@@ -247,14 +247,29 @@ enum meta_gem_type {
   META_GEM_NONE=0,
   META_AUSTERE_EARTHSIEGE,
   META_BEAMING_EARTHSIEGE,
+  META_BRACING_EARTHSIEGE,
+  META_BRACING_EARTHSTORM,
   META_CHAOTIC_SKYFIRE,
   META_CHAOTIC_SKYFLARE,
   META_EMBER_SKYFLARE,
+  META_FORLORN_SKYFLARE,
+  META_FORLORN_STARFLARE,
   META_INSIGHTFUL_EARTHSIEGE,
   META_INSIGHTFUL_EARTHSTORM,
+  META_MYSTICAL_SKYFIRE,
+  META_PERSISTENT_EARTHSIEGE,
+  META_PERSISTENT_EARTHSHATTER,
+  META_POWERFUL_EARTHSIEGE,
+  META_POWERFUL_EARTHSHATTER,
+  META_POWERFUL_EARTHSTORM,
   META_RELENTLESS_EARTHSIEGE,
   META_RELENTLESS_EARTHSTORM,
-  META_MYSTICAL_SKYFIRE,
+  META_REVITALIZING_SKYFLARE,
+  META_SWIFT_SKYFIRE,
+  META_SWIFT_SKYFLARE,
+  META_SWIFT_STARFIRE,
+  META_SWIFT_STARFLARE,
+  META_TIRELESS_STARFLARE,
   META_GEM_MAX
 };
 
@@ -2187,15 +2202,15 @@ struct thread_t
 struct armory_t
 {
   static bool download_guild( sim_t* sim, 
-			      const std::string& region, 
-			      const std::string& server, 
-			      const std::string& name,
-			      int player_type = PLAYER_NONE );
+                              const std::string& region, 
+                              const std::string& server, 
+                              const std::string& name,
+                              int player_type = PLAYER_NONE );
   static player_t* download_player( sim_t* sim,
-				    const std::string& region, 
-				    const std::string& server, 
-				    const std::string& name,
-				    bool active_talents=true );
+                                    const std::string& region, 
+                                    const std::string& server, 
+                                    const std::string& name,
+                                    bool active_talents=true );
   static bool download_slot( item_t&, const std::string& item_id );
   static bool download_item( item_t&, const std::string& item_id );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
@@ -2207,10 +2222,10 @@ struct armory_t
 struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
-				    const std::string& region, 
-				    const std::string& server, 
-				    const std::string& name,
-				    bool active_talents=true );
+                                    const std::string& region, 
+                                    const std::string& server, 
+                                    const std::string& name,
+                                    bool active_talents=true );
   static player_t* download_player( sim_t* sim, const std::string& id, bool active_talents=true );
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );

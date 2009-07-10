@@ -16,11 +16,12 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
-  { "3872",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
+  { "3873",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
   { "3872",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
   { "3870",  "Blood Draining",                                            ""                               },
   { "3855",  "+69 Spell Power",                                           "69SP"                           },
   { "3854",  "+81 Spell Power",                                           "81SP"                           },
+  { "3852",  "+30 Stamina and +15 Resilience Rating",                     "30Sta"                          },
   { "3851",  "+50 Stamina",                                               "50Sta"                          },
   { "3850",  "+40 Stamina",                                               "40Sta"                          },
   { "3849",  "Titanium Plating",                                          ""                               },
@@ -113,11 +114,13 @@ static enchant_data_t enchant_db[] =
   { "3273",  "Deathfrost",                                                ""                               },
   { "3269",  "Truesilver Line",                                           ""                               },
   { "3260",  "+240 Armor",                                                "240Armor"                       },
+  { "3256",  "Increased Stealth and Agility 10",                          "10Agi"                          },
   { "3253",  "+2% Threat and 10 Parry Rating",                            ""                               },
   { "3252",  "+8 All Stats",                                              "8Str_8Agi_8Sta_8Int_8Spi"       },
   { "3247",  "Titanium Weapon Chain",                                     ""                               },
   { "3249",  "+16 Critical Strike Rating",                                "16Crit"                         },
   { "3246",  "+28 Spell Power",                                           "28SP"                           },
+  { "3245",  "+20 Resilience Rating",                                     ""                               },
   { "3244",  "Greater Vitality",                                          "6MP5"                           },
   { "3243",  "+35 Spell Penetration",                                     "35SPen"                         },
   { "3241",  "Lifeward",                                                  ""                               },
@@ -766,8 +769,8 @@ void enchant_t::register_callbacks( player_t* p )
 // enchant_t::get_encoding ==================================================
 
 bool enchant_t::get_encoding( std::string& name,
-			      std::string& encoding,
-			      const std::string& enchant_id )
+                              std::string& encoding,
+                              const std::string& enchant_id )
 {
   for( int i=0; enchant_db[ i ].id; i++ )
   {
@@ -786,7 +789,7 @@ bool enchant_t::get_encoding( std::string& name,
 // enchant_t::download ======================================================
 
 bool enchant_t::download( item_t&            item,
-			  const std::string& enchant_id )
+                          const std::string& enchant_id )
 {
   item.armory_enchant_str.clear();
 

@@ -1995,8 +1995,8 @@ void priest_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
 
@@ -2007,7 +2007,8 @@ void priest_t::init_actions()
       action_list_str += "/speed_potion";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
-      action_list_str += "/devouring_plague/mind_blast/mind_flay";
+      action_list_str += "/devouring_plague/mind_blast";
+      action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death"; // when moving
     }
     else

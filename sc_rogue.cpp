@@ -3001,18 +3001,21 @@ struct apply_poison_t : public rogue_poison_t
 
     trigger_gcd = 0;
 
-    if ( main_hand_str == "anesthetic" ) main_hand_poison = ANESTHETIC_POISON;
-    if ( main_hand_str == "deadly"     ) main_hand_poison =     DEADLY_POISON;
-    if ( main_hand_str == "instant"    ) main_hand_poison =    INSTANT_POISON;
-    if ( main_hand_str == "wound"      ) main_hand_poison =      WOUND_POISON;
+    if( p -> main_hand_weapon.type != WEAPON_NONE )
+    {
+      if ( main_hand_str == "anesthetic" ) main_hand_poison = ANESTHETIC_POISON;
+      if ( main_hand_str == "deadly"     ) main_hand_poison =     DEADLY_POISON;
+      if ( main_hand_str == "instant"    ) main_hand_poison =    INSTANT_POISON;
+      if ( main_hand_str == "wound"      ) main_hand_poison =      WOUND_POISON;
+    }
 
-    if ( off_hand_str == "anesthetic" ) off_hand_poison = ANESTHETIC_POISON;
-    if ( off_hand_str == "deadly"     ) off_hand_poison =     DEADLY_POISON;
-    if ( off_hand_str == "instant"    ) off_hand_poison =    INSTANT_POISON;
-    if ( off_hand_str == "wound"      ) off_hand_poison =      WOUND_POISON;
-
-    if ( main_hand_poison != WEAPON_BUFF_NONE ) assert( p -> main_hand_weapon.type != WEAPON_NONE );
-    if (  off_hand_poison != WEAPON_BUFF_NONE ) assert( p ->  off_hand_weapon.type != WEAPON_NONE );
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      if ( off_hand_str == "anesthetic" ) off_hand_poison = ANESTHETIC_POISON;
+      if ( off_hand_str == "deadly"     ) off_hand_poison =     DEADLY_POISON;
+      if ( off_hand_str == "instant"    ) off_hand_poison =    INSTANT_POISON;
+      if ( off_hand_str == "wound"      ) off_hand_poison =      WOUND_POISON;
+    }
 
     if ( ! p -> active_anesthetic_poison ) p -> active_anesthetic_poison = new anesthetic_poison_t( p );
     if ( ! p -> active_deadly_poison     ) p -> active_deadly_poison     = new     deadly_poison_t( p );
@@ -3034,12 +3037,14 @@ struct apply_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if ( main_hand_poison != WEAPON_BUFF_NONE )
-      return( main_hand_poison != p -> main_hand_weapon.buff );
+    if( p -> main_hand_weapon.type != WEAPON_NONE )
+      if ( main_hand_poison != WEAPON_BUFF_NONE )
+        return( main_hand_poison != p -> main_hand_weapon.buff );
 
-    if ( off_hand_poison != WEAPON_BUFF_NONE )
-      return( off_hand_poison != p -> off_hand_weapon.buff );
-
+    if( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( off_hand_poison != WEAPON_BUFF_NONE )
+        return( off_hand_poison != p -> off_hand_weapon.buff );
+    
     return false;
   }
 };
@@ -3300,9 +3305,15 @@ void rogue_t::init_glyphs()
     else if( n == "slice_and_dice"      ) glyphs.slice_and_dice = 1;
     else if( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade = 1;
     else if( n == "vigor"               ) glyphs.vigor = 1;
-    else if( n == "safe_fall"           ) ;
-    else if( n == "pick_lock"           ) ;
+    // To prevent warning messages....
     else if( n == "blurred_speed"       ) ;
+    else if( n == "cloak_of_shadows"    ) ;
+    else if( n == "distract"            ) ;
+    else if( n == "garrote"             ) ;
+    else if( n == "pick_lock"           ) ;
+    else if( n == "pick_pocket"         ) ;
+    else if( n == "safe_fall"           ) ;
+    else if( n == "sprint"              ) ;
     else if( n == "vanish"              ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }

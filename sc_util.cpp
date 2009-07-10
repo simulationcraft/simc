@@ -173,7 +173,7 @@ int util_t::parse_race_type( const std::string& name )
 
     for( int j=0; tolower( race_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( race_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return RACE_NONE;
@@ -211,7 +211,7 @@ int util_t::parse_profession_type( const std::string& name )
 
     for( int j=0; tolower( prof_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( prof_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return PROFESSION_NONE;
@@ -250,7 +250,7 @@ int util_t::parse_player_type( const std::string& name )
 
     for( int j=0; tolower( player_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( player_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return PLAYER_NONE;
@@ -281,7 +281,7 @@ int util_t::parse_attribute_type( const std::string& name )
 
     for( int j=0; tolower( attr_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( attr_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return ATTRIBUTE_NONE;
@@ -327,7 +327,7 @@ int util_t::parse_gem_type( const std::string& name )
 
     for( int j=0; tolower( gem_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( gem_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return GEM_NONE;
@@ -339,16 +339,31 @@ const char* util_t::meta_gem_type_string( int type )
 {
   switch ( type )
   {
-  case META_AUSTERE_EARTHSIEGE:    return "austere_earthsiege";
-  case META_BEAMING_EARTHSIEGE:    return "beaming_earthsiege";
-  case META_CHAOTIC_SKYFIRE:       return "chaotic_skyfire";
-  case META_CHAOTIC_SKYFLARE:      return "chaotic_skyflare";
-  case META_EMBER_SKYFLARE:        return "ember_skyflare";
-  case META_INSIGHTFUL_EARTHSIEGE: return "insightful_earthsiege";
-  case META_INSIGHTFUL_EARTHSTORM: return "insightful_earthstorm";
-  case META_RELENTLESS_EARTHSIEGE: return "relentless_earthsiege";
-  case META_RELENTLESS_EARTHSTORM: return "relentless_earthstorm";
-  case META_MYSTICAL_SKYFIRE:      return "mystical_skyfire";
+  case META_AUSTERE_EARTHSIEGE:      return "austere_earthsiege";
+  case META_BEAMING_EARTHSIEGE:      return "beaming_earthsiege";
+  case META_BRACING_EARTHSIEGE:      return "bracing_earthsiege";
+  case META_BRACING_EARTHSTORM:      return "bracing_earthstorm";
+  case META_CHAOTIC_SKYFIRE:         return "chaotic_skyfire";
+  case META_CHAOTIC_SKYFLARE:        return "chaotic_skyflare";
+  case META_EMBER_SKYFLARE:          return "ember_skyflare";
+  case META_FORLORN_SKYFLARE:        return "forlorn_skyflare";
+  case META_FORLORN_STARFLARE:       return "forlorn_starflare";
+  case META_INSIGHTFUL_EARTHSIEGE:   return "insightful_earthsiege";
+  case META_INSIGHTFUL_EARTHSTORM:   return "insightful_earthstorm";
+  case META_MYSTICAL_SKYFIRE:        return "mystical_skyfire";
+  case META_PERSISTENT_EARTHSHATTER: return "persistent_earthshatter";
+  case META_PERSISTENT_EARTHSIEGE:   return "persistent_earthsiege";
+  case META_POWERFUL_EARTHSHATTER:   return "powerful_earthshatter";
+  case META_POWERFUL_EARTHSIEGE:     return "powerful_earthsiege";
+  case META_POWERFUL_EARTHSTORM:     return "powerful_earthstorm";
+  case META_RELENTLESS_EARTHSIEGE:   return "relentless_earthsiege";
+  case META_RELENTLESS_EARTHSTORM:   return "relentless_earthstorm";
+  case META_REVITALIZING_SKYFLARE:   return "revitalizing_skyflare";
+  case META_SWIFT_SKYFIRE:           return "swift_skyfire";
+  case META_SWIFT_SKYFLARE:          return "swift_skyflare";
+  case META_SWIFT_STARFIRE:          return "swift_starfire";
+  case META_SWIFT_STARFLARE:         return "swift_starflare";
+  case META_TIRELESS_STARFLARE:      return "tireless_starflare";
   }
   return "unknown";
 }
@@ -363,7 +378,7 @@ int util_t::parse_meta_gem_type( const std::string& name )
 
     for( int j=0; tolower( meta_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( meta_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return META_GEM_NONE;
@@ -398,7 +413,7 @@ int util_t::parse_result_type( const std::string& name )
 
     for( int j=0; tolower( result_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( result_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return RESULT_NONE;
@@ -431,7 +446,7 @@ int util_t::parse_resource_type( const std::string& name )
 
     for( int j=0; tolower( resource_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( resource_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return RESOURCE_NONE;
@@ -467,7 +482,7 @@ int util_t::parse_school_type( const std::string& name )
 
     for( int j=0; tolower( school_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( school_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return SCHOOL_NONE;
@@ -518,7 +533,7 @@ int util_t::parse_talent_tree( const std::string& name )
 
     for( int j=0; tolower( tree_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( tree_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return TREE_NONE;
@@ -561,7 +576,7 @@ int util_t::parse_weapon_type( const std::string& name )
 
     for( int j=0; tolower( weapon_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( weapon_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return WEAPON_NONE;
@@ -595,7 +610,7 @@ int util_t::parse_enchant_type( const std::string& name )
 
     for( int j=0; tolower( enchant_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( enchant_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return ENCHANT_NONE;
@@ -632,7 +647,7 @@ int util_t::parse_weapon_buff_type( const std::string& name )
 
     for( int j=0; tolower( buff_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( buff_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return WEAPON_BUFF_NONE;
@@ -667,7 +682,7 @@ int util_t::parse_flask_type( const std::string& name )
 
     for( int j=0; tolower( flask_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( flask_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return FLASK_NONE;
@@ -706,7 +721,7 @@ int util_t::parse_food_type( const std::string& name )
 
     for( int j=0; tolower( food_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( food_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return FOOD_NONE;
@@ -751,7 +766,7 @@ int util_t::parse_slot_type( const std::string& name )
 
     for( int j=0; tolower( slot_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( slot_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   return SLOT_NONE;
@@ -890,7 +905,7 @@ int util_t::parse_stat_type( const std::string& name )
 
     for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( stat_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   for( int i=0; i <= STAT_MAX; i++ )
@@ -899,7 +914,7 @@ int util_t::parse_stat_type( const std::string& name )
 
     for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( stat_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   for( int i=0; i <= STAT_MAX; i++ )
@@ -908,7 +923,7 @@ int util_t::parse_stat_type( const std::string& name )
 
     for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
       if( stat_name[ j ] == '\0' )
-	return i;
+        return i;
   }
 
   if( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
@@ -940,7 +955,7 @@ int util_t::translate_class_id( int cid )
 // util_t::socket_gem_match ================================================
 
 bool util_t::socket_gem_match( int socket,
-			       int gem )
+                               int gem )
 {
   if( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
 

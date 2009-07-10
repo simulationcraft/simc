@@ -2630,7 +2630,7 @@ struct chimera_shot_t : public hunter_attack_t
     if ( result_is_hit() && sting )
     {
       sting -> refresh_duration();
-	  sting -> result = RESULT_HIT;
+          sting -> result = RESULT_HIT;
 
       double sting_dmg = sting -> num_ticks * sting -> calculate_tick_damage();
 
@@ -2986,7 +2986,7 @@ struct serpent_sting_t : public hunter_attack_t
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + ( p -> talents.improved_stings * 0.1 +
-			       p -> set_bonus.tier8_2pc() * 0.1   );
+                               p -> set_bonus.tier8_2pc() * 0.1   );
     tick_may_crit    = ( p -> set_bonus.tier9_2pc() == 1 );
 
     observer = &( p -> active_serpent_sting );
@@ -3700,10 +3700,18 @@ void hunter_t::init_glyphs()
     else if( n == "steady_shot"                 ) glyphs.steady_shot = 1;
     else if( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
     else if( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
-    else if( n == "the_pack"			) {}
-    else if( n == "mend_pet"			) {}
-    else if( n == "revive_pet"			) {}
-    else if( n == "feign_death"			) {}
+    // To prevent warnings....
+    else if( n == "the_pack"           ) ;
+    else if( n == "mend_pet"           ) ;
+    else if( n == "mending"            ) ;
+    else if( n == "revive_pet"         ) ;
+    else if( n == "explosive_trap"     ) ;
+    else if( n == "feign_death"        ) ;
+    else if( n == "scare_beast"        ) ;
+    else if( n == "possessed_strength" ) ;
+    else if( n == "disengage"          ) ;
+    else if( n == "arcane_shot"        ) ;
+    else if( n == "frost_trap"         ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3831,8 +3839,8 @@ void hunter_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
     if( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";

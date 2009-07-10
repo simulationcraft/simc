@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // download_profile =========================================================
 
 static js_node_t* download_profile( sim_t* sim, 
-				    const std::string& id )
+                                    const std::string& id )
 {
   std::string url = "http://profiler.wowhead.com/?profile=load&id=" + id;
   std::string result;
@@ -25,9 +25,9 @@ static js_node_t* download_profile( sim_t* sim,
       if( finish != std::string::npos ) finish = result.rfind( "}", finish );
       if( finish != std::string::npos )
       {
-	std::string buffer = result.substr( start, ( finish - start ) + 1 );
-	if( sim -> debug ) printf( "%s\n", buffer.c_str() );
-	return js_t::create( buffer );
+        std::string buffer = result.substr( start, ( finish - start ) + 1 );
+        if( sim -> debug ) printf( "%s\n", buffer.c_str() );
+        return js_t::create( buffer );
       }
     }
   }
@@ -50,7 +50,7 @@ static xml_node_t* download_id( const std::string& id_str )
 // parse_stats ==============================================================
 
 static void parse_stats( std::string& encoding,
-			 const std::string& stats_str )
+                         const std::string& stats_str )
 {
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, stats_str, "," );
@@ -64,9 +64,9 @@ static void parse_stats( std::string& encoding,
       int type = util_t::parse_stat_type( type_str );
       if( type != STAT_NONE )
       {
-	encoding += "_";
-	encoding += value_str;
-	encoding += util_t::stat_type_abbrev( type );
+        encoding += "_";
+        encoding += value_str;
+        encoding += util_t::stat_type_abbrev( type );
       }
     }
   }
@@ -75,7 +75,7 @@ static void parse_stats( std::string& encoding,
 // parse_gem ================================================================
 
 static int parse_gem( item_t&            item, 
-		      const std::string& gem_id )
+                      const std::string& gem_id )
 {
   if( gem_id.empty() || gem_id == "" || gem_id == "0" )
     return GEM_NONE;
@@ -94,23 +94,23 @@ static int parse_gem( item_t&            item,
     
       if( gem_type == GEM_META )
       {
-	std::string name_str;
-	if( xml_t::get_value( name_str, node, "name/cdata" ) )
-	{
-	  std::string::size_type pos = name_str.find( " Diamond" );
-	  if( pos != std::string::npos ) name_str.erase( pos );
-	  armory_t::format( name_str );
-	  item.armory_gems_str += "_";
-	  item.armory_gems_str += name_str;
-	}	
+        std::string name_str;
+        if( xml_t::get_value( name_str, node, "name/cdata" ) )
+        {
+          std::string::size_type pos = name_str.find( " Diamond" );
+          if( pos != std::string::npos ) name_str.erase( pos );
+          armory_t::format( name_str );
+          item.armory_gems_str += "_";
+          item.armory_gems_str += name_str;
+        }       
       }
       else
       {
-	std::string stats_str;
-	if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
-	{
-	  parse_stats( item.armory_gems_str, stats_str );
-	}
+        std::string stats_str;
+        if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+        {
+          parse_stats( item.armory_gems_str, stats_str );
+        }
       }
 
       return gem_type;
@@ -123,8 +123,8 @@ static int parse_gem( item_t&            item,
 // parse_gems ===============================================================
 
 static bool parse_gems( item_t&           item, 
-			xml_node_t*       node,
-			const std::string gem_ids[ 3 ] )
+                        xml_node_t*       node,
+                        const std::string gem_ids[ 3 ] )
 {
   item.armory_gems_str.clear();
 
@@ -176,12 +176,12 @@ static bool parse_gems( item_t&           item,
       std::string::size_type pos = tooltip_str.find( search );
       if( pos != std::string::npos )
       {
-	std::string::size_type start = pos + strlen( search );
-	std::string::size_type pos = tooltip_str.find( "<", start );
-	if( pos != std::string::npos )
+        std::string::size_type start = pos + strlen( search );
+        std::string::size_type pos = tooltip_str.find( "<", start );
+        if( pos != std::string::npos )
         {
-	  armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, pos-start ) );
-	}
+          armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, pos-start ) );
+        }
       }
     }
   }
@@ -194,7 +194,7 @@ static bool parse_gems( item_t&           item,
 // parse_weapon =============================================================
 
 static bool parse_weapon( item_t&     item,
-			  xml_node_t* node )
+                          xml_node_t* node )
 {
   std::string stats_str;
   if( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) ) 
@@ -252,7 +252,7 @@ static bool parse_weapon( item_t&     item,
 // parse_item_stats =========================================================
 
 static bool parse_item_stats( item_t&     item,
-			      xml_node_t* node )
+                              xml_node_t* node )
 {
   item.armory_stats_str.clear();
 
@@ -269,7 +269,7 @@ static bool parse_item_stats( item_t&     item,
 // parse_item_name ==========================================================
 
 static bool parse_item_name( item_t&     item,
-			     xml_node_t* node )
+                             xml_node_t* node )
 {
   if( ! xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
     return false;
@@ -334,7 +334,7 @@ static const char* translate_inventory_id( int slot )
 // wowhead_t::download_glyph ================================================
 
 bool wowhead_t::download_glyph( std::string&       glyph_name,
-				const std::string& glyph_id )
+                                const std::string& glyph_id )
 {
   xml_node_t* node = download_id( glyph_id );
   if( node )
@@ -352,7 +352,7 @@ bool wowhead_t::download_glyph( std::string&       glyph_name,
 // wowhead_t::download_item =================================================
 
 bool wowhead_t::download_item( item_t&            item, 
-			       const std::string& item_id )
+                               const std::string& item_id )
 {
   player_t* p = item.player;
 
@@ -387,9 +387,9 @@ bool wowhead_t::download_item( item_t&            item,
 // wowhead_t::download_slot =================================================
 
 bool wowhead_t::download_slot( item_t&            item, 
-			       const std::string& item_id,
-			       const std::string& enchant_id, 
-			       const std::string  gem_ids[ 3 ] )
+                               const std::string& item_id,
+                               const std::string& enchant_id, 
+                               const std::string  gem_ids[ 3 ] )
 {
   player_t* p = item.player;
 
@@ -436,10 +436,10 @@ bool wowhead_t::download_slot( item_t&            item,
 // wowhead_t::download_player ===============================================
 
 player_t* wowhead_t::download_player( sim_t* sim,
-				      const std::string& region, 
-				      const std::string& server, 
-				      const std::string& name,
-				      bool use_active_talents )
+                                      const std::string& region, 
+                                      const std::string& server, 
+                                      const std::string& name,
+                                      bool use_active_talents )
 {
   std::string url = "http://profiler.wowhead.com/?profile=" + region + "." + server + "." + name;
   std::string result;
@@ -452,15 +452,15 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string::size_type finish = result.find( ";", start );
       if( finish != std::string::npos )
       {
-	std::vector<std::string> splits;
-	int num_splits = util_t::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
-	for( int i=0; i < num_splits-1; i++ )
-	{
-	  if( splits[ i ] == "id" )
-	  {
-	    return download_player( sim, splits[ i+1 ], use_active_talents );
-	  }
-	}
+        std::vector<std::string> splits;
+        int num_splits = util_t::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
+        for( int i=0; i < num_splits-1; i++ )
+        {
+          if( splits[ i ] == "id" )
+          {
+            return download_player( sim, splits[ i+1 ], use_active_talents );
+          }
+        }
       }
     }
   }
@@ -471,8 +471,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
 // wowhead_t::download_player ===============================================
 
 player_t* wowhead_t::download_player( sim_t* sim,
-				      const std::string& id, 
-				      bool use_active_talents )
+                                      const std::string& id, 
+                                      bool use_active_talents )
 {
   js_node_t* profile_js = download_profile( sim, id );
 
@@ -505,7 +505,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if( ! p ) 
   {
     printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n", 
-	    type_str.c_str(), name_str.c_str(), id.c_str() );
+            type_str.c_str(), name_str.c_str(), id.c_str() );
     return 0;
   }
 
@@ -571,8 +571,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string glyph_name;
       if( ! download_glyph( glyph_name, glyph_id ) ) 
       {
-	printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
-	return 0;
+        printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
+        return 0;
       }
       if( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
@@ -593,7 +593,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
       if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
-	return 0;
+        return 0;
     }
   }
 

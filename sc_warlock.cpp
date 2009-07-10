@@ -1675,7 +1675,7 @@ struct shadow_bolt_t : public warlock_spell_t
                                  p -> set_bonus.tier6_4pc()        * 0.06 +
                                  p -> talents.improved_shadow_bolt * 0.01 );
     base_crit         += ( p -> talents.devastation   * 0.05 + 
-			   p -> set_bonus.tier8_4pc() * 0.05 );
+                           p -> set_bonus.tier8_4pc() * 0.05 );
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -2350,9 +2350,9 @@ struct unstable_affliction_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
-				p -> set_bonus.tier8_2pc()  * 0.20 + //FIXME assuming additive
+                                p -> set_bonus.tier8_2pc()  * 0.20 + //FIXME assuming additive
         p -> set_bonus.tier9_4pc()  * 0.10 +
-				( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
+                                ( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
@@ -2849,7 +2849,7 @@ struct incinerate_t : public warlock_spell_t
                                  p -> set_bonus.tier6_4pc() * 0.06 +
                                  p -> glyphs.incinerate     * 0.05 );
     base_crit         += ( p -> talents.devastation   * 0.05 +
-			   p -> set_bonus.tier8_4pc() * 0.05 );
+                           p -> set_bonus.tier8_4pc() * 0.05 );
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -3681,11 +3681,11 @@ struct demonic_pact_callback_t : public action_callback_t
           p -> buffs.demonic_pact = buff;
           p -> buffs.demonic_pact_pet = pet;
 
-	  // HACK ALERT!!! Remove "double-dip" during spell power scale factor generation.
-	  if( p != o && sim -> scaling -> scale_stat == STAT_SPELL_POWER )
-	  {
-	    p -> buffs.demonic_pact -= sim -> scaling -> scale_value * 0.10;
-	  }
+          // HACK ALERT!!! Remove "double-dip" during spell power scale factor generation.
+          if( p != o && sim -> scaling -> scale_stat == STAT_SPELL_POWER )
+          {
+            p -> buffs.demonic_pact -= sim -> scaling -> scale_value * 0.10;
+          }
         }
         sim -> add_event( this, 12.0 );
       }
@@ -4036,8 +4036,8 @@ void warlock_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	      action_list_str += "/use_item,name=";
-	      action_list_str += items[ i ].name();
+              action_list_str += "/use_item,name=";
+              action_list_str += items[ i ].name();
       }
     }
 

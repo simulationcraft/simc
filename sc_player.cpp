@@ -587,15 +587,30 @@ void player_t::init_items()
     }
   }
 
-  if     ( meta_gem == META_AUSTERE_EARTHSIEGE    ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if( meta_gem == META_BEAMING_EARTHSIEGE    ) item_stats.crit_rating += 21;
-  else if( meta_gem == META_CHAOTIC_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if( meta_gem == META_CHAOTIC_SKYFIRE       ) item_stats.crit_rating += 12;
-  else if( meta_gem == META_EMBER_SKYFLARE        ) item_stats.spell_power += 25;
-  else if( meta_gem == META_INSIGHTFUL_EARTHSIEGE ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if( meta_gem == META_INSIGHTFUL_EARTHSTORM ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if( meta_gem == META_RELENTLESS_EARTHSIEGE ) item_stats.attribute[ ATTR_AGILITY ] += 21;
-  else if( meta_gem == META_RELENTLESS_EARTHSTORM ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+  if     ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if( meta_gem == META_BEAMING_EARTHSIEGE      ) item_stats.crit_rating += 21;
+  else if( meta_gem == META_BRACING_EARTHSIEGE      ) item_stats.spell_power += 25;
+  else if( meta_gem == META_BRACING_EARTHSTORM      ) item_stats.spell_power += 14;
+  else if( meta_gem == META_CHAOTIC_SKYFIRE         ) item_stats.crit_rating += 12;
+  else if( meta_gem == META_CHAOTIC_SKYFLARE        ) item_stats.crit_rating += 21;
+  else if( meta_gem == META_EMBER_SKYFLARE          ) item_stats.spell_power += 25;
+  else if( meta_gem == META_FORLORN_SKYFLARE        ) item_stats.spell_power += 25;
+  else if( meta_gem == META_FORLORN_STARFLARE       ) item_stats.spell_power += 20;
+  else if( meta_gem == META_INSIGHTFUL_EARTHSIEGE   ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if( meta_gem == META_INSIGHTFUL_EARTHSTORM   ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if( meta_gem == META_PERSISTENT_EARTHSHATTER ) item_stats.attack_power += 34;
+  else if( meta_gem == META_PERSISTENT_EARTHSIEGE   ) item_stats.attack_power += 42;
+  else if( meta_gem == META_POWERFUL_EARTHSHATTER   ) item_stats.attribute[ ATTR_STAMINA ] += 26;
+  else if( meta_gem == META_POWERFUL_EARTHSIEGE     ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if( meta_gem == META_POWERFUL_EARTHSTORM     ) item_stats.attribute[ ATTR_STAMINA ] += 18;
+  else if( meta_gem == META_RELENTLESS_EARTHSIEGE   ) item_stats.attribute[ ATTR_AGILITY ] += 21;
+  else if( meta_gem == META_RELENTLESS_EARTHSTORM   ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+  else if( meta_gem == META_REVITALIZING_SKYFLARE   ) item_stats.mp5 += 8;
+  else if( meta_gem == META_SWIFT_SKYFIRE           ) item_stats.attack_power += 24;
+  else if( meta_gem == META_SWIFT_SKYFLARE          ) item_stats.attack_power += 42;
+  else if( meta_gem == META_SWIFT_STARFIRE          ) item_stats.spell_power  += 12;
+  else if( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
+  else if( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
 
   for( int i=0; i < STAT_MAX; i++ )
   {
@@ -1055,21 +1070,21 @@ void player_t::init_scaling()
       case STAT_ARMOR_PENETRATION_RATING: initial_attack_penetration += v / rating.armor_penetration; break;
 
       case STAT_HIT_RATING:
-	initial_attack_hit += v / rating.attack_hit;
-	initial_spell_hit  += v / rating.spell_hit;
-	break;
+        initial_attack_hit += v / rating.attack_hit;
+        initial_spell_hit  += v / rating.spell_hit;
+        break;
 
       case STAT_CRIT_RATING:
-	initial_attack_crit += v / rating.attack_crit;
-	initial_spell_crit  += v / rating.spell_crit;
-	break;
+        initial_attack_crit += v / rating.attack_crit;
+        initial_spell_crit  += v / rating.spell_crit;
+        break;
 
       case STAT_HASTE_RATING: initial_haste_rating += v; break;
 
       case STAT_WEAPON_DPS: 
-	main_hand_weapon.damage += main_hand_weapon.swing_time * v;
-	ranged_weapon.damage    += ranged_weapon.swing_time * v;
-	break;
+        main_hand_weapon.damage += main_hand_weapon.swing_time * v;
+        ranged_weapon.damage    += ranged_weapon.swing_time * v;
+        break;
 
       case STAT_ARMOR: initial_armor += v; break;
 
@@ -2400,17 +2415,17 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-	discharge_spell_t( const char* n, player_t* p, double a, int s ) :
+        discharge_spell_t( const char* n, player_t* p, double a, int s ) :
           spell_t( n, p, RESOURCE_NONE, s )
-	{
-	  trigger_gcd = 0;
-	  base_dd_min = a;
-	  base_dd_max = a;
-	  may_crit    = true;
-	  background  = true;
-	  base_spell_power_multiplier = 0;
-	  reset();
-	}
+        {
+          trigger_gcd = 0;
+          base_dd_min = a;
+          base_dd_max = a;
+          may_crit    = true;
+          background  = true;
+          base_spell_power_multiplier = 0;
+          reset();
+        }
       };
 
       spell = new discharge_spell_t( item -> name(), player, item -> use.amount, item -> use.school );

@@ -401,7 +401,7 @@ static bool parse_item_weapon( item_t& item,
 // armory_t::fuzzy_stats ====================================================
 
 void armory_t::fuzzy_stats( std::string&       encoding_str,
-			    const std::string& description_str )
+                            const std::string& description_str )
 {
   if( description_str.empty() ) return;
 
@@ -445,10 +445,10 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 // armory_t::download_guild =================================================
 
 bool armory_t::download_guild( sim_t* sim,
-			       const std::string& region, 
-			       const std::string& server, 
-			       const std::string& name,
-			       int player_type )
+                               const std::string& region, 
+                               const std::string& server, 
+                               const std::string& name,
+                               int player_type )
 {
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
@@ -478,15 +478,15 @@ bool armory_t::download_guild( sim_t* sim,
     int character_level;
 
     if( xml_t::get_value( character_name,  characters[ i ], "name"    ) &&
-	xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
-	xml_t::get_value( character_level, characters[ i ], "level"   ) )
+        xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
+        xml_t::get_value( character_level, characters[ i ], "level"   ) )
     {
       if( character_level < 80 )
-	continue;
+        continue;
 
       if( player_type != PLAYER_NONE )
-	if( player_type != util_t::translate_class_id( character_cid ) )
-	  continue;
+        if( player_type != util_t::translate_class_id( character_cid ) )
+          continue;
 
       character_names.push_back( character_name );
     }
@@ -503,19 +503,24 @@ bool armory_t::download_guild( sim_t* sim,
 
       fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
 
-      player_t* p = download_player( sim, region, server, character_name, true );
+      player_t* p = armory_t::download_player( sim, region, server, character_name, true );
+      if( ! p ) 
+      {
+        printf( "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
+        p = wowhead_t::download_player( sim, region, server, character_name, true );
+      }
       if( ! p ) return false;
 
       int tree = p -> primary_tree();
       if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_PROTECTION )
       {
-	fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
-	p -> quiet = true;
+        fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
+        p -> quiet = true;
       }
       if( tree == TREE_PROTECTION )
       {
-	fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on tank %s\n", character_name.c_str() );
-	p -> quiet = true;
+        fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on tank %s\n", character_name.c_str() );
+        p -> quiet = true;
       }
     }
   }
@@ -549,7 +554,7 @@ player_t* armory_t::download_player( sim_t* sim,
       ! xml_t::get_value(    level, sheet_xml, "character/level"   ) )
   {
     printf( "\nsimcraft: Unable to determine class/name/level from armory xml for %s|%s|%s.\n", 
-	    region.c_str(), server.c_str(), name.c_str() );
+            region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   armory_t::format( type_str );
@@ -559,7 +564,7 @@ player_t* armory_t::download_player( sim_t* sim,
   if( ! p ) 
   {
     printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n", 
-	    type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+            type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -581,7 +586,7 @@ player_t* armory_t::download_player( sim_t* sim,
   {
     std::string key_str, value_str;
     if( xml_t::get_value(   key_str, skill_nodes[ i ], "key"   ) &&
-	xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
+        xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
     {
       if( i ) p -> professions_str += "/";
       p -> professions_str += key_str + "=" + value_str;
@@ -616,13 +621,13 @@ player_t* armory_t::download_player( sim_t* sim,
       std::string talents_encoding;
       if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) 
       {
-	printf( "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
-	return 0;
+        printf( "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
+        return 0;
       }
       if( ! p -> parse_talents( talents_encoding ) ) 
       {
-	printf( "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
-	return 0;
+        printf( "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
+        return 0;
       }
       p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
 
@@ -633,10 +638,10 @@ player_t* armory_t::download_player( sim_t* sim,
       {
         std::string glyph_name;
         if( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) ) 
-	{
-	  printf( "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
-	  return 0;
-	}
+        {
+          printf( "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
+          return 0;
+        }
         glyph_name.erase( 0, 9 ); // remove "Glyph of "
         armory_t::format( glyph_name );
         if( i ) p -> glyphs_str += "/";
@@ -661,11 +666,11 @@ player_t* armory_t::download_player( sim_t* sim,
 
       std::string enchant_id, gem_ids[ 3 ];
       if( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
-	  xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
-	  xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
-	  xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
+          xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
+          xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
+          xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-	success = wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids );
+        success = wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids );
       }
       
       if( ! success ) success = armory_t::download_slot( p -> items[ slot ], id_str );
