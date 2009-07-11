@@ -3285,6 +3285,7 @@ void shaman_t::init_glyphs()
     else if( n == "healing_stream_totem" ) ;
     else if( n == "lesser_healing_wave"  ) ;
     else if( n == "renewed_life"         ) ;
+    else if( n == "stoneclaw_totem"      ) ;
     else if( n == "water_breathing"      ) ;
     else if( n == "water_mastery"        ) ;
     else if( n == "water_shield"         ) ;
@@ -3352,6 +3353,7 @@ void shaman_t::init_items()
   else if ( totem == "totem_of_the_tundra"        ) totems.tundra = 1;
   else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
   // To prevent warnings...
+  else if ( totem == "totem_of_forest_growth" ) ;
   else if ( totem == "totem_of_healing_rains" ) ;
   else
   {

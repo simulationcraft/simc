@@ -278,7 +278,8 @@ struct druid_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return talents.moonkin_form ? ROLE_SPELL    : ROLE_ATTACK;     }
-  virtual int       primary_tree() SC_CONST     { return talents.moonkin_form ? TREE_BALANCE  : TREE_FERAL;      }
+  virtual int       primary_tree() SC_CONST     { return talents.moonkin_form ? TREE_BALANCE  : 
+                                                           talents.leader_of_the_pack ? TREE_FERAL : TREE_RESTORATION;      }
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -3305,6 +3306,7 @@ void druid_t::init_glyphs()
     else if( n == "thorns"                ) ;
     else if( n == "typhoon"               ) ;
     else if( n == "unburdened_rebirth"    ) ;
+    else if( n == "wild_growth"           ) ;
     else if( n == "wrath"                 ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
@@ -3385,9 +3387,10 @@ void druid_t::init_items()
   else if( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if( idol == "idol_of_worship"            ) idols.worship = 1;
   // To prevent warnings....
-  else if( idol == "idol_of_awakening"           ) ;
-  else if( idol == "idol_of_lush_moss"           ) ;
-  else if( idol == "harolds_rejuvenating_broach" ) ;
+  else if( idol == "idol_of_awakening"            ) ;
+  else if( idol == "idol_of_lush_moss"            ) ;
+  else if( idol == "idol_of_the_flourishing_life" ) ;
+  else if( idol == "harolds_rejuvenating_broach"  ) ;
   else
   {
     printf( "simcraft: %s has unknown idol %s\n", name(), idol.c_str() );

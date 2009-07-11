@@ -121,6 +121,7 @@ struct priest_t : public player_t
     int shadow_word_pain;
     int shadow;
     int penance;
+    int dispersion;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1509,7 +1510,12 @@ struct dispersion_t : public priest_spell_t
     channeled         = true;
     harmful           = false;
     base_cost         = 0;
-    cooldown          = 180;
+    cooldown          = ( sim -> P320 ) ? 120 : 180;
+
+    if ( p -> glyphs.dispersion )
+    {
+      cooldown        -= 45;
+    }
   }
 
   virtual void tick()
@@ -1890,12 +1896,15 @@ void priest_t::init_glyphs()
     else if( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
     else if( n == "shadow"            ) glyphs.shadow = 1;
     else if( n == "penance"           ) glyphs.penance = 1;
+    else if( n == "dispersion"        ) glyphs.dispersion = 1;
     // Just to prevent warnings....
     else if( n == "circle_of_healing" ) ;
     else if( n == "dispel_magic"      ) ;
     else if( n == "fading"            ) ;
     else if( n == "flash_heal"        ) ;
     else if( n == "fortitude"         ) ;
+    else if( n == "guardian_spirit"   ) ;
+    else if( n == "inner_fire"        ) ;
     else if( n == "levitate"          ) ;
     else if( n == "mind_flay"         ) ;
     else if( n == "pain_suppression"  ) ;

@@ -20,6 +20,7 @@ static enchant_data_t enchant_db[] =
   { "3872",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
   { "3870",  "Blood Draining",                                            ""                               },
   { "3869",  "Blade Ward",                                                ""                               },
+  { "3859",  "Springy Arachnoweave",                                      "18SP"                           },
   { "3855",  "+69 Spell Power",                                           "69SP"                           },
   { "3854",  "+81 Spell Power",                                           "81SP"                           },
   { "3853",  "+40 Resilience Rating +28 Stamina",                         "28Sta"                          },
