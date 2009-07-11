@@ -3280,6 +3280,7 @@ void shaman_t::init_glyphs()
     // To prevent warnings....
     else if( n == "astral_recall"        ) ;
     else if( n == "chain_heal"           ) ;
+    else if( n == "earth_shield"         ) ;
     else if( n == "ghost_wolf"           ) ;
     else if( n == "healing_stream_totem" ) ;
     else if( n == "lesser_healing_wave"  ) ;
