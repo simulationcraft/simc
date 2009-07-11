@@ -3313,6 +3313,7 @@ void mage_t::init_glyphs()
     else if( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
     else if( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
     else if( n == "arcane_power"    ) glyphs.arcane_power = 1;
+    else if( n == "fire_ball"       ) glyphs.fire_ball = 1;
     else if( n == "fireball"        ) glyphs.fire_ball = 1;
     else if( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
     else if( n == "ice_lance"       ) glyphs.ice_lance = 1;
