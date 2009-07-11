@@ -2594,10 +2594,12 @@ void warrior_t::init_glyphs()
     else if( n == "devastate"        ) ;
     else if( n == "enduring_victory" ) ;
     else if( n == "hamstring"        ) ;
+    else if( n == "last_stand"       ) ;
     else if( n == "revenge"          ) ;
     else if( n == "shield_wall"      ) ;
     else if( n == "sunder_armor"     ) ;
     else if( n == "thunder_clap"     ) ;
+    else if( n == "vigilance"        ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
