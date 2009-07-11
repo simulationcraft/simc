@@ -106,7 +106,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</talentGroup>", -1 );
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", -1, 1 );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -442,7 +442,8 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::string& server, 
                                const std::string& name,
                                int player_filter,
-                               int max_rank )
+                               int max_rank,
+			       int cache_profile )
 {
   if( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
   {
@@ -509,16 +510,45 @@ bool armory_t::download_guild( sim_t* sim,
     for( int i=0; i < num_characters; i++ )
     {
       std::string& character_name = character_names[ i ];
+      player_t* p = 0;
 
-      fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
+      std::string cache_file_str;
+      if( cache_profile )
+      {
+	std::string format_name = character_name;
+	armory_t::format( format_name );
+	cache_file_str = "save_";
+	cache_file_str += format_name;
+	cache_file_str += ".simcraft";
+	FILE* file = fopen( cache_file_str.c_str(), "r" );
+	if( file )
+	{
+	  sim -> active_files.push_back( cache_file_str );
+	  option_t::parse_file( sim, file );
+	  fclose( file );
+	  sim -> active_files.pop_back();
+	  p = sim -> find_player( format_name );
+	  if( p )
+	  {
+	    fprintf( sim -> output_file, "\nsimcraft: Using cache '%s' for character: %s\n", cache_file_str.c_str(), character_name.c_str() );
+	    cache_file_str.clear();
+	  }
+	}
+      }
 
-      player_t* p = armory_t::download_player( sim, region, server, character_name, true );
+      if( ! p ) 
+      {
+	fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
+	p = armory_t::download_player( sim, region, server, character_name, true );
+      }
       if( ! p ) 
       {
         printf( "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
         p = wowhead_t::download_player( sim, region, server, character_name, true );
       }
       if( ! p ) return false;
+
+      if( ! cache_file_str.empty() ) p -> save_str = cache_file_str;
 
       int tree = p -> primary_tree();
       if( tree == TREE_RESTORATION || tree == TREE_HOLY )

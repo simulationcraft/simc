@@ -186,13 +186,15 @@ static bool parse_armory( sim_t*             sim,
     std::string server = sim -> default_server_str;
     std::string type_str;
     int max_rank = 0;
+    int cache = 0;
 
     option_t options[] =
     {
       { "region",   OPT_STRING, &region   },
       { "server",   OPT_STRING, &server   },
       { "class",    OPT_STRING, &type_str },
-      { "max_rank", OPT_INT,    &max_rank  },
+      { "max_rank", OPT_INT,    &max_rank },
+      { "cache",    OPT_INT,    &cache    },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -202,7 +204,7 @@ static bool parse_armory( sim_t*             sim,
     int player_type = PLAYER_NONE;
     if( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
-    return armory_t::download_guild( sim, region, server, guild_name, player_type, max_rank );
+    return armory_t::download_guild( sim, region, server, guild_name, player_type, max_rank, cache );
   }
 
   return false;
