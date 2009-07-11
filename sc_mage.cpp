@@ -3335,6 +3335,8 @@ void mage_t::init_glyphs()
     else if( n == "frost_armor"      ) ;
     else if( n == "frost_ward"       ) ;
     else if( n == "ice_barrier"      ) ;
+    else if( n == "ice_block"        ) ;
+    else if( n == "icy_veins"        ) ;
     else if( n == "slow_fall"        ) ;
     else if( n == "the_penguin"      ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );

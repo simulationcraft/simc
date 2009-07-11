@@ -265,6 +265,7 @@ static bool parse_item_gems( item_t& item,
         else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
         else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
         else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
+        else if( enchant == "+21 Defense Rating and +5% Shield Block Value"               ) { s += "_eternal_earthsiege";    }
         else if( enchant == "+21 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthsiege"; }
         else if( enchant == "+12 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthstorm"; }
         else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
@@ -440,7 +441,8 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::string& region, 
                                const std::string& server, 
                                const std::string& name,
-                               int player_type )
+                               int player_type,
+                               int max_rank )
 {
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
@@ -468,12 +470,17 @@ bool armory_t::download_guild( sim_t* sim,
     std::string character_name;
     int character_cid;
     int character_level;
+    int character_rank;
 
     if( xml_t::get_value( character_name,  characters[ i ], "name"    ) &&
         xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
-        xml_t::get_value( character_level, characters[ i ], "level"   ) )
+        xml_t::get_value( character_level, characters[ i ], "level"   ) &&
+        xml_t::get_value( character_rank,  characters[ i ], "rank"    ) )
     {
       if( character_level < 80 )
+        continue;
+
+      if ( ( max_rank > 0 ) && ( character_rank > max_rank ) )
         continue;
 
       if( player_type != PLAYER_NONE )
@@ -634,7 +641,10 @@ player_t* armory_t::download_player( sim_t* sim,
           printf( "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
           return 0;
         }
-        glyph_name.erase( 0, 9 ); // remove "Glyph of "
+        if ( !glyph_name.compare( 0, 9, "Glyph of " ) )
+          glyph_name.erase( 0, 9 ); // remove "Glyph of "
+        else if ( !glyph_name.compare( 0, 8, "Glyph - " ) )
+          glyph_name.erase( 0, 8 ); // remove "Glyph - "
         armory_t::format( glyph_name );
         if( i ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;

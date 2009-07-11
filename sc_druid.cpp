@@ -3286,6 +3286,7 @@ void druid_t::init_glyphs()
     else if( n == "starfall"     ) glyphs.starfall = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if( n == "aquatic_form"          ) ;
+    else if( n == "barkskin"              ) ;
     else if( n == "challenging_roar"      ) ;
     else if( n == "dash"                  ) ;
     else if( n == "entangling_roots"      ) ;

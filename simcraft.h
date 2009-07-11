@@ -2220,7 +2220,8 @@ struct armory_t
                               const std::string& region, 
                               const std::string& server, 
                               const std::string& name,
-                              int player_type = PLAYER_NONE );
+                              int player_type = PLAYER_NONE,
+                              int max_rank = 0 );
   static player_t* download_player( sim_t* sim,
                                     const std::string& region, 
                                     const std::string& server, 
