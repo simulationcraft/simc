@@ -1225,7 +1225,7 @@ struct auto_attack_t : public warrior_attack_t
       // the Titan's Grip talent!
       if ( p -> main_hand_weapon.group() == WEAPON_2H || p -> off_hand_weapon.group() == WEAPON_2H )
       {
-        assert( p -> talents.titans_grip != 0 );
+        // assert( p -> talents.titans_grip != 0 );
         // * Titan's Grip (Tier 11) now reduces physical damage you deal by 10%.
         p -> _buffs.titans_grip = -0.10;
       }
@@ -2585,11 +2585,19 @@ void warrior_t::init_glyphs()
     else if( n == "rending"       ) glyphs.rending = 1;
     else if( n == "whirlwind"     ) glyphs.whirlwind = 1;
     else if( n == "blocking"      ) glyphs.blocking = 1;
-    else if( n == "shield_wall"   ) ;
-    else if( n == "thunder_clap"  ) ;
-    else if( n == "battle"        ) ;
-    else if( n == "devastate"     ) ;
-    else if( n == "charge"        ) ;
+    // To prevent warnings....
+    else if( n == "battle"           ) ;
+    else if( n == "bloodrage"        ) ;
+    else if( n == "bloodthirst"      ) ;
+    else if( n == "charge"           ) ;
+    else if( n == "cleaving"         ) ;
+    else if( n == "devastate"        ) ;
+    else if( n == "enduring_victory" ) ;
+    else if( n == "hamstring"        ) ;
+    else if( n == "revenge"          ) ;
+    else if( n == "shield_wall"      ) ;
+    else if( n == "sunder_armor"     ) ;
+    else if( n == "thunder_clap"     ) ;
     else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }

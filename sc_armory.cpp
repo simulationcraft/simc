@@ -90,7 +90,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</characterTab>", -1 );
+  xml_node_t* node = xml_t::download( url, "</characterTab>", -1, 1 );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -504,7 +504,7 @@ bool armory_t::download_guild( sim_t* sim,
       if( ! p ) return false;
 
       int tree = p -> primary_tree();
-      if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_PROTECTION )
+      if( tree == TREE_RESTORATION || tree == TREE_HOLY )
       {
         fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
         p -> quiet = true;
