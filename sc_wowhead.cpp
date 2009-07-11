@@ -501,6 +501,12 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
   std::string type_str = util_t::player_type_string( player_type );
 
+  if( type_str == "death_knight" || type_str == "paladin" )
+  {
+    printf( "simcraft: The Death Knight and Paladin modules are still in development, so wowhead downloads are disabled.\n" );
+    return 0;
+  }
+
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) 
   {

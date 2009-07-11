@@ -441,9 +441,15 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::string& region, 
                                const std::string& server, 
                                const std::string& name,
-                               int player_type,
+                               int player_filter,
                                int max_rank )
 {
+  if( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
+  {
+    printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
+    return false;
+  }
+
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
   xml_node_t* guild_info = xml_t::download( url, "</members>", -1 );
@@ -483,9 +489,13 @@ bool armory_t::download_guild( sim_t* sim,
       if ( ( max_rank > 0 ) && ( character_rank > max_rank ) )
         continue;
 
-      if( player_type != PLAYER_NONE )
-        if( player_type != util_t::translate_class_id( character_cid ) )
-          continue;
+      int player_type = util_t::translate_class_id( character_cid );
+      if( player_type == DEATH_KNIGHT || player_type == PALADIN )
+	continue;
+
+      if( player_filter != PLAYER_NONE )
+	if( player_filter != player_type )
+	  continue;
 
       character_names.push_back( character_name );
     }
@@ -558,6 +568,12 @@ player_t* armory_t::download_player( sim_t* sim,
   }
   armory_t::format( type_str );
   armory_t::format( name_str );
+
+  if( type_str == "death_knight" || type_str == "paladin" )
+  {
+    printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
+    return 0;
+  }
 
   player_t* p = player_t::create( sim, type_str, name_str );
   if( ! p ) 
