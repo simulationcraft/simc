@@ -672,7 +672,12 @@ void paladin_t::init_actions()
 	action_list_str += items[ i ].name();
       }
     }
-    action_list_str += "/avenging_wrath/crusader_strike/hammer_of_wrath/judgement/divine_storm";
+    action_list_str += "/avenging_wrath";
+    if ( talents.crusader_strike )
+      action_list_str += "/crusader_strike";
+    action_list_str += "/hammer_of_wrath/judgement";
+    if ( talents.divine_storm )
+      action_list_str += "/divine_storm";
 //    action_list_str += "/consecration/exorcism";
 
     action_list_default = 1;
