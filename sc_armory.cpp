@@ -86,11 +86,12 @@ static bool is_proc_description( const std::string& description_str )
 static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& region, 
                                              const std::string& server, 
-                                             const std::string& name )
+                                             const std::string& name,
+					     int cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</characterTab>", -1, 1 );
+  xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), 1 );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -102,11 +103,12 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& region, 
                                                const std::string& server, 
-                                               const std::string& name )
+                                               const std::string& name,
+					       int cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</talentGroup>", -1, 1 );
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), 1 );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -443,7 +445,7 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::string& name,
                                int player_filter,
                                int max_rank,
-			       int cache_profile )
+			       int cache )
 {
   if( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
   {
@@ -453,7 +455,7 @@ bool armory_t::download_guild( sim_t* sim,
 
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
-  xml_node_t* guild_info = xml_t::download( url, "</members>", -1 );
+  xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ) );
   if( ! guild_info )
   {
     printf( "\nsimcraft: Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
@@ -510,45 +512,16 @@ bool armory_t::download_guild( sim_t* sim,
     for( int i=0; i < num_characters; i++ )
     {
       std::string& character_name = character_names[ i ];
-      player_t* p = 0;
 
-      std::string cache_file_str;
-      if( cache_profile )
-      {
-	std::string format_name = character_name;
-	armory_t::format( format_name );
-	cache_file_str = "save_";
-	cache_file_str += format_name;
-	cache_file_str += ".simcraft";
-	FILE* file = fopen( cache_file_str.c_str(), "r" );
-	if( file )
-	{
-	  sim -> active_files.push_back( cache_file_str );
-	  option_t::parse_file( sim, file );
-	  fclose( file );
-	  sim -> active_files.pop_back();
-	  p = sim -> find_player( format_name );
-	  if( p )
-	  {
-	    fprintf( sim -> output_file, "\nsimcraft: Using cache '%s' for character: %s\n", cache_file_str.c_str(), character_name.c_str() );
-	    cache_file_str.clear();
-	  }
-	}
-      }
+      fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
+      player_t* p = armory_t::download_player( sim, region, server, character_name, 1, cache );
 
-      if( ! p ) 
-      {
-	fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
-	p = armory_t::download_player( sim, region, server, character_name, true );
-      }
       if( ! p ) 
       {
         printf( "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
-        p = wowhead_t::download_player( sim, region, server, character_name, true );
+        p = wowhead_t::download_player( sim, region, server, character_name, 1 );
       }
       if( ! p ) return false;
-
-      if( ! cache_file_str.empty() ) p -> save_str = cache_file_str;
 
       int tree = p -> primary_tree();
       if( tree == TREE_RESTORATION || tree == TREE_HOLY )
@@ -573,10 +546,11 @@ player_t* armory_t::download_player( sim_t* sim,
                                      const std::string& region, 
                                      const std::string& server, 
                                      const std::string& name,
-                                     bool use_active_talents )
+                                     int use_active_talents,
+				     int cache )
 {
-  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name );
-  xml_node_t* talents_xml = download_character_talents( sim, region, server, name );
+  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, cache );
+  xml_node_t* talents_xml = download_character_talents( sim, region, server, name, cache );
 
   if( ! sheet_xml || ! talents_xml )
   {

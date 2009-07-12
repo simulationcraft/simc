@@ -99,14 +99,16 @@ static bool parse_player( sim_t*             sim,
     std::string wowhead;
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
-    std::string talents = "active";
+    int active=1;
+    int cache=0;
 
     option_t options[] =
     {
       { "wowhead", OPT_STRING, &wowhead },
       { "region",  OPT_STRING, &region  },
       { "server",  OPT_STRING, &server  },
-      { "talents", OPT_STRING, &talents },
+      { "active",  OPT_BOOL,   &active  },
+      { "cache",   OPT_BOOL,   &cache   },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -114,11 +116,11 @@ static bool parse_player( sim_t*             sim,
 
     if( wowhead.empty() )
     {
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( talents == "active" ) );
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active, cache );
     }
     else
     {
-      sim -> active_player = wowhead_t::download_player( sim, wowhead, ( talents == "active" ) );
+      sim -> active_player = wowhead_t::download_player( sim, wowhead, cache );
 
       if( sim -> active_player )
 	if( player_name != sim -> active_player -> name() )
@@ -158,13 +160,13 @@ static bool parse_armory( sim_t*             sim,
     for( int i=2; i < num_splits; i++ )
     {
       std::string player_name = splits[ i ];
-      bool active_talents = true;
+      int active = 1;
       if( player_name[ 0 ] == '!' )
       {
 	player_name.erase( 0, 1 );
-	active_talents = false;
+	active = 0;
       }
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active_talents );
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active );
       if( ! sim -> active_player ) return false;
     }
     return true;
@@ -194,7 +196,7 @@ static bool parse_armory( sim_t*             sim,
       { "server",   OPT_STRING, &server   },
       { "class",    OPT_STRING, &type_str },
       { "max_rank", OPT_INT,    &max_rank },
-      { "cache",    OPT_INT,    &cache    },
+      { "cache",    OPT_BOOL,   &cache    },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -224,13 +226,13 @@ static bool parse_wowhead( sim_t*             sim,
     if( num_splits == 1 )
     {
       std::string player_id = splits[ 0 ];
-      bool active_talents = true;
+      int active = 1;
       if( player_id[ 0 ] == '!' )
       {
 	player_id.erase( 0, 1 );
-	active_talents = false;
+	active = 0;
       }
-      sim -> active_player = wowhead_t::download_player( sim, player_id );
+      sim -> active_player = wowhead_t::download_player( sim, player_id, active );
     }
     else if( num_splits >= 3 )
     {
@@ -240,13 +242,13 @@ static bool parse_wowhead( sim_t*             sim,
       for( int i=2; i < num_splits; i++ )
       {
 	std::string player_name = splits[ i ];
-	bool active_talents = true;
+	int active = 1;
 	if( player_name[ 0 ] == '!' )
         {
 	  player_name.erase( 0, 1 );
-	  active_talents = false;
+	  active = 0;
 	}
-	sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active_talents );
+	sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active );
 	if( ! sim -> active_player ) return false;
       }
     }

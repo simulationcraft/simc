@@ -439,7 +439,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& region, 
                                       const std::string& server, 
                                       const std::string& name,
-                                      bool use_active_talents )
+                                      int use_active_talents )
 {
   std::string url = "http://profiler.wowhead.com/?profile=" + region + "." + server + "." + name;
   std::string result;
@@ -472,7 +472,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
 player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& id, 
-                                      bool use_active_talents )
+                                      int use_active_talents )
 {
   js_node_t* profile_js = download_profile( sim, id );
 

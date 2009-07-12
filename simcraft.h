@@ -2223,13 +2223,14 @@ struct armory_t
                               const std::string& server, 
                               const std::string& name,
                               int player_type = PLAYER_NONE,
-                              int max_rank = 0,
-			      int cache_profile = 0 );
+                              int max_rank=0,
+			      int cache=0 );
   static player_t* download_player( sim_t* sim,
                                     const std::string& region, 
                                     const std::string& server, 
                                     const std::string& name,
-                                    bool active_talents=true );
+                                    int active=1,
+				    int cache=0 );
   static bool download_slot( item_t&, const std::string& item_id );
   static bool download_item( item_t&, const std::string& item_id );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
@@ -2244,8 +2245,8 @@ struct wowhead_t
                                     const std::string& region, 
                                     const std::string& server, 
                                     const std::string& name,
-                                    bool active_talents=true );
-  static player_t* download_player( sim_t* sim, const std::string& id, bool active_talents=true );
+                                    int active=1 );
+  static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );

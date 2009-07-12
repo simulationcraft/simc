@@ -239,8 +239,6 @@ void http_t::cache_set( const std::string& url,
                         const std::string& result,
                         int64_t            timestamp )
 {
-  if( timestamp < 0 ) return;
-
   thread_t::mutex_lock( cache_mutex );
 
   int num_records = url_cache_db.size();
