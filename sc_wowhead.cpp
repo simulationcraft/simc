@@ -43,7 +43,7 @@ static xml_node_t* download_id( const std::string& id_str )
   std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
   xml_node_t* node = xml_t::download( url, "</json>", 0 );
   //xml_t::print( node );
-  if( ! node ) printf( "\nsimcraft: Unable to download glyph id %s from wowhead\n", id_str.c_str() );
+  if( ! node ) printf( "\nsimcraft: Unable to download id %s from wowhead\n", id_str.c_str() );
   return node;
 }
 
@@ -359,7 +359,7 @@ bool wowhead_t::download_item( item_t&            item,
   xml_node_t* node = download_id( item_id );
   if( ! node ) 
   {
-    printf( "\nsimcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -396,7 +396,7 @@ bool wowhead_t::download_slot( item_t&            item,
   xml_node_t* node = download_id( item_id );
   if( ! node ) 
   {
-    printf( "\nsimcraft: Player %s nable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 

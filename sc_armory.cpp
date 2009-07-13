@@ -134,11 +134,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
 
   xml_node_t* node = xml_t::download( url, "</itemTooltip>", p -> last_modified, 1 );
 
-  if( sim -> debug || ! node )
-  {
-    fprintf( sim -> output_file, "\nxml url: %s\n", url.c_str() );
-    xml_t::print( node, sim -> output_file );
-  }
+  if( sim -> debug ) xml_t::print( node );
 
   return node;
 }
@@ -262,17 +258,14 @@ static bool parse_item_gems( item_t& item,
 
       if( color == "Meta" )
       {
-        if     ( enchant == "+32 Stamina and 2% Increased Armor Value from Items"         ) { s += "_austere_earthsiege";    }
-        else if( enchant == "+21 Critical Strike Rating and +2% Mana"                     ) { s += "_beaming_earthsiege";    }
-        else if( enchant == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyflare";      }
-        else if( enchant == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) { s += "_chaotic_skyfire";       }
-        else if( enchant == "+25 Spell Power and +2% Intellect"                           ) { s += "_ember_skyflare";        }
-        else if( enchant == "+21 Defense Rating and +5% Shield Block Value"               ) { s += "_eternal_earthsiege";    }
-        else if( enchant == "+21 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthsiege"; }
-        else if( enchant == "+12 Intellect and Chance to restore mana on spellcast"       ) { s += "_insightful_earthstorm"; }
-        else if( enchant == "+21 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthsiege"; }
-        else if( enchant == "+12 Agility and 3% Increased Critical Damage"                ) { s += "_relentless_earthstorm"; }
-        else
+	int meta_gem_type = armory_t::parse_meta_gem( enchant );
+
+	if( meta_gem_type != META_GEM_NONE )
+	{
+	  s += "_";
+	  s += util_t::meta_gem_type_string( meta_gem_type );
+	}
+	else
         {
           armory_t::fuzzy_stats( s, enchant );
         }
@@ -435,6 +428,24 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
+}
+
+// armory_t::parse_meta_gem =================================================
+
+int armory_t::parse_meta_gem( const std::string& description )
+{
+  if( description == "+32 Stamina and 2% Increased Armor Value from Items"         ) return META_AUSTERE_EARTHSIEGE;
+  if( description == "+21 Critical Strike Rating and +2% Mana"                     ) return META_BEAMING_EARTHSIEGE;
+  if( description == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFLARE;
+  if( description == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFIRE;
+  if( description == "+25 Spell Power and +2% Intellect"                           ) return META_EMBER_SKYFLARE;
+  if( description == "+21 Defense Rating and +5% Shield Block Value"               ) return META_ETERNAL_EARTHSIEGE;
+  if( description == "+21 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSIEGE;
+  if( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
+  if( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
+  if( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
+
+  return META_GEM_NONE;
 }
 
 // armory_t::download_guild =================================================
@@ -684,6 +695,8 @@ player_t* armory_t::download_player( sim_t* sim,
     {
       if( slot == -1 ) continue;
 
+      item_t& item = p -> items[ slot ];
+
       bool success = false;
 
       std::string enchant_id, gem_ids[ 3 ];
@@ -692,10 +705,16 @@ player_t* armory_t::download_player( sim_t* sim,
           xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
           xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = wowhead_t::download_slot( p -> items[ slot ], id_str, enchant_id, gem_ids );
+        success = wowhead_t::download_slot( item, id_str, enchant_id, gem_ids );
+
+	if( ! success )
+	{
+	  printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
+	  success = mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids );
+	}
       }
       
-      if( ! success ) success = armory_t::download_slot( p -> items[ slot ], id_str );
+      if( ! success ) success = armory_t::download_slot( item, id_str );
       
       if( ! success ) return 0;
     }
