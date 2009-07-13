@@ -212,9 +212,15 @@ bool item_t::init()
   if( ! option_id_str.empty() ) 
   {
     if( ! armory_t::download_item( *this, option_id_str ) )
+    {
+      printf( "simcraft: Trying wowhead...\n" );
       if( ! wowhead_t::download_item( *this, option_id_str ) )
+      {
+	printf( "simcraft: Trying mmo-champion...\n" );
 	if( ! mmo_champion_t::download_item( *this, option_id_str ) )
 	  return false;
+      }
+    }
 
     if( encoded_name_str != armory_name_str ) 
     {

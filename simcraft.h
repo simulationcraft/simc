@@ -2251,7 +2251,7 @@ struct wowhead_t
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
-  static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
+  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
 };
 
 // MMO Champion ==============================================================
@@ -2260,7 +2260,7 @@ struct mmo_champion_t
 {
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
-  static bool download_glyph( std::string& glyph_name, const std::string& glyph_id );
+  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
 };
 
 // HTTP Download  ============================================================
@@ -2284,7 +2284,7 @@ struct xml_t
 {
   static xml_node_t* get_child( xml_node_t* root, const std::string& name );
   static xml_node_t* get_node ( xml_node_t* root, const std::string& path );
-  static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name );
+  static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
   static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );

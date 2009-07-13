@@ -150,11 +150,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
 
   xml_node_t* node = xml_t::download( url, "</itemTooltip>", 0, 1 );
 
-  if( sim -> debug || ! node )
-  {
-    fprintf( sim -> output_file, "\nxml url: %s\n", url.c_str() );
-    xml_t::print( node, sim -> output_file );
-  }
+  if( sim -> debug ) xml_t::print( node );
 
   return node;
 }

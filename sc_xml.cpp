@@ -356,7 +356,10 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
   for( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = root -> children[ i ];
-    if( name_str == node -> name() ) nodes.push_back( node );
+    if( name_str.empty() || name_str == node -> name() ) 
+    {
+      nodes.push_back( node );
+    }
   }
 
   return nodes.size();
