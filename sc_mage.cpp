@@ -930,8 +930,7 @@ static void trigger_winters_grasp( spell_t* s )
 
 static void clear_fingers_of_frost( spell_t* s )
 {
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
+  if ( ! s -> may_crit ) return;
 
   mage_t* p = s -> player -> cast_mage();
 
@@ -1383,8 +1382,7 @@ void mage_spell_t::player_buff()
   {
     player_crit += ( p -> _buffs.combustion * 0.10 );
   }
-  if ( school == SCHOOL_FROST ||
-       school == SCHOOL_FROSTFIRE )
+  if ( p -> talents.shatter )
   {
     if ( sim -> target -> debuffs.frozen )
     {
