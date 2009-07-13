@@ -35,7 +35,6 @@ struct mage_t : public player_t
     int    mage_armor;
     double missile_barrage;
     int    molten_armor;
-    int    shatter_combo;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -936,17 +935,25 @@ static void clear_fingers_of_frost( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  p -> _buffs.shatter_combo = 0;
-
-  if ( p -> _buffs.fingers_of_frost > 0 )
+  if( p -> _buffs.fingers_of_frost < 0 )
+  {
+    p -> aura_loss( "Ghost Charge" );
+    p -> _buffs.fingers_of_frost = 0;
+  }
+  else if ( p -> _buffs.fingers_of_frost > 0 )
   {
     p -> _buffs.fingers_of_frost--;
 
-    if ( s -> time_to_execute         > 0 &&
-         p -> _buffs.fingers_of_frost == 0 &&
-         p -> talents.shatter         > 0 )
+    if( p -> _buffs.fingers_of_frost == 0 )
     {
-      p -> _buffs.shatter_combo = 1;
+      p -> aura_loss( "Fingers of Frost" );
+
+      if ( s -> time_to_execute > 0 &&
+	   p -> talents.shatter > 0 )
+      {
+	p -> aura_gain( "Ghost Charge" );
+	p -> _buffs.fingers_of_frost = -1;
+      }
     }
   }
 }
@@ -962,8 +969,8 @@ static void trigger_fingers_of_frost( spell_t* s )
 
   if ( p -> rng_fingers_of_frost -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
+    p -> aura_gain( "Fingers of Frost" );
     p -> _buffs.fingers_of_frost = 2;
-    p -> _buffs.shatter_combo = 0;
   }
 }
 
@@ -1385,7 +1392,7 @@ void mage_spell_t::player_buff()
     }
     else if ( p -> talents.fingers_of_frost )
     {
-      if ( p -> _buffs.fingers_of_frost || ( p -> _buffs.shatter_combo && time_to_execute == 0 ) )
+      if ( p -> _buffs.fingers_of_frost > 0 || ( p -> _buffs.fingers_of_frost < 0 && time_to_execute == 0 ) )
       {
         player_crit += p -> talents.shatter * 0.5/3;
       }
@@ -2563,8 +2570,7 @@ struct frost_bolt_t : public mage_spell_t
 
     if ( frozen )
     {
-      if ( ! p -> _buffs.shatter_combo &&
-           ! p -> _buffs.fingers_of_frost &&
+      if ( p -> _buffs.fingers_of_frost <= 0 &&
            ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
         return false;
     }
@@ -2629,9 +2635,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> _buffs.shatter_combo    ||
-         p -> _buffs.fingers_of_frost ||
-         t -> debuffs.frozen         )
+    if ( p -> _buffs.fingers_of_frost != 0 || t -> debuffs.frozen )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {
@@ -2653,22 +2657,21 @@ struct ice_lance_t : public mage_spell_t
 
     if ( frozen )
     {
-      if ( ! p -> _buffs.shatter_combo &&
-           ! p -> _buffs.fingers_of_frost &&
-           ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-        return false;
+      if ( ! p -> _buffs.fingers_of_frost &&
+	   ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+	  return false;
     }
 
     if ( fb_priority )
     {
-      double fb_execute_time = sim -> current_time + 2.5 * haste();
+      if ( p -> _buffs.fingers_of_frost > 0 )
+      {
+	double fb_execute_time = sim -> current_time + 2.5 * haste();
 
-      if ( sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-        if ( fb_execute_time < sim -> target -> expirations.frozen -> occurs() )
-          return false;
-
-      if ( p -> _buffs.fingers_of_frost )
-        return false;
+	if ( sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+	  if ( fb_execute_time < sim -> target -> expirations.frozen -> occurs() )
+	    return false;
+      }
     }
 
     return true;
