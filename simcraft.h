@@ -1466,6 +1466,7 @@ struct player_t
   virtual void trigger_replenishment();
   virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
+  virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) {}
 
   // Class-Specific Methods
 

@@ -721,6 +721,8 @@ player_t* armory_t::download_player( sim_t* sim,
     else return 0;
   }
 
+  if( p ) p -> armory( sheet_xml, talents_xml );
+
   return p;
 }
 
