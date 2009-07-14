@@ -25,8 +25,8 @@ chest=conquerors_nightsong_vestments,stats=591armor_75haste_115sp_85sta_86int_60
 waist=sash_of_ancient_power,stats=177armor_43hit_49haste_81sp_63sta_64int,gems=9sp_8spi_19sp_19sp_7sp
 legs=conquerors_nightsong_trousers,stats=517armor_59hit_76crit_115sp_85sta_86int,gems=19sp_19sp,enchant=50sp_20spi
 feet=boots_of_fiery_resolution,stats=223armor_55haste_102sp_72sta_72int_64spi,gems=19sp_19sp,enchant=12crit_12hit
-wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
-hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=19sp_19sp,enchant=28sp
+wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=32sp_32sp_4spi,enchant=30sp
+hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=19sp_19sp_32sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
@@ -34,14 +34,13 @@ trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=19sp,enchant=23haste
 main_hand=staff_of_endless_winter,stats=104crit_587sp_111sta_128int_84spi,gems=19sp_19sp,enchant=81sp,weapon=staff_2.10speed_165.3dps
 ranged=idol_of_the_shooting_star
-
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
 # gear_stamina=931
 # gear_intellect=914
 # gear_spirit=453
-# gear_spell_power=2411
+# gear_spell_power=2488
 # gear_hit_rating=261
 # gear_crit_rating=577
 # gear_haste_rating=447
