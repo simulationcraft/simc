@@ -3740,8 +3740,53 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
 
 // hunter_t::armory ===========================================================
 
+struct ammo_data
+{
+  int id;
+  double dps;
+};
+
 void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
 {
+  // Ammo support
+  static ammo_data ammo[] = {
+    { 41164, 67.5 }, { 41165, 67.5 },
+    { 30319, 63.5 },
+    { 32760, 53.0 }, { 32761, 53.0 }, { 31737, 53.0 }, { 31735, 53.0 },
+    { 34581, 46.5 }, { 34582, 46.5 }, { 41584, 46.5 }, { 41586, 46.5 },
+    { 23773, 43.0 }, { 33803, 43.0 }, 
+    { 32883, 37.0 }, { 32882, 37.0 }, { 31949, 37.0 }, 
+    { 30612, 34.0 }, { 30611, 34.0 },
+    { 28056, 32.0 }, { 28061, 32.0 },
+    { 28060, 22.0 }, { 28053, 22.0 },
+    { 28060, 22.0 }, { 28053, 22.0 },
+    { 0, 0 }
+  };
+  std::vector<xml_node_t*> item_nodes;
+  int num_items = xml_t::get_nodes( item_nodes, sheet_xml, "item" );
+  for( int i=0; i < num_items; i++ )
+  {
+    int slot;
+    int id;
+
+    if( xml_t::get_value( slot, item_nodes[ i ], "slot" ) &&
+        xml_t::get_value( id,   item_nodes[ i ], "id"   ) &&
+        slot == -1 )
+    {
+      for( int k=0; ammo[k].id > 0; k++ )
+      {
+        if( id == ammo[k].id )
+        {
+          if( sim -> debug )
+            log_t::output( sim, "Setting ammo dps to %.1f (from item id %d)", ammo[k].dps, id );
+          ammo_dps = ammo[k].dps;
+          break;
+        }
+      }
+    }
+  }
+
+  // Pet support
   static pet_type_t pet_types[] =
                 { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
            /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
