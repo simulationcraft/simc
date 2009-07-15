@@ -1448,6 +1448,7 @@ struct player_t
   virtual void register_tick_damage_callback  ( action_callback_t* );
   virtual void register_direct_damage_callback( action_callback_t* );
 
+  virtual bool get_talent_translation( std::vector<int*>& tree, talent_translation_t translation[] );
   virtual bool get_talent_translation( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 );
   virtual bool parse_talents( std::vector<int*>& talent_tree, const std::string& talent_string );

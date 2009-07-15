@@ -2547,7 +2547,15 @@ void player_t::trigger_replenishment()
 }
 
 
-// player_t::get_talent_trees ===============================================
+// player_t::get_talent_translation ===============================================
+
+bool player_t::get_talent_translation( std::vector<int*>& tree,
+                                       talent_translation_t translation[] )
+{
+  for ( int i=0; translation[ i ].index > 0; i++ ) tree.push_back( translation[ i ].address );
+
+  return true;
+}
 
 bool player_t::get_talent_translation( std::vector<int*>& tree1,
                                  std::vector<int*>& tree2,

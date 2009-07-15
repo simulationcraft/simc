@@ -246,6 +246,7 @@ struct hunter_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
+  virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
@@ -391,6 +392,12 @@ struct hunter_pet_t : public pet_t
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
       pet_t( sim, owner, pet_name ), pet_type( pt ), main_hand_attack( 0 )
   {
+    if( ! supported( pet_type ) )
+    {
+      fprintf( stdout, "simcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
+      exit( 0 );
+    }
+
     hunter_t* o = owner -> cast_hunter();
 
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -398,8 +405,6 @@ struct hunter_pet_t : public pet_t
     main_hand_weapon.swing_time = 2.0;
 
     stamina_per_owner = 0.45;
-
-    bool unsupported = false;
 
     if ( group() == PET_FEROCITY )
     {
@@ -428,7 +433,7 @@ struct hunter_pet_t : public pet_t
       {
         action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
       }
-      else unsupported = true;
+      else assert( 0 );
     }
     else if ( group() == PET_CUNNING )
     {
@@ -445,17 +450,27 @@ struct hunter_pet_t : public pet_t
       {
         action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
       }
-      else unsupported = true;
+      else assert( 0 );
     }
     else // TENACITY
     {
-      unsupported = true;
+      assert( 0 );
     }
 
-    if ( unsupported )
+  }
+
+  static bool supported( int family )
+  {
+    switch( family )
     {
-      fprintf( stdout, "simcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
-      exit( 0 );
+      case PET_CAT:
+      case PET_DEVILSAUR:
+      case PET_RAPTOR:
+      case PET_WOLF:
+      case PET_WIND_SERPENT:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -583,6 +598,71 @@ struct hunter_pet_t : public pet_t
     }
 
     return options;
+  }
+
+  virtual bool parse_talents( const std::string& talent_string )
+  {
+    std::vector<int*> tree;
+
+    if( group() == PET_FEROCITY )
+    {
+      talent_translation_t translation[] = {
+        {  1, &( talents.cobra_reflexes         ) },
+        {  2, NULL                                },
+        {  3, NULL                                },
+        {  4, NULL                                },
+        {  5, NULL                                },
+        {  6, NULL                                },
+        {  7, &( talents.spiked_collar          ) },
+        {  8, NULL                                },
+        {  9, NULL                                },
+        { 10, NULL                                },
+        { 11, NULL                                },
+        { 12, NULL                                },
+        { 13, &( talents.spiders_bite           ) },
+        { 14, NULL                                },
+        { 15, &( talents.rabid                  ) },
+        { 16, NULL                                },
+        { 17, &( talents.call_of_the_wild       ) },
+        { 18, &( talents.shark_attack           ) },
+        { 19, &( talents.wild_hunt              ) },
+        {  0, NULL                                }
+      };
+      get_talent_translation( tree, translation );
+      return player_t::parse_talents( tree, talent_string );
+    }
+    else if ( group() == PET_CUNNING )
+    {
+      talent_translation_t translation[] = {
+        {  1, &( talents.cobra_reflexes         ) },
+        {  2, NULL                                },
+        {  3, NULL                                },
+        {  4, NULL                                },
+        {  5, NULL                                },
+        {  6, NULL                                },
+        {  7, &( talents.owls_focus             ) },
+        {  8, &( talents.spiked_collar          ) },
+        {  9, NULL                                },
+        { 10, NULL                                },
+        { 11, NULL                                },
+        { 12, NULL                                },
+        { 13, NULL                                },
+        { 14, &( talents.feeding_frenzy         ) },
+        { 15, &( talents.wolverine_bite         ) },
+        { 16, &( talents.roar_of_recovery       ) },
+        { 17, &( talents.call_of_the_wild       ) },
+        { 18, NULL                                },
+        { 19, &( talents.wild_hunt              ) },
+        { 20, NULL                                },
+        {  0, NULL                                }
+      };
+      get_talent_translation( tree, translation );
+      return player_t::parse_talents( tree, talent_string );
+    }
+    else // TENACITY
+    {
+      return false;
+    }
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -3656,6 +3736,47 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
   if ( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
 
   return 0;
+}
+
+// hunter_t::armory ===========================================================
+
+void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
+{
+  static pet_type_t pet_types[] =
+                { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
+           /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
+           /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
+           /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
+           /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
+           /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
+           /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
+           /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
+           /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
+           /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST };
+
+  std::vector<xml_node_t*> pet_nodes;
+  int num_pets = xml_t::get_nodes( pet_nodes, talents_xml, "pet" );
+  for( int i=0; i < num_pets; i++ )
+  {
+    std::string name_str;
+    int family_id;
+
+    if( xml_t::get_value( name_str,  pet_nodes[ i ], "name"     ) &&
+        xml_t::get_value( family_id, pet_nodes[ i ], "familyId" ) )
+    {
+      if( family_id < 0 || family_id > 46 )
+        continue;
+      if( ! hunter_pet_t::supported( pet_types[ family_id ] ) )
+        continue;
+      hunter_pet_t* pet = new hunter_pet_t( sim, this, name_str, pet_types[ family_id ] );
+      std::string talent_str;
+      if( xml_t::get_value( talent_str, pet_nodes[ i ], "talentSpec/value" ) &&
+          talent_str != "" )
+      {
+        pet -> parse_talents( talent_str );
+      }
+    }
+  }
 }
 
 // hunter_t::init =============================================================
