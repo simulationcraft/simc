@@ -3309,6 +3309,7 @@ void rogue_t::init_glyphs()
     else if( n == "blurred_speed"       ) ;
     else if( n == "cloak_of_shadows"    ) ;
     else if( n == "distract"            ) ;
+    else if( n == "fan_of_knives"       ) ;
     else if( n == "garrote"             ) ;
     else if( n == "pick_lock"           ) ;
     else if( n == "pick_pocket"         ) ;
