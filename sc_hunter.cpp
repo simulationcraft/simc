@@ -3830,7 +3830,7 @@ void hunter_t::init()
 {
   player_t::init();
 
-  if ( ! pet_list )
+  if ( ! find_pet( summon_pet_str ) )
   {
     create_pet( "cat" );
     create_pet( "devilsaur" );
