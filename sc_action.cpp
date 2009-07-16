@@ -48,7 +48,7 @@ action_t::action_t( int         ty,
     weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
     rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
     time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
-    rank_index( -1 ), bloodlust_active( 0 ),
+    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ),
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
@@ -111,6 +111,7 @@ void action_t::parse_options( option_t*          options,
       { "allow_early_cast",   OPT_INT,    &is_ifall              },
       { "allow_early_recast", OPT_INT,    &is_ifall              },
       { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
+      { "haste<",             OPT_FLT,    &max_haste             },
       { "health_percentage<", OPT_FLT,    &max_health_percentage },
       { "health_percentage>", OPT_FLT,    &min_health_percentage },
       { "if",                 OPT_STRING, &if_expression         },
@@ -976,6 +977,10 @@ bool action_t::ready()
 
   if ( max_health_percentage > 0 )
     if ( sim -> target -> health_percentage() > max_health_percentage )
+      return false;
+
+  if ( max_haste > 0 )
+    if ( ( 1.0 - haste() ) > max_haste )
       return false;
 
   if ( bloodlust_active > 0 )

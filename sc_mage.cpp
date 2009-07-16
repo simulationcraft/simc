@@ -27,7 +27,8 @@ struct mage_t : public player_t
     double clearcasting;
     int    combustion;
     int    combustion_crits;
-    int    fingers_of_frost;
+    double fingers_of_frost;
+    int    fingers_of_frost_charges;
     int    hot_streak;
     double hot_streak_pyroblast;
     int    icy_veins;
@@ -211,6 +212,8 @@ struct mage_t : public player_t
     
     // Valid values: molten|mage
     armor_type_str = "molten";
+
+    distance = 30;
   }
 
   // Character Definition
@@ -930,28 +933,32 @@ static void trigger_winters_grasp( spell_t* s )
 
 static void clear_fingers_of_frost( spell_t* s )
 {
-  if ( ! s -> may_crit ) return;
-
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> _buffs.fingers_of_frost < 0 )
+  if( ! p -> _buffs.fingers_of_frost ) return;
+
+  if( p -> _buffs.fingers_of_frost_charges < 0 )
   {
     p -> aura_loss( "Ghost Charge" );
     p -> _buffs.fingers_of_frost = 0;
+    p -> _buffs.fingers_of_frost_charges = 0;
   }
-  else if ( p -> _buffs.fingers_of_frost > 0 )
+  else if ( s -> may_crit && p -> _buffs.fingers_of_frost_charges > 0 )
   {
-    p -> _buffs.fingers_of_frost--;
+    p -> _buffs.fingers_of_frost_charges--;
 
-    if( p -> _buffs.fingers_of_frost == 0 )
+    if( p -> _buffs.fingers_of_frost_charges == 0 )
     {
       p -> aura_loss( "Fingers of Frost" );
 
-      if ( s -> time_to_execute > 0 &&
-	   p -> talents.shatter > 0 )
+      if ( p -> gcd_ready < p -> sim -> current_time )
       {
 	p -> aura_gain( "Ghost Charge" );
-	p -> _buffs.fingers_of_frost = -1;
+	p -> _buffs.fingers_of_frost_charges = -1;
+      }
+      else
+      {
+	p -> _buffs.fingers_of_frost = 0;
       }
     }
   }
@@ -961,15 +968,13 @@ static void clear_fingers_of_frost( spell_t* s )
 
 static void trigger_fingers_of_frost( spell_t* s )
 {
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
-
   mage_t* p = s -> player -> cast_mage();
 
   if ( p -> rng_fingers_of_frost -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
     p -> aura_gain( "Fingers of Frost" );
-    p -> _buffs.fingers_of_frost = 2;
+    p -> _buffs.fingers_of_frost = p -> sim -> current_time;
+    p -> _buffs.fingers_of_frost_charges = 2;
   }
 }
 
@@ -1325,14 +1330,12 @@ void mage_spell_t::execute()
 
   spell_t::execute();
 
-  clear_fingers_of_frost( this );
-
   if ( result_is_hit() )
   {
+    clear_fingers_of_frost( this );
     trigger_arcane_concentration( this );
     trigger_frostbite( this );
     trigger_winters_grasp( this );
-    trigger_fingers_of_frost( this );
     stack_winters_chill( this, p -> talents.winters_chill / 3.0 );
 
     if ( result == RESULT_CRIT )
@@ -1382,7 +1385,7 @@ void mage_spell_t::player_buff()
   {
     player_crit += ( p -> _buffs.combustion * 0.10 );
   }
-  if ( p -> talents.shatter )
+  if ( p -> talents.shatter && may_crit )
   {
     if ( sim -> target -> debuffs.frozen )
     {
@@ -1390,11 +1393,11 @@ void mage_spell_t::player_buff()
     }
     else if ( p -> talents.fingers_of_frost )
     {
-      if ( p -> _buffs.fingers_of_frost > 0 || ( p -> _buffs.fingers_of_frost < 0 && time_to_execute == 0 ) )
-      {
-        player_crit += p -> talents.shatter * 0.5/3;
-      }
-      p -> uptimes_fingers_of_frost -> update( p -> _buffs.fingers_of_frost != 0 );
+      bool fof_benefit = ( p -> _buffs.fingers_of_frost_charges > 0 || ( p -> _buffs.fingers_of_frost_charges < 0 && time_to_execute == 0 ) );
+
+      if( fof_benefit ) player_crit += p -> talents.shatter * 0.5/3;
+
+      p -> uptimes_fingers_of_frost -> update( fof_benefit );
     }
   }
 
@@ -2485,6 +2488,8 @@ struct frost_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
+    travel_speed = 21.0; // set before options to allow override
+
     option_t options[] =
       {
         { "frozen", OPT_BOOL, &frozen },
@@ -2562,15 +2567,24 @@ struct frost_bolt_t : public mage_spell_t
     }
   }
 
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    mage_spell_t::travel( travel_result, travel_dmg );
+    trigger_fingers_of_frost( this );
+  }
+
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
 
     if ( frozen )
     {
-      if ( p -> _buffs.fingers_of_frost <= 0 &&
-           ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-        return false;
+      bool target_frozen = sim -> time_to_think( sim -> target -> debuffs.frozen );
+
+      bool fof = sim -> time_to_think( p -> _buffs.fingers_of_frost ) && p -> _buffs.fingers_of_frost_charges > 0;
+
+      if( ! target_frozen && ! fof ) return false;
     }
 
     return mage_spell_t::ready();
@@ -2582,17 +2596,15 @@ struct frost_bolt_t : public mage_spell_t
 struct ice_lance_t : public mage_spell_t
 {
   int frozen;
-  int fb_priority;
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), frozen( 0 ), fb_priority( 0 )
+      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), frozen( 0 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
       {
-        { "frozen",      OPT_BOOL, &frozen      },
-        { "fb_priority", OPT_BOOL, &fb_priority },
+        { "frozen", OPT_BOOL, &frozen },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
@@ -2655,21 +2667,9 @@ struct ice_lance_t : public mage_spell_t
 
     if ( frozen )
     {
-      if ( ! p -> _buffs.fingers_of_frost &&
+      if ( ! sim -> time_to_think( p -> _buffs.fingers_of_frost ) &&
 	   ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
 	  return false;
-    }
-
-    if ( fb_priority )
-    {
-      if ( p -> _buffs.fingers_of_frost > 0 )
-      {
-	double fb_execute_time = sim -> current_time + 2.5 * haste();
-
-	if ( sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-	  if ( fb_execute_time < sim -> target -> expirations.frozen -> occurs() )
-	    return false;
-      }
     }
 
     return true;
@@ -2681,15 +2681,19 @@ struct ice_lance_t : public mage_spell_t
 struct frostfire_bolt_t : public mage_spell_t
 {
   int dot_wait;
+  int frozen;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), dot_wait( 0 )
   {
     mage_t* p = player -> cast_mage();
 
+    travel_speed = 21.0; // set before options to allow override
+
     option_t options[] =
       {
-        { "dot_wait", OPT_BOOL, &dot_wait   },
+        { "dot_wait", OPT_BOOL, &dot_wait },
+        { "frozen",   OPT_BOOL, &frozen   },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
@@ -2757,6 +2761,29 @@ struct frostfire_bolt_t : public mage_spell_t
       trigger_tier8_2pc( this );
     }
     trigger_hot_streak( this );
+  }
+
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    mage_spell_t::travel( travel_result, travel_dmg );
+    trigger_fingers_of_frost( this );
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if ( frozen )
+    {
+      bool target_frozen = sim -> time_to_think( sim -> target -> debuffs.frozen );
+
+      bool fof = sim -> time_to_think( p -> _buffs.fingers_of_frost ) && p -> _buffs.fingers_of_frost_charges > 0;
+
+      if( ! target_frozen && ! fof ) return false;
+    }
+
+    return mage_spell_t::ready();
   }
 };
 
