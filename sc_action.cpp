@@ -980,7 +980,7 @@ bool action_t::ready()
       return false;
 
   if ( max_haste > 0 )
-    if ( ( 1.0 - haste() ) > max_haste )
+    if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
       return false;
 
   if ( bloodlust_active > 0 )

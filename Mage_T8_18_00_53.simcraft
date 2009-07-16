@@ -10,7 +10,7 @@ actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/use_item,name=scale_of_fates
 actions+=/frost_bolt,frozen=1
 actions+=/mirror_image/water_elemental/icy_veins/cold_snap
-actions+=/fire_ball,brain_freeze=1,haste<=0.35
+actions+=/fire_ball,brain_freeze=1,haste<=0.50
 actions+=/frost_bolt
 actions+=/evocation
 # Actions while moving
