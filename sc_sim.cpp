@@ -99,7 +99,7 @@ static bool parse_player( sim_t*             sim,
     std::string wowhead;
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
-    int active=1;
+    std::string talents = "active";
     int cache=0;
 
     option_t options[] =
@@ -107,7 +107,7 @@ static bool parse_player( sim_t*             sim,
       { "wowhead", OPT_STRING, &wowhead },
       { "region",  OPT_STRING, &region  },
       { "server",  OPT_STRING, &server  },
-      { "active",  OPT_BOOL,   &active  },
+      { "talents", OPT_STRING, &talents },
       { "cache",   OPT_BOOL,   &cache   },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -116,7 +116,7 @@ static bool parse_player( sim_t*             sim,
 
     if( wowhead.empty() )
     {
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active, cache );
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, talents, cache );
     }
     else
     {
@@ -166,7 +166,7 @@ static bool parse_armory( sim_t*             sim,
 	player_name.erase( 0, 1 );
 	active = 0;
       }
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, active );
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( active ? "active" : "inactive" ) );
       if( ! sim -> active_player ) return false;
     }
     return true;

@@ -2231,7 +2231,7 @@ struct armory_t
                                     const std::string& region, 
                                     const std::string& server, 
                                     const std::string& name,
-                                    int active=1,
+                                    const std::string& talents,
 				    int cache=0 );
   static bool download_slot( item_t&, const std::string& item_id );
   static bool download_item( item_t&, const std::string& item_id );

@@ -521,7 +521,7 @@ bool armory_t::download_guild( sim_t* sim,
       std::string& character_name = character_names[ i ];
 
       fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
-      player_t* p = armory_t::download_player( sim, region, server, character_name, 1, cache );
+      player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
 
       if( ! p ) 
       {
@@ -553,7 +553,7 @@ player_t* armory_t::download_player( sim_t* sim,
                                      const std::string& region, 
                                      const std::string& server, 
                                      const std::string& name,
-                                     int use_active_talents,
+                                     const std::string& talents_description,
 				     int cache )
 {
   xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, cache );
@@ -640,8 +640,38 @@ player_t* armory_t::download_player( sim_t* sim,
       if( inactive_talents )
       {
         int active_value=0;
-        if( ! xml_t::get_value( active_value, active_talents, "active" ) || ! active_value ) std::swap( active_talents, inactive_talents );
-        if( ! use_active_talents ) std::swap( active_talents, inactive_talents );
+        if( xml_t::get_value( active_value, inactive_talents, "active" ) && active_value ) 
+	{
+	  std::swap( active_talents, inactive_talents );
+	}
+
+	if( talents_description == "active" )
+	{
+	  // Leave it alone.
+	}
+	else if( talents_description == "inactive" )
+	{
+	  std::swap( active_talents, inactive_talents );
+	}
+	else
+	{
+	  int primary_tree = util_t::parse_talent_tree( talents_description );
+	  if( primary_tree == TREE_NONE )
+	  {
+	    printf( "\nsimcraft: Valid values for 'talents' are 'active', 'inactive', or the name of a tree such as 'fury' or 'shadow'.\n" );
+	    return 0;
+	  }
+
+	  std::string primary_tree_str;
+	  if( xml_t::get_value( primary_tree_str, inactive_talents, "prim" ) )
+	  {
+	    armory_t::format( primary_tree_str );
+	    if( primary_tree == util_t::parse_talent_tree( primary_tree_str ) )
+	    {
+	      std::swap( active_talents, inactive_talents );
+	    }
+	  }
+	}
       }
 
       std::string talents_encoding;
