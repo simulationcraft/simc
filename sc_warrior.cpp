@@ -1380,7 +1380,10 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> glyphs.heroic_strike && result == RESULT_CRIT )
       p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
 
-    trigger_tier8_2pc( this );
+    if ( ! p -> talents.devastate )
+    {
+      trigger_tier8_2pc( this );
+    }
     trigger_unbridled_wrath( this );
   }
   virtual bool ready()
@@ -1529,8 +1532,8 @@ struct devastate_t : public warrior_attack_t
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;
-    base_crit += ( p -> talents.sword_and_board * 5 +  
-		   p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 );
+    base_crit += ( ( p -> talents.sword_and_board * 0.05 ) +  
+		   ( p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 ) );
   }
   virtual void execute()
   {
@@ -2769,7 +2772,7 @@ void warrior_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::primary_tree ====================================================
+// warrior_t::primary_tree ====================================================
 
 int warrior_t::primary_tree() SC_CONST
 {
