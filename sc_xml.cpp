@@ -47,6 +47,24 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 
 static int create_children( xml_node_t* root, const std::string& input, std::string::size_type& index );
 
+// simplify_xml ============================================================
+
+static void simplify_xml( std::string& buffer )
+{
+  for( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
+  {
+    buffer.replace( pos, 4, "<" );
+  }
+  for( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
+  {
+    buffer.replace( pos, 4, ">" );
+  }
+  for( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
+  {
+    buffer.replace( pos, 5, "&" );
+  }
+}
+
 // is_white_space ==========================================================
 
 static bool is_white_space( char c )
@@ -63,7 +81,7 @@ static bool is_name_char( char c )
 {
   if( isalpha( c ) ) return true;
   if( isdigit( c ) ) return true;
-  return( c == '_' || c == '-' );
+  return( c == '_' || c == '-' || c ==':' );
 }
 
 // parse_name ==============================================================
@@ -313,9 +331,11 @@ xml_node_t* xml_t::create( const std::string& input )
 {
   xml_node_t* root = new xml_node_t( "root" );
 
+  std::string buffer = input;
   std::string::size_type index=0;
 
-  create_children( root, input, index );
+  simplify_xml( buffer );
+  create_children( root, buffer, index );
 
   return root;
 }

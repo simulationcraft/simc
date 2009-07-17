@@ -1544,7 +1544,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
+    event_t::early( p -> _expirations.maelstrom_weapon );
     if ( p -> _buffs.elemental_mastery == 1 )
     {
       p -> _buffs.elemental_mastery = 2;
@@ -1602,16 +1602,19 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
+  int maelstrom;
   int flame_shock;
   int max_ticks_consumed;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), flame_shock( 0 ), max_ticks_consumed( 0 )
+      shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ), 
+      maelstrom(0), flame_shock( 0 ), max_ticks_consumed( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
       {
+        { "maelstrom",          OPT_INT,  &maelstrom          },
         { "flame_shock",        OPT_BOOL, &flame_shock        },
         { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
         { NULL, OPT_UNKNOWN, NULL }
@@ -1655,6 +1658,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
+    event_t::early( p -> _expirations.maelstrom_weapon );
     if ( p -> _buffs.elemental_mastery == 1 )
     {
       p -> _buffs.elemental_mastery = 2;
@@ -1673,6 +1677,17 @@ struct lava_burst_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
+    if ( p -> _buffs.maelstrom_weapon )
+    {
+      if ( p -> _buffs.maelstrom_weapon == 5 )
+      {
+        t = 0;
+      }
+      else
+      {
+        t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
+      }
+    }
     if ( p -> _buffs.elemental_mastery == 1 )
     {
       t = 0;
@@ -1691,6 +1706,8 @@ struct lava_burst_t : public shaman_spell_t
   {
     if ( ! shaman_spell_t::ready() )
       return false;
+
+
 
     if ( flame_shock )
     {

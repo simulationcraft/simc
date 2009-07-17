@@ -935,7 +935,7 @@ static void clear_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( ! p -> _buffs.fingers_of_frost ) return;
+  if( p -> _buffs.fingers_of_frost == 0 ) return;
 
   if( p -> _buffs.fingers_of_frost_charges < 0 )
   {

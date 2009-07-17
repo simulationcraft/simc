@@ -7,6 +7,24 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// simplify_html =============================================================
+
+static void simplify_html( std::string& buffer )
+{
+  for( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
+  {
+    buffer.replace( pos, 4, "<" );
+  }
+  for( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
+  {
+    buffer.replace( pos, 4, ">" );
+  }
+  for( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
+  {
+    buffer.replace( pos, 5, "&" );
+  }
+}
+
 // print_action ==============================================================
 
 static void print_action( FILE* file, stats_t* s )
@@ -706,8 +724,13 @@ static void print_wiki_raid( FILE*  file,
   int count = sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    fprintf( file, "|| %s&dummy=dummy.png || %s&dummy=dummy.png ||\n",
-             sim -> dps_charts[ i ].c_str(), sim -> gear_charts[ i ].c_str() );
+    std::string  dps_chart = sim ->  dps_charts[ i ];
+    std::string gear_chart = sim -> gear_charts[ i ];
+
+    simplify_html(  dps_chart );
+    simplify_html( gear_chart );
+
+    fprintf( file, "|| %s&dummy=dummy.png || %s&dummy=dummy.png ||\n", dps_chart.c_str(), gear_chart.c_str() );
   }
 
   std::string raid_downtime = "No chart for Raid Down-Time";
@@ -715,13 +738,13 @@ static void print_wiki_raid( FILE*  file,
 
   if ( ! sim -> downtime_chart.empty() )
   {
-    raid_downtime = sim -> downtime_chart;
-    raid_downtime += "&dummy=dummy.png";
+    raid_downtime = sim -> downtime_chart + "&dummy=dummy.png";
+    simplify_html( raid_downtime );
   }
   if ( ! sim -> uptimes_chart.empty() )
   {
-    raid_uptimes = sim -> uptimes_chart;
-    raid_uptimes += "&dummy=dummy.png";
+    raid_uptimes = sim -> uptimes_chart + "&dummy=dummy.png";
+    simplify_html( raid_uptimes );
   }
 
   fprintf( file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
@@ -730,10 +753,12 @@ static void print_wiki_raid( FILE*  file,
   for ( int i=0; i < count; i++ )
   {
     std::string raid_dpet = sim -> dpet_charts[ i ] + "&dummy=dummy.png";
+    simplify_html( raid_dpet );
     fprintf( file, "|| %s ", raid_dpet.c_str() );
     if ( ++i < count )
     {
       raid_dpet = sim -> dpet_charts[ i ] + "&dummy=dummy.png";
+      simplify_html( raid_dpet );
       fprintf( file, "|| %s ", raid_dpet.c_str() );
     }
     fprintf( file, "||\n" );
@@ -780,11 +805,19 @@ static void print_wiki_scale_factors( FILE*  file,
         fprintf( file, " %.2f ||", p -> scaling.get_stat( j ) );
       }
     }
+    
+    std::string lootrank = p -> gear_weights_lootrank_link;
+    std::string wowhead  = p -> gear_weights_wowhead_link;
+    std::string pawn     = p -> gear_weights_pawn_string;
+
+    simplify_html( lootrank );
+    simplify_html( wowhead  );
+    simplify_html( pawn     );
 
     fprintf( file, " %.2f ||", p -> scaling_lag );
-    fprintf( file, " [%s lootrank] ||", p -> gear_weights_lootrank_link.c_str() );
-    fprintf( file, " [%s wowhead] ||",  p -> gear_weights_wowhead_link.c_str() );
-    fprintf( file, " %s ||",            p -> gear_weights_pawn_string.c_str() );
+    fprintf( file, " [%s lootrank] ||", lootrank.c_str() );
+    fprintf( file, " [%s wowhead] ||",  wowhead.c_str() );
+    fprintf( file, " %s ||",            pawn.c_str() );
 
     fprintf( file, "\n" );
   }
@@ -807,36 +840,43 @@ static void print_wiki_player( FILE*     file,
   {
     action_dpet = p -> action_dpet_chart;
     action_dpet += "&dummy=dummy.png";
+    simplify_html( action_dpet );
   }
   if ( ! p -> uptimes_and_procs_chart.empty() )
   {
     uptimes_and_procs = p -> uptimes_and_procs_chart;
     uptimes_and_procs += "&dummy=dummy.png";
+    simplify_html( uptimes_and_procs );
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
     action_dmg = p -> action_dmg_chart;
     action_dmg += "&dummy=dummy.png";
+    simplify_html( action_dmg );
   }
   if ( ! p -> gains_chart.empty() )
   {
     gains = p -> gains_chart;
     gains += "&dummy=dummy.png";
+    simplify_html( gains );
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
     timeline_dps = p -> timeline_dps_chart;
     timeline_dps += "&dummy=dummy.png";
+    simplify_html( timeline_dps );
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
     distribution_dps = p -> distribution_dps_chart;
     distribution_dps += "&dummy=dummy.png";
+    simplify_html( distribution_dps );
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
     timeline_resource = p -> timeline_resource_chart;
     timeline_resource += "&dummy=dummy.png";
+    simplify_html( timeline_resource );
   }
 
   fprintf( file, "\n" );
