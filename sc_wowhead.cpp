@@ -361,13 +361,13 @@ bool wowhead_t::download_item( item_t&            item,
   xml_node_t* node = download_id( item.sim, item_id );
   if( ! node ) 
   {
-    printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to download item id %s from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_name( item, node ) )
   {
-    printf( "\nsimcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to determine item name for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 

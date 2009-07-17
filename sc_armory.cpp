@@ -762,7 +762,7 @@ bool armory_t::download_slot( item_t& item,
   xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot );
   if( ! slot_xml ) 
   {
-    printf( "\nsimcraft: Unable to download item %s at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
+    printf( "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
     return false;
   }
 
@@ -809,19 +809,19 @@ bool armory_t::download_item( item_t& item,
   xml_node_t* item_xml = download_item_tooltip( p, id_str );
   if( ! item_xml ) 
   {
-    printf( "\nsimcraft: Player %s unable to download item %s for slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_name( item, item_xml ) )
   {
-    printf( "\nsimcraft: Player %s unable to parse name for item %s for slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
   if( ! parse_item_stats( item, item_xml ) )
   {
-    printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" for slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 

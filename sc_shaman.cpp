@@ -1058,6 +1058,21 @@ struct melee_t : public shaman_attack_t
     return t;
   }
 
+  void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    if( p -> executing ) 
+    {
+      if( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
+      schedule_execute();
+    }
+    else
+    {
+      shaman_attack_t::execute();
+    }
+  }
+
   void schedule_execute()
   {
     shaman_attack_t::schedule_execute();
@@ -1110,10 +1125,19 @@ struct auto_attack_t : public shaman_attack_t
 
 struct lava_lash_t : public shaman_attack_t
 {
+  int wf_cd_only;
+  
   lava_lash_t( player_t* player, const std::string& options_str ) :
-      shaman_attack_t( "lava_lash", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
+    shaman_attack_t( "lava_lash", player, SCHOOL_FIRE, TREE_ENHANCEMENT ), wf_cd_only(0)
   {
     shaman_t* p = player -> cast_shaman();
+
+    option_t options[] =
+      {
+        { "wf_cd_only", OPT_INT, &wf_cd_only  },
+        { NULL, OPT_UNKNOWN, NULL }
+      };
+    parse_options( options, options_str );
 
     weapon      = &( player -> off_hand_weapon );
     base_dd_min = base_dd_max = 1;
@@ -1137,6 +1161,17 @@ struct lava_lash_t : public shaman_attack_t
       shaman_t* p = player -> cast_shaman();
       player_multiplier *= 1.25 + p -> glyphs.lava_lash * 0.10;
     }
+  }
+
+  virtual bool ready()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    if( wf_cd_only )
+      if( p -> _cooldowns.windfury_weapon < sim -> current_time )
+	return false;
+
+    return shaman_attack_t::ready();
   }
 };
 
@@ -1295,11 +1330,12 @@ void shaman_spell_t::execute()
 
 void shaman_spell_t::schedule_execute()
 {
+  shaman_t* p = player -> cast_shaman();
+
   spell_t::schedule_execute();
 
-  if ( time_to_execute > 0 )
+  if ( time_to_execute > 0 && ! p -> _buffs.maelstrom_weapon )
   {
-    shaman_t* p = player -> cast_shaman();
     if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
     if ( p ->  off_hand_attack ) p ->  off_hand_attack -> cancel();
   }
@@ -3352,6 +3388,10 @@ void shaman_t::init_items()
   else if ( totem == "totem_of_the_dancing_flame" ) totems.dancing_flame = 1;
   else if ( totem == "totem_of_the_tundra"        ) totems.tundra = 1;
   else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
+  else if ( totem.find( "totem_of_indomitability" ) != std::string::npos )
+  {
+    totems.indomitability = 1;
+  }
   // To prevent warnings...
   else if ( totem == "totem_of_forest_growth" ) ;
   else if ( totem == "totem_of_healing_rains" ) ;
@@ -3476,12 +3516,15 @@ void shaman_t::init_actions()
         }
       }
       action_list_str += "/wind_shock/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
-      action_list_str += "/auto_attack/lightning_bolt,maelstrom=5";
+      action_list_str += "/auto_attack";
+      action_list_str += "/speed_potion";
+      action_list_str += "/lightning_bolt,maelstrom=5";
       if( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
       if( talents.stormstrike      ) action_list_str += "/stormstrike";
       action_list_str += "/earth_shock/magma_totem/lightning_shield";
       if( talents.lava_lash    ) action_list_str += "/lava_lash";
       if( talents.feral_spirit ) action_list_str += "/spirit_wolf";
+      action_list_str += "/lightning_bolt,maelstrom=4";
     }
     else
     {

@@ -224,8 +224,8 @@ bool item_t::init()
 
     if( encoded_name_str != armory_name_str ) 
     {
-      printf( "\nsimcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and id '%s'\n",
-	      player -> name(), slot_name(), option_name_str.c_str(), option_id_str.c_str() );
+      printf( "\nsimcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
+	      player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
 
       encoded_name_str = armory_name_str;
     }

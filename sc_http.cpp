@@ -290,8 +290,8 @@ bool http_t::get( std::string& result,
     {
       if( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
       {
-	printf( "\nsimcraft: HTTP failed on '%s'\n", url.c_str() );
-	printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+	//printf( "\nsimcraft: HTTP failed on '%s'\n", url.c_str() );
+	//printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
         fflush( stdout );
         success = false;
       }

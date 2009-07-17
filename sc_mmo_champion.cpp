@@ -328,6 +328,17 @@ static bool parse_item_name( item_t&     item,
 
   std::string::size_type pos = s.find( " - " );
   if( pos != std::string::npos ) s.erase( pos );
+
+  // The MMO-Champion names often have numbers embedded in the name.....
+  for( int i=0; s[ i ]; i++ )
+  {
+    if( isdigit( s[ i ] ) )
+    {
+      s.erase( i, 1 );
+      i--;
+    }
+  }
+
   armory_t::format( s );
 
   return true;

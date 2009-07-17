@@ -164,14 +164,21 @@ double attack_t::block_chance( int delta_level ) SC_CONST
 
 double attack_t::crit_chance( int delta_level ) SC_CONST
 {
-  if ( delta_level > 2 )
+  double chance = total_crit();
+
+  if( ! special )
   {
-    return total_crit() - ( 0.03 + delta_level * 0.006 );
+    if ( delta_level > 2 )
+    {
+      chance -= ( 0.03 + delta_level * 0.006 );
+    }
+    else
+    {
+      chance -= ( delta_level * 0.002 );
+    }
   }
-  else
-  {
-    return total_crit() - ( delta_level * 0.002 );
-  }
+
+  return chance;
 }
 
 // attack_t::build_table ====================================================
