@@ -181,6 +181,28 @@ struct warrior_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct tiers_t
+  {
+    int t7_2pc_dps;
+    int t7_4pc_dps;
+    int t8_2pc_dps;
+    int t8_4pc_dps;
+    int t9_2pc_dps;
+    int t9_4pc_dps;
+    int t10_2pc_dps;
+    int t10_4pc_dps;
+    int t7_2pc_tank;
+    int t7_4pc_tank;
+    int t8_2pc_tank;
+    int t8_4pc_tank;
+    int t9_2pc_tank;
+    int t9_4pc_tank;
+    int t10_2pc_tank;
+    int t10_4pc_tank;
+    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
+  };
+  tiers_t tiers;
+
   warrior_t( sim_t* sim, const std::string& name ) : player_t( sim, WARRIOR, name )
   {
     // Active
@@ -198,6 +220,7 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_glyphs();
   virtual void      init_base();
+  virtual void      init_items();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -374,13 +397,13 @@ static void trigger_bloodsurge( action_t* a )
 
 }
 
-// trigger_tier7_4pc ========================================================
+// trigger_tier7_4pc_dps ====================================================
 
-static void trigger_tier7_4pc( action_t* a )
+static void trigger_tier7_4pc_dps( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( ! p -> set_bonus.tier7_4pc() )
+  if ( ! p -> tiers.t7_4pc_dps )
     return;
 
   if ( ! p -> rngs.tier7_4pc -> roll( 0.10 ) )
@@ -460,7 +483,7 @@ static void trigger_deep_wounds( action_t* a )
     virtual void tick()
     {
       warrior_attack_t::tick();
-      trigger_tier7_4pc( this );
+      trigger_tier7_4pc_dps( this );
     }
   };
 
@@ -753,16 +776,16 @@ static void trigger_unbridled_wrath( action_t* a )
   }
 }
 
-// trigger_tier8_2pc ========================================================
+// trigger_tier8_2pc_dps ====================================================
 
-static void trigger_tier8_2pc( action_t* a )
+static void trigger_tier8_2pc_dps( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( a -> result != RESULT_CRIT )
+  if ( ! p -> tiers.t8_2pc_dps )
     return;
 
-  if ( ! p -> set_bonus.tier8_2pc() )
+  if ( a -> result != RESULT_CRIT )
     return;
 
   if ( ! p -> rngs.tier8_2pc -> roll( 0.40 ) )
@@ -1380,10 +1403,7 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> glyphs.heroic_strike && result == RESULT_CRIT )
       p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
 
-    if ( ! p -> talents.devastate )
-    {
-      trigger_tier8_2pc( this );
-    }
+    trigger_tier8_2pc_dps( this );
     trigger_unbridled_wrath( this );
   }
   virtual bool ready()
@@ -1964,7 +1984,7 @@ struct rend_t : public warrior_attack_t
   virtual void tick()
   {
     warrior_attack_t::tick();
-    trigger_tier7_4pc( this );
+    trigger_tier7_4pc_dps( this );
     trigger_taste_for_blood( this );
   }
   virtual void execute()
@@ -2034,7 +2054,7 @@ struct slam_t : public warrior_attack_t
     if ( p -> _buffs.bloodsurge )
       event_t::early( p -> _expirations.bloodsurge );
 
-    trigger_tier8_2pc( this );
+    trigger_tier8_2pc_dps( this );
 
   }
   virtual void schedule_execute()
@@ -2636,6 +2656,35 @@ void warrior_t::init_base()
   health_per_stamina = 10;
 
   base_gcd = 1.5;
+}
+
+// warrior_t::init_items =======================================================
+
+void warrior_t::init_items()
+{
+  player_t::init_items();
+  if ( talents.devastate )
+  {
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_dps = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_dps = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_dps = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_dps = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_dps = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_dps = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_dps = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_dps = 1;
+  }
+  else if ( talents.mortal_strike || talents.bloodthirst )
+  {
+    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_tank = 1;
+    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_tank = 1;
+    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_tank = 1;
+    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_tank = 1;
+    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_tank = 1;
+    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_tank = 1;
+    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_tank = 1;
+    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_tank = 1;
+  }
 }
 
 // warrior_t::init_gains =======================================================
