@@ -1517,9 +1517,9 @@ struct devastate_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     if ( sim -> P320 )
     {
-      base_dd_min = 605;
-      base_dd_max = 605;
-      weapon_multiplier = 0.60;
+      base_dd_min = 1010;
+      base_dd_max = 1010;
+      weapon_multiplier = 1.00;
       if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05; 
     }
     else
