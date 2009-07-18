@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 
 	<xsl:output method="html" encoding="utf-8" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" cdata-section-elements="pre script style" indent="yes" />
-	
-	<xsl:key name="options" match="option" use="@optdoc_loc" />
 	
 	<!--  Top-level XML tag this matches the root of the xml, and is the top of the xsl parsing tree -->
 	<xsl:template match="/xml">
@@ -35,6 +33,7 @@
 			<!-- Call the template defined below, which handles initializing the prototypical new-raiders in javascript -->
 			<xsl:call-template name="javascript_prefill" />
 
+			<!-- Match on any exceptions, and show the warning (template defined below) -->
 			<xsl:apply-templates select="exceptions" />
 
 			<!-- The overall page content -->		
@@ -54,14 +53,11 @@
 		
 					<!-- Add the main content form -->										
 					<xsl:call-template name="content_form" />
-				
 				</form>	
 			</div>
 		</body>
 	</html>
 	</xsl:template>
-
-
 
 	<!-- === ERRORS === -->
 	<xsl:template match="exceptions">
@@ -74,8 +70,6 @@
 			</ul>
 		</div>
 	</xsl:template>
-	
-	
 
 	<!-- === TITLE === -->
 	<xsl:template name="titlebar">
@@ -84,8 +78,6 @@
 			<p>A World of Warcraft Combat Simulation</p>
 		</div>
 	</xsl:template>
-	
-	
 
 	<!-- === SIDEBAR === -->
 	<xsl:template name="sidebar">
@@ -101,13 +93,13 @@
 				<ul id="new_member_by_class">
 				
 					<!-- For each of the classes defined in the XML file (Except 'all_classes'), add a list element -->
-					<xsl:for-each select="options/supported_classes/class[not(@class='all_classes')]">
-						<xsl:sort select="@class" />
+					<xsl:for-each select="/xml/options/player/*[not(name()='all')]">
+						<xsl:sort select="name()" />
 					
 						<li>
-							<xsl:attribute name="class">supported_class <xsl:value-of select="@class" /></xsl:attribute>
-							<xsl:attribute name="title"><xsl:value-of select="@label" /></xsl:attribute>
-							<span><xsl:value-of select="@label" /></span>
+							<xsl:attribute name="class">supported_class <xsl:value-of select="name()" /></xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="@title" /></xsl:attribute>
+							<span><xsl:value-of select="@title" /></span>
 						</li>
 					
 					</xsl:for-each>
@@ -127,14 +119,14 @@
 						<select name="add_from_armory[server]" id="armory_server">
 							<option value=""></option>
 							
-							<xsl:for-each select="//servers/server">
+							<xsl:for-each select="/xml/servers/server">
 								<xsl:if test="position()=1 or @region != preceding-sibling::server[1]/@region">
 									
 									<optgroup>
 										<xsl:attribute name="label"><xsl:value-of select="@region" /></xsl:attribute>
 									
 										<xsl:variable name="region"><xsl:value-of select="@region" /></xsl:variable>
-										<xsl:for-each select="//servers/server[@region=$region]">
+										<xsl:for-each select="/xml/servers/server[@region=$region]">
 											<xsl:sort select="@region" />
 											<xsl:sort select="@label" />
 											<option>
@@ -161,25 +153,29 @@
 		</div>
 	</xsl:template>
 
-
-
 	<!--  === FLOATING BOTTOM BAR === -->
 	<xsl:template name="bottombar">
 		<div id="bottombar">
 		
+			<!-- The 'run' buttons -->
 			<div class="bottombar_section">
 				<h3>Simulation</h3>
+								
 				<xsl:if test="/xml/options/@allow_simulation='1'">
 					<input name="simulate" id="simulate" type="submit" value="Run Simulation" title="Execute the SimulationCraft simulation and display the results" />
 				</xsl:if>
+				
 				<input type="reset" value="Reset Form" title="Reset the fields of this simulation to their values as of the past page load" />
 			</div>
 			
+			<!-- The config file import functions -->
 			<div class="bottombar_section">
 				<h3>Import SimCraft Files</h3>
+				
 				<ul class="subscript_labels stacked_fields">
 					<li>
 						<label for="import_file_path">Import File</label>
+						
 						<!-- Max upload file size, in bytes -->
 						<input name="MAX_FILE_SIZE" type="hidden" value="30000">
 							<xsl:attribute name="value"><xsl:value-of select="/xml/options/@max_file_size" /></xsl:attribute>
@@ -198,15 +194,15 @@
 				</ul>
 			</div>
 
+			<!-- The config file export functions -->
 			<div class="bottombar_section">
 				<h3>Export SimCraft Files</h3>
+				
 				<input name="export_file" type="submit" value="Export to File" title="Download an export of the current simulation build to a .simcraft file" />
 			</div>
 
 		</div>
 	</xsl:template>
-		
-	
 	
 	<!-- === THE MAIN SUBMISSION FORM === -->
 	<xsl:template name="content_form">
@@ -218,7 +214,7 @@
 								
 				<!--  The main list of raid members (generated with a template defined below) -->
 				<ul id="raid_members">
-					<xsl:apply-templates select="raid_content/player" />
+					<xsl:apply-templates select="/xml/raid_content/*" />
 				</ul>
 			</div>	
 
@@ -228,44 +224,29 @@
 				<h2 class="page_panel">Global Settings</h2>
 
 				<div id="global_options_wrapper">
-				
-					<!-- For each of the options appropriate for this raider... -->
-					<xsl:for-each select="//global_options/option[generate-id() = generate-id(key('options', @optdoc_loc)[1]) ]">
-						<xsl:sort select="@optdoc_loc" />
-						<xsl:variable name="optdoc_loc"><xsl:value-of select="@optdoc_loc" /></xsl:variable>
-		
-						<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
-						<xsl:call-template name="option_list">
-							<xsl:with-param name="root_name" select="'globals'" />
-							<xsl:with-param name="name" select="@optdoc_title" />
-							<xsl:with-param name="which" select="//global_options/option[@optdoc_loc=$optdoc_loc]" />
-						</xsl:call-template>
-					</xsl:for-each>
-		
-					<!-- Do another set for the options that have no optdoc-loc -->
+	
+					<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
 					<xsl:call-template name="option_list">
-						<xsl:with-param name="root_name" select="'globals'" />
-						<xsl:with-param name="name" select="'Others (unsorted)'" />
-						<xsl:with-param name="which" select="//global_options/option[not(@optdoc_loc)]" />
-					</xsl:call-template>				
+						<xsl:with-param name="which" select="/xml/options/global/*" />
+						<xsl:with-param name="field_root_name" select="'globals'" />
+						<xsl:with-param name="index" select="''" />
+					</xsl:call-template>
 					
 				</div>
 			</div>
 		</div>
 	</xsl:template>
 	
-	
-	
 	<!-- === Javascript support section, describing the classes === -->
 	<xsl:template name="javascript_prefill">
 		<div class="hidden" id="prototype_character_classes">
-			<xsl:for-each select="options/supported_classes/class">
+			<xsl:for-each select="/xml/options/player/*[not(name()='all')]">
 	
 				<!-- Because javascript sucks and has no HEREDOC equivalent, we have to do this the hard way... -->
 				<!-- each class will get a hidden div holding a prototype new-raider, with a replacable tag string in place of it's index number -->
 				<!-- On add, javascript will copy this hidden div, and replace the tag string with the actual index number -->
 				<div class="hidden">
-					<xsl:attribute name="id">hidden_div_<xsl:value-of select="@class" /></xsl:attribute>
+					<xsl:attribute name="id">hidden_div_<xsl:value-of select="name()" /></xsl:attribute>
 
 					<ul>
 						<!-- Call the template that handles displaying a raider instance (same as the one used to print the visible raider list elements) -->
@@ -278,19 +259,17 @@
 			</xsl:for-each>
 		</div>
 	</xsl:template>
-	
-	
 		
 	<!-- === raider element === -->
 	<!-- players in the raid-content tag.  This template gets used to generate the visible elements as well as the prototypical hidden raiders, 
 			which get used by javascript to insert new players -->
-	<xsl:template match="raid_content/player" name="raid_content_player">
-		
-		<!-- What's the character-class for this new player? (defaults to the player tag's class attribute, if its present) -->
-		<xsl:param name="class" select="@class" />
+	<xsl:template match="raid_content/*" name="raid_content_player">
 		
 		<!-- What index should we use (default to the XML element's position index) -->
 		<xsl:param name="index" select="position()" />
+
+		<!-- What's the character-class for this new player? (defaults to the player tag's name attribute, if its present) -->
+		<xsl:param name="class" select="name()" />
 
 		<li class="raider">
 
@@ -304,7 +283,7 @@
 			<!--  Class description block (with the text looked up in the supported_classes tag) -->
 			<div>
 				<xsl:attribute name="class">member_class <xsl:value-of select="$class" /></xsl:attribute>
-				<xsl:value-of select="//supported_classes/class[@class=$class]/@label" /> - 
+				<xsl:value-of select="/xml/options/player/*[name()=$class]/@title" /> - 
 
 				<!-- option defining the name for the raider -->
 				<xsl:call-template name="simcraft_option">
@@ -328,110 +307,181 @@
 			</xsl:call-template>
 			
 
-			<!-- Remember this raider element, for passing as a reference element -->
-			<xsl:variable name="this_raider" select="." />
-
-			<!-- For each of the options appropriate for this raider... -->
-			<xsl:for-each select="//supported_classes/class[@class='all_classes' or @class=$class]/option[generate-id() = generate-id(key('options', @optdoc_loc)[1]) ]">
-				<xsl:sort select="@optdoc_loc" />
-				<xsl:variable name="optdoc_loc"><xsl:value-of select="@optdoc_loc" /></xsl:variable>
-
-				<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
-				<xsl:call-template name="option_list">
-					<xsl:with-param name="root_name" select="'raider'" />
-					<xsl:with-param name="index" select="$index" />
-					<xsl:with-param name="name" select="@optdoc_title" />
-					<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and @optdoc_loc=$optdoc_loc]" />
-					<xsl:with-param name="reference_element" select="$this_raider" />
-				</xsl:call-template>
-			</xsl:for-each>
-
-			<!-- Do another set for the options that have no optdoc-loc -->
+			<!-- List of options for this user (except for class and name, which were explicity positioned above already) -->
 			<xsl:call-template name="option_list">
-				<xsl:with-param name="root_name" select="'raider'" />
+				<xsl:with-param name="which" select="/xml/options/player/*[name()='all' or name()=$class]/*" />
+				<xsl:with-param name="field_root_name" select="'raider'" />
 				<xsl:with-param name="index" select="$index" />
-				<xsl:with-param name="name" select="'Others (unsorted)'" />
-				<xsl:with-param name="which" select="//supported_classes/class[@class='all_classes' or @class=$class]/option[not(@name='class') and not(@name='name') and not(@optdoc_loc)]" />
-				<xsl:with-param name="reference_element" select="$this_raider" />
+				<xsl:with-param name="field_value_source_element" select="." />
 			</xsl:call-template>
-
-			
 		</li>
 	</xsl:template>
-
-
-
-
 
 	<!-- A group of options for a raid member -->
 	<xsl:template name="option_list">
 		
-		<!-- What index should we use in the HTML field name (ensures that PHP gets an array of values) -->
-		<xsl:param name="index" />
-		
-		<!-- What's the name of the field? -->
-		<xsl:param name="name" />
-		
 		<!-- Which option elements should be selected to build the list? -->
 		<xsl:param name="which" />
 		
-		<!-- The root name of the option field names -->
-		<xsl:param name="root_name" />
+		<!-- The root name of the option HTML field names -->
+		<xsl:param name="field_root_name" />
+		
+		<!-- What index should we use in the HTML field name (ensures that PHP gets an array of values) -->
+		<xsl:param name="index" />
 		
 		<!-- 'this' raider, defined by the current context.  Used below in a loop, where the context would be different -->
-		<xsl:param name="reference_element" />
+		<xsl:param name="field_value_source_element" select="false()" />
 		
 		
-		<!-- If the which variable actually finds any elements, show the fieldset -->
-		<xsl:if test="$which">
-			<fieldset class="option_section foldable folded">
-				<legend><xsl:value-of select="$name" /></legend>
+		<div class="content_list">
+		
+			<!-- Set up the menus for the list -->
+			<xsl:call-template name="option_menu">
+				<xsl:with-param name="which" select="$which" />
+				<xsl:with-param name="field_root_name" select="$field_root_name" />
+				<xsl:with-param name="index" select="$index" />
+			</xsl:call-template>
 			
-				<ul class="raider_options stacked_fields subscript_labels">
 			
-				<!-- For each of the options selected in the $which parameter, build a list-element for it -->
-				<xsl:for-each select="$which">
-					<xsl:sort select="@label" />
+			<!-- Set up the divs for the list -->
+			<xsl:call-template name="option_panes">
+				<xsl:with-param name="which" select="$which" />
+				<xsl:with-param name="field_root_name" select="$field_root_name" />
+				<xsl:with-param name="index" select="$index" />
+				<xsl:with-param name="field_value_source_element" select="$field_value_source_element" />
+			</xsl:call-template>
+		</div>
 		
-					<li>
-					
-						<!-- Mark checkbox list elements specially, for CSS hooking -->
-						<xsl:if test="@type='boolean'">
-							<xsl:attribute name="class">checkbox</xsl:attribute>
-						</xsl:if>
-
-						<!-- Remember the name of this field name -->
-						<xsl:variable name="this_field_name" select="@name" />
-									
-						<!-- Call the template that handles options, with the appropriate parameters -->
-						<!-- If a value was already set for this option, don't use the parent element's attribute-value for the value (use the option's value attribute) -->
-						<xsl:choose>
-							
-							<xsl:when test="$reference_element">
-								<xsl:apply-templates select=".">
-									<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
-									<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
-									<!-- This is crazy but it works - pass for the value the parent-element's attribute with a name equivalent to this field's name - wow -->
-									<xsl:with-param name="value"><xsl:value-of select="$reference_element/@*[name()=$this_field_name]" /></xsl:with-param>
-								</xsl:apply-templates>
-							</xsl:when>
-							
-							<xsl:otherwise>
-								<xsl:apply-templates select=".">
-									<xsl:with-param name="variable_name"><xsl:value-of select="$root_name" /></xsl:with-param>
-									<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
-								</xsl:apply-templates>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-				</xsl:for-each>
-				
-				</ul>
-			</fieldset>
-		</xsl:if>
 	</xsl:template>
 
+	<!-- Menu bars for the option-lists -->
+	<xsl:template name="option_menu">
 
+		<!-- Which option elements should be selected to build the list? -->
+		<xsl:param name="which" />
+		
+		<!-- The root name of the option HTML field names -->
+		<xsl:param name="field_root_name" />
+		
+		<!-- What index should we use in the HTML field name (ensures that PHP gets an array of values) -->
+		<xsl:param name="index" />
+
+		<xsl:param name="with_parent_id" select="false()" />
+	
+		<!-- If there are any sub-elements that aren't options -->
+		<xsl:if test="$which[not(name()='option')]">
+			
+			<!-- build their menu structure as a hierarchical list -->
+			<ul>
+				<xsl:attribute name="class">menu<xsl:if test="$with_parent_id"> child_menu child_of_<xsl:value-of select="generate-id($which/..)" /></xsl:if></xsl:attribute>
+		
+				<!-- Loop over each of the elements passed (should be optdoc 'tiers') -->
+				<xsl:for-each select="$which[not(name()='option')]">
+					<xsl:sort select="name()" />
+
+					<li>
+						<xsl:attribute name="id">menu_item_<xsl:value-of select="generate-id(.)" /></xsl:attribute>
+						<span class="menu_tab"><xsl:value-of select="@title" /></span>
+					</li>
+
+				</xsl:for-each>
+			</ul>
+			
+			<!-- Recurse for any sub-lists -->
+			<xsl:call-template name="option_menu">
+				<xsl:with-param name="which" select="$which[not(name()='option')]/*[not(name()='option')]" />
+				<xsl:with-param name="field_root_name" select="$field_root_name" />
+				<xsl:with-param name="index" select="$index" />
+				<xsl:with-param name="with_parent_id" select="true()" />
+			</xsl:call-template>
+
+			
+		</xsl:if>	
+	</xsl:template>
+
+	<!-- Option content blocks for the option-lists -->
+	<xsl:template name="option_panes">
+
+		<!-- Which option elements should be selected to build the list? -->
+		<xsl:param name="which" />
+		
+		<!-- The root name of the option HTML field names -->
+		<xsl:param name="field_root_name" />
+		
+		<!-- What index should we use in the HTML field name (ensures that PHP gets an array of values) -->
+		<xsl:param name="index" />
+
+		<!-- 'this' raider, defined by the current context.  Used below in a loop, where the context would be different -->
+		<xsl:param name="field_value_source_element" select="false()" />
+
+	
+		<!-- If there are any sub-elements that aren't options -->
+		<xsl:if test="$which[not(name()='option')]">
+			
+			<!-- Loop over each of the elements passed (should be optdoc 'tiers') -->
+			<xsl:for-each select="$which[not(name()='option')]">
+				<xsl:sort select="name()" />
+
+				<xsl:if test="option">
+				
+					<div class="option_pane">
+						<xsl:attribute name="id">menu_pane_<xsl:value-of select="generate-id(.)" /></xsl:attribute>
+					
+						<!-- Show any options at this level -->			
+						<ul class="stacked_fields subscript_labels">
+					
+							<!-- For each of the options selected in the $which parameter, build a list-element for it -->
+							<xsl:for-each select="option">
+								<xsl:sort select="@name" />
+					
+								<li>
+								
+									<!-- Mark checkbox list elements specially, for CSS hooking -->
+									<xsl:if test="@type='boolean'">
+										<xsl:attribute name="class">checkbox</xsl:attribute>
+									</xsl:if>
+			
+									<!-- Call the template that handles options, with the appropriate parameters -->
+									<!-- If a value was already set for this option, don't use the parent element's attribute-value for the value (use the option's value attribute) -->
+									<xsl:choose>
+										
+										<xsl:when test="$field_value_source_element">
+											<xsl:variable name="this_field_name" select="@name" />
+											<xsl:variable name="this_field_value" select="$field_value_source_element/@*[name()=$this_field_name]" />
+										
+											<xsl:apply-templates select=".">
+												<xsl:with-param name="variable_name"><xsl:value-of select="$field_root_name" /></xsl:with-param>
+												<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+												<xsl:with-param name="value"><xsl:value-of select="$this_field_value" /></xsl:with-param>
+											</xsl:apply-templates>
+										</xsl:when>
+										
+										<xsl:otherwise>
+											<xsl:apply-templates select=".">
+												<xsl:with-param name="variable_name"><xsl:value-of select="$field_root_name" /></xsl:with-param>
+												<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
+											</xsl:apply-templates>
+										</xsl:otherwise>
+									</xsl:choose>
+									
+								</li>
+								
+							</xsl:for-each>
+						</ul>
+					</div>
+				</xsl:if>
+				
+				<!-- Recurse for any sub-lists -->
+				<xsl:call-template name="option_panes">
+					<xsl:with-param name="which" select="./*[not(name()='option')]" />
+					<xsl:with-param name="field_root_name" select="$field_root_name" />
+					<xsl:with-param name="index" select="$index" />
+					<xsl:with-param name="field_value_source_element" select="$field_value_source_element" />
+				</xsl:call-template>
+
+			</xsl:for-each>
+		</xsl:if>	
+	</xsl:template>		
 
 	<!-- === OPTION FIELDS === -->
 	<!-- Any of the option fields in the page, this template gets called in multiple places above -->
@@ -511,5 +561,8 @@
 		
 		</input>					
 	</xsl:template> 
+
+	<!-- Skip showing the character name field (already did it manually) -->
+	<xsl:template match="all/general/option[@name='name']" />
 
 </xsl:stylesheet>

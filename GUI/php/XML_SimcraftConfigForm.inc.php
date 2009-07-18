@@ -59,9 +59,6 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 */
 	protected function build_simulation_config_options()
 	{ 
-		// Allow access to the global definition arrays (from defines.inc.php)
-		global $ARR_SUPPORTED_CLASSES, $ARR_PLAYER_RELATED_SOURCE_FILES;
-	
 		// The options XML root
 		$xml = new XML_SimcraftConfigForm('<options />');
 		
@@ -73,55 +70,17 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 				unset($arr_source_files[$index]);
 			}
 		}
+				
 		
-		
-		// Add the options for all-classes
-		$xml_player_options = $xml->addChild('supported_classes');	
-		$xml_all_class_options = $xml_player_options->addChild('class');
-		$xml_all_class_options->addAttribute('class', 'all_classes');
-		$xml_all_class_options->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', 'all_classes'))));
-		foreach($ARR_PLAYER_RELATED_SOURCE_FILES as $file_name ) {
-			
-			// Remove this class's file from the array of source file names - it's already been handled
-			unset($arr_source_files[array_search($file_name, $arr_source_files)]);
-	
-			// Fetch the options for this class type
-			if( !empty($file_name) ) {
-				$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $file_name );
-				$xml_all_class_options->add_options_from_array( $arr_options );
-			}		
-		}
-		
-		
-		// Add the options from the individual character-class files
-		foreach($ARR_SUPPORTED_CLASSES as $class_name => $class_array ) {
-			
-			// Remove this class's file from the array of source file names - it's already been handled
-			unset($arr_source_files[array_search($class_array['source_file'], $arr_source_files)]);
-			
-			// Add the class element, with a class and label attribute
-			$new_class = $xml_player_options->addChild('class');
-			$new_class->addAttribute('class', $class_name);
-			$new_class->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', $class_name))));
-	
-			// Fetch the options for this class type
-			if( !empty($class_array['source_file']) ) {
-				$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $class_array['source_file'] );
-				$new_class->add_options_from_array( $arr_options );
-			}		
-		}
-		
-		
-		// Add the global simulation options (the options in the files that weren't handled above)
-		$xml_global_options = $xml->addChild('global_options');
+		// Loop over the source files, and add the options	
 		foreach( $arr_source_files as $file_name ) {		
+				
+			// Retrieve the array of options from the source file 
+			$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $file_name );
 			
-			// Fetch the options for this class type
-			if( !empty($file_name) ) {
-				$arr_options = parse_source_file_for_options( get_valid_path(SIMULATIONCRAFT_PATH) . $file_name );
-				$xml_global_options->add_options_from_array( $arr_options );
-			}		
-		}
+			// Add the options to the XML
+			$xml->add_options_from_array( $arr_options );
+		}		
 			
 		// Add the additional hand-tweaked options
 		$xml->add_hand_edited_options();
@@ -142,36 +101,32 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 */
 	protected function add_hand_edited_options( )
 	{
-		// Reach in and get the global-options tag
-		$global_options = $this->global_options ? $this->global_options : $this->addChild('global_options');
-		
-		// Get the all-classes options tag
-		$all_classes = $this->supported_classes->fetch_single_XML_xpath("class[@class='all_classes']");
-	
 		// Add the talent meta-parameter
-		$all_classes->add_options_from_array(array(array(
+		$this->add_options_from_array(array(array(
 					'name' => 'talents',
 					'type' => 'OPT_STRING',
-					'tag' => '',
-					'file' => 'meta_options'
+					'optdoc_loc' => 'player/all/general',
+					'optdoc_title' => 'General',
+					'file' => 'meta_options'					
 			)));
 	
 		// Add the optimal-raid meta-parameter
-		$global_options->add_options_from_array(array(array(
+		$this->add_options_from_array(array(array(
 					'name' => 'optimal_raid',
 					'type' => 'OPT_BOOL',
-					'tag' => '',
-					'file' => 'meta_options'
+					'optdoc_loc' => 'global/general',
+					'optdoc_title' => 'General',
+					'file' => 'meta_options'					
 			)));
 	
 		// Add the patch meta-parameter
-		$global_options->add_options_from_array(array(array(
+		$this->add_options_from_array(array(array(
 					'name' => 'patch',
 					'type' => 'OPT_STRING',
-					'tag' => '',
+					'optdoc_loc' => 'global/general',
+					'optdoc_title' => 'General',
 					'file' => 'meta_options'
 			)));
-			
 	}
 	
 	/**
@@ -213,26 +168,45 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 				$interpreted_type = 'float';
 			}
 			
-			// Do not display options that are not of the above types
+			// If the type is not recognized, something is wrong
 			else {
+				error_log("The option {$arr_option['name']} from file ".basename($arr_option['file'])." has an unknown type ({$arr_option['type']})", E_USER_NOTICE);
 				continue;
 			}
 	
 			
+			// Parse the opt-doc loc, if it exists
+			$arr_optdoc_loc = false;
+			if( !empty($arr_option['optdoc_loc']) ) {
+				$arr_optdoc_loc = explode( '/', $arr_option['optdoc_loc'] );
+			}
+			
+			// Build the insertion tree, from the option doc
+			$target_xml = $this;
+			while( $arr_optdoc_loc!==false && $optdoc_element = array_shift($arr_optdoc_loc)) {
+				if( $target_xml->$optdoc_element ) {
+					$target_xml = $target_xml->$optdoc_element;
+				}
+				else {
+					$target_xml = $target_xml->addChild($optdoc_element);
+					$target_xml->addAttribute('title', ucwords(strtolower(str_replace('_', ' ', $optdoc_element))) );
+				}
+			}
+			
+			// Set the parent optdoc title, if necessary
+			if( !empty($arr_option['optdoc_title'])  ) {
+				$target_xml['title'] = $arr_option['optdoc_title'];
+			}
+			
 			// Add the option to the xml object given		
-			$xml_new = $this->addChild('option');
+			$xml_new = $target_xml->addChild('option');
 			$xml_new->addAttribute('name', $arr_option['name']);
 			$xml_new->addAttribute('label', ucwords(strtolower(str_replace('_', ' ', $arr_option['name']))) );
+			$xml_new->addAttribute('value', '');
 			$xml_new->addAttribute('type', $interpreted_type);
+			//$xml_new->addAttribute('optdoc_loc', $arr_option['optdoc_loc']);
 			$xml_new->addAttribute('cpp_type', $arr_option['type']);
-			$xml_new->addAttribute('file', basename($arr_option['file']) );
-			if( !empty($arr_option['optdoc_loc']) ) {
-				$xml_new->addAttribute('optdoc_loc', $arr_option['optdoc_loc']);
-			}
-			if( !empty($arr_option['optdoc_title']) ) {
-				$xml_new->addAttribute('optdoc_title', $arr_option['optdoc_title']);
-			}
-			$xml_new->addAttribute('value', '');		
+			$xml_new->addAttribute('cpp_file', basename($arr_option['file']) );
 		}
 	}
 	
@@ -242,42 +216,40 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 */
 	public function set_default_option_values( )
 	{
-		// Reach in and get the global-options tag
-		$global_options = $this->options->global_options ? $this->options->global_options : $this->options->addChild('global_options');
-		
-		// Get the all-classes options tag
-		$all_classes = $this->options->supported_classes->fetch_single_XML_xpath("class[@class='all_classes']");
-		
-		// Most of these were lifted from the Globals_T8 file
-		$global_options->set_single_xml_xpath_property("option[@name='optimal_raid']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='smooth_rng']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='normalize_scale_factors']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='threads']", 'value', 2);
-		$global_options->set_single_xml_xpath_property("option[@name='queue_lag']", 'value', 0.075);
-		$global_options->set_single_xml_xpath_property("option[@name='gcd_lag']", 'value', 0.150);
-		$global_options->set_single_xml_xpath_property("option[@name='channel_lag']", 'value', 0.250);
-		$global_options->set_single_xml_xpath_property("option[@name='travel_variance']", 'value', 0.075);
-		$global_options->set_single_xml_xpath_property("option[@name='target_level']", 'value', 83);
-		$global_options->set_single_xml_xpath_property("option[@name='max_time']", 'value', 300);
-		$global_options->set_single_xml_xpath_property("option[@name='iterations']", 'value', 1000);
-		$global_options->set_single_xml_xpath_property("option[@name='infinite_mana']", 'value', 0);
-		$global_options->set_single_xml_xpath_property("option[@name='regen_periodicity']", 'value', 1.0);
-		$global_options->set_single_xml_xpath_property("option[@name='target_armor']", 'value', 10643);
-		$global_options->set_single_xml_xpath_property("option[@name='target_race']", 'value', 'humanoid');
-		$global_options->set_single_xml_xpath_property("option[@name='heroic_presence']", 'value', 0);
-		$global_options->set_single_xml_xpath_property("option[@name='faerie_fire']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='mangle']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='battle_shout']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='sunder_armor']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='thunder_clap']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='blessing_of_kings']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='blessing_of_wisdom']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='blessing_of_might']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='judgement_of_wisdom']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='sanctified_retribution']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='swift_retribution']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='crypt_fever']", 'value', 1);
-		$global_options->set_single_xml_xpath_property("option[@name='calculate_scale_factors']", 'value', 1);
+		if( $this->options->global ) {
+			$global_options = $this->options->global;
+			
+			// Most of these were lifted from the Globals_T8 file
+			$global_options->set_single_xml_xpath_property(".//option[@name='optimal_raid']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='smooth_rng']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='normalize_scale_factors']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='threads']", 'value', 2);
+			$global_options->set_single_xml_xpath_property(".//option[@name='queue_lag']", 'value', 0.075);
+			$global_options->set_single_xml_xpath_property(".//option[@name='gcd_lag']", 'value', 0.150);
+			$global_options->set_single_xml_xpath_property(".//option[@name='channel_lag']", 'value', 0.250);
+			$global_options->set_single_xml_xpath_property(".//option[@name='travel_variance']", 'value', 0.075);
+			$global_options->set_single_xml_xpath_property(".//option[@name='target_level']", 'value', 83);
+			$global_options->set_single_xml_xpath_property(".//option[@name='max_time']", 'value', 300);
+			$global_options->set_single_xml_xpath_property(".//option[@name='iterations']", 'value', 1000);
+			$global_options->set_single_xml_xpath_property(".//option[@name='infinite_mana']", 'value', 0);
+			$global_options->set_single_xml_xpath_property(".//option[@name='regen_periodicity']", 'value', 1.0);
+			$global_options->set_single_xml_xpath_property(".//option[@name='target_armor']", 'value', 10643);
+			$global_options->set_single_xml_xpath_property(".//option[@name='target_race']", 'value', 'humanoid');
+			$global_options->set_single_xml_xpath_property(".//option[@name='heroic_presence']", 'value', 0);
+			$global_options->set_single_xml_xpath_property(".//option[@name='faerie_fire']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='mangle']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='battle_shout']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='sunder_armor']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='thunder_clap']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='blessing_of_kings']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='blessing_of_wisdom']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='blessing_of_might']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='judgement_of_wisdom']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='sanctified_retribution']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='swift_retribution']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='crypt_fever']", 'value', 1);
+			$global_options->set_single_xml_xpath_property(".//option[@name='calculate_scale_factors']", 'value', 1);
+		}
 	}
 			
 	/**
@@ -287,13 +259,10 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 */
 	public function set_option_values_from_array( array $arr_options )
 	{
-		// Reach in and get the global-options tag (or create it if it isn't present)
-		$global_options = $this->options->global_options ? $this->options->global_options : $this->options->addChild('global_options');
-	
 		// Append each of the globals values that was present in the array
-		if( is_array($arr_options['globals']) ) {
+		if( $this->options->global && is_array($arr_options['globals']) ) {
 			foreach($arr_options['globals'] as $index => $value ) {
-				$target = $global_options->xpath("option[@name='$index']");
+				$target = $this->options->global->xpath(".//option[@name='$index']");
 				$target[0]['value'] = $value;
 			}
 		}
@@ -351,7 +320,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 			$field_value = trim($arr_match[2]);
 			
 			// If this option is the name of one of the supported classes, then a new player is beginning
-			if( in_array($field_name, array_keys($ARR_SUPPORTED_CLASSES)) ) {
+			if( in_array($field_name, $ARR_SUPPORTED_CLASSES) ) {
 				
 				// Commit the previous collection of player options to xml, if any existed
 				if(!empty($arr_options['raiders'])) {
@@ -382,15 +351,17 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 			}
 		}
 	
+		
 		// Commit the last player that wasn't committed above
 		if(!empty($arr_options['raiders'])) {
 			$this->add_raider_from_array($arr_options['raiders']);
 		}
 	
+		
 		// Commit the global values
 		if( $just_raiders !== true ) {
 			foreach($arr_options['globals'] as $field_name => $field_value ) {
-					$xpath_result = $this->xpath("//options/global_options/option[@name='$field_name']");
+					$xpath_result = $this->xpath("//options/global//option[@name='$field_name']");
 					if( is_array($xpath_result) && count($xpath_result) > 0 ) {
 						$xpath_result[0]['value'] = $field_value;
 					}		
@@ -466,7 +437,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		global $ARR_SUPPORTED_CLASSES;
 		
 		// Make sure the class name is an allowed class
-		if( !in_array($arr_option_values['class'], array_keys($ARR_SUPPORTED_CLASSES)) ) {
+		if( !in_array($arr_option_values['class'], $ARR_SUPPORTED_CLASSES) ) {
 			throw new Exception("The supplied class name ({$arr_option_values['class']}) is not an allowed class.");
 		}
 			
@@ -474,7 +445,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		$xml_raid_content = $this->raid_content ? $this->raid_content : $this->addChild('raid_content');
 		
 		// Add the player tag
-		$new_raider = $xml_raid_content->addChild('player'); 
+		$new_raider = $xml_raid_content->addChild($arr_option_values['class']); 
 		
 		// Add any options this raider has
 		foreach($arr_option_values as $option_name => $option_value) {

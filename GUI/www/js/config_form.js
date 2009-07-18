@@ -12,7 +12,7 @@ $( function() {
 	// Set the last insert number to start after the existing raider records
 	last_insert_number = $('ul#raid_members li.raider').size();
 	
-	// Form submit buttons should all remove the form target, except simulate
+	// Form submit buttons should all remove the form target, except simulate which submits to a popup
 	$("form#config_form input[type='submit']").click( function() {
 		$("form#config_form").removeAttr('target');
 		return true;
@@ -47,7 +47,7 @@ $( function() {
 	// Reset the event handlers
 	reset_list_elements();
 	
-	// Error box close button
+	// Set up all the error box close button
 	$('div#error_report div.close_button').click( function() { $(this).parent().hide(); });
 });
 
@@ -102,23 +102,57 @@ function reset_list_elements()
 	
 	
 	// Reset the event handlers for the close buttons
-	$('ul#raid_members li.raider div.close_button').unbind('click');
-	$('ul#raid_members li.raider div.close_button').click( function() {
+	$('ul#raid_members li.raider div.close_button').unbind('click').click( function() {
 		$(this).parent('li.raider').remove(); 
 	});
 	
 	
-	/* Allow folded fieldsets to toggle their folded-ness on click of the legend */
-	$('fieldset.foldable legend').unbind('click');
-	$('fieldset.foldable legend').click( function() {
-		$(this).parent().toggleClass('folded');
+	// Option Menus
+	$('ul.menu li').unbind('click').click( function() {
+		
+		// Pull this menu element id
+		var this_id = $(this).attr('id').substring('menu_item_'.length);
+
+		// Show any submenus associated with this menu
+		$('ul.menu.child_menu', $(this).parents('div.content_list')).hide();
+		$('ul.menu.child_of_'+this_id, $(this).parents('div.content_list')).show();
+
+		// Make the button (and any parents) look selected
+		$('ul.menu li.selected', $(this).parents('div.content_list')).removeClass('selected');
+		var target_element = $(this);
+		while( target_element ) {
+			
+			// Make this element selected and show the menu list it's in
+			target_element.addClass('selected').parent().show();
+			
+			// If this element's menu is a sub-menu of another menu element, make the appropriate parent selected as well
+			if( target_element.parent().hasClass('child_menu') ) {
+				var this_parent_class = target_element.parent().attr('class').split(' ')[2].substring('child_of_'.length);
+				target_element = $('ul.menu li#menu_item_'+this_parent_class, target_element.parents('div.content_list'));
+				if(target_element.length == 0) {
+					target_element = false;
+				}
+			}
+			else {
+				target_element = false;
+			}
+		}
+		
+		// If this menu element doesn't have a pane associated with it, but it has children, select the first one
+		if( $('div#menu_pane_'+this_id, $(this).parents('div.content_list')).length == 0 ) {
+			$('ul.menu.child_of_'+this_id+':first li:first-child', $(this).parents('div.content_list')).click();
+		}
+		
+		// Show the pane associated with this menu item
+		else {
+			$('div.option_pane', $(this).parents('div.content_list')).hide();
+			$('div#menu_pane_'+this_id, $(this).parents('div.content_list')).show();
+		}
 	});
+	
 
-
-	// NOTE: this button is commented out in the XSL - this function doesn't work well yet (field value copy doesnt work)
 	// define the 'clone' operation
-	$('ul#raid_members li.raider div.clone_button').unbind('click');
-	$('ul#raid_members li.raider div.clone_button').click( function() {
+	$('ul#raid_members li.raider div.clone_button').unbind('click').click( function() {
 		
 		// Determine the class of this element
 		var class_name = $('input.field_class', $(this).parent()).val();

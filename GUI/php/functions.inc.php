@@ -342,51 +342,61 @@ function get_arr_wow_servers( )
 		$arr_return = array();
 		foreach($realm_list as $list_name => $url) {
 			
-			// create curl resource
-			$ch = curl_init();
-			
-			// set url
-			curl_setopt($ch, CURLOPT_URL, $url);
-			
-			// return the transfer as a string
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			
-			// Pretend to be a browser that understands XML
-			curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
-		
-			// $output contains the output string
-			$response_xml = curl_exec($ch);
-			
-			// close curl resource to free up system resources
-			curl_close($ch);
-			
-			// Create an XML object of the response (cleaning up the badly formed XML...)
-			$xml = new SimpleXMLElement_XSL(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
-			
-			// Assemble the array
-			$arr_return[$list_name] = array();
-			foreach($xml->xpath('channel/item') as $realm) {
+			try {
 				
-				// The EU RSS is annoyingly different
-				if( $realm->title && $realm->title=='Alert') {
-					continue;
-				}
+				// create curl resource
+				$ch = curl_init();
 				
-				// Pull out the realm info
-				$realm_name = (string) $realm->link;
+				// set url
+				curl_setopt($ch, CURLOPT_URL, $url);
+				
+				// return the transfer as a string
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				
+				// Pretend to be a browser that understands XML
+				curl_setopt($ch, CURLOPT_USERAGENT,  "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.2) Gecko/20070319 Firefox/2.0.0.3");
+			
+				// $output contains the output string
+				$response_xml = curl_exec($ch);
+				
+				// close curl resource to free up system resources
+				curl_close($ch);
 
-				// Clean up the realm name
-				if( strpos($realm_name, 'r=')!==false ) {
-					$realm_name = substr( $realm_name, strpos($realm_name, 'r=')+2 );
+				// Test the response
+				if($response_xml === false) {
+					throw new Exception("Failure to load $list_name WoW server list.");
 				}
-				else if( strpos($realm_name, '#')!==false ) {
-					$realm_name = substr( $realm_name, strpos($realm_name, '#')+1 );
-				}
+								
+				// Create an XML object of the response (cleaning up the badly formed XML...)
+				$xml = new SimpleXMLElement_XSL(preg_replace(array('/<\?.*\?>/', '/&nbsp;/'), array('', '&#160;'), $response_xml) );
 				
-				// Add the realm to the list
-				$arr_return[$list_name][] = array( 
-						'name' => $realm_name
-					);
+				// Assemble the array
+				$arr_return[$list_name] = array();
+				foreach($xml->xpath('channel/item') as $realm) {
+					
+					// The EU RSS is annoyingly different
+					if( $realm->title && $realm->title=='Alert') {
+						continue;
+					}
+					
+					// Pull out the realm info
+					$realm_name = (string) $realm->link;
+	
+					// Clean up the realm name
+					if( strpos($realm_name, 'r=')!==false ) {
+						$realm_name = substr( $realm_name, strpos($realm_name, 'r=')+2 );
+					}
+					else if( strpos($realm_name, '#')!==false ) {
+						$realm_name = substr( $realm_name, strpos($realm_name, '#')+1 );
+					}
+					
+					// Add the realm to the list
+					$arr_return[$list_name][] = array( 
+							'name' => $realm_name
+						);
+				}
+			}
+			catch(Exception $e) {
 			}
 		}
 		
@@ -462,6 +472,9 @@ function custom_exception_handler( $exception )
 	// Log the exception details in the log file
 	error_log($exception);
 
+	// Send the page content, with an error header
+	header('HTTP/1.1 500 Internal Server Error');
+	
 	// Attempt to recover the form contents, as much as possible
 	try {
 
@@ -483,18 +496,21 @@ function custom_exception_handler( $exception )
 		else {
 			$xml->set_default_option_values();
 		}
+
+		$xml->release_to_browser('xsl/config_form.xsl');
+		exit(1);
 	}
 	
 	// If the attempt to recover the form contents failed, add an additional error message for the user - hey, we tried
 	catch( Exception $e) {
-		$exceptions = $xml->exceptions ? $xml->exceptions : $xml->addChild('exceptions');
-		$xml_exc = $exceptions->addChild('exception');
-		$xml_exc->addAttribute('message', 'An attempt was made to recover the form contents, but failed.' );
+		if( is_object($xml) ) {
+			$exceptions = $xml->exceptions ? $xml->exceptions : $xml->addChild('exceptions');
+			$xml_exc = $exceptions->addChild('exception');
+			$xml_exc->addAttribute('message', 'An attempt was made to recover the form contents, but failed.' );
+			$xml->release_to_browser('xsl/config_form.xsl');
+		}
+		exit(1);
 	}
-		
-	// Send the page content, with an error header
-	header('HTTP/1.1 500 Internal Server Error');
-	$xml->release_to_browser('xsl/config_form.xsl');
-	exit(1);
+	
 }
 ?>

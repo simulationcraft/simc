@@ -83,21 +83,65 @@ ul.subscript_labels li.checkbox {
 
 
 /* Foldable fieldsets get some styling */
-fieldset.folded ul {
+/*fieldset.folded ul {
 	display: none;
 	visibility: hidden;
-}
+}*/
 
-fieldset.foldable legend {
+/*fieldset.foldable legend {
 	padding-left: 25px;
 	margin-bottom: 3px;
 	background: url(../images/messagebox_critical.png) no-repeat 0 0;
 	cursor: pointer;
-}
+}*/
 
-fieldset.foldable.folded legend {
+/*fieldset.foldable.folded legend {
 	background: url(../images/edit_add.png) no-repeat 0 0;
-}
+}*/
+
+	/* === OPTION MENUS === */
+	ul.menu {
+		vertical-align: top;
+	}
+
+	/* Make sub-menus invisible at first */
+	ul.menu.child_menu {
+		display: none;
+	}
+
+		/* Make the list elements stack up next to each other */
+		ul.menu li {
+			display: inline-block;
+			vertical-align: top;
+			border: 1px solid gray;
+			background-color: #444444;
+		}
+	
+		/* Active menu elements */
+		ul.menu li.selected {
+			background-color: #FF945C;
+			color: black;
+		}
+
+			/* Content strings of the menu lists */
+			ul.menu li span {
+				display: block;
+				margin: 5px 15px;
+				font-size: 0.8em;
+			}
+
+			ul.menu.child_menu li span{
+				font-size: 0.7em;
+			}
+
+	/* Make the panes associated with the menus hidden by default */
+	div.option_pane {
+		display: none;
+	}
+		
+		div.option_pane ul {
+			margin-top: 10px;
+		}
 
 
 
@@ -401,56 +445,60 @@ div#config_content div.page_panel {
 			font-weight: bold;
 			text-decoration: underline;
 			border: 1px solid black;
-			background-color: transparent;
+			background-color: black;
+			color: inherit;
+			-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
+			filter: alpha(opacity=75);
+			opacity: 0.75;
 		}
 		
 		/* These colors were lifted from http://www.wowwiki.com/Class_colors */
-		ul#raid_members li.raider div.member_class.death_knight, ul#raid_members li.raider div.member_class.death_knight input.field_name {
+		ul#raid_members li.raider div.member_class.death_knight {
 			background-color: #9482C9;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.druid, ul#raid_members li.raider div.member_class.druid input.field_name {
+		ul#raid_members li.raider div.member_class.druid {
 			background-color: #FF7D0A;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.hunter, ul#raid_members li.raider div.member_class.hunter input.field_name {
+		ul#raid_members li.raider div.member_class.hunter {
 			background-color: #ABD473;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.mage, ul#raid_members li.raider div.member_class.mage input.field_name {
+		ul#raid_members li.raider div.member_class.mage {
 			background-color: #69CCF0;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.paladin, ul#raid_members li.raider div.member_class.paladin input.field_name {
+		ul#raid_members li.raider div.member_class.paladin {
 			background-color: #F58CBA;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.priest, ul#raid_members li.raider div.member_class.priest input.field_name {
+		ul#raid_members li.raider div.member_class.priest {
 			background-color: #FFFFFF;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.rogue, ul#raid_members li.raider div.member_class.rogue input.field_name {
+		ul#raid_members li.raider div.member_class.rogue {
 			background-color: #FFF569;
 			color: #444444;
 		}
 		
-		ul#raid_members li.raider div.member_class.shaman, ul#raid_members li.raider div.member_class.shaman input.field_name {
+		ul#raid_members li.raider div.member_class.shaman {
 			background-color: #2459FF;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.warlock, ul#raid_members li.raider div.member_class.warlock input.field_name {
+		ul#raid_members li.raider div.member_class.warlock {
 			background-color: #9482C9;
 			color: white;
 		}
 		
-		ul#raid_members li.raider div.member_class.warrior, ul#raid_members li.raider div.member_class.warrior input.field_name {
+		ul#raid_members li.raider div.member_class.warrior {
 			background-color: #C79C6E;
 			color: white;
 		}

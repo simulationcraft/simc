@@ -10,7 +10,7 @@ define('USE_CACHE_WOW_DATA', true);
  * Should cached copies of the configuration data from simcraft source code be used?
  * @var boolean
  */
-define('USE_CACHE_CONFIG_OPTIONS', true);
+define('USE_CACHE_CONFIG_OPTIONS', false);
 
 /**
  * Should the simulation be allowed to run?
@@ -38,31 +38,9 @@ define('SIMULATIONCRAFT_PATH', '../../');
 
 
 /**
- * This array describes the currently-supported classes, and which C++ files contain their unique options  
+ * This array describes the currently-supported classes  
  * 
  * @var array
  */
-$ARR_SUPPORTED_CLASSES = array(
-		'death_knight' 		=> array('source_file'=>'sc_death_knight.cpp' ),
-		'druid' 					=> array('source_file'=>'sc_druid.cpp' ),
-		'hunter' 					=> array('source_file'=>'sc_hunter.cpp' ),
-		'mage' 						=> array('source_file'=>'sc_mage.cpp' ),
-		'paladin' 				=> array('source_file'=>'sc_paladin.cpp' ),
-		'priest' 					=> array('source_file'=>'sc_priest.cpp' ),
-		'rogue' 					=> array('source_file'=>'sc_rogue.cpp' ),
-		'shaman' 					=> array('source_file'=>'sc_shaman.cpp' ),
-		'warlock' 				=> array('source_file'=>'sc_warlock.cpp' ),
-		'warrior' 				=> array('source_file'=>'sc_warrior.cpp' )
-	);
-
-	
-/**
- * This array lists C++ source files which are considered to contain additional class-independent player options
- * @var array
- */
-$ARR_PLAYER_RELATED_SOURCE_FILES = array(
-		'sc_player.cpp',
-		'sc_enchant.cpp',
-		'sc_unique_gear.cpp'
-	);
+$ARR_SUPPORTED_CLASSES = array(	'death_knight', 'druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior' );
 ?>
