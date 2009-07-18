@@ -562,7 +562,4 @@
 		</input>					
 	</xsl:template> 
 
-	<!-- Skip showing the character name field (already did it manually) -->
-	<xsl:template match="all/general/option[@name='name']" />
-
 </xsl:stylesheet>

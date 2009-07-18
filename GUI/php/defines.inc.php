@@ -10,7 +10,7 @@ define('USE_CACHE_WOW_DATA', true);
  * Should cached copies of the configuration data from simcraft source code be used?
  * @var boolean
  */
-define('USE_CACHE_CONFIG_OPTIONS', false);
+define('USE_CACHE_CONFIG_OPTIONS', true);
 
 /**
  * Should the simulation be allowed to run?

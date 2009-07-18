@@ -152,7 +152,7 @@ function generate_simcraft_command( array $arr_options )
 	}
 	
 	// Add the output directives
-	$return_string .= " xml={OUTPUT_FILENAME}";
+	$return_string .= " max_time=300 iterations=1000 threads=1 xml={OUTPUT_FILENAME}";
 		
 	// Return the output
 	return $return_string;

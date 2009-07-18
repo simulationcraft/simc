@@ -83,7 +83,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 		}		
 			
 		// Add the additional hand-tweaked options
-		$xml->add_hand_edited_options();
+		$xml->hand_edit_options();
 		
 		
 		// return the generated XML
@@ -99,7 +99,7 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 	 * A lot of these options were found in sc_option.cpp, starting around line 306, revision 2186
 	 * @return unknown_type
 	 */
-	protected function add_hand_edited_options( )
+	protected function hand_edit_options( )
 	{
 		// Add the talent meta-parameter
 		$this->add_options_from_array(array(array(
@@ -127,6 +127,23 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 					'optdoc_title' => 'General',
 					'file' => 'meta_options'
 			)));
+			
+			
+		// Remove some fields that shouldn't be sent to the UI
+		$items = $this->xpath('player/all/general/option[@name="name" or @name="quiet" or @name="sleeping" or @name="id" or @name="save"]');
+		foreach($items as $item) {
+			$dom = dom_import_simplexml($item);
+	    $dom->parentNode->removeChild($dom);
+		}
+    
+    $items = $this->xpath('global/general/option[@name="threads" or @name="max_time" or @name="iterations"]');
+		foreach($items as $item) {
+			$dom = dom_import_simplexml($item);
+	    $dom->parentNode->removeChild($dom);
+		}
+		
+
+		
 	}
 	
 	/**
@@ -223,14 +240,14 @@ class XML_SimcraftConfigForm extends SimpleXMLElement_XSL
 			$global_options->set_single_xml_xpath_property(".//option[@name='optimal_raid']", 'value', 1);
 			$global_options->set_single_xml_xpath_property(".//option[@name='smooth_rng']", 'value', 1);
 			$global_options->set_single_xml_xpath_property(".//option[@name='normalize_scale_factors']", 'value', 1);
-			$global_options->set_single_xml_xpath_property(".//option[@name='threads']", 'value', 2);
+			//$global_options->set_single_xml_xpath_property(".//option[@name='threads']", 'value', 2);
 			$global_options->set_single_xml_xpath_property(".//option[@name='queue_lag']", 'value', 0.075);
 			$global_options->set_single_xml_xpath_property(".//option[@name='gcd_lag']", 'value', 0.150);
 			$global_options->set_single_xml_xpath_property(".//option[@name='channel_lag']", 'value', 0.250);
 			$global_options->set_single_xml_xpath_property(".//option[@name='travel_variance']", 'value', 0.075);
 			$global_options->set_single_xml_xpath_property(".//option[@name='target_level']", 'value', 83);
-			$global_options->set_single_xml_xpath_property(".//option[@name='max_time']", 'value', 300);
-			$global_options->set_single_xml_xpath_property(".//option[@name='iterations']", 'value', 1000);
+			//$global_options->set_single_xml_xpath_property(".//option[@name='max_time']", 'value', 300);
+			//$global_options->set_single_xml_xpath_property(".//option[@name='iterations']", 'value', 1000);
 			$global_options->set_single_xml_xpath_property(".//option[@name='infinite_mana']", 'value', 0);
 			$global_options->set_single_xml_xpath_property(".//option[@name='regen_periodicity']", 'value', 1.0);
 			$global_options->set_single_xml_xpath_property(".//option[@name='target_armor']", 'value', 10643);
