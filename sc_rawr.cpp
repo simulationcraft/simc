@@ -14,41 +14,39 @@ static const char* translate_glyph_name( player_t* p,
 {
   switch ( p -> type )
   {
-#if 0
   case DRUID:  
     switch( index )
     {
-    case 0: return "berserk";
-    case 0: return "focus";
-    case 0: return "innervate";
-    case 0: return "insect_swarm";
-    case 0: return "mangle";
-    case 0: return "moonfire";
-    case 0: return "rip";
-    case 0: return "savage_roar";
-    case 0: return "shred";
-    case 0: return "starfire";
-    case 0: return "starfall";
+    case  0: return "mangle";
+    case  1: return "shred";
+    case  2: return "rip";
+    case  3: return "berserk";
+    case  4: return "savage_roar";
+    case  8: return "focus";
+    case  9: return "insect_swarm";
+    case 11: return "moonfire";
+    case 12: return "starfall";
+    case 13: return "starfire";
+    case 16: return "innervate";
     default: return 0;
     }
   case HUNTER: 
     switch( index )
     {
-    case 0: return "aimed_shot";
-    case 0: return "aspect_of_the_viper";
-    case 0: return "bestial_wrath";
-    case 0: return "chimera_shot";
-    case 0: return "explosive_shot";
-    case 0: return "hunters_mark";
-    case 0: return "improved_aspect_of_the_hawk";
-    case 0: return "kill_shot";
-    case 0: return "rapid_fire";
-    case 0: return "serpent_sting";
-    case 0: return "steady_shot";
-    case 0: return "trueshot_aura";
+    case  0: return "aimed_shot";
+    case  2: return "aspect_of_the_viper";
+    case  3: return "bestial_wrath";
+    case  4: return "chimera_shot";
+    case  7: return "explosive_shot";
+    case 12: return "hunters_mark";
+    case 14: return "kill_shot";
+    case 19: return "rapid_fire";
+    case 24: return "serpent_sting";
+    case 26: return "steady_shot";
+    case 28: return "the_hawk";
+    case 30: return "trueshot_aura";
     default: return 0;
     }
-#endif
   case MAGE:   
     switch( index )
     {
@@ -68,96 +66,93 @@ static const char* translate_glyph_name( player_t* p,
     case 15: return "ice_lance";
     default: return 0;
     }
-#if 0
   case PRIEST: 
     switch( index )
     {
-    case 0: return "shadow_word_death";
-    case 0: return "shadow_word_pain";
-    case 0: return "shadow";
-    case 0: return "penance";
-    case 0: return "dispersion";
+    case  2: return "dispersion";
+    case 16: return "penance";
+    case 22: return "shadow";
+    case 23: return "shadow_word_death";
+    case 24: return "shadow_word_pain";
     default: return 0;
     }
   case ROGUE:  
     switch( index )
     {
-    case 0: return "adrenaline_rush";
-    case 0: return "backstab";
-    case 0: return "blade_flurry";
-    case 0: return "eviscerate";
-    case 0: return "expose_armor";
-    case 0: return "feint";
-    case 0: return "ghostly_strike";
-    case 0: return "hemorrhage";
-    case 0: return "hunger_for_blood";
-    case 0: return "killing_spree";
-    case 0: return "mutilate";
-    case 0: return "preparation";
-    case 0: return "rupture";
-    case 0: return "shadow_dance";
-    case 0: return "sinister_strike";
-    case 0: return "slice_and_dice";
-    case 0: return "tricks_of_the_trade";
-    case 0: return "vigor";
+    case  0: return "backstab";
+    case  1: return "eviscerate";
+    case  2: return "mutilate";
+    case  3: return "hunger_for_blood";
+    case  4: return "killing_spree";
+    case  5: return "vigor";
+    case  7: return "expose_armor";
+    case  8: return "sinister_strike";
+    case  9: return "slice_and_dice";
+    case 10: return "feint";
+    case 11: return "ghostly_strike";
+    case 12: return "rupture";
+    case 13: return "blade_flurry";
+    case 14: return "adrenaline_rush";
+      // NYI by Rawr:
+      // case 0: return "shadow_dance";
+      // case 0: return "tricks_of_the_trade";
+      // case 0: return "preparation";
+      // case 0: return "hemorrhage";
     default: return 0;
     }
   case SHAMAN: 
     switch( index )
     {
-    case 0: return "chain_lightning";
-    case 0: return "elemental_mastery";
-    case 0: return "feral_spirit";
-    case 0: return "flame_shock";
-    case 0: return "flametongue_weapon";
-    case 0: return "lava";
-    case 0: return "lava_lash";
-    case 0: return "lightning_bolt";
-    case 0: return "lightning_shield";
-    case 0: return "mana_tide";
-    case 0: return "shocking";
-    case 0: return "stormstrike";
-    case 0: return "totem_of_wrath";
-    case 0: return "thunderstorm";
-    case 0: return "windfury_weapon";
+    case  1: return "lightning_bolt";
+    case  2: return "shocking";
+    case  3: return "lightning_shield";
+    case  4: return "flame_shock";
+    case  5: return "flametongue_weapon";
+    case  6: return "lava_lash";
+    case 13: return "windfury_weapon";
+    case 14: return "chain_lightning";
+    case 17: return "feral_spirit";
+    case 19: return "mana_tide";
+    case 22: return "stormstrike";
+    case 24: return "totem_of_wrath";
+    case 25: return "elemental_mastery";
+    case 26: return "lava";
+    case 28: return "thunderstorm";
     default: return 0;
     }
   case WARLOCK:
     switch( index )
     { 
-    case 0: return "chaos_bolt";
-    case 0: return "conflagrate";
-    case 0: return "corruption";
-    case 0: return "curse_of_agony";
-    case 0: return "felguard";
-    case 0: return "felhunter";
-    case 0: return "haunt";
-    case 0: return "immolate";
-    case 0: return "imp";
-    case 0: return "incinerate";
-    case 0: return "life_tap";
-    case 0: return "metamorphosis";
-    case 0: return "searing_pain";
-    case 0: return "shadow_bolt";
-    case 0: return "shadow_burn";
-    case 0: return "siphon_life";
-    case 0: return "unstable_affliction";
+    case  0: return "chaos_bolt";
+    case  1: return "conflagrate";
+    case  2: return "corruption";
+    case  3: return "curse_of_agony";
+    case  4: return "felguard";
+    case  5: return "haunt";
+    case  6: return "immolate";
+    case  7: return "imp";
+    case  8: return "incinerate";
+    case  9: return "life_tap";
+    case 10: return "metamorphosis";
+    case 11: return "searing_pain";
+    case 12: return "shadow_bolt";
+    case 13: return "shadow_burn";
+    case 14: return "unstable_affliction";
     default: return 0;
     }
   case WARRIOR:
     switch( index )
     {
-    case 0: return "bladestorm";
-    case 0: return "execution";
-    case 0: return "heroic_strike";
-    case 0: return "mortal_strike";
-    case 0: return "overpower";
-    case 0: return "rending";
-    case 0: return "whirlwind";
-    case 0: return "blocking";
+    case  1: return "bladestorm";
+    case  2: return "blocking";
+    case  7: return "execution";
+    case  9: return "heroic_strike";
+    case 12: return "mortal_strike";
+    case 13: return "overpower";
+    case 15: return "rending";
+    case 26: return "whirlwind";
     default: return 0;
     }
-#endif
 }
 
   return 0;
