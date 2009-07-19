@@ -2732,10 +2732,7 @@ struct chimera_shot_t : public hunter_attack_t
             may_miss = true;
             may_crit = true;
           }
-          // FIXME! Chimera - Serpent Sting does benefit from the Crit talents,
-          // but on the other hand should not doubledip from +x% damage talents
           virtual double total_multiplier() SC_CONST { return 1.0; }
-          virtual void target_debuff( int dmg_type ) {}
         };
 
         if ( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
