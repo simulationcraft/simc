@@ -2721,7 +2721,6 @@ struct chimera_shot_t : public hunter_attack_t
         {
           chimera_serpent_t( player_t* p ) : hunter_attack_t( "chimera_serpent", p, SCHOOL_NATURE, TREE_MARKSMANSHIP )
           {
-            // FIXME! Which talents benefit this attack?
             // FIXME! Which procs can be triggered by this attack?
             may_crit    = true;
             background  = true;
@@ -2733,12 +2732,13 @@ struct chimera_shot_t : public hunter_attack_t
             may_miss = true;
             may_crit = true;
           }
-          virtual void player_buff() {}
+          // FIXME! Chimera - Serpent Sting does benefit from the Crit talents,
+          // but on the other hand should not doubledip from +x% damage talents
+          //virtual void player_buff() {}
           virtual void target_debuff( int dmg_type ) {}
         };
 
         if ( ! p -> active_chimera_serpent ) p -> active_chimera_serpent = new chimera_serpent_t( p );
-
         double base_dd = 0.40 * sting_dmg;
         p -> active_chimera_serpent -> base_dd_min = base_dd;
         p -> active_chimera_serpent -> base_dd_max = base_dd;
