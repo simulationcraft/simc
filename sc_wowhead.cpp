@@ -505,7 +505,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   if( type_str == "death_knight" || type_str == "paladin" )
   {
-    printf( "simcraft: The Death Knight and Paladin modules are still in development, so wowhead downloads are disabled.\n" );
+    printf( "\nsimcraft: The Death Knight and Paladin modules are still in development, so wowhead downloads are disabled.\n" );
     return 0;
   }
 

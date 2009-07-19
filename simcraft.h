@@ -2185,7 +2185,8 @@ struct util_t
   static int parse_weapon_buff_type   ( const std::string& name );
   static int parse_weapon_type        ( const std::string& name );
 
-  static int  translate_class_id( int cid );
+  static const char* class_id_string( int type );
+  static int translate_class_id( int cid );
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
@@ -2262,6 +2263,14 @@ struct mmo_champion_t
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
+};
+
+// Rawr ======================================================================
+
+struct rawr_t
+{
+  static player_t* load_player( sim_t*, FILE* );
+  static player_t* load_player( sim_t*, const std::string& character_xml );
 };
 
 // HTTP Download  ============================================================

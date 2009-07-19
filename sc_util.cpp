@@ -935,6 +935,27 @@ int util_t::parse_stat_type( const std::string& name )
 
 // util_t::translate_class_id ==============================================
 
+const char* util_t::class_id_string( int type )
+{
+  switch( type )
+  {
+  case WARRIOR:      return  "1";
+  case PALADIN:      return  "2";
+  case HUNTER:       return  "3";
+  case ROGUE:        return  "4";
+  case PRIEST:       return  "5";
+  case DEATH_KNIGHT: return  "6";
+  case SHAMAN:       return  "7";
+  case MAGE:         return  "8";
+  case WARLOCK:      return  "9";
+  case DRUID:        return "11";
+  }
+
+  return "0";
+}
+
+// util_t::translate_class_id ==============================================
+
 int util_t::translate_class_id( int cid )
 {
   switch( cid )
@@ -1017,7 +1038,7 @@ int util_t::string_split( const std::string& str,
       std::string& f = format_splits[ i ];
       const char*  s =    str_splits[ i ].c_str();
 
-      if     ( f == "i" ) *( ( int* )         va_arg( vap, int*    ) ) = atoi( s );
+      if      ( f == "i" ) *( ( int* )         va_arg( vap, int*    ) ) = atoi( s );
       else if ( f == "f" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
       else if ( f == "d" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
       else if ( f == "s" ) strcpy( ( char* )   va_arg( vap, char* ), s );

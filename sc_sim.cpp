@@ -262,6 +262,31 @@ static bool parse_wowhead( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+// parse_rawr ===============================================================
+
+static bool parse_rawr( sim_t*             sim,
+			const std::string& name,
+			const std::string& value )
+{
+  if( name == "rawr" ) 
+  {
+    FILE* file = fopen( value.c_str(), "r" );
+    if( ! file )
+    {
+      printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", value.c_str() );
+      return false;
+    }
+    sim -> active_player = rawr_t::load_player( sim, file );
+    fclose( file );
+    if( ! sim -> active_player )
+    {
+      printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
+    }
+  }
+
+  return sim -> active_player != 0;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1293,6 +1318,7 @@ std::vector<option_t>& sim_t::get_options()
       { "armory",                           OPT_FUNC,   (void*) ::parse_armory                        },
       { "guild",                            OPT_FUNC,   (void*) ::parse_armory                        },
       { "wowhead",                          OPT_FUNC,   (void*) ::parse_wowhead                       },
+      { "rawr",                             OPT_FUNC,   (void*) ::parse_rawr                          },
       { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },

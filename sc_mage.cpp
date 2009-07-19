@@ -2684,7 +2684,7 @@ struct frostfire_bolt_t : public mage_spell_t
   int frozen;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), dot_wait( 0 )
+    mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), dot_wait( 0 ), frozen( 0 )
   {
     mage_t* p = player -> cast_mage();
 
