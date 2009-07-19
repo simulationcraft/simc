@@ -115,6 +115,11 @@ ul.subscript_labels li.checkbox {
 			vertical-align: top;
 			border: 1px solid gray;
 			background-color: #444444;
+			cursor: pointer;
+		}
+		
+		ul.menu li:hover {
+			background-color: #777777;
 		}
 	
 		/* Active menu elements */
@@ -130,7 +135,7 @@ ul.subscript_labels li.checkbox {
 				font-size: 0.8em;
 			}
 
-			ul.menu.child_menu li span{
+			ul.menu.child_menu li span {
 				font-size: 0.7em;
 			}
 
