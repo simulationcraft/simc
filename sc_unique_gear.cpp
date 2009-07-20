@@ -332,7 +332,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
   else if( name == "lightning_capacitor"          ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
   else if( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
-  else if( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_3Stack_2.5Cd";
+  else if( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
+  else if( name == "reign_of_the_unliving"        ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
+  else if( name == "reign_of_the_dead"            ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
 
   if( e.empty() ) return false;
 
