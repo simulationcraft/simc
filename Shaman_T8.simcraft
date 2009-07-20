@@ -6,4 +6,9 @@ optimal_raid=1
 
 Shaman_T8_16_55_00.simcraft
 Shaman_T8_57_14_00.simcraft
-Shaman_T8_57_14_00_noToW.simcraft
+Shaman_T8_57_14_00_ToW.simcraft
+
+#wowhead=12997878 name=Shaman_T8_16_55_00     save=Shaman_T8_16_55_00.simcraft     trinket1=comets_trail,id=45609
+#wowhead=12997799 name=Shaman_T8_57_14_00     save=Shaman_T8_57_14_00.simcraft     totem_of_wrath=0 
+#wowhead=12997799 name=Shaman_T8_57_14_00_ToW save=Shaman_T8_57_14_00_ToW.simcraft
+#save_profiles=1

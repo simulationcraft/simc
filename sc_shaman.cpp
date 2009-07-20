@@ -3555,11 +3555,15 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      action_list_str += "/wind_shock/mana_spring_totem";
-      if( talents.totem_of_wrath ) action_list_str += "/wrath_of_air_totem";
-      action_list_str += "/speed_potion";
+      action_list_str += "/wind_shock";
+      action_list_str += "/mana_spring_totem/wrath_of_air_totem";
+      if( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
+      action_list_str += "/water_shield/speed_potion";
       if( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
-      action_list_str += "/flame_shock/lava_burst,flame_shock=1/searing_totem/chain_lightning,lvb_cd<=1.5/lightning_bolt";
+      action_list_str += "/flame_shock/lava_burst,flame_shock=1";
+      if( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
+      action_list_str += "/chain_lightning,lvb_cd<=1.5";
+      action_list_str += "/lightning_bolt";
       if( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
 
