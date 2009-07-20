@@ -1062,7 +1062,14 @@ void action_t::cancel()
   event_t::cancel( execute_event );
   event_t::cancel(    tick_event );
 
-  reset();
+  ticking = 0;
+  current_tick = 0;
+  added_ticks = 0;
+  cooldown_ready = 0;
+  duration_ready = 0;
+  execute_event = 0;
+  tick_event = 0;
+  if ( observer ) *observer = 0;
 }
 
 // action_t::create_expression ====================================================
