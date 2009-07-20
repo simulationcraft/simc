@@ -67,6 +67,7 @@ struct mage_t : public player_t
   proc_t* procs_clearcasting;
   proc_t* procs_deferred_ignite;
   proc_t* procs_hot_streak_pyroblast;
+  proc_t* procs_mana_gem;
 
   // Up-Times
   uptime_t* uptimes_arcane_blast[ 4 ];
@@ -1019,6 +1020,17 @@ static void trigger_brain_freeze( spell_t* s )
     }
     p -> _buffs.brain_freeze = s -> sim -> current_time;
   }
+}
+
+// consume_brain_freeze ============================================================
+
+static void consume_brain_freeze( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if ( p -> _expirations.brain_freeze )
+    if ( ! trigger_tier8_4pc( s ) )
+      event_t::early( p -> _expirations.brain_freeze );
 }
 
 // trigger_hot_streak ==============================================================
@@ -2048,34 +2060,42 @@ struct presence_of_mind_t : public mage_spell_t
 struct fire_ball_t : public mage_spell_t
 {
   int brain_freeze;
+  int frozen;
+  int ghost_charge;
 
   fire_ball_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ), brain_freeze( 0 )
+    mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ), 
+    brain_freeze( 0 ), frozen( 0 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
       {
         { "brain_freeze", OPT_BOOL, &brain_freeze },
+        { "frozen",       OPT_BOOL, &frozen       },
+        { "ghost_charge", OPT_BOOL, &ghost_charge },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
       {
-        { 78, 16, 888, 1132, 0, 0.19 },
-        { 74, 15, 783,  997, 0, 0.19 },
-        { 70, 14, 717,  913, 0, 0.19 },
-        { 66, 13, 633,  805, 0, 425  },
-        { 60, 12, 596,  760, 0, 410  },
-        { 60, 11, 561,  715, 0, 395  },
+        { 78, 16, 888, 1132, 29, 0.19 },
+        { 74, 15, 783,  997, 25, 0.19 },
+        { 70, 14, 717,  913, 23, 0.19 },
+        { 66, 13, 633,  805, 21, 425  },
+        { 62, 12, 596,  760, 19, 410  },
+        { 60, 11, 561,  715, 18, 395  },
         { 0, 0, 0, 0, 0, 0 }
       };
     init_rank( ranks );
 
-    base_execute_time = 3.5;
     may_crit          = true;
+    base_execute_time = 3.5;
     direct_power_mod  = base_execute_time / 3.5;
+    base_tick_time    = 2.0;
+    num_ticks         = 4;
+    tick_power_mod    = 0;
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
@@ -2094,7 +2114,12 @@ struct fire_ball_t : public mage_spell_t
     base_crit += p -> talents.improved_scorch * 0.01;
 
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
-    if ( p -> glyphs.fire_ball ) base_crit += 0.05;
+
+    if ( p -> glyphs.fire_ball ) 
+    {
+      base_crit += 0.05;
+      num_ticks = 0;
+    }
   }
 
   virtual void player_buff()
@@ -2122,17 +2147,15 @@ struct fire_ball_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
+    duration_ready = 0; // Never wait for DoT component to finish.
     if ( result_is_hit() )
     {
       trigger_missile_barrage( this );
       trigger_tier8_2pc( this );
     }
     trigger_hot_streak( this );
-    if ( p -> _expirations.brain_freeze )
-      if ( ! trigger_tier8_4pc( this ) )
-        event_t::early( p -> _expirations.brain_freeze );
+    consume_brain_freeze( this );
   }
 
   virtual bool ready()
@@ -2145,6 +2168,17 @@ struct fire_ball_t : public mage_spell_t
     if ( brain_freeze )
       if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
         return false;
+
+    if ( ghost_charge )
+      if( p -> _buffs.fingers_of_frost_charges != -1 )
+	return false;
+
+    if ( frozen )
+    {
+      if ( ! sim -> time_to_think( p -> _buffs.fingers_of_frost ) &&
+	   ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
+	  return false;
+    }
 
     return true;
   }
@@ -2596,15 +2630,18 @@ struct frost_bolt_t : public mage_spell_t
 struct ice_lance_t : public mage_spell_t
 {
   int frozen;
+  int ghost_charge;
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), frozen( 0 )
+      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), 
+      frozen( 0 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
       {
-        { "frozen", OPT_BOOL, &frozen },
+        { "frozen",       OPT_BOOL, &frozen       },
+        { "ghost_charge", OPT_BOOL, &ghost_charge },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
@@ -2665,6 +2702,10 @@ struct ice_lance_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
+    if ( ghost_charge )
+      if( p -> _buffs.fingers_of_frost_charges != -1 )
+	return false;
+
     if ( frozen )
     {
       if ( ! sim -> time_to_think( p -> _buffs.fingers_of_frost ) &&
@@ -2680,11 +2721,14 @@ struct ice_lance_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
+  int brain_freeze;
   int dot_wait;
   int frozen;
+  int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
-    mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), dot_wait( 0 ), frozen( 0 )
+    mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), 
+    brain_freeze( 0 ), dot_wait( 0 ), frozen( 0 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2692,8 +2736,10 @@ struct frostfire_bolt_t : public mage_spell_t
 
     option_t options[] =
       {
-        { "dot_wait", OPT_BOOL, &dot_wait },
-        { "frozen",   OPT_BOOL, &frozen   },
+        { "brain_freeze", OPT_BOOL, &brain_freeze }, // for theoretical work only
+        { "dot_wait",     OPT_BOOL, &dot_wait     },
+        { "frozen",       OPT_BOOL, &frozen       },
+        { "ghost_charge", OPT_BOOL, &ghost_charge },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
@@ -2710,12 +2756,9 @@ struct frostfire_bolt_t : public mage_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
 
-    if ( dot_wait )
-    {
-      base_tick_time = 3.0;
-      num_ticks      = 3;
-      tick_power_mod = 0;
-    }
+    base_tick_time    = 3.0;
+    num_ticks         = 3;
+    tick_power_mod    = 0;
 
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
@@ -2743,6 +2786,20 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
+  virtual double cost() SC_CONST
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> _buffs.brain_freeze ) return 0;
+    return mage_spell_t::cost();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> _buffs.brain_freeze ) return 0;
+    return mage_spell_t::execute_time();
+  }
+
   virtual void player_buff()
   {
     mage_t* p = player -> cast_mage();
@@ -2755,12 +2812,14 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
+    if ( ! dot_wait ) duration_ready = 0;
     if ( result_is_hit() )
     {
       trigger_missile_barrage( this );
       trigger_tier8_2pc( this );
     }
     trigger_hot_streak( this );
+    consume_brain_freeze( this );
   }
 
   virtual void travel( int    travel_result,
@@ -2773,6 +2832,14 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
+
+    if ( brain_freeze )
+      if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
+        return false;
+
+    if ( ghost_charge )
+      if( p -> _buffs.fingers_of_frost_charges != -1 )
+	return false;
 
     if ( frozen )
     {
@@ -3077,9 +3144,12 @@ struct mana_gem_t : public action_t
   double trigger;
   double min;
   double max;
+  int charges;
+  int used;
 
   mana_gem_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_gem", player ), trigger( 0 ), min( 3330 ), max( 3500 )
+      action_t( ACTION_USE, "mana_gem", player ), 
+      trigger( 0 ), min( 3330 ), max( 3500 ), charges( 3 ), used( 0 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -3088,6 +3158,7 @@ struct mana_gem_t : public action_t
         { "min",     OPT_FLT, &min     },
         { "max",     OPT_FLT, &max     },
         { "trigger", OPT_FLT, &trigger },
+        { "charges", OPT_FLT, &charges },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
@@ -3125,6 +3196,9 @@ struct mana_gem_t : public action_t
 
     if ( sim -> log ) log_t::output( sim, "%s uses Mana Gem", p -> name() );
 
+    p -> procs_mana_gem -> occur();
+    used++;
+
     double gain = sim -> rng -> range( min, max );
 
     if ( p -> set_bonus.tier7_2pc() )
@@ -3157,8 +3231,17 @@ struct mana_gem_t : public action_t
     if ( cooldown_ready > sim -> current_time )
       return false;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] -
-            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+    if ( used >= charges )
+      return false;
+
+    return( ( player -> resource_max    [ RESOURCE_MANA ] -
+	      player -> resource_current[ RESOURCE_MANA ] ) > trigger ); 
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    used = 0;
   }
 };
 
@@ -3420,9 +3503,10 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_clearcasting         = get_proc( "clearcasting" );
-  procs_deferred_ignite      = get_proc( "deferred_ignite" );
-  procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast" );
+  procs_clearcasting         = get_proc( "clearcasting",         sim );
+  procs_deferred_ignite      = get_proc( "deferred_ignite",      sim );
+  procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast", sim );
+  procs_mana_gem             = get_proc( "mana_gem"            , sim );
 }
 
 // mage_t::init_uptimes ====================================================

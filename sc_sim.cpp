@@ -837,7 +837,7 @@ void sim_t::analyze()
       if ( proc -> count > 0 )
       {
         proc -> count /= iterations;
-        proc -> frequency = p -> total_seconds / proc -> count;
+        proc -> frequency = proc -> interval_count > 0 ? ( proc -> interval_sum / proc -> interval_count ) : 0;
       }
     }
 
@@ -998,7 +998,7 @@ void sim_t::merge( sim_t& other_sim )
 
     for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
     {
-      proc -> merge( other_p -> get_proc( proc -> name_str ) );
+      proc -> merge( other_p -> get_proc( proc -> name_str, other_p -> sim ) );
     }
 
     for ( gain_t* gain = p -> gain_list; gain; gain = gain -> next )

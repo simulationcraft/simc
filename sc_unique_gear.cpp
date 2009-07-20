@@ -25,7 +25,7 @@ struct stat_proc_callback_t : public action_callback_t
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance )
     {
-      proc = p -> get_proc( name_str.c_str() );
+      proc = p -> get_proc( name_str.c_str(), sim );
       if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
       rng  = p -> get_rng ( name_str.c_str(), rng_type );
     }
@@ -122,8 +122,8 @@ struct discharge_proc_callback_t : public action_callback_t
 
     spell = new discharge_spell_t( name_str.c_str(), p, min, max, school );
 
-    proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str(), rng_type );  //default is CYCLIC since discharge should not have duration
+    proc = p -> get_proc( name_str.c_str(), sim );
+    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
   }
 
   virtual void reset() { stacks=0; cooldown_ready=0; }

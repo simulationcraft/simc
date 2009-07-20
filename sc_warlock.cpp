@@ -3967,8 +3967,8 @@ void warlock_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_dark_pact     = get_proc( "dark_pact" );
-  procs_life_tap      = get_proc( "life_tap" );
+  procs_dark_pact = get_proc( "dark_pact", sim );
+  procs_life_tap  = get_proc( "life_tap",  sim );
 }
 
 // warlock_t::init_uptimes ===================================================

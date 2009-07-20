@@ -19,9 +19,9 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
 
   judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
   {
-    gain = p -> get_gain( "judgement_of_wisdom" );
-    proc = p -> get_proc( "judgement_of_wisdom" );
-    rng  = p -> get_rng ( "judgement_of_wisdom" );
+    gain = p -> get_gain( "judgement_of_wisdom"      );
+    proc = p -> get_proc( "judgement_of_wisdom", sim );
+    rng  = p -> get_rng ( "judgement_of_wisdom"      );
   }
 
   virtual void trigger( action_t* a )
@@ -961,21 +961,21 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
-  procs.honor_among_thieves_donor = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor" );
-  procs.tier4_2pc = get_proc( "tier4_2pc" );
-  procs.tier4_4pc = get_proc( "tier4_4pc" );
-  procs.tier5_2pc = get_proc( "tier5_2pc" );
-  procs.tier5_4pc = get_proc( "tier5_4pc" );
-  procs.tier6_2pc = get_proc( "tier6_2pc" );
-  procs.tier6_4pc = get_proc( "tier6_4pc" );
-  procs.tier7_2pc = get_proc( "tier7_2pc" );
-  procs.tier7_4pc = get_proc( "tier7_4pc" );
-  procs.tier8_2pc = get_proc( "tier8_2pc" );
-  procs.tier8_4pc = get_proc( "tier8_4pc" );
-  procs.tier9_2pc = get_proc( "tier9_2pc" );
-  procs.tier9_4pc = get_proc( "tier9_4pc" );
-  procs.tier10_2pc = get_proc( "tier10_2pc" );
-  procs.tier10_4pc = get_proc( "tier10_4pc" );
+  procs.honor_among_thieves_donor = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor", sim );
+  procs.tier4_2pc = get_proc( "tier4_2pc",   sim );
+  procs.tier4_4pc = get_proc( "tier4_4pc",   sim );
+  procs.tier5_2pc = get_proc( "tier5_2pc",   sim );
+  procs.tier5_4pc = get_proc( "tier5_4pc",   sim );
+  procs.tier6_2pc = get_proc( "tier6_2pc",   sim );
+  procs.tier6_4pc = get_proc( "tier6_4pc",   sim );
+  procs.tier7_2pc = get_proc( "tier7_2pc",   sim );
+  procs.tier7_4pc = get_proc( "tier7_4pc",   sim );
+  procs.tier8_2pc = get_proc( "tier8_2pc",   sim );
+  procs.tier8_4pc = get_proc( "tier8_4pc",   sim );
+  procs.tier9_2pc = get_proc( "tier9_2pc",   sim );
+  procs.tier9_4pc = get_proc( "tier9_4pc",   sim );
+  procs.tier10_2pc = get_proc( "tier10_2pc", sim );
+  procs.tier10_4pc = get_proc( "tier10_4pc", sim );
 }
 
 // player_t::init_uptimes ==================================================
@@ -2136,7 +2136,8 @@ gain_t* player_t::get_gain( const std::string& name )
 
 // player_t::get_proc =======================================================
 
-proc_t* player_t::get_proc( const std::string& name )
+proc_t* player_t::get_proc( const std::string& name, 
+			    sim_t*             sim )
 {
   proc_t* p=0;
 
@@ -2146,7 +2147,7 @@ proc_t* player_t::get_proc( const std::string& name )
       return p;
   }
 
-  p = new proc_t( name );
+  p = new proc_t( sim, name );
 
   proc_t** tail = &proc_list;
 
@@ -2457,7 +2458,7 @@ struct use_item_t : public action_t
       spell = new discharge_spell_t( item -> name(), player, item -> use.amount, item -> use.school );
     }
 
-    proc = player -> get_proc( item_name );
+    proc = player -> get_proc( item_name, sim );
     
     cooldown = item -> use.cooldown;
     trigger_gcd = 0;

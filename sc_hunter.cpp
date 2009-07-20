@@ -3932,8 +3932,8 @@ void hunter_t::init_gains()
 void hunter_t::init_procs()
 {
   player_t::init_procs();
-  procs_wild_quiver = get_proc( "wild_quiver" );
-  procs_lock_and_load = get_proc( "lock_and_load" );
+  procs_wild_quiver   = get_proc( "wild_quiver",   sim );
+  procs_lock_and_load = get_proc( "lock_and_load", sim );
 }
 
 // hunter_t::init_uptimes ====================================================

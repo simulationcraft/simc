@@ -3480,8 +3480,8 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_lightning_overload = get_proc( "lightning_overload" );
-  procs_windfury           = get_proc( "windfury" );
+  procs_lightning_overload = get_proc( "lightning_overload", sim );
+  procs_windfury           = get_proc( "windfury",           sim );
 }
 
 // shaman_t::init_uptimes ====================================================

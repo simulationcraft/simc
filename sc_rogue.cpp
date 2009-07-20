@@ -3374,13 +3374,13 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points                 = get_proc( "combo_points" );
-  procs_combo_points_wasted          = get_proc( "combo_points_wasted" );
-  procs_deadly_poison                = get_proc( "deadly_poisons" );
-  procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver" );
-  procs_ruthlessness                 = get_proc( "ruthlessness" );
-  procs_seal_fate                    = get_proc( "seal_fate" );
-  procs_sword_specialization         = get_proc( "sword_specialization" );
+  procs_combo_points                 = get_proc( "combo_points",                 sim );
+  procs_combo_points_wasted          = get_proc( "combo_points_wasted",          sim );
+  procs_deadly_poison                = get_proc( "deadly_poisons",               sim );
+  procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver", sim );
+  procs_ruthlessness                 = get_proc( "ruthlessness",                 sim );
+  procs_seal_fate                    = get_proc( "seal_fate",                    sim );
+  procs_sword_specialization         = get_proc( "sword_specialization",         sim );
 }
 
 // rogue_t::init_uptimes =====================================================

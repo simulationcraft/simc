@@ -2712,12 +2712,12 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_bloodsurge           = get_proc( "bloodsurge" );
-  procs_glyph_overpower      = get_proc( "glyph_of_overpower" );
-  procs_sudden_death         = get_proc( "sudden_death" );
-  procs_sword_and_board      = get_proc( "sword_and_board" );
-  procs_sword_specialization = get_proc( "sword_specialization" );
-  procs_taste_for_blood      = get_proc( "taste_for_blood" );
+  procs_bloodsurge           = get_proc( "bloodsurge",           sim );
+  procs_glyph_overpower      = get_proc( "glyph_of_overpower",   sim );
+  procs_sudden_death         = get_proc( "sudden_death",         sim );
+  procs_sword_and_board      = get_proc( "sword_and_board",      sim );
+  procs_sword_specialization = get_proc( "sword_specialization", sim );
+  procs_taste_for_blood      = get_proc( "taste_for_blood",      sim );
 }
 
 // warrior_t::init_uptimes =====================================================

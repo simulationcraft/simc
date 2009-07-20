@@ -1510,7 +1510,7 @@ struct player_t
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
   gain_t*   get_gain  ( const std::string& name );
-  proc_t*   get_proc  ( const std::string& name );
+  proc_t*   get_proc  ( const std::string& name, sim_t* );
   stats_t*  get_stats ( const std::string& name );
   uptime_t* get_uptime( const std::string& name );
   rng_t*    get_rng   ( const std::string& name, int type=RNG_DEFAULT );
@@ -2030,13 +2030,32 @@ struct gain_t
 
 struct proc_t
 {
+  sim_t* sim;
   std::string name_str;
   double count;
   double frequency;
+  double interval_sum;
+  double interval_count;
+  double last_proc;
   proc_t* next;
-  proc_t( const std::string& n ) : name_str( n ), count( 0 ), frequency( 0 ) {}
-  void occur() { count++; }
-  void merge( proc_t* other ) { count += other -> count; }
+  proc_t( sim_t* s, const std::string& n ) : 
+    sim( s ), name_str( n ), count( 0 ), frequency( 0 ), interval_sum( 0 ), interval_count( 0 ), last_proc( 0 ) {}
+  void occur() 
+  { 
+    count++; 
+    if( last_proc > 0 && last_proc < sim -> current_time )
+    {
+      interval_sum += sim -> current_time - last_proc;
+      interval_count++;
+    }
+    last_proc = sim -> current_time;
+  }
+  void merge( proc_t* other ) 
+  { 
+    count          += other -> count; 
+    interval_sum   += other -> interval_sum;
+    interval_count += other -> interval_count;
+  }
   const char* name() SC_CONST { return name_str.c_str(); }
 };
 

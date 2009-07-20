@@ -3455,12 +3455,12 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points        = get_proc( "combo_points"        );
-  procs_combo_points_wasted = get_proc( "combo_points_wasted" );
-  procs_idol_of_lunar_fury  = get_proc( "lunar_fury"          );
-  procs_omen_of_clarity     = get_proc( "omen_of_clarity"     );
-  procs_primal_fury         = get_proc( "primal_fury"         );
-  procs_unseen_moon         = get_proc( "unseen_moon"         );
+  procs_combo_points        = get_proc( "combo_points",        sim );
+  procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
+  procs_idol_of_lunar_fury  = get_proc( "lunar_fury",          sim );
+  procs_omen_of_clarity     = get_proc( "omen_of_clarity",     sim );
+  procs_primal_fury         = get_proc( "primal_fury",         sim );
+  procs_unseen_moon         = get_proc( "unseen_moon",         sim );
 }
 
 // druid_t::init_uptimes ====================================================

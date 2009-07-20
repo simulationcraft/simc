@@ -268,11 +268,11 @@ struct death_knight_t : public player_t
     gains_scent_of_blood     = get_gain( "scent_of_blood" );
 
     // Procs
-    procs_abominations_might = get_proc( "abominations_might" );
-    procs_bloodworms         = get_proc( "bloodworms" );
-    procs_bloody_vengeance   = get_proc( "bloody_vengeance" );
-    procs_scent_of_blood     = get_proc( "scent_of_blood" );
-    procs_sudden_doom        = get_proc( "sudden_doom" );
+    procs_abominations_might = get_proc( "abominations_might", sim );
+    procs_bloodworms         = get_proc( "bloodworms",         sim );
+    procs_bloody_vengeance   = get_proc( "bloody_vengeance",   sim );
+    procs_scent_of_blood     = get_proc( "scent_of_blood",     sim );
+    procs_sudden_doom        = get_proc( "sudden_doom",        sim );
 
     // Up-Times
     uptimes_abominations_might = get_uptime( "abominations_might" );
