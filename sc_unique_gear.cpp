@@ -138,6 +138,9 @@ struct discharge_proc_callback_t : public action_callback_t
       if ( ! rng -> roll( proc_chance ) )
         return;
 
+    if ( cooldown )
+      cooldown_ready = sim -> current_time + cooldown;
+
     if ( ++stacks < max_stacks )
     {
       listener -> aura_gain( name_str.c_str() );
@@ -147,9 +150,6 @@ struct discharge_proc_callback_t : public action_callback_t
       stacks = 0;
       spell -> execute();
       proc -> occur();
-
-      if ( cooldown )
-        cooldown_ready = sim -> current_time + cooldown;
     }
   }
 };
