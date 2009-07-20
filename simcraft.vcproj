@@ -288,6 +288,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_rawr.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_report.cpp"
 			>
 		</File>
