@@ -1427,7 +1427,11 @@ void mage_spell_t::player_buff()
 
   if ( p -> _buffs.molten_armor )
   {
-    player_crit += p -> spirit() * ( p -> glyphs.molten_armor ? 0.55 : 0.35 ) / p -> rating.spell_crit;
+    double spirit_contribution = p -> glyphs.molten_armor ? 0.55 : 0.35;
+
+    if( p -> set_bonus.tier9_2pc() ) spirit_contribution += 0.15;
+
+    player_crit += p -> spirit() * spirit_contribution / p -> rating.spell_crit;
   }
 
   if ( p -> buffs.focus_magic_feedback )
@@ -1562,6 +1566,7 @@ struct arcane_blast_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
   }
 
   virtual double cost() SC_CONST
@@ -1692,6 +1697,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc()  ? 0.05 : 0.00 ) );
 
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
   }
 
   virtual void player_buff()
@@ -2114,6 +2120,7 @@ struct fire_ball_t : public mage_spell_t
     base_crit += p -> talents.improved_scorch * 0.01;
 
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
 
     if ( p -> glyphs.fire_ball ) 
     {
@@ -2578,7 +2585,8 @@ struct frost_bolt_t : public mage_spell_t
     base_crit += p -> talents.winters_chill * 0.01;
 
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
-    if ( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+    if ( p -> glyphs.frost_bolt     ) base_multiplier *= 1.05;
   }
 
   virtual void player_buff()
@@ -2778,6 +2786,8 @@ struct frostfire_bolt_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
+
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += 0.05;
 
     if ( p -> glyphs.frostfire )
     {
