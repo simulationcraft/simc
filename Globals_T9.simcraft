@@ -1,0 +1,97 @@
+
+# Multi-Threading: Performance can be significantly increased using multi-threading.
+# Most modern processors are dual-core allowing for threads=2 to be specified.
+threads=1
+
+# To generate a combat log with just one iteration, simply set 'log=1'
+# Setting log to a non-zero value will force the simulator to execute just one iteration
+log=0
+
+# To get a detailed breakdown of contributions to attacks/spells as they occur, simply set 'debug=1'
+# Setting debug to a non-zero value will force the simulator to execute just one iteration
+debug=0
+
+# Lag is a random value (gaussian distribution) centered on the value below with a stddev of 25%
+# The type of lag is dependent upon the previous action and whether or not the player is
+# able to take advantage of the spell queuing system, has to time a multi-tap on GCD, or
+# has to wait for a channel to finish.
+queue_lag=0.075
+gcd_lag=0.150
+channel_lag=0.250
+
+# Flight time is based on the spell flight speed, but varies with lag.  For now, we model this variance
+# seperately from the 3 variables above, though it might be related to them.  This value is the stddev
+# of a gaussian distribution of travel time, centered on the mean which is based on distance from mob and
+# spell flight speed.
+travel_variance=0.075
+
+# Boss Level
+target_level=83
+
+# One of "max_time" (fight time in seconds) or "target_health" must be specified.
+# When "max_time" is used, the health of the target will be infered half-way through simulation.
+max_time=300
+
+# While min/max damage effects (such as weapons and direct damage spells) are averaged out, spell event
+# and attack table mechanics are still random.  In order to get a trustworthy answer from the simulator,
+# one must have a very long fight or iterate a short fight many, many times.  Given the constraints of
+# mana, iterating a short fight is often more realistic.
+iterations=1000
+
+# For convenience it is possible to tell the simulator that a specific resource (mana, rage, etc)
+# will never run out if you do not wish to configure raid/consumable buff scenarios to ensure sufficient
+# resource replenishment.
+infinite_mana=0
+
+# WotLK has regen ticks occuring every 0.1sec.  Modeling this exactly produces a ton of churn in the
+# event list and tons of unnecessary calculations.  A value of 1.0 is not perfect, but the performance
+# improvement is worth the slight inaccuracy.
+regen_periodicity=1.0
+
+# WotLK boss armor
+target_armor=10643
+
+# Target race
+target_race=humanoid
+
+# Faction specific
+heroic_presence=0
+
+# Turn off 'optimal_raid' so that buffs and debuffs are managed properly
+optimal_raid=0
+
+# Support for Feral Bear does not yet exist
+faerie_fire=1
+mangle=1
+
+# Support for Warrior class does not yet exist
+battle_shout=1
+sunder_armor=1
+thunder_clap=1
+
+# Support for the Paladin class does not yet exist
+blessing_of_kings=1
+blessing_of_wisdom=1
+blessing_of_might=1
+judgement_of_wisdom=1
+sanctified_retribution=1
+swift_retribution=1
+
+# Support for Death Knights does not yet exist.
+crypt_fever=1
+
+# To generate scale factors, set calculate_scale_factors=1
+calculate_scale_factors=0
+# Default amount to change each stat when calculating
+# scale factors
+#scale_strength=+250
+#scale_agility=+250
+#scale_intellect=+250
+#scale_spirit=+250
+#scale_spell_power=+250
+#scale_attack_power=+250
+#scale_expertise_rating=-150
+#scale_armor_penetration_rating=+250
+#scale_hit_rating=-200
+#scale_crit_rating=+250
+#scale_haste_rating=+250
