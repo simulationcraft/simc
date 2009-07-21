@@ -3546,22 +3546,31 @@ void druid_t::init_actions()
         action_list_str+="/moonfire,eclipse_left>=12";
         if( talents.insect_swarm )
           action_list_str+="/insect_swarm,skip_on_eclipse=1";
-        for( int i=0; i < num_items; i++ )
-        {
-	        if( items[ i ].use.active() )
-          {
-	          action_list_str += "/use_item,name=";
-	          action_list_str += items[ i ].name();
-	        }
-        }
         if( sim -> P320 )
         {
 	        action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
+          for( int i=0; i < num_items; i++ )
+          {
+	          if( items[ i ].use.active() )
+            {
+	            action_list_str += "/use_item,name=";
+	            action_list_str += items[ i ].name();
+	          }
+          }
 	        action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
         }
         else
         {
-	        action_list_str+="/wrath,eclipse=trigger/starfire";
+	        action_list_str+="/wrath,eclipse=trigger";
+          for( int i=0; i < num_items; i++ )
+          {
+	          if( items[ i ].use.active() )
+            {
+	            action_list_str += "/use_item,name=";
+	            action_list_str += items[ i ].name();
+	          }
+          }
+          action_list_str+="/starfire";
         }
       }
     }
@@ -3570,6 +3579,7 @@ void druid_t::init_actions()
       // Assume feral
       action_list_str+="flask,type=endless_rage/food,type=blackened_dragonfin";
       action_list_str+="/cat_form/auto_attack";
+      action_list_str+="/maim";
       int num_items = items.size();
       for( int i=0; i < num_items; i++ )
       {
