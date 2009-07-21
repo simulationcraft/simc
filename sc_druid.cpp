@@ -3538,7 +3538,7 @@ void druid_t::init_actions()
         }
         else
         {
-	        action_list_str+="starfire,eclipse=trigger/wrath,eclipse=benefit/starfire";
+	        action_list_str+="/starfire,eclipse=trigger/wrath,eclipse=benefit/starfire";
         }
       }
       else
