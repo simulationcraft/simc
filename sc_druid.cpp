@@ -110,6 +110,8 @@ struct druid_t : public player_t
 
   double equipped_weapon_dps;
 
+  bool use_mangle;
+
   struct talents_t
   {
     int  balance_of_power;
@@ -251,6 +253,8 @@ struct druid_t : public player_t
     melee_attack = 0;
 
     equipped_weapon_dps = 0;
+
+    use_mangle          = false;
   }
 
   // Character Definition
@@ -3528,7 +3532,7 @@ void druid_t::init_actions()
       }
       else
       {
-	action_list_str+="/wrath,eclipse=trigger/starfire";
+	      action_list_str+="/wrath,eclipse=trigger/starfire";
       }
     }
     else if( talents.mangle )
@@ -3539,17 +3543,19 @@ void druid_t::init_actions()
       int num_items = items.size();
       for( int i=0; i < num_items; i++ )
       {
-	if( items[ i ].use.active() )
+	      if( items[ i ].use.active() )
         {
-	  action_list_str += "/use_item,name=";
-	  action_list_str += items[ i ].name();
-	}
+	        action_list_str += "/use_item,name=";
+	        action_list_str += items[ i ].name();
+	      }
       }
       action_list_str+="/shred,omen_of_clarity=1/tigers_fury,energy<=40";
       if( talents.berserk )
         action_list_str+="/berserk,tigers_fury=1";
       action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
-      action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6/mangle_cat,mangle<=2/rake/shred";
+      action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
+      if ( use_mangle ) action_list_str+="/mangle_cat,mangle<=2";
+      action_list_str+="/rake/shred";
     }
     action_list_default = 1;
   }
@@ -3798,6 +3804,7 @@ std::vector<option_t>& druid_t::get_options()
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
+      { "use_mangle",                OPT_BOOL,   &( use_mangle                       ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
