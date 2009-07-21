@@ -2694,7 +2694,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> _buffs.fingers_of_frost != 0 || t -> debuffs.frozen )
+    if ( p -> _buffs.fingers_of_frost_charges != 0 || t -> debuffs.frozen )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {

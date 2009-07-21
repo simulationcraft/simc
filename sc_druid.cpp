@@ -110,8 +110,7 @@ struct druid_t : public player_t
 
   double equipped_weapon_dps;
 
-  bool use_mangle;
-  bool wrath_mode;
+  std::string eclipse_cycle;
 
   struct talents_t
   {
@@ -255,8 +254,7 @@ struct druid_t : public player_t
 
     equipped_weapon_dps = 0;
 
-    use_mangle          = false;
-    wrath_mode          = false;
+    eclipse_cycle = "solar";
   }
 
   // Character Definition
@@ -284,8 +282,8 @@ struct druid_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return talents.moonkin_form ? ROLE_SPELL    : ROLE_ATTACK;     }
-  virtual int       primary_tree() SC_CONST     { return talents.moonkin_form ? TREE_BALANCE  : 
-                                                           talents.leader_of_the_pack ? TREE_FERAL : TREE_RESTORATION;      }
+  virtual int       primary_tree() SC_CONST     { return talents.moonkin_form       ? TREE_BALANCE  : 
+                                                         talents.leader_of_the_pack ? TREE_FERAL    : TREE_RESTORATION; }
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -2801,17 +2799,15 @@ struct starfire_t : public druid_spell_t
       if ( p -> talents.eclipse == 0 )
         return false;
 
-      if ( sim -> current_time + 1.5 < p -> _cooldowns.eclipse_wrath )
-      {
-        // Did the player have enough time by now to realise he procced eclipse?
-        // If so, return false as we only want to cast to procc
-        if ( sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
-          return false;
+      // Did the player have enough time by now to realise he procced eclipse?
+      // If so, return false as we only want to cast to procc
+      if ( sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
+	return false;
 
-        // This is for the time when eclipse buff faded, but it is still on cd.
-        if ( ! p -> _buffs.eclipse_wrath )
-          return false;
-      }
+      // Not yet possible to trigger
+      if ( ! p -> _buffs.eclipse_wrath )
+	if ( sim -> current_time + 1.5 < p -> _cooldowns.eclipse_wrath )
+	  return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2943,17 +2939,15 @@ struct wrath_t : public druid_spell_t
       if ( p -> talents.eclipse == 0 )
         return false;
 
-      if ( sim -> current_time + 3.0 < p -> _cooldowns.eclipse_starfire )
-      {
-        // Did the player have enough time by now to realise he procced eclipse?
-        // If so, return false as we only want to cast to procc
-        if ( sim -> time_to_think( p -> _buffs.eclipse_starfire ) )
-          return false;
+      // Did the player have enough time by now to realise he procced eclipse?
+      // If so, return false as we only want to cast to procc
+      if ( sim -> time_to_think( p -> _buffs.eclipse_starfire ) )
+	return false;
 
-        // This is for the time when eclipse buff faded, but it is still on cd.
-        if ( ! p -> _buffs.eclipse_starfire )
+      // Not yet possible to trigger
+      if ( ! p -> _buffs.eclipse_starfire )
+	if ( sim -> current_time + 3.0 < p -> _cooldowns.eclipse_starfire )
           return false;
-      }
     }
 
     if ( ! prev_str.empty() )
@@ -3506,96 +3500,65 @@ void druid_t::init_actions()
 {
   if( action_list_str.empty() )
   {
-    if( talents.moonkin_form )
+    std::string use_str = "";
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
     {
-      // Assume balance
-      action_list_str+="flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion";
-      int num_items = items.size();
-
-      action_list_str+="/innervate,trigger=19000";
-      if( talents.force_of_nature ) 
-        action_list_str+="/treants";
-      if( talents.starfall ) 
-        action_list_str+="/starfall,skip_on_eclipse=1";
-      if ( wrath_mode )
+      if( items[ i ].use.active() )
       {
-        action_list_str+="/moonfire,skip_on_eclipse=-1";
-        if( talents.insect_swarm )
-          action_list_str+="/insect_swarm,eclipse_left>=12";
-        action_list_str+="/starfire,instant=1";
-        for( int i=0; i < num_items; i++ )
-        {
-	        if( items[ i ].use.active() )
-          {
-	          action_list_str += "/use_item,name=";
-	          action_list_str += items[ i ].name();
-	        }
-        }
-        if( sim -> P320 )
-        {
-	        action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
-	        action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
-        }
-        else
-        {
-	        action_list_str+="/starfire,eclipse=trigger/wrath,eclipse=benefit/starfire";
-        }
-      }
-      else
-      {
-        action_list_str+="/moonfire,eclipse_left>=12";
-        if( talents.insect_swarm )
-          action_list_str+="/insect_swarm,skip_on_eclipse=1";
-        if( sim -> P320 )
-        {
-	        action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
-          for( int i=0; i < num_items; i++ )
-          {
-	          if( items[ i ].use.active() )
-            {
-	            action_list_str += "/use_item,name=";
-	            action_list_str += items[ i ].name();
-	          }
-          }
-	        action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
-        }
-        else
-        {
-	        action_list_str+="/wrath,eclipse=trigger";
-          for( int i=0; i < num_items; i++ )
-          {
-	          if( items[ i ].use.active() )
-            {
-	            action_list_str += "/use_item,name=";
-	            action_list_str += items[ i ].name();
-	          }
-          }
-          action_list_str+="/starfire";
-        }
+	use_str += "/use_item,name=";
+	use_str += items[ i ].name();
       }
     }
-    else if( talents.mangle )
+
+    if( primary_tree() == TREE_FERAL )
     {
       // Assume feral
       action_list_str+="flask,type=endless_rage/food,type=blackened_dragonfin";
       action_list_str+="/cat_form/auto_attack";
       action_list_str+="/maim";
-      int num_items = items.size();
-      for( int i=0; i < num_items; i++ )
-      {
-	      if( items[ i ].use.active() )
-        {
-	        action_list_str += "/use_item,name=";
-	        action_list_str += items[ i ].name();
-	      }
-      }
+      action_list_str += use_str;
       action_list_str+="/shred,omen_of_clarity=1/tigers_fury,energy<=40";
       if( talents.berserk )
         action_list_str+="/berserk,tigers_fury=1";
       action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
       action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
-      if ( use_mangle ) action_list_str+="/mangle_cat,mangle<=2";
+      if ( talents.mangle ) action_list_str+="/mangle_cat,mangle<=2";
       action_list_str+="/rake/shred";
+    }
+    else
+    {
+      action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
+      if( talents.moonkin_form ) action_list_str += "/moonkin_form";
+      action_list_str += "/speed_potion";
+      action_list_str += "/innervate,trigger=20000";
+      if( talents.force_of_nature ) action_list_str+="/treants";
+      if( talents.starfall        ) action_list_str+="/starfall,skip_on_eclipse=1";
+      action_list_str += "/starfire,instant=1";
+      if( eclipse_cycle == "lunar" )
+      {
+        action_list_str += "/moonfire,skip_on_eclipse=-1";
+        if( talents.insect_swarm ) action_list_str += "/insect_swarm,eclipse_left>=12";
+	action_list_str += "/starfire,eclipse=trigger";
+	action_list_str += use_str;
+        if( sim -> P320 )
+        {
+	  action_list_str += "/wrath,eclipse=benefit/starfire,eclipse=benefit";
+        }
+	action_list_str += "/wrath";
+      }
+      else
+      {
+        action_list_str += "/moonfire,eclipse_left>=12";
+        if( talents.insect_swarm ) action_list_str += "/insect_swarm,skip_on_eclipse=1";
+	action_list_str += "/wrath,eclipse=trigger";
+	action_list_str += use_str;
+        if( sim -> P320 )
+        {
+	  action_list_str += "/starfire,eclipse=benefit/wrath,eclipse=benefit";
+        }
+	action_list_str += "/starfire";
+      }
     }
     action_list_default = 1;
   }
@@ -3844,8 +3807,7 @@ std::vector<option_t>& druid_t::get_options()
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { "use_mangle",                OPT_BOOL,   &( use_mangle                       ) },
-      { "wrath_mode",                OPT_BOOL,   &( wrath_mode                       ) },
+      { "eclipse_cycle",             OPT_STRING, &( eclipse_cycle                    ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

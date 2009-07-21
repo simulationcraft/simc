@@ -9,10 +9,11 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/mark_of_the_wild
 actions+=/moonkin_form
-actions+=/mana_potion
-actions+=/innervate,trigger=19000
+actions+=/speed_potion
+actions+=/innervate,trigger=20000
 actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
+actions+=/starfire,instant=1
 actions+=/moonfire,eclipse_left>=12
 actions+=/insect_swarm,skip_on_eclipse=1
 actions+=/wrath,eclipse=trigger
