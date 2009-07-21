@@ -1837,8 +1837,11 @@ struct shadow_fiend_spell_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
+    if ( sim -> infinite_resource [ RESOURCE_MANA ] )
+      return true;
+
     return( player -> resource_max    [ RESOURCE_MANA ] -
-            player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+            player -> resource_current[ RESOURCE_MANA ] ) >= trigger;
   }
 };
 
