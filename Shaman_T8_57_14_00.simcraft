@@ -1,7 +1,7 @@
 #!simcraft
 
 shaman=Shaman_T8_57_14_00
-origin=http://profiler.wowhead.com/?profile=12997799
+origin=http://profiler.wowhead.com/?profile=13000116
 level=80
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
 glyphs=flame_shock/lava/lightning_bolt
