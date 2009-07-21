@@ -1,6 +1,6 @@
 #!simcraft
 
-Globals_T8.simcraft
+Globals_T9.simcraft
 
 optimal_raid=1
 
@@ -8,7 +8,7 @@ Shaman_T8_16_55_00.simcraft
 Shaman_T8_57_14_00.simcraft
 Shaman_T8_57_14_00_ToW.simcraft
 
-# simcraftshamant8
+# simcraftshamant9
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=13000114 name=Shaman_T8_16_55_00     save=Shaman_T8_16_55_00.simcraft     trinket1=comets_trail,id=45609

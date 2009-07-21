@@ -1,0 +1,19 @@
+#!simcraft
+
+Globals_T9.simcraft
+
+optimal_raid=1
+
+Priest_T9_13_00_58.simcraft
+Priest_T9_13_00_58_SWD.simcraft
+Priest_T9_51_20_00.simcraft
+Priest_T9_34_28_09.simcraft
+
+# simcraftpriestt9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=13000099 name=Priest_T9_13_00_58      save=Priest_T9_13_00_58.simcraft     waist=starwatchers_binding,id=45619
+#wowhead=13000099 name=Priest_T9_13_00_58_SWD  save=Priest_T9_13_00_58_SWD.simcraft waist=starwatchers_binding,id=45619 use_shadow_word_death=1
+#wowhead=13000098 name=Priest_T9_51_20_00      save=Priest_T9_51_20_00.simcraft     waist=starwatchers_binding,id=45619
+#wowhead=13000102 name=Priest_T9_34_28_09      save=Priest_T9_34_28_09.simcraft     waist=starwatchers_binding,id=45619
+#save_profiles=1

@@ -1,6 +1,6 @@
 #!simcraft
 
-Globals_T8.simcraft
+Globals_T9.simcraft
 
 optimal_raid=1
 
@@ -9,5 +9,5 @@ Warrior_T8_56_15_00_M.simcraft
 Warrior_T8_56_15_00_A.simcraft
 Warrior_T8_18_53_00.simcraft
 
-# scwarriort8
+# scwarriort9
 # Uncomment below and comment out above to download profiles.
