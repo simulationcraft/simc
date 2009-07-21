@@ -936,30 +936,24 @@ static void clear_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> _buffs.fingers_of_frost == 0 ) return;
-
   if( p -> _buffs.fingers_of_frost_charges < 0 )
   {
     p -> aura_loss( "Ghost Charge" );
-    p -> _buffs.fingers_of_frost = 0;
     p -> _buffs.fingers_of_frost_charges = 0;
   }
-  else if ( s -> may_crit && p -> _buffs.fingers_of_frost_charges > 0 )
+  else if ( p -> _buffs.fingers_of_frost_charges > 0 && s -> may_crit )
   {
     p -> _buffs.fingers_of_frost_charges--;
 
     if( p -> _buffs.fingers_of_frost_charges == 0 )
     {
       p -> aura_loss( "Fingers of Frost" );
+      p -> _buffs.fingers_of_frost = 0;
 
       if ( p -> gcd_ready < p -> sim -> current_time )
       {
 	p -> aura_gain( "Ghost Charge" );
 	p -> _buffs.fingers_of_frost_charges = -1;
-      }
-      else
-      {
-	p -> _buffs.fingers_of_frost = 0;
       }
     }
   }
@@ -974,8 +968,11 @@ static void trigger_fingers_of_frost( spell_t* s )
   if ( p -> rng_fingers_of_frost -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
   {
     p -> aura_gain( "Fingers of Frost" );
-    p -> _buffs.fingers_of_frost = p -> sim -> current_time;
     p -> _buffs.fingers_of_frost_charges = 2;
+    if( p -> _buffs.fingers_of_frost == 0 )
+    {
+      p -> _buffs.fingers_of_frost = p -> sim -> current_time;
+    }
   }
 }
 
@@ -1254,6 +1251,21 @@ static void trigger_incanters_absorption( mage_t* p,
   else
   {
     e = new ( p -> sim ) incanters_absorption_expiration_t( p -> sim, p );
+  }
+}
+
+// target_is_frozen ========================================================
+
+static int target_is_frozen( mage_t* p )
+{
+  if( p -> sim -> time_to_think( p -> _buffs.fingers_of_frost         ) ||
+      p -> sim -> time_to_think( p -> sim -> target -> debuffs.frozen ) )
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
   }
 }
 
@@ -2071,7 +2083,7 @@ struct fire_ball_t : public mage_spell_t
 
   fire_ball_t( player_t* player, const std::string& options_str ) :
     mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ), 
-    brain_freeze( 0 ), frozen( 0 ), ghost_charge( 0 )
+    brain_freeze( 0 ), frozen( -1 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2180,12 +2192,9 @@ struct fire_ball_t : public mage_spell_t
       if( p -> _buffs.fingers_of_frost_charges != -1 )
 	return false;
 
-    if ( frozen )
-    {
-      if ( ! sim -> time_to_think( p -> _buffs.fingers_of_frost ) &&
-	   ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-	  return false;
-    }
+    if ( frozen != -1 )
+      if ( frozen != target_is_frozen( p ) )
+	return false;
 
     return true;
   }
@@ -2525,7 +2534,7 @@ struct frost_bolt_t : public mage_spell_t
   int frozen;
 
   frost_bolt_t( player_t* player, const std::string& options_str ) :
-    mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen(0)
+    mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen(-1)
   {
     mage_t* p = player -> cast_mage();
 
@@ -2620,14 +2629,9 @@ struct frost_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    if ( frozen )
-    {
-      bool target_frozen = sim -> time_to_think( sim -> target -> debuffs.frozen );
-
-      bool fof = sim -> time_to_think( p -> _buffs.fingers_of_frost ) && p -> _buffs.fingers_of_frost_charges > 0;
-
-      if( ! target_frozen && ! fof ) return false;
-    }
+    if ( frozen != -1 )
+      if ( frozen != target_is_frozen( p ) )
+	return false;
 
     return mage_spell_t::ready();
   }
@@ -2642,7 +2646,7 @@ struct ice_lance_t : public mage_spell_t
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), 
-      frozen( 0 ), ghost_charge( 0 )
+      frozen( -1 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2714,12 +2718,9 @@ struct ice_lance_t : public mage_spell_t
       if( p -> _buffs.fingers_of_frost_charges != -1 )
 	return false;
 
-    if ( frozen )
-    {
-      if ( ! sim -> time_to_think( p -> _buffs.fingers_of_frost ) &&
-	   ! sim -> time_to_think( sim -> target -> debuffs.frozen ) )
-	  return false;
-    }
+    if ( frozen != -1 )
+      if ( frozen != target_is_frozen( p ) )
+	return false;
 
     return true;
   }
@@ -2736,7 +2737,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), 
-    brain_freeze( 0 ), dot_wait( 0 ), frozen( 0 ), ghost_charge( 0 )
+    brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( 0 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2851,14 +2852,9 @@ struct frostfire_bolt_t : public mage_spell_t
       if( p -> _buffs.fingers_of_frost_charges != -1 )
 	return false;
 
-    if ( frozen )
-    {
-      bool target_frozen = sim -> time_to_think( sim -> target -> debuffs.frozen );
-
-      bool fof = sim -> time_to_think( p -> _buffs.fingers_of_frost ) && p -> _buffs.fingers_of_frost_charges > 0;
-
-      if( ! target_frozen && ! fof ) return false;
-    }
+    if ( frozen != -1 )
+      if ( frozen != target_is_frozen( p ) )
+	return false;
 
     return mage_spell_t::ready();
   }
