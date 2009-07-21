@@ -3567,7 +3567,9 @@ void mage_t::init_actions()
   {
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
     if( talents.focus_magic ) action_list_str += "/focus_magic";
-    action_list_str += "/counterspell/mirror_image";
+    action_list_str += "/counterspell";
+    if( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
+    action_list_str += "/mirror_image";
     int num_items = items.size();
     for( int i=0; i < num_items; i++ )
     {
