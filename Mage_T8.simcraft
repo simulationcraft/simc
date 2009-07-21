@@ -13,7 +13,9 @@ Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53
 # scmaget8
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000343 name=Mage_T8_18_00_53 save=Mage_T8_00_53_18.simcraft 
 #wowhead=13000266 name=Mage_T8_00_53_18 save=Mage_T8_00_53_18.simcraft waist=starwatchers_binding,id=45619,gems=9sp_8hit_9sp_8hit_19sp_7sp
+#wowhead=13000343 name=Mage_T8_18_00_53 save=Mage_T8_18_00_53.simcraft 
 #wowhead=12998999 name=Mage_T8_19_52_00 save=Mage_T8_19_52_00.simcraft waist=starwatchers_binding,id=45619,gems=9sp_8hit_9sp_8hit_19sp_7sp
+#wowhead=13000901 name=Mage_T8_53_18_00 save=Mage_T8_53_18_00.simcraft waist=starwatchers_binding,id=45619,gems=9sp_8hit_9sp_8hit_19sp_7sp
+#wowhead=13001124 name=Mage_T8_57_03_11 save=Mage_T8_57_03_11.simcraft waist=starwatchers_binding,id=45619,gems=9sp_8hit_9sp_8hit_19sp_7sp
 #save_profiles=1
