@@ -2086,7 +2086,7 @@ struct fire_ball_t : public mage_spell_t
 
   fire_ball_t( player_t* player, const std::string& options_str ) :
     mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ), 
-    brain_freeze( 0 ), frozen( -1 ), ghost_charge( 0 )
+    brain_freeze( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2191,8 +2191,8 @@ struct fire_ball_t : public mage_spell_t
       if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
         return false;
 
-    if ( ghost_charge )
-      if( ! p -> _buffs.ghost_charge )
+    if ( ghost_charge != -1 )
+      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
@@ -2649,7 +2649,7 @@ struct ice_lance_t : public mage_spell_t
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), 
-      frozen( -1 ), ghost_charge( 0 )
+      frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2717,8 +2717,8 @@ struct ice_lance_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
-    if ( ghost_charge )
-      if( ! p -> _buffs.ghost_charge )
+    if ( ghost_charge != -1 )
+      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
@@ -2740,7 +2740,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), 
-    brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( 0 )
+    brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2851,8 +2851,8 @@ struct frostfire_bolt_t : public mage_spell_t
       if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
         return false;
 
-    if ( ghost_charge )
-      if( ! p -> _buffs.ghost_charge )
+    if ( ghost_charge != -1 )
+      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
