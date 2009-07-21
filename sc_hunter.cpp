@@ -4011,16 +4011,25 @@ void hunter_t::init_actions()
     action_list_str += "/aspect";
     if( talents.chimera_shot ) action_list_str += "/serpent_sting";
     action_list_str += "/rapid_fire";
-    action_list_str += "/kill_shot";
+    if ( primary_tree() != TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";    
     if( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
     if(   talents.silencing_shot ) action_list_str += "/silencing_shot";
     if(   talents.chimera_shot   ) action_list_str += "/chimera_shot";
+    if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";    
     if(   talents.explosive_shot ) action_list_str += "/explosive_shot";
     if(   talents.black_arrow    ) action_list_str += "/black_arrow";
     if( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
-    if( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
-    if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
-    if(   talents.aimed_shot     ) action_list_str += "/aimed_shot";
+    if ( primary_tree() == TREE_MARKSMANSHIP )
+    {
+      if( ! talents.explosive_shot ) action_list_str += "/aimed_shot";
+      if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+    }
+    else
+    {
+      if( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
+      if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+      if(   talents.aimed_shot     ) action_list_str += "/aimed_shot";
+    }
     if( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
     action_list_str += "/steady_shot";
 
