@@ -29,6 +29,7 @@ struct mage_t : public player_t
     int    combustion_crits;
     double fingers_of_frost;
     int    fingers_of_frost_charges;
+    int    ghost_charge;
     int    hot_streak;
     double hot_streak_pyroblast;
     int    icy_veins;
@@ -87,6 +88,7 @@ struct mage_t : public player_t
   rng_t* rng_empowered_fire;
   rng_t* rng_fingers_of_frost;
   rng_t* rng_frostbite;
+  rng_t* rng_ghost_charge;
   rng_t* rng_hot_streak;
   rng_t* rng_improved_scorch;
   rng_t* rng_improved_water_elemental;
@@ -97,6 +99,7 @@ struct mage_t : public player_t
   // Options
   std::string focus_magic_target_str;
   std::string armor_type_str;
+  double      ghost_charge_pct;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -211,9 +214,8 @@ struct mage_t : public player_t
     active_ignite          = 0;
     active_water_elemental = 0;
     
-    // Valid values: molten|mage
-    armor_type_str = "molten";
-
+    armor_type_str = "molten"; // Valid values: molten|mage
+    ghost_charge_pct = 1.0;
     distance = 30;
   }
 
@@ -936,12 +938,12 @@ static void clear_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> _buffs.fingers_of_frost_charges < 0 )
+  if( p -> _buffs.ghost_charge != 0 )
   {
     p -> aura_loss( "Ghost Charge" );
-    p -> _buffs.fingers_of_frost_charges = 0;
+    p -> _buffs.ghost_charge = 0;
   }
-  else if ( p -> _buffs.fingers_of_frost_charges > 0 && s -> may_crit )
+  if ( p -> _buffs.fingers_of_frost_charges > 0 && s -> may_crit )
   {
     p -> _buffs.fingers_of_frost_charges--;
 
@@ -953,7 +955,7 @@ static void clear_fingers_of_frost( spell_t* s )
       if ( p -> gcd_ready < p -> sim -> current_time )
       {
 	p -> aura_gain( "Ghost Charge" );
-	p -> _buffs.fingers_of_frost_charges = -1;
+	p -> _buffs.ghost_charge = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1 : -1;
       }
     }
   }
@@ -969,6 +971,7 @@ static void trigger_fingers_of_frost( spell_t* s )
   {
     p -> aura_gain( "Fingers of Frost" );
     p -> _buffs.fingers_of_frost_charges = 2;
+    p -> _buffs.ghost_charge = 0;
     if( p -> _buffs.fingers_of_frost == 0 )
     {
       p -> _buffs.fingers_of_frost = p -> sim -> current_time;
@@ -1417,7 +1420,7 @@ void mage_spell_t::player_buff()
     }
     else if ( p -> talents.fingers_of_frost )
     {
-      bool fof_benefit = ( p -> _buffs.fingers_of_frost_charges > 0 || ( p -> _buffs.fingers_of_frost_charges < 0 && time_to_execute == 0 ) );
+      bool fof_benefit = ( p -> _buffs.fingers_of_frost_charges > 0 ) || ( p -> _buffs.ghost_charge > 0 && time_to_execute == 0 );
 
       if( fof_benefit ) player_crit += p -> talents.shatter * 0.5/3;
 
@@ -2189,7 +2192,7 @@ struct fire_ball_t : public mage_spell_t
         return false;
 
     if ( ghost_charge )
-      if( p -> _buffs.fingers_of_frost_charges != -1 )
+      if( ! p -> _buffs.ghost_charge )
 	return false;
 
     if ( frozen != -1 )
@@ -2694,7 +2697,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> _buffs.fingers_of_frost_charges != 0 || t -> debuffs.frozen )
+    if ( p -> _buffs.ghost_charge > 0 || p -> _buffs.fingers_of_frost_charges > 0 || t -> debuffs.frozen )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {
@@ -2715,7 +2718,7 @@ struct ice_lance_t : public mage_spell_t
       return false;
 
     if ( ghost_charge )
-      if( p -> _buffs.fingers_of_frost_charges != -1 )
+      if( ! p -> _buffs.ghost_charge )
 	return false;
 
     if ( frozen != -1 )
@@ -2849,7 +2852,7 @@ struct frostfire_bolt_t : public mage_spell_t
         return false;
 
     if ( ghost_charge )
-      if( p -> _buffs.fingers_of_frost_charges != -1 )
+      if( ! p -> _buffs.ghost_charge )
 	return false;
 
     if ( frozen != -1 )
@@ -3548,6 +3551,7 @@ void mage_t::init_rng()
   rng_empowered_fire           = get_rng( "empowered_fire"           );
   rng_fingers_of_frost         = get_rng( "fingers_of_frost"         );
   rng_frostbite                = get_rng( "frostbite"                );
+  rng_ghost_charge             = get_rng( "ghost_charge"             );
   rng_improved_scorch          = get_rng( "improved_scorch"          );
   rng_improved_water_elemental = get_rng( "improved_water_elemental" );
   rng_winters_chill            = get_rng( "winters_chill"            );
@@ -3890,6 +3894,7 @@ std::vector<option_t>& mage_t::get_options()
       // @option_doc loc=player/mage/misc title="Misc"
       { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
       { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
+      { "ghost_charge_pct",          OPT_FLT,    &( ghost_charge_pct                 ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
