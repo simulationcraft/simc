@@ -3433,6 +3433,7 @@ void mage_t::init_glyphs()
     else if( n == "fire_ball"       ) glyphs.fire_ball = 1;
     else if( n == "fireball"        ) glyphs.fire_ball = 1;
     else if( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
+    else if( n == "frostbolt"       ) glyphs.frost_bolt = 1;
     else if( n == "ice_lance"       ) glyphs.ice_lance = 1;
     else if( n == "improved_scorch" ) glyphs.improved_scorch = 1;
     else if( n == "living_bomb"     ) glyphs.living_bomb = 1;

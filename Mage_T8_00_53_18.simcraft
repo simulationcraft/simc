@@ -1,52 +1,57 @@
-#!simcraft max_time=300 optimal_raid=1
+#!simcraft
 
 mage=Mage_T8_00_53_18
+origin=http://profiler.wowhead.com/?profile=13000266
 level=80
-talents=http://www.wowhead.com/?talent#oZfVc0RhIuVubhstbIccoc
-glyphs=molten_armor/frostfire/living_bomb
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0000000000000000000000000000002305030012303331053120301351203303031003
+glyphs=molten_armor/frostfire/living_bomb/slow_fall/arcane_intellect/fire_ward
+actions=flask,type=frost_wyrm
+actions+=/food,type=tender_shoveltusk_steak
+actions+=/arcane_brilliance
 actions+=/counterspell
-actions+=/mana_gem/speed_potion
-# Scorch will not be invoked if Improved Shadow Bolt is up
 actions+=/scorch,debuff=1
-actions+=/mirror_image/combustion/icy_veins
-actions+=/living_bomb/pyroblast,hot_streak=1/frostfire_bolt
-actions+=/evocation
-# Actions while moving
+actions+=/mirror_image
+actions+=/combustion
+actions+=/icy_veins
+actions+=/mana_gem,trigger=1000
+actions+=/speed_potion
+actions+=/living_bomb
+actions+=/pyroblast,hot_streak=1
+actions+=/frostfire_bolt
 actions+=/fire_blast
-
+actions+=/evocation
+head=conquerors_kirin_tor_hood,stats=256armor_69hit_113sp_62sta_87int_66spi,gems=chaotic_skyflare_19sp_9sp,enchant=30sp_20crit
+neck=pendant_of_the_shallow_grave,stats=41crit_31haste_74sp_45sta_43int,gems=8crit_9sp_4crit
+shoulders=conquerors_kirin_tor_shoulderpads,stats=236armor_62haste_98sp_65sta_65int_33spi,gems=19sp,enchant=24sp_15crit
+chest=conquerors_kirin_tor_tunic,stats=314armor_82crit_132sp_75sta_81int_50spi,gems=19sp_19sp,enchant=10str_10agi_10sta_10int_10spi
+waist=starwatchers_binding,stats=64spi_69int_82sta_47crit_92sp_182armor,gems=9sp_8hit_9sp_8hit_19sp_7sp
+legs=conquerors_kirin_tor_leggings,stats=275armor_66hit_74crit_123sp_76sta_82int,gems=19sp_9sp_8spi_6crit,enchant=50sp_20spi
+feet=treads_of_the_false_oracle,stats=223armor_61crit_47haste_92sp_82sta_69int,gems=19sp_9sp_8spi_7sp,enchant=12crit_12hit
+wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
+hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=9sp_8spi_8crit_9sp_7sp,enchant=28sp
+finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit,enchant=19sp
+finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=19sp
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket2=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8hit_9sp_5sp,enchant=lightweave
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
+ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # Gear Summary
-gear_strength=10
-gear_agility=10
-gear_stamina=922
-gear_intellect=901
-gear_spirit=401
-gear_spell_power=2394
-gear_hit_rating=286
-gear_crit_rating=846
-gear_haste_rating=381
-gear_armor=1811
-meta_gem=chaotic_skyflare
-tier8_2pc=1
-tier8_4pc=1
-back=drape_of_mortal_downfall,enchant=lightweave
-items=flare_of_the_heavens/eye_of_the_broodmother
-
-# Gear summary generated from:
-# head=conquerors_kirin_tor_hood,id=46129,gems=chaotic_skyflare_19SP_9SP,enchant=30SP_20Crit
-# neck=pendant_of_the_shallow_grave,id=45933,gems=9SP_8Crit_4Crit
-# shoulder=conquerors_kirin_tor_shoulderpads,id=46134,gems=19SP,enchant=24SP_15Crit
-# back=drape_of_mortal_downfall,id=45242,gems=9SP_8Hit_5SP,enchant=lightweave
-# chest=conquerors_kirin_tor_tunic,id=46130,gems=19SP_19SP,enchant=10All
-# wrists=grasps_of_reason,id=45446,gems=19SP_4Spi,enchant=30SP
-# hands=pharos_gloves,id=45665,gems=9SP_8Spi_9SP_8Crit_7SP,enchant=28SP
-# waist=starwatchers_binding,stats=82Sta_69Int_64Spi_92SP_47Crit,gems=9SP_8Crit_9SP_8Crit_19SP_7SP
-# legs=conquerors_kirin_tor_leggings,id=46133,gems=19SP_9SP_8Spi_6Crit,enchant=50SP_20Spi
-# feet=treads_of_the_false_oracle,id=45537,gems=19SP_9SP_8Crit_7SP,enchant=12Hit_12Crit
-# finger1=nebula_band,id=46046,gems=9SP_8Haste_4Crit,enchant=19SP
-# finger2=conductive_seal,id=45495,gems=19SP,enchant=19SP
-# trinket1=flare_of_the_heavens,id=45518
-# trinket2=eye_of_the_broodmother,id=45308
-# main_hand=starshard_edge,id=45620,gems=9SP_8Spi_5SP,enchant=63SP
-# off_hand=cosmos,id=45617
-# ranged=scepter_of_lost_souls,id=45511
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=922
+# gear_intellect=901
+# gear_spirit=401
+# gear_spell_power=2399
+# gear_hit_rating=302
+# gear_crit_rating=822
+# gear_haste_rating=381
+# gear_armor=1993
+# meta_gem=chaotic_skyflare
+# tier8_2pc=1
+# tier8_4pc=1
+# back=drape_of_mortal_downfall,enchant=lightweave
+# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# items=flare_of_the_heavens/eye_of_the_broodmother
+armor_type=molten
