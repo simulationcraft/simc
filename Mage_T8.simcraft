@@ -12,3 +12,5 @@ Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53
 
 # scmaget8
 # Uncomment below and comment out above to download profiles.
+
+#wowhead=13000266 name=Mage_T8_00_53_18      save=Mage_T8_00_53_18.simcraft     waist=starwatchers_binding,id=45619
