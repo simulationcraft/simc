@@ -111,6 +111,7 @@ struct druid_t : public player_t
   double equipped_weapon_dps;
 
   bool use_mangle;
+  bool wrath_mode;
 
   struct talents_t
   {
@@ -255,6 +256,7 @@ struct druid_t : public player_t
     equipped_weapon_dps = 0;
 
     use_mangle          = false;
+    wrath_mode          = false;
   }
 
   // Character Definition
@@ -3509,30 +3511,58 @@ void druid_t::init_actions()
       // Assume balance
       action_list_str+="flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion";
       int num_items = items.size();
-      for( int i=0; i < num_items; i++ )
-      {
-	if( items[ i ].use.active() )
-        {
-	  action_list_str += "/use_item,name=";
-	  action_list_str += items[ i ].name();
-	}
-      }
+
       action_list_str+="/innervate,trigger=19000";
       if( talents.force_of_nature ) 
         action_list_str+="/treants";
       if( talents.starfall ) 
         action_list_str+="/starfall,skip_on_eclipse=1";
-      action_list_str+="/moonfire,eclipse_left>=12";
-      if( talents.insect_swarm )
-        action_list_str+="/insect_swarm,skip_on_eclipse=1";
-      if( sim -> P320 )
+      if ( wrath_mode )
       {
-	action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
-	action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
+        action_list_str+="/moonfire,skip_on_eclipse=-1";
+        if( talents.insect_swarm )
+          action_list_str+="/insect_swarm,eclipse_left>=12";
+        action_list_str+="/starfire,instant=1";
+        for( int i=0; i < num_items; i++ )
+        {
+	        if( items[ i ].use.active() )
+          {
+	          action_list_str += "/use_item,name=";
+	          action_list_str += items[ i ].name();
+	        }
+        }
+        if( sim -> P320 )
+        {
+	        action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
+	        action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
+        }
+        else
+        {
+	        action_list_str+="starfire,eclipse=trigger/wrath,eclipse=benefit/starfire";
+        }
       }
       else
       {
-	      action_list_str+="/wrath,eclipse=trigger/starfire";
+        action_list_str+="/moonfire,eclipse_left>=12";
+        if( talents.insect_swarm )
+          action_list_str+="/insect_swarm,skip_on_eclipse=1";
+        for( int i=0; i < num_items; i++ )
+        {
+	        if( items[ i ].use.active() )
+          {
+	          action_list_str += "/use_item,name=";
+	          action_list_str += items[ i ].name();
+	        }
+        }
+        if( sim -> P320 )
+        {
+	        action_list_str+="/wrath,eclipse=benefit/wrath,eclipse=trigger";
+	        action_list_str+="/starfire,eclipse=benefit/starfire,eclipse=trigger";
+        }
+        else
+        {
+	        action_list_str+="/wrath,eclipse=trigger/starfire";
+        }
       }
     }
     else if( talents.mangle )
@@ -3805,6 +3835,7 @@ std::vector<option_t>& druid_t::get_options()
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { "use_mangle",                OPT_BOOL,   &( use_mangle                       ) },
+      { "wrath_mode",                OPT_BOOL,   &( wrath_mode                       ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
