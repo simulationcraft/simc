@@ -12,6 +12,7 @@
 struct priest_t : public player_t
 {
   action_t* active_devouring_plague;
+  action_t* active_holy_fire;
   action_t* active_shadow_word_pain;
   action_t* active_vampiric_touch;
   action_t* active_vampiric_embrace;
@@ -117,9 +118,11 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
+    int hymn_of_hope;
     int shadow_word_death;
     int shadow_word_pain;
     int shadow;
+    int smite;
     int penance;
     int dispersion;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
@@ -127,17 +130,20 @@ struct priest_t : public player_t
   glyphs_t glyphs;
 
   double devious_mind_delay;
+  bool   use_shadow_word_death;
 
   priest_t( sim_t* sim, const std::string& name ) : player_t( sim, PRIEST, name )
   {
     // Active
     active_devouring_plague  = 0;
+    active_holy_fire         = 0;
     active_shadow_word_pain  = 0;
     active_vampiric_touch    = 0;
     active_vampiric_embrace  = 0;
 
     // Tier 8 4-piece Delay
     devious_mind_delay = 0.0;
+    use_shadow_word_death = false;
   }
 
   // Character Definition
@@ -154,7 +160,7 @@ struct priest_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : TREE_HOLY; }
+  virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : talents.penance ? TREE_DISCIPLINE : TREE_HOLY; }
   virtual void      regen( double periodicity );
 };
 
@@ -682,6 +688,8 @@ struct holy_fire_t : public priest_spell_t
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
+
+    observer          = &( p -> active_holy_fire );
   }
 };
 
@@ -746,6 +754,7 @@ struct smite_t : public priest_spell_t
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
     may_crit = ! ( p -> _buffs.surge_of_light );
+    if ( p -> active_holy_fire && p -> glyphs.smite ) player_multiplier *= 1.20;
   }
 };
 
@@ -915,7 +924,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( shadow_weaving_wait && p -> _buffs.shadow_weaving < 5 )
+    if ( shadow_weaving_wait && ( p -> talents.shadow_weaving != 0 ) && p -> _buffs.shadow_weaving < 5 )
       return false;
 
     return true;
@@ -1892,11 +1901,12 @@ void priest_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if     ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
+    if     ( n == "dispersion" )        glyphs.dispersion = 1;
+    else if( n == "penance"           ) glyphs.penance = 1;
+    else if( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
     else if( n == "shadow"            ) glyphs.shadow = 1;
-    else if( n == "penance"           ) glyphs.penance = 1;
-    else if( n == "dispersion"        ) glyphs.dispersion = 1;
+    else if( n == "smite"             ) glyphs.smite = 1;
     // Just to prevent warnings....
     else if( n == "circle_of_healing" ) ;
     else if( n == "dispel_magic"      ) ;
@@ -1904,6 +1914,7 @@ void priest_t::init_glyphs()
     else if( n == "flash_heal"        ) ;
     else if( n == "fortitude"         ) ;
     else if( n == "guardian_spirit"   ) ;
+    else if( n == "hymn_of_hope"      ) ;
     else if( n == "inner_fire"        ) ;
     else if( n == "levitate"          ) ;
     else if( n == "mind_flay"         ) ;
@@ -2009,25 +2020,40 @@ void priest_t::init_actions()
       }
     }
 
-    if( primary_tree() == TREE_SHADOW )
+    switch( primary_tree() )
     {
-      action_list_str += "/shadow_form/shadow_fiend";
-      if( talents.dispersion ) action_list_str += "/dispersion";
-      action_list_str += "/speed_potion";
-      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
-      if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
-      action_list_str += "/devouring_plague/mind_blast";
-      action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
-      action_list_str += "/shadow_word_death"; // when moving
-    }
-    else
-    {
-      action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
-      if( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
-      action_list_str += "/shadow_word_pain";
-      if( talents.power_infusion ) action_list_str += "/power_infusion";
-      action_list_str += "/holy_fire/mind_blast/smite";
-      action_list_str += "/shadow_word_death"; // when moving
+      case TREE_SHADOW:
+        if( talents.shadow_form ) action_list_str += "/shadow_form";
+        action_list_str += "/shadow_fiend";
+        if( talents.dispersion ) action_list_str += "/dispersion";
+        action_list_str += "/speed_potion";
+        action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
+        if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
+        action_list_str += "/devouring_plague/mind_blast";
+        if( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
+        if( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_wait=0,mb_priority=0";
+        action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
+        action_list_str += "/shadow_word_death"; // when moving
+        break;
+      case TREE_DISCIPLINE:
+        action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
+        if( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
+        action_list_str += "/shadow_word_pain";
+        if( talents.power_infusion ) action_list_str += "/power_infusion";
+        action_list_str += "/holy_fire/mind_blast/";
+        if( talents.penance ) action_list_str += "/penance";
+        action_list_str += "/smite";
+        action_list_str += "/shadow_word_death"; // when moving
+        break;
+      case TREE_HOLY:
+      default:
+        action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
+        if( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
+        action_list_str += "/shadow_word_pain";
+        if( talents.power_infusion ) action_list_str += "/power_infusion";
+        action_list_str += "/holy_fire/mind_blast/smite";
+        action_list_str += "/shadow_word_death"; // when moving
+        break;
     }
 
     action_list_default = 1;
@@ -2044,6 +2070,7 @@ void priest_t::reset()
 
   // Active
   active_devouring_plague = 0;
+  active_holy_fire        = 0;
   active_shadow_word_pain = 0;
   active_vampiric_touch   = 0;
   active_vampiric_embrace = 0;
@@ -2201,12 +2228,15 @@ std::vector<option_t>& priest_t::get_options()
       { "vampiric_touch",                OPT_INT,  &( talents.vampiric_touch                ) },
       { "veiled_shadows",                OPT_INT,  &( talents.veiled_shadows                ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
+      { "glyph_hymn_of_hope",            OPT_BOOL, &( glyphs.hymn_of_hope                   ) },
+      { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
       { "glyph_shadow_word_death",       OPT_BOOL, &( glyphs.shadow_word_death              ) },
       { "glyph_shadow_word_pain",        OPT_BOOL, &( glyphs.shadow_word_pain               ) },
       { "glyph_shadow",                  OPT_BOOL, &( glyphs.shadow                         ) },
-      { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
+      { "glyph_smite",                   OPT_BOOL, &( glyphs.smite                          ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
+      { "use_shadow_word_death",         OPT_BOOL, &( use_shadow_word_death                 ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

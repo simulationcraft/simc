@@ -6,3 +6,11 @@ optimal_raid=1
 
 Priest_T8_13_00_58.simcraft
 Priest_T8_13_00_58_SWD.simcraft
+Priest_T8_51_20_00.simcraft
+Priest_T8_34_28_09.simcraft
+
+#wowhead=12999362 name=Priest_T8_13_00_58      save=Priest_T8_13_00_58.simcraft     waist=starwatchers_binding,id=45619
+#wowhead=12999362 name=Priest_T8_13_00_58_SWD  save=Priest_T8_13_00_58_SWD.simcraft waist=starwatchers_binding,id=45619 use_shadow_word_death=1
+#wowhead=12999348 name=Priest_T8_51_20_00      save=Priest_T8_51_20_00.simcraft     waist=starwatchers_binding,id=45619
+#wowhead=12999351 name=Priest_T8_34_28_09      save=Priest_T8_34_28_09.simcraft     waist=starwatchers_binding,id=45619
+#save_profiles=1
