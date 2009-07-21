@@ -1,7 +1,7 @@
 #!simcraft
 
 priest=Priest_T7_51_20_00
-origin=http://profiler.wowhead.com/?profile=12999379
+origin=http://profiler.wowhead.com/?profile=13000003
 level=80
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=053320313032051233100320005100555000032
 glyphs=hymn_of_hope/penance/smite/levitate/shadowfiend/fading

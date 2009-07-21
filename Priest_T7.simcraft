@@ -9,8 +9,8 @@ Priest_T7_13_00_58_SWD.simcraft
 Priest_T7_51_20_00.simcraft
 Priest_T7_34_28_09.simcraft
 
-#wowhead=12999366 name=Priest_T7_13_00_58      save=Priest_T7_13_00_58.simcraft
-#wowhead=12999366 name=Priest_T7_13_00_58_SWD  save=Priest_T7_13_00_58_SWD.simcraft use_shadow_word_death=1
-#wowhead=12999379 name=Priest_T7_51_20_00      save=Priest_T7_51_20_00.simcraft
-#wowhead=12999394 name=Priest_T7_34_28_09      save=Priest_T7_34_28_09.simcraft
+#wowhead=13000000 name=Priest_T7_13_00_58      save=Priest_T7_13_00_58.simcraft
+#wowhead=13000000 name=Priest_T7_13_00_58_SWD  save=Priest_T7_13_00_58_SWD.simcraft use_shadow_word_death=1
+#wowhead=13000003 name=Priest_T7_51_20_00      save=Priest_T7_51_20_00.simcraft
+#wowhead=13000001 name=Priest_T7_34_28_09      save=Priest_T7_34_28_09.simcraft
 #save_profiles=1
