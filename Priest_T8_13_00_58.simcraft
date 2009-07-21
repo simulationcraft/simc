@@ -1,7 +1,7 @@
 #!simcraft
 
 priest=Priest_T8_13_00_58
-origin=http://profiler.wowhead.com/?profile=12999362
+origin=http://profiler.wowhead.com/?profile=13000014
 level=80
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
