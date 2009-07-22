@@ -3506,8 +3506,8 @@ void druid_t::init_actions()
     {
       if( items[ i ].use.active() )
       {
-	use_str += "/use_item,name=";
-	use_str += items[ i ].name();
+	      use_str += "/use_item,name=";
+	      use_str += items[ i ].name();
       }
     }
 
@@ -3539,25 +3539,25 @@ void druid_t::init_actions()
       {
         action_list_str += "/moonfire,skip_on_eclipse=-1";
         if( talents.insect_swarm ) action_list_str += "/insect_swarm,eclipse_left>=12";
-	action_list_str += "/starfire,eclipse=trigger";
-	action_list_str += use_str;
+	      action_list_str += "/starfire,eclipse=trigger";
+	      action_list_str += use_str;
         if( sim -> P320 )
         {
-	  action_list_str += "/wrath,eclipse=benefit/starfire,eclipse=benefit";
+	        action_list_str += "/wrath,eclipse=benefit/starfire,eclipse=benefit";
         }
-	action_list_str += "/wrath";
+	      action_list_str += "/wrath";
       }
       else
       {
         action_list_str += "/moonfire,eclipse_left>=12";
         if( talents.insect_swarm ) action_list_str += "/insect_swarm,skip_on_eclipse=1";
-	action_list_str += "/wrath,eclipse=trigger";
-	action_list_str += use_str;
+	      action_list_str += "/wrath,eclipse=trigger";
+	      action_list_str += use_str;
         if( sim -> P320 )
         {
-	  action_list_str += "/starfire,eclipse=benefit/wrath,eclipse=benefit";
+	        action_list_str += "/starfire,eclipse=benefit/wrath,eclipse=benefit";
         }
-	action_list_str += "/starfire";
+	      action_list_str += "/starfire";
       }
     }
     action_list_default = 1;
