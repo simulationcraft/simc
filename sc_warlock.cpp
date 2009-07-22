@@ -88,6 +88,9 @@ struct warlock_t : public player_t
   rng_t* rng_improved_soul_leech;
   rng_t* rng_everlasting_affliction;
 
+  // Custom Parameters
+  std::string summon_pet_str;
+
   struct talents_t
   {
     int  aftermath;
@@ -3289,7 +3292,8 @@ struct summon_pet_t : public warlock_spell_t
   summon_pet_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "summon_pet", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
-    pet_name = options_str;
+    warlock_t* p = player -> cast_warlock();
+    pet_name = ( options_str.size() > 0 ) ? options_str : p -> summon_pet_str;
     harmful = false;
     trigger_gcd = 0;
   }
@@ -4035,18 +4039,26 @@ void warlock_t::init_actions()
   {
     action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak";
     action_list_str+= talents.emberstorm ? "/fire_stone" :  "/spell_stone";
-    action_list_str+="/fel_armor/summon_pet,";
-    if (talents.summon_felguard) action_list_str+="felguard"; else 
-      if (talents.empowered_imp || talents.improved_imp) action_list_str+="imp"; else 
-        action_list_str+="succubus";
+    action_list_str+="/fel_armor/summon_pet";
+
+    if( summon_pet_str.empty() )
+    {
+      if ( talents.summon_felguard ) 
+        summon_pet_str = "felguard"; 
+      else if ( talents.empowered_imp || talents.improved_imp ) 
+        summon_pet_str = "imp"; 
+      else 
+        summon_pet_str = "succubus";
+    }
+    action_list_str += "," + summon_pet_str;
 
     int num_items = items.size();
     for( int i=0; i < num_items; i++ )
     {
       if( items[ i ].use.active() )
-      {
-              action_list_str += "/use_item,name=";
-              action_list_str += items[ i ].name();
+      { 
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
 
@@ -4080,7 +4092,7 @@ void warlock_t::init_actions()
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     }
 
-    if (talents.emberstorm) action_list_str+="/incinerate"; else action_list_str+="/shadow_bolt";
+    action_list_str += talents.emberstorm ? "/incinerate" : "/shadow_bolt";
 
     // instants to use when moving if possible
     action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30/shadow_burn/shadowfury/corruption/curse_of_agony"; 
@@ -4307,6 +4319,8 @@ std::vector<option_t>& warlock_t::get_options()
       { "suppression",              OPT_INT,  &( talents.suppression              ) },
       { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
       { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
+      // @option_doc loc=player/warlock/misc title="Misc"
+      { "summon_pet",               OPT_STRING, &( summon_pet_str                 ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

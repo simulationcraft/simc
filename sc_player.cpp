@@ -1924,6 +1924,7 @@ void player_t::summon_pet( const char* pet_name )
       return;
     }
   }
+  printf( "\nsimcraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
   assert( 0 );
 }
 
