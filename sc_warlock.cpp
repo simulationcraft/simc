@@ -3888,6 +3888,7 @@ void warlock_t::init_glyphs()
     else if( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if( n == "curse_of_exhaustion" ) ;
+    else if( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
     else if( n == "drain_soul" )          ;
     else if( n == "enslave_demon" )       ;
     else if( n == "healthstone" )         ;
