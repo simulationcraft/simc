@@ -895,9 +895,11 @@ struct warlock_spell_t : public spell_t
   int metamorphosis;
   int backdraft, backdraft_skip;
   int molten_core;
+  int pyroclasm;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ), metamorphosis( 0 ), backdraft(0), backdraft_skip(0), molten_core(0)
+      spell_t( n, player, RESOURCE_MANA, s, t ), metamorphosis( 0 ), backdraft(0), backdraft_skip(0), molten_core(0),
+        pyroclasm(0)
   {}
 
   // Overridden Methods
@@ -1346,6 +1348,7 @@ void warlock_spell_t::parse_options( option_t*          options,
       { "no_backdraft",   OPT_BOOL, &backdraft_skip },
       { "backdraft_skip", OPT_BOOL, &backdraft_skip },
       { "molten_core",    OPT_BOOL, &molten_core    },
+      { "pyroclasm",      OPT_BOOL, &pyroclasm      },
       { NULL, OPT_UNKNOWN, NULL }
     };
   std::vector<option_t> merged_options;
@@ -1383,6 +1386,11 @@ bool warlock_spell_t::ready()
       return false;
   }
 
+  if ( pyroclasm )
+  {
+    if ( !p->pyroclasm->is_up() )
+      return false;
+  }
 
   return true;
 }
