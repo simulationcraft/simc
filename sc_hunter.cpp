@@ -740,6 +740,8 @@ struct hunter_spell_t : public spell_t
   {}
 
   virtual double gcd() SC_CONST;
+
+  inline bool check_active_pet() { hunter_t* p = player -> cast_hunter(); return check_condition( p -> active_pet, "Pet is not active: %s\n" ); }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -972,7 +974,7 @@ static void trigger_go_for_the_throat( attack_t* a )
   hunter_t* p = a -> player -> cast_hunter();
 
   if ( ! p -> talents.go_for_the_throat ) return;
-  if ( ! p -> active_pet ) return;
+  if ( ! a -> check_condition( p -> active_pet, "Pet is not active: %s\n" ) ) return;
 
   double gain = p -> talents.go_for_the_throat * 25.0;
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain,
@@ -1598,6 +1600,8 @@ struct hunter_pet_attack_t : public attack_t
       }
     }
   }
+
+  inline bool check_pet_type(bool status) { return check_condition(status, "Wrong pet type for action: %s\n"); }
 };
 
 // Pet Melee =================================================================
@@ -1676,7 +1680,7 @@ struct rake_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_CAT );
+    if( ! check_pet_type( p -> pet_type == PET_CAT ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1712,7 +1716,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_DEVILSAUR );
+    if( ! check_pet_type ( p -> pet_type == PET_DEVILSAUR ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1772,7 +1776,7 @@ struct savage_rend_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_RAPTOR );
+    if( ! check_pet_type( p -> pet_type == PET_RAPTOR ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1840,7 +1844,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> talents.wolverine_bite );
+    if( ! check_talent( p -> talents.wolverine_bite ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1943,6 +1947,8 @@ struct hunter_pet_spell_t : public spell_t
 
     trigger_feeding_frenzy( this );
   }
+
+  inline bool check_pet_type(bool status) { return check_condition(status, "Wrong pet type for action: %s\n"); }
 };
 
 // Chimera Froststorm Breath ================================================
@@ -1955,7 +1961,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_CHIMERA );
+    if( ! check_pet_type( p -> pet_type == PET_CHIMERA ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1976,7 +1982,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_WIND_SERPENT );
+    if( ! check_pet_type( p -> pet_type == PET_WIND_SERPENT ) ) return;
 
     parse_options( 0, options_str );
 
@@ -1997,7 +2003,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> talents.call_of_the_wild );
+    if( ! check_talent( p -> talents.call_of_the_wild ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2050,7 +2056,7 @@ struct furious_howl_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> pet_type == PET_WOLF );
+    if( ! check_pet_type( p -> pet_type == PET_WOLF ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2103,7 +2109,7 @@ struct rabid_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> talents.rabid );
+    if( ! check_talent( p -> talents.rabid ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2152,7 +2158,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    assert( p -> talents.roar_of_recovery );
+    if( ! check_talent( p -> talents.roar_of_recovery ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2390,7 +2396,7 @@ struct aimed_shot_t : public hunter_attack_t
       improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.aimed_shot );
+    if( ! check_talent( p -> talents.aimed_shot ) ) return;
 
     option_t options[] =
       {
@@ -2590,7 +2596,7 @@ struct black_arrow_t : public hunter_attack_t
       hunter_attack_t( "black_arrow", player, SCHOOL_SHADOW, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.black_arrow );
+    if( ! check_talent( p -> talents.black_arrow ) ) return;
 
     static rank_t ranks[] =
       {
@@ -2649,7 +2655,7 @@ struct chimera_shot_t : public hunter_attack_t
       active_sting( 1 ), improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.chimera_shot );
+    if( ! check_talent( p -> talents.chimera_shot ) ) return;
 
     option_t options[] =
       {
@@ -2843,7 +2849,7 @@ struct explosive_shot_t : public hunter_attack_t
       lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.explosive_shot );
+    if( ! check_talent( p -> talents.explosive_shot ) ) return;
 
     option_t options[] =
       {
@@ -3010,7 +3016,7 @@ struct scatter_shot_t : public hunter_attack_t
       hunter_attack_t( "scatter_shot", player, SCHOOL_PHYSICAL, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.scatter_shot );
+    if( ! check_talent( p -> talents.scatter_shot ) ) return;
 
     may_crit    = true;
     base_dd_min = 1;
@@ -3108,7 +3114,7 @@ struct silencing_shot_t : public hunter_attack_t
       hunter_attack_t( "silencing_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.silencing_shot );
+    if( ! check_talent( p -> talents.silencing_shot ) ) return;
 
     base_dd_min = 1;
     base_dd_max = 1;
@@ -3336,7 +3342,7 @@ struct bestial_wrath_t : public hunter_spell_t
       hunter_spell_t( "bestial_wrath", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.bestial_wrath );
+    if( ! check_talent( p -> talents.bestial_wrath ) ) return;
 
     base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
     cooldown = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
@@ -3344,8 +3350,7 @@ struct bestial_wrath_t : public hunter_spell_t
 
   virtual void execute()
   {
-    hunter_t* p = player -> cast_hunter();
-    assert( p -> active_pet );
+    if( ! check_active_pet() ) return;
 
     struct expiration_t : public event_t
     {
@@ -3565,7 +3570,7 @@ struct readiness_t : public hunter_spell_t
       wait_for_rf( false )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.readiness );
+    if( ! check_talent( p -> talents.readiness ) ) return;
 
     option_t options[] =
       {
@@ -3642,7 +3647,7 @@ struct trueshot_aura_t : public hunter_spell_t
       hunter_spell_t( "trueshot_aura", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
-    assert( p -> talents.trueshot_aura );
+    if( ! check_talent( p -> talents.trueshot_aura ) ) return;
     trigger_gcd = 0;
     harmful = false;
   }
