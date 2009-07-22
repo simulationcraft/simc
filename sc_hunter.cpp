@@ -601,6 +601,10 @@ struct hunter_pet_t : public pet_t
     return options;
   }
 
+  /* A couple dummy methods to avoid warnings about hidden overloaded methods */
+  virtual bool parse_talents(std::vector<int*, std::allocator<int*> >& a, const std::string& b) { return player_t::parse_talents(a,b); }
+  virtual bool parse_talents(const std::string& a, int b) { return player_t::parse_talents(a,b); }
+
   virtual bool parse_talents( const std::string& talent_string )
   {
     std::vector<int*> tree;
