@@ -1113,6 +1113,10 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   snprintf( buffer, sizeof( buffer ), "( Pawn: v1: \"%s\": ", p -> name() );
   s += buffer;
 
+  double maxR = 0;
+  double maxB = 0;
+  double maxY = 0;
+
   for ( int i=0; i < STAT_MAX; i++ )
   {
     int stat = stats[ i ];
@@ -1123,18 +1127,18 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     const char* name=0;
     switch ( stat )
     {
-    case STAT_STRENGTH:                 name = "Strength";         break;
-    case STAT_AGILITY:                  name = "Agility";          break;
-    case STAT_STAMINA:                  name = "Stamina";          break;
-    case STAT_INTELLECT:                name = "Intellect";        break;
-    case STAT_SPIRIT:                   name = "Spirit";           break;
-    case STAT_SPELL_POWER:              name = "SpellDamage";      break;
-    case STAT_ATTACK_POWER:             name = "Ap";               break;
-    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; break;
-    case STAT_HIT_RATING:               name = "HitRating";        break;
-    case STAT_CRIT_RATING:              name = "CritRating";       break;
-    case STAT_HASTE_RATING:             name = "HasteRating";      break;
+    case STAT_STRENGTH:                 name = "Strength";         if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_AGILITY:                  name = "Agility";          if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_STAMINA:                  name = "Stamina";          if ( value*16 > maxB ) maxB = value*16; break;
+    case STAT_INTELLECT:                name = "Intellect";        if ( value*16 > maxY ) maxY = value*16; break;
+    case STAT_SPIRIT:                   name = "Spirit";           if ( value*16 > maxB ) maxB = value*16; break;
+    case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_ATTACK_POWER:             name = "Ap";               if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; if ( value*16 > maxR ) maxR = value*16; break;
+    case STAT_HIT_RATING:               name = "HitRating";        if ( value*16 > maxY ) maxY = value*16; break;
+    case STAT_CRIT_RATING:              name = "CritRating";       if ( value*16 > maxY ) maxY = value*16; break;
+    case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*16 > maxY ) maxY = value*16; break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
     }
@@ -1147,6 +1151,26 @@ const char* chart_t::gear_weights_pawn( std::string& s,
       s += buffer;
     }
   }
+
+  double maxG = 0;
+  double value = 0;
+
+  if ( maxR > maxG )  maxG=maxR;
+  if ( maxY > maxG )  maxG=maxY;
+  if ( maxB > maxG )  maxG=maxB;
+
+  s += ",";
+  if ( maxR == maxG ) { value = maxR; } else { value = maxR/2 + maxG/2; }
+  snprintf( buffer, sizeof( buffer ), " RedSocket=%.2f", value );
+  s += buffer;
+  s += ",";
+  if ( maxY == maxG ) { value = maxY; } else { value = maxY/2 + maxG/2; }
+  snprintf( buffer, sizeof( buffer ), " YellowSocket=%.2f", value );
+  s += buffer;
+  s += ",";
+  if ( maxB == maxG ) { value = maxB; } else { value = maxB/2 + maxG/2; }
+  snprintf( buffer, sizeof( buffer ), " BlueSocket=%.2f", value );
+  s += buffer;
 
   s += " )";
 
