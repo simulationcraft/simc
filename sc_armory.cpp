@@ -91,7 +91,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), 1 );
+  xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -108,7 +108,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
 
-  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), 1 );
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -132,7 +132,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
   sprintf( buffer, "&s=%d", slot );
   url += buffer;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", p -> last_modified, 1 );
+  xml_node_t* node = xml_t::download( url, "</itemTooltip>", p -> last_modified, sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -148,7 +148,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
 
   std::string url = "http://" + p -> region_str + ".wowarmory.com/item-tooltip.xml?i=" + id_str;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 0, 1 );
+  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 0, sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -462,7 +462,7 @@ bool armory_t::download_guild( sim_t* sim,
 
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
-  xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ) );
+  xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ), sim -> armory_throttle );
   if( ! guild_info )
   {
     printf( "\nsimcraft: Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
@@ -531,7 +531,7 @@ bool armory_t::download_guild( sim_t* sim,
       if( ! p ) return false;
 
       int tree = p -> primary_tree();
-      if( tree == TREE_RESTORATION || tree == TREE_HOLY )
+      if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
       {
         fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
         p -> quiet = true;

@@ -836,7 +836,7 @@ struct sim_t
   std::deque<std::string> active_files;
   FILE* output_file;
   FILE* log_file;
-  int http_throttle;
+  int armory_throttle;
   int duration_uptimes;
   int debug_exp;
 
