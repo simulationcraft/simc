@@ -2957,7 +2957,7 @@ std::vector<option_t>& player_t::get_options()
       { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
       { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
       { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
-      { "enchant_armor_penetration",            OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
+      { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
       { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
       { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
       { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },

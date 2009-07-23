@@ -446,7 +446,7 @@ double action_t::resistance() SC_CONST
     double reduced_armor = armor();
     double penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
 
-    //if ( penetration > 1 ) penetration = 1;
+    if ( penetration > 1 ) penetration = 1;
 
     double adjusted_armor = reduced_armor - penetration_max * penetration;
 

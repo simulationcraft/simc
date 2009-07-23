@@ -152,8 +152,12 @@ static void print_actions( FILE* file, player_t* p )
 static void print_core_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Core Stats:  strength=%.0f  agility=%.0f  stamina=%.0f  intellect=%.0f  spirit=%.0f  health=%.0f  mana=%.0f\n",
-           p -> strength(), p -> agility(), p -> stamina(), p -> intellect(), p -> spirit(),
+           "  Core Stats:  strength=%.0f(%.0f)  agility=%.0f(%.0f)  stamina=%.0f(%.0f)  intellect=%.0f(%.0f)  spirit=%.0f(%.0f)  health=%.0f  mana=%.0f\n",
+           p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
+	   p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
+	   p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
+	   p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
+	   p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
            p -> resource_max[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_MANA ] );
 }
 
@@ -162,12 +166,12 @@ static void print_core_stats( FILE* file, player_t* p )
 static void print_spell_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Spell Stats:  power=%.0f  hit=%.2f%%  crit=%.2f%%  penetration=%.0f  haste=%.2f%%  mp5=%.0f\n",
-           p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(),
-           p -> composite_spell_hit()  * 100.0,
-           p -> composite_spell_crit() * 100.0,
-           p -> composite_spell_penetration(),
-           ( 1.0 / p -> spell_haste - 1 ) * 100.0,
+           "  Spell Stats:  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  penetration=%.0f(%.0f)  haste=%.2f%%(%.0f)  mp5=%.0f\n",
+           p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
+           p -> composite_spell_hit()  * 100.0,    p -> stats.hit_rating,
+           p -> composite_spell_crit() * 100.0,    p -> stats.crit_rating,
+           p -> composite_spell_penetration(),     p -> stats.spell_penetration,
+           ( 1.0 / p -> spell_haste - 1 ) * 100.0, p -> stats.haste_rating,
            p -> initial_mp5 );
 }
 
@@ -176,13 +180,13 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Attack Stats  power=%.0f  hit=%.2f%%  crit=%.2f%%  expertise=%.2f  penetration=%.2f%%  haste=%.2f%%\n",
-           p -> composite_attack_power() * p -> composite_attack_power_multiplier(),
-           p -> composite_attack_hit()         * 100.0,
-           p -> composite_attack_crit()        * 100.0,
-           p -> composite_attack_expertise()   * 100.0,
-           p -> composite_attack_penetration() * 100.0,
-           ( 1.0 / p -> attack_haste - 1 )     * 100.0 );
+           "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
+           p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
+           p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
+           p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
+           p -> composite_attack_expertise()   * 100.0, p -> stats.expertise_rating,
+           p -> composite_attack_penetration() * 100.0, p -> stats.armor_penetration_rating,
+           ( 1.0 / p -> attack_haste - 1 )     * 100.0, p -> stats.haste_rating );
 }
 
 // print_defense_stats =======================================================
@@ -190,8 +194,8 @@ static void print_attack_stats( FILE* file, player_t* p )
 static void print_defense_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Defense Stats:  armor=%.0f\n",
-           p -> composite_armor() );
+           "  Defense Stats:  armor=%.0f(%.0f)\n",
+           p -> composite_armor(), p -> stats.armor );
 }
 
 // print_gains ===============================================================
