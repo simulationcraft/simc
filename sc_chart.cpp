@@ -181,17 +181,6 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     }
   }
 
-  double max_total=0;
-  for ( int i=0; i < num_players; i++ )
-  {
-    double total=0;
-    for ( int j=0; j < STAT_MAX; j++ )
-    {
-      total += data_points[ j ][ i ];
-    }
-    if ( total > max_total ) max_total = total;
-  }
-
   const char* colors[ STAT_MAX ];
 
   for ( int i=0; i < STAT_MAX; i++ ) colors[ i ] = 0;
@@ -210,6 +199,18 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   colors[ STAT_ARMOR_PENETRATION_RATING ] = "00FF00";
   colors[ STAT_SPELL_PENETRATION        ] = "00FF00";
 
+  double max_total=0;
+  for ( int i=0; i < num_players; i++ )
+  {
+    double total=0;
+    for ( int j=0; j < STAT_MAX; j++ )
+    {
+      if( ! colors[ j ] ) continue;
+      total += data_points[ j ][ i ];
+    }
+    if ( total > max_total ) max_total = total;
+  }
+
   std::string s;
   char buffer[ 1024 ];
   bool first;
@@ -221,8 +222,12 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   {
     if ( num_players > max_players ) num_players = max_players;
 
+    int height = num_players * 20 + 30;
+
+    if( num_players < 10 ) height += 70;
+
     s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chs=450x%d", height ); s += buffer;
     s += "&amp;";
     s += "cht=bhs";
     s += "&amp;";
@@ -274,6 +279,10 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       s += util_t::stat_type_abbrev( i );
     }
     s += "&amp;";
+    if( num_players < 10 )
+    {
+      s += "chdlp=t&amp;";
+    }
     s += "chtt=Gear+Overview";
     s += "&amp;";
     s += "chts=000000,20";
