@@ -47,7 +47,7 @@ scaling_t::scaling_t( sim_t* s ) :
     calculate_scale_factors(0),
     center_scale_delta(0),
     scale_lag(0),
-    scale_factor_noise(0),
+    scale_factor_noise(0.05),
     normalize_scale_factors(0),
     smooth_scale_factors(1),
     debug_scale_factors(0)

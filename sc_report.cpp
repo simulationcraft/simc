@@ -180,7 +180,7 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   fprintf( file,
-           "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
+           "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f%%(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
            p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
            p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
            p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
