@@ -680,7 +680,7 @@ player_t* armory_t::download_player( sim_t* sim,
         printf( "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
         return 0;
       }
-      if( ! p -> parse_talents( talents_encoding ) ) 
+      if( ! p -> parse_talents_armory( talents_encoding ) ) 
       {
         printf( "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
         return 0;

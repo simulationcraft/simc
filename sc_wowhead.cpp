@@ -557,7 +557,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if( num_builds == 2 )
   {
     std::string& encoding = talent_encodings[ active_talents ];
-    if( ! p -> parse_talents( encoding ) ) 
+    if( ! p -> parse_talents_armory( encoding ) ) 
     {
       printf( "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
       return 0;

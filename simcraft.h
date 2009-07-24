@@ -356,8 +356,6 @@ enum food_type {
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
 
-enum encoding_type { ENCODING_NONE=0, ENCODING_BLIZZARD, ENCODING_MMO, ENCODING_WOWHEAD, ENCODING_MAX };
-
 enum profession_type {
   PROFESSION_NONE=0,
   PROF_ALCHEMY,
@@ -1459,11 +1457,10 @@ struct player_t
   virtual bool get_talent_translation( std::vector<int*>& tree, talent_translation_t translation[] );
   virtual bool get_talent_translation( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
   virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 );
-  virtual bool parse_talents( std::vector<int*>& talent_tree, const std::string& talent_string );
-  virtual bool parse_talents( const std::string& talent_string );
-  virtual bool parse_talents_mmo( const std::string& talent_string );
+  virtual bool parse_talent_tree( std::vector<int*>& talent_tree, const std::string& talent_string );
+  virtual bool parse_talents_armory ( const std::string& talent_string );
+  virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
-  virtual bool parse_talents( const std::string& talent_string, int encoding );
   
   virtual std::vector<option_t>& get_options();
   virtual bool save( FILE* );

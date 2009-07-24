@@ -306,23 +306,19 @@ static bool parse_talent_url( sim_t* sim,
   p -> talents_str = url;
 
   std::string::size_type cut_pt;
-  std::string talent_string;
-  int encoding = ENCODING_NONE;
 
   if( url.find( "worldofwarcraft" ) != url.npos )
   {
     if( ( cut_pt = url.find_first_of( "=" ) ) != url.npos )
     {
-      talent_string = url.substr( cut_pt + 1 );
-      encoding = ENCODING_BLIZZARD;
+      return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
   }
   else if( url.find( "wowarmory" ) != url.npos )
   {
     if( ( cut_pt = url.find_last_of( "=" ) ) != url.npos )
     {
-      talent_string = url.substr( cut_pt + 1 );
-      encoding = ENCODING_BLIZZARD;
+      return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
   }
   else if( url.find( "mmo-champion" ) != url.npos )
@@ -333,26 +329,20 @@ static bool parse_talent_url( sim_t* sim,
 
     if( ( cut_pt = parts[ 0 ].find_first_of( "=" ) ) != parts[ 0 ].npos )
     {
-      talent_string = parts[ 0 ].substr( cut_pt + 1 );
-      encoding = ENCODING_MMO;
+      return p -> parse_talents_mmo( parts[ 0 ].substr( cut_pt + 1 ) );
     }
   }
   else if( url.find( "wowhead" ) != url.npos )
   {
     if( ( cut_pt = url.find_first_of( "#=" ) ) != url.npos )
     {
-      talent_string = url.substr( cut_pt + 1 );
-      encoding = ENCODING_WOWHEAD;
+      return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
     }
   }
 
-  if ( encoding == ENCODING_NONE || ! p -> parse_talents( talent_string, encoding ) )
-  {
-    printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
-    return false;
-  }
+  printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
 
-  return true;
+  return false;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -2580,10 +2570,10 @@ bool player_t::get_talent_trees( std::vector<int*>& tree1,
   return false;
 }
 
-// player_t::parse_talents ==================================================
+// player_t::parse_talent_tree ==============================================
 
-bool player_t::parse_talents( std::vector<int*>& talent_tree,
-                              const std::string& talent_string )
+bool player_t::parse_talent_tree( std::vector<int*>& talent_tree,
+				  const std::string& talent_string )
 {
   const char* s = talent_string.c_str();
 
@@ -2593,15 +2583,21 @@ bool player_t::parse_talents( std::vector<int*>& talent_tree,
   {
     int* address = talent_tree[ i ];
     if ( ! address ) continue;
-    *address = s[ i ] - '0';
+    char c = s[ i ];
+    if( c < '0' || c > '5' )
+    {
+      printf( "\nsimcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      return false;
+    }
+    *address = c - '0';
   }
 
   return true;
 }
 
-// player_t::parse_talents ==================================================
+// player_t::parse_talents_armory ===========================================
 
-bool player_t::parse_talents( const std::string& talent_string )
+bool player_t::parse_talents_armory( const std::string& talent_string )
 {
   std::vector<int*> talent_tree1, talent_tree2, talent_tree3;
 
@@ -2624,18 +2620,16 @@ bool player_t::parse_talents( const std::string& talent_string )
   std::string talent_string2( buffer, size1,  size2 );
   std::string talent_string3( buffer, size1 + size2 );
 
-  parse_talents( talent_tree1, talent_string1 );
-  parse_talents( talent_tree2, talent_string2 );
-  parse_talents( talent_tree3, talent_string3 );
-
-  return true;
+  return( parse_talent_tree( talent_tree1, talent_string1 ) &&
+	  parse_talent_tree( talent_tree2, talent_string2 ) &&
+	  parse_talent_tree( talent_tree3, talent_string3 ) );
 }
 
 // player_t::parse_talents_mmo ==============================================
 
 bool player_t::parse_talents_mmo( const std::string& talent_string )
 {
-  return parse_talents( talent_string );
+  return parse_talents_armory( talent_string );
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -2720,22 +2714,11 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   for ( int i=0; i < 3; i++ )
   {
-    parse_talents( talent_trees[ i ], talent_strings[ i ] );
+    if( ! parse_talent_tree( talent_trees[ i ], talent_strings[ i ] ) )
+      return false;
   }
 
   return true;
-}
-
-// player_t::parse_talents ==================================================
-
-bool player_t::parse_talents( const std::string& talent_string,
-                              int                encoding )
-{
-  if ( encoding == ENCODING_BLIZZARD ) return parse_talents        ( talent_string );
-  if ( encoding == ENCODING_MMO      ) return parse_talents_mmo    ( talent_string );
-  if ( encoding == ENCODING_WOWHEAD  ) return parse_talents_wowhead( talent_string );
-
-  return false;
 }
 
 // player_t::save ===========================================================

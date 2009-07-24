@@ -258,7 +258,7 @@ player_t* rawr_t::load_player( sim_t* sim,
     return 0;
   }
 
-  if( ! p -> parse_talents( talents_encoding ) ) 
+  if( ! p -> parse_talents_armory( talents_encoding ) ) 
   {
     printf( "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;

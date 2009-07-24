@@ -601,11 +601,7 @@ struct hunter_pet_t : public pet_t
     return options;
   }
 
-  /* A couple dummy methods to avoid warnings about hidden overloaded methods */
-  virtual bool parse_talents(std::vector<int*, std::allocator<int*> >& a, const std::string& b) { return player_t::parse_talents(a,b); }
-  virtual bool parse_talents(const std::string& a, int b) { return player_t::parse_talents(a,b); }
-
-  virtual bool parse_talents( const std::string& talent_string )
+  virtual bool parse_talents_armory( const std::string& talent_string )
   {
     std::vector<int*> tree;
 
@@ -634,7 +630,7 @@ struct hunter_pet_t : public pet_t
         {  0, NULL                                }
       };
       get_talent_translation( tree, translation );
-      return player_t::parse_talents( tree, talent_string );
+      return parse_talent_tree( tree, talent_string );
     }
     else if ( group() == PET_CUNNING )
     {
@@ -662,7 +658,7 @@ struct hunter_pet_t : public pet_t
         {  0, NULL                                }
       };
       get_talent_translation( tree, translation );
-      return player_t::parse_talents( tree, talent_string );
+      return parse_talent_tree( tree, talent_string );
     }
     else // TENACITY
     {
@@ -3825,7 +3821,7 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
       if( xml_t::get_value( talent_str, pet_nodes[ i ], "talentSpec/value" ) &&
           talent_str != "" )
       {
-        pet -> parse_talents( talent_str );
+        pet -> parse_talents_armory( talent_str );
       }
     }
   }
