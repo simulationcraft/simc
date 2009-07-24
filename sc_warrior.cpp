@@ -1300,7 +1300,7 @@ struct bladestorm_t : public warrior_attack_t
       warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.bladestorm );
+    check_talent( p -> talents.bladestorm );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -1428,7 +1428,7 @@ struct bloodthirst_t : public warrior_attack_t
       warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.bloodthirst );
+    check_talent( p -> talents.bloodthirst );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -1463,7 +1463,7 @@ struct concussion_blow_t : public warrior_attack_t
       warrior_attack_t( "concussion blow",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.concussion_blow );
+    check_talent( p -> talents.concussion_blow );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -1490,7 +1490,7 @@ struct shockwave_t : public warrior_attack_t
       warrior_attack_t( "shockwave",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.shockwave );
+    check_talent( p -> talents.shockwave );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -1520,7 +1520,7 @@ struct devastate_t : public warrior_attack_t
       warrior_attack_t( "devastate",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.devastate );
+    check_talent( p -> talents.devastate );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -1851,7 +1851,7 @@ struct mortal_strike_t : public warrior_attack_t
       warrior_attack_t( "mortal_strike",  player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
-    assert( p -> talents.mortal_strike );
+    check_talent( p -> talents.mortal_strike );
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }

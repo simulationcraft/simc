@@ -1097,7 +1097,7 @@ struct auto_attack_t : public shaman_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      assert( p -> talents.dual_wield );
+      check_talent( p -> talents.dual_wield );
       p -> off_hand_attack = new melee_t( "melee_off_hand", player );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
@@ -1750,7 +1750,7 @@ struct elemental_mastery_t : public shaman_spell_t
       shaman_spell_t( "elemental_mastery", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.elemental_mastery );
+    check_talent( p -> talents.elemental_mastery );
 
     cooldown  = 180.0;
     cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
@@ -1793,7 +1793,7 @@ struct shamans_swiftness_t : public shaman_spell_t
       shaman_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.natures_swiftness );
+    check_talent( p -> talents.natures_swiftness );
     trigger_gcd = 0;
     cooldown = sim -> P320 ? 120.0 : 180.0;
     if ( ! options_str.empty() )
@@ -2228,7 +2228,7 @@ struct totem_of_wrath_t : public shaman_spell_t
       shaman_spell_t( "totem_of_wrath", player, SCHOOL_NATURE, TREE_ELEMENTAL ), bonus_spell_power( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.totem_of_wrath );
+    check_talent( p -> talents.totem_of_wrath );
 
     option_t options[] =
       {
@@ -2777,7 +2777,7 @@ struct mana_tide_totem_t : public shaman_spell_t
       shaman_spell_t( "mana_tide_totem", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.mana_tide_totem );
+    check_talent( p -> talents.mana_tide_totem );
 
     option_t options[] =
       {
@@ -3156,7 +3156,7 @@ struct thunderstorm_t : public shaman_spell_t
       shaman_spell_t( "thunderstorm", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.thunderstorm );
+    check_talent( p -> talents.thunderstorm );
     cooldown = 45.0;
     if ( p -> glyphs.thunderstorm ) cooldown -= 7.0;
   }
@@ -3199,7 +3199,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
       shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    assert( p -> talents.feral_spirit );
+    check_talent( p -> talents.feral_spirit );
 
     option_t options[] =
       {

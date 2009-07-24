@@ -1425,7 +1425,7 @@ struct mangle_cat_t : public druid_attack_t
       druid_attack_t( "mangle_cat", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.mangle );
+    check_talent( p -> talents.mangle );
 
     // By default, do not overwrite Mangle
     max_mangle_expire = 0.001;
@@ -1751,7 +1751,7 @@ struct berserk_t : public druid_attack_t
       druid_attack_t( "berserk", player )
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.berserk );
+    check_talent( p -> talents.berserk );
 
     option_t options[] =
       {
@@ -2344,7 +2344,7 @@ struct insect_swarm_t : public druid_spell_t
     druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ), min_eclipse_left(0)
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.insect_swarm );
+    check_talent( p -> talents.insect_swarm );
 
     option_t options[] =
       {
@@ -2578,7 +2578,7 @@ struct moonkin_form_t : public druid_spell_t
       druid_spell_t( "moonkin_form", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.moonkin_form );
+    check_talent( p -> talents.moonkin_form );
     trigger_gcd = 0;
     base_execute_time = 0;
     base_cost = 0;
@@ -2621,7 +2621,7 @@ struct druids_swiftness_t : public druid_spell_t
       druid_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.natures_swiftness );
+    check_talent( p -> talents.natures_swiftness );
     trigger_gcd = 0;
     cooldown = 180.0;
     if ( ! options_str.empty() )
@@ -3133,7 +3133,7 @@ struct treants_spell_t : public druid_spell_t
       druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    assert( p -> talents.force_of_nature );
+    check_talent( p -> talents.force_of_nature );
 
     option_t options[] =
       {

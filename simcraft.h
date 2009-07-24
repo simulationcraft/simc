@@ -1832,8 +1832,7 @@ struct action_t
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
-  inline bool    check_condition(bool status, const char *fmt) { static bool done = false; if(unlikely(!status) && unlikely(!done)) { printf(fmt, this->name()); done=true; } return status; }
-  inline bool    check_talent(bool status) { return check_condition(status, "The enabling talent is not active for action: %s\n"); }
+  virtual void   check_talent( int talent_rank );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
   virtual double total_multiplier() SC_CONST { return   base_multiplier * player_multiplier * target_multiplier; }

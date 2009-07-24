@@ -440,7 +440,7 @@ struct crusader_strike_t : public paladin_attack_t
   crusader_strike_t( paladin_t* p, const std::string& options_str ) : 
     paladin_attack_t( "crusader_strike", p )
   {
-    assert( p -> talents.crusader_strike );
+    check_talent( p -> talents.crusader_strike );
 
     weapon                 = &( p -> main_hand_weapon );
     weapon_multiplier     *= 1.1;
@@ -473,7 +473,7 @@ struct divine_storm_t : public paladin_attack_t
   divine_storm_t( paladin_t* p, const std::string& options_str ) : 
     paladin_attack_t( "divine_storm", p)
   {
-    assert( p -> talents.divine_storm );
+    check_talent( p -> talents.divine_storm );
 
     weapon                 = &( p -> main_hand_weapon );
     weapon_multiplier     *= 1.1;

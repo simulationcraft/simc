@@ -1149,7 +1149,7 @@ struct adrenaline_rush_t : public rogue_attack_t
       rogue_attack_t( "adrenaline_rush", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.adrenaline_rush );
+    check_talent( p -> talents.adrenaline_rush );
 
     option_t options[] =
       {
@@ -1327,7 +1327,7 @@ struct blade_flurry_t : public rogue_attack_t
       rogue_attack_t( "blade_flurry", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.blade_flurry );
+    check_talent( p -> talents.blade_flurry );
 
     option_t options[] =
       {
@@ -1754,7 +1754,7 @@ struct ghostly_strike_t : public rogue_attack_t
       rogue_attack_t( "ghostly_strike", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.ghostly_strike );
+    check_talent( p -> talents.ghostly_strike );
 
     option_t options[] =
       {
@@ -1791,7 +1791,7 @@ struct hemorrhage_t : public rogue_attack_t
       rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY ), damage_adder( 0 )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.hemorrhage );
+    check_talent( p -> talents.hemorrhage );
 
     option_t options[] =
       {
@@ -1878,7 +1878,7 @@ struct hunger_for_blood_t : public rogue_attack_t
       refresh_at( 5 )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.hunger_for_blood );
+    check_talent( p -> talents.hunger_for_blood );
 
     option_t options[] =
       {
@@ -2020,7 +2020,7 @@ struct killing_spree_t : public rogue_attack_t
       rogue_attack_t( "killing_spree", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.killing_spree );
+    check_talent( p -> talents.killing_spree );
 
     option_t options[] =
       {
@@ -2091,7 +2091,7 @@ struct mutilate_t : public rogue_attack_t
       rogue_attack_t( "mutilate", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.mutilate );
+    check_talent( p -> talents.mutilate );
 
     option_t options[] =
       {
@@ -2549,7 +2549,7 @@ struct shadow_dance_t : public rogue_attack_t
       rogue_attack_t( "shadow_dance", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.shadow_dance );
+    check_talent( p -> talents.shadow_dance );
 
     option_t options[] =
       {
@@ -3062,7 +3062,7 @@ struct cold_blood_t : public spell_t
       spell_t( "cold_blood", player )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.cold_blood );
+    check_talent( p -> talents.cold_blood );
 
     option_t options[] =
       {
@@ -3091,7 +3091,7 @@ struct preparation_t : public spell_t
       spell_t( "preparation", player )
   {
     rogue_t* p = player -> cast_rogue();
-    assert( p -> talents.preparation );
+    check_talent( p -> talents.preparation );
 
     option_t options[] =
       {

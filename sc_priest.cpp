@@ -803,7 +803,7 @@ struct penance_t : public priest_spell_t
       priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.penance );
+    check_talent( p -> talents.penance );
 
     option_t options[] =
       {
@@ -940,7 +940,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    assert( p -> talents.vampiric_touch );
+    check_talent( p -> talents.vampiric_touch );
 
     option_t options[] =
       {
@@ -1137,7 +1137,7 @@ struct vampiric_embrace_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    assert( p -> talents.vampiric_embrace );
+    check_talent( p -> talents.vampiric_embrace );
 
     static rank_t ranks[] =
       {
@@ -1424,7 +1424,7 @@ struct mind_flay_t : public priest_spell_t
       priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_wait( 0 ), devious_mind_priority( 0 )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.mind_flay );
+    check_talent( p -> talents.mind_flay );
 
     option_t options[] =
       {
@@ -1511,7 +1511,7 @@ struct dispersion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    assert( p -> talents.dispersion );
+    check_talent( p -> talents.dispersion );
 
     base_execute_time = 0.0;
     base_tick_time    = 1.0;
@@ -1583,7 +1583,7 @@ struct power_infusion_t : public priest_spell_t
       priest_spell_t( "power_infusion", player, SCHOOL_ARCANE, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.power_infusion );
+    check_talent( p -> talents.power_infusion );
     trigger_gcd = 0;
     cooldown = 120.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
@@ -1619,7 +1619,7 @@ struct inner_focus_t : public priest_spell_t
       priest_spell_t( "inner_focus", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.inner_focus );
+    check_talent( p -> talents.inner_focus );
 
     cooldown = 180.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
@@ -1761,7 +1761,7 @@ struct shadow_form_t : public priest_spell_t
       priest_spell_t( "shadow_form", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     priest_t* p = player -> cast_priest();
-    assert( p -> talents.shadow_form );
+    check_talent( p -> talents.shadow_form );
     trigger_gcd = 0;
   }
 

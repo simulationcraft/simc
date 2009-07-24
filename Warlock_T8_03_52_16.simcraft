@@ -22,8 +22,6 @@ actions+=/shadow_bolt
 actions+=/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1
 actions+=/corruption,time_to_die>=20
 actions+=/curse_of_agony,time_to_die>=30
-actions+=/shadow_burn
-actions+=/shadowfury
 actions+=/corruption
 actions+=/curse_of_agony
 actions+=/life_tap
@@ -31,7 +29,7 @@ head=conquerors_deathbringer_hood,stats=256armor_86crit_113sp_89sta_76int_41spi,
 neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=8haste_9sp_5sp
 shoulders=conquerors_deathbringer_shoulderpads,stats=236armor_58crit_41haste_99sp_68sta_62int,gems=8haste_9sp_4hit,enchant=24sp_15crit
 chest=conquerors_deathbringer_robe,stats=314armor_73hit_66crit_124sp_83sta_76int,gems=19sp_8haste_9sp_7sp,enchant=10str_10agi_10sta_10int_10spi
-waist=starwatchers_binding,stats=64spi_69int_82sta_47crit_92sp_182armor,gems=19sp_8haste_9sp_19sp_7sp
+waist=starwatchers_binding,stats=82sta_69int_64spi_92sp_47crit_182armor,gems=19sp_8haste_9sp_19sp_7sp
 legs=conquerors_deathbringer_leggings,stats=275armor_66haste_132sp_86sta_86int_49spi,gems=19sp_19sp,enchant=50sp_20spi
 feet=boots_of_fiery_resolution,stats=223armor_55haste_102sp_72sta_72int_64spi,gems=19sp_8haste_9sp_6haste,enchant=12crit_12hit
 wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp

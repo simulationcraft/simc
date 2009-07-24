@@ -1072,7 +1072,27 @@ void action_t::cancel()
   if ( observer ) *observer = 0;
 }
 
-// action_t::create_expression ====================================================
+// action_t::check_talent ===================================================
+
+void action_t::check_talent( int talent_rank )
+{
+  if( talent_rank != 0 ) return;
+
+  if( player -> is_pet() )
+  {
+    pet_t* p = player -> cast_pet();
+    printf( "\nsimcraft: Player %s has pet %s attempting to execute action %s without the required talent.\n",
+	    p -> owner -> name(), p -> name(), name() );
+  }
+  else
+  {
+    printf( "\nsimcraft: Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
+  }
+
+  background = true; // prevent action from being executed
+}
+
+// action_t::create_expression ==============================================
 act_expression_t* action_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
   act_expression_t* node=0;
   // check action specific functions

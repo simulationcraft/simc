@@ -1330,7 +1330,7 @@ struct heart_strike_t : public death_knight_attack_t
       death_knight_attack_t( "heart_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
-    assert( p -> talents.heart_strike == 1 );
+    check_talent( p -> talents.heart_strike );
 
     option_t options[] =
       {

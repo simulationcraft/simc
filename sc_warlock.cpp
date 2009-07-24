@@ -1908,6 +1908,7 @@ struct shadow_burn_t : public warlock_spell_t
       warlock_spell_t( "shadow_burn", player, SCHOOL_SHADOW, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.shadow_burn );
 
     option_t options[] =
       {
@@ -1983,7 +1984,8 @@ struct shadowfury_t : public warlock_spell_t
       warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), cast_gcd(-1)
   {
     warlock_t* p = player -> cast_warlock();
-
+    check_talent( p -> talents.shadowfury );
+    
     option_t options[] =
       {
         { "cast_gcd",    OPT_FLT,  &cast_gcd    },
@@ -2337,6 +2339,8 @@ struct unstable_affliction_t : public warlock_spell_t
       warlock_spell_t( "unstable_affliction", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.unstable_affliction );
+
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -2421,6 +2425,7 @@ struct haunt_t : public warlock_spell_t
       warlock_spell_t( "haunt", player, SCHOOL_SHADOW, TREE_AFFLICTION ), debuff( 0 )
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.haunt );
 
     option_t options[] =
       {
@@ -2669,6 +2674,7 @@ struct conflagrate_t : public warlock_spell_t
       warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true )
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.conflagrate );
 
     option_t options[] =
       {
@@ -3163,6 +3169,9 @@ struct dark_pact_t : public warlock_spell_t
   dark_pact_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
+    warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.dark_pact );
+
     option_t options[] =
       {
         { NULL, OPT_UNKNOWN, NULL }
@@ -3442,6 +3451,7 @@ struct metamorphosis_t : public warlock_spell_t
       warlock_spell_t( "metamorphosis", player, SCHOOL_SHADOW, TREE_DEMONOLOGY )
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.metamorphosis );
 
     option_t options[] =
       {
@@ -3483,6 +3493,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), demonic_frenzy(0)
   {
     warlock_t* p = player -> cast_warlock();
+    check_talent( p -> talents.demonic_empowerment );
 
     option_t options[] =
       {
@@ -3627,7 +3638,7 @@ struct wait_for_decimation_t : public action_t
       action_t( ACTION_OTHER, "wait_for_decimation", player ), time( 0.25 )
   {
     warlock_t* p = player -> cast_warlock();
-    assert( p -> talents.decimation );
+    check_talent( p -> talents.decimation );
 
     option_t options[] =
       {
@@ -4095,7 +4106,10 @@ void warlock_t::init_actions()
     action_list_str += talents.emberstorm ? "/incinerate" : "/shadow_bolt";
 
     // instants to use when moving if possible
-    action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30/shadow_burn/shadowfury/corruption/curse_of_agony"; 
+    action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30";
+    if( talents.shadow_burn ) action_list_str+="/shadow_burn";
+    if( talents.shadowfury  ) action_list_str+="/shadowfury";
+    action_list_str+="/corruption/curse_of_agony"; 
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     action_list_default = 1;

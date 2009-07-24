@@ -1472,7 +1472,7 @@ struct arcane_barrage_t : public mage_spell_t
       mage_spell_t( "arcane_barrage", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.arcane_barrage );
+    check_talent( p -> talents.arcane_barrage );
 
     option_t options[] =
       {
@@ -1859,7 +1859,7 @@ struct arcane_power_t : public mage_spell_t
       mage_spell_t( "arcane_power", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.arcane_power );
+    check_talent( p -> talents.arcane_power );
     trigger_gcd = 0;
     cooldown = 120.0;
     cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
@@ -1898,7 +1898,7 @@ struct slow_t : public mage_spell_t
       mage_spell_t( "slow", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.slow );
+    check_talent( p -> talents.slow );
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
   }
 
@@ -1929,7 +1929,7 @@ struct focus_magic_t : public mage_spell_t
       mage_spell_t( "focus_magic", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.focus_magic );
+    check_talent( p -> talents.focus_magic );
 
     std::string target_str = p -> focus_magic_target_str;
     option_t options[] =
@@ -2030,7 +2030,7 @@ struct presence_of_mind_t : public mage_spell_t
       mage_spell_t( "presence_of_mind", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.presence_of_mind );
+    check_talent( p -> talents.presence_of_mind );
 
     cooldown = 120.0;
     if ( p -> set_bonus.tier4_4pc() ) cooldown -= 24.0;
@@ -2265,7 +2265,7 @@ struct living_bomb_t : public mage_spell_t
       mage_spell_t( "living_bomb", player, SCHOOL_FIRE, TREE_FIRE ), explosion( 0 )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.living_bomb );
+    check_talent( p -> talents.living_bomb );
 
     option_t options[] =
       {
@@ -2347,7 +2347,7 @@ struct pyroblast_t : public mage_spell_t
       mage_spell_t( "pyroblast", player, SCHOOL_FIRE, TREE_FIRE ), hot_streak( 0 )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.pyroblast );
+    check_talent( p -> talents.pyroblast );
 
     option_t options[] =
       {
@@ -2472,7 +2472,7 @@ struct scorch_t : public mage_spell_t
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
-    if ( debuff ) assert( p -> talents.improved_scorch );
+    if ( debuff ) check_talent( p -> talents.improved_scorch );
   }
 
   virtual void execute()
@@ -2515,7 +2515,7 @@ struct combustion_t : public mage_spell_t
       mage_spell_t( "combustion", player, SCHOOL_FIRE, TREE_FIRE )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.combustion );
+    check_talent( p -> talents.combustion );
     cooldown = 180;
   }
 
@@ -2889,7 +2889,7 @@ struct icy_veins_t : public mage_spell_t
       mage_spell_t( "icy_veins", player, SCHOOL_FROST, TREE_FROST )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.icy_veins );
+    check_talent( p -> talents.icy_veins );
 
     option_t options[] =
     {
@@ -2928,7 +2928,7 @@ struct cold_snap_t : public mage_spell_t
       mage_spell_t( "cold_snap", player, SCHOOL_FROST, TREE_FROST )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.cold_snap );
+    check_talent( p -> talents.cold_snap );
 
     option_t options[] =
     {
@@ -3085,7 +3085,7 @@ struct water_elemental_spell_t : public mage_spell_t
       mage_spell_t( "water_elemental", player, SCHOOL_FROST, TREE_FROST )
   {
     mage_t* p = player -> cast_mage();
-    assert( p -> talents.summon_water_elemental );
+    check_talent( p -> talents.summon_water_elemental );
 
     option_t options[] =
     {
