@@ -2554,6 +2554,7 @@ struct frost_bolt_t : public mage_spell_t
 
     static rank_t ranks[] =
       {
+        { 80, 16, 803, 866, 0, pct },
         { 79, 16, 799, 861, 0, pct },
         { 75, 15, 702, 758, 0, pct },
         { 70, 14, 630, 680, 0, pct },
