@@ -1685,6 +1685,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
     static rank_t ranks[] =
       {
+        { 80, 13, 361, 362, 0, 0 },
         { 79, 13, 360, 360, 0, 0 },
         { 75, 12, 320, 320, 0, 0 },
         { 70, 11, 280, 280, 0, 0 },
@@ -2101,6 +2102,7 @@ struct fire_ball_t : public mage_spell_t
 
     static rank_t ranks[] =
       {
+        { 80, 16, 898, 1143, 29, 0.19 },
         { 78, 16, 888, 1132, 29, 0.19 },
         { 74, 15, 783,  997, 25, 0.19 },
         { 70, 14, 717,  913, 23, 0.19 },
@@ -2443,6 +2445,7 @@ struct scorch_t : public mage_spell_t
 
     static rank_t ranks[] =
       {
+        { 80, 11, 382, 451, 0, 0.08 },
         { 78, 11, 376, 444, 0, 0.08 },
         { 73, 10, 321, 379, 0, 0.08 },
         { 70,  9, 305, 361, 0, 180  },
@@ -2666,6 +2669,7 @@ struct ice_lance_t : public mage_spell_t
 
     static rank_t ranks[] =
       {
+        { 80, 3, 223, 258, 0, pct },
         { 78, 3, 221, 255, 0, pct },
         { 72, 2, 182, 210, 0, pct },
         { 66, 1, 161, 187, 0, 150 },
