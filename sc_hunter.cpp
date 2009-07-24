@@ -741,7 +741,7 @@ struct hunter_spell_t : public spell_t
 
   virtual double gcd() SC_CONST;
 
-  inline bool check_active_pet() { hunter_t* p = player -> cast_hunter(); return check_condition( p -> active_pet, "Pet is not active: %s\n" ); }
+  inline bool check_active_pet() { hunter_t* p = player -> cast_hunter(); return check_condition( p -> active_pet != NULL, "Pet is not active: %s\n" ); }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -974,7 +974,7 @@ static void trigger_go_for_the_throat( attack_t* a )
   hunter_t* p = a -> player -> cast_hunter();
 
   if ( ! p -> talents.go_for_the_throat ) return;
-  if ( ! a -> check_condition( p -> active_pet, "Pet is not active: %s\n" ) ) return;
+  if ( ! a -> check_condition( p -> active_pet != NULL, "Pet is not active: %s\n" ) ) return;
 
   double gain = p -> talents.go_for_the_throat * 25.0;
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain,
@@ -1844,7 +1844,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( ! check_talent( p -> talents.wolverine_bite ) ) return;
+    if( ! check_talent( p -> talents.wolverine_bite != 0 ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2003,7 +2003,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( ! check_talent( p -> talents.call_of_the_wild ) ) return;
+    if( ! check_talent( p -> talents.call_of_the_wild != 0 ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2109,7 +2109,7 @@ struct rabid_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( ! check_talent( p -> talents.rabid ) ) return;
+    if( ! check_talent( p -> talents.rabid != 0 ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2158,7 +2158,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    if( ! check_talent( p -> talents.roar_of_recovery ) ) return;
+    if( ! check_talent( p -> talents.roar_of_recovery != 0 ) ) return;
 
     parse_options( 0, options_str );
 
@@ -2396,7 +2396,7 @@ struct aimed_shot_t : public hunter_attack_t
       improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.aimed_shot ) ) return;
+    if( ! check_talent( p -> talents.aimed_shot != 0 ) ) return;
 
     option_t options[] =
       {
@@ -2596,7 +2596,7 @@ struct black_arrow_t : public hunter_attack_t
       hunter_attack_t( "black_arrow", player, SCHOOL_SHADOW, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.black_arrow ) ) return;
+    if( ! check_talent( p -> talents.black_arrow != 0 ) ) return;
 
     static rank_t ranks[] =
       {
@@ -2655,7 +2655,7 @@ struct chimera_shot_t : public hunter_attack_t
       active_sting( 1 ), improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.chimera_shot ) ) return;
+    if( ! check_talent( p -> talents.chimera_shot != 0 ) ) return;
 
     option_t options[] =
       {
@@ -2849,7 +2849,7 @@ struct explosive_shot_t : public hunter_attack_t
       lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.explosive_shot ) ) return;
+    if( ! check_talent( p -> talents.explosive_shot != 0 ) ) return;
 
     option_t options[] =
       {
@@ -3016,7 +3016,7 @@ struct scatter_shot_t : public hunter_attack_t
       hunter_attack_t( "scatter_shot", player, SCHOOL_PHYSICAL, TREE_SURVIVAL )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.scatter_shot ) ) return;
+    if( ! check_talent( p -> talents.scatter_shot != 0 ) ) return;
 
     may_crit    = true;
     base_dd_min = 1;
@@ -3114,7 +3114,7 @@ struct silencing_shot_t : public hunter_attack_t
       hunter_attack_t( "silencing_shot", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.silencing_shot ) ) return;
+    if( ! check_talent( p -> talents.silencing_shot != 0 ) ) return;
 
     base_dd_min = 1;
     base_dd_max = 1;
@@ -3342,7 +3342,7 @@ struct bestial_wrath_t : public hunter_spell_t
       hunter_spell_t( "bestial_wrath", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.bestial_wrath ) ) return;
+    if( ! check_talent( p -> talents.bestial_wrath != 0 ) ) return;
 
     base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
     cooldown = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
@@ -3570,7 +3570,7 @@ struct readiness_t : public hunter_spell_t
       wait_for_rf( false )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.readiness ) ) return;
+    if( ! check_talent( p -> talents.readiness != 0 ) ) return;
 
     option_t options[] =
       {
@@ -3647,7 +3647,7 @@ struct trueshot_aura_t : public hunter_spell_t
       hunter_spell_t( "trueshot_aura", player, SCHOOL_ARCANE, TREE_MARKSMANSHIP )
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! check_talent( p -> talents.trueshot_aura ) ) return;
+    if( ! check_talent( p -> talents.trueshot_aura != 0 ) ) return;
     trigger_gcd = 0;
     harmful = false;
   }
