@@ -1536,6 +1536,13 @@ struct pet_t : public player_t
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    if( sim -> P320 )
+      return owner -> composite_attack_hit() * 6.5 / 8.0;
+    else
+      return player_t::composite_attack_expertise();
+  }
   virtual double composite_attack_hit() SC_CONST { return owner -> composite_attack_hit(); }
   virtual double composite_spell_hit() SC_CONST  { return owner -> composite_spell_hit();  }
 

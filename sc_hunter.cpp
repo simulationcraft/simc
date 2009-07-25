@@ -509,7 +509,11 @@ struct hunter_pet_t : public pet_t
     // FIXME don't know level 60 value
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
 
-    base_attack_expertise = 0.25 * o -> talents.animal_handler * 0.05;
+    if( sim -> P320 )
+      initial_attack_power_multiplier *= 1.0 + o -> talents.animal_handler * 0.05;
+    else
+      base_attack_expertise = 0.25 * o -> talents.animal_handler * 0.05;
+
 
     base_attack_crit = 0.032 + talents.spiders_bite * 0.03;
     base_attack_crit += o -> talents.ferocity * 0.02;
@@ -555,6 +559,14 @@ struct hunter_pet_t : public pet_t
       ap *= 1.1;
 
     return ap;
+  }
+
+  virtual double composite_spell_hit() SC_CONST
+  {
+    if( sim -> P320 )
+      return composite_attack_hit() * 17.0 / 8.0;
+    else
+      return pet_t::composite_spell_hit();
   }
 
   virtual void summon()
