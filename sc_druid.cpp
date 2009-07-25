@@ -2830,9 +2830,10 @@ struct wrath_t : public druid_spell_t
   int eclipse_benefit;
   int eclipse_trigger;
   std::string prev_str;
+  double moonfury_bonus;
 
   wrath_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit( 0 ), eclipse_trigger( 0 )
+      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit( 0 ), eclipse_trigger( 0 ), moonfury_bonus( 0.0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2870,7 +2871,9 @@ struct wrath_t : public druid_spell_t
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
-    base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
+    // The % bonus from eclipse and moonfury are additive, so have to sum 
+    // them up in player_buff()
+    moonfury_bonus = util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
@@ -2905,10 +2908,13 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
     p -> uptimes_eclipse_wrath -> update( p -> _buffs.eclipse_wrath != 0 );
+    // Eclipse and Moonfury being additive has to be handled here
+    double e_m_additive_bonus = 1.0 + moonfury_bonus;
     if ( p -> _buffs.eclipse_wrath )
     {
-      player_multiplier *= 1.3 + p -> tiers.t8_2pc_balance * 0.15;
+      e_m_additive_bonus += 0.3 + p -> tiers.t8_2pc_balance * 0.15;
     }
+    player_multiplier *= e_m_additive_bonus;
     if ( p -> active_insect_swarm )
     {
       player_multiplier *= 1.0 + p -> talents.improved_insect_swarm * 0.01;
