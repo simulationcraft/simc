@@ -196,6 +196,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\sc_buff.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\sc_chart.cpp"
 			>
 		</File>
