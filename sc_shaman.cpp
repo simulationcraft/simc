@@ -406,12 +406,11 @@ static void trigger_flametongue_weapon( attack_t* a )
     {
       shaman_t* p = player -> cast_shaman();
 
-      background       = true;
-      proc             = true;
-      may_crit         = true;
-      trigger_gcd      = 0;
-      direct_power_mod = 0.10; // Fix-Me. In 3.1 this scales with weapon speed.
-      base_hit        += p -> talents.elemental_precision * 0.01;
+      background   = true;
+      proc         = true;
+      may_crit     = true;
+      trigger_gcd  = 0;
+      base_hit    += p -> talents.elemental_precision * 0.01;
 
       reset();
     }
@@ -433,6 +432,7 @@ static void trigger_flametongue_weapon( attack_t* a )
 
     p -> flametongue_weapon_spell -> base_dd_min = fire_dmg;
     p -> flametongue_weapon_spell -> base_dd_max = fire_dmg;
+    p -> flametongue_weapon_spell -> direct_power_mod = 0.03811 * a -> weapon -> swing_time;
     p -> flametongue_weapon_spell -> execute();
   }
 }
