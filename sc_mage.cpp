@@ -234,6 +234,7 @@ struct mage_t : public player_t
   virtual bool      save( FILE* file );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual int       decode_set   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
@@ -3921,6 +3922,17 @@ bool mage_t::save( FILE* file )
   if( ! focus_magic_target_str.empty() ) fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
 
   return true;
+}
+
+// mage_t::decode_set =======================================================
+
+int mage_t::decode_set( const std::string& name )
+{
+  if( name.find( "frostfire"  ) != std::string::npos ) return SET_T7;
+  if( name.find( "kirin_tor"  ) != std::string::npos ) return SET_T8;
+  if( name.find( "sunstrider" ) != std::string::npos ) return SET_T9;
+  if( name.find( "khadgar"    ) != std::string::npos ) return SET_T9;
+  return SET_NONE;
 }
 
 // player_t::create_mage  ===================================================

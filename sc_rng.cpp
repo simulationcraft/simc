@@ -819,14 +819,18 @@ struct rng_distance_bands_t : public rng_distance_simple_t
 
 rng_t* rng_t::create( sim_t*             sim,
                       const std::string& name,
-                      int                rng_type )
+                      int                type )
 {
+  if ( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;
+  if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
+  if ( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_BANDS;
+
   rng_t* b = sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng;
 
   bool ar = ( bool ) ( sim -> average_range != 0 );
   bool ag = ( bool ) ( sim -> average_gauss != 0 );
 
-  switch ( rng_type )
+  switch ( type )
   {
   case RNG_STANDARD:         return new rng_t                ( name,    ar, ag );
   case RNG_MERSENNE_TWISTER: return new rng_sfmt_t           ( name,    ar, ag );

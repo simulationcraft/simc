@@ -296,7 +296,7 @@ static bool parse_rawr( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P312( false ), P313( false ), P320( false ), rng( 0 ), deterministic_rng( 0 ),
+    parent( p ), P312( false ), P313( false ), P320( false ), 
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
@@ -310,9 +310,10 @@ sim_t::sim_t( sim_t* p, int index ) :
     instant_only_gcd_lag( 0 ), armor_update_interval( 20 ), 
     optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles(0),
     default_region_str( "us" ),
+    rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-    replenishment_targets( 0 ),
+    buff_list( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
@@ -357,6 +358,12 @@ sim_t::~sim_t()
   {
     free_list = e -> next;
     event_t::deallocate( e );
+  }
+
+  while ( rng_t* r = rng_list )
+  {
+    rng_list = r -> next;
+    delete r;
   }
 
   if ( rng     ) delete rng;
@@ -1165,6 +1172,34 @@ double sim_t::gauss( double mean,
                      double stddev )
 {
   return rng -> gauss( mean, stddev );
+}
+
+// sim_t::get_rng ===========================================================
+
+rng_t* sim_t::get_rng( const std::string& n, int type )
+{
+  assert( rng );
+
+  if ( ! smooth_rng || type == RNG_GLOBAL ) return rng;
+
+  if( type == RNG_DETERMINISTIC ) return deterministic_rng;
+
+  rng_t* r=0;
+
+  for ( r = rng_list; r; r = r -> next )
+  {
+    if ( r -> name_str == n )
+      return r;
+  }
+
+  if ( ! r )
+  {
+    r = rng_t::create( this, n, type );
+    r -> next = rng_list;
+    rng_list = r;
+  }
+
+  return rng;
 }
 
 // sim_t::print_options =====================================================

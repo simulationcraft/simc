@@ -81,6 +81,7 @@ struct alias_t;
 struct attack_t;
 struct spell_tick_t;
 struct base_stats_t;
+struct buff_t;
 struct buff_expiration_t;
 struct buff_uptime_t;
 struct callback_t;
@@ -637,6 +638,40 @@ struct buff_list_t{
   bool     chk_buff(std::string& name) SC_CONST;
 };
 
+struct buff_t
+{
+  sim_t* sim;
+  player_t* player;
+  std::string name_str;
+  int current_stack, max_stack;
+  double current_value, react, duration, cooldown, cooldown_ready;
+  double last_start, interval_sum, uptime_sum;
+  int64_t up_count, down_count, interval_count, start_count;
+  int aura_id;
+  event_t* expiration;
+  rng_t* rng;
+  buff_t* next;
+
+  buff_t() : sim(0) {}
+  buff_t( sim_t*, player_t*, 
+	  const std::string& name, 
+	  int max_stack, double duration, double cooldown, 
+	  int rng_type=RNG_CYCLIC, int aura_id=0 );
+
+  virtual bool   may_react();
+  virtual bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
+  virtual int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
+  virtual double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double remains();
+  virtual bool   trigger( double chance=1.0, int stacks=1, double value=1.0 );
+  virtual void   increment( int stacks=1, double value=1.0 );
+  virtual void   decrement( int stacks=0 );
+  virtual void   start();
+  virtual void   expire();
+  virtual void   reset();
+  virtual void   merge( buff_t* other_buff );
+  virtual const char* name() { return name_str.c_str(); }
+};
 
 // Expressions =================================================================
 
@@ -701,8 +736,6 @@ struct sim_t
   bool        P312;
   bool        P313;
   bool        P320;
-  rng_t*      rng;
-  rng_t*      deterministic_rng;
   event_t*    free_list;
   target_t*   target;
   player_t*   player_list;
@@ -726,7 +759,10 @@ struct sim_t
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
 
-  // Smooth Random Number Generation
+  // Random Number Generation
+  rng_t* rng;
+  rng_t* deterministic_rng;
+  rng_t* rng_list;
   int smooth_rng, deterministic_roll, average_range, average_gauss;
 
   // Timing Wheel Event Management
@@ -823,6 +859,8 @@ struct sim_t
   };
   expirations_t expirations;
 
+  buff_t* buff_list;
+
   // Replenishment
   int replenishment_targets;
   std::vector<player_t*> replenishment_candidates;
@@ -881,6 +919,7 @@ struct sim_t
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
+  rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   player_t* find_player( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
 };
@@ -1037,7 +1076,7 @@ struct set_bonus_t
   int tier10_2pc() SC_CONST;
   int tier10_4pc() SC_CONST;
   int spellstrike() SC_CONST;
-  int decode( const std::string& item_name ) SC_CONST;
+  int decode( player_t*, const std::string& item_name ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();
 };
@@ -1167,6 +1206,7 @@ struct player_t
   double    resource_gained[ RESOURCE_MAX ];
   double    dps, dps_min, dps_max, dps_std_dev, dps_error;
   double    dpr, rps_gain, rps_loss;
+  buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
@@ -1195,7 +1235,7 @@ struct player_t
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
 
-  struct buff_t
+  struct buffs_t
   {
     int       abominations_might;
     double    arcane_brilliance;
@@ -1240,10 +1280,10 @@ struct player_t
     int       tier8_2pc,  tier8_4pc;
     int       tier9_2pc,  tier9_4pc;
     int       tier10_2pc, tier10_4pc;
-    void reset() { memset( ( void* ) this, 0x0, sizeof( buff_t ) ); }
-    buff_t() { reset(); }
+    void reset() { memset( ( void* ) this, 0x0, sizeof( buffs_t ) ); }
+    buffs_t() { reset(); }
   };
-  buff_t buffs;
+  buffs_t buffs;
 
 
   struct expirations_t
@@ -1342,7 +1382,7 @@ struct player_t
   };
   procs_t procs;
 
-  buff_list_t buff_list;
+  buff_list_t _buff_list;
 
   rng_t* rng_list;
 
@@ -1473,6 +1513,7 @@ struct player_t
   virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
   virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) {}
+  virtual int  decode_set( const std::string& name ) { return SET_NONE; }
 
   // Class-Specific Methods
 

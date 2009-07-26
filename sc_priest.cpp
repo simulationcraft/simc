@@ -158,6 +158,7 @@ struct priest_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual int       decode_set   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : talents.penance ? TREE_DISCIPLINE : TREE_HOLY; }
@@ -2247,6 +2248,17 @@ std::vector<option_t>& priest_t::get_options()
   }
 
   return options;
+}
+
+// priest_t::decode_set =====================================================
+
+int priest_t::decode_set( const std::string& name )
+{
+  if( name.find( "faith"          ) != std::string::npos ) return SET_T7;
+  if( name.find( "sanctification" ) != std::string::npos ) return SET_T8;
+  if( name.find( "zabra"          ) != std::string::npos ) return SET_T9;
+  if( name.find( "velen"          ) != std::string::npos ) return SET_T9;
+  return SET_NONE;
 }
 
 // player_t::create_priest  =================================================

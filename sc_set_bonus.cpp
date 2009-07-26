@@ -68,70 +68,15 @@ int set_bonus_t::spellstrike() SC_CONST { return ( count[ SET_SPELLSTRIKE ] >= 2
 
 // set_bonus_t::decode ======================================================
 
-int set_bonus_t::decode( const std::string& name ) SC_CONST
+int set_bonus_t::decode( player_t*          p,
+			 const std::string& name ) SC_CONST
 {
   if( name.empty() ) return SET_NONE;
 
-  // Death Knight
-  if( name.find( "scourgeborne" ) != std::string::npos ) return SET_T7;
-  if( name.find( "darkruned"    ) != std::string::npos ) return SET_T8;
-  if( name.find( "koltira"      ) != std::string::npos ) return SET_T9;
-  if( name.find( "thassarian"   ) != std::string::npos ) return SET_T9;
+  int set = p -> decode_set( name );
+  if( set != SET_NONE ) return set;
 
-  // Druid
-  if( name.find( "dreamwalker" ) != std::string::npos ) return SET_T7;
-  if( name.find( "nightsong"   ) != std::string::npos ) return SET_T8;
-  if( name.find( "stormrage"   ) != std::string::npos ) return SET_T9;
-  if( name.find( "runetotem"   ) != std::string::npos ) return SET_T9;
-
-  // Hunter
-  if( name.find( "cryptstalker"   ) != std::string::npos ) return SET_T7;
-  if( name.find( "scourgestalker" ) != std::string::npos ) return SET_T8;
-  if( name.find( "windrunner"     ) != std::string::npos ) return SET_T9;
-  // Horde T9 name?
-  // if( name.find( ""   ) != std::string::npos ) return SET_T9;
-
-  // Mage
-  if( name.find( "frostfire"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "kirin_tor"  ) != std::string::npos ) return SET_T8;
-  if( name.find( "sunstrider" ) != std::string::npos ) return SET_T9;
-  if( name.find( "khadgar"    ) != std::string::npos ) return SET_T9;
-
-  // Paladin
-  if( name.find( "redemption" ) != std::string::npos ) return SET_T7;
-  if( name.find( "aegis"      ) != std::string::npos ) return SET_T8;
-  if( name.find( "turalyon"   ) != std::string::npos ) return SET_T9;
-  if( name.find( "liadrin"    ) != std::string::npos ) return SET_T9;
-
-  // Priest
-  if( name.find( "faith"          ) != std::string::npos ) return SET_T7;
-  if( name.find( "sanctification" ) != std::string::npos ) return SET_T8;
-  if( name.find( "zabra"          ) != std::string::npos ) return SET_T9;
-  if( name.find( "velen"          ) != std::string::npos ) return SET_T9;
-
-  // Rogue
-  if( name.find( "bonescythe"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "terrorblade" ) != std::string::npos ) return SET_T8;
-  if( name.find( "vancleef"    ) != std::string::npos ) return SET_T9;
-  if( name.find( "garona"      ) != std::string::npos ) return SET_T9;
-
-  // Shaman
-  if( name.find( "earthshatter" ) != std::string::npos ) return SET_T7;
-  if( name.find( "worldbreaker" ) != std::string::npos ) return SET_T8;
-  if( name.find( "nobundo"      ) != std::string::npos ) return SET_T9;
-  if( name.find( "thrall"       ) != std::string::npos ) return SET_T9;
-
-  // Warlock
-  if( name.find( "plagueheart"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "deathbringer" ) != std::string::npos ) return SET_T8;
-  if( name.find( "kelthuzad"    ) != std::string::npos ) return SET_T9;
-  if( name.find( "guldan"       ) != std::string::npos ) return SET_T9;
-
-  // Warrior
-  if( name.find( "dreadnaught"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "siegebreaker" ) != std::string::npos ) return SET_T8;
-  if( name.find( "wrynn"        ) != std::string::npos ) return SET_T9;
-  if( name.find( "hellscream"   ) != std::string::npos ) return SET_T9;
+  if( name.find( "spellstrike"  ) != std::string::npos ) return SET_SPELLSTRIKE;
 
   return SET_NONE;
 }
@@ -144,7 +89,7 @@ bool set_bonus_t::init( player_t* p )
 
   for( int i=0; i < num_items; i++ )
   {
-    count[ decode( p -> items[ i ].encoded_name_str ) ] += 1;
+    count[ decode( p, p -> items[ i ].encoded_name_str ) ] += 1;
   }
 
   return true;

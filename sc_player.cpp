@@ -409,7 +409,7 @@ player_t::player_t( sim_t*             s,
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0),
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
-  proc_list(0), gain_list(0), stats_list(0), uptime_list(0), 
+  buff_list(0), proc_list(0), gain_list(0), stats_list(0), uptime_list(0), 
   meta_gem(META_GEM_NONE), normalized_to(STAT_NONE), scaling_lag(0), rng_list(0)
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
@@ -1413,7 +1413,7 @@ void player_t::combat_end()
     iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
   }
 
-  buff_list.cancel_buffs();
+  _buff_list.cancel_buffs();
 }
 
 // player_t::reset =========================================================
@@ -1518,7 +1518,7 @@ void player_t::reset()
 
   if ( sleeping ) quiet = 1;
 
-  buff_list.reset_buffs();
+  _buff_list.reset_buffs();
 }
 
 // player_t::schedule_ready =================================================
@@ -2217,10 +2217,6 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   if ( ! sim -> smooth_rng || type == RNG_GLOBAL ) return sim -> rng;
 
   if( type == RNG_DETERMINISTIC ) return sim -> deterministic_rng;
-
-  if ( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;
-  if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
-  if ( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_BANDS;
 
   rng_t* rng=0;
 

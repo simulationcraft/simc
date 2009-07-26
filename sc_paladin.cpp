@@ -108,8 +108,8 @@ struct paladin_t : public player_t
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_glyphs();
-  //virtual void      init_procs();
-  //virtual void      init_uptimes();
+//virtual void      init_procs();
+//virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_actions();
@@ -119,6 +119,7 @@ struct paladin_t : public player_t
   virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
+  virtual int       decode_set( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual int       primary_tree() SC_CONST     { return TREE_RETRIBUTION; }
@@ -1191,6 +1192,17 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if( name == "seal_of_corruption"      ) return new seal_of_vengeance_t        ( this, options_str );
   if( name == "seal_of_vengeance"       ) return new seal_of_vengeance_t        ( this, options_str );
   return player_t::create_action( name, options_str );
+}
+
+// paladin_t::decode_set ====================================================
+
+int paladin_t::decode_set( const std::string& name )
+{
+  if( name.find( "redemption" ) != std::string::npos ) return SET_T7;
+  if( name.find( "aegis"      ) != std::string::npos ) return SET_T8;
+  if( name.find( "turalyon"   ) != std::string::npos ) return SET_T9;
+  if( name.find( "liadrin"    ) != std::string::npos ) return SET_T9;
+  return SET_NONE;
 }
 
 player_t* player_t::create_paladin( sim_t* sim, const std::string& name )

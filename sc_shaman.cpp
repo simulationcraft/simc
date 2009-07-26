@@ -277,6 +277,7 @@ struct shaman_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual int       decode_set   ( const std::string& name );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
   virtual int       primary_tree() SC_CONST;
@@ -3819,6 +3820,17 @@ std::vector<option_t>& shaman_t::get_options()
   }
 
   return options;
+}
+
+// shaman_t::decode_set ====================================================
+
+int shaman_t::decode_set( const std::string& name )
+{
+  if( name.find( "earthshatter" ) != std::string::npos ) return SET_T7;
+  if( name.find( "worldbreaker" ) != std::string::npos ) return SET_T8;
+  if( name.find( "nobundo"      ) != std::string::npos ) return SET_T9;
+  if( name.find( "thrall"       ) != std::string::npos ) return SET_T9;
+  return SET_NONE;
 }
 
 // player_t::create_shaman  =================================================

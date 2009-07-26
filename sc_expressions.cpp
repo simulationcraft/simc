@@ -434,7 +434,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       if (name!=""){
         // Buffs
         if ( ((prefix==EXPF_BUFF)||(prefix==EXPF_NONE)) && !root) {
-          pbuff_t* buff=action->player->buff_list.find_buff(name);
+          pbuff_t* buff=action->player->_buff_list.find_buff(name);
           // now set buff if found
           if (buff){
             bool sfx_stacks=(suffix=="value")||(suffix=="buff") || (suffix=="stacks");
@@ -743,7 +743,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     uptime_cnt -> next = *tail;
     *tail = uptime_cnt;
     // add buff in list
-    player->buff_list.add_buff(this);
+    player->_buff_list.add_buff(this);
   }
   //reset buff, called at end of iteration  
   void pbuff_t::reset_iteration(){
