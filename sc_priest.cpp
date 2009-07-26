@@ -203,12 +203,12 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
-      direct_power_mod = 0.3787;
+      direct_power_mod = 0.379;
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
       base_dd_multiplier = 1.15; // Shadowcrawl
-      base_dd_min = 101;
-      base_dd_max = 211;
+      base_dd_min = 177;
+      base_dd_max = 209;
       background = true;
       repeating  = true;
       may_dodge  = false;
