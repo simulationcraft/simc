@@ -657,6 +657,7 @@ struct buff_t
 	  const std::string& name, 
 	  int max_stack, double duration, double cooldown, 
 	  int rng_type=RNG_CYCLIC, int aura_id=0 );
+  virtual ~buff_t();
 
   virtual bool   may_react();
   virtual bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
