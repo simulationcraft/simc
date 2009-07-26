@@ -814,7 +814,7 @@ struct exorcism_t : public paladin_spell_t
     if( ! paladin_spell_t::ready() )
       return false;
 
-    return p -> _buffs.the_art_of_war;
+    return p -> _buffs.the_art_of_war != 0;
   }
 
   virtual void execute()
