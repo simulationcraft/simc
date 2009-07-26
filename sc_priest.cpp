@@ -879,7 +879,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 6;
     tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.91666667;  // Nerf Bat!
+    tick_power_mod   *= 0.915;  // Nerf Bat! Determined to be 0.915 after more rigorous testing.
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                                 p -> talents.shadow_focus    * 0.02 );
 
