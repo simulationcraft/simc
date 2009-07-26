@@ -280,7 +280,7 @@ struct druid_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       decode_set   ( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return talents.moonkin_form ? ROLE_SPELL    : ROLE_ATTACK;     }
   virtual int       primary_tree() SC_CONST     { return talents.moonkin_form       ? TREE_BALANCE  : 
@@ -3826,12 +3826,12 @@ std::vector<option_t>& druid_t::get_options()
 
 // druid_t::decode_set ======================================================
 
-int druid_t::decode_set( const std::string& name )
+int druid_t::decode_set( item_t& item )
 {
-  if( name.find( "dreamwalker" ) != std::string::npos ) return SET_T7;
-  if( name.find( "nightsong"   ) != std::string::npos ) return SET_T8;
-  if( name.find( "stormrage"   ) != std::string::npos ) return SET_T9;
-  if( name.find( "runetotem"   ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "dreamwalker" ) ) return SET_T7;
+  if( strstr( item.name(), "nightsong"   ) ) return SET_T8;
+  if( strstr( item.name(), "stormrage"   ) ) return SET_T9;
+  if( strstr( item.name(), "runetotem"   ) ) return SET_T9;
   return SET_NONE;
 }
 

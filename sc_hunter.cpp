@@ -247,7 +247,7 @@ struct hunter_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
-  virtual int       decode_set( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
@@ -4302,11 +4302,11 @@ bool hunter_t::save( FILE* file )
 
 // hunter_t::decode_set =====================================================
 
-int hunter_t::decode_set( const std::string& name )
+int hunter_t::decode_set( item_t& item )
 {
-  if( name.find( "cryptstalker"   ) != std::string::npos ) return SET_T7;
-  if( name.find( "scourgestalker" ) != std::string::npos ) return SET_T8;
-  if( name.find( "windrunner"     ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "cryptstalker"   ) ) return SET_T7;
+  if( strstr( item.name(), "scourgestalker" ) ) return SET_T8;
+  if( strstr( item.name(), "windrunner"     ) ) return SET_T9;
   // Horde T9 name?
   return SET_NONE;
 }

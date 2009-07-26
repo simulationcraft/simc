@@ -255,7 +255,7 @@ struct rogue_t : public player_t
   virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       decode_set( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
@@ -3733,12 +3733,12 @@ bool rogue_t::save( FILE* file )
 
 // rogue_t::decode_set =====================================================
 
-int rogue_t::decode_set( const std::string& name )
+int rogue_t::decode_set( item_t& item )
 {
-  if( name.find( "bonescythe"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "terrorblade" ) != std::string::npos ) return SET_T8;
-  if( name.find( "vancleef"    ) != std::string::npos ) return SET_T9;
-  if( name.find( "garona"      ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "bonescythe"  ) ) return SET_T7;
+  if( strstr( item.name(), "terrorblade" ) ) return SET_T8;
+  if( strstr( item.name(), "vancleef"    ) ) return SET_T9;
+  if( strstr( item.name(), "garona"      ) ) return SET_T9;
   return SET_NONE;
 }
 

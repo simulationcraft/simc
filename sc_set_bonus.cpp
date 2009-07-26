@@ -68,15 +68,15 @@ int set_bonus_t::spellstrike() SC_CONST { return ( count[ SET_SPELLSTRIKE ] >= 2
 
 // set_bonus_t::decode ======================================================
 
-int set_bonus_t::decode( player_t*          p,
-			 const std::string& name ) SC_CONST
+int set_bonus_t::decode( player_t* p,
+			 item_t&   item ) SC_CONST
 {
-  if( name.empty() ) return SET_NONE;
+  if( ! item.name() ) return SET_NONE;
 
-  int set = p -> decode_set( name );
+  int set = p -> decode_set( item );
   if( set != SET_NONE ) return set;
 
-  if( name.find( "spellstrike"  ) != std::string::npos ) return SET_SPELLSTRIKE;
+  if( strstr( item.name(), "spellstrike"  ) ) return SET_SPELLSTRIKE;
 
   return SET_NONE;
 }
@@ -89,7 +89,7 @@ bool set_bonus_t::init( player_t* p )
 
   for( int i=0; i < num_items; i++ )
   {
-    count[ decode( p, p -> items[ i ].encoded_name_str ) ] += 1;
+    count[ decode( p, p -> items[ i ] ) ] += 1;
   }
 
   return true;

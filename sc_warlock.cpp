@@ -226,7 +226,7 @@ struct warlock_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
-  virtual int       decode_set   ( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
@@ -4347,12 +4347,12 @@ std::vector<option_t>& warlock_t::get_options()
 
 // warlock_t::decode_set ===================================================
 
-int warlock_t::decode_set( const std::string& name )
+int warlock_t::decode_set( item_t& item )
 {
-  if( name.find( "plagueheart"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "deathbringer" ) != std::string::npos ) return SET_T8;
-  if( name.find( "kelthuzad"    ) != std::string::npos ) return SET_T9;
-  if( name.find( "guldan"       ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "plagueheart"  ) ) return SET_T7;
+  if( strstr( item.name(), "deathbringer" ) ) return SET_T8;
+  if( strstr( item.name(), "kelthuzad"    ) ) return SET_T9;
+  if( strstr( item.name(), "guldan"       ) ) return SET_T9;
   return SET_NONE;
 }
 

@@ -309,7 +309,7 @@ struct death_knight_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_t* execute_action();
-  virtual int       decode_set( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
 
   // Utilities
@@ -2020,12 +2020,12 @@ std::vector<option_t>& death_knight_t::get_options()
 
 // death_knight_t::decode_set ===============================================
 
-int death_knight_t::decode_set( const std::string& name )
+int death_knight_t::decode_set( item_t& item )
 {
-  if( name.find( "scourgeborne" ) != std::string::npos ) return SET_T7;
-  if( name.find( "darkruned"    ) != std::string::npos ) return SET_T8;
-  if( name.find( "koltira"      ) != std::string::npos ) return SET_T9;
-  if( name.find( "thassarian"   ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "scourgeborne" ) ) return SET_T7;
+  if( strstr( item.name(), "darkruned"    ) ) return SET_T8;
+  if( strstr( item.name(), "koltira"      ) ) return SET_T9;
+  if( strstr( item.name(), "thassarian"   ) ) return SET_T9;
   return SET_NONE;
 }
 

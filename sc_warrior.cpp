@@ -237,7 +237,7 @@ struct warrior_t : public player_t
   virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       decode_set( const std::string& name );
+  virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
@@ -3058,12 +3058,12 @@ std::vector<option_t>& warrior_t::get_options()
 
 // warrior_t::decode_set ===================================================
 
-int warrior_t::decode_set( const std::string& name )
+int warrior_t::decode_set( item_t& item )
 {
-  if( name.find( "dreadnaught"  ) != std::string::npos ) return SET_T7;
-  if( name.find( "siegebreaker" ) != std::string::npos ) return SET_T8;
-  if( name.find( "wrynn"        ) != std::string::npos ) return SET_T9;
-  if( name.find( "hellscream"   ) != std::string::npos ) return SET_T9;
+  if( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
+  if( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
+  if( strstr( item.name(), "wrynn"        ) ) return SET_T9;
+  if( strstr( item.name(), "hellscream"   ) ) return SET_T9;
   return SET_NONE;
 }
 

@@ -1077,7 +1077,7 @@ struct set_bonus_t
   int tier10_2pc() SC_CONST;
   int tier10_4pc() SC_CONST;
   int spellstrike() SC_CONST;
-  int decode( player_t*, const std::string& item_name ) SC_CONST;
+  int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();
 };
@@ -1514,7 +1514,7 @@ struct player_t
   virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
 
   virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) {}
-  virtual int  decode_set( const std::string& name ) { return SET_NONE; }
+  virtual int  decode_set( item_t& item ) { return SET_NONE; }
 
   // Class-Specific Methods
 
