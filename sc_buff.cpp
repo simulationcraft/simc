@@ -68,6 +68,32 @@ double buff_t::remains()
   return -1;
 }
 
+// buff_t::remains_gt =======================================================
+
+bool buff_t::remains_gt( double time )
+{
+  double time_remaining = remains();
+
+  if( time_remaining == 0 ) return false;
+
+  if( time_remaining == -1 ) return true;
+
+  return ( time_remaining > time );
+}
+
+// buff_t::remains_lt =======================================================
+
+bool buff_t::remains_lt( double time )
+{
+  double time_remaining = remains();
+
+  if( time_remaining == 0 ) return false;
+
+  if( time_remaining == -1 ) return false;
+
+  return ( time_remaining < time );
+}
+
 // buff_t::trigger ==========================================================
 
 bool buff_t::trigger( double chance,
