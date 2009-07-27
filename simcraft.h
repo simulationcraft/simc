@@ -1831,7 +1831,8 @@ struct action_t
   event_t* execute_event;
   event_t* tick_event;
   double time_to_execute, time_to_tick, time_to_travel, travel_speed;
-  int rank_index, bloodlust_active, max_haste;
+  int rank_index, bloodlust_active;
+  double max_haste;
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
