@@ -2781,7 +2781,8 @@ void warrior_t::init_actions()
       action_list_str += "/overpower";
       action_list_str += "/bladestorm";
       action_list_str += "/execute";
-      action_list_str += "/slam,rage>=40";
+      //action_list_str += "/slam,rage>=40";
+      action_list_str += "/slam";
     }
     else if ( primary_tree() == TREE_FURY )
     {
