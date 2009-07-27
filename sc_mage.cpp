@@ -2308,6 +2308,12 @@ struct living_bomb_t : public mage_spell_t
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
 
+  virtual void tick()
+  {
+    mage_spell_t::tick();
+    if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
+  }
+
   virtual void last_tick()
   {
     target_debuff( DMG_DIRECT );
@@ -2325,6 +2331,7 @@ struct living_bomb_t : public mage_spell_t
           trigger_ignite( this, direct_dmg );
           trigger_master_of_elements( this, 1.0 );
         }
+	if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
       }
     }
     update_stats( DMG_DIRECT );
