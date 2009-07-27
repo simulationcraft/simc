@@ -83,7 +83,7 @@ bool buff_t::trigger( double chance,
 
   increment( stacks, value );
 
-  if( cooldown )
+  if( cooldown > 0 )
     cooldown_ready = sim -> current_time + cooldown;
 
   return true;
@@ -180,9 +180,9 @@ void buff_t::expire()
 
 void buff_t::reset()
 {
-  if( ! rng ) rng = sim -> rng;
   cooldown_ready = 0;
   expire();
+  last_start = -1;
 }
 
 // buff_t::merge ============================================================
