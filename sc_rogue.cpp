@@ -3157,8 +3157,8 @@ struct stealth_t : public spell_t
 
 int rogue_t::primary_tree() SC_CONST
 {
-  if( talents.mutilate            ) return TREE_ASSASSINATION;
-  if( talents.killing_spree       ) return TREE_COMBAT;
+  if( talents.mutilate ) return TREE_ASSASSINATION;
+  if( talents.adrenaline_rush || talents.killing_spree ) return TREE_COMBAT;
   if( talents.honor_among_thieves ) return TREE_SUBTLETY;
 
   return TALENT_TREE_MAX;
@@ -3205,13 +3205,25 @@ void rogue_t::init_actions()
       action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
       action_list_str += "/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/killing_spree,energy<=20,snd>=5";
-      if( talents.blade_flurry ) action_list_str += "/blade_flurry,snd>=5";
+      if( talents.killing_spree ) action_list_str += "/killing_spree,energy<=20,snd>=5";
+      if( talents.blade_flurry  ) action_list_str += "/blade_flurry,snd>=5";
       action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
-      action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
-      action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
-      action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
-      action_list_str += "/sinister_strike,max_combo_points=4";
+      if(   talents.puncturing_wounds        &&
+	    talents.opportunity              &&
+	    talents.close_quarters_combat    &&
+	  ! talents.improved_sinister_strike &&
+	  ! talents.improved_eviscerate      &&
+	    ( main_hand_weapon.type == WEAPON_DAGGER ) )
+      {
+	action_list_str += "/backstab";
+      }
+      else
+      {
+	action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
+	action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
+	action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
+	action_list_str += "/sinister_strike,max_combo_points=4";
+      }
       if( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
     }
     else if( primary_tree() == TREE_SUBTLETY )

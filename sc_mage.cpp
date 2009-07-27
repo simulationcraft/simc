@@ -3611,7 +3611,7 @@ void mage_t::init_actions()
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
       if( talents.arcane_barrage ) action_list_str += "/arcane_barrage"; // when moving
-      action_list_str += "/fire_blast"; // when moving
+      action_list_str += "/fire_blast,moving=1"; // when moving
     }
     else if( primary_tree() == TREE_FROST )
     {
@@ -3622,8 +3622,8 @@ void mage_t::init_actions()
       if( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
       action_list_str += "/frost_bolt";
       action_list_str += "/evocation";
-      action_list_str += "/ice_lance";  // when moving
-      action_list_str += "/fire_blast"; // when moving
+      action_list_str += "/ice_lance,moving=1";  // when moving
+      action_list_str += "/fire_blast,moving=1"; // when moving
     }
     else if( primary_tree() == TREE_FIRE )
     {
@@ -3639,8 +3639,8 @@ void mage_t::init_actions()
         action_list_str += "/fire_ball";
       }
       action_list_str += "/evocation";
-      action_list_str += "/fire_blast"; // when moving
-      action_list_str += "/ice_lance";  // when moving
+      action_list_str += "/fire_blast,moving=1"; // when moving
+      action_list_str += "/ice_lance,moving=1";  // when moving
     }
     else action_list_str = "/arcane_missiles/evocation";
 
