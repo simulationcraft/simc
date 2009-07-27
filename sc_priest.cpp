@@ -1949,9 +1949,10 @@ void priest_t::init_base()
   attribute_base[ ATTR_INTELLECT ] = rating_t::interpolate( level, base_stats_60.intellect, base_stats_70.intellect, base_stats_80.intellect );
   attribute_base[ ATTR_SPIRIT    ] = rating_t::interpolate( level, base_stats_60.spirit,    base_stats_70.spirit,    base_stats_80.spirit    );
 
-  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.enlightenment * 0.01;
-  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.01;
+  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.improved_power_word_fortitude * 0.02;
+  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.02;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
 
   base_spell_crit = rating_t::interpolate( level, base_stats_60.spell_crit, base_stats_70.spell_crit, base_stats_80.spell_crit );
 
@@ -1969,8 +1970,6 @@ void priest_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
-
-  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
 }
 
 // priest_t::init_gains ======================================================
