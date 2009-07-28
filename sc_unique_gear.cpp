@@ -319,7 +319,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000SP_10%_10Dur_50Cd";
   else if( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
-  else if( name == "pandoras_plea"                   ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
+  else if( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
   else if( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
   else if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
