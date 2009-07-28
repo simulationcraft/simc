@@ -2719,89 +2719,105 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 // player_t::save ===========================================================
 
-bool player_t::save( FILE* file )
+bool player_t::save( FILE* file, int save_type )
 {
-  fprintf( file, "#!simcraft\n\n" );
+  if( save_type == SAVE_ALL )
+  {
+    fprintf( file, "#!simcraft\n\n" );
 
-  fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
-  fprintf( file, "origin=%s\n", origin_str.c_str() );
-  fprintf( file, "level=%d\n", level );
+    fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
+    fprintf( file, "origin=%s\n", origin_str.c_str() );
+    fprintf( file, "level=%d\n", level );
 
-  if( professions_str.size() > 0 )
-  {
-    fprintf( file, "professions=%s\n", professions_str.c_str() );
-  };
-  if( talents_str.size() > 0 )
-  {
-    fprintf( file, "talents=%s\n", talents_str.c_str() );
-  };
-  if( glyphs_str.size() > 0 )
-  {
-    fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
-  }
-  if( action_list_str.size() > 0 )
-  {
-    std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, action_list_str, "/" );
-    for ( int i=0; i < num_splits; i++ )
+    if( professions_str.size() > 0 )
     {
-      fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
-    }    
+      fprintf( file, "professions=%s\n", professions_str.c_str() );
+    };
   }
-  for( int i=0; i < SLOT_MAX; i++ )
-  {
-    item_t& item = items[ i ];
 
-    if( item.active() )
+  if( save_type == SAVE_ALL || save_type == SAVE_TALENTS )
+  {
+    if( talents_str.size() > 0 )
     {
-      fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
+      fprintf( file, "talents=%s\n", talents_str.c_str() );
+    };
+    if( glyphs_str.size() > 0 )
+    {
+      fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
     }
   }
-  if( ! items_str.empty() )
+  
+  if( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    fprintf( file, "items=%s\n", items_str.c_str() );
-  }
-
-  fprintf( file, "# Gear Summary\n" );
-  for( int i=0; i < STAT_MAX; i++ )
-  {
-    double value = stats.get_stat( i );
-    if( value != 0 ) fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
-  }
-  if( meta_gem != META_GEM_NONE ) fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
-  if( set_bonus.tier7_2pc() ) fprintf( file, "# tier7_2pc=1\n" );
-  if( set_bonus.tier7_4pc() ) fprintf( file, "# tier7_4pc=1\n" );
-  if( set_bonus.tier8_2pc() ) fprintf( file, "# tier8_2pc=1\n" );
-  if( set_bonus.tier8_4pc() ) fprintf( file, "# tier8_4pc=1\n" );
-  if( set_bonus.tier9_2pc() ) fprintf( file, "# tier9_2pc=1\n" );
-  if( set_bonus.tier9_4pc() ) fprintf( file, "# tier9_4pc=1\n" );
-  if( set_bonus.tier10_2pc() ) fprintf( file, "# tier10_2pc=1\n" );
-  if( set_bonus.tier10_4pc() ) fprintf( file, "# tier10_4pc=1\n" );
-
-  for( int i=0; i < SLOT_MAX; i++ )
-  {
-    item_t& item = items[ i ];
-    if( item.active() && ( ! item.encoded_weapon_str.empty() || item.enchant != ENCHANT_NONE ) )
+    if( action_list_str.size() > 0 )
     {
-      fprintf( file, "# %s=%s", item.slot_name(), item.name() );
-      if( ! item.encoded_weapon_str.empty() ) fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
-      if( item.enchant != ENCHANT_NONE ) fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
-      fprintf( file, "\n" );
+      std::vector<std::string> splits;
+      int num_splits = util_t::string_split( splits, action_list_str, "/" );
+      for ( int i=0; i < num_splits; i++ )
+      {
+        fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
+      }    
     }
   }
 
-  bool first = true;
-  int num_items = items.size();
-  for( int i=0; i < num_items; i++ )
+  if( save_type == SAVE_ALL || save_type == SAVE_GEAR )
   {
-    item_t& item = items[ i ];
-    if( item.active() && ( item.use.active() || item.equip.active() || item.unique ) )
+    for( int i=0; i < SLOT_MAX; i++ )
     {
-      fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
-      first = false;
+      item_t& item = items[ i ];
+
+      if( item.active() )
+      {
+        fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
+      }
     }
+    if( ! items_str.empty() )
+    {
+      fprintf( file, "items=%s\n", items_str.c_str() );
+    }
+
+    fprintf( file, "# Gear Summary\n" );
+    for( int i=0; i < STAT_MAX; i++ )
+    {
+      double value = stats.get_stat( i );
+      if( value != 0 ) fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
+    }
+    if( meta_gem != META_GEM_NONE ) fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
+    if( set_bonus.tier7_2pc() ) fprintf( file, "# tier7_2pc=1\n" );
+    if( set_bonus.tier7_4pc() ) fprintf( file, "# tier7_4pc=1\n" );
+    if( set_bonus.tier8_2pc() ) fprintf( file, "# tier8_2pc=1\n" );
+    if( set_bonus.tier8_4pc() ) fprintf( file, "# tier8_4pc=1\n" );
+    if( set_bonus.tier9_2pc() ) fprintf( file, "# tier9_2pc=1\n" );
+    if( set_bonus.tier9_4pc() ) fprintf( file, "# tier9_4pc=1\n" );
+    if( set_bonus.tier10_2pc() ) fprintf( file, "# tier10_2pc=1\n" );
+    if( set_bonus.tier10_4pc() ) fprintf( file, "# tier10_4pc=1\n" );
+
+    for( int i=0; i < SLOT_MAX; i++ )
+    {
+      item_t& item = items[ i ];
+      if( item.active() && ( ! item.encoded_weapon_str.empty() || item.enchant != ENCHANT_NONE ) )
+      {
+        fprintf( file, "# %s=%s", item.slot_name(), item.name() );
+        if( ! item.encoded_weapon_str.empty() ) fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
+        if( item.enchant != ENCHANT_NONE ) fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
+        fprintf( file, "\n" );
+      }
+    }
+
+    bool first = true;
+    int num_items = items.size();
+    for( int i=0; i < num_items; i++ )
+    {
+      item_t& item = items[ i ];
+      if( item.active() && ( item.use.active() || item.equip.active() || item.unique ) )
+      {
+        fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
+        first = false;
+      }
+    }
+
+    if( ! first ) fprintf( file, "\n" );
   }
-  if( ! first ) fprintf( file, "\n" );
 
   return true;
 }
@@ -2860,6 +2876,9 @@ std::vector<option_t>& player_t::get_options()
       { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
       { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
       { "save",                                 OPT_STRING,   &( save_str                                     ) },
+      { "save_gear",                            OPT_STRING,   &( save_gear_str                                ) },
+      { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
+      { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
       // @option_doc loc=player/all/items title="Items"
       { "items",                                OPT_STRING,   &( items_str                                    ) },
       { "items+",                               OPT_APPEND,   &( items_str                                    ) },

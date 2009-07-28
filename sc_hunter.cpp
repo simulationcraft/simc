@@ -251,7 +251,7 @@ struct hunter_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
-  virtual bool      save( FILE* );
+  virtual bool      save( FILE*, int save_type=SAVE_ALL );
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -4291,11 +4291,14 @@ std::vector<option_t>& hunter_t::get_options()
 
 // hunter_t::save ===========================================================
 
-bool hunter_t::save( FILE* file )
+bool hunter_t::save( FILE* file, int save_type )
 {
-  player_t::save( file );
+  player_t::save( file, save_type );
 
-  if( ammo_dps != 0 ) fprintf( file, "ammo_dps=%.2f\n", ammo_dps );
+  if ( save_type == SAVE_ALL || save_type == SAVE_GEAR )
+  {
+    if( ammo_dps != 0 ) fprintf( file, "ammo_dps=%.2f\n", ammo_dps );
+  }
 
   return true;
 }

@@ -1134,6 +1134,50 @@ void report_t::print_profiles( sim_t* sim )
   {
     if( p -> is_pet() ) continue;
 
+    FILE* file = NULL;
+
+    if ( !p -> save_gear_str.empty() ) // Save gear
+    {
+      file = fopen( p -> save_gear_str.c_str(), "w" );
+      if ( ! file )
+      {
+        printf( "simcraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
+      }
+      else
+      {
+        p -> save( file, SAVE_GEAR );
+        fclose( file );
+      }
+    }
+
+    if ( !p -> save_talents_str.empty() ) // Save talents
+    {
+      file = fopen( p -> save_talents_str.c_str(), "w" );
+      if ( ! file )
+      {
+        printf( "simcraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
+      }
+      else
+      {
+        p -> save( file, SAVE_TALENTS );
+        fclose( file );
+      }
+    }
+
+    if ( !p -> save_actions_str.empty() ) // Save actions
+    {
+      file = fopen( p -> save_actions_str.c_str(), "w" );
+      if ( ! file )
+      {
+        printf( "simcraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
+      }
+      else
+      {
+        p -> save( file, SAVE_ACTIONS );
+        fclose( file );
+      }
+    }
+
     std::string file_name = p -> save_str;
 
     if( file_name.empty() && sim -> save_profiles )
@@ -1145,7 +1189,7 @@ void report_t::print_profiles( sim_t* sim )
 
     if( file_name.empty() ) continue;
 
-    FILE* file = fopen( file_name.c_str(), "w" );
+    file = fopen( file_name.c_str(), "w" );
     if( ! file )
     {
       printf( "simcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );

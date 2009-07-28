@@ -394,6 +394,16 @@ enum rng_type
   RNG_MAX
 };
 
+enum save_type
+{
+  // Specifies the type of profile data to be saved 
+  SAVE_ALL=0,
+  SAVE_GEAR,
+  SAVE_TALENTS,
+  SAVE_ACTIONS,
+  SAVE_MAX
+};
+
 // Options ====================================================================
 
 enum option_type_t
@@ -1223,6 +1233,9 @@ struct player_t
   std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_pawn_string;
   std::string save_str;
+  std::string save_gear_str;
+  std::string save_talents_str;
+  std::string save_actions_str;
 
   // Gear
   std::string items_str, meta_gem_str;
@@ -1506,7 +1519,7 @@ struct player_t
   virtual bool parse_talents_wowhead( const std::string& talent_string );
   
   virtual std::vector<option_t>& get_options();
-  virtual bool save( FILE* );
+  virtual bool save( FILE*, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
