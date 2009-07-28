@@ -2383,7 +2383,14 @@ struct bloodrage_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
     p -> _buffs.bloodrage = 10;
-    p -> resource_gain( RESOURCE_RAGE, 10 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
+    if( sim -> P320 )
+    {
+      p -> resource_gain( RESOURCE_RAGE, 20 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
+    }
+    else
+    {
+      p -> resource_gain( RESOURCE_RAGE, 10 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
+    }
 
     new ( sim ) bloodrage_buff_t( sim, p );
   }
