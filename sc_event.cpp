@@ -144,7 +144,15 @@ void action_tick_event_t::execute()
 
   action -> tick_event = 0;
   action -> current_tick++;
-  action -> tick();
+
+  if ( action -> channeled && player -> skill < 1.0 )
+  {
+    if( sim -> roll( player -> skill ) ) action -> tick();
+  }
+  else
+  {
+    action -> tick();
+  }
 
   if ( action -> current_tick == action -> num_ticks )
   {

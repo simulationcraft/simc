@@ -945,9 +945,20 @@ bool action_t::ready()
 {
   target_t* t = sim -> target;
 
-  if (( duration_ready > 0 )&&(!is_ifall))
-    if ( duration_ready > ( sim -> current_time + execute_time() ) )
+  if ( player -> skill < 1.0 )
+    if( ! sim -> roll( player -> skill ) )
       return false;
+
+  if ( ( duration_ready > 0 ) && ( !is_ifall ) )
+  {
+    double duration_delta = duration_ready - ( sim -> current_time + execute_time() );
+
+    if ( duration_delta > 1.0 )
+      return false;
+
+    if ( duration_delta > 0 && sim -> roll( player -> skill ) )
+      return false;
+  }
 
   if ( cooldown_ready > sim -> current_time )
     return false;
