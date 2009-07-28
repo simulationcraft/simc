@@ -214,12 +214,13 @@ void target_t::combat_begin()
   if ( sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
   if ( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = 0.05;
   if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = (sim -> P313 ? 500 : 300) * 1.5;
+  if ( sim -> overrides.improved_faerie_fire  ) debuffs.improved_faerie_fire = 3;
   if ( sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
   if ( sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
   if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
   if ( sim -> overrides.mangle                ) debuffs.mangle = 1;
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
-  if ( sim -> overrides.misery                ) { debuffs.misery = 3; debuffs.misery_stack = 1; }
+  if ( sim -> overrides.misery                ) debuffs.misery = 3;
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
   if ( sim -> overrides.snare                 ) debuffs.snare = 1;

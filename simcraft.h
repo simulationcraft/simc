@@ -913,6 +913,7 @@ struct sim_t
     int fortitude;
     int heroic_presence;
     int hunters_mark;
+    int improved_faerie_fire;
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
@@ -1787,6 +1788,7 @@ struct target_t
     event_t* improved_faerie_fire;
     event_t* improved_scorch;
     event_t* improved_shadow_bolt;
+    event_t* misery;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;

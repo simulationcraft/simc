@@ -318,31 +318,44 @@ static void stack_shadow_weaving( spell_t* s )
   }
 }
 
-// push_misery =================================================================
+// trigger_misery ==============================================
 
-static void push_misery( spell_t* s )
+static void trigger_misery( action_t* a )
 {
-  target_t* t = s -> sim -> target;
-  priest_t* p = s -> player -> cast_priest();
+  priest_t* p = a -> player -> cast_priest();
 
-  t -> debuffs.misery_stack++;
-  if ( p -> talents.misery > t -> debuffs.misery )
+  if ( ! p -> talents.misery )
+    return;
+
+  if ( a -> sim -> target -> debuffs.misery > p -> talents.misery )
+    return;
+
+  if ( a -> sim -> target -> debuffs.improved_faerie_fire >= p -> talents.misery )
+    return;
+
+  struct expiration_t : public event_t
   {
-    t -> debuffs.misery = p -> talents.misery;
+    expiration_t( sim_t* sim, player_t* p, int misery_stacks ) : event_t( sim, p )
+    {
+      sim -> target -> debuffs.misery = misery_stacks;
+      sim -> add_event( this, 24.0 );
+    }
+    virtual void execute()
+    {
+      sim -> target -> debuffs.misery = 0;
+      sim -> target -> expirations.misery = 0;
+    }
+  };
+
+  event_t*& e = a -> sim -> target -> expirations.misery;
+
+  if ( e )
+  {
+    e -> reschedule( 24.0 );
   }
-}
-
-// pop_misery ==================================================================
-
-static void pop_misery( spell_t* s )
-{
-  priest_t* p = s -> player -> cast_priest();
-  target_t* t = s -> sim -> target;
-
-  if ( p -> talents.misery )
+  else
   {
-    t -> debuffs.misery_stack--;
-    if ( t -> debuffs.misery_stack == 0 ) t -> debuffs.misery = 0;
+    e = new ( a -> sim ) expiration_t( a -> sim, a -> player, p -> talents.misery );
   }
 }
 
@@ -902,7 +915,7 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
-      push_misery( this );
+      trigger_misery( this );
     }
   }
 
@@ -915,7 +928,6 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual void last_tick()
   {
     priest_spell_t::last_tick();
-    pop_misery( this );
   }
 
   virtual bool ready()
@@ -983,14 +995,13 @@ struct vampiric_touch_t : public priest_spell_t
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
-      push_misery( this );
+      trigger_misery( this );
     }
   }
 
   virtual void last_tick()
   {
     priest_spell_t::last_tick();
-    pop_misery( this );
   }
 };
 
@@ -1089,7 +1100,7 @@ struct devouring_plague_t : public priest_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> set_bonus.tier8_2pc()             * 0.15 ); // FIX ME! Is tier8_2pc additive or multiplicative?
+                                p -> set_bonus.tier8_2pc()             * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.03;
 
@@ -1455,6 +1466,15 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     priest_spell_t::schedule_execute();
     p -> uptimes_devious_mind_mf -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      trigger_misery( this );
+    }
   }
 
   virtual void tick()

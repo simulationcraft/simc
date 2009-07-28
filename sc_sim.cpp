@@ -1120,6 +1120,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.fortitude              = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
+  overrides.improved_faerie_fire   = optimal_raid;
   overrides.improved_moonkin_aura  = optimal_raid;
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
@@ -1280,6 +1281,7 @@ std::vector<option_t>& sim_t::get_options()
       { "fortitude",                        OPT_BOOL,   &( overrides.fortitude                      ) },
       { "heroic_presence",                  OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "hunters_mark",                     OPT_BOOL,   &( overrides.hunters_mark                   ) },
+      { "improved_faerie_fire",             OPT_BOOL,   &( overrides.improved_faerie_fire           ) },
       { "improved_moonkin_aura",            OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "improved_scorch",                  OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "improved_shadow_bolt",             OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },

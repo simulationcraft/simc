@@ -544,11 +544,17 @@ static void trigger_improved_faerie_fire( action_t* a )
   if ( ! p -> talents.improved_faerie_fire )
     return;
 
+  if ( a -> sim -> target -> debuffs.improved_faerie_fire > p -> talents.improved_faerie_fire )
+    return;
+
+  if ( a -> sim -> target -> debuffs.misery > p -> talents.improved_faerie_fire )
+    return;
+
   struct expiration_t : public event_t
   {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+    expiration_t( sim_t* sim, player_t* p, int iff_level ) : event_t( sim, p )
     {
-      sim -> target -> debuffs.improved_faerie_fire = 3;
+      sim -> target -> debuffs.improved_faerie_fire = iff_level;
       sim -> add_event( this, 300.0 );
     }
     virtual void execute()
@@ -566,7 +572,7 @@ static void trigger_improved_faerie_fire( action_t* a )
   }
   else
   {
-    e = new ( a -> sim ) expiration_t( a -> sim, a -> player );
+    e = new ( a -> sim ) expiration_t( a -> sim, a -> player, p -> talents.improved_faerie_fire );
   }
 }
 
