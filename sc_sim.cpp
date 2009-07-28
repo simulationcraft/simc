@@ -1334,6 +1334,7 @@ std::vector<option_t>& sim_t::get_options()
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "armory_throttle",                  OPT_INT,    &( armory_throttle                          ) },
       { "duration_uptimes",                 OPT_INT,    &( duration_uptimes                         ) },
+      { "reference_player",                 OPT_STRING, &( reference_player_str                     ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },

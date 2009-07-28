@@ -359,12 +359,20 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   fprintf( file, "\nScale Factors:\n" );
 
   int num_players = sim -> players_by_name.size();
+  int max_length=0;
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+    int length = strlen( p -> name() );
+    if( length > max_length ) max_length = length;
+  }
 
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    fprintf( file, "  %-25s", p -> name() );
+    fprintf( file, "  %-*s", max_length, p -> name() );
 
     gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
 
@@ -384,6 +392,85 @@ static void print_scale_factors( FILE* file, sim_t* sim )
     fprintf( file, "  Lag=%.2f", p -> scaling_lag );
 
     fprintf( file, "\n" );
+  }
+}
+
+// print_reference_dps ========================================================
+
+static void print_reference_dps( FILE* file, sim_t* sim )
+{
+  if ( sim -> reference_player_str.empty() ) return;
+
+  fprintf( file, "\nReference DPS:\n" );
+
+  player_t* ref_p = sim -> find_player( sim -> reference_player_str );
+
+  if( ! ref_p ) 
+  {
+    fprintf( file, "Unable to locate reference player: %s\n", sim -> reference_player_str.c_str() );
+    return;
+  }
+
+  int num_players = sim -> players_by_rank.size();
+  int max_length=0;
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_rank[ i ];
+    int length = strlen( p -> name() );
+    if( length > max_length ) max_length = length;
+  }
+
+  fprintf( file, "  %-*s", max_length, ref_p -> name() );
+  fprintf( file, "  %.0f", ref_p -> dps );
+
+  if( sim -> scaling -> calculate_scale_factors )
+  {
+    for ( int j=0; j < STAT_MAX; j++ )
+    {
+      if( ref_p -> scales_with[ j ] != 0 )
+      {
+	fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), ref_p -> scaling.get_stat( j ) );
+      }
+    }
+  }
+
+  fprintf( file, "\n" );
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_rank[ i ];
+
+    if( p != ref_p )
+    {
+      fprintf( file, "  %-*s", max_length, p -> name() );
+
+      bool over = ( p -> dps > ref_p -> dps );
+
+      double ratio = 100.0 * fabs( p -> dps - ref_p -> dps ) / ref_p -> dps;
+
+      fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
+
+      if( sim -> scaling -> calculate_scale_factors )
+      {
+	for ( int j=0; j < STAT_MAX; j++ )
+        {
+	  if( ref_p -> scales_with[ j ] != 0 )
+          {
+	    double ref_sf = ref_p -> scaling.get_stat( j );
+	    double     sf =     p -> scaling.get_stat( j );
+	  
+	    over = ( sf > ref_sf );
+
+	    ratio = 100.0 * fabs( sf - ref_sf ) / ref_sf;
+	    
+	    fprintf( file, "  %s=%c%.0f%%", util_t::stat_type_abbrev( j ), ( over ? '+' : '-' ), ratio );
+	  }
+	}
+      }
+
+      fprintf( file, "\n" );
+    }
   }
 }
 
@@ -981,6 +1068,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     print_waiting      ( file, sim );
     print_performance  ( file, sim );
     print_scale_factors( file, sim );
+    print_reference_dps( file, sim );
   }
 
   fprintf( file, "\n" );

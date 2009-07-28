@@ -884,6 +884,7 @@ struct sim_t
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
   int        merge_ignite;
   int        report_progress;
+  std::string reference_player_str;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
   std::vector<std::string> id_dictionary;
