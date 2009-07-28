@@ -141,7 +141,9 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, p -> name(), get_color( p ), i ); s += buffer;
+      std::string formatted_name = p -> name_str;
+      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_color( p ), i ); s += buffer;
     }
     s += "&amp;";
     s += "chtt=DPS+Ranking";
@@ -263,8 +265,11 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "chxl=0:";
     for ( int i = num_players-1; i >= 0; i-- )
     {
+      std::string formatted_name = player_list[ i ] -> name_str;
+      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+
       s += "|";
-      s += player_list[ i ] -> name();
+      s += formatted_name.c_str();
     }
     s += "&amp;";
     s += "chxs=0,000000,15";
@@ -355,7 +360,9 @@ const char* chart_t::raid_downtime( std::string& s,
   for ( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, p -> name(), get_color( p ), i ); s += buffer;
+    std::string formatted_name = p -> name_str;
+    armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_color( p ), i ); s += buffer;
   }
   s += "&amp;";
   s += "chtt=Raid+Down-Time";
@@ -487,8 +494,11 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
+      std::string formatted_name = st -> player -> name_str;
+      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
-                st -> dpet, st -> name_str.c_str(), st -> player -> name(), get_color( st -> player ), i ); s += buffer;
+                st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ), i ); s += buffer;
     }
     s += "&amp;";
     s += "chtt=Raid+Damage+Per+Execute+Time";
@@ -570,7 +580,9 @@ const char* chart_t::action_dpet( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", p -> name() ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -703,7 +715,9 @@ const char* chart_t::gains( std::string& s,
     s += gains_list[ i ] -> name();
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", p -> name() ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -784,7 +798,9 @@ const char* chart_t::uptimes_and_procs( std::string& s,
               proc -> count, proc -> frequency, proc -> name(), num_uptimes+i ); s += buffer;
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Up-Times+and+Procs+(%.0fsec)", p -> name(), p -> sim -> total_seconds ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|Up-Times+and+Procs+(%.0fsec)", formatted_name.c_str(), p -> sim -> total_seconds ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -841,7 +857,9 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", p -> name() ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -900,7 +918,9 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Resource+(%s)+Timeline", p -> name(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|Resource+(%s)+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -946,7 +966,9 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", p -> name() ); s += buffer;
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 

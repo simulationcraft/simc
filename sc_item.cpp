@@ -213,10 +213,10 @@ bool item_t::init()
   {
     if( ! armory_t::download_item( *this, option_id_str ) )
     {
-      printf( "simcraft: Trying wowhead...\n" );
+      util_t::sc_printf( "simcraft: Trying wowhead...\n" );
       if( ! wowhead_t::download_item( *this, option_id_str ) )
       {
-	printf( "simcraft: Trying mmo-champion...\n" );
+	util_t::sc_printf( "simcraft: Trying mmo-champion...\n" );
 	if( ! mmo_champion_t::download_item( *this, option_id_str ) )
 	  return false;
       }
@@ -224,7 +224,7 @@ bool item_t::init()
 
     if( encoded_name_str != armory_name_str ) 
     {
-      printf( "\nsimcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
+      util_t::sc_printf( "\nsimcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
 	      player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
 
       encoded_name_str = armory_name_str;
@@ -277,7 +277,7 @@ bool item_t::decode_stats()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'stats=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "simcraft: %s has unknown 'stats=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -313,7 +313,7 @@ bool item_t::decode_gems()
     }
     else
     {
-      printf( "\nsimcraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "\nsimcraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       //return false;
     }
   }
@@ -356,7 +356,7 @@ bool item_t::decode_enchant()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "simcraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -415,7 +415,7 @@ bool item_t::decode_equip()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "simcraft: %s has unknown 'equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -455,7 +455,7 @@ bool item_t::decode_use()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'use=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "simcraft: %s has unknown 'use=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -504,7 +504,7 @@ bool item_t::decode_weapon()
     }
     else
     {
-      printf( "simcraft: %s has unknown 'weapon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::sc_printf( "simcraft: %s has unknown 'weapon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }

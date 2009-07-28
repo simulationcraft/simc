@@ -2624,7 +2624,7 @@ void warrior_t::init_glyphs()
     else if( n == "sunder_armor"     ) ;
     else if( n == "thunder_clap"     ) ;
     else if( n == "vigilance"        ) ;
-    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

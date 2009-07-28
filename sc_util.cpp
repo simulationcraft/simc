@@ -1098,6 +1098,262 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
+// util_t::sc_printf =====================================================
+
+
+int util_t::sc_printf( const char *format,  ... )
+{
+  va_list fmtargs;
+  int retcode = 0;
+  char *p_locale = NULL;
+  char buffer_locale[ 1024 ];
+
+  p_locale = setlocale( LC_CTYPE, NULL );
+  if ( p_locale != NULL )
+  {
+    strncpy(buffer_locale, p_locale, 1023 );
+    buffer_locale[1023] = '\0';
+  }
+  else
+  {
+    buffer_locale[0] = '\0';
+  }
+
+  setlocale( LC_CTYPE, "" );
+
+  va_start( fmtargs, format );
+  retcode = vprintf( format, fmtargs );
+  va_end(fmtargs);
+
+  setlocale( LC_CTYPE, p_locale );
+
+  return retcode;
+}
+
+// util_t::sc_fprintf =====================================================
+
+int util_t::sc_fprintf( FILE *stream, const char *format,  ... )
+{
+  va_list fmtargs;
+  int retcode = 0;
+  char *p_locale = NULL;
+  char buffer_locale[ 1024 ];
+
+  p_locale = setlocale( LC_CTYPE, NULL );
+  if ( p_locale != NULL )
+  {
+    strncpy(buffer_locale, p_locale, 1023 );
+    buffer_locale[1023] = '\0';
+  }
+  else
+  {
+    buffer_locale[0] = '\0';
+  }
+
+  setlocale( LC_CTYPE, "" );
+
+  va_start( fmtargs, format );
+  retcode = vfprintf( stream, format, fmtargs );
+  va_end(fmtargs);
+
+  setlocale( LC_CTYPE, p_locale );
+
+  return retcode;
+}
+
+std::string& util_t::utf8_binary_to_hex( std::string& name )
+{
+  if( name.empty() ) return name;
+
+  std::string buffer="";
+  char buffer2[32];
+
+  int size = name.size();
+  for( int i=0; i < size; i++ )
+  {
+    unsigned char c = name[ i ];
+
+    if ( c >= 0x80 )
+    {
+      snprintf(buffer2,31,"%%%0X",c);
+      buffer2[31] = '\0';
+      buffer += buffer2;
+      continue;
+    }
+
+    buffer += c;
+  }
+  name = buffer;
+
+  return name;
+}
+
+std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
+{
+  if( name.empty() ) return name;
+
+  std::string buffer="";
+  char buffer2[32];
+
+  int size = name.size();
+  for( int i=0; i < size; i++ )
+  {
+    unsigned char c = name[ i ];
+
+    if ( c >= 0x80 )
+    {
+      if ( c < 0xC0 )
+      {
+        buffer += "%C2";
+      }
+      else
+      {
+        buffer += "%C3";
+        c -= 0x40;
+      }
+      snprintf(buffer2,31,"%%%0X",c);
+      buffer2[31] = '\0';
+      buffer += buffer2;
+      continue;
+    }
+
+    buffer += c;
+  }
+  name = buffer;
+
+  return name;
+}
+
+std::string& util_t::utf8_hex_to_ascii( std::string& name )
+{
+  if( name.empty() ) return name;
+
+  std::string buffer="";
+
+  int size = name.size();
+  for( int i=0; i < size; i++ )
+  {
+    unsigned char c = name[ i ];
+
+    if( c == '%' )
+    {
+      if( ( ( i + 5 ) < size ) && ( name[ i + 3 ] == '%' ) &&
+          ( tolower( name[ i + 1 ] ) == 'c' ) &&
+          ( name[ i + 2 ] >= '2' ) && ( name[ i + 2 ] <= '3' ) &&
+          (
+            ( name[ i + 4 ] == '8' ) || ( name[ i + 4 ] == '9' ) ||
+            ( tolower( name[ i + 4 ] ) == 'a' ) || ( tolower( name[ i + 4 ] ) == 'b' )
+          )
+        )
+      {        
+        int num = 0;
+        switch( tolower( name[ i + 4 ] ) )
+        {
+        case 8: 
+          num=0x80;
+          break;
+        case 9: 
+          num=0x90;
+          break;
+        case 'a':
+          num=0xA0;
+          break;
+        case 'b':
+          num=0xB0;
+          break;
+        }
+        
+        int c2 = tolower( name[ i + 5 ] );
+        if( ( c2 >= '0' ) && ( c2 <= '9' ) )
+        {
+          num += c2 - '0';
+        }
+        else if ( ( c2 >= 'a' ) && ( c2 <= 'f' ) )
+        {
+          num += 10 + c2 - 'a';
+        }
+        else
+        {
+          buffer += c;
+          continue;
+        }
+
+        if ( name[ i + 2 ] == '3' )
+        {
+          num += 0x40;
+        }
+        buffer += ( unsigned char ) num;
+
+        i += 5;
+        continue;
+      }
+
+      if ( ( i + 2 ) < size )
+      {
+        int num = 0;
+        unsigned char d;
+
+        num = tolower( name[ i + 1 ] ) - 'c';
+        if ( ( num < 0 ) || ( num > 3 ) )
+        {
+          buffer += c;
+          continue;
+        }
+        num = num << 4;
+        num += 0xC0;
+        d = tolower( name[ i + 2 ] );
+        if ( isdigit( d ) )
+        {
+          num += d - '0';
+        }
+        else if ( ( d >= 'a' ) || ( d <= 'f' ) )
+        {
+          num += 10 + d - 'a';
+        }
+        else
+        {
+          buffer += c;
+          continue;
+        }
+
+        if ( num < 0xC2 || num > 0xF4 )
+        {
+          buffer += c;
+          continue;
+        }
+        if ( num >= 0xC2 && num <= 0xDF )
+        {
+          i += 5;
+        }
+        else if ( num >= 0xE0 && num <= 0xEF )
+        {
+          i += 8;
+        }
+        else
+        {
+          i += 11;
+        }
+      }
+      continue;
+    }
+
+    buffer += c;
+  }
+  name = buffer;
+
+  return name;
+}
+
+
+std::string& util_t::format_name( std::string& name )
+{
+  if( name.empty() ) return name;
+
+  util_t::utf8_hex_to_ascii( name );
+
+  return name;
+}
+
 //-------------------------------
 // std::STRING   utils
 //-------------------------------

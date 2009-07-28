@@ -3923,7 +3923,7 @@ void warlock_t::init_glyphs()
     else if( n == "soulstone" )           ;
     else if( n == "unending_breath" )     ;
     else if( n == "voidwalker" )          ;
-    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

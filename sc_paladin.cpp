@@ -1030,7 +1030,7 @@ void paladin_t::init_glyphs()
     else if( n == "exorcism"            ) glyphs.exorcism = 1;
     else if( n == "judgement"           ) glyphs.judgement = 1;
     else if( n == "seal_of_vengeance"   ) glyphs.seal_of_vengeance = 1;
-    else if( ! sim -> parent ) printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

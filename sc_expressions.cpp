@@ -244,11 +244,11 @@ void act_expression_t::warn(int severity, action_t* action, const char* format, 
     std::string e_msg;
     if (severity<2)  e_msg="Warning";  else  e_msg="Error";
     e_msg+="("+action->name_str+"): "+ buffer;
-    printf("%s\n", e_msg.c_str());
+    util_t::sc_printf("%s\n", e_msg.c_str());
     if ( action->sim -> debug ) log_t::output( action->sim, "Exp.parser warning: %s", e_msg.c_str() );
     if (severity==3)
     {
-      printf("Expression parser breaking error\n");
+      util_t::sc_printf("Expression parser breaking error\n");
       assert(0);
     }
   }
@@ -967,7 +967,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
 void alias_t::add(std::string& name, std::string& value){
   //check validity
   if (name==""){
-    printf("Alias definition must be in name=text  format\n");
+    util_t::sc_printf("Alias definition must be in name=text  format\n");
     assert(0);
   }
   // if already exists
@@ -979,7 +979,7 @@ void alias_t::add(std::string& name, std::string& value){
   if (i<alias_name.size()){
     // rewrite old value
     alias_value[i]=value;
-    printf("Redefinition of alias (%s): %s",name.c_str(), value.c_str());
+    util_t::sc_printf("Redefinition of alias (%s): %s",name.c_str(), value.c_str());
   }else{
     // put new pair in list
     alias_name.push_back(name);

@@ -404,6 +404,24 @@ enum save_type
   SAVE_MAX
 };
 
+enum format_type {
+  FORMAT_NONE=0,
+  FORMAT_NAME,
+  FORMAT_CHAR_NAME,
+  FORMAT_CONVERT_HEX,
+  FORMAT_CONVERT_UTF8,
+  FORMAT_MAX
+};
+
+#define FORMAT_CHAR_NAME_MASK  ( (1<<FORMAT_NAME) | (1<<FORMAT_CHAR_NAME) )
+#define FORMAT_GUILD_NAME_MASK ( (1<<FORMAT_NAME) )
+#define FORMAT_ALL_NAME_MASK   ( (1<<FORMAT_NAME) | (1<<FORMAT_CHAR_NAME) )
+#define FORMAT_UTF8_MASK       ( (1<<FORMAT_CONVERT_HEX) | (1<<FORMAT_CONVERT_UTF8) )
+#define FORMAT_ASCII_MASK      ( (1<<FORMAT_CONVERT_UTF8) )
+#define FORMAT_CONVERT_MASK    ( (1<<FORMAT_CONVERT_HEX) | (1<<FORMAT_CONVERT_UTF8) )
+#define FORMAT_DEFAULT         ( FORMAT_ASCII_MASK )
+#define FORMAT_ALL_MASK        -1
+
 // Options ====================================================================
 
 enum option_type_t
@@ -454,6 +472,82 @@ struct option_t
   static bool parse_token( sim_t*, std::string& token );
 };
 
+// Utilities =================================================================
+
+struct util_t
+{
+  static double talent_rank( int num, int max, double increment );
+  static double talent_rank( int num, int max, double value1, double value2, ... );
+
+  static int talent_rank( int num, int max, int increment );
+  static int talent_rank( int num, int max, int value1, int value2, ... );
+
+  static double ability_rank( int player_level, double ability_value, int ability_level, ... );
+  static int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
+
+  static char* dup( const char* );
+
+  static const char* attribute_type_string     ( int type );
+  static const char* dmg_type_string           ( int type );
+  static const char* elixir_type_string        ( int type );
+  static const char* enchant_type_string       ( int type );
+  static const char* flask_type_string         ( int type );
+  static const char* food_type_string          ( int type );
+  static const char* gem_type_string           ( int type );
+  static const char* meta_gem_type_string      ( int type );
+  static const char* player_type_string        ( int type );
+  static const char* profession_type_string    ( int type );
+  static const char* race_type_string          ( int type );
+  static const char* resource_type_string      ( int type );
+  static const char* result_type_string        ( int type );
+  static const char* school_type_string        ( int type );
+  static const char* slot_type_string          ( int type );
+  static const char* stat_type_string          ( int type );
+  static const char* stat_type_abbrev          ( int type );
+  static const char* stat_type_wowhead         ( int type );
+  static const char* talent_tree_string        ( int tree );
+  static const char* weapon_buff_type_string   ( int type );
+  static const char* weapon_type_string        ( int type );
+
+  static int parse_attribute_type     ( const std::string& name );
+  static int parse_dmg_type           ( const std::string& name );
+  static int parse_elixir_type        ( const std::string& name );
+  static int parse_enchant_type       ( const std::string& name );
+  static int parse_flask_type         ( const std::string& name );
+  static int parse_food_type          ( const std::string& name );
+  static int parse_gem_type           ( const std::string& name );
+  static int parse_meta_gem_type      ( const std::string& name );
+  static int parse_player_type        ( const std::string& name );
+  static int parse_profession_type    ( const std::string& name );
+  static int parse_race_type          ( const std::string& name );
+  static int parse_resource_type      ( const std::string& name );
+  static int parse_result_type        ( const std::string& name );
+  static int parse_school_type        ( const std::string& name );
+  static int parse_slot_type          ( const std::string& name );
+  static int parse_stat_type          ( const std::string& name );
+  static int parse_talent_tree        ( const std::string& name );
+  static int parse_weapon_buff_type   ( const std::string& name );
+  static int parse_weapon_type        ( const std::string& name );
+
+  static const char* class_id_string( int type );
+  static int translate_class_id( int cid );
+  static bool socket_gem_match( int socket, int gem );
+
+  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
+  static int string_split( const std::string& str, const char* delim, const char* format, ... );
+
+  static int64_t milliseconds();
+  static int64_t parse_date( const std::string& month_day_year );
+
+  static int sc_printf( const char *format,  ... );
+  static int sc_fprintf( FILE *stream, const char *format,  ... );
+
+  static std::string& utf8_binary_to_hex( std::string& name );
+  static std::string& ascii_binary_to_utf8_hex( std::string& name );
+  static std::string& utf8_hex_to_ascii( std::string& name );
+  static std::string& format_name( std::string& name );
+};
+
 // Event =====================================================================
 
 struct event_t
@@ -473,7 +567,7 @@ struct event_t
   }
   double occurs() SC_CONST { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void reschedule( double new_time );
-  virtual void execute() { printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
+  virtual void execute() { util_t::sc_printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
   static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }
@@ -2218,75 +2312,6 @@ struct rng_t
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
 
-
-// Utilities =================================================================
-
-struct util_t
-{
-  static double talent_rank( int num, int max, double increment );
-  static double talent_rank( int num, int max, double value1, double value2, ... );
-
-  static int talent_rank( int num, int max, int increment );
-  static int talent_rank( int num, int max, int value1, int value2, ... );
-
-  static double ability_rank( int player_level, double ability_value, int ability_level, ... );
-  static int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
-
-  static char* dup( const char* );
-
-  static const char* attribute_type_string     ( int type );
-  static const char* dmg_type_string           ( int type );
-  static const char* elixir_type_string        ( int type );
-  static const char* enchant_type_string       ( int type );
-  static const char* flask_type_string         ( int type );
-  static const char* food_type_string          ( int type );
-  static const char* gem_type_string           ( int type );
-  static const char* meta_gem_type_string      ( int type );
-  static const char* player_type_string        ( int type );
-  static const char* profession_type_string    ( int type );
-  static const char* race_type_string          ( int type );
-  static const char* resource_type_string      ( int type );
-  static const char* result_type_string        ( int type );
-  static const char* school_type_string        ( int type );
-  static const char* slot_type_string          ( int type );
-  static const char* stat_type_string          ( int type );
-  static const char* stat_type_abbrev          ( int type );
-  static const char* stat_type_wowhead         ( int type );
-  static const char* talent_tree_string        ( int tree );
-  static const char* weapon_buff_type_string   ( int type );
-  static const char* weapon_type_string        ( int type );
-
-  static int parse_attribute_type     ( const std::string& name );
-  static int parse_dmg_type           ( const std::string& name );
-  static int parse_elixir_type        ( const std::string& name );
-  static int parse_enchant_type       ( const std::string& name );
-  static int parse_flask_type         ( const std::string& name );
-  static int parse_food_type          ( const std::string& name );
-  static int parse_gem_type           ( const std::string& name );
-  static int parse_meta_gem_type      ( const std::string& name );
-  static int parse_player_type        ( const std::string& name );
-  static int parse_profession_type    ( const std::string& name );
-  static int parse_race_type          ( const std::string& name );
-  static int parse_resource_type      ( const std::string& name );
-  static int parse_result_type        ( const std::string& name );
-  static int parse_school_type        ( const std::string& name );
-  static int parse_slot_type          ( const std::string& name );
-  static int parse_stat_type          ( const std::string& name );
-  static int parse_talent_tree        ( const std::string& name );
-  static int parse_weapon_buff_type   ( const std::string& name );
-  static int parse_weapon_type        ( const std::string& name );
-
-  static const char* class_id_string( int type );
-  static int translate_class_id( int cid );
-  static bool socket_gem_match( int socket, int gem );
-
-  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
-  static int string_split( const std::string& str, const char* delim, const char* format, ... );
-
-  static int64_t milliseconds();
-  static int64_t parse_date( const std::string& month_day_year );
-};
-
 // String utils =================================================================
 
 std::string tolower( std::string src );
@@ -2329,7 +2354,7 @@ struct armory_t
   static bool download_item( item_t&, const std::string& item_id );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
   static int  parse_meta_gem( const std::string& description );
-  static std::string& format( std::string& name );
+  static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
 };
 
 // Wowhead  ==================================================================

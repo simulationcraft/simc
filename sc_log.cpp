@@ -115,7 +115,7 @@ static bool write_timestamp( sim_t* sim )
   hours    = minutes / 60;
   minutes %= 60;
 
-  fprintf( sim -> log_file, "1/1 %02d:%02d:%02d.%03d  ", hours, minutes, seconds, milisec );
+  util_t::sc_fprintf( sim -> log_file, "1/1 %02d:%02d:%02d.%03d  ", hours, minutes, seconds, milisec );
 
   return true;
 }
@@ -131,10 +131,14 @@ static bool write_timestamp( sim_t* sim )
 void log_t::output( sim_t* sim, const char* format, ... )
 {
   va_list vap;
+  char buffer[2048];
+
   va_start( vap, format );
-  fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
-  vfprintf( sim -> output_file, format, vap );
-  fprintf( sim -> output_file, "\n" );
+  util_t::sc_fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
+  vsnprintf( buffer, 2047,  format, vap );
+  buffer[2047] = '\0';
+  util_t::sc_fprintf( sim -> output_file, "%s", buffer );
+  util_t::sc_fprintf( sim -> output_file, "\n" );
   fflush( sim -> output_file );
 }
 
@@ -144,7 +148,7 @@ void log_t::start_event( action_t* a )
 {
   if ( ! write_timestamp( a -> sim ) ) return;
 
-  fprintf( a -> sim -> log_file,
+  util_t::sc_fprintf( a -> sim -> log_file,
            "SPELL_CAST_START,%s,%s,%d,\"%s\",0x%X\n",
            a -> player -> id(),
            nil_target_id(),
@@ -163,11 +167,11 @@ void log_t::damage_event( action_t* a,
 
   if ( is_swing( a ) )
   {
-    fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
+    util_t::sc_fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
   }
   else
   {
-    fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
+    util_t::sc_fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
              ( ( dmg_type == DMG_DIRECT ) ? "SPELL_DAMAGE" : "SPELL_PERIODIC_DAMAGE" ),
              a -> player -> id(),
              a -> sim -> target -> id(),
@@ -176,7 +180,7 @@ void log_t::damage_event( action_t* a,
              school_id( a -> school ) );
   }
 
-  fprintf( a -> sim -> log_file,
+  util_t::sc_fprintf( a -> sim -> log_file,
            ",%d,0,%d,%d,0,%d,%s,%s,nil\n",
            ( int ) dmg,
            school_id( a -> school ),
@@ -193,7 +197,7 @@ void log_t::miss_event( action_t* a )
 {
   if ( ! write_timestamp( a -> sim ) ) return;
 
-  fprintf( a -> sim -> log_file,
+  util_t::sc_fprintf( a -> sim -> log_file,
            "%s,%s,%s,%d,\"%s\",0x%X,%s\n",
            ( is_swing( a ) ? "SWING_MISSED" : "SPELL_MISSED" ),
            a -> player -> id(),
@@ -218,7 +222,7 @@ void log_t::resource_gain_event( player_t* p,
 
   if ( resource == RESOURCE_HEALTH )
   {
-    fprintf( p -> sim -> log_file,
+    util_t::sc_fprintf( p -> sim -> log_file,
              "SPELL_PERIODIC_HEAL,%s,%s,%d,\"%s\",0x%X,%d,%d,nil\n",
              p -> id(),
              p -> id(),
@@ -230,7 +234,7 @@ void log_t::resource_gain_event( player_t* p,
   }
   else
   {
-    fprintf( p -> sim -> log_file,
+    util_t::sc_fprintf( p -> sim -> log_file,
              "SPELL_ENERGIZE,%s,%s,%d,\"%s\",0x%X,%d,%d\n",
              p -> id(),
              p -> id(),
@@ -251,7 +255,7 @@ void log_t::aura_gain_event( player_t*   p,
 {
   if ( ! write_timestamp( p -> sim ) ) return;
 
-  fprintf( p -> sim -> log_file,
+  util_t::sc_fprintf( p -> sim -> log_file,
            "SPELL_AURA_APPLIED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
            p -> id(),
            p -> id(),
@@ -268,7 +272,7 @@ void log_t::aura_loss_event( player_t*   p,
 {
   if ( ! write_timestamp( p -> sim ) ) return;
 
-  fprintf( p -> sim -> log_file,
+  util_t::sc_fprintf( p -> sim -> log_file,
            "SPELL_AURA_REMOVED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
            p -> id(),
            p -> id(),
@@ -285,7 +289,7 @@ void log_t::summon_event( pet_t* pet )
 
   if ( ! write_timestamp( pet -> sim ) ) return;
 
-  fprintf( pet -> sim -> log_file,
+  util_t::sc_fprintf( pet -> sim -> log_file,
            "SPELL_SUMMON,%s,%s,688,\"Ritual Enslavement\",0x%X\n",
            pet -> id(),
            pet -> owner -> id(),
@@ -293,7 +297,7 @@ void log_t::summon_event( pet_t* pet )
 
   write_timestamp( pet -> sim );
 
-  fprintf( pet -> sim -> log_file,
+  util_t::sc_fprintf( pet -> sim -> log_file,
            "SPELL_SUMMON,%s,%s,688,\"Summon Pet\",0x%X\n",
            pet -> id(),
            pet -> owner -> id(),
@@ -301,7 +305,7 @@ void log_t::summon_event( pet_t* pet )
 
   write_timestamp( pet -> sim );
 
-  fprintf( pet -> sim -> log_file,
+  util_t::sc_fprintf( pet -> sim -> log_file,
            "SPELL_ENERGIZE,0,0,%s,%s,688,\"Summon Pet\",0x%X\n",
            pet -> id(),
            pet -> owner -> id(),

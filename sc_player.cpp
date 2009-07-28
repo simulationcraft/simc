@@ -340,7 +340,7 @@ static bool parse_talent_url( sim_t* sim,
     }
   }
 
-  printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
+  util_t::sc_printf( "simcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
 
   return false;
 }
@@ -553,7 +553,7 @@ void player_t::init_items()
   {
     if( find_item( splits[ i ] ) )
     {
-      printf( "simcraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
+      util_t::sc_printf( "simcraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
     }
     items.push_back( item_t( this, splits[ i ] ) );
   }
@@ -567,7 +567,7 @@ void player_t::init_items()
 
     if( ! item.init() )
     {
-      printf( "simcraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
+      util_t::sc_printf( "simcraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
       assert( false );
     }
 
@@ -832,7 +832,7 @@ void player_t::init_professions()
     int prof_type = util_t::parse_profession_type( prof_name );
     if ( prof_type == PROFESSION_NONE )
     {
-      printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
+      util_t::sc_printf( "Invalid profession encoding: %s\n", professions_str.c_str() );
       assert( 0 );
     }
 
@@ -884,7 +884,7 @@ void player_t::init_actions()
 
       if ( ! create_action( action_name, action_options ) )
       {
-        printf( "player_t: Unknown action: %s\n", splits[ i ].c_str() );
+        util_t::sc_printf( "player_t: Unknown action: %s\n", splits[ i ].c_str() );
         assert( false );
       }
     }
@@ -1128,7 +1128,7 @@ void player_t::init_expressions()
       a->if_exp=act_expression_t::create(a, a->if_expression,"", ETP_BOOL);
     a->has_if_exp= (a->if_exp!=0);
     if (a->has_if_exp && sim->debug_exp) //debug
-      printf("%s", a->if_exp->to_string().c_str()); 
+      util_t::sc_printf("%s", a->if_exp->to_string().c_str()); 
   }
 }
 
@@ -1914,7 +1914,7 @@ void player_t::summon_pet( const char* pet_name )
       return;
     }
   }
-  printf( "\nsimcraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
+  util_t::sc_printf( "\nsimcraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
   assert( 0 );
 }
 
@@ -2255,7 +2255,7 @@ struct cycle_t : public action_t
       current_action = next;
       if ( ! current_action )
       {
-        printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
+        util_t::sc_printf( "simcraft: player %s has no actions after 'cycle'\n", player -> name() );
         exit( 0 );
       }
       for ( action_t* a = next; a; a = a -> next ) a -> background = true;
@@ -2409,19 +2409,19 @@ struct use_item_t : public action_t
 
     if( item_name.empty() )
     {
-      printf( "simcraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
+      util_t::sc_printf( "simcraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
       assert( false );
     }
 
     item = player -> find_item( item_name );
     if( ! item )
     {
-      printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+      util_t::sc_printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
       assert( false );
     }
     if( ! item -> use.active() )
     {
-      printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
+      util_t::sc_printf( "simcraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
       assert( false );
     }
 
@@ -2582,7 +2582,7 @@ bool player_t::parse_talent_tree( std::vector<int*>& talent_tree,
     char c = s[ i ];
     if( c < '0' || c > '5' )
     {
-      printf( "\nsimcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      util_t::sc_printf( "\nsimcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
     }
     *address = c - '0';
@@ -2668,7 +2668,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   {
     if ( tree > 2 )
     {
-      fprintf( sim -> output_file, "Malformed wowhead talent string. Too many trees specified.\n" );
+      util_t::sc_fprintf( sim -> output_file, "Malformed wowhead talent string. Too many trees specified.\n" );
       assert( 0 );
     }
 
@@ -2690,7 +2690,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     if ( ! decode )
     {
-      fprintf( sim -> output_file, "Malformed wowhead talent string. Translation for '%c' unknown.\n", c );
+      util_t::sc_fprintf( sim -> output_file, "Malformed wowhead talent string. Translation for '%c' unknown.\n", c );
       assert( 0 );
     }
 
@@ -2703,9 +2703,9 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   if ( sim -> debug )
   {
-    fprintf( sim -> output_file, "%s tree1: %s\n", name(), talent_strings[ 0 ].c_str() );
-    fprintf( sim -> output_file, "%s tree2: %s\n", name(), talent_strings[ 1 ].c_str() );
-    fprintf( sim -> output_file, "%s tree3: %s\n", name(), talent_strings[ 2 ].c_str() );
+    util_t::sc_fprintf( sim -> output_file, "%s tree1: %s\n", name(), talent_strings[ 0 ].c_str() );
+    util_t::sc_fprintf( sim -> output_file, "%s tree2: %s\n", name(), talent_strings[ 1 ].c_str() );
+    util_t::sc_fprintf( sim -> output_file, "%s tree3: %s\n", name(), talent_strings[ 2 ].c_str() );
   }
 
   for ( int i=0; i < 3; i++ )
@@ -2723,15 +2723,15 @@ bool player_t::save( FILE* file, int save_type )
 {
   if( save_type == SAVE_ALL )
   {
-    fprintf( file, "#!simcraft\n\n" );
+    util_t::sc_fprintf( file, "#!simcraft\n\n" );
 
-    fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
-    fprintf( file, "origin=%s\n", origin_str.c_str() );
-    fprintf( file, "level=%d\n", level );
+    util_t::sc_fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
+    util_t::sc_fprintf( file, "origin=%s\n", origin_str.c_str() );
+    util_t::sc_fprintf( file, "level=%d\n", level );
 
     if( professions_str.size() > 0 )
     {
-      fprintf( file, "professions=%s\n", professions_str.c_str() );
+      util_t::sc_fprintf( file, "professions=%s\n", professions_str.c_str() );
     };
   }
 
@@ -2739,11 +2739,11 @@ bool player_t::save( FILE* file, int save_type )
   {
     if( talents_str.size() > 0 )
     {
-      fprintf( file, "talents=%s\n", talents_str.c_str() );
+      util_t::sc_fprintf( file, "talents=%s\n", talents_str.c_str() );
     };
     if( glyphs_str.size() > 0 )
     {
-      fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
+      util_t::sc_fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
     }
   }
   
@@ -2755,7 +2755,7 @@ bool player_t::save( FILE* file, int save_type )
       int num_splits = util_t::string_split( splits, action_list_str, "/" );
       for ( int i=0; i < num_splits; i++ )
       {
-        fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
+        util_t::sc_fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
       }    
     }
   }
@@ -2768,39 +2768,39 @@ bool player_t::save( FILE* file, int save_type )
 
       if( item.active() )
       {
-        fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
+        util_t::sc_fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
       }
     }
     if( ! items_str.empty() )
     {
-      fprintf( file, "items=%s\n", items_str.c_str() );
+      util_t::sc_fprintf( file, "items=%s\n", items_str.c_str() );
     }
 
-    fprintf( file, "# Gear Summary\n" );
+    util_t::sc_fprintf( file, "# Gear Summary\n" );
     for( int i=0; i < STAT_MAX; i++ )
     {
       double value = stats.get_stat( i );
-      if( value != 0 ) fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
+      if( value != 0 ) util_t::sc_fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
     }
-    if( meta_gem != META_GEM_NONE ) fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
-    if( set_bonus.tier7_2pc() ) fprintf( file, "# tier7_2pc=1\n" );
-    if( set_bonus.tier7_4pc() ) fprintf( file, "# tier7_4pc=1\n" );
-    if( set_bonus.tier8_2pc() ) fprintf( file, "# tier8_2pc=1\n" );
-    if( set_bonus.tier8_4pc() ) fprintf( file, "# tier8_4pc=1\n" );
-    if( set_bonus.tier9_2pc() ) fprintf( file, "# tier9_2pc=1\n" );
-    if( set_bonus.tier9_4pc() ) fprintf( file, "# tier9_4pc=1\n" );
-    if( set_bonus.tier10_2pc() ) fprintf( file, "# tier10_2pc=1\n" );
-    if( set_bonus.tier10_4pc() ) fprintf( file, "# tier10_4pc=1\n" );
+    if( meta_gem != META_GEM_NONE ) util_t::sc_fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
+    if( set_bonus.tier7_2pc() ) util_t::sc_fprintf( file, "# tier7_2pc=1\n" );
+    if( set_bonus.tier7_4pc() ) util_t::sc_fprintf( file, "# tier7_4pc=1\n" );
+    if( set_bonus.tier8_2pc() ) util_t::sc_fprintf( file, "# tier8_2pc=1\n" );
+    if( set_bonus.tier8_4pc() ) util_t::sc_fprintf( file, "# tier8_4pc=1\n" );
+    if( set_bonus.tier9_2pc() ) util_t::sc_fprintf( file, "# tier9_2pc=1\n" );
+    if( set_bonus.tier9_4pc() ) util_t::sc_fprintf( file, "# tier9_4pc=1\n" );
+    if( set_bonus.tier10_2pc() ) util_t::sc_fprintf( file, "# tier10_2pc=1\n" );
+    if( set_bonus.tier10_4pc() ) util_t::sc_fprintf( file, "# tier10_4pc=1\n" );
 
     for( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
       if( item.active() && ( ! item.encoded_weapon_str.empty() || item.enchant != ENCHANT_NONE ) )
       {
-        fprintf( file, "# %s=%s", item.slot_name(), item.name() );
-        if( ! item.encoded_weapon_str.empty() ) fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
-        if( item.enchant != ENCHANT_NONE ) fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
-        fprintf( file, "\n" );
+        util_t::sc_fprintf( file, "# %s=%s", item.slot_name(), item.name() );
+        if( ! item.encoded_weapon_str.empty() ) util_t::sc_fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
+        if( item.enchant != ENCHANT_NONE ) util_t::sc_fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
+        util_t::sc_fprintf( file, "\n" );
       }
     }
 
@@ -2811,12 +2811,12 @@ bool player_t::save( FILE* file, int save_type )
       item_t& item = items[ i ];
       if( item.active() && ( item.use.active() || item.equip.active() || item.unique ) )
       {
-        fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
+        util_t::sc_fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
         first = false;
       }
     }
 
-    if( ! first ) fprintf( file, "\n" );
+    if( ! first ) util_t::sc_fprintf( file, "\n" );
   }
 
   return true;

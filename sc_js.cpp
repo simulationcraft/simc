@@ -113,7 +113,7 @@ static void parse_value( js_node_t*              node,
       if( token_type == '}' ) break;
       if( token_type != 'S' )
       {
-        printf( "Unexpected token '%c' (%s) at index %d (%s)\n", token_type, token_str.c_str(), (int) index, node -> name() );
+        util_t::sc_printf( "Unexpected token '%c' (%s) at index %d (%s)\n", token_type, token_str.c_str(), (int) index, node -> name() );
         assert( false );
       }
       js_node_t* child = new js_node_t( token_str );
@@ -122,7 +122,7 @@ static void parse_value( js_node_t*              node,
       token_type = parse_token( token_str, input, index );
       if( token_type != ':' )
       {
-        printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+        util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
         assert( false );
       }
       parse_value( child, input, index );
@@ -131,7 +131,7 @@ static void parse_value( js_node_t*              node,
       if( token_type == ',' ) continue;
       if( token_type == '}' ) break;
 
-      printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+      util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
       assert( false );
     }
   }
@@ -143,7 +143,7 @@ static void parse_value( js_node_t*              node,
       if( token_type == ']' ) break;
       if( token_type != 'S' )
       {
-        printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+        util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
         assert( false );
       }
       node -> vector_value.push_back( token_str );
@@ -152,7 +152,7 @@ static void parse_value( js_node_t*              node,
       if( token_type == ',' ) continue;
       if( token_type == ']' ) break;
 
-      printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+      util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
       assert( false );
     }
   }
@@ -161,7 +161,7 @@ static void parse_value( js_node_t*              node,
     token_type = parse_token( token_str, input, index );
     if( token_type != 'S' )
     {
-      printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+      util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
       assert( false );
     }
     node -> scalar_value = token_str;
@@ -169,7 +169,7 @@ static void parse_value( js_node_t*              node,
     token_type = parse_token( token_str, input, index );
     if( token_type != '(' )
     {
-      printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+      util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
       assert( false );
     }
 
@@ -189,7 +189,7 @@ static void parse_value( js_node_t*              node,
       if( token_type == ',' ) continue;
       if( token_type == ')' ) break;
 
-      printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+      util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
       assert( false );
     }
   }
@@ -199,7 +199,7 @@ static void parse_value( js_node_t*              node,
   }
   else 
   {
-    printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
+    util_t::sc_printf( "Unexpected token '%c' at index %d (%s)\n", token_type, (int) index, node -> name() );
     assert( false );
   }
 }
@@ -409,23 +409,23 @@ void js_t::print( js_node_t* root,
 
   if( ! file ) file = stdout;
 
-  fprintf( file, "%*s%s", spacing, "", root -> name() );
+  util_t::sc_fprintf( file, "%*s%s", spacing, "", root -> name() );
 
   if( ! root -> scalar_value.empty() )
   {
-    fprintf( file, " : '%s'", root -> scalar_value.c_str() );
+    util_t::sc_fprintf( file, " : '%s'", root -> scalar_value.c_str() );
   }
   int num_vector_values = root -> vector_value.size();
   if( num_vector_values > 0 )
   {
-    fprintf( file, " : [" );
+    util_t::sc_fprintf( file, " : [" );
     for( int i=0; i < num_vector_values; i++ )
     {
-      fprintf( file, "%s '%s'", (i?",":""), root -> vector_value[ i ].c_str() );
+      util_t::sc_fprintf( file, "%s '%s'", (i?",":""), root -> vector_value[ i ].c_str() );
     }
-    fprintf( file, " ]" );
+    util_t::sc_fprintf( file, " ]" );
   }
-  fprintf( file, "\n" );
+  util_t::sc_fprintf( file, "\n" );
 
   int num_children = root -> children.size();
   for( int i=0; i < num_children; i++ )
@@ -440,13 +440,13 @@ int main( int argc, char** argv )
 {
   if( argc < 2 )
   {
-    printf( "Usage: js filename\n" );
+    util_t::sc_printf( "Usage: js filename\n" );
     exit(0);
   }
   FILE* file = fopen( argv[ 1 ], "r" );
   if( ! file )
   {
-    printf( "Unable to open file %s\n", argv[ 1 ] );
+    util_t::sc_printf( "Unable to open file %s\n", argv[ 1 ] );
     exit(0);
   }
 

@@ -54,34 +54,34 @@ void option_t::print( FILE* file )
   if( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
+    util_t::sc_fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
   }
   else if( type == OPT_CHARP )
   {
     const char* v = *( ( char** ) address );
-    fprintf( file, "%s=%s\n", name, v ? v : "" );
+    util_t::sc_fprintf( file, "%s=%s\n", name, v ? v : "" );
   }
   else if( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    fprintf( file, "%s=%d\n", name, (v>0) ? 1 : 0 );
+    util_t::sc_fprintf( file, "%s=%d\n", name, (v>0) ? 1 : 0 );
   }
   else if( type == OPT_INT )
   {
     int v = *( ( int* ) address );
-    fprintf( file, "%s=%d\n", name, v );
+    util_t::sc_fprintf( file, "%s=%d\n", name, v );
   }
   else if( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
-    fprintf( file, "%s=%.2f\n", name, v );
+    util_t::sc_fprintf( file, "%s=%.2f\n", name, v );
   }
   else if( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
-    fprintf( file, "%s=", name );
-    for ( unsigned i=0; i < v.size(); i++ ) fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
-    fprintf( file, "\n" );
+    util_t::sc_fprintf( file, "%s=", name );
+    for ( unsigned i=0; i < v.size(); i++ ) util_t::sc_fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+    util_t::sc_fprintf( file, "\n" );
   }
 }
 
@@ -92,36 +92,36 @@ void option_t::save( FILE* file )
   if( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    if( ! v.empty() ) fprintf( file, "%s=%s\n", name, v.c_str() );
+    if( ! v.empty() ) util_t::sc_fprintf( file, "%s=%s\n", name, v.c_str() );
   }
   else if( type == OPT_CHARP )
   {
     const char* v = *( ( char** ) address );
-    if( v ) fprintf( file, "%s=%s\n", name, v );
+    if( v ) util_t::sc_fprintf( file, "%s=%s\n", name, v );
   }
   else if( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    if( v > 0 ) fprintf( file, "%s=1\n", name );
+    if( v > 0 ) util_t::sc_fprintf( file, "%s=1\n", name );
   }
   else if( type == OPT_INT )
   {
     int v = *( ( int* ) address );
-    if( v != 0 ) fprintf( file, "%s=%d\n", name, v );
+    if( v != 0 ) util_t::sc_fprintf( file, "%s=%d\n", name, v );
   }
   else if( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
-    if( v != 0 ) fprintf( file, "%s=%.2f\n", name, v );
+    if( v != 0 ) util_t::sc_fprintf( file, "%s=%.2f\n", name, v );
   }
   else if( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
     if( ! v.empty() )
     {
-      fprintf( file, "%s=", name );
-      for ( unsigned i=0; i < v.size(); i++ ) fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
-      fprintf( file, "\n" );
+      util_t::sc_fprintf( file, "%s=", name );
+      for ( unsigned i=0; i < v.size(); i++ ) util_t::sc_fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+      util_t::sc_fprintf( file, "\n" );
     }
   }
 }
@@ -160,13 +160,13 @@ bool option_t::parse( sim_t*             sim,
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
     case OPT_BOOL:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
-      if ( v != "0" && v != "1" ) printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name );
+      if ( v != "0" && v != "1" ) util_t::sc_printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name );
       break;
     case OPT_FUNC: return ( (option_function_t) address )( sim, n, v );
     case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
-      printf( "simcraft: option '%s' has been deprecated.\n", name );
-      if ( address ) printf( "simcraft: please use '%s' instead.\n", ( char* ) address );
+      util_t::sc_printf( "simcraft: option '%s' has been deprecated.\n", name );
+      if ( address ) util_t::sc_printf( "simcraft: please use '%s' instead.\n", ( char* ) address );
       exit( 0 );
     default: assert( 0 );
     }
@@ -210,7 +210,7 @@ bool option_t::parse( sim_t*                 sim,
 
     if( index == std::string::npos )
     {
-      fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
+      util_t::sc_fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
       return false;
     }
 
@@ -219,7 +219,7 @@ bool option_t::parse( sim_t*                 sim,
 
     if( ! option_t::parse( sim, options, n, v ) )
     {
-      fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
+      util_t::sc_fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
       return false;
     }
   }
@@ -301,7 +301,7 @@ bool option_t::parse_token( sim_t*       sim,
     FILE* file = fopen( token.c_str(), "r" );
     if ( ! file )
     {
-      printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
+      util_t::sc_printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
       return false;
     }
     sim -> active_files.push_back( token );
@@ -321,7 +321,7 @@ bool option_t::parse_token( sim_t*       sim,
     FILE* file = fopen( value.c_str(), "r" );
     if ( ! file )
     {
-      printf( "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
+      util_t::sc_printf( "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );
     }
     sim -> active_files.push_back( token );
     parse_file( sim, file );
@@ -330,7 +330,7 @@ bool option_t::parse_token( sim_t*       sim,
   }
   else if ( ! sim -> parse_option( name, value ) )
   {
-    printf( "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
+    util_t::sc_printf( "simcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
     return false;
   }
 

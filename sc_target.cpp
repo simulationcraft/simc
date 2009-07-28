@@ -168,7 +168,7 @@ void target_t::init()
 
     if ( race == RACE_MAX )
     {
-      printf( "simcraft: '%s' is not a valid value for 'target_race'\n", race_str.c_str() );
+      util_t::sc_printf( "simcraft: '%s' is not a valid value for 'target_race'\n", race_str.c_str() );
       exit( 0 );
     }
   }
