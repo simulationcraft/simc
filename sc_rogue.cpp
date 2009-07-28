@@ -2231,6 +2231,7 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     base_cost             = 25;
     base_tick_time        = 2.0;
+    num_ticks             = 3;
     base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
                                     p -> talents.find_weakness   * 0.02 +
                                     p -> talents.serrated_blades * 0.10 +
@@ -2255,10 +2256,13 @@ struct rupture_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    added_ticks = 0;
-    num_ticks = 3 + p -> _buffs.combo_points;
-    if ( p -> glyphs.rupture ) num_ticks += 2;
     rogue_attack_t::execute();
+    if( result_is_hit() )
+    {
+      added_ticks = 0;
+      num_ticks = 3 + p -> _buffs.combo_points;
+      if ( p -> glyphs.rupture ) num_ticks += 2;
+    }
   }
 
   virtual void player_buff()

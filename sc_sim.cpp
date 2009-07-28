@@ -301,8 +301,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
     channel_lag( 0.250 ), channel_lag_range( 0 ),
-    travel_variance( 0 ),
-    reaction_time( 0.5 ), regen_periodicity( 1.0 ),
+    travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 1.0 ),
     current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
@@ -1249,6 +1248,7 @@ std::vector<option_t>& sim_t::get_options()
       { "gcd_lag_range",                    OPT_FLT,    &( gcd_lag_range                            ) },
       { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
       { "queue_lag_range",                  OPT_FLT,    &( queue_lag_range                          ) },
+      { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
       { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
       // @option_doc loc=skip

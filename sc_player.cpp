@@ -361,7 +361,7 @@ player_t::player_t( sim_t*             s,
   region_str(s->default_region_str), server_str(s->default_server_str), origin_str("unknown"),
   next(0), index(-1), type(t), level(80), 
   party(0), member(0),
-  skill(1.0), distance(0), gcd_ready(0), base_gcd(1.5), 
+  skill(s->default_skill), distance(0), gcd_ready(0), base_gcd(1.5), 
   potion_used(0), stunned(0), moving(0), sleeping(0), initialized(0), 
   pet_list(0), last_modified(0), race(RACE_NONE),
   // Haste

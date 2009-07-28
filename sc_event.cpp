@@ -140,12 +140,19 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
 void action_tick_event_t::execute()
 {
-  assert( action -> current_tick < action -> num_ticks );
+  if( action -> current_tick >= action -> num_ticks )
+  {
+    util_t::printf( "simcraft: Player %s has corrupt tick (%d of %d) event on action %s!\n", 
+		    player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
+    assert( false );
+  }
 
   action -> tick_event = 0;
   action -> current_tick++;
 
-  if ( action -> channeled && player -> skill < 1.0 )
+  if ( action -> channeled && 
+       action -> current_tick == action -> num_ticks &&
+       player -> skill < 1.0 )
   {
     if( sim -> roll( player -> skill ) ) action -> tick();
   }
