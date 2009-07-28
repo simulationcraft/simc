@@ -400,7 +400,7 @@ void raid_event_t::parse_options( option_t*          options,
 
   if( ! option_t::parse( sim, name(), merged_options, options_str ) )
   {
-    util_t::sc_fprintf( sim -> output_file, "raid_event_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    util_t::fprintf( sim -> output_file, "raid_event_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
     assert( false );
   }
 }
@@ -449,7 +449,7 @@ void raid_event_t::init( sim_t* sim )
 
     if( ! e )
     {
-      util_t::sc_printf( "simcraft: Unknown raid event: %s\n", splits[ i ].c_str() );
+      util_t::printf( "simcraft: Unknown raid event: %s\n", splits[ i ].c_str() );
       assert( false );
     }
 

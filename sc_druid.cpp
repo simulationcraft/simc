@@ -3315,7 +3315,7 @@ void druid_t::init_glyphs()
     else if( n == "unburdened_rebirth"    ) ;
     else if( n == "wild_growth"           ) ;
     else if( n == "wrath"                 ) ;
-    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3400,7 +3400,7 @@ void druid_t::init_items()
   else if( idol == "harolds_rejuvenating_broach"  ) ;
   else
   {
-    util_t::sc_printf( "simcraft: %s has unknown idol %s\n", name(), idol.c_str() );
+    util_t::printf( "simcraft: %s has unknown idol %s\n", name(), idol.c_str() );
   }
 
   if( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );

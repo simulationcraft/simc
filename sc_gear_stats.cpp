@@ -152,10 +152,10 @@ void gear_stats_t::print( FILE* file )
 
     if( value != 0 )
     {
-      util_t::sc_fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - (int) value ) > 0 ) ? 3 : 0 ), value );
+      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - (int) value ) > 0 ) ? 3 : 0 ), value );
     }
   }
-  util_t::sc_fprintf( file, "\n" );
+  util_t::fprintf( file, "\n" );
 }
 
 // gear_stats_t::stat_mod ===================================================

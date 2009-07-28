@@ -281,7 +281,7 @@ bool http_t::get( std::string& result,
 
   if( ! success )
   {
-    util_t::sc_printf( "@" ); fflush( stdout );
+    util_t::printf( "@" ); fflush( stdout );
     throttle( throttle_seconds );
     std::string encoded_url;
     success = download( result, format( encoded_url, url ) );
@@ -290,8 +290,8 @@ bool http_t::get( std::string& result,
     {
       if( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
       {
-	//util_t::sc_printf( "\nsimcraft: HTTP failed on '%s'\n", url.c_str() );
-	//util_t::sc_printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+	//util_t::printf( "\nsimcraft: HTTP failed on '%s'\n", url.c_str() );
+	//util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
         fflush( stdout );
         success = false;
       }
@@ -330,11 +330,8 @@ std::string& http_t::format( std::string& encoded_url,
     else if( ( unsigned char ) c > 127 )
     {
       std::string temp = "";
-
       temp += c;
-
       util_t::ascii_binary_to_utf8_hex( temp );
-    
       encoded_url += temp;
     }
     else encoded_url += c;
@@ -572,15 +569,15 @@ int main( int argc, char** argv )
 
   if( http_t::get( result, "http://www.wowarmory.com/character-sheet.xml?r=Llane&n=Pagezero" ) )
   {
-    util_t::sc_printf( "%s\n", result.c_str() );
+    util_t::printf( "%s\n", result.c_str() );
   }
-  else util_t::sc_printf( "Unable to download armory data.\n" );
+  else util_t::printf( "Unable to download armory data.\n" );
 
   if( http_t::get( result, "http://www.wowhead.com/?item=40328&xml" ) )
   {
-    util_t::sc_printf( "%s\n", result.c_str() );
+    util_t::printf( "%s\n", result.c_str() );
   }
-  else util_t::sc_printf( "Unable to download wowhead data.\n" );
+  else util_t::printf( "Unable to download wowhead data.\n" );
 
   http_t::save_cache();
 

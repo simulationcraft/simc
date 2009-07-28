@@ -19,7 +19,7 @@ static bool parse_patch( sim_t*             sim,
 
   if ( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
   {
-    util_t::sc_printf( "simcraft: Expected format: -patch=#.#.#\n" );
+    util_t::printf( "simcraft: Expected format: -patch=#.#.#\n" );
     return false;
   }
 
@@ -56,7 +56,7 @@ static bool parse_active( sim_t*             sim,
     }
     if ( ! sim -> active_player )
     {
-      util_t::sc_printf( "simcraft: Unable to find player %s\n", value.c_str() );
+      util_t::printf( "simcraft: Unable to find player %s\n", value.c_str() );
       return false;
     }
   }
@@ -124,7 +124,7 @@ static bool parse_player( sim_t*             sim,
 
       if( sim -> active_player )
 	if( player_name != sim -> active_player -> name() )
-	  util_t::sc_printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
+	  util_t::printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
 		  player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
 	
     }
@@ -150,7 +150,7 @@ static bool parse_armory( sim_t*             sim,
 
     if( num_splits < 3 )
     {
-      util_t::sc_printf( "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
+      util_t::printf( "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
       assert( false );
     }
 
@@ -254,7 +254,7 @@ static bool parse_wowhead( sim_t*             sim,
     }
     else
     {
-      util_t::sc_printf( "simcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
+      util_t::printf( "simcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
       assert( false );
     }
   }
@@ -273,14 +273,14 @@ static bool parse_rawr( sim_t*             sim,
     FILE* file = fopen( value.c_str(), "r" );
     if( ! file )
     {
-      util_t::sc_printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", value.c_str() );
+      util_t::printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", value.c_str() );
       return false;
     }
     sim -> active_player = rawr_t::load_player( sim, file );
     fclose( file );
     if( ! sim -> active_player )
     {
-      util_t::sc_printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
+      util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
   }
 
@@ -665,7 +665,7 @@ bool sim_t::init()
 
   if ( too_quiet && ! debug )
   {
-    util_t::sc_printf( "simcraft: No active players in sim.\n" );
+    util_t::printf( "simcraft: No active players in sim.\n" );
     assert( false );
   }
 
@@ -701,7 +701,7 @@ bool sim_t::init()
       for ( int j=0; j < num_players; j++ )
       {
         player_t* p = find_player( player_names[ j ] );
-        if ( ! p ) util_t::sc_printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+        if ( ! p ) util_t::printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
         assert( p );
         p -> party = party_index;
         p -> member = member_index++;
@@ -956,12 +956,12 @@ void sim_t::iterate()
   {
     if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) && ( message_index > 0 ) )
     {
-      util_t::sc_fprintf( stdout, "%d... ", message_index-- );
+      util_t::fprintf( stdout, "%d... ", message_index-- );
       fflush( stdout );
     }
     combat( i );
   }
-  if ( report_progress ) util_t::sc_fprintf( stdout, "\n" );
+  if ( report_progress ) util_t::fprintf( stdout, "\n" );
 
   reset();
 }
@@ -1050,7 +1050,7 @@ void sim_t::partition()
   if ( iterations < threads ) return;
 
 #if defined( NO_THREADS )
-  util_t::sc_fprintf( output_file, "simcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
+  util_t::fprintf( output_file, "simcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
   exit( 0 );
 #endif
 
@@ -1206,12 +1206,12 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
 void sim_t::print_options()
 {
-  util_t::sc_fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
+  util_t::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
   std::vector<option_t>& options = get_options();
   int num_options = options.size();
   
-  util_t::sc_fprintf( output_file, "\nSimulation Engine:\n" );
+  util_t::fprintf( output_file, "\nSimulation Engine:\n" );
   for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
 
   for ( player_t* p = player_list; p; p = p -> next )
@@ -1219,11 +1219,11 @@ void sim_t::print_options()
     std::vector<option_t>& options = p -> get_options();
     int num_options = options.size();
 
-    util_t::sc_fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
+    util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
     for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
   }
 
-  util_t::sc_fprintf( output_file, "\n" );
+  util_t::fprintf( output_file, "\n" );
   fflush( output_file );
 }
 
@@ -1410,7 +1410,7 @@ bool sim_t::parse_options( int    _argc,
     output_file = fopen( output_file_str.c_str(), "w" );
     if ( ! output_file )
     {
-      util_t::sc_printf( "simcraft: Unable to open output file '%s'\n", output_file_str.c_str() );
+      util_t::printf( "simcraft: Unable to open output file '%s'\n", output_file_str.c_str() );
       exit( 0 );
     }
   }
@@ -1419,7 +1419,7 @@ bool sim_t::parse_options( int    _argc,
     log_file = fopen( log_file_str.c_str(), "w" );
     if ( ! log_file )
     {
-      util_t::sc_printf( "simcraft: Unable to open combat log file '%s'\n", log_file_str.c_str() );
+      util_t::printf( "simcraft: Unable to open combat log file '%s'\n", log_file_str.c_str() );
       exit( 0 );
     }
     log = 1;
@@ -1448,7 +1448,7 @@ int sim_t::main( int argc, char** argv )
 
   if ( ! parse_options( argc, argv ) )
   {
-    util_t::sc_printf( "simcraft: ERROR! Incorrect option format..\n" );
+    util_t::printf( "simcraft: ERROR! Incorrect option format..\n" );
     exit( 0 );
   }
 
@@ -1458,7 +1458,7 @@ int sim_t::main( int argc, char** argv )
   int arch, version, revision;
   patch.decode( &arch, &version, &revision );
 
-  util_t::sc_fprintf( output_file,
+  util_t::fprintf( output_file,
            "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
            arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
@@ -1467,22 +1467,22 @@ int sim_t::main( int argc, char** argv )
   {
     init();
 
-    util_t::sc_fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
+    util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
   }
   else
   {
     if ( max_time <= 0 && target -> initial_health <= 0 )
     {
-      util_t::sc_printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
+      util_t::printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
 
-    util_t::sc_fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+    util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
     execute();
     scaling -> analyze();
 
-    util_t::sc_fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
+    util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
     report_t::print_suite( this );
   }
 

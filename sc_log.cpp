@@ -115,7 +115,7 @@ static bool write_timestamp( sim_t* sim )
   hours    = minutes / 60;
   minutes %= 60;
 
-  util_t::sc_fprintf( sim -> log_file, "1/1 %02d:%02d:%02d.%03d  ", hours, minutes, seconds, milisec );
+  util_t::fprintf( sim -> log_file, "1/1 %02d:%02d:%02d.%03d  ", hours, minutes, seconds, milisec );
 
   return true;
 }
@@ -134,11 +134,11 @@ void log_t::output( sim_t* sim, const char* format, ... )
   char buffer[2048];
 
   va_start( vap, format );
-  util_t::sc_fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
+  util_t::fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
   vsnprintf( buffer, 2047,  format, vap );
   buffer[2047] = '\0';
-  util_t::sc_fprintf( sim -> output_file, "%s", buffer );
-  util_t::sc_fprintf( sim -> output_file, "\n" );
+  util_t::fprintf( sim -> output_file, "%s", buffer );
+  util_t::fprintf( sim -> output_file, "\n" );
   fflush( sim -> output_file );
 }
 
@@ -148,13 +148,13 @@ void log_t::start_event( action_t* a )
 {
   if ( ! write_timestamp( a -> sim ) ) return;
 
-  util_t::sc_fprintf( a -> sim -> log_file,
-           "SPELL_CAST_START,%s,%s,%d,\"%s\",0x%X\n",
-           a -> player -> id(),
-           nil_target_id(),
-           ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
-           a -> name(),
-           school_id( a -> school ) );
+  util_t::fprintf( a -> sim -> log_file,
+		   "SPELL_CAST_START,%s,%s,%d,\"%s\",0x%X\n",
+		   a -> player -> id(),
+		   nil_target_id(),
+		   ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
+		   a -> name(),
+		   school_id( a -> school ) );
 }
 
 // log_t::damage_event ======================================================
@@ -167,27 +167,27 @@ void log_t::damage_event( action_t* a,
 
   if ( is_swing( a ) )
   {
-    util_t::sc_fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
+    util_t::fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
   }
   else
   {
-    util_t::sc_fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
-             ( ( dmg_type == DMG_DIRECT ) ? "SPELL_DAMAGE" : "SPELL_PERIODIC_DAMAGE" ),
-             a -> player -> id(),
-             a -> sim -> target -> id(),
-             ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
-             a -> name(),
-             school_id( a -> school ) );
+    util_t::fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
+		     ( ( dmg_type == DMG_DIRECT ) ? "SPELL_DAMAGE" : "SPELL_PERIODIC_DAMAGE" ),
+		     a -> player -> id(),
+		     a -> sim -> target -> id(),
+		     ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
+		     a -> name(),
+		     school_id( a -> school ) );
   }
 
-  util_t::sc_fprintf( a -> sim -> log_file,
-           ",%d,0,%d,%d,0,%d,%s,%s,nil\n",
-           ( int ) dmg,
-           school_id( a -> school ),
-           ( int ) a -> resisted_dmg,
-           ( int ) a -> blocked_dmg,
-           ( ( a -> result == RESULT_CRIT   ) ? "1" : "nil" ),
-           ( ( a -> result == RESULT_GLANCE ) ? "1" : "nil" ) );
+  util_t::fprintf( a -> sim -> log_file,
+		   ",%d,0,%d,%d,0,%d,%s,%s,nil\n",
+		   ( int ) dmg,
+		   school_id( a -> school ),
+		   ( int ) a -> resisted_dmg,
+		   ( int ) a -> blocked_dmg,
+		   ( ( a -> result == RESULT_CRIT   ) ? "1" : "nil" ),
+		   ( ( a -> result == RESULT_GLANCE ) ? "1" : "nil" ) );
 
 }
 
@@ -197,15 +197,15 @@ void log_t::miss_event( action_t* a )
 {
   if ( ! write_timestamp( a -> sim ) ) return;
 
-  util_t::sc_fprintf( a -> sim -> log_file,
-           "%s,%s,%s,%d,\"%s\",0x%X,%s\n",
-           ( is_swing( a ) ? "SWING_MISSED" : "SPELL_MISSED" ),
-           a -> player -> id(),
-           a -> player -> id(),
-           ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
-           a -> name(),
-           school_id( a -> school ),
-           result_name( a -> result ) );
+  util_t::fprintf( a -> sim -> log_file,
+		   "%s,%s,%s,%d,\"%s\",0x%X,%s\n",
+		   ( is_swing( a ) ? "SWING_MISSED" : "SPELL_MISSED" ),
+		   a -> player -> id(),
+		   a -> player -> id(),
+		   ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
+		   a -> name(),
+		   school_id( a -> school ),
+		   result_name( a -> result ) );
 }
 
 // log_t::resource_gain_event ===============================================
@@ -222,27 +222,27 @@ void log_t::resource_gain_event( player_t* p,
 
   if ( resource == RESOURCE_HEALTH )
   {
-    util_t::sc_fprintf( p -> sim -> log_file,
-             "SPELL_PERIODIC_HEAL,%s,%s,%d,\"%s\",0x%X,%d,%d,nil\n",
-             p -> id(),
-             p -> id(),
-             ( source -> id ? source -> id : default_id( p -> sim, source -> name() ) ),
-             source -> name(),
-             school_id( SCHOOL_PHYSICAL ),
-             ( int ) actual_amount,
-             ( int ) ( amount - actual_amount ) );
+    util_t::fprintf( p -> sim -> log_file,
+		     "SPELL_PERIODIC_HEAL,%s,%s,%d,\"%s\",0x%X,%d,%d,nil\n",
+		     p -> id(),
+		     p -> id(),
+		     ( source -> id ? source -> id : default_id( p -> sim, source -> name() ) ),
+		     source -> name(),
+		     school_id( SCHOOL_PHYSICAL ),
+		     ( int ) actual_amount,
+		     ( int ) ( amount - actual_amount ) );
   }
   else
   {
-    util_t::sc_fprintf( p -> sim -> log_file,
-             "SPELL_ENERGIZE,%s,%s,%d,\"%s\",0x%X,%d,%d\n",
-             p -> id(),
-             p -> id(),
-             ( source -> id ? source -> id : default_id( p -> sim, source -> name() ) ),
-             source -> name(),
-             school_id( SCHOOL_PHYSICAL ),
-             ( int ) actual_amount,
-             resource_id( resource ) );
+    util_t::fprintf( p -> sim -> log_file,
+		     "SPELL_ENERGIZE,%s,%s,%d,\"%s\",0x%X,%d,%d\n",
+		     p -> id(),
+		     p -> id(),
+		     ( source -> id ? source -> id : default_id( p -> sim, source -> name() ) ),
+		     source -> name(),
+		     school_id( SCHOOL_PHYSICAL ),
+		     ( int ) actual_amount,
+		     resource_id( resource ) );
   }
 
 }
@@ -255,13 +255,13 @@ void log_t::aura_gain_event( player_t*   p,
 {
   if ( ! write_timestamp( p -> sim ) ) return;
 
-  util_t::sc_fprintf( p -> sim -> log_file,
-           "SPELL_AURA_APPLIED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
-           p -> id(),
-           p -> id(),
-           ( id ? id : default_id( p -> sim, name ) ),
-           name,
-           school_id( SCHOOL_PHYSICAL ) );
+  util_t::fprintf( p -> sim -> log_file,
+		   "SPELL_AURA_APPLIED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
+		   p -> id(),
+		   p -> id(),
+		   ( id ? id : default_id( p -> sim, name ) ),
+		   name,
+		   school_id( SCHOOL_PHYSICAL ) );
 }
 
 // log_t::aura_loss_event ===================================================
@@ -272,13 +272,13 @@ void log_t::aura_loss_event( player_t*   p,
 {
   if ( ! write_timestamp( p -> sim ) ) return;
 
-  util_t::sc_fprintf( p -> sim -> log_file,
-           "SPELL_AURA_REMOVED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
-           p -> id(),
-           p -> id(),
-           ( id ? id : default_id( p -> sim, name ) ),
-           name,
-           school_id( SCHOOL_PHYSICAL ) );
+  util_t::fprintf( p -> sim -> log_file,
+		   "SPELL_AURA_REMOVED,%s,%s,%d,\"%s\",0x%X,BUFF\n",
+		   p -> id(),
+		   p -> id(),
+		   ( id ? id : default_id( p -> sim, name ) ),
+		   name,
+		   school_id( SCHOOL_PHYSICAL ) );
 }
 
 // log_t::summon_event ======================================================
@@ -289,25 +289,25 @@ void log_t::summon_event( pet_t* pet )
 
   if ( ! write_timestamp( pet -> sim ) ) return;
 
-  util_t::sc_fprintf( pet -> sim -> log_file,
-           "SPELL_SUMMON,%s,%s,688,\"Ritual Enslavement\",0x%X\n",
-           pet -> id(),
-           pet -> owner -> id(),
-           school_id( SCHOOL_SHADOW ) );
+  util_t::fprintf( pet -> sim -> log_file,
+		   "SPELL_SUMMON,%s,%s,688,\"Ritual Enslavement\",0x%X\n",
+		   pet -> id(),
+		   pet -> owner -> id(),
+		   school_id( SCHOOL_SHADOW ) );
 
   write_timestamp( pet -> sim );
 
-  util_t::sc_fprintf( pet -> sim -> log_file,
-           "SPELL_SUMMON,%s,%s,688,\"Summon Pet\",0x%X\n",
-           pet -> id(),
-           pet -> owner -> id(),
-           school_id( SCHOOL_SHADOW ) );
-
+  util_t::fprintf( pet -> sim -> log_file,
+		   "SPELL_SUMMON,%s,%s,688,\"Summon Pet\",0x%X\n",
+		   pet -> id(),
+		   pet -> owner -> id(),
+		   school_id( SCHOOL_SHADOW ) );
+  
   write_timestamp( pet -> sim );
 
-  util_t::sc_fprintf( pet -> sim -> log_file,
-           "SPELL_ENERGIZE,0,0,%s,%s,688,\"Summon Pet\",0x%X\n",
-           pet -> id(),
-           pet -> owner -> id(),
-           school_id( SCHOOL_SHADOW ) );
+  util_t::fprintf( pet -> sim -> log_file,
+		   "SPELL_ENERGIZE,0,0,%s,%s,688,\"Summon Pet\",0x%X\n",
+		   pet -> id(),
+		   pet -> owner -> id(),
+		   school_id( SCHOOL_SHADOW ) );
 }

@@ -539,8 +539,8 @@ struct util_t
   static int64_t milliseconds();
   static int64_t parse_date( const std::string& month_day_year );
 
-  static int sc_printf( const char *format,  ... );
-  static int sc_fprintf( FILE *stream, const char *format,  ... );
+  static int printf( const char *format,  ... );
+  static int fprintf( FILE *stream, const char *format,  ... );
 
   static std::string& utf8_binary_to_hex( std::string& name );
   static std::string& ascii_binary_to_utf8_hex( std::string& name );
@@ -567,7 +567,7 @@ struct event_t
   }
   double occurs() SC_CONST { return reschedule_time != 0 ? reschedule_time : time; }
   virtual void reschedule( double new_time );
-  virtual void execute() { util_t::sc_printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
+  virtual void execute() { util_t::printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
   static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
   static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }

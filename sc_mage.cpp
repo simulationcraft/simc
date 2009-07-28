@@ -3288,7 +3288,7 @@ struct choose_rotation_t : public action_t
 
     if ( cooldown < 1.0 )
     {
-      util_t::sc_printf( "simcraft: choose_rotation cannot have cooldown less than 1.0sec\n" );
+      util_t::printf( "simcraft: choose_rotation cannot have cooldown less than 1.0sec\n" );
       exit( 0 );
     }
 
@@ -3474,7 +3474,7 @@ void mage_t::init_glyphs()
     else if( n == "icy_veins"        ) ;
     else if( n == "slow_fall"        ) ;
     else if( n == "the_penguin"      ) ;
-    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3703,7 +3703,7 @@ void mage_t::combat_begin()
     }
     else
     {
-      util_t::sc_printf( "simcraft: Unknown armor type '%s' for player %s\n", armor_type_str.c_str(), name() );
+      util_t::printf( "simcraft: Unknown armor type '%s' for player %s\n", armor_type_str.c_str(), name() );
       exit( 0 );
     }
   }
@@ -3926,12 +3926,12 @@ bool mage_t::save( FILE* file, int save_type )
 
   if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    if( ! armor_type_str.empty() ) util_t::sc_fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
+    if( ! armor_type_str.empty() ) util_t::fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
   }
 
   if ( save_type == SAVE_ALL )
   {
-    if( ! focus_magic_target_str.empty() ) util_t::sc_fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
+    if( ! focus_magic_target_str.empty() ) util_t::fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
   }
 
   return true;

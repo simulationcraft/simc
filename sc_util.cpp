@@ -1098,10 +1098,10 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// util_t::sc_printf =====================================================
+// util_t::printf ========================================================
 
 
-int util_t::sc_printf( const char *format,  ... )
+int util_t::printf( const char *format,  ... )
 {
   va_list fmtargs;
   int retcode = 0;
@@ -1130,9 +1130,9 @@ int util_t::sc_printf( const char *format,  ... )
   return retcode;
 }
 
-// util_t::sc_fprintf =====================================================
+// util_t::fprintf ========================================================
 
-int util_t::sc_fprintf( FILE *stream, const char *format,  ... )
+int util_t::fprintf( FILE *stream, const char *format,  ... )
 {
   va_list fmtargs;
   int retcode = 0;

@@ -119,11 +119,11 @@ void rng_t::seed( uint32_t start )
 
 void rng_t::report( FILE* file )
 {
-  util_t::sc_fprintf( file, "RNG %s Actual/Expected Roll=%.6f Range=%.6f Gauss=%.6f\n",
-           name_str.c_str(),
-           ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
-           ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
-           ( ( expected_gauss == 0 ) ? 1.0 : actual_gauss / expected_gauss ) );
+  util_t::fprintf( file, "RNG %s Actual/Expected Roll=%.6f Range=%.6f Gauss=%.6f\n",
+		   name_str.c_str(),
+		   ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
+		   ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
+		   ( ( expected_gauss == 0 ) ? 1.0 : actual_gauss / expected_gauss ) );
 }
 
 // ==========================================================================
@@ -625,10 +625,10 @@ struct distribution_t
 
   virtual void verify( rng_t* rng )
   {
-    util_t::sc_printf( "distribution_t::verify:\n" );
+    util_t::printf( "distribution_t::verify:\n" );
     double sum=0;
     for( int i=0; i <= last; i++ ) sum += chances[ i ];
-    util_t::sc_printf( "\tsum: %f\n", sum );
+    util_t::printf( "\tsum: %f\n", sum );
     std::vector<int> rng_counts;
     rng_counts.insert( rng_counts.begin(), size, 0 );
     for( int i=0; i < total_count; i++ )
@@ -643,7 +643,7 @@ struct distribution_t
       }
       rng_counts[ index ]++;
     }
-    for( int i=0; i <= last; i++ ) util_t::sc_printf( "\t%d : %d\n", counts[ i ], rng_counts[ i ] );
+    for( int i=0; i <= last; i++ ) util_t::printf( "\t%d : %d\n", counts[ i ], rng_counts[ i ] );
   }
 };
 
@@ -848,43 +848,43 @@ rng_t* rng_t::create( sim_t*             sim,
 int main( int argc, char** argv )
 {
   range_distribution_t range_d;
-  util_t::sc_printf( "\nrange:\n" );
+  util_t::printf( "\nrange:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    util_t::sc_printf( "  %.2f", range_d.next_value() );
-    if ( i % 10 == 0 ) util_t::sc_printf( "\n" );
+    util_t::printf( "  %.2f", range_d.next_value() );
+    if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
   gauss_distribution_t gauss_d;
-  util_t::sc_printf( "\ngauss:\n" );
+  util_t::printf( "\ngauss:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    util_t::sc_printf( "  %.2f", gauss_d.next_value() );
-    if ( i % 10 == 0 ) util_t::sc_printf( "\n" );
+    util_t::printf( "  %.2f", gauss_d.next_value() );
+    if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
   roll_distribution_t roll_d;
-  util_t::sc_printf( "\nroll:\n" );
+  util_t::printf( "\nroll:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    util_t::sc_printf( "  %d", roll_d.reach( 0.30 ) );
-    if ( i % 10 == 0 ) util_t::sc_printf( "\n" );
+    util_t::printf( "  %d", roll_d.reach( 0.30 ) );
+    if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
   rng_t* rng = new rng_sfmt_t( "global", false, false );
 
   roll_distribution_t roll_d_05;
-  util_t::sc_printf( "\nroll 5%%:\n" );
+  util_t::printf( "\nroll 5%%:\n" );
   for( int i=0; i < 1000000; i++ ) roll_d_05.reach( 0.05 );
   roll_d_05.verify( rng );
 
   roll_distribution_t roll_d_30;
-  util_t::sc_printf( "\nroll 30%%:\n" );
+  util_t::printf( "\nroll 30%%:\n" );
   for( int i=0; i < 1000000; i++ ) roll_d_30.reach( 0.30 );
   roll_d_30.verify( rng );
 
   roll_distribution_t roll_d_80;
-  util_t::sc_printf( "\nroll 80%%:\n" );
+  util_t::printf( "\nroll 80%%:\n" );
   for( int i=0; i < 1000000; i++ ) roll_d_80.reach( 0.80 );
   roll_d_80.verify( rng );
 }

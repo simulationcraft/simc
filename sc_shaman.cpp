@@ -2524,7 +2524,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     }
     else
     {
-      util_t::sc_fprintf( sim -> output_file, "flametongue_weapon: weapon option must be one of main/off/both\n" );
+      util_t::fprintf( sim -> output_file, "flametongue_weapon: weapon option must be one of main/off/both\n" );
       assert( 0 );
     }
     trigger_gcd = 0;
@@ -2601,7 +2601,7 @@ struct windfury_weapon_t : public shaman_spell_t
     }
     else
     {
-      util_t::sc_fprintf( sim -> output_file, "windfury_weapon: weapon option must be one of main/off/both\n" );
+      util_t::fprintf( sim -> output_file, "windfury_weapon: weapon option must be one of main/off/both\n" );
       assert( 0 );
     }
     trigger_gcd = 0;
@@ -3344,7 +3344,7 @@ void shaman_t::init_glyphs()
     else if( n == "water_mastery"        ) ;
     else if( n == "water_shield"         ) ;
     else if( n == "water_walking"        ) ;
-    else if( ! sim -> parent ) util_t::sc_printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3415,7 +3415,7 @@ void shaman_t::init_items()
   else if ( totem == "totem_of_healing_rains" ) ;
   else
   {
-    util_t::sc_printf( "simcraft: %s was unknown totem %s\n", name(), totem.c_str() );
+    util_t::printf( "simcraft: %s was unknown totem %s\n", name(), totem.c_str() );
   }
 
   if ( talents.dual_wield )

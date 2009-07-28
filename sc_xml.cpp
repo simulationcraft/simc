@@ -166,8 +166,8 @@ static xml_node_t* create_node( const std::string&      input,
   }
   else 
   {
-    util_t::sc_printf( "Unexpected character '%c' at index %d (%s)\n", c, (int) index, node -> name() );
-    util_t::sc_printf( "%s\n", input.c_str() );
+    util_t::printf( "Unexpected character '%c' at index %d (%s)\n", c, (int) index, node -> name() );
+    util_t::printf( "%s\n", input.c_str() );
     assert( false );
   }
 
@@ -205,8 +205,8 @@ static int create_children( xml_node_t*             root,
           std::string::size_type finish = input.find( "]]", index );
 	  if( finish == std::string::npos ) 
 	  {
-	    util_t::sc_printf( "Unexpected EOF at index %d (%s)\n", (int) index, root -> name() );
-	    util_t::sc_printf( "%s\n", input.c_str() );
+	    util_t::printf( "Unexpected EOF at index %d (%s)\n", (int) index, root -> name() );
+	    util_t::printf( "%s\n", input.c_str() );
 	    assert( false );
 	  }
           root -> parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish-index ) ) );
@@ -490,15 +490,15 @@ void xml_t::print( xml_node_t* root,
 
   if( ! file ) file = stdout;
 
-  util_t::sc_fprintf( file, "%*s%s", spacing, "", root -> name() );
+  util_t::fprintf( file, "%*s%s", spacing, "", root -> name() );
 
   int num_parms = root -> parameters.size();
   for( int i=0; i < num_parms; i++ )
   {
     xml_parm_t& parm = root -> parameters[ i ];
-    util_t::sc_fprintf( file, " %s=\"%s\"", parm.name(), parm.value_str.c_str() );
+    util_t::fprintf( file, " %s=\"%s\"", parm.name(), parm.value_str.c_str() );
   }
-  util_t::sc_fprintf( file, "\n" );
+  util_t::fprintf( file, "\n" );
 
   int num_children = root -> children.size();
   for( int i=0; i < num_children; i++ )
@@ -513,13 +513,13 @@ int main( int argc, char** argv )
 {
   if( argc < 2 )
   {
-    util_t::sc_printf( "Usage: xml filename\n" );
+    util_t::printf( "Usage: xml filename\n" );
     exit(0);
   }
   FILE* file = fopen( argv[ 1 ], "r" );
   if( ! file )
   {
-    util_t::sc_printf( "Unable to open file %s\n", argv[ 1 ] );
+    util_t::printf( "Unable to open file %s\n", argv[ 1 ] );
     exit(0);
   }
 

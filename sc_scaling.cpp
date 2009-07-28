@@ -87,7 +87,7 @@ void scaling_t::analyze_stats()
   sim_t* baseline_sim = sim;
   if( smooth_scale_factors )
   {
-    util_t::sc_fprintf( stdout, "\nGenerating smooth baseline...\n" );
+    util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
     fflush( stdout );
 
     baseline_sim = new sim_t( sim );
@@ -102,7 +102,7 @@ void scaling_t::analyze_stats()
     int scale_delta = ( int ) stats.get_stat( i );
     if ( scale_delta == 0 ) continue;
 
-    util_t::sc_fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
+    util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
     fflush( stdout );
 
     bool center = center_scale_delta && ! stat_may_cap( i );
@@ -157,7 +157,7 @@ void scaling_t::analyze_lag()
   int num_players = sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
-  util_t::sc_fprintf( stdout, "\nGenerating scale factors for lag...\n" );
+  util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
   fflush( stdout );
 
   sim_t* ref_sim = new sim_t( sim );
