@@ -1080,7 +1080,7 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 8;
-    cooldown          = 24.0;
+    cooldown          = ( sim -> P320 ) ? 0.0 : 24.0;
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.925;
