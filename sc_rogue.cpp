@@ -1951,12 +1951,6 @@ struct hunger_for_blood_t : public rogue_attack_t
 
     return true;
   }
-
-  // Rogues can stack the buff prior to entering combat, so if they have yet to use an
-  // offensive ability, then this action will not trigger the GCD nor will it cost any energy.
-
-  virtual double gcd() SC_CONST { return player -> in_combat ? rogue_attack_t::gcd()  : 0; }
-  virtual double cost() SC_CONST { return player -> in_combat ? rogue_attack_t::cost() : 0; }
 };
 
 // Kick =====================================================================
