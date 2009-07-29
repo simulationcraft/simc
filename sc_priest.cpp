@@ -2280,6 +2280,10 @@ int priest_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_priest  =================================================
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name )
@@ -2291,4 +2295,20 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name )
   return p;
 }
 
+// player_t::init_priest =====================================================
 
+void player_t::init_priest( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_priest =============================================
+
+void player_t::combat_begin_priest( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}

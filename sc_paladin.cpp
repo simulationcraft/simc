@@ -1226,8 +1226,25 @@ int paladin_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 player_t* player_t::create_paladin( sim_t* sim, const std::string& name )
 {
   return new paladin_t( sim, name );
 }
 
+void player_t::init_paladin( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+void player_t::combat_begin_paladin( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}

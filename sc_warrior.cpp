@@ -3075,9 +3075,31 @@ int warrior_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_warrior ===============================================
 
 player_t* player_t::create_warrior( sim_t* sim, const std::string& name )
 {
   return new warrior_t( sim, name );
+}
+
+// player_t::init_warrior ===================================================
+
+void player_t::init_warrior( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_warrior ===========================================
+
+void player_t::combat_begin_warrior( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
 }

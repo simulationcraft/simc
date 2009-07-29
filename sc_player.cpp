@@ -533,6 +533,7 @@ void player_t::init()
   init_consumables();
   init_resources();
   init_actions();
+  init_buffs();
   init_gains();
   init_procs();
   init_uptimes();
@@ -911,6 +912,12 @@ void player_t::init_actions()
 void player_t::init_rating()
 {
   rating.init( level );
+}
+
+// player_t::init_buffs ====================================================
+
+void player_t::init_buffs()
+{
 }
 
 // player_t::init_gains ====================================================

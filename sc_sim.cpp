@@ -575,6 +575,17 @@ void sim_t::combat_begin()
 
   target -> combat_begin();
 
+  player_t::combat_begin_death_knight( this );
+  player_t::combat_begin_druid       ( this );
+  player_t::combat_begin_hunter      ( this );
+  player_t::combat_begin_mage        ( this );
+  player_t::combat_begin_paladin     ( this );
+  player_t::combat_begin_priest      ( this );
+  player_t::combat_begin_rogue       ( this );
+  player_t::combat_begin_shaman      ( this );
+  player_t::combat_begin_warlock     ( this );
+  player_t::combat_begin_warrior     ( this );
+
   for ( player_t* p = player_list; p; p = p -> next )
   {
     p -> combat_begin();
@@ -653,6 +664,17 @@ bool sim_t::init()
   if ( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.25;
 
   target -> init();
+
+  player_t::init_death_knight( this );
+  player_t::init_druid       ( this );
+  player_t::init_hunter      ( this );
+  player_t::init_mage        ( this );
+  player_t::init_paladin     ( this );
+  player_t::init_priest      ( this );
+  player_t::init_rogue       ( this );
+  player_t::init_shaman      ( this );
+  player_t::init_warlock     ( this );
+  player_t::init_warrior     ( this );
 
   bool too_quiet = true;
 

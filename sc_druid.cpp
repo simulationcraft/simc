@@ -3847,6 +3847,10 @@ int druid_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_druid  ==================================================
 
 player_t* player_t::create_druid( sim_t*             sim,
@@ -3859,3 +3863,20 @@ player_t* player_t::create_druid( sim_t*             sim,
   return p;
 }
 
+// player_t::init_druid =====================================================
+
+void player_t::init_druid( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_druid =============================================
+
+void player_t::combat_begin_druid( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}

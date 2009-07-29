@@ -3836,6 +3836,10 @@ int shaman_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_shaman  =================================================
 
 player_t* player_t::create_shaman( sim_t* sim, const std::string& name )
@@ -3845,4 +3849,22 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name )
   new spirit_wolf_pet_t( sim, p );
 
   return p;
+}
+
+// player_t::init_shaman ====================================================
+
+void player_t::init_shaman( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_shaman ============================================
+
+void player_t::combat_begin_shaman( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
 }

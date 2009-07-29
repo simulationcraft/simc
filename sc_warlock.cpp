@@ -4356,6 +4356,10 @@ int warlock_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_warlock ================================================
 
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
@@ -4372,3 +4376,20 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
   return p;
 }
 
+// player_t::init_warlock ===================================================
+
+void player_t::init_warlock( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_warlock ===========================================
+
+void player_t::combat_begin_warlock( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}

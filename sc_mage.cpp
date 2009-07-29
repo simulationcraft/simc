@@ -3954,6 +3954,10 @@ int mage_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// ==========================================================================
+// PLAYER_T EXTENSIONS
+// ==========================================================================
+
 // player_t::create_mage  ===================================================
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name )
@@ -3964,4 +3968,22 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name )
   new water_elemental_pet_t( sim, p );
 
   return p;
+}
+
+// player_t::init_mage ======================================================
+
+void player_t::init_mage( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+}
+
+// player_t::combat_begin_mage ==============================================
+
+void player_t::combat_begin_mage( sim_t* sim )
+{
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
 }

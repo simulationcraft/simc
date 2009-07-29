@@ -1545,6 +1545,7 @@ struct player_t
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();
+  virtual void init_buffs();
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
@@ -1644,6 +1645,28 @@ struct player_t
   static player_t * create_shaman      ( sim_t* sim, const std::string& name );
   static player_t * create_warlock     ( sim_t* sim, const std::string& name );
   static player_t * create_warrior     ( sim_t* sim, const std::string& name );
+
+  static void init_death_knight( sim_t* sim );
+  static void init_druid       ( sim_t* sim );
+  static void init_hunter      ( sim_t* sim );
+  static void init_mage        ( sim_t* sim );
+  static void init_paladin     ( sim_t* sim );
+  static void init_priest      ( sim_t* sim );
+  static void init_rogue       ( sim_t* sim );
+  static void init_shaman      ( sim_t* sim );
+  static void init_warlock     ( sim_t* sim );
+  static void init_warrior     ( sim_t* sim );
+
+  static void combat_begin_death_knight( sim_t* sim );
+  static void combat_begin_druid       ( sim_t* sim );
+  static void combat_begin_hunter      ( sim_t* sim );
+  static void combat_begin_mage        ( sim_t* sim );
+  static void combat_begin_paladin     ( sim_t* sim );
+  static void combat_begin_priest      ( sim_t* sim );
+  static void combat_begin_rogue       ( sim_t* sim );
+  static void combat_begin_shaman      ( sim_t* sim );
+  static void combat_begin_warlock     ( sim_t* sim );
+  static void combat_begin_warrior     ( sim_t* sim );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
