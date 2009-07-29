@@ -8,19 +8,18 @@ glyphs=death_strike/dancing_rune_weapon/dark_death/horn_of_winter/raise_dead/pes
 
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
-#actions+=/blood_presence
+actions+=/blood_presence
 actions+=/auto_attack
-actions+=/icy_touch,frost_fever<=2
-actions+=/plague_strike,blood_plague<=2
+actions+=/icy_touch,frost_fever<=1
+actions+=/plague_strike,blood_plague<=1
 #actions+=/dancing_rune_weapon
 #actions+=/empower_rune_weapon
 #actions+=/hysteria
 #actions+=/speed_potion
 #actions+=/blood_fury
-#actions+=/anti_magic_shell
-#actions+=/death_coil
-#actions+=/death_strike,frost_fever>=8,blood_plague>=8
-#actions+=/heart_strike
+actions+=/death_strike,frost_fever>=6,blood_plague>=6
+actions+=/heart_strike
+actions+=/death_coil
 #actions+=/raise_dead
 
 head=warhelm_of_the_champion,stats=1966armor_61hit_60crit_122str_145sta,gems=relentless_earthsiege_8str_8hit_8str,enchant=50ap_20crit

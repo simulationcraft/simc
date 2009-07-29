@@ -289,9 +289,10 @@ struct death_knight_t : public player_t
     assert ( sim ->patch.after( 3,1,0 ) );
 
     // Active
+    active_presence          = 0;
     active_blood_plague      = NULL;
     active_frost_fever       = NULL;
-    diseases = 0;
+    diseases                 = 0;
 
     // Pets and Guardians
     for ( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
@@ -763,7 +764,8 @@ static void trigger_sudden_doom( action_t* a )
   if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
 
   p -> procs_sudden_doom -> occur();
-  p -> sudden_doom -> execute();
+  // TODO: Intialize me
+  //p -> sudden_doom -> execute();
 }
 
 static void stack_bloody_vengeance( action_t* a )
@@ -888,6 +890,10 @@ void death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
 
+  if ( p -> active_presence == PRESENCE_BLOOD) {
+    player_multiplier *= 1.0 + 0.15;
+  }
+
   if ( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
@@ -906,8 +912,8 @@ void death_knight_attack_t::player_buff()
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
-                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
+                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier, player_spell_power, player_penetration, player_multiplier );
 }
 
 bool death_knight_attack_t::ready()
@@ -1058,6 +1064,10 @@ void death_knight_spell_t::player_buff()
   death_knight_t* p = player -> cast_death_knight();
 
   spell_t::player_buff();
+
+  if ( p -> active_presence == PRESENCE_BLOOD) {
+    player_multiplier *= 1.0 + 0.15;
+  }
 
   if ( school == SCHOOL_PHYSICAL && p -> talents.bloody_vengeance )
   {
@@ -1235,6 +1245,8 @@ struct blood_plague_t : public death_knight_spell_t
   blood_plague_t( player_t* player ) :
     death_knight_spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
+    death_knight_t* p = player -> cast_death_knight();
+
     static rank_t ranks[] =
       {
         { 55, 1, 0, 0, 1, 0 },
@@ -1246,7 +1258,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_cost         = 0;
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 5;
+    num_ticks         = 5 + p -> talents.epidemic;
     base_attack_power_multiplier = 0.055;
     tick_power_mod    = 1;
 
@@ -1287,12 +1299,29 @@ struct blood_presence_t : public action_t
       };
     parse_options( options, options_str );
 
+    base_cost   = 0;
     trigger_gcd = 0;
+    cooldown    = 1.0;
+    harmful     = false;
   }
 
   void execute()
   {
-    //trigger_hysteria( player, player );
+    const char* stance_name[] =
+      { "Unknown Presence",
+        "Blood Presence",
+        "Frost Presence",
+        "Unpossible Presence",
+        "Unholy Presence"
+      };
+    death_knight_t* p = player -> cast_death_knight();
+    if (p -> active_presence) {
+      p -> aura_loss( stance_name[ p -> active_presence  ] );
+    }
+    p -> active_presence = PRESENCE_BLOOD;
+    p -> aura_gain( stance_name[ p -> active_presence  ] );
+
+    update_ready();
   }
 
   bool ready()
@@ -1358,6 +1387,7 @@ struct blood_strike_t : public death_knight_attack_t
   }
 };
 
+// TODO: Implement me
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( player_t* player, const std::string& options_str ) :
@@ -1394,6 +1424,7 @@ struct blood_tap_t : public death_knight_spell_t
   }
 };
 
+// TODO: Implement me
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   struct dancing_rune_weapon_expiration_t : public event_t
@@ -1459,7 +1490,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   death_coil_t( player_t* player, const std::string& options_str, bool sudden_doom = false ) :
-      death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_BLOOD )
+      death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     option_t options[] =
       {
@@ -1526,7 +1557,7 @@ struct death_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.75;
+    weapon_multiplier *= 0.75;
 
     base_crit += p -> talents.improved_death_strike * 0.03;
     base_crit_bonus *= p -> talents.might_of_mograine * 0.15;
@@ -1552,28 +1583,18 @@ struct empower_rune_weapon_t : public death_knight_spell_t
       };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-      {
-        { 78, 5, 227, 245, 0, -10 },
-        { 73, 4, 187, 203, 0, -10 },
-        { 67, 3, 161, 173, 0, -10 },
-        { 61, 2, 144, 156, 0, -10 },
-        { 55, 1, 127, 137, 0, -10 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
-    init_rank( ranks );
-
-    cost_frost = 1;
-
-    base_execute_time = 0;
-    direct_power_mod  = 0.1;
-    cooldown          = 0.0;
+    trigger_gcd = 0;
+    cooldown = 300;
   }
 
   void execute()
   {
+    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-    if ( result_is_hit() ) player -> cast_death_knight() -> frost_fever -> execute();
+
+    // TODO: What happens to death runes?
+    p -> _runes.reset();
+    p -> resource_gain( RESOURCE_RUNIC, 25, p -> gains_rune_abilities );
   }
 };
 
@@ -1582,6 +1603,8 @@ struct frost_fever_t : public death_knight_spell_t
   frost_fever_t( player_t* player ) :
     death_knight_spell_t( "frost_fever", player, SCHOOL_FROST, TREE_FROST )
   {
+    death_knight_t* p = player -> cast_death_knight();
+
     static rank_t ranks[] =
       {
         { 55, 1, 0, 0, 1, 0 },
@@ -1593,7 +1616,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_cost         = 0;
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 5;
+    num_ticks         = 5 + p -> talents.epidemic;
     base_attack_power_multiplier = 0.055;
     tick_power_mod    = 1;
 
@@ -1714,6 +1737,7 @@ struct heart_strike_t : public death_knight_attack_t
   }
 };
 
+// TODO: Implement me
 struct horn_of_winter_t : public death_knight_spell_t
 {
   horn_of_winter_t( player_t* player, const std::string& options_str ) :
@@ -1750,6 +1774,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   }
 };
 
+// TODO: Implement me
 struct hysteria_t : public action_t
 {
   hysteria_t( player_t* player, const std::string& options_str ) :
@@ -1926,6 +1951,7 @@ struct plague_strike_t : public death_knight_attack_t
   }
 };
 
+// TODO: Implement me
 struct raise_dead_t : public death_knight_spell_t
 {
   struct raise_dead_expiration_t : public event_t
@@ -1943,7 +1969,7 @@ struct raise_dead_t : public death_knight_spell_t
   int target_pct;
 
   raise_dead_t( player_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
+    death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY ), target_pct( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.dancing_rune_weapon );
@@ -1988,6 +2014,7 @@ struct raise_dead_t : public death_knight_spell_t
   }
 };
 
+// TODO: Implement me
 struct rune_tap_t : public death_knight_spell_t
 {
   rune_tap_t( player_t* player, const std::string& options_str ) :
@@ -2276,6 +2303,7 @@ void death_knight_t::reset()
   player_t::reset();
 
   // Active
+  active_presence     = 0;
   active_blood_plague = NULL;
   active_frost_fever  = NULL;
   diseases            = 0;
