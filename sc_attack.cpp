@@ -166,7 +166,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if( ! special )
+  if( true /*!special*/ )
   {
     if ( delta_level > 2 )
     {
