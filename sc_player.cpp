@@ -1495,6 +1495,11 @@ void player_t::reset()
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
 
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> reset();
+  }
+
   buffs.reset();
   expirations.reset();
   cooldowns.reset();

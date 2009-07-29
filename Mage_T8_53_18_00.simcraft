@@ -18,13 +18,11 @@ actions+=/mana_gem
 actions+=/evocation
 actions+=/choose_rotation
 actions+=/arcane_blast,max=2
-actions+=/arcane_blast,max=3,arcane_power=1
-actions+=/arcane_blast,max=3,dps=1
-actions+=/arcane_missiles,barrage=1
-actions+=/arcane_blast,arcane_power=1
+actions+=/arcane_missiles,barrage=1,dpm=1
+actions+=/arcane_blast,max=3
 actions+=/arcane_missiles
 actions+=/mana_potion
-actions+=/arcane_barrage
+actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 head=conquerors_kirin_tor_hood,stats=256armor_69hit_113sp_62sta_87int_66spi,gems=chaotic_skyflare_19sp_9sp,enchant=30sp_20crit
 neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=8haste_9sp_5sp

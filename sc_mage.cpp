@@ -21,7 +21,6 @@ struct mage_t : public player_t
   struct _buffs_t
   {
     int    arcane_blast;
-    int    arcane_potency;
     int    arcane_power;
     double brain_freeze;
     double clearcasting;
@@ -222,6 +221,7 @@ struct mage_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      init_glyphs();
+  virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -802,47 +802,19 @@ static void trigger_combustion( spell_t* s )
   }
 }
 
-// trigger_arcane_potency =====================================================
-
-static void trigger_arcane_potency( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> talents.arcane_potency )
-  {
-    p -> aura_gain( "Arcane Potency" );
-    p -> _buffs.arcane_potency = p -> talents.arcane_potency;
-  }
-}
-
-// clear_arcane_potency =====================================================
-
-static void clear_arcane_potency( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if (   p -> _buffs.arcane_potency &&
-         ! p -> _buffs.clearcasting )
-  {
-    p -> aura_loss( "Arcane Potency" );
-    p -> _buffs.arcane_potency = 0;
-  }
-}
-
 // trigger_arcane_concentration =============================================
 
 static void trigger_arcane_concentration( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> talents.arcane_concentration ) return;
+  if ( ! p -> talents.arcane_concentration || s -> dual ) return;
 
   if ( p -> rng_arcane_concentration -> roll( p -> talents.arcane_concentration * 0.02 ) )
   {
     p -> aura_gain( "Clearcasting" );
     p -> procs_clearcasting -> occur();
-    p -> _buffs.clearcasting = s -> sim -> current_time;
-    trigger_arcane_potency( s );
+    if( p -> _buffs.clearcasting == 0 ) p -> _buffs.clearcasting = s -> sim -> current_time;
   }
 }
 
@@ -1376,7 +1348,6 @@ void mage_spell_t::execute()
   }
   trigger_combustion( this );
   trigger_brain_freeze( this );
-  clear_arcane_potency( this );
 }
 
 // mage_spell_t::consume_resource ==========================================
@@ -1436,7 +1407,7 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.playing_with_fire * 0.01;
   }
 
-  if ( p -> _buffs.arcane_potency )
+  if ( p -> _buffs.clearcasting && ! dual )
   {
     player_crit += p -> talents.arcane_potency * 0.15;
   }
@@ -1680,6 +1651,8 @@ struct arcane_blast_t : public mage_spell_t
 
 struct arcane_missiles_tick_t : public mage_spell_t
 {
+  bool clearcast;
+
   arcane_missiles_tick_t( player_t* player ) : mage_spell_t( "arcane_missiles", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
@@ -1715,14 +1688,18 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
     if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+
+    clearcast = false;
   }
 
   virtual void player_buff()
   {
     mage_t* p = player -> cast_mage();
-
     mage_spell_t::player_buff();
-
+    if ( clearcast )
+    {
+      player_crit += p -> talents.arcane_potency * 0.15;
+    }
     if ( p -> _buffs.arcane_blast )
     {
       player_multiplier *= 1.0 + p ->  _buffs.arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
@@ -1752,7 +1729,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
 struct arcane_missiles_t : public mage_spell_t
 {
-  spell_t* arcane_missiles_tick;
+  arcane_missiles_tick_t* arcane_missiles_tick;
   int barrage;
   int clearcast;
 
@@ -1798,6 +1775,8 @@ struct arcane_missiles_t : public mage_spell_t
       }
     }
 
+    arcane_missiles_tick -> clearcast = p -> _buffs.clearcasting != 0;
+
     mage_spell_t::execute();
   }
 
@@ -1812,7 +1791,6 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
-    clear_arcane_potency( this );
     event_t::early( p -> _expirations.arcane_blast );
   }
 
@@ -2066,8 +2044,9 @@ struct presence_of_mind_t : public mage_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> aura_gain( "Presence of Mind" );
     p -> last_foreground_action = fast_action;
-    trigger_arcane_potency( this );
+    p -> spell_crit += p -> talents.arcane_potency * 0.15;
     fast_action -> execute();
+    p -> spell_crit -= p -> talents.arcane_potency * 0.15;
     p -> aura_loss( "Presence of Mind" );
     update_ready();
   }
@@ -3508,6 +3487,14 @@ void mage_t::init_base()
   mana_per_intellect = 15;
 }
 
+// mage_t::init_buffs ======================================================
+
+void mage_t::init_buffs()
+{
+  player_t::init_buffs();
+
+}
+
 // mage_t::init_gains ======================================================
 
 void mage_t::init_gains()
@@ -3611,13 +3598,11 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem/evocation";
       action_list_str += "/choose_rotation";
       action_list_str += "/arcane_blast,max=2";
-      action_list_str += "/arcane_blast,max=3,arcane_power=1";
-      action_list_str += "/arcane_blast,max=3,dps=1";
-      action_list_str += "/arcane_missiles,barrage=1";
-      action_list_str += "/arcane_blast,arcane_power=1";
+      action_list_str += "/arcane_missiles,barrage=1,dpm=1";
+      action_list_str += "/arcane_blast,max=3";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
-      if( talents.arcane_barrage ) action_list_str += "/arcane_barrage"; // when moving
+      if( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
     else if( primary_tree() == TREE_FROST )

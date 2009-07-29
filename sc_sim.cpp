@@ -542,6 +542,10 @@ void sim_t::reset()
 {
   if ( debug ) log_t::output( this, "Reseting Simulator" );
   current_time = id = 0;
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> reset();
+  }
   auras.reset();
   expirations.reset();
   target -> reset();
