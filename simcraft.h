@@ -751,9 +751,10 @@ struct buff_t
   player_t* player;
   std::string name_str;
   int current_stack, max_stack;
-  double current_value, react, duration, cooldown, cooldown_ready;
+  double current_value, react, duration, cooldown, cooldown_ready, default_chance;
   double last_start, interval_sum, uptime_sum;
   int64_t up_count, down_count, interval_count, start_count;
+  int64_t trigger_attempts, trigger_successes;
   int aura_id;
   event_t* expiration;
   rng_t* rng;
@@ -762,8 +763,8 @@ struct buff_t
   buff_t() : sim(0) {}
   buff_t( sim_t*, player_t*, 
 	  const std::string& name, 
-	  int max_stack, double duration, double cooldown, 
-	  int rng_type=RNG_CYCLIC, int aura_id=0 );
+	  int max_stack=1, double duration=0, double cooldown=0, 
+	  double chance=1.0, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~buff_t() { };
 
   virtual bool   may_react();
@@ -773,7 +774,7 @@ struct buff_t
   virtual double remains();
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
-  virtual bool   trigger( double chance=1.0, int stacks=1, double value=1.0 );
+  virtual bool   trigger( double chance=-1, int stacks=1, double value=1.0 );
   virtual void   increment( int stacks=1, double value=1.0 );
   virtual void   decrement( int stacks=0 );
   virtual void   start();

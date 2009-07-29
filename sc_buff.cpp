@@ -13,11 +13,12 @@ buff_t::buff_t( sim_t*             s,
 		int                ms,
 		double             d,
 		double             cd,
+		double             ch,
 		int                rng_type,
 		int                a ) :
   sim( s ), player( p ), name_str( n ),
   current_stack( 0 ),max_stack( ms ), 
-  duration( d ), cooldown( cd ), cooldown_ready( 0 ),
+  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
   last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
   up_count( 0 ), down_count( 0 ), interval_count( 0 ), start_count( 0 ),
   aura_id( 0 ), expiration( 0 ), rng( 0 ), next( 0 )
@@ -100,9 +101,13 @@ bool buff_t::trigger( double chance,
 		      int    stacks,
 		      double value )
 {
+  trigger_attempts++;
+
   if( cooldown_ready > 0 )
     if( sim -> current_time < cooldown_ready )
       return false;
+
+  if( chance < 0 ) chance = default_chance;
 
   if( ! rng -> roll( chance ) )
     return false;
@@ -111,6 +116,8 @@ bool buff_t::trigger( double chance,
 
   if( cooldown > 0 )
     cooldown_ready = sim -> current_time + cooldown;
+
+  trigger_successes++;
 
   return true;
 }
@@ -122,9 +129,12 @@ void buff_t::increment( int    stacks,
 {
   if( current_stack == 0 ) start();
 
-  current_stack += stacks;
-  if( current_stack > max_stack )
-    max_stack = current_stack;
+  if( current_stack < max_stack )
+  {
+    current_stack += stacks;
+    if( current_stack > max_stack )
+      current_stack = max_stack;
+  }
 
   current_value = value;
 
