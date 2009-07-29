@@ -609,6 +609,9 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if( meta_gem == META_CHAOTIC_SKYFIRE         ) item_stats.crit_rating += 12;
   else if( meta_gem == META_CHAOTIC_SKYFLARE        ) item_stats.crit_rating += 21;
   else if( meta_gem == META_EMBER_SKYFLARE          ) item_stats.spell_power += 25;
+  else if( meta_gem == META_ENIGMATIC_SKYFLARE      ) item_stats.crit_rating += 21;
+  else if( meta_gem == META_ENIGMATIC_STARFLARE     ) item_stats.crit_rating += 17;
+  else if( meta_gem == META_ENIGMATIC_SKYFIRE       ) item_stats.crit_rating += 12;
   else if( meta_gem == META_FORLORN_SKYFLARE        ) item_stats.spell_power += 25;
   else if( meta_gem == META_FORLORN_STARFLARE       ) item_stats.spell_power += 20;
   else if( meta_gem == META_INSIGHTFUL_EARTHSIEGE   ) item_stats.attribute[ ATTR_INTELLECT ] += 21;

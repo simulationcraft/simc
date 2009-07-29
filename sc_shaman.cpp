@@ -3339,6 +3339,7 @@ void shaman_t::init_glyphs()
     else if( n == "healing_stream_totem" ) ;
     else if( n == "lesser_healing_wave"  ) ;
     else if( n == "renewed_life"         ) ;
+    else if( n == "riptide"              ) ;
     else if( n == "stoneclaw_totem"      ) ;
     else if( n == "water_breathing"      ) ;
     else if( n == "water_mastery"        ) ;
@@ -3411,11 +3412,13 @@ void shaman_t::init_items()
     totems.indomitability = 1;
   }
   // To prevent warnings...
-  else if ( totem == "totem_of_forest_growth" ) ;
-  else if ( totem == "totem_of_healing_rains" ) ;
+  else if ( totem == "steamcallers_totem"      ) ;
+  else if ( totem == "totem_of_forest_growth"  ) ;
+  else if ( totem == "totem_of_healing_rains"  ) ;
+  else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
   else
   {
-    util_t::printf( "simcraft: %s was unknown totem %s\n", name(), totem.c_str() );
+    util_t::printf( "simcraft: %s has unknown totem %s\n", name(), totem.c_str() );
   }
 
   if ( talents.dual_wield )

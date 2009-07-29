@@ -346,6 +346,9 @@ const char* util_t::meta_gem_type_string( int type )
   case META_CHAOTIC_SKYFIRE:         return "chaotic_skyfire";
   case META_CHAOTIC_SKYFLARE:        return "chaotic_skyflare";
   case META_EMBER_SKYFLARE:          return "ember_skyflare";
+  case META_ENIGMATIC_SKYFLARE:      return "enigmatic_skyflare";
+  case META_ENIGMATIC_STARFLARE:     return "enigmatic_starflare";
+  case META_ENIGMATIC_SKYFIRE:       return "enigmatic_skyfire";
   case META_ETERNAL_EARTHSIEGE:      return "eternal_earthsiege";
   case META_ETERNAL_EARTHSTORM:      return "eternal_earthstorm";
   case META_FORLORN_SKYFLARE:        return "forlorn_skyflare";

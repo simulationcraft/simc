@@ -440,6 +440,9 @@ int armory_t::parse_meta_gem( const std::string& description )
   if( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
   if( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
   if( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
+  if( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFLARE;
+  if( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_STARFLARE;
+  if( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFIRE;
 
   return META_GEM_NONE;
 }
@@ -538,9 +541,6 @@ bool armory_t::download_guild( sim_t* sim,
         p = wowhead_t::download_player( sim, region, server, character_name, 1 );
       }
       if( ! p ) return false;
-
-      armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-      util_t::format_name( character_name );
 
       int tree = p -> primary_tree();
       if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
@@ -903,11 +903,12 @@ std::string& armory_t::format( std::string& name, int format_type )
     {
       c = '_';
     }
-    else if( c == '_' && i == 0 )
+    else if( ( c == '_' || c == '+' ) && i == 0 )
     {
       continue;
     }
-    else if( c != '_' && 
+    else if( c != '_' &&
+             c != '+' &&
              c != '.' && 
              c != '%' && 
              ! isdigit( c ) )
