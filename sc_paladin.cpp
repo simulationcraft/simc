@@ -268,9 +268,10 @@ static void trigger_seal_of_command( attack_t* a )
 }
 
 // Clunky mechanics:
-// * The dot application/stacking can miss
+// * The dot application/stacking can miss and is only triggered by autoattack and HotR
 // * The proc at 5 stacks cannot miss
-static void trigger_seal_of_vengeance( attack_t* a )
+
+static void trigger_seal_of_vengeance_dot( attack_t* a )
 {
   if( a -> proc ) return;
 
@@ -352,6 +353,19 @@ static void trigger_seal_of_vengeance( attack_t* a )
     }
   };
 
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if( p -> active_seal != SEAL_OF_VENGEANCE ) return;
+
+  if( ! p -> active_seal_of_vengeance_dot )
+    p -> active_seal_of_vengeance_dot = new seal_of_vengeance_dot_t( p );
+  p -> active_seal_of_vengeance_dot -> schedule_execute();
+}
+
+static void trigger_seal_of_vengeance_attack( attack_t* a )
+{
+  if( a -> proc ) return;
+
   // doesn't scale with seals of the pure
   struct seal_of_vengeance_attack_t : public paladin_attack_t
   {
@@ -375,13 +389,12 @@ static void trigger_seal_of_vengeance( attack_t* a )
 
   if( p -> active_seal != SEAL_OF_VENGEANCE ) return;
 
-  if( ! p -> active_seal_of_vengeance_dot ) p -> active_seal_of_vengeance_dot = new seal_of_vengeance_dot_t( p );
-  if( ! p -> active_seal_of_vengeance )     p -> active_seal_of_vengeance     = new seal_of_vengeance_attack_t( p );
-
-  // Note order! If this attack gives us the fifth stack we shouldn't get the weapon-based damage
   if( p -> _buffs.seal_of_vengeance_stacks == 5 )
+  {
+    if( ! p -> active_seal_of_vengeance )
+      p -> active_seal_of_vengeance = new seal_of_vengeance_attack_t( p );
     p -> active_seal_of_vengeance -> schedule_execute();
-  p -> active_seal_of_vengeance_dot -> schedule_execute();
+  }
 }
 
 static void trigger_the_art_of_war( attack_t* a )
@@ -479,7 +492,7 @@ void paladin_attack_t::execute()
           trigger_seal_of_command( this );
           break;
         case SEAL_OF_VENGEANCE:
-          trigger_seal_of_vengeance( this );
+          trigger_seal_of_vengeance_attack( this );
           break;
         default:
           assert(0);
@@ -506,11 +519,19 @@ struct melee_t : public paladin_attack_t
 
   virtual void execute()
   {
+    paladin_t* p = player -> cast_paladin();
+
     paladin_attack_t::execute();
 
-    if( result == RESULT_CRIT )
+    if( result_is_hit() )
     {
-      trigger_the_art_of_war( this );
+      if( result == RESULT_CRIT )
+      {
+        trigger_the_art_of_war( this );
+      }
+
+      if( p -> active_seal == SEAL_OF_VENGEANCE )
+        trigger_seal_of_vengeance_dot( this );
     }
   }
 };
