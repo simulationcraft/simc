@@ -23,7 +23,7 @@ php_value upload_max_filesize			1M
 
 # Show all errors, except for notices
 # In other words, "E_ALL & ~E_NOTICE | E_STRICT" as of PHP 5.
-# see http://us3.php.net/manual/en/errorfunc.constants.php
+# see http//us3.php.net/manual/en/errorfunc.constants.php
 #
 # E_ALL is 32767 in PHP 6, 30719 in PHP 5.3.x, 6143 in PHP 5.2.x, 2047 previously
 # So our bit mask is 32759 in PHP 6, 32759 in PHP 5.3.x, 8183 in PHP 5.2.x, 2039 previously
