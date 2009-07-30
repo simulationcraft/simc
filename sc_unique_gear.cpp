@@ -364,6 +364,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
   else if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
   else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
+  else if( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
 
   if( e.empty() ) return false;
 
