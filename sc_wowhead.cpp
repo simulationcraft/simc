@@ -75,6 +75,11 @@ static xml_node_t* download_id( sim_t* sim,
   if( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
   std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
   xml_node_t* node = xml_t::download( url, "</json>", 0 );
+  if ( !node )
+  {
+    std::string url = "http://ptr.wowhead.com/?item=" + id_str + "&xml";
+    node = xml_t::download( url, "</json>", 0 );
+  }
   if( sim -> debug ) xml_t::print( node );
   return node;
 }
