@@ -2273,10 +2273,26 @@ std::vector<option_t>& priest_t::get_options()
 
 int priest_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "faith"          ) ) return SET_T7;
-  if( strstr( item.name(), "sanctification" ) ) return SET_T8;
-  if( strstr( item.name(), "zabra"          ) ) return SET_T9;
-  if( strstr( item.name(), "velen"          ) ) return SET_T9;
+  if( strstr( item.name(), "circlet_of_faith"            ) ) return SET_T7;
+  if( strstr( item.name(), "mantle_of_faith"             ) ) return SET_T7;
+  if( strstr( item.name(), "raiments_of_faith"           ) ) return SET_T7;
+  if( strstr( item.name(), "handwraps_of_faith"          ) ) return SET_T7;
+  if( strstr( item.name(), "pants_of_faith"              ) ) return SET_T7;
+  if( strstr( item.name(), "circlet_of_sanctification"   ) ) return SET_T8;
+  if( strstr( item.name(), "mantle_of_sanctification"    ) ) return SET_T8;
+  if( strstr( item.name(), "raiments_of_sanctification"  ) ) return SET_T8;
+  if( strstr( item.name(), "handwraps_of_sanctification" ) ) return SET_T8;
+  if( strstr( item.name(), "pants_of_sanctification"     ) ) return SET_T8;
+  if( strstr( item.name(), "zabras_circlet_"             ) ) return SET_T9;
+  if( strstr( item.name(), "zabras_mantle_"              ) ) return SET_T9;
+  if( strstr( item.name(), "zabras_raiments_"            ) ) return SET_T9;
+  if( strstr( item.name(), "zabras_handwraps_"           ) ) return SET_T9;
+  if( strstr( item.name(), "zabras_pants_"               ) ) return SET_T9;
+  if( strstr( item.name(), "velens_circlet_"             ) ) return SET_T9;
+  if( strstr( item.name(), "velens_mantle_"              ) ) return SET_T9;
+  if( strstr( item.name(), "velens_raiments_"            ) ) return SET_T9;
+  if( strstr( item.name(), "velens_handwraps_"           ) ) return SET_T9;
+  if( strstr( item.name(), "velens_pants_"               ) ) return SET_T9;
   return SET_NONE;
 }
 
