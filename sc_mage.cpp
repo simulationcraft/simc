@@ -18,20 +18,11 @@ struct mage_t : public player_t
   pet_t*   active_water_elemental;
 
   // Buffs
-  struct _buffs_t
-  {
-    int    arcane_blast;
-    int    combustion;
-    int    combustion_crits;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
-    _buffs_t() { reset(); }
-  };
-  _buffs_t _buffs;
-
+  buff_t* buffs_arcane_blast;
   buff_t* buffs_arcane_power;
   buff_t* buffs_brain_freeze;
   buff_t* buffs_clearcasting;
+  buff_t* buffs_combustion;
   buff_t* buffs_fingers_of_frost;
   buff_t* buffs_ghost_charge;
   buff_t* buffs_hot_streak;
@@ -41,16 +32,6 @@ struct mage_t : public player_t
   buff_t* buffs_mage_armor;
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
-
-  // Expirations
-  struct _expirations_t
-  {
-    event_t* arcane_blast;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
-    _expirations_t() { reset(); }
-  };
-  _expirations_t _expirations;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -292,6 +273,7 @@ static void stack_winters_chill( spell_t* s,
 
 struct mage_spell_t : public spell_t
 {
+  bool may_torment;
   int dps_rotation;
   int dpm_rotation;
   int arcane_power;
@@ -299,6 +281,7 @@ struct mage_spell_t : public spell_t
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
+      may_torment( false ),
       dps_rotation( 0 ),
       dpm_rotation( 0 ),
       arcane_power( 0 ),
@@ -751,20 +734,6 @@ static void trigger_master_of_elements( spell_t* s, double adjust )
   p -> resource_gain( RESOURCE_MANA, adjust * s -> base_cost * p -> talents.master_of_elements * 0.10, p -> gains_master_of_elements );
 }
 
-// trigger_molten_fury ======================================================
-
-static void trigger_molten_fury( spell_t* s )
-{
-  mage_t*   p = s -> player -> cast_mage();
-
-  if ( ! p -> talents.molten_fury ) return;
-
-  if ( s -> sim -> target -> health_percentage() < 35 )
-  {
-    s -> player_multiplier *= 1.0 + p -> talents.molten_fury * 0.06;
-  }
-}
-
 // trigger_combustion =======================================================
 
 static void trigger_combustion( spell_t* s )
@@ -774,15 +743,16 @@ static void trigger_combustion( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> _buffs.combustion_crits == 0 ) return;
+  if ( ! p -> buffs_combustion -> check() ) return;
 
-  p -> _buffs.combustion++;
-
-  if ( s -> result == RESULT_CRIT ) p -> _buffs.combustion_crits--;
-
-  if ( p -> _buffs.combustion_crits == 0 )
+  if( s -> result_is_hit() )
   {
-    p -> _buffs.combustion = 0;
+    p -> buffs_combustion -> current_value++;
+
+    if ( s -> result == RESULT_CRIT ) 
+    {
+      p -> buffs_combustion -> decrement();
+    }
   }
 }
 
@@ -1222,12 +1192,34 @@ void mage_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  trigger_molten_fury( this );
-
-  if ( school == SCHOOL_FIRE ||
-       school == SCHOOL_FROSTFIRE )
+  if ( p -> talents.molten_fury )
   {
-    player_crit += ( p -> _buffs.combustion * 0.10 );
+    if ( sim -> target -> health_percentage() < 35 )
+    {
+      player_multiplier *= 1.0 + p -> talents.molten_fury * 0.06;
+    }
+  }
+
+  if( may_torment && sim -> target -> debuffs.snared() )
+  {
+    player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.04;
+  }
+
+  if ( school == SCHOOL_ARCANE )
+  {
+    int ab_stack = p ->  buffs_arcane_blast -> stack();
+
+    player_multiplier *= 1.0 + ab_stack * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == ab_stack );
+    }
+  }
+  else if ( school == SCHOOL_FIRE ||
+	    school == SCHOOL_FROSTFIRE )
+  {
+    player_crit += ( p -> buffs_combustion -> value() * 0.10 );
   }
   if ( p -> talents.shatter && may_crit )
   {
@@ -1327,22 +1319,8 @@ struct arcane_barrage_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
-  }
 
-  virtual void player_buff()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::player_buff();
-    if ( p -> _buffs.arcane_blast )
-    {
-      player_multiplier *= 1.0 + p ->  _buffs.arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
-    }
-    for ( int i=0; i < 4; i++ )
-    {
-      p -> uptimes_arcane_blast[ i ] -> update( i == p -> _buffs.arcane_blast );
-    }
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+    may_torment = true;
   }
 
   virtual void execute()
@@ -1350,7 +1328,7 @@ struct arcane_barrage_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     if ( result_is_hit() ) trigger_missile_barrage( this );
-    event_t::early( p -> _expirations.arcane_blast );
+    p -> buffs_arcane_blast -> expire();
   }
 };
 
@@ -1405,6 +1383,8 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
     if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+
+    may_torment = true;
   }
 
   virtual double cost() SC_CONST
@@ -1413,7 +1393,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if ( c != 0 )
     {
-      if ( p -> _buffs.arcane_blast ) c += base_cost * p -> _buffs.arcane_blast * 2.00;
+      c += base_cost * p -> buffs_arcane_blast -> stack() * 2.00;
       if ( p -> set_bonus.tier5_2pc() ) c += base_cost * 0.05;
     }
     return c;
@@ -1421,6 +1401,8 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
+
     mage_spell_t::execute();
 
     if ( result_is_hit() )
@@ -1429,58 +1411,7 @@ struct arcane_blast_t : public mage_spell_t
       trigger_tier8_2pc( this );
     }
 
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        name = "Arcane Blast Expiration";
-        p -> aura_gain( "Arcane Blast" );
-        sim -> add_event( this, 10.0 );
-      }
-      virtual void execute()
-      {
-        mage_t* p = player -> cast_mage();
-        p -> aura_loss( "Arcane Blast" );
-        p -> _buffs.arcane_blast = 0;
-        p -> _expirations.arcane_blast = 0;
-      }
-    };
-
-    mage_t* p = player -> cast_mage();
-
-    if ( p -> _buffs.arcane_blast < 3 )
-    {
-      p -> _buffs.arcane_blast++;
-
-      if ( sim -> debug ) log_t::output( sim, "%s gains Arcane Blast %d", p -> name(), p -> _buffs.arcane_blast );
-    }
-
-    event_t*& e = p -> _expirations.arcane_blast;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( sim ) expiration_t( sim, p );
-    }
-  }
-
-  virtual void player_buff()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::player_buff();
-    if ( p -> _buffs.arcane_blast )
-    {
-      player_multiplier *= 1.0 + p ->  _buffs.arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
-    }
-    for ( int i=0; i < 4; i++ )
-    {
-      p -> uptimes_arcane_blast[ i ] -> update( i == p -> _buffs.arcane_blast );
-    }
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+    p -> buffs_arcane_blast -> increment();
   }
 
   virtual bool ready()
@@ -1491,7 +1422,7 @@ struct arcane_blast_t : public mage_spell_t
       return false;
 
     if ( max_buff > 0 )
-      if ( p -> _buffs.arcane_blast >= max_buff )
+      if ( p -> buffs_arcane_blast -> check() >= max_buff )
         return false;
 
     return true;
@@ -1541,6 +1472,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
 
     clearcast = false;
+    may_torment = true;
   }
 
   virtual void player_buff()
@@ -1551,16 +1483,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     {
       player_crit += p -> talents.arcane_potency * 0.15;
     }
-    if ( p -> _buffs.arcane_blast )
-    {
-      player_multiplier *= 1.0 + p ->  _buffs.arcane_blast * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
-    }
-    for ( int i=0; i < 4; i++ )
-    {
-      p -> uptimes_arcane_blast[ i ] -> update( i == p -> _buffs.arcane_blast );
-    }
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
   }
 
   virtual void execute()
@@ -1644,7 +1566,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
-    event_t::early( p -> _expirations.arcane_blast );
+    p -> buffs_arcane_blast -> expire();
   }
 
   virtual bool ready()
@@ -1960,15 +1882,8 @@ struct fire_ball_t : public mage_spell_t
       base_crit += 0.05;
       num_ticks = 0;
     }
-  }
 
-  virtual void player_buff()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::player_buff();
-
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+    may_torment = true;
   }
 
   virtual double cost() SC_CONST
@@ -2350,9 +2265,7 @@ struct combustion_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> aura_gain( "Combustion" );
-    p -> _buffs.combustion = 0;
-    p -> _buffs.combustion_crits = 3;
+    p -> buffs_combustion -> start( 3, 0.0 );
     update_ready();
   }
 };
@@ -2427,15 +2340,8 @@ struct frost_bolt_t : public mage_spell_t
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
     if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
     if ( p -> glyphs.frost_bolt     ) base_multiplier *= 1.05;
-  }
 
-  virtual void player_buff()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::player_buff();
-
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+    may_torment = true;
   }
 
   virtual void execute()
@@ -2625,15 +2531,8 @@ struct frostfire_bolt_t : public mage_spell_t
       base_multiplier *= 1.02;
       base_crit += 0.02;
     }
-  }
 
-  virtual void player_buff()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::player_buff();
-
-    int snared = sim -> target -> debuffs.snared() ? 1 : 0;
-    player_multiplier *= 1.0 + snared * p -> talents.torment_the_weak * 0.04;
+    may_torment = true;
   }
 
   virtual void execute()
@@ -3295,9 +3194,11 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
+  buffs_arcane_blast         = new buff_t( sim, this, "arcane_blast",         3, 10.0 );
   buffs_arcane_power         = new buff_t( sim, this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
   buffs_brain_freeze         = new buff_t( sim, this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
   buffs_clearcasting         = new buff_t( sim, this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
+  buffs_combustion           = new buff_t( sim, this, "combustion",           3 );
   buffs_fingers_of_frost     = new buff_t( sim, this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
   buffs_hot_streak_crits     = new buff_t( sim, this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_hot_streak           = new buff_t( sim, this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
@@ -3500,9 +3401,6 @@ void mage_t::reset()
 
   // Active
   active_water_elemental = 0;
-
-  _buffs.reset();
-  _expirations.reset();
 
   rotation.reset();
 }

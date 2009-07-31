@@ -134,10 +134,12 @@ void buff_t::increment( int    stacks,
 {
   if( current_stack == 0 ) 
   {
+    if( value < 0 ) value = 1.0;
     start( stacks, value );
   }
   else 
   {
+    if( value < 0 ) value = current_value;
     refresh( stacks, value );
   }
 }
@@ -154,7 +156,7 @@ void buff_t::decrement( int    stacks,
   else 
   {
     current_stack -= stacks;
-    current_value  = value;
+    if( value >= 0 ) current_value = value;
   }
 }
 

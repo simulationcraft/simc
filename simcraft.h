@@ -772,7 +772,7 @@ struct buff_t
   // Use check() inside of ready() methods to keep "benefit" calculation accurate.
   // Use up() where the presence of the buff affects the action mechanics.
 
-  virtual bool   check() { return current_stack > 0; }
+  virtual int    check() { return current_stack; }
   virtual bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   virtual int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   virtual double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
@@ -781,8 +781,8 @@ struct buff_t
   virtual bool   remains_lt( double time );
   virtual bool   may_react();
   virtual bool   trigger  ( int stacks=1, double value=1.0, double chance=-1.0 );
-  virtual void   increment( int stacks=1, double value=1.0 );
-  virtual void   decrement( int stacks=1, double value=1.0 );
+  virtual void   increment( int stacks=1, double value=-1.0 );
+  virtual void   decrement( int stacks=1, double value=-1.0 );
   virtual void   start    ( int stacks=1, double value=1.0 );
   virtual void   refresh  ( int stacks=0, double value=1.0 );
   virtual void   expire();

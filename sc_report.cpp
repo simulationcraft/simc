@@ -185,7 +185,7 @@ static void print_buffs( FILE* file, player_t* p )
 
     if( ! b -> constant )
     {
-      util_t::fprintf( file, "    %-*s : start=%4.1f  refresh=%3.1f  interval=%.1f  uptime=%2.0f%%  benefit=%2.0f%%",
+      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-4.1f  interval=%-5.1f  uptime=%2.0f%%  benefit=%2.0f%%",
 		       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct, b -> benefit_pct );
 
       if( b -> trigger_pct > 0 ) util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
@@ -248,107 +248,58 @@ static void print_defense_stats( FILE* file, player_t* p )
 
 // print_gains ===============================================================
 
-static void print_gains( FILE* file, sim_t* sim )
+static void print_gains( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "\nGains:\n" );
+  util_t::fprintf( file, "  Gains:\n" );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  int max_length = 0;
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( p -> quiet )
-      continue;
-
-    bool first=true;
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    if ( g -> actual > 0 )
     {
-      if ( g -> actual > 0 )
-      {
-        if ( first )
-        {
-          util_t::fprintf( file, "\n    %s:\n", p -> name() );
-          first = false;
-        }
-        util_t::fprintf( file, "        %s=%.1f", g -> name(), g -> actual );
-        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-        if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
-        util_t::fprintf( file, "\n" );
-      }
+      int length = strlen( g -> name() );
+      if( length > max_length ) max_length = length;
+    }
+  }
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  {
+    if ( g -> actual > 0 )
+    {
+      util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
+      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+      if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
+      util_t::fprintf( file, "\n" );
     }
   }
 }
 
 // print_procs ================================================================
 
-static void print_procs( FILE* file, sim_t* sim )
+static void print_procs( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "\nProcs:\n" );
+  util_t::fprintf( file, "  Procs:\n" );
 
-  for ( player_t* player = sim -> player_list; player; player = player -> next )
+  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
-    if ( player -> quiet )
-      continue;
-
-    bool first=true;
-    for ( proc_t* p = player -> proc_list; p; p = p -> next )
+    if ( proc -> count > 0 )
     {
-      if ( p -> count > 0 )
-      {
-        if ( first )
-        {
-          util_t::fprintf( file, "\n    %s:\n", player -> name() );
-          first = false;
-        }
-        util_t::fprintf( file, "        %s=%.1f|%.2fsec\n", p -> name(), p -> count, p -> frequency );
-      }
+      util_t::fprintf( file, "    %5.1f | %6.2fsec : %s\n", 
+		       proc -> count, proc -> frequency, proc -> name() );
     }
   }
 }
 
 // print_uptime ===============================================================
 
-static void print_uptime( FILE* file, sim_t* sim )
+static void print_uptime( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "\nUp-Times:\n" );
+  util_t::fprintf( file, "  Up-Times:\n" );
 
-  bool first=true;
-  for ( uptime_t* u = sim -> target -> uptime_list; u; u = u -> next )
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
     if ( u -> percentage() > 0 )
     {
-      if ( first )
-      {
-        util_t::fprintf( file, "\n    Global:\n" );
-        first = false;
-      }
-      util_t::fprintf( file, "        %5.1f%% : %-30s", u -> percentage(), u -> name() );
-      util_t::fprintf( file, "\n");
-    }
-  }
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> quiet )
-      continue;
-
-    first=true;
-    for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
-    {
-      if ( u -> percentage() > 0 )
-      {
-        if ( first )
-        {
-          util_t::fprintf( file, "\n    %s:\n", p -> name() );
-          first = false;
-        }
-        util_t::fprintf( file, "        %5.1f%% : %-30s", u -> percentage(), u -> name() );
-
-        if (typeid(*u)==typeid(buff_uptime_t)){
-          double upt= ((buff_uptime_t*)u)->percentage_time();
-          double ntrig=((buff_uptime_t*)u)->avg_triggers();
-          if (upt>0)  util_t::fprintf( file, "  ( %5.1f triggers, %5.1f%% D.uptime )",ntrig,upt );
-        }
-
-        util_t::fprintf( file, "\n");
-      }
+      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> percentage(), u -> name() );
     }
   }
 }
@@ -414,6 +365,11 @@ static void print_scale_factors( FILE* file, sim_t* sim )
     player_t* p = sim -> players_by_name[ i ];
     int length = strlen( p -> name() );
     if( length > max_length ) max_length = length;
+  }
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
 
     util_t::fprintf( file, "  %-*s", max_length, p -> name() );
 
@@ -1059,7 +1015,7 @@ static void print_wiki_text( FILE*  file,
 // Report
 // ===========================================================================
 
-// report_t::print_test ======================================================
+// report_t::print_text ======================================================
 
 void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 {
@@ -1101,14 +1057,18 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     print_attack_stats ( file, p );
     print_defense_stats( file, p );
     print_actions      ( file, p );
-    print_buffs        ( file, p );
+
+    if( detail )
+    {
+      print_buffs ( file, p );
+      print_uptime( file, p );
+      print_procs ( file, p );
+      print_gains ( file, p );
+    }
   }
 
   if( detail )
   {
-    print_gains        ( file, sim );
-    print_procs        ( file, sim );
-    print_uptime       ( file, sim );
     print_waiting      ( file, sim );
     print_performance  ( file, sim );
     print_scale_factors( file, sim );
