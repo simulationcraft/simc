@@ -998,8 +998,60 @@ bool util_t::socket_gem_match( int socket,
 
 int util_t::string_split( std::vector<std::string>& results,
                           const std::string&        str,
-                          const char*               delim )
+                          const char*               delim,
+                          bool                      allow_quotes )
 {
+  std::string buffer = str;
+  std::string::size_type cut_pt;
+
+  std::string search = delim;
+  search += '"';
+  bool in_quotes = false;
+  std::string temp_str;
+
+  while ( ( cut_pt = buffer.find_first_of( search ) ) != buffer.npos )
+  {
+    if ( cut_pt > 0 )
+    {
+      if ( allow_quotes && ( buffer[cut_pt] == '"' ) )
+      {
+	      in_quotes = !in_quotes;
+        temp_str = buffer.substr( 0, cut_pt );
+        temp_str += buffer.substr( cut_pt + 1 );
+	      buffer = temp_str;
+        if ( in_quotes )
+        {
+          search = '"';
+        }
+        else
+        {
+          search = delim;
+          search += '"';
+        }
+      }
+      if ( !in_quotes ) 
+      {
+        results.push_back( buffer.substr( 0, cut_pt ) ); 
+      }
+    }
+    if ( !in_quotes )
+    {
+      if ( buffer.length() > cut_pt )
+      {
+        buffer = buffer.substr( cut_pt + 1 );  
+      }
+      else
+      {
+        buffer = "";
+      }
+    }
+  }
+  if ( buffer.length() > 0 )
+  {
+    results.push_back( buffer );
+  }
+
+/*
   std::string buffer = str;
   std::string::size_type cut_pt;
 
@@ -1015,7 +1067,7 @@ int util_t::string_split( std::vector<std::string>& results,
   {
     results.push_back( buffer );
   }
-
+*/
   return static_cast<int>( results.size() );
 }
 

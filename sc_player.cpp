@@ -406,6 +406,8 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list(0), action_list_default(0),
   // Reporting
+  save_str(""), save_gear_str(""), save_talents_str(""), save_actions_str(""),
+  comment_str(""),
   quiet(0), last_foreground_action(0),
   last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0),
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
@@ -2742,7 +2744,15 @@ bool player_t::save( FILE* file, int save_type )
   if( save_type == SAVE_ALL )
   {
     util_t::fprintf( file, "#!simcraft\n\n" );
+  }
 
+  if ( !comment_str.empty() )
+  {
+    util_t::fprintf( file, "# %s\n", comment_str.c_str() );
+  }
+
+  if( save_type == SAVE_ALL )
+  {
     util_t::fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
     util_t::fprintf( file, "origin=%s\n", origin_str.c_str() );
     util_t::fprintf( file, "level=%d\n", level );
@@ -2898,6 +2908,7 @@ std::vector<option_t>& player_t::get_options()
       { "save_gear",                            OPT_STRING,   &( save_gear_str                                ) },
       { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
       { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
+      { "comment",                              OPT_STRING,   &( comment_str                                  ) },
       // @option_doc loc=player/all/items title="Items"
       { "items",                                OPT_STRING,   &( items_str                                    ) },
       { "items+",                               OPT_APPEND,   &( items_str                                    ) },

@@ -536,7 +536,7 @@ struct util_t
   static int translate_class_id( int cid );
   static bool socket_gem_match( int socket, int gem );
 
-  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim );
+  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 
   static int64_t milliseconds();
@@ -1335,6 +1335,7 @@ struct player_t
   std::string save_gear_str;
   std::string save_talents_str;
   std::string save_actions_str;
+  std::string comment_str;
 
   // Gear
   std::string items_str, meta_gem_str;
