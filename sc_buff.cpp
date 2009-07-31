@@ -14,14 +14,19 @@ buff_t::buff_t( sim_t*             s,
 		double             d,
 		double             cd,
 		double             ch,
+		bool               q,
 		int                rng_type,
 		int                a ) :
-  sim( s ), player( p ), name_str( n ),
-  current_stack( 0 ),max_stack( ms ), 
-  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
-  last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
-  up_count( 0 ), down_count( 0 ), interval_count( 0 ), start_count( 0 ),
-  aura_id( 0 ), expiration( 0 ), rng( 0 ), next( 0 )
+  sim(s), player(p), name_str(n),
+  current_stack(0),max_stack(ms), 
+  duration(d), cooldown(cd), cooldown_ready(0), default_chance(ch),
+  last_start(-1), interval_sum(0), uptime_sum(0),
+  up_count(0), down_count(0), interval_count(0), 
+  start_count(0), refresh_count(0),
+  trigger_attempts(0), trigger_successes(0),
+  uptime_pct(0), benefit_pct(0), trigger_pct(0), 
+  avg_interval(0), avg_start(0), avg_refresh(0),
+  constant(false), quiet(q), aura_id(0), expiration(0), rng(0), next(0)
 {
   buff_t** tail = 0;
 
@@ -97,9 +102,9 @@ bool buff_t::remains_lt( double time )
 
 // buff_t::trigger ==========================================================
 
-bool buff_t::trigger( double chance,
-		      int    stacks,
-		      double value )
+bool buff_t::trigger( int    stacks,
+		      double value,
+		      double chance )
 {
   trigger_attempts++;
 
@@ -127,15 +132,55 @@ bool buff_t::trigger( double chance,
 void buff_t::increment( int    stacks,
 			double value )
 {
-  if( current_stack == 0 ) start();
-
-  if( current_stack < max_stack )
+  if( current_stack == 0 ) 
   {
-    current_stack += stacks;
-    if( current_stack > max_stack )
-      current_stack = max_stack;
+    start( stacks, value );
   }
+  else 
+  {
+    refresh( stacks, value );
+  }
+}
 
+// buff_t::decrement ========================================================
+
+void buff_t::decrement( int    stacks,
+			double value )
+{
+  if( stacks == 0 || current_stack <= stacks ) 
+  {
+    expire();
+  }
+  else 
+  {
+    current_stack -= stacks;
+    current_value  = value;
+  }
+}
+
+// buff_t::start ============================================================
+
+void buff_t::start( int    stacks,
+		    double value )
+{
+  assert( ! expiration );
+
+  if( sim -> current_time == 0 ) constant = true;
+
+  start_count++;
+
+  if( player ) 
+  {
+    player -> aura_gain( name(), aura_id );
+  }
+  if( last_start >= 0 )
+  {
+    interval_sum += sim -> current_time - last_start;
+    interval_count++;
+  }
+  last_start = sim -> current_time;
+
+  current_stack = std::min( stacks, max_stack );
   current_value = value;
 
   if( duration > 0 )
@@ -154,51 +199,39 @@ void buff_t::increment( int    stacks,
 	buff -> expire();
       }
     };
-
-    if( expiration )
-    {
-      expiration -> reschedule( duration );
-    }
-    else
-    {
-      expiration = new expiration_t( sim, player, this );
-    }
+    
+    expiration = new ( sim ) expiration_t( sim, player, this );
   }
 }
 
-// buff_t::decrement ========================================================
+// buff_t::refresh ==========================================================
 
-void buff_t::decrement( int stacks )
+void buff_t::refresh( int    stacks,
+		      double value )
 {
-  current_stack -= stacks;
+  refresh_count++;
 
-  if( stacks == 0 || current_stack <= 0 ) 
+  if( current_stack < max_stack )
   {
-    expire();
+    current_stack += stacks;
+    if( current_stack > max_stack )
+      current_stack = max_stack;
   }
-}
 
-// buff_t::start ============================================================
+  current_value = value;
 
-void buff_t::start()
-{
-  start_count++;
-  if( player ) 
+  if( duration > 0 )
   {
-    player -> aura_gain( name(), aura_id );
+    assert( expiration );
+    expiration -> reschedule( duration );
   }
-  if( last_start >= 0 )
-  {
-    interval_sum += sim -> current_time - last_start;
-    interval_count++;
-  }
-  last_start = sim -> current_time;
 }
 
 // buff_t::expire ===========================================================
 
 void buff_t::expire()
 {
+  if( current_stack <= 0 ) return;
   event_t::cancel( expiration );
   current_stack = 0;
   current_value = 0;
@@ -208,8 +241,10 @@ void buff_t::expire()
   }
   if( last_start >= 0 )
   {
-    uptime_sum += sim -> current_time - last_start;
+    double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
+    uptime_sum += current_time - last_start;
   }
+  if( sim -> current_time != 0 ) constant = false;
 }
 
 // buff_t::reset ============================================================
@@ -225,10 +260,37 @@ void buff_t::reset()
 
 void buff_t::merge( buff_t* other )
 {
-  interval_sum   += other -> interval_sum;
-  uptime_sum     += other -> uptime_sum;
-  up_count       += other -> up_count;
-  down_count     += other -> down_count;
-  interval_count += other -> interval_count;
-  start_count    += other -> start_count;
+  interval_sum      += other -> interval_sum;
+  uptime_sum        += other -> uptime_sum;
+  up_count          += other -> up_count;
+  down_count        += other -> down_count;
+  interval_count    += other -> interval_count;
+  start_count       += other -> start_count;
+  trigger_attempts  += other -> trigger_attempts;
+  trigger_successes += other -> trigger_successes;
+}
+
+// buff_t::analyze ==========================================================
+
+void buff_t::analyze()
+{
+  double total_seconds = player ? player -> total_seconds : sim -> total_seconds;
+  if( total_seconds > 0 ) 
+  {
+    uptime_pct = 100.0 * uptime_sum / total_seconds;
+  }
+  if( up_count > 0 ) 
+  {
+    benefit_pct = 100.0 * up_count / ( up_count + down_count );
+  }
+  if( trigger_attempts > 0 )
+  {
+    trigger_pct = 100.0 * trigger_successes / trigger_attempts;
+  }
+  if( interval_count > 0 )
+  {
+    avg_interval = interval_sum / interval_count;
+  }
+  avg_start   =   start_count / (double) sim -> iterations;
+  avg_refresh = refresh_count / (double) sim -> iterations;
 }

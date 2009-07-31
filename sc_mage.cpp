@@ -21,35 +21,31 @@ struct mage_t : public player_t
   struct _buffs_t
   {
     int    arcane_blast;
-    int    arcane_power;
-    double brain_freeze;
-    double clearcasting;
     int    combustion;
     int    combustion_crits;
-    double fingers_of_frost;
-    int    fingers_of_frost_charges;
-    int    ghost_charge;
-    int    hot_streak;
-    double hot_streak_pyroblast;
-    int    icy_veins;
-    double incanters_absorption;
-    int    mage_armor;
-    double missile_barrage;
-    int    molten_armor;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
 
+  buff_t* buffs_arcane_power;
+  buff_t* buffs_brain_freeze;
+  buff_t* buffs_clearcasting;
+  buff_t* buffs_fingers_of_frost;
+  buff_t* buffs_ghost_charge;
+  buff_t* buffs_hot_streak;
+  buff_t* buffs_hot_streak_crits;
+  buff_t* buffs_icy_veins;
+  buff_t* buffs_incanters_absorption;
+  buff_t* buffs_mage_armor;
+  buff_t* buffs_missile_barrage;
+  buff_t* buffs_molten_armor;
+
   // Expirations
   struct _expirations_t
   {
     event_t* arcane_blast;
-    event_t* brain_freeze;
-    event_t* hot_streak;
-    event_t* incanters_absorption;
-    event_t* missile_barrage;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -64,34 +60,22 @@ struct mage_t : public player_t
   gain_t* gains_master_of_elements;
 
   // Procs
-  proc_t* procs_clearcasting;
   proc_t* procs_deferred_ignite;
-  proc_t* procs_hot_streak_pyroblast;
   proc_t* procs_mana_gem;
 
   // Up-Times
   uptime_t* uptimes_arcane_blast[ 4 ];
-  uptime_t* uptimes_arcane_power;
   uptime_t* uptimes_dps_rotation;
   uptime_t* uptimes_dpm_rotation;
-  uptime_t* uptimes_fingers_of_frost;
   uptime_t* uptimes_focus_magic_feedback;
-  uptime_t* uptimes_icy_veins;
-  uptime_t* uptimes_incanters_absorption;
-  uptime_t* uptimes_missile_barrage;
   uptime_t* uptimes_water_elemental;
 
   // Random Number Generation
-  rng_t* rng_arcane_concentration;
-  rng_t* rng_brain_freeze;
   rng_t* rng_empowered_fire;
-  rng_t* rng_fingers_of_frost;
   rng_t* rng_frostbite;
   rng_t* rng_ghost_charge;
-  rng_t* rng_hot_streak;
   rng_t* rng_improved_scorch;
   rng_t* rng_improved_water_elemental;
-  rng_t* rng_missile_barrage;
   rng_t* rng_winters_chill;
   rng_t* rng_winters_grasp;
 
@@ -808,14 +792,9 @@ static void trigger_arcane_concentration( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> talents.arcane_concentration || s -> dual ) return;
+  if ( s -> dual ) return;
 
-  if ( p -> rng_arcane_concentration -> roll( p -> talents.arcane_concentration * 0.02 ) )
-  {
-    p -> aura_gain( "Clearcasting" );
-    p -> procs_clearcasting -> occur();
-    if( p -> _buffs.clearcasting == 0 ) p -> _buffs.clearcasting = s -> sim -> current_time;
-  }
+  p -> buffs_clearcasting -> trigger();
 }
 
 // trigger_frostbite ========================================================
@@ -911,24 +890,19 @@ static void clear_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if( p -> _buffs.ghost_charge != 0 )
-  {
-    p -> aura_loss( "Ghost Charge" );
-    p -> _buffs.ghost_charge = 0;
-  }
-  if ( p -> _buffs.fingers_of_frost_charges > 0 && s -> may_crit )
-  {
-    p -> _buffs.fingers_of_frost_charges--;
+  p -> buffs_ghost_charge -> expire();
 
-    if( p -> _buffs.fingers_of_frost_charges == 0 )
+  if ( s -> may_crit && p -> buffs_fingers_of_frost -> check() )
+  {
+    p -> buffs_fingers_of_frost -> decrement();
+
+    if( ! p -> buffs_fingers_of_frost -> check() )
     {
-      p -> aura_loss( "Fingers of Frost" );
-      p -> _buffs.fingers_of_frost = 0;
-
       if ( p -> gcd_ready < p -> sim -> current_time )
       {
-	p -> aura_gain( "Ghost Charge" );
-	p -> _buffs.ghost_charge = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1 : -1;
+	double value = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1.0 : -1.0;
+
+	p -> buffs_ghost_charge -> start( 1, value );
       }
     }
   }
@@ -940,16 +914,7 @@ static void trigger_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> rng_fingers_of_frost -> roll( p -> talents.fingers_of_frost * 0.15/2 ) )
-  {
-    p -> aura_gain( "Fingers of Frost" );
-    p -> _buffs.fingers_of_frost_charges = 2;
-    p -> _buffs.ghost_charge = 0;
-    if( p -> _buffs.fingers_of_frost == 0 )
-    {
-      p -> _buffs.fingers_of_frost = p -> sim -> current_time;
-    }
-  }
+  p -> buffs_fingers_of_frost -> trigger( 2 );
 }
 
 // trigger_brain_freeze ===========================================================
@@ -961,38 +926,7 @@ static void trigger_brain_freeze( spell_t* s )
 
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> rng_brain_freeze -> roll( p -> talents.brain_freeze * 0.05 ) )
-  {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
-      {
-        name = "Brain Freeze Expiration";
-        p -> aura_gain( "Brain Freeze" );
-        p -> _buffs.brain_freeze = sim -> current_time;
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        mage_t* p = player -> cast_mage();
-        p -> aura_loss( "Brain Freeze" );
-        p -> _buffs.brain_freeze       = 0;
-        p -> _expirations.brain_freeze = 0;
-      }
-    };
-
-    event_t*& e = p -> _expirations.brain_freeze;
-
-    if ( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-    p -> _buffs.brain_freeze = s -> sim -> current_time;
-  }
+  p -> buffs_brain_freeze -> trigger();
 }
 
 // consume_brain_freeze ============================================================
@@ -1001,9 +935,9 @@ static void consume_brain_freeze( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> _expirations.brain_freeze )
+  if ( p -> buffs_brain_freeze -> check() )
     if ( ! trigger_tier8_4pc( s ) )
-      event_t::early( p -> _expirations.brain_freeze );
+      p -> buffs_brain_freeze -> expire();
 }
 
 // trigger_hot_streak ==============================================================
@@ -1022,47 +956,19 @@ static void trigger_hot_streak( spell_t* s )
       // Decouple Hot Streak proc from actual crit to reduce wild swings during RNG smoothing.
       result = sim -> rng -> roll( s -> total_crit() ) ? RESULT_CRIT : RESULT_HIT;
     }
-    if ( result == RESULT_CRIT && p -> rng_hot_streak -> roll( p -> talents.hot_streak * ( 1/3.0 ) ) )
+    if ( result == RESULT_CRIT )
     {
-      p -> _buffs.hot_streak++;
-
-      if ( p -> _buffs.hot_streak == 2 )
+      p -> buffs_hot_streak_crits -> increment();
+      
+      if( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
-        struct expiration_t : public event_t
-        {
-          expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
-          {
-            name = "Hot Streak Expiration";
-            p -> aura_gain( "Hot Streak" );
-            p -> _buffs.hot_streak_pyroblast = sim -> current_time;
-            sim -> add_event( this, 10.0 );
-          }
-          virtual void execute()
-          {
-            mage_t* p = player -> cast_mage();
-            p -> aura_loss( "Hot Streak" );
-            p -> _buffs.hot_streak_pyroblast = 0;
-            p -> _expirations.hot_streak     = 0;
-          }
-        };
-
-        p -> _buffs.hot_streak = 0;
-
-        event_t*& e = p -> _expirations.hot_streak;
-
-        if ( e )
-        {
-          e -> reschedule( 10.0 );
-        }
-        else
-        {
-          e = new ( sim ) expiration_t( sim, p );
-        }
+	p -> buffs_hot_streak -> trigger();
+	p -> buffs_hot_streak_crits -> expire();
       }
     }
     else
     {
-      p -> _buffs.hot_streak = 0;
+      p -> buffs_hot_streak_crits -> expire();
     }
   }
 }
@@ -1129,37 +1035,7 @@ static void trigger_missile_barrage( spell_t* s )
 
   if ( p -> talents.missile_barrage )
   {
-    if ( p -> rng_missile_barrage -> roll( p -> talents.missile_barrage * 0.04 ) )
-    {
-      struct expiration_t : public event_t
-      {
-        expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
-        {
-          name = "Missile Barrage Expiration";
-          p -> aura_gain( "Missile Barrage" );
-          p -> _buffs.missile_barrage = sim -> current_time;
-          sim -> add_event( this, 15.0 );
-        }
-        virtual void execute()
-        {
-          mage_t* p = player -> cast_mage();
-          p -> aura_loss( "Missile Barrage" );
-          p -> _buffs.missile_barrage       = 0;
-          p -> _expirations.missile_barrage = 0;
-        }
-      };
-
-      event_t*& e = p -> _expirations.missile_barrage;
-
-      if ( e )
-      {
-        e -> reschedule( 15.0 );
-      }
-      else
-      {
-        e = new ( s -> sim ) expiration_t( s -> sim, p );
-      }
-    }
+    p -> buffs_missile_barrage -> trigger();
   }
 }
 
@@ -1186,55 +1062,27 @@ static void trigger_incanters_absorption( mage_t* p,
   if( ! p -> talents.incanters_absorption )
     return;
 
+  buff_t* buff = p -> buffs_incanters_absorption;
+
   double bonus_spell_power = damage * p -> talents.incanters_absorption * 0.05;
 
-  if( p -> _expirations.incanters_absorption )
+  if( buff -> check() )
   {
-    double remaining_time = p -> _expirations.incanters_absorption -> occurs() - p -> sim -> current_time;
-
-    bonus_spell_power += p -> _buffs.incanters_absorption * remaining_time / 10.0;
+    bonus_spell_power += buff -> value() * buff -> remains() / buff -> duration;
   }
 
   double bonus_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.05;
 
   if( bonus_spell_power > bonus_max ) bonus_spell_power = bonus_max;
 
-  p -> _buffs.incanters_absorption = bonus_spell_power;
-
-  struct incanters_absorption_expiration_t : public event_t
-  {
-    incanters_absorption_expiration_t( sim_t* sim, mage_t* p ) : event_t( sim, p )
-    {
-      name = "Incanters Absorption Expiration";
-      p -> aura_gain( "Incanter's Absorption" );
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-      p -> aura_loss( "Incanter's Absorption" );
-      p -> _buffs.incanters_absorption       = 0;
-      p -> _expirations.incanters_absorption = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.incanters_absorption;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( p -> sim ) incanters_absorption_expiration_t( p -> sim, p );
-  }
+  buff -> increment( 1, bonus_spell_power );
 }
 
 // target_is_frozen ========================================================
 
 static int target_is_frozen( mage_t* p )
 {
-  if( p -> sim -> time_to_think( p -> _buffs.fingers_of_frost         ) ||
+  if( p -> buffs_fingers_of_frost -> may_react() ||
       p -> sim -> time_to_think( p -> sim -> target -> debuffs.frozen ) )
   {
     return 1;
@@ -1281,11 +1129,11 @@ bool mage_spell_t::ready()
       return false;
 
   if ( arcane_power )
-    if ( p -> _buffs.arcane_power == 0 )
+    if ( ! p -> buffs_arcane_power -> check() )
       return false;
 
   if ( icy_veins )
-    if ( p -> _buffs.icy_veins == 0 )
+    if ( ! p -> buffs_icy_veins -> check() )
       return false;
 
   return spell_t::ready();
@@ -1296,9 +1144,9 @@ bool mage_spell_t::ready()
 double mage_spell_t::cost() SC_CONST
 {
   mage_t* p = player -> cast_mage();
-  if ( p -> _buffs.clearcasting ) return 0;
+  if ( p -> buffs_clearcasting -> check() ) return 0;
   double c = spell_t::cost();
-  if ( p -> _buffs.arcane_power ) c += base_cost * 0.20;
+  if ( p -> buffs_arcane_power -> check() ) c += base_cost * 0.20;
   return c;
 }
 
@@ -1308,12 +1156,11 @@ double mage_spell_t::haste() SC_CONST
 {
   mage_t* p = player -> cast_mage();
   double h = spell_t::haste();
-  if ( p -> _buffs.icy_veins ) h *= 1.0 / ( 1.0 + 0.20 );
+  if ( p -> buffs_icy_veins -> up() ) h *= 1.0 / ( 1.0 + 0.20 );
   if ( p -> talents.netherwind_presence )
   {
     h *= 1.0 / ( 1.0 + p -> talents.netherwind_presence * 0.02 );
   }
-  p -> uptimes_icy_veins -> update( p -> _buffs.icy_veins != 0 );
   return h;
 }
 
@@ -1323,7 +1170,6 @@ void mage_spell_t::execute()
 {
   mage_t* p = player -> cast_mage();
 
-  p -> uptimes_arcane_power -> update( p -> _buffs.arcane_power != 0 );
   p -> uptimes_dps_rotation -> update( p -> rotation.current == ROTATION_DPS );
   p -> uptimes_dpm_rotation -> update( p -> rotation.current == ROTATION_DPM );
   p -> uptimes.tier8_2pc    -> update( p -> buffs.tier8_2pc == 1 );
@@ -1356,15 +1202,14 @@ void mage_spell_t::consume_resource()
 {
   mage_t* p = player -> cast_mage();
   spell_t::consume_resource();
-  if ( p -> _buffs.clearcasting )
+  if ( p -> buffs_clearcasting -> up() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
     if ( amount > 0 )
     {
-      p -> aura_loss( "Clearcasting" );
+      p -> buffs_clearcasting -> expire();
       p -> gains_clearcasting -> add( amount );
-      p -> _buffs.clearcasting = 0;
     }
   }
 }
@@ -1392,27 +1237,33 @@ void mage_spell_t::player_buff()
     }
     else if ( p -> talents.fingers_of_frost )
     {
-      bool fof_benefit = ( p -> _buffs.fingers_of_frost_charges > 0 ) || ( p -> _buffs.ghost_charge > 0 && time_to_execute == 0 );
-
-      if( fof_benefit ) player_crit += p -> talents.shatter * 0.5/3;
-
-      p -> uptimes_fingers_of_frost -> update( fof_benefit );
+      if( p -> buffs_fingers_of_frost -> up() )
+      {
+	player_crit += p -> talents.shatter * 0.5/3;
+      }
+      else if( time_to_execute == 0 )
+      {
+	if( p -> buffs_ghost_charge -> value() > 0 )
+	{
+	  player_crit += p -> talents.shatter * 0.5/3;
+	}
+      }
     }
   }
 
-  if ( p -> _buffs.arcane_power ) player_multiplier *= 1.20;
+  if ( p -> buffs_arcane_power -> up() ) player_multiplier *= 1.20;
 
   if ( p -> talents.playing_with_fire )
   {
     player_multiplier *= 1.0 + p -> talents.playing_with_fire * 0.01;
   }
 
-  if ( p -> _buffs.clearcasting && ! dual )
+  if ( p -> buffs_clearcasting -> up() && ! dual )
   {
     player_crit += p -> talents.arcane_potency * 0.15;
   }
 
-  if ( p -> _buffs.molten_armor )
+  if ( p -> buffs_molten_armor -> up() )
   {
     double spirit_contribution = p -> glyphs.molten_armor ? 0.55 : 0.35;
 
@@ -1763,19 +1614,21 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    base_tick_time = p -> _buffs.missile_barrage ? 0.5 : 1.0;
-
-    p -> uptimes_missile_barrage -> update( p -> _buffs.missile_barrage != 0 );
-
-    if ( p -> _buffs.missile_barrage )
+    if ( p -> buffs_missile_barrage -> up() )
     {
+      base_tick_time = 0.5;
+
       if ( ! trigger_tier8_4pc( this ) )
       {
-        event_t::early( p -> _expirations.missile_barrage );
+        p -> buffs_missile_barrage -> expire();
       }
     }
+    else
+    {
+      base_tick_time = 1.0;
+    }
 
-    arcane_missiles_tick -> clearcast = p -> _buffs.clearcasting != 0;
+    arcane_missiles_tick -> clearcast = p -> buffs_clearcasting -> up();
 
     mage_spell_t::execute();
   }
@@ -1802,12 +1655,12 @@ struct arcane_missiles_t : public mage_spell_t
       return false;
 
     if ( barrage )
-      if ( ! sim -> time_to_think( p -> _buffs.missile_barrage ) )
+      if ( ! p -> buffs_missile_barrage -> may_react() )
         return false;
 
     if ( clearcast )
-      if ( cost() != 0 || ! sim -> time_to_think( p -> _buffs.clearcasting ) )
-        return false;
+      if( !  p -> buffs_clearcasting -> may_react() )
+	return false;
 
     return true;
   }
@@ -1817,24 +1670,6 @@ struct arcane_missiles_t : public mage_spell_t
 
 struct arcane_power_t : public mage_spell_t
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Arcane Power Expiration";
-      mage_t* p = player -> cast_mage();
-      p -> aura_gain( "Arcane Power" );
-      p -> _buffs.arcane_power = 1;
-      sim -> add_event( this, p -> glyphs.arcane_power ? 18.0 : 15.0 );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-      p -> aura_loss( "Arcane Power" );
-      p -> _buffs.arcane_power = 0;
-    }
-  };
-
   arcane_power_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "arcane_power", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
@@ -1847,10 +1682,11 @@ struct arcane_power_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    mage_t* p = player -> cast_mage();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player );
+    p -> buffs_arcane_power -> start();
   }
 };
 
@@ -2138,14 +1974,14 @@ struct fire_ball_t : public mage_spell_t
   virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> _buffs.brain_freeze ) return 0;
+    if ( p -> buffs_brain_freeze -> check() ) return 0;
     return mage_spell_t::cost();
   }
 
   virtual double execute_time() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> _buffs.brain_freeze ) return 0;
+    if ( p -> buffs_brain_freeze -> up() ) return 0;
     return mage_spell_t::execute_time();
   }
 
@@ -2170,11 +2006,11 @@ struct fire_ball_t : public mage_spell_t
       return false;
 
     if ( brain_freeze )
-      if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
+      if ( ! p -> buffs_brain_freeze -> may_react() )
         return false;
 
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
+      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
@@ -2380,13 +2216,13 @@ struct pyroblast_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+
     mage_spell_t::execute();
-    if ( p -> _expirations.hot_streak )
-    {
-      p -> procs_hot_streak_pyroblast -> occur();
+
+    if( p -> buffs_hot_streak -> check() )
       if ( ! trigger_tier8_4pc( this ) )
-        event_t::early( p -> _expirations.hot_streak );
-    }
+	p -> buffs_hot_streak -> expire();
+
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
     if ( hot_streak ) duration_ready=0;
   }
@@ -2394,7 +2230,7 @@ struct pyroblast_t : public mage_spell_t
   virtual double execute_time() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> _buffs.hot_streak_pyroblast ) return 0;
+    if ( p -> buffs_hot_streak -> up() ) return 0;
     return mage_spell_t::execute_time();
   }
 
@@ -2406,7 +2242,7 @@ struct pyroblast_t : public mage_spell_t
       return false;
 
     if ( hot_streak )
-      if ( ! sim -> time_to_think( p -> _buffs.hot_streak_pyroblast ) )
+      if ( ! p -> buffs_hot_streak -> may_react() )
         return false;
 
     return true;
@@ -2690,7 +2526,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> _buffs.ghost_charge > 0 || p -> _buffs.fingers_of_frost_charges > 0 || t -> debuffs.frozen )
+    if ( p -> buffs_ghost_charge -> value() > 0 || p -> buffs_fingers_of_frost -> up() || t -> debuffs.frozen )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {
@@ -2711,7 +2547,7 @@ struct ice_lance_t : public mage_spell_t
       return false;
 
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
+      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
@@ -2726,14 +2562,13 @@ struct ice_lance_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
-  int brain_freeze;
   int dot_wait;
   int frozen;
   int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), 
-    brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
+    dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2741,7 +2576,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     option_t options[] =
       {
-        { "brain_freeze", OPT_BOOL, &brain_freeze }, // for theoretical work only
         { "dot_wait",     OPT_BOOL, &dot_wait     },
         { "frozen",       OPT_BOOL, &frozen       },
         { "ghost_charge", OPT_BOOL, &ghost_charge },
@@ -2793,20 +2627,6 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual double cost() SC_CONST
-  {
-    mage_t* p = player -> cast_mage();
-    if ( p -> _buffs.brain_freeze ) return 0;
-    return mage_spell_t::cost();
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    mage_t* p = player -> cast_mage();
-    if ( p -> _buffs.brain_freeze ) return 0;
-    return mage_spell_t::execute_time();
-  }
-
   virtual void player_buff()
   {
     mage_t* p = player -> cast_mage();
@@ -2826,7 +2646,6 @@ struct frostfire_bolt_t : public mage_spell_t
       trigger_tier8_2pc( this );
     }
     trigger_hot_streak( this );
-    consume_brain_freeze( this );
   }
 
   virtual void travel( int    travel_result,
@@ -2840,12 +2659,8 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    if ( brain_freeze )
-      if ( ! sim -> time_to_think( p -> _buffs.brain_freeze ) )
-        return false;
-
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> _buffs.ghost_charge ? 1 : 0 ) )
+      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
 	return false;
 
     if ( frozen != -1 )
@@ -2860,24 +2675,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
 struct icy_veins_t : public mage_spell_t
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Icy Veins Expiration";
-      mage_t* p = player -> cast_mage();
-      p -> aura_gain( "Icy Veins" );
-      p -> _buffs.icy_veins = 1;
-      sim -> add_event( this, 20.0 );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-      p -> aura_loss( "Icy Veins" );
-      p -> _buffs.icy_veins = 0;
-    }
-  };
-
   icy_veins_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "icy_veins", player, SCHOOL_FROST, TREE_FROST )
   {
@@ -2898,18 +2695,19 @@ struct icy_veins_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    mage_t* p = player -> cast_mage();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player );
+    p -> buffs_icy_veins -> start();
   }
 
   virtual bool ready()
   {
-    if ( ! mage_spell_t::ready() )
+    mage_t* p = player -> cast_mage();
+    if( p -> buffs_icy_veins -> check() )
       return false;
-
-    return player -> cast_mage() -> _buffs.icy_veins == 0;
+    return mage_spell_t::ready();
   }
 };
 
@@ -2963,13 +2761,14 @@ struct molten_armor_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> _buffs.mage_armor   = 0;
-    p -> _buffs.molten_armor = 1;
+    p -> buffs_mage_armor -> expire();
+    p -> buffs_molten_armor -> start();
   }
 
   virtual bool ready()
   {
-    return( player -> cast_mage() -> _buffs.molten_armor == 0 );
+    mage_t* p = player -> cast_mage();
+    return ! p -> buffs_molten_armor -> check();
   }
 };
 
@@ -2987,13 +2786,14 @@ struct mage_armor_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> _buffs.mage_armor   = 1;
-    p -> _buffs.molten_armor = 0;
+    p -> buffs_molten_armor -> expire();
+    p -> buffs_mage_armor -> start();
   }
 
   virtual bool ready()
   {
-    return( player -> cast_mage() -> _buffs.mage_armor == 0 );
+    mage_t* p = player -> cast_mage();
+    return ! p -> buffs_mage_armor -> check();
   }
 };
 
@@ -3493,6 +3293,21 @@ void mage_t::init_buffs()
 {
   player_t::init_buffs();
 
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+
+  buffs_arcane_power         = new buff_t( sim, this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
+  buffs_brain_freeze         = new buff_t( sim, this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
+  buffs_clearcasting         = new buff_t( sim, this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
+  buffs_fingers_of_frost     = new buff_t( sim, this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
+  buffs_hot_streak_crits     = new buff_t( sim, this, "hot_streak_crits",     2,    0, 0, 1.0, true );
+  buffs_hot_streak           = new buff_t( sim, this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
+  buffs_icy_veins            = new buff_t( sim, this, "icy_veins",            1, 20.0 );
+  buffs_incanters_absorption = new buff_t( sim, this, "incanters_absorption", 1, 10.0 );
+  buffs_missile_barrage      = new buff_t( sim, this, "missile_barrage",      1, 15.0, 0, talents.missile_barrage * 0.04 );
+
+  buffs_ghost_charge = new buff_t( sim, this, "ghost_charge" );
+  buffs_mage_armor   = new buff_t( sim, this, "mage_armor" );
+  buffs_molten_armor = new buff_t( sim, this, "molten_armor" );
 }
 
 // mage_t::init_gains ======================================================
@@ -3514,10 +3329,8 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_clearcasting         = get_proc( "clearcasting",         sim );
-  procs_deferred_ignite      = get_proc( "deferred_ignite",      sim );
-  procs_hot_streak_pyroblast = get_proc( "hot_streak_pyroblast", sim );
-  procs_mana_gem             = get_proc( "mana_gem"            , sim );
+  procs_deferred_ignite = get_proc( "deferred_ignite",      sim );
+  procs_mana_gem        = get_proc( "mana_gem"            , sim );
 }
 
 // mage_t::init_uptimes ====================================================
@@ -3530,14 +3343,9 @@ void mage_t::init_uptimes()
   uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1" );
   uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
   uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
-  uptimes_arcane_power         = get_uptime( "arcane_power" );
   uptimes_dps_rotation         = get_uptime( "dps_rotation" );
   uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
-  uptimes_fingers_of_frost     = get_uptime( "fingers_of_frost" );
   uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
-  uptimes_icy_veins            = get_uptime( "icy_veins" );
-  uptimes_incanters_absorption = get_uptime( "incanters_absorption" );
-  uptimes_missile_barrage      = get_uptime( "missile_barrage" );
   uptimes_water_elemental      = get_uptime( "water_elemental" );
 }
 
@@ -3547,22 +3355,13 @@ void mage_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_arcane_concentration     = get_rng( "arcane_concentration"     );
-  rng_brain_freeze             = get_rng( "brain_freeze"             );
   rng_empowered_fire           = get_rng( "empowered_fire"           );
-  rng_fingers_of_frost         = get_rng( "fingers_of_frost"         );
   rng_frostbite                = get_rng( "frostbite"                );
   rng_ghost_charge             = get_rng( "ghost_charge"             );
   rng_improved_scorch          = get_rng( "improved_scorch"          );
   rng_improved_water_elemental = get_rng( "improved_water_elemental" );
   rng_winters_chill            = get_rng( "winters_chill"            );
   rng_winters_grasp            = get_rng( "winters_grasp"            );
-
-  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
-  // also useful for frequent checks with low probability of proc and timed effect
-
-  rng_hot_streak      = get_rng( "hot_streak"      );
-  rng_missile_barrage = get_rng( "missile_barrage" );
 }
 
 // mage_t::init_actions ======================================================
@@ -3661,8 +3460,7 @@ double mage_t::composite_spell_power( int school ) SC_CONST
 
   if( talents.incanters_absorption )
   {
-    uptimes_incanters_absorption -> update( _buffs.incanters_absorption != 0 );
-    sp += _buffs.incanters_absorption;
+    sp += buffs_incanters_absorption -> value();
   }
 
   return sp;
@@ -3680,11 +3478,11 @@ void mage_t::combat_begin()
 
     if ( armor_type_str == "mage" )
     {
-      _buffs.mage_armor = 1;
+      buffs_mage_armor -> start();
     }
     else if ( armor_type_str == "molten" )
     {
-      _buffs.molten_armor = 1;
+      buffs_molten_armor -> start();
     }
     else
     {
@@ -3717,7 +3515,7 @@ void mage_t::regen( double periodicity )
   mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
   mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
 
-  if ( _buffs.mage_armor )
+  if ( buffs_mage_armor -> up() )
   {
     mana_regen_while_casting += 0.50 + ( glyphs.mage_armor ? 0.20 : 0.00 );
   }

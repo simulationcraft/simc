@@ -147,6 +147,54 @@ static void print_actions( FILE* file, player_t* p )
   }
 }
 
+// print_buffs ===============================================================
+
+static void print_buffs( FILE* file, player_t* p )
+{
+  util_t::fprintf( file, "  Constant Buffs:" );
+  char prefix = ' ';
+  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if( b -> quiet || ! b -> start_count )
+      continue;
+
+    if( b -> constant )
+    {
+      util_t::fprintf( file, "%c%s", prefix, b -> name() );
+      prefix = '/';
+    }
+  }
+  util_t::fprintf( file, "\n" );
+
+  util_t::fprintf( file, "  Dynamic Buffs:\n" );
+
+  int max_length = 0;
+  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if( ! b -> quiet && b -> start_count && ! b -> constant )
+    {
+      int length = strlen( b -> name() );
+      if( length > max_length ) max_length = length;
+    }
+  }
+
+  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if( b -> quiet || ! b -> start_count )
+      continue;
+
+    if( ! b -> constant )
+    {
+      util_t::fprintf( file, "    %-*s : start=%4.1f  refresh=%3.1f  interval=%.1f  uptime=%2.0f%%  benefit=%2.0f%%",
+		       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct, b -> benefit_pct );
+
+      if( b -> trigger_pct > 0 ) util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
+
+      util_t::fprintf( file, "\n" );
+    }
+  }
+}
+
 // print_core_stats ===========================================================
 
 static void print_core_stats( FILE* file, player_t* p )
@@ -1053,6 +1101,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     print_attack_stats ( file, p );
     print_defense_stats( file, p );
     print_actions      ( file, p );
+    print_buffs        ( file, p );
   }
 
   if( detail )

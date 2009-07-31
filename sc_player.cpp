@@ -407,7 +407,7 @@ player_t::player_t( sim_t*             s,
   action_list(0), action_list_default(0),
   // Reporting
   quiet(0), last_foreground_action(0),
-  last_action_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0),
+  current_time(0), total_seconds(0), total_waiting(0), iteration_dmg(0), total_dmg(0),
   dps(0), dps_min(0), dps_max(0), dps_std_dev(0), dps_error(0), dpr(0), rps_gain(0), rps_loss(0),
   buff_list(0), proc_list(0), gain_list(0), stats_list(0), uptime_list(0), 
   save_str(""), save_gear_str(""), save_talents_str(""), save_actions_str(""),
@@ -1415,7 +1415,7 @@ void player_t::combat_end()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );
 
-  double iteration_seconds = last_action_time;
+  double iteration_seconds = current_time;
 
   if ( iteration_seconds > 0 )
   {
@@ -1478,8 +1478,13 @@ void player_t::reset()
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
 
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> reset();
+  }
+
   last_foreground_action = 0;
-  last_action_time = 0;
+  current_time = 0;
 
   executing = 0;
   channeling = 0;
@@ -1499,11 +1504,6 @@ void player_t::reset()
   elixir_guardian = ELIXIR_NONE;
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
-
-  for( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> reset();
-  }
 
   buffs.reset();
   expirations.reset();

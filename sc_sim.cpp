@@ -526,9 +526,8 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) log_t::output( this, "Executing event: %s", e -> name );
+      if ( e -> player ) e -> player -> current_time = current_time;
       e -> execute();
-
-      if ( e -> player ) e -> player -> last_action_time = current_time;
     }
     delete e;
   }
@@ -782,11 +781,19 @@ void sim_t::analyze()
 {
   if ( total_seconds == 0 ) return;
 
+  // buff_t::analyze must be called before total_seconds is normalized via iteration count
+
+  for ( buff_t* b = buff_list; b; b = b -> next )
+    b -> analyze();
+
   total_dmg = 0;
   total_seconds /= iterations;
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
+    for ( buff_t* b = p -> buff_list; b; b = b -> next )
+      b -> analyze();
+
     p -> total_dmg = 0;
     p -> total_seconds /= iterations;
     p -> total_waiting /= iterations;
@@ -858,20 +865,11 @@ void sim_t::analyze()
     p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
     p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
 
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
-    {
-      g -> actual   /= iterations;
-      g -> overflow /= iterations;
-    }
+    for ( gain_t* g = p -> gain_list; g; g = g -> next ) 
+      g -> analyze( this );
 
-    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
-    {
-      if ( proc -> count > 0 )
-      {
-        proc -> count /= iterations;
-        proc -> frequency = proc -> interval_count > 0 ? ( proc -> interval_sum / proc -> interval_count ) : 0;
-      }
-    }
+    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next ) 
+      proc -> analyze( this );
 
     p -> timeline_dmg.clear();
     p -> timeline_dps.clear();

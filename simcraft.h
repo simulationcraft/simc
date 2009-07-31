@@ -753,8 +753,10 @@ struct buff_t
   int current_stack, max_stack;
   double current_value, react, duration, cooldown, cooldown_ready, default_chance;
   double last_start, interval_sum, uptime_sum;
-  int64_t up_count, down_count, interval_count, start_count;
+  int64_t up_count, down_count, interval_count, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
+  double uptime_pct, benefit_pct, trigger_pct, avg_interval, avg_start, avg_refresh;
+  bool constant, quiet;
   int aura_id;
   event_t* expiration;
   rng_t* rng;
@@ -764,23 +766,29 @@ struct buff_t
   buff_t( sim_t*, player_t*, 
 	  const std::string& name, 
 	  int max_stack=1, double duration=0, double cooldown=0, 
-	  double chance=1.0, int rng_type=RNG_CYCLIC, int aura_id=0 );
+	  double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~buff_t() { };
 
-  virtual bool   may_react();
+  // Use check() inside of ready() methods to keep "benefit" calculation accurate.
+  // Use up() where the presence of the buff affects the action mechanics.
+
+  virtual bool   check() { return current_stack > 0; }
   virtual bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   virtual int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   virtual double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   virtual double remains();
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
-  virtual bool   trigger( double chance=-1, int stacks=1, double value=1.0 );
+  virtual bool   may_react();
+  virtual bool   trigger  ( int stacks=1, double value=1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=1.0 );
-  virtual void   decrement( int stacks=0 );
-  virtual void   start();
+  virtual void   decrement( int stacks=1, double value=1.0 );
+  virtual void   start    ( int stacks=1, double value=1.0 );
+  virtual void   refresh  ( int stacks=0, double value=1.0 );
   virtual void   expire();
   virtual void   reset();
   virtual void   merge( buff_t* other_buff );
+  virtual void   analyze();
   virtual const char* name() { return name_str.c_str(); }
 };
 
@@ -1309,9 +1317,9 @@ struct player_t
   int         action_list_default;
 
   // Reporting
-  int    quiet;
+  int       quiet;
   action_t* last_foreground_action;
-  double    last_action_time, total_seconds;
+  double    current_time, total_seconds;
   double    total_waiting;
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
@@ -2218,6 +2226,7 @@ struct gain_t
   gain_t( const std::string& n, int _id=0 ) : name_str( n ), actual( 0 ), overflow( 0 ), id( _id ) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; }
+  void analyze( sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; }
   const char* name() SC_CONST { return name_str.c_str(); }
 };
 
@@ -2250,6 +2259,11 @@ struct proc_t
     count          += other -> count; 
     interval_sum   += other -> interval_sum;
     interval_count += other -> interval_count;
+  }
+  void analyze( sim_t* sim )
+  {
+    count /= sim -> iterations;
+    if( interval_count > 0 ) frequency = interval_sum / interval_count;
   }
   const char* name() SC_CONST { return name_str.c_str(); }
 };
