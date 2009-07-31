@@ -51,8 +51,6 @@
 #include <string.h>
 #include <math.h>
 
-
-
 // Patch Specific Modeling ==================================================
 
 struct patch_t
@@ -82,8 +80,6 @@ struct attack_t;
 struct spell_tick_t;
 struct base_stats_t;
 struct buff_t;
-struct buff_expiration_t;
-struct buff_uptime_t;
 struct callback_t;
 struct death_knight_t;
 struct druid_t;
@@ -96,7 +92,6 @@ struct js_node_t;
 struct mage_t;
 struct option_t;
 struct paladin_t;
-struct pbuff_t;
 struct pet_t;
 struct player_t;
 struct priest_t;
@@ -654,96 +649,7 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
-// Uptime ======================================================================
-
-struct uptime_t
-{
-  std::string name_str;
-  uint64_t up, down;
-  uptime_t* next;
-  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
-  virtual ~uptime_t() {}
-  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
-  double percentage() SC_CONST { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
-  virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
-  const char* name() SC_CONST { return name_str.c_str(); }
-};
-
 // Buffs ======================================================================
-struct buff_expiration_t : public event_t
-{
-  pbuff_t* pbuff;
-  int n_trig;
-  buff_expiration_t( pbuff_t* p_buff) ;
-  virtual ~buff_expiration_t() {}
-  virtual void execute();
-};
-
-struct buff_uptime_t : public uptime_t
-{
-  double timer_uptime, timer_downtime;
-  int n_triggers, n_runs;
-  buff_uptime_t( const std::string& n ) : uptime_t(n), timer_uptime(0), timer_downtime(0),
-                                          n_triggers(0),n_runs(0){}
-  virtual ~buff_uptime_t() {}
-  virtual void   merge( uptime_t* other ) { 
-    up += other -> up; down += other -> down; 
-    timer_uptime+= ((buff_uptime_t*)other)->timer_uptime;
-    timer_downtime+= ((buff_uptime_t*)other)->timer_downtime;
-    n_triggers+= ((buff_uptime_t*)other)->n_triggers;
-    n_runs+= ((buff_uptime_t*)other)->n_runs;
-  }
-  virtual double percentage_time() SC_CONST {
-     return ( timer_uptime<=0 ) ? 0 : ( 100.0*timer_uptime/( timer_uptime+timer_downtime ) ); 
-  }
-  virtual double avg_triggers() SC_CONST { return n_runs==0?  n_triggers : n_triggers/(n_runs+0.0); }
-};
-
-struct pbuff_t{
-  std::string name_str;
-  player_t*  player;
-  double buff_value; 
-  double value; 
-  buff_expiration_t* expiration; 
-  std::string name_expiration;
-  int (*callback_expiration)(); //if set, will be called upon expiration
-  int *trigger_counter;  // if set, will be incremented/decremented when buff is up/down
-  double last_trigger, expected_end, last_update;
-  bool last_update_state;
-  buff_uptime_t* uptime_cnt; 
-  int aura_id;
-  double chance;
-  rng_t* rng_chance;
-  double duration, cooldown;
-  bool ignore; // if he can not obtain this buff (no talents etc)
-  pbuff_t* next;
-  int n_triggers, n_trg_tries;
-  // methods
-  pbuff_t(player_t* plr, std::string name, double buff_duration=0, double buff_cooldown=0, int aura_idx=0, 
-          double use_value=0, bool t_ignore=false, double t_chance=0 );
-  virtual ~pbuff_t() { };
-  virtual void cancel();
-  virtual void reset_iteration();
-  virtual void uptime_update(bool activated);
-  virtual void update_old_uptime();
-  virtual double expiration_time() SC_CONST;
-  virtual bool   trigger(double val=1, double b_chance=-1);
-  virtual void   dec_buff();
-  virtual bool   is_up(bool skip_old_uptime=false);
-  virtual double mul_value(bool skip_old_uptime=false);
-  virtual double add_value(bool skip_old_uptime=false);
-};
-
-struct buff_list_t{
-  int n_buffs;
-  pbuff_t* first;
-  buff_list_t();
-  void add_buff(pbuff_t* new_buff);
-  void reset_buffs();
-  void cancel_buffs();
-  pbuff_t* find_buff(std::string& name) SC_CONST;
-  bool     chk_buff(std::string& name) SC_CONST;
-};
 
 struct buff_t
 {
@@ -769,7 +675,7 @@ struct buff_t
 	  double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~buff_t() { };
 
-  // Use check() inside of ready() methods to keep "benefit" calculation accurate.
+  // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
 
   virtual int    check() { return current_stack; }
@@ -790,6 +696,9 @@ struct buff_t
   virtual void   merge( buff_t* other_buff );
   virtual void   analyze();
   virtual const char* name() { return name_str.c_str(); }
+
+  static buff_t* find(    sim_t*, const std::string& name );
+  static buff_t* find( player_t*, const std::string& name );
 };
 
 // Expressions =================================================================
@@ -1506,8 +1415,6 @@ struct player_t
   };
   procs_t procs;
 
-  buff_list_t _buff_list;
-
   rng_t* rng_list;
 
   struct rngs_t
@@ -2213,6 +2120,21 @@ struct consumable_t
   static void init_food   ( player_t* );
 
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
+};
+
+// Up-Time =====================================================================
+
+struct uptime_t
+{
+  std::string name_str;
+  uint64_t up, down;
+  uptime_t* next;
+  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
+  virtual ~uptime_t() {}
+  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
+  double percentage() SC_CONST { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
+  virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
+  const char* name() SC_CONST { return name_str.c_str(); }
 };
 
 // Gain ======================================================================

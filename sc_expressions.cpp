@@ -95,26 +95,28 @@
 
   // custom class to invoke pbuff_t expiration
   struct pbuff_expression_t: public act_expression_t{
-    pbuff_t* buff;
+    buff_t* buff;
     action_t* action;
     int method;
-    pbuff_expression_t(std::string expression_str, pbuff_t* e_buff, int e_method, action_t* e_action=0):act_expression_t(AEXP_BUFF,expression_str,0), 
+    pbuff_expression_t(std::string expression_str, buff_t* e_buff, int e_method, action_t* e_action=0):act_expression_t(AEXP_BUFF,expression_str,0), 
                        buff(e_buff), action(e_action), method(e_method){};
     virtual ~pbuff_expression_t(){};
     virtual double evaluate() {
       switch(method){
-        case 1: // "buffname" or "buffname.duration<3" or "buffname.time>5"
-                return buff->expiration_time();
-        case 2: // buffname.time_to_think
-                return (buff->buff_value>0)&&((buff->player->sim->current_time - buff->last_trigger) > buff->player->sim->reaction_time);
-        case 3: // buffname.time_to_execute
-                return (buff->buff_value>0)&&( action->execute_time() <= buff->expiration_time() );
-        case 4: // buffname.time_to_do  ( #2 && #3 )
-                return (buff->buff_value>0)&&
-                       ((buff->player->sim->current_time - buff->last_trigger) > buff->player->sim->reaction_time)&&
-                       ( action->execute_time() <= buff->expiration_time() );
+        case 1: 
+	  // "buffname" or "buffname.duration<3" or "buffname.time>5"
+	  return buff->remains();
+        case 2: 
+	  // buffname.time_to_think
+	  return buff->may_react();
+        case 3: 
+	  // buffname.time_to_execute
+	  return buff->remains_gt( action->execute_time() );
+        case 4:
+	  // buffname.time_to_do  ( #2 && #3 )
+	  return ( buff->may_react() && buff->remains_gt( action->execute_time() ) );
       }
-      return buff->buff_value;
+      return buff->current_value;
     }
   };
 
@@ -434,7 +436,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
       if (name!=""){
         // Buffs
         if ( ((prefix==EXPF_BUFF)||(prefix==EXPF_NONE)) && !root) {
-          pbuff_t* buff=action->player->_buff_list.find_buff(name);
+          buff_t* buff=buff_t::find(action->player,name);
           // now set buff if found
           if (buff){
             bool sfx_stacks=(suffix=="value")||(suffix=="buff") || (suffix=="stacks");
@@ -448,7 +450,7 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
               root= e_buff;
             }else{
               root= new act_expression_t(AEXP_DOUBLE_PTR,e);
-              root->p_value= &buff->buff_value;
+              root->p_value= &buff->current_value;
             }
           }
         }
@@ -657,305 +659,6 @@ act_expression_t* act_expression_t::find_operator(action_t* action, std::string&
     if (operand_2) s+=operand_2->to_string(level+1);
     return s;
   }
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-// **************************************************************************
-//
-// PBUFF_T  implementation
-//
-//    - encapsulate all functions for time duraction effects like buffs
-//    - replace or remove need for previously used structures/functions:
-//        _buff_t::int buff_XYZ_variable;
-//        _cooldowns_t::buff_XYZ_cooldown
-//        _expirations_t::event_t* buff_XYZ_expiration;
-//        uptime_t* uptimes_buff_XYZ;
-//        rng_t* rng_trigger_buff_XYZ;
-//        static void trigger_buff_XYZ( spell_t* s ) {..~40 lines ...}
-//    - above declarations and triggers are replaced with:
-//        pbuff_t* buff_XYZ;        
-//        buff_XYZ->trigger();
-//
-//    - allows settings of "value" that buff would have if active, so
-//      usual usage (possible at N places) can also be reduced from:
-//        if ( p -> _buffs.pyroclasm ) 
-//           player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
-//        p -> uptimes_pyroclasm -> update( p -> _buffs.pyroclasm != 0 );
-//    - to something like:
-//        player_multiplier *= p->pyroclasm->mul_value();
-//    - or it also can use IF to do more complex stuff, but no need to update uptimes:
-//        if (p->pyroclasm->is_up())
-//           player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
-//
-// **************************************************************************
-
-
-
-  pbuff_t::pbuff_t(player_t* plr, std::string name, double buff_duration, double buff_cooldown, int aura_idx, double use_value, bool t_ignore, double t_chance ){
-    player=plr;
-    name_str=name;
-    name_expiration = name_str+"_Expiration";
-    buff_value=0;
-    aura_id=aura_idx;
-    duration=buff_duration;
-    cooldown=buff_cooldown;
-    ignore=t_ignore;
-    chance=t_chance;
-    rng_chance=0;
-    value=use_value;
-    expiration=0;
-    last_trigger=0;
-    expected_end=0;
-    next=0;
-    n_triggers=0;
-    n_trg_tries=0;
-    callback_expiration=NULL;
-    trigger_counter=NULL;
-    if (chance!=0){
-      int rng_type=RNG_DISTRIBUTED;
-      // if "negative" chance, use simple random
-      if (chance<0){
-        chance=-chance;
-        rng_type=RNG_CYCLIC;
-      }
-      rng_chance   = player->get_rng( name+"_buff",   rng_type );
-    }
-    // create uptime and add to list
-    last_update=0;
-    last_update_state=false;
-    // uptime_cnt= player->get_uptime(name); 
-    // get_uptime() does not support buff_uptime_t
-    uptime_cnt = new buff_uptime_t( name );
-    uptime_t** tail = &player->uptime_list;
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-      tail = &( ( *tail ) -> next );
-    uptime_cnt -> next = *tail;
-    *tail = uptime_cnt;
-    // add buff in list
-    player->_buff_list.add_buff(this);
-  }
-  //reset buff, called at end of iteration  
-  void pbuff_t::reset_iteration(){
-    expiration=0;
-    last_trigger=0;
-    last_update=0;
-    last_update_state=false;
-    expected_end=0;
-    buff_value=0; 
-    uptime_cnt->n_runs++;
-  }
-  // update time-based uptime counters
-  void pbuff_t::uptime_update(bool activated)
-  {
-    double time_now= player->sim->current_time;
-    double delta= time_now - last_update;
-    if (delta<0) delta=0;
-    if (last_update_state)
-      uptime_cnt->timer_uptime+= delta;
-    else
-      uptime_cnt->timer_downtime+= delta;
-    last_update= time_now;
-    last_update_state=activated;
-  }
-  // update old uptime counters
-  void pbuff_t::update_old_uptime()
-  {
-    uptime_cnt -> update(buff_value!=0); 
-  }
-  // cancel buff if up
-  void pbuff_t::cancel(){
-    if (expiration){
-      //event_t::early(expiration); - can not use, expiration is not of type (event_t)
-      expiration -> canceled = 1; 
-      expiration -> execute(); 
-      expiration=0;
-    }
-    if ((duration<0)&&(buff_value!=0)){
-      // simulate expiration for "infinite" buffs
-      player -> aura_loss( name_str.c_str(), aura_id );
-      if (trigger_counter) *trigger_counter--;
-      if (callback_expiration) callback_expiration();
-    }
-    buff_value=0;
-    expected_end=0;
-    uptime_update(false);
-  }
-  // trigger buff if conditions are met (return false otherwise)
-  // will use duration and chance from buff constructor if none supplied here
-  bool pbuff_t::trigger(double val, double b_chance){
-    n_trg_tries++;
-    // if talents or other reasons do not allow this buff, skip it
-    if (ignore) return false;
-    // check cooldown if any
-    if (player->sim->current_time <= last_trigger + cooldown) return false; 
-    // if chance is supplied, check it
-    if (chance>0) 
-        if ( !rng_chance -> roll( chance ) ) return false;
-    // if we passed all checks, trigger buff
-    bool was_up= (buff_value!=0);
-    n_triggers++;
-    buff_value=val;
-    last_trigger=player->sim->current_time;
-    if (trigger_counter) *trigger_counter++;
-    uptime_cnt->n_triggers++;
-    uptime_update(true);
-    // create and launch expiration event
-    expected_end=last_trigger+duration;
-    if (duration>0){
-      if ( expiration )
-      {
-        expiration -> reschedule( duration );
-        expiration->n_trig= n_triggers;
-      }
-      else
-      {
-        expiration = new (player->sim) buff_expiration_t(this);
-      } 
-    }else{
-      // if duration==0, this just proc, without any buff effect on player
-      // if duration<0 , this buff has "infinite" duration (like nightfall)
-      if (duration<0){
-        expected_end=last_trigger+100000;
-        if (!was_up) player -> aura_gain( name_expiration.c_str(), aura_id);
-      }
-    }
-    return true;
-  }
-  //return time till expiration (or 0 if expired). Used as function pointer in expressions
-  double  pbuff_t::expiration_time() SC_CONST
-  {
-    if (buff_value==0) return 0; 
-    double remains= expected_end - player->sim->current_time;
-    if (remains<0) remains=0;
-    if ((remains<=0)&&(buff_value!=0))
-      remains=1; // fixing when buff is set outside without triggers - will report as 1sec remaining
-    return remains;
-  }
-
-  // if buff is up, return "value", otherwise return 1
-  double pbuff_t::mul_value(bool skip_old_uptime)
-  {
-    if (!skip_old_uptime) update_old_uptime();
-    if (buff_value!=0)
-      return value;
-    else
-      return 1;
-  }
-  // if buff is up, return "value", otherwise return 0
-  double pbuff_t::add_value(bool skip_old_uptime)
-  {
-    if (!skip_old_uptime) update_old_uptime();
-    if (buff_value!=0)
-      return value;
-    else
-      return 0;
-  }
-  // decrement buff stack for one, return if buff still up
-  void pbuff_t::dec_buff(){
-    if (buff_value>0){
-      if (buff_value<=1) 
-        cancel();
-      else
-        buff_value--;
-    }
-  }
-
-  // now same versions that do change uptime counters
-  bool pbuff_t::is_up(bool skip_old_uptime) {
-    if (!skip_old_uptime) update_old_uptime();
-    return (buff_value!=0);
-  }
-
-
-
-
-
-  // 
-  // buff_expiration_t  implementation
-
-  buff_expiration_t::buff_expiration_t( pbuff_t* p_buff) 
-    : event_t( p_buff->player->sim, p_buff->player )
-  {
-    pbuff=p_buff;
-    player -> aura_gain( pbuff->name_expiration.c_str(), pbuff->aura_id);
-    n_trig= pbuff->n_triggers;
-    sim -> add_event( this, pbuff->duration );
-  }
-
-  void buff_expiration_t::execute()
-  {
-    if (pbuff->n_triggers== n_trig){
-      player -> aura_loss( pbuff->name_str.c_str(), pbuff->aura_id );
-      pbuff->buff_value=0;
-      pbuff->expected_end=0;
-      pbuff->uptime_update(false);
-      if (pbuff->trigger_counter) *pbuff->trigger_counter--;
-      if (pbuff->callback_expiration) pbuff->callback_expiration();
-    }else{
-      //new buff was casted while old one was expiring
-    }
-    pbuff->expiration=0;
-  }
-
-  // 
-  // buff_list_t  implementation
-
-  buff_list_t::buff_list_t(): n_buffs(0),first(0)
-  {
-  }
-
-  void buff_list_t::add_buff(pbuff_t* new_buff)
-  {
-    new_buff->next=first;
-    first= new_buff;
-    n_buffs++;
-  }
-
-  void buff_list_t::reset_buffs()
-  {
-    for (pbuff_t* p=first; p; p=p->next){
-      p->reset_iteration();
-    }
-  }
-
-  void buff_list_t::cancel_buffs()
-  {
-    //just update uptimes, do not real cancel()
-    //since sim already flushed those
-    for (pbuff_t* p=first; p; p=p->next){
-      p->uptime_update(false);
-    }
-  }
-
-  pbuff_t* buff_list_t::find_buff(std::string& name) SC_CONST {
-    pbuff_t* res=0;
-    std::string prop_name=proper_option_name(name);
-    for (pbuff_t* p=first; p && !res; p=p->next){
-      if (proper_option_name(p->name_str)==prop_name)
-        res=p;
-    }
-    return res;
-  }
-
-  bool buff_list_t::chk_buff(std::string& name) SC_CONST {
-    pbuff_t* buff= find_buff(name);
-    if (buff) 
-      return buff->buff_value!=0;
-    else
-      return false;
-  }
-
 
 // **************************************************************************
 //

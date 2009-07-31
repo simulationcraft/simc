@@ -421,6 +421,8 @@ player_t::player_t( sim_t*             s,
   next = 0;
   index = ++( sim -> num_players );
 
+  if( is_pet() ) skill = 1.0;
+
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
@@ -1427,8 +1429,6 @@ void player_t::combat_end()
     }
     iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
   }
-
-  _buff_list.cancel_buffs();
 }
 
 // player_t::reset =========================================================
@@ -1537,8 +1537,6 @@ void player_t::reset()
   moving = 0;
 
   if ( sleeping ) quiet = 1;
-
-  _buff_list.reset_buffs();
 }
 
 // player_t::schedule_ready =================================================

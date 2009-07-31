@@ -953,7 +953,7 @@ bool action_t::ready()
   {
     double duration_delta = duration_ready - ( sim -> current_time + execute_time() );
 
-    if ( duration_delta > 1.0 )
+    if ( duration_delta > 3.0 )
       return false;
 
     if ( duration_delta > 0 && sim -> roll( player -> skill ) )

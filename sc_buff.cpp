@@ -167,7 +167,7 @@ void buff_t::start( int    stacks,
 {
   assert( ! expiration );
 
-  if( sim -> current_time == 0 ) constant = true;
+  if( sim -> current_time <= 0.01 ) constant = true;
 
   start_count++;
 
@@ -246,7 +246,7 @@ void buff_t::expire()
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
     uptime_sum += current_time - last_start;
   }
-  if( sim -> current_time != 0 ) constant = false;
+  if( sim -> current_time >= 0.01 ) constant = false;
 }
 
 // buff_t::reset ============================================================
@@ -295,4 +295,28 @@ void buff_t::analyze()
   }
   avg_start   =   start_count / (double) sim -> iterations;
   avg_refresh = refresh_count / (double) sim -> iterations;
+}
+
+// buff_t::find =============================================================
+
+buff_t* buff_t::find( sim_t* sim,
+		      const std::string& name_str )
+{
+  for( buff_t* b = sim -> buff_list; b; b = b -> next )
+    if( name_str == b -> name() )
+      return b;
+
+  return 0;
+}
+
+// buff_t::find =============================================================
+
+buff_t* buff_t::find( player_t* p,
+		      const std::string& name_str )
+{
+  for( buff_t* b = p -> buff_list; b; b = b -> next )
+    if( name_str == b -> name() )
+      return b;
+
+  return 0;
 }
