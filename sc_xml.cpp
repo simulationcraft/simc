@@ -192,7 +192,7 @@ static int create_children( xml_node_t*             root,
       {
         std::string name_str;
         parse_name( name_str, input, ++index );
-        assert( name_str == root -> name() );
+//        assert( name_str == root -> name() );
         index++;
         break;
       }
