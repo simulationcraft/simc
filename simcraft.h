@@ -160,6 +160,7 @@ enum proc_type {
   PROC_DAMAGE,
   PROC_ATTACK,
   PROC_SPELL,
+  PROC_TICK,
   PROC_MAX
 };
 
@@ -1054,19 +1055,16 @@ struct item_t
 
   // Extracted data
   gear_stats_t stats;
-  struct use_t {
-    int stat, school;
-    double amount, duration, cooldown;
-    use_t() : stat(0), school(0), amount(0), duration(0), cooldown(0) {}
-    bool active() { return stat || school; }
-  } use;
-  struct equip_t {
-    std::string trigger;
+  struct special_effect_t {
+    std::string trigger_str;
+    int trigger_type, trigger_mask;
     int stat, school, max_stacks;
     double amount, proc_chance, duration, cooldown;
-    equip_t() : stat(0), school(0), max_stacks(0), amount(0), proc_chance(0), duration(0), cooldown(0) {}
+    special_effect_t() : 
+      trigger_type(0), trigger_mask(0), stat(0), school(0), 
+      max_stacks(0), amount(0), proc_chance(0), duration(0), cooldown(0) {}
     bool active() { return stat || school; }
-  } equip;
+  } use, equip;
 
   item_t() : sim(0), player(0), slot(SLOT_NONE), enchant(ENCHANT_NONE), unique(false) {}
   item_t( player_t*, const std::string& options_str );
@@ -1080,8 +1078,7 @@ struct item_t
   bool decode_stats();
   bool decode_gems();
   bool decode_enchant();
-  bool decode_equip();
-  bool decode_use();
+  bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
 };
 
@@ -2024,19 +2021,29 @@ struct action_callback_t
 {
   sim_t* sim;
   player_t* listener;
-  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ) {}
+  bool active;
+  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active(true) {}
   virtual ~action_callback_t() {}
   virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
+  virtual void activate() { active=true; }
+  virtual void deactivate() { active=false; }
   static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
-    std::vector<action_callback_t*>::size_type i = v.size();
-    while ( i ) v[--i]->trigger( a );
+    int size = v.size();
+    for( int i=0; i < size; i++ ) 
+    {
+      action_callback_t* cb = v[ i ];
+      if( cb -> active ) cb -> trigger( a );
+    }
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {
-    std::vector<action_callback_t*>::size_type i = v.size();
-    while ( i ) v[--i]->reset();
+    int size = v.size();
+    for( int i=0; i < size; i++ ) 
+    {
+      v[ i ] -> reset();
+    }
   }
 };
 
@@ -2090,14 +2097,14 @@ struct regen_event_t : public event_t
 struct unique_gear_t
 {
   static void init( player_t* );
-  static void register_stat_proc( int type, int mask, const std::string& name, player_t*, 
-				  int stat, int max_stacks, double amount, 
-				  double proc_chance, double duration, double cooldown, 
-				  int rng_type=RNG_DEFAULT );
-  static void register_discharge_proc( int type, int mask, const std::string& name, player_t*, 
-				       int max_stacks, int school, double min_dmg, double max_dmg, 
-				       double proc_chance, double cooldown, 
-				       int rng_type=RNG_DEFAULT );
+  static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*, 
+						int stat, int max_stacks, double amount, 
+						double proc_chance, double duration, double cooldown, 
+						int rng_type=RNG_DEFAULT );
+  static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*, 
+						     int max_stacks, int school, double min_dmg, double max_dmg, 
+						     double proc_chance, double cooldown, 
+						     int rng_type=RNG_DEFAULT );
   static bool get_equip_encoding( std::string& encoding, const std::string& item_name );
   static bool get_use_encoding  ( std::string& encoding, const std::string& item_name );
 };

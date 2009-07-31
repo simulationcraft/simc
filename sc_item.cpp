@@ -249,9 +249,10 @@ bool item_t::init()
   if( ! decode_stats()   ) return false;
   if( ! decode_gems()    ) return false;
   if( ! decode_enchant() ) return false;
-  if( ! decode_equip()   ) return false;
-  if( ! decode_use()     ) return false;
   if( ! decode_weapon()  ) return false;
+
+  if( ! decode_special(   use, encoded_use_str   ) ) return false;
+  if( ! decode_special( equip, encoded_equip_str ) ) return false;
 
   encode_options();
 
@@ -364,12 +365,13 @@ bool item_t::decode_enchant()
   return true;
 }
 
-// item_t::decode_equip =====================================================
+// item_t::decode_special ===================================================
 
-bool item_t::decode_equip()
+bool item_t::decode_special( special_effect_t& effect,
+			     const std::string& encoding )
 {
   std::vector<token_t> tokens;
-  int num_tokens = parse_tokens( tokens, encoded_equip_str );
+  int num_tokens = parse_tokens( tokens, encoding );
 
   for( int i=0; i < num_tokens; i++ )
   {
@@ -378,84 +380,79 @@ bool item_t::decode_equip()
 
     if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
-      equip.stat = s;
-      equip.amount = t.value;
+      effect.stat = s;
+      effect.amount = t.value;
     }
     else if( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
-      equip.school = s;
-      equip.amount = t.value;
+      effect.school = s;
+      effect.amount = t.value;
     }
     else if( t.name == "stacks" || t.name == "stack" )
     {
-      equip.max_stacks = (int) t.value;
+      effect.max_stacks = (int) t.value;
     }
     else if( t.name == "%" )
     {
-      equip.proc_chance = t.value / 100.0;
+      effect.proc_chance = t.value / 100.0;
     }
     else if( t.name == "duration" || t.name == "dur" )
     {
-      equip.duration = t.value;
+      effect.duration = t.value;
     }
     else if( t.name == "cooldown" || t.name == "cd" )
     {
-      equip.cooldown = t.value;
+      effect.cooldown = t.value;
     }
-    else if( t.full == "ondamage"     ||
-	     t.full == "ontick"       ||
-	     t.full == "onspellhit"   ||
-	     t.full == "onspellcrit"  ||
-	     t.full == "onspellmiss"  ||
-	     t.full == "onattackhit"  ||
-	     t.full == "onattackcrit" ||
-	     t.full == "onattackmiss" )
+    else if( t.full == "ondamage" )
     {
-      equip.trigger = t.full;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
     }
-    else
+    else if( t.full == "ontick" )
     {
-      util_t::printf( "simcraft: %s has unknown 'equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-      return false;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_TICK;
     }
-  }
-
-  return true;
-}
-
-// item_t::decode_use =======================================================
-
-bool item_t::decode_use()
-{
-  std::vector<token_t> tokens;
-  int num_tokens = parse_tokens( tokens, encoded_use_str );
-
-  for( int i=0; i < num_tokens; i++ )
-  {
-    token_t& t = tokens[ i ];
-    int s;
-
-    if( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    else if( t.full == "onspellhit" )
     {
-      use.stat = s;
-      use.amount = t.value;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL;
+      effect.trigger_mask = RESULT_HIT_MASK;
     }
-    else if( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if( t.full == "onspellcrit" )
     {
-      use.school = s;
-      use.amount = t.value;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL;
+      effect.trigger_mask = RESULT_CRIT_MASK;
     }
-    else if( t.name == "duration" || t.name == "dur" )
+    else if( t.full == "onspellmiss" )
     {
-      use.duration = t.value;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL;
+      effect.trigger_mask = RESULT_MISS_MASK;
     }
-    else if( t.name == "cooldown" || t.name == "cd" )
+    else if( t.full == "onattackhit" )
     {
-      use.cooldown = t.value;
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if( t.full == "onattackcrit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if( t.full == "onattackmiss" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK;
+      effect.trigger_mask = RESULT_MISS_MASK;
     }
     else
     {
-      util_t::printf( "simcraft: %s has unknown 'use=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::printf( "simcraft: %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }

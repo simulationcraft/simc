@@ -2411,11 +2411,13 @@ struct wait_until_ready_t : public action_t
 struct use_item_t : public action_t
 {
   item_t* item;
-  spell_t* spell;
+  spell_t* discharge;
   proc_t* proc;
+  action_callback_t* trigger;
 
   use_item_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "use_item", player ), item(0), spell(0)
+    action_t( ACTION_OTHER, "use_item", player ), 
+    item(0), discharge(0), proc(0), trigger(0)
   {
     std::string item_name;
     option_t options[] =
@@ -2443,7 +2445,26 @@ struct use_item_t : public action_t
       assert( false );
     }
 
-    if( item -> use.school )
+    item_t::special_effect_t& e = item -> use;
+
+    if( e.trigger_type )
+    {
+      std::string trigger_str = item_name + "_" + e.trigger_str;
+
+      if( e.stat )
+      {
+	trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, trigger_str, player, 
+						     e.stat, e.max_stacks, e.amount, e.proc_chance, 0, 0 );
+      }
+      else if( e.school )
+      {
+	trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, trigger_str, player,
+							  e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0 );
+      }
+
+      if( trigger ) trigger -> deactivate();
+    }
+    else if( e.school )
     {
       struct discharge_spell_t : public spell_t
       {
@@ -2460,7 +2481,7 @@ struct use_item_t : public action_t
         }
       };
 
-      spell = new discharge_spell_t( item -> name(), player, item -> use.amount, item -> use.school );
+      discharge = new discharge_spell_t( item -> name(), player, e.amount, e.school );
     }
 
     proc = player -> get_proc( item_name, sim );
@@ -2473,24 +2494,51 @@ struct use_item_t : public action_t
   {
     proc -> occur();
 
-    if( spell )
+    if( discharge )
     {
-      spell -> execute();
+      discharge -> execute();
+    }
+    else if( trigger )
+    {
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
+
+      trigger -> activate();
+
+      if( item -> use.duration )
+      {
+        struct trigger_expiration_t : public event_t
+        {
+	  item_t* item;
+          action_callback_t* trigger;
+
+          trigger_expiration_t( sim_t* sim, player_t* player, item_t* i, action_callback_t* t ) : event_t( sim, player ), item(i), trigger(t)
+          {
+            name = item -> name();
+            sim -> add_event( this, item -> use.duration );
+          }
+          virtual void execute()
+          {
+	    trigger -> deactivate();
+          }
+        };
+
+        new ( sim ) trigger_expiration_t( sim, player, item, trigger );
+      }
     }
     else
     {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
 
       player -> aura_gain( item -> name() );
       player -> stat_gain( item -> use.stat, item -> use.amount );
       
       if( item -> use.duration )
       {
-        struct expiration_t : public event_t
+        struct stat_expiration_t : public event_t
         {
           item_t* item;
 
-          expiration_t( sim_t* sim, player_t* player, item_t* i ) : event_t( sim, player ), item( i )
+          stat_expiration_t( sim_t* sim, player_t* player, item_t* i ) : event_t( sim, player ), item( i )
           {
             name = item -> name();
             sim -> add_event( this, item -> use.duration );
@@ -2502,11 +2550,17 @@ struct use_item_t : public action_t
           }
         };
 
-        new ( sim ) expiration_t( sim, player, item );
+        new ( sim ) stat_expiration_t( sim, player, item );
       }
     }
 
     update_ready();
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+    if( trigger ) trigger -> deactivate();
   }
 };
 

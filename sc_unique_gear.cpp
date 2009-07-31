@@ -33,6 +33,23 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void reset() { stacks=0; cooldown_ready=0; expiration=0; }
 
+  virtual void expire()
+  {
+    if( stacks > 0 )
+    {
+      listener -> aura_loss( name_str.c_str() );
+      listener -> stat_loss( stat, amount * stacks );
+      stacks = 0;
+    }
+  }
+
+  virtual void deactivate() 
+  {
+    action_callback_t::deactivate(); 
+    event_t::cancel( expiration );
+    expire();
+  }
+
   virtual void trigger( action_t* a )
   {
     if ( cooldown )
@@ -76,10 +93,8 @@ struct stat_proc_callback_t : public action_callback_t
           }
           virtual void execute()
           {
-            player -> aura_loss( callback -> name_str.c_str() );
-            player -> stat_loss( callback -> stat, callback -> amount * callback -> stacks );
             callback -> expiration = 0;
-            callback -> stacks = 0;
+	    callback -> expire();
           }
         };
 
@@ -128,6 +143,8 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void reset() { stacks=0; cooldown_ready=0; }
 
+  virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
+
   virtual void trigger( action_t* a )
   {
     if ( cooldown )
@@ -167,32 +184,15 @@ void unique_gear_t::init( player_t* p )
   for( int i=0; i < num_items; i++ )
   {
     item_t& item = p -> items[ i ];
-    item_t::equip_t& e = item.equip;
-    action_callback_t* cb = 0;
+    item_t::special_effect_t& e = item.equip;
 
     if( e.stat )
     {
-      cb = new stat_proc_callback_t( item.name(), p, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
+      register_stat_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
     }
     else if( e.school )
     {
-      cb = new discharge_proc_callback_t( item.name(), p, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
-    }
-
-    if( cb )
-    {
-      if( e.trigger == "ondamage" )
-      {
-	p -> register_tick_damage_callback( cb );
-	p -> register_direct_damage_callback( cb );
-      }
-      else if( e.trigger == "ontick"       ) { p -> register_tick_callback( cb ); }
-      else if( e.trigger == "onspellhit"   ) { p -> register_spell_result_callback( RESULT_HIT_MASK,  cb ); }
-      else if( e.trigger == "onspellcrit"  ) { p -> register_spell_result_callback( RESULT_CRIT_MASK, cb ); }
-      else if( e.trigger == "onspellmiss"  ) { p -> register_spell_result_callback( RESULT_MISS_MASK, cb ); }
-      else if( e.trigger == "onattackhit"  ) { p -> register_attack_result_callback( RESULT_HIT_MASK,  cb ); }
-      else if( e.trigger == "onattackcrit" ) { p -> register_attack_result_callback( RESULT_CRIT_MASK, cb ); }
-      else if( e.trigger == "onattackmiss" ) { p -> register_attack_result_callback( RESULT_MISS_MASK, cb ); }
+      register_discharge_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
     }
   }
 
@@ -229,17 +229,17 @@ void unique_gear_t::init( player_t* p )
 // unique_gear_t::register_stat_proc
 // ==========================================================================
 
-void unique_gear_t::register_stat_proc( int                type,
-					int                mask,
-					const std::string& name,
-					player_t*          player,
-					int                stat,
-					int                max_stacks,
-					double             amount,
-					double             proc_chance,
-					double             duration,
-					double             cooldown,
-					int                rng_type )
+action_callback_t* unique_gear_t::register_stat_proc( int                type,
+						      int                mask,
+						      const std::string& name,
+						      player_t*          player,
+						      int                stat,
+						      int                max_stacks,
+						      double             amount,
+						      double             proc_chance,
+						      double             duration,
+						      double             cooldown,
+						      int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, rng_type );
   
@@ -256,23 +256,25 @@ void unique_gear_t::register_stat_proc( int                type,
   {
     player -> register_spell_result_callback( mask, cb );
   }
+
+  return cb;
 }
 
 // ==========================================================================
 // unique_gear_t::register_discharge_proc
 // ==========================================================================
 
-void unique_gear_t::register_discharge_proc( int                type,
-					     int                mask,
-					     const std::string& name,
-					     player_t*          player,
-					     int                max_stacks,
-					     int                school,
-					     double             min_dmg,
-					     double             max_dmg,
-					     double             proc_chance,
-					     double             cooldown,
-					     int                rng_type )
+action_callback_t* unique_gear_t::register_discharge_proc( int                type,
+							   int                mask,
+							   const std::string& name,
+							   player_t*          player,
+							   int                max_stacks,
+							   int                school,
+							   double             min_dmg,
+							   double             max_dmg,
+							   double             proc_chance,
+							   double             cooldown,
+							   int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
   
@@ -280,6 +282,10 @@ void unique_gear_t::register_discharge_proc( int                type,
   {
     player -> register_tick_damage_callback( cb );
     player -> register_direct_damage_callback( cb );
+  }
+  else if( type == PROC_TICK )
+  {
+    player -> register_tick_callback( cb );
   }
   else if( type == PROC_ATTACK )
   {
@@ -289,6 +295,8 @@ void unique_gear_t::register_discharge_proc( int                type,
   {
     player -> register_spell_result_callback( mask, cb );
   }
+
+  return cb;
 }
 
 // ==========================================================================
@@ -353,18 +361,22 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 {
   std::string e;
 
+  // Simple
   if     ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
   else if( name == "hyperspeed_accelerators"     ) e = "340Haste_10Dur_60Cd";
   else if( name == "hyperspeed_accelerators320"  ) e = "340Haste_12Dur_60Cd";
   else if( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
   else if( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
   else if( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
-  else if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
   else if( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
+  else if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
   else if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
   else if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
-  else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
   else if( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
+  else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
+
+  // Hybrid
+  if( name == "talisman_of_volatile_power"  ) e = "OnSpellHit_57Haste_8Stack_20Dur_120Cd";
 
   if( e.empty() ) return false;
 
