@@ -274,7 +274,7 @@ bool option_t::parse_line( sim_t* sim,
 
   std::vector<std::string> tokens;
 
-  int num_tokens = util_t::string_split( tokens, buffer, " \t\n" );
+  int num_tokens = util_t::string_split( tokens, buffer, " \t\n", true );
 
   for ( int i=0; i < num_tokens; i++ )
     if ( ! parse_token( sim, tokens[ i ] ) )
