@@ -1045,6 +1045,7 @@ struct item_t
   std::string armory_weapon_str;
 
   // Encoded Data
+  std::string id_str;
   std::string encoded_name_str;
   std::string encoded_stats_str;
   std::string encoded_gems_str;
@@ -2097,16 +2098,24 @@ struct regen_event_t : public event_t
 struct unique_gear_t
 {
   static void init( player_t* );
+
   static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*, 
 						int stat, int max_stacks, double amount, 
 						double proc_chance, double duration, double cooldown, 
 						int rng_type=RNG_DEFAULT );
+
   static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*, 
 						     int max_stacks, int school, double min_dmg, double max_dmg, 
 						     double proc_chance, double cooldown, 
 						     int rng_type=RNG_DEFAULT );
-  static bool get_equip_encoding( std::string& encoding, const std::string& item_name );
-  static bool get_use_encoding  ( std::string& encoding, const std::string& item_name );
+
+  static bool get_equip_encoding( std::string& encoding, 
+				  const std::string& item_name, 
+				  const std::string& item_id=std::string() );
+
+  static bool get_use_encoding  ( std::string& encoding, 
+				  const std::string& item_name, 
+				  const std::string& item_id=std::string() );
 };
 
 // Enchants ===================================================================

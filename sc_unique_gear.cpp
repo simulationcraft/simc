@@ -315,7 +315,8 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
-                                        const std::string& name )
+                                        const std::string& name,
+                                        const std::string& id )
 {
   std::string e;
 
@@ -370,7 +371,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 // ==========================================================================
 
 bool unique_gear_t::get_use_encoding( std::string&       encoding,
-                                      const std::string& name )
+                                      const std::string& name,
+                                      const std::string& id )
 {
   std::string e;
 
@@ -390,10 +392,10 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
-  if( name == "fetish_of_volatile_power"   ) e = "OnSpellHit_64Haste_8Stack_20Dur_120Cd";
-  if( name == "talisman_of_volatile_power" ) e = "OnSpellHit_57Haste_8Stack_20Dur_120Cd";
-  if( name == "vengeance_of_the_forsaken"  ) e = "OnAttackHit_215AP_5Stack_20Dur_120Cd";
-  if( name == "victors_call"               ) e = "OnAttackHit_250AP_5Stack_20Dur_120Cd";
+  if( name == "fetish_of_volatile_power"   ) e = ( id == "47879" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  if( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  if( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  if( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
 
   if( e.empty() ) return false;
 

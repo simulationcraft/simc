@@ -318,8 +318,9 @@ static bool parse_item_stats( item_t&     item,
 
 // parse_item_name ==========================================================
 
-static bool parse_item_name( item_t&     item,
-                             xml_node_t* node )
+static bool parse_item_name( item_t&            item,
+                             xml_node_t*        node,
+			     const std::string& item_id )
 {
   std::string& s = item.armory_name_str;
 
@@ -340,6 +341,8 @@ static bool parse_item_name( item_t&     item,
   }
 
   armory_t::format( s );
+
+  item.armory_id_str = item_id;
 
   return true;
 }
@@ -369,7 +372,7 @@ bool mmo_champion_t::download_glyph( sim_t*             sim,
 // mmo_champion_t::download_item ============================================
 
 bool mmo_champion_t::download_item( item_t&            item, 
-                               const std::string& item_id )
+				    const std::string& item_id )
 {
   player_t* p = item.player;
 
@@ -380,7 +383,7 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
-  if( ! parse_item_name( item, node ) )
+  if( ! parse_item_name( item, node, item_id ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
@@ -404,9 +407,9 @@ bool mmo_champion_t::download_item( item_t&            item,
 // mmo_champion_t::download_slot ============================================
 
 bool mmo_champion_t::download_slot( item_t&            item, 
-                               const std::string& item_id,
-                               const std::string& enchant_id, 
-                               const std::string  gem_ids[ 3 ] )
+				    const std::string& item_id,
+				    const std::string& enchant_id, 
+				    const std::string  gem_ids[ 3 ] )
 {
   player_t* p = item.player;
 
@@ -417,7 +420,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
     return false;
   }
 
-  if( ! parse_item_name( item, node ) )
+  if( ! parse_item_name( item, node, item_id ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;

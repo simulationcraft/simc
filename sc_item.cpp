@@ -231,13 +231,14 @@ bool item_t::init()
     }
   }
 
+  id_str              = armory_id_str;
   encoded_stats_str   = armory_stats_str;
   encoded_gems_str    = armory_gems_str;
   encoded_enchant_str = armory_enchant_str;
   encoded_weapon_str  = armory_weapon_str;
 
-  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str );
-  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str );
+  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, id_str );
+  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, id_str );
 
   if( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if( ! option_gems_str.empty()    ) encoded_gems_str    = option_gems_str;

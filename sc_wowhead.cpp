@@ -313,6 +313,9 @@ static bool parse_item_name( item_t&     item,
   if( ! xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
     return false;
 
+  if( ! xml_t::get_value( item.armory_id_str, node, "item/id" ) )
+    return false;
+
   armory_t::format( item.armory_name_str );
 
   return true;
