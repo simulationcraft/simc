@@ -870,9 +870,9 @@ static void clear_fingers_of_frost( spell_t* s )
     {
       if ( p -> gcd_ready < p -> sim -> current_time )
       {
-	double value = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1.0 : -1.0;
+        double value = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1.0 : -1.0;
 
-	p -> buffs_ghost_charge -> start( 1, value );
+        p -> buffs_ghost_charge -> start( 1, value );
       }
     }
   }
@@ -932,8 +932,8 @@ static void trigger_hot_streak( spell_t* s )
       
       if( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
-	p -> buffs_hot_streak -> trigger();
-	p -> buffs_hot_streak_crits -> expire();
+        p -> buffs_hot_streak -> trigger();
+        p -> buffs_hot_streak_crits -> expire();
       }
     }
     else
@@ -1217,7 +1217,7 @@ void mage_spell_t::player_buff()
     }
   }
   else if ( school == SCHOOL_FIRE ||
-	    school == SCHOOL_FROSTFIRE )
+            school == SCHOOL_FROSTFIRE )
   {
     player_crit += ( p -> buffs_combustion -> value() * 0.10 );
   }
@@ -1231,14 +1231,14 @@ void mage_spell_t::player_buff()
     {
       if( p -> buffs_fingers_of_frost -> up() )
       {
-	player_crit += p -> talents.shatter * 0.5/3;
+        player_crit += p -> talents.shatter * 0.5/3;
       }
       else if( time_to_execute == 0 )
       {
-	if( p -> buffs_ghost_charge -> value() > 0 )
-	{
-	  player_crit += p -> talents.shatter * 0.5/3;
-	}
+        if( p -> buffs_ghost_charge -> value() > 0 )
+        {
+          player_crit += p -> talents.shatter * 0.5/3;
+        }
       }
     }
   }
@@ -1582,7 +1582,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     if ( clearcast )
       if( !  p -> buffs_clearcasting -> may_react() )
-	return false;
+        return false;
 
     return true;
   }
@@ -1926,11 +1926,11 @@ struct fire_ball_t : public mage_spell_t
 
     if ( ghost_charge != -1 )
       if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-	return false;
+        return false;
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-	return false;
+        return false;
 
     return true;
   }
@@ -2061,7 +2061,7 @@ struct living_bomb_t : public mage_spell_t
           trigger_ignite( this, direct_dmg );
           trigger_master_of_elements( this, 1.0 );
         }
-	if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
+        if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
       }
     }
     update_stats( DMG_DIRECT );
@@ -2136,7 +2136,7 @@ struct pyroblast_t : public mage_spell_t
 
     if( p -> buffs_hot_streak -> check() )
       if ( ! trigger_tier8_4pc( this ) )
-	p -> buffs_hot_streak -> expire();
+        p -> buffs_hot_streak -> expire();
 
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
     if ( hot_streak ) duration_ready=0;
@@ -2368,7 +2368,7 @@ struct frost_bolt_t : public mage_spell_t
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-	return false;
+        return false;
 
     return mage_spell_t::ready();
   }
@@ -2454,11 +2454,11 @@ struct ice_lance_t : public mage_spell_t
 
     if ( ghost_charge != -1 )
       if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-	return false;
+        return false;
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-	return false;
+        return false;
 
     return true;
   }
@@ -2560,11 +2560,11 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( ghost_charge != -1 )
       if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-	return false;
+        return false;
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-	return false;
+        return false;
 
     return mage_spell_t::ready();
   }
@@ -2936,7 +2936,7 @@ struct mana_gem_t : public action_t
       return false;
 
     return( ( player -> resource_max    [ RESOURCE_MANA ] -
-	      player -> resource_current[ RESOURCE_MANA ] ) > trigger ); 
+              player -> resource_current[ RESOURCE_MANA ] ) > trigger ); 
   }
 
   virtual void reset()
@@ -3625,10 +3625,10 @@ int mage_t::decode_set( item_t& item )
   if( strstr( item.name(), "frostfire"  ) ) return SET_T7;
   if( strstr( item.name(), "kirin_tor"  ) ) 
     if( item.slot == SLOT_HEAD      ||
-	item.slot == SLOT_SHOULDERS ||
-	item.slot == SLOT_CHEST     ||
-	item.slot == SLOT_HANDS     ||
-	item.slot == SLOT_LEGS      )
+        item.slot == SLOT_SHOULDERS ||
+        item.slot == SLOT_CHEST     ||
+        item.slot == SLOT_HANDS     ||
+        item.slot == SLOT_LEGS      )
       return SET_T8;
   if( strstr( item.name(), "sunstrider" ) ) return SET_T9;
   if( strstr( item.name(), "khadgar"    ) ) return SET_T9;

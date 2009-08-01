@@ -1246,7 +1246,7 @@ void warlock_spell_t::player_buff()
     {
       if( p -> buffs_empowered_imp -> up() )
       {
-	player_crit += ( sim -> P320 ? 1.00 : 0.20 );
+        player_crit += ( sim -> P320 ? 1.00 : 0.20 );
       }
     }
 
@@ -1273,11 +1273,11 @@ void warlock_spell_t::target_debuff( int dmg_type )
     {
       if( p -> talents.shadow_embrace )
       {
-	target_multiplier *= 1.0 + p -> buffs_shadow_embrace -> stack() * p -> talents.shadow_embrace * 0.01;
+        target_multiplier *= 1.0 + p -> buffs_shadow_embrace -> stack() * p -> talents.shadow_embrace * 0.01;
       }
       if ( p -> buffs_haunted -> up() ) 
       {
-	target_multiplier *= 1.20 + ( p -> glyphs.haunt ? 0.03 : 0.00 );
+        target_multiplier *= 1.20 + ( p -> glyphs.haunt ? 0.03 : 0.00 );
       }
     }
 
@@ -3808,10 +3808,10 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
   if ( active_pet && talents.demonic_knowledge )
   {
     if ( active_pet -> pet_type != PET_INFERNAL &&
-	 active_pet -> pet_type != PET_DOOMGUARD )
+         active_pet -> pet_type != PET_DOOMGUARD )
     {
       sp += ( active_pet -> stamina() +
-	      active_pet -> intellect() ) * talents.demonic_knowledge * 0.04;
+              active_pet -> intellect() ) * talents.demonic_knowledge * 0.04;
     }
   }
 

@@ -8,15 +8,15 @@
 // buff_t::buff_t ===========================================================
 
 buff_t::buff_t( sim_t*             s,
-		player_t*          p,
-		const std::string& n,
-		int                ms,
-		double             d,
-		double             cd,
-		double             ch,
-		bool               q,
-		int                rng_type,
-		int                a ) :
+                player_t*          p,
+                const std::string& n,
+                int                ms,
+                double             d,
+                double             cd,
+                double             ch,
+                bool               q,
+                int                rng_type,
+                int                a ) :
   sim(s), player(p), name_str(n),
   current_stack(0),max_stack(ms), 
   duration(d), cooldown(cd), cooldown_ready(0), default_chance(ch),
@@ -103,8 +103,8 @@ bool buff_t::remains_lt( double time )
 // buff_t::trigger ==========================================================
 
 bool buff_t::trigger( int    stacks,
-		      double value,
-		      double chance )
+                      double value,
+                      double chance )
 {
   trigger_attempts++;
 
@@ -130,7 +130,7 @@ bool buff_t::trigger( int    stacks,
 // buff_t::increment ========================================================
 
 void buff_t::increment( int    stacks,
-			double value )
+                        double value )
 {
   if( current_stack == 0 ) 
   {
@@ -147,7 +147,7 @@ void buff_t::increment( int    stacks,
 // buff_t::decrement ========================================================
 
 void buff_t::decrement( int    stacks,
-			double value )
+                        double value )
 {
   if( stacks == 0 || current_stack <= stacks ) 
   {
@@ -163,7 +163,7 @@ void buff_t::decrement( int    stacks,
 // buff_t::start ============================================================
 
 void buff_t::start( int    stacks,
-		    double value )
+                    double value )
 {
   assert( ! expiration );
 
@@ -192,13 +192,13 @@ void buff_t::start( int    stacks,
       buff_t* buff;
       expiration_t( sim_t* sim, player_t* p, buff_t* b ) : event_t( sim, p ), buff( b )
       {
-	name = buff -> name();
-	sim -> add_event( this, buff -> duration );
+        name = buff -> name();
+        sim -> add_event( this, buff -> duration );
       }
       virtual void execute()
       {
-	buff -> expiration = 0;
-	buff -> expire();
+        buff -> expiration = 0;
+        buff -> expire();
       }
     };
     
@@ -209,7 +209,7 @@ void buff_t::start( int    stacks,
 // buff_t::refresh ==========================================================
 
 void buff_t::refresh( int    stacks,
-		      double value )
+                      double value )
 {
   refresh_count++;
 
@@ -300,7 +300,7 @@ void buff_t::analyze()
 // buff_t::find =============================================================
 
 buff_t* buff_t::find( sim_t* sim,
-		      const std::string& name_str )
+                      const std::string& name_str )
 {
   for( buff_t* b = sim -> buff_list; b; b = b -> next )
     if( name_str == b -> name() )
@@ -312,7 +312,7 @@ buff_t* buff_t::find( sim_t* sim,
 // buff_t::find =============================================================
 
 buff_t* buff_t::find( player_t* p,
-		      const std::string& name_str )
+                      const std::string& name_str )
 {
   for( buff_t* b = p -> buff_list; b; b = b -> next )
     if( name_str == b -> name() )

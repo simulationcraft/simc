@@ -94,7 +94,7 @@ struct stat_proc_callback_t : public action_callback_t
           virtual void execute()
           {
             callback -> expiration = 0;
-	    callback -> expire();
+            callback -> expire();
           }
         };
 
@@ -214,7 +214,18 @@ void unique_gear_t::init( player_t* p )
         max_stat = stat[ i ];
       }
     }
-    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+
+    p -> register_tick_damage_callback( cb );
+    p -> register_direct_damage_callback( cb );
+  }
+  if( item_t* item = p -> find_item( "deaths_choice" ) )
+  {
+    item -> unique = true;
+
+    int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
+
+    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, stat, 1, 450, 0.35, 15.0, 45.0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
@@ -230,16 +241,16 @@ void unique_gear_t::init( player_t* p )
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( int                type,
-						      int                mask,
-						      const std::string& name,
-						      player_t*          player,
-						      int                stat,
-						      int                max_stacks,
-						      double             amount,
-						      double             proc_chance,
-						      double             duration,
-						      double             cooldown,
-						      int                rng_type )
+                                                      int                mask,
+                                                      const std::string& name,
+                                                      player_t*          player,
+                                                      int                stat,
+                                                      int                max_stacks,
+                                                      double             amount,
+                                                      double             proc_chance,
+                                                      double             duration,
+                                                      double             cooldown,
+                                                      int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, rng_type );
   
@@ -265,16 +276,16 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( int                type,
-							   int                mask,
-							   const std::string& name,
-							   player_t*          player,
-							   int                max_stacks,
-							   int                school,
-							   double             min_dmg,
-							   double             max_dmg,
-							   double             proc_chance,
-							   double             cooldown,
-							   int                rng_type )
+                                                           int                mask,
+                                                           const std::string& name,
+                                                           player_t*          player,
+                                                           int                max_stacks,
+                                                           int                school,
+                                                           double             min_dmg,
+                                                           double             max_dmg,
+                                                           double             proc_chance,
+                                                           double             cooldown,
+                                                           int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
   
@@ -304,12 +315,14 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
-					const std::string& name )
+                                        const std::string& name )
 {
   std::string e;
 
   // Stat Procs
-  if     ( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
+  if     ( name == "abyssal_rune"                    ) e = "OnSpellHit_590SP_25%_10Dur_45Cd";
+  else if( name == "banner_of_victory"               ) e = "OnAttackHit_1008AP_20%_10Dur_45Cd";
+  else if( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if( name == "chuchus_tiny_box_of_horrors"     ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if( name == "comets_trail"                    ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
   else if( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
@@ -330,8 +343,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
   else if( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
-  else if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
   else if( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
+  else if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
   else if( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
   else if( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
@@ -357,7 +370,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 // ==========================================================================
 
 bool unique_gear_t::get_use_encoding( std::string&       encoding,
-				      const std::string& name )
+                                      const std::string& name )
 {
   std::string e;
 
@@ -371,12 +384,16 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
   else if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
   else if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
+  else if( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
   else if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
   else if( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
   else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
-  if( name == "talisman_of_volatile_power"  ) e = "OnSpellHit_57Haste_8Stack_20Dur_120Cd";
+  if( name == "fetish_of_volatile_power"   ) e = "OnSpellHit_64Haste_8Stack_20Dur_120Cd";
+  if( name == "talisman_of_volatile_power" ) e = "OnSpellHit_57Haste_8Stack_20Dur_120Cd";
+  if( name == "vengeance_of_the_forsaken"  ) e = "OnAttackHit_215AP_5Stack_20Dur_120Cd";
+  if( name == "victors_call"               ) e = "OnAttackHit_250AP_5Stack_20Dur_120Cd";
 
   if( e.empty() ) return false;
 
