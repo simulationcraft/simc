@@ -20,7 +20,7 @@ actions+=/rake
 actions+=/shred
 head=conquerors_nightsong_headguard,stats=480armor_152ap_75crit_50arpen_82agi_122sta,gems=relentless_earthsiege_16arpen_8agi,enchant=50ap_20crit
 neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=16arpen
-shoulders=conquerors_nightsong_shoulderpads,stats=443armor_112ap_62crit_48exp_77agi_74sta,gems=16arpen_4crit,enchant=24sp_15crit
+shoulders=conquerors_nightsong_shoulderpads,stats=443armor_112ap_62crit_48exp_77agi_74sta,gems=16arpen_4crit,enchant=40ap_15crit
 chest=conquerors_nightsong_raiments,stats=591armor_162ap_49hit_66crit_97agi_119sta,gems=16arpen_16arpen,enchant=10str_10agi_10sta_10int_10spi
 waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=16agi_16arpen_16arpen_12ap
 legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16agi_27agi_16agi,enchant=75ap_22crit
@@ -40,8 +40,7 @@ ranged=idol_of_the_ravenous_beast
 # gear_stamina=1046
 # gear_intellect=10
 # gear_spirit=10
-# gear_spell_power=24
-# gear_attack_power=1947
+# gear_attack_power=1987
 # gear_expertise_rating=104
 # gear_armor_penetration_rating=568
 # gear_hit_rating=197
