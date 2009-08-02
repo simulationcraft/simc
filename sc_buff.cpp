@@ -49,6 +49,14 @@ buff_t::buff_t( sim_t*             s,
   }
   next = *tail;
   *tail = this;
+
+  char buffer[ name_str.size() + 16 ];
+  aura_str.resize( max_stack + 1 );
+  for( int i=1; i <= max_stack; i++ )
+  {
+    sprintf( buffer, "%s(%d)", name_str.c_str(), i );
+    aura_str[ i ] = buffer;
+  }
 }
 
 // buff_t::may_react ========================================================
@@ -171,9 +179,12 @@ void buff_t::start( int    stacks,
 
   start_count++;
 
+  current_stack = std::min( stacks, max_stack );
+  current_value = value;
+
   if( player ) 
   {
-    player -> aura_gain( name(), aura_id );
+    player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
   }
   if( last_start >= 0 )
   {
@@ -181,9 +192,6 @@ void buff_t::start( int    stacks,
     interval_count++;
   }
   last_start = sim -> current_time;
-
-  current_stack = std::min( stacks, max_stack );
-  current_value = value;
 
   if( duration > 0 )
   {
@@ -218,6 +226,11 @@ void buff_t::refresh( int    stacks,
     current_stack += stacks;
     if( current_stack > max_stack )
       current_stack = max_stack;
+    
+    if( player )
+    {
+      player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+    }
   }
 
   current_value = value;

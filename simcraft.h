@@ -17,22 +17,21 @@
 // Results of the sim should always be the same, no matter if this is set to:
 // #define SC_CONST const    -OR-
 // #define SC_CONST 
- #define SC_CONST const
+#define SC_CONST const
 
 #if defined( _MSC_VER )
-#include "./vs/stdint.h"
+#  include "./vs/stdint.h"
 #  define snprintf _snprintf
-//#  define SC_CONST 
 #else
-#include <stdint.h>
+#  include <stdint.h>
 #endif
 
 #if defined(__GNUC__)
-#define likely(x)       __builtin_expect((x),1)
-#define unlikely(x)     __builtin_expect((x),0)
+#  define likely(x)       __builtin_expect((x),1)
+#  define unlikely(x)     __builtin_expect((x),0)
 #else
-#define likely(x) (x)
-#define unlikely(x) (x)
+#  define likely(x) (x)
+#  define unlikely(x) (x)
 #endif
 
 #include <typeinfo>
@@ -50,6 +49,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+#if __BSD_VISIBLE 
+#  include <netinet/in.h>
+#  if !defined(CLOCKS_PER_SEC)
+#    define CLOCKS_PER_SEC 1000000
+#  endif
+#endif
 
 // Patch Specific Modeling ==================================================
 
@@ -657,6 +663,7 @@ struct buff_t
   sim_t* sim;
   player_t* player;
   std::string name_str;
+  std::vector<std::string> aura_str;
   int current_stack, max_stack;
   double current_value, react, duration, cooldown, cooldown_ready, default_chance;
   double last_start, interval_sum, uptime_sum;
