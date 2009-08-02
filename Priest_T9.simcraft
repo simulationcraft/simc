@@ -4,16 +4,152 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-Priest_T9_13_00_58.simcraft
-Priest_T9_13_00_58_SWD.simcraft
-Priest_T9_51_20_00.simcraft
-Priest_T9_34_28_09.simcraft
+# Shadow DPS
+Priest_T9_13_00_58_232.simcraft
+Priest_T9_13_00_58_232_SWD.simcraft
+Priest_T9_13_00_58_245.simcraft
+Priest_T9_13_00_58_245_SWD.simcraft
+Priest_T9_13_00_58_258.simcraft
+Priest_T9_13_00_58_258_SWD.simcraft
+
+# Discipline DPS
+Priest_T9_51_20_00_232.simcraft
+Priest_T9_51_20_00_245.simcraft
+Priest_T9_51_20_00_258.simcraft
+
+# Holy DPS
+Priest_T9_34_28_09_232.simcraft
+Priest_T9_34_28_09_245.simcraft
+Priest_T9_34_28_09_258.simcraft
 
 # simcraftpriestt9
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000099 name=Priest_T9_13_00_58      save=Priest_T9_13_00_58.simcraft     waist=starwatchers_binding,id=45619
-#wowhead=13000099 name=Priest_T9_13_00_58_SWD  save=Priest_T9_13_00_58_SWD.simcraft waist=starwatchers_binding,id=45619 use_shadow_word_death=1
-#wowhead=13000098 name=Priest_T9_51_20_00      save=Priest_T9_51_20_00.simcraft     waist=starwatchers_binding,id=45619
-#wowhead=13000102 name=Priest_T9_34_28_09      save=Priest_T9_34_28_09.simcraft     waist=starwatchers_binding,id=45619
+# Shadow DPS
+#wowhead=13043846 name=Priest_T9_13_00_58_232      save=Priest_T9_13_00_58_232.simcraft
+#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
+#neck=pendant_of_the_shallow_grave,id=45933,gems=23sp
+#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#back=drape_of_mortal_downfall,id=45242,gems=12sp_10crit_5sp,enchant=lightweave
+#wrists=bejeweled_wizards_bracers,id=47585,gems=12sp_10spi_5sp,enchant=30sp
+#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#hands=velens_handwraps_of_conquest,id=48072,gems=12sp_10crit_5sp,enchant=28sp
+#waist=belt_of_the_eternal,id=47909,gems=23sp_23sp
+#legs=velens_pants_of_conquest,id=48074,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
+#feet=sandals_of_the_silver_magus,id=47721,gems=23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=band_of_the_invoker,id=47732,enchant=23sp
+#main_hand=blade_of_the_silver_disciple,id=47941,gems=23sp_4crit,enchant=63sp
+#off_hand=chalice_of_benedictus,id=47742,gems=12sp_10crit_5sp
+#ranged=petrified_ivy_sprig,id=45294,gems=23sp
+#trinket1=eye_of_the_broodmother,id=45308
+#trinket2=illustration_of_the_dragon_soul,id=40432
+
+    
+#wowhead=13043846 name=Priest_T9_13_00_58_232_SWD  save=Priest_T9_13_00_58_232_SWD.simcraft	use_shadow_word_death=1
+#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
+#neck=pendant_of_the_shallow_grave,id=45933,gems=23sp
+#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#back=drape_of_mortal_downfall,id=45242,gems=12sp_10crit_5sp,enchant=lightweave
+#wrists=bejeweled_wizards_bracers,id=47585,gems=12sp_10spi_5sp,enchant=30sp
+#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#hands=velens_handwraps_of_conquest,id=48072,gems=12sp_10crit_5sp,enchant=28sp
+#waist=belt_of_the_eternal,id=47909,gems=23sp_23sp
+#legs=velens_pants_of_conquest,id=48074,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
+#feet=sandals_of_the_silver_magus,id=47721,gems=23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=band_of_the_invoker,id=47732,enchant=23sp
+#main_hand=blade_of_the_silver_disciple,id=47941,gems=23sp_4crit,enchant=63sp
+#off_hand=chalice_of_benedictus,id=47742,gems=12sp_10crit_5sp
+#ranged=petrified_ivy_sprig,id=45294,gems=23sp
+#trinket1=eye_of_the_broodmother,id=45308
+#trinket2=illustration_of_the_dragon_soul,id=40432
+
+#wowhead=13043847 name=Priest_T9_13_00_58_245      save=Priest_T9_13_00_58_245.simcraft
+#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47139
+#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#back=pennant_cloak,id=44005,gems=23sp,enchant=lightweave
+#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48077,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47081,gems=23sp_23sp
+#legs=velens_pants_of_triumph,id=48079,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
+#feet=footpads_of_the_icy_floe,id=47194,gems=23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=band_of_deplorable_violence,id=47054,enchant=23sp
+#main_hand=blade_of_the_silver_disciple,id=47941,gems=23sp_4crit,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47138
+#ranged=petrified_ivy_sprig,id=45294,gems=23sp
+#trinket1=flare_of_the_heavens,id=45518
+#trinket2=reign_of_the_unliving,id=47182
+   
+#wowhead=13043847 name=Priest_T9_13_00_58_245_SWD  save=Priest_T9_13_00_58_245_SWD.simcraft	use_shadow_word_death=1
+#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47139
+#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#back=pennant_cloak,id=44005,gems=23sp,enchant=lightweave
+#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48077,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47081,gems=23sp_23sp
+#legs=velens_pants_of_triumph,id=48079,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
+#feet=footpads_of_the_icy_floe,id=47194,gems=23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=band_of_deplorable_violence,id=47054,enchant=23sp
+#main_hand=blade_of_the_silver_disciple,id=47941,gems=23sp_4crit,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47138
+#ranged=petrified_ivy_sprig,id=45294,gems=23sp
+#trinket1=flare_of_the_heavens,id=45518
+#trinket2=reign_of_the_unliving,id=47182
+
+#wowhead=13043848 name=Priest_T9_13_00_58_258      save=Priest_T9_13_00_58_258.simcraft
+#head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47139
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
+#back=cloak_of_displacement,id=47095,gems=12sp_10crit_5sp,enchant=lightweave
+#chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
+#wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=23sp_23sp_23sp
+#legs=velens_pants_of_triumph,id=48084,gems=23s_12sp_10spi_7sp,enchant=50sp_20sp
+#feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=conductive_seal,id=45495,gems=23sp,enchant=23sp
+#main_hand=relentless_gladiators_mageblade,id=48408,gems=23sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47138
+#ranged=rod_of_imprisoned_souls,id=47612
+#trinket1=flare_of_the_heavens,id=45518
+#trinket2=reign_of_the_unliving,id=47182
+
+#wowhead=13043848 name=Priest_T9_13_00_58_258_SWD  save=Priest_T9_13_00_58_258_SWD.simcraft	use_shadow_word_death=1
+#head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47139
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
+#back=cloak_of_displacement,id=47095,gems=12sp_10crit_5sp,enchant=lightweave
+#chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
+#wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=23sp_23sp_23sp
+#legs=velens_pants_of_triumph,id=48084,gems=23s_12sp_10spi_7sp,enchant=50sp_20sp
+#feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit
+#finger1=nebula_band,id=46046,gems=23sp,enchant=23sp
+#finger2=conductive_seal,id=45495,gems=23sp,enchant=23sp
+#main_hand=relentless_gladiators_mageblade,id=48408,gems=23sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47138
+#ranged=rod_of_imprisoned_souls,id=47612
+#trinket1=flare_of_the_heavens,id=45518
+#trinket2=reign_of_the_unliving,id=47182
+
+
+# Discipline DPS
+#wowhead=13043859 name=Priest_T9_51_20_00_232      save=Priest_T9_51_20_00_232.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+#wowhead=13043861 name=Priest_T9_51_20_00_245      save=Priest_T9_51_20_00_245.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+#wowhead=13043863 name=Priest_T9_51_20_00_258      save=Priest_T9_51_20_00_258.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+
+# Holy DPS
+#wowhead=13043855 name=Priest_T9_34_28_09_232      save=Priest_T9_34_28_09_232.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+#wowhead=13043856 name=Priest_T9_34_28_09_245      save=Priest_T9_34_28_09_245.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+#wowhead=13043857 name=Priest_T9_34_28_09_258      save=Priest_T9_34_28_09_258.simcraft     waist=starwatchers_binding,id=45619 comment="*** Not yet updated ***"
+
 #save_profiles=1

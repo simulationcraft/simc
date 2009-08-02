@@ -1,0 +1,58 @@
+#!simcraft
+
+priest=Priest_T9_13_00_58_232_SWD
+origin=http://profiler.wowhead.com/?profile=13043846
+level=80
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
+glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=tender_shoveltusk_steak
+actions+=/fortitude
+actions+=/divine_spirit
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/shadow_fiend
+actions+=/dispersion
+actions+=/speed_potion
+actions+=/shadow_word_pain,shadow_weaving_wait=1
+actions+=/vampiric_touch
+actions+=/devouring_plague
+actions+=/mind_blast
+actions+=/vampiric_embrace
+actions+=/shadow_word_death,mb_wait=0,mb_priority=0
+actions+=/mind_flay
+actions+=/shadow_word_death
+head=conquerors_circlet_of_sanctification,stats=84sta_76int_113sp_70crit_66haste_256armor,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
+neck=pendant_of_the_shallow_grave,stats=45sta_43int_74sp_41crit_31haste,gems=23sp
+shoulders=conquerors_mantle_of_sanctification,stats=53sta_65int_49spi_90sp_62crit_236armor,gems=23sp_5sp,enchant=24sp_15crit
+chest=merlins_robe,stats=331armor_66crit_90haste_131sp_103sta_103int,gems=23sp_23sp_23sp,enchant=10all
+waist=belt_of_the_eternal,stats=178armor_40crit_105sp_68sta_64int_64spi,gems=23sp_23sp
+legs=velens_pants_of_conquest,stats=278armor_80hit_64haste_122sp_92sta_92int,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
+feet=sandals_of_the_silver_magus,stats=218armor_40hit_64crit_100sp_64sta_69int,gems=23sp,enchant=12crit_12hit
+wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=12sp_10spi_5sp,enchant=30sp
+hands=velens_handwraps_of_conquest,stats=198armor_52hit_60crit_96sp_68sta_68int,gems=12sp_10crit_5sp,enchant=28sp
+finger1=nebula_band,stats=48sta_36int_74sp_46crit_36haste,gems=23sp,enchant=23sp
+finger2=band_of_the_invoker,stats=50haste_89sp_58sta_58int_50spi,gems=19sp,enchant=23sp
+trinket1=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
+trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+back=drape_of_mortal_downfall,stats=61sta_51int_75sp_41hit_43crit_162armor,gems=12sp_10crit_5sp,enchant=lightweave
+main_hand=blade_of_the_silver_disciple,stats=44sta_49int_621sp_58haste_37crit,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
+off_hand=chalice_of_benedictus,stats=37hit_45haste_69sp_51sta_48int,gems=12sp_10crit_5sp
+ranged=petrified_ivy_sprig,stats=26sta_19int_22spi_45sp_29hit,gems=23sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=933
+# gear_intellect=917
+# gear_spirit=235
+# gear_spell_power=2565
+# gear_hit_rating=291
+# gear_crit_rating=760
+# gear_haste_rating=490
+# gear_armor=2002
+# meta_gem=chaotic_skyflare
+# tier8_2pc=1
+# tier9_2pc=1
+# back=drape_of_mortal_downfall,enchant=lightweave
+# main_hand=blade_of_the_silver_disciple,weapon=dagger_1.80speed_113.3dps
+# items=eye_of_the_broodmother/illustration_of_the_dragon_soul
