@@ -18,7 +18,7 @@ buff_t::buff_t( sim_t*             s,
                 int                rng_type,
                 int                a ) :
   sim(s), player(p), name_str(n),
-  current_stack(0),max_stack(ms), 
+  current_stack(0), max_stack(ms), current_value(0), 
   duration(d), cooldown(cd), cooldown_ready(0), default_chance(ch),
   last_start(-1), interval_sum(0), uptime_sum(0),
   up_count(0), down_count(0), interval_count(0), 
