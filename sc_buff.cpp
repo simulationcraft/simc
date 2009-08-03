@@ -50,13 +50,16 @@ buff_t::buff_t( sim_t*             s,
   next = *tail;
   *tail = this;
 
-  char buffer[ name_str.size() + 16 ];
+  char *buffer = new char[name_str.size() + 16];
+  assert( buffer != NULL );
+
   aura_str.resize( max_stack + 1 );
   for( int i=1; i <= max_stack; i++ )
   {
     sprintf( buffer, "%s(%d)", name_str.c_str(), i );
     aura_str[ i ] = buffer;
   }
+  delete [] buffer;
 }
 
 // buff_t::may_react ========================================================
