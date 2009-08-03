@@ -12,6 +12,10 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 static bool is_scaling_stat( sim_t* sim,
                              int    stat )
 {
+  if( ! sim -> scaling -> scale_only_str.empty() )
+    if( util_t::parse_stat_type( sim -> scaling -> scale_only_str ) != stat )
+      return false;
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> quiet ) continue;
@@ -137,8 +141,8 @@ void scaling_t::analyze_stats()
 
     if( debug_scale_factors )
     {
-      report_t::print_text( sim -> output_file,   ref_sim, false );
-      report_t::print_text( sim -> output_file, child_sim, false );
+      report_t::print_text( sim -> output_file,   ref_sim, true );
+      report_t::print_text( sim -> output_file, child_sim, true );
     }
 
     if ( ref_sim != baseline_sim ) delete ref_sim;
@@ -216,7 +220,8 @@ void scaling_t::normalize()
 
     double divisor = p -> scaling.get_stat( p -> normalized_to );
 
-    if( divisor != 0 )
+    if( divisor == 0 ) continue;
+
     for ( int i=0; i < STAT_MAX; i++ )
     {
       if( p -> scales_with[ i ] == 0 ) continue;
@@ -245,26 +250,27 @@ int scaling_t::get_options( std::vector<option_t>& options )
   option_t scaling_options[] =
     {
       // @option_doc loc=global/scale_factors title="Scale Factors"
-      { "calculate_scale_factors",        OPT_BOOL, &( calculate_scale_factors              ) },
-      { "smooth_scale_factors",           OPT_BOOL, &( smooth_scale_factors                 ) },
-      { "normalize_scale_factors",        OPT_BOOL, &( normalize_scale_factors              ) },
-      { "debug_scale_factors",            OPT_BOOL, &( debug_scale_factors                  ) },
-      { "center_scale_delta",             OPT_BOOL, &( center_scale_delta                   ) },
-      { "scale_lag",                      OPT_BOOL, &( scale_lag                            ) },
-      { "scale_factor_noise",             OPT_FLT,  &( scale_factor_noise                   ) },
-      { "scale_strength",                 OPT_FLT,  &( stats.attribute[ ATTR_STRENGTH  ]    ) },
-      { "scale_agility",                  OPT_FLT,  &( stats.attribute[ ATTR_AGILITY   ]    ) },
-      { "scale_stamina",                  OPT_FLT,  &( stats.attribute[ ATTR_STAMINA   ]    ) },
-      { "scale_intellect",                OPT_FLT,  &( stats.attribute[ ATTR_INTELLECT ]    ) },
-      { "scale_spirit",                   OPT_FLT,  &( stats.attribute[ ATTR_SPIRIT    ]    ) },
-      { "scale_spell_power",              OPT_FLT,  &( stats.spell_power                    ) },
-      { "scale_attack_power",             OPT_FLT,  &( stats.attack_power                   ) },
-      { "scale_expertise_rating",         OPT_FLT,  &( stats.expertise_rating               ) },
-      { "scale_armor_penetration_rating", OPT_FLT,  &( stats.armor_penetration_rating       ) },
-      { "scale_hit_rating",               OPT_FLT,  &( stats.hit_rating                     ) },
-      { "scale_crit_rating",              OPT_FLT,  &( stats.crit_rating                    ) },
-      { "scale_haste_rating",             OPT_FLT,  &( stats.haste_rating                   ) },
-      { "scale_weapon_dps",               OPT_FLT,  &( stats.weapon_dps                     ) },
+      { "calculate_scale_factors",        OPT_BOOL,   &( calculate_scale_factors              ) },
+      { "smooth_scale_factors",           OPT_BOOL,   &( smooth_scale_factors                 ) },
+      { "normalize_scale_factors",        OPT_BOOL,   &( normalize_scale_factors              ) },
+      { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
+      { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
+      { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
+      { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
+      { "scale_strength",                 OPT_FLT,    &( stats.attribute[ ATTR_STRENGTH  ]    ) },
+      { "scale_agility",                  OPT_FLT,    &( stats.attribute[ ATTR_AGILITY   ]    ) },
+      { "scale_stamina",                  OPT_FLT,    &( stats.attribute[ ATTR_STAMINA   ]    ) },
+      { "scale_intellect",                OPT_FLT,    &( stats.attribute[ ATTR_INTELLECT ]    ) },
+      { "scale_spirit",                   OPT_FLT,    &( stats.attribute[ ATTR_SPIRIT    ]    ) },
+      { "scale_spell_power",              OPT_FLT,    &( stats.spell_power                    ) },
+      { "scale_attack_power",             OPT_FLT,    &( stats.attack_power                   ) },
+      { "scale_expertise_rating",         OPT_FLT,    &( stats.expertise_rating               ) },
+      { "scale_armor_penetration_rating", OPT_FLT,    &( stats.armor_penetration_rating       ) },
+      { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
+      { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
+      { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
+      { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
+      { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

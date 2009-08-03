@@ -976,6 +976,7 @@ struct scaling_t
   int    normalize_scale_factors;
   int    smooth_scale_factors;
   int    debug_scale_factors;
+  std::string scale_only_str;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
