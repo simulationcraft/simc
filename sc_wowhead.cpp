@@ -121,56 +121,6 @@ static void parse_stats( std::string& encoding,
   }
 }
 
-// parse_gem ================================================================
-
-static int parse_gem( item_t&            item, 
-                      const std::string& gem_id )
-{
-  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
-    return GEM_NONE;
-
-  xml_node_t* node = download_id( item.sim, gem_id );
-  if( ! node )
-  {
-    util_t::printf( "\nsimcraft: Player %s unable to download gem id %s from wowhead\n", item.player -> name(), gem_id.c_str() );
-    return GEM_NONE;
-  }
-
-  int gem_type = GEM_NONE;
-
-  std::string color_str;
-  if( xml_t::get_value( color_str, node, "subclass/cdata" ) )
-  {
-    std::string::size_type pos = color_str.find( ' ' );
-    if( pos != std::string::npos ) color_str.erase( pos );
-    armory_t::format( color_str );
-    gem_type = util_t::parse_gem_type( color_str );
-    
-    if( gem_type == GEM_META )
-    {
-      std::string name_str;
-      if( xml_t::get_value( name_str, node, "name/cdata" ) )
-      {
-	std::string::size_type pos = name_str.find( " Diamond" );
-	if( pos != std::string::npos ) name_str.erase( pos );
-	armory_t::format( name_str );
-	item.armory_gems_str += "_";
-	item.armory_gems_str += name_str;
-      }       
-    }
-    else
-    {
-      std::string stats_str;
-      if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
-      {
-	parse_stats( item.armory_gems_str, stats_str );
-      }
-    }
-  }
-
-  return gem_type;
-}
-
 // parse_gems ===============================================================
 
 static bool parse_gems( item_t&           item, 
@@ -203,7 +153,7 @@ static bool parse_gems( item_t&           item,
   bool match = true;
   for( int i=0; i < 3; i++ )
   {
-    int gem = parse_gem( item, gem_ids[ i ] );
+    int gem = item_t::parse_gem( item, gem_ids[ i ] );
 
     switch( sockets[ i ] )
     {
@@ -384,6 +334,58 @@ static const char* translate_inventory_id( int slot )
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
+
+// wowhead_t::parse_gem ================================================================
+
+int wowhead_t::parse_gem( item_t&            item, 
+                          const std::string& gem_id,
+                          int cache_only )
+{
+  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
+    return GEM_NONE;
+
+  xml_node_t* node = download_id( item.sim, gem_id, cache_only );
+  if( ! node )
+  {
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Player %s unable to download gem id %s from wowhead\n", item.player -> name(), gem_id.c_str() );
+    return GEM_NONE;
+  }
+
+  int gem_type = GEM_NONE;
+
+  std::string color_str;
+  if( xml_t::get_value( color_str, node, "subclass/cdata" ) )
+  {
+    std::string::size_type pos = color_str.find( ' ' );
+    if( pos != std::string::npos ) color_str.erase( pos );
+    armory_t::format( color_str );
+    gem_type = util_t::parse_gem_type( color_str );
+    
+    if( gem_type == GEM_META )
+    {
+      std::string name_str;
+      if( xml_t::get_value( name_str, node, "name/cdata" ) )
+      {
+	      std::string::size_type pos = name_str.find( " Diamond" );
+	      if( pos != std::string::npos ) name_str.erase( pos );
+	      armory_t::format( name_str );
+        item.armory_gems_str += "_";
+	      item.armory_gems_str += name_str;
+      }       
+    }
+    else
+    {
+      std::string stats_str;
+      if( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+      {
+	      parse_stats( item.armory_gems_str, stats_str );
+      }
+    }
+  }
+
+  return gem_type;
+}
 
 // wowhead_t::download_glyph ================================================
 
@@ -646,17 +648,10 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string& glyph_id = glyph_ids[ i ];
       if( glyph_id == "0" ) continue;
       std::string glyph_name;
-      if( ! download_glyph( sim, glyph_name, glyph_id, 1 ) && ! mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 1 ) ) 
+
+      if( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
       {
-        if ( ! download_glyph( sim, glyph_name, glyph_id ) )
-        {
-          util_t::printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
-          if ( ! mmo_champion_t::download_glyph( sim, glyph_name, glyph_id ) )
-          {
-            util_t::printf( "\nsimcraft: Player %s unable to download glyph id '%s' from mmo-champion.\n", p -> name(), glyph_id.c_str() );
-            return 0;
-          }
-        }
+        return 0;
       }
       if( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
@@ -676,18 +671,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids, 1 ) &&
-          ! mmo_champion_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids, 1 ) )
+      if( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
       {
-        if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )        
-        {
-          util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead.\n", p -> name(), item_id.c_str() );
-          if ( ! mmo_champion_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
-          {
-            util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from mmo-champion.\n", p -> name(), item_id.c_str() );
-            return 0;
-          }
-        }
+        return 0;
       }
     }
   }

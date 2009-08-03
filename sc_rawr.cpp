@@ -276,8 +276,8 @@ player_t* rawr_t::load_player( sim_t* sim,
       const char* glyph_name = translate_glyph_name( p, i );
       if( ! glyph_name )
       {
-	util_t::printf( "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
-	return 0;
+	      util_t::printf( "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
+	      return 0;
       }
       if( p -> glyphs_str.size() ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
@@ -298,23 +298,15 @@ player_t* rawr_t::load_player( sim_t* sim,
 
       if( 5 != util_t::string_split( slot_encoding, ".", "S S S S S", &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), &enchant_id ) )
       {
-	util_t::printf( "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
-	return 0;
+	      util_t::printf( "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
+	      return 0;
       }
 
-      bool success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 1 )      ||
-                     mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
-                     wowhead_t::download_slot( item, item_id, enchant_id, gem_ids );
+      bool success = item_t::download_slot( item, item_id, enchant_id, gem_ids );
 
       if( ! success )
       {
-	      util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
-
-	      if( ! mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids ) )
-	      {
-	        util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from mmo-champopn....\n", p -> name(), item.slot_name() );
-	        return 0;
-	      }
+        return 0;
       }
     }
   }

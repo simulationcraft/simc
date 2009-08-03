@@ -761,27 +761,12 @@ player_t* armory_t::download_player( sim_t* sim,
           xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
           xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = wowhead_t::download_slot( item, id_str, enchant_id, gem_ids, 1) ||
-                  mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids, 1) ||
-                  armory_t::download_slot( item, id_str, 1 ||
-                  wowhead_t::download_slot( item, id_str, enchant_id, gem_ids ) );
-  
-	      if( ! success )
-	      {
-	        util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
-	        success = mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids );
-	      }
+        success = item_t::download_slot( item, id_str, enchant_id, gem_ids);
       }
       
       if( ! success ) 
       {
-        success = armory_t::download_slot( item, id_str, 1 )       ||
-                  wowhead_t::download_item( item, id_str, 1 )      ||
-                  mmo_champion_t::download_item( item, id_str, 1 ) ||
-                  armory_t::download_slot( item, id_str )          ||
-                  wowhead_t::download_item( item, id_str )         ||
-                  mmo_champion_t::download_item( item, id_str );
-
+        success = item_t::download_item( item, id_str );
       }
       
       if( ! success ) return 0;

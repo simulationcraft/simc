@@ -1088,6 +1088,12 @@ struct item_t
   bool decode_enchant();
   bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
+
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
+  static bool download_item( item_t&, const std::string& item_id );
+  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
+  static int  parse_gem( item_t&            item, 
+                         const std::string& gem_id );
 };
 
 // Set Bonus =================================================================
@@ -2358,6 +2364,7 @@ struct wowhead_t
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
+  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
 };
 
 // MMO Champion ==============================================================
@@ -2367,6 +2374,7 @@ struct mmo_champion_t
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
+  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
 };
 
 // Rawr ======================================================================

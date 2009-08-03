@@ -122,64 +122,6 @@ static int get_tti_value( std::vector<std::string>& values,
   return values.size();
 }
 
-// parse_gem ================================================================
-
-static int parse_gem( item_t&            item, 
-                      const std::string& gem_id )
-{
-  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
-    return GEM_NONE;
-
-  xml_node_t* node = download_id( item.sim, gem_id );
-  if( ! node )
-  {
-    util_t::printf( "\nsimcraft: Player %s unable to download gem id %s from mmo-champion.\n", item.player -> name(), gem_id.c_str() );
-    return GEM_NONE;
-  }
-
-  if( node )
-  {
-    std::string color_str;
-    if( get_tti_value( color_str, node, "tti-subclass" ) )
-    {
-      armory_t::format( color_str );
-      int gem_type = util_t::parse_gem_type( color_str );
-
-      std::string property_str;
-      xml_node_t* property_node = get_tti_node( node, "tti-gemproperties" );
-      if( property_node ) xml_t::get_value( property_str, property_node, "a/." );
-    
-      if( gem_type == GEM_NONE || property_str.empty() ) 
-	return GEM_NONE;
-
-      std::string& s = item.armory_gems_str;
-
-      if( gem_type == GEM_META )
-      {
-	int meta_gem_type = armory_t::parse_meta_gem( property_str );
-
-	if( meta_gem_type != META_GEM_NONE )
-	{
-	  s += "_";
-	  s += util_t::meta_gem_type_string( meta_gem_type );
-	}
-	else
-        {
-          armory_t::fuzzy_stats( s, property_str );
-        }
-      }
-      else
-      {
-	armory_t::fuzzy_stats( s, property_str );
-      }
-
-      return gem_type;
-    }
-  }
-
-  return GEM_NONE;
-}
-
 // parse_gems ===============================================================
 
 static bool parse_gems( item_t&           item, 
@@ -204,7 +146,7 @@ static bool parse_gems( item_t&           item,
   bool match = true;
   for( int i=0; i < 3; i++ )
   {
-    int gem = parse_gem( item, gem_ids[ i ] );
+    int gem = item_t::parse_gem( item, gem_ids[ i ] );
 
     if( ! util_t::socket_gem_match( sockets[ i ], gem ) )
       match = false;
@@ -356,6 +298,67 @@ static bool parse_item_name( item_t&            item,
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
+
+
+// mmo_champion_t::parse_gem ================================================================
+
+int mmo_champion_t::parse_gem( item_t&            item, 
+                               const std::string& gem_id,
+                               int cache_only )
+{
+  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
+    return GEM_NONE;
+
+  xml_node_t* node = download_id( item.sim, gem_id, cache_only ); 
+  if( ! node )
+  {
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Player %s unable to download gem id %s from mmo-champion.\n", item.player -> name(), gem_id.c_str() );
+    return GEM_NONE;
+  }
+
+  if( node )
+  {
+    std::string color_str;
+    if( get_tti_value( color_str, node, "tti-subclass" ) )
+    {
+      armory_t::format( color_str );
+      int gem_type = util_t::parse_gem_type( color_str );
+
+      std::string property_str;
+      xml_node_t* property_node = get_tti_node( node, "tti-gemproperties" );
+      if( property_node ) xml_t::get_value( property_str, property_node, "a/." );
+    
+      if( gem_type == GEM_NONE || property_str.empty() ) 
+	      return GEM_NONE;
+
+      std::string& s = item.armory_gems_str;
+
+      if( gem_type == GEM_META )
+      {
+	      int meta_gem_type = armory_t::parse_meta_gem( property_str );
+
+	      if( meta_gem_type != META_GEM_NONE )
+	      {
+	        s += "_";
+	        s += util_t::meta_gem_type_string( meta_gem_type );
+	      }
+	      else
+        {
+          armory_t::fuzzy_stats( s, property_str );
+        }
+      }
+      else
+      {
+	      armory_t::fuzzy_stats( s, property_str );
+      }
+
+      return gem_type;
+    }
+  }
+
+  return GEM_NONE;
+}
 
 // mmo_champion_t::download_glyph ===========================================
 

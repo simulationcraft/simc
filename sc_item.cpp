@@ -517,3 +517,117 @@ bool item_t::decode_weapon()
   return true;
 }
 
+// item_t::download_slot =============================================================
+
+bool item_t::download_slot( item_t& item, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] )
+{
+  player_t* p = item.player;
+  bool success = false;
+
+  // Check URL caches
+  success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
+            mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
+            armory_t::download_slot( item, item_id, 1 );
+
+  if ( success )
+    return true;
+
+  success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 0 );
+  if ( ! success )
+  {
+	  util_t::printf( "\nsimcraft: Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", p -> name(), item.slot_name() );
+    success = mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 0 );
+  }
+
+  if ( ! success )
+  {
+	  util_t::printf( "\nsimcraft: Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", p -> name(), item.slot_name() );
+    success = armory_t::download_slot( item, item_id, 0 );
+  }
+
+  return success;
+}
+
+// item_t::download_item ================================================================
+
+bool item_t::download_item( item_t& item, const std::string& item_id )
+{
+  player_t* p = item.player;
+  bool success = false;
+
+  // Check URL caches
+  success = wowhead_t::download_item( item, item_id, 1 ) ||
+            mmo_champion_t::download_item( item, item_id, 1 ) ||
+            armory_t::download_item( item, item_id, 1 );
+
+  if ( success )
+    return true;
+
+  success = wowhead_t::download_item( item, item_id, 0 );
+  if ( ! success )
+  {
+	  util_t::printf( "\nsimcraft: Player %s unable to download item '%s' info from wowhead.  Trying mmo-champion....\n", p -> name(), item.name() );
+    success = mmo_champion_t::download_item( item, item_id, 0 );
+  }
+
+  if ( ! success )
+  {
+    util_t::printf( "\nsimcraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", p -> name(), item.name() );
+    success = armory_t::download_item( item, item_id, 0 );
+  }
+
+  return success;
+}
+
+// item_t::download_glyph ================================================================
+
+bool item_t::download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id )
+{
+  bool success = false;
+
+  success = wowhead_t::download_glyph( sim, glyph_name, glyph_id, 1 ) ||
+            mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 1 );
+
+  if ( success )
+    return true;
+
+  success = wowhead_t::download_glyph( sim, glyph_name, glyph_id, 0 );
+  if ( ! success )
+  {
+	  util_t::printf( "\nsimcraft: Unable to download glyph id '%s' info from wowhead.  Trying mmo-champion....\n", glyph_id.c_str() );
+    success = mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 0 );
+  }
+
+  return success;
+}
+
+// item_t::parse_gem ================================================================
+
+int item_t::parse_gem( item_t&            item, 
+                      const std::string& gem_id )
+{
+  int gem_type = GEM_NONE;
+
+  if( gem_id.empty() || gem_id == "" || gem_id == "0" )
+    return GEM_NONE;
+
+  // Check URL caches first
+  gem_type = wowhead_t::parse_gem( item, gem_id, 1 );
+  if ( gem_type != GEM_NONE )
+    return gem_type;
+
+  gem_type = mmo_champion_t::parse_gem( item, gem_id, 1 );
+  if ( gem_type != GEM_NONE )
+    return gem_type;
+
+  // Not in cache. Try to download.
+  gem_type = wowhead_t::parse_gem( item, gem_id, 0 );
+  if ( gem_type != GEM_NONE )
+    return gem_type;
+
+  util_t::printf( "\nsimcraft: Unable to download gem id '%s' info from wowhead.  Trying mmo-champion....\n", gem_id.c_str() );
+
+  gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );
+
+  return gem_type;
+}
