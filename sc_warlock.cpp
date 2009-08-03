@@ -3980,8 +3980,8 @@ void warlock_t::init_buffs()
   buffs_eradication    = new buff_t( sim, this, "eradication",    1, 10.0, 0.0, talents.eradication ? 0.06 : 0.00 );
   buffs_haunted        = new buff_t( sim, this, "haunted",        1, 12.0, 0.0, talents.haunt );
   buffs_metamorphosis  = new buff_t( sim, this, "metamorphosis",  1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
-  buffs_molten_core    = new buff_t( sim, this, "molten_core",    1, 12,0, 0.0, talents.molten_core * 0.05 );
-  buffs_pyroclasm      = new buff_t( sim, this, "pyroclasm",      1, 10,0, 0.0, talents.pyroclasm );
+  buffs_molten_core    = new buff_t( sim, this, "molten_core",    1, 12.0, 0.0, talents.molten_core * 0.05 );
+  buffs_pyroclasm      = new buff_t( sim, this, "pyroclasm",      1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace = new buff_t( sim, this, "shadow_embrace", 2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance  = new buff_t( sim, this, "shadow_trance",  1,  0.0, 0.0, talents.nightfall );
 
