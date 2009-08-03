@@ -918,6 +918,7 @@ struct sim_t
   FILE* output_file;
   FILE* log_file;
   int armory_throttle;
+  int current_throttle;
   int duration_uptimes;
   int debug_exp;
 

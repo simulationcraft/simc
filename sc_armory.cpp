@@ -90,7 +90,16 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 					                                   int cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
-  xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), sim -> armory_throttle );
+  xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
+
+  if ( ! node )
+  {
+    sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
+  }
+  else
+  {
+    sim -> current_throttle = sim -> armory_throttle;
+  }
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -106,7 +115,16 @@ static xml_node_t* download_character_talents( sim_t* sim,
 					                                     int   cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
-  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> armory_throttle );;
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
+
+  if ( ! node )
+  {
+    sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
+  }
+  else
+  {
+    sim -> current_throttle = sim -> armory_throttle;
+  }
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -136,7 +154,17 @@ static xml_node_t* download_item_tooltip( player_t* p,
   if ( cache_only )
     node = xml_t::download_cache( url, p -> last_modified );
   else
-    node = xml_t::download( url, "</itemTooltip>", p -> last_modified, sim -> armory_throttle );
+  {
+    node = xml_t::download( url, "</itemTooltip>", p -> last_modified, sim -> current_throttle );
+    if ( ! node )
+    {
+      sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
+    }
+    else
+    {
+      sim -> current_throttle = sim -> armory_throttle;
+    }
+  }
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -157,7 +185,17 @@ static xml_node_t* download_item_tooltip( player_t* p,
   if ( cache_only )
     node = xml_t::download_cache( url );
   else
-    node = xml_t::download( url, "</itemTooltip>", 0, sim -> armory_throttle );
+  {
+    node = xml_t::download( url, "</itemTooltip>", 0, sim -> current_throttle );
+    if ( ! node )
+    {
+      sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
+    }
+    else
+    {
+      sim -> current_throttle = sim -> armory_throttle;
+    }
+  }
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -480,12 +518,15 @@ bool armory_t::download_guild( sim_t* sim,
 
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
 
-  xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ), sim -> armory_throttle );
+  xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
   if( ! guild_info )
   {
+    sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
+
     util_t::printf( "\nsimcraft: Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
     return false;
   }
+  sim -> current_throttle = sim -> armory_throttle;
 
   if( sim -> debug ) xml_t::print( guild_info, sim -> output_file );
 

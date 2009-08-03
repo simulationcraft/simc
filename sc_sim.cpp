@@ -316,7 +316,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), armory_throttle(2), duration_uptimes(0), debug_exp(0),
+    output_file( stdout ), log_file( 0 ), armory_throttle(2), current_throttle(2), duration_uptimes(0), debug_exp(0),
     threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1477,6 +1477,8 @@ int sim_t::main( int argc, char** argv )
     util_t::printf( "simcraft: ERROR! Incorrect option format..\n" );
     exit( 0 );
   }
+
+  current_throttle = armory_throttle;
 
   if ( seed == 0 ) seed = ( int ) time( NULL );
   srand( seed );
