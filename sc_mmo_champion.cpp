@@ -10,11 +10,19 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // download_id ==============================================================
 
 static xml_node_t* download_id( sim_t*             sim,
-				const std::string& id_str )
+			                        	const std::string& id_str,
+                                int                cache_only=0 )
 {
   if( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
   std::string url = "http://db.mmo-champion.com/i/" + id_str + "/";
-  xml_node_t* node = xml_t::download( url, "<h4>Item #", 0 );
+
+  xml_node_t* node;
+
+  if ( cache_only )
+    node = xml_t::download_cache( url );
+  else
+    node = xml_t::download( url, "<h4>Item #", 0 );
+
   if( sim -> debug ) xml_t::print( node );
   return node;
 }
@@ -353,12 +361,14 @@ static bool parse_item_name( item_t&            item,
 
 bool mmo_champion_t::download_glyph( sim_t*             sim,
 				     std::string&       glyph_name,
-				     const std::string& glyph_id )
+				     const std::string& glyph_id,
+             int cache_only )
 {
-  xml_node_t* node = download_id( sim, glyph_id );
+  xml_node_t* node = download_id( sim, glyph_id, cache_only );
   if( ! node || ! xml_t::get_value( glyph_name, node, "title/." ) )
   {
-    util_t::printf( "\nsimcraft: Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
     return false;
   }
 
@@ -372,13 +382,15 @@ bool mmo_champion_t::download_glyph( sim_t*             sim,
 // mmo_champion_t::download_item ============================================
 
 bool mmo_champion_t::download_item( item_t&            item, 
-				    const std::string& item_id )
+				    const std::string& item_id,
+            int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only );
   if( ! node ) 
   {
+    if ( ! cache_only )
     util_t::printf( "\nsimcraft: Player %s nable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
@@ -409,13 +421,15 @@ bool mmo_champion_t::download_item( item_t&            item,
 bool mmo_champion_t::download_slot( item_t&            item, 
 				    const std::string& item_id,
 				    const std::string& enchant_id, 
-				    const std::string  gem_ids[ 3 ] )
+				    const std::string  gem_ids[ 3 ],
+            int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only );
   if( ! node ) 
   {
+    if ( ! cache_only )
     util_t::printf( "\nsimcraft: Player %s nable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }

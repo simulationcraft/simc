@@ -87,10 +87,9 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& region, 
                                              const std::string& server, 
                                              const std::string& name,
-					     int cache )
+					                                   int cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
-
   xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
@@ -104,11 +103,10 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& region, 
                                                const std::string& server, 
                                                const std::string& name,
-					       int cache )
+					                                     int   cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
-
-  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> armory_throttle );
+  xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> armory_throttle );;
 
   if( sim -> debug ) xml_t::print( node, sim -> output_file );
 
@@ -119,7 +117,8 @@ static xml_node_t* download_character_talents( sim_t* sim,
 
 static xml_node_t* download_item_tooltip( player_t* p,
                                           const std::string& id_str,
-                                          int slot )
+                                          int slot,
+                                          int cache_only )
 {
   sim_t* sim = p -> sim;
 
@@ -132,7 +131,12 @@ static xml_node_t* download_item_tooltip( player_t* p,
   sprintf( buffer, "&s=%d", slot );
   url += buffer;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", p -> last_modified, sim -> armory_throttle );
+  xml_node_t* node;
+
+  if ( cache_only )
+    node = xml_t::download_cache( url, p -> last_modified );
+  else
+    node = xml_t::download( url, "</itemTooltip>", p -> last_modified, sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -142,13 +146,18 @@ static xml_node_t* download_item_tooltip( player_t* p,
 // download_item_tooltip ====================================================
 
 static xml_node_t* download_item_tooltip( player_t* p,
-                                          const std::string& id_str )
+                                          const std::string& id_str,
+                                          int cache_only=0 )
 {
   sim_t* sim = p -> sim;
 
   std::string url = "http://" + p -> region_str + ".wowarmory.com/item-tooltip.xml?i=" + id_str;
+  xml_node_t* node;
 
-  xml_node_t* node = xml_t::download( url, "</itemTooltip>", 0, sim -> armory_throttle );
+  if ( cache_only )
+    node = xml_t::download_cache( url );
+  else
+    node = xml_t::download( url, "</itemTooltip>", 0, sim -> armory_throttle );
 
   if( sim -> debug ) xml_t::print( node );
 
@@ -566,7 +575,7 @@ player_t* armory_t::download_player( sim_t* sim,
                                      const std::string& server, 
                                      const std::string& name,
                                      const std::string& talents_description,
-				     int cache )
+				                             int cache )
 {
   std::string temp_name = name;
   armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
@@ -752,16 +761,28 @@ player_t* armory_t::download_player( sim_t* sim,
           xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
           xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = wowhead_t::download_slot( item, id_str, enchant_id, gem_ids );
-
-	if( ! success )
-	{
-	  util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
-	  success = mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids );
-	}
+        success = wowhead_t::download_slot( item, id_str, enchant_id, gem_ids, 1) ||
+                  mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids, 1) ||
+                  armory_t::download_slot( item, id_str, 1 ||
+                  wowhead_t::download_slot( item, id_str, enchant_id, gem_ids ) );
+  
+	      if( ! success )
+	      {
+	        util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
+	        success = mmo_champion_t::download_slot( item, id_str, enchant_id, gem_ids );
+	      }
       }
       
-      if( ! success ) success = armory_t::download_slot( item, id_str );
+      if( ! success ) 
+      {
+        success = armory_t::download_slot( item, id_str, 1 )       ||
+                  wowhead_t::download_item( item, id_str, 1 )      ||
+                  mmo_champion_t::download_item( item, id_str, 1 ) ||
+                  armory_t::download_slot( item, id_str )          ||
+                  wowhead_t::download_item( item, id_str )         ||
+                  mmo_champion_t::download_item( item, id_str );
+
+      }
       
       if( ! success ) return 0;
     }
@@ -776,14 +797,16 @@ player_t* armory_t::download_player( sim_t* sim,
 // armory_t::download_slot ==================================================
 
 bool armory_t::download_slot( item_t& item,
-                              const std::string& id_str )
+                              const std::string& id_str,
+                              int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot );
+  xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot, cache_only );
   if( ! slot_xml ) 
   {
-    util_t::printf( "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
     return false;
   }
 
@@ -823,14 +846,16 @@ bool armory_t::download_slot( item_t& item,
 // armory_t::download_item ==================================================
 
 bool armory_t::download_item( item_t& item,
-                              const std::string& id_str )
+                              const std::string& id_str,
+                              int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* item_xml = download_item_tooltip( p, id_str );
+  xml_node_t* item_xml = download_item_tooltip( p, id_str, cache_only );
   if( ! item_xml ) 
   {
-    util_t::printf( "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 

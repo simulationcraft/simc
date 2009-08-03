@@ -70,16 +70,28 @@ static js_node_t* download_profile( sim_t* sim,
 // download_id ==============================================================
 
 static xml_node_t* download_id( sim_t* sim, 
-				const std::string& id_str )
+				const std::string& id_str,
+        int cache_only=0 )
 {
   if( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
-  std::string url = "http://www.wowhead.com/?item=" + id_str + "&xml";
-  xml_node_t* node = xml_t::download( url, "</json>", 0 );
-  if ( !node )
+  std::string url_www = "http://www.wowhead.com/?item=" + id_str + "&xml";
+  std::string url_ptr = "http://ptr.wowhead.com/?item=" + id_str + "&xml";
+
+  xml_node_t *node;
+  
+  if ( cache_only )
   {
-    std::string url = "http://ptr.wowhead.com/?item=" + id_str + "&xml";
-    node = xml_t::download( url, "</json>", 0 );
+    node = xml_t::download_cache( url_www );
+    if ( ! node )
+      node = xml_t::download_cache( url_ptr );
   }
+  else
+  {
+    node = xml_t::download( url_www, "</json>", 0 );
+    if ( ! node )
+      node = xml_t::download( url_ptr, "</json>", 0 );
+  }
+ 
   if( sim -> debug ) xml_t::print( node );
   return node;
 }
@@ -376,13 +388,15 @@ static const char* translate_inventory_id( int slot )
 // wowhead_t::download_glyph ================================================
 
 bool wowhead_t::download_glyph( sim_t*             sim,
-				std::string&       glyph_name,
-                                const std::string& glyph_id )
+				                        std::string&       glyph_name,
+                                const std::string& glyph_id,
+                                int                cache_only )
 {
-  xml_node_t* node = download_id( sim, glyph_id );
+  xml_node_t* node = download_id( sim, glyph_id, cache_only );
   if( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
   {
-    util_t::printf( "\nsimcraft: Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
     return false;
   }
 
@@ -394,14 +408,16 @@ bool wowhead_t::download_glyph( sim_t*             sim,
 // wowhead_t::download_item =================================================
 
 bool wowhead_t::download_item( item_t&            item, 
-                               const std::string& item_id )
+                               const std::string& item_id,
+                               int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only );
   if( ! node ) 
   {
-    util_t::printf( "\nsimcraft: Player %s unable to download item id %s from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Player %s unable to download item id %s from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -431,14 +447,16 @@ bool wowhead_t::download_item( item_t&            item,
 bool wowhead_t::download_slot( item_t&            item, 
                                const std::string& item_id,
                                const std::string& enchant_id, 
-                               const std::string  gem_ids[ 3 ] )
+                               const std::string  gem_ids[ 3 ],
+                               int cache_only )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only );
   if( ! node ) 
   {
-    util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    if ( ! cache_only )
+      util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -628,10 +646,17 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string& glyph_id = glyph_ids[ i ];
       if( glyph_id == "0" ) continue;
       std::string glyph_name;
-      if( ! download_glyph( sim, glyph_name, glyph_id ) ) 
+      if( ! download_glyph( sim, glyph_name, glyph_id, 1 ) && ! mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 1 ) ) 
       {
-        util_t::printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
-        return 0;
+        if ( ! download_glyph( sim, glyph_name, glyph_id ) )
+        {
+          util_t::printf( "\nsimcraft: Player %s unable to download glyph id '%s' from wowhead.\n", p -> name(), glyph_id.c_str() );
+          if ( ! mmo_champion_t::download_glyph( sim, glyph_name, glyph_id ) )
+          {
+            util_t::printf( "\nsimcraft: Player %s unable to download glyph id '%s' from mmo-champion.\n", p -> name(), glyph_id.c_str() );
+            return 0;
+          }
+        }
       }
       if( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
@@ -651,8 +676,19 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
-        return 0;
+      if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids, 1 ) &&
+          ! mmo_champion_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids, 1 ) )
+      {
+        if( ! download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )        
+        {
+          util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from wowhead.\n", p -> name(), item_id.c_str() );
+          if ( ! mmo_champion_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids ) )
+          {
+            util_t::printf( "\nsimcraft: Player %s unable to download item id '%s' from mmo-champion.\n", p -> name(), item_id.c_str() );
+            return 0;
+          }
+        }
+      }
     }
   }
 

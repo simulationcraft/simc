@@ -302,15 +302,19 @@ player_t* rawr_t::load_player( sim_t* sim,
 	return 0;
       }
 
-      if( ! wowhead_t::download_slot( item, item_id, enchant_id, gem_ids ) )
-      {
-	util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
+      bool success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 1 )      ||
+                     mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
+                     wowhead_t::download_slot( item, item_id, enchant_id, gem_ids );
 
-	if( ! mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids ) )
-	{
-	  util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from mmo-champopn....\n", p -> name(), item.slot_name() );
-	  return 0;
-	}
+      if( ! success )
+      {
+	      util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from wowhead.  Trying mmo-champopn....\n", p -> name(), item.slot_name() );
+
+	      if( ! mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids ) )
+	      {
+	        util_t::printf( "\nsimcraft: Player %s unable download slot '%s' info from mmo-champopn....\n", p -> name(), item.slot_name() );
+	        return 0;
+	      }
       }
     }
   }

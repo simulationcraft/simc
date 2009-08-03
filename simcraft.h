@@ -2331,15 +2331,15 @@ struct armory_t
                               const std::string& name,
                               int player_type = PLAYER_NONE,
                               int max_rank=0,
-			      int cache=0 );
+			                        int cache=0 );
   static player_t* download_player( sim_t* sim,
                                     const std::string& region, 
                                     const std::string& server, 
                                     const std::string& name,
                                     const std::string& talents,
-				    int cache=0 );
-  static bool download_slot( item_t&, const std::string& item_id );
-  static bool download_item( item_t&, const std::string& item_id );
+				                            int cache=0 );
+  static bool download_slot( item_t&, const std::string& item_id, int cache_only=0 );
+  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
   static int  parse_meta_gem( const std::string& description );
   static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
@@ -2355,18 +2355,18 @@ struct wowhead_t
                                     const std::string& name,
                                     int active=1 );
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& item_id );
-  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
+  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
+  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
 };
 
 // MMO Champion ==============================================================
 
 struct mmo_champion_t
 {
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& item_id );
-  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
+  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
+  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
 };
 
 // Rawr ======================================================================
@@ -2404,6 +2404,7 @@ struct xml_t
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
   static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
+  static xml_node_t* download_cache( const std::string& url, int64_t timestamp=0 );
   static xml_node_t* create( const std::string& input );
   static xml_node_t* create( FILE* input );
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );

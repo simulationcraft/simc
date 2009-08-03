@@ -211,14 +211,18 @@ bool item_t::init()
 
   if( ! option_id_str.empty() ) 
   {
-    if( ! armory_t::download_item( *this, option_id_str ) )
+    bool success = armory_t::download_item( *this, option_id_str, 1 ) ||
+                   wowhead_t::download_item( *this, option_id_str, 1 ) ||
+                   mmo_champion_t::download_item( *this, option_id_str, 1 ) || 
+                   armory_t::download_item( *this, option_id_str );
+    if( ! success )
     {
       util_t::printf( "simcraft: Trying wowhead...\n" );
       if( ! wowhead_t::download_item( *this, option_id_str ) )
       {
-	util_t::printf( "simcraft: Trying mmo-champion...\n" );
-	if( ! mmo_champion_t::download_item( *this, option_id_str ) )
-	  return false;
+	      util_t::printf( "simcraft: Trying mmo-champion...\n" );
+	      if( ! mmo_champion_t::download_item( *this, option_id_str ) )
+	        return false;
       }
     }
 

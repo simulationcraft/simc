@@ -292,8 +292,9 @@ static xml_node_t* split_path( xml_node_t*        node,
 
 xml_node_t* xml_t::download( const std::string& url, 
                              const std::string& confirmation, 
-			     int64_t            timestamp,
-                             int                throttle_seconds )
+			                       int64_t            timestamp,
+                             int                throttle_seconds
+                            )
 {
   thread_t::mutex_lock( xml_mutex );
 
@@ -311,6 +312,41 @@ xml_node_t* xml_t::download( const std::string& url,
     std::string result;
 
     if( http_t::get( result, url, confirmation, timestamp, throttle_seconds ) )
+    {
+      node = xml_t::create( result );
+
+      if( node ) xml_cache.push_back( xml_cache_t( url, node ) );
+    }  
+  }
+
+  thread_t::mutex_unlock( xml_mutex );
+
+  return node;
+}
+
+// xml_t::download =========================================================
+
+xml_node_t* xml_t::download_cache( const std::string& url, 
+			                             int64_t            timestamp )
+{
+  thread_t::mutex_lock( xml_mutex );
+
+  static std::vector<xml_cache_t> xml_cache;
+  int size = xml_cache.size();
+
+  if ( timestamp < 0 ) timestamp = 0;
+
+  xml_node_t* node = 0;
+
+  for( int i=0; i < size && ! node; i++ )
+    if( xml_cache[ i ].url == url )
+      node = xml_cache[ i ].node;
+
+  if( ! node )
+  {
+    std::string result;
+
+    if ( http_t::cache_get( result, url, timestamp ) )
     {
       node = xml_t::create( result );
 
