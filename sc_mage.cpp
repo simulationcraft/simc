@@ -1689,6 +1689,8 @@ struct focus_magic_t : public mage_spell_t
       assert ( focus_magic_target != 0 );
       assert ( focus_magic_target != p );
     }
+
+    trigger_gcd = 0;
   }
 
   virtual void execute()

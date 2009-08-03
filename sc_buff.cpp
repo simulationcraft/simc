@@ -117,6 +117,8 @@ bool buff_t::trigger( int    stacks,
                       double value,
                       double chance )
 {
+  if( max_stack == 0 ) return false;
+
   trigger_attempts++;
 
   if( cooldown_ready > 0 )
@@ -143,6 +145,8 @@ bool buff_t::trigger( int    stacks,
 void buff_t::increment( int    stacks,
                         double value )
 {
+  if( max_stack == 0 ) return;
+
   if( current_stack == 0 ) 
   {
     if( value < 0 ) value = 1.0;
@@ -160,6 +164,8 @@ void buff_t::increment( int    stacks,
 void buff_t::decrement( int    stacks,
                         double value )
 {
+  if( max_stack == 0 ) return;
+
   if( stacks == 0 || current_stack <= stacks ) 
   {
     expire();
@@ -176,6 +182,8 @@ void buff_t::decrement( int    stacks,
 void buff_t::start( int    stacks,
                     double value )
 {
+  if( max_stack == 0 ) return;
+
   assert( ! expiration );
 
   if( sim -> current_time <= 0.01 ) constant = true;
@@ -222,6 +230,8 @@ void buff_t::start( int    stacks,
 void buff_t::refresh( int    stacks,
                       double value )
 {
+  if( max_stack == 0 ) return;
+
   refresh_count++;
 
   if( current_stack < max_stack )

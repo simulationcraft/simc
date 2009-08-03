@@ -1131,7 +1131,7 @@ struct player_t
   std::string name_str, talents_str, glyphs_str, id_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
-  int         index, type, level, party, member;
+  int         index, type, level, tank, party, member;
   double      skill, distance, gcd_ready, base_gcd;
   int         potion_used, stunned, moving, sleeping, initialized;
   rating_t    rating;
@@ -1190,6 +1190,7 @@ struct player_t
   int    position;
 
   // Defense Mechanics
+  event_t* target_auto_attack;
   double base_armor, initial_armor, armor, armor_snapshot;
   double armor_per_agility;
   bool   use_armor_snapshot;
@@ -1530,6 +1531,8 @@ struct player_t
   virtual void  summon_pet( const char* name );
   virtual void dismiss_pet( const char* name );
 
+  virtual void target_swing() {}
+
   virtual void register_callbacks();
   virtual void register_resource_gain_callback( int resource, action_callback_t* );
   virtual void register_resource_loss_callback( int resource, action_callback_t* );
@@ -1682,6 +1685,7 @@ struct target_t
   int vulnerable;
   int invulnerable;
   int casting;
+  double attack_speed, attack_damage;
   double initial_health, current_health;
   double total_dmg;
   uptime_t* uptime_list;

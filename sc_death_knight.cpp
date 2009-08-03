@@ -17,7 +17,6 @@ enum rune_type {
 
 #define RUNE_TYPE_MASK     3
 #define RUNE_SLOT_MAX      6
-#define MAX_BLOODWORMS     4
 
 #define RUNE_GRACE_PERIOD   2.0
 #define RUNIC_POWER_REFUND  0.9
@@ -64,42 +63,12 @@ struct death_knight_t : public player_t
   int       diseases;
 
   // Pets and Guardians
-  bloodworm_pet_t*  active_bloodworms[MAX_BLOODWORMS];
+  bloodworm_pet_t*  active_bloodworms;
 
   // Buffs
-  struct _buffs_t
-  {
-    int     bloody_vengeance;
-    double  butchery;
-    int     scent_of_blood;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
-    _buffs_t() { reset(); }
-  };
-  _buffs_t _buffs;
-
-  // Cooldowns
-  struct _cooldowns_t
-  {
-    double  bloodworms;
-    double  hysteria;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
-
-  // Expirations
-  struct _expirations_t
-  {
-    event_t* bloodworms;
-    event_t* bloody_vengeance;
-    event_t* scent_of_blood;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
-    _expirations_t() { reset(); }
-  };
-  _expirations_t _expirations;
+  buff_t* buffs_bloodworms;
+  buff_t* buffs_bloody_vengeance;
+  buff_t* buffs_scent_of_blood;
 
   // Gains
   gain_t* gains_rune_abilities;
@@ -109,19 +78,12 @@ struct death_knight_t : public player_t
 
   // Procs
   proc_t* procs_abominations_might;
-  proc_t* procs_bloodworms;
-  proc_t* procs_bloody_vengeance;
-  proc_t* procs_scent_of_blood;
   proc_t* procs_sudden_doom;
 
   // Up-Times
   uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_blood_plague;
-  uptime_t* uptimes_bloodworms;
-  uptime_t* uptimes_bloody_vengeance;
   uptime_t* uptimes_frost_fever;
-  uptime_t* uptimes_hysteria;
-  uptime_t* uptimes_scent_of_blood;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -135,7 +97,7 @@ struct death_knight_t : public player_t
   spell_t* sudden_doom;
 
   // Options
-  int scent_of_blood_interval;
+  std::string hysteria_target_str;
 
   // Talents
   struct talents_t
@@ -289,30 +251,28 @@ struct death_knight_t : public player_t
     assert ( sim ->patch.after( 3,1,0 ) );
 
     // Active
-    active_presence          = 0;
-    active_blood_plague      = NULL;
-    active_frost_fever       = NULL;
-    diseases                 = 0;
+    active_presence     = 0;
+    active_blood_plague = NULL;
+    active_frost_fever  = NULL;
+    diseases            = 0;
 
     // Pets and Guardians
-    for ( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+    active_bloodworms   = NULL;
 
     // Auto-Attack
-    main_hand_attack         = NULL;
-    off_hand_attack          = NULL;
+    main_hand_attack    = NULL;
+    off_hand_attack     = NULL;
 
-    sudden_doom              = NULL;
-
-    // Options
-    scent_of_blood_interval  = 0;
+    sudden_doom         = NULL;
 
     // Settings
-    use_armor_snapshot       = true;
+    use_armor_snapshot  = true;
   }
 
   // Character Definition
   virtual void      init_actions();
   virtual void      init_base();
+  virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_glyphs();
   virtual void      init_procs();
@@ -320,6 +280,8 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
+  virtual void      target_swing();
+  virtual void      combat_begin();
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -334,12 +296,12 @@ struct death_knight_t : public player_t
 
 struct bloodworm_pet_t : public pet_t
 {
-  static const char* id[];
+  int spawn_count;
 
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) :
-        attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -348,17 +310,18 @@ struct bloodworm_pet_t : public pet_t
       background  = true;
       repeating   = true;
     }
-    void execute()
+    virtual void player_buff()
     {
-      attack_t::execute();
-      player -> cast_pet() -> owner -> cast_death_knight() -> uptimes_bloodworms -> update( true );
+      bloodworm_pet_t* p = (bloodworm_pet_t*) player;
+      attack_t::player_buff();
+      player_multiplier *= p -> spawn_count;
     }
   };
 
-  melee_t*  melee;
+  melee_t* melee;
 
-  bloodworm_pet_t( sim_t* sim, player_t* owner, int num ) :
-      pet_t( sim, owner, id[num - 1], true /*guardian*/ )
+  bloodworm_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "bloodworms", true /*guardian*/ ), spawn_count(3)
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.damage     = 20;
@@ -381,22 +344,20 @@ struct bloodworm_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon();
-    for ( int i = MAX_BLOODWORMS; i--; )
-      if ( ! o -> active_bloodworms[i] )
-      {
-        o -> active_bloodworms[i] = this;
-        break;
-      }
+    o -> active_bloodworms = this;
     melee -> schedule_execute();
+  }
+  virtual void dismiss()
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::dismiss();
+    o -> active_bloodworms = 0;
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
 };
 
-const char* bloodworm_pet_t::id[] = { "bloodworm#1", "bloodworm#2", "bloodworm#3", "bloodworm#4" };
-
-namespace
-{ // ANONYMOUS NAMESPACE =========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Death Knight Attack
@@ -635,128 +596,6 @@ static void trigger_abominations_might( action_t* a, double base_chance )
   }
 }
 
-static void trigger_bloodworms( action_t* a )
-{
-  struct bloodworms_expiration_t : public event_t
-  {
-    bloodworms_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Bloodworms Expiration";
-      sim -> add_event( this, 20.0 );
-    }
-    virtual void execute()
-    {
-      death_knight_t* p = player -> cast_death_knight();
-      for ( int i = MAX_BLOODWORMS; i--; )
-        if ( p-> active_bloodworms[i] )
-        {
-          p -> active_bloodworms[i] -> dismiss();
-          p -> active_bloodworms[i] = NULL;
-        }
-      p -> uptimes_bloodworms -> update( false );
-      p -> _expirations.bloodworms = NULL;
-    }
-  };
-
-  death_knight_t* p = a -> player -> cast_death_knight();
-
-  if (   a -> sim -> current_time <= p->_cooldowns.bloodworms ||
-         ! a -> sim -> roll( p -> talents.bloodworms * 0.03 ) ) return;
-
-  p -> procs_bloodworms -> occur();
-  p -> _cooldowns.bloodworms = a -> sim -> current_time + 20;
-
-  // Forcing exactly 3 bloodworms for now
-  for ( int i = 3; i; )
-    p->summon_pet( bloodworm_pet_t::id[--i] );
-
-  event_t*& e = p -> _expirations.bloodworms;
-  assert( !e );
-  e = new ( a -> sim ) bloodworms_expiration_t( a -> sim, p );
-}
-
-static void trigger_hysteria( player_t* player, player_t* target )
-{
-  struct hysteria_expiration_t : public event_t
-  {
-    hysteria_expiration_t( player_t* p ) : event_t( p -> sim, p )
-    {
-      name = "Hysteria Expiration";
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      if ( player -> buffs.hysteria )
-      {
-        player -> aura_loss( "Hysteria" );
-        player -> buffs.hysteria = 0;
-      }
-
-      player -> expirations.hysteria = NULL;
-    }
-  };
-
-  target -> aura_gain( "Hysteria" );
-  target -> buffs.hysteria = 1;
-  player -> cast_death_knight() -> _cooldowns.hysteria = player -> sim -> current_time + 180;
-
-  event_t*& e = target -> expirations.hysteria;
-
-  if ( e )
-  {
-    e -> reschedule( 30.0 );
-  }
-  else
-  {
-    e = new ( player -> sim ) hysteria_expiration_t( target );
-  }
-}
-
-static void trigger_scent_of_blood( player_t* player )
-{
-  static const char* const  aura_string[] = { "Scent of Blood(1)", "Scent of Blood(2)", "Scent of Blood(3)" };
-
-  struct scent_of_blood_expiration_t : public event_t
-  {
-    scent_of_blood_expiration_t( player_t* p ) : event_t( p -> sim, p )
-    {
-      name = "Scent of Blood Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      death_knight_t* p = player -> cast_death_knight();
-
-      if ( p -> _buffs.scent_of_blood )
-      {
-        p -> aura_loss( "Scent of Blood" );
-        p -> _buffs.scent_of_blood = 0;
-      }
-
-      p -> _expirations.scent_of_blood = NULL;
-    }
-  };
-
-  death_knight_t* p = player -> cast_death_knight();
-
-  if ( ! p -> talents.scent_of_blood || ! p -> sim -> roll( 0.15 ) ) return;
-
-  p -> aura_gain( aura_string[ p -> talents.scent_of_blood - 1 ] );
-  p -> _buffs.scent_of_blood = p -> talents.scent_of_blood;
-  p -> procs_scent_of_blood -> occur();
-
-  event_t*& e = p -> _expirations.scent_of_blood;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( p -> sim ) scent_of_blood_expiration_t( p );
-  }
-}
-
 static void trigger_sudden_doom( action_t* a )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
@@ -766,50 +605,6 @@ static void trigger_sudden_doom( action_t* a )
   p -> procs_sudden_doom -> occur();
   // TODO: Intialize me
   //p -> sudden_doom -> execute();
-}
-
-static void stack_bloody_vengeance( action_t* a )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, death_knight_t* p ) : event_t( sim, p )
-    {
-      name = "Bloody Vengeance Expiration";
-      p -> aura_gain( "Bloody Vengeance(1)" );
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      death_knight_t* p = player -> cast_death_knight();
-      p -> aura_loss( "Bloody Vengeance" );
-      p -> _buffs.bloody_vengeance = 0;
-      p -> _expirations.bloody_vengeance = NULL;
-    }
-  };
-
-  death_knight_t* p = a -> player -> cast_death_knight();
-
-  if ( p -> talents.bloody_vengeance )
-  {
-    if ( p -> _buffs.bloody_vengeance == 1 )
-      p -> aura_gain( "Bloody Vengeance(2)" );
-    else if ( p -> _buffs.bloody_vengeance == 2 )
-      p -> aura_gain( "Bloody Vengeance(3)" );
-
-    if ( p -> _buffs.bloody_vengeance < 3 ) p -> _buffs.bloody_vengeance++;
-
-    event_t*& e = p -> _expirations.bloody_vengeance;
-    p -> procs_bloody_vengeance -> occur();
-
-    if ( e )
-    {
-      e -> reschedule( 30.0 );
-    }
-    else
-    {
-      e = new ( a -> sim ) expiration_t( a -> sim, p );
-    }
-  }
 }
 
 // ==========================================================================
@@ -870,11 +665,11 @@ void death_knight_attack_t::execute()
     double gain = -cost();
     if ( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
 
-    trigger_bloodworms( this );
+    p -> buffs_bloodworms -> trigger();
 
     if ( result == RESULT_CRIT )
     {
-      stack_bloody_vengeance( this );
+      p -> buffs_bloody_vengeance -> increment();
     }
   }
   else
@@ -896,9 +691,7 @@ void death_knight_attack_t::player_buff()
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
-    p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
-    p -> uptimes_hysteria -> update( p -> buffs.hysteria != 0 );
+    player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
@@ -1049,7 +842,7 @@ void death_knight_spell_t::execute()
 
     if ( result == RESULT_CRIT )
     {
-      stack_bloody_vengeance( this );
+      p -> buffs_bloody_vengeance -> increment();
     }
   }
   else
@@ -1069,10 +862,9 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + 0.15;
   }
 
-  if ( school == SCHOOL_PHYSICAL && p -> talents.bloody_vengeance )
+  if ( school == SCHOOL_PHYSICAL )
   {
-    player_multiplier *= 1 + p-> talents.bloody_vengeance * 0.01 * p -> _buffs.bloody_vengeance;
-    p -> uptimes_bloody_vengeance -> update( p -> _buffs.bloody_vengeance != 0 );
+    player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
   p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
@@ -1187,12 +979,10 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      p -> uptimes_scent_of_blood -> update( p -> _buffs.scent_of_blood > 0 );
-
-      if ( p -> _buffs.scent_of_blood )
+      if ( p -> buffs_scent_of_blood -> up() )
       {
-        if ( ! --p -> _buffs.scent_of_blood ) p -> aura_loss( "Scent of Blood" );
-        p -> resource_gain( resource, 10, p -> gains_scent_of_blood );
+        p -> resource_gain( resource, 5, p -> gains_scent_of_blood );
+	p -> buffs_scent_of_blood -> decrement();
       }
     }
   }
@@ -1265,27 +1055,25 @@ struct blood_plague_t : public death_knight_spell_t
     may_crit          = false;
     may_miss          = false;
     cooldown          = 0.0;
+
+    observer = &( p -> active_blood_plague );
   }
 
-  virtual void execute()   {
+  virtual void execute()   
+  {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-
-    if ( ! p -> active_blood_plague ) {
-      p -> active_blood_plague = this;
-      p -> diseases++;
-    }
+    p -> diseases++;
   }
 
-  virtual void last_tick() {
+  virtual void last_tick() 
+  {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::last_tick();
-
-    p -> active_blood_plague = 0;
     p -> diseases--;
   }
 
-  virtual bool ready()     { return false; }
+  virtual bool ready() { return false; }
 };
 
 struct blood_presence_t : public action_t
@@ -1623,23 +1411,21 @@ struct frost_fever_t : public death_knight_spell_t
     may_crit          = false;
     may_miss          = false;
     cooldown          = 0.0;
+    
+    observer = &( p -> active_frost_fever );
   }
 
-  virtual void execute()   {
+  virtual void execute()   
+  {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-
-    if ( ! p -> active_frost_fever ) {
-      p -> active_frost_fever = this;
-      p -> diseases++;
-    }
+    p -> diseases++;
   }
 
-  virtual void last_tick() {
+  virtual void last_tick() 
+  {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::last_tick();
-
-    p -> active_frost_fever = 0;
     p -> diseases--;
   }
 
@@ -1774,31 +1560,71 @@ struct horn_of_winter_t : public death_knight_spell_t
   }
 };
 
-// TODO: Implement me
 struct hysteria_t : public action_t
 {
-  hysteria_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
-  {
-    assert( player -> cast_death_knight() -> talents.hysteria == 1 );
+  player_t* hysteria_target;
 
+  hysteria_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD ), hysteria_target(0)
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    check_talent( p -> talents.hysteria );
+
+    std::string target_str = p -> hysteria_target_str;
     option_t options[] =
       {
+        { "target", OPT_STRING, &target_str },
         { NULL, OPT_UNKNOWN, NULL }
       };
     parse_options( options, options_str );
 
+    if ( target_str.empty() )
+    {
+      hysteria_target = p;
+    }
+    else
+    {
+      hysteria_target = sim -> find_player( target_str );
+      assert ( hysteria_target != 0 );
+    }
+
     trigger_gcd = 0;
+    cooldown = 30;
   }
 
-  void execute()
+  virtual void execute()
   {
-    trigger_hysteria( player, player );
+    if ( sim -> log ) log_t::output( sim, "%s grants %s Hysteria", player -> name(), hysteria_target -> name() );
+
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+	name = "Hysteria Expiration";
+	player -> buffs.hysteria++;
+	if ( player -> buffs.hysteria == 1 )
+	  player -> aura_gain( "Hysteria" );
+	sim -> add_event( this, 30.0 );
+      }
+      virtual void execute()
+      {
+	player -> buffs.hysteria--;
+	if ( player -> buffs.hysteria == 0 ) 
+	  player -> aura_loss( "Hysteria" );
+      }
+    };
+
+    new ( sim ) expiration_t( sim, player );
+
+    update_ready();
   }
 
-  bool ready()
+  virtual bool ready()
   {
-    return player -> sim -> current_time > player -> cast_death_knight() -> _cooldowns.hysteria;
+    if( hysteria_target -> buffs.hysteria ) 
+      return false;
+
+    return action_t::ready();
   }
 };
 
@@ -2212,16 +2038,6 @@ void death_knight_t::init_actions()
   player_t::init_actions();
 }
 
-void death_knight_t::init_gains()
-{
-  player_t::init_gains();
-
-  gains_rune_abilities     = get_gain( "rune_abilities" );
-  gains_butchery           = get_gain( "butchery" );
-  gains_power_refund       = get_gain( "power_refund" );
-  gains_scent_of_blood     = get_gain( "scent_of_blood" );
-}
-
 void death_knight_t::init_glyphs()
 {
   memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
@@ -2274,14 +2090,49 @@ void death_knight_t::init_glyphs()
   }
 }
 
+void death_knight_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  
+  buffs_bloody_vengeance = new buff_t( sim, this, "bloody_vengeance", 3,                      0.0,  0.0, talents.bloody_vengeance );
+  buffs_scent_of_blood   = new buff_t( sim, this, "scent_of_blood",   talents.scent_of_blood, 0.0, 10.0, 0.15                     );
+
+  struct bloodworms_buff_t : public buff_t
+  {
+    bloodworms_buff_t( death_knight_t* p ) : 
+      buff_t( p -> sim, p, "bloodworms", 1, 19.99, 20.01, p -> talents.bloodworms * 0.03 ) {}
+    virtual void start( int stacks, double value )
+    {
+      buff_t::start( stacks, value );
+      player -> summon_pet( "bloodworms" );
+    }
+    virtual void expire()
+    {
+      buff_t::expire();
+      death_knight_t* p = player -> cast_death_knight();
+      if( p -> active_bloodworms ) p -> active_bloodworms -> dismiss();
+    }
+  };
+  buffs_bloodworms = new bloodworms_buff_t( this );
+}
+
+void death_knight_t::init_gains()
+{
+  player_t::init_gains();
+
+  gains_rune_abilities     = get_gain( "rune_abilities" );
+  gains_butchery           = get_gain( "butchery" );
+  gains_power_refund       = get_gain( "power_refund" );
+  gains_scent_of_blood     = get_gain( "scent_of_blood" );
+}
+
 void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
   procs_abominations_might = get_proc( "abominations_might", sim );
-  procs_bloodworms         = get_proc( "bloodworms",         sim );
-  procs_bloody_vengeance   = get_proc( "bloody_vengeance",   sim );
-  procs_scent_of_blood     = get_proc( "scent_of_blood",     sim );
   procs_sudden_doom        = get_proc( "sudden_doom",        sim );
 }
 
@@ -2291,11 +2142,7 @@ void death_knight_t::init_uptimes()
 
   uptimes_abominations_might = get_uptime( "abominations_might" );
   uptimes_blood_plague       = get_uptime( "blood_plague" );
-  uptimes_bloodworms         = get_uptime( "bloodworms" );
-  uptimes_bloody_vengeance   = get_uptime( "bloody_vengeance" );
   uptimes_frost_fever        = get_uptime( "frost_fever" );
-  uptimes_hysteria           = get_uptime( "hysteria" );
-  uptimes_scent_of_blood     = get_uptime( "scent_of_blood" );
 }
 
 void death_knight_t::reset()
@@ -2309,12 +2156,40 @@ void death_knight_t::reset()
   diseases            = 0;
 
   // Pets and Guardians
-  for ( int i = MAX_BLOODWORMS; i ; ) active_bloodworms[--i] = NULL;
+  active_bloodworms = NULL;
 
-  _buffs.reset();
-  _cooldowns.reset();
-  _expirations.reset();
   _runes.reset();
+}
+
+void death_knight_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if( talents.butchery )
+  {
+    struct butchery_regen_t : public event_t
+    {
+      butchery_regen_t( sim_t* sim, player_t* player ) : event_t( sim, player )
+      {
+	name = "Butchery Regen";
+	sim -> add_event( this, 5.0 );
+      }
+      virtual void execute()
+      {
+	death_knight_t* p = player -> cast_death_knight();
+	p -> resource_gain( RESOURCE_RUNIC, p -> talents.butchery, p -> gains_butchery );
+	new ( sim ) butchery_regen_t( sim, p );
+      }
+    };
+    new ( sim ) butchery_regen_t( sim, this );
+  }
+}
+
+void death_knight_t::target_swing()
+{
+  player_t::target_swing();
+
+  buffs_scent_of_blood -> trigger( 3 );
 }
 
 double death_knight_t::composite_attack_power() SC_CONST
@@ -2325,13 +2200,6 @@ double death_knight_t::composite_attack_power() SC_CONST
 void death_knight_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
-
-  _buffs.butchery += periodicity;
-  if ( _buffs.butchery >= 5.0 )
-  {
-    _buffs.butchery -= 5;
-    resource_gain( RESOURCE_RUNIC, talents.butchery, cast_death_knight() -> gains_butchery );
-  }
 
   uptimes_blood_plague -> update( active_blood_plague != 0 );
   uptimes_frost_fever -> update( active_frost_fever != 0 );
@@ -2490,6 +2358,7 @@ std::vector<option_t>& death_knight_t::get_options()
       { "rage_of_rivendare",                OPT_INT, &( talents.rage_of_rivendare                ) },
       { "summon_gargoyle",                  OPT_INT, &( talents.summon_gargoyle                  ) },
       // @option_doc loc=player/deathknight/misc title="Misc"
+      { "hysteria_target",                  OPT_STRING, &( hysteria_target_str                   ) },
       { "sigil",                            OPT_STRING, &( items[ SLOT_RANGED ].options_str      ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2517,10 +2386,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name )
 {
   death_knight_t* p = new death_knight_t( sim, name );
 
-  new bloodworm_pet_t( sim, p, 1 );
-  new bloodworm_pet_t( sim, p, 2 );
-  new bloodworm_pet_t( sim, p, 3 );
-  new bloodworm_pet_t( sim, p, 4 );
+  new bloodworm_pet_t( sim, p );
 
   return p;
 }

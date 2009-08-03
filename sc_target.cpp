@@ -12,10 +12,11 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s ) :
-    sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
-    initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ), 
-    vulnerable( 0 ), invulnerable( 0 ), casting( 0 ),
-    initial_health( 0 ), current_health( 0 ), total_dmg( 0 ), uptime_list( 0 )
+    sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(83),
+    initial_armor(-1), armor(0), block_value(0), shield(0), 
+    vulnerable(0), invulnerable(0), casting(0),
+    attack_speed(2.0), attack_damage(2000),
+    initial_health(0), current_health(0), total_dmg(0), uptime_list(0)
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -317,6 +318,9 @@ int target_t::get_options( std::vector<option_t>& options )
       { "target_armor",          OPT_INT,    &( initial_armor                     ) },
       { "target_shield",         OPT_INT,    &( shield                            ) },
       { "target_block",          OPT_INT,    &( block_value                       ) },
+      // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
+      { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
+      { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

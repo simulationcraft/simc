@@ -293,6 +293,62 @@ static void replenish_raid( player_t* provider )
   }
 }
 
+// trigger_armor_snapshots ==================================================
+
+static void trigger_armor_snapshots( player_t* p )
+{
+  assert( p -> sim -> armor_update_interval > 0 );
+
+  struct armor_snapshot_event_t : public event_t
+  {
+    armor_snapshot_event_t( sim_t* sim, player_t* player, double interval ) : event_t( sim, player )
+    {
+      name = "Armor Snapshot";
+      sim -> add_event( this, interval );
+    }
+    virtual void execute()
+    {
+      if ( sim -> debug )
+	log_t::output( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
+
+      player -> armor_snapshot = player -> composite_armor();
+
+      new ( sim ) armor_snapshot_event_t( sim, player, sim -> armor_update_interval );
+    }
+  };
+
+  p -> armor_snapshot = p -> composite_armor();
+
+  new ( p -> sim ) armor_snapshot_event_t( p -> sim, p, p -> sim -> current_iteration % p -> sim -> armor_update_interval );
+}
+
+// trigger_target_swings ====================================================
+
+static void trigger_target_swings( player_t* p )
+{
+  assert( p -> sim -> target -> attack_speed > 0 );
+
+  struct target_swing_event_t : public event_t
+  {
+    target_swing_event_t( sim_t* sim, player_t* player, double interval ) : event_t( sim, player )
+    {
+      name = "Target Swing";
+      sim -> add_event( this, interval );
+    }
+    virtual void execute()
+    {
+      if ( sim -> log )
+	log_t::output( sim, "%s swings at %s", sim -> target -> name(), player -> name() );
+
+      player -> target_swing();
+
+      player -> target_auto_attack = new ( sim ) target_swing_event_t( sim, player, sim -> target -> attack_speed );
+    }
+  };
+
+  p -> target_auto_attack = new ( p -> sim ) target_swing_event_t( p -> sim, p, p -> sim -> target -> attack_speed );
+}
+
 // parse_talent_url =========================================================
 
 static bool parse_talent_url( sim_t* sim,
@@ -359,7 +415,7 @@ player_t::player_t( sim_t*             s,
                     const std::string& n ) :
   sim(s), name_str(n), 
   region_str(s->default_region_str), server_str(s->default_server_str), origin_str("unknown"),
-  next(0), index(-1), type(t), level(80), 
+  next(0), index(-1), type(t), level(80), tank(0),
   party(0), member(0),
   skill(s->default_skill), distance(0), gcd_ready(0), base_gcd(1.5), 
   potion_used(0), stunned(0), moving(0), sleeping(0), initialized(0), 
@@ -390,9 +446,9 @@ player_t::player_t( sim_t*             s,
   attack_power_per_strength(0), initial_attack_power_per_strength(0),
   attack_power_per_agility(0),  initial_attack_power_per_agility(0),
   attack_crit_per_agility(0),   initial_attack_crit_per_agility(0),
-  position( POSITION_BACK ),
+  position(POSITION_BACK),
   // Defense Mechanics
-  base_armor(0), initial_armor(0), armor(0), armor_snapshot(0),
+  target_auto_attack(0), base_armor(0), initial_armor(0), armor(0), armor_snapshot(0),
   armor_per_agility(2.0), use_armor_snapshot(false),
   // Resources
   mana_per_intellect(0), health_per_stamina(0),
@@ -1387,28 +1443,9 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if ( use_armor_snapshot )
-  {
-    assert( sim -> armor_update_interval > 0 );
+  if ( use_armor_snapshot ) trigger_armor_snapshots( this );
 
-    struct armor_snapshot_event_t : public event_t
-    {
-      armor_snapshot_event_t( sim_t* sim, player_t* p, double interval ) : event_t( sim, p )
-      {
-        name = "Armor Snapshot";
-        sim -> add_event( this, interval );
-      }
-      virtual void execute()
-      {
-        if ( sim -> debug )
-          log_t::output( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
-        player -> armor_snapshot = player -> composite_armor();
-        new ( sim ) armor_snapshot_event_t( sim, player, sim -> armor_update_interval );
-      }
-    };
-    armor_snapshot = composite_armor();
-    new ( sim ) armor_snapshot_event_t( sim, this, sim -> current_iteration % sim -> armor_update_interval );
-  }
+  if ( tank ) trigger_target_swings( this );
 }
 
 // player_t::combat_end ====================================================
@@ -2949,6 +2986,7 @@ std::vector<option_t>& player_t::get_options()
       { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
       { "race",                                 OPT_STRING,   &( race_str                                     ) },
       { "level",                                OPT_INT,      &( level                                        ) },
+      { "tank",                                 OPT_INT,      &( tank                                         ) },
       { "skill",                                OPT_FLT,      &( skill                                        ) },
       { "distance",                             OPT_FLT,      &( distance                                     ) },
       { "professions",                          OPT_STRING,   &( professions_str                              ) },
