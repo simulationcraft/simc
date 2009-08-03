@@ -332,7 +332,7 @@ struct rogue_poison_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    proc = true;
+    proc = ! sim -> P320;
 
     base_hit  += p -> talents.precision * 0.01;
 
@@ -2750,7 +2750,6 @@ struct anesthetic_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     trigger_gcd      = 0;
     background       = true;
-    proc             = true;
     may_crit         = true;
     direct_power_mod = 0;
     base_dd_min      = util_t::ability_rank( p -> level,  218,77,  134,68,  0,0 );
@@ -2779,7 +2778,6 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     trigger_gcd    = 0;
     background     = true;
-    proc           = true;
     num_ticks      = 4;
     base_tick_time = 3.0;
     tick_power_mod = 0.12 / num_ticks;
@@ -2866,7 +2864,6 @@ struct instant_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     trigger_gcd      = 0;
     background       = true;
-    proc             = true;
     may_crit         = true;
     direct_power_mod = 0.10;
     base_dd_min      = util_t::ability_rank( p -> level,  300,79,  245,73,  161,68,  76,0 );
@@ -2908,7 +2905,6 @@ struct wound_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     trigger_gcd      = 0;
     background       = true;
-    proc             = true;
     may_crit         = true;
     direct_power_mod = .04;
     base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
