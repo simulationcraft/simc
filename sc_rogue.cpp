@@ -3448,7 +3448,9 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> special || a -> ticking || a -> proc ) return;
+    if ( ! a -> special || a -> proc ) return;
+
+    if( ! sim -> P320 && a -> ticking ) return;
 
     rogue_t* rogue = listener -> cast_rogue();
 
