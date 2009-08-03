@@ -2047,9 +2047,9 @@ void priest_t::init_actions()
     {
       case TREE_SHADOW:
         if( talents.shadow_form ) action_list_str += "/shadow_form";
+        action_list_str += "/wild_magic_potion";
         action_list_str += "/shadow_fiend";
         if( talents.dispersion ) action_list_str += "/dispersion";
-        action_list_str += "/speed_potion";
         action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
         if( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
         action_list_str += "/devouring_plague/mind_blast";
