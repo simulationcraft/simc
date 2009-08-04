@@ -14,10 +14,11 @@ actions+=/innervate,trigger=20000
 actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
 actions+=/starfire,instant=1
-actions+=/moonfire,skip_on_eclipse=-1
-actions+=/insect_swarm,eclipse_left>=12
+actions+=/moonfire
+actions+=/insect_swarm
 actions+=/starfire,eclipse=trigger
 actions+=/use_item,name=scale_of_fates
+actions+=/wrath,eclipse=benefit/starfire,eclipse=benefit
 actions+=/wrath
 head=conquerors_nightsong_cover,stats=480armor_60hit_115sp_85sta_86int_59spi,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
 neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=19sp

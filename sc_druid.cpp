@@ -3556,10 +3556,10 @@ void druid_t::init_actions()
       if ( talents.force_of_nature ) action_list_str+="/treants";
       if ( talents.starfall        ) action_list_str+="/starfall,skip_on_eclipse=1";
       action_list_str += "/starfire,instant=1";
+      action_list_str += "/moonfire";
+      if ( talents.insect_swarm ) action_list_str += "/insect_swarm";
       if ( eclipse_cycle == "lunar" )
       {
-        action_list_str += "/moonfire,skip_on_eclipse=-1";
-        if ( talents.insect_swarm ) action_list_str += "/insect_swarm,eclipse_left>=12";
         action_list_str += "/starfire,eclipse=trigger";
         action_list_str += use_str;
         if ( sim -> P320 )
@@ -3570,8 +3570,6 @@ void druid_t::init_actions()
       }
       else
       {
-        action_list_str += "/moonfire,eclipse_left>=12";
-        if ( talents.insect_swarm ) action_list_str += "/insect_swarm,skip_on_eclipse=1";
         action_list_str += "/wrath,eclipse=trigger";
         action_list_str += use_str;
         if ( sim -> P320 )
