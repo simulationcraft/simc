@@ -1426,6 +1426,44 @@ static void trigger_tier8_4pc( attack_t* a )
   p -> expirations.tier8_4pc = new ( a -> sim ) precision_shots_expiration_t( a -> sim, p );
 }
 
+// trigger_tier9_4pc =================================================
+
+static void trigger_tier9_4pc( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> set_bonus.tier9_4pc() )
+    return;
+
+  if ( ! a -> sim -> cooldown_ready( p -> cooldowns.tier9_4pc ) )
+    return;
+
+  if ( ! p -> rngs.tier9_4pc -> roll( 0.35 ) )
+    return;
+
+  struct greatness_expiration_t : public event_t
+  {
+    greatness_expiration_t( sim_t* sim, hunter_t* p ) : event_t( sim, p )
+    {
+      name = "Greatness Expiration";
+      p -> active_pet -> aura_gain( "Greatness" );
+      p -> cooldowns.tier9_4pc = sim -> current_time + 45;
+      p -> active_pet -> stat_gain(STAT_ATTACK_POWER, 600);
+      sim -> add_event( this, 15.0 );
+    }
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> active_pet -> aura_loss( "Greatness" );
+      p -> active_pet -> stat_loss(STAT_ATTACK_POWER, 600);
+      p -> expirations.tier9_4pc = 0;
+    }
+  };
+
+  p -> procs.tier9_4pc -> occur();
+  p -> expirations.tier9_4pc = new ( a -> sim ) greatness_expiration_t( a -> sim, p );
+}
+
 // trigger_wild_quiver ===============================================
 
 static void trigger_wild_quiver( attack_t* a )
@@ -2257,6 +2295,7 @@ void hunter_attack_t::execute()
   {
     trigger_aspect_of_the_viper( this );
     trigger_master_tactician( this );
+    trigger_tier9_4pc( this );
 
     if ( result == RESULT_CRIT )
     {
@@ -4057,8 +4096,9 @@ void hunter_t::init_actions()
     if ( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
     if ( primary_tree() == TREE_MARKSMANSHIP )
     {
-      if ( ! talents.explosive_shot ) action_list_str += "/aimed_shot";
-      if (   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+      if( talents.improved_arcane_shot ) action_list_str += "/arcane_shot";
+      if( talents.aimed_shot           ) action_list_str += "/aimed_shot";
+      if( talents.readiness            ) action_list_str += "/readiness,wait_for_rapid_fire=1";
     }
     else
     {
