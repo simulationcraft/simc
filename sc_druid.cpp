@@ -705,7 +705,7 @@ static void trigger_eclipse_wrath( spell_t* s )
       p -> aura_gain( "Eclipse Wrath" );
       p -> _buffs.eclipse_wrath = sim -> current_time;
       p -> _cooldowns.eclipse_wrath = sim -> current_time + 30;
-      p -> _cooldowns.eclipse_starfire = sim -> current_time + ( sim -> P320 ? 15 : 30 );
+      p -> _cooldowns.eclipse_starfire = sim -> current_time + 15;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
@@ -739,7 +739,7 @@ static void trigger_eclipse_starfire( spell_t* s )
       p -> aura_gain( "Eclipse Starfire" );
       p -> _buffs.eclipse_starfire = sim -> current_time;
       p -> _cooldowns.eclipse_starfire = sim -> current_time + 30;
-      p -> _cooldowns.eclipse_wrath = sim -> current_time + ( sim -> P320 ? 15 : 30 );
+      p -> _cooldowns.eclipse_wrath = sim -> current_time + 15;
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
@@ -1447,18 +1447,13 @@ struct mangle_cat_t : public druid_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 634, 634, 0, 45 },
-      { 75, 4, 536, 536, 0, 45 },
+      { 80, 5, 566, 566, 0, 45 },
+      { 75, 4, 478, 478, 0, 45 },
       { 68, 3, 330, 330, 0, 45 },
       { 58, 2, 256, 256, 0, 45 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48566 );
-
-    if ( sim -> P320 )
-    {
-      base_dd_min = base_dd_max = 566;
-    }
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 2.0;
@@ -1555,15 +1550,13 @@ struct rip_t : public druid_attack_t
 
     num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
 
-    static double dmg_80[] = { 39+99*1, 39+99*2, 39+99*3, 39+99*4, 39+99*5 };
-    static double dmg_71[] = { 32+72*1, 32+72*2, 32+72*3, 32+72*4, 32+72*5 };
+    static double dmg_80[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
+    static double dmg_71[] = { 30+67*1, 30+67*2, 30+67*3, 30+67*4, 30+67*5 };
     static double dmg_67[] = { 24+48*1, 24+48*2, 24+48*3, 24+48*4, 24+48*5 };
     static double dmg_60[] = { 17+28*1, 17+28*2, 17+28*3, 17+28*4, 17+28*5 };
 
-    static double dmg_80_P320[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
 
-    combo_point_dmg = ( sim -> P320 ? dmg_80_P320 :
-                        p -> level >= 80 ? dmg_80 :
+    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
                         p -> level >= 71 ? dmg_71 :
                         p -> level >= 67 ? dmg_67 :
                         dmg_60 );
@@ -1679,8 +1672,8 @@ struct shred_t : public druid_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 742, 742, 0, 60 },
-      { 75, 8, 630, 630, 0, 60 },
+      { 80, 9, 666, 666, 0, 60 },
+      { 75, 8, 564, 564, 0, 60 },
       { 70, 7, 405, 405, 0, 60 },
       { 61, 6, 236, 236, 0, 60 },
       { 54, 5, 180, 180, 0, 60 },
@@ -1688,15 +1681,7 @@ struct shred_t : public druid_attack_t
     };
     init_rank( ranks, 48572 );
 
-    if ( sim -> P320 )
-    {
-      base_dd_min = base_dd_max = 666;
-      weapon_multiplier *= 2.26;
-    }
-    else
-    {
-      weapon_multiplier *= 2.25;
-    }
+    weapon_multiplier *= 2.25;
 
     weapon = &( p -> main_hand_weapon );
     requires_position  = POSITION_BACK;
@@ -2261,10 +2246,7 @@ struct innervate_t : public druid_spell_t
 
     base_cost = 0.0;
     base_execute_time = 0;
-    if ( sim -> P320 )
-      cooldown  = 240;
-    else
-      cooldown  = 480;
+    cooldown  = 240;
 
     harmful   = false;
     if ( p -> tiers.t4_4pc_balance ) cooldown -= 48.0;
@@ -2280,10 +2262,7 @@ struct innervate_t : public druid_spell_t
     {
       expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-        if ( sim -> P320 )
-          sim -> add_event( this, 10.0 );
-        else
-          sim -> add_event( this, 20.0 );
+        sim -> add_event( this, 10.0 );
       }
       virtual void execute()
       {
@@ -2295,10 +2274,7 @@ struct innervate_t : public druid_spell_t
     {
       expiration_glyph_t( sim_t* sim, player_t* p ) : event_t( sim, p )
       {
-        if ( sim -> P320 )
-          sim -> add_event( this, 10.0 );
-        else
-          sim -> add_event( this, 20.0 );
+        sim -> add_event( this, 10.0 );
       }
       virtual void execute()
       {
@@ -3562,20 +3538,14 @@ void druid_t::init_actions()
       {
         action_list_str += "/starfire,eclipse=trigger";
         action_list_str += use_str;
-        if ( sim -> P320 )
-        {
-          action_list_str += "/wrath,eclipse=benefit/starfire,eclipse=benefit";
-        }
+        action_list_str += "/wrath,eclipse=benefit/starfire,eclipse=benefit";
         action_list_str += "/wrath";
       }
       else
       {
         action_list_str += "/wrath,eclipse=trigger";
         action_list_str += use_str;
-        if ( sim -> P320 )
-        {
-          action_list_str += "/starfire,eclipse=benefit/wrath,eclipse=benefit";
-        }
+        action_list_str += "/starfire,eclipse=benefit/wrath,eclipse=benefit";
         action_list_str += "/starfire";
       }
     }

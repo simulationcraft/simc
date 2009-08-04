@@ -1540,17 +1540,10 @@ struct devastate_t : public warrior_attack_t
 
 
     weapon = &( p -> main_hand_weapon );
-    if ( sim -> P320 )
-    {
-      base_dd_min = 1010;
-      base_dd_max = 1010;
-      weapon_multiplier = 1.00;
-      if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05;
-    }
-    else
-    {
-      weapon_multiplier = 0.50;
-    }
+    base_dd_min = 1010;
+    base_dd_max = 1010;
+    weapon_multiplier = 1.00;
+    if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05;
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;
@@ -1784,14 +1777,7 @@ struct execute_t : public warrior_attack_t
     bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
 
     double max_consumed = 0;
-    if ( sim -> P320 )
-    {
-      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 );
-    }
-    else
-    {
-      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], ( sudden_death_up ? 30.0 : 100.0 ) );
-    }
+    max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 );
 
     double excess_rage = max_consumed - resource_consumed;
 
@@ -2149,7 +2135,6 @@ struct whirlwind_t : public warrior_attack_t
       if ( p -> _buffs.recklessness == 1 )
         p -> _buffs.recklessness++;
     }
-    weapon = &( player -> off_hand_weapon );
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
@@ -2384,14 +2369,7 @@ struct bloodrage_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
     p -> _buffs.bloodrage = 10;
-    if ( sim -> P320 )
-    {
-      p -> resource_gain( RESOURCE_RAGE, 20 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
-    }
-    else
-    {
-      p -> resource_gain( RESOURCE_RAGE, 10 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
-    }
+    p -> resource_gain( RESOURCE_RAGE, 20 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
 
     new ( sim ) bloodrage_buff_t( sim, p );
   }
@@ -2880,10 +2858,7 @@ void warrior_t::interrupt()
 
 double warrior_t::composite_attack_power() SC_CONST
 {
-  if ( sim -> P320 )
-    return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
-
-  return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 180 : 0 );
+  return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
 }
 
 // warrior_t::composite_armor ================================================
