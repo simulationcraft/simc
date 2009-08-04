@@ -299,9 +299,10 @@ static bool parse_rawr( sim_t*             sim,
 sim_t::sim_t( sim_t* p, int index ) :
     parent( p ), P320( false ),
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
-    queue_lag( 0.075 ), queue_lag_range( 0 ),
-    gcd_lag( 0.150 ), gcd_lag_range( 0 ),
-    channel_lag( 0.250 ), channel_lag_range( 0 ),
+    queue_lag( 0.075 ), queue_lag_stddev( 0 ),
+    gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
+    channel_lag( 0.250 ), channel_lag_stddev
+( 0 ),
     travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 1.0 ),
     current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
@@ -660,9 +661,9 @@ bool sim_t::init()
 
   total_seconds = 0;
 
-  if (   queue_lag_range == 0 )   queue_lag_range =   queue_lag * 0.25;
-  if (     gcd_lag_range == 0 )     gcd_lag_range =     gcd_lag * 0.25;
-  if ( channel_lag_range == 0 ) channel_lag_range = channel_lag * 0.25;
+  if (   queue_lag_stddev == 0 )   queue_lag_stddev =   queue_lag * 0.25;
+  if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
+  if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
 
   target -> init();
 
@@ -1265,11 +1266,11 @@ std::vector<option_t>& sim_t::get_options()
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
       { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
-      { "channel_lag_range",                OPT_FLT,    &( channel_lag_range                        ) },
+      { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
       { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
-      { "gcd_lag_range",                    OPT_FLT,    &( gcd_lag_range                            ) },
+      { "gcd_lag_stddev",                   OPT_FLT,    &( gcd_lag_stddev                           ) },
       { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
-      { "queue_lag_range",                  OPT_FLT,    &( queue_lag_range                          ) },
+      { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
       { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
       { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },

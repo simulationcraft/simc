@@ -1595,15 +1595,18 @@ void player_t::schedule_ready( double delta_time,
       }
       else if ( last_foreground_action -> channeled )
       {
-        lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_range );
+	double delta = sim -> channel_lag_stddev * 2.0;
+	lag = rngs.lag_channel -> range( sim -> channel_lag - delta, sim -> channel_lag + delta );
       }
       else if ( gcd_adjust > 0 && last_foreground_action -> time_to_execute == 0 )
       {
-        lag = rngs.lag_gcd -> gauss( sim -> gcd_lag, sim -> gcd_lag_range );
+	double delta = sim -> gcd_lag_stddev * 2.0;
+        lag = rngs.lag_gcd -> range( sim -> gcd_lag - delta, sim -> gcd_lag + delta );
       }
       else // queued cast
       {
-        lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_range );
+	double delta = sim -> queue_lag_stddev * 2.0;
+        lag = rngs.lag_queue -> range( sim -> queue_lag - delta, sim -> queue_lag + delta );
       }
     }
 

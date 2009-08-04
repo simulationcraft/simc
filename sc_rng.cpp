@@ -675,14 +675,17 @@ struct range_distribution_t : public distribution_t
 
 struct gauss_distribution_t : public distribution_t
 {
-  gauss_distribution_t() : distribution_t( 6 )
+  gauss_distribution_t() : distribution_t( 9 )
   {
-    chances[ 0 ] = 0.022;  values[ 0 ] = -2.5;
-    chances[ 1 ] = 0.136;  values[ 1 ] = -1.5;
-    chances[ 2 ] = 0.342;  values[ 2 ] = -0.5;
-    chances[ 3 ] = 0.342;  values[ 3 ] = +0.5;
-    chances[ 4 ] = 0.136;  values[ 4 ] = +1.5;
-    chances[ 5 ] = 0.022;  values[ 5 ] = +2.5;
+    chances[ 0 ] = 0.025;  values[ 0 ] = -2.5;
+    chances[ 1 ] = 0.050;  values[ 1 ] = -2.0;
+    chances[ 2 ] = 0.100;  values[ 1 ] = -1.5;
+    chances[ 3 ] = 0.200;  values[ 2 ] = -0.5;
+    chances[ 4 ] = 0.250;  values[ 3 ] =  0.0;
+    chances[ 5 ] = 0.200;  values[ 3 ] = +0.5;
+    chances[ 6 ] = 0.100;  values[ 4 ] = +1.5;
+    chances[ 7 ] = 0.050;  values[ 4 ] = +2.0;
+    chances[ 8 ] = 0.025;  values[ 5 ] = +2.5;
   }
 };
 

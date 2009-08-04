@@ -800,9 +800,9 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
-  double      queue_lag, queue_lag_range;
-  double      gcd_lag, gcd_lag_range;
-  double      channel_lag, channel_lag_range;
+  double      queue_lag, queue_lag_stddev;
+  double      gcd_lag, gcd_lag_stddev;
+  double      channel_lag, channel_lag_stddev;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
