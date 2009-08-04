@@ -214,7 +214,7 @@ void target_t::combat_begin()
   if ( sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
   if ( sim -> overrides.earth_and_moon        ) debuffs.earth_and_moon = 13;
   if ( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = 0.05;
-  if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = (sim -> P313 ? 500 : 300) * 1.5;
+  if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 500 * 1.5;
   if ( sim -> overrides.improved_faerie_fire  ) debuffs.improved_faerie_fire = 3;
   if ( sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
   if ( sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;

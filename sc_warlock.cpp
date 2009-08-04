@@ -1838,10 +1838,9 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> active_immolate){
-      if (sim->patch.after(3,2,0))
+      if ( sim -> P320 )
         player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
       else
-      if (sim -> P312 )
         player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
     }
   }
@@ -1946,8 +1945,6 @@ struct shadow_burn_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
-
-    if ( sim -> P312 ) direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
   }
 
   virtual void execute()
@@ -2462,7 +2459,7 @@ struct haunt_t : public warlock_spell_t
     cooldown          = 8.0;
     may_crit          = true;
 
-    if ( p -> talents.pandemic && sim->patch.after(3,2,0) )
+    if ( p -> talents.pandemic && sim -> P320 )
     {
       base_crit_bonus_multiplier = 2;
     }
@@ -2562,11 +2559,8 @@ struct immolate_t : public warlock_spell_t
                                   p -> set_bonus.tier9_4pc()     * 0.10 );
 
 
-    if ( ! sim -> P312 )
-    {
-      tick_power_mod    += p -> talents.fire_and_brimstone * 0.02 / num_ticks;
-      direct_power_mod  += p -> talents.fire_and_brimstone * 0.01;
-    }
+    tick_power_mod    += p -> talents.fire_and_brimstone * 0.02 / num_ticks;
+    direct_power_mod  += p -> talents.fire_and_brimstone * 0.01;
 
     if ( p -> set_bonus.tier4_4pc() ) num_ticks++;
 
@@ -2712,12 +2706,10 @@ struct conflagrate_t : public warlock_spell_t
                        + p -> talents.improved_immolate * 0.10
                        + p -> glyphs.immolate           * 0.10;
 
-    if ( ! sim -> P312 ) base_multiplier *= 0.7;
+    base_multiplier *= 0.7;
 
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03 + p -> set_bonus.tier8_2pc() * 0.10 ;
     base_crit        += p -> talents.devastation * 0.05;
-
-    if ( sim -> P312 ) base_crit += p -> talents.fire_and_brimstone * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -2743,20 +2735,10 @@ struct conflagrate_t : public warlock_spell_t
     {
       dot_spell = &( p -> active_shadowflame );
     }
-    if ( ! sim -> P312 )
-    {
-      base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   )
-                                  * ( ( *dot_spell ) -> num_ticks      );
-      direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod )
-                                  * ( ( *dot_spell ) -> num_ticks      );
-    }
-    else
-    {
-      base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   )
-                                  * ( ( *dot_spell ) -> num_ticks - 1  );
-      direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod )
-                                  * ( ( *dot_spell ) -> num_ticks - 1  );
-    }
+
+    base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   ) * ( ( *dot_spell ) -> num_ticks );
+    direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod ) * ( ( *dot_spell ) -> num_ticks );
+
     player_spell_power = ( *dot_spell ) -> player_spell_power;
 
     return warlock_spell_t::calculate_direct_damage();
@@ -2782,18 +2764,16 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( ! sim -> P312 )
-    {
-      if ( p -> talents.fire_and_brimstone &&
-           p -> active_immolate )
-      {
-        int ticks_remaining = ( p -> active_immolate -> num_ticks -
-                                p -> active_immolate -> current_tick );
 
-        if ( ticks_remaining <= 2 )
-        {
-          player_crit += p -> talents.fire_and_brimstone * 0.05;
-        }
+    if ( p -> talents.fire_and_brimstone &&
+	 p -> active_immolate )
+    {
+      int ticks_remaining = ( p -> active_immolate -> num_ticks -
+			      p -> active_immolate -> current_tick );
+
+      if ( ticks_remaining <= 2 )
+      {
+	player_crit += p -> talents.fire_and_brimstone * 0.05;
       }
     }
   }
@@ -2919,10 +2899,9 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
     if ( p -> active_immolate){
-      if (sim->patch.after(3,2,0))
+      if ( sim -> P320 )
         player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
       else
-      if (sim -> P312 )
         player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
     }
     p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );

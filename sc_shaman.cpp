@@ -3676,81 +3676,41 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
                                  std::vector<int*>& enhancement,
                                  std::vector<int*>& restoration )
 {
-  if ( sim -> patch.after( 3, 1, 0 ) )
-  {
-    talent_translation_t translation[][3] =
-      {
-        { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
-        { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
-        { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
-        { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
-        { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
-        { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
-        { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
-        { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
-        { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
-        { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
-        { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
-        { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
-        { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
-        { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
-        { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
-        { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
-        { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
-        { { 18, &( talents.booming_echoes        ) }, { 18, &( talents.frozen_power              ) }, { 18, NULL                                  } },
-        { { 19, &( talents.elemental_oath        ) }, { 19, &( talents.dual_wield_specialization ) }, { 19, &( talents.blessing_of_the_eternals ) } },
-        { { 20, &( talents.lightning_overload    ) }, { 20, &( talents.dual_wield                ) }, { 20, NULL                                  } },
-        { { 21, NULL                               }, { 21, &( talents.stormstrike               ) }, { 21, NULL                                  } },
-        { { 22, &( talents.totem_of_wrath        ) }, { 22, &( talents.static_shock              ) }, { 22, NULL                                  } },
-        { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, &( talents.earth_shield             ) } },
-        { { 24, &( talents.shamanism             ) }, { 24, &( talents.improved_stormstrike      ) }, { 24, NULL                                  } },
-        { { 25, &( talents.thunderstorm          ) }, { 25, &( talents.mental_quickness          ) }, { 25, NULL                                  } },
-        { {  0, NULL                               }, { 26, &( talents.shamanistic_rage          ) }, { 26, NULL                                  } },
-        { {  0, NULL                               }, { 27, NULL                                   }, {  0, NULL                                  } },
-        { {  0, NULL                               }, { 28, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
-        { {  0, NULL                               }, { 29, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
-        { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
-      };
-
-    return get_talent_translation( elemental, enhancement, restoration, translation );
-  }
-  else
-  {
-    talent_translation_t translation[][3] =
-      {
-        { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
-        { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
-        { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
-        { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
-        { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
-        { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
-        { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
-        { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
-        { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
-        { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
-        { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
-        { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
-        { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
-        { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
-        { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
-        { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
-        { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
-        { { 18, &( talents.elemental_oath        ) }, { 18, &( talents.dual_wield_specialization ) }, { 18, NULL                                  } },
-        { { 19, &( talents.lightning_overload    ) }, { 19, &( talents.dual_wield                ) }, { 19, &( talents.blessing_of_the_eternals ) } },
-        { { 20, NULL                               }, { 20, &( talents.stormstrike               ) }, { 20, NULL                                  } },
-        { { 21, &( talents.totem_of_wrath        ) }, { 21, &( talents.static_shock              ) }, { 21, NULL                                  } },
-        { { 22, &( talents.lava_flows            ) }, { 22, &( talents.lava_lash                 ) }, { 22, NULL                                  } },
-        { { 23, &( talents.shamanism             ) }, { 23, &( talents.improved_stormstrike      ) }, { 23, NULL                                  } },
-        { { 24, &( talents.thunderstorm          ) }, { 24, &( talents.mental_quickness          ) }, { 24, NULL                                  } },
-        { {  0, NULL                               }, { 25, &( talents.shamanistic_rage          ) }, { 25, NULL                                  } },
-        { {  0, NULL                               }, { 26, NULL                                   }, { 26, NULL                                  } },
-        { {  0, NULL                               }, { 27, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
-        { {  0, NULL                               }, { 28, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
-        { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
-      };
-
-    return get_talent_translation( elemental, enhancement, restoration, translation );
-  }
+  talent_translation_t translation[][3] =
+    {
+      { {  1, &( talents.convection            ) }, {  1, &( talents.enhancing_totems          ) }, {  1, NULL                                  } },
+      { {  2, &( talents.concussion            ) }, {  2, NULL                                   }, {  2, &( talents.totemic_focus            ) } },
+      { {  3, &( talents.call_of_flame         ) }, {  3, &( talents.ancestral_knowledge       ) }, {  3, NULL                                  } },
+      { {  4, NULL                               }, {  4, NULL                                   }, {  4, NULL                                  } },
+      { {  5, &( talents.elemental_devastation ) }, {  5, &( talents.thundering_strikes        ) }, {  5, NULL                                  } },
+      { {  6, &( talents.reverberation         ) }, {  6, NULL                                   }, {  6, NULL                                  } },
+      { {  7, &( talents.elemental_focus       ) }, {  7, &( talents.improved_shields          ) }, {  7, NULL                                  } },
+      { {  8, &( talents.elemental_fury        ) }, {  8, &( talents.elemental_weapons         ) }, {  8, NULL                                  } },
+      { {  9, NULL                               }, {  9, &( talents.shamanistic_focus         ) }, {  9, NULL                                  } },
+      { { 10, NULL                               }, { 10, NULL                                   }, { 10, &( talents.restorative_totems       ) } },
+      { { 11, NULL                               }, { 11, &( talents.flurry                    ) }, { 11, &( talents.tidal_mastery            ) } },
+      { { 12, &( talents.call_of_thunder       ) }, { 12, NULL                                   }, { 12, NULL                                  } },
+      { { 13, &( talents.unrelenting_storm     ) }, { 13, &( talents.improved_windfury_totem   ) }, { 13, &( talents.natures_swiftness        ) } },
+      { { 14, &( talents.elemental_precision   ) }, { 14, &( talents.spirit_weapons            ) }, { 14, NULL                                  } },
+      { { 15, &( talents.lightning_mastery     ) }, { 15, &( talents.mental_dexterity          ) }, { 15, NULL                                  } },
+      { { 16, &( talents.elemental_mastery     ) }, { 16, &( talents.unleashed_rage            ) }, { 16, NULL                                  } },
+      { { 17, &( talents.storm_earth_and_fire  ) }, { 17, &( talents.weapon_mastery            ) }, { 17, &( talents.mana_tide_totem          ) } },
+      { { 18, &( talents.booming_echoes        ) }, { 18, &( talents.frozen_power              ) }, { 18, NULL                                  } },
+      { { 19, &( talents.elemental_oath        ) }, { 19, &( talents.dual_wield_specialization ) }, { 19, &( talents.blessing_of_the_eternals ) } },
+      { { 20, &( talents.lightning_overload    ) }, { 20, &( talents.dual_wield                ) }, { 20, NULL                                  } },
+      { { 21, NULL                               }, { 21, &( talents.stormstrike               ) }, { 21, NULL                                  } },
+      { { 22, &( talents.totem_of_wrath        ) }, { 22, &( talents.static_shock              ) }, { 22, NULL                                  } },
+      { { 23, &( talents.lava_flows            ) }, { 23, &( talents.lava_lash                 ) }, { 23, &( talents.earth_shield             ) } },
+      { { 24, &( talents.shamanism             ) }, { 24, &( talents.improved_stormstrike      ) }, { 24, NULL                                  } },
+      { { 25, &( talents.thunderstorm          ) }, { 25, &( talents.mental_quickness          ) }, { 25, NULL                                  } },
+      { {  0, NULL                               }, { 26, &( talents.shamanistic_rage          ) }, { 26, NULL                                  } },
+      { {  0, NULL                               }, { 27, NULL                                   }, {  0, NULL                                  } },
+      { {  0, NULL                               }, { 28, &( talents.maelstrom_weapon          ) }, {  0, NULL                                  } },
+      { {  0, NULL                               }, { 29, &( talents.feral_spirit              ) }, {  0, NULL                                  } },
+      { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                  } }
+    };
+  
+  return get_talent_translation( elemental, enhancement, restoration, translation );
 }
 
 // shaman_t::get_options ================================================

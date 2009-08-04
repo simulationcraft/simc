@@ -769,8 +769,6 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  bool        P312;
-  bool        P313;
   bool        P320;
   event_t*    free_list;
   target_t*   target;

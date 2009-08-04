@@ -248,8 +248,6 @@ struct death_knight_t : public player_t
   death_knight_t( sim_t* sim, const std::string& name ) :
       player_t( sim, DEATH_KNIGHT, name )
   {
-    assert ( sim ->patch.after( 3,1,0 ) );
-
     // Active
     active_presence     = 0;
     active_blood_plague = NULL;

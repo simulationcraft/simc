@@ -767,20 +767,9 @@ void player_t::init_spell()
 
   initial_mp5 = base_mp5 + stats.mp5;
 
-  double base_60, base_70, base_80;
-
-  if ( sim -> patch.after( 3, 1, 0 ) )
-  {
-    base_60 = 0.006600;
-    base_70 = 0.005596;
-    base_80 = 0.003345;
-  }
-  else
-  {
-    base_60 = 0.011000;
-    base_70 = 0.009327;
-    base_80 = 0.005575;
-  }
+  double base_60 = 0.006600;
+  double base_70 = 0.005596;
+  double base_80 = 0.003345;
 
   mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80 );
 }
