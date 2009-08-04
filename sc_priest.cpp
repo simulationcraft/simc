@@ -835,14 +835,8 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    if ( sim -> P320 )
-    {
-      cooldown        = 12;
-    }
-    else
-    {
-      cooldown        = 10;
-    }
+    cooldown        = 12;
+
     if ( p -> glyphs.penance )
     {
       cooldown       -= 2;
@@ -1092,7 +1086,7 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 8;
-    cooldown          = ( sim -> P320 ) ? 0.0 : 24.0;
+    cooldown          = 0.0;
     binary            = true;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 0.925;
@@ -1541,7 +1535,7 @@ struct dispersion_t : public priest_spell_t
     channeled         = true;
     harmful           = false;
     base_cost         = 0;
-    cooldown          = ( sim -> P320 ) ? 120 : 180;
+    cooldown          = 120;
 
     if ( p -> glyphs.dispersion )
     {
