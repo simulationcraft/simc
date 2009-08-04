@@ -3317,8 +3317,9 @@ void mage_t::init_actions()
       if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
       action_list_str += "/frost_bolt";
       action_list_str += "/evocation";
-      action_list_str += "/ice_lance,moving=1";  // when moving
-      action_list_str += "/fire_blast,moving=1"; // when moving
+      action_list_str += "/ice_lance,moving=1,frozen=1"; // when moving
+      action_list_str += "/fire_blast,moving=1";         // when moving
+      action_list_str += "/ice_lance,moving=1";          // when moving
     }
     else if ( primary_tree() == TREE_FIRE )
     {
