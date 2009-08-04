@@ -1,4 +1,4 @@
-#!simcraft max_time=300 optimal_raid=1 
+#!simcraft max_time=300 optimal_raid=1
 
 # When using this profile in the context of a raid:
 # set honor_among_thieves_interval=0

@@ -15,5 +15,5 @@ Druid_T8_00_55_16_M.simcraft
 #wowhead=13000433 name=Druid_T8_58_00_13_SF save=Druid_T8_58_00_13_SF.simcraft eclipse_cycle=solar
 #wowhead=13000433 name=Druid_T8_58_00_13_W  save=Druid_T8_58_00_13_W.simcraft  eclipse_cycle=lunar
 #wowhead=13000407 name=Druid_T8_00_55_16    save=Druid_T8_00_55_16.simcraft    trinket1=comets_trail,id=45609  mangle=0
-#wowhead=13000407 name=Druid_T8_00_55_16_M  save=Druid_T8_00_55_16_M.simcraft  trinket1=comets_trail,id=45609 
+#wowhead=13000407 name=Druid_T8_00_55_16_M  save=Druid_T8_00_55_16_M.simcraft  trinket1=comets_trail,id=45609
 #save_profiles=1

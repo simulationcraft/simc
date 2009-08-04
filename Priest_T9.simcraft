@@ -45,7 +45,7 @@ Priest_T9_34_28_09_258.simcraft
 #trinket1=eye_of_the_broodmother,id=45308
 #trinket2=illustration_of_the_dragon_soul,id=40432
 
-    
+
 #wowhead=13043846 name=Priest_T9_13_00_58_232_SWD  save=Priest_T9_13_00_58_232_SWD.simcraft	use_shadow_word_death=1
 #head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 #neck=pendant_of_the_shallow_grave,id=45933,gems=23sp
@@ -83,7 +83,7 @@ Priest_T9_34_28_09_258.simcraft
 #ranged=petrified_ivy_sprig,id=45294,gems=23sp
 #trinket1=flare_of_the_heavens,id=45518
 #trinket2=reign_of_the_unliving,id=47182
-   
+
 #wowhead=13043847 name=Priest_T9_13_00_58_245_SWD  save=Priest_T9_13_00_58_245_SWD.simcraft	use_shadow_word_death=1
 #head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 #neck=wail_of_the_valkyr,id=47139
