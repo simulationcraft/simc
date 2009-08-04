@@ -3060,36 +3060,26 @@ struct soul_fire_t : public warlock_spell_t
 
 struct life_tap_t : public warlock_spell_t
 {
-  int    trigger;
+  int    buff_refresh;
   int    inferno;
-  int    glyph;
-  int    glyph_skip;
-  int    tier7_4pc;
-  int    tier7_4pc_skip;
-  int    max;
+  int    prevent_overflow;
+  double trigger;
+  double max_mana_pct;
   double base_tap;
-  double mana_perc;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ),
-      trigger( 0 ), inferno( 0 ),
-      glyph( 0 ), glyph_skip( 0 ),
-      tier7_4pc( 0 ), tier7_4pc_skip( 0 ),
-      max( 0 ), base_tap( 0 ), mana_perc( 0 )
+      buff_refresh(0), inferno(0), prevent_overflow(0), trigger(0), max_mana_pct(0), base_tap(0)
   {
     id = 57946;
 
     option_t options[] =
     {
-      { "trigger",   OPT_INT,  &trigger   },
-      { "inferno",   OPT_BOOL, &inferno   },
-      { "glyph",     OPT_BOOL, &glyph     },
-      { "glyph_skip",OPT_BOOL, &glyph_skip},
-      { "tier7_4pc", OPT_BOOL, &tier7_4pc },
-      { "tier7_4pc_skip", OPT_BOOL, &tier7_4pc_skip },
-      { "max",       OPT_BOOL, &max       },
-      { "mana_perc<",OPT_FLT,  &mana_perc },
-      { "mana_perc", OPT_FLT,  &mana_perc },
+      { "buff_refresh",     OPT_BOOL, &buff_refresh     },
+      { "inferno",          OPT_BOOL, &inferno          },
+      { "mana_percentage<", OPT_FLT,  &max_mana_pct     },
+      { "prevent_overflow", OPT_BOOL, &prevent_overflow },
+      { "trigger",          OPT_FLT,  &trigger          },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3117,34 +3107,31 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( ! warlock_spell_t::ready() )
-      return false;
+    if (  max_mana_pct > 0 ) 
+      if( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
+	return false;
 
-    // skip if more mana than 'mana_perc' %
-    if ( ( mana_perc>0 ) && ( p->resource_current[ RESOURCE_MANA ]/p -> resource_max[ RESOURCE_MANA ]*100 > mana_perc ) )
-      return false;
-    // skip if tier7_4pc buff is up
-    if ( tier7_4pc_skip && p -> buffs.tier7_4pc )
-      return false;
-    // skip if tier7_4pc buff is up, OR player do not have  t7_4pc
-    if ( tier7_4pc && ( p -> buffs.tier7_4pc || !p -> set_bonus.tier7_4pc() ) )
-      return false;
-    // skip if life_tap Glyph buff is up
-    if ( glyph_skip && p -> buffs_life_tap_glyph -> check() )
-      return false;
-    // skip if life_tap Glyph buff is up, OR player do not have glyph
-    if ( glyph && ( p -> buffs_life_tap_glyph -> check() || ! p -> glyphs.life_tap )  )
-      return false;
-    // skip if LifeTap would overflow mana over maximum
-    if ( max )
+    if ( buff_refresh )
     {
-      double max_trigger = ( int ) ( p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 ) );
-      if ( p -> resource_current[ RESOURCE_MANA ] > max_trigger )
+      if( ! p -> set_bonus.tier7_4pc() || ! p -> glyphs.life_tap )
+	return false;
+
+      if ( p -> buffs.tier7_4pc || p -> buffs_life_tap_glyph -> check() )
+	return false;
+    }
+
+    if ( prevent_overflow )
+    {
+      double max_current = ( p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 ) );
+
+      if ( p -> resource_current[ RESOURCE_MANA ] > max_current )
         return false;
     }
-    // skip if more mana than 'trigger'
-    if ( trigger && ( p -> resource_current[ RESOURCE_MANA ] > ( double ) trigger ) )
-      return false;
+
+    if ( trigger > 0 )
+      if ( p -> resource_current[ RESOURCE_MANA ] > trigger )
+	return false;
+
     // skip if infernal out and over 80% mana?
     if ( inferno )
     {
@@ -3156,8 +3143,8 @@ struct life_tap_t : public warlock_spell_t
           return false;
       }
     }
-    // if no condition was negative, ready for Life Tap
-    return true;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -4090,10 +4077,12 @@ void warlock_t::init_actions()
     action_list_str += talents.emberstorm ? "/incinerate" : "/shadow_bolt";
 
     // instants to use when moving if possible
-    action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30";
-    if ( talents.shadow_burn ) action_list_str+="/shadow_burn";
-    if ( talents.shadowfury  ) action_list_str+="/shadowfury";
-    action_list_str+="/corruption/curse_of_agony";
+    action_list_str+="/life_tap,mana_percentage<=20,buff_refresh=1,moving=1";
+    action_list_str+="/corruption,time_to_die>=20,moving=1";
+    action_list_str+="/curse_of_agony,time_to_die>=30,moving=1";
+    if ( talents.shadow_burn ) action_list_str+="/shadow_burn,moving=1";
+    if ( talents.shadowfury  ) action_list_str+="/shadowfury,moving=1";
+
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     action_list_default = 1;
