@@ -5,15 +5,16 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // is_scaling_stat ===========================================================
 
 static bool is_scaling_stat( sim_t* sim,
                              int    stat )
 {
-  if( ! sim -> scaling -> scale_only_str.empty() )
-    if( util_t::parse_stat_type( sim -> scaling -> scale_only_str ) != stat )
+  if ( ! sim -> scaling -> scale_only_str.empty() )
+    if ( util_t::parse_stat_type( sim -> scaling -> scale_only_str ) != stat )
       return false;
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
@@ -46,15 +47,15 @@ static bool stat_may_cap( int stat )
 
 scaling_t::scaling_t( sim_t* s ) :
     sim( s ),
-    scale_stat(STAT_NONE),
-    scale_value(0),
-    calculate_scale_factors(0),
-    center_scale_delta(0),
-    scale_lag(0),
-    scale_factor_noise(0.05),
-    normalize_scale_factors(0),
-    smooth_scale_factors(1),
-    debug_scale_factors(0)
+    scale_stat( STAT_NONE ),
+    scale_value( 0 ),
+    calculate_scale_factors( 0 ),
+    center_scale_delta( 0 ),
+    scale_lag( 0 ),
+    scale_factor_noise( 0.05 ),
+    normalize_scale_factors( 0 ),
+    smooth_scale_factors( 1 ),
+    debug_scale_factors( 0 )
 {}
 
 // scaling_t::init_deltas ===================================================
@@ -89,7 +90,7 @@ void scaling_t::analyze_stats()
   if ( num_players == 0 ) return;
 
   sim_t* baseline_sim = sim;
-  if( smooth_scale_factors )
+  if ( smooth_scale_factors )
   {
     util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
     fflush( stdout );
@@ -139,7 +140,7 @@ void scaling_t::analyze_stats()
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }
 
-    if( debug_scale_factors )
+    if ( debug_scale_factors )
     {
       report_t::print_text( sim -> output_file,   ref_sim, true );
       report_t::print_text( sim -> output_file, child_sim, true );
@@ -216,15 +217,15 @@ void scaling_t::normalize()
     double sp = p -> scaling.get_stat( STAT_SPELL_POWER );
     double ap = p -> scaling.get_stat( STAT_ATTACK_POWER );
 
-    p -> normalized_to = ( sp > ap ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER; 
+    p -> normalized_to = ( sp > ap ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER;
 
     double divisor = p -> scaling.get_stat( p -> normalized_to );
 
-    if( divisor == 0 ) continue;
+    if ( divisor == 0 ) continue;
 
     for ( int i=0; i < STAT_MAX; i++ )
     {
-      if( p -> scales_with[ i ] == 0 ) continue;
+      if ( p -> scales_with[ i ] == 0 ) continue;
 
       p -> normalized_scaling.set_stat( i, p -> scaling.get_stat( i ) / divisor );
     }
@@ -248,31 +249,31 @@ void scaling_t::analyze()
 int scaling_t::get_options( std::vector<option_t>& options )
 {
   option_t scaling_options[] =
-    {
-      // @option_doc loc=global/scale_factors title="Scale Factors"
-      { "calculate_scale_factors",        OPT_BOOL,   &( calculate_scale_factors              ) },
-      { "smooth_scale_factors",           OPT_BOOL,   &( smooth_scale_factors                 ) },
-      { "normalize_scale_factors",        OPT_BOOL,   &( normalize_scale_factors              ) },
-      { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
-      { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
-      { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
-      { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
-      { "scale_strength",                 OPT_FLT,    &( stats.attribute[ ATTR_STRENGTH  ]    ) },
-      { "scale_agility",                  OPT_FLT,    &( stats.attribute[ ATTR_AGILITY   ]    ) },
-      { "scale_stamina",                  OPT_FLT,    &( stats.attribute[ ATTR_STAMINA   ]    ) },
-      { "scale_intellect",                OPT_FLT,    &( stats.attribute[ ATTR_INTELLECT ]    ) },
-      { "scale_spirit",                   OPT_FLT,    &( stats.attribute[ ATTR_SPIRIT    ]    ) },
-      { "scale_spell_power",              OPT_FLT,    &( stats.spell_power                    ) },
-      { "scale_attack_power",             OPT_FLT,    &( stats.attack_power                   ) },
-      { "scale_expertise_rating",         OPT_FLT,    &( stats.expertise_rating               ) },
-      { "scale_armor_penetration_rating", OPT_FLT,    &( stats.armor_penetration_rating       ) },
-      { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
-      { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
-      { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
-      { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
-      { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    // @option_doc loc=global/scale_factors title="Scale Factors"
+    { "calculate_scale_factors",        OPT_BOOL,   &( calculate_scale_factors              ) },
+    { "smooth_scale_factors",           OPT_BOOL,   &( smooth_scale_factors                 ) },
+    { "normalize_scale_factors",        OPT_BOOL,   &( normalize_scale_factors              ) },
+    { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
+    { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
+    { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
+    { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
+    { "scale_strength",                 OPT_FLT,    &( stats.attribute[ ATTR_STRENGTH  ]    ) },
+    { "scale_agility",                  OPT_FLT,    &( stats.attribute[ ATTR_AGILITY   ]    ) },
+    { "scale_stamina",                  OPT_FLT,    &( stats.attribute[ ATTR_STAMINA   ]    ) },
+    { "scale_intellect",                OPT_FLT,    &( stats.attribute[ ATTR_INTELLECT ]    ) },
+    { "scale_spirit",                   OPT_FLT,    &( stats.attribute[ ATTR_SPIRIT    ]    ) },
+    { "scale_spell_power",              OPT_FLT,    &( stats.spell_power                    ) },
+    { "scale_attack_power",             OPT_FLT,    &( stats.attack_power                   ) },
+    { "scale_expertise_rating",         OPT_FLT,    &( stats.expertise_rating               ) },
+    { "scale_armor_penetration_rating", OPT_FLT,    &( stats.armor_penetration_rating       ) },
+    { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
+    { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
+    { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
+    { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
+    { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
   option_t::copy( options, scaling_options );
 

@@ -43,7 +43,7 @@ double spell_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.05 );
     }
 
-    if( sim -> auras.celerity )
+    if ( sim -> auras.celerity )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }
@@ -137,7 +137,7 @@ void spell_t::target_debuff( int dmg_type )
 // spell_t::level_based_miss_chance ==========================================
 
 double spell_t::level_based_miss_chance( int player,
-    int target ) SC_CONST
+                                         int target ) SC_CONST
 {
   int delta_level = target - player;
   double miss=0;

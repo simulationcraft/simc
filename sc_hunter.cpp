@@ -394,7 +394,7 @@ struct hunter_pet_t : public pet_t
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
       pet_t( sim, owner, pet_name ), pet_type( pt ), main_hand_attack( 0 )
   {
-    if( ! supported( pet_type ) )
+    if ( ! supported( pet_type ) )
     {
       util_t::fprintf( stdout, "simcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
       exit( 0 );
@@ -463,16 +463,16 @@ struct hunter_pet_t : public pet_t
 
   static bool supported( int family )
   {
-    switch( family )
+    switch ( family )
     {
-      case PET_CAT:
-      case PET_DEVILSAUR:
-      case PET_RAPTOR:
-      case PET_WOLF:
-      case PET_WIND_SERPENT:
-        return true;
-      default:
-        return false;
+    case PET_CAT:
+    case PET_DEVILSAUR:
+    case PET_RAPTOR:
+    case PET_WOLF:
+    case PET_WIND_SERPENT:
+      return true;
+    default:
+      return false;
     }
   }
 
@@ -510,7 +510,7 @@ struct hunter_pet_t : public pet_t
     // FIXME don't know level 60 value
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
 
-    if( sim -> P320 )
+    if ( sim -> P320 )
       initial_attack_power_multiplier *= 1.0 + o -> talents.animal_handler * 0.05;
     else
       base_attack_expertise = 0.25 * o -> talents.animal_handler * 0.05;
@@ -564,7 +564,7 @@ struct hunter_pet_t : public pet_t
 
   virtual double composite_spell_hit() SC_CONST
   {
-    if( sim -> P320 )
+    if ( sim -> P320 )
       return composite_attack_hit() * 17.0 / 8.0;
     else
       return pet_t::composite_spell_hit();
@@ -580,14 +580,14 @@ struct hunter_pet_t : public pet_t
   virtual void interrupt()
   {
     pet_t::interrupt();
-    if( main_hand_attack ) main_hand_attack -> cancel();
+    if ( main_hand_attack ) main_hand_attack -> cancel();
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
   virtual std::vector<option_t>& get_options()
   {
-    if( options.empty() )
+    if ( options.empty() )
     {
       pet_t::get_options();
 
@@ -618,9 +618,10 @@ struct hunter_pet_t : public pet_t
   {
     std::vector<int*> tree;
 
-    if( group() == PET_FEROCITY )
+    if ( group() == PET_FEROCITY )
     {
-      talent_translation_t translation[] = {
+      talent_translation_t translation[] =
+      {
         {  1, &( talents.cobra_reflexes         ) },
         {  2, NULL                                },
         {  3, NULL                                },
@@ -647,7 +648,8 @@ struct hunter_pet_t : public pet_t
     }
     else if ( group() == PET_CUNNING )
     {
-      talent_translation_t translation[] = {
+      talent_translation_t translation[] =
+      {
         {  1, &( talents.cobra_reflexes         ) },
         {  2, NULL                                },
         {  3, NULL                                },
@@ -751,7 +753,8 @@ struct hunter_spell_t : public spell_t
   virtual double gcd() SC_CONST;
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // trigger_aspect_of_the_viper ==============================================
 
@@ -1407,14 +1410,14 @@ static void trigger_tier8_4pc( attack_t* a )
       name = "Precision Shots Expiration";
       p -> aura_gain( "Precision Shots" );
       p -> cooldowns.tier8_4pc = sim -> current_time + 45;
-      p -> stat_gain(STAT_ATTACK_POWER, 600);
+      p -> stat_gain( STAT_ATTACK_POWER, 600 );
       sim -> add_event( this, 15.0 );
     }
     virtual void execute()
     {
       hunter_t* p = player -> cast_hunter();
       p -> aura_loss( "Precision Shots" );
-      p -> stat_loss(STAT_ATTACK_POWER, 600);
+      p -> stat_loss( STAT_ATTACK_POWER, 600 );
       p -> expirations.tier8_4pc = 0;
     }
   };
@@ -1491,10 +1494,10 @@ static void check_pet_type( action_t* a, int pet_type )
   hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
-  if( p -> pet_type != pet_type )
+  if ( p -> pet_type != pet_type )
   {
     util_t::printf( "\nsimcraft: Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
-	    o -> name(), p -> name(), a -> name() );
+                    o -> name(), p -> name(), a -> name() );
     a -> background = true;
   }
 }
@@ -2395,7 +2398,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if( p -> moving ) return false;
+    if ( p -> moving ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -2411,24 +2414,24 @@ struct aimed_shot_t : public hunter_attack_t
       improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    
+
     check_talent( p -> talents.aimed_shot );
 
     option_t options[] =
-      {
-        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 9, 408, 408, 0, 0.08 },
-        { 75, 8, 345, 345, 0, 0.08 },
-        { 70, 7, 205, 205, 0, 0.08 },
-        { 60, 6, 150, 150, 0, 0.12 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 9, 408, 408, 0, 0.08 },
+      { 75, 8, 345, 345, 0, 0.08 },
+      { 70, 7, 205, 205, 0, 0.08 },
+      { 60, 6, 150, 150, 0, 0.12 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> ranged_weapon );
@@ -2439,7 +2442,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     cooldown = 10;
     cooldown_group = "aimed_multi";
-    
+
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
     base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
@@ -2513,21 +2516,21 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-      {
-        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-        { "lock_and_load",        OPT_BOOL, &lock_and_load        },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+      { "lock_and_load",        OPT_BOOL, &lock_and_load        },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 79, 11, 492, 492, 0, 0.05 },
-        { 73, 10, 402, 402, 0, 0.05 },
-        { 69, 9,  273, 273, 0, 0.05 },
-        { 60, 8,  200, 200, 0, 0.07 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 79, 11, 492, 492, 0, 0.05 },
+      { 73, 10, 402, 402, 0, 0.05 },
+      { 69, 9,  273, 273, 0, 0.05 },
+      { 60, 8,  200, 200, 0, 0.07 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     // To trigger ppm-based JoW
@@ -2615,15 +2618,15 @@ struct black_arrow_t : public hunter_attack_t
     check_talent( p -> talents.black_arrow );
 
     static rank_t ranks[] =
-      {
-        { 80, 6, 0, 0, 2765/5.0, 0.06 },
-        { 75, 5, 0, 0, 2240/5.0, 0.06 },
-        { 69, 4, 0, 0, 1480/5.0, 0.06 },
-        { 63, 3, 0, 0, 1250/5.0, 0.06 },
-        { 57, 2, 0, 0,  940/5.0, 0.06 },
-        { 50, 1, 0, 0,  785/5.0, 0.06 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 6, 0, 0, 2765/5.0, 0.06 },
+      { 75, 5, 0, 0, 2240/5.0, 0.06 },
+      { 69, 4, 0, 0, 1480/5.0, 0.06 },
+      { 63, 3, 0, 0, 1250/5.0, 0.06 },
+      { 57, 2, 0, 0,  940/5.0, 0.06 },
+      { 50, 1, 0, 0,  785/5.0, 0.06 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_tick_time   = 3.0;
@@ -2671,15 +2674,15 @@ struct chimera_shot_t : public hunter_attack_t
       active_sting( 1 ), improved_steady_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    
+
     check_talent( p -> talents.chimera_shot );
 
     option_t options[] =
-      {
-        { "active_sting",         OPT_BOOL, &active_sting         },
-        { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "active_sting",         OPT_BOOL, &active_sting         },
+      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> ranged_weapon );
@@ -2736,7 +2739,7 @@ struct chimera_shot_t : public hunter_attack_t
     if ( result_is_hit() && sting )
     {
       sting -> refresh_duration();
-          sting -> result = RESULT_HIT;
+      sting -> result = RESULT_HIT;
 
       double sting_dmg = sting -> num_ticks * sting -> calculate_tick_damage();
 
@@ -2805,13 +2808,13 @@ struct explosive_tick_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-      {
-        { 80, 4,  386, 464, 0, 0 },
-        { 75, 3,  325, 391, 0, 0 },
-        { 70, 2,  221, 265, 0, 0 },
-        { 60, 1,  160, 192, 0, 0 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4,  386, 464, 0, 0 },
+      { 75, 3,  325, 391, 0, 0 },
+      { 70, 2,  221, 265, 0, 0 },
+      { 60, 1,  160, 192, 0, 0 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     // To trigger ppm-based JoW
@@ -2868,10 +2871,10 @@ struct explosive_shot_t : public hunter_attack_t
     check_talent( p -> talents.explosive_shot );
 
     option_t options[] =
-      {
-        { "lock_and_load", OPT_BOOL, &lock_and_load },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "lock_and_load", OPT_BOOL, &lock_and_load },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost = 0.07 * p -> resource_base[ RESOURCE_MANA ];
@@ -2929,12 +2932,12 @@ struct kill_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-      {
-        { 80, 3, 650, 650, 0, 0.07 },
-        { 75, 2, 500, 500, 0, 0.07 },
-        { 71, 1, 410, 410, 0, 0.07 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 3, 650, 650, 0, 0.07 },
+      { 75, 2, 500, 500, 0, 0.07 },
+      { 71, 1, 410, 410, 0, 0.07 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     parse_options( 0, options_str );
@@ -2993,13 +2996,13 @@ struct multi_shot_t : public hunter_attack_t
     assert( p -> ranged_weapon.type != WEAPON_NONE );
 
     static rank_t ranks[] =
-      {
-        { 80, 8, 408, 408, 0, 0.09 },
-        { 74, 7, 333, 333, 0, 0.09 },
-        { 67, 6, 205, 205, 0, 0.09 },
-        { 60, 5, 150, 150, 0, 0.13 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 8, 408, 408, 0, 0.09 },
+      { 74, 7, 333, 333, 0, 0.09 },
+      { 67, 6, 205, 205, 0, 0.09 },
+      { 60, 5, 150, 150, 0, 0.13 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     parse_options( 0, options_str );
@@ -3071,20 +3074,20 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-      {
-        { "force", OPT_BOOL, &force },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "force", OPT_BOOL, &force },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 79, 12, 0, 0, 1210/5.0, 0.09 },
-        { 73, 11, 0, 0,  990/5.0, 0.09 },
-        { 67, 10, 0, 0,  660/5.0, 0.09 },
-        { 60, 9,  0, 0,  555/5.0, 0.13 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 79, 12, 0, 0, 1210/5.0, 0.09 },
+      { 73, 11, 0, 0,  990/5.0, 0.09 },
+      { 67, 10, 0, 0,  660/5.0, 0.09 },
+      { 60, 9,  0, 0,  555/5.0, 0.13 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_tick_time   = 3.0;
@@ -3168,13 +3171,13 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     static rank_t ranks[] =
-      {
-        { 77, 4, 252, 252, 0, 0.05 },
-        { 71, 3, 198, 198, 0, 0.05 },
-        { 62, 2, 108, 108, 0, 0.05 },
-        { 50, 1,  45,  45, 0, 0.05 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 77, 4, 252, 252, 0, 0.05 },
+      { 71, 3, 198, 198, 0, 0.05 },
+      { 62, 2, 108, 108, 0, 0.05 },
+      { 50, 1,  45,  45, 0, 0.05 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> ranged_weapon );
@@ -3260,13 +3263,13 @@ struct aspect_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-      {
-        { "beast_during_bw", OPT_BOOL, &beast_during_bw },
-        { "hawk_always",     OPT_BOOL, &hawk_always },
-        { "viper_start",     OPT_INT,  &viper_start },
-        { "viper_stop",      OPT_INT,  &viper_stop  },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "beast_during_bw", OPT_BOOL, &beast_during_bw },
+      { "hawk_always",     OPT_BOOL, &hawk_always },
+      { "viper_start",     OPT_INT,  &viper_start },
+      { "viper_stop",      OPT_INT,  &viper_stop  },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     cooldown         = 1.0;
@@ -3399,7 +3402,7 @@ struct bestial_wrath_t : public hunter_spell_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! p -> active_pet ) return false;
+    if ( ! p -> active_pet ) return false;
     return hunter_spell_t::ready();
   }
 };
@@ -3417,7 +3420,7 @@ struct hunters_mark_t : public hunter_spell_t
 
     base_cost = 0.02 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - p -> talents.improved_hunters_mark / 3.0;
-    
+
     ap_bonus = util_t::ability_rank( p -> level,  500,76,  110,0 );
 
     ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10
@@ -3480,13 +3483,13 @@ struct kill_command_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
-    cooldown  = 60 - (p -> sim -> P320 ? 10 * p -> talents.catlike_reflexes : 0);
+    cooldown  = 60 - ( p -> sim -> P320 ? 10 * p -> talents.catlike_reflexes : 0 );
     trigger_gcd = 0;
   }
 
@@ -3526,10 +3529,10 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
-      {
-        { "viper", OPT_BOOL, &viper },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "viper", OPT_BOOL, &viper },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
@@ -3595,12 +3598,12 @@ struct readiness_t : public hunter_spell_t
     check_talent( p -> talents.readiness );
 
     option_t options[] =
-      {
-        // Only perform Readiness while Rapid Fire is up, allows the sequence
-        // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
-        { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      // Only perform Readiness while Rapid Fire is up, allows the sequence
+      // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
+      { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     cooldown = 180;
@@ -3778,13 +3781,14 @@ struct ammo_data
 void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
 {
   // Ammo support
-  static ammo_data ammo[] = {
+  static ammo_data ammo[] =
+  {
     { 41164, 67.5 }, { 41165, 67.5 },
     { 30319, 63.5 },
     { 32760, 53.0 }, { 32761, 53.0 }, { 31737, 53.0 }, { 31735, 53.0 },
     { 34581, 46.5 }, { 34582, 46.5 }, { 41584, 46.5 }, { 41586, 46.5 },
-    { 23773, 43.0 }, { 33803, 43.0 }, 
-    { 32883, 37.0 }, { 32882, 37.0 }, { 31949, 37.0 }, 
+    { 23773, 43.0 }, { 33803, 43.0 },
+    { 32883, 37.0 }, { 32882, 37.0 }, { 31949, 37.0 },
     { 30612, 34.0 }, { 30611, 34.0 },
     { 28056, 32.0 }, { 28061, 32.0 },
     { 28060, 22.0 }, { 28053, 22.0 },
@@ -3793,20 +3797,20 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
   };
   std::vector<xml_node_t*> item_nodes;
   int num_items = xml_t::get_nodes( item_nodes, sheet_xml, "item" );
-  for( int i=0; i < num_items; i++ )
+  for ( int i=0; i < num_items; i++ )
   {
     int slot;
     int id;
 
-    if( xml_t::get_value( slot, item_nodes[ i ], "slot" ) &&
-        xml_t::get_value( id,   item_nodes[ i ], "id"   ) &&
-        slot == -1 )
+    if ( xml_t::get_value( slot, item_nodes[ i ], "slot" ) &&
+         xml_t::get_value( id,   item_nodes[ i ], "id"   ) &&
+         slot == -1 )
     {
-      for( int k=0; ammo[k].id > 0; k++ )
+      for ( int k=0; ammo[k].id > 0; k++ )
       {
-        if( id == ammo[k].id )
+        if ( id == ammo[k].id )
         {
-          if( sim -> debug )
+          if ( sim -> debug )
             log_t::output( sim, "Setting ammo dps to %.1f (from item id %d)", ammo[k].dps, id );
           ammo_dps = ammo[k].dps;
           break;
@@ -3817,35 +3821,36 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
 
   // Pet support
   static pet_type_t pet_types[] =
-                { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
-           /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
-           /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
-           /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
-           /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
-           /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
-           /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
-           /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
-           /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
-           /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST };
+    { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
+      /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
+      /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
+      /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
+      /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
+      /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
+      /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
+      /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
+      /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
+      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST
+    };
 
   std::vector<xml_node_t*> pet_nodes;
   int num_pets = xml_t::get_nodes( pet_nodes, talents_xml, "pet" );
-  for( int i=0; i < num_pets; i++ )
+  for ( int i=0; i < num_pets; i++ )
   {
     std::string name_str;
     int family_id;
 
-    if( xml_t::get_value( name_str,  pet_nodes[ i ], "name"     ) &&
-        xml_t::get_value( family_id, pet_nodes[ i ], "familyId" ) )
+    if ( xml_t::get_value( name_str,  pet_nodes[ i ], "name"     ) &&
+         xml_t::get_value( family_id, pet_nodes[ i ], "familyId" ) )
     {
-      if( family_id < 0 || family_id > 46 )
+      if ( family_id < 0 || family_id > 46 )
         continue;
-      if( ! hunter_pet_t::supported( pet_types[ family_id ] ) )
+      if ( ! hunter_pet_t::supported( pet_types[ family_id ] ) )
         continue;
       hunter_pet_t* pet = new hunter_pet_t( sim, this, name_str, pet_types[ family_id ] );
       std::string talent_str;
-      if( xml_t::get_value( talent_str, pet_nodes[ i ], "talentSpec/value" ) &&
-          talent_str != "" )
+      if ( xml_t::get_value( talent_str, pet_nodes[ i ], "talentSpec/value" ) &&
+           talent_str != "" )
       {
         pet -> parse_talents_armory( talent_str );
       }
@@ -3877,37 +3882,37 @@ void hunter_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
 
     if     ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
-    else if( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
-    else if( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
-    else if( n == "chimera_shot"                ) glyphs.chimera_shot = 1;
-    else if( n == "explosive_shot"              ) glyphs.explosive_shot = 1;
-    else if( n == "hunters_mark"                ) glyphs.hunters_mark = 1;
-    else if( n == "improved_aspect_of_the_hawk" ) glyphs.improved_aspect_of_the_hawk = 1;
-    else if( n == "kill_shot"                   ) glyphs.kill_shot = 1;
-    else if( n == "rapid_fire"                  ) glyphs.rapid_fire = 1;
-    else if( n == "serpent_sting"               ) glyphs.serpent_sting = 1;
-    else if( n == "steady_shot"                 ) glyphs.steady_shot = 1;
-    else if( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
-    else if( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
+    else if ( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
+    else if ( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
+    else if ( n == "chimera_shot"                ) glyphs.chimera_shot = 1;
+    else if ( n == "explosive_shot"              ) glyphs.explosive_shot = 1;
+    else if ( n == "hunters_mark"                ) glyphs.hunters_mark = 1;
+    else if ( n == "improved_aspect_of_the_hawk" ) glyphs.improved_aspect_of_the_hawk = 1;
+    else if ( n == "kill_shot"                   ) glyphs.kill_shot = 1;
+    else if ( n == "rapid_fire"                  ) glyphs.rapid_fire = 1;
+    else if ( n == "serpent_sting"               ) glyphs.serpent_sting = 1;
+    else if ( n == "steady_shot"                 ) glyphs.steady_shot = 1;
+    else if ( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
+    else if ( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
     // To prevent warnings....
-    else if( n == "the_pack"           ) ;
-    else if( n == "mend_pet"           ) ;
-    else if( n == "mending"            ) ;
-    else if( n == "revive_pet"         ) ;
-    else if( n == "explosive_trap"     ) ;
-    else if( n == "feign_death"        ) ;
-    else if( n == "scare_beast"        ) ;
-    else if( n == "possessed_strength" ) ;
-    else if( n == "disengage"          ) ;
-    else if( n == "arcane_shot"        ) ;
-    else if( n == "frost_trap"         ) ;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "the_pack"           ) ;
+    else if ( n == "mend_pet"           ) ;
+    else if ( n == "mending"            ) ;
+    else if ( n == "revive_pet"         ) ;
+    else if ( n == "explosive_trap"     ) ;
+    else if ( n == "feign_death"        ) ;
+    else if ( n == "scare_beast"        ) ;
+    else if ( n == "possessed_strength" ) ;
+    else if ( n == "disengage"          ) ;
+    else if ( n == "arcane_shot"        ) ;
+    else if ( n == "frost_trap"         ) ;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -4024,44 +4029,44 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark/summon_pet";
-    if( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
+    if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
+      if ( items[ i ].use.active() )
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
       }
     }
-    if( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
+    if ( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
     action_list_str += "/aspect";
-    if( talents.chimera_shot ) action_list_str += "/serpent_sting";
+    if ( talents.chimera_shot ) action_list_str += "/serpent_sting";
     action_list_str += "/rapid_fire";
-    if ( primary_tree() != TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";    
-    if( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
-    if(   talents.silencing_shot ) action_list_str += "/silencing_shot";
-    if(   talents.chimera_shot   ) action_list_str += "/chimera_shot";
-    if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";    
-    if(   talents.explosive_shot ) action_list_str += "/explosive_shot";
-    if(   talents.black_arrow    ) action_list_str += "/black_arrow";
-    if( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
+    if ( primary_tree() != TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
+    if ( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
+    if (   talents.silencing_shot ) action_list_str += "/silencing_shot";
+    if (   talents.chimera_shot   ) action_list_str += "/chimera_shot";
+    if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
+    if (   talents.explosive_shot ) action_list_str += "/explosive_shot";
+    if (   talents.black_arrow    ) action_list_str += "/black_arrow";
+    if ( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
     if ( primary_tree() == TREE_MARKSMANSHIP )
     {
-      if( ! talents.explosive_shot ) action_list_str += "/aimed_shot";
-      if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+      if ( ! talents.explosive_shot ) action_list_str += "/aimed_shot";
+      if (   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
     }
     else
     {
-      if( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
-      if(   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
-      if(   talents.aimed_shot     ) action_list_str += "/aimed_shot";
+      if ( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
+      if (   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
+      if (   talents.aimed_shot     ) action_list_str += "/aimed_shot";
     }
-    if( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
+    if ( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
     action_list_str += "/steady_shot";
 
     action_list_default = 1;
@@ -4074,10 +4079,10 @@ void hunter_t::init_actions()
 
 int hunter_t::primary_tree() SC_CONST
 {
-  if( talents.serpents_swiftness || talents.beast_within ) return TREE_BEAST_MASTERY;
-  if( talents.master_marksman ) return TREE_MARKSMANSHIP;
-  if( talents.black_arrow ) return TREE_SURVIVAL;
-  
+  if ( talents.serpents_swiftness || talents.beast_within ) return TREE_BEAST_MASTERY;
+  if ( talents.master_marksman ) return TREE_MARKSMANSHIP;
+  if ( talents.black_arrow ) return TREE_SURVIVAL;
+
   return TALENT_TREE_MAX;
 }
 
@@ -4106,7 +4111,7 @@ void hunter_t::interrupt()
 {
   player_t::interrupt();
 
-  if( ranged_attack ) ranged_attack -> cancel();
+  if ( ranged_attack ) ranged_attack -> cancel();
 }
 
 // hunter_t::composite_attack_power ==========================================
@@ -4158,37 +4163,37 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
                                  std::vector<int*>& survival )
 {
   talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
-      { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
-      { {  3, &( talents.focused_fire                ) }, {  3, &( talents.lethal_shots                 ) }, {  3, &( talents.savage_strikes           ) } },
-      { {  4, NULL                                     }, {  4, &( talents.careful_aim                  ) }, {  4, NULL                                  } },
-      { {  5, NULL                                     }, {  5, &( talents.improved_hunters_mark        ) }, {  5, NULL                                  } },
-      { {  6, NULL                                     }, {  6, &( talents.mortal_shots                 ) }, {  6, &( talents.trap_mastery             ) } },
-      { {  7, NULL                                     }, {  7, &( talents.go_for_the_throat            ) }, {  7, &( talents.survival_instincts       ) } },
-      { {  8, &( talents.aspect_mastery              ) }, {  8, &( talents.improved_arcane_shot         ) }, {  8, &( talents.survivalist              ) } },
-      { {  9, &( talents.unleashed_fury              ) }, {  9, &( talents.aimed_shot                   ) }, {  9, &( talents.scatter_shot             ) } },
-      { { 10, NULL                                     }, { 10, &( talents.rapid_killing                ) }, { 10, NULL                                  } },
-      { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
-      { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
-      { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
-      { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
-      { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
-      { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
-      { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
-      { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
-      { { 19, &( talents.catlike_reflexes            ) }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
-      { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
-      { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
-      { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
-      { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
-      { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
-      { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, &( talents.black_arrow              ) } },
-      { { 26, &( talents.beast_mastery               ) }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
-      { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
-      { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
-      { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
-    };
+  {
+    { {  1, &( talents.improved_aspect_of_the_hawk ) }, {  1, NULL                                      }, {  1, &( talents.improved_tracking        ) } },
+    { {  2, NULL                                     }, {  2, &( talents.focused_aim                  ) }, {  2, NULL                                  } },
+    { {  3, &( talents.focused_fire                ) }, {  3, &( talents.lethal_shots                 ) }, {  3, &( talents.savage_strikes           ) } },
+    { {  4, NULL                                     }, {  4, &( talents.careful_aim                  ) }, {  4, NULL                                  } },
+    { {  5, NULL                                     }, {  5, &( talents.improved_hunters_mark        ) }, {  5, NULL                                  } },
+    { {  6, NULL                                     }, {  6, &( talents.mortal_shots                 ) }, {  6, &( talents.trap_mastery             ) } },
+    { {  7, NULL                                     }, {  7, &( talents.go_for_the_throat            ) }, {  7, &( talents.survival_instincts       ) } },
+    { {  8, &( talents.aspect_mastery              ) }, {  8, &( talents.improved_arcane_shot         ) }, {  8, &( talents.survivalist              ) } },
+    { {  9, &( talents.unleashed_fury              ) }, {  9, &( talents.aimed_shot                   ) }, {  9, &( talents.scatter_shot             ) } },
+    { { 10, NULL                                     }, { 10, &( talents.rapid_killing                ) }, { 10, NULL                                  } },
+    { { 11, &( talents.ferocity                    ) }, { 11, &( talents.improved_stings              ) }, { 11, &( talents.survival_tactics         ) } },
+    { { 12, NULL                                     }, { 12, &( talents.efficiency                   ) }, { 12, &( talents.tnt                      ) } },
+    { { 13, NULL                                     }, { 13, NULL                                      }, { 13, &( talents.lock_and_load            ) } },
+    { { 14, &( talents.bestial_discipline          ) }, { 14, &( talents.readiness                    ) }, { 14, &( talents.hunter_vs_wild           ) } },
+    { { 15, &( talents.animal_handler              ) }, { 15, &( talents.barrage                      ) }, { 15, &( talents.killer_instinct          ) } },
+    { { 16, &( talents.frenzy                      ) }, { 16, &( talents.combat_experience            ) }, { 16, NULL                                  } },
+    { { 17, &( talents.ferocious_inspiration       ) }, { 17, &( talents.ranged_weapon_specialization ) }, { 17, &( talents.lightning_reflexes       ) } },
+    { { 18, &( talents.bestial_wrath               ) }, { 18, &( talents.piercing_shots               ) }, { 18, &( talents.resourcefulness          ) } },
+    { { 19, &( talents.catlike_reflexes            ) }, { 19, &( talents.trueshot_aura                ) }, { 19, &( talents.expose_weakness          ) } },
+    { { 20, &( talents.invigoration                ) }, { 20, &( talents.improved_barrage             ) }, { 20, NULL                                  } },
+    { { 21, &( talents.serpents_swiftness          ) }, { 21, &( talents.master_marksman              ) }, { 21, &( talents.thrill_of_the_hunt       ) } },
+    { { 22, &( talents.longevity                   ) }, { 22, &( talents.rapid_recuperation           ) }, { 22, &( talents.master_tactician         ) } },
+    { { 23, &( talents.beast_within                ) }, { 23, &( talents.wild_quiver                  ) }, { 23, &( talents.noxious_stings           ) } },
+    { { 24, &( talents.cobra_strikes               ) }, { 24, &( talents.silencing_shot               ) }, { 24, NULL                                  } },
+    { { 25, &( talents.kindred_spirits             ) }, { 25, &( talents.improved_steady_shot         ) }, { 25, &( talents.black_arrow              ) } },
+    { { 26, &( talents.beast_mastery               ) }, { 26, &( talents.marked_for_death             ) }, { 26, &( talents.sniper_training          ) } },
+    { {  0, NULL                                     }, { 27, &( talents.chimera_shot                 ) }, { 27, &( talents.hunting_party            ) } },
+    { {  0, NULL                                     }, {  0, NULL                                      }, { 28, &( talents.explosive_shot           ) } },
+    { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                  } }
+  };
 
   return get_talent_translation( beastmastery, marksmanship, survival, translation );
 }
@@ -4198,7 +4203,7 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
 
 std::vector<option_t>& hunter_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
 
@@ -4288,7 +4293,7 @@ bool hunter_t::save( FILE* file, int save_type )
 
   if ( save_type == SAVE_ALL || save_type == SAVE_GEAR )
   {
-    if( ammo_dps != 0 ) util_t::fprintf( file, "ammo_dps=%.2f\n", ammo_dps );
+    if ( ammo_dps != 0 ) util_t::fprintf( file, "ammo_dps=%.2f\n", ammo_dps );
   }
 
   return true;
@@ -4298,9 +4303,9 @@ bool hunter_t::save( FILE* file, int save_type )
 
 int hunter_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "cryptstalker"   ) ) return SET_T7;
-  if( strstr( item.name(), "scourgestalker" ) ) return SET_T8;
-  if( strstr( item.name(), "windrunner"     ) ) return SET_T9;
+  if ( strstr( item.name(), "cryptstalker"   ) ) return SET_T7;
+  if ( strstr( item.name(), "scourgestalker" ) ) return SET_T8;
+  if ( strstr( item.name(), "windrunner"     ) ) return SET_T9;
   // Horde T9 name?
   return SET_NONE;
 }
@@ -4320,7 +4325,7 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name )
 
 void player_t::init_hunter( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
@@ -4329,7 +4334,7 @@ void player_t::init_hunter( sim_t* sim )
 
 void player_t::combat_begin_hunter( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }

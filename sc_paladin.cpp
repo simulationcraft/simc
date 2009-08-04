@@ -27,7 +27,7 @@ struct paladin_t : public player_t
     int seal_of_vengeance_stacks;       // really a debuff
     int the_art_of_war;
     int vengeance;
-    void reset() { memset( (void*) this, 0x00, sizeof( _buffs_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
@@ -37,7 +37,7 @@ struct paladin_t : public player_t
   {
     event_t*    the_art_of_war;
     event_t*    vengeance;
-    void reset() { memset( (void*) this, 0x00, sizeof( _expirations_t ) ); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
   };
   _expirations_t _expirations;
@@ -81,7 +81,7 @@ struct paladin_t : public player_t
     int sanctified_retribution; // aura gives +3% dmg
     int seal_of_command;
     int swift_retribution;      // auras give 1-3% haste
-    talents_t() { memset( (void*) this, 0x0, sizeof( talents_t ) ); }
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
@@ -91,7 +91,7 @@ struct paladin_t : public player_t
     int exorcism;
     int judgement;
     int seal_of_vengeance;
-    glyphs_t() { memset( (void*) this, 0x0, sizeof( glyphs_t ) ); }
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -130,8 +130,8 @@ struct paladin_attack_t : public attack_t
   bool trigger_seal;
 
   paladin_attack_t( const char* n, paladin_t* p, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-    attack_t( n, p, RESOURCE_MANA, s, t, special ),
-    trigger_seal(true)
+      attack_t( n, p, RESOURCE_MANA, s, t, special ),
+      trigger_seal( true )
   {
     may_crit = true;
     base_dd_min = base_dd_max = 1;
@@ -155,11 +155,11 @@ struct paladin_attack_t : public attack_t
 
     attack_t::player_buff();
 
-    if( p -> glyphs.seal_of_vengeance && p -> active_seal == SEAL_OF_VENGEANCE )
+    if ( p -> glyphs.seal_of_vengeance && p -> active_seal == SEAL_OF_VENGEANCE )
       player_expertise += 0.0025 * 10;
 
     player_multiplier *= 1.0 + 0.01 * p -> talents.vengeance * p -> _buffs.vengeance;
-    if( p -> _buffs.avenging_wrath )
+    if ( p -> _buffs.avenging_wrath )
       player_multiplier *= 1.20;
   }
 };
@@ -167,7 +167,7 @@ struct paladin_attack_t : public attack_t
 struct paladin_spell_t : public spell_t
 {
   paladin_spell_t( const char* n, paladin_t* p, int s=SCHOOL_HOLY, int t=TREE_NONE ) :
-    spell_t( n, p, RESOURCE_MANA, s, t )
+      spell_t( n, p, RESOURCE_MANA, s, t )
   {
     base_crit       += 0.01 * ( p -> talents.conviction + p -> talents.sanctity_of_battle );
     base_multiplier *= ( 1.0 + 0.01 * p -> talents.crusade * 2 ); // FIXME: target type
@@ -180,7 +180,7 @@ struct paladin_spell_t : public spell_t
     spell_t::player_buff();
 
     player_multiplier *= 1.0 + 0.01 * p -> talents.vengeance * p -> _buffs.vengeance;
-    if( p -> _buffs.avenging_wrath )
+    if ( p -> _buffs.avenging_wrath )
       player_multiplier *= 1.20;
   }
 };
@@ -189,8 +189,8 @@ static void trigger_judgements_of_the_wise( attack_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( ! p -> talents.judgements_of_the_wise ) return;
-  if( ! p -> rng_jotw -> roll( p -> talents.judgements_of_the_wise / 3.0 ) ) return;
+  if ( ! p -> talents.judgements_of_the_wise ) return;
+  if ( ! p -> rng_jotw -> roll( p -> talents.judgements_of_the_wise / 3.0 ) ) return;
 
   p -> resource_gain( RESOURCE_MANA, 0.25 * p -> resource_base[ RESOURCE_MANA ], p -> gains_jotw );
   p -> trigger_replenishment();
@@ -200,7 +200,7 @@ static void trigger_righteous_vengeance( attack_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( ! p -> talents.righteous_vengeance ) return;
+  if ( ! p -> talents.righteous_vengeance ) return;
 
   struct righteous_vengeance_t : public attack_t
   {
@@ -222,9 +222,9 @@ static void trigger_righteous_vengeance( attack_t* a )
 
   double dmg = p -> talents.righteous_vengeance * 0.1 * a -> direct_dmg;
 
-  if( ! p -> active_righteous_vengeance ) p -> active_righteous_vengeance = new righteous_vengeance_t( p );
+  if ( ! p -> active_righteous_vengeance ) p -> active_righteous_vengeance = new righteous_vengeance_t( p );
 
-  if( p -> active_righteous_vengeance -> ticking )
+  if ( p -> active_righteous_vengeance -> ticking )
   {
     int num_ticks = p -> active_righteous_vengeance -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_righteous_vengeance -> current_tick;
@@ -239,12 +239,12 @@ static void trigger_righteous_vengeance( attack_t* a )
 
 static void trigger_seal_of_command( attack_t* a )
 {
-  if( a -> proc ) return;
+  if ( a -> proc ) return;
 
   struct seal_of_command_attack_t : public paladin_attack_t
   {
     seal_of_command_attack_t( paladin_t* p ) :
-      paladin_attack_t( "seal_of_command_atk", p, SCHOOL_HOLY )
+        paladin_attack_t( "seal_of_command_atk", p, SCHOOL_HOLY )
     {
       background  = true;
       proc        = true;
@@ -260,9 +260,9 @@ static void trigger_seal_of_command( attack_t* a )
 
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( p -> active_seal != SEAL_OF_COMMAND ) return;
+  if ( p -> active_seal != SEAL_OF_COMMAND ) return;
 
-  if( ! p -> active_seal_of_command )   p -> active_seal_of_command = new seal_of_command_attack_t( p );
+  if ( ! p -> active_seal_of_command )   p -> active_seal_of_command = new seal_of_command_attack_t( p );
 
   p -> active_seal_of_command -> schedule_execute();
 }
@@ -273,12 +273,12 @@ static void trigger_seal_of_command( attack_t* a )
 
 static void trigger_seal_of_vengeance_dot( attack_t* a )
 {
-  if( a -> proc ) return;
+  if ( a -> proc ) return;
 
   struct seal_of_vengeance_dot_t : public paladin_attack_t
   {
     seal_of_vengeance_dot_t( paladin_t* p ) :
-      paladin_attack_t( "seal_of_vengeance_dot", p, SCHOOL_HOLY )
+        paladin_attack_t( "seal_of_vengeance_dot", p, SCHOOL_HOLY )
     {
       background  = true;
       proc        = true;
@@ -294,7 +294,7 @@ static void trigger_seal_of_vengeance_dot( attack_t* a )
       base_tick_time = 3;
       base_spell_power_multiplier = 1;
 
-      base_multiplier *= (1 + p -> talents.seals_of_the_pure * 0.03);
+      base_multiplier *= ( 1 + p -> talents.seals_of_the_pure * 0.03 );
     }
 
     virtual void execute()
@@ -309,14 +309,14 @@ static void trigger_seal_of_vengeance_dot( attack_t* a )
 
       calculate_result();
 
-      if( result_is_hit() )
+      if ( result_is_hit() )
       {
-        if( p -> _buffs.seal_of_vengeance_stacks < 5 )
+        if ( p -> _buffs.seal_of_vengeance_stacks < 5 )
         {
           p -> _buffs.seal_of_vengeance_stacks++;
         }
 
-        if( ticking )
+        if ( ticking )
         {
           refresh_duration();
         }
@@ -355,22 +355,22 @@ static void trigger_seal_of_vengeance_dot( attack_t* a )
 
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( p -> active_seal != SEAL_OF_VENGEANCE ) return;
+  if ( p -> active_seal != SEAL_OF_VENGEANCE ) return;
 
-  if( ! p -> active_seal_of_vengeance_dot )
+  if ( ! p -> active_seal_of_vengeance_dot )
     p -> active_seal_of_vengeance_dot = new seal_of_vengeance_dot_t( p );
   p -> active_seal_of_vengeance_dot -> schedule_execute();
 }
 
 static void trigger_seal_of_vengeance_attack( attack_t* a )
 {
-  if( a -> proc ) return;
+  if ( a -> proc ) return;
 
   // doesn't scale with seals of the pure
   struct seal_of_vengeance_attack_t : public paladin_attack_t
   {
     seal_of_vengeance_attack_t( paladin_t* p ) :
-      paladin_attack_t( "seal_of_vengeance_atk", p, SCHOOL_HOLY )
+        paladin_attack_t( "seal_of_vengeance_atk", p, SCHOOL_HOLY )
     {
       background  = true;
       proc        = true;
@@ -387,11 +387,11 @@ static void trigger_seal_of_vengeance_attack( attack_t* a )
 
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( p -> active_seal != SEAL_OF_VENGEANCE ) return;
+  if ( p -> active_seal != SEAL_OF_VENGEANCE ) return;
 
-  if( p -> _buffs.seal_of_vengeance_stacks == 5 )
+  if ( p -> _buffs.seal_of_vengeance_stacks == 5 )
   {
-    if( ! p -> active_seal_of_vengeance )
+    if ( ! p -> active_seal_of_vengeance )
       p -> active_seal_of_vengeance = new seal_of_vengeance_attack_t( p );
     p -> active_seal_of_vengeance -> schedule_execute();
   }
@@ -401,7 +401,7 @@ static void trigger_the_art_of_war( attack_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if( ! p -> talents.the_art_of_war ) return;
+  if ( ! p -> talents.the_art_of_war ) return;
 
   struct the_art_of_war_expiration_t : public event_t
   {
@@ -424,7 +424,7 @@ static void trigger_the_art_of_war( attack_t* a )
 
   event_t*& e = p -> _expirations.the_art_of_war;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 15.0 );
   }
@@ -457,11 +457,11 @@ static void trigger_vengeance( attack_t* a )
     }
   };
 
-  if( p -> _buffs.vengeance < 3 ) p -> _buffs.vengeance++;
+  if ( p -> _buffs.vengeance < 3 ) p -> _buffs.vengeance++;
 
   event_t*& e = p -> _expirations.vengeance;
 
-  if( e )
+  if ( e )
   {
     e -> reschedule( 30.0 );
   }
@@ -475,28 +475,28 @@ void paladin_attack_t::execute()
 {
   attack_t::execute();
 
-  if( result_is_hit() )
+  if ( result_is_hit() )
   {
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_vengeance( this );
     }
 
-    if( trigger_seal )
+    if ( trigger_seal )
     {
       paladin_t* p = player -> cast_paladin();
 
-      switch( p -> active_seal )
+      switch ( p -> active_seal )
       {
-        case SEAL_OF_COMMAND:
-          trigger_seal_of_command( this );
-          break;
-        case SEAL_OF_VENGEANCE:
-          trigger_seal_of_vengeance_attack( this );
-          break;
-        default:
-          assert(0);
-          break;
+      case SEAL_OF_COMMAND:
+        trigger_seal_of_command( this );
+        break;
+      case SEAL_OF_VENGEANCE:
+        trigger_seal_of_vengeance_attack( this );
+        break;
+      default:
+        assert( 0 );
+        break;
       }
     }
   }
@@ -506,8 +506,8 @@ void paladin_attack_t::execute()
 
 struct melee_t : public paladin_attack_t
 {
-  melee_t( paladin_t* p ) : 
-    paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, TREE_NONE, false )
+  melee_t( paladin_t* p ) :
+      paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     background        = true;
     repeating         = true;
@@ -523,14 +523,14 @@ struct melee_t : public paladin_attack_t
 
     paladin_attack_t::execute();
 
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
-      if( result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
         trigger_the_art_of_war( this );
       }
 
-      if( p -> active_seal == SEAL_OF_VENGEANCE )
+      if ( p -> active_seal == SEAL_OF_VENGEANCE )
         trigger_seal_of_vengeance_dot( this );
     }
   }
@@ -540,8 +540,8 @@ struct melee_t : public paladin_attack_t
 
 struct auto_attack_t : public paladin_attack_t
 {
-  auto_attack_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "auto_attack", p)
+  auto_attack_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "auto_attack", p )
   {
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> auto_attack = new melee_t( p );
@@ -558,7 +558,7 @@ struct auto_attack_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> moving ) return false;
+    if ( p -> moving ) return false;
     return( p -> auto_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -568,8 +568,8 @@ struct auto_attack_t : public paladin_attack_t
 
 struct seal_of_command_t : public paladin_attack_t
 {
-  seal_of_command_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "seal_of_command", p )
+  seal_of_command_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "seal_of_command", p )
   {
     assert( p -> talents.seal_of_command );
 
@@ -579,7 +579,7 @@ struct seal_of_command_t : public paladin_attack_t
 
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     consume_resource();
 
@@ -590,7 +590,7 @@ struct seal_of_command_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> active_seal == SEAL_OF_COMMAND )
+    if ( p -> active_seal == SEAL_OF_COMMAND )
       return false;
 
     return paladin_attack_t::ready();
@@ -601,8 +601,8 @@ struct seal_of_command_t : public paladin_attack_t
 
 struct seal_of_vengeance_t : public paladin_attack_t
 {
-  seal_of_vengeance_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "seal_of_vengeance", p )
+  seal_of_vengeance_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "seal_of_vengeance", p )
   {
     harmful = false;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.14;
@@ -610,7 +610,7 @@ struct seal_of_vengeance_t : public paladin_attack_t
 
   virtual void execute()
   {
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     consume_resource();
 
@@ -621,7 +621,7 @@ struct seal_of_vengeance_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> active_seal == SEAL_OF_VENGEANCE )
+    if ( p -> active_seal == SEAL_OF_VENGEANCE )
       return false;
 
     return paladin_attack_t::ready();
@@ -635,7 +635,7 @@ struct seal_of_vengeance_t : public paladin_attack_t
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "avenging_wrath", p )
+      paladin_spell_t( "avenging_wrath", p )
   {
     harmful     = false;
     cooldown    = 180 - 30 * p -> talents.sanctified_wrath;
@@ -660,7 +660,7 @@ struct avenging_wrath_t : public paladin_spell_t
       }
     };
 
-    if( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     consume_resource();
     update_ready();
@@ -676,7 +676,7 @@ struct avenging_wrath_t : public paladin_spell_t
 struct consecration_tick_t : public paladin_spell_t
 {
   consecration_tick_t( paladin_t* p ) :
-    paladin_spell_t( "consecration", p )
+      paladin_spell_t( "consecration", p )
   {
     dual       = true;
     background = true;
@@ -689,7 +689,7 @@ struct consecration_tick_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_spell_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       ticking = 1;
       tick_dmg = direct_dmg;
@@ -713,7 +713,7 @@ struct consecration_t : public paladin_spell_t
   action_t* consecration_tick;
 
   consecration_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "consecration", p )
+      paladin_spell_t( "consecration", p )
   {
     num_ticks      = 8 + ( p -> glyphs.consecration ? 2 : 0 );
     base_tick_time = 1;
@@ -737,8 +737,8 @@ struct consecration_t : public paladin_spell_t
 // 75% wpn damage, 4s cd, 5%basemana
 struct crusader_strike_t : public paladin_attack_t
 {
-  crusader_strike_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "crusader_strike", p )
+  crusader_strike_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "crusader_strike", p )
   {
     check_talent( p -> talents.crusader_strike );
 
@@ -751,14 +751,14 @@ struct crusader_strike_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    if( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
+    if ( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
   }
-  
+
   virtual void execute()
   {
     paladin_attack_t::execute();
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_righteous_vengeance( this );
     }
@@ -770,8 +770,8 @@ struct crusader_strike_t : public paladin_attack_t
 // 110% damage, 10s cd, 12%basemana
 struct divine_storm_t : public paladin_attack_t
 {
-  divine_storm_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "divine_storm", p)
+  divine_storm_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "divine_storm", p )
   {
     check_talent( p -> talents.divine_storm );
 
@@ -783,15 +783,15 @@ struct divine_storm_t : public paladin_attack_t
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.12;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    if( p -> set_bonus.tier7_2pc() ) base_multiplier *= 1.1;
-    if( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
+    if ( p -> set_bonus.tier7_2pc() ) base_multiplier *= 1.1;
+    if ( p -> set_bonus.tier8_4pc() ) base_crit += 0.10;
   }
-  
+
   virtual void execute()
   {
     paladin_attack_t::execute();
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_righteous_vengeance( this );
     }
@@ -802,7 +802,7 @@ struct divine_storm_t : public paladin_attack_t
 struct exorcism_t : public paladin_spell_t
 {
   exorcism_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "exorcism", p )
+      paladin_spell_t( "exorcism", p )
   {
     base_execute_time = 1.5;
     cooldown = 15;
@@ -811,7 +811,7 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod = 0.15;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
-    if( p -> glyphs.exorcism )
+    if ( p -> glyphs.exorcism )
       base_multiplier *= 1.2;
     base_attack_power_multiplier = 1;
   }
@@ -821,18 +821,18 @@ struct exorcism_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
 
     double t = paladin_spell_t::execute_time();
-    if( p -> _buffs.the_art_of_war )
+    if ( p -> _buffs.the_art_of_war )
     {
       t -= 0.75 * p -> talents.the_art_of_war;
     }
-    return (t < 0) ? 0 : t;
+    return ( t < 0 ) ? 0 : t;
   }
 
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
 
-    if( ! paladin_spell_t::ready() )
+    if ( ! paladin_spell_t::ready() )
       return false;
 
     return p -> _buffs.the_art_of_war != 0;
@@ -844,7 +844,7 @@ struct exorcism_t : public paladin_spell_t
 
     paladin_spell_t::execute();
 
-    if( p -> _expirations.the_art_of_war )
+    if ( p -> _expirations.the_art_of_war )
       event_t::early( p -> _expirations.the_art_of_war );
   }
 
@@ -867,7 +867,7 @@ struct exorcism_t : public paladin_spell_t
 struct hammer_of_wrath_t : public paladin_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
-    paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY )
+      paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY )
   {
     trigger_seal = false;
 
@@ -901,7 +901,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
   virtual bool ready()
   {
-    if( sim -> target -> health_percentage() > 20 )
+    if ( sim -> target -> health_percentage() > 20 )
       return false;
 
     return paladin_attack_t::ready();
@@ -912,8 +912,8 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
 struct judgement_t : public paladin_attack_t
 {
-  judgement_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_attack_t( "judgement", p, SCHOOL_HOLY )
+  judgement_t( paladin_t* p, const std::string& options_str ) :
+      paladin_attack_t( "judgement", p, SCHOOL_HOLY )
   {
     may_parry = false;
     may_dodge = false;
@@ -936,19 +936,19 @@ struct judgement_t : public paladin_attack_t
 
     paladin_attack_t::player_buff();
 
-    switch( p -> active_seal )
+    switch ( p -> active_seal )
     {
-      case SEAL_OF_COMMAND:
-        // FIXME
-        break;
-      case SEAL_OF_VENGEANCE:
-        // (1 + 14% AP + 22% SP) * (1 + num_stacks * 0.1)
-        player_multiplier *= 1 + p -> talents.seals_of_the_pure * 0.03;
-        player_multiplier *= 1 + p -> _buffs.seal_of_vengeance_stacks * 0.1;
-        break;
-      default:
-        assert(0);
-        break;
+    case SEAL_OF_COMMAND:
+      // FIXME
+      break;
+    case SEAL_OF_VENGEANCE:
+      // (1 + 14% AP + 22% SP) * (1 + num_stacks * 0.1)
+      player_multiplier *= 1 + p -> talents.seals_of_the_pure * 0.03;
+      player_multiplier *= 1 + p -> _buffs.seal_of_vengeance_stacks * 0.1;
+      break;
+    default:
+      assert( 0 );
+      break;
     }
   }
 
@@ -956,19 +956,19 @@ struct judgement_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
 
-    switch( p -> active_seal )
+    switch ( p -> active_seal )
     {
-      case SEAL_OF_COMMAND:
-        // FIXME
-        break;
-      case SEAL_OF_VENGEANCE:
-        // (1 + 14% AP + 22% SP) * (1 + num_stacks * 0.1)
-        base_dd_min = base_dd_max = (1 + 0.22 * total_spell_power());
-        direct_power_mod = 0.14;
-        break;
-      default:
-        assert(0);
-        break;
+    case SEAL_OF_COMMAND:
+      // FIXME
+      break;
+    case SEAL_OF_VENGEANCE:
+      // (1 + 14% AP + 22% SP) * (1 + num_stacks * 0.1)
+      base_dd_min = base_dd_max = ( 1 + 0.22 * total_spell_power() );
+      direct_power_mod = 0.14;
+      break;
+    default:
+      assert( 0 );
+      break;
     }
 
     return paladin_attack_t::calculate_direct_damage();
@@ -978,11 +978,11 @@ struct judgement_t : public paladin_attack_t
   {
     paladin_attack_t::execute();
 
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_judgements_of_the_wise( this );
 
-      if( result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
         trigger_righteous_vengeance( this );
       }
@@ -992,7 +992,7 @@ struct judgement_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> active_seal == SEAL_NONE )
+    if ( p -> active_seal == SEAL_NONE )
       return false;
 
     return paladin_attack_t::ready();
@@ -1042,16 +1042,16 @@ void paladin_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
-  
+
     if     ( n == "consecration"        ) glyphs.consecration = 1;
-    else if( n == "exorcism"            ) glyphs.exorcism = 1;
-    else if( n == "judgement"           ) glyphs.judgement = 1;
-    else if( n == "seal_of_vengeance"   ) glyphs.seal_of_vengeance = 1;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "exorcism"            ) glyphs.exorcism = 1;
+    else if ( n == "judgement"           ) glyphs.judgement = 1;
+    else if ( n == "seal_of_vengeance"   ) glyphs.seal_of_vengeance = 1;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -1071,16 +1071,16 @@ void paladin_t::init_scaling()
 
 void paladin_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=fish_feast/seal_of_vengeance/auto_attack";
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
+      if ( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
     action_list_str += "/avenging_wrath";
@@ -1113,7 +1113,7 @@ void paladin_t::interrupt()
 {
   player_t::interrupt();
 
-  if( auto_attack ) auto_attack -> cancel();
+  if ( auto_attack ) auto_attack -> cancel();
 }
 
 double paladin_t::composite_spell_power( int school ) SC_CONST
@@ -1161,7 +1161,7 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
 
 std::vector<option_t>& paladin_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
 
@@ -1201,17 +1201,17 @@ std::vector<option_t>& paladin_t::get_options()
 
 action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )
 {
-  if( name == "auto_attack"             ) return new auto_attack_t              ( this, options_str );
-  if( name == "avenging_wrath"          ) return new avenging_wrath_t           ( this, options_str );
-  if( name == "consecration"            ) return new consecration_t             ( this, options_str );
-  if( name == "crusader_strike"         ) return new crusader_strike_t          ( this, options_str );
-  if( name == "divine_storm"            ) return new divine_storm_t             ( this, options_str );
-  if( name == "exorcism"                ) return new exorcism_t                 ( this, options_str );
-  if( name == "hammer_of_wrath"         ) return new hammer_of_wrath_t          ( this, options_str );
-  if( name == "judgement"               ) return new judgement_t                ( this, options_str );
-  if( name == "seal_of_command"         ) return new seal_of_command_t          ( this, options_str );
-  if( name == "seal_of_corruption"      ) return new seal_of_vengeance_t        ( this, options_str );
-  if( name == "seal_of_vengeance"       ) return new seal_of_vengeance_t        ( this, options_str );
+  if ( name == "auto_attack"             ) return new auto_attack_t              ( this, options_str );
+  if ( name == "avenging_wrath"          ) return new avenging_wrath_t           ( this, options_str );
+  if ( name == "consecration"            ) return new consecration_t             ( this, options_str );
+  if ( name == "crusader_strike"         ) return new crusader_strike_t          ( this, options_str );
+  if ( name == "divine_storm"            ) return new divine_storm_t             ( this, options_str );
+  if ( name == "exorcism"                ) return new exorcism_t                 ( this, options_str );
+  if ( name == "hammer_of_wrath"         ) return new hammer_of_wrath_t          ( this, options_str );
+  if ( name == "judgement"               ) return new judgement_t                ( this, options_str );
+  if ( name == "seal_of_command"         ) return new seal_of_command_t          ( this, options_str );
+  if ( name == "seal_of_corruption"      ) return new seal_of_vengeance_t        ( this, options_str );
+  if ( name == "seal_of_vengeance"       ) return new seal_of_vengeance_t        ( this, options_str );
   return player_t::create_action( name, options_str );
 }
 
@@ -1219,10 +1219,10 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 
 int paladin_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "redemption" ) ) return SET_T7;
-  if( strstr( item.name(), "aegis"      ) ) return SET_T8;
-  if( strstr( item.name(), "turalyon"   ) ) return SET_T9;
-  if( strstr( item.name(), "liadrin"    ) ) return SET_T9;
+  if ( strstr( item.name(), "redemption" ) ) return SET_T7;
+  if ( strstr( item.name(), "aegis"      ) ) return SET_T8;
+  if ( strstr( item.name(), "turalyon"   ) ) return SET_T9;
+  if ( strstr( item.name(), "liadrin"    ) ) return SET_T9;
   return SET_NONE;
 }
 
@@ -1237,14 +1237,14 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name )
 
 void player_t::init_paladin( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
 
 void player_t::combat_begin_paladin( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }

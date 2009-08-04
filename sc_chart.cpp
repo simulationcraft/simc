@@ -179,7 +179,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       player_t* p = sim -> players_by_rank[ j ];
 
       data_points[ i ][ j ] = ( p -> gear.   get_stat( i ) +
-				p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i );
+                                p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i );
     }
   }
 
@@ -207,7 +207,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     double total=0;
     for ( int j=0; j < STAT_MAX; j++ )
     {
-      if( ! colors[ j ] ) continue;
+      if ( ! colors[ j ] ) continue;
       total += data_points[ j ][ i ];
     }
     if ( total > max_total ) max_total = total;
@@ -226,7 +226,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     int height = num_players * 20 + 30;
 
-    if( num_players < 10 ) height += 70;
+    if ( num_players < 10 ) height += 70;
 
     s = "http://chart.apis.google.com/chart?";
     snprintf( buffer, sizeof( buffer ), "chs=450x%d", height ); s += buffer;
@@ -284,7 +284,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       s += util_t::stat_type_abbrev( i );
     }
     s += "&amp;";
-    if( num_players < 10 )
+    if ( num_players < 10 )
     {
       s += "chdlp=t&amp;";
     }
@@ -978,7 +978,7 @@ const char* chart_t::distribution_dps( std::string& s,
 // chart_t::gear_weights_lootrank =============================================
 
 const char* chart_t::gear_weights_lootrank( std::string& s,
-    player_t*    p )
+                                            player_t*    p )
 {
   char buffer[ 1024 ];
 
@@ -1042,7 +1042,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 // chart_t::gear_weights_wowhead ==============================================
 
 const char* chart_t::gear_weights_wowhead( std::string& s,
-    player_t*    p )
+                                           player_t*    p )
 {
   char buffer[ 1024 ];
   bool first=true;
@@ -1126,7 +1126,7 @@ struct compare_stat_scale_factors
   bool operator()( const int& l, const int& r ) SC_CONST
   {
     return( player -> scaling.get_stat( l ) >
-            player -> scaling.get_stat( r ) );
+    player -> scaling.get_stat( r ) );
   }
 };
 
@@ -1191,15 +1191,18 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   if ( maxB > maxG )  maxG=maxB;
 
   s += ",";
-  if ( maxR == maxG ) { value = maxR; } else { value = maxR/2 + maxG/2; }
+  if ( maxR == maxG ) { value = maxR; }
+  else { value = maxR/2 + maxG/2; }
   snprintf( buffer, sizeof( buffer ), " RedSocket=%.2f", value );
   s += buffer;
   s += ",";
-  if ( maxY == maxG ) { value = maxY; } else { value = maxY/2 + maxG/2; }
+  if ( maxY == maxG ) { value = maxY; }
+  else { value = maxY/2 + maxG/2; }
   snprintf( buffer, sizeof( buffer ), " YellowSocket=%.2f", value );
   s += buffer;
   s += ",";
-  if ( maxB == maxG ) { value = maxB; } else { value = maxB/2 + maxG/2; }
+  if ( maxB == maxG ) { value = maxB; }
+  else { value = maxB/2 + maxG/2; }
   snprintf( buffer, sizeof( buffer ), " BlueSocket=%.2f", value );
   s += buffer;
 

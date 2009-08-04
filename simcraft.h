@@ -16,7 +16,7 @@
 // Switching of using 'const'-flag on methods possible ======================
 // Results of the sim should always be the same, no matter if this is set to:
 // #define SC_CONST const    -OR-
-// #define SC_CONST 
+// #define SC_CONST
 #define SC_CONST const
 
 #if defined( _MSC_VER )
@@ -50,7 +50,7 @@
 #include <string.h>
 #include <math.h>
 
-#if __BSD_VISIBLE 
+#if __BSD_VISIBLE
 #  include <netinet/in.h>
 #  if !defined(CLOCKS_PER_SEC)
 #    define CLOCKS_PER_SEC 1000000
@@ -124,7 +124,8 @@ struct xml_node_t;
 
 // Enumerations ==============================================================
 
-enum race_type {
+enum race_type
+{
   RACE_NONE=0,
   // Target Races
   RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
@@ -133,7 +134,8 @@ enum race_type {
   RACE_MAX
 };
 
-enum player_type {
+enum player_type
+{
   PLAYER_NONE=0,
   DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
@@ -144,12 +146,15 @@ enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum resource_type {
+enum resource_type
+{
   RESOURCE_NONE=0,
   RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC,
-  RESOURCE_MAX };
+  RESOURCE_MAX
+};
 
-enum result_type {
+enum result_type
+{
   RESULT_NONE=0,
   RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY,
   RESULT_BLOCK, RESULT_GLANCE, RESULT_CRIT,  RESULT_HIT,
@@ -161,7 +166,8 @@ enum result_type {
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
 #define RESULT_ALL_MASK  -1
 
-enum proc_type {
+enum proc_type
+{
   PROC_NONE=0,
   PROC_DAMAGE,
   PROC_ATTACK,
@@ -172,14 +178,16 @@ enum proc_type {
 
 enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
-enum school_type {
+enum school_type
+{
   SCHOOL_NONE=0,
   SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST,
   SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW,
   SCHOOL_MAX
 };
 
-enum talent_tree_type {
+enum talent_tree_type
+{
   TREE_NONE=0,
   TREE_BLOOD,         TREE_UNHOLY,                         // DEATH KNIGHT
   TREE_BALANCE,       TREE_FERAL,        TREE_RESTORATION, // DRUID
@@ -194,7 +202,8 @@ enum talent_tree_type {
   TALENT_TREE_MAX
 };
 
-enum weapon_type {
+enum weapon_type
+{
   WEAPON_NONE=0,
   WEAPON_DAGGER,                                                                                   WEAPON_SMALL,
   WEAPON_BEAST,    WEAPON_SWORD,    WEAPON_MACE,     WEAPON_AXE,    WEAPON_FIST,                   WEAPON_1H,
@@ -203,22 +212,25 @@ enum weapon_type {
   WEAPON_MAX
 };
 
-enum enchant_type { 
-  ENCHANT_NONE=0, 
-  ENCHANT_BERSERKING, ENCHANT_MONGOOSE, ENCHANT_EXECUTIONER, ENCHANT_DEATH_FROST, ENCHANT_SCOPE, 
-  ENCHANT_LIGHTWEAVE, ENCHANT_SPELLSURGE, 
-  ENCHANT_MAX 
+enum enchant_type
+{
+  ENCHANT_NONE=0,
+  ENCHANT_BERSERKING, ENCHANT_MONGOOSE, ENCHANT_EXECUTIONER, ENCHANT_DEATH_FROST, ENCHANT_SCOPE,
+  ENCHANT_LIGHTWEAVE, ENCHANT_SPELLSURGE,
+  ENCHANT_MAX
 };
 
-enum weapon_buff_type {
+enum weapon_buff_type
+{
   WEAPON_BUFF_NONE=0,
   ANESTHETIC_POISON, DEADLY_POISON, FIRE_STONE, FLAMETONGUE, INSTANT_POISON,
   SHARPENING_STONE,  SPELL_STONE,   WINDFURY,   WIZARD_OIL,  WOUND_POISON,
   WEAPON_BUFF_MAX
 };
 
-enum slot_type { // these enum values match armory settings
-  SLOT_NONE      = -1, 
+enum slot_type   // these enum values match armory settings
+{
+  SLOT_NONE      = -1,
   SLOT_HEAD      = 0,
   SLOT_NECK      = 1,
   SLOT_SHOULDERS = 2,
@@ -234,14 +246,15 @@ enum slot_type { // these enum values match armory settings
   SLOT_TRINKET_1 = 12,
   SLOT_TRINKET_2 = 13,
   SLOT_BACK      = 14,
-  SLOT_MAIN_HAND = 15, 
-  SLOT_OFF_HAND  = 16, 
-  SLOT_RANGED    = 17, 
-  SLOT_TABARD    = 18, 
-  SLOT_MAX       = 19 
+  SLOT_MAIN_HAND = 15,
+  SLOT_OFF_HAND  = 16,
+  SLOT_RANGED    = 17,
+  SLOT_TABARD    = 18,
+  SLOT_MAX       = 19
 };
 
-enum set_type {
+enum set_type
+{
   SET_NONE = 0,
   SET_T4,  SET_T4_2PC,  SET_T4_4PC,
   SET_T5,  SET_T5_2PC,  SET_T5_4PC,
@@ -254,7 +267,8 @@ enum set_type {
   SET_MAX
 };
 
-enum gem_type {
+enum gem_type
+{
   GEM_NONE=0,
   GEM_META, GEM_PRISMATIC,
   GEM_RED, GEM_YELLOW, GEM_BLUE,
@@ -262,7 +276,8 @@ enum gem_type {
   GEM_MAX
 };
 
-enum meta_gem_type {
+enum meta_gem_type
+{
   META_GEM_NONE=0,
   META_AUSTERE_EARTHSIEGE,
   META_BEAMING_EARTHSIEGE,
@@ -297,7 +312,8 @@ enum meta_gem_type {
   META_GEM_MAX
 };
 
-enum stat_type {
+enum stat_type
+{
   STAT_NONE=0,
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
@@ -309,7 +325,8 @@ enum stat_type {
   STAT_MAX
 };
 
-enum elixir_type {
+enum elixir_type
+{
   ELIXIR_NONE=0,
   ELIXIR_DRAENIC_WISDOM,
   ELIXIR_MAJOR_MAGEBLOOD,
@@ -330,7 +347,8 @@ enum elixir_type {
   ELIXIR_MAX
 };
 
-enum flask_type {
+enum flask_type
+{
   FLASK_NONE=0,
   FLASK_BLINDING_LIGHT,
   FLASK_DISTILLED_WISDOM,
@@ -343,7 +361,8 @@ enum flask_type {
   FLASK_MAX
 };
 
-enum food_type {
+enum food_type
+{
   FOOD_NONE=0,
   FOOD_TENDER_SHOVELTUSK_STEAK,
   FOOD_SMOKED_SALMON,
@@ -362,7 +381,8 @@ enum food_type {
 
 enum position_type { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED, POSITION_MAX };
 
-enum profession_type {
+enum profession_type
+{
   PROFESSION_NONE=0,
   PROF_ALCHEMY,
   PROF_MINING,
@@ -401,7 +421,7 @@ enum rng_type
 
 enum save_type
 {
-  // Specifies the type of profile data to be saved 
+  // Specifies the type of profile data to be saved
   SAVE_ALL=0,
   SAVE_GEAR,
   SAVE_TALENTS,
@@ -409,7 +429,8 @@ enum save_type
   SAVE_MAX
 };
 
-enum format_type {
+enum format_type
+{
   FORMAT_NONE=0,
   FORMAT_NAME,
   FORMAT_CHAR_NAME,
@@ -447,16 +468,16 @@ enum option_type_t
 // Expression Operation types ==================================================
 enum exp_res_t    { ETP_NONE, ETP_BOOL, ETP_NUM };
 
-enum exp_type { AEXP_NONE=0, 
+enum exp_type { AEXP_NONE=0,
                 AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
                 AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
                 AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
                 AEXP_BUFF, AEXP_FUNC, // these presume overriden class
                 AEXP_MAX
-};
+              };
 
 
-typedef bool (*option_function_t)( sim_t* sim, const std::string& name, const std::string& value );
+typedef bool ( *option_function_t )( sim_t* sim, const std::string& name, const std::string& value );
 
 struct option_t
 {
@@ -676,11 +697,11 @@ struct buff_t
   rng_t* rng;
   buff_t* next;
 
-  buff_t() : sim(0) {}
-  buff_t( sim_t*, player_t*, 
-	  const std::string& name, 
-	  int max_stack=1, double duration=0, double cooldown=0, 
-	  double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+  buff_t() : sim( 0 ) {}
+  buff_t( sim_t*, player_t*,
+          const std::string& name,
+          int max_stack=1, double duration=0, double cooldown=0,
+          double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~buff_t() { };
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
@@ -712,7 +733,8 @@ struct buff_t
 // Expressions =================================================================
 
 // definition of operators
-struct operator_def_t{
+struct operator_def_t
+{
   std::string name;
   int type;
   bool binary;
@@ -720,45 +742,48 @@ struct operator_def_t{
   exp_res_t operand_type;
 };
 
-struct act_expression_t{
+struct act_expression_t
+{
   int    type;
   double value;
   void   *p_value;
   std::string exp_str;
   act_expression_t* operand_1;
   act_expression_t* operand_2;
-  act_expression_t(int e_type, std::string expression_str="", double e_value=0);
-  std::string to_string(int level=0);
+  act_expression_t( int e_type, std::string expression_str="", double e_value=0 );
+  std::string to_string( int level=0 );
   virtual ~act_expression_t() {}
   virtual double evaluate();
   virtual bool   ok();
-  static act_expression_t* create(action_t* action, std::string& expression, std::string alias_protect, exp_res_t expected_type);
-  static void warn(int severity, action_t* action, const char* format, ... );
-  static act_expression_t* find_operator(action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect, 
-                                         operator_def_t& op);
-  static std::string op_name(int op_type);
+  static act_expression_t* create( action_t* action, std::string& expression, std::string alias_protect, exp_res_t expected_type );
+  static void warn( int severity, action_t* action, const char* format, ... );
+  static act_expression_t* find_operator( action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect,
+                                          operator_def_t& op );
+  static std::string op_name( int op_type );
 
 };
 
-struct oldbuff_expression_t: public act_expression_t{
+struct oldbuff_expression_t: public act_expression_t
+{
   event_t** expiration_ptr;
   int* int_ptr;
   double* double_ptr;
-  oldbuff_expression_t(std::string expression_str, void* value_ptr, event_t** e_expiration=0, int ptr_type=1);
-  virtual ~oldbuff_expression_t(){};
+  oldbuff_expression_t( std::string expression_str, void* value_ptr, event_t** e_expiration=0, int ptr_type=1 );
+  virtual ~oldbuff_expression_t() {};
   virtual double evaluate();
 };
 
 // Alias support =============================================================
-struct alias_t{
+struct alias_t
+{
   std::string alias_str;
   std::vector<std::string> alias_name;
   std::vector<std::string> alias_value;
-  alias_t(){}
-  virtual ~alias_t(){}
-  virtual void add(std::string& name, std::string& value);
+  alias_t() {}
+  virtual ~alias_t() {}
+  virtual void add( std::string& name, std::string& value );
   virtual void init_parse();
-  virtual std::string find(std::string& name);
+  virtual std::string find( std::string& name );
 };
 
 // Simulation Engine =========================================================
@@ -1063,18 +1088,19 @@ struct item_t
 
   // Extracted data
   gear_stats_t stats;
-  struct special_effect_t {
+  struct special_effect_t
+  {
     std::string trigger_str;
     int trigger_type, trigger_mask;
     int stat, school, max_stacks;
     double amount, proc_chance, duration, cooldown;
-    special_effect_t() : 
-      trigger_type(0), trigger_mask(0), stat(0), school(0), 
-      max_stacks(0), amount(0), proc_chance(0), duration(0), cooldown(0) {}
+    special_effect_t() :
+        trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
+        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ) {}
     bool active() { return stat || school; }
   } use, equip;
 
-  item_t() : sim(0), player(0), slot(SLOT_NONE), enchant(ENCHANT_NONE), unique(false) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), enchant( ENCHANT_NONE ), unique( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   const char* name() SC_CONST;
@@ -1092,7 +1118,7 @@ struct item_t
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
-  static int  parse_gem( item_t&            item, 
+  static int  parse_gem( item_t&            item,
                          const std::string& gem_id );
 };
 
@@ -1547,7 +1573,7 @@ struct player_t
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
-  
+
   virtual std::vector<option_t>& get_options();
   virtual bool save( FILE*, int save_type=SAVE_ALL );
 
@@ -1556,7 +1582,7 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
+  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 
   virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) {}
   virtual int  decode_set( item_t& item ) { return SET_NONE; }
@@ -1647,7 +1673,7 @@ struct pet_t : public player_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    if( sim -> P320 )
+    if ( sim -> P320 )
       return owner -> composite_attack_hit() * 6.5 / 8.0;
     else
       return player_t::composite_attack_expertise();
@@ -1967,7 +1993,7 @@ struct action_t
 
   virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier; }
   virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier; }
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
+  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 
 };
 
@@ -2040,7 +2066,7 @@ struct action_callback_t
   sim_t* sim;
   player_t* listener;
   bool active;
-  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active(true) {}
+  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active( true ) {}
   virtual ~action_callback_t() {}
   virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
@@ -2049,16 +2075,16 @@ struct action_callback_t
   static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
     int size = v.size();
-    for( int i=0; i < size; i++ ) 
+    for ( int i=0; i < size; i++ )
     {
       action_callback_t* cb = v[ i ];
-      if( cb -> active ) cb -> trigger( a );
+      if ( cb -> active ) cb -> trigger( a );
     }
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {
     int size = v.size();
-    for( int i=0; i < size; i++ ) 
+    for ( int i=0; i < size; i++ )
     {
       v[ i ] -> reset();
     }
@@ -2116,23 +2142,23 @@ struct unique_gear_t
 {
   static void init( player_t* );
 
-  static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*, 
-						int stat, int max_stacks, double amount, 
-						double proc_chance, double duration, double cooldown, 
-						int rng_type=RNG_DEFAULT );
+  static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*,
+                                                int stat, int max_stacks, double amount,
+                                                double proc_chance, double duration, double cooldown,
+                                                int rng_type=RNG_DEFAULT );
 
-  static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*, 
-						     int max_stacks, int school, double min_dmg, double max_dmg, 
-						     double proc_chance, double cooldown, 
-						     int rng_type=RNG_DEFAULT );
+  static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*,
+                                                     int max_stacks, int school, double min_dmg, double max_dmg,
+                                                     double proc_chance, double cooldown,
+                                                     int rng_type=RNG_DEFAULT );
 
-  static bool get_equip_encoding( std::string& encoding, 
-				  const std::string& item_name, 
-				  const std::string& item_id=std::string() );
+  static bool get_equip_encoding( std::string& encoding,
+                                  const std::string& item_name,
+                                  const std::string& item_id=std::string() );
 
-  static bool get_use_encoding  ( std::string& encoding, 
-				  const std::string& item_name, 
-				  const std::string& item_id=std::string() );
+  static bool get_use_encoding  ( std::string& encoding,
+                                  const std::string& item_name,
+                                  const std::string& item_id=std::string() );
 };
 
 // Enchants ===================================================================
@@ -2197,28 +2223,28 @@ struct proc_t
   double interval_count;
   double last_proc;
   proc_t* next;
-  proc_t( sim_t* s, const std::string& n ) : 
-    sim( s ), name_str( n ), count( 0 ), frequency( 0 ), interval_sum( 0 ), interval_count( 0 ), last_proc( 0 ) {}
-  void occur() 
-  { 
-    count++; 
-    if( last_proc > 0 && last_proc < sim -> current_time )
+  proc_t( sim_t* s, const std::string& n ) :
+      sim( s ), name_str( n ), count( 0 ), frequency( 0 ), interval_sum( 0 ), interval_count( 0 ), last_proc( 0 ) {}
+  void occur()
+  {
+    count++;
+    if ( last_proc > 0 && last_proc < sim -> current_time )
     {
       interval_sum += sim -> current_time - last_proc;
       interval_count++;
     }
     last_proc = sim -> current_time;
   }
-  void merge( proc_t* other ) 
-  { 
-    count          += other -> count; 
+  void merge( proc_t* other )
+  {
+    count          += other -> count;
     interval_sum   += other -> interval_sum;
     interval_count += other -> interval_count;
   }
   void analyze( sim_t* sim )
   {
     count /= sim -> iterations;
-    if( interval_count > 0 ) frequency = interval_sum / interval_count;
+    if ( interval_count > 0 ) frequency = interval_sum / interval_count;
   }
   const char* name() SC_CONST { return name_str.c_str(); }
 };
@@ -2316,7 +2342,7 @@ std::string tolower( std::string src );
 std::string trim( std::string src );
 void replace_char( std::string& src, char old_c, char new_c  );
 void replace_str( std::string& src, std::string old_str, std::string new_str  );
-bool str_to_float(std::string src, double& dest );
+bool str_to_float( std::string src, double& dest );
 std::string proper_option_name( const std::string& full_name );
 
 // Thread Wrappers ===========================================================
@@ -2335,19 +2361,19 @@ struct thread_t
 
 struct armory_t
 {
-  static bool download_guild( sim_t* sim, 
-                              const std::string& region, 
-                              const std::string& server, 
+  static bool download_guild( sim_t* sim,
+                              const std::string& region,
+                              const std::string& server,
                               const std::string& name,
                               int player_type = PLAYER_NONE,
                               int max_rank=0,
-			                        int cache=0 );
+                              int cache=0 );
   static player_t* download_player( sim_t* sim,
-                                    const std::string& region, 
-                                    const std::string& server, 
+                                    const std::string& region,
+                                    const std::string& server,
                                     const std::string& name,
                                     const std::string& talents,
-				                            int cache=0 );
+                                    int cache=0 );
   static bool download_slot( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
@@ -2360,8 +2386,8 @@ struct armory_t
 struct wowhead_t
 {
   static player_t* download_player( sim_t* sim,
-                                    const std::string& region, 
-                                    const std::string& server, 
+                                    const std::string& region,
+                                    const std::string& server,
                                     const std::string& name,
                                     int active=1 );
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );

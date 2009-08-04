@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp(-1), is_ifall(0), if_exp(NULL),
+    moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp( -1 ), is_ifall( 0 ), if_exp( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -107,28 +107,28 @@ void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "allow_early_cast",   OPT_INT,    &is_ifall              },
-      { "allow_early_recast", OPT_INT,    &is_ifall              },
-      { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
-      { "haste<",             OPT_FLT,    &max_haste             },
-      { "health_percentage<", OPT_FLT,    &max_health_percentage },
-      { "health_percentage>", OPT_FLT,    &min_health_percentage },
-      { "if",                 OPT_STRING, &if_expression         },
-      { "if_buff",            OPT_STRING, &if_expression         },
-      { "invulnerable",       OPT_BOOL,   &invulnerable          },
-      { "moving",             OPT_BOOL,   &moving                },
-      { "rank",               OPT_INT,    &rank_index            },
-      { "sync",               OPT_STRING, &sync_str              },
-      { "time<",              OPT_FLT,    &max_current_time      },
-      { "time>",              OPT_FLT,    &min_current_time      },
-      { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
-      { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
-      { "travel_speed",       OPT_FLT,    &travel_speed          },
-      { "vulnerable",         OPT_BOOL,   &vulnerable            },
-      { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
-      { NULL,                 0,          NULL                   }
-    };
+  {
+    { "allow_early_cast",   OPT_INT,    &is_ifall              },
+    { "allow_early_recast", OPT_INT,    &is_ifall              },
+    { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
+    { "haste<",             OPT_FLT,    &max_haste             },
+    { "health_percentage<", OPT_FLT,    &max_health_percentage },
+    { "health_percentage>", OPT_FLT,    &min_health_percentage },
+    { "if",                 OPT_STRING, &if_expression         },
+    { "if_buff",            OPT_STRING, &if_expression         },
+    { "invulnerable",       OPT_BOOL,   &invulnerable          },
+    { "moving",             OPT_BOOL,   &moving                },
+    { "rank",               OPT_INT,    &rank_index            },
+    { "sync",               OPT_STRING, &sync_str              },
+    { "time<",              OPT_FLT,    &max_current_time      },
+    { "time>",              OPT_FLT,    &min_current_time      },
+    { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
+    { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
+    { "travel_speed",       OPT_FLT,    &travel_speed          },
+    { "vulnerable",         OPT_BOOL,   &vulnerable            },
+    { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
+    { NULL,                 0,          NULL                   }
+  };
 
   std::vector<option_t> merged_options;
   merge_options( merged_options, options, base_options );
@@ -145,7 +145,7 @@ void action_t::parse_options( option_t*          options,
   if ( options_buffer.empty()     ) return;
   if ( options_buffer.size() == 0 ) return;
 
-  if( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
+  if ( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
   {
     util_t::fprintf( sim -> output_file, "action_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
     assert( false );
@@ -378,7 +378,7 @@ void action_t::target_debuff( int dmg_type )
     // no spell power based debuffs at this time
   }
 
-  if( t -> vulnerable ) target_multiplier *= 2.0;
+  if ( t -> vulnerable ) target_multiplier *= 2.0;
 
   t -> uptimes.totem_of_wrath  -> update( t -> debuffs.totem_of_wrath  != 0 );
   t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
@@ -396,10 +396,10 @@ void action_t::target_debuff( int dmg_type )
 bool action_t::result_is_hit() SC_CONST
 {
   return( result == RESULT_HIT    ||
-          result == RESULT_CRIT   ||
-          result == RESULT_GLANCE ||
-          result == RESULT_BLOCK  ||
-          result == RESULT_NONE   );
+  result == RESULT_CRIT   ||
+  result == RESULT_GLANCE ||
+  result == RESULT_BLOCK  ||
+  result == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================
@@ -407,8 +407,8 @@ bool action_t::result_is_hit() SC_CONST
 bool action_t::result_is_miss() SC_CONST
 {
   return( result == RESULT_MISS   ||
-          result == RESULT_DODGE  ||
-          result == RESULT_RESIST );
+  result == RESULT_DODGE  ||
+  result == RESULT_RESIST );
 }
 
 // action_t::armor ==========================================================
@@ -497,8 +497,8 @@ double action_t::resistance() SC_CONST
 double action_t::total_crit_bonus() SC_CONST
 {
   double crit_multiplier = (   base_crit_multiplier *
-                               player_crit_multiplier *
-                               target_crit_multiplier );
+  player_crit_multiplier *
+  target_crit_multiplier );
 
   double crit_bonus_multiplier = (   base_crit_bonus_multiplier *
                                      player_crit_bonus_multiplier *
@@ -946,7 +946,7 @@ bool action_t::ready()
   target_t* t = sim -> target;
 
   if ( player -> skill < 1.0 )
-    if( ! sim -> roll( player -> skill ) )
+    if ( ! sim -> roll( player -> skill ) )
       return false;
 
   if ( ( duration_ready > 0 ) && ( !is_ifall ) )
@@ -1005,29 +1005,29 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if( sim -> target -> invulnerable )
-    if( harmful )
+  if ( sim -> target -> invulnerable )
+    if ( harmful )
       return false;
 
   if ( player -> moving )
-    if( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
+    if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
       return false;
 
   if ( moving )
-    if( ! player -> moving )
+    if ( ! player -> moving )
       return false;
 
   if ( vulnerable )
-    if( ! t -> vulnerable )
+    if ( ! t -> vulnerable )
       return false;
 
   if ( invulnerable )
-    if( ! t -> invulnerable )
+    if ( ! t -> invulnerable )
       return false;
 
   //check action expression if any
-  if (has_if_exp) 
-    if (! if_exp->ok())
+  if ( has_if_exp )
+    if ( ! if_exp->ok() )
       return false;
 
   return true;
@@ -1087,13 +1087,13 @@ void action_t::cancel()
 
 void action_t::check_talent( int talent_rank )
 {
-  if( talent_rank != 0 ) return;
+  if ( talent_rank != 0 ) return;
 
-  if( player -> is_pet() )
+  if ( player -> is_pet() )
   {
     pet_t* p = player -> cast_pet();
     util_t::printf( "\nsimcraft: Player %s has pet %s attempting to execute action %s without the required talent.\n",
-	    p -> owner -> name(), p -> name(), name() );
+                    p -> owner -> name(), p -> name(), name() );
   }
   else
   {
@@ -1104,13 +1104,14 @@ void action_t::check_talent( int talent_rank )
 }
 
 // action_t::create_expression ==============================================
-act_expression_t* action_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
+act_expression_t* action_t::create_expression( std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type )
+{
   act_expression_t* node=0;
   // check action specific functions
   //...
 
   // if none found, check player functions
-  if (node==0)   node=player->create_expression(name,prefix,suffix,expected_type);
+  if ( node==0 )   node=player->create_expression( name,prefix,suffix,expected_type );
   //return resutl
   return node;
 }

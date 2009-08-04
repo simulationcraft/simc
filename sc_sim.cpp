@@ -5,7 +5,8 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // parse_patch ==============================================================
 
@@ -80,10 +81,10 @@ static bool parse_optimal_raid( sim_t*             sim,
 // parse_player =============================================================
 
 static bool parse_player( sim_t*             sim,
-			  const std::string& name,
-			  const std::string& value )
+                          const std::string& name,
+                          const std::string& value )
 {
-  if( name == "player" ) 
+  if ( name == "player" )
   {
     std::string player_name = value;
     std::string player_options = "";
@@ -114,7 +115,7 @@ static bool parse_player( sim_t*             sim,
 
     option_t::parse( sim, "player", options, player_options );
 
-    if( wowhead.empty() )
+    if ( wowhead.empty() )
     {
       sim -> active_player = armory_t::download_player( sim, region, server, player_name, talents, cache );
     }
@@ -122,11 +123,11 @@ static bool parse_player( sim_t*             sim,
     {
       sim -> active_player = wowhead_t::download_player( sim, wowhead, cache );
 
-      if( sim -> active_player )
-	if( player_name != sim -> active_player -> name() )
-	  util_t::printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
-		  player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
-	
+      if ( sim -> active_player )
+        if ( player_name != sim -> active_player -> name() )
+          util_t::printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
+                          player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
+
     }
   }
   else
@@ -140,15 +141,15 @@ static bool parse_player( sim_t*             sim,
 // parse_armory =============================================================
 
 static bool parse_armory( sim_t*             sim,
-			  const std::string& name,
-			  const std::string& value )
+                          const std::string& name,
+                          const std::string& value )
 {
-  if( name == "armory" ) 
+  if ( name == "armory" )
   {
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, value, "," );
 
-    if( num_splits < 3 )
+    if ( num_splits < 3 )
     {
       util_t::printf( "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
       assert( false );
@@ -157,21 +158,21 @@ static bool parse_armory( sim_t*             sim,
     std::string region = splits[ 0 ];
     std::string server = splits[ 1 ];
 
-    for( int i=2; i < num_splits; i++ )
+    for ( int i=2; i < num_splits; i++ )
     {
       std::string player_name = splits[ i ];
       int active = 1;
-      if( player_name[ 0 ] == '!' )
+      if ( player_name[ 0 ] == '!' )
       {
-	player_name.erase( 0, 1 );
-	active = 0;
+        player_name.erase( 0, 1 );
+        active = 0;
       }
       sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( active ? "active" : "inactive" ) );
-      if( ! sim -> active_player ) return false;
+      if ( ! sim -> active_player ) return false;
     }
     return true;
   }
-  else if( name == "guild" ) 
+  else if ( name == "guild" )
   {
     std::string guild_name = value;
     std::string guild_options = "";
@@ -200,11 +201,11 @@ static bool parse_armory( sim_t*             sim,
       { NULL, OPT_UNKNOWN, NULL }
     };
 
-    if( ! option_t::parse( sim, "guild", options, guild_options ) )
+    if ( ! option_t::parse( sim, "guild", options, guild_options ) )
       return false;
 
     int player_type = PLAYER_NONE;
-    if( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
+    if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
     return armory_t::download_guild( sim, region, server, guild_name, player_type, max_rank, cache );
   }
@@ -215,41 +216,41 @@ static bool parse_armory( sim_t*             sim,
 // parse_wowhead ============================================================
 
 static bool parse_wowhead( sim_t*             sim,
-			   const std::string& name,
-			   const std::string& value )
+                           const std::string& name,
+                           const std::string& value )
 {
-  if( name == "wowhead" ) 
+  if ( name == "wowhead" )
   {
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, value, "," );
 
-    if( num_splits == 1 )
+    if ( num_splits == 1 )
     {
       std::string player_id = splits[ 0 ];
       int active = 1;
-      if( player_id[ 0 ] == '!' )
+      if ( player_id[ 0 ] == '!' )
       {
-	player_id.erase( 0, 1 );
-	active = 0;
+        player_id.erase( 0, 1 );
+        active = 0;
       }
       sim -> active_player = wowhead_t::download_player( sim, player_id, active );
     }
-    else if( num_splits >= 3 )
+    else if ( num_splits >= 3 )
     {
       std::string region = splits[ 0 ];
       std::string server = splits[ 1 ];
 
-      for( int i=2; i < num_splits; i++ )
+      for ( int i=2; i < num_splits; i++ )
       {
-	std::string player_name = splits[ i ];
-	int active = 1;
-	if( player_name[ 0 ] == '!' )
+        std::string player_name = splits[ i ];
+        int active = 1;
+        if ( player_name[ 0 ] == '!' )
         {
-	  player_name.erase( 0, 1 );
-	  active = 0;
-	}
-	sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active );
-	if( ! sim -> active_player ) return false;
+          player_name.erase( 0, 1 );
+          active = 0;
+        }
+        sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active );
+        if ( ! sim -> active_player ) return false;
       }
     }
     else
@@ -265,20 +266,20 @@ static bool parse_wowhead( sim_t*             sim,
 // parse_rawr ===============================================================
 
 static bool parse_rawr( sim_t*             sim,
-			const std::string& name,
-			const std::string& value )
+                        const std::string& name,
+                        const std::string& value )
 {
-  if( name == "rawr" ) 
+  if ( name == "rawr" )
   {
     FILE* file = fopen( value.c_str(), "r" );
-    if( ! file )
+    if ( ! file )
     {
       util_t::printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", value.c_str() );
       return false;
     }
     sim -> active_player = rawr_t::load_player( sim, file );
     fclose( file );
-    if( ! sim -> active_player )
+    if ( ! sim -> active_player )
     {
       util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
@@ -296,7 +297,7 @@ static bool parse_rawr( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P320( false ), 
+    parent( p ), P320( false ),
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_range( 0 ),
     gcd_lag( 0.150 ), gcd_lag_range( 0 ),
@@ -306,8 +307,8 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
-    instant_only_gcd_lag( 0 ), armor_update_interval( 20 ), 
-    optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles(0),
+    instant_only_gcd_lag( 0 ), armor_update_interval( 20 ),
+    optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
@@ -316,7 +317,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), armory_throttle(2), current_throttle(2), duration_uptimes(0), debug_exp(0),
+    output_file( stdout ), log_file( 0 ), armory_throttle( 2 ), current_throttle( 2 ), duration_uptimes( 0 ), debug_exp( 0 ),
     threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -370,7 +371,7 @@ sim_t::~sim_t()
   if ( scaling ) delete scaling;
 
   int num_events = raid_events.size();
-  for( int i=0; i < num_events; i++ )
+  for ( int i=0; i < num_events; i++ )
   {
     delete raid_events[ i ];
   }
@@ -496,7 +497,7 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if( max_time > 0 && current_time > ( max_time * 2.0 ) )
+    if ( max_time > 0 && current_time > ( max_time * 2.0 ) )
     {
       target -> recalculate_health();
       if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
@@ -541,7 +542,7 @@ void sim_t::reset()
 {
   if ( debug ) log_t::output( this, "Reseting Simulator" );
   current_time = id = 0;
-  for( buff_t* b = buff_list; b; b = b -> next )
+  for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
   }
@@ -554,7 +555,7 @@ void sim_t::reset()
   }
 
   int num_events = raid_events.size();
-  for( int i=0; i < num_events; i++ )
+  for ( int i=0; i < num_events; i++ )
   {
     raid_events[ i ] -> reset();
   }
@@ -596,7 +597,7 @@ void sim_t::combat_begin()
   new ( this ) regen_event_t( this );
 
   int num_events = raid_events.size();
-  for( int i=0; i < num_events; i++ )
+  for ( int i=0; i < num_events; i++ )
   {
     raid_events[ i ] -> schedule();
   }
@@ -630,8 +631,8 @@ bool sim_t::init()
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
   deterministic_rng -> seed( 31459 + thread_index );
 
-  if( scaling -> smooth_scale_factors && 
-      scaling -> scale_stat != STAT_NONE )
+  if ( scaling -> smooth_scale_factors &&
+       scaling -> scale_stat != STAT_NONE )
   {
     smooth_rng = 1;
     average_range = 1;
@@ -762,11 +763,11 @@ struct compare_name
 {
   bool operator()( player_t* l, player_t* r ) SC_CONST
   {
-    if( l -> type != r -> type )
+    if ( l -> type != r -> type )
     {
       return l -> type < r -> type;
     }
-    if( l -> primary_tree() != r -> primary_tree() )
+    if ( l -> primary_tree() != r -> primary_tree() )
     {
       return l -> primary_tree() < r -> primary_tree();
     }
@@ -862,10 +863,10 @@ void sim_t::analyze()
     p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
     p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
 
-    for ( gain_t* g = p -> gain_list; g; g = g -> next ) 
+    for ( gain_t* g = p -> gain_list; g; g = g -> next )
       g -> analyze( this );
 
-    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next ) 
+    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
       proc -> analyze( this );
 
     p -> timeline_dmg.clear();
@@ -1203,7 +1204,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
   if ( ! smooth_rng || type == RNG_GLOBAL ) return rng;
 
-  if( type == RNG_DETERMINISTIC ) return deterministic_rng;
+  if ( type == RNG_DETERMINISTIC ) return deterministic_rng;
 
   rng_t* r=0;
 
@@ -1231,9 +1232,9 @@ void sim_t::print_options()
 
   std::vector<option_t>& options = get_options();
   int num_options = options.size();
-  
+
   util_t::fprintf( output_file, "\nSimulation Engine:\n" );
-  for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
+  for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -1241,7 +1242,7 @@ void sim_t::print_options()
     int num_options = options.size();
 
     util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
-    for( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
+    for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
   }
 
   util_t::fprintf( output_file, "\n" );
@@ -1252,15 +1253,15 @@ void sim_t::print_options()
 
 std::vector<option_t>& sim_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     option_t global_options[] =
     {
       // @option_doc loc=global/general title="General"
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
-      { "optimal_raid",                     OPT_FUNC,   (void*) ::parse_optimal_raid                  },
-      { "patch",                            OPT_FUNC,   (void*) ::parse_patch                         },
+      { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                  },
+      { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                         },
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
       { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
@@ -1348,7 +1349,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/party title="Party Composition"
       { "party",                            OPT_LIST,   &( party_encoding                           ) },
       // @option_doc loc=skip
-      { "active",                           OPT_FUNC,   (void*) ::parse_active                        },
+      { "active",                           OPT_FUNC,   ( void* ) ::parse_active                        },
       { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
       { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
       { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
@@ -1362,23 +1363,23 @@ std::vector<option_t>& sim_t::get_options()
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
       // @option_doc loc=skip
-      { "death_knight",                     OPT_FUNC,   (void*) ::parse_player                        },
-      { "druid",                            OPT_FUNC,   (void*) ::parse_player                        },
-      { "hunter",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "mage",                             OPT_FUNC,   (void*) ::parse_player                        },
-      { "priest",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "paladin",                          OPT_FUNC,   (void*) ::parse_player                        },
-      { "rogue",                            OPT_FUNC,   (void*) ::parse_player                        },
-      { "shaman",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "warlock",                          OPT_FUNC,   (void*) ::parse_player                        },
-      { "warrior",                          OPT_FUNC,   (void*) ::parse_player                        },
-      { "pet",                              OPT_FUNC,   (void*) ::parse_player                        },
-      { "player",                           OPT_FUNC,   (void*) ::parse_player                        },
-      { "armory",                           OPT_FUNC,   (void*) ::parse_armory                        },
-      { "guild",                            OPT_FUNC,   (void*) ::parse_armory                        },
-      { "wowhead",                          OPT_FUNC,   (void*) ::parse_wowhead                       },
-      { "rawr",                             OPT_FUNC,   (void*) ::parse_rawr                          },
-      { "http_cache_clear",                 OPT_FUNC,   (void*) ::http_t::clear_cache                 },
+      { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "player",                           OPT_FUNC,   ( void* ) ::parse_player                        },
+      { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                        },
+      { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                        },
+      { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                       },
+      { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                          },
+      { "http_cache_clear",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache                 },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
@@ -1398,10 +1399,10 @@ std::vector<option_t>& sim_t::get_options()
 // sim_t::parse_option ======================================================
 
 bool sim_t::parse_option( const std::string& name,
-			  const std::string& value )
+                          const std::string& value )
 {
-  if( active_player )
-    if( option_t::parse( this, active_player -> get_options(), name, value ) ) 
+  if ( active_player )
+    if ( option_t::parse( this, active_player -> get_options(), name, value ) )
       return true;
 
   return option_t::parse( this, get_options(), name, value );
@@ -1484,11 +1485,11 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   util_t::fprintf( output_file,
-           "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
-           arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
+                   "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
+                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
 
-  if( save_profiles )
+  if ( save_profiles )
   {
     init();
 

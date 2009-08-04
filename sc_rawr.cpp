@@ -5,17 +5,18 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // translate_glyph_name =====================================================
 
 static const char* translate_glyph_name( player_t* p,
-					 int       index )
+                                         int       index )
 {
   switch ( p -> type )
   {
-  case DRUID:  
-    switch( index )
+  case DRUID:
+    switch ( index )
     {
     case  0: return "mangle";
     case  1: return "shred";
@@ -30,8 +31,8 @@ static const char* translate_glyph_name( player_t* p,
     case 16: return "innervate";
     default: return 0;
     }
-  case HUNTER: 
-    switch( index )
+  case HUNTER:
+    switch ( index )
     {
     case  0: return "aimed_shot";
     case  2: return "aspect_of_the_viper";
@@ -47,8 +48,8 @@ static const char* translate_glyph_name( player_t* p,
     case 30: return "trueshot_aura";
     default: return 0;
     }
-  case MAGE:   
-    switch( index )
+  case MAGE:
+    switch ( index )
     {
     case  0: return "fire_ball";
     case  1: return "frostfire";
@@ -66,8 +67,8 @@ static const char* translate_glyph_name( player_t* p,
     case 15: return "ice_lance";
     default: return 0;
     }
-  case PRIEST: 
-    switch( index )
+  case PRIEST:
+    switch ( index )
     {
     case  2: return "dispersion";
     case 16: return "penance";
@@ -76,8 +77,8 @@ static const char* translate_glyph_name( player_t* p,
     case 24: return "shadow_word_pain";
     default: return 0;
     }
-  case ROGUE:  
-    switch( index )
+  case ROGUE:
+    switch ( index )
     {
     case  0: return "backstab";
     case  1: return "eviscerate";
@@ -100,8 +101,8 @@ static const char* translate_glyph_name( player_t* p,
       // case 0: return "hemorrhage";
     default: return 0;
     }
-  case SHAMAN: 
-    switch( index )
+  case SHAMAN:
+    switch ( index )
     {
     case  1: return "lightning_bolt";
     case  2: return "shocking";
@@ -121,8 +122,8 @@ static const char* translate_glyph_name( player_t* p,
     default: return 0;
     }
   case WARLOCK:
-    switch( index )
-    { 
+    switch ( index )
+    {
     case  0: return "chaos_bolt";
     case  1: return "conflagrate";
     case  2: return "corruption";
@@ -141,7 +142,7 @@ static const char* translate_glyph_name( player_t* p,
     default: return 0;
     }
   case WARRIOR:
-    switch( index )
+    switch ( index )
     {
     case  1: return "bladestorm";
     case  2: return "blocking";
@@ -153,7 +154,7 @@ static const char* translate_glyph_name( player_t* p,
     case 26: return "whirlwind";
     default: return 0;
     }
-}
+  }
 
   return 0;
 }
@@ -162,7 +163,7 @@ static const char* translate_glyph_name( player_t* p,
 
 static const char* translate_inventory_id( int slot )
 {
-  switch( slot )
+  switch ( slot )
   {
   case SLOT_HEAD:      return "Head/.";
   case SLOT_NECK:      return "Neck/.";
@@ -191,11 +192,11 @@ static const char* translate_inventory_id( int slot )
 // rawr_t::load_player ======================================================
 
 player_t* rawr_t::load_player( sim_t* sim,
-			       FILE*  character_file )
+                               FILE*  character_file )
 {
   std::string buffer;
   char c;
-  while( ( c = fgetc( character_file ) ) != EOF ) buffer += c;
+  while ( ( c = fgetc( character_file ) ) != EOF ) buffer += c;
 
   player_t* p = load_player( sim, buffer );
 
@@ -205,20 +206,20 @@ player_t* rawr_t::load_player( sim_t* sim,
 // rawr_t::load_player ======================================================
 
 player_t* rawr_t::load_player( sim_t* sim,
-			       const std::string& character_xml )
+                               const std::string& character_xml )
 {
   xml_node_t* root_node = xml_t::create( character_xml );
-  if( ! root_node )
+  if ( ! root_node )
   {
     util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save XML.\n" );
     return 0;
   }
 
-  if( sim -> debug ) xml_t::print( root_node );
-  
+  if ( sim -> debug ) xml_t::print( root_node );
+
   std::string name_str, class_str;
-  if( ! xml_t::get_value(  name_str, root_node, "Name/."  ) ||
-      ! xml_t::get_value( class_str, root_node, "Class/." ) )
+  if ( ! xml_t::get_value(  name_str, root_node, "Name/."  ) ||
+       ! xml_t::get_value( class_str, root_node, "Class/." ) )
   {
     util_t::printf( "\nsimcraft: Unable to determine character name and class in Rawr Character Save XML.\n" );
     return 0;
@@ -228,14 +229,14 @@ player_t* rawr_t::load_player( sim_t* sim,
   armory_t::format(  name_str );
   armory_t::format( class_str );
 
-  if( class_str == "paladin" || class_str == "death_knight" )
+  if ( class_str == "paladin" || class_str == "death_knight" )
   {
     util_t::printf( "\nsimcraft: The Death Knight and Paladin modules are still in development, so Rawr import is disabled.\n" );
     return 0;
   }
 
   player_t* p = player_t::create( sim, class_str, name_str );
-  if( ! p ) 
+  if ( ! p )
   {
     util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
     return 0;
@@ -245,20 +246,20 @@ player_t* rawr_t::load_player( sim_t* sim,
   xml_t::get_value( p -> server_str, root_node, "Realm/."  );
 
   std::string talents_str;
-  if( ! xml_t::get_value( talents_str, root_node, talents_parm ) )
+  if ( ! xml_t::get_value( talents_str, root_node, talents_parm ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
     return 0;
   }
 
   std::string talents_encoding, glyphs_encoding;
-  if( 2 != util_t::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
+  if ( 2 != util_t::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
   {
     util_t::printf( "\nsimcraft: Player %s expected 'talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
     return 0;
   }
 
-  if( ! p -> parse_talents_armory( talents_encoding ) ) 
+  if ( ! p -> parse_talents_armory( talents_encoding ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
@@ -269,42 +270,42 @@ player_t* rawr_t::load_player( sim_t* sim,
   p -> talents_str += "&tal=" + talents_encoding;
 
   p -> glyphs_str = "";
-  for( int i=0; glyphs_encoding[ i ]; i++ )
+  for ( int i=0; glyphs_encoding[ i ]; i++ )
   {
-    if( glyphs_encoding[ i ] == '1' )
+    if ( glyphs_encoding[ i ] == '1' )
     {
       const char* glyph_name = translate_glyph_name( p, i );
-      if( ! glyph_name )
+      if ( ! glyph_name )
       {
-	      util_t::printf( "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
-	      return 0;
+        util_t::printf( "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
+        return 0;
       }
-      if( p -> glyphs_str.size() ) p -> glyphs_str += "/";
+      if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }
   }
-  
-  for( int i=0; i < SLOT_MAX; i++ )
+
+  for ( int i=0; i < SLOT_MAX; i++ )
   {
     const char* slot_name = translate_inventory_id( i );
-    if( ! slot_name ) continue;
+    if ( ! slot_name ) continue;
 
     item_t& item = p -> items[ i ];
 
     std::string slot_encoding;
-    if( xml_t::get_value( slot_encoding, root_node, slot_name ) )
+    if ( xml_t::get_value( slot_encoding, root_node, slot_name ) )
     {
       std::string item_id, gem_ids[ 3 ], enchant_id;
 
-      if( 5 != util_t::string_split( slot_encoding, ".", "S S S S S", &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), &enchant_id ) )
+      if ( 5 != util_t::string_split( slot_encoding, ".", "S S S S S", &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), &enchant_id ) )
       {
-	      util_t::printf( "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
-	      return 0;
+        util_t::printf( "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
+        return 0;
       }
 
       bool success = item_t::download_slot( item, item_id, enchant_id, gem_ids );
 
-      if( ! success )
+      if ( ! success )
       {
         return 0;
       }

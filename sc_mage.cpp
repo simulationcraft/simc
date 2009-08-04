@@ -177,7 +177,7 @@ struct mage_t : public player_t
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;
-    
+
     armor_type_str = "molten"; // Valid values: molten|mage
     ghost_charge_pct = 1.0;
     distance = 30;
@@ -211,7 +211,8 @@ struct mage_t : public player_t
   virtual double resource_loss( int resource, double amount, action_t* action=0 );
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // stack_winters_chill =====================================================
 
@@ -426,15 +427,15 @@ struct mirror_image_pet_t : public pet_t
       {
         stack_winters_chill( this, 1.00 );
       }
-      if( next_in_sequence ) 
+      if ( next_in_sequence )
       {
         next_in_sequence -> schedule_execute();
       }
       else
       {
-        mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+        mirror_image_pet_t* mi = ( mirror_image_pet_t* ) player;
         mi -> sequence_finished++;
-        if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
   };
@@ -458,15 +459,15 @@ struct mirror_image_pet_t : public pet_t
     virtual void execute()
     {
       spell_t::execute();
-      if( next_in_sequence ) 
+      if ( next_in_sequence )
       {
         next_in_sequence -> schedule_execute();
       }
       else
       {
-        mirror_image_pet_t* mi = (mirror_image_pet_t*) player;
+        mirror_image_pet_t* mi = ( mirror_image_pet_t* ) player;
         mi -> sequence_finished++;
-        if( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
     virtual void player_buff()
@@ -478,7 +479,7 @@ struct mirror_image_pet_t : public pet_t
   };
 
   mirror_image_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 4 ), sequence_finished( 0 )
+      pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 4 ), sequence_finished( 0 )
   {}
   virtual void init_base()
   {
@@ -663,9 +664,9 @@ static void trigger_ignite( spell_t* s,
     {
       mage_t* p = player -> cast_mage();
       mage_spell_t::tick();
-      if( sim -> P320 && p -> talents.empowered_fire )
+      if ( sim -> P320 && p -> talents.empowered_fire )
       {
-        if( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
+        if ( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
         {
           p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_empowered_fire );
         }
@@ -745,11 +746,11 @@ static void trigger_combustion( spell_t* s )
 
   if ( ! p -> buffs_combustion -> check() ) return;
 
-  if( s -> result_is_hit() )
+  if ( s -> result_is_hit() )
   {
     p -> buffs_combustion -> current_value++;
 
-    if ( s -> result == RESULT_CRIT ) 
+    if ( s -> result == RESULT_CRIT )
     {
       p -> buffs_combustion -> decrement();
     }
@@ -866,7 +867,7 @@ static void clear_fingers_of_frost( spell_t* s )
   {
     p -> buffs_fingers_of_frost -> decrement();
 
-    if( ! p -> buffs_fingers_of_frost -> check() )
+    if ( ! p -> buffs_fingers_of_frost -> check() )
     {
       if ( p -> gcd_ready < p -> sim -> current_time )
       {
@@ -929,8 +930,8 @@ static void trigger_hot_streak( spell_t* s )
     if ( result == RESULT_CRIT )
     {
       p -> buffs_hot_streak_crits -> increment();
-      
-      if( p -> buffs_hot_streak_crits -> stack() == 2 )
+
+      if ( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
         p -> buffs_hot_streak -> trigger();
         p -> buffs_hot_streak_crits -> expire();
@@ -1029,21 +1030,21 @@ static void trigger_replenishment( spell_t* s )
 static void trigger_incanters_absorption( mage_t* p,
                                           double damage )
 {
-  if( ! p -> talents.incanters_absorption )
+  if ( ! p -> talents.incanters_absorption )
     return;
 
   buff_t* buff = p -> buffs_incanters_absorption;
 
   double bonus_spell_power = damage * p -> talents.incanters_absorption * 0.05;
 
-  if( buff -> check() )
+  if ( buff -> check() )
   {
     bonus_spell_power += buff -> value() * buff -> remains() / buff -> duration;
   }
 
   double bonus_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.05;
 
-  if( bonus_spell_power > bonus_max ) bonus_spell_power = bonus_max;
+  if ( bonus_spell_power > bonus_max ) bonus_spell_power = bonus_max;
 
   buff -> increment( 1, bonus_spell_power );
 }
@@ -1052,8 +1053,8 @@ static void trigger_incanters_absorption( mage_t* p,
 
 static int target_is_frozen( mage_t* p )
 {
-  if( p -> buffs_fingers_of_frost -> may_react() ||
-      p -> sim -> time_to_think( p -> sim -> target -> debuffs.frozen ) )
+  if ( p -> buffs_fingers_of_frost -> may_react() ||
+       p -> sim -> time_to_think( p -> sim -> target -> debuffs.frozen ) )
   {
     return 1;
   }
@@ -1073,13 +1074,13 @@ void mage_spell_t::parse_options( option_t*          options,
                                   const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "dps",          OPT_BOOL, &dps_rotation },
-      { "dpm",          OPT_BOOL, &dpm_rotation },
-      { "arcane_power", OPT_BOOL, &arcane_power },
-      { "icy_veins",    OPT_BOOL, &icy_veins    },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    { "dps",          OPT_BOOL, &dps_rotation },
+    { "dpm",          OPT_BOOL, &dpm_rotation },
+    { "arcane_power", OPT_BOOL, &arcane_power },
+    { "icy_veins",    OPT_BOOL, &icy_veins    },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -1200,7 +1201,7 @@ void mage_spell_t::player_buff()
     }
   }
 
-  if( may_torment && sim -> target -> debuffs.snared() )
+  if ( may_torment && sim -> target -> debuffs.snared() )
   {
     player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.04;
   }
@@ -1229,13 +1230,13 @@ void mage_spell_t::player_buff()
     }
     else if ( p -> talents.fingers_of_frost )
     {
-      if( p -> buffs_fingers_of_frost -> up() )
+      if ( p -> buffs_fingers_of_frost -> up() )
       {
         player_crit += p -> talents.shatter * 0.5/3;
       }
-      else if( time_to_execute == 0 )
+      else if ( time_to_execute == 0 )
       {
-        if( p -> buffs_ghost_charge -> value() > 0 )
+        if ( p -> buffs_ghost_charge -> value() > 0 )
         {
           player_crit += p -> talents.shatter * 0.5/3;
         }
@@ -1259,7 +1260,7 @@ void mage_spell_t::player_buff()
   {
     double spirit_contribution = p -> glyphs.molten_armor ? 0.55 : 0.35;
 
-    if( p -> set_bonus.tier9_2pc() ) spirit_contribution += 0.15;
+    if ( p -> set_bonus.tier9_2pc() ) spirit_contribution += 0.15;
 
     player_crit += p -> spirit() * spirit_contribution / p -> rating.spell_crit;
   }
@@ -1290,18 +1291,18 @@ struct arcane_barrage_t : public mage_spell_t
     check_talent( p -> talents.arcane_barrage );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 3, 936, 1144, 0, 0.18 },
-        { 70, 2, 709,  865, 0, 0.18 },
-        { 60, 1, 386,  470, 0, 0.18 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 3, 936, 1144, 0, 0.18 },
+      { 70, 2, 709,  865, 0, 0.18 },
+      { 60, 1, 386,  470, 0, 0.18 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -1344,24 +1345,24 @@ struct arcane_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "ap_burn", OPT_DEPRECATED, ( void* ) "arcane_power" },
-        { "max",     OPT_INT,        &max_buff              },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "ap_burn", OPT_DEPRECATED, ( void* ) "arcane_power" },
+      { "max",     OPT_INT,        &max_buff              },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 4, 1185, 1377, 0, 0.08 },
-        { 76, 3, 1047, 1215, 0, 0.08 },
-        { 71, 2, 897,  1041, 0, 0.08 },
-        { 64, 1, 842,  978,  0, 195  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4, 1185, 1377, 0, 0.08 },
+      { 76, 3, 1047, 1215, 0, 0.08 },
+      { 71, 2, 897,  1041, 0, 0.08 },
+      { 64, 1, 842,  978,  0, 195  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
-    if( sim -> P320 ) base_cost *= 0.88;
+    if ( sim -> P320 ) base_cost *= 0.88;
 
     base_execute_time = 2.5;
     may_crit          = true;
@@ -1440,16 +1441,16 @@ struct arcane_missiles_tick_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     static rank_t ranks[] =
-      {
-        { 80, 13, 361, 362, 0, 0 },
-        { 79, 13, 360, 360, 0, 0 },
-        { 75, 12, 320, 320, 0, 0 },
-        { 70, 11, 280, 280, 0, 0 },
-        { 69, 10, 260, 260, 0, 0 },
-        { 63,  9, 240, 240, 0, 0 },
-        { 60,  8, 230, 230, 0, 0 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 13, 361, 362, 0, 0 },
+      { 79, 13, 360, 360, 0, 0 },
+      { 75, 12, 320, 320, 0, 0 },
+      { 70, 11, 280, 280, 0, 0 },
+      { 69, 10, 260, 260, 0, 0 },
+      { 63,  9, 240, 240, 0, 0 },
+      { 60,  8, 230, 230, 0, 0 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     dual       = true;
@@ -1512,11 +1513,11 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "barrage",    OPT_BOOL, &barrage    },
-        { "clearcast",  OPT_BOOL, &clearcast  },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "barrage",    OPT_BOOL, &barrage    },
+      { "clearcast",  OPT_BOOL, &clearcast  },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     harmful        = false;
@@ -1581,7 +1582,7 @@ struct arcane_missiles_t : public mage_spell_t
         return false;
 
     if ( clearcast )
-      if( !  p -> buffs_clearcasting -> may_react() )
+      if ( !  p -> buffs_clearcasting -> may_react() )
         return false;
 
     return true;
@@ -1671,10 +1672,10 @@ struct focus_magic_t : public mage_spell_t
 
     std::string target_str = p -> focus_magic_target_str;
     option_t options[] =
-      {
-        { "target", OPT_STRING, &target_str },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "target", OPT_STRING, &target_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( target_str.empty() )
@@ -1826,31 +1827,31 @@ struct fire_ball_t : public mage_spell_t
   int ghost_charge;
 
   fire_ball_t( player_t* player, const std::string& options_str ) :
-    mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ), 
-    brain_freeze( 0 ), frozen( -1 ), ghost_charge( -1 )
+      mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ),
+      brain_freeze( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "brain_freeze", OPT_BOOL, &brain_freeze },
-        { "frozen",       OPT_BOOL, &frozen       },
-        { "ghost_charge", OPT_BOOL, &ghost_charge },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "brain_freeze", OPT_BOOL, &brain_freeze },
+      { "frozen",       OPT_BOOL, &frozen       },
+      { "ghost_charge", OPT_BOOL, &ghost_charge },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 16, 898, 1143, 29, 0.19 },
-        { 78, 16, 888, 1132, 29, 0.19 },
-        { 74, 15, 783,  997, 25, 0.19 },
-        { 70, 14, 717,  913, 23, 0.19 },
-        { 66, 13, 633,  805, 21, 425  },
-        { 62, 12, 596,  760, 19, 410  },
-        { 60, 11, 561,  715, 18, 395  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 16, 898, 1143, 29, 0.19 },
+      { 78, 16, 888, 1132, 29, 0.19 },
+      { 74, 15, 783,  997, 25, 0.19 },
+      { 70, 14, 717,  913, 23, 0.19 },
+      { 66, 13, 633,  805, 21, 425  },
+      { 62, 12, 596,  760, 19, 410  },
+      { 60, 11, 561,  715, 18, 395  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit          = true;
@@ -1879,7 +1880,7 @@ struct fire_ball_t : public mage_spell_t
     if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
     if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
 
-    if ( p -> glyphs.fire_ball ) 
+    if ( p -> glyphs.fire_ball )
     {
       base_crit += 0.05;
       num_ticks = 0;
@@ -1927,7 +1928,7 @@ struct fire_ball_t : public mage_spell_t
         return false;
 
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
+      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
         return false;
 
     if ( frozen != -1 )
@@ -1948,20 +1949,20 @@ struct fire_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 11, 925, 1095, 0, 0.21 },
-        { 74, 10, 760,  900, 0, 0.21 },
-        { 70,  9, 664,  786, 0, 465  },
-        { 61,  8, 539,  637, 0, 400  },
-        { 54,  7, 431,  509, 0, 340  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 11, 925, 1095, 0, 0.21 },
+      { 74, 10, 760,  900, 0, 0.21 },
+      { 70,  9, 664,  786, 0, 465  },
+      { 61,  8, 539,  637, 0, 400  },
+      { 54,  7, 431,  509, 0, 340  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -2003,18 +2004,18 @@ struct living_bomb_t : public mage_spell_t
     check_talent( p -> talents.living_bomb );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 3, 759, 759, 690, 0.22 },
-        { 70, 2, 568, 568, 512, 0.22 },
-        { 60, 1, 336, 336, 306, 0.22 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 3, 759, 759, 690, 0.22 },
+      { 70, 2, 568, 568, 512, 0.22 },
+      { 60, 1, 336, 336, 306, 0.22 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -2043,7 +2044,7 @@ struct living_bomb_t : public mage_spell_t
   virtual void tick()
   {
     mage_spell_t::tick();
-    if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
+    if ( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
   }
 
   virtual void last_tick()
@@ -2063,7 +2064,7 @@ struct living_bomb_t : public mage_spell_t
           trigger_ignite( this, direct_dmg );
           trigger_master_of_elements( this, 1.0 );
         }
-        if( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
+        if ( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
       }
     }
     update_stats( DMG_DIRECT );
@@ -2092,22 +2093,22 @@ struct pyroblast_t : public mage_spell_t
     check_talent( p -> talents.pyroblast );
 
     option_t options[] =
-      {
-        { "hot_streak", OPT_BOOL, &hot_streak },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "hot_streak", OPT_BOOL, &hot_streak },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 12, 1210, 1531, 75, 0.22 },
-        { 77, 12, 1190, 1510, 75, 0.22 },
-        { 73, 11, 1014, 1286, 64, 0.22 },
-        { 70, 10,  939, 1191, 59, 500  },
-        { 66,  9,  846, 1074, 52, 460  },
-        { 60,  8,  708,  898, 45, 440  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 12, 1210, 1531, 75, 0.22 },
+      { 77, 12, 1190, 1510, 75, 0.22 },
+      { 73, 11, 1014, 1286, 64, 0.22 },
+      { 70, 10,  939, 1191, 59, 500  },
+      { 66,  9,  846, 1074, 52, 460  },
+      { 60,  8,  708,  898, 45, 440  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 5.0;
@@ -2136,7 +2137,7 @@ struct pyroblast_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if( p -> buffs_hot_streak -> check() )
+    if ( p -> buffs_hot_streak -> check() )
       if ( ! trigger_tier8_4pc( this ) )
         p -> buffs_hot_streak -> expire();
 
@@ -2178,22 +2179,22 @@ struct scorch_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "debuff",    OPT_BOOL, &debuff     },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "debuff",    OPT_BOOL, &debuff     },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 11, 382, 451, 0, 0.08 },
-        { 78, 11, 376, 444, 0, 0.08 },
-        { 73, 10, 321, 379, 0, 0.08 },
-        { 70,  9, 305, 361, 0, 180  },
-        { 64,  8, 269, 317, 0, 165  },
-        { 58,  7, 233, 275, 0, 150  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 11, 382, 451, 0, 0.08 },
+      { 78, 11, 376, 444, 0, 0.08 },
+      { 73, 10, 321, 379, 0, 0.08 },
+      { 70,  9, 305, 361, 0, 180  },
+      { 64,  8, 269, 317, 0, 165  },
+      { 58,  7, 233, 275, 0, 150  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 1.5;
@@ -2279,35 +2280,35 @@ struct frost_bolt_t : public mage_spell_t
   int frozen;
 
   frost_bolt_t( player_t* player, const std::string& options_str ) :
-    mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen(-1)
+      mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen( -1 )
   {
     mage_t* p = player -> cast_mage();
 
     travel_speed = 21.0; // set before options to allow override
 
     option_t options[] =
-      {
-        { "frozen", OPT_BOOL, &frozen },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "frozen", OPT_BOOL, &frozen },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     double pct = sim -> P320 ? 0.11 : 0.13;
 
     static rank_t ranks[] =
-      {
-        { 80, 16, 803, 866, 0, pct },
-        { 79, 16, 799, 861, 0, pct },
-        { 75, 15, 702, 758, 0, pct },
-        { 70, 14, 630, 680, 0, pct },
-        { 68, 13, 597, 644, 0, 330 },
-        { 62, 12, 522, 563, 0, 300 },
-        { 60, 11, 515, 555, 0, 290 },
-        { 56, 10, 429, 463, 0, 260 },
-        { 50, 9,  353, 383, 0, 225 },
-        { 44, 8,  292, 316, 0, 195 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 16, 803, 866, 0, pct },
+      { 79, 16, 799, 861, 0, pct },
+      { 75, 15, 702, 758, 0, pct },
+      { 70, 14, 630, 680, 0, pct },
+      { 68, 13, 597, 644, 0, 330 },
+      { 62, 12, 522, 563, 0, 300 },
+      { 60, 11, 515, 555, 0, 290 },
+      { 56, 10, 429, 463, 0, 260 },
+      { 50, 9,  353, 383, 0, 225 },
+      { 44, 8,  292, 316, 0, 195 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 3.0;
@@ -2323,7 +2324,7 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.arcane_instability * 0.01;
     direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
 
-    if( sim -> P320 )
+    if ( sim -> P320 )
     {
       base_execute_time -= p -> talents.empowered_frost_bolt * 0.1;
     }
@@ -2384,29 +2385,29 @@ struct ice_lance_t : public mage_spell_t
   int ghost_charge;
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ), 
+      mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ),
       frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "frozen",       OPT_BOOL, &frozen       },
-        { "ghost_charge", OPT_BOOL, &ghost_charge },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "frozen",       OPT_BOOL, &frozen       },
+      { "ghost_charge", OPT_BOOL, &ghost_charge },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     double pct = sim -> P320 ? 0.06 : 0.07;
 
     static rank_t ranks[] =
-      {
-        { 80, 3, 223, 258, 0, pct },
-        { 78, 3, 221, 255, 0, pct },
-        { 72, 2, 182, 210, 0, pct },
-        { 66, 1, 161, 187, 0, 150 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 3, 223, 258, 0, pct },
+      { 78, 3, 221, 255, 0, pct },
+      { 72, 2, 182, 210, 0, pct },
+      { 66, 1, 161, 187, 0, 150 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0.0;
@@ -2455,7 +2456,7 @@ struct ice_lance_t : public mage_spell_t
       return false;
 
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
+      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
         return false;
 
     if ( frozen != -1 )
@@ -2475,28 +2476,28 @@ struct frostfire_bolt_t : public mage_spell_t
   int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
-    mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ), 
-    dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
+      mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ),
+      dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
     travel_speed = 21.0; // set before options to allow override
 
     option_t options[] =
-      {
-        { "dot_wait",     OPT_BOOL, &dot_wait     },
-        { "frozen",       OPT_BOOL, &frozen       },
-        { "ghost_charge", OPT_BOOL, &ghost_charge },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "dot_wait",     OPT_BOOL, &dot_wait     },
+      { "frozen",       OPT_BOOL, &frozen       },
+      { "ghost_charge", OPT_BOOL, &ghost_charge },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 2, 722, 838, 30, 0.14 },
-        { 75, 1, 629, 731, 20, 0.14 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 2, 722, 838, 30, 0.14 },
+      { 75, 1, 629, 731, 20, 0.14 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 3.0;
@@ -2561,7 +2562,7 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( ghost_charge != -1 )
-      if( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
+      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
         return false;
 
     if ( frozen != -1 )
@@ -2606,7 +2607,7 @@ struct icy_veins_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if( p -> buffs_icy_veins -> check() )
+    if ( p -> buffs_icy_veins -> check() )
       return false;
     return mage_spell_t::ready();
   }
@@ -2752,7 +2753,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> casting ) return false;
     return mage_spell_t::ready();
   }
 };
@@ -2851,19 +2852,19 @@ struct mana_gem_t : public action_t
   int used;
 
   mana_gem_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_gem", player ), 
+      action_t( ACTION_USE, "mana_gem", player ),
       trigger( 0 ), min( 3330 ), max( 3500 ), charges( 3 ), used( 0 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
-      {
-        { "min",     OPT_FLT, &min     },
-        { "max",     OPT_FLT, &max     },
-        { "trigger", OPT_FLT, &trigger },
-        { "charges", OPT_FLT, &charges },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "min",     OPT_FLT, &min     },
+      { "max",     OPT_FLT, &max     },
+      { "trigger", OPT_FLT, &trigger },
+      { "charges", OPT_FLT, &charges },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( min == 0 && max == 0 ) min = max = trigger;
@@ -2938,7 +2939,7 @@ struct mana_gem_t : public action_t
       return false;
 
     return( ( player -> resource_max    [ RESOURCE_MANA ] -
-              player -> resource_current[ RESOURCE_MANA ] ) > trigger ); 
+              player -> resource_current[ RESOURCE_MANA ] ) > trigger );
   }
 
   virtual void reset()
@@ -2960,10 +2961,10 @@ struct choose_rotation_t : public action_t
     cooldown = 10;
 
     option_t options[] =
-      {
-        { "cooldown", OPT_FLT, &cooldown },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "cooldown", OPT_FLT, &cooldown },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( cooldown < 1.0 )
@@ -3118,43 +3119,43 @@ void mage_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
 
     if     ( n == "arcane_barrage"  ) glyphs.arcane_barrage = 1;
-    else if( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
-    else if( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
-    else if( n == "arcane_power"    ) glyphs.arcane_power = 1;
-    else if( n == "fire_ball"       ) glyphs.fire_ball = 1;
-    else if( n == "fireball"        ) glyphs.fire_ball = 1;
-    else if( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
-    else if( n == "frostbolt"       ) glyphs.frost_bolt = 1;
-    else if( n == "ice_lance"       ) glyphs.ice_lance = 1;
-    else if( n == "improved_scorch" ) glyphs.improved_scorch = 1;
-    else if( n == "living_bomb"     ) glyphs.living_bomb = 1;
-    else if( n == "mage_armor"      ) glyphs.mage_armor = 1;
-    else if( n == "mana_gem"        ) glyphs.mana_gem = 1;
-    else if( n == "mirror_image"    ) glyphs.mirror_image = 1;
-    else if( n == "molten_armor"    ) glyphs.molten_armor = 1;
-    else if( n == "water_elemental" ) glyphs.water_elemental = 1;
-    else if( n == "frostfire"       ) glyphs.frostfire = 1;
+    else if ( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
+    else if ( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
+    else if ( n == "arcane_power"    ) glyphs.arcane_power = 1;
+    else if ( n == "fire_ball"       ) glyphs.fire_ball = 1;
+    else if ( n == "fireball"        ) glyphs.fire_ball = 1;
+    else if ( n == "frost_bolt"      ) glyphs.frost_bolt = 1;
+    else if ( n == "frostbolt"       ) glyphs.frost_bolt = 1;
+    else if ( n == "ice_lance"       ) glyphs.ice_lance = 1;
+    else if ( n == "improved_scorch" ) glyphs.improved_scorch = 1;
+    else if ( n == "living_bomb"     ) glyphs.living_bomb = 1;
+    else if ( n == "mage_armor"      ) glyphs.mage_armor = 1;
+    else if ( n == "mana_gem"        ) glyphs.mana_gem = 1;
+    else if ( n == "mirror_image"    ) glyphs.mirror_image = 1;
+    else if ( n == "molten_armor"    ) glyphs.molten_armor = 1;
+    else if ( n == "water_elemental" ) glyphs.water_elemental = 1;
+    else if ( n == "frostfire"       ) glyphs.frostfire = 1;
     // To prevent warnings....
-    else if( n == "arcane_intellect" ) ;
-    else if( n == "blast_wave"       ) ;
-    else if( n == "blink"            ) ;
-    else if( n == "evocation"        ) ;
-    else if( n == "fire_blast"       ) ;
-    else if( n == "fire_ward"        ) ;
-    else if( n == "frost_armor"      ) ;
-    else if( n == "frost_ward"       ) ;
-    else if( n == "ice_barrier"      ) ;
-    else if( n == "ice_block"        ) ;
-    else if( n == "icy_veins"        ) ;
-    else if( n == "slow_fall"        ) ;
-    else if( n == "the_penguin"      ) ;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "arcane_intellect" ) ;
+    else if ( n == "blast_wave"       ) ;
+    else if ( n == "blink"            ) ;
+    else if ( n == "evocation"        ) ;
+    else if ( n == "fire_blast"       ) ;
+    else if ( n == "fire_ward"        ) ;
+    else if ( n == "frost_armor"      ) ;
+    else if ( n == "frost_ward"       ) ;
+    else if ( n == "ice_barrier"      ) ;
+    else if ( n == "ice_block"        ) ;
+    else if ( n == "icy_veins"        ) ;
+    else if ( n == "slow_fall"        ) ;
+    else if ( n == "the_penguin"      ) ;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3271,31 +3272,31 @@ void mage_t::init_rng()
 
 void mage_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
-    if( talents.focus_magic ) action_list_str += "/focus_magic";
+    if ( talents.focus_magic ) action_list_str += "/focus_magic";
     action_list_str += "/counterspell";
-    if( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
+    if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
     action_list_str += "/mirror_image";
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
+      if ( items[ i ].use.active() )
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
       }
     }
-    if( talents.combustion   ) action_list_str += "/combustion";
-    if( talents.arcane_power ) action_list_str += "/arcane_power";
-    if( talents.icy_veins    ) action_list_str += "/icy_veins";
-    if( talents.presence_of_mind ) 
+    if ( talents.combustion   ) action_list_str += "/combustion";
+    if ( talents.arcane_power ) action_list_str += "/arcane_power";
+    if ( talents.icy_veins    ) action_list_str += "/icy_veins";
+    if ( talents.presence_of_mind )
     {
       action_list_str += "/presence_of_mind,";
       action_list_str += ( talents.pyroblast ) ? "pyroblast" : "arcane_blast";
     }
-    if( primary_tree() == TREE_ARCANE )
+    if ( primary_tree() == TREE_ARCANE )
     {
       action_list_str += "/mana_gem/evocation";
       action_list_str += "/choose_rotation";
@@ -3304,27 +3305,27 @@ void mage_t::init_actions()
       action_list_str += "/arcane_blast,max=3";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
-      if( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
+      if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
-    else if( primary_tree() == TREE_FROST )
+    else if ( primary_tree() == TREE_FROST )
     {
       action_list_str += "/mana_gem,trigger=1000/speed_potion";
       action_list_str += "/frost_bolt,frozen=1";
-      if( talents.summon_water_elemental ) action_list_str += "/water_elemental";
-      if( talents.cold_snap              ) action_list_str += "/cold_snap";
-      if( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
+      if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
+      if ( talents.cold_snap              ) action_list_str += "/cold_snap";
+      if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
       action_list_str += "/frost_bolt";
       action_list_str += "/evocation";
       action_list_str += "/ice_lance,moving=1";  // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
-    else if( primary_tree() == TREE_FIRE )
+    else if ( primary_tree() == TREE_FIRE )
     {
       action_list_str += "/mana_gem,trigger=1000/speed_potion";
-      if( talents.living_bomb ) action_list_str += "/living_bomb";
-      if( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
-      if( talents.piercing_ice && talents.ice_shards )
+      if ( talents.living_bomb ) action_list_str += "/living_bomb";
+      if ( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
+      if ( talents.piercing_ice && talents.ice_shards )
       {
         action_list_str += "/frostfire_bolt";
       }
@@ -3348,9 +3349,9 @@ void mage_t::init_actions()
 
 int mage_t::primary_tree() SC_CONST
 {
-  if( talents.arcane_empowerment   ) return TREE_ARCANE;
-  if( talents.empowered_fire       ) return TREE_FIRE;
-  if( talents.empowered_frost_bolt ) return TREE_FROST;
+  if ( talents.arcane_empowerment   ) return TREE_ARCANE;
+  if ( talents.empowered_fire       ) return TREE_FIRE;
+  if ( talents.empowered_frost_bolt ) return TREE_FROST;
 
   return TALENT_TREE_MAX;
 }
@@ -3361,7 +3362,7 @@ double mage_t::composite_spell_power( int school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
-  if( talents.incanters_absorption )
+  if ( talents.incanters_absorption )
   {
     sp += buffs_incanters_absorption -> value();
   }
@@ -3451,7 +3452,7 @@ double mage_t::resource_loss( int       resource,
 {
   double actual_amount = player_t::resource_loss( resource, amount, action );
 
-  if( resource == RESOURCE_MANA )
+  if ( resource == RESOURCE_MANA )
   {
     if ( rotation.current == ROTATION_DPS )
     {
@@ -3462,7 +3463,7 @@ double mage_t::resource_loss( int       resource,
       rotation.dpm_mana_loss += actual_amount;
     }
   }
-  else if( resource == RESOURCE_HEALTH )
+  else if ( resource == RESOURCE_HEALTH )
   {
     trigger_incanters_absorption( this, amount );
   }
@@ -3477,39 +3478,39 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
                                std::vector<int*>& frost )
 {
   talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.arcane_subtlety      ) }, {  1, &( talents.improved_fire_blast ) }, {  1, &( talents.frostbite                ) } },
-      { {  2, &( talents.arcane_focus         ) }, {  2, &( talents.incineration        ) }, {  2, &( talents.improved_frost_bolt      ) } },
-      { {  3, NULL                              }, {  3, &( talents.improved_fire_ball  ) }, {  3, &( talents.ice_floes                ) } },
-      { {  4, NULL                              }, {  4, &( talents.ignite              ) }, {  4, &( talents.ice_shards               ) } },
-      { {  5, NULL                              }, {  5, NULL                             }, {  5, NULL                                  } },
-      { {  6, &( talents.arcane_concentration ) }, {  6, &( talents.world_in_flames     ) }, {  6, &( talents.precision                ) } },
-      { {  7, NULL                              }, {  7, NULL                             }, {  7, NULL                                  } },
-      { {  8, &( talents.spell_impact         ) }, {  8, NULL                             }, {  8, &( talents.piercing_ice             ) } },
-      { {  9, &( talents.student_of_the_mind  ) }, {  9, &( talents.pyroblast           ) }, {  9, &( talents.icy_veins                ) } },
-      { { 10, &( talents.focus_magic          ) }, { 10, &( talents.burning_soul        ) }, { 10, NULL                                  } },
-      { { 11, NULL                              }, { 11, &( talents.improved_scorch     ) }, { 11, NULL                                  } },
-      { { 12, NULL                              }, { 12, NULL                             }, { 12, &( talents.frost_channeling         ) } },
-      { { 13, &( talents.arcane_meditation    ) }, { 13, &( talents.master_of_elements  ) }, { 13, &( talents.shatter                  ) } },
-      { { 14, &( talents.torment_the_weak     ) }, { 14, &( talents.playing_with_fire   ) }, { 14, &( talents.cold_snap                ) } },
-      { { 15, NULL                              }, { 15, &( talents.critical_mass       ) }, { 15, NULL                                  } },
-      { { 16, &( talents.presence_of_mind     ) }, { 16, NULL                             }, { 16, NULL                                  } },
-      { { 17, &( talents.arcane_mind          ) }, { 17, NULL                             }, { 17, &( talents.cold_as_ice              ) } },
-      { { 18, NULL                              }, { 18, &( talents.fire_power          ) }, { 18, &( talents.winters_chill            ) } },
-      { { 19, &( talents.arcane_instability   ) }, { 19, &( talents.pyromaniac          ) }, { 19, NULL                                  } },
-      { { 20, &( talents.arcane_potency       ) }, { 20, &( talents.combustion          ) }, { 20, NULL                                  } },
-      { { 21, &( talents.arcane_empowerment   ) }, { 21, &( talents.molten_fury         ) }, { 21, &( talents.arctic_winds             ) } },
-      { { 22, &( talents.arcane_power         ) }, { 22, NULL                             }, { 22, &( talents.empowered_frost_bolt     ) } },
-      { { 23, &( talents.incanters_absorption ) }, { 23, &( talents.empowered_fire      ) }, { 23, &( talents.fingers_of_frost         ) } },
-      { { 24, &( talents.arcane_flows         ) }, { 24, NULL                             }, { 24, &( talents.brain_freeze             ) } },
-      { { 25, &( talents.mind_mastery         ) }, { 25, NULL                             }, { 25, &( talents.summon_water_elemental   ) } },
-      { { 26, &( talents.slow                 ) }, { 26, &( talents.hot_streak          ) }, { 26, &( talents.improved_water_elemental ) } },
-      { { 27, &( talents.missile_barrage      ) }, { 27, &( talents.burnout             ) }, { 27, &( talents.chilled_to_the_bone      ) } },
-      { { 28, &( talents.netherwind_presence  ) }, { 28, &( talents.living_bomb         ) }, { 28, NULL                                  } },
-      { { 29, &( talents.spell_power          ) }, {  0, NULL                             }, {  0, NULL                                  } },
-      { { 30, &( talents.arcane_barrage       ) }, {  0, NULL                             }, {  0, NULL                                  } },
-      { {  0, NULL                              }, {  0, NULL                             }, {  0, NULL                                  } }
-    };
+  {
+    { {  1, &( talents.arcane_subtlety      ) }, {  1, &( talents.improved_fire_blast ) }, {  1, &( talents.frostbite                ) } },
+    { {  2, &( talents.arcane_focus         ) }, {  2, &( talents.incineration        ) }, {  2, &( talents.improved_frost_bolt      ) } },
+    { {  3, NULL                              }, {  3, &( talents.improved_fire_ball  ) }, {  3, &( talents.ice_floes                ) } },
+    { {  4, NULL                              }, {  4, &( talents.ignite              ) }, {  4, &( talents.ice_shards               ) } },
+    { {  5, NULL                              }, {  5, NULL                             }, {  5, NULL                                  } },
+    { {  6, &( talents.arcane_concentration ) }, {  6, &( talents.world_in_flames     ) }, {  6, &( talents.precision                ) } },
+    { {  7, NULL                              }, {  7, NULL                             }, {  7, NULL                                  } },
+    { {  8, &( talents.spell_impact         ) }, {  8, NULL                             }, {  8, &( talents.piercing_ice             ) } },
+    { {  9, &( talents.student_of_the_mind  ) }, {  9, &( talents.pyroblast           ) }, {  9, &( talents.icy_veins                ) } },
+    { { 10, &( talents.focus_magic          ) }, { 10, &( talents.burning_soul        ) }, { 10, NULL                                  } },
+    { { 11, NULL                              }, { 11, &( talents.improved_scorch     ) }, { 11, NULL                                  } },
+    { { 12, NULL                              }, { 12, NULL                             }, { 12, &( talents.frost_channeling         ) } },
+    { { 13, &( talents.arcane_meditation    ) }, { 13, &( talents.master_of_elements  ) }, { 13, &( talents.shatter                  ) } },
+    { { 14, &( talents.torment_the_weak     ) }, { 14, &( talents.playing_with_fire   ) }, { 14, &( talents.cold_snap                ) } },
+    { { 15, NULL                              }, { 15, &( talents.critical_mass       ) }, { 15, NULL                                  } },
+    { { 16, &( talents.presence_of_mind     ) }, { 16, NULL                             }, { 16, NULL                                  } },
+    { { 17, &( talents.arcane_mind          ) }, { 17, NULL                             }, { 17, &( talents.cold_as_ice              ) } },
+    { { 18, NULL                              }, { 18, &( talents.fire_power          ) }, { 18, &( talents.winters_chill            ) } },
+    { { 19, &( talents.arcane_instability   ) }, { 19, &( talents.pyromaniac          ) }, { 19, NULL                                  } },
+    { { 20, &( talents.arcane_potency       ) }, { 20, &( talents.combustion          ) }, { 20, NULL                                  } },
+    { { 21, &( talents.arcane_empowerment   ) }, { 21, &( talents.molten_fury         ) }, { 21, &( talents.arctic_winds             ) } },
+    { { 22, &( talents.arcane_power         ) }, { 22, NULL                             }, { 22, &( talents.empowered_frost_bolt     ) } },
+    { { 23, &( talents.incanters_absorption ) }, { 23, &( talents.empowered_fire      ) }, { 23, &( talents.fingers_of_frost         ) } },
+    { { 24, &( talents.arcane_flows         ) }, { 24, NULL                             }, { 24, &( talents.brain_freeze             ) } },
+    { { 25, &( talents.mind_mastery         ) }, { 25, NULL                             }, { 25, &( talents.summon_water_elemental   ) } },
+    { { 26, &( talents.slow                 ) }, { 26, &( talents.hot_streak          ) }, { 26, &( talents.improved_water_elemental ) } },
+    { { 27, &( talents.missile_barrage      ) }, { 27, &( talents.burnout             ) }, { 27, &( talents.chilled_to_the_bone      ) } },
+    { { 28, &( talents.netherwind_presence  ) }, { 28, &( talents.living_bomb         ) }, { 28, NULL                                  } },
+    { { 29, &( talents.spell_power          ) }, {  0, NULL                             }, {  0, NULL                                  } },
+    { { 30, &( talents.arcane_barrage       ) }, {  0, NULL                             }, {  0, NULL                                  } },
+    { {  0, NULL                              }, {  0, NULL                             }, {  0, NULL                                  } }
+  };
 
   return get_talent_translation( arcane, fire, frost, translation );
 }
@@ -3518,7 +3519,7 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
 
 std::vector<option_t>& mage_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
 
@@ -3609,12 +3610,12 @@ bool mage_t::save( FILE* file, int save_type )
 
   if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    if( ! armor_type_str.empty() ) util_t::fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
+    if ( ! armor_type_str.empty() ) util_t::fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
   }
 
   if ( save_type == SAVE_ALL )
   {
-    if( ! focus_magic_target_str.empty() ) util_t::fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
+    if ( ! focus_magic_target_str.empty() ) util_t::fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
   }
 
   return true;
@@ -3624,16 +3625,16 @@ bool mage_t::save( FILE* file, int save_type )
 
 int mage_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "frostfire"  ) ) return SET_T7;
-  if( strstr( item.name(), "kirin_tor"  ) ) 
-    if( item.slot == SLOT_HEAD      ||
-        item.slot == SLOT_SHOULDERS ||
-        item.slot == SLOT_CHEST     ||
-        item.slot == SLOT_HANDS     ||
-        item.slot == SLOT_LEGS      )
+  if ( strstr( item.name(), "frostfire"  ) ) return SET_T7;
+  if ( strstr( item.name(), "kirin_tor"  ) )
+    if ( item.slot == SLOT_HEAD      ||
+         item.slot == SLOT_SHOULDERS ||
+         item.slot == SLOT_CHEST     ||
+         item.slot == SLOT_HANDS     ||
+         item.slot == SLOT_LEGS      )
       return SET_T8;
-  if( strstr( item.name(), "sunstrider" ) ) return SET_T9;
-  if( strstr( item.name(), "khadgar"    ) ) return SET_T9;
+  if ( strstr( item.name(), "sunstrider" ) ) return SET_T9;
+  if ( strstr( item.name(), "khadgar"    ) ) return SET_T9;
   return SET_NONE;
 }
 
@@ -3657,7 +3658,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name )
 
 void player_t::init_mage( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
@@ -3666,7 +3667,7 @@ void player_t::init_mage( sim_t* sim )
 
 void player_t::combat_begin_mage( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }

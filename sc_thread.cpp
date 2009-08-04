@@ -64,7 +64,7 @@ static unsigned WINAPI thread_execute( LPVOID sim )
 
 // thread_t::init ===========================================================
 
-void thread_t::init() 
+void thread_t::init()
 {
   InitializeCriticalSection( &global_mutex );
   thread_initialized = true;
@@ -97,7 +97,7 @@ void thread_t::mutex_init( void*& mutex )
 {
   EnterCriticalSection( &global_mutex );
 
-  if( ! mutex )
+  if ( ! mutex )
   {
     CRITICAL_SECTION* cs = new CRITICAL_SECTION();
     InitializeCriticalSection( cs );
@@ -111,15 +111,15 @@ void thread_t::mutex_init( void*& mutex )
 
 void thread_t::mutex_lock( void*& mutex )
 {
-  if( ! mutex ) mutex_init( mutex );
-  EnterCriticalSection( (CRITICAL_SECTION*) mutex );
+  if ( ! mutex ) mutex_init( mutex );
+  EnterCriticalSection( ( CRITICAL_SECTION* ) mutex );
 }
 
 // thread_t::mutex_unlock ===================================================
 
 void thread_t::mutex_unlock( void*& mutex )
 {
-  LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
+  LeaveCriticalSection( ( CRITICAL_SECTION* ) mutex );
 }
 
 #elif defined( _MSC_VER )
@@ -143,7 +143,7 @@ static DWORD WINAPI thread_execute( __in LPVOID sim )
 
 // thread_t::init ===========================================================
 
-void thread_t::init() 
+void thread_t::init()
 {
   InitializeCriticalSection( &global_mutex );
   thread_initialized = true;
@@ -175,7 +175,7 @@ void thread_t::mutex_init( void*& mutex )
 {
   EnterCriticalSection( &global_mutex );
 
-  if( ! mutex )
+  if ( ! mutex )
   {
     CRITICAL_SECTION* cs = new CRITICAL_SECTION();
     InitializeCriticalSection( cs );
@@ -189,15 +189,15 @@ void thread_t::mutex_init( void*& mutex )
 
 void thread_t::mutex_lock( void*& mutex )
 {
-  if( ! mutex ) mutex_init( mutex );
-  EnterCriticalSection( (CRITICAL_SECTION*) mutex );
+  if ( ! mutex ) mutex_init( mutex );
+  EnterCriticalSection( ( CRITICAL_SECTION* ) mutex );
 }
 
 // thread_t::mutex_unlock ===================================================
 
 void thread_t::mutex_unlock( void*& mutex )
 {
-  LeaveCriticalSection( (CRITICAL_SECTION*) mutex );
+  LeaveCriticalSection( ( CRITICAL_SECTION* ) mutex );
 }
 
 #else
@@ -221,7 +221,7 @@ static void* thread_execute( void* sim )
 
 // thread_t::init ===========================================================
 
-void thread_t::init() 
+void thread_t::init()
 {
   pthread_mutex_init( &global_mutex, NULL );
   thread_initialized = true;
@@ -253,7 +253,7 @@ void thread_t::mutex_init( void*& mutex )
 {
   pthread_mutex_lock( &global_mutex );
 
-  if( ! mutex )
+  if ( ! mutex )
   {
     pthread_mutex_t* m = new pthread_mutex_t();
     pthread_mutex_init( m, NULL );
@@ -267,15 +267,15 @@ void thread_t::mutex_init( void*& mutex )
 
 void thread_t::mutex_lock( void*& mutex )
 {
-  if( ! mutex ) mutex_init( mutex );
-  pthread_mutex_lock( (pthread_mutex_t*) mutex );
+  if ( ! mutex ) mutex_init( mutex );
+  pthread_mutex_lock( ( pthread_mutex_t* ) mutex );
 }
 
 // thread_t::mutex_unlock ===================================================
 
 void thread_t::mutex_unlock( void*& mutex )
 {
-  pthread_mutex_unlock( (pthread_mutex_t*) mutex );
+  pthread_mutex_unlock( ( pthread_mutex_t* ) mutex );
 }
 
 #endif

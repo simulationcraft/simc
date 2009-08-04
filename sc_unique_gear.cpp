@@ -35,7 +35,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void expire()
   {
-    if( stacks > 0 )
+    if ( stacks > 0 )
     {
       listener -> aura_loss( name_str.c_str() );
       listener -> stat_loss( stat, amount * stacks );
@@ -43,9 +43,9 @@ struct stat_proc_callback_t : public action_callback_t
     }
   }
 
-  virtual void deactivate() 
+  virtual void deactivate()
   {
-    action_callback_t::deactivate(); 
+    action_callback_t::deactivate();
     event_t::cancel( expiration );
     expire();
   }
@@ -177,26 +177,26 @@ struct discharge_proc_callback_t : public action_callback_t
 
 void unique_gear_t::init( player_t* p )
 {
-  if( p -> is_pet() ) return;
+  if ( p -> is_pet() ) return;
 
   int num_items = p -> items.size();
 
-  for( int i=0; i < num_items; i++ )
+  for ( int i=0; i < num_items; i++ )
   {
     item_t& item = p -> items[ i ];
     item_t::special_effect_t& e = item.equip;
 
-    if( e.stat )
+    if ( e.stat )
     {
       register_stat_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
     }
-    else if( e.school )
+    else if ( e.school )
     {
       register_discharge_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
     }
   }
 
-  if( item_t* item = p -> find_item( "darkmoon_card_greatness" ) )
+  if ( item_t* item = p -> find_item( "darkmoon_card_greatness" ) )
   {
     item -> unique = true;
 
@@ -206,9 +206,9 @@ void unique_gear_t::init( player_t* p )
     int max_stat=-1;
     double max_value=0;
 
-    for( int i=0; i < 4; i++ ) 
+    for ( int i=0; i < 4; i++ )
     {
-      if( p -> attribute[ attr[ i ] ] > max_value )
+      if ( p -> attribute[ attr[ i ] ] > max_value )
       {
         max_value = p -> attribute[ attr[ i ] ];
         max_stat = stat[ i ];
@@ -219,7 +219,7 @@ void unique_gear_t::init( player_t* p )
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
   }
-  if( item_t* item = p -> find_item( "deaths_choice" ) )
+  if ( item_t* item = p -> find_item( "deaths_choice" ) )
   {
     item -> unique = true;
 
@@ -230,7 +230,7 @@ void unique_gear_t::init( player_t* p )
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
   }
-  if( p -> set_bonus.spellstrike() )
+  if ( p -> set_bonus.spellstrike() )
   {
     unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
   }
@@ -253,17 +253,17 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, rng_type );
-  
-  if( type == PROC_DAMAGE )
+
+  if ( type == PROC_DAMAGE )
   {
     player -> register_tick_damage_callback( cb );
     player -> register_direct_damage_callback( cb );
   }
-  else if( type == PROC_ATTACK )
+  else if ( type == PROC_ATTACK )
   {
     player -> register_attack_result_callback( mask, cb );
   }
-  else if( type == PROC_SPELL )
+  else if ( type == PROC_SPELL )
   {
     player -> register_spell_result_callback( mask, cb );
   }
@@ -288,21 +288,21 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
                                                            int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
-  
-  if( type == PROC_DAMAGE )
+
+  if ( type == PROC_DAMAGE )
   {
     player -> register_tick_damage_callback( cb );
     player -> register_direct_damage_callback( cb );
   }
-  else if( type == PROC_TICK )
+  else if ( type == PROC_TICK )
   {
     player -> register_tick_callback( cb );
   }
-  else if( type == PROC_ATTACK )
+  else if ( type == PROC_ATTACK )
   {
     player -> register_attack_result_callback( mask, cb );
   }
-  else if( type == PROC_SPELL )
+  else if ( type == PROC_SPELL )
   {
     player -> register_spell_result_callback( mask, cb );
   }
@@ -322,43 +322,43 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Stat Procs
   if     ( name == "abyssal_rune"                    ) e = "OnSpellHit_590SP_25%_10Dur_45Cd";
-  else if( name == "banner_of_victory"               ) e = "OnAttackHit_1008AP_20%_10Dur_45Cd";
-  else if( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
-  else if( name == "chuchus_tiny_box_of_horrors"     ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
-  else if( name == "comets_trail"                    ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
-  else if( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
-  else if( name == "darkmoon_card_crusade"           ) e = "OnSpellHit_8SP_10Stack_10Dur";
-  else if( name == "dying_curse"                     ) e = "OnSpellHit_765SP_15%_10Dur_45Cd";
-  else if( name == "elemental_focus_stone"           ) e = "OnSpellHit_522Haste_10%_10Dur_45Cd";
-  else if( name == "embrace_of_the_spider"           ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
-  else if( name == "eye_of_magtheridon"              ) e = "OnSpellMiss_170SP_10Dur";
-  else if( name == "eye_of_the_broodmother"          ) e = "OnSpellHit_25SP_5Stack_10Dur";
-  else if( name == "flare_of_the_heavens"            ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
-  else if( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
-  else if( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16SP_20Stack_10Dur";
-  else if( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
-  else if( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
-  else if( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
-  else if( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000SP_10%_10Dur_50Cd";
-  else if( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
-  else if( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
-  else if( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
-  else if( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
-  else if( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
-  else if( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
-  else if( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
-  else if( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
+  else if ( name == "banner_of_victory"               ) e = "OnAttackHit_1008AP_20%_10Dur_45Cd";
+  else if ( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
+  else if ( name == "chuchus_tiny_box_of_horrors"     ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
+  else if ( name == "comets_trail"                    ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
+  else if ( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
+  else if ( name == "darkmoon_card_crusade"           ) e = "OnSpellHit_8SP_10Stack_10Dur";
+  else if ( name == "dying_curse"                     ) e = "OnSpellHit_765SP_15%_10Dur_45Cd";
+  else if ( name == "elemental_focus_stone"           ) e = "OnSpellHit_522Haste_10%_10Dur_45Cd";
+  else if ( name == "embrace_of_the_spider"           ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
+  else if ( name == "eye_of_magtheridon"              ) e = "OnSpellMiss_170SP_10Dur";
+  else if ( name == "eye_of_the_broodmother"          ) e = "OnSpellHit_25SP_5Stack_10Dur";
+  else if ( name == "flare_of_the_heavens"            ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
+  else if ( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
+  else if ( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16SP_20Stack_10Dur";
+  else if ( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
+  else if ( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
+  else if ( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
+  else if ( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000SP_10%_10Dur_50Cd";
+  else if ( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
+  else if ( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
+  else if ( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
+  else if ( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
+  else if ( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
+  else if ( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
+  else if ( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
+  else if ( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
   // Discharge Procs
-  else if( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
-  else if( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
-  else if( name == "lightning_capacitor"          ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
-  else if( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
-  else if( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
-  else if( name == "reign_of_the_unliving"        ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
-  else if( name == "reign_of_the_dead"            ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
+  else if ( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
+  else if ( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
+  else if ( name == "lightning_capacitor"          ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
+  else if ( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
+  else if ( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
+  else if ( name == "reign_of_the_unliving"        ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
+  else if ( name == "reign_of_the_dead"            ) e = "OnSpellCrit_1882Fire_3Stack_2.5Cd";
 
-  if( e.empty() ) return false;
+  if ( e.empty() ) return false;
 
   armory_t::format( e );
   encoding = e;
@@ -378,26 +378,26 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   // Simple
   if     ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
-  else if( name == "hyperspeed_accelerators"     ) e = "340Haste_10Dur_60Cd";
-  else if( name == "hyperspeed_accelerators320"  ) e = "340Haste_12Dur_60Cd";
-  else if( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
-  else if( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
-  else if( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
-  else if( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
-  else if( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
-  else if( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
-  else if( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
-  else if( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
-  else if( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
-  else if( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
+  else if ( name == "hyperspeed_accelerators"     ) e = "340Haste_10Dur_60Cd";
+  else if ( name == "hyperspeed_accelerators320"  ) e = "340Haste_12Dur_60Cd";
+  else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
+  else if ( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
+  else if ( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
+  else if ( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
+  else if ( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
+  else if ( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
+  else if ( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
+  else if ( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
+  else if ( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
+  else if ( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
-  if( name == "fetish_of_volatile_power"   ) e = ( id == "47879" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
-  if( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
-  if( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
-  if( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  if ( name == "fetish_of_volatile_power"   ) e = ( id == "47879" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  if ( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  if ( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
 
-  if( e.empty() ) return false;
+  if ( e.empty() ) return false;
 
   armory_t::format( e );
   encoding = e;

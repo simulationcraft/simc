@@ -5,15 +5,16 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // is_number ================================================================
 
 static bool is_number( const std::string s )
 {
   int size = s.size();
-  for( int i=0; i < size; i++ )
-    if( ! isdigit( s[ i ] ) )
+  for ( int i=0; i < size; i++ )
+    if ( ! isdigit( s[ i ] ) )
       return false;
   return true;
 }
@@ -29,39 +30,39 @@ static void stat_search( std::string&              encoding_str,
   int num_stats = util_t::string_split( stat_tokens, stat_str, " " );
   int num_descriptions = description_tokens.size();
 
-  for( int i=0; i < num_descriptions; i++ )
+  for ( int i=0; i < num_descriptions; i++ )
   {
     bool match = true;
 
-    for( int j=0; j < num_stats && match; j++ )
+    for ( int j=0; j < num_stats && match; j++ )
     {
-      if( ( i + j ) == num_descriptions )
+      if ( ( i + j ) == num_descriptions )
       {
         match = false;
       }
-      else if( stat_tokens[ j ] != description_tokens[ i + j ] )
+      else if ( stat_tokens[ j ] != description_tokens[ i + j ] )
       {
         match = false;
       }
     }
 
-    if( match )
+    if ( match )
     {
       std::string value_str;
 
-      if( ( i > 0 ) && 
-          ( is_number( description_tokens[ i-1 ] ) ) )
+      if ( ( i > 0 ) &&
+           ( is_number( description_tokens[ i-1 ] ) ) )
       {
         value_str = description_tokens[ i-1 ];
       }
-      if( ( ( i + num_stats + 1 ) < num_descriptions ) && 
-          ( description_tokens[ i + num_stats ] == "by" ) &&
-          ( is_number( description_tokens[ i + num_stats + 1 ] ) ) )
+      if ( ( ( i + num_stats + 1 ) < num_descriptions ) &&
+           ( description_tokens[ i + num_stats ] == "by" ) &&
+           ( is_number( description_tokens[ i + num_stats + 1 ] ) ) )
       {
         value_str = description_tokens[ i + num_stats + 1 ];
       }
 
-      if( ! value_str.empty() )
+      if ( ! value_str.empty() )
       {
         encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type );
       }
@@ -73,10 +74,10 @@ static void stat_search( std::string&              encoding_str,
 
 static bool is_proc_description( const std::string& description_str )
 {
-  if( description_str.find( "chance" ) != std::string::npos ) return true;
-  if( description_str.find( "stack"  ) != std::string::npos ) return true;
-  if( description_str.find( "time"   ) != std::string::npos ) return true;
-  if( description_str.find( "_sec"   ) != std::string::npos ) return true;
+  if ( description_str.find( "chance" ) != std::string::npos ) return true;
+  if ( description_str.find( "stack"  ) != std::string::npos ) return true;
+  if ( description_str.find( "time"   ) != std::string::npos ) return true;
+  if ( description_str.find( "_sec"   ) != std::string::npos ) return true;
 
   return false;
 }
@@ -84,10 +85,10 @@ static bool is_proc_description( const std::string& description_str )
 // download_character_sheet =================================================
 
 static xml_node_t* download_character_sheet( sim_t* sim,
-                                             const std::string& region, 
-                                             const std::string& server, 
+                                             const std::string& region,
+                                             const std::string& server,
                                              const std::string& name,
-					                                   int cache )
+                                             int cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
@@ -101,7 +102,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
     sim -> current_throttle = sim -> armory_throttle;
   }
 
-  if( sim -> debug ) xml_t::print( node, sim -> output_file );
+  if ( sim -> debug ) xml_t::print( node, sim -> output_file );
 
   return node;
 }
@@ -109,10 +110,10 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 // download_character_talents ===============================================
 
 static xml_node_t* download_character_talents( sim_t* sim,
-                                               const std::string& region, 
-                                               const std::string& server, 
+                                               const std::string& region,
+                                               const std::string& server,
                                                const std::string& name,
-					                                     int   cache )
+                                               int   cache )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
@@ -126,7 +127,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
     sim -> current_throttle = sim -> armory_throttle;
   }
 
-  if( sim -> debug ) xml_t::print( node, sim -> output_file );
+  if ( sim -> debug ) xml_t::print( node, sim -> output_file );
 
   return node;
 }
@@ -166,7 +167,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
     }
   }
 
-  if( sim -> debug ) xml_t::print( node );
+  if ( sim -> debug ) xml_t::print( node );
 
   return node;
 }
@@ -197,7 +198,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
     }
   }
 
-  if( sim -> debug ) xml_t::print( node );
+  if ( sim -> debug ) xml_t::print( node );
 
   return node;
 }
@@ -207,8 +208,8 @@ static xml_node_t* download_item_tooltip( player_t* p,
 static bool parse_item_name( item_t& item,
                              xml_node_t* node )
 {
-  if( ! xml_t::get_value( item.armory_id_str,   node, "id/."   ) ) return false;
-  if( ! xml_t::get_value( item.armory_name_str, node, "name/." ) ) return false;
+  if ( ! xml_t::get_value( item.armory_id_str,   node, "id/."   ) ) return false;
+  if ( ! xml_t::get_value( item.armory_name_str, node, "name/." ) ) return false;
 
   armory_t::format( item.armory_name_str );
 
@@ -224,50 +225,50 @@ static bool parse_item_stats( item_t& item,
   s.clear();
 
   std::string value;
-  if( xml_t::get_value( value, xml, "bonusStrength/."  ) ) s += "_" + value + "str";
-  if( xml_t::get_value( value, xml, "bonusAgility/."   ) ) s += "_" + value + "agi";
-  if( xml_t::get_value( value, xml, "bonusStamina/."   ) ) s += "_" + value + "sta";
-  if( xml_t::get_value( value, xml, "bonusIntellect/." ) ) s += "_" + value + "int";
-  if( xml_t::get_value( value, xml, "bonusSpirit/."    ) ) s += "_" + value + "spi";
+  if ( xml_t::get_value( value, xml, "bonusStrength/."  ) ) s += "_" + value + "str";
+  if ( xml_t::get_value( value, xml, "bonusAgility/."   ) ) s += "_" + value + "agi";
+  if ( xml_t::get_value( value, xml, "bonusStamina/."   ) ) s += "_" + value + "sta";
+  if ( xml_t::get_value( value, xml, "bonusIntellect/." ) ) s += "_" + value + "int";
+  if ( xml_t::get_value( value, xml, "bonusSpirit/."    ) ) s += "_" + value + "spi";
 
-  if( xml_t::get_value( value, xml, "bonusSpellPower/."       ) ) s += "_" + value + "sp";
-  if( xml_t::get_value( value, xml, "bonusSpellPenetration/." ) ) s += "_" + value + "spen";
-  if( xml_t::get_value( value, xml, "bonusManaRegen/."        ) ) s += "_" + value + "mp5";
-  
-  if( xml_t::get_value( value, xml, "bonusAttackPower/."      ) ) s += "_" + value + "ap";
-  if( xml_t::get_value( value, xml, "bonusExpertiseRating/."  ) ) s += "_" + value + "exp";
-  if( xml_t::get_value( value, xml, "bonusArmorPenetration/." ) ) s += "_" + value + "arpen";
+  if ( xml_t::get_value( value, xml, "bonusSpellPower/."       ) ) s += "_" + value + "sp";
+  if ( xml_t::get_value( value, xml, "bonusSpellPenetration/." ) ) s += "_" + value + "spen";
+  if ( xml_t::get_value( value, xml, "bonusManaRegen/."        ) ) s += "_" + value + "mp5";
 
-  if( xml_t::get_value( value, xml, "bonusHitRating/."   ) ) s += "_" + value + "hit";
-  if( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
-  if( xml_t::get_value( value, xml, "bonusHasteRating/." ) ) s += "_" + value + "haste";
+  if ( xml_t::get_value( value, xml, "bonusAttackPower/."      ) ) s += "_" + value + "ap";
+  if ( xml_t::get_value( value, xml, "bonusExpertiseRating/."  ) ) s += "_" + value + "exp";
+  if ( xml_t::get_value( value, xml, "bonusArmorPenetration/." ) ) s += "_" + value + "arpen";
 
-  if( xml_t::get_value( value, xml, "armor/." ) ) s += "_" + value + "armor";
+  if ( xml_t::get_value( value, xml, "bonusHitRating/."   ) ) s += "_" + value + "hit";
+  if ( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
+  if ( xml_t::get_value( value, xml, "bonusHasteRating/." ) ) s += "_" + value + "haste";
+
+  if ( xml_t::get_value( value, xml, "armor/." ) ) s += "_" + value + "armor";
 
   xml_node_t* spell_data = xml_t::get_node( xml, "spellData" );
-  if( spell_data )
+  if ( spell_data )
   {
     std::vector<xml_node_t*> spell_nodes;
     int num_spells = xml_t::get_nodes( spell_nodes, spell_data, "spell" );
-    for( int i=0; i < num_spells; i++ )
+    for ( int i=0; i < num_spells; i++ )
     {
-      if( xml_t::get_value( value, spell_nodes[ i ], "trigger/." ) && ( value == "1" ) )
+      if ( xml_t::get_value( value, spell_nodes[ i ], "trigger/." ) && ( value == "1" ) )
       {
-        if( xml_t::get_value( value, spell_nodes[ i ], "desc/." ) )
+        if ( xml_t::get_value( value, spell_nodes[ i ], "desc/." ) )
         {
           armory_t::fuzzy_stats( s, value );
         }
       }
     }
   }
-  
-  if( ! s.empty() ) 
+
+  if ( ! s.empty() )
   {
     s.erase( 0, 1 );
     armory_t::format( s );
   }
 
-  if( item.sim -> debug && ! s.empty() )
+  if ( item.sim -> debug && ! s.empty() )
     log_t::output( item.sim, "%s %s %s armory_stats=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
 
   return true;
@@ -282,7 +283,7 @@ static bool parse_item_gems( item_t& item,
 
   xml_node_t* socket_data = xml_t::get_node( xml, "socketData" );
 
-  if( socket_data )
+  if ( socket_data )
   {
     std::string& s = item.armory_gems_str;
 
@@ -290,25 +291,25 @@ static bool parse_item_gems( item_t& item,
     int num_sockets = xml_t::get_nodes( socket_nodes, socket_data, "socket" );
     bool socket_bonus = true;
 
-    for( int i=0; i < num_sockets; i++ )
+    for ( int i=0; i < num_sockets; i++ )
     {
       xml_node_t* socket = socket_nodes[ i ];
       std::string enchant, color, match;
 
-      if( ! xml_t::get_value( enchant, socket, "enchant" ) ||
-          ! xml_t::get_value( color,   socket, "color"   ) )
+      if ( ! xml_t::get_value( enchant, socket, "enchant" ) ||
+           ! xml_t::get_value( color,   socket, "color"   ) )
         continue;
 
-      if( color == "Meta" )
+      if ( color == "Meta" )
       {
-	int meta_gem_type = armory_t::parse_meta_gem( enchant );
+        int meta_gem_type = armory_t::parse_meta_gem( enchant );
 
-	if( meta_gem_type != META_GEM_NONE )
-	{
-	  s += "_";
-	  s += util_t::meta_gem_type_string( meta_gem_type );
-	}
-	else
+        if ( meta_gem_type != META_GEM_NONE )
+        {
+          s += "_";
+          s += util_t::meta_gem_type_string( meta_gem_type );
+        }
+        else
         {
           armory_t::fuzzy_stats( s, enchant );
         }
@@ -318,30 +319,30 @@ static bool parse_item_gems( item_t& item,
         armory_t::fuzzy_stats( s, enchant );
       }
 
-      if( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
+      if ( ! xml_t::get_value( match, socket, "match" ) || ( match != "1" ) ) socket_bonus = false;
     }
 
-    if( socket_bonus )
+    if ( socket_bonus )
     {
       std::string enchant;
-      if( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
+      if ( xml_t::get_value( enchant, socket_data, "socketMatchEnchant/." ) )
       {
         armory_t::fuzzy_stats( s, enchant );
       }
     }
 
-    if( ! s.empty() ) 
+    if ( ! s.empty() )
     {
       s.erase( 0, 1 );
       armory_t::format( s );
     }
 
-    if( item.sim -> debug && ! s.empty() )
+    if ( item.sim -> debug && ! s.empty() )
     {
       log_t::output( item.sim, "%s %s %s armory_gems=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
     }
   }
-  
+
   return true;
 }
 
@@ -354,28 +355,28 @@ static bool parse_item_enchant( item_t& item,
 
   std::string enchant;
 
-  if( xml_t::get_value( enchant, xml, "enchant/." ) )
+  if ( xml_t::get_value( enchant, xml, "enchant/." ) )
   {
     std::string& s = item.armory_enchant_str;
 
     if     ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
-    else if( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
-    else if( enchant == "Berserking"               ) { s += "_berserking";  }
-    else if( enchant == "Mongoose"                 ) { s += "_mongoose";    }
-    else if( enchant == "Executioner"              ) { s += "_executioner"; }
-    else if( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
+    else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
+    else if ( enchant == "Berserking"               ) { s += "_berserking";  }
+    else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
+    else if ( enchant == "Executioner"              ) { s += "_executioner"; }
+    else if ( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
     else
     {
       armory_t::fuzzy_stats( s, enchant );
     }
 
-    if( ! s.empty() ) 
+    if ( ! s.empty() )
     {
       s.erase( 0, 1 );
       armory_t::format( s );
     }
 
-    if( item.sim -> debug && ! s.empty() )
+    if ( item.sim -> debug && ! s.empty() )
       log_t::output( item.sim, "%s %s %s armory_enchant=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
   }
 
@@ -390,8 +391,8 @@ static bool parse_item_weapon( item_t& item,
   item.armory_weapon_str.clear();
 
   std::string speed, dps;
-  if(  xml_t::get_value( speed, xml, "speed/." ) &&
-       xml_t::get_value( dps,   xml, "dps/."   ) )
+  if (  xml_t::get_value( speed, xml, "speed/." ) &&
+        xml_t::get_value( dps,   xml, "dps/."   ) )
   {
     std::string sub_class;
     int inventory_type = -1;
@@ -400,26 +401,26 @@ static bool parse_item_weapon( item_t& item,
 
     int weapon_type = WEAPON_NONE;
     if     ( sub_class == "Axe" && inventory_type == 17   ) weapon_type = WEAPON_AXE;
-    else if( sub_class == "Axe"                           ) weapon_type = WEAPON_AXE_2H;
-    else if( sub_class == "Dagger"                        ) weapon_type = WEAPON_DAGGER;
-    else if( sub_class == "Fist Weapon"                   ) weapon_type = WEAPON_FIST;
-    else if( sub_class == "Mace" && inventory_type == 17  ) weapon_type = WEAPON_MACE;
-    else if( sub_class == "Mace"                          ) weapon_type = WEAPON_MACE_2H;
-    else if( sub_class == "Polearm"                       ) weapon_type = WEAPON_POLEARM;
-    else if( sub_class == "Staff"                         ) weapon_type = WEAPON_STAFF;
-    else if( sub_class == "Sword" && inventory_type == 17 ) weapon_type = WEAPON_SWORD_2H;
-    else if( sub_class == "Sword"                         ) weapon_type = WEAPON_SWORD;
-    else if( sub_class == "Bow"                           ) weapon_type = WEAPON_BOW;
-    else if( sub_class == "Crossbow"                      ) weapon_type = WEAPON_CROSSBOW;
-    else if( sub_class == "Gun"                           ) weapon_type = WEAPON_GUN;
-    else if( sub_class == "Thrown"                        ) weapon_type = WEAPON_THROWN;
-    else if( sub_class == "Wand"                          ) weapon_type = WEAPON_WAND;
-    else if( sub_class == "Fishking Pole"                 ) weapon_type = WEAPON_POLEARM;
-    else if( sub_class.empty() && inventory_type == 21    ) weapon_type = WEAPON_POLEARM; // Fishing Pole
+    else if ( sub_class == "Axe"                           ) weapon_type = WEAPON_AXE_2H;
+    else if ( sub_class == "Dagger"                        ) weapon_type = WEAPON_DAGGER;
+    else if ( sub_class == "Fist Weapon"                   ) weapon_type = WEAPON_FIST;
+    else if ( sub_class == "Mace" && inventory_type == 17  ) weapon_type = WEAPON_MACE;
+    else if ( sub_class == "Mace"                          ) weapon_type = WEAPON_MACE_2H;
+    else if ( sub_class == "Polearm"                       ) weapon_type = WEAPON_POLEARM;
+    else if ( sub_class == "Staff"                         ) weapon_type = WEAPON_STAFF;
+    else if ( sub_class == "Sword" && inventory_type == 17 ) weapon_type = WEAPON_SWORD_2H;
+    else if ( sub_class == "Sword"                         ) weapon_type = WEAPON_SWORD;
+    else if ( sub_class == "Bow"                           ) weapon_type = WEAPON_BOW;
+    else if ( sub_class == "Crossbow"                      ) weapon_type = WEAPON_CROSSBOW;
+    else if ( sub_class == "Gun"                           ) weapon_type = WEAPON_GUN;
+    else if ( sub_class == "Thrown"                        ) weapon_type = WEAPON_THROWN;
+    else if ( sub_class == "Wand"                          ) weapon_type = WEAPON_WAND;
+    else if ( sub_class == "Fishking Pole"                 ) weapon_type = WEAPON_POLEARM;
+    else if ( sub_class.empty() && inventory_type == 21    ) weapon_type = WEAPON_POLEARM; // Fishing Pole
 
-    if( weapon_type == WEAPON_NONE ) return false;
-    if( weapon_type == WEAPON_WAND ) return true;
-    
+    if ( weapon_type == WEAPON_NONE ) return false;
+    if ( weapon_type == WEAPON_WAND ) return true;
+
     item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
     item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps";
   }
@@ -434,12 +435,12 @@ static bool parse_item_weapon( item_t& item,
 void armory_t::fuzzy_stats( std::string&       encoding_str,
                             const std::string& description_str )
 {
-  if( description_str.empty() ) return;
+  if ( description_str.empty() ) return;
 
   std::string buffer = description_str;
   armory_t::format( buffer );
 
-  if( is_proc_description( buffer ) )
+  if ( is_proc_description( buffer ) )
     return;
 
   std::vector<std::string> splits;
@@ -477,19 +478,19 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
 int armory_t::parse_meta_gem( const std::string& description )
 {
-  if( description == "+32 Stamina and 2% Increased Armor Value from Items"         ) return META_AUSTERE_EARTHSIEGE;
-  if( description == "+21 Critical Strike Rating and +2% Mana"                     ) return META_BEAMING_EARTHSIEGE;
-  if( description == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFLARE;
-  if( description == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFIRE;
-  if( description == "+25 Spell Power and +2% Intellect"                           ) return META_EMBER_SKYFLARE;
-  if( description == "+21 Defense Rating and +5% Shield Block Value"               ) return META_ETERNAL_EARTHSIEGE;
-  if( description == "+21 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSIEGE;
-  if( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
-  if( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
-  if( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
-  if( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFLARE;
-  if( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_STARFLARE;
-  if( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFIRE;
+  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"         ) return META_AUSTERE_EARTHSIEGE;
+  if ( description == "+21 Critical Strike Rating and +2% Mana"                     ) return META_BEAMING_EARTHSIEGE;
+  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFLARE;
+  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFIRE;
+  if ( description == "+25 Spell Power and +2% Intellect"                           ) return META_EMBER_SKYFLARE;
+  if ( description == "+21 Defense Rating and +5% Shield Block Value"               ) return META_ETERNAL_EARTHSIEGE;
+  if ( description == "+21 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSIEGE;
+  if ( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
+  if ( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
+  if ( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
+  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_STARFLARE;
+  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFIRE;
 
   return META_GEM_NONE;
 }
@@ -497,12 +498,12 @@ int armory_t::parse_meta_gem( const std::string& description )
 // armory_t::download_guild =================================================
 
 bool armory_t::download_guild( sim_t* sim,
-                               const std::string& region, 
-                               const std::string& server, 
+                               const std::string& region,
+                               const std::string& server,
                                const std::string& name,
                                int player_filter,
                                int max_rank,
-			       int cache )
+                               int cache )
 {
   std::string guild_name = name;
   util_t::format_name( guild_name );
@@ -510,7 +511,7 @@ bool armory_t::download_guild( sim_t* sim,
   std::string formatted_guild_name = guild_name;
   armory_t::format( formatted_guild_name, FORMAT_GUILD_NAME_MASK | FORMAT_ASCII_MASK );
 
-  if( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
+  if ( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
   {
     util_t::printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
     return false;
@@ -519,7 +520,7 @@ bool armory_t::download_guild( sim_t* sim,
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
 
   xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
-  if( ! guild_info )
+  if ( ! guild_info )
   {
     sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
 
@@ -528,10 +529,10 @@ bool armory_t::download_guild( sim_t* sim,
   }
   sim -> current_throttle = sim -> armory_throttle;
 
-  if( sim -> debug ) xml_t::print( guild_info, sim -> output_file );
+  if ( sim -> debug ) xml_t::print( guild_info, sim -> output_file );
 
   xml_node_t* members = xml_t::get_node( guild_info, "members" );
-  if( ! members )
+  if ( ! members )
   {
     util_t::printf( "\nsimcraft: Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
     return false;
@@ -540,31 +541,31 @@ bool armory_t::download_guild( sim_t* sim,
   std::vector<std::string> character_names;
   std::vector<xml_node_t*> characters;
   int num_characters = xml_t::get_nodes( characters, members, "character" );
-  for( int i=0; i < num_characters; i++ )
+  for ( int i=0; i < num_characters; i++ )
   {
     std::string character_name;
     int character_cid;
     int character_level;
     int character_rank;
 
-    if( xml_t::get_value( character_name,  characters[ i ], "name"    ) &&
-        xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
-        xml_t::get_value( character_level, characters[ i ], "level"   ) &&
-        xml_t::get_value( character_rank,  characters[ i ], "rank"    ) )
+    if ( xml_t::get_value( character_name,  characters[ i ], "name"    ) &&
+         xml_t::get_value( character_cid,   characters[ i ], "classId" ) &&
+         xml_t::get_value( character_level, characters[ i ], "level"   ) &&
+         xml_t::get_value( character_rank,  characters[ i ], "rank"    ) )
     {
-      if( character_level < 80 )
+      if ( character_level < 80 )
         continue;
 
       if ( ( max_rank > 0 ) && ( character_rank > max_rank ) )
         continue;
 
       int player_type = util_t::translate_class_id( character_cid );
-      if( player_type == DEATH_KNIGHT || player_type == PALADIN )
-	continue;
+      if ( player_type == DEATH_KNIGHT || player_type == PALADIN )
+        continue;
 
-      if( player_filter != PLAYER_NONE )
-	if( player_filter != player_type )
-	  continue;
+      if ( player_filter != PLAYER_NONE )
+        if ( player_filter != player_type )
+          continue;
 
       armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
       util_t::format_name( character_name );
@@ -574,31 +575,31 @@ bool armory_t::download_guild( sim_t* sim,
   }
 
   num_characters = character_names.size();
-  if( num_characters > 0 )
+  if ( num_characters > 0 )
   {
     std::sort( character_names.begin(), character_names.end() );
 
-    for( int i=0; i < num_characters; i++ )
+    for ( int i=0; i < num_characters; i++ )
     {
       std::string& character_name = character_names[ i ];
-      
+
       util_t::fprintf( sim -> output_file, "\nsimcraft: Downloading character: %s\n", character_name.c_str() );
       player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
 
-      if( ! p ) 
+      if ( ! p )
       {
         util_t::printf( "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
         p = wowhead_t::download_player( sim, region, server, character_name, 1 );
       }
-      if( ! p ) return false;
+      if ( ! p ) return false;
 
       int tree = p -> primary_tree();
-      if( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
+      if ( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
       {
         util_t::fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
         p -> quiet = true;
       }
-      if( tree == TREE_PROTECTION )
+      if ( tree == TREE_PROTECTION )
       {
         util_t::fprintf( sim -> output_file, "\nsimcraft: Setting quiet=1 on tank %s\n", character_name.c_str() );
         p -> quiet = true;
@@ -612,11 +613,11 @@ bool armory_t::download_guild( sim_t* sim,
 // armory_t::download_player ================================================
 
 player_t* armory_t::download_player( sim_t* sim,
-                                     const std::string& region, 
-                                     const std::string& server, 
+                                     const std::string& region,
+                                     const std::string& server,
                                      const std::string& name,
                                      const std::string& talents_description,
-				                             int cache )
+                                     int cache )
 {
   std::string temp_name = name;
   armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
@@ -624,7 +625,7 @@ player_t* armory_t::download_player( sim_t* sim,
   xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, temp_name, cache );
   xml_node_t* talents_xml = download_character_talents( sim, region, server, temp_name, cache );
 
-  if( ! sheet_xml || ! talents_xml )
+  if ( ! sheet_xml || ! talents_xml )
   {
     util_t::printf( "\nsimcraft: Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
@@ -633,30 +634,30 @@ player_t* armory_t::download_player( sim_t* sim,
   std::string type_str, cid_str, name_str;
   int level;
 
-  if( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ||
-      ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ||
-      ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ||
-      ! xml_t::get_value(    level, sheet_xml, "character/level"   ) )
+  if ( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ||
+       ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ||
+       ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ||
+       ! xml_t::get_value(    level, sheet_xml, "character/level"   ) )
   {
-    util_t::printf( "\nsimcraft: Unable to determine class/name/level from armory xml for %s|%s|%s.\n", 
-            region.c_str(), server.c_str(), name.c_str() );
+    util_t::printf( "\nsimcraft: Unable to determine class/name/level from armory xml for %s|%s|%s.\n",
+                    region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   armory_t::format( type_str );
   armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
   util_t::format_name( name_str );
 
-  if( type_str == "death_knight" || type_str == "paladin" )
+  if ( type_str == "death_knight" || type_str == "paladin" )
   {
     util_t::printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
     return 0;
   }
 
   player_t* p = player_t::create( sim, type_str, name_str );
-  if( ! p ) 
+  if ( ! p )
   {
-    util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n", 
-            type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+    util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
+                    type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -665,13 +666,13 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> server_str = server;
 
   std::string temp_origin_str;
- 
+
   temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + temp_name;
   http_t::format( p -> origin_str, temp_origin_str );
 
 
   std::string last_modified;
-  if( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
+  if ( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
   {
     p -> last_modified = util_t::parse_date( last_modified );
   }
@@ -679,79 +680,79 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> professions_str = "";
   std::vector<xml_node_t*> skill_nodes;
   int num_skills = xml_t::get_nodes( skill_nodes, sheet_xml, "professions/skill" );
-  for( int i=0; i < num_skills; i++ )
+  for ( int i=0; i < num_skills; i++ )
   {
     std::string key_str, value_str;
-    if( xml_t::get_value(   key_str, skill_nodes[ i ], "key"   ) &&
-        xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
+    if ( xml_t::get_value(   key_str, skill_nodes[ i ], "key"   ) &&
+         xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
     {
-      if( i ) p -> professions_str += "/";
+      if ( i ) p -> professions_str += "/";
       p -> professions_str += key_str + "=" + value_str;
     }
   }
 
   xml_node_t* talents_node = xml_t::get_node( talents_xml, "talents" );
-  
-  // US/EU Armory pages using different notations!
-  if( ! talents_node ) talents_node = xml_t::get_node( talents_xml, "talentGroups" );
 
-  if( talents_node )
+  // US/EU Armory pages using different notations!
+  if ( ! talents_node ) talents_node = xml_t::get_node( talents_xml, "talentGroups" );
+
+  if ( talents_node )
   {
     xml_node_t*   active_talents = 0;
     xml_node_t* inactive_talents = 0;
 
     std::vector<xml_node_t*> talent_groups;
     int num_groups = xml_t::get_children( talent_groups, talents_node, "talentGroup" );
-  
-    if( num_groups > 0 )   active_talents = talent_groups[ 0 ];
-    if( num_groups > 1 ) inactive_talents = talent_groups[ 1 ];
 
-    if( active_talents )
+    if ( num_groups > 0 )   active_talents = talent_groups[ 0 ];
+    if ( num_groups > 1 ) inactive_talents = talent_groups[ 1 ];
+
+    if ( active_talents )
     {
-      if( inactive_talents )
+      if ( inactive_talents )
       {
         int active_value=0;
-        if( xml_t::get_value( active_value, inactive_talents, "active" ) && active_value ) 
-	{
-	  std::swap( active_talents, inactive_talents );
-	}
+        if ( xml_t::get_value( active_value, inactive_talents, "active" ) && active_value )
+        {
+          std::swap( active_talents, inactive_talents );
+        }
 
-	if( talents_description == "active" )
-	{
-	  // Leave it alone.
-	}
-	else if( talents_description == "inactive" )
-	{
-	  std::swap( active_talents, inactive_talents );
-	}
-	else
-	{
-	  int primary_tree = util_t::parse_talent_tree( talents_description );
-	  if( primary_tree == TREE_NONE )
-	  {
-	    util_t::printf( "\nsimcraft: Valid values for 'talents' are 'active', 'inactive', or the name of a tree such as 'fury' or 'shadow'.\n" );
-	    return 0;
-	  }
+        if ( talents_description == "active" )
+        {
+          // Leave it alone.
+        }
+        else if ( talents_description == "inactive" )
+        {
+          std::swap( active_talents, inactive_talents );
+        }
+        else
+        {
+          int primary_tree = util_t::parse_talent_tree( talents_description );
+          if ( primary_tree == TREE_NONE )
+          {
+            util_t::printf( "\nsimcraft: Valid values for 'talents' are 'active', 'inactive', or the name of a tree such as 'fury' or 'shadow'.\n" );
+            return 0;
+          }
 
-	  std::string primary_tree_str;
-	  if( xml_t::get_value( primary_tree_str, inactive_talents, "prim" ) )
-	  {
-	    armory_t::format( primary_tree_str );
-	    if( primary_tree == util_t::parse_talent_tree( primary_tree_str ) )
-	    {
-	      std::swap( active_talents, inactive_talents );
-	    }
-	  }
-	}
+          std::string primary_tree_str;
+          if ( xml_t::get_value( primary_tree_str, inactive_talents, "prim" ) )
+          {
+            armory_t::format( primary_tree_str );
+            if ( primary_tree == util_t::parse_talent_tree( primary_tree_str ) )
+            {
+              std::swap( active_talents, inactive_talents );
+            }
+          }
+        }
       }
 
       std::string talents_encoding;
-      if( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) ) 
+      if ( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) )
       {
         util_t::printf( "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
         return 0;
       }
-      if( ! p -> parse_talents_armory( talents_encoding ) ) 
+      if ( ! p -> parse_talents_armory( talents_encoding ) )
       {
         util_t::printf( "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
         return 0;
@@ -761,10 +762,10 @@ player_t* armory_t::download_player( sim_t* sim,
       p -> glyphs_str = "";
       std::vector<xml_node_t*> glyph_nodes;
       int num_glyphs = xml_t::get_nodes( glyph_nodes, active_talents, "glyph" );
-      for( int i=0; i < num_glyphs; i++ )
+      for ( int i=0; i < num_glyphs; i++ )
       {
         std::string glyph_name;
-        if( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) ) 
+        if ( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) )
         {
           util_t::printf( "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
           return 0;
@@ -774,7 +775,7 @@ player_t* armory_t::download_player( sim_t* sim,
         else if ( !glyph_name.compare( 0, 8, "Glyph - " ) )
           glyph_name.erase( 0, 8 ); // remove "Glyph - "
         armory_t::format( glyph_name );
-        if( i ) p -> glyphs_str += "/";
+        if ( i ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;
       }
     }
@@ -782,40 +783,40 @@ player_t* armory_t::download_player( sim_t* sim,
 
   std::vector<xml_node_t*> item_nodes;
   int num_items = xml_t::get_nodes( item_nodes, sheet_xml, "item" );
-  for( int i=0; i < num_items; i++ )
+  for ( int i=0; i < num_items; i++ )
   {
     std::string id_str;
     int slot;
 
-    if( xml_t::get_value( id_str, item_nodes[ i ], "id"   ) &&
-        xml_t::get_value( slot,   item_nodes[ i ], "slot" ) )
+    if ( xml_t::get_value( id_str, item_nodes[ i ], "id"   ) &&
+         xml_t::get_value( slot,   item_nodes[ i ], "slot" ) )
     {
-      if( slot == -1 ) continue;
+      if ( slot == -1 ) continue;
 
       item_t& item = p -> items[ slot ];
 
       bool success = false;
 
       std::string enchant_id, gem_ids[ 3 ];
-      if( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
-          xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
-          xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
-          xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
+      if ( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
+           xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
+           xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
+           xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = item_t::download_slot( item, id_str, enchant_id, gem_ids);
+        success = item_t::download_slot( item, id_str, enchant_id, gem_ids );
       }
-      
-      if( ! success ) 
+
+      if ( ! success )
       {
         success = item_t::download_item( item, id_str );
       }
-      
-      if( ! success ) return 0;
+
+      if ( ! success ) return 0;
     }
     else return 0;
   }
 
-  if( p ) p -> armory( sheet_xml, talents_xml );
+  if ( p ) p -> armory( sheet_xml, talents_xml );
 
   return p;
 }
@@ -829,38 +830,38 @@ bool armory_t::download_slot( item_t& item,
   player_t* p = item.player;
 
   xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot, cache_only );
-  if( ! slot_xml ) 
+  if ( ! slot_xml )
   {
     if ( ! cache_only )
       util_t::printf( "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
     return false;
   }
 
-  if( ! parse_item_name( item, slot_xml ) )
+  if ( ! parse_item_name( item, slot_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_stats( item, slot_xml ) )
+  if ( ! parse_item_stats( item, slot_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_gems( item, slot_xml ) )
+  if ( ! parse_item_gems( item, slot_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse gems for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_enchant( item, slot_xml ) )
+  if ( ! parse_item_enchant( item, slot_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse enchant for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_weapon( item, slot_xml ) )
+  if ( ! parse_item_weapon( item, slot_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
@@ -878,26 +879,26 @@ bool armory_t::download_item( item_t& item,
   player_t* p = item.player;
 
   xml_node_t* item_xml = download_item_tooltip( p, id_str, cache_only );
-  if( ! item_xml ) 
+  if ( ! item_xml )
   {
     if ( ! cache_only )
       util_t::printf( "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_name( item, item_xml ) )
+  if ( ! parse_item_name( item, item_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_stats( item, item_xml ) )
+  if ( ! parse_item_stats( item, item_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
-  if( ! parse_item_weapon( item, item_xml ) )
+  if ( ! parse_item_weapon( item, item_xml ) )
   {
     util_t::printf( "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
@@ -910,11 +911,11 @@ bool armory_t::download_item( item_t& item,
 
 std::string& armory_t::format( std::string& name, int format_type )
 {
-  if( name.empty() ) return name;
+  if ( name.empty() ) return name;
 
   std::string buffer="";
-  
-  switch( format_type & FORMAT_CONVERT_MASK )
+
+  switch ( format_type & FORMAT_CONVERT_MASK )
   {
   case FORMAT_UTF8_MASK:
     util_t::utf8_binary_to_hex( name );
@@ -925,22 +926,22 @@ std::string& armory_t::format( std::string& name, int format_type )
   }
 
   int size = name.size();
-  for( int i=0; i < size; i++ )
+  for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
 
-    if( c >= 0x80 )
+    if ( c >= 0x80 )
     {
       continue;
     }
-    else if( isalpha( c ) )
+    else if ( isalpha( c ) )
     {
-      switch( format_type & FORMAT_ALL_NAME_MASK )
+      switch ( format_type & FORMAT_ALL_NAME_MASK )
       {
       case FORMAT_GUILD_NAME_MASK:
         break;
       case FORMAT_CHAR_NAME_MASK:
-        if( i != 0)
+        if ( i != 0 )
         {
           c = tolower( ( unsigned ) c );
         }
@@ -950,19 +951,19 @@ std::string& armory_t::format( std::string& name, int format_type )
         break;
       }
     }
-    else if( c == ' ' )
+    else if ( c == ' ' )
     {
       c = '_';
     }
-    else if( ( c == '_' || c == '+' ) && i == 0 )
+    else if ( ( c == '_' || c == '+' ) && i == 0 )
     {
       continue;
     }
-    else if( c != '_' &&
-             c != '+' &&
-             c != '.' && 
-             c != '%' && 
-             ! isdigit( c ) )
+    else if ( c != '_' &&
+              c != '+' &&
+              c != '.' &&
+              c != '%' &&
+              ! isdigit( c ) )
     {
       continue;
     }

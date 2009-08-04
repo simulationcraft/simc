@@ -5,21 +5,22 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // simplify_html =============================================================
 
 static void simplify_html( std::string& buffer )
 {
-  for( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
+  for ( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
   {
     buffer.replace( pos, 4, "<" );
   }
-  for( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
+  for ( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
   {
     buffer.replace( pos, 4, ">" );
   }
-  for( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
+  for ( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
   {
     buffer.replace( pos, 5, "&" );
   }
@@ -32,19 +33,19 @@ static void print_action( FILE* file, stats_t* s )
   if ( s -> total_dmg == 0 ) return;
 
   util_t::fprintf( file,
-           "    %-20s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
-           s -> name_str.c_str(),
-           s -> num_executes,
-           s -> frequency,
-           s -> dpe,
-           s -> portion_dmg * 100.0,
-           s -> dpet,
-           s -> dpr,
-           s -> portion_dps );
+                   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                   s -> name_str.c_str(),
+                   s -> num_executes,
+                   s -> frequency,
+                   s -> dpe,
+                   s -> portion_dmg * 100.0,
+                   s -> dpet,
+                   s -> dpr,
+                   s -> portion_dps );
 
-  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count + 
-		      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
-								     
+  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count +
+                      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
+
 
   util_t::fprintf( file, "  Miss=%.1f%%", 100.0 * miss_pct );
 
@@ -55,23 +56,23 @@ static void print_action( FILE* file, stats_t* s )
   if ( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-             "  Crit=%5.0f|%5.0f|%.1f%%",
-             s -> execute_results[ RESULT_CRIT ].avg_dmg,
-             s -> execute_results[ RESULT_CRIT ].max_dmg,
-             s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
+                     "  Crit=%5.0f|%5.0f|%.1f%%",
+                     s -> execute_results[ RESULT_CRIT ].avg_dmg,
+                     s -> execute_results[ RESULT_CRIT ].max_dmg,
+                     s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
   }
   if ( s -> execute_results[ RESULT_GLANCE ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-             "  Glance=%4.0f|%.1f%%",
-             s -> execute_results[ RESULT_GLANCE ].avg_dmg,
-             s -> execute_results[ RESULT_GLANCE ].count * 100.0 / s -> num_executes );
+                     "  Glance=%4.0f|%.1f%%",
+                     s -> execute_results[ RESULT_GLANCE ].avg_dmg,
+                     s -> execute_results[ RESULT_GLANCE ].count * 100.0 / s -> num_executes );
   }
   if ( s -> execute_results[ RESULT_DODGE ].count > 0 )
   {
     util_t::fprintf( file,
-             "  Dodge=%.1f%%",
-             s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
+                     "  Dodge=%.1f%%",
+                     s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
   }
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
@@ -79,15 +80,15 @@ static void print_action( FILE* file, stats_t* s )
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-             "  Tick=%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg );
+                     "  Tick=%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg );
   }
   if ( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-             "  CritTick=%.0f|%.0f|%.1f%%",
-             s -> tick_results[ RESULT_CRIT ].avg_dmg,
-             s -> tick_results[ RESULT_CRIT ].max_dmg,
-             s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
+                     "  CritTick=%.0f|%.0f|%.1f%%",
+                     s -> tick_results[ RESULT_CRIT ].avg_dmg,
+                     s -> tick_results[ RESULT_CRIT ].max_dmg,
+                     s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
   }
 
   util_t::fprintf( file, "\n" );
@@ -99,16 +100,16 @@ static void print_actions( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
-  if( p -> action_list_default )
+  if ( p -> action_list_default )
   {
     util_t::fprintf( file, "  Priorities:\n" );
 
     std::vector<std::string> action_list;
     int num_actions = util_t::string_split( action_list, p -> action_list_str, "/" );
     int length = 0;
-    for( int i=0; i < num_actions; i++ )
+    for ( int i=0; i < num_actions; i++ )
     {
-      if( length > 80 )
+      if ( length > 80 )
       {
         util_t::fprintf( file, "\n" );
         length = 0;
@@ -153,12 +154,12 @@ static void print_buffs( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "  Constant Buffs:" );
   char prefix = ' ';
-  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
-    if( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> start_count )
       continue;
 
-    if( b -> constant )
+    if ( b -> constant )
     {
       util_t::fprintf( file, "%c%s", prefix, b -> name() );
       prefix = '/';
@@ -169,26 +170,26 @@ static void print_buffs( FILE* file, player_t* p )
   util_t::fprintf( file, "  Dynamic Buffs:\n" );
 
   int max_length = 0;
-  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
-    if( ! b -> quiet && b -> start_count && ! b -> constant )
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
     {
       int length = strlen( b -> name() );
-      if( length > max_length ) max_length = length;
+      if ( length > max_length ) max_length = length;
     }
   }
 
-  for( buff_t* b = p -> buff_list; b; b = b -> next )
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
-    if( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> start_count )
       continue;
 
-    if( ! b -> constant )
+    if ( ! b -> constant )
     {
       util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-4.1f  interval=%-5.1f  uptime=%2.0f%%  benefit=%2.0f%%",
-		       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct, b -> benefit_pct );
+                       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct, b -> benefit_pct );
 
-      if( b -> trigger_pct > 0 ) util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
+      if ( b -> trigger_pct > 0 ) util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
 
       util_t::fprintf( file, "\n" );
     }
@@ -200,13 +201,13 @@ static void print_buffs( FILE* file, player_t* p )
 static void print_core_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-           "  Core Stats:  strength=%.0f(%.0f)  agility=%.0f(%.0f)  stamina=%.0f(%.0f)  intellect=%.0f(%.0f)  spirit=%.0f(%.0f)  health=%.0f  mana=%.0f\n",
-           p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
-	   p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
-	   p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
-	   p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
-	   p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
-           p -> resource_max[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_MANA ] );
+                   "  Core Stats:  strength=%.0f(%.0f)  agility=%.0f(%.0f)  stamina=%.0f(%.0f)  intellect=%.0f(%.0f)  spirit=%.0f(%.0f)  health=%.0f  mana=%.0f\n",
+                   p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
+                   p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
+                   p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
+                   p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
+                   p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
+                   p -> resource_max[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_MANA ] );
 }
 
 // print_spell_stats ==========================================================
@@ -214,13 +215,13 @@ static void print_core_stats( FILE* file, player_t* p )
 static void print_spell_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-           "  Spell Stats:  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  penetration=%.0f(%.0f)  haste=%.2f%%(%.0f)  mp5=%.0f\n",
-           p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
-           p -> composite_spell_hit()  * 100.0,    p -> stats.hit_rating,
-           p -> composite_spell_crit() * 100.0,    p -> stats.crit_rating,
-           p -> composite_spell_penetration(),     p -> stats.spell_penetration,
-           ( 1.0 / p -> spell_haste - 1 ) * 100.0, p -> stats.haste_rating,
-           p -> initial_mp5 );
+                   "  Spell Stats:  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  penetration=%.0f(%.0f)  haste=%.2f%%(%.0f)  mp5=%.0f\n",
+                   p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
+                   p -> composite_spell_hit()  * 100.0,    p -> stats.hit_rating,
+                   p -> composite_spell_crit() * 100.0,    p -> stats.crit_rating,
+                   p -> composite_spell_penetration(),     p -> stats.spell_penetration,
+                   ( 1.0 / p -> spell_haste - 1 ) * 100.0, p -> stats.haste_rating,
+                   p -> initial_mp5 );
 }
 
 // print_attack_stats =========================================================
@@ -228,13 +229,13 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-           "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f%%(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
-           p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
-           p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
-           p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
-           p -> composite_attack_expertise()   * 100.0, p -> stats.expertise_rating,
-           p -> composite_attack_penetration() * 100.0, p -> stats.armor_penetration_rating,
-           ( 1.0 / p -> attack_haste - 1 )     * 100.0, p -> stats.haste_rating );
+                   "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f%%(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
+                   p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
+                   p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
+                   p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
+                   p -> composite_attack_expertise()   * 100.0, p -> stats.expertise_rating,
+                   p -> composite_attack_penetration() * 100.0, p -> stats.armor_penetration_rating,
+                   ( 1.0 / p -> attack_haste - 1 )     * 100.0, p -> stats.haste_rating );
 }
 
 // print_defense_stats =======================================================
@@ -242,8 +243,8 @@ static void print_attack_stats( FILE* file, player_t* p )
 static void print_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-           "  Defense Stats:  armor=%.0f(%.0f)\n",
-           p -> composite_armor(), p -> stats.armor );
+                   "  Defense Stats:  armor=%.0f(%.0f)\n",
+                   p -> composite_armor(), p -> stats.armor );
 }
 
 // print_gains ===============================================================
@@ -258,7 +259,7 @@ static void print_gains( FILE* file, player_t* p )
     if ( g -> actual > 0 )
     {
       int length = strlen( g -> name() );
-      if( length > max_length ) max_length = length;
+      if ( length > max_length ) max_length = length;
     }
   }
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
@@ -283,8 +284,8 @@ static void print_procs( FILE* file, player_t* p )
   {
     if ( proc -> count > 0 )
     {
-      util_t::fprintf( file, "    %5.1f | %6.2fsec : %s\n", 
-		       proc -> count, proc -> frequency, proc -> name() );
+      util_t::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
+                       proc -> count, proc -> frequency, proc -> name() );
     }
   }
 }
@@ -332,19 +333,19 @@ static void print_waiting( FILE* file, sim_t* sim )
 static void print_performance( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file,
-           "\nBaseline Performance:\n"
-           "  TotalEvents   = %d\n"
-           "  MaxEventQueue = %d\n"
-           "  TargetHealth  = %.0f\n"
-           "  SimSeconds    = %.0f\n"
-           "  CpuSeconds    = %.3f\n"
-           "  SpeedUp       = %.0f\n\n",
-           sim -> total_events_processed,
-           sim -> max_events_remaining,
-           sim -> target -> initial_health,
-           sim -> iterations * sim -> total_seconds,
-           sim -> elapsed_cpu_seconds,
-           sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+                   "\nBaseline Performance:\n"
+                   "  TotalEvents   = %d\n"
+                   "  MaxEventQueue = %d\n"
+                   "  TargetHealth  = %.0f\n"
+                   "  SimSeconds    = %.0f\n"
+                   "  CpuSeconds    = %.3f\n"
+                   "  SpeedUp       = %.0f\n\n",
+                   sim -> total_events_processed,
+                   sim -> max_events_remaining,
+                   sim -> target -> initial_health,
+                   sim -> iterations * sim -> total_seconds,
+                   sim -> elapsed_cpu_seconds,
+                   sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
 
   sim -> rng -> report( file );
 }
@@ -364,7 +365,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   {
     player_t* p = sim -> players_by_name[ i ];
     int length = strlen( p -> name() );
-    if( length > max_length ) max_length = length;
+    if ( length > max_length ) max_length = length;
   }
 
   for ( int i=0; i < num_players; i++ )
@@ -377,13 +378,13 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     for ( int j=0; j < STAT_MAX; j++ )
     {
-      if( p -> scales_with[ j ] != 0 )
+      if ( p -> scales_with[ j ] != 0 )
       {
         util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), sf.get_stat( j ) );
       }
     }
 
-    if( sim -> scaling -> normalize_scale_factors )
+    if ( sim -> scaling -> normalize_scale_factors )
     {
       util_t::fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
     }
@@ -404,7 +405,7 @@ static void print_reference_dps( FILE* file, sim_t* sim )
 
   player_t* ref_p = sim -> find_player( sim -> reference_player_str );
 
-  if( ! ref_p ) 
+  if ( ! ref_p )
   {
     util_t::fprintf( file, "Unable to locate reference player: %s\n", sim -> reference_player_str.c_str() );
     return;
@@ -417,19 +418,19 @@ static void print_reference_dps( FILE* file, sim_t* sim )
   {
     player_t* p = sim -> players_by_rank[ i ];
     int length = strlen( p -> name() );
-    if( length > max_length ) max_length = length;
+    if ( length > max_length ) max_length = length;
   }
 
   util_t::fprintf( file, "  %-*s", max_length, ref_p -> name() );
   util_t::fprintf( file, "  %.0f", ref_p -> dps );
 
-  if( sim -> scaling -> calculate_scale_factors )
+  if ( sim -> scaling -> calculate_scale_factors )
   {
     for ( int j=0; j < STAT_MAX; j++ )
     {
-      if( ref_p -> scales_with[ j ] != 0 )
+      if ( ref_p -> scales_with[ j ] != 0 )
       {
-	      util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), ref_p -> scaling.get_stat( j ) );
+        util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), ref_p -> scaling.get_stat( j ) );
       }
     }
   }
@@ -440,7 +441,7 @@ static void print_reference_dps( FILE* file, sim_t* sim )
   {
     player_t* p = sim -> players_by_rank[ i ];
 
-    if( p != ref_p )
+    if ( p != ref_p )
     {
       util_t::fprintf( file, "  %-*s", max_length, p -> name() );
 
@@ -450,22 +451,22 @@ static void print_reference_dps( FILE* file, sim_t* sim )
 
       util_t::fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
 
-      if( sim -> scaling -> calculate_scale_factors )
+      if ( sim -> scaling -> calculate_scale_factors )
       {
-	for ( int j=0; j < STAT_MAX; j++ )
+        for ( int j=0; j < STAT_MAX; j++ )
         {
-	  if( ref_p -> scales_with[ j ] != 0 )
+          if ( ref_p -> scales_with[ j ] != 0 )
           {
-	    double ref_sf = ref_p -> scaling.get_stat( j );
-	    double     sf =     p -> scaling.get_stat( j );
-	  
-	    over = ( sf > ref_sf );
+            double ref_sf = ref_p -> scaling.get_stat( j );
+            double     sf =     p -> scaling.get_stat( j );
 
-	    ratio = 100.0 * fabs( sf - ref_sf ) / ref_sf;
-	    
-	    util_t::fprintf( file, "  %s=%c%.0f%%", util_t::stat_type_abbrev( j ), ( over ? '+' : '-' ), ratio );
-	  }
-	}
+            over = ( sf > ref_sf );
+
+            ratio = 100.0 * fabs( sf - ref_sf ) / ref_sf;
+
+            util_t::fprintf( file, "  %s=%c%.0f%%", util_t::stat_type_abbrev( j ), ( over ? '+' : '-' ), ratio );
+          }
+        }
       }
 
       util_t::fprintf( file, "\n" );
@@ -478,15 +479,15 @@ static void print_reference_dps( FILE* file, sim_t* sim )
 static void print_html_menu_definition( FILE*  file, sim_t* sim )
 {
   util_t::fprintf( file, "<script type=\"text/javascript\">\n"
-           "function hideElement(el) {if (el) el.style.display='none';}\n"
-           "function showElement(el) {if (el) el.style.display='';}\n"
-           "function hideElements(els) {if (els) {"
-           "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
-           "}}\n"
-           "function showElements(els) {if (els) {"
-           "for (var i = 0; i < els.length; i++) showElement(els[i]);"
-           "}}\n"
-           "</script>\n" );
+                   "function hideElement(el) {if (el) el.style.display='none';}\n"
+                   "function showElement(el) {if (el) el.style.display='';}\n"
+                   "function hideElements(els) {if (els) {"
+                   "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
+                   "}}\n"
+                   "function showElements(els) {if (els) {"
+                   "for (var i = 0; i < els.length; i++) showElement(els[i]);"
+                   "}}\n"
+                   "</script>\n" );
 }
 
 // print_html_menu_triggers ==================================================
@@ -618,18 +619,18 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "    <td><a href=\"%s\"> lootrank</a></td>\n", p -> gear_weights_lootrank_link.c_str() );
     util_t::fprintf( file, "    <td><a href=\"%s\"> wowhead </a></td>\n", p -> gear_weights_wowhead_link.c_str() );
     util_t::fprintf( file,
-             "    <td>\n      <div style=\"margin:1px; margin-top:1px\">\n"
-             "        <pre class=\"alt2\" dir=\"ltr\" style=\""
-             "margin: 0px;"
-             "padding: 3px;"
-             "border: 1px inset;"
-             "width: 64px;"
-             "height: 30px;"
-             "text-align: left;"
-             "overflow: auto\">%s"
-             "</pre>\n"
-             "      </div>\n    </td>\n",
-             p -> gear_weights_pawn_string.c_str() );
+                     "    <td>\n      <div style=\"margin:1px; margin-top:1px\">\n"
+                     "        <pre class=\"alt2\" dir=\"ltr\" style=\""
+                     "margin: 0px;"
+                     "padding: 3px;"
+                     "border: 1px inset;"
+                     "width: 64px;"
+                     "height: 30px;"
+                     "text-align: left;"
+                     "overflow: auto\">%s"
+                     "</pre>\n"
+                     "      </div>\n    </td>\n",
+                     p -> gear_weights_pawn_string.c_str() );
 
     util_t::fprintf( file, "  </tr>\n" );
   }
@@ -690,19 +691,19 @@ static void print_html_text( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<h1>Raw Text Output</h1>\n" );
 
   util_t::fprintf( file, "%s",
-           "<ul>\n"
-           " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i></li>\n"
-           " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i></li>\n"
-           " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i></li>\n"
-           " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
-           " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
-           " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
-           " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit</li>\n"
-           " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
-           " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions</li>\n"
-           " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
-           " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
-           "</ul>\n" );
+                   "<ul>\n"
+                   " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i></li>\n"
+                   " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i></li>\n"
+                   " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i></li>\n"
+                   " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
+                   " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
+                   " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
+                   " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit</li>\n"
+                   " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
+                   " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions</li>\n"
+                   " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
+                   " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
+                   "</ul>\n" );
 
   util_t::fprintf( file, "<pre>\n" );
   report_t::print_text( file, sim );
@@ -744,19 +745,23 @@ static void print_xml_raid( FILE*  file, sim_t* sim )
 
 static void print_xml_player( FILE* file, player_t* p )
 {
-  if ( ! p -> action_dpet_chart.empty() ) {
+  if ( ! p -> action_dpet_chart.empty() )
+  {
     util_t::fprintf( file, "      <chart name=\"Damage Per Execute Time\" type=\"chart_dpet\" url=\"%s\" />\n", p -> action_dpet_chart.c_str() );
   }
 
-  if ( ! p -> uptimes_and_procs_chart.empty() ) {
+  if ( ! p -> uptimes_and_procs_chart.empty() )
+  {
     util_t::fprintf( file, "      <chart name=\"Up-Times and Procs\" type=\"chart_uptimes\" url=\"%s\" />\n", p -> uptimes_and_procs_chart.c_str() );
   }
 
-  if ( ! p -> action_dmg_chart.empty() ) {
+  if ( ! p -> action_dmg_chart.empty() )
+  {
     util_t::fprintf( file, "      <chart name=\"Damage Sources\" type=\"chart_sources\" url=\"%s\" />\n", p -> action_dmg_chart.c_str() );
   }
 
-  if ( ! p -> gains_chart.empty() ) {
+  if ( ! p -> gains_chart.empty() )
+  {
     util_t::fprintf( file, "      <chart name=\"Resource Gains\" type=\"chart_gains\" url=\"%s\" />\n", p -> gains_chart.c_str() );
   }
 
@@ -775,8 +780,10 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
 
   util_t::fprintf( file, "      <scale_factors>\n" );
 
-  for ( int j=0; j < STAT_MAX; j++ ) {
-    if ( sim -> scaling -> stats.get_stat( j ) != 0 ) {
+  for ( int j=0; j < STAT_MAX; j++ )
+  {
+    if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+    {
       util_t::fprintf( file, "        <scale_factor name=\"%s\" value=\"%.2f\" />\n", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j ) );
     }
   }
@@ -895,7 +902,7 @@ static void print_wiki_scale_factors( FILE*  file,
         util_t::fprintf( file, " %.2f ||", p -> scaling.get_stat( j ) );
       }
     }
-    
+
     std::string lootrank = p -> gear_weights_lootrank_link;
     std::string wowhead  = p -> gear_weights_wowhead_link;
     std::string pawn     = p -> gear_weights_pawn_string;
@@ -988,21 +995,21 @@ static void print_wiki_text( FILE*  file,
                              sim_t* sim )
 {
   util_t::fprintf( file, "%s",
-           "\n"
-           "= Raw Text Output =\n"
-           "*Super-Secret Decoder Ring (remember that these values represent the average over all iterations)*\n"
-           " * *DPS=Num:* _Num_ is the _damage per second_\n"
-           " * *DPR=Num:* _Num_ is the _damage per resource_\n"
-           " * *RPS=Num1/Num2:* _Num1_ is the _resource consumed per second_ and _Num2_ is the _resource regenerated per second_\n"
-           " * *Count=Num|Time:* _Num_ is number of casts per fight and _Time_ is average time between casts\n"
-           " * *DPE=Num:* _Num_ is the _damage per execute_\n"
-           " * *DPET=Num:* _Num_ is the _damage per execute_ divided by the _time to execute_ (this value includes GCD costs and Lag in the calculation of _time to execute_)\n"
-           " * *Hit=Num:* _Num_ is the average damage per non-crit hit\n"
-           " * *Crit=Num1|Num2|Pct:* _Num1_ is average crit damage, _Num2_ is the max crit damage, and _Pct_ is the percentage of crits _per execute_ (not _per hit_)\n"
-           " * *Tick=Num:* _Num_ is the average tick of damage for the _damage over time_ portion of actions\n"
-           " * *Up-Time:* This is _not_ the percentage of time the buff/debuff is present, but rather the ratio of _actions it affects_ over _total number of actions it could affect_.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.\n"
-           " * *Waiting*: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).\n"
-           "\n" );
+                   "\n"
+                   "= Raw Text Output =\n"
+                   "*Super-Secret Decoder Ring (remember that these values represent the average over all iterations)*\n"
+                   " * *DPS=Num:* _Num_ is the _damage per second_\n"
+                   " * *DPR=Num:* _Num_ is the _damage per resource_\n"
+                   " * *RPS=Num1/Num2:* _Num1_ is the _resource consumed per second_ and _Num2_ is the _resource regenerated per second_\n"
+                   " * *Count=Num|Time:* _Num_ is number of casts per fight and _Time_ is average time between casts\n"
+                   " * *DPE=Num:* _Num_ is the _damage per execute_\n"
+                   " * *DPET=Num:* _Num_ is the _damage per execute_ divided by the _time to execute_ (this value includes GCD costs and Lag in the calculation of _time to execute_)\n"
+                   " * *Hit=Num:* _Num_ is the average damage per non-crit hit\n"
+                   " * *Crit=Num1|Num2|Pct:* _Num1_ is average crit damage, _Num2_ is the max crit damage, and _Pct_ is the percentage of crits _per execute_ (not _per hit_)\n"
+                   " * *Tick=Num:* _Num_ is the average tick of damage for the _damage over time_ portion of actions\n"
+                   " * *Up-Time:* This is _not_ the percentage of time the buff/debuff is present, but rather the ratio of _actions it affects_ over _total number of actions it could affect_.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.\n"
+                   " * *Waiting*: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).\n"
+                   "\n" );
 
   util_t::fprintf( file, "{{{\n" );
   report_t::print_text( file, sim );
@@ -1023,7 +1030,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
   int num_players = sim -> players_by_rank.size();
 
-  if( detail )
+  if ( detail )
   {
     util_t::fprintf( file, "\nDPS Ranking:\n" );
     util_t::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
@@ -1039,14 +1046,14 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     player_t* p = sim -> players_by_name[ i ];
 
     util_t::fprintf( file, "\nPlayer=%s (%s)  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
-             p -> name(), util_t::talent_tree_string( p -> primary_tree() ),
-             p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
+                     p -> name(), util_t::talent_tree_string( p -> primary_tree() ),
+                     p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
 
     if ( p -> rps_loss > 0 )
     {
       util_t::fprintf( file, "  DPR=%.1f  RS=%.1f/%.1f  (%s)",
-               p -> dpr, p -> rps_loss, p -> rps_gain,
-               util_t::resource_type_string( p -> primary_resource() ) );
+                       p -> dpr, p -> rps_loss, p -> rps_gain,
+                       util_t::resource_type_string( p -> primary_resource() ) );
     }
 
     util_t::fprintf( file, "\n" );
@@ -1058,7 +1065,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     print_defense_stats( file, p );
     print_actions      ( file, p );
 
-    if( detail )
+    if ( detail )
     {
       print_buffs ( file, p );
       print_uptime( file, p );
@@ -1067,7 +1074,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     }
   }
 
-  if( detail )
+  if ( detail )
   {
     print_waiting      ( file, sim );
     print_performance  ( file, sim );
@@ -1173,8 +1180,8 @@ void report_t::print_xml( sim_t* sim )
   FILE* file = fopen( sim -> xml_file_str.c_str(), "w" );
   if ( ! file )
   {
-        util_t::fprintf( stderr, "simcraft: Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
-        exit( 0 );
+    util_t::fprintf( stderr, "simcraft: Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
+    exit( 0 );
   }
 
   // Start the XML file
@@ -1182,7 +1189,8 @@ void report_t::print_xml( sim_t* sim )
   util_t::fprintf( file, "<xml>\n" );
 
   // Add the overall raid summary data
-  if ( num_players > 1 ) {
+  if ( num_players > 1 )
+  {
     util_t::fprintf( file, "  <raid_summary>\n" );
     print_xml_raid( file, sim );
     util_t::fprintf( file, "  </raid_summary>\n" );
@@ -1190,19 +1198,20 @@ void report_t::print_xml( sim_t* sim )
 
   // Loop over the players in the simulation, and print each's simulation results
   util_t::fprintf( file, "  <players>\n" );
-  for ( int i=0; i < num_players; i++ ) {
-        util_t::fprintf( file, "    <player name=\"%s\" talent_url=\"%s\">\n",
-                        sim -> players_by_name[ i ] -> name(),
-                        sim -> players_by_name[ i ] -> talents_str.c_str()	// TODO: These talent URLs should have their ampersands escaped
-                );
+  for ( int i=0; i < num_players; i++ )
+  {
+    util_t::fprintf( file, "    <player name=\"%s\" talent_url=\"%s\">\n",
+                     sim -> players_by_name[ i ] -> name(),
+                     sim -> players_by_name[ i ] -> talents_str.c_str() // TODO: These talent URLs should have their ampersands escaped
+                   );
 
-        // Print the player results
-        print_xml_player( file, sim -> players_by_name[ i ] );
+    // Print the player results
+    print_xml_player( file, sim -> players_by_name[ i ] );
 
-        // Add the scale factors for the player
-        print_xml_player_scale_factors( file, sim, sim -> players_by_name[ i ] );
+    // Add the scale factors for the player
+    print_xml_player_scale_factors( file, sim, sim -> players_by_name[ i ] );
 
-        util_t::fprintf( file, "    </player>\n" );
+    util_t::fprintf( file, "    </player>\n" );
   }
   util_t::fprintf( file, "  </players>\n" );
 
@@ -1224,7 +1233,7 @@ void report_t::print_profiles( sim_t* sim )
 {
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if( p -> is_pet() ) continue;
+    if ( p -> is_pet() ) continue;
 
     FILE* file = NULL;
 
@@ -1272,17 +1281,17 @@ void report_t::print_profiles( sim_t* sim )
 
     std::string file_name = p -> save_str;
 
-    if( file_name.empty() && sim -> save_profiles )
+    if ( file_name.empty() && sim -> save_profiles )
     {
       file_name  = "save_";
       file_name += p -> name_str;
       file_name += ".simcraft";
     }
 
-    if( file_name.empty() ) continue;
+    if ( file_name.empty() ) continue;
 
     file = fopen( file_name.c_str(), "w" );
-    if( ! file )
+    if ( ! file )
     {
       util_t::printf( "simcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
       continue;

@@ -23,10 +23,10 @@ struct flask_t : public action_t
     std::string type_str;
 
     option_t options[] =
-      {
-        { "type", OPT_STRING, &type_str },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "type", OPT_STRING, &type_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -102,10 +102,10 @@ struct food_t : public action_t
     std::string type_str;
 
     option_t options[] =
-      {
-        { "type", OPT_STRING, &type_str },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "type", OPT_STRING, &type_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -165,7 +165,7 @@ struct food_t : public action_t
       break;
     case FOOD_HEARTY_RHINO:
       player -> attribute[ ATTR_STRENGTH ] += 40;
-      player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40);
+      player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
       player -> attribute[ ATTR_STAMINA  ] += 40;
       break;
     case FOOD_GREAT_FEAST:
@@ -198,9 +198,9 @@ struct destruction_potion_t : public action_t
       action_t( ACTION_USE, "destruction_potion", p )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -252,9 +252,9 @@ struct speed_potion_t : public action_t
       action_t( ACTION_USE, "speed_potion", p )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -306,9 +306,9 @@ struct wild_magic_potion_t : public action_t
       action_t( ACTION_USE, "wild_magic_potion", p )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -366,12 +366,12 @@ struct mana_potion_t : public action_t
       action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
     option_t options[] =
-      {
-        { "min",     OPT_INT, &min     },
-        { "max",     OPT_INT, &max     },
-        { "trigger", OPT_INT, &trigger },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "min",     OPT_INT, &min     },
+      { "max",     OPT_INT, &max     },
+      { "trigger", OPT_INT, &trigger },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( min == 0 && max == 0 )
@@ -402,8 +402,8 @@ struct mana_potion_t : public action_t
     if ( player -> potion_used )
       return false;
 
-    if( ( player -> resource_max    [ RESOURCE_MANA ] -
-	  player -> resource_current[ RESOURCE_MANA ] ) < trigger )
+    if ( ( player -> resource_max    [ RESOURCE_MANA ] -
+           player -> resource_current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
     return action_t::ready();
@@ -423,11 +423,11 @@ struct health_stone_t : public action_t
       action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 )
   {
     option_t options[] =
-      {
-        { "health",  OPT_INT, &health  },
-        { "trigger", OPT_INT, &trigger },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "health",  OPT_INT, &health  },
+      { "trigger", OPT_INT, &trigger },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( health  == 0 ) health = trigger;
@@ -448,8 +448,8 @@ struct health_stone_t : public action_t
 
   virtual bool ready()
   {
-    if( ( player -> resource_max    [ RESOURCE_HEALTH ] -
-	  player -> resource_current[ RESOURCE_HEALTH ] ) < trigger )
+    if ( ( player -> resource_max    [ RESOURCE_HEALTH ] -
+           player -> resource_current[ RESOURCE_HEALTH ] ) < trigger )
       return false;
 
     return action_t::ready();
@@ -470,12 +470,12 @@ struct dark_rune_t : public action_t
       action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 )
   {
     option_t options[] =
-      {
-        { "trigger", OPT_INT,  &trigger },
-        { "mana",    OPT_INT,  &mana    },
-        { "health",  OPT_INT,  &health  },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "trigger", OPT_INT,  &trigger },
+      { "mana",    OPT_INT,  &mana    },
+      { "health",  OPT_INT,  &health  },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( mana    == 0 ) mana = trigger;
@@ -497,11 +497,11 @@ struct dark_rune_t : public action_t
 
   virtual bool ready()
   {
-    if( player -> resource_current[ RESOURCE_HEALTH ] <= health )
+    if ( player -> resource_current[ RESOURCE_HEALTH ] <= health )
       return false;
 
-    if( ( player -> resource_max    [ RESOURCE_MANA ] -
-	  player -> resource_current[ RESOURCE_MANA ] ) < trigger )
+    if ( ( player -> resource_max    [ RESOURCE_MANA ] -
+           player -> resource_current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
     return action_t::ready();

@@ -40,12 +40,13 @@ struct warlock_t : public player_t
   buff_t* buffs_shadow_trance;
 
   // warlock specific expression functions
-  struct warlock_expression_t: public act_expression_t{
+  struct warlock_expression_t: public act_expression_t
+  {
     warlock_t* player;
     int method;
-    warlock_expression_t(warlock_t* e_player, std::string expression_str, int e_method)
-      :act_expression_t(AEXP_FUNC,expression_str,0),player(e_player),method(e_method){};
-    virtual ~warlock_expression_t(){};
+    warlock_expression_t( warlock_t* e_player, std::string expression_str, int e_method )
+        :act_expression_t( AEXP_FUNC,expression_str,0 ),player( e_player ),method( e_method ) {};
+    virtual ~warlock_expression_t() {};
     virtual double evaluate();
   };
 
@@ -218,7 +219,7 @@ struct warlock_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
-  virtual act_expression_t* create_expression(std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type);      
+  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 };
 
 // ==========================================================================
@@ -226,7 +227,8 @@ struct warlock_t : public player_t
 // ==========================================================================
 
 enum pet_type_t { PET_NONE=0,     PET_FELGUARD, PET_FELHUNTER, PET_IMP,
-                  PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL,  PET_DOOMGUARD };
+                  PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL,  PET_DOOMGUARD
+                };
 
 struct warlock_pet_t : public pet_t
 {
@@ -256,7 +258,7 @@ struct warlock_pet_t : public pet_t
   _expirations_t _expirations;
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-    pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
+      pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {}
 
   virtual void init_base()
@@ -270,10 +272,10 @@ struct warlock_pet_t : public pet_t
     attribute_base[ ATTR_SPIRIT    ] = 209;
 
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + ( o -> talents.fel_stamina  * 0.03 +
-        o -> talents.fel_vitality * 0.05 );
+                                                              o -> talents.fel_vitality * 0.05 );
 
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
-        o -> talents.fel_vitality  * 0.05 );
+                                                              o -> talents.fel_vitality  * 0.05 );
 
     initial_attack_power_per_strength = 2.0;
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
@@ -296,7 +298,7 @@ struct warlock_pet_t : public pet_t
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
   {
-    if( melee && ! melee -> execute_event )
+    if ( melee && ! melee -> execute_event )
     {
       melee -> schedule_execute();
     }
@@ -317,7 +319,7 @@ struct warlock_pet_t : public pet_t
   virtual void interrupt()
   {
     pet_t::interrupt();
-    if( melee ) melee -> cancel();
+    if ( melee ) melee -> cancel();
   }
 
   void adjust_base_modifiers( action_t* a )
@@ -353,7 +355,7 @@ struct warlock_pet_t : public pet_t
 
     if ( o -> set_bonus.tier9_2pc() )
     {
-        a -> base_crit       +=       0.10;
+      a -> base_crit       +=       0.10;
     }
   }
 
@@ -474,12 +476,12 @@ struct imp_pet_t : public warlock_pet_t
       warlock_t* o = p -> owner -> cast_warlock();
 
       static rank_t ranks[] =
-        {
-          { 78, 8, 203, 227, 0, 180 },
-          { 68, 8, 110, 124, 0, 145 },
-          { 58, 7,  83,  93, 0, 115 },
-          { 0, 0, 0, 0, 0, 0 }
-        };
+      {
+        { 78, 8, 203, 227, 0, 180 },
+        { 68, 8, 110, 124, 0, 145 },
+        { 58, 7,  83,  93, 0, 115 },
+        { 0, 0, 0, 0, 0, 0 }
+      };
       init_rank( ranks, 47964 );
       // improved_imp does not influence +SP from player
       base_dd_min*=1.0 +  o -> talents.improved_imp  * 0.10;
@@ -552,11 +554,11 @@ struct felguard_pet_t : public warlock_pet_t
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
 
       static rank_t ranks[] =
-        {
-          { 76, 4, 124, 124, 0, 0.1 },
-          { 68, 3,  78,  78, 0, 0.1 },
-          { 0, 0, 0, 0, 0, 0 }
-        };
+      {
+        { 76, 4, 124, 124, 0, 0.1 },
+        { 68, 3,  78,  78, 0, 0.1 },
+        { 0, 0, 0, 0, 0, 0 }
+      };
       init_rank( ranks, 47994 );
 
       weapon   = &( p -> main_hand_weapon );
@@ -651,11 +653,11 @@ struct felhunter_pet_t : public warlock_pet_t
         warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       static rank_t ranks[] =
-        {
-          { 74, 5, 118, 118, 0, 0.03 },
-          { 66, 4, 101, 101, 0, 0.03 },
-          { 0, 0, 0, 0, 0, 0 }
-        };
+      {
+        { 74, 5, 118, 118, 0, 0.03 },
+        { 66, 4, 101, 101, 0, 0.03 },
+        { 0, 0, 0, 0, 0, 0 }
+      };
       init_rank( ranks, 54053 );
 
       cooldown = 6.0;
@@ -713,13 +715,13 @@ struct succubus_pet_t : public warlock_pet_t
         warlock_pet_spell_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       static rank_t ranks[] =
-        {
-          { 80, 9, 237, 237, 0, 250 },
-          { 74, 8, 193, 193, 0, 220 },
-          { 68, 7, 123, 123, 0, 190 },
-          { 60, 6,  99,  99, 0, 160 },
-          { 0, 0, 0, 0, 0, 0 }
-        };
+      {
+        { 80, 9, 237, 237, 0, 250 },
+        { 74, 8, 193, 193, 0, 220 },
+        { 68, 7, 123, 123, 0, 190 },
+        { 60, 6,  99,  99, 0, 160 },
+        { 0, 0, 0, 0, 0, 0 }
+      };
       init_rank( ranks );
 
       direct_power_mod  = ( 1.5 / 3.5 );
@@ -826,7 +828,7 @@ struct infernal_pet_t : public warlock_pet_t
     melee      = new   warlock_pet_melee_t( this, "infernal_melee" );
     immolation = new infernal_immolation_t( this );
   }
-  virtual void schedule_ready( double delta_time=0, 
+  virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
   {
     warlock_pet_t::schedule_ready( delta_time, waiting );
@@ -871,7 +873,8 @@ struct doomguard_pet_t : public warlock_pet_t
   }
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // ==========================================================================
 // Warlock Spell
@@ -886,8 +889,8 @@ struct warlock_spell_t : public spell_t
   int pyroclasm;
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ), 
-      metamorphosis( -1 ), backdraft(-1), molten_core(-1), pyroclasm(-1)
+      spell_t( n, player, RESOURCE_MANA, s, t ),
+      metamorphosis( -1 ), backdraft( -1 ), molten_core( -1 ), pyroclasm( -1 )
   {}
 
   // Overridden Methods
@@ -909,7 +912,7 @@ static void trigger_tier7_2pc( spell_t* s )
   warlock_t* p = s -> player -> cast_warlock();
 
   if (   p ->  set_bonus.tier7_2pc() &&
-       ! p -> buffs.tier7_2pc )
+         ! p -> buffs.tier7_2pc )
   {
     p -> buffs.tier7_2pc = p -> rngs.tier7_2pc -> roll( 0.15 );
 
@@ -978,7 +981,7 @@ static void trigger_improved_shadow_bolt( spell_t* s )
 static void trigger_nightfall( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
-  if( p -> talents.nightfall )
+  if ( p -> talents.nightfall )
   {
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talents.nightfall * 0.02 );
   }
@@ -989,7 +992,7 @@ static void trigger_nightfall( spell_t* s )
 static void trigger_corruption_glyph( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
-  if( p -> glyphs.corruption )
+  if ( p -> glyphs.corruption )
   {
     p -> buffs_shadow_trance -> trigger( 1, 1.0, 0.04 );
   }
@@ -1141,7 +1144,7 @@ double warlock_spell_t::haste() SC_CONST
 {
   warlock_t* p = player -> cast_warlock();
   double h = spell_t::haste();
-  if( p -> buffs_eradication -> up() )
+  if ( p -> buffs_eradication -> up() )
   {
     double ranks[] = { 0.0, 0.06, 0.12, 0.20 };
     assert( p -> talents.eradication <= 3 );
@@ -1158,7 +1161,7 @@ double warlock_spell_t::execute_time() SC_CONST
   double t = spell_t::execute_time();
   if ( t > 0 )
   {
-    if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() ) 
+    if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() )
     {
       t *= 1.0 - p -> talents.backdraft * 0.10;
     }
@@ -1172,7 +1175,7 @@ double warlock_spell_t::gcd() SC_CONST
 {
   double t = spell_t::gcd();
   warlock_t* p = player -> cast_warlock();
-  if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() ) 
+  if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() )
   {
     t *= 1.0 - p -> talents.backdraft * 0.10;
   }
@@ -1187,14 +1190,14 @@ void warlock_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if( p -> buffs_metamorphosis -> up() )
+  if ( p -> buffs_metamorphosis -> up() )
   {
     player_multiplier *= 1.20;
   }
 
   if ( p -> talents.malediction ) player_multiplier *= 1.0 + p -> talents.malediction * 0.01;
 
-  int sacrifice = (int) p -> buffs_pet_sacrifice -> value();
+  int sacrifice = ( int ) p -> buffs_pet_sacrifice -> value();
 
   if ( school == SCHOOL_SHADOW )
   {
@@ -1244,7 +1247,7 @@ void warlock_spell_t::player_buff()
 
     if ( may_crit )
     {
-      if( p -> buffs_empowered_imp -> up() )
+      if ( p -> buffs_empowered_imp -> up() )
       {
         player_crit += ( sim -> P320 ? 1.00 : 0.20 );
       }
@@ -1271,11 +1274,11 @@ void warlock_spell_t::target_debuff( int dmg_type )
   {
     if ( school == SCHOOL_SHADOW )
     {
-      if( p -> talents.shadow_embrace )
+      if ( p -> talents.shadow_embrace )
       {
         target_multiplier *= 1.0 + p -> buffs_shadow_embrace -> stack() * p -> talents.shadow_embrace * 0.01;
       }
-      if ( p -> buffs_haunted -> up() ) 
+      if ( p -> buffs_haunted -> up() )
       {
         target_multiplier *= 1.20 + ( p -> glyphs.haunt ? 0.03 : 0.00 );
       }
@@ -1331,7 +1334,7 @@ void warlock_spell_t::execute()
     trigger_molten_core( this );
   }
 
-  if( may_crit ) p -> buffs_empowered_imp -> expire();
+  if ( may_crit ) p -> buffs_empowered_imp -> expire();
 }
 
 // warlock_spell_t::tick =====================================================
@@ -1349,13 +1352,13 @@ void warlock_spell_t::parse_options( option_t*          options,
                                      const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "metamorphosis",  OPT_INT,  &metamorphosis  },
-      { "backdraft",      OPT_BOOL, &backdraft      },
-      { "molten_core",    OPT_BOOL, &molten_core    },
-      { "pyroclasm",      OPT_BOOL, &pyroclasm      },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    { "metamorphosis",  OPT_INT,  &metamorphosis  },
+    { "backdraft",      OPT_BOOL, &backdraft      },
+    { "molten_core",    OPT_BOOL, &molten_core    },
+    { "pyroclasm",      OPT_BOOL, &pyroclasm      },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -1370,11 +1373,11 @@ bool warlock_spell_t::ready()
     return false;
 
   if ( metamorphosis == 0 )
-    if(  p -> buffs_metamorphosis -> check() )
+    if (  p -> buffs_metamorphosis -> check() )
       return false;
 
   if ( metamorphosis == 1 )
-    if(  ! p -> buffs_metamorphosis -> check() )
+    if (  ! p -> buffs_metamorphosis -> check() )
       return false;
 
   if ( backdraft == 0 )
@@ -1416,17 +1419,17 @@ struct curse_of_elements_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 67, 3, 0, 0, 0, 260 },
-        { 56, 2, 0, 0, 0, 200 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 67, 3, 0, 0, 0, 260 },
+      { 56, 2, 0, 0, 0, 200 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     harmful = false;
@@ -1498,19 +1501,19 @@ struct curse_of_agony_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 79, 9, 0, 0, 145, 0.10 },
-        { 73, 8, 0, 0, 120, 0.10 },
-        { 67, 7, 0, 0, 113, 265  },
-        { 58, 6, 0, 0,  87, 215  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 79, 9, 0, 0, 145, 0.10 },
+      { 73, 8, 0, 0, 120, 0.10 },
+      { 67, 7, 0, 0, 113, 265  },
+      { 58, 6, 0, 0,  87, 215  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47864 );
 
     base_execute_time = 0;
@@ -1580,18 +1583,18 @@ struct curse_of_doom_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 3, 0, 0, 7300, 0.15 },
-        { 70, 2, 0, 0, 4200, 380  },
-        { 60, 1, 0, 0, 3200, 300  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 3, 0, 0, 7300, 0.15 },
+      { 70, 2, 0, 0, 4200, 380  },
+      { 60, 1, 0, 0, 3200, 300  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -1661,23 +1664,23 @@ struct shadow_bolt_t : public warlock_spell_t
 
     travel_speed = 21.0; // set before options to allow override
     option_t options[] =
-      {
-        { "shadow_trance", OPT_BOOL, &shadow_trance },
-        { "isb_benefit",   OPT_BOOL, &isb_benefit   },
-        { "isb_trigger",   OPT_BOOL, &isb_trigger   },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "shadow_trance", OPT_BOOL, &shadow_trance },
+      { "isb_benefit",   OPT_BOOL, &isb_benefit   },
+      { "isb_trigger",   OPT_BOOL, &isb_trigger   },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 79, 13, 690, 770, 0, 0.17 },
-        { 74, 12, 596, 664, 0, 0.17 },
-        { 69, 11, 541, 603, 0, 420  },
-        { 60, 10, 482, 538, 0, 380  },
-        { 60,  9, 455, 507, 0, 370  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 79, 13, 690, 770, 0, 0.17 },
+      { 74, 12, 596, 664, 0, 0.17 },
+      { 69, 11, 541, 603, 0, 420  },
+      { 60, 10, 482, 538, 0, 380  },
+      { 60,  9, 455, 507, 0, 370  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47809 );
 
     base_execute_time = 3.0;
@@ -1693,7 +1696,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
                                  p -> set_bonus.tier6_4pc()        * 0.06 +
                                  p -> talents.improved_shadow_bolt * 0.01 );
-    base_crit         += ( p -> talents.devastation   * 0.05 + 
+    base_crit         += ( p -> talents.devastation   * 0.05 +
                            p -> set_bonus.tier8_4pc() * 0.05 );
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -1788,20 +1791,20 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
 
     rank_t ranks[] =
-      {
-        { 80, 4, 1429, 1813, 0, 0.07 },
-        { 75, 3, 1217, 1545, 0, 0.07 },
-        { 70, 2, 1077, 1367, 0, 0.07 },
-        { 60, 1,  837, 1061, 0, 0.09 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4, 1429, 1813, 0, 0.07 },
+      { 75, 3, 1217, 1545, 0, 0.07 },
+      { 70, 2, 1077, 1367, 0, 0.07 },
+      { 60, 1,  837, 1061, 0, 0.09 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
 
     init_rank( ranks );
 
@@ -1837,7 +1840,8 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> active_immolate){
+    if ( p -> active_immolate )
+    {
       if ( sim -> P320 )
         player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
       else
@@ -1849,7 +1853,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if (!p->talents.chaos_bolt) return false;
+    if ( !p->talents.chaos_bolt ) return false;
 
     if ( ! warlock_spell_t::ready() )
       return false;
@@ -1868,19 +1872,19 @@ struct death_coil_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 78, 6, 790, 790, 0, 0.23 },
-        { 73, 5, 670, 670, 0, 0.23 },
-        { 68, 4, 519, 519, 0, 600  },
-        { 58, 3, 400, 400, 0, 480  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 78, 6, 790, 790, 0, 0.23 },
+      { 73, 5, 670, 670, 0, 0.23 },
+      { 68, 4, 519, 519, 0, 600  },
+      { 58, 3, 400, 400, 0, 480  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -1918,20 +1922,20 @@ struct shadow_burn_t : public warlock_spell_t
     check_talent( p -> talents.shadow_burn );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 10, 775, 865, 0, 0.20 },
-        { 75,  9, 662, 738, 0, 0.20 },
-        { 70,  8, 597, 665, 0, 0.20 },
-        { 63,  7, 518, 578, 0, 0.27 },
-        { 56,  6, 450, 502, 0, 0.27 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 10, 775, 865, 0, 0.20 },
+      { 75,  9, 662, 738, 0, 0.20 },
+      { 70,  8, 597, 665, 0, 0.20 },
+      { 63,  7, 518, 578, 0, 0.27 },
+      { 56,  6, 450, 502, 0, 0.27 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit         = true;
@@ -1972,7 +1976,7 @@ struct shadow_burn_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if (!p->talents.shadow_burn)         return false;
+    if ( !p->talents.shadow_burn )         return false;
     return warlock_spell_t::ready();
   }
 };
@@ -1986,26 +1990,26 @@ struct shadowfury_t : public warlock_spell_t
   double cast_gcd;
 
   shadowfury_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), cast_gcd(-1)
+      warlock_spell_t( "shadowfury", player, SCHOOL_FIRE, TREE_DESTRUCTION ), cast_gcd( -1 )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.shadowfury );
-    
+
     option_t options[] =
-      {
-        { "cast_gcd",    OPT_FLT,  &cast_gcd    },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "cast_gcd",    OPT_FLT,  &cast_gcd    },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     rank_t ranks[] =
-      {
-        { 80, 4, 968, 1152, 0, 0.27 },
-        { 75, 3, 822,  978, 0, 0.27 },
-        { 70, 2, 612,  728, 0, 0.27 },
-        { 60, 1, 459,  547, 0, 0.37 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4, 968, 1152, 0, 0.27 },
+      { 75, 3, 822,  978, 0, 0.27 },
+      { 70, 2, 612,  728, 0, 0.27 },
+      { 60, 1, 459,  547, 0, 0.37 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
 
 
     init_rank( ranks );
@@ -2016,7 +2020,7 @@ struct shadowfury_t : public warlock_spell_t
     direct_power_mod  = ( 1.5/3.5 );
     cooldown          = 20;
     trigger_gcd = 0.5; // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    if (cast_gcd>=0) trigger_gcd=cast_gcd;
+    if ( cast_gcd>=0 ) trigger_gcd=cast_gcd;
 
 
     base_hit        += p -> talents.suppression * 0.01;
@@ -2033,7 +2037,7 @@ struct shadowfury_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if (!p->talents.shadowfury) 
+    if ( !p->talents.shadowfury )
       return false;
 
     if ( ! warlock_spell_t::ready() )
@@ -2054,19 +2058,19 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 77, 10, 0, 0, 180, 0.14 },
-        { 71,  9, 0, 0, 165, 0.14 },
-        { 65,  8, 0, 0, 150, 370  },
-        { 60,  7, 0, 0, 137, 340  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 77, 10, 0, 0, 180, 0.14 },
+      { 71,  9, 0, 0, 165, 0.14 },
+      { 65,  8, 0, 0, 150, 370  },
+      { 60,  7, 0, 0, 137, 340  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47813 );
 
     base_execute_time = 0.0;
@@ -2138,19 +2142,19 @@ struct drain_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 78, 9, 0, 0, 133, 0.17 },
-        { 69, 8, 0, 0, 108, 425  },
-        { 62, 7, 0, 0,  87, 355  },
-        { 54, 6, 0, 0,  71, 300  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 78, 9, 0, 0, 133, 0.17 },
+      { 69, 8, 0, 0, 108, 425  },
+      { 62, 7, 0, 0,  87, 355  },
+      { 54, 6, 0, 0,  71, 300  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -2201,8 +2205,8 @@ struct drain_life_t : public warlock_spell_t
     double max = max_multiplier[ p -> talents.soul_siphon ];
 
     int effects = p -> affliction_effects;
-    if( p -> buffs_haunted        -> check() ) effects++;
-    if( p -> buffs_shadow_embrace -> check() ) effects++;
+    if ( p -> buffs_haunted        -> check() ) effects++;
+    if ( p -> buffs_shadow_embrace -> check() ) effects++;
 
     double multiplier = effects * min;
 
@@ -2231,20 +2235,20 @@ struct drain_soul_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { "interrupt",  OPT_BOOL, &interrupt },
-        { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "interrupt",  OPT_BOOL, &interrupt },
+      { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 77, 6, 0, 0, 142, 0.14 },
-        { 67, 5, 0, 0, 124, 360  },
-        { 52, 4, 0, 0,  91, 290  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 77, 6, 0, 0, 142, 0.14 },
+      { 67, 5, 0, 0, 124, 360  },
+      { 52, 4, 0, 0,  91, 290  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     rank_t* rank = init_rank( ranks, 47855 );
 
     base_execute_time = 0;
@@ -2350,19 +2354,19 @@ struct unstable_affliction_t : public warlock_spell_t
     check_talent( p -> talents.unstable_affliction );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 5,  0, 0, 230, 0.15 },
-        { 75, 4,  0, 0, 197, 0.15 },
-        { 70, 3,  0, 0, 175, 400  },
-        { 60, 2,  0, 0, 155, 315  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 5,  0, 0, 230, 0.15 },
+      { 75, 4,  0, 0, 197, 0.15 },
+      { 70, 3,  0, 0, 175, 400  },
+      { 60, 2,  0, 0, 155, 315  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47843 );
 
     base_execute_time = 1.5;
@@ -2374,7 +2378,7 @@ struct unstable_affliction_t : public warlock_spell_t
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
                                 p -> set_bonus.tier8_2pc()  * 0.20 + //FIXME assuming additive
-        p -> set_bonus.tier9_4pc()  * 0.10 +
+                                p -> set_bonus.tier9_4pc()  * 0.10 +
                                 ( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
@@ -2417,7 +2421,7 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if (!p->talents.unstable_affliction ) return false;
+    if ( !p->talents.unstable_affliction ) return false;
     return warlock_spell_t::ready();
   }
 
@@ -2436,22 +2440,22 @@ struct haunt_t : public warlock_spell_t
     check_talent( p -> talents.haunt );
 
     option_t options[] =
-      {
-        { "debuff", OPT_BOOL, &debuff     },
-        { "only_for_debuff", OPT_DEPRECATED, ( void* ) "debuff" },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "debuff", OPT_BOOL, &debuff     },
+      { "only_for_debuff", OPT_DEPRECATED, ( void* ) "debuff" },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
 
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 4, 645, 753, 0, 0.12 },
-        { 75, 3, 550, 642, 0, 0.12 },
-        { 70, 2, 487, 569, 0, 0.12 },
-        { 60, 1, 405, 473, 0, 0.12 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4, 645, 753, 0, 0.12 },
+      { 75, 3, 550, 642, 0, 0.12 },
+      { 70, 2, 487, 569, 0, 0.12 },
+      { 60, 1, 405, 473, 0, 0.12 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 59164 );
 
     base_execute_time = 1.5;
@@ -2491,13 +2495,13 @@ struct haunt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if (!p->talents.haunt) return false;
+    if ( !p->talents.haunt ) return false;
 
     if ( ! warlock_spell_t::ready() )
       return false;
 
     if ( debuff )
-      if( p -> buffs_haunted -> remains_gt( execute_time() ) )
+      if ( p -> buffs_haunted -> remains_gt( execute_time() ) )
         return false;
 
     return true;
@@ -2514,21 +2518,21 @@ struct immolate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage>" },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage>" },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 11, 460, 460, 157, 0.17 },
-        { 75, 10, 370, 370, 139, 0.17 },
-        { 69,  9, 327, 327, 123, 445  },
-        { 60,  8, 279, 279, 102, 380  },
-        { 60,  7, 258, 258,  97, 370  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 11, 460, 460, 157, 0.17 },
+      { 75, 10, 370, 370, 139, 0.17 },
+      { 69,  9, 327, 327, 123, 445  },
+      { 60,  8, 279, 279, 102, 380  },
+      { 60,  7, 258, 258,  97, 370  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47811 );
 
     base_execute_time = 2.0;
@@ -2602,17 +2606,17 @@ struct shadowflame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 2, 615, 671, 128, 0.25 },
-        { 75, 1, 520, 568, 108, 0.25 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 2, 615, 671, 128, 0.25 },
+      { 75, 1, 520, 568, 108, 0.25 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -2681,17 +2685,17 @@ struct conflagrate_t : public warlock_spell_t
     check_talent( p -> talents.conflagrate );
 
     option_t options[] =
-      {
-        { "ticks_lost",   OPT_INT,  &ticks_lost   },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "ticks_lost",   OPT_INT,  &ticks_lost   },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 40, 1, 0, 0, 0, 0.16 },
-        {  0, 0, 0, 0, 0, 0    }
-      };
+    {
+      { 40, 1, 0, 0, 0, 0.16 },
+      {  0, 0, 0, 0, 0, 0    }
+    };
     init_rank( ranks );
 
     base_execute_time = 0;
@@ -2766,14 +2770,14 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     if ( p -> talents.fire_and_brimstone &&
-	 p -> active_immolate )
+         p -> active_immolate )
     {
       int ticks_remaining = ( p -> active_immolate -> num_ticks -
-			      p -> active_immolate -> current_tick );
+                              p -> active_immolate -> current_tick );
 
       if ( ticks_remaining <= 2 )
       {
-	player_crit += p -> talents.fire_and_brimstone * 0.05;
+        player_crit += p -> talents.fire_and_brimstone * 0.05;
       }
     }
   }
@@ -2782,7 +2786,7 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if (!p->talents.conflagrate) return false;
+    if ( !p->talents.conflagrate ) return false;
 
     if ( ! spell_t::ready() )
       return false;
@@ -2827,19 +2831,19 @@ struct incinerate_t : public warlock_spell_t
     travel_speed = 21.0; // set before options to allow override
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 4, 582, 676, 0, 0.14 },
-        { 74, 3, 485, 563, 0, 0.14 },
-        { 70, 2, 429, 497, 0, 300  },
-        { 64, 1, 357, 413, 0, 256  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 4, 582, 676, 0, 0.14 },
+      { 74, 3, 485, 563, 0, 0.14 },
+      { 70, 2, 429, 497, 0, 300  },
+      { 64, 1, 357, 413, 0, 256  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47838 );
 
     base_execute_time  = 2.5;
@@ -2898,7 +2902,8 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
-    if ( p -> active_immolate){
+    if ( p -> active_immolate )
+    {
       if ( sim -> P320 )
         player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
       else
@@ -2919,20 +2924,20 @@ struct searing_pain_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 79, 10, 343, 405, 0, 0.08 },
-        { 74,  9, 295, 349, 0, 0.08 },
-        { 70,  8, 270, 320, 0, 205  },
-        { 65,  7, 243, 287, 0, 191  },
-        { 58,  6, 204, 240, 0, 168  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 79, 10, 343, 405, 0, 0.08 },
+      { 74,  9, 295, 349, 0, 0.08 },
+      { 70,  8, 270, 320, 0, 205  },
+      { 65,  7, 243, 287, 0, 191  },
+      { 58,  6, 204, 240, 0, 168  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     base_execute_time = 1.5;
@@ -2976,21 +2981,21 @@ struct soul_fire_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
-      {
-        { "decimation", OPT_BOOL, &decimation },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "decimation", OPT_BOOL, &decimation },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 6, 1323, 1657, 0, 0.09 },
-        { 75, 5, 1137, 1423, 0, 0.09 },
-        { 70, 4, 1003, 1257, 0, 455  },
-        { 64, 3,  839, 1051, 0, 390  },
-        { 56, 2,  703,  881, 0, 335  },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 6, 1323, 1657, 0, 0.09 },
+      { 75, 5, 1137, 1423, 0, 0.09 },
+      { 70, 4, 1003, 1257, 0, 455  },
+      { 64, 3,  839, 1051, 0, 390  },
+      { 56, 2,  703,  881, 0, 335  },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks, 47825 );
 
     base_execute_time = 6.0;
@@ -3023,7 +3028,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
-    if( p -> buffs_decimation -> up() )
+    if ( p -> buffs_decimation -> up() )
     {
       t *= 1.0 - p -> talents.decimation * 0.30;
       assert( t > 0 );
@@ -3042,7 +3047,7 @@ struct soul_fire_t : public warlock_spell_t
     {
       if ( ! p -> buffs_decimation -> check() )
         return false;
-      
+
       if ( p -> distance >= 30 && p -> decimation_queue.empty() )
         return false;
     }
@@ -3066,27 +3071,27 @@ struct life_tap_t : public warlock_spell_t
   double mana_perc;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ), 
-      trigger( 0 ), inferno( 0 ), 
-      glyph( 0 ), glyph_skip( 0 ), 
-      tier7_4pc( 0 ), tier7_4pc_skip( 0 ), 
-      max( 0 ), base_tap( 0 ), mana_perc(0)
+      warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ),
+      trigger( 0 ), inferno( 0 ),
+      glyph( 0 ), glyph_skip( 0 ),
+      tier7_4pc( 0 ), tier7_4pc_skip( 0 ),
+      max( 0 ), base_tap( 0 ), mana_perc( 0 )
   {
     id = 57946;
 
     option_t options[] =
-      {
-        { "trigger",   OPT_INT,  &trigger   },
-        { "inferno",   OPT_BOOL, &inferno   },
-        { "glyph",     OPT_BOOL, &glyph     },
-        { "glyph_skip",OPT_BOOL, &glyph_skip},
-        { "tier7_4pc", OPT_BOOL, &tier7_4pc },
-        { "tier7_4pc_skip", OPT_BOOL, &tier7_4pc_skip },
-        { "max",       OPT_BOOL, &max       },
-        { "mana_perc<",OPT_FLT,  &mana_perc },
-        { "mana_perc", OPT_FLT,  &mana_perc },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "trigger",   OPT_INT,  &trigger   },
+      { "inferno",   OPT_BOOL, &inferno   },
+      { "glyph",     OPT_BOOL, &glyph     },
+      { "glyph_skip",OPT_BOOL, &glyph_skip},
+      { "tier7_4pc", OPT_BOOL, &tier7_4pc },
+      { "tier7_4pc_skip", OPT_BOOL, &tier7_4pc_skip },
+      { "max",       OPT_BOOL, &max       },
+      { "mana_perc<",OPT_FLT,  &mana_perc },
+      { "mana_perc", OPT_FLT,  &mana_perc },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     harmful = false;
@@ -3116,29 +3121,30 @@ struct life_tap_t : public warlock_spell_t
       return false;
 
     // skip if more mana than 'mana_perc' %
-    if ( (mana_perc>0) && (p->resource_current[ RESOURCE_MANA ]/p -> resource_max[ RESOURCE_MANA ]*100 > mana_perc) )
-      return false; 
+    if ( ( mana_perc>0 ) && ( p->resource_current[ RESOURCE_MANA ]/p -> resource_max[ RESOURCE_MANA ]*100 > mana_perc ) )
+      return false;
     // skip if tier7_4pc buff is up
     if ( tier7_4pc_skip && p -> buffs.tier7_4pc )
-      return false; 
+      return false;
     // skip if tier7_4pc buff is up, OR player do not have  t7_4pc
-    if ( tier7_4pc && (p -> buffs.tier7_4pc || !p -> set_bonus.tier7_4pc()) )
-      return false; 
+    if ( tier7_4pc && ( p -> buffs.tier7_4pc || !p -> set_bonus.tier7_4pc() ) )
+      return false;
     // skip if life_tap Glyph buff is up
     if ( glyph_skip && p -> buffs_life_tap_glyph -> check() )
-      return false; 
+      return false;
     // skip if life_tap Glyph buff is up, OR player do not have glyph
-    if ( glyph && ( p -> buffs_life_tap_glyph -> check() || ! p -> glyphs.life_tap)  )
-      return false; 
+    if ( glyph && ( p -> buffs_life_tap_glyph -> check() || ! p -> glyphs.life_tap )  )
+      return false;
     // skip if LifeTap would overflow mana over maximum
-    if ( max ){
+    if ( max )
+    {
       double max_trigger = ( int ) ( p -> resource_max[ RESOURCE_MANA ] - ( base_tap + 3.0 * p -> spirit() ) * ( 1.0 + p -> talents.improved_life_tap * 0.10 ) );
-      if (p -> resource_current[ RESOURCE_MANA ] > max_trigger )
-        return false; 
+      if ( p -> resource_current[ RESOURCE_MANA ] > max_trigger )
+        return false;
     }
     // skip if more mana than 'trigger'
-    if ( trigger && (p -> resource_current[ RESOURCE_MANA ] > (double) trigger ) )
-      return false; 
+    if ( trigger && ( p -> resource_current[ RESOURCE_MANA ] > ( double ) trigger ) )
+      return false;
     // skip if infernal out and over 80% mana?
     if ( inferno )
     {
@@ -3166,18 +3172,18 @@ struct dark_pact_t : public warlock_spell_t
     check_talent( p -> talents.dark_pact );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 5, 1200, 1200, 0, 0 },
-        { 70, 3,  700,  700, 0, 0 },
-        { 60, 2,  545,  545, 0, 0 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 5, 1200, 1200, 0, 0 },
+      { 70, 3,  700,  700, 0, 0 },
+      { 60, 2,  545,  545, 0, 0 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     harmful = false;
@@ -3199,7 +3205,7 @@ struct dark_pact_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if (!p->talents.dark_pact) return false;
+    if ( !p->talents.dark_pact ) return false;
 
     if ( ! warlock_spell_t::ready() )
       return false;
@@ -3322,11 +3328,11 @@ struct inferno_t : public warlock_spell_t
       warlock_spell_t( "inferno", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
   {
     option_t options[] =
-      {
-        { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { "time_remaining", OPT_DEPRECATED, ( void* ) "time_to_die<"       },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
+      { "time_remaining", OPT_DEPRECATED, ( void* ) "time_to_die<"       },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( max_health_percentage == 0 &&
@@ -3336,10 +3342,10 @@ struct inferno_t : public warlock_spell_t
     }
 
     static rank_t ranks[] =
-      {
-        { 50, 1, 200, 200, 0, 0.80 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 50, 1, 200, 200, 0, 0.80 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     cooldown          = 20 * 60;
@@ -3387,9 +3393,9 @@ struct immolation_t : public warlock_spell_t
       warlock_spell_t( "immolation", player, SCHOOL_FIRE, TREE_DEMONOLOGY )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     warlock_t* p   = player -> cast_warlock();
@@ -3430,9 +3436,9 @@ struct metamorphosis_t : public warlock_spell_t
     check_talent( p -> talents.metamorphosis );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     harmful = false;
@@ -3457,17 +3463,17 @@ struct demonic_empowerment_t : public warlock_spell_t
   int demonic_frenzy;
 
   demonic_empowerment_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), demonic_frenzy(0)
+      warlock_spell_t( "demonic_empowerment", player, SCHOOL_SHADOW, TREE_DEMONOLOGY ), demonic_frenzy( 0 )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.demonic_empowerment );
 
     option_t options[] =
-      {
-        { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
-        { "demonic_frenzy", OPT_INT,        &demonic_frenzy              },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
+      { "demonic_frenzy", OPT_INT,        &demonic_frenzy              },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     harmful = false;
@@ -3608,10 +3614,10 @@ struct wait_for_decimation_t : public action_t
     check_talent( p -> talents.decimation );
 
     option_t options[] =
-      {
-        { "time", OPT_FLT, &time },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "time", OPT_FLT, &time },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -3671,7 +3677,7 @@ struct demonic_pact_callback_t : public action_callback_t
           p -> buffs.demonic_pact_pet = pet;
 
           // HACK ALERT!!! Remove "double-dip" during spell power scale factor generation.
-          if( p != o && sim -> scaling -> scale_stat == STAT_SPELL_POWER )
+          if ( p != o && sim -> scaling -> scale_stat == STAT_SPELL_POWER )
           {
             p -> buffs.demonic_pact -= sim -> scaling -> scale_value * 0.10;
           }
@@ -3704,7 +3710,7 @@ struct demonic_pact_callback_t : public action_callback_t
 
     if ( o -> buffs_fel_armor -> check() ) buff += o -> spirit() * 0.3;
 
-    if( o -> buffs_life_tap_glyph -> check() )
+    if ( o -> buffs_life_tap_glyph -> check() )
     {
       buff -= o -> spirit() * 0.20;
     }
@@ -3779,7 +3785,7 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
 
   sp += buffs_fel_armor -> value();
 
-  if( buffs_life_tap_glyph -> up() )
+  if ( buffs_life_tap_glyph -> up() )
   {
     sp += spirit() * 0.20;
   }
@@ -3863,42 +3869,42 @@ void warlock_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
 
     if     ( n == "chaos_bolt"          ) glyphs.chaos_bolt = 1;
-    else if( n == "conflagrate"         ) glyphs.conflagrate = 1;
-    else if( n == "corruption"          ) glyphs.corruption = 1;
-    else if( n == "curse_of_agony"      ) glyphs.curse_of_agony = 1;
-    else if( n == "felguard"            ) glyphs.felguard = 1;
-    else if( n == "felhunter"           ) glyphs.felhunter = 1;
-    else if( n == "haunt"               ) glyphs.haunt = 1;
-    else if( n == "immolate"            ) glyphs.immolate = 1;
-    else if( n == "imp"                 ) glyphs.imp = 1;
-    else if( n == "incinerate"          ) glyphs.incinerate = 1;
-    else if( n == "life_tap"            ) glyphs.life_tap = 1;
-    else if( n == "metamorphosis"       ) glyphs.metamorphosis = 1;
-    else if( n == "searing_pain"        ) glyphs.searing_pain = 1;
-    else if( n == "shadow_bolt"         ) glyphs.shadow_bolt = 1;
-    else if( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
-    else if( n == "siphon_life"         ) glyphs.siphon_life = 1;
-    else if( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
+    else if ( n == "conflagrate"         ) glyphs.conflagrate = 1;
+    else if ( n == "corruption"          ) glyphs.corruption = 1;
+    else if ( n == "curse_of_agony"      ) glyphs.curse_of_agony = 1;
+    else if ( n == "felguard"            ) glyphs.felguard = 1;
+    else if ( n == "felhunter"           ) glyphs.felhunter = 1;
+    else if ( n == "haunt"               ) glyphs.haunt = 1;
+    else if ( n == "immolate"            ) glyphs.immolate = 1;
+    else if ( n == "imp"                 ) glyphs.imp = 1;
+    else if ( n == "incinerate"          ) glyphs.incinerate = 1;
+    else if ( n == "life_tap"            ) glyphs.life_tap = 1;
+    else if ( n == "metamorphosis"       ) glyphs.metamorphosis = 1;
+    else if ( n == "searing_pain"        ) glyphs.searing_pain = 1;
+    else if ( n == "shadow_bolt"         ) glyphs.shadow_bolt = 1;
+    else if ( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
+    else if ( n == "siphon_life"         ) glyphs.siphon_life = 1;
+    else if ( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
     // minor glyphs, to prevent 'not-found' warning
-    else if( n == "curse_of_exhaustion" ) ;
-    else if( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
-    else if( n == "drain_soul" )          ;
-    else if( n == "enslave_demon" )       ;
-    else if( n == "healthstone" )         ;
-    else if( n == "kilrogg" )             ;
-    else if( n == "shadowflame" )         ;
-    else if( n == "soul_link" )           ;
-    else if( n == "souls" )               ;
-    else if( n == "soulstone" )           ;
-    else if( n == "unending_breath" )     ;
-    else if( n == "voidwalker" )          ;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "curse_of_exhaustion" ) ;
+    else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
+    else if ( n == "drain_soul" )          ;
+    else if ( n == "enslave_demon" )       ;
+    else if ( n == "healthstone" )         ;
+    else if ( n == "kilrogg" )             ;
+    else if ( n == "shadowflame" )         ;
+    else if ( n == "soul_link" )           ;
+    else if ( n == "souls" )               ;
+    else if ( n == "soulstone" )           ;
+    else if ( n == "unending_breath" )     ;
+    else if ( n == "voidwalker" )          ;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3913,7 +3919,7 @@ void warlock_t::init_base()
   attribute_base[ ATTR_SPIRIT    ] = 171; //142;
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03
-      + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
+                                                  + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
 
   base_spell_crit = 0.0169966;
   base_spell_crit+= talents.demonic_tactics * 0.02 + talents.backlash * 0.01;
@@ -3940,8 +3946,8 @@ void warlock_t::init_base()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
-  
-  if ( talents.demonic_knowledge ) 
+
+  if ( talents.demonic_knowledge )
     scales_with[ STAT_STAMINA ] = 1;
   else
     scales_with[ STAT_STAMINA ] = -1; // show 0.00
@@ -4024,59 +4030,59 @@ void warlock_t::init_rng()
 
 void warlock_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str+="flask,type=frost_wyrm/food,type=tender_shoveltusk_steak";
     action_list_str+= talents.emberstorm ? "/fire_stone" :  "/spell_stone";
     action_list_str+="/fel_armor/summon_pet";
 
-    if( summon_pet_str.empty() )
+    if ( summon_pet_str.empty() )
     {
-      if ( talents.summon_felguard ) 
-        summon_pet_str = "felguard"; 
-      else if ( talents.empowered_imp || talents.improved_imp ) 
-        summon_pet_str = "imp"; 
-      else 
+      if ( talents.summon_felguard )
+        summon_pet_str = "felguard";
+      else if ( talents.empowered_imp || talents.improved_imp )
+        summon_pet_str = "imp";
+      else
         summon_pet_str = "succubus";
     }
     action_list_str += "," + summon_pet_str;
 
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
-      { 
+      if ( items[ i ].use.active() )
+      {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
       }
     }
 
     if ( talents.haunt ) // 53_00_18
-    { 
+    {
       action_list_str+="/haunt,debuff=1/corruption/curse_of_agony/unstable_affliction/haunt";
       action_list_str+="/drain_soul,health_percentage<=25,interrupt=1";
     }
     else if ( talents.chaos_bolt ) // 00_13_58
-    {  
+    {
       action_list_str+="/curse_of_doom,time_to_die>=80/immolate/conflagrate/chaos_bolt";
     }
     else if ( talents.metamorphosis ) // 00_56_15
-    {  
+    {
       action_list_str+="/demonic_empowerment/life_tap,trigger=10000,health_percentage>=35,metamorphosis=0";
       action_list_str+="/soul_fire,decimation=1/metamorphosis/curse_of_doom,time_to_die>=90";
       action_list_str+="/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
-    {  
+    {
       action_list_str+="/soul_fire,decimation=1/immolate/curse_of_agony/corruption,health_percentage>=35";
     }
     else if ( talents.decimation && talents.conflagrate ) // 00_40_31
-    {  
+    {
       action_list_str+="/soul_fire,decimation=1/immolate/conflagrate";
       action_list_str+="/curse_of_agony/corruption,health_percentage>=35";
     }
     else // generic
-    { 
+    {
       action_list_str+="/corruption/curse_of_agony/immolate";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     }
@@ -4085,9 +4091,9 @@ void warlock_t::init_actions()
 
     // instants to use when moving if possible
     action_list_str+="/life_tap,mana_perc<=20,glyph_skip=1,tier7_4pc_skip=1/corruption,time_to_die>=20/curse_of_agony,time_to_die>=30";
-    if( talents.shadow_burn ) action_list_str+="/shadow_burn";
-    if( talents.shadowfury  ) action_list_str+="/shadowfury";
-    action_list_str+="/corruption/curse_of_agony"; 
+    if ( talents.shadow_burn ) action_list_str+="/shadow_burn";
+    if ( talents.shadowfury  ) action_list_str+="/shadowfury";
+    action_list_str+="/corruption/curse_of_agony";
     action_list_str+="/life_tap"; // to use when no mana or nothing else is possible
 
     action_list_default = 1;
@@ -4133,10 +4139,12 @@ void warlock_t::regen( double periodicity )
 // warlock_t::warlock_t::warlock_expression_t::evaluate =================================================
 // - expression class that can "evaluate" functions that access warlock_t specific methods
 // - "type: is recognized during warlock_t::create_expression
-double warlock_t::warlock_expression_t::evaluate() {
-  switch(method){
-    case 1:   return player->decimation_queue.size();
-    case 2:   return player->decimation_queue.empty();
+double warlock_t::warlock_expression_t::evaluate()
+{
+  switch ( method )
+  {
+  case 1:   return player->decimation_queue.size();
+  case 2:   return player->decimation_queue.empty();
   }
   return 0;
 }
@@ -4144,23 +4152,27 @@ double warlock_t::warlock_expression_t::evaluate() {
 // warlock_t::create_expression =================================================
 // -this is optional support for class specific expression functions or variables
 // -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
-// -if name not recognized, returns 0 
-act_expression_t* warlock_t::create_expression(std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type){
-  act_expression_t* node= player_t::create_expression(name,prefix,suffix,expected_type);
-  if (node!=0) return node;
+// -if name not recognized, returns 0
+act_expression_t* warlock_t::create_expression( std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type )
+{
+  act_expression_t* node= player_t::create_expression( name,prefix,suffix,expected_type );
+  if ( node!=0 ) return node;
   std::string e_name=name;
-  if (prefix!="") e_name=prefix+"."+e_name;
-  if (suffix!="") e_name=e_name+"."+suffix;
+  if ( prefix!="" ) e_name=prefix+"."+e_name;
+  if ( suffix!="" ) e_name=e_name+"."+suffix;
   // old buffs
-  if ((prefix=="buff")&&(node==0)){
-    bool ex=(suffix!="value")&&(suffix!="buff")&&(suffix!="stacks"); // if one of these, ignore expiration time
-    if ((suffix=="")&&(expected_type==ETP_BOOL)) ex=false; //also ignore expiration value if boolean result is needed
+  if ( ( prefix=="buff" )&&( node==0 ) )
+  {
+    bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
+    if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
   }
   // general functions
-  if ((node==0)){
-    if (name=="decimation_queue"){
-      int method=(suffix=="empty")? 2 : 1;
-      node= new warlock_expression_t(this,e_name, method); 
+  if ( ( node==0 ) )
+  {
+    if ( name=="decimation_queue" )
+    {
+      int method=( suffix=="empty" )? 2 : 1;
+      node= new warlock_expression_t( this,e_name, method );
     }
   }
   // return expression node, if any
@@ -4173,9 +4185,9 @@ act_expression_t* warlock_t::create_expression(std::string& name,std::string& pr
 
 int warlock_t::primary_tree() SC_CONST
 {
-  if( talents.unstable_affliction ) return TREE_AFFLICTION;
-  if( talents.decimation          ) return TREE_DEMONOLOGY;
-  if( talents.shadow_and_flame    ) return TREE_DESTRUCTION;
+  if ( talents.unstable_affliction ) return TREE_AFFLICTION;
+  if ( talents.decimation          ) return TREE_DEMONOLOGY;
+  if ( talents.shadow_and_flame    ) return TREE_DESTRUCTION;
 
   return TALENT_TREE_MAX;
 }
@@ -4187,37 +4199,37 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
                                   std::vector<int*>& destruction )
 {
   talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.improved_curse_of_agony ) }, {  1, NULL                                  }, {  1, &( talents.improved_shadow_bolt  ) } },
-      { {  2, &( talents.suppression             ) }, {  2, &( talents.improved_imp             ) }, {  2, &( talents.bane                  ) } },
-      { {  3, &( talents.improved_corruption     ) }, {  3, &( talents.demonic_embrace          ) }, {  3, &( talents.aftermath             ) } },
-      { {  4, NULL                                 }, {  4, NULL                                  }, {  4, NULL                               } },
-      { {  5, &( talents.improved_drain_soul     ) }, {  5, NULL                                  }, {  5, &( talents.cataclysm             ) } },
-      { {  6, &( talents.improved_life_tap       ) }, {  6, &( talents.demonic_brutality        ) }, {  6, &( talents.demonic_power         ) } },
-      { {  7, &( talents.soul_siphon             ) }, {  7, &( talents.fel_vitality             ) }, {  7, &( talents.shadow_burn           ) } },
-      { {  8, NULL                                 }, {  8, NULL                                  }, {  8, &( talents.ruin                  ) } },
-      { {  9, NULL                                 }, {  9, NULL                                  }, {  9, NULL                               } },
-      { { 10, &( talents.amplify_curse           ) }, { 10, &( talents.fel_domination           ) }, { 10, &( talents.destructive_reach     ) } },
-      { { 11, NULL                                 }, { 11, &( talents.demonic_aegis            ) }, { 11, &( talents.improved_searing_pain ) } },
-      { { 12, &( talents.nightfall               ) }, { 12, &( talents.unholy_power             ) }, { 12, &( talents.backlash              ) } },
-      { { 13, &( talents.empowered_corruption    ) }, { 13, &( talents.master_summoner          ) }, { 13, &( talents.improved_immolate     ) } },
-      { { 14, &( talents.shadow_embrace          ) }, { 14, &( talents.mana_feed                ) }, { 14, &( talents.devastation           ) } },
-      { { 15, &( talents.siphon_life             ) }, { 15, &( talents.master_conjuror          ) }, { 15, NULL                               } },
-      { { 16, NULL                                 }, { 16, &( talents.master_demonologist      ) }, { 16, &( talents.emberstorm            ) } },
-      { { 17, &( talents.improved_felhunter      ) }, { 17, &( talents.molten_core              ) }, { 17, &( talents.conflagrate           ) } },
-      { { 18, &( talents.shadow_mastery          ) }, { 18, NULL                                  }, { 18, &( talents.soul_leech            ) } },
-      { { 19, &( talents.eradication             ) }, { 19, &( talents.demonic_empowerment      ) }, { 19, &( talents.pyroclasm             ) } },
-      { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
-      { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
-      { { 22, NULL                                 }, { 22, &( talents.decimation               ) }, { 22, &( talents.backdraft             ) } },
-      { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, &( talents.shadowfury            ) } },
-      { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
-      { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.nemesis                  ) }, { 25, &( talents.fire_and_brimstone    ) } },
-      { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
-      { { 27, &( talents.everlasting_affliction  ) }, { 27, &( talents.metamorphosis            ) }, {  0, NULL                               } },
-      { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
-      { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
-    };
+  {
+    { {  1, &( talents.improved_curse_of_agony ) }, {  1, NULL                                  }, {  1, &( talents.improved_shadow_bolt  ) } },
+    { {  2, &( talents.suppression             ) }, {  2, &( talents.improved_imp             ) }, {  2, &( talents.bane                  ) } },
+    { {  3, &( talents.improved_corruption     ) }, {  3, &( talents.demonic_embrace          ) }, {  3, &( talents.aftermath             ) } },
+    { {  4, NULL                                 }, {  4, NULL                                  }, {  4, NULL                               } },
+    { {  5, &( talents.improved_drain_soul     ) }, {  5, NULL                                  }, {  5, &( talents.cataclysm             ) } },
+    { {  6, &( talents.improved_life_tap       ) }, {  6, &( talents.demonic_brutality        ) }, {  6, &( talents.demonic_power         ) } },
+    { {  7, &( talents.soul_siphon             ) }, {  7, &( talents.fel_vitality             ) }, {  7, &( talents.shadow_burn           ) } },
+    { {  8, NULL                                 }, {  8, NULL                                  }, {  8, &( talents.ruin                  ) } },
+    { {  9, NULL                                 }, {  9, NULL                                  }, {  9, NULL                               } },
+    { { 10, &( talents.amplify_curse           ) }, { 10, &( talents.fel_domination           ) }, { 10, &( talents.destructive_reach     ) } },
+    { { 11, NULL                                 }, { 11, &( talents.demonic_aegis            ) }, { 11, &( talents.improved_searing_pain ) } },
+    { { 12, &( talents.nightfall               ) }, { 12, &( talents.unholy_power             ) }, { 12, &( talents.backlash              ) } },
+    { { 13, &( talents.empowered_corruption    ) }, { 13, &( talents.master_summoner          ) }, { 13, &( talents.improved_immolate     ) } },
+    { { 14, &( talents.shadow_embrace          ) }, { 14, &( talents.mana_feed                ) }, { 14, &( talents.devastation           ) } },
+    { { 15, &( talents.siphon_life             ) }, { 15, &( talents.master_conjuror          ) }, { 15, NULL                               } },
+    { { 16, NULL                                 }, { 16, &( talents.master_demonologist      ) }, { 16, &( talents.emberstorm            ) } },
+    { { 17, &( talents.improved_felhunter      ) }, { 17, &( talents.molten_core              ) }, { 17, &( talents.conflagrate           ) } },
+    { { 18, &( talents.shadow_mastery          ) }, { 18, NULL                                  }, { 18, &( talents.soul_leech            ) } },
+    { { 19, &( talents.eradication             ) }, { 19, &( talents.demonic_empowerment      ) }, { 19, &( talents.pyroclasm             ) } },
+    { { 20, &( talents.contagion               ) }, { 20, &( talents.demonic_knowledge        ) }, { 20, &( talents.shadow_and_flame      ) } },
+    { { 21, &( talents.dark_pact               ) }, { 21, &( talents.demonic_tactics          ) }, { 21, &( talents.improved_soul_leech   ) } },
+    { { 22, NULL                                 }, { 22, &( talents.decimation               ) }, { 22, &( talents.backdraft             ) } },
+    { { 23, &( talents.malediction             ) }, { 23, &( talents.improved_demonic_tactics ) }, { 23, &( talents.shadowfury            ) } },
+    { { 24, &( talents.deaths_embrace          ) }, { 24, &( talents.summon_felguard          ) }, { 24, &( talents.empowered_imp         ) } },
+    { { 25, &( talents.unstable_affliction     ) }, { 25, &( talents.nemesis                  ) }, { 25, &( talents.fire_and_brimstone    ) } },
+    { { 26, &( talents.pandemic                ) }, { 26, &( talents.demonic_pact             ) }, { 26, &( talents.chaos_bolt            ) } },
+    { { 27, &( talents.everlasting_affliction  ) }, { 27, &( talents.metamorphosis            ) }, {  0, NULL                               } },
+    { { 28, &( talents.haunt                   ) }, {  0, NULL                                  }, {  0, NULL                               } },
+    { {  0, NULL                                 }, {  0, NULL                                  }, {  0, NULL                               } }
+  };
   return get_talent_translation( affliction, demonology, destruction, translation );
 }
 
@@ -4225,7 +4237,7 @@ bool warlock_t::get_talent_trees( std::vector<int*>& affliction,
 
 std::vector<option_t>& warlock_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
 
@@ -4320,10 +4332,10 @@ std::vector<option_t>& warlock_t::get_options()
 
 int warlock_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "plagueheart"  ) ) return SET_T7;
-  if( strstr( item.name(), "deathbringer" ) ) return SET_T8;
-  if( strstr( item.name(), "kelthuzad"    ) ) return SET_T9;
-  if( strstr( item.name(), "guldan"       ) ) return SET_T9;
+  if ( strstr( item.name(), "plagueheart"  ) ) return SET_T7;
+  if ( strstr( item.name(), "deathbringer" ) ) return SET_T8;
+  if ( strstr( item.name(), "kelthuzad"    ) ) return SET_T9;
+  if ( strstr( item.name(), "guldan"       ) ) return SET_T9;
   return SET_NONE;
 }
 
@@ -4351,7 +4363,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
 
 void player_t::init_warlock( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
@@ -4360,7 +4372,7 @@ void player_t::init_warlock( sim_t* sim )
 
 void player_t::combat_begin_warlock( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }

@@ -5,7 +5,8 @@
 
 #include "simcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // is_white_space ===========================================================
 
@@ -51,32 +52,32 @@ static void remove_white_space( std::string& buffer,
 
 void option_t::print( FILE* file )
 {
-  if( type == OPT_STRING )
+  if ( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
     util_t::fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
   }
-  else if( type == OPT_CHARP )
+  else if ( type == OPT_CHARP )
   {
     const char* v = *( ( char** ) address );
     util_t::fprintf( file, "%s=%s\n", name, v ? v : "" );
   }
-  else if( type == OPT_BOOL )
+  else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    util_t::fprintf( file, "%s=%d\n", name, (v>0) ? 1 : 0 );
+    util_t::fprintf( file, "%s=%d\n", name, ( v>0 ) ? 1 : 0 );
   }
-  else if( type == OPT_INT )
+  else if ( type == OPT_INT )
   {
     int v = *( ( int* ) address );
     util_t::fprintf( file, "%s=%d\n", name, v );
   }
-  else if( type == OPT_FLT )
+  else if ( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
     util_t::fprintf( file, "%s=%.2f\n", name, v );
   }
-  else if( type == OPT_LIST )
+  else if ( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
     util_t::fprintf( file, "%s=", name );
@@ -89,35 +90,35 @@ void option_t::print( FILE* file )
 
 void option_t::save( FILE* file )
 {
-  if( type == OPT_STRING )
+  if ( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    if( ! v.empty() ) util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
+    if ( ! v.empty() ) util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
-  else if( type == OPT_CHARP )
+  else if ( type == OPT_CHARP )
   {
     const char* v = *( ( char** ) address );
-    if( v ) util_t::fprintf( file, "%s=%s\n", name, v );
+    if ( v ) util_t::fprintf( file, "%s=%s\n", name, v );
   }
-  else if( type == OPT_BOOL )
+  else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    if( v > 0 ) util_t::fprintf( file, "%s=1\n", name );
+    if ( v > 0 ) util_t::fprintf( file, "%s=1\n", name );
   }
-  else if( type == OPT_INT )
+  else if ( type == OPT_INT )
   {
     int v = *( ( int* ) address );
-    if( v != 0 ) util_t::fprintf( file, "%s=%d\n", name, v );
+    if ( v != 0 ) util_t::fprintf( file, "%s=%d\n", name, v );
   }
-  else if( type == OPT_FLT )
+  else if ( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
-    if( v != 0 ) util_t::fprintf( file, "%s=%.2f\n", name, v );
+    if ( v != 0 ) util_t::fprintf( file, "%s=%.2f\n", name, v );
   }
-  else if( type == OPT_LIST )
+  else if ( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
-    if( ! v.empty() )
+    if ( ! v.empty() )
     {
       util_t::fprintf( file, "%s=", name );
       for ( unsigned i=0; i < v.size(); i++ ) util_t::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
@@ -129,18 +130,18 @@ void option_t::save( FILE* file )
 // option_t::copy ===========================================================
 
 void option_t::copy( std::vector<option_t>& opt_vector,
-		     option_t*              opt_array )
+                     option_t*              opt_array )
 {
   int vector_size = opt_vector.size();
   int  array_size = 0;
 
-  for( int i=0; opt_array[ i ].name; i++ ) array_size++;
+  for ( int i=0; opt_array[ i ].name; i++ ) array_size++;
   opt_vector.resize( vector_size + array_size );
 
-  for( int i=0; i < array_size; i++ )
+  for ( int i=0; i < array_size; i++ )
   {
     opt_vector[ vector_size + i ]  = opt_array[ i ];
-  }  
+  }
 }
 
 // option_t::parse ==========================================================
@@ -162,7 +163,7 @@ bool option_t::parse( sim_t*             sim,
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) util_t::printf( "simcraft: Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_FUNC: return ( (option_function_t) address )( sim, n, v );
+    case OPT_FUNC: return ( ( option_function_t ) address )( sim, n, v );
     case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
       util_t::printf( "simcraft: option '%s' has been deprecated.\n", name );
@@ -179,14 +180,14 @@ bool option_t::parse( sim_t*             sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*                 sim,
-		      std::vector<option_t>& options,
+                      std::vector<option_t>& options,
                       const std::string&     name,
                       const std::string&     value )
 {
   int num_options = options.size();
 
   for ( int i=0; i < num_options; i++ )
-    if( options[ i ].parse( sim, name, value ) )
+    if ( options[ i ].parse( sim, name, value ) )
       return true;
 
   return false;
@@ -195,20 +196,20 @@ bool option_t::parse( sim_t*                 sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*                 sim,
-		      const char*            context,
-		      std::vector<option_t>& options,
+                      const char*            context,
+                      std::vector<option_t>& options,
                       const std::string&     options_str )
 {
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, options_str, "," );
 
-  for( int i=0; i < num_splits; i++ )
+  for ( int i=0; i < num_splits; i++ )
   {
     std::string& s = splits[ i ];
 
     std::string::size_type index = s.find( "=" );
 
-    if( index == std::string::npos )
+    if ( index == std::string::npos )
     {
       util_t::fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
       return false;
@@ -217,7 +218,7 @@ bool option_t::parse( sim_t*                 sim,
     std::string n = s.substr( 0, index );
     std::string v = s.substr( index + 1 );
 
-    if( ! option_t::parse( sim, options, n, v ) )
+    if ( ! option_t::parse( sim, options, n, v ) )
     {
       util_t::fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
       return false;
@@ -230,17 +231,17 @@ bool option_t::parse( sim_t*                 sim,
 // option_t::parse ==========================================================
 
 bool option_t::parse( sim_t*             sim,
-		      const char*        context,
-		      option_t*          options,
+                      const char*        context,
+                      option_t*          options,
                       const std::string& options_str )
 {
   int num_options=0;
-  while( options[ num_options ].name ) num_options++;
+  while ( options[ num_options ].name ) num_options++;
 
   std::vector<option_t> options_vector;
   options_vector.resize( num_options );
 
-  for( int i=0; i < num_options; i++ )
+  for ( int i=0; i < num_options; i++ )
   {
     options_vector[ i ] = options[ i ];
   }

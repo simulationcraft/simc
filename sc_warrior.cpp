@@ -258,7 +258,8 @@ double warrior_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-namespace { // ANONYMOUS NAMESPACE =========================================
+namespace   // ANONYMOUS NAMESPACE =========================================
+{
 
 // ==========================================================================
 // Warrior Attack
@@ -913,13 +914,13 @@ void warrior_attack_t::parse_options( option_t*          options,
                                       const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "min_rage",       OPT_FLT, &min_rage       },
-      { "max_rage",       OPT_FLT, &max_rage       },
-      { "rage>",          OPT_FLT, &min_rage       },
-      { "rage<",          OPT_FLT, &max_rage       },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    { "min_rage",       OPT_FLT, &min_rage       },
+    { "max_rage",       OPT_FLT, &max_rage       },
+    { "rage>",          OPT_FLT, &min_rage       },
+    { "rage<",          OPT_FLT, &max_rage       },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -1051,12 +1052,12 @@ void warrior_attack_t::player_buff()
   if ( p -> active_stance == STANCE_BATTLE )
   {
     player_penetration += 0.10;
-    if( player -> set_bonus.tier9_2pc() ) player_penetration += 0.06;
+    if ( player -> set_bonus.tier9_2pc() ) player_penetration += 0.06;
   }
   else if ( p -> active_stance == STANCE_BERSERKER )
   {
     player_crit += 0.03;
-    if( player -> set_bonus.tier9_2pc() ) player_crit += 0.02;
+    if ( player -> set_bonus.tier9_2pc() ) player_crit += 0.02;
 
   }
   else if ( p -> active_stance == STANCE_DEFENSE )
@@ -1123,7 +1124,7 @@ struct melee_t : public warrior_attack_t
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
     // Rage Conversion Value, needed for: damage done => rage gained
-    if( p -> level == 80 )
+    if ( p -> level == 80 )
       rage_conversion_value = 453.3;
     else
       rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
@@ -1133,7 +1134,7 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     double h = warrior_attack_t::haste();
-      
+
     h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.05 );
 
     return h;
@@ -1204,15 +1205,15 @@ struct melee_t : public warrior_attack_t
         hitfactor /= 2.0;
 
       // double rage_gained = 15.0 * direct_dmg / ( 4.0 * rage_conversion_value ) + time_to_execute * hitfactor / 2.0;
-      
+
       // http://elitistjerks.com/f81/t60632-rage_generation_changed/
       // double rage_gained = 3.0/8.0 * ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value );
-      
+
       // http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
-      // 
+      //
       double rage_gain = ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value ) / 2.0;
       double rage_gain_max = 7.5 * direct_dmg / rage_conversion_value * 2.0;
-      
+
       double real_rage_gain = std::min( rage_gain, rage_gain_max );
 
       if ( p -> talents.endless_rage )
@@ -1268,7 +1269,7 @@ struct auto_attack_t : public warrior_attack_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if( p -> moving ) return false;
+    if ( p -> moving ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1303,9 +1304,9 @@ struct bladestorm_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.bladestorm );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     harmful   = false;
@@ -1356,27 +1357,27 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 76, 13, 495, 495, 0, 15 },
-        { 72, 12, 432, 432, 0, 15 },
-        { 70, 11, 317, 317, 0, 15 },
-        { 66, 10, 234, 234, 0, 15 },
-        { 60,  9, 201, 201, 0, 15 },
-        { 56,  8, 178, 178, 0, 15 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 76, 13, 495, 495, 0, 15 },
+      { 72, 12, 432, 432, 0, 15 },
+      { 70, 11, 317, 317, 0, 15 },
+      { 66, 10, 234, 234, 0, 15 },
+      { 60,  9, 201, 201, 0, 15 },
+      { 56,  8, 178, 178, 0, 15 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit        = true;
     base_cost      -= p -> talents.improved_heroic_strike;
     base_crit      += p -> talents.incite * 0.05;
-    if( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
+    if ( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
 
     trigger_gcd     = 0;
 
@@ -1431,9 +1432,9 @@ struct bloodthirst_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.bloodthirst );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1466,9 +1467,9 @@ struct concussion_blow_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.concussion_blow );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1493,9 +1494,9 @@ struct shockwave_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.shockwave );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1523,9 +1524,9 @@ struct devastate_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.devastate );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
@@ -1544,7 +1545,7 @@ struct devastate_t : public warrior_attack_t
       base_dd_min = 1010;
       base_dd_max = 1010;
       weapon_multiplier = 1.00;
-      if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05; 
+      if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05;
     }
     else
     {
@@ -1553,8 +1554,8 @@ struct devastate_t : public warrior_attack_t
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;
-    base_crit += ( ( p -> talents.sword_and_board * 0.05 ) +  
-		   ( p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 ) );
+    base_crit += ( ( p -> talents.sword_and_board * 0.05 ) +
+                   ( p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 ) );
   }
   virtual void execute()
   {
@@ -1572,9 +1573,9 @@ struct revenge_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
@@ -1595,7 +1596,7 @@ struct revenge_t : public warrior_attack_t
     cooldown          = 5.0;
     direct_power_mod  = 0.207;
     base_multiplier  *= 1 + p -> talents.improved_revenge * 0.1;
-    if( p -> talents.unrelenting_assault )
+    if ( p -> talents.unrelenting_assault )
     {
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
       cooldown -= ( p -> talents.unrelenting_assault * 2 );
@@ -1620,10 +1621,10 @@ struct shield_slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { "sword_and_board", OPT_BOOL, &sword_and_board },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "sword_and_board", OPT_BOOL, &sword_and_board },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
@@ -1673,11 +1674,11 @@ struct shield_slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    if( sword_and_board )
+    if ( sword_and_board )
       if ( ! p -> _buffs.sword_and_board )
         return false;
 
-    if( p -> _buffs.sword_and_board )
+    if ( p -> _buffs.sword_and_board )
       return true;
 
     return warrior_attack_t::ready();
@@ -1694,9 +1695,9 @@ struct thunderclap_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
@@ -1738,21 +1739,21 @@ struct execute_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { "sudden_death", OPT_BOOL, &sudden_death },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "sudden_death", OPT_BOOL, &sudden_death },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 8, 1456, 1456, 0, 15 },
-        { 73, 7, 1142, 1142, 0, 15 },
-        { 70, 6,  865,  865, 0, 15 },
-        { 65, 5,  687,  687, 0, 15 },
-        { 56, 4,  554,  554, 0, 15 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 8, 1456, 1456, 0, 15 },
+      { 73, 7, 1142, 1142, 0, 15 },
+      { 70, 6,  865,  865, 0, 15 },
+      { 65, 5,  687,  687, 0, 15 },
+      { 56, 4,  554,  554, 0, 15 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     excess_rage_mod   = ( p -> level >= 80 ? 38 :
@@ -1774,8 +1775,8 @@ struct execute_t : public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
   }
 
-  virtual void consume_resource() 
-  { 
+  virtual void consume_resource()
+  {
     warrior_t* p = player -> cast_warrior();
 
     resource_consumed = cost();
@@ -1783,9 +1784,9 @@ struct execute_t : public warrior_attack_t
     bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
 
     double max_consumed = 0;
-    if( sim -> P320 )
+    if ( sim -> P320 )
     {
-      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0);
+      max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 );
     }
     else
     {
@@ -1798,26 +1799,26 @@ struct execute_t : public warrior_attack_t
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", player -> name(),
-		     resource_consumed, util_t::resource_type_string( resource ), name() );
+                     resource_consumed, util_t::resource_type_string( resource ), name() );
 
     player -> resource_loss( resource, resource_consumed );
 
     stats -> consume_resource( resource_consumed );
-    
+
     if ( p -> glyphs.execution ) excess_rage += 10;
 
     base_dd_adder = ( excess_rage > 0 ) ? excess_rage_mod * excess_rage : 0.0;
 
-    if( sudden_death_up )
+    if ( sudden_death_up )
     {
       p -> aura_loss( "Sudden Death" );
       p -> _buffs.sudden_death = 0;
 
       double current_rage = p -> resource_current[ RESOURCE_RAGE ];
 
-      if( current_rage < 10 )
+      if ( current_rage < 10 )
       {
-	p -> resource_gain( RESOURCE_RAGE, 10.0 - current_rage, p -> gains_sudden_death );
+        p -> resource_gain( RESOURCE_RAGE, 10.0 - current_rage, p -> gains_sudden_death );
       }
     }
   }
@@ -1854,20 +1855,20 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.mortal_strike );
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 8, 380, 380, 0, 30 },
-        { 75, 7, 320, 320, 0, 30 },
-        { 70, 6, 210, 210, 0, 30 },
-        { 66, 5, 185, 185, 0, 30 },
-        { 60, 4, 160, 160, 0, 30 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 8, 380, 380, 0, 30 },
+      { 75, 7, 320, 320, 0, 30 },
+      { 70, 6, 210, 210, 0, 30 },
+      { 66, 5, 185, 185, 0, 30 },
+      { 60, 4, 160, 160, 0, 30 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit         = true;
@@ -1891,9 +1892,9 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1945,19 +1946,19 @@ struct rend_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 76, 10, 0, 0, 76, 10 },
-        { 71,  9, 0, 0, 63, 10 },
-        { 68,  8, 0, 0, 43, 10 },
-        { 60,  7, 0, 0, 37, 10 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 76, 10, 0, 0, 76, 10 },
+      { 71,  9, 0, 0, 63, 10 },
+      { 68,  8, 0, 0, 43, 10 },
+      { 60,  7, 0, 0, 37, 10 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
@@ -2008,25 +2009,25 @@ struct slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { "bloodsurge", OPT_BOOL, &bloodsurge },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "bloodsurge", OPT_BOOL, &bloodsurge },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 8, 250, 250, 0, 15 },
-        { 74, 7, 220, 220, 0, 15 },
-        { 69, 6, 140, 140, 0, 15 },
-        { 61, 5, 105, 105, 0, 15 },
-        { 54, 4,  87,  87, 0, 15 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 8, 250, 250, 0, 15 },
+      { 74, 7, 220, 220, 0, 15 },
+      { 69, 6, 140, 140, 0, 15 },
+      { 61, 5, 105, 105, 0, 15 },
+      { 54, 4,  87,  87, 0, 15 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit = true;
-    if( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
+    if ( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
     base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
     base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> set_bonus.tier7_2pc() ? 0.10 : 0.0 );
 
@@ -2113,9 +2114,9 @@ struct whirlwind_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -2138,7 +2139,7 @@ struct whirlwind_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     /* Special case for Recklessness + Whirlwind + Dualwield
-    *  Every hand uses one charge, _BUT_ if only one charge 
+    *  Every hand uses one charge, _BUT_ if only one charge
     *  is left on recklessness, both hands will crit.
     *  So we deal with offhand first and increase charges by
     *  if only one is left, so offhand also gets one.
@@ -2174,9 +2175,9 @@ struct pummel_t : public warrior_attack_t
       warrior_attack_t( "pummel",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -2189,7 +2190,7 @@ struct pummel_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> casting ) return false;
     return warrior_attack_t::ready();
   }
 };
@@ -2297,13 +2298,13 @@ void warrior_spell_t::parse_options( option_t*          options,
                                      const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "min_rage",       OPT_FLT, &min_rage       },
-      { "max_rage",       OPT_FLT, &max_rage       },
-      { "rage>",          OPT_FLT, &min_rage       },
-      { "rage<",          OPT_FLT, &max_rage       },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    { "min_rage",       OPT_FLT, &min_rage       },
+    { "max_rage",       OPT_FLT, &max_rage       },
+    { "rage>",          OPT_FLT, &min_rage       },
+    { "rage<",          OPT_FLT, &max_rage       },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -2318,9 +2319,9 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost   = 0;
@@ -2347,9 +2348,9 @@ struct bloodrage_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost   = 0;
@@ -2383,7 +2384,7 @@ struct bloodrage_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
     p -> _buffs.bloodrage = 10;
-    if( sim -> P320 )
+    if ( sim -> P320 )
     {
       p -> resource_gain( RESOURCE_RAGE, 20 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
     }
@@ -2406,9 +2407,9 @@ struct death_wish_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost   = 10;
@@ -2455,9 +2456,9 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     cooldown    = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
@@ -2506,10 +2507,10 @@ struct stance_t : public warrior_spell_t
 
     std::string stance_str;
     option_t options[] =
-      {
-        { "choose",  OPT_STRING, &stance_str     },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "choose",  OPT_STRING, &stance_str     },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( ! stance_str.empty() )
@@ -2603,35 +2604,35 @@ void warrior_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
 
     if     ( n == "bladestorm"    ) glyphs.bladestorm = 1;
-    else if( n == "execution"     ) glyphs.execution = 1;
-    else if( n == "heroic_strike" ) glyphs.heroic_strike = 1;
-    else if( n == "mortal_strike" ) glyphs.mortal_strike = 1;
-    else if( n == "overpower"     ) glyphs.overpower = 1;
-    else if( n == "rending"       ) glyphs.rending = 1;
-    else if( n == "whirlwind"     ) glyphs.whirlwind = 1;
-    else if( n == "blocking"      ) glyphs.blocking = 1;
+    else if ( n == "execution"     ) glyphs.execution = 1;
+    else if ( n == "heroic_strike" ) glyphs.heroic_strike = 1;
+    else if ( n == "mortal_strike" ) glyphs.mortal_strike = 1;
+    else if ( n == "overpower"     ) glyphs.overpower = 1;
+    else if ( n == "rending"       ) glyphs.rending = 1;
+    else if ( n == "whirlwind"     ) glyphs.whirlwind = 1;
+    else if ( n == "blocking"      ) glyphs.blocking = 1;
     // To prevent warnings....
-    else if( n == "battle"           ) ;
-    else if( n == "bloodrage"        ) ;
-    else if( n == "bloodthirst"      ) ;
-    else if( n == "charge"           ) ;
-    else if( n == "cleaving"         ) ;
-    else if( n == "devastate"        ) ;
-    else if( n == "enduring_victory" ) ;
-    else if( n == "hamstring"        ) ;
-    else if( n == "last_stand"       ) ;
-    else if( n == "revenge"          ) ;
-    else if( n == "shield_wall"      ) ;
-    else if( n == "sunder_armor"     ) ;
-    else if( n == "thunder_clap"     ) ;
-    else if( n == "vigilance"        ) ;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "battle"           ) ;
+    else if ( n == "bloodrage"        ) ;
+    else if ( n == "bloodthirst"      ) ;
+    else if ( n == "charge"           ) ;
+    else if ( n == "cleaving"         ) ;
+    else if ( n == "devastate"        ) ;
+    else if ( n == "enduring_victory" ) ;
+    else if ( n == "hamstring"        ) ;
+    else if ( n == "last_stand"       ) ;
+    else if ( n == "revenge"          ) ;
+    else if ( n == "shield_wall"      ) ;
+    else if ( n == "sunder_armor"     ) ;
+    else if ( n == "thunder_clap"     ) ;
+    else if ( n == "vigilance"        ) ;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -2764,21 +2765,21 @@ void warrior_t::init_rng()
 
 void warrior_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
 
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
+      if ( items[ i ].use.active() )
       {
-	action_list_str += "/use_item,name=";
-	action_list_str += items[ i ].name();
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
       }
     }
 
-    if( primary_tree() == TREE_ARMS )
+    if ( primary_tree() == TREE_ARMS )
     {
       action_list_str += "/stance,choose=battle/auto_attack";
       action_list_str += "/bloodrage,rage<=85";
@@ -2834,9 +2835,9 @@ void warrior_t::init_actions()
 
 int warrior_t::primary_tree() SC_CONST
 {
-  if( talents.mortal_strike        ) return TREE_ARMS;
-  if( talents.bloodthirst          ) return TREE_FURY;
-  if( talents.devastate            ) return TREE_PROTECTION;
+  if ( talents.mortal_strike        ) return TREE_ARMS;
+  if ( talents.bloodthirst          ) return TREE_FURY;
+  if ( talents.devastate            ) return TREE_PROTECTION;
 
   return TALENT_TREE_MAX;
 }
@@ -2871,8 +2872,8 @@ void warrior_t::interrupt()
 {
   player_t::interrupt();
 
-  if( main_hand_attack ) main_hand_attack -> cancel();
-  if(  off_hand_attack )  off_hand_attack -> cancel();
+  if ( main_hand_attack ) main_hand_attack -> cancel();
+  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // warrior_t::composite_attack_power =========================================
@@ -2919,20 +2920,20 @@ void warrior_t::regen( double periodicity )
 // warrior_t::resource_loss ================================================
 
 double warrior_t::resource_loss( int       resource,
-				 double    amount,
-				 action_t* action )
+                                 double    amount,
+                                 action_t* action )
 {
   double actual_amount = player_t::resource_loss( resource, amount, action );
 
-  if( resource == RESOURCE_HEALTH )
+  if ( resource == RESOURCE_HEALTH )
   {
     // FIXME!!! Only works for level 80 currently!
     double coeff_60 = 453.3;
     double coeff_70 = 453.3;
     double coeff_80 = 453.3;
-    
+
     double coeff = rating_t::interpolate( level, coeff_60, coeff_70, coeff_80 );
-    
+
     double rage_gain = 5 * amount / ( 2 * coeff );
 
     resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
@@ -2948,40 +2949,40 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
                                   std::vector<int*>& protection )
 {
   talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage         ) } },
-      { {  2, NULL                                         }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
-      { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap       ) } },
-      { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                     ) } },
-      { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, NULL                                    } },
-      { {  6, NULL                                         }, {  6, NULL                                   }, {  6, NULL                                    } },
-      { {  7, &( talents.improved_overpower              ) }, {  7, NULL                                   }, {  7, &( talents.improved_revenge           ) } },
-      { {  8, &( talents.anger_management                ) }, {  8, NULL                                   }, {  8, &( talents.shield_mastery             ) } },
-      { {  9, &( talents.impale                          ) }, {  9, &( talents.commanding_presence       ) }, {  9, &( talents.toughness                  ) } },
-      { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, NULL                                    } },
-      { { 11, &( talents.twohanded_weapon_specialization ) }, { 11, &( talents.improved_execute          ) }, { 11, NULL                                    } },
-      { { 12, &( talents.taste_for_blood                 ) }, { 12, NULL                                   }, { 12, &( talents.puncture                   ) } },
-      { { 13, &( talents.poleaxe_specialization          ) }, { 13, &( talents.precision                 ) }, { 13, NULL                                    } },
-      { { 14, NULL                                         }, { 14, &( talents.death_wish                ) }, { 14, &( talents.concussion_blow            ) } },
-      { { 15, &( talents.mace_specialization             ) }, { 15, NULL                                   }, { 15, &( talents.gag_order                  ) } },
-      { { 16, &( talents.sword_specialization            ) }, { 16, &( talents.improved_berserker_rage   ) }, { 16, &( talents.onhanded_weapon_specialization ) } },
-      { { 17, &( talents.weapon_mastery                  ) }, { 17, &( talents.flurry                    ) }, { 17, &( talents.improved_defensive_stance  ) } },
-      { { 18, NULL                                         }, { 18, &( talents.intensify_rage            ) }, { 18, NULL                                    } },
-      { { 19, &( talents.trauma                          ) }, { 19, &( talents.bloodthirst               ) }, { 19, &( talents.focused_rage               ) } },
-      { { 20, NULL                                         }, { 20, &( talents.improved_whirlwind        ) }, { 20, &( talents.vitality                   ) } },
-      { { 21, &( talents.mortal_strike                   ) }, { 21, NULL                                   }, { 21, NULL                                    } },
-      { { 22, &( talents.strength_of_arms                ) }, { 22, &( talents.improved_berserker_stance ) }, { 22, NULL                                    } },
-      { { 23, &( talents.improved_slam                   ) }, { 23, NULL                                   }, { 23, &( talents.devastate                  ) } },
-      { { 24, NULL                                         }, { 24, &( talents.rampage                   ) }, { 24, &( talents.critical_block             ) } },
-      { { 25, &( talents.improved_mortal_strike          ) }, { 25, &( talents.bloodsurge                ) }, { 25, &( talents.sword_and_board            ) } },
-      { { 26, &( talents.unrelenting_assault             ) }, { 26, &( talents.unending_fury             ) }, { 26, NULL                                    } },
-      { { 27, &( talents.sudden_death                    ) }, { 27, &( talents.titans_grip               ) }, { 27, &( talents.shockwave                  ) } },
-      { { 28, &( talents.endless_rage                    ) }, {  0, NULL                                   }, {  0, NULL                                    } },
-      { { 29, &( talents.blood_frenzy                    ) }, {  0, NULL                                   }, {  0, NULL                                    } },
-      { { 30, &( talents.wrecking_crew                   ) }, {  0, NULL                                   }, {  0, NULL                                    } },
-      { { 31, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                    } },
-      { {  0, NULL                                         }, {  0, NULL                                   }, {  0, NULL                                    } }
-    };
+  {
+    { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage         ) } },
+    { {  2, NULL                                         }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
+    { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap       ) } },
+    { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                     ) } },
+    { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, NULL                                    } },
+    { {  6, NULL                                         }, {  6, NULL                                   }, {  6, NULL                                    } },
+    { {  7, &( talents.improved_overpower              ) }, {  7, NULL                                   }, {  7, &( talents.improved_revenge           ) } },
+    { {  8, &( talents.anger_management                ) }, {  8, NULL                                   }, {  8, &( talents.shield_mastery             ) } },
+    { {  9, &( talents.impale                          ) }, {  9, &( talents.commanding_presence       ) }, {  9, &( talents.toughness                  ) } },
+    { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, NULL                                    } },
+    { { 11, &( talents.twohanded_weapon_specialization ) }, { 11, &( talents.improved_execute          ) }, { 11, NULL                                    } },
+    { { 12, &( talents.taste_for_blood                 ) }, { 12, NULL                                   }, { 12, &( talents.puncture                   ) } },
+    { { 13, &( talents.poleaxe_specialization          ) }, { 13, &( talents.precision                 ) }, { 13, NULL                                    } },
+    { { 14, NULL                                         }, { 14, &( talents.death_wish                ) }, { 14, &( talents.concussion_blow            ) } },
+    { { 15, &( talents.mace_specialization             ) }, { 15, NULL                                   }, { 15, &( talents.gag_order                  ) } },
+    { { 16, &( talents.sword_specialization            ) }, { 16, &( talents.improved_berserker_rage   ) }, { 16, &( talents.onhanded_weapon_specialization ) } },
+    { { 17, &( talents.weapon_mastery                  ) }, { 17, &( talents.flurry                    ) }, { 17, &( talents.improved_defensive_stance  ) } },
+    { { 18, NULL                                         }, { 18, &( talents.intensify_rage            ) }, { 18, NULL                                    } },
+    { { 19, &( talents.trauma                          ) }, { 19, &( talents.bloodthirst               ) }, { 19, &( talents.focused_rage               ) } },
+    { { 20, NULL                                         }, { 20, &( talents.improved_whirlwind        ) }, { 20, &( talents.vitality                   ) } },
+    { { 21, &( talents.mortal_strike                   ) }, { 21, NULL                                   }, { 21, NULL                                    } },
+    { { 22, &( talents.strength_of_arms                ) }, { 22, &( talents.improved_berserker_stance ) }, { 22, NULL                                    } },
+    { { 23, &( talents.improved_slam                   ) }, { 23, NULL                                   }, { 23, &( talents.devastate                  ) } },
+    { { 24, NULL                                         }, { 24, &( talents.rampage                   ) }, { 24, &( talents.critical_block             ) } },
+    { { 25, &( talents.improved_mortal_strike          ) }, { 25, &( talents.bloodsurge                ) }, { 25, &( talents.sword_and_board            ) } },
+    { { 26, &( talents.unrelenting_assault             ) }, { 26, &( talents.unending_fury             ) }, { 26, NULL                                    } },
+    { { 27, &( talents.sudden_death                    ) }, { 27, &( talents.titans_grip               ) }, { 27, &( talents.shockwave                  ) } },
+    { { 28, &( talents.endless_rage                    ) }, {  0, NULL                                   }, {  0, NULL                                    } },
+    { { 29, &( talents.blood_frenzy                    ) }, {  0, NULL                                   }, {  0, NULL                                    } },
+    { { 30, &( talents.wrecking_crew                   ) }, {  0, NULL                                   }, {  0, NULL                                    } },
+    { { 31, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                    } },
+    { {  0, NULL                                         }, {  0, NULL                                   }, {  0, NULL                                    } }
+  };
   return get_talent_translation( arms, fury, protection, translation );
 }
 
@@ -2989,7 +2990,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
 
 std::vector<option_t>& warrior_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
 
@@ -3068,10 +3069,10 @@ std::vector<option_t>& warrior_t::get_options()
 
 int warrior_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
-  if( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
-  if( strstr( item.name(), "wrynn"        ) ) return SET_T9;
-  if( strstr( item.name(), "hellscream"   ) ) return SET_T9;
+  if ( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
+  if ( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
+  if ( strstr( item.name(), "wrynn"        ) ) return SET_T9;
+  if ( strstr( item.name(), "hellscream"   ) ) return SET_T9;
   return SET_NONE;
 }
 
@@ -3090,7 +3091,7 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name )
 
 void player_t::init_warrior( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
@@ -3099,7 +3100,7 @@ void player_t::init_warrior( sim_t* sim )
 
 void player_t::combat_begin_warrior( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }

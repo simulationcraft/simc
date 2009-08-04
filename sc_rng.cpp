@@ -120,10 +120,10 @@ void rng_t::seed( uint32_t start )
 void rng_t::report( FILE* file )
 {
   util_t::fprintf( file, "RNG %s Actual/Expected Roll=%.6f Range=%.6f Gauss=%.6f\n",
-		   name_str.c_str(),
-		   ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
-		   ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
-		   ( ( expected_gauss == 0 ) ? 1.0 : actual_gauss / expected_gauss ) );
+                   name_str.c_str(),
+                   ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
+                   ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
+                   ( ( expected_gauss == 0 ) ? 1.0 : actual_gauss / expected_gauss ) );
 }
 
 // ==========================================================================
@@ -393,7 +393,7 @@ struct rng_phase_shift_t : public rng_normalized_t
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     range_distribution.resize( 10 );
-    for( int i=0; i < 5; i++ ) 
+    for ( int i=0; i < 5; i++ )
     {
       range_distribution[ i*2   ] = 0.5 + ( i + 0.5 );
       range_distribution[ i*2+1 ] = 0.5 - ( i + 0.5 );
@@ -466,7 +466,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     range_distribution.resize( 10 );
-    for( int i=0; i < 5; i++ ) 
+    for ( int i=0; i < 5; i++ )
     {
       range_distribution[ i*2   ] = 0.5 + ( i + 0.5 );
       range_distribution[ i*2+1 ] = 0.5 - ( i + 0.5 );
@@ -511,7 +511,7 @@ struct rng_pre_fill_t : public rng_normalized_t
       for ( int i=0; i < size; i++ ) roll_distribution[ i ] = down;
       while ( num_procs > 0 )
       {
-        int index = (int) ( real() * size * 0.9999 );
+        int index = ( int ) ( real() * size * 0.9999 );
         if ( roll_distribution[ index ] == up ) continue;
         roll_distribution[ index ] = up;
         num_procs--;
@@ -580,7 +580,7 @@ struct distribution_t
   std::vector<int> counts;
 
   distribution_t( int s ) :
-    size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
+      size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
   {
     chances.insert( chances.begin(), size, 0.0 );
     values .insert( values .begin(), size, 0.0 );
@@ -627,23 +627,23 @@ struct distribution_t
   {
     util_t::printf( "distribution_t::verify:\n" );
     double sum=0;
-    for( int i=0; i <= last; i++ ) sum += chances[ i ];
+    for ( int i=0; i <= last; i++ ) sum += chances[ i ];
     util_t::printf( "\tsum: %f\n", sum );
     std::vector<int> rng_counts;
     rng_counts.insert( rng_counts.begin(), size, 0 );
-    for( int i=0; i < total_count; i++ )
+    for ( int i=0; i < total_count; i++ )
     {
       double p = rng -> real();
       int index=0;
-      while( index < last ) 
+      while ( index < last )
       {
-	p -= chances[ index ];
-	if( p < 0 ) break;
-	index++;
+        p -= chances[ index ];
+        if ( p < 0 ) break;
+        index++;
       }
       rng_counts[ index ]++;
     }
-    for( int i=0; i <= last; i++ ) util_t::printf( "\t%d : %d\n", counts[ i ], rng_counts[ i ] );
+    for ( int i=0; i <= last; i++ ) util_t::printf( "\t%d : %d\n", counts[ i ], rng_counts[ i ] );
   }
 };
 
@@ -709,7 +709,7 @@ struct roll_distribution_t : public distribution_t
       values [ i ] = 1.0 - avg_expected * ( i + 1 );
       chances[ i ] = remainder * avg_expected;
       remainder -= chances[ i ];
-      if( remainder < 0.001 ) break;
+      if ( remainder < 0.001 ) break;
     }
     chances[ last ] += remainder;
     avg_fill = avg_expected;
@@ -734,14 +734,14 @@ struct roll_distribution_t : public distribution_t
 
 struct rng_distance_simple_t : public rng_normalized_t
 {
-   roll_distribution_t  roll_d;
+  roll_distribution_t  roll_d;
   range_distribution_t range_d;
   gauss_distribution_t gauss_d;
 
   rng_distance_simple_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-     roll_d.actual = real() - 0.5;
+    roll_d.actual = real() - 0.5;
     range_d.actual = real() - 0.5;
     gauss_d.actual = ( real() - 0.5 ) * 5.0;
   }
@@ -793,7 +793,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   rng_distance_bands_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_distance_simple_t( name, b, avg_range, avg_gauss )
   {
-    for( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
+    for ( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
   }
   virtual int type() SC_CONST { return RNG_DISTANCE_BANDS; }
 
@@ -875,17 +875,17 @@ int main( int argc, char** argv )
 
   roll_distribution_t roll_d_05;
   util_t::printf( "\nroll 5%%:\n" );
-  for( int i=0; i < 1000000; i++ ) roll_d_05.reach( 0.05 );
+  for ( int i=0; i < 1000000; i++ ) roll_d_05.reach( 0.05 );
   roll_d_05.verify( rng );
 
   roll_distribution_t roll_d_30;
   util_t::printf( "\nroll 30%%:\n" );
-  for( int i=0; i < 1000000; i++ ) roll_d_30.reach( 0.30 );
+  for ( int i=0; i < 1000000; i++ ) roll_d_30.reach( 0.30 );
   roll_d_30.verify( rng );
 
   roll_distribution_t roll_d_80;
   util_t::printf( "\nroll 80%%:\n" );
-  for( int i=0; i < 1000000; i++ ) roll_d_80.reach( 0.80 );
+  for ( int i=0; i < 1000000; i++ ) roll_d_80.reach( 0.80 );
   roll_d_80.verify( rng );
 }
 

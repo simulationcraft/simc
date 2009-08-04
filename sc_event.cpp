@@ -67,8 +67,8 @@ void event_t::deallocate( event_t* e )
 // player_ready_event_t::player_ready_event_t ===============================
 
 player_ready_event_t::player_ready_event_t( sim_t*    sim,
-    player_t* p,
-    double    delta_time ) :
+                                            player_t* p,
+                                            double    delta_time ) :
     event_t( sim, p )
 {
   name = "Player-Ready";
@@ -93,8 +93,8 @@ void player_ready_event_t::execute()
 // action_execute_event_t::action_execute_event_t ===========================
 
 action_execute_event_t::action_execute_event_t( sim_t*    sim,
-    action_t* a,
-    double    time_to_execute ) :
+                                                action_t* a,
+                                                double    time_to_execute ) :
     event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
@@ -123,8 +123,8 @@ void action_execute_event_t::execute()
 // action_tick_event_t::action_tick_event_t =================================
 
 action_tick_event_t::action_tick_event_t( sim_t*    sim,
-    action_t* a,
-    double    time_to_tick ) :
+                                          action_t* a,
+                                          double    time_to_tick ) :
     event_t( sim, a -> player ), action( a )
 {
   name = "Action Tick";
@@ -140,21 +140,21 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
 void action_tick_event_t::execute()
 {
-  if( action -> current_tick >= action -> num_ticks )
+  if ( action -> current_tick >= action -> num_ticks )
   {
-    util_t::printf( "simcraft: Player %s has corrupt tick (%d of %d) event on action %s!\n", 
-		    player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
+    util_t::printf( "simcraft: Player %s has corrupt tick (%d of %d) event on action %s!\n",
+                    player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
     assert( false );
   }
 
   action -> tick_event = 0;
   action -> current_tick++;
 
-  if ( action -> channeled && 
+  if ( action -> channeled &&
        action -> current_tick == action -> num_ticks &&
        player -> skill < 1.0 )
   {
-    if( sim -> roll( player -> skill ) ) action -> tick();
+    if ( sim -> roll( player -> skill ) ) action -> tick();
   }
   else
   {
@@ -182,8 +182,8 @@ void action_tick_event_t::execute()
 // action_travel_event_t::action_travel_event_t =============================
 
 action_travel_event_t::action_travel_event_t( sim_t*    sim,
-    action_t* a,
-    double    time_to_travel ) :
+                                              action_t* a,
+                                              double    time_to_travel ) :
     event_t( sim, a -> player ), action( a )
 {
   name   = "Action Travel";
@@ -248,5 +248,5 @@ void event_t::reschedule( double new_time )
 
   if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
 
-  if( ! strcmp( name, "Rabid Expiration" ) ) assert(false);
+  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }

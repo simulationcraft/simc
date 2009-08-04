@@ -48,7 +48,8 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_ARMOR: armor += value; break;
 
-  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; } break;
+  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
+    break;
 
   default: assert( 0 );
   }
@@ -93,7 +94,8 @@ void gear_stats_t::set_stat( int    stat,
 
   case STAT_ARMOR: armor = value; break;
 
-  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; } break;
+  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
+    break;
 
   default: assert( 0 );
   }
@@ -146,13 +148,13 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
 
 void gear_stats_t::print( FILE* file )
 {
-  for( int i=0; i < STAT_MAX; i++ )
+  for ( int i=0; i < STAT_MAX; i++ )
   {
     double value = get_stat( i );
 
-    if( value != 0 )
+    if ( value != 0 )
     {
-      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - (int) value ) > 0 ) ? 3 : 0 ), value );
+      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
     }
   }
   util_t::fprintf( file, "\n" );

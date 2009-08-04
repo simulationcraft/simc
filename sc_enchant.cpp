@@ -5,8 +5,8 @@
 
 #include "simcraft.h"
 
-struct enchant_data_t 
-{ 
+struct enchant_data_t
+{
   const char* id;
   const char* name;
   const char* encoding;
@@ -537,7 +537,7 @@ struct berserking_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    if( w -> enchant != ENCHANT_BERSERKING ) return;
+    if ( w -> enchant != ENCHANT_BERSERKING ) return;
 
     // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
@@ -620,7 +620,7 @@ struct mongoose_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    if( w -> enchant != ENCHANT_MONGOOSE ) return;
+    if ( w -> enchant != ENCHANT_MONGOOSE ) return;
 
     // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
@@ -696,7 +696,7 @@ struct executioner_callback_t : public action_callback_t
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    if( w -> enchant != ENCHANT_EXECUTIONER ) return;
+    if ( w -> enchant != ENCHANT_EXECUTIONER ) return;
 
     // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
@@ -730,7 +730,7 @@ struct executioner_callback_t : public action_callback_t
 
 void enchant_t::init( player_t* p )
 {
-  if( p -> is_pet() ) return;
+  if ( p -> is_pet() ) return;
 
   p -> main_hand_weapon.enchant = p -> items[ SLOT_MAIN_HAND ].enchant;
   p ->  off_hand_weapon.enchant = p -> items[ SLOT_OFF_HAND  ].enchant;
@@ -761,7 +761,7 @@ void enchant_t::init( player_t* p )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }
-  if( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
+  if ( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
   {
     unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 250, 0.50, 15.0, 45.0 );
   }
@@ -773,11 +773,11 @@ bool enchant_t::get_encoding( std::string& name,
                               std::string& encoding,
                               const std::string& enchant_id )
 {
-  for( int i=0; enchant_db[ i ].id; i++ )
+  for ( int i=0; enchant_db[ i ].id; i++ )
   {
     enchant_data_t& enchant = enchant_db[ i ];
 
-    if( enchant_id == enchant.id )
+    if ( enchant_id == enchant.id )
     {
       name     = enchant.name;
       encoding = enchant.encoding;
@@ -794,18 +794,18 @@ bool enchant_t::download( item_t&            item,
 {
   item.armory_enchant_str.clear();
 
-  if( enchant_id.empty() || enchant_id == "" || enchant_id == "0" ) 
+  if ( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
     return true;
 
   std::string enchant_name;
-  if( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
+  if ( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
   {
     if     ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
-    else if( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
-    else if( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
-    else if( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
-    else if( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
-    else if( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
+    else if ( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
+    else if ( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
+    else if ( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
+    else if ( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
+    else if ( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
 
     armory_t::format( item.armory_enchant_str );
 

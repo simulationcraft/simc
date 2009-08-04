@@ -9,8 +9,8 @@
 
 set_bonus_t::set_bonus_t()
 {
-  memset( (void*) this, 0x00, sizeof( set_bonus_t ) );
-  
+  memset( ( void* ) this, 0x00, sizeof( set_bonus_t ) );
+
   count[ SET_T4_2PC  ] = count[ SET_T4_4PC  ] = -1;
   count[ SET_T5_2PC  ] = count[ SET_T5_4PC  ] = -1;
   count[ SET_T6_2PC  ] = count[ SET_T6_4PC  ] = -1;
@@ -69,14 +69,14 @@ int set_bonus_t::spellstrike() SC_CONST { return ( count[ SET_SPELLSTRIKE ] >= 2
 // set_bonus_t::decode ======================================================
 
 int set_bonus_t::decode( player_t* p,
-			 item_t&   item ) SC_CONST
+                         item_t&   item ) SC_CONST
 {
-  if( ! item.name() ) return SET_NONE;
+  if ( ! item.name() ) return SET_NONE;
 
   int set = p -> decode_set( item );
-  if( set != SET_NONE ) return set;
+  if ( set != SET_NONE ) return set;
 
-  if( strstr( item.name(), "spellstrike"  ) ) return SET_SPELLSTRIKE;
+  if ( strstr( item.name(), "spellstrike"  ) ) return SET_SPELLSTRIKE;
 
   return SET_NONE;
 }
@@ -87,7 +87,7 @@ bool set_bonus_t::init( player_t* p )
 {
   int num_items = p -> items.size();
 
-  for( int i=0; i < num_items; i++ )
+  for ( int i=0; i < num_items; i++ )
   {
     count[ decode( p, p -> items[ i ] ) ] += 1;
   }

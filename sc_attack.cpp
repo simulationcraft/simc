@@ -65,7 +65,7 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + p -> buffs.windfury_totem );
     }
 
-    if( sim -> auras.celerity )
+    if ( sim -> auras.celerity )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }
@@ -166,7 +166,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if( true /*!special*/ )
+  if ( true /*!special*/ )
   {
     if ( delta_level > 2 )
     {

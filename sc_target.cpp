@@ -12,11 +12,11 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s ) :
-    sim(s), name_str("Fluffy Pillow"), race(RACE_HUMANOID), level(83),
-    initial_armor(-1), armor(0), block_value(0), shield(0), 
-    vulnerable(0), invulnerable(0), casting(0),
-    attack_speed(2.0), attack_damage(2000),
-    initial_health(0), current_health(0), total_dmg(0), uptime_list(0)
+    sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
+    initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ),
+    vulnerable( 0 ), invulnerable( 0 ), casting( 0 ),
+    attack_speed( 2.0 ), attack_damage( 2000 ),
+    initial_health( 0 ), current_health( 0 ), total_dmg( 0 ), uptime_list( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -89,8 +89,8 @@ void target_t::recalculate_health()
     delta_time /= sim -> current_iteration + 1; // dampening factor
 
     double factor = 1 - ( delta_time / sim -> max_time );
-    if( factor > 1.5 ) factor = 1.5;
-    if( factor < 0.5 ) factor = 0.5;
+    if ( factor > 1.5 ) factor = 1.5;
+    if ( factor < 0.5 ) factor = 0.5;
 
     initial_health *= factor;
   }
@@ -301,28 +301,28 @@ void target_t::combat_end()
 int target_t::get_options( std::vector<option_t>& options )
 {
   option_t target_options[] =
-    {
-      // @option_doc loc=global/target/general title="Target General"
-      { "target_name",           OPT_STRING, &( name_str                          ) },
-      { "target_race",           OPT_STRING, &( race_str                          ) },
-      { "target_level",          OPT_INT,    &( level                             ) },
-      { "target_health",         OPT_FLT,    &( initial_health                    ) },
-      { "target_id",             OPT_STRING, &( id_str                            ) },
-      // @option_doc loc=global/target/defense title="Target Defense"
-      { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
-      { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
-      { "target_resist_arcane",  OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
-      { "target_resist_frost",   OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
-      { "target_resist_fire",    OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
-      { "target_resist_nature",  OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
-      { "target_armor",          OPT_INT,    &( initial_armor                     ) },
-      { "target_shield",         OPT_INT,    &( shield                            ) },
-      { "target_block",          OPT_INT,    &( block_value                       ) },
-      // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
-      { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
-      { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    // @option_doc loc=global/target/general title="Target General"
+    { "target_name",           OPT_STRING, &( name_str                          ) },
+    { "target_race",           OPT_STRING, &( race_str                          ) },
+    { "target_level",          OPT_INT,    &( level                             ) },
+    { "target_health",         OPT_FLT,    &( initial_health                    ) },
+    { "target_id",             OPT_STRING, &( id_str                            ) },
+    // @option_doc loc=global/target/defense title="Target Defense"
+    { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
+    { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
+    { "target_resist_arcane",  OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
+    { "target_resist_frost",   OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
+    { "target_resist_fire",    OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
+    { "target_resist_nature",  OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
+    { "target_armor",          OPT_INT,    &( initial_armor                     ) },
+    { "target_shield",         OPT_INT,    &( shield                            ) },
+    { "target_block",          OPT_INT,    &( block_value                       ) },
+    // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
+    { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
+    { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
   option_t::copy( options, target_options );
 

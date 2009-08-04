@@ -167,12 +167,12 @@ const char* util_t::race_type_string( int type )
 
 int util_t::parse_race_type( const std::string& name )
 {
-  for( int i=0; i < RACE_MAX; i++ )
+  for ( int i=0; i < RACE_MAX; i++ )
   {
     const char* race_name = util_t::race_type_string( i );
 
-    for( int j=0; tolower( race_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( race_name[ j ] == '\0' )
+    for ( int j=0; tolower( race_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( race_name[ j ] == '\0' )
         return i;
   }
 
@@ -205,12 +205,12 @@ const char* util_t::profession_type_string( int type )
 
 int util_t::parse_profession_type( const std::string& name )
 {
-  for( int i=0; i < PROFESSION_MAX; i++ )
+  for ( int i=0; i < PROFESSION_MAX; i++ )
   {
     const char* prof_name = util_t::profession_type_string( i );
 
-    for( int j=0; tolower( prof_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( prof_name[ j ] == '\0' )
+    for ( int j=0; tolower( prof_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( prof_name[ j ] == '\0' )
         return i;
   }
 
@@ -244,12 +244,12 @@ const char* util_t::player_type_string( int type )
 
 int util_t::parse_player_type( const std::string& name )
 {
-  for( int i=0; i < PLAYER_MAX; i++ )
+  for ( int i=0; i < PLAYER_MAX; i++ )
   {
     const char* player_name = util_t::player_type_string( i );
 
-    for( int j=0; tolower( player_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( player_name[ j ] == '\0' )
+    for ( int j=0; tolower( player_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( player_name[ j ] == '\0' )
         return i;
   }
 
@@ -275,12 +275,12 @@ const char* util_t::attribute_type_string( int type )
 
 int util_t::parse_attribute_type( const std::string& name )
 {
-  for( int i=0; i < ATTRIBUTE_MAX; i++ )
+  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     const char* attr_name = util_t::attribute_type_string( i );
 
-    for( int j=0; tolower( attr_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( attr_name[ j ] == '\0' )
+    for ( int j=0; tolower( attr_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( attr_name[ j ] == '\0' )
         return i;
   }
 
@@ -321,12 +321,12 @@ const char* util_t::gem_type_string( int type )
 
 int util_t::parse_gem_type( const std::string& name )
 {
-  for( int i=0; i < GEM_MAX; i++ )
+  for ( int i=0; i < GEM_MAX; i++ )
   {
     const char* gem_name = util_t::gem_type_string( i );
 
-    for( int j=0; tolower( gem_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( gem_name[ j ] == '\0' )
+    for ( int j=0; tolower( gem_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( gem_name[ j ] == '\0' )
         return i;
   }
 
@@ -377,12 +377,12 @@ const char* util_t::meta_gem_type_string( int type )
 
 int util_t::parse_meta_gem_type( const std::string& name )
 {
-  for( int i=0; i < META_GEM_MAX; i++ )
+  for ( int i=0; i < META_GEM_MAX; i++ )
   {
     const char* meta_name = util_t::meta_gem_type_string( i );
 
-    for( int j=0; tolower( meta_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( meta_name[ j ] == '\0' )
+    for ( int j=0; tolower( meta_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( meta_name[ j ] == '\0' )
         return i;
   }
 
@@ -412,12 +412,12 @@ const char* util_t::result_type_string( int type )
 
 int util_t::parse_result_type( const std::string& name )
 {
-  for( int i=0; i < RESULT_MAX; i++ )
+  for ( int i=0; i < RESULT_MAX; i++ )
   {
     const char* result_name = util_t::result_type_string( i );
 
-    for( int j=0; tolower( result_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( result_name[ j ] == '\0' )
+    for ( int j=0; tolower( result_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( result_name[ j ] == '\0' )
         return i;
   }
 
@@ -445,12 +445,12 @@ const char* util_t::resource_type_string( int type )
 
 int util_t::parse_resource_type( const std::string& name )
 {
-  for( int i=0; i < RESOURCE_MAX; i++ )
+  for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     const char* resource_name = util_t::resource_type_string( i );
 
-    for( int j=0; tolower( resource_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( resource_name[ j ] == '\0' )
+    for ( int j=0; tolower( resource_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( resource_name[ j ] == '\0' )
         return i;
   }
 
@@ -481,12 +481,12 @@ const char* util_t::school_type_string( int school )
 
 int util_t::parse_school_type( const std::string& name )
 {
-  for( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int i=0; i < SCHOOL_MAX; i++ )
   {
     const char* school_name = util_t::school_type_string( i );
 
-    for( int j=0; tolower( school_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( school_name[ j ] == '\0' )
+    for ( int j=0; tolower( school_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( school_name[ j ] == '\0' )
         return i;
   }
 
@@ -532,12 +532,12 @@ const char* util_t::talent_tree_string( int tree )
 
 int util_t::parse_talent_tree( const std::string& name )
 {
-  for( int i=0; i < TALENT_TREE_MAX; i++ )
+  for ( int i=0; i < TALENT_TREE_MAX; i++ )
   {
     const char* tree_name = util_t::talent_tree_string( i );
 
-    for( int j=0; tolower( tree_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( tree_name[ j ] == '\0' )
+    for ( int j=0; tolower( tree_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( tree_name[ j ] == '\0' )
         return i;
   }
 
@@ -575,12 +575,12 @@ const char* util_t::weapon_type_string( int weapon )
 
 int util_t::parse_weapon_type( const std::string& name )
 {
-  for( int i=0; i < WEAPON_MAX; i++ )
+  for ( int i=0; i < WEAPON_MAX; i++ )
   {
     const char* weapon_name = util_t::weapon_type_string( i );
 
-    for( int j=0; tolower( weapon_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( weapon_name[ j ] == '\0' )
+    for ( int j=0; tolower( weapon_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( weapon_name[ j ] == '\0' )
         return i;
   }
 
@@ -609,12 +609,12 @@ const char* util_t::enchant_type_string( int enchant )
 
 int util_t::parse_enchant_type( const std::string& name )
 {
-  for( int i=0; i < ENCHANT_MAX; i++ )
+  for ( int i=0; i < ENCHANT_MAX; i++ )
   {
     const char* enchant_name = util_t::enchant_type_string( i );
 
-    for( int j=0; tolower( enchant_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( enchant_name[ j ] == '\0' )
+    for ( int j=0; tolower( enchant_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( enchant_name[ j ] == '\0' )
         return i;
   }
 
@@ -646,12 +646,12 @@ const char* util_t::weapon_buff_type_string( int buff )
 
 int util_t::parse_weapon_buff_type( const std::string& name )
 {
-  for( int i=0; i < WEAPON_BUFF_MAX; i++ )
+  for ( int i=0; i < WEAPON_BUFF_MAX; i++ )
   {
     const char* buff_name = util_t::weapon_buff_type_string( i );
 
-    for( int j=0; tolower( buff_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( buff_name[ j ] == '\0' )
+    for ( int j=0; tolower( buff_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( buff_name[ j ] == '\0' )
         return i;
   }
 
@@ -681,12 +681,12 @@ const char* util_t::flask_type_string( int flask )
 
 int util_t::parse_flask_type( const std::string& name )
 {
-  for( int i=0; i < FLASK_MAX; i++ )
+  for ( int i=0; i < FLASK_MAX; i++ )
   {
     const char* flask_name = util_t::flask_type_string( i );
 
-    for( int j=0; tolower( flask_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( flask_name[ j ] == '\0' )
+    for ( int j=0; tolower( flask_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( flask_name[ j ] == '\0' )
         return i;
   }
 
@@ -720,12 +720,12 @@ const char* util_t::food_type_string( int food )
 
 int util_t::parse_food_type( const std::string& name )
 {
-  for( int i=0; i < FOOD_MAX; i++ )
+  for ( int i=0; i < FOOD_MAX; i++ )
   {
     const char* food_name = util_t::food_type_string( i );
 
-    for( int j=0; tolower( food_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( food_name[ j ] == '\0' )
+    for ( int j=0; tolower( food_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( food_name[ j ] == '\0' )
         return i;
   }
 
@@ -765,12 +765,12 @@ const char* util_t::slot_type_string( int slot )
 
 int util_t::parse_slot_type( const std::string& name )
 {
-  for( int i=0; i < SLOT_MAX; i++ )
+  for ( int i=0; i < SLOT_MAX; i++ )
   {
     const char* slot_name = util_t::slot_type_string( i );
 
-    for( int j=0; tolower( slot_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( slot_name[ j ] == '\0' )
+    for ( int j=0; tolower( slot_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( slot_name[ j ] == '\0' )
         return i;
   }
 
@@ -904,34 +904,34 @@ const char* util_t::stat_type_wowhead( int stat )
 
 int util_t::parse_stat_type( const std::string& name )
 {
-  for( int i=0; i <= STAT_MAX; i++ )
+  for ( int i=0; i <= STAT_MAX; i++ )
   {
     const char* stat_name = util_t::stat_type_string( i );
 
-    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( stat_name[ j ] == '\0' )
+    for ( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( stat_name[ j ] == '\0' )
         return i;
   }
 
-  for( int i=0; i <= STAT_MAX; i++ )
+  for ( int i=0; i <= STAT_MAX; i++ )
   {
     const char* stat_name = util_t::stat_type_abbrev( i );
 
-    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( stat_name[ j ] == '\0' )
+    for ( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( stat_name[ j ] == '\0' )
         return i;
   }
 
-  for( int i=0; i <= STAT_MAX; i++ )
+  for ( int i=0; i <= STAT_MAX; i++ )
   {
     const char* stat_name = util_t::stat_type_wowhead( i );
 
-    for( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
-      if( stat_name[ j ] == '\0' )
+    for ( int j=0; tolower( stat_name[ j ] ) == tolower( name[ j ] ); j++ )
+      if ( stat_name[ j ] == '\0' )
         return i;
   }
 
-  if( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
+  if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
   return STAT_NONE;
 }
@@ -940,7 +940,7 @@ int util_t::parse_stat_type( const std::string& name )
 
 const char* util_t::class_id_string( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case WARRIOR:      return  "1";
   case PALADIN:      return  "2";
@@ -961,7 +961,7 @@ const char* util_t::class_id_string( int type )
 
 int util_t::translate_class_id( int cid )
 {
-  switch( cid )
+  switch ( cid )
   {
   case  1: return WARRIOR;
   case  2: return PALADIN;
@@ -983,13 +983,13 @@ int util_t::translate_class_id( int cid )
 bool util_t::socket_gem_match( int socket,
                                int gem )
 {
-  if( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
+  if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
 
-  if( socket == GEM_META ) return ( gem == GEM_META );
+  if ( socket == GEM_META ) return ( gem == GEM_META );
 
-  if( socket == GEM_RED    ) return ( gem == GEM_RED    || gem == GEM_ORANGE || gem == GEM_PURPLE );
-  if( socket == GEM_YELLOW ) return ( gem == GEM_YELLOW || gem == GEM_ORANGE || gem == GEM_GREEN  );
-  if( socket == GEM_BLUE   ) return ( gem == GEM_BLUE   || gem == GEM_PURPLE || gem == GEM_GREEN  );
+  if ( socket == GEM_RED    ) return ( gem == GEM_RED    || gem == GEM_ORANGE || gem == GEM_PURPLE );
+  if ( socket == GEM_YELLOW ) return ( gem == GEM_YELLOW || gem == GEM_ORANGE || gem == GEM_GREEN  );
+  if ( socket == GEM_BLUE   ) return ( gem == GEM_BLUE   || gem == GEM_PURPLE || gem == GEM_GREEN  );
 
   return false;
 }
@@ -1015,10 +1015,10 @@ int util_t::string_split( std::vector<std::string>& results,
     {
       if ( allow_quotes && ( buffer[cut_pt] == '"' ) )
       {
-	      in_quotes = !in_quotes;
+        in_quotes = !in_quotes;
         temp_str = buffer.substr( 0, cut_pt );
         temp_str += buffer.substr( cut_pt + 1 );
-	      buffer = temp_str;
+        buffer = temp_str;
         if ( in_quotes )
         {
           search = '"';
@@ -1029,16 +1029,16 @@ int util_t::string_split( std::vector<std::string>& results,
           search += '"';
         }
       }
-      if ( !in_quotes ) 
+      if ( !in_quotes )
       {
-        results.push_back( buffer.substr( 0, cut_pt ) ); 
+        results.push_back( buffer.substr( 0, cut_pt ) );
       }
     }
     if ( !in_quotes )
     {
       if ( buffer.length() > cut_pt )
       {
-        buffer = buffer.substr( cut_pt + 1 );  
+        buffer = buffer.substr( cut_pt + 1 );
       }
       else
       {
@@ -1051,23 +1051,23 @@ int util_t::string_split( std::vector<std::string>& results,
     results.push_back( buffer );
   }
 
-/*
-  std::string buffer = str;
-  std::string::size_type cut_pt;
+  /*
+    std::string buffer = str;
+    std::string::size_type cut_pt;
 
-  while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
-  {
-    if ( cut_pt > 0 )
+    while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
     {
-      results.push_back( buffer.substr( 0, cut_pt ) );
+      if ( cut_pt > 0 )
+      {
+        results.push_back( buffer.substr( 0, cut_pt ) );
+      }
+      buffer = buffer.substr( cut_pt + 1 );
     }
-    buffer = buffer.substr( cut_pt + 1 );
-  }
-  if ( buffer.length() > 0 )
-  {
-    results.push_back( buffer );
-  }
-*/
+    if ( buffer.length() > 0 )
+    {
+      results.push_back( buffer );
+    }
+  */
   return static_cast<int>( results.size() );
 }
 
@@ -1110,7 +1110,7 @@ int util_t::string_split( const std::string& str,
 
 int64_t util_t::milliseconds()
 {
-  return clock()/( CLOCKS_PER_SEC/1000 ); 
+  return clock()/( CLOCKS_PER_SEC/1000 );
 }
 
 // util_t::parse_date ======================================================
@@ -1119,34 +1119,34 @@ int64_t util_t::parse_date( const std::string& month_day_year )
 {
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, month_day_year, " _,;-/" );
-  if( num_splits != 3 ) return 0;
+  if ( num_splits != 3 ) return 0;
 
   std::string month = splits[ 0 ];
   std::string day   = splits[ 1 ];
   std::string year  = splits[ 2 ];
-  
-  for( int i=0; month[ i ]; i++ ) month[ i ] = tolower( month[ i ] );
 
-  if( month.find( "jan" ) != std::string::npos ) month = "01";
-  if( month.find( "feb" ) != std::string::npos ) month = "02";
-  if( month.find( "mar" ) != std::string::npos ) month = "03";
-  if( month.find( "apr" ) != std::string::npos ) month = "04";
-  if( month.find( "may" ) != std::string::npos ) month = "05";
-  if( month.find( "jun" ) != std::string::npos ) month = "06";
-  if( month.find( "jul" ) != std::string::npos ) month = "07";
-  if( month.find( "aug" ) != std::string::npos ) month = "08";
-  if( month.find( "sep" ) != std::string::npos ) month = "09";
-  if( month.find( "oct" ) != std::string::npos ) month = "10";
-  if( month.find( "nov" ) != std::string::npos ) month = "11";
-  if( month.find( "ded" ) != std::string::npos ) month = "12";
+  for ( int i=0; month[ i ]; i++ ) month[ i ] = tolower( month[ i ] );
 
-  if( month.size() == 1 ) month.insert( month.begin(), '0'  );
-  if( day  .size() == 1 ) day  .insert( day  .begin(), '0'  );
-  if( year .size() == 2 ) year .insert( year .begin(), 2, '0' );
+  if ( month.find( "jan" ) != std::string::npos ) month = "01";
+  if ( month.find( "feb" ) != std::string::npos ) month = "02";
+  if ( month.find( "mar" ) != std::string::npos ) month = "03";
+  if ( month.find( "apr" ) != std::string::npos ) month = "04";
+  if ( month.find( "may" ) != std::string::npos ) month = "05";
+  if ( month.find( "jun" ) != std::string::npos ) month = "06";
+  if ( month.find( "jul" ) != std::string::npos ) month = "07";
+  if ( month.find( "aug" ) != std::string::npos ) month = "08";
+  if ( month.find( "sep" ) != std::string::npos ) month = "09";
+  if ( month.find( "oct" ) != std::string::npos ) month = "10";
+  if ( month.find( "nov" ) != std::string::npos ) month = "11";
+  if ( month.find( "ded" ) != std::string::npos ) month = "12";
 
-  if( day.size()   != 2 ) return 0;
-  if( month.size() != 2 ) return 0;
-  if( year.size()  != 4 ) return 0;
+  if ( month.size() == 1 ) month.insert( month.begin(), '0'  );
+  if ( day  .size() == 1 ) day  .insert( day  .begin(), '0'  );
+  if ( year .size() == 2 ) year .insert( year .begin(), 2, '0' );
+
+  if ( day.size()   != 2 ) return 0;
+  if ( month.size() != 2 ) return 0;
+  if ( year.size()  != 4 ) return 0;
 
   std::string buffer = year + month + day;
 
@@ -1166,7 +1166,7 @@ int util_t::printf( const char *format,  ... )
   p_locale = setlocale( LC_CTYPE, NULL );
   if ( p_locale != NULL )
   {
-    strncpy(buffer_locale, p_locale, 1023 );
+    strncpy( buffer_locale, p_locale, 1023 );
     buffer_locale[1023] = '\0';
   }
   else
@@ -1178,7 +1178,7 @@ int util_t::printf( const char *format,  ... )
 
   va_start( fmtargs, format );
   retcode = vprintf( format, fmtargs );
-  va_end(fmtargs);
+  va_end( fmtargs );
 
   setlocale( LC_CTYPE, p_locale );
 
@@ -1197,7 +1197,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   p_locale = setlocale( LC_CTYPE, NULL );
   if ( p_locale != NULL )
   {
-    strncpy(buffer_locale, p_locale, 1023 );
+    strncpy( buffer_locale, p_locale, 1023 );
     buffer_locale[1023] = '\0';
   }
   else
@@ -1209,7 +1209,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
 
   va_start( fmtargs, format );
   retcode = vfprintf( stream, format, fmtargs );
-  va_end(fmtargs);
+  va_end( fmtargs );
 
   setlocale( LC_CTYPE, p_locale );
 
@@ -1218,19 +1218,19 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
 
 std::string& util_t::utf8_binary_to_hex( std::string& name )
 {
-  if( name.empty() ) return name;
+  if ( name.empty() ) return name;
 
   std::string buffer="";
   char buffer2[32];
 
   int size = name.size();
-  for( int i=0; i < size; i++ )
+  for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
 
     if ( c >= 0x80 )
     {
-      snprintf(buffer2,31,"%%%0X",c);
+      snprintf( buffer2,31,"%%%0X",c );
       buffer2[31] = '\0';
       buffer += buffer2;
       continue;
@@ -1245,13 +1245,13 @@ std::string& util_t::utf8_binary_to_hex( std::string& name )
 
 std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
 {
-  if( name.empty() ) return name;
+  if ( name.empty() ) return name;
 
   std::string buffer="";
   char buffer2[32];
 
   int size = name.size();
-  for( int i=0; i < size; i++ )
+  for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
 
@@ -1266,7 +1266,7 @@ std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
         buffer += "%C3";
         c -= 0x40;
       }
-      snprintf(buffer2,31,"%%%0X",c);
+      snprintf( buffer2,31,"%%%0X",c );
       buffer2[31] = '\0';
       buffer += buffer2;
       continue;
@@ -1281,33 +1281,33 @@ std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
 
 std::string& util_t::utf8_hex_to_ascii( std::string& name )
 {
-  if( name.empty() ) return name;
+  if ( name.empty() ) return name;
 
   std::string buffer="";
 
   int size = name.size();
-  for( int i=0; i < size; i++ )
+  for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
 
-    if( c == '%' )
+    if ( c == '%' )
     {
-      if( ( ( i + 5 ) < size ) && ( name[ i + 3 ] == '%' ) &&
-          ( tolower( name[ i + 1 ] ) == 'c' ) &&
-          ( name[ i + 2 ] >= '2' ) && ( name[ i + 2 ] <= '3' ) &&
-          (
-            ( name[ i + 4 ] == '8' ) || ( name[ i + 4 ] == '9' ) ||
-            ( tolower( name[ i + 4 ] ) == 'a' ) || ( tolower( name[ i + 4 ] ) == 'b' )
-          )
-        )
-      {        
+      if ( ( ( i + 5 ) < size ) && ( name[ i + 3 ] == '%' ) &&
+           ( tolower( name[ i + 1 ] ) == 'c' ) &&
+           ( name[ i + 2 ] >= '2' ) && ( name[ i + 2 ] <= '3' ) &&
+           (
+             ( name[ i + 4 ] == '8' ) || ( name[ i + 4 ] == '9' ) ||
+             ( tolower( name[ i + 4 ] ) == 'a' ) || ( tolower( name[ i + 4 ] ) == 'b' )
+           )
+         )
+      {
         int num = 0;
-        switch( tolower( name[ i + 4 ] ) )
+        switch ( tolower( name[ i + 4 ] ) )
         {
-        case 8: 
+        case 8:
           num=0x80;
           break;
-        case 9: 
+        case 9:
           num=0x90;
           break;
         case 'a':
@@ -1317,9 +1317,9 @@ std::string& util_t::utf8_hex_to_ascii( std::string& name )
           num=0xB0;
           break;
         }
-        
+
         int c2 = tolower( name[ i + 5 ] );
-        if( ( c2 >= '0' ) && ( c2 <= '9' ) )
+        if ( ( c2 >= '0' ) && ( c2 <= '9' ) )
         {
           num += c2 - '0';
         }
@@ -1402,7 +1402,7 @@ std::string& util_t::utf8_hex_to_ascii( std::string& name )
 
 std::string& util_t::format_name( std::string& name )
 {
-  if( name.empty() ) return name;
+  if ( name.empty() ) return name;
 
   util_t::utf8_hex_to_ascii( name );
 
@@ -1425,18 +1425,18 @@ std::string tolower( std::string src )
 
 std::string trim( std::string src )
 {
-  if (src=="") return "";
+  if ( src=="" ) return "";
   std::string dest=src;
   //remove left
   int p=0;
-  while ((p<(int)dest.length())&&(dest[p]==' ')) p++;
-  if (p>0) 
-    dest.erase(0,p);
+  while ( ( p<( int )dest.length() )&&( dest[p]==' ' ) ) p++;
+  if ( p>0 )
+    dest.erase( 0,p );
   //remove right
   p=dest.length()-1;
-  while ((p>=0)&&(dest[p]==' ')) p--;
-  if (p<(int)dest.length()-1) 
-    dest.erase(p+1);
+  while ( ( p>=0 )&&( dest[p]==' ' ) ) p--;
+  if ( p<( int )dest.length()-1 )
+    dest.erase( p+1 );
   //return trimmed string
   return dest;
 }
@@ -1444,19 +1444,20 @@ std::string trim( std::string src )
 
 void replace_char( std::string& src, char old_c, char new_c  )
 {
-  for (int i=0; i<(int)src.length(); i++)
-    if (src[i]==old_c)
+  for ( int i=0; i<( int )src.length(); i++ )
+    if ( src[i]==old_c )
       src[i]=new_c;
 }
 
 void replace_str( std::string& src, std::string old_str, std::string new_str  )
 {
-  if (old_str=="") return;
+  if ( old_str=="" ) return;
   std::string dest="";
   size_t p;
-  while ((p=src.find(old_str))!=std::string::npos){
-    dest+=src.substr(0,p)+new_str;
-    src.erase(0,p+old_str.length());
+  while ( ( p=src.find( old_str ) )!=std::string::npos )
+  {
+    dest+=src.substr( 0,p )+new_str;
+    src.erase( 0,p+old_str.length() );
   }
   dest+=src;
   src=dest;
@@ -1469,25 +1470,29 @@ bool my_isdigit( char c )
   return isdigit( c )!=0;
 }
 
-bool str_to_float(std::string src, double& dest )
+bool str_to_float( std::string src, double& dest )
 {
   bool was_sign=false;
   bool was_digit=false;
   bool was_dot=false;
   bool res=true;
   //check each char
-  for (size_t p=0; res&&(p<src.length()); p++){
+  for ( size_t p=0; res&&( p<src.length() ); p++ )
+  {
     char ch=src[p];
-    if (ch==' ') continue;
-    if (((ch=='+')||(ch=='-'))&& !(was_sign||was_digit)){
+    if ( ch==' ' ) continue;
+    if ( ( ( ch=='+' )||( ch=='-' ) )&& !( was_sign||was_digit ) )
+    {
       was_sign=true;
       continue;
     }
-    if ((ch=='.')&& was_digit && !was_dot){
+    if ( ( ch=='.' )&& was_digit && !was_dot )
+    {
       was_dot=true;
       continue;
     }
-    if ((ch>='0')&&(ch<='9')){
+    if ( ( ch>='0' )&&( ch<='9' ) )
+    {
       was_digit=true;
       continue;
     }
@@ -1495,8 +1500,8 @@ bool str_to_float(std::string src, double& dest )
     res=false;
   }
   //check if we had at least one digit
-  if (!was_digit) res=false;
+  if ( !was_digit ) res=false;
   //return result
-  dest=atof(src.c_str());
+  dest=atof( src.c_str() );
   return res;
 }

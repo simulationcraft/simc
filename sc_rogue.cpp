@@ -274,7 +274,8 @@ struct rogue_t : public player_t
   }
 };
 
-namespace { // ANONYMOUS NAMESPACE =========================================
+namespace   // ANONYMOUS NAMESPACE =========================================
+{
 
 // ==========================================================================
 // Rogue Attack
@@ -376,7 +377,7 @@ static void break_stealth( rogue_t* p )
   {
     p -> _buffs.stealthed = -1;
 
-    if( p -> _buffs.master_of_subtlety )
+    if ( p -> _buffs.master_of_subtlety )
     {
       struct master_of_subtlety_expiration_t : public event_t
       {
@@ -398,7 +399,7 @@ static void break_stealth( rogue_t* p )
       new ( p -> sim ) master_of_subtlety_expiration_t( p -> sim, p );
     }
 
-    if( p -> _buffs.overkill )
+    if ( p -> _buffs.overkill )
     {
       struct overkill_expiration_t : public event_t
       {
@@ -792,25 +793,25 @@ void rogue_attack_t::parse_options( option_t*          options,
                                     const std::string& options_str )
 {
   option_t base_options[] =
-    {
-      { "min_combo_points", OPT_INT, &min_combo_points },
-      { "max_combo_points", OPT_INT, &max_combo_points },
-      { "cp>",              OPT_INT, &min_combo_points },
-      { "cp<",              OPT_INT, &max_combo_points },
-      { "min_energy",       OPT_FLT, &min_energy       },
-      { "max_energy",       OPT_FLT, &max_energy       },
-      { "energy>",          OPT_FLT, &min_energy       },
-      { "energy<",          OPT_FLT, &max_energy       },
-      { "hfb>",             OPT_FLT, &min_hfb_expire   },
-      { "hfb<",             OPT_FLT, &max_hfb_expire   },
-      { "snd>",             OPT_FLT, &min_snd_expire   },
-      { "snd<",             OPT_FLT, &max_snd_expire   },
-      { "env>",             OPT_FLT, &min_env_expire   },
-      { "env<",             OPT_FLT, &max_env_expire   },
-      { "rup>",             OPT_FLT, &min_rup_expire   },
-      { "rup<",             OPT_FLT, &max_rup_expire   },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  {
+    { "min_combo_points", OPT_INT, &min_combo_points },
+    { "max_combo_points", OPT_INT, &max_combo_points },
+    { "cp>",              OPT_INT, &min_combo_points },
+    { "cp<",              OPT_INT, &max_combo_points },
+    { "min_energy",       OPT_FLT, &min_energy       },
+    { "max_energy",       OPT_FLT, &max_energy       },
+    { "energy>",          OPT_FLT, &min_energy       },
+    { "energy<",          OPT_FLT, &max_energy       },
+    { "hfb>",             OPT_FLT, &min_hfb_expire   },
+    { "hfb<",             OPT_FLT, &max_hfb_expire   },
+    { "snd>",             OPT_FLT, &min_snd_expire   },
+    { "snd<",             OPT_FLT, &max_snd_expire   },
+    { "env>",             OPT_FLT, &min_env_expire   },
+    { "env<",             OPT_FLT, &max_env_expire   },
+    { "rup>",             OPT_FLT, &min_rup_expire   },
+    { "rup<",             OPT_FLT, &max_rup_expire   },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
   std::vector<option_t> merged_options;
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
@@ -866,7 +867,7 @@ void rogue_attack_t::execute()
     p -> _buffs.cold_blood = 0;
 
   p -> _buffs.shadowstep = 0;
-  
+
   if ( p -> _buffs.tier9_2pc && base_cost > 0 )
   {
     p -> _buffs.tier9_2pc = 0;
@@ -1137,7 +1138,7 @@ struct auto_attack_t : public rogue_attack_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
-    if( p -> moving ) return false;
+    if ( p -> moving ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1153,9 +1154,9 @@ struct adrenaline_rush_t : public rogue_attack_t
     check_talent( p -> talents.adrenaline_rush );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     cooldown = 180;
@@ -1198,20 +1199,20 @@ struct ambush_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 10, 908, 908, 0, 60 },
-        { 75,  9, 770, 770, 0, 60 },
-        { 70,  8, 509, 509, 0, 60 },
-        { 66,  7, 369, 369, 0, 60 },
-        { 58,  6, 319, 319, 0, 60 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 10, 908, 908, 0, 60 },
+      { 75,  9, 770, 770, 0, 60 },
+      { 70,  8, 509, 509, 0, 60 },
+      { 66,  7, 369, 369, 0, 60 },
+      { 58,  6, 319, 319, 0, 60 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
@@ -1263,19 +1264,19 @@ struct backstab_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 12, 465, 465, 0, 60 },
-        { 74, 11, 383, 383, 0, 60 },
-        { 68, 10, 255, 255, 0, 60 },
-        { 60,  9, 225, 225, 0, 60 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 12, 465, 465, 0, 60 },
+      { 74, 11, 383, 383, 0, 60 },
+      { 68, 10, 255, 255, 0, 60 },
+      { 60,  9, 225, 225, 0, 60 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
@@ -1296,7 +1297,7 @@ struct backstab_t : public rogue_attack_t
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
-    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1331,9 +1332,9 @@ struct blade_flurry_t : public rogue_attack_t
     check_talent( p -> talents.blade_flurry );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     cooldown  = 120;
@@ -1381,11 +1382,11 @@ struct envenom_t : public rogue_attack_t
     assert( p -> level >= 62 );
 
     option_t options[] =
-      {
-        { "min_doses", OPT_INT,  &min_doses },
-        { "no_buff",   OPT_BOOL, &no_buff   },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "min_doses", OPT_INT,  &min_doses },
+      { "no_buff",   OPT_BOOL, &no_buff   },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1500,9 +1501,9 @@ struct eviscerate_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1567,10 +1568,10 @@ struct expose_armor_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { "override_sunder", OPT_BOOL, &override_sunder },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "override_sunder", OPT_BOOL, &override_sunder },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1653,9 +1654,9 @@ struct feint_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost = p -> glyphs.feint ? 10 : 20;
@@ -1682,18 +1683,18 @@ struct garrote_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 10, 0, 0, 119, 50 },
-        { 75,  9, 0, 0, 110, 50 },
-        { 70,  8, 0, 0, 102, 50 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 10, 0, 0, 119, 50 },
+      { 75,  9, 0, 0, 110, 50 },
+      { 70,  8, 0, 0, 102, 50 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     // it uses a weapon (for poison app)
@@ -1758,9 +1759,9 @@ struct ghostly_strike_t : public rogue_attack_t
     check_talent( p -> talents.ghostly_strike );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -1795,9 +1796,9 @@ struct hemorrhage_t : public rogue_attack_t
     check_talent( p -> talents.hemorrhage );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_dd_min = base_dd_max = 1;
@@ -1811,7 +1812,7 @@ struct hemorrhage_t : public rogue_attack_t
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> set_bonus.tier6_4pc()    * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
-    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
@@ -1882,10 +1883,10 @@ struct hunger_for_blood_t : public rogue_attack_t
     check_talent( p -> talents.hunger_for_blood );
 
     option_t options[] =
-      {
-        { "refresh_at", OPT_FLT, &refresh_at },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "refresh_at", OPT_FLT, &refresh_at },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_cost = 15.0;
@@ -1961,9 +1962,9 @@ struct kick_t : public rogue_attack_t
       rogue_attack_t( "kick", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -1976,7 +1977,7 @@ struct kick_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    if( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> casting ) return false;
     return rogue_attack_t::ready();
   }
 };
@@ -2018,9 +2019,9 @@ struct killing_spree_t : public rogue_attack_t
     check_talent( p -> talents.killing_spree );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     base_dd_min = base_dd_max = 1;
@@ -2089,19 +2090,19 @@ struct mutilate_t : public rogue_attack_t
     check_talent( p -> talents.mutilate );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 6, 181, 181, 0, 60 },
-        { 75, 5, 153, 153, 0, 60 },
-        { 70, 4, 101, 101, 0, 60 },
-        { 60, 3,  88,  88, 0, 60 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 6, 181, 181, 0, 60 },
+      { 75, 5, 153, 153, 0, 60 },
+      { 70, 4, 101, 101, 0, 60 },
+      { 60, 3,  88,  88, 0, 60 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     may_crit               = true;
@@ -2116,7 +2117,7 @@ struct mutilate_t : public rogue_attack_t
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
-    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2146,7 +2147,7 @@ struct mutilate_t : public rogue_attack_t
     trigger_dirty_deeds( this );
   }
 
-virtual void consume_resource() { }
+  virtual void consume_resource() { }
 
   virtual bool ready()
   {
@@ -2166,9 +2167,9 @@ struct premeditation_t : public rogue_attack_t
       rogue_attack_t( "premeditation", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     requires_stealth = true;
@@ -2213,9 +2214,9 @@ struct rupture_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -2251,7 +2252,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       added_ticks = 0;
       num_ticks = 3 + p -> _buffs.combo_points;
@@ -2267,7 +2268,7 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::player_buff();
     trigger_dirty_deeds( this );
   }
-  
+
   virtual void tick()
   {
     rogue_t* p = player -> cast_rogue();
@@ -2289,9 +2290,9 @@ struct shadowstep_t : public rogue_attack_t
       rogue_attack_t( "shadowstep", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -2318,9 +2319,9 @@ struct shiv_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     weapon = &( p -> off_hand_weapon );
@@ -2360,20 +2361,20 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     static rank_t ranks[] =
-      {
-        { 80, 12, 180, 180, 0, 45 },
-        { 76, 11, 150, 150, 0, 45 },
-        { 70, 10,  98,  98, 0, 45 },
-        { 62,  9,  80,  80, 0, 45 },
-        { 54,  8,  68,  68, 0, 45 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
+    {
+      { 80, 12, 180, 180, 0, 45 },
+      { 76, 11, 150, 150, 0, 45 },
+      { 70, 10,  98,  98, 0, 45 },
+      { 62,  9,  80,  80, 0, 45 },
+      { 54,  8,  68,  68, 0, 45 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
     init_rank( ranks );
 
     weapon = &( p -> main_hand_weapon );
@@ -2390,7 +2391,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> set_bonus.tier6_4pc()    * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
-    if( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
 
@@ -2425,9 +2426,9 @@ struct slice_and_dice_t : public rogue_attack_t
       rogue_attack_t( "slice_and_dice", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     requires_combo_points = true;
@@ -2499,11 +2500,11 @@ struct pool_energy_t : public rogue_attack_t
       rogue_attack_t( "pool_energy", player ), wait( 0.5 ), for_next( 0 )
   {
     option_t options[] =
-      {
-        { "wait",     OPT_FLT,  &wait     },
-        { "for_next", OPT_BOOL, &for_next },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "wait",     OPT_FLT,  &wait     },
+      { "for_next", OPT_BOOL, &for_next },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
   }
 
@@ -2551,9 +2552,9 @@ struct shadow_dance_t : public rogue_attack_t
     check_talent( p -> talents.shadow_dance );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -2570,7 +2571,7 @@ struct shadow_dance_t : public rogue_attack_t
         p -> aura_gain( "Shadow Dance" );
         p -> _buffs.shadow_dance = 1;
         double duration = sim -> P320 ? 6 : 10;
-        if( p -> glyphs.shadow_dance ) duration += 4;
+        if ( p -> glyphs.shadow_dance ) duration += 4;
         sim -> add_event( this, duration );
       }
       virtual void execute()
@@ -2602,10 +2603,10 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     std::string target_str = p -> tricks_of_the_trade_target_str;
 
     option_t options[] =
-      {
-        { "target", OPT_STRING, &target_str },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "target", OPT_STRING, &target_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -2613,11 +2614,11 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     base_cost = 15;
     cooldown  = 30.0 - p -> talents.filthy_tricks * 5.0;
 
-    if( target_str.empty() || target_str == "none" )
+    if ( target_str.empty() || target_str == "none" )
     {
       tricks_target = 0;
     }
-    else if( target_str == "self" )
+    else if ( target_str == "self" )
     {
       tricks_target = p;
     }
@@ -2646,7 +2647,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    if( ! tricks_target ) return false;
+    if ( ! tricks_target ) return false;
 
     if ( tricks_target -> buffs.tricks_of_the_trade )
       return false;
@@ -2663,9 +2664,9 @@ struct vanish_t : public rogue_attack_t
       rogue_attack_t( "vanish", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -2981,11 +2982,11 @@ struct apply_poison_t : public rogue_poison_t
     std::string  off_hand_str;
 
     option_t options[] =
-      {
-        { "main_hand", OPT_STRING, &main_hand_str },
-        {  "off_hand", OPT_STRING,  &off_hand_str },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { "main_hand", OPT_STRING, &main_hand_str },
+      {  "off_hand", OPT_STRING,  &off_hand_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     if ( main_hand_str.empty() &&
@@ -2997,7 +2998,7 @@ struct apply_poison_t : public rogue_poison_t
 
     trigger_gcd = 0;
 
-    if( p -> main_hand_weapon.type != WEAPON_NONE )
+    if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
       if ( main_hand_str == "anesthetic" ) main_hand_poison = ANESTHETIC_POISON;
       if ( main_hand_str == "deadly"     ) main_hand_poison =     DEADLY_POISON;
@@ -3005,7 +3006,7 @@ struct apply_poison_t : public rogue_poison_t
       if ( main_hand_str == "wound"      ) main_hand_poison =      WOUND_POISON;
     }
 
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( off_hand_str == "anesthetic" ) off_hand_poison = ANESTHETIC_POISON;
       if ( off_hand_str == "deadly"     ) off_hand_poison =     DEADLY_POISON;
@@ -3033,14 +3034,14 @@ struct apply_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if( p -> main_hand_weapon.type != WEAPON_NONE )
+    if ( p -> main_hand_weapon.type != WEAPON_NONE )
       if ( main_hand_poison != WEAPON_BUFF_NONE )
         return( main_hand_poison != p -> main_hand_weapon.buff );
 
-    if( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
       if ( off_hand_poison != WEAPON_BUFF_NONE )
         return( off_hand_poison != p -> off_hand_weapon.buff );
-    
+
     return false;
   }
 };
@@ -3060,9 +3061,9 @@ struct cold_blood_t : public spell_t
     check_talent( p -> talents.cold_blood );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -3089,9 +3090,9 @@ struct preparation_t : public spell_t
     check_talent( p -> talents.preparation );
 
     option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
     parse_options( options, options_str );
 
     trigger_gcd = 0;
@@ -3151,9 +3152,9 @@ struct stealth_t : public spell_t
 
 int rogue_t::primary_tree() SC_CONST
 {
-  if( talents.mutilate ) return TREE_ASSASSINATION;
-  if( talents.adrenaline_rush || talents.killing_spree ) return TREE_COMBAT;
-  if( talents.honor_among_thieves ) return TREE_SUBTLETY;
+  if ( talents.mutilate ) return TREE_ASSASSINATION;
+  if ( talents.adrenaline_rush || talents.killing_spree ) return TREE_COMBAT;
+  if ( talents.honor_among_thieves ) return TREE_SUBTLETY;
 
   return TALENT_TREE_MAX;
 }
@@ -3162,71 +3163,71 @@ int rogue_t::primary_tree() SC_CONST
 
 void rogue_t::init_actions()
 {
-  if( action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
     action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
     action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
     action_list_str += ",off_hand=deadly";
-    if( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
+    if ( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
     action_list_str += "/auto_attack/kick";
-        
+
     int num_items = items.size();
-    for( int i=0; i < num_items; i++ )
+    for ( int i=0; i < num_items; i++ )
     {
-      if( items[ i ].use.active() )
+      if ( items[ i ].use.active() )
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
       }
     }
 
-    if( primary_tree() == TREE_ASSASSINATION )
+    if ( primary_tree() == TREE_ASSASSINATION )
     {
-      if( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
+      if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
       action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
-      if( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+      if ( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
-      if( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
+      if ( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,min_combo_points=4,no_buff=1";
       action_list_str += "/envenom,min_combo_points=4,energy>=90";
       action_list_str += "/envenom,min_combo_points=2,snd<=2";
       action_list_str += "/tricks_of_the_trade";
       action_list_str += "/mutilate,max_combo_points=3";
-      if( talents.overkill ) action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
+      if ( talents.overkill ) action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
     }
-    else if( primary_tree() == TREE_COMBAT )
+    else if ( primary_tree() == TREE_COMBAT )
     {
       action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
       action_list_str += "/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
-      if( talents.killing_spree ) action_list_str += "/killing_spree,energy<=20,snd>=5";
-      if( talents.blade_flurry  ) action_list_str += "/blade_flurry,snd>=5";
+      if ( talents.killing_spree ) action_list_str += "/killing_spree,energy<=20,snd>=5";
+      if ( talents.blade_flurry  ) action_list_str += "/blade_flurry,snd>=5";
       action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
-      if(   talents.puncturing_wounds        &&
-	    talents.opportunity              &&
-	    talents.close_quarters_combat    &&
-	  ! talents.improved_sinister_strike &&
-	  ! talents.improved_eviscerate      &&
-	    ( main_hand_weapon.type == WEAPON_DAGGER ) )
+      if (   talents.puncturing_wounds        &&
+             talents.opportunity              &&
+             talents.close_quarters_combat    &&
+             ! talents.improved_sinister_strike &&
+             ! talents.improved_eviscerate      &&
+             ( main_hand_weapon.type == WEAPON_DAGGER ) )
       {
-	action_list_str += "/backstab";
+        action_list_str += "/backstab";
       }
       else
       {
-	action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
-	action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
-	action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
-	action_list_str += "/sinister_strike,max_combo_points=4";
+        action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
+        action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
+        action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
+        action_list_str += "/sinister_strike,max_combo_points=4";
       }
-      if( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
+      if ( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
     }
-    else if( primary_tree() == TREE_SUBTLETY )
+    else if ( primary_tree() == TREE_SUBTLETY )
     {
       action_list_str += "/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3";
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
       action_list_str += "/rupture,min_combo_points=4";
-      if( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
+      if ( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
       action_list_str += "/eviscerate,min_combo_points=4";
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
       action_list_str += ",max_combo_points=2,energy>=80";
@@ -3290,41 +3291,41 @@ void rogue_t::init_glyphs()
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-  
-  for( int i=0; i < num_glyphs; i++ )
+
+  for ( int i=0; i < num_glyphs; i++ )
   {
     std::string& n = glyph_names[ i ];
 
     if     ( n == "adrenaline_rush"     ) glyphs.adrenaline_rush = 1;
-    else if( n == "backstab"            ) glyphs.backstab = 1;
-    else if( n == "blade_flurry"        ) glyphs.blade_flurry = 1;
-    else if( n == "eviscerate"          ) glyphs.eviscerate = 1;
-    else if( n == "expose_armor"        ) glyphs.expose_armor = 1;
-    else if( n == "feint"               ) glyphs.feint = 1;
-    else if( n == "ghostly_strike"      ) glyphs.ghostly_strike = 1;
-    else if( n == "hemorrhage"          ) glyphs.hemorrhage = 1;
-    else if( n == "hunger_for_blood"    ) glyphs.hunger_for_blood = 1;
-    else if( n == "killing_spree"       ) glyphs.killing_spree = 1;
-    else if( n == "mutilate"            ) glyphs.mutilate = 1;
-    else if( n == "preparation"         ) glyphs.preparation = 1;
-    else if( n == "rupture"             ) glyphs.rupture = 1;
-    else if( n == "shadow_dance"        ) glyphs.shadow_dance = 1;
-    else if( n == "sinister_strike"     ) glyphs.sinister_strike = 1;
-    else if( n == "slice_and_dice"      ) glyphs.slice_and_dice = 1;
-    else if( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade = 1;
-    else if( n == "vigor"               ) glyphs.vigor = 1;
+    else if ( n == "backstab"            ) glyphs.backstab = 1;
+    else if ( n == "blade_flurry"        ) glyphs.blade_flurry = 1;
+    else if ( n == "eviscerate"          ) glyphs.eviscerate = 1;
+    else if ( n == "expose_armor"        ) glyphs.expose_armor = 1;
+    else if ( n == "feint"               ) glyphs.feint = 1;
+    else if ( n == "ghostly_strike"      ) glyphs.ghostly_strike = 1;
+    else if ( n == "hemorrhage"          ) glyphs.hemorrhage = 1;
+    else if ( n == "hunger_for_blood"    ) glyphs.hunger_for_blood = 1;
+    else if ( n == "killing_spree"       ) glyphs.killing_spree = 1;
+    else if ( n == "mutilate"            ) glyphs.mutilate = 1;
+    else if ( n == "preparation"         ) glyphs.preparation = 1;
+    else if ( n == "rupture"             ) glyphs.rupture = 1;
+    else if ( n == "shadow_dance"        ) glyphs.shadow_dance = 1;
+    else if ( n == "sinister_strike"     ) glyphs.sinister_strike = 1;
+    else if ( n == "slice_and_dice"      ) glyphs.slice_and_dice = 1;
+    else if ( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade = 1;
+    else if ( n == "vigor"               ) glyphs.vigor = 1;
     // To prevent warning messages....
-    else if( n == "blurred_speed"       ) ;
-    else if( n == "cloak_of_shadows"    ) ;
-    else if( n == "distract"            ) ;
-    else if( n == "fan_of_knives"       ) ;
-    else if( n == "garrote"             ) ;
-    else if( n == "pick_lock"           ) ;
-    else if( n == "pick_pocket"         ) ;
-    else if( n == "safe_fall"           ) ;
-    else if( n == "sprint"              ) ;
-    else if( n == "vanish"              ) ;
-    else if( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( n == "blurred_speed"       ) ;
+    else if ( n == "cloak_of_shadows"    ) ;
+    else if ( n == "distract"            ) ;
+    else if ( n == "fan_of_knives"       ) ;
+    else if ( n == "garrote"             ) ;
+    else if ( n == "pick_lock"           ) ;
+    else if ( n == "pick_pocket"         ) ;
+    else if ( n == "safe_fall"           ) ;
+    else if ( n == "sprint"              ) ;
+    else if ( n == "vanish"              ) ;
+    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3344,7 +3345,7 @@ void rogue_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
   initial_attack_power_multiplier  *= 1.0 + ( talents.savage_combat * 0.02 +
-                                      talents.deadliness    * 0.02 );
+                                              talents.deadliness    * 0.02 );
 
   base_attack_crit = -0.00298321;
   initial_attack_crit_per_agility = rating_t::interpolate( level, 0.000355, 0.000250, 0.000120085 );
@@ -3446,7 +3447,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
   {
     if ( ! a -> special || a -> proc ) return;
 
-    if( ! sim -> P320 && a -> ticking ) return;
+    if ( ! sim -> P320 && a -> ticking ) return;
 
     rogue_t* rogue = listener -> cast_rogue();
 
@@ -3551,8 +3552,8 @@ void rogue_t::interrupt()
 {
   player_t::interrupt();
 
-  if( main_hand_attack ) main_hand_attack -> cancel();
-  if(  off_hand_attack )  off_hand_attack -> cancel();
+  if ( main_hand_attack ) main_hand_attack -> cancel();
+  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // rogue_t::regen ==========================================================
@@ -3592,7 +3593,7 @@ double rogue_t::available() SC_CONST
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 
-  if( energy > 20 ) return 0.1;
+  if ( energy > 20 ) return 0.1;
 
   return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
 }
@@ -3604,37 +3605,37 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
                                 std::vector<int*>& subtlety )
 {
   talent_translation_t translation[][3] =
-    {
-      { {  1, &( talents.improved_eviscerate   ) }, {  1, NULL                                   }, {  1, &( talents.relentless_strikes         ) } },
-      { {  2, NULL                               }, {  2, &( talents.improved_sinister_strike  ) }, {  2, NULL                                    } },
-      { {  3, &( talents.malice                ) }, {  3, &( talents.dual_wield_specialization ) }, {  3, &( talents.opportunity                ) } },
-      { {  4, &( talents.ruthlessness          ) }, {  4, &( talents.improved_slice_and_dice   ) }, {  4, &( talents.sleight_of_hand            ) } },
-      { {  5, &( talents.blood_spatter         ) }, {  5, NULL                                   }, {  5, NULL                                    } },
-      { {  6, &( talents.puncturing_wounds     ) }, {  6, &( talents.precision                 ) }, {  6, NULL                                    } },
-      { {  7, &( talents.vigor                 ) }, {  7, NULL                                   }, {  7, NULL                                    } },
-      { {  8, &( talents.improved_expose_armor ) }, {  8, NULL                                   }, {  8, &( talents.ghostly_strike             ) } },
-      { {  9, &( talents.lethality             ) }, {  9, &( talents.close_quarters_combat     ) }, {  9, &( talents.serrated_blades            ) } },
-      { { 10, &( talents.vile_poisons          ) }, { 10, NULL                                   }, { 10, NULL                                    } },
-      { { 11, &( talents.improved_poisons      ) }, { 11, NULL                                   }, { 11, &( talents.initiative                 ) } },
-      { { 12, NULL                               }, { 12, &( talents.lightning_reflexes        ) }, { 12, &( talents.improved_ambush            ) } },
-      { { 13, &( talents.cold_blood            ) }, { 13, &( talents.aggression                ) }, { 13, NULL                                    } },
-      { { 14, NULL                               }, { 14, &( talents.mace_specialization       ) }, { 14, &( talents.preparation                ) } },
-      { { 15, &( talents.quick_recovery        ) }, { 15, &( talents.blade_flurry              ) }, { 15, &( talents.dirty_deeds                ) } },
-      { { 16, &( talents.seal_fate             ) }, { 16, &( talents.sword_specialization      ) }, { 16, &( talents.hemorrhage                 ) } },
-      { { 17, &( talents.murder                ) }, { 17, &( talents.weapon_expertise          ) }, { 17, &( talents.master_of_subtlety         ) } },
-      { { 18, NULL                               }, { 18, &( talents.blade_twisting            ) }, { 18, &( talents.deadliness                 ) } },
-      { { 19, &( talents.overkill              ) }, { 19, &( talents.vitality                  ) }, { 19, NULL                                    } },
-      { { 20, NULL                               }, { 20, &( talents.adrenaline_rush           ) }, { 20, &( talents.premeditation              ) } },
-      { { 21, &( talents.focused_attacks       ) }, { 21, NULL                                   }, { 21, NULL                                    } },
-      { { 22, &( talents.find_weakness         ) }, { 22, NULL                                   }, { 22, &( talents.sinister_calling           ) } },
-      { { 23, &( talents.master_poisoner       ) }, { 23, &( talents.combat_potency            ) }, { 23, NULL                                    } },
-      { { 24, &( talents.mutilate              ) }, { 24, NULL                                   }, { 24, &( talents.honor_among_thieves        ) } },
-      { { 25, &( talents.turn_the_tables       ) }, { 25, &( talents.surprise_attacks          ) }, { 25, &( talents.shadowstep                 ) } },
-      { { 26, &( talents.cut_to_the_chase      ) }, { 26, &( talents.savage_combat             ) }, { 26, &( talents.filthy_tricks              ) } },
-      { { 27, &( talents.hunger_for_blood      ) }, { 27, &( talents.prey_on_the_weak          ) }, { 27, &( talents.slaughter_from_the_shadows ) } },
-      { {  0, NULL                               }, { 28, &( talents.killing_spree             ) }, { 28, &( talents.shadow_dance               ) } },
-      { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                    } }
-    };
+  {
+    { {  1, &( talents.improved_eviscerate   ) }, {  1, NULL                                   }, {  1, &( talents.relentless_strikes         ) } },
+    { {  2, NULL                               }, {  2, &( talents.improved_sinister_strike  ) }, {  2, NULL                                    } },
+    { {  3, &( talents.malice                ) }, {  3, &( talents.dual_wield_specialization ) }, {  3, &( talents.opportunity                ) } },
+    { {  4, &( talents.ruthlessness          ) }, {  4, &( talents.improved_slice_and_dice   ) }, {  4, &( talents.sleight_of_hand            ) } },
+    { {  5, &( talents.blood_spatter         ) }, {  5, NULL                                   }, {  5, NULL                                    } },
+    { {  6, &( talents.puncturing_wounds     ) }, {  6, &( talents.precision                 ) }, {  6, NULL                                    } },
+    { {  7, &( talents.vigor                 ) }, {  7, NULL                                   }, {  7, NULL                                    } },
+    { {  8, &( talents.improved_expose_armor ) }, {  8, NULL                                   }, {  8, &( talents.ghostly_strike             ) } },
+    { {  9, &( talents.lethality             ) }, {  9, &( talents.close_quarters_combat     ) }, {  9, &( talents.serrated_blades            ) } },
+    { { 10, &( talents.vile_poisons          ) }, { 10, NULL                                   }, { 10, NULL                                    } },
+    { { 11, &( talents.improved_poisons      ) }, { 11, NULL                                   }, { 11, &( talents.initiative                 ) } },
+    { { 12, NULL                               }, { 12, &( talents.lightning_reflexes        ) }, { 12, &( talents.improved_ambush            ) } },
+    { { 13, &( talents.cold_blood            ) }, { 13, &( talents.aggression                ) }, { 13, NULL                                    } },
+    { { 14, NULL                               }, { 14, &( talents.mace_specialization       ) }, { 14, &( talents.preparation                ) } },
+    { { 15, &( talents.quick_recovery        ) }, { 15, &( talents.blade_flurry              ) }, { 15, &( talents.dirty_deeds                ) } },
+    { { 16, &( talents.seal_fate             ) }, { 16, &( talents.sword_specialization      ) }, { 16, &( talents.hemorrhage                 ) } },
+    { { 17, &( talents.murder                ) }, { 17, &( talents.weapon_expertise          ) }, { 17, &( talents.master_of_subtlety         ) } },
+    { { 18, NULL                               }, { 18, &( talents.blade_twisting            ) }, { 18, &( talents.deadliness                 ) } },
+    { { 19, &( talents.overkill              ) }, { 19, &( talents.vitality                  ) }, { 19, NULL                                    } },
+    { { 20, NULL                               }, { 20, &( talents.adrenaline_rush           ) }, { 20, &( talents.premeditation              ) } },
+    { { 21, &( talents.focused_attacks       ) }, { 21, NULL                                   }, { 21, NULL                                    } },
+    { { 22, &( talents.find_weakness         ) }, { 22, NULL                                   }, { 22, &( talents.sinister_calling           ) } },
+    { { 23, &( talents.master_poisoner       ) }, { 23, &( talents.combat_potency            ) }, { 23, NULL                                    } },
+    { { 24, &( talents.mutilate              ) }, { 24, NULL                                   }, { 24, &( talents.honor_among_thieves        ) } },
+    { { 25, &( talents.turn_the_tables       ) }, { 25, &( talents.surprise_attacks          ) }, { 25, &( talents.shadowstep                 ) } },
+    { { 26, &( talents.cut_to_the_chase      ) }, { 26, &( talents.savage_combat             ) }, { 26, &( talents.filthy_tricks              ) } },
+    { { 27, &( talents.hunger_for_blood      ) }, { 27, &( talents.prey_on_the_weak          ) }, { 27, &( talents.slaughter_from_the_shadows ) } },
+    { {  0, NULL                               }, { 28, &( talents.killing_spree             ) }, { 28, &( talents.shadow_dance               ) } },
+    { {  0, NULL                               }, {  0, NULL                                   }, {  0, NULL                                    } }
+  };
 
   return get_talent_translation( assassination, combat, subtlety, translation );
 }
@@ -3643,10 +3644,10 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
 
 std::vector<option_t>& rogue_t::get_options()
 {
-  if( options.empty() )
+  if ( options.empty() )
   {
     player_t::get_options();
-    
+
     option_t rogue_options[] =
     {
       // @option_doc loc=skip
@@ -3731,7 +3732,7 @@ bool rogue_t::save( FILE* file, int save_type )
 
   if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    if( honor_among_thieves_interval != 0 )
+    if ( honor_among_thieves_interval != 0 )
     {
       util_t::fprintf( file, "# When using this profile with a real raid AND party setups, override this value to zero.\n" );
       util_t::fprintf( file, "# This does not include HAT procs generated by the Rogue himself.\n" );
@@ -3746,10 +3747,10 @@ bool rogue_t::save( FILE* file, int save_type )
 
 int rogue_t::decode_set( item_t& item )
 {
-  if( strstr( item.name(), "bonescythe"  ) ) return SET_T7;
-  if( strstr( item.name(), "terrorblade" ) ) return SET_T8;
-  if( strstr( item.name(), "vancleef"    ) ) return SET_T9;
-  if( strstr( item.name(), "garona"      ) ) return SET_T9;
+  if ( strstr( item.name(), "bonescythe"  ) ) return SET_T7;
+  if ( strstr( item.name(), "terrorblade" ) ) return SET_T8;
+  if ( strstr( item.name(), "vancleef"    ) ) return SET_T9;
+  if ( strstr( item.name(), "garona"      ) ) return SET_T9;
   return SET_NONE;
 }
 
@@ -3768,7 +3769,7 @@ player_t* player_t::create_rogue( sim_t* sim, const std::string& name )
 
 void player_t::init_rogue( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
@@ -3777,7 +3778,7 @@ void player_t::init_rogue( sim_t* sim )
 
 void player_t::combat_begin_rogue( sim_t* sim )
 {
-  for( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
   }
 }
