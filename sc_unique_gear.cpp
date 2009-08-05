@@ -10,97 +10,52 @@
 struct stat_proc_callback_t : public action_callback_t
 {
   std::string name_str;
-  int stat, stacks, max_stacks;
-  double amount, proc_chance, duration;
-  double cooldown, cooldown_ready;
-  event_t* expiration;
-  proc_t* proc;
-  rng_t* rng;
+  int stat;
+  double amount;
+  buff_t* buff;
 
-  stat_proc_callback_t( const std::string& n, player_t* p, int s, int ms, double a, double pc, double d, double cd, int rng_type=RNG_DEFAULT ) :
+  stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
+			double proc_chance, double duration, double cooldown, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
-      name_str( n ), stat( s ), stacks( 0 ), max_stacks( ms ), amount( a ), proc_chance( pc ), duration( d ), cooldown( cd ),
-      cooldown_ready( 0 ), expiration( 0 ), proc( 0 ), rng( 0 )
+      name_str( n ), stat( s ), amount( a )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
-    if ( proc_chance )
-    {
-      proc = p -> get_proc( name_str.c_str(), sim );
-      if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
-      rng  = p -> get_rng ( name_str.c_str(), rng_type );
-    }
-  }
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-  virtual void reset() { stacks=0; cooldown_ready=0; expiration=0; }
-
-  virtual void expire()
-  {
-    if ( stacks > 0 )
+    struct stat_buff_t : public buff_t
     {
-      listener -> aura_loss( name_str.c_str() );
-      listener -> stat_loss( stat, amount * stacks );
-      stacks = 0;
-    }
+      stat_proc_callback_t* callback;
+      
+      stat_buff_t( const std::string& n, player_t* p, int max_stacks, double duration, double cooldown, double chance, int rng, stat_proc_callback_t* cb ) :
+	buff_t( p -> sim, p, n, max_stacks, duration, cooldown, chance, false, rng ), callback(cb) {}
+
+      virtual void expire()
+      {
+	if( current_stack > 0 ) 
+	{
+	  callback -> listener -> stat_loss( callback -> stat, 
+					     callback -> amount * current_stack );
+	}
+	buff_t::expire();
+      }
+    };
+
+    buff = new stat_buff_t( n, p, max_stacks, duration, cooldown, proc_chance, rng_type, this );
   }
 
   virtual void deactivate()
   {
     action_callback_t::deactivate();
-    event_t::cancel( expiration );
-    expire();
+    buff -> expire();
   }
 
   virtual void trigger( action_t* a )
   {
-    if ( cooldown )
-      if ( sim -> current_time < cooldown_ready )
-        return;
+    bool may_stack = ( buff -> current_stack < buff -> max_stack );
 
-    if ( proc_chance )
-    {
-      if ( ! rng -> roll( proc_chance ) )
-        return;
-
-      proc -> occur();
-    }
-
-    if ( cooldown )
-      cooldown_ready = sim -> current_time + cooldown;
-
-    if ( stacks < max_stacks )
-    {
-      stacks++;
-      listener -> aura_gain( name_str.c_str() );
-      listener -> stat_gain( stat, amount );
-    }
-
-    if ( duration )
-    {
-      if ( expiration )
-      {
-        expiration -> reschedule( duration );
-      }
-      else
-      {
-        struct expiration_t : public event_t
-        {
-          stat_proc_callback_t* callback;
-
-          expiration_t( sim_t* sim, player_t* player, stat_proc_callback_t* cb ) : event_t( sim, player ), callback( cb )
-          {
-            name = callback -> name_str.c_str();
-            sim -> add_event( this, callback -> duration );
-          }
-          virtual void execute()
-          {
-            callback -> expiration = 0;
-            callback -> expire();
-          }
-        };
-
-        expiration = new ( sim ) expiration_t( sim, listener, this );
-      }
-    }
+    if( buff -> trigger( 1 ) )
+      if( may_stack )
+	listener -> stat_gain( stat, amount );
   }
 };
 

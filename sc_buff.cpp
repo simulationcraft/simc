@@ -119,11 +119,11 @@ bool buff_t::trigger( int    stacks,
 {
   if ( max_stack == 0 ) return false;
 
-  trigger_attempts++;
-
   if ( cooldown_ready > 0 )
     if ( sim -> current_time < cooldown_ready )
       return false;
+
+  trigger_attempts++;
 
   if ( chance < 0 ) chance = default_chance;
 
@@ -272,7 +272,11 @@ void buff_t::expire()
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
     uptime_sum += current_time - last_start;
   }
-  if ( sim -> current_time >= 0.01 ) constant = false;
+  if ( sim -> current_time >= 0.01 &&
+       sim -> target -> current_health > 0 ) 
+  {
+    constant = false;
+  }
 }
 
 // buff_t::reset ============================================================

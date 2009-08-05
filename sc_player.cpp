@@ -1444,6 +1444,11 @@ void player_t::combat_end()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );
 
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> expire();
+  }
+
   double iteration_seconds = current_time;
 
   if ( iteration_seconds > 0 )
@@ -2442,12 +2447,12 @@ struct use_item_t : public action_t
 {
   item_t* item;
   spell_t* discharge;
-  proc_t* proc;
   action_callback_t* trigger;
+  buff_t* buff;
 
   use_item_t( player_t* player, const std::string& options_str ) :
       action_t( ACTION_OTHER, "use_item", player ),
-      item( 0 ), discharge( 0 ), proc( 0 ), trigger( 0 )
+      item(0), discharge(0), trigger(0), buff(0)
   {
     std::string item_name;
     option_t options[] =
@@ -2479,16 +2484,14 @@ struct use_item_t : public action_t
 
     if ( e.trigger_type )
     {
-      std::string trigger_str = item_name + "_" + e.trigger_str;
-
       if ( e.stat )
       {
-        trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, trigger_str, player,
+        trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, item_name, player,
                                                      e.stat, e.max_stacks, e.amount, e.proc_chance, 0, 0 );
       }
       else if ( e.school )
       {
-        trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, trigger_str, player,
+        trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, item_name, player,
                                                           e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0 );
       }
 
@@ -2513,8 +2516,27 @@ struct use_item_t : public action_t
 
       discharge = new discharge_spell_t( item -> name(), player, e.amount, e.school );
     }
+    else if ( e.stat )
+    {
+      if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
+      if( e.proc_chance <= 0 ) e.proc_chance = 1;
 
-    proc = player -> get_proc( item_name, sim );
+      struct stat_buff_t : public buff_t
+      {
+	item_t* item;
+
+	stat_buff_t( item_t* i ) : buff_t( i -> sim, i -> player, i -> name(), i -> use.max_stacks, i -> use.duration, 0, i -> use.proc_chance ), item(i) {}
+
+	virtual void expire()
+        {
+	  if( current_stack > 0 ) player -> stat_loss( item -> use.stat, item -> use.amount );
+	  buff_t::expire();
+	}
+      };
+      
+      buff = new stat_buff_t( item );
+    }
+    else assert( false );
 
     cooldown = item -> use.cooldown;
     trigger_gcd = 0;
@@ -2522,8 +2544,6 @@ struct use_item_t : public action_t
 
   virtual void execute()
   {
-    proc -> occur();
-
     if ( discharge )
     {
       discharge -> execute();
@@ -2555,34 +2575,16 @@ struct use_item_t : public action_t
         new ( sim ) trigger_expiration_t( sim, player, item, trigger );
       }
     }
-    else
+    else if( buff )
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
 
-      player -> aura_gain( item -> name() );
-      player -> stat_gain( item -> use.stat, item -> use.amount );
-
-      if ( item -> use.duration )
+      if( buff -> trigger() )
       {
-        struct stat_expiration_t : public event_t
-        {
-          item_t* item;
-
-          stat_expiration_t( sim_t* sim, player_t* player, item_t* i ) : event_t( sim, player ), item( i )
-          {
-            name = item -> name();
-            sim -> add_event( this, item -> use.duration );
-          }
-          virtual void execute()
-          {
-            player -> aura_loss( item -> name() );
-            player -> stat_loss( item -> use.stat, item -> use.amount );
-          }
-        };
-
-        new ( sim ) stat_expiration_t( sim, player, item );
+	player -> stat_gain( item -> use.stat, item -> use.amount );
       }
     }
+    else assert( false );
 
     update_ready();
   }

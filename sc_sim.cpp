@@ -621,6 +621,11 @@ void sim_t::combat_end()
   {
     p -> combat_end();
   }
+
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> expire();
+  }
 }
 
 // sim_t::init ==============================================================
