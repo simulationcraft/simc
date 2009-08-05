@@ -7,10 +7,11 @@ actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form
 actions+=/innervate,trigger=19000
 actions+=/treants
 actions+=/starfall,skip_on_eclipse=1
-actions+=/moonfire,skip_on_eclipse=-1
-actions+=/insect_swarm,eclipse_left>=12
-actions+=/wrath,eclipse=benefit
-actions+=/starfire
+actions+=/moonfire
+actions+=/insect_swarm
+actions+=/starfire,eclipse=trigger
+actions+=/wrath,eclipse=benefit/starfire,eclipse=benefit
+actions+=/wrath
 
 # Standard Gear Attributes http://www.chardev.org/?template=148722
 gear_stamina=800
