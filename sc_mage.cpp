@@ -625,7 +625,7 @@ static bool trigger_tier8_4pc( spell_t* s )
   if ( ! p -> set_bonus.tier8_4pc() )
     return false;
 
-  if ( ! p -> rngs.tier8_4pc -> roll( 0.10 ) )
+  if ( ! p -> rngs.tier8_4pc -> roll( 0.25 ) )
     return false;
 
   p -> procs.tier8_4pc -> occur();
@@ -2032,7 +2032,6 @@ struct living_bomb_t : public mage_spell_t
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.pyromaniac * 0.01;
-    base_crit        += p -> talents.world_in_flames * 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
@@ -2045,6 +2044,17 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_spell_t::tick();
     if ( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
+  }
+
+  // Hack! Only the explosion benefits from World-in-Flames
+  virtual void target_debuff( int dmg_type )
+  {
+    mage_spell_t::target_debuff( dmg_type );
+    if( dmg_type == DMG_DIRECT )
+    {
+      mage_t* p = player -> cast_mage();
+      target_crit += p -> talents.world_in_flames * 0.02;
+    }
   }
 
   virtual void last_tick()
