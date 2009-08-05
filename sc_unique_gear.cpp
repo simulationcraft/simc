@@ -20,6 +20,7 @@ struct stat_proc_callback_t : public action_callback_t
       name_str( n ), stat( s ), amount( a )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
+    if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
     struct stat_buff_t : public buff_t
