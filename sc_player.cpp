@@ -5,10 +5,7 @@
 
 #include "simcraft.h"
 
-
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
-
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // trigger_judgement_of_wisdom ==============================================
 
@@ -459,7 +456,7 @@ player_t::player_t( sim_t*             s,
     flask( FLASK_NONE ),
     food( FOOD_NONE ),
     // Events
-    executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ),
+    executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ), action_queued( false ),
     // Actions
     action_list( 0 ), action_list_default( 0 ),
     // Reporting
@@ -1580,6 +1577,7 @@ void player_t::schedule_ready( double delta_time,
 
   executing = 0;
   channeling = 0;
+  action_queued = false;
 
   double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > 0 ) delta_time += gcd_adjust;
@@ -1603,7 +1601,7 @@ void player_t::schedule_ready( double delta_time,
 	double delta = sim -> channel_lag_stddev * 2.0;
 	lag = rngs.lag_channel -> range( sim -> channel_lag - delta, sim -> channel_lag + delta );
       }
-      else if ( gcd_adjust > 0 && last_foreground_action -> base_execute_time == 0 )
+      else if ( gcd_adjust > 0 && last_foreground_action -> time_to_execute == 0 )
       {
 	double delta = sim -> gcd_lag_stddev * 2.0;
         lag = rngs.lag_gcd -> range( sim -> gcd_lag - delta, sim -> gcd_lag + delta );
@@ -1612,6 +1610,7 @@ void player_t::schedule_ready( double delta_time,
       {
 	double delta = sim -> queue_lag_stddev * 2.0;
         lag = rngs.lag_queue -> range( sim -> queue_lag - delta, sim -> queue_lag + delta );
+	action_queued = true;
       }
     }
 

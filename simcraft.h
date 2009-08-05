@@ -803,6 +803,7 @@ struct sim_t
   double      queue_lag, queue_lag_stddev;
   double      gcd_lag, gcd_lag_stddev;
   double      channel_lag, channel_lag_stddev;
+  double      queue_gcd_reduction;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
@@ -1247,6 +1248,7 @@ struct player_t
   action_t* channeling;
   event_t*  readying;
   bool      in_combat;
+  bool      action_queued;
 
   // Callbacks
   std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];

@@ -301,8 +301,8 @@ sim_t::sim_t( sim_t* p, int index ) :
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
-    channel_lag( 0.250 ), channel_lag_stddev
-( 0 ),
+    channel_lag( 0.250 ), channel_lag_stddev( 0 ),
+    queue_gcd_reduction( 0.075 ),
     travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 1.0 ),
     current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
@@ -1266,8 +1266,8 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/general title="General"
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
-      { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                  },
-      { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                         },
+      { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
+      { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
       { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
@@ -1276,6 +1276,7 @@ std::vector<option_t>& sim_t::get_options()
       { "gcd_lag_stddev",                   OPT_FLT,    &( gcd_lag_stddev                           ) },
       { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
       { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
+      { "queue_gcd_reduction",              OPT_FLT,    &( queue_gcd_reduction                      ) },
       { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
       { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
