@@ -11,12 +11,6 @@
 
 struct shaman_t : public player_t
 {
-  // Totems
-  spell_t* fire_totem;
-  spell_t* air_totem;
-  spell_t* water_totem;
-  spell_t* earth_totem;
-
   // Active
   action_t* active_flame_shock;
   action_t* active_lightning_charge;
@@ -25,14 +19,13 @@ struct shaman_t : public player_t
   // Buffs
   buff_t* buffs_elemental_devastation;
   buff_t* buffs_elemental_focus;
+  buff_t* buffs_elemental_mastery;
+  buff_t* buffs_flurry;
+  buff_t* buffs_indomitability;
+  buff_t* buffs_lightning_shield;
 
   struct _buffs_t
   {
-    int    elemental_mastery;
-    int    flurry;
-    int    indomitability;
-    int    lightning_charges;
-    int    lightning_shield;
     int    maelstrom_weapon;
     int    nature_vulnerability;
     int    nature_vulnerability_charges;
@@ -84,8 +77,6 @@ struct shaman_t : public player_t
 
   // Up-Times
   uptime_t* uptimes_elemental_oath;
-  uptime_t* uptimes_flurry;
-  uptime_t* uptimes_indomitability;
   uptime_t* uptimes_nature_vulnerability;
   uptime_t* uptimes_stonebreaker;
   uptime_t* uptimes_tundra;
@@ -236,12 +227,6 @@ struct shaman_t : public player_t
 
   shaman_t( sim_t* sim, const std::string& name ) : player_t( sim, SHAMAN, name )
   {
-    // Totems
-    fire_totem  = 0;
-    air_totem   = 0;
-    water_totem = 0;
-    earth_totem = 0;;
-
     // Active
     active_flame_shock        = 0;
     active_lightning_charge   = 0;
@@ -278,7 +263,7 @@ struct shaman_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID      : ROLE_SPELL;     }
+  virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID : ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
 
   // Event Tracking
@@ -818,38 +803,6 @@ static void trigger_totem_of_dueling( attack_t* a )
   p -> _cooldowns.totem = current_time + 10.01;
 }
 
-// trigger_totem_of_indomitability ===============================================
-
-static void trigger_totem_of_indomitability( attack_t* a )
-{
-  shaman_t* p = a -> player -> cast_shaman();
-
-  if ( ! p -> totems.indomitability ) return;
-
-  double current_time = p -> sim -> current_time;
-
-  if ( current_time < p -> _cooldowns.totem ) return;
-
-  struct indomitability_expiration_t : public event_t
-  {
-    indomitability_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
-    {
-      name = "Indomitability Expiration";
-      p -> _buffs.indomitability = 1;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      shaman_t* p = player -> cast_shaman();
-      p -> _buffs.indomitability = 0;
-    }
-  };
-
-  new ( a -> sim ) indomitability_expiration_t( a -> sim, p );
-
-  p -> _cooldowns.totem = current_time + 10.01;
-}
-
 // trigger_totem_of_the_tundra ===================================================
 
 static void trigger_totem_of_the_tundra( spell_t* s )
@@ -931,7 +884,7 @@ void shaman_attack_t::execute()
     if ( result == RESULT_CRIT )
     {
       trigger_unleashed_rage( this );
-      if ( p -> talents.flurry ) p -> _buffs.flurry = 3;
+      p -> buffs_flurry -> trigger( 3 );
     }
     if ( p -> _buffs.shamanistic_rage )
     {
@@ -943,7 +896,6 @@ void shaman_attack_t::execute()
     stack_maelstrom_weapon( this );
   }
 
-  if ( p -> totems.indomitability ) p -> uptimes_indomitability -> update( p -> _buffs.indomitability != 0 );
   if ( p -> totems.stonebreaker   ) p -> uptimes_stonebreaker   -> update( p -> _buffs.stonebreaker   != 0 );
   if ( p -> totems.tundra         ) p -> uptimes_tundra         -> update( p -> _buffs.tundra         != 0 );
 }
@@ -970,18 +922,13 @@ void shaman_attack_t::assess_damage( double amount,
 
   attack_t::assess_damage( amount, dmg_type );
 
-  if ( num_ticks == 0 && p -> _buffs.lightning_charges > 0 && p -> talents.static_shock )
+  if ( num_ticks == 0 && p -> talents.static_shock && p -> buffs_lightning_shield -> stack() )
   {
     double chance = p -> talents.static_shock * 0.02 + p -> tiers.t9_2pc_enhancement * 0.03;
     if ( p -> rng_static_shock -> roll( chance ) )
     {
-      p -> _buffs.lightning_charges--;
+      p -> buffs_lightning_shield -> decrement();
       p -> active_lightning_charge -> execute();
-
-      if ( p -> _buffs.lightning_charges == 0 )
-      {
-        p -> active_lightning_charge -> cancel();
-      }
     }
   }
 }
@@ -1012,11 +959,10 @@ struct melee_t : public shaman_attack_t
   {
     double t = shaman_attack_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if ( p -> _buffs.flurry > 0 )
+    if ( p -> buffs_flurry -> up() )
     {
       t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
     }
-    p -> uptimes_flurry -> update( p -> _buffs.flurry > 0 );
     return t;
   }
 
@@ -1039,7 +985,7 @@ struct melee_t : public shaman_attack_t
   {
     shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
-    if ( p -> _buffs.flurry > 0 ) p -> _buffs.flurry--;
+    p -> buffs_flurry -> decrement();
   }
 };
 
@@ -1111,16 +1057,17 @@ struct lava_lash_t : public shaman_attack_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_attack_t::execute();
-    trigger_totem_of_indomitability( this );
+    p -> buffs_indomitability -> trigger();
   }
 
   virtual void player_buff()
   {
+    shaman_t* p = player -> cast_shaman();
     shaman_attack_t::player_buff();
     if ( weapon -> buff == FLAMETONGUE )
     {
-      shaman_t* p = player -> cast_shaman();
       player_multiplier *= 1.25 + p -> glyphs.lava_lash * 0.10;
     }
   }
@@ -1233,7 +1180,7 @@ void shaman_spell_t::player_buff()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
-  if ( p -> _buffs.elemental_mastery )
+  if ( p -> buffs_elemental_mastery -> up() )
   {
     player_crit += 0.15;
   }
@@ -1389,10 +1336,7 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( player -> cast_shaman() -> _expirations.maelstrom_weapon );
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      p -> _buffs.elemental_mastery = 2;
-    }
+    p -> buffs_elemental_mastery -> current_value = 0;
     if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
@@ -1403,6 +1347,7 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_elemental_mastery -> value() ) return 0;
     if ( p -> _buffs.maelstrom_weapon )
     {
       if ( p -> _buffs.maelstrom_weapon == 5 )
@@ -1413,10 +1358,6 @@ struct chain_lightning_t : public shaman_spell_t
       {
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
-    }
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      t = 0;
     }
     return t;
   }
@@ -1507,10 +1448,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( p -> _expirations.maelstrom_weapon );
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      p -> _buffs.elemental_mastery = 2;
-    }
+    p -> buffs_elemental_mastery -> current_value = 0;
     if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
@@ -1525,6 +1463,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_elemental_mastery -> value() ) return 0;
     if ( p -> _buffs.maelstrom_weapon )
     {
       if ( p -> _buffs.maelstrom_weapon == 5 )
@@ -1535,10 +1474,6 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
-    }
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      t = 0;
     }
     return t;
   }
@@ -1621,10 +1556,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     event_t::early( p -> _expirations.maelstrom_weapon );
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      p -> _buffs.elemental_mastery = 2;
-    }
+    p -> buffs_elemental_mastery -> current_value = 0;
     if ( result_is_hit() )
     {
       if ( p -> active_flame_shock && ! p -> glyphs.flame_shock )
@@ -1639,6 +1571,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_elemental_mastery -> value() ) return 0;
     if ( p -> _buffs.maelstrom_weapon )
     {
       if ( p -> _buffs.maelstrom_weapon == 5 )
@@ -1649,10 +1582,6 @@ struct lava_burst_t : public shaman_spell_t
       {
         t *= ( 1.0 - p -> _buffs.maelstrom_weapon * 0.20 );
       }
-    }
-    if ( p -> _buffs.elemental_mastery == 1 )
-    {
-      t = 0;
     }
     return t;
   }
@@ -1722,28 +1651,10 @@ struct elemental_mastery_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Elemental Mastery Expiration";
-        shaman_t* p = player -> cast_shaman();
-        p -> aura_gain( "Elemental Mastery" );
-        p -> _buffs.elemental_mastery = 1;
-        // Fix-Me. Needs a shared cooldown with nature's swiftness in 3.1.0
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        shaman_t* p = player -> cast_shaman();
-        p -> aura_loss( "Elemental Mastery" );
-        p -> _buffs.elemental_mastery = 0;
-      }
-    };
-
-    if ( sim -> log ) log_t::output( sim, "%s performs elemental_mastery", player -> name() );
+    shaman_t* p = player -> cast_shaman();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    new ( sim ) expiration_t( sim, player );
+    p -> buffs_elemental_mastery -> trigger();
   }
 };
 
@@ -2996,13 +2907,6 @@ struct lightning_shield_t : public shaman_spell_t
 
       if ( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
     }
-    virtual void cancel()
-    {
-      shaman_t* p = player -> cast_shaman();
-      p -> aura_loss( "Lightning Shield" );
-      p -> _buffs.lightning_charges = 0;
-      p -> _buffs.lightning_shield = 0;
-    }
   };
 
   lightning_shield_t( player_t* player, const std::string& options_str ) :
@@ -3042,9 +2946,7 @@ struct lightning_shield_t : public shaman_spell_t
       p -> aura_loss( "Water Shield" );
       p -> _buffs.water_shield = 0;
     }
-    p -> _buffs.lightning_charges = 3 + 2 * p -> talents.static_shock;
-    p -> _buffs.lightning_shield = 1;
-    p -> aura_gain( "Lightning Shield" );
+    p -> buffs_lightning_shield -> trigger( 3 + 2 * p -> talents.static_shock );
     consume_resource();
     update_ready();
     direct_dmg = 0;
@@ -3053,10 +2955,8 @@ struct lightning_shield_t : public shaman_spell_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-
-    if ( p -> _buffs.lightning_shield )
+    if ( p -> buffs_lightning_shield -> check() )
       return false;
-
     return shaman_spell_t::ready();
   }
 };
@@ -3091,10 +2991,7 @@ struct water_shield_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( p -> _buffs.lightning_shield )
-    {
-      p -> active_lightning_charge -> cancel();
-    }
+    p -> buffs_lightning_shield -> expire();
     p -> aura_gain( "Water Shield" );
     p -> _buffs.water_shield = base_cost;
   }
@@ -3102,10 +2999,8 @@ struct water_shield_t : public shaman_spell_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-
     if ( p -> _buffs.water_shield )
       return false;
-
     return shaman_spell_t::ready();
   }
 };
@@ -3435,8 +3330,12 @@ void shaman_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_elemental_devastation = new buff_t( sim, this, "elemental_devastation", 1, 10.0, 0.0, talents.elemental_devastation );
-  buffs_elemental_focus       = new buff_t( sim, this, "elemental_focus",       2, 15.0, 0.0, talents.elemental_focus       );
+  buffs_elemental_devastation = new buff_t( sim, this, "elemental_devastation", 1,  10.0,   0.0, talents.elemental_devastation );
+  buffs_elemental_focus       = new buff_t( sim, this, "elemental_focus",       2,  15.0,   0.0, talents.elemental_focus       );
+  buffs_elemental_mastery     = new buff_t( sim, this, "elemental_mastery",     1,  15.0,   0.0, talents.elemental_mastery     );
+  buffs_flurry                = new buff_t( sim, this, "flurry",                3,   0.0,   0.0, talents.flurry                );
+  buffs_indomitability        = new buff_t( sim, this, "indomitability",        1,  9.99, 10.01, totems.indomitability         );
+  buffs_lightning_shield      = new buff_t( sim, this, "lightning_shield",      3 + 2 * talents.static_shock );
 }
 
 // shaman_t::init_gains ======================================================
@@ -3468,10 +3367,8 @@ void shaman_t::init_uptimes()
   player_t::init_uptimes();
 
   uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
-  uptimes_flurry                = get_uptime( "flurry"                   );
   uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
   uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
-  uptimes_indomitability        = get_uptime( "indomitability_totem"     );
   uptimes_stonebreaker          = get_uptime( "stonebreaker_totem"       );
   uptimes_tundra                = get_uptime( "tundra_totem"             );
 }
@@ -3556,12 +3453,6 @@ void shaman_t::reset()
 {
   player_t::reset();
 
-  // Totems
-  fire_totem  = 0;
-  air_totem   = 0;
-  water_totem = 0;
-  earth_totem = 0;;
-
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
@@ -3588,9 +3479,10 @@ double shaman_t::composite_attack_power() SC_CONST
     ap += composite_attack_power_multiplier() * intellect() * talents.mental_dexterity / 3.0;
   }
 
-  if ( _buffs.indomitability ) ap += 120;
-  if ( _buffs.stonebreaker   ) ap += 110;
-  if ( _buffs.tundra         ) ap += 94;
+  if ( buffs_indomitability -> up() ) ap += 120;
+
+  if ( _buffs.stonebreaker ) ap += 110;
+  if ( _buffs.tundra       ) ap += 94;
 
   return ap;
 }

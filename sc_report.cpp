@@ -186,7 +186,7 @@ static void print_buffs( FILE* file, player_t* p )
 
     if ( ! b -> constant )
     {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-4.1f  interval=%-5.1f  uptime=%2.0f%%",
+      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%-5.1f  uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct );
 
       if( b -> benefit_pct > 0 &&
