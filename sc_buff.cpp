@@ -5,6 +5,10 @@
 
 #include "simcraft.h"
 
+// ==========================================================================
+// BUFF
+// ==========================================================================
+
 // buff_t::buff_t ===========================================================
 
 buff_t::buff_t( sim_t*             s,
@@ -16,7 +20,7 @@ buff_t::buff_t( sim_t*             s,
                 double             ch,
                 bool               q,
                 int                rng_type,
-                int                a ) :
+                int                id ) :
     sim( s ), player( p ), name_str( n ), aura_str( 0 ),
     current_stack( 0 ), max_stack( ms ), current_value( 0 ),
     duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
@@ -26,7 +30,7 @@ buff_t::buff_t( sim_t*             s,
     trigger_attempts( 0 ), trigger_successes( 0 ),
     uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
     avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
-    constant( false ), quiet( q ), aura_id( 0 ), expiration( 0 ), rng( 0 ), next( 0 )
+    constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
 {
   buff_t** tail = 0;
 
@@ -184,7 +188,7 @@ void buff_t::start( int    stacks,
 {
   if ( max_stack == 0 ) return;
 
-  assert( ! expiration );
+  assert( current_stack < max_stack );
 
   if ( sim -> current_time <= 0.01 ) constant = true;
 
@@ -350,3 +354,79 @@ buff_t* buff_t::find( player_t* p,
 
   return 0;
 }
+
+// ==========================================================================
+// STAT_BUFF
+// ==========================================================================
+
+// stat_buff_t::stat_buff_t =================================================
+
+stat_buff_t::stat_buff_t( sim_t*             s,
+			  player_t*          p,
+			  const std::string& n,
+			  int                st,
+			  double             a,
+			  int                ms,
+			  double             d,
+			  double             cd,
+			  double             ch,
+			  bool               q,
+			  int                rng_type,
+			  int                id ) :
+  buff_t( s, p, n, ms, d, cd, ch, q, rng_type, id ), stat(st), amount(a)
+{
+}
+
+// stat_buff_t::start =======================================================
+
+void stat_buff_t::start( int    stacks,
+			 double value )
+{
+  if ( max_stack == 0 ) return;
+  buff_t::start( stacks, value );
+  player -> stat_gain( stat, amount * current_stack );
+}
+
+// stat_buff_t::refresh =====================================================
+
+void stat_buff_t::refresh( int    stacks,
+			   double value )
+{
+  if ( max_stack == 0 ) return;
+  int before = current_stack;
+  buff_t::refresh( stacks, value );
+  if( current_stack > before ) 
+  {
+    player -> stat_gain( stat, amount * ( current_stack - before ) );
+  }
+}
+
+// stat_buff_t::decrement ===================================================
+
+void stat_buff_t::decrement( int    stacks,
+			     double value )
+{
+  if ( max_stack == 0 ) return;
+  if ( stacks == 0 || current_stack <= stacks )
+  {
+    expire();
+  }
+  else
+  {
+    player -> stat_loss( stat, amount * stacks );
+    current_stack -= stacks;
+    if ( value >= 0 ) current_value = value;
+  }
+}
+
+// stat_buff_t::expire ======================================================
+
+void stat_buff_t::expire()
+{
+  if ( current_stack > 0 )
+  {
+    player -> stat_loss( stat, amount * current_stack );
+    buff_t::expire();
+  }
+}
+

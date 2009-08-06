@@ -2447,7 +2447,7 @@ struct use_item_t : public action_t
   item_t* item;
   spell_t* discharge;
   action_callback_t* trigger;
-  buff_t* buff;
+  stat_buff_t* buff;
 
   use_item_t( player_t* player, const std::string& options_str ) :
       action_t( ACTION_OTHER, "use_item", player ),
@@ -2519,21 +2519,8 @@ struct use_item_t : public action_t
     {
       if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
       if( e.proc_chance <= 0 ) e.proc_chance = 1;
-
-      struct stat_buff_t : public buff_t
-      {
-	item_t* item;
-
-	stat_buff_t( item_t* i ) : buff_t( i -> sim, i -> player, i -> name(), i -> use.max_stacks, i -> use.duration, 0, i -> use.proc_chance ), item(i) {}
-
-	virtual void expire()
-        {
-	  if( current_stack > 0 ) player -> stat_loss( item -> use.stat, item -> use.amount );
-	  buff_t::expire();
-	}
-      };
       
-      buff = new stat_buff_t( item );
+      buff = new stat_buff_t( sim, player, item -> name(), e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance );
     }
     else assert( false );
 
@@ -2578,10 +2565,7 @@ struct use_item_t : public action_t
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
 
-      if( buff -> trigger() )
-      {
-	player -> stat_gain( item -> use.stat, item -> use.amount );
-      }
+      buff -> trigger();
     }
     else assert( false );
 

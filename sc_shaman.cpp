@@ -270,8 +270,7 @@ struct shaman_t : public player_t
   virtual void regen( double periodicity );
 };
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Shaman Attack
@@ -3334,8 +3333,11 @@ void shaman_t::init_buffs()
   buffs_elemental_focus       = new buff_t( sim, this, "elemental_focus",       2,  15.0,   0.0, talents.elemental_focus       );
   buffs_elemental_mastery     = new buff_t( sim, this, "elemental_mastery",     1,  15.0,   0.0, talents.elemental_mastery     );
   buffs_flurry                = new buff_t( sim, this, "flurry",                3,   0.0,   0.0, talents.flurry                );
-  buffs_indomitability        = new buff_t( sim, this, "indomitability",        1,  9.99, 10.01, totems.indomitability         );
   buffs_lightning_shield      = new buff_t( sim, this, "lightning_shield",      3 + 2 * talents.static_shock );
+
+  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+
+  buffs_indomitability = new stat_buff_t( sim, this, "indomitability", STAT_ATTACK_POWER, 120, 1, 9.99, 10.01, totems.indomitability );
 }
 
 // shaman_t::init_gains ======================================================
@@ -3478,8 +3480,6 @@ double shaman_t::composite_attack_power() SC_CONST
   {
     ap += composite_attack_power_multiplier() * intellect() * talents.mental_dexterity / 3.0;
   }
-
-  if ( buffs_indomitability -> up() ) ap += 120;
 
   if ( _buffs.stonebreaker ) ap += 110;
   if ( _buffs.tundra       ) ap += 94;

@@ -1864,10 +1864,6 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
-  if ( may_crit || tick_may_crit ) 
-  {
-    player_crit += p -> buffs_lunar_fury -> value();
-  }
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -2203,7 +2199,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::tick();
-    p -> buffs_lunar_fury -> trigger( 1, ( 200 / p -> rating.spell_crit ) );
+    p -> buffs_lunar_fury -> trigger();
   }
 };
 
@@ -3070,13 +3066,11 @@ void druid_t::init_buffs()
 {
   player_t::init_buffs();
 
-  //buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  //                                    sim, this, name,              , S,   dur,    cd,                  proc_chance, quiet )
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk           = new buff_t( sim, this, "berserk"          , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
   buffs_combo_points      = new buff_t( sim, this, "combo_points"     , 5 );
   buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
   buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 ); // 20/40/60%
-  buffs_lunar_fury        = new buff_t( sim, this, "lunary_fury",       1,  12.0,     0, idols.lunar_fury * 0.70 );
   buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
   buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
@@ -3084,12 +3078,14 @@ void druid_t::init_buffs()
   buffs_tigers_fury       = new buff_t( sim, this, "tigers_fury"      , 1,   6.0 );
   buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1 );
 
-  buffs_stealthed    = new buff_t( sim, this, "stealthed" );
+  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_lunar_fury = new stat_buff_t( sim, this, "lunary_fury", STAT_CRIT_RATING, 200, 1, 12.0, 0, idols.lunar_fury * 0.70 );
 
-  // Forms
+  // simple
   buffs_bear_form    = new buff_t( sim, this, "bear_form" );
   buffs_cat_form     = new buff_t( sim, this, "cat_form" );
   buffs_moonkin_form = new buff_t( sim, this, "moonkin_form" );
+  buffs_stealthed    = new buff_t( sim, this, "stealthed" );
 }
 
 // druid_t::init_items ======================================================

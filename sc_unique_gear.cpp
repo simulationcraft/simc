@@ -12,7 +12,7 @@ struct stat_proc_callback_t : public action_callback_t
   std::string name_str;
   int stat;
   double amount;
-  buff_t* buff;
+  stat_buff_t* buff;
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
 			double proc_chance, double duration, double cooldown, int rng_type=RNG_DEFAULT ) :
@@ -23,25 +23,7 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    struct stat_buff_t : public buff_t
-    {
-      stat_proc_callback_t* callback;
-      
-      stat_buff_t( const std::string& n, player_t* p, int max_stacks, double duration, double cooldown, double chance, int rng, stat_proc_callback_t* cb ) :
-	buff_t( p -> sim, p, n, max_stacks, duration, cooldown, chance, false, rng ), callback(cb) {}
-
-      virtual void expire()
-      {
-	if( current_stack > 0 ) 
-	{
-	  callback -> listener -> stat_loss( callback -> stat, 
-					     callback -> amount * current_stack );
-	}
-	buff_t::expire();
-      }
-    };
-
-    buff = new stat_buff_t( n, p, max_stacks, duration, cooldown, proc_chance, rng_type, this );
+    buff = new stat_buff_t( p -> sim, p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, rng_type );
   }
 
   virtual void deactivate()
@@ -52,11 +34,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    bool may_stack = ( buff -> current_stack < buff -> max_stack );
-
-    if( buff -> trigger( 1 ) )
-      if( may_stack )
-	listener -> stat_gain( stat, amount );
+    buff -> trigger();
   }
 };
 

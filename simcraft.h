@@ -730,6 +730,22 @@ struct buff_t
   static buff_t* find( player_t*, const std::string& name );
 };
 
+struct stat_buff_t : public buff_t
+{
+  int stat;
+  double amount;
+  stat_buff_t( sim_t*, player_t*,
+	       const std::string& name,
+	       int stat, double amount,
+	       int max_stack=1, double duration=0, double cooldown=0,
+	       double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+  virtual ~stat_buff_t() { };
+  virtual void start    ( int stacks=1, double value=1.0 );
+  virtual void refresh  ( int stacks=0, double value=1.0 );
+  virtual void decrement( int stacks=1, double value=-1.0 );
+  virtual void expire();
+};
+
 // Expressions =================================================================
 
 // definition of operators
