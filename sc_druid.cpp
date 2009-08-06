@@ -20,32 +20,35 @@ struct druid_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    int    berserk;
     int    bear_form;
-    int    cat_form;
     int    combo_points;
-    double eclipse_starfire;
-    double eclipse_wrath;
-    int    moonkin_form;
-    double natures_grace;
     int    natures_swiftness;
-    int    omen_of_clarity;
-    int    savage_roar;
-    int    starfall;
     int    stealthed;
-    int    t8_4pc_balance;
-    double tigers_fury;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
 
+  // buff_t Buffs
+  buff_t* buffs_berserk;
+  buff_t* buffs_bear_form;
+  buff_t* buffs_cat_form;
+  buff_t* buffs_combo_points;
+  buff_t* buffs_eclipse_lunar;
+  buff_t* buffs_eclipse_solar;
+  buff_t* buffs_moonkin_form;
+  buff_t* buffs_natures_grace;
+  buff_t* buffs_natures_swiftness;
+  buff_t* buffs_omen_of_clarity;
+  buff_t* buffs_savage_roar;
+  buff_t* buffs_stealthed;
+  buff_t* buffs_t8_4pc_balance;
+  buff_t* buffs_tigers_fury;
+
   // Cooldowns
   struct _cooldowns_t
   {
-    double eclipse_starfire;
-    double eclipse_wrath;
     double idol;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
@@ -56,15 +59,10 @@ struct druid_t : public player_t
   // Expirations
   struct _expirations_t
   {
-    event_t* berserk;
-    event_t* eclipse;
     event_t* idol_of_lunar_fury;
     event_t* idol_of_the_corruptor;
-    event_t* natures_grace;
     event_t* mangle;
     event_t* savage_roar;
-    event_t* t8_4pc_balance;
-    event_t* tigers_fury;
     event_t* unseen_moon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
@@ -88,18 +86,14 @@ struct druid_t : public player_t
   proc_t* procs_unseen_moon;
 
   // Up-Times
-  uptime_t* uptimes_eclipse_starfire;
-  uptime_t* uptimes_eclipse_wrath;
   uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_lunar_fury;
-  uptime_t* uptimes_natures_grace;
   uptime_t* uptimes_savage_roar;
   uptime_t* uptimes_rip;
   uptime_t* uptimes_rake;
 
   // Random Number Generation
   rng_t* rng_eclipse;
-  rng_t* rng_natures_grace;
   rng_t* rng_idol_of_lunar_fury;
   rng_t* rng_idol_of_terror;
   rng_t* rng_omen_of_clarity;
@@ -260,6 +254,7 @@ struct druid_t : public player_t
   // Character Definition
   virtual void      init_glyphs();
   virtual void      init_base();
+  virtual void      init_buffs();
   virtual void      init_items();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -492,16 +487,9 @@ static void trigger_omen_of_clarity( action_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( p -> talents.omen_of_clarity == 0 ) return;
+  if ( a -> dual ) return;
 
-  // Convert to fixed ~6% proc rate
-
-  if ( p -> rng_omen_of_clarity -> roll( 3.5 / 60.0 ) )
-  {
-    p -> aura_gain( "Omen of Clarity" );
-    p -> _buffs.omen_of_clarity = 1;
-    p -> procs_omen_of_clarity -> occur();
-  }
+  p -> buffs_omen_of_clarity -> trigger();
 }
 
 // trigger_faerie_fire =======================================================
@@ -654,156 +642,6 @@ static void trigger_earth_and_moon( spell_t* s )
   }
 }
 
-// trigger_natures_grace ====================================================
-
-static void trigger_natures_grace( spell_t* s )
-{
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( ! p -> rng_natures_grace -> roll( p -> talents.natures_grace / 3.0 ) )
-    return;
-
-  struct natures_grace_expiration_t : public event_t
-  {
-    natures_grace_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Nature's Grace Expiration";
-      p -> aura_gain( "Nature's Grace" );
-      p -> _buffs.natures_grace = 0.20;
-      sim -> add_event( this, 3.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> _buffs.natures_grace       = 0;
-      p -> _expirations.natures_grace = 0;
-      p -> aura_loss( "Nature's Grace" );
-    }
-  };
-
-  event_t*& e = p -> _expirations.natures_grace;
-
-  if ( e )
-  {
-    e -> reschedule( 3.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) natures_grace_expiration_t( s -> sim, p );
-  }
-}
-
-// trigger_eclipse_wrath ===================================================
-
-static void trigger_eclipse_wrath( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Eclipse Wrath Expiration";
-      p -> aura_gain( "Eclipse Wrath" );
-      p -> _buffs.eclipse_wrath = sim -> current_time;
-      p -> _cooldowns.eclipse_wrath = sim -> current_time + 30;
-      p -> _cooldowns.eclipse_starfire = sim -> current_time + 15;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Eclipse Wrath" );
-      p -> _buffs.eclipse_wrath = 0;
-      p -> _expirations.eclipse = 0;
-    }
-  };
-
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( p -> talents.eclipse != 0 &&
-       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse_wrath ) &&
-       p -> rng_eclipse -> roll( p -> talents.eclipse * 1.0/3 ) )
-  {
-    p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
-}
-
-// trigger_eclipse_starfire =================================================
-
-static void trigger_eclipse_starfire( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Eclipse Starfire Expiration";
-      p -> aura_gain( "Eclipse Starfire" );
-      p -> _buffs.eclipse_starfire = sim -> current_time;
-      p -> _cooldowns.eclipse_starfire = sim -> current_time + 30;
-      p -> _cooldowns.eclipse_wrath = sim -> current_time + 15;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Eclipse Starfire" );
-      p -> _buffs.eclipse_starfire = 0;
-      p -> _expirations.eclipse = 0;
-    }
-  };
-
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( p -> talents.eclipse != 0 &&
-       s -> sim -> cooldown_ready( p -> _cooldowns.eclipse_starfire ) &&
-       p -> rng_eclipse -> roll( p -> talents.eclipse * 0.2 ) )
-  {
-    p -> _expirations.eclipse = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
-}
-
-// trigger_t8_4pc_balance ===================================================
-
-static void trigger_t8_4pc_balance( spell_t* s )
-{
-  druid_t* p = s -> player -> cast_druid();
-
-  // http://thottbot.com/test/s64824
-  double chance = 0.08;
-  if ( ! p -> rngs.tier8_4pc -> roll( chance ) )
-    return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Tier 8 4 Piece Balance";
-      p -> aura_gain( "Tier 8 4 Piece Balance" );
-      p -> _buffs.t8_4pc_balance = 1;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Tier 8 4 Piece Balance" );
-      p -> _buffs.t8_4pc_balance       = 0;
-      p -> _expirations.t8_4pc_balance = 0;
-    }
-  };
-
-  p -> procs.tier8_4pc -> occur();
-
-  event_t*& e = p -> _expirations.t8_4pc_balance;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
-}
-
 // trigger_t8_2pc_feral =====================================================
 
 static void trigger_t8_2pc_feral( action_t* a )
@@ -813,17 +651,13 @@ static void trigger_t8_2pc_feral( action_t* a )
   if ( ! p -> tiers.t8_2pc_feral )
     return;
 
-  if ( p -> rngs.tier8_2pc -> roll( 0.02 ) )
-  {
-    /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
-    /  It is just another chance to procc the same clearcasting
-    /  buff that OoC provides. OoC and t8_2pc_feral overwrite
-    /  each other. Easier to treat it just (ab)use the OoC handling */
-    druid_t* p = a -> player -> cast_druid();
-    p -> aura_gain( "Omen of Clarity" );
-    p -> _buffs.omen_of_clarity = 1;
+  /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
+  /  It is just another chance to procc the same clearcasting
+  /  buff that OoC provides. OoC and t8_2pc_feral overwrite
+  /  each other. Easier to treat it just (ab)use the OoC handling */
+
+  if ( p -> buffs_omen_of_clarity -> trigger(1, 1, 0.02) )
     p -> procs.tier8_2pc -> occur();
-  }
 }
 
 // trigger_unseen_moon ========================================================
@@ -1078,8 +912,8 @@ double druid_attack_t::cost() SC_CONST
   druid_t* p = player -> cast_druid();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> _buffs.omen_of_clarity ) return 0;
-  if ( p -> _buffs.berserk ) c *= 0.5;
+  if ( p -> buffs_omen_of_clarity -> check() ) return 0;
+  if ( p -> buffs_berserk -> check() ) c *= 0.5;
   return c;
 }
 
@@ -1089,15 +923,14 @@ void druid_attack_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   attack_t::consume_resource();
-  if ( p -> _buffs.omen_of_clarity )
+  if ( p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a energy gain.
     double amount = attack_t::cost();
     if ( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount, 0 );
-      p -> _buffs.omen_of_clarity = 0;
-      p -> aura_loss( "Omen of Clarity" );
+      p -> gains_omen_of_clarity -> add( amount );
+      p -> buffs_omen_of_clarity -> expire();
     }
   }
 }
@@ -1134,7 +967,7 @@ void druid_attack_t::execute()
 double druid_attack_t::calculate_direct_damage()
 {
   druid_t* p = player -> cast_druid();
-  base_dd_adder = p -> _buffs.tigers_fury;
+  base_dd_adder = p -> buffs_tigers_fury -> value();
   return attack_t::calculate_direct_damage();
 }
 
@@ -1146,18 +979,13 @@ void druid_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if ( p -> _buffs.savage_roar )
-  {
-    // sr glyph seems to be additive
-    player_multiplier *= 1.3 + 0.03 * p -> glyphs.savage_roar;
-  }
+  player_multiplier *= 1 + p -> buffs_savage_roar -> value();
 
   if ( p -> talents.naturalist )
   {
     player_multiplier *= 1 + p -> talents.naturalist * 0.02;
   }
 
-  p -> uptimes_savage_roar -> update( p -> _buffs.savage_roar != 0 );
   p -> uptimes_rip -> update( p -> active_rip != 0 );
   p -> uptimes_rake -> update( p -> active_rake != 0 );
 }
@@ -1182,7 +1010,7 @@ bool druid_attack_t::ready()
   if ( requires_combo_points && ( p -> _buffs.combo_points == 0 ) )
     return false;
 
-  if ( berserk && ! p -> _buffs.berserk )
+  if ( berserk && ! p -> buffs_berserk -> check() )
     return false;
 
   if ( min_combo_points > 0 )
@@ -1212,11 +1040,11 @@ bool druid_attack_t::ready()
       return false;
 
   if ( min_savage_roar_expire > 0 )
-    if ( ! p -> _expirations.savage_roar || ( ( p -> _expirations.savage_roar -> occurs() - ct ) < min_savage_roar_expire ) )
+    if ( p -> buffs_savage_roar -> remains_lt( min_savage_roar_expire ) )
       return false;
 
   if ( max_savage_roar_expire > 0 )
-    if ( p -> _expirations.savage_roar && ( ( p -> _expirations.savage_roar -> occurs() - ct ) > max_savage_roar_expire ) )
+    if ( p -> buffs_savage_roar -> remains_gt( max_savage_roar_expire ) )
       return false;
 
   if ( min_rip_expire > 0 )
@@ -1243,7 +1071,6 @@ bool druid_attack_t::ready()
 void druid_attack_t::tick()
 {
   attack_t::tick();
-  // FIX ME! Get info on t8_2pc_feral and implement the procc, could be as easy as trigger_omen_of_clarity?
 }
 
 // Melee Attack ============================================================
@@ -1357,7 +1184,7 @@ struct faerie_fire_feral_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> _buffs.cat_form )
+    if ( p -> buffs_cat_form -> check() )
     {
       // The damage component is only active in (Dire) Bear Form
       direct_power_mod = 0;
@@ -1598,6 +1425,7 @@ struct rip_t : public druid_attack_t
 
 struct savage_roar_t : public druid_attack_t
 {
+  double buff_value;
   savage_roar_t( player_t* player, const std::string& options_str ) :
       druid_attack_t( "savage_roar", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
@@ -1611,44 +1439,22 @@ struct savage_roar_t : public druid_attack_t
     requires_combo_points = true;
     base_cost = 25;
     id = 52610;
+
+    druid_t* p = player -> cast_druid();
+    buff_value = 0.30;
+    if( p -> glyphs.savage_roar ) buff_value += 0.03;
   }
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p )
-      {
-        p -> aura_gain( "Savage Roar" );
-        p -> _buffs.savage_roar = 1;
-        sim -> add_event( this, duration );
-      }
-      virtual void execute()
-      {
-        druid_t* p = player -> cast_druid();
-        p -> aura_loss( "Savage Roar" );
-        p -> _buffs.savage_roar = 0;
-        p -> _expirations.savage_roar = 0;
-      }
-    };
-
     druid_t* p = player -> cast_druid();
 
     double duration = 9.0 + p -> _buffs.combo_points * 5.0;
     if ( p -> tiers.t8_4pc_feral ) duration += 8.0;
+    p -> buffs_savage_roar -> duration = duration;
+    p -> buffs_savage_roar -> trigger(1, buff_value );
 
     clear_combo_points( p );
-
-    event_t*& e = p -> _expirations.savage_roar;
-
-    if ( e )
-    {
-      e -> reschedule( duration );
-    }
-    else
-    {
-      e = new ( sim ) expiration_t( sim, p, duration );
-    }
   }
 };
 
@@ -1731,7 +1537,7 @@ struct shred_t : public druid_attack_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( omen_of_clarity && ! p -> _buffs.omen_of_clarity )
+    if ( omen_of_clarity && ! p -> buffs_omen_of_clarity -> may_react() )
       return false;
 
     return true;
@@ -1760,33 +1566,18 @@ struct berserk_t : public druid_attack_t
 
     cooldown = 180;
     id = 50334;
+
   }
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-      {
-        name = "Berserk Expiration";
-        p -> aura_gain( "Berserk" );
-        p -> _buffs.berserk = 1;
-        sim -> add_event( this, 15.0 + ( p -> glyphs.berserk ? 5.0 : 0.0 ) );
-      }
-      virtual void execute()
-      {
-        druid_t* p = player -> cast_druid();
-        p -> aura_loss( "Berserk" );
-        p -> _buffs.berserk = 0;
-        p -> _expirations.berserk = 0;
-      }
-    };
-
     druid_t* p = player -> cast_druid();
+    p -> buffs_berserk -> start();
+    // Berserk cancels TF
+    if( p -> buffs_tigers_fury -> check() ) 
+      p -> buffs_tigers_fury -> expire();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> _expirations.berserk = new ( sim ) expiration_t( sim, p );
-    event_t::early( p -> _expirations.tigers_fury );
   }
 
   virtual bool ready()
@@ -1796,7 +1587,7 @@ struct berserk_t : public druid_attack_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( tigers_fury && ! p -> _buffs.tigers_fury )
+    if ( tigers_fury && ! p -> buffs_tigers_fury -> check() )
       return false;
 
     return true;
@@ -1807,6 +1598,7 @@ struct berserk_t : public druid_attack_t
 
 struct tigers_fury_t : public druid_attack_t
 {
+  double tiger_value;
   tigers_fury_t( player_t* player, const std::string& options_str ) :
       druid_attack_t( "tigers_fury", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
@@ -1820,6 +1612,7 @@ struct tigers_fury_t : public druid_attack_t
 
     cooldown    = 30.0 - 3.0 * p -> tiers.t7_4pc_feral;
     trigger_gcd = 0;
+    tiger_value = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
     id = 50213;
   }
 
@@ -1833,28 +1626,8 @@ struct tigers_fury_t : public druid_attack_t
     {
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle * 20, p -> gains_tigers_fury );
     }
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* player ): event_t( sim, player )
-      {
-        name = "Tigers Fury Expiration";
-        druid_t* p = player -> cast_druid();
-        p -> aura_gain( "Tigers Fury" );
-        p -> _buffs.tigers_fury = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
-        sim -> add_event( this, 6.0 );
-      }
 
-      virtual void execute()
-      {
-        druid_t* p = player -> cast_druid();
-        p -> aura_loss( "Tigers Fury" );
-        p -> _buffs.tigers_fury = 0;
-
-      }
-    };
-
-    p -> _expirations.tigers_fury = new ( sim ) expiration_t( sim, p );
-
+    p -> buffs_tigers_fury -> start( 1, tiger_value );
     update_ready();
   }
 
@@ -1862,7 +1635,7 @@ struct tigers_fury_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( p -> _buffs.berserk )
+    if ( p -> buffs_berserk -> check() )
       return false;
 
     return druid_attack_t::ready();
@@ -2028,7 +1801,7 @@ bool druid_spell_t::ready()
   druid_t*  p = player -> cast_druid();
 
   if ( skip_on_eclipse > 0 )
-    if ( sim -> time_to_think( p -> _buffs.eclipse_starfire ) || sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
+    if ( p -> buffs_eclipse_lunar -> may_react() || p -> buffs_eclipse_solar -> may_react() )
       return false;
 
   return true;
@@ -2039,7 +1812,7 @@ bool druid_spell_t::ready()
 double druid_spell_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( p -> _buffs.omen_of_clarity ) return 0;
+  if ( p -> buffs_omen_of_clarity -> check() ) return 0;
   return spell_t::cost();
 }
 
@@ -2050,9 +1823,9 @@ double druid_spell_t::haste() SC_CONST
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
   if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
-  if ( p -> _buffs.natures_grace )
+  if ( p -> buffs_natures_grace -> check() )
   {
-    h *= 1.0 / ( 1.0 + p -> _buffs.natures_grace );
+    h *= 1.0 / ( 1.0 + p -> buffs_natures_grace -> value() );
   }
   return h;
 }
@@ -2071,9 +1844,6 @@ double druid_spell_t::execute_time() SC_CONST
 void druid_spell_t::schedule_execute()
 {
   druid_t* p = player -> cast_druid();
-
-  if ( druid_spell_t::execute_time() > 0 )
-    p -> uptimes_natures_grace -> update( p -> _buffs.natures_grace != 0 );
 
   spell_t::schedule_execute();
 
@@ -2099,12 +1869,12 @@ void druid_spell_t::execute()
 
   if ( result == RESULT_CRIT )
   {
-    if ( p -> _buffs.moonkin_form && ! aoe )
+    if ( p -> buffs_moonkin_form -> check() && ! aoe )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
 
-    trigger_natures_grace( this );
+    p -> buffs_natures_grace -> trigger( 1, 0.20 );
   }
 
   if ( ! aoe )
@@ -2126,14 +1896,14 @@ void druid_spell_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   spell_t::consume_resource();
-  if ( p -> _buffs.omen_of_clarity )
+  if ( p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
     if ( amount > 0 )
     {
       p -> gains_omen_of_clarity -> add( amount );
-      p -> _buffs.omen_of_clarity = 0;
+      p -> buffs_omen_of_clarity -> expire();
     }
   }
 }
@@ -2144,7 +1914,7 @@ void druid_spell_t::player_buff()
 {
   druid_t* p = player -> cast_druid();
   spell_t::player_buff();
-  if ( p -> _buffs.moonkin_form )
+  if ( p -> buffs_moonkin_form -> check() )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
@@ -2373,11 +2143,9 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
-    if ( p -> tiers.t8_4pc_balance )
-    {
-      trigger_t8_4pc_balance( this );
-    }
+    p -> buffs_t8_4pc_balance -> trigger();
   }
+  
   virtual bool ready()
   {
     if ( ! druid_spell_t::ready() )
@@ -2386,17 +2154,14 @@ struct insect_swarm_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( skip_on_eclipse < 0 )
-      if ( p -> _buffs.eclipse_starfire )
+      if ( p -> buffs_eclipse_lunar -> check() )
         return false;
 
-    // "_buffs.eclipse_starfire" is the time eclipse proc'd (0 if eclipse is not currently up)
+    // "buffs_eclipse_lunar" is the time eclipse proc'd (0 if eclipse is not currently up)
 
-    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_starfire > 0 )
+    if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
     {
-      double time_remaining = 15.0 - ( sim -> current_time - p -> _buffs.eclipse_starfire );
-
-      if ( min_eclipse_left > time_remaining )
-        return false;
+      return false;
     }
 
     return true;
@@ -2486,17 +2251,14 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( skip_on_eclipse < 0 )
-      if ( p -> _buffs.eclipse_wrath )
+      if ( p -> buffs_eclipse_solar )
         return false;
 
-    // "_buffs.eclipse_starfire" is the time eclipse proc'd (0 if eclipse is not currently up)
+    // "buffs_eclipse_lunar" is the time eclipse proc'd (0 if eclipse is not currently up)
 
-    if ( min_eclipse_left > 0 && p  -> _buffs.eclipse_starfire > 0 )
+    if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
     {
-      double time_remaining = 15.0 - ( sim -> current_time - p -> _buffs.eclipse_starfire );
-
-      if ( min_eclipse_left > time_remaining )
-        return false;
+      return false;
     }
 
     return true;
@@ -2539,7 +2301,7 @@ struct cat_form_t : public druid_spell_t
         d -> melee_attack -> cancel(); // Force melee swing to restart if necessary
     }
 
-    d -> _buffs.cat_form = 1;
+    d -> buffs_cat_form -> start();
     d -> base_gcd = 1.0;
     d -> reset_gcd();
 
@@ -2557,7 +2319,7 @@ struct cat_form_t : public druid_spell_t
   virtual bool ready()
   {
     druid_t* d = player -> cast_druid();
-    return( d -> _buffs.cat_form == 0 );
+    return ! d -> buffs_cat_form -> check();
   }
 };
 
@@ -2582,7 +2344,7 @@ struct moonkin_form_t : public druid_spell_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    p -> _buffs.moonkin_form = 1;
+    p -> buffs_moonkin_form -> start();
 
     sim -> auras.moonkin = 1;
 
@@ -2600,7 +2362,7 @@ struct moonkin_form_t : public druid_spell_t
   virtual bool ready()
   {
     druid_t* d = player -> cast_druid();
-    return( d -> _buffs.moonkin_form == 0 );
+    return ! d -> buffs_moonkin_form -> check();
   }
 };
 
@@ -2706,11 +2468,9 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
-    p -> uptimes_eclipse_starfire -> update( p -> _buffs.eclipse_starfire != 0 );
-    if ( p -> _buffs.eclipse_starfire )
-    {
-      player_crit += 0.30 + p -> tiers.t8_2pc_balance * 0.15;
-    }
+
+    player_crit += p -> buffs_eclipse_lunar -> value();
+
     if ( p -> active_moonfire )
     {
       player_crit += 0.01 * p -> talents.improved_insect_swarm;
@@ -2729,7 +2489,7 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::schedule_execute();
     druid_t* p = player -> cast_druid();
-    event_t::early( p -> _expirations.t8_4pc_balance );
+    p -> buffs_t8_4pc_balance -> expire();
   }
 
   virtual void execute()
@@ -2742,7 +2502,8 @@ struct starfire_t : public druid_spell_t
       trigger_earth_and_moon( this );
       if ( result == RESULT_CRIT )
       {
-        trigger_eclipse_wrath( this );
+        if( !p -> buffs_eclipse_lunar -> check() ) 
+          p -> buffs_eclipse_solar -> trigger(1, 0.30 + ( p -> tiers.t8_2pc_balance ? 0.15 : 0.0 ));
       }
 
       if ( p -> glyphs.starfire && p -> active_moonfire )
@@ -2755,7 +2516,7 @@ struct starfire_t : public druid_spell_t
   virtual double execute_time() SC_CONST
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> _buffs.t8_4pc_balance )
+    if ( p -> buffs_t8_4pc_balance -> check() )
       return 0;
 
     return druid_spell_t::execute_time();
@@ -2767,7 +2528,7 @@ struct starfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( instant && p -> _buffs.t8_4pc_balance == 0 )
+    if ( instant && ! p -> buffs_t8_4pc_balance -> may_react() )
       return false;
 
     if ( extend_moonfire && p -> glyphs.starfire )
@@ -2776,13 +2537,12 @@ struct starfire_t : public druid_spell_t
 
     if ( eclipse_benefit )
     {
-      if ( ! sim -> time_to_think( p -> _buffs.eclipse_starfire ) )
+      if ( ! p -> buffs_eclipse_lunar -> may_react() )
         return false;
 
       // Don't cast starfire if eclipse will fade before the cast finished
-      if ( p -> _expirations.eclipse )
-        if ( execute_time() > p -> _expirations.eclipse -> occurs() - sim -> current_time )
-          return false;
+      if ( p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
+        return false;
     }
 
     if ( eclipse_trigger )
@@ -2792,13 +2552,12 @@ struct starfire_t : public druid_spell_t
 
       // Did the player have enough time by now to realise he procced eclipse?
       // If so, return false as we only want to cast to procc
-      if ( sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
+      if ( p -> buffs_eclipse_solar -> may_react() )
         return false;
 
       // Not yet possible to trigger
-      if ( ! p -> _buffs.eclipse_wrath )
-        if ( sim -> current_time + 1.5 < p -> _cooldowns.eclipse_wrath )
-          return false;
+      if ( sim -> current_time < p -> buffs_eclipse_solar -> cooldown_ready )
+        return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2888,7 +2647,9 @@ struct wrath_t : public druid_spell_t
     {
       if ( result == RESULT_CRIT )
       {
-        trigger_eclipse_starfire( this );
+        druid_t* p = player -> cast_druid();
+        if( ! p -> buffs_eclipse_solar -> check() ) 
+          p -> buffs_eclipse_lunar -> trigger(1, 0.30 + ( p -> tiers.t8_2pc_balance ? 0.15 : 0.0 ));
       }
       trigger_earth_and_moon( this );
     }
@@ -2898,14 +2659,13 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
-    p -> uptimes_eclipse_wrath -> update( p -> _buffs.eclipse_wrath != 0 );
+
     // Eclipse and Moonfury being additive has to be handled here
     double e_m_additive_bonus = 1.0 + moonfury_bonus;
-    if ( p -> _buffs.eclipse_wrath )
-    {
-      e_m_additive_bonus += 0.3 + p -> tiers.t8_2pc_balance * 0.15;
-    }
+    e_m_additive_bonus += p -> buffs_eclipse_solar -> value();
+
     player_multiplier *= e_m_additive_bonus;
+    
     if ( p -> active_insect_swarm )
     {
       player_multiplier *= 1.0 + p -> talents.improved_insect_swarm * 0.01;
@@ -2921,13 +2681,12 @@ struct wrath_t : public druid_spell_t
 
     if ( eclipse_benefit )
     {
-      if ( ! sim -> time_to_think( p -> _buffs.eclipse_wrath ) )
+      if ( ! p -> buffs_eclipse_solar -> may_react() )
         return false;
 
       // Don't cast wrath if eclipse will fade before the cast finished.
-      if ( p -> _expirations.eclipse )
-        if ( execute_time() > p -> _expirations.eclipse -> occurs() - sim -> current_time )
-          return false;
+      if ( p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
+        return false;
     }
 
 
@@ -2938,13 +2697,12 @@ struct wrath_t : public druid_spell_t
 
       // Did the player have enough time by now to realise he procced eclipse?
       // If so, return false as we only want to cast to procc
-      if ( sim -> time_to_think( p -> _buffs.eclipse_starfire ) )
+      if (  p -> buffs_eclipse_lunar -> may_react() )
         return false;
 
       // Not yet possible to trigger
-      if ( ! p -> _buffs.eclipse_starfire )
-        if ( sim -> current_time + 3.0 < p -> _cooldowns.eclipse_starfire )
-          return false;
+      if ( sim -> current_time < p -> buffs_eclipse_lunar -> cooldown_ready )
+        return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2989,8 +2747,8 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        aoe               = true; // Prevents procing Omen or Moonkin Form mana gains.
-        dual = true;
+        aoe               = true; // Prevents Moonkin Form mana gains.
+        dual              = true;
 
         base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
@@ -3018,7 +2776,7 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        aoe               = true; // Prevents procing Omen or Moonkin Form mana gains.
+        aoe               = true; // Prevents Moonkin Form mana gains.
         dual              = true;
 
         base_dd_min = base_dd_max  = 0;
@@ -3059,7 +2817,7 @@ struct starfall_t : public druid_spell_t
 
     cooldown          = 90;
     base_execute_time = 0;
-    aoe               = true; // Can the actual CAST of Starfall trigger omen? FIX ME!
+    aoe               = true;
 
     static rank_t ranks[] =
     {
@@ -3365,6 +3123,33 @@ void druid_t::init_base()
   base_gcd = 1.5;
 }
 
+// druid_t::init_buffs ======================================================
+
+void druid_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  //buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  //                                    sim, this, name,              , S,   dur,    cd,                  proc_chance, quiet )
+  buffs_berserk           = new buff_t( sim, this, "berserk"          , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
+  buffs_combo_points      = new buff_t( sim, this, "combo_points"     , 5 );
+  buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
+  buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 ); // 20/40/60%
+  buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
+  buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
+  buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
+  buffs_t8_4pc_balance    = new buff_t( sim, this, "t8_4pc_balance"   , 1,  10.0,     0, 0.08 );
+  buffs_tigers_fury       = new buff_t( sim, this, "tigers_fury"      , 1,   6.0 );
+  buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1, 14.0 );
+
+  buffs_stealthed    = new buff_t( sim, this, "stealthed" );
+
+  // Forms
+  buffs_bear_form    = new buff_t( sim, this, "bear_form" );
+  buffs_cat_form     = new buff_t( sim, this, "cat_form" );
+  buffs_moonkin_form = new buff_t( sim, this, "moonkin_form" );
+}
+
 // druid_t::init_items ======================================================
 
 void druid_t::init_items()
@@ -3466,11 +3251,8 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_eclipse_starfire = get_uptime( "eclipse_starfire" );
-  uptimes_eclipse_wrath    = get_uptime( "eclipse_wrath"    );
   uptimes_energy_cap       = get_uptime( "energy_cap"       );
   uptimes_lunar_fury       = get_uptime( "lunar_fury"       );
-  uptimes_natures_grace    = get_uptime( "natures_grace"    );
   uptimes_savage_roar      = get_uptime( "savage_roar"      );
   uptimes_rip              = get_uptime( "rip"              );
   uptimes_rake             = get_uptime( "rake"             );
@@ -3483,7 +3265,6 @@ void druid_t::init_rng()
   player_t::init_rng();
 
   rng_eclipse            = get_rng( "eclipse"            );
-  rng_natures_grace      = get_rng( "natures_grace"      );
   rng_idol_of_lunar_fury = get_rng( "idol_of_lunar_fury" );
   rng_idol_of_terror     = get_rng( "idol_of_terror"     );
   rng_omen_of_clarity    = get_rng( "omen_of_clarity"    );
@@ -3621,7 +3402,7 @@ double druid_t::composite_attack_power() SC_CONST
     weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes, 3, 0.07, 0.14, 0.20 );
   }
 
-  if ( _buffs.cat_form ) ap += 160;
+  if ( buffs_cat_form -> check() ) ap += 160;
 
   ap += weapon_ap;
 
@@ -3634,7 +3415,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
 {
   double multiplier = player_t::composite_attack_power_multiplier();
 
-  if ( _buffs.cat_form && talents.heart_of_the_wild )
+  if ( buffs_cat_form -> check() && talents.heart_of_the_wild )
   {
     multiplier *= 1 + talents.heart_of_the_wild * 0.02;
   }
@@ -3648,7 +3429,7 @@ double druid_t::composite_attack_crit() SC_CONST
 {
   double c = player_t::composite_attack_crit();
 
-  if ( _buffs.cat_form )
+  if ( buffs_cat_form -> check() )
   {
     c += 0.02 * talents.sharpened_claws;
     c += 0.02 * talents.master_shapeshifter;
