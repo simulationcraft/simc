@@ -23,10 +23,11 @@ struct shaman_t : public player_t
   action_t* active_lightning_bolt_dot;
 
   // Buffs
+  buff_t* buffs_elemental_devastation;
+  buff_t* buffs_elemental_focus;
+
   struct _buffs_t
   {
-    int    elemental_devastation;
-    int    elemental_focus;
     int    elemental_mastery;
     int    flurry;
     int    indomitability;
@@ -62,7 +63,6 @@ struct shaman_t : public player_t
   // Expirations
   struct _expirations_t
   {
-    event_t* elemental_devastation;
     event_t* elemental_oath;
     event_t* maelstrom_weapon;
     event_t* nature_vulnerability;
@@ -83,8 +83,6 @@ struct shaman_t : public player_t
   proc_t* procs_windfury;
 
   // Up-Times
-  uptime_t* uptimes_elemental_devastation;
-  uptime_t* uptimes_elemental_focus;
   uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_flurry;
   uptime_t* uptimes_indomitability;
@@ -264,6 +262,7 @@ struct shaman_t : public player_t
   virtual void      init_base();
   virtual void      init_items();
   virtual void      init_scaling();
+  virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -735,44 +734,6 @@ static void trigger_lightning_overload( spell_t* s,
   }
 }
 
-// trigger_elemental_devastation =================================================
-
-static void trigger_elemental_devastation( spell_t* s )
-{
-  shaman_t* p = s -> player -> cast_shaman();
-
-  if ( p -> talents.elemental_devastation == 0 ) return;
-
-  if ( s -> proc ) return;
-
-  struct elemental_devastation_expiration_t : public event_t
-  {
-    elemental_devastation_expiration_t( sim_t* sim, shaman_t* p ) : event_t( sim, p )
-    {
-      name = "Elemental Devastation Expiration";
-      p -> _buffs.elemental_devastation = 1;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      shaman_t* p = player -> cast_shaman();
-      p -> _buffs.elemental_devastation = 0;
-      p -> _expirations.elemental_devastation = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.elemental_devastation;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) elemental_devastation_expiration_t( s -> sim, p );
-  }
-}
-
 // trigger_elemental_oath =====================================================
 
 static void trigger_elemental_oath( spell_t* s )
@@ -993,12 +954,11 @@ void shaman_attack_t::player_buff()
 {
   attack_t::player_buff();
   shaman_t* p = player -> cast_shaman();
-  if ( p -> _buffs.elemental_devastation )
+  if ( p -> buffs_elemental_devastation -> up() )
   {
     player_crit += p -> talents.elemental_devastation * 0.03;
   }
-  p -> uptimes_elemental_devastation -> update( p -> _buffs.elemental_devastation != 0 );
-  p -> uptimes_unleashed_rage        -> update( p ->  buffs.unleashed_rage        != 0 );
+  p -> uptimes_unleashed_rage -> update( p ->  buffs.unleashed_rage != 0 );
 }
 
 // shaman_attack_t::assess_damage ==========================================
@@ -1238,7 +1198,7 @@ double shaman_spell_t::cost() SC_CONST
   double c = spell_t::cost();
   if ( c == 0 ) return 0;
   double cr = cost_reduction();
-  if ( p -> _buffs.elemental_focus   ) cr += 0.40;
+  if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
   c *= 1.0 - cr;
   if ( p -> buffs.tier4_4pc ) c -= 270;
   if ( c < 0 ) c = 0;
@@ -1251,9 +1211,9 @@ void shaman_spell_t::consume_resource()
 {
   spell_t::consume_resource();
   shaman_t* p = player -> cast_shaman();
-  if ( p -> _buffs.elemental_focus > 0 )
+  if ( p -> buffs_elemental_focus -> up() )
   {
-    p -> _buffs.elemental_focus--;
+    p -> buffs_elemental_focus -> decrement();
   }
   p -> buffs.tier4_4pc = 0;
 }
@@ -1295,12 +1255,11 @@ void shaman_spell_t::player_buff()
   if ( p -> talents.elemental_oath )
   {
     if ( p -> buffs.elemental_oath &&
-         p -> _buffs.elemental_focus )
+         p -> buffs_elemental_focus -> up() )
     {
       player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
     }
 
-    p -> uptimes_elemental_focus -> update( p -> _buffs.elemental_focus != 0 );
     p -> uptimes_elemental_oath  -> update( p -> buffs.elemental_oath  != 0 );
   }
 }
@@ -1315,11 +1274,12 @@ void shaman_spell_t::execute()
   {
     if ( result == RESULT_CRIT )
     {
-      trigger_elemental_devastation( this );
-      trigger_elemental_oath( this );
-
-      p -> _buffs.elemental_focus = 2;
-
+      if ( ! proc && ! ticking ) 
+      {
+	trigger_elemental_oath( this );
+	p -> buffs_elemental_devastation -> trigger();
+	p -> buffs_elemental_focus -> trigger( 2 );
+      }
       if ( p -> tiers.t4_4pc_elemental )
       {
         p -> buffs.tier4_4pc = p -> rngs.tier4_4pc -> roll( 0.11 ) ;
@@ -3467,6 +3427,18 @@ void shaman_t::init_scaling()
   scales_with[ STAT_SPIRIT ] = 0;
 }
 
+// shaman_t::init_buffs ======================================================
+
+void shaman_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+
+  buffs_elemental_devastation = new buff_t( sim, this, "elemental_devastation", 1, 10.0, 0.0, talents.elemental_devastation );
+  buffs_elemental_focus       = new buff_t( sim, this, "elemental_focus",       2, 15.0, 0.0, talents.elemental_focus       );
+}
+
 // shaman_t::init_gains ======================================================
 
 void shaman_t::init_gains()
@@ -3495,8 +3467,6 @@ void shaman_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_elemental_devastation = get_uptime( "elemental_devastation"    );
-  uptimes_elemental_focus       = get_uptime( "elemental_focus"          );
   uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
   uptimes_flurry                = get_uptime( "flurry"                   );
   uptimes_nature_vulnerability  = get_uptime( "nature_vulnerability"     );
