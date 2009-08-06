@@ -150,6 +150,8 @@ bool option_t::parse( sim_t*             sim,
                       const std::string& n,
                       const std::string& v )
 {
+  if ( ! name ) return false;
+
   if ( n == name )
   {
     switch ( type )
