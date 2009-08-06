@@ -37,6 +37,7 @@ struct druid_t : public player_t
   buff_t* buffs_combo_points;
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
+  buff_t* buffs_lunar_fury;
   buff_t* buffs_moonkin_form;
   buff_t* buffs_natures_grace;
   buff_t* buffs_natures_swiftness;
@@ -59,7 +60,6 @@ struct druid_t : public player_t
   // Expirations
   struct _expirations_t
   {
-    event_t* idol_of_lunar_fury;
     event_t* idol_of_the_corruptor;
     event_t* mangle;
     event_t* unseen_moon;
@@ -79,7 +79,6 @@ struct druid_t : public player_t
   // Procs
   proc_t* procs_combo_points;
   proc_t* procs_combo_points_wasted;
-  proc_t* procs_idol_of_lunar_fury;
   proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
   proc_t* procs_unseen_moon;
@@ -87,13 +86,11 @@ struct druid_t : public player_t
   // Up-Times
   uptime_t* uptimes_eclipse_overlap;
   uptime_t* uptimes_energy_cap;
-  uptime_t* uptimes_lunar_fury;
   uptime_t* uptimes_rip;
   uptime_t* uptimes_rake;
 
   // Random Number Generation
   rng_t* rng_eclipse;
-  rng_t* rng_idol_of_lunar_fury;
   rng_t* rng_idol_of_terror;
   rng_t* rng_omen_of_clarity;
   rng_t* rng_primal_fury;
@@ -696,52 +693,6 @@ static void trigger_unseen_moon( spell_t* s )
     else
     {
       e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// trigger_lunar_fury =========================================================
-
-static void trigger_lunar_fury( spell_t* s )
-{
-  // http://ptr.wowhead.com/?spell=67361
-
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( ! p -> idols.lunar_fury )
-    return;
-
-  struct expiration_idol_of_lunar_fury_t : public event_t
-  {
-    expiration_idol_of_lunar_fury_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Idol of Lunar Fury";
-      p -> aura_gain( "Idol of Lunar Fury" );
-      p -> stat_gain( STAT_CRIT_RATING, 200 );
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Idol of the Unseen Moon" );
-      p -> stat_loss( STAT_CRIT_RATING, 200 );
-      p -> _expirations.idol_of_lunar_fury = 0;
-    }
-  };
-
-  if ( p -> rng_idol_of_lunar_fury -> roll( 0.7 ) )
-  {
-    p -> procs_idol_of_lunar_fury -> occur();
-
-    event_t*& e = p -> _expirations.idol_of_lunar_fury;
-
-    if ( e )
-    {
-      e -> reschedule( 12.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_idol_of_lunar_fury_t( s -> sim, p );
     }
   }
 }
@@ -1770,8 +1721,6 @@ struct druid_spell_t : public spell_t
   virtual bool   ready();
   virtual void   schedule_execute();
   virtual void   target_debuff( int dmg_type );
-  virtual void   tick();
-
 };
 
 // druid_spell_t::parse_options ============================================
@@ -1859,9 +1808,6 @@ void druid_spell_t::execute()
 {
   druid_t* p = player -> cast_druid();
 
-  if ( may_crit )
-    p -> uptimes_lunar_fury -> update( p -> _expirations.idol_of_lunar_fury != 0 );
-
   spell_t::execute();
 
   if ( result == RESULT_CRIT )
@@ -1918,6 +1864,10 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
+  if ( may_crit || tick_may_crit ) 
+  {
+    player_crit += p -> buffs_lunar_fury -> value();
+  }
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -1930,19 +1880,6 @@ void druid_spell_t::target_debuff( int dmg_type )
   if ( t -> debuffs.faerie_fire )
   {
     target_crit += p -> talents.improved_faerie_fire * 0.01;
-  }
-}
-
-// druid_spell_t::tick() ===================================================
-
-void druid_spell_t::tick()
-{
-  spell_t::tick();
-  if ( tick_may_crit )
-  {
-    druid_t* p = player -> cast_druid();
-    p -> uptimes_lunar_fury -> update(
-      p -> _expirations.idol_of_lunar_fury != 0 );
   }
 }
 
@@ -2264,8 +2201,9 @@ struct moonfire_t : public druid_spell_t
   }
   virtual void tick()
   {
+    druid_t* p = player -> cast_druid();
     druid_spell_t::tick();
-    trigger_lunar_fury( this );
+    p -> buffs_lunar_fury -> trigger( 1, ( 200 / p -> rating.spell_crit ) );
   }
 };
 
@@ -3138,6 +3076,7 @@ void druid_t::init_buffs()
   buffs_combo_points      = new buff_t( sim, this, "combo_points"     , 5 );
   buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
   buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 ); // 20/40/60%
+  buffs_lunar_fury        = new buff_t( sim, this, "lunary_fury",       1,  12.0,     0, idols.lunar_fury * 0.70 );
   buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
   buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
@@ -3161,7 +3100,7 @@ void druid_t::init_items()
 
   std::string& idol = items[ SLOT_RANGED ].encoded_name_str;
 
-  if     ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
+  if      ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
   else if ( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
   else if ( idol == "idol_of_terror"             ) idols.terror = 1;
   else if ( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
@@ -3242,7 +3181,6 @@ void druid_t::init_procs()
 
   procs_combo_points        = get_proc( "combo_points",        sim );
   procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
-  procs_idol_of_lunar_fury  = get_proc( "lunar_fury",          sim );
   procs_omen_of_clarity     = get_proc( "omen_of_clarity",     sim );
   procs_primal_fury         = get_proc( "primal_fury",         sim );
   procs_unseen_moon         = get_proc( "unseen_moon",         sim );
@@ -3256,7 +3194,6 @@ void druid_t::init_uptimes()
 
   uptimes_eclipse_overlap  = get_uptime( "eclipse_overlap"  );
   uptimes_energy_cap       = get_uptime( "energy_cap"       );
-  uptimes_lunar_fury       = get_uptime( "lunar_fury"       );
   uptimes_rip              = get_uptime( "rip"              );
   uptimes_rake             = get_uptime( "rake"             );
 }
@@ -3268,7 +3205,6 @@ void druid_t::init_rng()
   player_t::init_rng();
 
   rng_eclipse            = get_rng( "eclipse"            );
-  rng_idol_of_lunar_fury = get_rng( "idol_of_lunar_fury" );
   rng_idol_of_terror     = get_rng( "idol_of_terror"     );
   rng_omen_of_clarity    = get_rng( "omen_of_clarity"    );
   rng_primal_fury        = get_rng( "primal_fury"        );

@@ -35,7 +35,7 @@ trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45c
 trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=19sp,enchant=lightweave
 main_hand=staff_of_endless_winter,stats=104crit_587sp_111sta_128int_84spi,gems=19sp_19sp,enchant=81sp,weapon=staff_2.10speed_165.3dps
-ranged=idol_of_the_shooting_star
+ranged=idol_of_lunar_fury
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
