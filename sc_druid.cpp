@@ -3208,7 +3208,7 @@ void druid_t::init_actions()
       action_list_str += "/starfire,instant=1";
       action_list_str += "/moonfire";
       if ( talents.insect_swarm ) action_list_str += "/insect_swarm";
-      if ( eclipse_cycle == "lunar" )
+      if ( eclipse_cycle == "solar" )
       {
         action_list_str += "/starfire,eclipse=trigger";
         action_list_str += use_str;
