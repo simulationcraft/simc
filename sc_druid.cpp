@@ -951,11 +951,11 @@ bool druid_attack_t::ready()
       return false;
 
   if ( min_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_gt( min_savage_roar_expire ) )
+    if ( p -> buffs_savage_roar -> remains_lt( min_savage_roar_expire ) )
       return false;
 
   if ( max_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_lt( max_savage_roar_expire ) )
+    if ( p -> buffs_savage_roar -> remains_gt( max_savage_roar_expire ) )
       return false;
 
   if ( min_rip_expire > 0 )
