@@ -204,6 +204,7 @@ struct mage_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_hit() SC_CONST;
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -288,8 +289,6 @@ struct mage_spell_t : public spell_t
       arcane_power( 0 ),
       icy_veins( 0 )
   {
-    mage_t* p = player -> cast_mage();
-    base_hit += p -> talents.precision * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& );
@@ -3373,6 +3372,17 @@ double mage_t::composite_spell_power( int school ) SC_CONST
   }
 
   return sp;
+}
+
+// mage_t::composite_spell_hit =============================================
+
+double mage_t::composite_spell_hit() SC_CONST
+{
+  double c = player_t::composite_spell_hit();
+
+  c += talents.precision * 0.01;
+
+  return c;
 }
 
 // mage_t::combat_begin ====================================================
