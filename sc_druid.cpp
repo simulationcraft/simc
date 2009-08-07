@@ -2143,7 +2143,7 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( skip_on_eclipse < 0 )
-      if ( p -> buffs_eclipse_solar )
+      if ( p -> buffs_eclipse_solar -> check() )
         return false;
 
     if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
@@ -3029,8 +3029,8 @@ void druid_t::init_buffs()
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk           = new buff_t( sim, this, "berserk"          , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
   buffs_combo_points      = new buff_t( sim, this, "combo_points"     , 5 );
-  buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
-  buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 ); // 20/40/60%
+  buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 );
+  buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
   buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
   buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
