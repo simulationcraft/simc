@@ -2040,12 +2040,6 @@ struct living_bomb_t : public mage_spell_t
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
 
-  virtual void tick()
-  {
-    mage_spell_t::tick();
-    // Hot-Fixed Away: if ( sim -> P320 && tick_may_crit ) trigger_hot_streak( this );
-  }
-
   // Hack! Only the explosion benefits from World-in-Flames
   virtual void target_debuff( int dmg_type )
   {
