@@ -1577,7 +1577,7 @@ struct player_t
   virtual void stat_gain( int stat, double amount );
   virtual void stat_loss( int stat, double amount );
 
-  virtual void  summon_pet( const char* name );
+  virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
 
   virtual void target_swing() {}
@@ -1711,7 +1711,7 @@ struct pet_t : public player_t
 
   virtual void init();
   virtual void reset();
-  virtual void summon();
+  virtual void summon( double duration=0 );
   virtual void dismiss();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );

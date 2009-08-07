@@ -341,9 +341,9 @@ struct water_elemental_pet_t : public pet_t
     health_per_stamina = 7.5;
     mana_per_intellect = 5;
   }
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
-    pet_t::summon();
+    pet_t::summon( duration );
 
     mage_t* o = cast_pet() -> owner -> cast_mage();
 
@@ -506,9 +506,9 @@ struct mirror_image_pet_t : public pet_t
       sequences.push_back( front );
     }
   }
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
-    pet_t::summon();
+    pet_t::summon( duration );
 
     sequence_finished = 0;
 

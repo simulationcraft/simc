@@ -172,34 +172,20 @@ struct shaman_t : public player_t
 
   struct tiers_t
   {
-    int t4_2pc_elemental;
-    int t4_4pc_elemental;
-    int t5_2pc_elemental;
-    int t5_4pc_elemental;
-    int t6_2pc_elemental;
-    int t6_4pc_elemental;
-    int t7_2pc_elemental;
-    int t7_4pc_elemental;
-    int t8_2pc_elemental;
-    int t8_4pc_elemental;
-    int t9_2pc_elemental;
-    int t9_4pc_elemental;
-    int t10_2pc_elemental;
-    int t10_4pc_elemental;
-    int t4_2pc_enhancement;
-    int t4_4pc_enhancement;
-    int t5_2pc_enhancement;
-    int t5_4pc_enhancement;
-    int t6_2pc_enhancement;
-    int t6_4pc_enhancement;
-    int t7_2pc_enhancement;
-    int t7_4pc_enhancement;
-    int t8_2pc_enhancement;
-    int t8_4pc_enhancement;
-    int t9_2pc_enhancement;
-    int t9_4pc_enhancement;
-    int t10_2pc_enhancement;
-    int t10_4pc_enhancement;
+    int  t4_2pc_elemental,  t4_4pc_elemental;
+    int  t5_2pc_elemental,  t5_4pc_elemental;
+    int  t6_2pc_elemental,  t6_4pc_elemental;
+    int  t7_2pc_elemental,  t7_4pc_elemental;
+    int  t8_2pc_elemental,  t8_4pc_elemental;
+    int  t9_2pc_elemental,  t9_4pc_elemental;
+    int t10_2pc_elemental, t10_4pc_elemental;
+    int  t4_2pc_enhancement,  t4_4pc_enhancement;
+    int  t5_2pc_enhancement,  t5_4pc_enhancement;
+    int  t6_2pc_enhancement,  t6_4pc_enhancement;
+    int  t7_2pc_enhancement,  t7_4pc_enhancement;
+    int  t8_2pc_enhancement,  t8_4pc_enhancement;
+    int  t9_2pc_enhancement,  t9_4pc_enhancement;
+    int t10_2pc_enhancement, t10_4pc_enhancement;
     tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
   };
   tiers_t tiers;
@@ -351,9 +337,9 @@ struct spirit_wolf_pet_t : public pet_t
     ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power();
     return ap;
   }
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
-    pet_t::summon();
+    pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
   }
 };
@@ -2733,18 +2719,6 @@ struct thunderstorm_t : public shaman_spell_t
 
 struct spirit_wolf_spell_t : public shaman_spell_t
 {
-  struct spirit_wolf_expiration_t : public event_t
-  {
-    spirit_wolf_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      sim -> add_event( this, 45.0 );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "spirit_wolf" );
-    }
-  };
-
   spirit_wolf_spell_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "spirit_wolf", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
@@ -2766,8 +2740,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "spirit_wolf" );
-    new ( sim ) spirit_wolf_expiration_t( sim, player );
+    player -> summon_pet( "spirit_wolf", 45.0 );
   }
 
 };

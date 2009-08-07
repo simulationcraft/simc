@@ -91,7 +91,7 @@ void pet_t::reset()
 
 // pet_t::summon ============================================================
 
-void pet_t::summon()
+void pet_t::summon( double duration )
 {
   if ( sim -> log )
   {
@@ -101,6 +101,22 @@ void pet_t::summon()
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;
+
+  if( duration > 0 )
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
+      {
+	sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+	player -> cast_pet() -> dismiss();
+      }
+    };
+    new ( sim ) expiration_t( sim, this, duration );
+  }
 
   schedule_ready();
 }

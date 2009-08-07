@@ -1956,13 +1956,14 @@ void player_t::stat_loss( int    stat,
 
 // player_t::summon_pet =====================================================
 
-void player_t::summon_pet( const char* pet_name )
+void player_t::summon_pet( const char* pet_name, 
+			   double      duration )
 {
   for ( pet_t* p = pet_list; p; p = p -> next_pet )
   {
     if ( p -> name_str == pet_name )
     {
-      p -> summon();
+      p -> summon( duration );
       return;
     }
   }

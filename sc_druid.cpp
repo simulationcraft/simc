@@ -951,11 +951,11 @@ bool druid_attack_t::ready()
       return false;
 
   if ( min_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_lt( min_savage_roar_expire ) )
+    if ( ! p -> buffs_savage_roar -> remains_lt( min_savage_roar_expire ) )
       return false;
 
   if ( max_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_gt( max_savage_roar_expire ) )
+    if ( ! p -> buffs_savage_roar -> remains_gt( max_savage_roar_expire ) )
       return false;
 
   if ( min_rip_expire > 0 )
@@ -2450,8 +2450,9 @@ struct starfire_t : public druid_spell_t
         return false;
 
       // Not yet possible to trigger
-      if ( sim -> current_time < p -> buffs_eclipse_solar -> cooldown_ready )
-        return false;
+      if ( ! p -> buffs_eclipse_solar -> check() )
+	if ( sim -> current_time + 3.0 < p -> buffs_eclipse_solar -> cooldown_ready )
+	  return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2598,8 +2599,9 @@ struct wrath_t : public druid_spell_t
         return false;
 
       // Not yet possible to trigger
-      if ( sim -> current_time < p -> buffs_eclipse_lunar -> cooldown_ready )
-        return false;
+      if (  ! p -> buffs_eclipse_lunar -> check() )
+	if ( sim -> current_time + 1.5 < p -> buffs_eclipse_lunar -> cooldown_ready )
+	  return false;
     }
 
     if ( ! prev_str.empty() )

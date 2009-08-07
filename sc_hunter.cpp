@@ -570,10 +570,10 @@ struct hunter_pet_t : public pet_t
       return pet_t::composite_spell_hit();
   }
 
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
     hunter_t* o = owner -> cast_hunter();
-    pet_t::summon();
+    pet_t::summon( duration );
     o -> active_pet = this;
   }
 

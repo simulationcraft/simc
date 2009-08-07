@@ -339,10 +339,10 @@ struct bloodworm_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
     death_knight_t* o = owner -> cast_death_knight();
-    pet_t::summon();
+    pet_t::summon( duration );
     o -> active_bloodworms = this;
     melee -> schedule_execute();
   }

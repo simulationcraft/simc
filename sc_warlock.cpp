@@ -306,10 +306,10 @@ struct warlock_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual void summon()
+  virtual void summon( double duration=0 )
   {
     warlock_t* o = owner -> cast_warlock();
-    pet_t::summon();
+    pet_t::summon( duration );
     o -> active_pet = this;
 
     _buffs.reset();
