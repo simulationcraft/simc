@@ -1797,20 +1797,6 @@ struct shadow_form_t : public priest_spell_t
 
 struct shadow_fiend_spell_t : public priest_spell_t
 {
-  struct shadow_fiend_expiration_t : public event_t
-  {
-    shadow_fiend_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      double duration = 15.1;
-      if ( p -> set_bonus.tier4_2pc() ) duration += 3.0;
-      sim -> add_event( this, duration );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "shadow_fiend" );
-    }
-  };
-
   int trigger;
 
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
@@ -1842,10 +1828,12 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
   virtual void execute()
   {
+    priest_t* p = player -> cast_priest();
     consume_resource();
     update_ready();
-    player -> summon_pet( "shadow_fiend" );
-    new ( sim ) shadow_fiend_expiration_t( sim, player );
+    double duration = 15.1;
+    if ( p -> set_bonus.tier4_2pc() ) duration += 3.0;
+    p -> summon_pet( "shadow_fiend", duration );
   }
 
   virtual bool ready()

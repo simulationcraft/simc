@@ -316,6 +316,13 @@ struct warlock_pet_t : public pet_t
     _expirations.reset();
   }
 
+  virtual void dismiss()
+  {
+    warlock_t* o = owner -> cast_warlock();
+    pet_t::dismiss();
+    o -> active_pet = 0;
+  }
+
   virtual void interrupt()
   {
     pet_t::interrupt();
@@ -3267,7 +3274,6 @@ struct sacrifice_pet_t : public warlock_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_pet_sacrifice -> start( 1, p -> active_pet -> pet_type );
     p -> active_pet -> dismiss();
-    p -> active_pet = 0;
   }
 
   virtual bool ready()
@@ -3343,32 +3349,10 @@ struct inferno_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_spell_t::execute();
-
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim, p )
-      {
-        name = "Infernal Expiration";
-        if ( p -> active_pet )
-        {
-          p -> active_pet -> dismiss();
-          p -> active_pet = 0;
-        }
-        p -> summon_pet( "infernal" );
-        sim -> add_event( this, 60.0 );
-      }
-      virtual void execute()
-      {
-        warlock_t* p = player -> cast_warlock();
-        p -> dismiss_pet( "infernal" );
-        p -> active_pet = 0;
-      }
-    };
-
     warlock_t* p = player -> cast_warlock();
-
-    new ( sim ) expiration_t( sim, p );
+    warlock_spell_t::execute();
+    if ( p -> active_pet ) p -> active_pet -> dismiss();
+    p -> summon_pet( "infernal", 60.0 );
   }
 };
 

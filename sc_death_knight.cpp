@@ -1752,29 +1752,14 @@ struct plague_strike_t : public death_knight_attack_t
 // TODO: Implement me
 struct raise_dead_t : public death_knight_spell_t
 {
-  struct raise_dead_expiration_t : public event_t
-  {
-    raise_dead_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      sim -> add_event( this, 45.0 );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "raise_dead" );
-    }
-  };
-
-  int target_pct;
-
   raise_dead_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY ), target_pct( 0 )
+      death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.dancing_rune_weapon );
 
     option_t options[] =
     {
-      { "trigger", OPT_INT, &target_pct },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1788,27 +1773,7 @@ struct raise_dead_t : public death_knight_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "raise_dead" );
-    new ( sim ) raise_dead_expiration_t( sim, player );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! death_knight_spell_t::ready() )
-      return false;
-
-    target_t* t = sim -> target;
-
-    if ( t -> time_to_die() > 60 )
-    {
-      if ( target_pct > 0 )
-      {
-        if ( t -> health_percentage() > target_pct )
-          return false;
-      }
-    }
-
-    return true;
+    player -> summon_pet( "raise_dead", 45.0 );
   }
 };
 

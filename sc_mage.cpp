@@ -2765,20 +2765,6 @@ struct counterspell_t : public mage_spell_t
 
 struct water_elemental_spell_t : public mage_spell_t
 {
-  struct water_elemental_expiration_t : public event_t
-  {
-    water_elemental_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      mage_t* p = player -> cast_mage();
-      p -> summon_pet( "water_elemental" );
-      sim -> add_event( this, 45.0 + p -> talents.improved_water_elemental * 5.0 );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "water_elemental" );
-    }
-  };
-
   water_elemental_spell_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "water_elemental", player, SCHOOL_FROST, TREE_FROST )
   {
@@ -2800,9 +2786,10 @@ struct water_elemental_spell_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
     consume_resource();
     update_ready();
-    new ( sim ) water_elemental_expiration_t( sim, player );
+    p -> summon_pet( "water_elemental", 45.0 + p -> talents.improved_water_elemental * 5.0 );
   }
 
   virtual bool ready()

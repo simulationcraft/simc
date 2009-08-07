@@ -3747,13 +3747,13 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
-//if( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
+//if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-//if( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
+//if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "readiness"             ) return new              readiness_t( this, options_str );
   if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
-//if( name == "scorpid_sting"         ) return new          scorpid_sting_t( this, options_str );
+//if ( name == "scorpid_sting"         ) return new          scorpid_sting_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
   if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );

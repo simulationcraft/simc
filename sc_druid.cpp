@@ -2802,22 +2802,9 @@ struct treants_spell_t : public druid_spell_t
 
   virtual void execute()
   {
-    struct treants_expiration_t : public event_t
-    {
-      treants_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        sim -> add_event( this, 30.0 );
-      }
-      virtual void execute()
-      {
-        player -> dismiss_pet( "treants" );
-      }
-    };
-
     consume_resource();
     update_ready();
-    player -> summon_pet( "treants" );
-    new ( sim ) treants_expiration_t( sim, player );
+    player -> summon_pet( "treants", 30.0 );
   }
 };
 
