@@ -20,9 +20,7 @@ struct druid_t : public player_t
   // Buffs
   struct _buffs_t
   {
-    int    bear_form;
     int    combo_points;
-    int    natures_swiftness;
     int    stealthed;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
@@ -46,24 +44,14 @@ struct druid_t : public player_t
   buff_t* buffs_savage_roar;
   buff_t* buffs_stealthed;
   buff_t* buffs_t8_4pc_balance;
+  buff_t* buffs_terror;
   buff_t* buffs_tigers_fury;
-
-  // Cooldowns
-  struct _cooldowns_t
-  {
-    double idol;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
+  buff_t* buffs_unseen_moon;
 
   // Expirations
   struct _expirations_t
   {
-    event_t* idol_of_the_corruptor;
     event_t* mangle;
-    event_t* unseen_moon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -82,7 +70,6 @@ struct druid_t : public player_t
   proc_t* procs_combo_points_wasted;
   proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
-  proc_t* procs_unseen_moon;
 
   // Up-Times
   uptime_t* uptimes_eclipse_overlap;
@@ -91,9 +78,7 @@ struct druid_t : public player_t
   uptime_t* uptimes_rake;
 
   // Random Number Generation
-  rng_t* rng_idol_of_terror;
   rng_t* rng_primal_fury;
-  rng_t* rng_unseen_moon;
 
   attack_t* melee_attack;
 
@@ -655,47 +640,6 @@ static void trigger_t8_2pc_feral( action_t* a )
     p -> procs.tier8_2pc -> occur();
 }
 
-// trigger_unseen_moon ========================================================
-
-static void trigger_unseen_moon( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, druid_t* p ) : event_t( sim, p )
-    {
-      name = "Idol of the Unseen Moon";
-      p -> aura_gain( "Idol of the Unseen Moon" );
-      p -> stat_gain( STAT_SPELL_POWER, 140 );
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Idol of the Unseen Moon" );
-      p -> stat_loss( STAT_SPELL_POWER, 140 );
-      p -> _expirations.unseen_moon = 0;
-    }
-  };
-
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( p -> rng_unseen_moon -> roll( 0.5 ) )
-  {
-    p -> procs_unseen_moon -> occur();
-
-    event_t*& e = p -> _expirations.unseen_moon;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
 // trigger_primal_fury =====================================================
 
 static void trigger_primal_fury( druid_attack_t* a )
@@ -744,42 +688,6 @@ static void trigger_primal_precision( druid_attack_t* a )
   double energy_restored = a -> resource_consumed * p -> talents.primal_precision * 0.40;
 
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_primal_precision );
-}
-
-// trigger_idol_of_terror ==================================================
-
-static void trigger_idol_of_terror( attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> idols.terror ) return;
-
-  double current_time = p -> sim -> current_time;
-
-  if ( current_time < p -> _cooldowns.idol ) return;
-
-  if ( ! p -> rng_idol_of_terror -> roll( 0.85 ) ) return;
-
-  struct idol_of_terror_expiration_t : public event_t
-  {
-    idol_of_terror_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Idol of Terror Expiration";
-      player -> aura_gain( "Idol of Terror" );
-      player -> stat_gain( STAT_AGILITY, 65 );
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Idol of Terror" );
-      player -> stat_loss( STAT_AGILITY, 65 );
-    }
-  };
-
-  new ( a -> sim ) idol_of_terror_expiration_t( a -> sim, p );
-
-  p -> _cooldowns.idol = current_time + 10.01;
 }
 
 // =========================================================================
@@ -1102,7 +1010,7 @@ struct faerie_fire_feral_t : public druid_attack_t
       base_dd_min = base_dd_max = 0;
     }
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( p -> _buffs.bear_form ) druid_attack_t::execute();
+    if ( p -> buffs_bear_form -> check() ) druid_attack_t::execute();
     trigger_faerie_fire( this );
     update_ready();
   }
@@ -1212,7 +1120,7 @@ struct mangle_cat_t : public druid_attack_t
     {
       druid_t* p = player -> cast_druid();
       trigger_mangle( this );
-      trigger_idol_of_terror( this );
+      p -> buffs_terror -> trigger();
       p -> buffs_corruptor -> trigger();
     }
   }
@@ -1743,7 +1651,7 @@ double druid_spell_t::haste() SC_CONST
 double druid_spell_t::execute_time() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( p -> _buffs.natures_swiftness ) return 0;
+  if ( p -> buffs_natures_swiftness -> check() ) return 0;
   return spell_t::execute_time();
 }
 
@@ -1757,10 +1665,7 @@ void druid_spell_t::schedule_execute()
 
   if ( base_execute_time > 0 )
   {
-    if ( p -> _buffs.natures_swiftness )
-    {
-      p -> _buffs.natures_swiftness = 0;
-    }
+    p -> buffs_natures_swiftness -> expire();
   }
 }
 
@@ -2130,8 +2035,7 @@ struct moonfire_t : public druid_spell_t
       added_ticks = 0;
       if ( p -> talents.natures_splendor ) num_ticks++;
       if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
-      if ( p -> idols.unseen_moon )
-        trigger_unseen_moon( this );
+      p -> buffs_unseen_moon -> trigger();
     }
   }
 
@@ -2281,8 +2185,7 @@ struct druids_swiftness_t : public druid_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     druid_t* p = player -> cast_druid();
-    p -> aura_gain( "Natures Swiftness" );
-    p -> _buffs.natures_swiftness = 1;
+    p -> buffs_natures_swiftness -> trigger();
     cooldown_ready = sim -> current_time + cooldown;
   }
 };
@@ -3023,13 +2926,15 @@ void druid_t::init_buffs()
   buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
   buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
+  buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1 );
   buffs_t8_4pc_balance    = new buff_t( sim, this, "t8_4pc_balance"   , 1,  10.0,     0, 0.08 );
   buffs_tigers_fury       = new buff_t( sim, this, "tigers_fury"      , 1,   6.0 );
-  buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_lunar_fury = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0, 0, idols.lunar_fury * 0.70 );
-  buffs_corruptor  = new stat_buff_t( sim, this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0, 0, idols.corruptor ); //100% chance!
+  buffs_lunar_fury  = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
+  buffs_corruptor   = new stat_buff_t( sim, this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
+  buffs_terror      = new stat_buff_t( sim, this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
+  buffs_unseen_moon = new stat_buff_t( sim, this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
 
   // simple
   buffs_bear_form    = new buff_t( sim, this, "bear_form" );
@@ -3128,7 +3033,6 @@ void druid_t::init_procs()
   procs_combo_points        = get_proc( "combo_points",        sim );
   procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
   procs_primal_fury         = get_proc( "primal_fury",         sim );
-  procs_unseen_moon         = get_proc( "unseen_moon",         sim );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -3149,9 +3053,7 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_idol_of_terror     = get_rng( "idol_of_terror"     );
-  rng_primal_fury        = get_rng( "primal_fury"        );
-  rng_unseen_moon        = get_rng( "unseen_moon"        );
+  rng_primal_fury = get_rng( "primal_fury" );
 }
 
 // druid_t::init_actions ====================================================
@@ -3231,7 +3133,6 @@ void druid_t::reset()
   active_rip          = 0;
 
   _buffs.reset();
-  _cooldowns.reset();
   _expirations.reset();
 
   base_gcd = 1.5;

@@ -1400,9 +1400,9 @@ struct shamans_swiftness_t : public shaman_spell_t
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs natures_swiftness", player -> name() );
-    update_ready();
     shaman_t* p = player -> cast_shaman();
     p -> buffs_natures_swiftness -> trigger();
+    cooldown_ready = sim -> current_time + cooldown;
   }
 };
 
