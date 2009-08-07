@@ -108,8 +108,6 @@ bool buff_t::remains_lt( double time )
 {
   double time_remaining = remains();
 
-  if ( time_remaining == 0 ) return false;
-
   if ( time_remaining == -1 ) return false;
 
   return ( time_remaining < time );
