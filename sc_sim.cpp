@@ -580,16 +580,16 @@ void sim_t::combat_begin()
 
   target -> combat_begin();
 
-  player_t::combat_begin_death_knight( this );
-  player_t::combat_begin_druid       ( this );
-  player_t::combat_begin_hunter      ( this );
-  player_t::combat_begin_mage        ( this );
-  player_t::combat_begin_paladin     ( this );
-  player_t::combat_begin_priest      ( this );
-  player_t::combat_begin_rogue       ( this );
-  player_t::combat_begin_shaman      ( this );
-  player_t::combat_begin_warlock     ( this );
-  player_t::combat_begin_warrior     ( this );
+  player_t::death_knight_combat_begin( this );
+  player_t::druid_combat_begin       ( this );
+  player_t::hunter_combat_begin      ( this );
+  player_t::mage_combat_begin        ( this );
+  player_t::paladin_combat_begin     ( this );
+  player_t::priest_combat_begin      ( this );
+  player_t::rogue_combat_begin       ( this );
+  player_t::shaman_combat_begin      ( this );
+  player_t::warlock_combat_begin     ( this );
+  player_t::warrior_combat_begin     ( this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -616,6 +616,17 @@ void sim_t::combat_end()
   flush_events();
 
   target -> combat_end();
+
+  player_t::death_knight_combat_end( this );
+  player_t::druid_combat_end       ( this );
+  player_t::hunter_combat_end      ( this );
+  player_t::mage_combat_end        ( this );
+  player_t::paladin_combat_end     ( this );
+  player_t::priest_combat_end      ( this );
+  player_t::rogue_combat_end       ( this );
+  player_t::shaman_combat_end      ( this );
+  player_t::warlock_combat_end     ( this );
+  player_t::warrior_combat_end     ( this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -672,16 +683,16 @@ bool sim_t::init()
 
   target -> init();
 
-  player_t::init_death_knight( this );
-  player_t::init_druid       ( this );
-  player_t::init_hunter      ( this );
-  player_t::init_mage        ( this );
-  player_t::init_paladin     ( this );
-  player_t::init_priest      ( this );
-  player_t::init_rogue       ( this );
-  player_t::init_shaman      ( this );
-  player_t::init_warlock     ( this );
-  player_t::init_warrior     ( this );
+  player_t::death_knight_init( this );
+  player_t::druid_init       ( this );
+  player_t::hunter_init      ( this );
+  player_t::mage_init        ( this );
+  player_t::paladin_init     ( this );
+  player_t::priest_init      ( this );
+  player_t::rogue_init       ( this );
+  player_t::shaman_init      ( this );
+  player_t::warlock_init     ( this );
+  player_t::warrior_init     ( this );
 
   bool too_quiet = true;
 

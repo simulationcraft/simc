@@ -3113,7 +3113,7 @@ struct life_tap_t : public warlock_spell_t
 
     if ( buff_refresh )
     {
-      if( ! p -> set_bonus.tier7_4pc() || ! p -> glyphs.life_tap )
+      if( ! p -> set_bonus.tier7_4pc() && ! p -> glyphs.life_tap )
 	return false;
 
       if ( p -> buffs.tier7_4pc || p -> buffs_life_tap_glyph -> check() )
@@ -4034,6 +4034,11 @@ void warlock_t::init_actions()
     }
     action_list_str += "," + summon_pet_str;
 
+    if( set_bonus.tier7_4pc() || glyphs.life_tap )
+    {
+      action_list_str+="/life_tap,buff_refresh=1";
+    }
+
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -4348,20 +4353,3 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
   return p;
 }
 
-// player_t::init_warlock ===================================================
-
-void player_t::init_warlock( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}
-
-// player_t::combat_begin_warlock ===========================================
-
-void player_t::combat_begin_warlock( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}

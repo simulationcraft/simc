@@ -2363,16 +2363,3 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name )
   return p;
 }
 
-void player_t::init_death_knight( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}
-
-void player_t::combat_begin_death_knight( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}

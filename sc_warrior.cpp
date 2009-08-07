@@ -3062,20 +3062,3 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name )
   return new warrior_t( sim, name );
 }
 
-// player_t::init_warrior ===================================================
-
-void player_t::init_warrior( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}
-
-// player_t::combat_begin_warrior ===========================================
-
-void player_t::combat_begin_warrior( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}

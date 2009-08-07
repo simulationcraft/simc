@@ -3765,20 +3765,3 @@ player_t* player_t::create_rogue( sim_t* sim, const std::string& name )
   return new rogue_t( sim, name );
 }
 
-// player_t::init_rogue =====================================================
-
-void player_t::init_rogue( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}
-
-// player_t::combat_begin_rogue =============================================
-
-void player_t::combat_begin_rogue( sim_t* sim )
-{
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-  }
-}
