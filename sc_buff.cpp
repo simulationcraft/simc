@@ -311,6 +311,7 @@ void buff_t::merge( buff_t* other )
   down_count        += other -> down_count;
   interval_count    += other -> interval_count;
   start_count       += other -> start_count;
+  refresh_count     += other -> refresh_count;
   trigger_attempts  += other -> trigger_attempts;
   trigger_successes += other -> trigger_successes;
 }

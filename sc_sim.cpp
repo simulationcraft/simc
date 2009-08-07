@@ -1003,6 +1003,11 @@ void sim_t::merge( sim_t& other_sim )
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
 
+  for ( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> merge( buff_t::find( &other_sim, b -> name() ) );
+  }
+
   for ( player_t* p = player_list; p; p = p -> next )
   {
     player_t* other_p = other_sim.find_player( p -> name() );
@@ -1017,7 +1022,7 @@ void sim_t::merge( sim_t& other_sim )
     }
 
     int num_buckets = std::min(       p -> timeline_resource.size(),
-                                      other_p -> timeline_resource.size() );
+				other_p -> timeline_resource.size() );
 
     for ( int i=0; i < num_buckets; i++ )
     {
@@ -1028,6 +1033,11 @@ void sim_t::merge( sim_t& other_sim )
     {
       p -> resource_lost  [ i ] += other_p -> resource_lost  [ i ];
       p -> resource_gained[ i ] += other_p -> resource_gained[ i ];
+    }
+
+    for ( buff_t* b = p -> buff_list; b; b = b -> next )
+    {
+      b -> merge( buff_t::find( other_p, b -> name() ) );
     }
 
     for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )

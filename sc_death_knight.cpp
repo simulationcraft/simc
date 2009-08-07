@@ -1218,29 +1218,14 @@ struct blood_tap_t : public death_knight_spell_t
 // TODO: Implement me
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
-  struct dancing_rune_weapon_expiration_t : public event_t
-  {
-    dancing_rune_weapon_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      sim -> add_event( this, 45.0 );
-    }
-    virtual void execute()
-    {
-      player -> dismiss_pet( "dancing_rune_weapon" );
-    }
-  };
-
-  int target_pct;
-
   dancing_rune_weapon_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
+      death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.dancing_rune_weapon );
 
     option_t options[] =
     {
-      { "trigger", OPT_INT, &target_pct },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1254,27 +1239,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "dancing_rune_weapon" );
-    new ( sim ) dancing_rune_weapon_expiration_t( sim, player );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! death_knight_spell_t::ready() )
-      return false;
-
-    target_t* t = sim -> target;
-
-    if ( t -> time_to_die() > 60 )
-    {
-      if ( target_pct > 0 )
-      {
-        if ( t -> health_percentage() > target_pct )
-          return false;
-      }
-    }
-
-    return true;
+    player -> summon_pet( "dancing_rune_weapon", 45.0 );
   }
 };
 
