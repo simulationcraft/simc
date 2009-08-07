@@ -1297,7 +1297,7 @@ double player_t::composite_spell_crit() SC_CONST
   {
     if ( buffs.focus_magic ) sc += 0.03;
 
-    if ( buffs.elemental_oath || sim -> auras.moonkin )
+    if ( buffs.elemental_oath -> up() || sim -> auras.moonkin )
     {
       sc += 0.05;
     }

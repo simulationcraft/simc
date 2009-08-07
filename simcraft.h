@@ -720,6 +720,7 @@ struct buff_t
   virtual void   decrement( int stacks=1, double value=-1.0 );
   virtual void   start    ( int stacks=1, double value=1.0 );
   virtual void   refresh  ( int stacks=0, double value=1.0 );
+  virtual void   override ( int stacks=1, double value=1.0 );
   virtual void   expire();
   virtual void   reset();
   virtual void   merge( buff_t* other_buff );
@@ -1326,6 +1327,10 @@ struct player_t
 
   struct buffs_t
   {
+    // New Buffs
+    buff_t* elemental_oath;
+    // Old Buffs
+    int       old_buffs;
     int       abominations_might;
     double    arcane_brilliance;
     int       battle_shout;
@@ -1337,7 +1342,6 @@ struct player_t
     double    cast_time_reduction;
     double    demonic_pact;
     pet_t*    demonic_pact_pet;
-    int       elemental_oath;
     int       ferocious_inspiration;
     double    flametongue_totem;
     player_t* focus_magic;
@@ -1369,11 +1373,14 @@ struct player_t
     int       tier8_2pc,  tier8_4pc;
     int       tier9_2pc,  tier9_4pc;
     int       tier10_2pc, tier10_4pc;
-    void reset() { memset( ( void* ) this, 0x0, sizeof( buffs_t ) ); }
-    buffs_t() { reset(); }
+    buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
+    void reset()
+    { 
+      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
+      memset( (void*) &old_buffs, 0x0, sizeof( buffs_t ) - delta );
+    }
   };
   buffs_t buffs;
-
 
   struct expirations_t
   {

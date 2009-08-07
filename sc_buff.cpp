@@ -259,6 +259,17 @@ void buff_t::refresh( int    stacks,
   }
 }
 
+// buff_t::override =========================================================
+
+void buff_t::override( int    stacks,
+		       double value )
+{
+  assert( max_stack > 0 );
+  assert( current_stack == 0 );
+  duration = 0;
+  start( stacks, value );
+}
+
 // buff_t::expire ===========================================================
 
 void buff_t::expire()

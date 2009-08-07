@@ -46,16 +46,6 @@ struct shaman_t : public player_t
   };
   _cooldowns_t _cooldowns;
 
-  // Expirations
-  struct _expirations_t
-  {
-    event_t* elemental_oath;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
-    _expirations_t() { reset(); }
-  };
-  _expirations_t _expirations;
-
   // Gains
   gain_t* gains_improved_stormstrike;
   gain_t* gains_shamanistic_rage;
@@ -67,7 +57,6 @@ struct shaman_t : public player_t
   proc_t* procs_windfury;
 
   // Up-Times
-  uptime_t* uptimes_elemental_oath;
   uptime_t* uptimes_tundra;
   uptime_t* uptimes_unleashed_rage;
 
@@ -638,48 +627,16 @@ static void trigger_lightning_overload( spell_t* s,
 
 static void trigger_elemental_oath( spell_t* s )
 {
-  struct elemental_oath_expiration_t : public event_t
-  {
-    elemental_oath_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Elemental Oath Expiration";
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> sleeping ) continue;
-        if ( p -> buffs.elemental_oath == 0 ) p -> aura_gain( "Elemental Oath" );
-        p -> buffs.elemental_oath++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> buffs.elemental_oath > 0 )
-        {
-          p -> buffs.elemental_oath--;
-          if ( p -> buffs.elemental_oath == 0 ) p -> aura_loss( "Elemental Oath" );
-        }
-      }
-      player -> cast_shaman() -> _expirations.elemental_oath = 0;
-    }
-  };
-
   if ( s -> proc ) return;
 
-  shaman_t* p = s -> player -> cast_shaman();
+  shaman_t* shaman = s -> player -> cast_shaman();
 
-  if ( p -> talents.elemental_oath == 0 ) return;
+  if ( shaman -> talents.elemental_oath == 0 ) return;
 
-  event_t*& e = p -> _expirations.elemental_oath;
-
-  if ( e )
+  for ( player_t* p = s -> sim -> player_list; p; p = p -> next )
   {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) elemental_oath_expiration_t( s -> sim, p );
+    if ( p -> sleeping ) continue;
+    p -> buffs.elemental_oath -> trigger();
   }
 }
 
@@ -1012,15 +969,10 @@ void shaman_spell_t::player_buff()
       player_crit += 0.02;
     }
   }
-  if ( p -> talents.elemental_oath )
+  if ( p -> buffs.elemental_oath  -> up() &&
+       p -> buffs_elemental_focus -> up() )
   {
-    if ( p -> buffs.elemental_oath &&
-         p -> buffs_elemental_focus -> up() )
-    {
-      player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
-    }
-
-    p -> uptimes_elemental_oath  -> update( p -> buffs.elemental_oath  != 0 );
+    player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
   }
 }
 
@@ -3103,8 +3055,7 @@ void shaman_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_elemental_oath        = get_uptime( "elemental_oath"           );
-  uptimes_unleashed_rage        = get_uptime( "unleashed_rage"           );
+  uptimes_unleashed_rage = get_uptime( "unleashed_rage" );
 }
 
 // shaman_t::init_rng ========================================================
@@ -3187,7 +3138,6 @@ void shaman_t::reset()
   player_t::reset();
 
   _cooldowns.reset();
-  _expirations.reset();
 }
 
 // shaman_t::interrupt =======================================================
@@ -3409,6 +3359,7 @@ void player_t::init_shaman( sim_t* sim )
 {
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
+    p -> buffs.elemental_oath = new buff_t( sim, p, "elemental_oath", 1, 15.0 );
   }
 }
 
