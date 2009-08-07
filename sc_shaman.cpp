@@ -2464,16 +2464,13 @@ struct mana_spring_totem_t : public shaman_spell_t
 
 struct bloodlust_t : public shaman_spell_t
 {
-  int target_pct;
-
   bloodlust_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT ), target_pct( 0 )
+      shaman_spell_t( "bloodlust", player, SCHOOL_NATURE, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage<" },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
