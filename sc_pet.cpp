@@ -135,5 +135,10 @@ void pet_t::dismiss()
     a -> cancel();
   }
 
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> expire();
+  }
+
   sim -> cancel_events( this );
 }

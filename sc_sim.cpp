@@ -683,17 +683,6 @@ bool sim_t::init()
 
   target -> init();
 
-  player_t::death_knight_init( this );
-  player_t::druid_init       ( this );
-  player_t::hunter_init      ( this );
-  player_t::mage_init        ( this );
-  player_t::paladin_init     ( this );
-  player_t::priest_init      ( this );
-  player_t::rogue_init       ( this );
-  player_t::shaman_init      ( this );
-  player_t::warlock_init     ( this );
-  player_t::warrior_init     ( this );
-
   bool too_quiet = true;
 
   for ( player_t* p = player_list; p; p = p -> next )
@@ -707,6 +696,17 @@ bool sim_t::init()
     util_t::printf( "simcraft: No active players in sim.\n" );
     assert( false );
   }
+
+  player_t::death_knight_init( this );
+  player_t::druid_init       ( this );
+  player_t::hunter_init      ( this );
+  player_t::mage_init        ( this );
+  player_t::paladin_init     ( this );
+  player_t::priest_init      ( this );
+  player_t::rogue_init       ( this );
+  player_t::shaman_init      ( this );
+  player_t::warlock_init     ( this );
+  player_t::warrior_init     ( this );
 
   // Defer party creation after player_t::init() calls to handle any pets created there.
 
