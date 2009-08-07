@@ -35,6 +35,7 @@ struct druid_t : public player_t
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
   buff_t* buffs_combo_points;
+  buff_t* buffs_corruptor;
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_lunar_fury;
@@ -90,9 +91,7 @@ struct druid_t : public player_t
   uptime_t* uptimes_rake;
 
   // Random Number Generation
-  rng_t* rng_eclipse;
   rng_t* rng_idol_of_terror;
-  rng_t* rng_omen_of_clarity;
   rng_t* rng_primal_fury;
   rng_t* rng_unseen_moon;
 
@@ -747,44 +746,6 @@ static void trigger_primal_precision( druid_attack_t* a )
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_primal_precision );
 }
 
-// trigger_idol_of_the_corruptor ===========================================
-
-static void trigger_idol_of_the_corruptor( attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> idols.corruptor ) return;
-
-  struct idol_of_the_corruptor_expiration_t : public event_t
-  {
-    idol_of_the_corruptor_expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Idol of the Corruptor Expiration";
-      player -> aura_gain( "Idol of the Corruptor" );
-      player -> stat_gain( STAT_AGILITY, 153 );
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      p -> aura_loss( "Idol of the Corruptor" );
-      player -> stat_loss( STAT_AGILITY, 153 );
-      p -> _expirations.idol_of_the_corruptor = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.idol_of_the_corruptor;
-
-  if ( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) idol_of_the_corruptor_expiration_t( a -> sim, p );
-  }
-}
-
 // trigger_idol_of_terror ==================================================
 
 static void trigger_idol_of_terror( attack_t* a )
@@ -1249,9 +1210,10 @@ struct mangle_cat_t : public druid_attack_t
     druid_attack_t::execute();
     if ( result_is_hit() )
     {
+      druid_t* p = player -> cast_druid();
       trigger_mangle( this );
-      trigger_idol_of_the_corruptor( this );
       trigger_idol_of_terror( this );
+      p -> buffs_corruptor -> trigger();
     }
   }
 };
@@ -2089,8 +2051,6 @@ struct insect_swarm_t : public druid_spell_t
       if ( p -> buffs_eclipse_lunar -> check() )
         return false;
 
-    // "buffs_eclipse_lunar" is the time eclipse proc'd (0 if eclipse is not currently up)
-
     if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
     {
       return false;
@@ -2185,8 +2145,6 @@ struct moonfire_t : public druid_spell_t
     if ( skip_on_eclipse < 0 )
       if ( p -> buffs_eclipse_solar )
         return false;
-
-    // "buffs_eclipse_lunar" is the time eclipse proc'd (0 if eclipse is not currently up)
 
     if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
     {
@@ -3079,7 +3037,8 @@ void druid_t::init_buffs()
   buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_lunar_fury = new stat_buff_t( sim, this, "lunary_fury", STAT_CRIT_RATING, 200, 1, 12.0, 0, idols.lunar_fury * 0.70 );
+  buffs_lunar_fury = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0, 0, idols.lunar_fury * 0.70 );
+  buffs_corruptor  = new stat_buff_t( sim, this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0, 0, idols.corruptor ); //100% chance!
 
   // simple
   buffs_bear_form    = new buff_t( sim, this, "bear_form" );
@@ -3177,7 +3136,6 @@ void druid_t::init_procs()
 
   procs_combo_points        = get_proc( "combo_points",        sim );
   procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
-  procs_omen_of_clarity     = get_proc( "omen_of_clarity",     sim );
   procs_primal_fury         = get_proc( "primal_fury",         sim );
   procs_unseen_moon         = get_proc( "unseen_moon",         sim );
 }
@@ -3200,9 +3158,7 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_eclipse            = get_rng( "eclipse"            );
   rng_idol_of_terror     = get_rng( "idol_of_terror"     );
-  rng_omen_of_clarity    = get_rng( "omen_of_clarity"    );
   rng_primal_fury        = get_rng( "primal_fury"        );
   rng_unseen_moon        = get_rng( "unseen_moon"        );
 }
