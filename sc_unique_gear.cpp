@@ -159,7 +159,7 @@ void unique_gear_t::init( player_t* p )
 
     int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
 
-    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, stat, 1, 450, 0.35, 15.0, 45.0 );
+    action_callback_t* cb = new stat_proc_callback_t( "deaths_choice", p, stat, 1, 450, 0.35, 15.0, 45.0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
