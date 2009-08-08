@@ -213,6 +213,7 @@ struct druid_t : public player_t
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_items();
+  virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -2800,9 +2801,16 @@ void druid_t::init_items()
     if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_feral = 1;
     if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_feral = 1;
     if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_feral = 1;
-
-    equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
   }
+}
+
+// druid_t::init_scaling ====================================================
+
+void druid_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
 }
 
 // druid_t::init_gains ======================================================
@@ -2967,9 +2975,12 @@ double druid_t::available() SC_CONST
 double druid_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
+  double weapon_ap=0;
 
-  double weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
-
+  if( buffs_cat_form -> check() )
+  {
+    weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
+  }
   if ( talents.predatory_strikes )
   {
     ap += level * talents.predatory_strikes * 0.5;
