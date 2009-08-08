@@ -986,7 +986,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   // Restrict lootrank to rare gems until epic gems become available
   // Gem: Not Set = Epic, 2=Common, 3=Rare
-  s += "Gem=3&amp;";
+  //s += "Gem=3&amp;";
 
   switch ( p -> type )
   {
@@ -1065,7 +1065,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   }
 
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
-  s += "gm=3;gb=1;";
+  s += "gm=4;gb=1;";
 
   std::string    id_string = "";
   std::string value_string = "";
