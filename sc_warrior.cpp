@@ -459,29 +459,27 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_t( warrior_t* p ) :
         warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
     {
-      background  = true;
+      background = true;
       trigger_gcd = 0;
-      base_cost   = 0;
-
-      base_multiplier = 1.0;
       base_tick_time = 1.0;
-      num_ticks      = 6;
-      tick_power_mod = 0;
-
-      weapon_multiplier = 0;
-      weapon   = &( p -> main_hand_weapon );
+      num_ticks = 6;
+      weapon_multiplier = p -> talents.deep_wounds * 0.16;
     }
-    virtual void player_buff() {}
-    virtual void target_debuff( int dmg_type )
+    virtual double total_multiplier() SC_CONST
     {
       target_t* t = sim -> target;
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma )
-      {
-        target_multiplier = 1.30;
-      }
+      return ( t -> debuffs.mangle -> up() || t -> debuffs.trauma ) ? 1.30 : 1.0;
     }
     virtual void execute()
     {
+      player_buff();
+      double damage = calculate_weapon_damage();
+      if( ticking ) 
+      {
+	damage += base_td * ( num_ticks - current_tick );
+	cancel();
+      }
+      base_td = damage / 6.0;
       trigger_blood_frenzy( this );
       schedule_tick();
     }
@@ -492,72 +490,12 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  double dw_multiplier         = 1.0;
-  double dw_weapon_damage      = 0.0;
-  double dw_damage             = 0.0;
-
-  // Deep Wounds uses it's own values for this, not the one of the
-  // triggering action
-  double tmp_weapon_multiplier = 0.0;
-  bool   tmp_weapon_normalize  = false;
+  if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
   // Every action HAS to have an weapon associated.
   assert( a -> weapon != 0 );
 
-  // But multiplier is set to 0 for attacks like Bloodthirst, Execute
-  // So get the wepaon_damage with a multiplier of 1.0 for DW calculation
-  // Also Deep wounds uses un-normalized weapon speed.
-  tmp_weapon_normalize  = a -> normalize_weapon_speed;
-  tmp_weapon_multiplier = a -> weapon_multiplier;
-  a -> weapon_multiplier      = 1.0;
-  a -> normalize_weapon_speed = false;
-
-  dw_weapon_damage = a -> calculate_weapon_damage();
-  dw_damage        = p -> talents.deep_wounds * 0.16 * dw_weapon_damage;
-  dw_multiplier    = a -> player_multiplier;
-  /* FIX ME! Deep Wounds is currently double dipping from Death Wish
-  // Was fixed with 3.1.1 */
-
-  a -> weapon_multiplier =      tmp_weapon_multiplier;
-  a -> normalize_weapon_speed = tmp_weapon_normalize;
-
-  if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
-
-  sim_t* sim = a -> sim;
-  if ( p -> active_deep_wounds -> ticking )
-  {
-    int num_ticks = p -> active_deep_wounds -> num_ticks;
-    int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
-
-    dw_damage += p -> active_deep_wounds -> base_td * remaining_ticks;
-
-    p -> active_deep_wounds -> cancel();
-
-    if ( sim -> debug )
-      log_t::output( sim, "trigger_deep_wounds: REFRESH src=%s wpn=%s wpn_dmg=%.1f p_mult=%.3f t_remain=%d t_old=%.1f t_new=%.1f",
-                     a -> name(),
-                     a -> weapon -> slot == SLOT_MAIN_HAND ? "mh" : "oh",
-                     dw_weapon_damage,
-                     dw_multiplier,
-                     remaining_ticks,
-                     p -> active_deep_wounds -> base_td,
-                     dw_damage / 6.0
-                   );
-  }
-  else
-  {
-    // Deep wounds is a bitch!
-    if ( sim -> debug )
-      log_t::output( sim, "trigger_deep_wounds: NEW src=%s wpn=%s wpn_dmg=%.1f p_mult=%.3f  t_new=%.1f",
-                     a -> name(),
-                     a -> weapon -> slot == SLOT_MAIN_HAND ? "mh" : "oh",
-                     dw_weapon_damage,
-                     dw_multiplier,
-                     dw_damage / 6.0
-                   );
-  }
-
-  p -> active_deep_wounds -> base_td = dw_damage / 6.0;
+  p -> active_deep_wounds -> weapon = a -> weapon;
   p -> active_deep_wounds -> execute();
 }
 
