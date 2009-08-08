@@ -2720,7 +2720,7 @@ struct conflagrate_t : public warlock_spell_t
     base_multiplier *= 0.7;
 
     base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03 + p -> set_bonus.tier8_2pc() * 0.10 ;
-    base_crit        += p -> talents.devastation * 0.05;
+    base_crit        += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -2767,24 +2767,6 @@ struct conflagrate_t : public warlock_spell_t
       if ( cancel_dot )
       {
         ( *dot_spell ) -> cancel();
-      }
-    }
-  }
-
-  virtual void player_buff()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
-
-    if ( p -> talents.fire_and_brimstone &&
-         p -> active_immolate )
-    {
-      int ticks_remaining = ( p -> active_immolate -> num_ticks -
-                              p -> active_immolate -> current_tick );
-
-      if ( ticks_remaining <= 2 )
-      {
-        player_crit += p -> talents.fire_and_brimstone * 0.05;
       }
     }
   }
