@@ -2096,8 +2096,7 @@ struct starfire_t : public druid_spell_t
       trigger_earth_and_moon( this );
       if ( result == RESULT_CRIT )
       {
-        if( ! p -> buffs_eclipse_lunar -> check() )
-          p -> buffs_eclipse_solar -> trigger();
+	p -> buffs_eclipse_solar -> trigger();
       }
 
       if ( p -> glyphs.starfire && p -> active_moonfire )
@@ -2242,8 +2241,7 @@ struct wrath_t : public druid_spell_t
     {
       if ( result == RESULT_CRIT )
       {
-        if( ! p -> buffs_eclipse_solar -> check() )
-          p -> buffs_eclipse_lunar -> trigger();
+	p -> buffs_eclipse_lunar -> trigger();
       }
       trigger_earth_and_moon( this );
     }
