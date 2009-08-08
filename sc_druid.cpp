@@ -49,7 +49,6 @@ struct druid_t : public player_t
   proc_t* procs_primal_fury;
 
   // Up-Times
-  uptime_t* uptimes_eclipse_overlap;
   uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_rip;
   uptime_t* uptimes_rake;
@@ -1494,9 +1493,6 @@ void druid_spell_t::execute()
   {
     p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier4_2pc );
   }
-
-  p -> uptimes_eclipse_overlap -> update( p -> buffs_eclipse_lunar -> check() &&
-					  p -> buffs_eclipse_solar -> check() );
 }
 
 // druid_spell_t::consume_resource =========================================
@@ -2097,7 +2093,10 @@ struct starfire_t : public druid_spell_t
       trigger_earth_and_moon( this );
       if ( result == RESULT_CRIT )
       {
-	p -> buffs_eclipse_solar -> trigger();
+	if( ! p -> buffs_eclipse_lunar -> check() )
+	{
+	  p -> buffs_eclipse_solar -> trigger();
+	}
       }
 
       if ( p -> glyphs.starfire && p -> active_moonfire )
@@ -2122,8 +2121,9 @@ struct starfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( instant && ! p -> buffs_t8_4pc_balance -> may_react() )
-      return false;
+    if ( instant )
+      if ( ! p -> buffs_t8_4pc_balance -> may_react() )
+	return false;
 
     if ( extend_moonfire && p -> glyphs.starfire )
       if ( p -> active_moonfire && p -> active_moonfire -> added_ticks > 2 )
@@ -2242,7 +2242,10 @@ struct wrath_t : public druid_spell_t
     {
       if ( result == RESULT_CRIT )
       {
-	p -> buffs_eclipse_lunar -> trigger();
+	if( ! p -> buffs_eclipse_solar -> check() )
+	{
+	  p -> buffs_eclipse_lunar -> trigger();
+	}
       }
       trigger_earth_and_moon( this );
     }
@@ -2842,10 +2845,9 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_eclipse_overlap  = get_uptime( "eclipse_overlap"  );
-  uptimes_energy_cap       = get_uptime( "energy_cap"       );
-  uptimes_rip              = get_uptime( "rip"              );
-  uptimes_rake             = get_uptime( "rake"             );
+  uptimes_energy_cap = get_uptime( "energy_cap" );
+  uptimes_rip        = get_uptime( "rip"        );
+  uptimes_rake       = get_uptime( "rake"       );
 }
 
 // druid_t::init_rng ========================================================
