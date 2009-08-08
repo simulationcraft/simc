@@ -1494,7 +1494,7 @@ struct curse_of_elements_t : public warlock_spell_t
 
     target_t* t = sim -> target;
 
-    return std::max( t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon ) < 13;
+    return std::max( (double) t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon -> current_value ) < 13;
   }
 };
 

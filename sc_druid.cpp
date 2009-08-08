@@ -18,17 +18,6 @@ struct druid_t : public player_t
   action_t* active_rip;
 
   // Buffs
-  struct _buffs_t
-  {
-    int    combo_points;
-    int    stealthed;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
-    _buffs_t() { reset(); }
-  };
-  _buffs_t _buffs;
-
-  // buff_t Buffs
   buff_t* buffs_berserk;
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
@@ -66,9 +55,7 @@ struct druid_t : public player_t
   gain_t* gains_tigers_fury;
 
   // Procs
-  proc_t* procs_combo_points;
   proc_t* procs_combo_points_wasted;
-  proc_t* procs_omen_of_clarity;
   proc_t* procs_primal_fury;
 
   // Up-Times
@@ -265,8 +252,8 @@ struct druid_t : public player_t
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
   {
-    assert( _buffs.combo_points > 0 );
-    return cp_list[ _buffs.combo_points-1 ];
+    assert( buffs_combo_points -> check() );
+    return cp_list[ buffs_combo_points -> stack() - 1 ];
   }
   double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) SC_CONST
   {
@@ -399,65 +386,17 @@ struct treants_pet_t : public pet_t
   }
 };
 
-// enter_stealth ===========================================================
-
-static void enter_stealth( druid_t* p )
-{
-  p -> _buffs.stealthed = 1;
-}
-
-// break_stealth ===========================================================
-
-static void break_stealth( druid_t* p )
-{
-  if ( p -> _buffs.stealthed == 1 )
-  {
-    p -> _buffs.stealthed = -1;
-  }
-}
-
-// clear_combo_points ======================================================
-
-static void clear_combo_points( druid_t* p )
-{
-  if ( p -> _buffs.combo_points <= 0 ) return;
-
-  const char* name[] =
-    { "Combo Points (1)",
-      "Combo Points (2)",
-      "Combo Points (3)",
-      "Combo Points (4)",
-      "Combo Points (5)"
-    };
-
-  p -> aura_loss( name[ p -> _buffs.combo_points - 1 ] );
-
-  p -> _buffs.combo_points = 0;
-}
-
-// add_combo_point=== ======================================================
+// add_combo_point =========================================================
 
 static void add_combo_point( druid_t* p )
 {
-  if ( p -> _buffs.combo_points >= 5 )
+  if ( p -> buffs_combo_points -> current_stack == 5 )
   {
     p -> procs_combo_points_wasted -> occur();
     return;
   }
 
-  const char* name[] =
-    { "Combo Points (1)",
-      "Combo Points (2)",
-      "Combo Points (3)",
-      "Combo Points (4)",
-      "Combo Points (5)"
-    };
-
-  p -> _buffs.combo_points++;
-
-  p -> aura_gain( name[ p -> _buffs.combo_points - 1 ] );
-
-  p -> procs_combo_points -> occur();
+  p -> buffs_combo_points -> trigger();
 }
 
 
@@ -593,32 +532,13 @@ static void trigger_earth_and_moon( spell_t* s )
 
   if ( p -> talents.earth_and_moon == 0 ) return;
 
-  struct earth_and_moon_expiration_t : public event_t
-  {
-    earth_and_moon_expiration_t( sim_t* sim, druid_t* p ) : event_t( sim )
-    {
-      name = "Earth and Moon Expiration";
-      if ( sim -> log ) log_t::output( sim, "%s gains Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = ( int ) util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "%s loses Earth and Moon", sim -> target -> name() );
-      sim -> target -> debuffs.earth_and_moon = 0;
-      sim -> target -> expirations.earth_and_moon = 0;
-    }
-  };
+  target_t* t = s -> sim -> target;
 
-  event_t*& e = s -> sim -> target -> expirations.earth_and_moon;
+  double value = util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
 
-  if ( e )
+  if( value >= t -> debuffs.earth_and_moon -> current_value )
   {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) earth_and_moon_expiration_t( s -> sim, p );
+    t -> debuffs.earth_and_moon -> trigger( 1, value );
   }
 }
 
@@ -764,8 +684,8 @@ void druid_attack_t::execute()
 
   if ( result_is_hit() )
   {
-    if ( requires_combo_points ) clear_combo_points( p );
-    if (     adds_combo_points )   add_combo_point ( p );
+    if ( requires_combo_points ) p -> buffs_combo_points -> expire();
+    if (     adds_combo_points ) add_combo_point ( p );
 
     if ( result == RESULT_CRIT )
     {
@@ -778,7 +698,7 @@ void druid_attack_t::execute()
     trigger_primal_precision( this );
   }
 
-  break_stealth( p );
+  if( harmful ) p -> buffs_stealthed -> expire();
 }
 
 // druid_attack_t::calculate_direct_damage =================================
@@ -823,21 +743,21 @@ bool druid_attack_t::ready()
       return false;
 
   if ( requires_stealth )
-    if ( p -> _buffs.stealthed <= 0 )
+    if ( ! p -> buffs_stealthed -> check() )
       return false;
 
-  if ( requires_combo_points && ( p -> _buffs.combo_points == 0 ) )
+  if ( requires_combo_points && ! p -> buffs_combo_points -> check() )
     return false;
 
   if ( berserk && ! p -> buffs_berserk -> check() )
     return false;
 
   if ( min_combo_points > 0 )
-    if ( p -> _buffs.combo_points < min_combo_points )
+    if ( p -> buffs_combo_points -> current_stack < min_combo_points )
       return false;
 
   if ( max_combo_points > 0 )
-    if ( p -> _buffs.combo_points > max_combo_points )
+    if ( p -> buffs_combo_points -> current_stack > max_combo_points )
       return false;
 
   if ( min_energy > 0 )
@@ -1061,7 +981,7 @@ struct maim_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    base_dd_min = base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ];
+    base_dd_min = base_dd_max = combo_point_dmg[ p -> buffs_combo_points -> stack() - 1 ];
     druid_attack_t::execute();
   }
 
@@ -1233,10 +1153,10 @@ struct rip_t : public druid_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    tick_power_mod = p -> _buffs.combo_points * 0.01;
+    tick_power_mod = p -> buffs_combo_points -> stack() * 0.01;
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
     if ( p -> idols.worship )
-      base_td_init += p -> _buffs.combo_points * 21;
+      base_td_init += p -> buffs_combo_points -> stack() * 21;
     druid_attack_t::player_buff();
   }
 };
@@ -1268,12 +1188,11 @@ struct savage_roar_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    double duration = 9.0 + p -> _buffs.combo_points * 5.0;
+    double duration = 9.0 + p -> buffs_combo_points -> stack();
     if ( p -> tiers.t8_4pc_feral ) duration += 8.0;
     p -> buffs_savage_roar -> duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
-
-    clear_combo_points( p );
+    p -> buffs_combo_points -> expire();
   }
 };
 
@@ -1508,10 +1427,10 @@ struct ferocious_bite_t : public druid_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    base_dd_min = combo_point_dmg[ p -> _buffs.combo_points - 1 ].min;
-    base_dd_max = combo_point_dmg[ p -> _buffs.combo_points - 1 ].max;
+    base_dd_min = combo_point_dmg[ p -> buffs_combo_points -> current_stack - 1 ].min;
+    base_dd_max = combo_point_dmg[ p -> buffs_combo_points -> current_stack - 1 ].max;
 
-    direct_power_mod = 0.07 * p -> _buffs.combo_points;
+    direct_power_mod = 0.07 * p -> buffs_combo_points -> stack();
 
     excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_attack_t::cost() );
 
@@ -2141,16 +2060,11 @@ struct moonkin_form_t : public druid_spell_t
 
     p -> buffs_moonkin_form -> start();
 
-    sim -> auras.moonkin = 1;
+    sim -> auras.moonkin -> trigger();
 
     if ( p -> talents.improved_moonkin_form )
     {
-      sim -> auras.improved_moonkin = 1;
-    }
-
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( ! p -> sleeping ) p -> aura_gain( "Moonkin Aura" );
+      sim -> auras.improved_moonkin -> trigger();
     }
   }
 
@@ -2725,13 +2639,13 @@ struct stealth_t : public spell_t
   {
     druid_t* p = player -> cast_druid();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    enter_stealth( p );
+    p -> buffs_stealthed -> trigger();
   }
 
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-    return p -> _buffs.stealthed == 0;
+    return ! p -> buffs_stealthed -> check();
   }
 };
 
@@ -2920,13 +2834,11 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk           = new buff_t( sim, this, "berserk"          , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_combo_points      = new buff_t( sim, this, "combo_points"     , 5 );
   buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 );
   buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
   buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
   buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
-  buffs_savage_roar       = new buff_t( sim, this, "savage_roar"      , 1 );
   buffs_t8_4pc_balance    = new buff_t( sim, this, "t8_4pc_balance"   , 1,  10.0,     0, 0.08 );
   buffs_tigers_fury       = new buff_t( sim, this, "tigers_fury"      , 1,   6.0 );
 
@@ -2939,7 +2851,9 @@ void druid_t::init_buffs()
   // simple
   buffs_bear_form    = new buff_t( sim, this, "bear_form" );
   buffs_cat_form     = new buff_t( sim, this, "cat_form" );
+  buffs_combo_points = new buff_t( sim, this, "combo_points", 5 );
   buffs_moonkin_form = new buff_t( sim, this, "moonkin_form" );
+  buffs_savage_roar  = new buff_t( sim, this, "savage_roar" );
   buffs_stealthed    = new buff_t( sim, this, "stealthed" );
 }
 
@@ -3030,7 +2944,6 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points        = get_proc( "combo_points",        sim );
   procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
   procs_primal_fury         = get_proc( "primal_fury",         sim );
 }
@@ -3132,7 +3045,6 @@ void druid_t::reset()
   active_rake         = 0;
   active_rip          = 0;
 
-  _buffs.reset();
   _expirations.reset();
 
   base_gcd = 1.5;
@@ -3395,5 +3307,24 @@ player_t* player_t::create_druid( sim_t*             sim,
   new treants_pet_t( sim, p, "treants" );
 
   return p;
+}
+
+// player_t::druid_init =====================================================
+
+void player_t::druid_init( sim_t* sim )
+{
+  sim -> auras.moonkin          = new buff_t( sim, NULL, "moonkin" );
+  sim -> auras.improved_moonkin = new buff_t( sim, NULL, "improved_moonkin" );
+
+  sim -> target -> debuffs.earth_and_moon = new buff_t( sim, NULL, "earth_and_moon", 1, ( sim -> overrides.earth_and_moon ? 0.0 : 12.0 ) );
+}
+
+// player_t::druid_combat_begin =============================================
+
+void player_t::druid_combat_begin( sim_t* sim )
+{
+  if ( sim -> overrides.earth_and_moon         ) sim -> target -> debuffs.earth_and_moon -> trigger( 1, 13 );
+  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> trigger();
+  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin -> trigger();
 }
 

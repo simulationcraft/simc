@@ -571,9 +571,7 @@ void sim_t::combat_begin()
   reset();
 
   if ( overrides.celerity               ) auras.celerity = 1;
-  if ( overrides.improved_moonkin_aura  ) auras.improved_moonkin = 1;
   if ( overrides.leader_of_the_pack     ) auras.leader_of_the_pack = 1;
-  if ( overrides.moonkin_aura           ) auras.moonkin = 1;
   if ( overrides.sanctified_retribution ) auras.sanctified_retribution = 1;
   if ( overrides.swift_retribution      ) auras.swift_retribution = 1;
   if ( overrides.trueshot_aura          ) auras.trueshot = 1;
@@ -1198,6 +1196,20 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.windfury_totem         = optimal_raid;
   overrides.winters_chill          = optimal_raid;
   overrides.wrath_of_air           = optimal_raid;
+}
+
+// sim_t::aura_gain =========================================================
+
+void sim_t::aura_gain( const char* aura_name , int aura_id )
+{
+  if( log ) log_t::output( this, "Raid gains %s", aura_name );
+}
+
+// sim_t::aura_loss =========================================================
+
+void sim_t::aura_loss( const char* aura_name , int aura_id )
+{
+  if( log ) log_t::output( this, "Raid loses %s", aura_name );
 }
 
 // sim_t::roll ==============================================================

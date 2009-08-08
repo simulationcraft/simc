@@ -912,15 +912,22 @@ struct sim_t
   // Auras
   struct auras_t
   {
+    // New Buffs
+    buff_t* moonkin;
+    buff_t* improved_moonkin;
+    // Old Buffs
+    int old_buffs;
     int celerity;
-    int improved_moonkin;
     int leader_of_the_pack;
-    int moonkin;
     int sanctified_retribution;
     int swift_retribution;
     int trueshot;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( auras_t ) ); }
-    auras_t() { reset(); }
+    auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
+    void reset()
+    { 
+      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
+      memset( (void*) &old_buffs, 0x0, sizeof( auras_t ) - delta );
+    }
   };
   auras_t auras;
 
@@ -1001,6 +1008,8 @@ struct sim_t
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   player_t* find_player( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
+  void      aura_gain( const char* name, int aura_id=0 );
+  void      aura_loss( const char* name, int aura_id=0 );
 };
 
 // Scaling ===================================================================
@@ -1633,8 +1642,8 @@ struct player_t
   static void death_knight_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Druid buff maintenance
-  static void druid_init        ( sim_t* sim ) {}
-  static void druid_combat_begin( sim_t* sim ) {}
+  static void druid_init        ( sim_t* sim );
+  static void druid_combat_begin( sim_t* sim );
   static void druid_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Hunter buff maintenance
@@ -1775,8 +1784,12 @@ struct target_t
   };
   cooldowns_t cooldowns;
 
-  struct debuff_t
+  struct debuffs_t
   {
+    // New Buffs
+    buff_t* earth_and_moon;
+    // Old Buffs
+    int    old_buffs;
     int    bleeding;
     int    blood_frenzy;
     int    crypt_fever;
@@ -1795,7 +1808,6 @@ struct target_t
     int    master_poisoner;
     int    misery;
     int    misery_stack;
-    int    earth_and_moon;
     int    poisoned;
     int    savage_combat;
     int    slow;
@@ -1806,11 +1818,15 @@ struct target_t
     int    totem_of_wrath;
     int    winters_chill;
     int    winters_grasp;
-    void reset() { memset( ( void* ) this, 0x0, sizeof( debuff_t ) ); }
-    debuff_t() { reset(); }
+    debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
+    void reset()
+    { 
+      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
+      memset( (void*) &old_buffs, 0x0, sizeof( debuffs_t ) - delta );
+    }
     bool snared() { return frozen || slow || snare || thunder_clap; }
   };
-  debuff_t debuffs;
+  debuffs_t debuffs;
 
   struct expirations_t
   {
@@ -1818,7 +1834,6 @@ struct target_t
     event_t* expose_armor;
     event_t* faerie_fire;
     event_t* frozen;
-    event_t* earth_and_moon;
     event_t* hemorrhage;
     event_t* hunters_mark;
     event_t* improved_faerie_fire;

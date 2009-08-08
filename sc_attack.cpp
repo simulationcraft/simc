@@ -55,7 +55,7 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.30 );
     }
 
-    if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin )
+    if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }

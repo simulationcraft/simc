@@ -199,6 +199,10 @@ void buff_t::start( int    stacks,
   {
     player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
   }
+  else
+  {
+    sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+  }
   if ( last_start >= 0 )
   {
     interval_sum += sim -> current_time - last_start;
@@ -246,6 +250,10 @@ void buff_t::refresh( int    stacks,
     {
       player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
     }
+    else
+    {
+      sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+    }
   }
 
   current_value = value;
@@ -279,6 +287,10 @@ void buff_t::expire()
   if ( player )
   {
     player -> aura_loss( name(), aura_id );
+  }
+  else
+  {
+    sim -> aura_loss( name(), aura_id );
   }
   if ( last_start >= 0 )
   {
