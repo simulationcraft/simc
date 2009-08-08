@@ -1788,6 +1788,9 @@ struct target_t
   {
     // New Buffs
     buff_t* earth_and_moon;
+    buff_t* faerie_fire;
+    buff_t* improved_faerie_fire;
+    buff_t* mangle;
     // Old Buffs
     int    old_buffs;
     int    bleeding;
@@ -1795,16 +1798,13 @@ struct target_t
     int    crypt_fever;
     int    curse_of_elements;
     double expose_armor;
-    double faerie_fire;
     double frozen;
     double hemorrhage;
     int    hemorrhage_charges;
     double hunters_mark;
-    int    improved_faerie_fire;
     int    improved_scorch;
     int    improved_shadow_bolt;
     int    judgement_of_wisdom;
-    int    mangle;
     int    master_poisoner;
     int    misery;
     int    misery_stack;
@@ -1832,11 +1832,9 @@ struct target_t
   {
     event_t* curse_of_elements;
     event_t* expose_armor;
-    event_t* faerie_fire;
     event_t* frozen;
     event_t* hemorrhage;
     event_t* hunters_mark;
-    event_t* improved_faerie_fire;
     event_t* improved_scorch;
     event_t* improved_shadow_bolt;
     event_t* misery;
@@ -1856,7 +1854,6 @@ struct target_t
     uptime_t* improved_scorch;
     uptime_t* improved_shadow_bolt;
     uptime_t* invulnerable;
-    uptime_t* mangle;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
     uptime_t* trauma;

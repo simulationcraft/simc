@@ -9,6 +9,7 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/mark_of_the_wild
 actions+=/moonkin_form
+actions+=/faerie_fire
 actions+=/speed_potion
 actions+=/innervate,trigger=20000
 actions+=/treants

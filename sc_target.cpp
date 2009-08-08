@@ -178,7 +178,6 @@ void target_t::init()
   uptimes.improved_scorch      = get_uptime( "improved_scorch"      );
   uptimes.improved_shadow_bolt = get_uptime( "improved_shadow_bolt" );
   uptimes.invulnerable         = get_uptime( "invulnerable"         );
-  uptimes.mangle               = get_uptime( "mangle"               );
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
   uptimes.trauma               = get_uptime( "trauma"               );
@@ -212,13 +211,10 @@ void target_t::combat_begin()
   if ( sim -> overrides.blood_frenzy          ) debuffs.blood_frenzy = 1;
   if ( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
   if ( sim -> overrides.curse_of_elements     ) debuffs.curse_of_elements = 13;
-  if ( sim -> overrides.faerie_fire           ) debuffs.faerie_fire = 0.05;
   if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 500 * 1.5;
-  if ( sim -> overrides.improved_faerie_fire  ) debuffs.improved_faerie_fire = 3;
   if ( sim -> overrides.improved_scorch       ) debuffs.improved_scorch = 5;
   if ( sim -> overrides.improved_shadow_bolt  ) debuffs.improved_shadow_bolt = 5;
   if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
-  if ( sim -> overrides.mangle                ) debuffs.mangle = 1;
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
   if ( sim -> overrides.misery                ) debuffs.misery = 3;
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;

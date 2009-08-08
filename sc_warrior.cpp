@@ -474,8 +474,11 @@ static void trigger_deep_wounds( action_t* a )
     virtual void player_buff() {}
     virtual void target_debuff( int dmg_type )
     {
-      if ( sim -> target -> debuffs.mangle || sim -> target -> debuffs.trauma )
+      target_t* t = sim -> target;
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma )
+      {
         target_multiplier = 1.30;
+      }
     }
     virtual void execute()
     {

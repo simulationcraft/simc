@@ -37,16 +37,6 @@ struct druid_t : public player_t
   buff_t* buffs_tigers_fury;
   buff_t* buffs_unseen_moon;
 
-  // Expirations
-  struct _expirations_t
-  {
-    event_t* mangle;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
-    _expirations_t() { reset(); }
-  };
-  _expirations_t _expirations;
-
   // Gains
   gain_t* gains_energy_refund;
   gain_t* gains_moonkin_form;
@@ -246,8 +236,7 @@ struct druid_t : public player_t
   virtual int       primary_resource() SC_CONST { return talents.moonkin_form ? RESOURCE_MANA : RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return talents.moonkin_form ? ROLE_SPELL    : ROLE_ATTACK;     }
   virtual int       primary_tree() SC_CONST     { return talents.moonkin_form       ? TREE_BALANCE  :
-                                                         talents.leader_of_the_pack ? TREE_FERAL    : TREE_RESTORATION;
-                                                }
+                                                         talents.leader_of_the_pack ? TREE_FERAL    : TREE_RESTORATION; }
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -269,8 +258,7 @@ struct druid_t : public player_t
   }
 };
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Druid Attack
@@ -409,119 +397,6 @@ static void trigger_omen_of_clarity( action_t* a )
   if ( a -> dual ) return;
 
   p -> buffs_omen_of_clarity -> trigger();
-}
-
-// trigger_faerie_fire =======================================================
-
-static void trigger_faerie_fire( action_t* a )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      target_t* t = sim -> target;
-      t -> debuffs.faerie_fire = 0.05;
-      sim -> add_event( this, 300.0 );
-    }
-
-    virtual void execute()
-    {
-      target_t* t = sim -> target;
-      t -> debuffs.faerie_fire = 0;
-      t -> expirations.faerie_fire = 0;
-    }
-  };
-
-  event_t*& e = a -> sim -> target -> expirations.faerie_fire;
-
-  if ( e )
-  {
-    e -> reschedule( 300.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) expiration_t( a -> sim, a -> player );
-  }
-}
-
-// trigger_improved_faerie_fire ==============================================
-
-static void trigger_improved_faerie_fire( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> talents.improved_faerie_fire )
-    return;
-
-  if ( a -> sim -> target -> debuffs.improved_faerie_fire > p -> talents.improved_faerie_fire )
-    return;
-
-  if ( a -> sim -> target -> debuffs.misery > p -> talents.improved_faerie_fire )
-    return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p, int iff_level ) : event_t( sim, p )
-    {
-      sim -> target -> debuffs.improved_faerie_fire = iff_level;
-      sim -> add_event( this, 300.0 );
-    }
-    virtual void execute()
-    {
-      sim -> target -> debuffs.improved_faerie_fire = 0;
-      sim -> target -> expirations.improved_faerie_fire = 0;
-    }
-  };
-
-  event_t*& e = a -> sim -> target -> expirations.improved_faerie_fire;
-
-  if ( e )
-  {
-    e -> reschedule( 300.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) expiration_t( a -> sim, a -> player, p -> talents.improved_faerie_fire );
-  }
-}
-
-// trigger_mangle ============================================================
-
-static void trigger_mangle( attack_t* a )
-{
-  struct mangle_expiration_t : public event_t
-  {
-    mangle_expiration_t( sim_t* sim, druid_t* p, double duration ): event_t( sim, p, 0 )
-    {
-      name = "Mangle Cat Expiration";
-      sim -> target -> debuffs.mangle++;
-      sim -> add_event( this, duration );
-    }
-    virtual void execute()
-    {
-      druid_t* p = player -> cast_druid();
-      sim -> target -> debuffs.mangle--;
-      p -> _expirations.mangle = 0;
-    }
-  };
-
-  druid_t* p = a -> player -> cast_druid();
-
-  double duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
-
-  event_t*& e = p -> _expirations.mangle;
-
-  if ( e )
-  {
-    if ( e -> occurs() < ( a -> sim -> current_time + duration ) )
-    {
-      e -> reschedule( duration );
-    }
-  }
-  else
-  {
-    e = new ( a -> sim ) mangle_expiration_t( a -> sim, p, duration );
-  }
 }
 
 // trigger_earth_and_moon ===================================================
@@ -737,6 +612,7 @@ bool druid_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
+  target_t* t = sim -> target;
 
   if ( requires_position != POSITION_NONE )
     if ( p -> position != requires_position )
@@ -771,11 +647,11 @@ bool druid_attack_t::ready()
   double ct = sim -> current_time;
 
   if ( min_mangle_expire > 0 )
-    if ( ! p -> _expirations.mangle || ( ( p -> _expirations.mangle -> occurs() - ct ) < min_mangle_expire ) )
+    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
       return false;
 
   if ( max_mangle_expire > 0 )
-    if ( p -> _expirations.mangle && ( ( p -> _expirations.mangle -> occurs() - ct ) > max_mangle_expire ) )
+    if ( t -> debuffs.mangle -> remains_gt( min_mangle_expire ) )
       return false;
 
   if ( min_savage_roar_expire > 0 )
@@ -931,19 +807,17 @@ struct faerie_fire_feral_t : public druid_attack_t
     }
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> buffs_bear_form -> check() ) druid_attack_t::execute();
-    trigger_faerie_fire( this );
+    sim -> target -> debuffs.faerie_fire -> trigger();
     update_ready();
   }
 
   virtual bool ready()
   {
-    if ( ! druid_attack_t::ready() )
-      return false;
+    if ( debuff_only ) 
+      if ( sim -> target -> debuffs.faerie_fire -> up() )
+	return false;
 
-    if ( debuff_only && sim -> target -> debuffs.faerie_fire )
-      return false;
-
-    return true;
+    return druid_attack_t::ready();
   }
 };
 
@@ -1039,7 +913,12 @@ struct mangle_cat_t : public druid_attack_t
     if ( result_is_hit() )
     {
       druid_t* p = player -> cast_druid();
-      trigger_mangle( this );
+      target_t* t = sim -> target;
+      if( ! sim -> overrides.mangle )
+      {
+	t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
+      }
+      t -> debuffs.mangle -> trigger();
       p -> buffs_terror -> trigger();
       p -> buffs_corruptor -> trigger();
     }
@@ -1259,7 +1138,7 @@ struct shred_t : public druid_attack_t
 
     druid_attack_t::player_buff();
 
-    if ( t -> debuffs.mangle || t -> debuffs.trauma ) player_multiplier *= 1.30;
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma ) player_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding )
     {
@@ -1270,15 +1149,13 @@ struct shred_t : public druid_attack_t
 
   virtual bool ready()
   {
-    if ( ! druid_attack_t::ready() )
-      return false;
-
     druid_t* p = player -> cast_druid();
 
-    if ( omen_of_clarity && ! p -> buffs_omen_of_clarity -> may_react() )
-      return false;
+    if ( omen_of_clarity )
+      if ( ! p -> buffs_omen_of_clarity -> may_react() )
+	return false;
 
-    return true;
+    return druid_attack_t::ready();
   }
 };
 
@@ -1656,10 +1533,10 @@ void druid_spell_t::player_buff()
 
 void druid_spell_t::target_debuff( int dmg_type )
 {
-  druid_t* p = player -> cast_druid();
-  spell_t::target_debuff( dmg_type );
+  druid_t*  p = player -> cast_druid();
   target_t* t = sim -> target;
-  if ( t -> debuffs.faerie_fire )
+  spell_t::target_debuff( dmg_type );
+  if ( t -> debuffs.faerie_fire -> up() )
   {
     target_crit += p -> talents.improved_faerie_fire * 0.01;
   }
@@ -1686,26 +1563,32 @@ struct faerie_fire_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    druid_t*  p = player -> cast_druid();
+    target_t* t = sim -> target;
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
-    trigger_faerie_fire( this );
-    trigger_improved_faerie_fire( this );
+    t -> debuffs.faerie_fire -> trigger();
+    if ( p -> talents.improved_faerie_fire >= t -> debuffs.improved_faerie_fire -> current_value )
+    {
+      t -> debuffs.improved_faerie_fire -> trigger( 1, p -> talents.improved_faerie_fire );
+    }
   }
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
+    druid_t*  p = player -> cast_druid();
+    target_t* t = sim -> target;
 
-    if ( ! druid_spell_t::ready() )
-      return false;
+    if ( t -> debuffs.faerie_fire -> up() )
+    {
+      if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.improved_faerie_fire )
+	return false;
 
-    if ( ! sim -> target -> debuffs.faerie_fire )
-      return true;
+      if ( t -> debuffs.misery >= p -> talents.improved_faerie_fire )
+	return false;
+    }
 
-    if ( ! sim -> target -> debuffs.improved_faerie_fire && p -> talents.improved_faerie_fire )
-      return true;
-
-    return false;
+    return druid_spell_t::ready();
   }
 };
 
@@ -2333,16 +2216,15 @@ struct wrath_t : public druid_spell_t
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
-    // The % bonus from eclipse and moonfury are additive, so have to sum
-    // them up in player_buff()
-    moonfury_bonus = util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
-    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
-    if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
+    // The % bonus from eclipse and moonfury are additive, so have to sum them up in player_buff()
+    moonfury_bonus = util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
 
+    if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
+    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
 
     if ( p -> idols.steadfast_renewal )
     {
@@ -2732,7 +2614,7 @@ void druid_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if     ( n == "berserk"      ) glyphs.berserk = 1;
+    if      ( n == "berserk"      ) glyphs.berserk = 1;
     else if ( n == "focus"        ) glyphs.focus = 1;
     else if ( n == "innervate"    ) glyphs.innervate = 1;
     else if ( n == "insect_swarm" ) glyphs.insect_swarm = 1;
@@ -2989,22 +2871,23 @@ void druid_t::init_actions()
     if ( primary_tree() == TREE_FERAL )
     {
       // Assume feral
-      action_list_str+="flask,type=endless_rage/food,type=blackened_dragonfin";
-      action_list_str+="/cat_form/auto_attack";
-      action_list_str+="/maim";
+      action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
+      action_list_str += "/cat_form/auto_attack";
+      action_list_str += "/maim";
+      action_list_str += "/faerie_fire_feral";
       action_list_str += use_str;
-      action_list_str+="/shred,omen_of_clarity=1/tigers_fury,energy<=40";
-      if ( talents.berserk )
-        action_list_str+="/berserk,tigers_fury=1";
-      action_list_str+="/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
-      action_list_str+="/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
-      if ( talents.mangle ) action_list_str+="/mangle_cat,mangle<=2";
-      action_list_str+="/rake/shred";
+      action_list_str += "/shred,omen_of_clarity=1/tigers_fury,energy<=40";
+      if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
+      action_list_str += "/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
+      action_list_str += "/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
+      if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=2";
+      action_list_str += "/rake/shred";
     }
     else
     {
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
+      if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
       action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature ) action_list_str+="/treants";
@@ -3044,8 +2927,6 @@ void druid_t::reset()
   active_moonfire     = 0;
   active_rake         = 0;
   active_rip          = 0;
-
-  _expirations.reset();
 
   base_gcd = 1.5;
 }
@@ -3316,15 +3197,24 @@ void player_t::druid_init( sim_t* sim )
   sim -> auras.moonkin          = new buff_t( sim, NULL, "moonkin" );
   sim -> auras.improved_moonkin = new buff_t( sim, NULL, "improved_moonkin" );
 
-  sim -> target -> debuffs.earth_and_moon = new buff_t( sim, NULL, "earth_and_moon", 1, ( sim -> overrides.earth_and_moon ? 0.0 : 12.0 ) );
+  target_t* t = sim -> target;
+  t -> debuffs.earth_and_moon       = new buff_t( sim, NULL, "earth_and_moon",       1, ( sim -> overrides.earth_and_moon       ? 0.0 :  12.0 ) );
+  t -> debuffs.faerie_fire          = new buff_t( sim, NULL, "faerie_fire",          1, ( sim -> overrides.faerie_fire          ? 0.0 : 300.0 ) );
+  t -> debuffs.improved_faerie_fire = new buff_t( sim, NULL, "improved_faerie_fire", 1, ( sim -> overrides.improved_faerie_fire ? 0.0 : 300.0 ) );
+  t -> debuffs.mangle               = new buff_t( sim, NULL, "mangle",               1, ( sim -> overrides.mangle               ? 0.0 :  12.0 ) );
 }
 
 // player_t::druid_combat_begin =============================================
 
 void player_t::druid_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.earth_and_moon         ) sim -> target -> debuffs.earth_and_moon -> trigger( 1, 13 );
   if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> trigger();
-  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin -> trigger();
+  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin          -> trigger();
+
+  target_t* t = sim -> target;
+  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> trigger( 1, 13 );
+  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> trigger();
+  if ( sim -> overrides.improved_faerie_fire ) t -> debuffs.improved_faerie_fire -> trigger( 1, 3 );
+  if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> trigger();
 }
 

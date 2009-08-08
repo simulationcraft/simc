@@ -347,11 +347,10 @@ void action_t::target_debuff( int dmg_type )
 
   if ( school == SCHOOL_BLEED )
   {
-    if ( t -> debuffs.mangle || t -> debuffs.trauma )
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma )
     {
       target_multiplier *= 1.30;
     }
-    t -> uptimes.mangle -> update( t -> debuffs.mangle != 0 );
     t -> uptimes.trauma -> update( t -> debuffs.trauma != 0 );
   }
 
@@ -420,7 +419,8 @@ double action_t::armor() SC_CONST
   double adjusted_armor =  t -> base_armor();
 
   adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
-  adjusted_armor *= 1.0 - t -> debuffs.faerie_fire;
+
+  if( t -> debuffs.faerie_fire -> up() ) adjusted_armor *= 0.95;
 
   return adjusted_armor;
 }

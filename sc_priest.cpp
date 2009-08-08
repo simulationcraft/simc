@@ -331,9 +331,6 @@ static void trigger_misery( action_t* a )
   if ( a -> sim -> target -> debuffs.misery > p -> talents.misery )
     return;
 
-  if ( a -> sim -> target -> debuffs.improved_faerie_fire >= p -> talents.misery )
-    return;
-
   struct expiration_t : public event_t
   {
     expiration_t( sim_t* sim, player_t* p, int misery_stacks ) : event_t( sim, p )

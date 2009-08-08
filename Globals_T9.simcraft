@@ -54,44 +54,32 @@ target_armor=10643
 # Target race
 target_race=humanoid
 
-# Faction specific
-heroic_presence=0
-
 # Turn off 'optimal_raid' so that buffs and debuffs are managed properly
 optimal_raid=0
 
+# Faction specific
+override.heroic_presence=0
+
 # Support for Feral Bear does not yet exist
-faerie_fire=1
-mangle=1
+override.faerie_fire=1
+override.mangle=1
 
 # Support for Warrior class does not yet exist
-battle_shout=1
-sunder_armor=1
-thunder_clap=1
+override.battle_shout=1
+override.sunder_armor=1
+override.thunder_clap=1
 
 # Support for the Paladin class does not yet exist
-blessing_of_kings=1
-blessing_of_wisdom=1
-blessing_of_might=1
-judgement_of_wisdom=1
-sanctified_retribution=1
-swift_retribution=1
+override.blessing_of_kings=1
+override.blessing_of_wisdom=1
+override.blessing_of_might=1
+override.judgement_of_wisdom=1
+override.sanctified_retribution=1
+override.swift_retribution=1
 
 # Support for Death Knights does not yet exist.
-crypt_fever=1
+override.crypt_fever=1
 
 # To generate scale factors, set calculate_scale_factors=1
+# To generate scale factors for just one stat, add scale_only=xxx
 calculate_scale_factors=0
-# Default amount to change each stat when calculating
-# scale factors
-#scale_strength=+250
-#scale_agility=+250
-#scale_intellect=+250
-#scale_spirit=+250
-#scale_spell_power=+250
-#scale_attack_power=+250
-#scale_expertise_rating=-150
-#scale_armor_penetration_rating=+250
-#scale_hit_rating=-200
-#scale_crit_rating=+250
-#scale_haste_rating=+250

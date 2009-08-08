@@ -261,7 +261,10 @@ void buff_t::refresh( int    stacks,
   if ( duration > 0 )
   {
     assert( expiration );
-    expiration -> reschedule( duration );
+    if( expiration -> occurs() < sim -> current_time + duration )
+    {
+      expiration -> reschedule( duration );
+    }
   }
 }
 
