@@ -112,7 +112,7 @@ all: $(MODULE)
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
-	@$(CXX) $(OPTS) $(LINK_FLAGS) $(LINK_LIBS) $^ -o $@
+	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 $(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H) Makefile
 	-@echo [$(MODULE)] Compiling $(notdir $<)
