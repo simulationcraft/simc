@@ -27,6 +27,7 @@ struct druid_t : public player_t
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_lunar_fury;
   buff_t* buffs_moonkin_form;
+  buff_t* buffs_mutilation;
   buff_t* buffs_natures_grace;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
@@ -148,6 +149,7 @@ struct druid_t : public player_t
     int corruptor;
     int crying_wind;
     int lunar_fury;
+    int mutilation;
     int raven_goddess;
     int ravenous_beast;
     int shooting_star;
@@ -599,7 +601,7 @@ void druid_attack_t::player_buff()
   {
     player_multiplier *= 1 + p -> talents.naturalist * 0.02;
   }
-
+  
   p -> uptimes_rip -> update( p -> active_rip != 0 );
   p -> uptimes_rake -> update( p -> active_rake != 0 );
 }
@@ -921,6 +923,7 @@ struct mangle_cat_t : public druid_attack_t
       t -> debuffs.mangle -> trigger();
       p -> buffs_terror -> trigger();
       p -> buffs_corruptor -> trigger();
+      p -> buffs_mutilation -> trigger();
     }
   }
 };
@@ -1015,12 +1018,11 @@ struct rip_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+
+    added_ticks = 0;
+    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
+
     druid_attack_t::execute();
-    if ( result_is_hit() )
-    {
-      added_ticks = 0;
-      num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
-    }
   }
 
   virtual void tick()
@@ -1129,6 +1131,7 @@ struct shred_t : public druid_attack_t
     {
       p -> active_rip -> extend_duration( 1 );
     }
+    if( result_is_hit() ) p -> buffs_mutilation -> trigger();
   }
 
   virtual void player_buff()
@@ -1827,13 +1830,16 @@ struct moonfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+
+    num_ticks = 4;
+    added_ticks = 0;
+    if ( p -> talents.natures_splendor ) num_ticks++;
+    if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
+
     druid_spell_t::execute();
+
     if ( result_is_hit() )
     {
-      num_ticks = 4;
-      added_ticks = 0;
-      if ( p -> talents.natures_splendor ) num_ticks++;
-      if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
       p -> buffs_unseen_moon -> trigger();
     }
   }
@@ -2728,6 +2734,7 @@ void druid_t::init_buffs()
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_lunar_fury  = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
+  buffs_mutilation  = new stat_buff_t( sim, this, "mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
   buffs_corruptor   = new stat_buff_t( sim, this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
   buffs_terror      = new stat_buff_t( sim, this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
   buffs_unseen_moon = new stat_buff_t( sim, this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
@@ -2754,6 +2761,7 @@ void druid_t::init_items()
   else if ( idol == "idol_of_terror"             ) idols.terror = 1;
   else if ( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
   else if ( idol == "idol_of_the_crying_wind"    ) idols.crying_wind = 1;
+  else if ( idol == "idol_of_mutilation"         ) idols.mutilation = 1;
   else if ( idol == "idol_of_the_raven_goddess"  ) idols.raven_goddess = 1;
   else if ( idol == "idol_of_the_ravenous_beast" ) idols.ravenous_beast = 1;
   else if ( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
