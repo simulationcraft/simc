@@ -2251,13 +2251,10 @@ struct rupture_t : public rogue_attack_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
+    added_ticks = 0;
+    num_ticks = 3 + p -> _buffs.combo_points;
+    if ( p -> glyphs.rupture ) num_ticks += 2;
     rogue_attack_t::execute();
-    if ( result_is_hit() )
-    {
-      added_ticks = 0;
-      num_ticks = 3 + p -> _buffs.combo_points;
-      if ( p -> glyphs.rupture ) num_ticks += 2;
-    }
   }
 
   virtual void player_buff()
