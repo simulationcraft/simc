@@ -8,9 +8,11 @@
 
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
 # By default, 32-bit binary is built.  To build a 64-bit binary, add BITS=64 to the cmd-line invocation
+# Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simcraft64'
+# Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
-
-OS = UNIX
+MODULE     = simcraft
+OS         = UNIX
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
@@ -100,17 +102,21 @@ SRC =\
 
 SRC_H   := $(filter %.h,   $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
-SRC_OBJ := $(SRC_CPP:.cpp=.o)
+OBJ_DIR = .
+OBJ_EXT = o
+SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)/%.$(OBJ_EXT))
 
-.PHONY:		all mostlyclean clean
+.PHONY:	all mostlyclean clean
 
-all: simcraft
+all: $(MODULE)
 
-simcraft: $(SRC_OBJ)
-	$(CXX) $(OPTS) $(LINK_FLAGS) $(SRC_OBJ) $(LINK_LIBS) -o simcraft
+$(MODULE): $(SRC_OBJ)
+	-@echo [$(MODULE)] Linking $@
+	@$(CXX) $(OPTS) $(LINK_FLAGS) $(LINK_LIBS) $^ -o $@
 
-$(SRC_OBJ): %.o: %.cpp $(SRC_H) Makefile
-	$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+$(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H) Makefile
+	-@echo [$(MODULE)] Compiling $(notdir $<)
+	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
 
 # Release targets (may use platform-specific cmds)
 
@@ -120,10 +126,12 @@ tarball:
 	gzip simcraft-r$(REV).tar
 
 mostlyclean:
-	rm -f *.o *.d *~
+	-@echo [$(MODULE)] Cleaning intermediate files
+	@rm -f $(SRC_OBJ)
 
 clean: mostlyclean
-	rm -f simcraft
+	-@echo [$(MODULE)] Cleaning target files
+	@rm -f $(MODULE)
 
 # Deprecated targets
 
