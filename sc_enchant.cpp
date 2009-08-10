@@ -20,7 +20,7 @@ static enchant_data_t enchant_db[] =
   { "3872",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
   { "3870",  "Blood Draining",                                            ""                               },
   { "3869",  "Blade Ward",                                                ""                               },
-  { "3859",  "Springy Arachnoweave",                                      "18SP"                           },
+  { "3859",  "Springy Arachnoweave",                                      "27SP"                           },
   { "3855",  "+69 Spell Power",                                           "69SP"                           },
   { "3854",  "+81 Spell Power",                                           "81SP"                           },
   { "3853",  "+40 Resilience Rating +28 Stamina",                         "28Sta"                          },
@@ -92,8 +92,8 @@ static enchant_data_t enchant_db[] =
   { "3718",  "+35 Spell Power and +12 Spirit",                            "35SP_12Spi"                     },
   { "3608",  "+40 Ranged Critical Strike",                                "40Crit"                         },
   { "3607",  "+40 Ranged Haste Rating",                                   ""                               },
-  { "3606",  "Nitro Boosts",                                              ""                               },
-  { "3605",  "Flexweave Underlay",                                        ""                               },
+  { "3606",  "Nitro Boosts",                                              "24Crit"                         },
+  { "3605",  "Flexweave Underlay",                                        "23Agi"                          },
   { "3604",  "Hyperspeed Accelerators",                                   ""                               },
   { "3603",  "Hand-Mounted Pyro Rocket",                                  ""                               },
   { "3601",  "Belt-Clipped Spynoculars",                                  ""                               },
@@ -800,7 +800,7 @@ bool enchant_t::download( item_t&            item,
   std::string enchant_name;
   if ( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
   {
-    if     ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
+    if      ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
     else if ( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
     else if ( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
     else if ( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }

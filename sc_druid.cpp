@@ -2620,6 +2620,7 @@ void druid_t::init_glyphs()
     else if ( n == "monsoon"               ) ;
     else if ( n == "nourish"               ) ;
     else if ( n == "rejuvenation"          ) ;
+    else if ( n == "regrowth"              ) ;
     else if ( n == "survival_instincts"    ) ;
     else if ( n == "swiftmend"             ) ;
     else if ( n == "the_wild"              ) ;
