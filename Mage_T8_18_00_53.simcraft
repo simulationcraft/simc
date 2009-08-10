@@ -13,7 +13,7 @@ actions+=/counterspell
 actions+=/mirror_image
 actions+=/use_item,name=scale_of_fates
 actions+=/icy_veins
-actions+=/mana_gem,trigger=1000
+actions+=/mana_gem
 actions+=/speed_potion
 actions+=/frost_bolt,frozen=1
 actions+=/water_elemental

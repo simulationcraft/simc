@@ -3300,7 +3300,7 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      action_list_str += "/mana_gem,trigger=1000/speed_potion";
+      action_list_str += "/mana_gem/speed_potion";
       action_list_str += "/frost_bolt,frozen=1";
       if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if ( talents.cold_snap              ) action_list_str += "/cold_snap";
@@ -3313,7 +3313,7 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FIRE )
     {
-      action_list_str += "/mana_gem,trigger=1000/speed_potion";
+      action_list_str += "/mana_gem/speed_potion";
       if ( talents.living_bomb ) action_list_str += "/living_bomb";
       if ( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
       if ( talents.piercing_ice && talents.ice_shards )

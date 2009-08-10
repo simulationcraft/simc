@@ -9,8 +9,12 @@
 // Shaman
 // ==========================================================================
 
+enum element_type_t { ELEMENT_NONE=0, ELEMENT_AIR, ELEMENT_EARTH, ELEMENT_FIRE, ELEMENT_WATER, ELEMENT_MAX };
+
 struct shaman_t : public player_t
 {
+  pet_t* active_totems[ ELEMENT_MAX ];
+
   // Active
   action_t* active_flame_shock;
   action_t* active_lightning_charge;
@@ -192,6 +196,8 @@ struct shaman_t : public player_t
 
   shaman_t( sim_t* sim, const std::string& name ) : player_t( sim, SHAMAN, name )
   {
+    for( int i=0; i < ELEMENT_MAX; i++ ) active_totems[ i ] = 0;
+
     // Active
     active_flame_shock        = 0;
     active_lightning_charge   = 0;
@@ -341,6 +347,45 @@ struct spirit_wolf_pet_t : public pet_t
   {
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
+  }
+};
+
+// ==========================================================================
+// Pet Totems
+// ==========================================================================
+
+struct totem_t : public pet_t
+{
+  int element;
+
+  totem_t( sim_t* sim, player_t* owner, const std::string& n, int e ) :
+    pet_t( sim, owner, n, true/*guardian*/ ), element(e)
+  {
+  }
+  virtual void init_base()
+  {
+    attribute_base[ ATTR_STAMINA ] = 100;
+  }
+  virtual double composite_spell_power( int school ) SC_CONST
+  {
+    return owner -> composite_spell_power( school );
+  }
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return owner -> composite_spell_crit();
+  }
+  virtual void summon( double duration=0 )
+  {
+    shaman_t* o = owner -> cast_shaman();
+    if( o -> active_totems[ element ] ) o -> active_totems[ element ] -> dismiss();
+    pet_t::summon( duration );
+    o -> active_totems[ element ] = this;
+  }
+  virtual void dismiss()
+  {
+    shaman_t* o = owner -> cast_shaman();
+    pet_t::dismiss();
+    o -> active_totems[ element ] = 0;
   }
 };
 
@@ -625,6 +670,10 @@ static void trigger_elemental_oath( spell_t* s )
     p -> buffs.elemental_oath -> trigger();
   }
 }
+
+// =========================================================================
+// Shaman Totems
+// =========================================================================
 
 // =========================================================================
 // Shaman Attack
@@ -3106,6 +3155,8 @@ void shaman_t::init_actions()
 void shaman_t::reset()
 {
   player_t::reset();
+
+  for( int i=0; i < ELEMENT_MAX; i++ ) active_totems[ i ] = 0;
 
   _cooldowns.reset();
 }

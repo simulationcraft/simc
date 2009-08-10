@@ -1,9 +1,9 @@
 #!simcraft
 
-mage=Mage_T8_19_52_00
+mage=Mage_T8_20_51_00
 origin=http://profiler.wowhead.com/?profile=13001492
 level=80
-talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050321000300000000000000000055032012303330053020300351
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050311002300000000000000000055031012303330053020300351
 glyphs=fireball/living_bomb/molten_armor
 actions=flask,type=frost_wyrm
 actions+=/food,type=tender_shoveltusk_steak
@@ -13,7 +13,7 @@ actions+=/counterspell
 actions+=/scorch,debuff=1
 actions+=/mirror_image
 actions+=/use_item,name=scale_of_fates
-actions+=/mana_gem,trigger=1000
+actions+=/mana_gem
 actions+=/speed_potion
 actions+=/living_bomb
 actions+=/pyroblast,hot_streak=1
