@@ -25,6 +25,7 @@ struct druid_t : public player_t
   buff_t* buffs_corruptor;
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
+  buff_t* buffs_glyph_of_innervate;
   buff_t* buffs_lunar_fury;
   buff_t* buffs_moonkin_form;
   buff_t* buffs_mutilation;
@@ -40,6 +41,7 @@ struct druid_t : public player_t
 
   // Gains
   gain_t* gains_energy_refund;
+  gain_t* gains_glyph_of_innervate;
   gain_t* gains_moonkin_form;
   gain_t* gains_omen_of_clarity;
   gain_t* gains_primal_precision;
@@ -1629,30 +1631,6 @@ struct innervate_t : public druid_spell_t
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        sim -> add_event( this, 10.0 );
-      }
-      virtual void execute()
-      {
-        player -> buffs.innervate = 0;
-        player -> aura_loss( "Innervate", 29166 );
-      }
-    };
-    struct expiration_glyph_t : public event_t
-    {
-      expiration_glyph_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        sim -> add_event( this, 10.0 );
-      }
-      virtual void execute()
-      {
-        player -> buffs.glyph_of_innervate = 0;
-        player -> aura_loss( "Glyph of Innervate" );
-      }
-    };
 
     consume_resource();
     update_ready();
@@ -1668,16 +1646,10 @@ struct innervate_t : public druid_spell_t
     // 3.2.0: The ManaPerSecond from Innervate is the same, but duration
     // and cooldown got halfed.
 
-    innervate_target -> buffs.innervate = player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0;
-    innervate_target -> aura_gain( "Innervate", 29166 );
+    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0);
 
-    if ( player -> cast_druid() -> glyphs.innervate )
-    {
-      player -> buffs.glyph_of_innervate = player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0;
-      player -> aura_gain( "Glyph of Innervate" );
-      new ( sim ) expiration_glyph_t( sim, player );
-    }
-    new ( sim ) expiration_t( sim, innervate_target );
+    druid_t* p = player -> cast_druid();
+    p -> buffs_glyph_of_innervate -> trigger( 1, player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0 );
   }
 
   virtual bool ready()
@@ -2723,14 +2695,15 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_berserk           = new buff_t( sim, this, "berserk"          , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar     = new buff_t( sim, this, "eclipse_lunar"    , 1,  15.0,  30.0, talents.eclipse / 5.0 );
-  buffs_eclipse_solar     = new buff_t( sim, this, "eclipse_solar"    , 1,  15.0,  30.0, talents.eclipse / 3.0 );
-  buffs_natures_grace     = new buff_t( sim, this, "natures_grace"    , 1,   3.0,     0, talents.natures_grace / 3.0 );
-  buffs_natures_swiftness = new buff_t( sim, this, "natures_swiftness", 1, 180.0, 180.0 );
-  buffs_omen_of_clarity   = new buff_t( sim, this, "omen_of_clarity"  , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
-  buffs_t8_4pc_balance    = new buff_t( sim, this, "t8_4pc_balance"   , 1,  10.0,     0, 0.08 );
-  buffs_tigers_fury       = new buff_t( sim, this, "tigers_fury"      , 1,   6.0 );
+  buffs_berserk            = new buff_t( sim, this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
+  buffs_eclipse_lunar      = new buff_t( sim, this, "eclipse_lunar"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
+  buffs_eclipse_solar      = new buff_t( sim, this, "eclipse_solar"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
+  buffs_natures_grace      = new buff_t( sim, this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
+  buffs_natures_swiftness  = new buff_t( sim, this, "natures_swiftness" , 1, 180.0, 180.0 );
+  buffs_omen_of_clarity    = new buff_t( sim, this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
+  buffs_t8_4pc_balance     = new buff_t( sim, this, "t8_4pc_balance"    , 1,  10.0,     0, 0.08 );
+  buffs_tigers_fury        = new buff_t( sim, this, "tigers_fury"       , 1,   6.0 );
+  buffs_glyph_of_innervate = new buff_t( sim, this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_lunar_fury  = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
@@ -2830,11 +2803,12 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_energy_refund    = get_gain( "energy_refund"    );
-  gains_moonkin_form     = get_gain( "moonkin_form"     );
-  gains_omen_of_clarity  = get_gain( "omen_of_clarity"  );
-  gains_primal_precision = get_gain( "primal_precision" );
-  gains_tigers_fury      = get_gain( "tigers_fury"      );
+  gains_energy_refund      = get_gain( "energy_refund"      );
+  gains_glyph_of_innervate = get_gain( "glyph_of_innervate" );
+  gains_moonkin_form       = get_gain( "moonkin_form"       );
+  gains_omen_of_clarity    = get_gain( "omen_of_clarity"    );
+  gains_primal_precision   = get_gain( "primal_precision"   );
+  gains_tigers_fury        = get_gain( "tigers_fury"        );
 }
 
 // druid_t::init_procs ======================================================
@@ -2962,10 +2936,16 @@ void druid_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( resource_max[ RESOURCE_ENERGY ] > 0 )
+  int resource_type = primary_resource();
+
+  if ( resource_type == RESOURCE_ENERGY )
   {
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
+  }
+  else if( resource_type == RESOURCE_MANA )
+  {
+    resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
   }
 }
 
@@ -3215,6 +3195,11 @@ void player_t::druid_init( sim_t* sim )
 {
   sim -> auras.moonkin          = new buff_t( sim, NULL, "moonkin" );
   sim -> auras.improved_moonkin = new buff_t( sim, NULL, "improved_moonkin" );
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> buffs.innervate = new buff_t( sim, p, "innervate", 1, 10.0 );
+  }
 
   target_t* t = sim -> target;
   t -> debuffs.earth_and_moon       = new buff_t( sim, NULL, "earth_and_moon",       1, ( sim -> overrides.earth_and_moon       ? 0.0 :  12.0 ) );

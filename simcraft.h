@@ -1338,6 +1338,7 @@ struct player_t
   {
     // New Buffs
     buff_t* elemental_oath;
+    buff_t* innervate;
     // Old Buffs
     int       old_buffs;
     int       abominations_might;
@@ -1356,8 +1357,6 @@ struct player_t
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
-    double    innervate;
-    double    glyph_of_innervate;
     int       hysteria;
     double    mana_cost_reduction;
     double    mana_spring;
