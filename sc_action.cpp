@@ -907,9 +907,14 @@ void action_t::update_ready()
   }
   if ( ! channeled && num_ticks > 0 && ! result_is_miss() )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
+    // tick_event -> time => time when the next tick happens
+    // tick_time() * ( num_ticks - (current_tick+1) ) => time of the last tick
+    // +0.01 to be sure it shows up ready() AFTER the last tick
+    // so update_ready() will always set duration_ready to 0.01s after the last tick
 
-    player -> share_duration( duration_group, sim -> current_time + 0.01 + tick_time() * num_ticks );
+    duration_ready = tick_event -> time + tick_time() * ( num_ticks - (current_tick+1) )+0.01;
+    if ( sim -> debug ) log_t::output( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
+    player -> share_duration( duration_group, duration_ready );
   }
 }
 

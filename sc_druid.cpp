@@ -1020,11 +1020,13 @@ struct rip_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-
-    added_ticks = 0;
-    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
-
     druid_attack_t::execute();
+    if ( result_is_hit() )
+    {
+      added_ticks = 0;
+      num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
+      update_ready();
+    }
   }
 
   virtual void tick()
@@ -1803,15 +1805,15 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    num_ticks = 4;
-    added_ticks = 0;
-    if ( p -> talents.natures_splendor ) num_ticks++;
-    if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
-
     druid_spell_t::execute();
 
     if ( result_is_hit() )
     {
+      num_ticks = 4;
+      added_ticks = 0;
+      if ( p -> talents.natures_splendor ) num_ticks++;
+      if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
+      update_ready();
       p -> buffs_unseen_moon -> trigger();
     }
   }
