@@ -979,7 +979,6 @@ void player_t::init_gains()
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.innervate              = get_gain( "innervate" );
-  gains.glyph_of_innervate     = get_gain( "glyph_of_innervate" );
   gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring            = get_gain( "mana_spring" );
@@ -1721,14 +1720,8 @@ void player_t::regen( double periodicity )
     {
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
 
-      if ( buffs.innervate )
-      {
-        resource_gain( RESOURCE_MANA, buffs.innervate * periodicity, gains.innervate );
-      }
-      if ( buffs.glyph_of_innervate )
-      {
-        resource_gain( RESOURCE_MANA, buffs.glyph_of_innervate * periodicity, gains.glyph_of_innervate );
-      }
+      resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
+
       if ( recent_cast() && mana_regen_while_casting < 1.0 )
       {
         spirit_regen *= mana_regen_while_casting;
