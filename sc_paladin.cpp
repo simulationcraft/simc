@@ -678,6 +678,7 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( paladin_t* p ) :
       paladin_spell_t( "consecration", p )
   {
+    aoe        = true;
     dual       = true;
     background = true;
     may_crit   = false;
@@ -691,7 +692,6 @@ struct consecration_tick_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( result_is_hit() )
     {
-      ticking = 1;
       tick_dmg = direct_dmg;
       update_stats( DMG_OVER_TIME );
     }

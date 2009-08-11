@@ -43,8 +43,7 @@ Warlock_T7_53_00_18.simcraft
 
 Warrior_T7_18_53_00.simcraft
 
-# To get real simulation of HAT procs, the Rogues must be in a party and honor_among_thieves_interval=0
-# active=Rogue_T7_23_05_43  honor_among_thieves_interval=0
-# active=Rogue_T7_08_20_43  honor_among_thieves_interval=0
+# To get real simulation of HAT procs, the Rogues must be in a party in which case honor_among_thieves_interval is ignored
+# To put everybody in one big party to check HAT donor rates, simply use party=all (and be sure to ignore the HAT Rogues)
 # party=Rogue_T7_23_05_43/Mage_T7_57_03_11/Mage_T7_00_53_18/Mage_T7_18_00_53/Druid_T7_58_00_13_W
 # party=Rogue_T7_08_20_43/Mage_T7_53_18_00/Shaman_T7_57_14_00/Shaman_T7_18_53_00/Druid_T7_58_00_13_SF

@@ -3444,13 +3444,23 @@ void rogue_t::init_rng()
 
 struct honor_among_thieves_callback_t : public action_callback_t
 {
-  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
+  double cooldown_ready;
+
+  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ), cooldown_ready(0) {}
+
+  virtual void reset()
+  {
+    action_callback_t::reset();
+    cooldown_ready = 0;
+  }
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> special || a -> proc ) return;
+    if ( ! a -> special || a -> aoe || a -> pseudo_pet ) 
+      return;
 
-    if ( ! sim -> P320 && a -> ticking ) return;
+    if( sim -> current_time < cooldown_ready ) 
+      return;
 
     rogue_t* rogue = listener -> cast_rogue();
 
@@ -3464,6 +3474,8 @@ struct honor_among_thieves_callback_t : public action_callback_t
     {
       rogue -> procs_honor_among_thieves_receiver -> occur();
     }
+
+    cooldown_ready = sim -> current_time + 1.0;
   }
 };
 
@@ -3479,13 +3491,9 @@ void rogue_t::register_callbacks()
     {
       if ( p != this )
       {
-        if ( honor_among_thieves_interval != 0 ) continue; // using "virtual" party procs
-
-        if ( p -> party == 0 || p -> party != party ) continue;
-
-        if ( p -> type == PLAYER_GUARDIAN ) continue;
-
-        if ( p -> type == PLAYER_PET ) continue;
+        if ( p -> party == 0     ) continue;
+	if ( p -> party != party ) continue;
+        if ( p -> is_pet()       ) continue;
       }
 
       p -> register_attack_result_callback( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
@@ -3502,7 +3510,11 @@ void rogue_t::combat_begin()
 
   if ( talents.honor_among_thieves )
   {
-    if ( honor_among_thieves_interval > 0 )
+    if ( party != 0 )
+    {
+      // When in a party, ignore honor_among_thieves_interval option.
+    }
+    else if ( honor_among_thieves_interval > 0 )
     {
       struct honor_among_thieves_proc_t : public event_t
       {
@@ -3526,7 +3538,7 @@ void rogue_t::combat_begin()
       // First proc comes 1.0 seconds into combat.
       new ( sim ) honor_among_thieves_proc_t( sim, this, 1.0 );
     }
-    else if ( party == 0 )
+    else 
     {
       util_t::printf( "simcraft: %s must have a party specification or 'honor_among_thieves_interval' must be set.\n", name() );
       exit( 0 );

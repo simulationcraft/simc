@@ -19,7 +19,8 @@ action_t::action_t( int         ty,
                     int         tr,
                     bool        sp ) :
     sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
-    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), repeating( false ), aoe( false ), harmful( true ), proc( false ),
+    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), 
+    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
     tick_may_crit( false ), tick_zero( false ), clip_dot( false ),
@@ -905,15 +906,18 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if ( ! channeled && num_ticks > 0 && ! result_is_miss() )
+  if ( ticking && ! channeled )
   {
-    // tick_event -> time => time when the next tick happens
-    // tick_time() * ( num_ticks - (current_tick+1) ) => time of the last tick
-    // +0.01 to be sure it shows up ready() AFTER the last tick
-    // so update_ready() will always set duration_ready to 0.01s after the last tick
+    assert( num_ticks && tick_event );
 
-    duration_ready = tick_event -> time + tick_time() * ( num_ticks - (current_tick+1) )+0.01;
+    int remaining_ticks = num_ticks - current_tick;
+
+    double next_tick = tick_event -> occurs();
+
+    duration_ready = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
+
     if ( sim -> debug ) log_t::output( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
+
     player -> share_duration( duration_group, duration_ready );
   }
 }

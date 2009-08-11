@@ -2887,7 +2887,6 @@ struct explosive_tick_t : public hunter_attack_t
   virtual void execute()
   {
     hunter_attack_t::execute();
-    ticking = 1; // Prevent HAT procs
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )

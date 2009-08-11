@@ -193,7 +193,7 @@ static int create_children( xml_node_t*             root,
       {
         std::string name_str;
         parse_name( name_str, input, ++index );
-//        assert( name_str == root -> name() );
+        //assert( name_str == root -> name() );
         index++;
         break;
       }
@@ -288,6 +288,13 @@ static xml_node_t* split_path( xml_node_t*        node,
 } // ANONYMOUS NAMESPACE ===================================================
 
 #ifndef UNIT_TEST
+
+// xml_t::get_name =========================================================
+
+const char* xml_t::get_name( xml_node_t* node )
+{
+  return node -> name();
+}
 
 // xml_t::download =========================================================
 

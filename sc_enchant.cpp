@@ -763,7 +763,7 @@ void enchant_t::init( player_t* p )
   }
   if ( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 250, 0.50, 15.0, 45.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 295, 0.35, 15.0, 60.0 );
   }
 }
 

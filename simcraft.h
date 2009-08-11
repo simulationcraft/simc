@@ -1951,7 +1951,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int id, school, resource, tree, result;
-  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc;
+  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, pseudo_pet;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, clip_dot;
   double min_gcd, trigger_gcd, range;
@@ -2280,6 +2280,7 @@ struct gain_t
 struct proc_t
 {
   sim_t* sim;
+  player_t* player;
   std::string name_str;
   double count;
   double frequency;
@@ -2288,7 +2289,7 @@ struct proc_t
   double last_proc;
   proc_t* next;
   proc_t( sim_t* s, const std::string& n ) :
-      sim( s ), name_str( n ), count( 0 ), frequency( 0 ), interval_sum( 0 ), interval_count( 0 ), last_proc( 0 ) {}
+    sim(s), name_str(n), count(0), frequency(0), interval_sum(0), interval_count(0), last_proc(0) {}
   void occur()
   {
     count++;
@@ -2498,6 +2499,7 @@ struct http_t
 
 struct xml_t
 {
+  static const char* get_name( xml_node_t* node );
   static xml_node_t* get_child( xml_node_t* root, const std::string& name );
   static xml_node_t* get_node ( xml_node_t* root, const std::string& path );
   static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );

@@ -638,6 +638,7 @@ static void trigger_lightning_overload( spell_t* s,
     stats_t* stats            = s -> stats;
 
     s -> proc                 = true;
+    s -> pseudo_pet           = true; // Prevent Honor Among Thieves
     s -> base_cost            = 0;
     s -> base_multiplier     /= 2.0;
     s -> direct_power_mod    += p -> talents.shamanism * 0.02; // Reapplied here because Shamanism isn't affected by the *0.5.
@@ -647,6 +648,7 @@ static void trigger_lightning_overload( spell_t* s,
     s -> execute();
 
     s -> proc                 = false;
+    s -> pseudo_pet           = false;
     s -> base_cost            = cost;
     s -> base_multiplier      = multiplier;
     s -> direct_power_mod     = direct_power_mod;
@@ -1736,6 +1738,9 @@ struct searing_totem_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
+
+    // Searing Totem is not a real DoT, but rather a pet that is spawned.
+    pseudo_pet = true;
   }
 
   // Odd things to handle:
@@ -1819,6 +1824,9 @@ struct magma_totem_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
+
+    // Magma Totem is not a real DoT, but rather a pet that is spawned.
+    pseudo_pet = true;
   }
 
   // Odd things to handle:
@@ -2638,6 +2646,9 @@ struct lightning_shield_t : public shaman_spell_t
       base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
       if ( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
+
+      // Lightning Shield may actually be modeled as a pet given that it cannot proc Honor Among Thieves
+      pseudo_pet = true;
     }
   };
 

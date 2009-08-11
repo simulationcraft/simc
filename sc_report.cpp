@@ -557,6 +557,48 @@ static void print_reference_dps( FILE* file, sim_t* sim )
   }
 }
 
+struct compare_hat_donor_interval
+{
+  bool operator()( player_t* l, player_t* r ) SC_CONST
+  {
+    return( l -> procs.honor_among_thieves_donor -> frequency < 
+	    r -> procs.honor_among_thieves_donor -> frequency );
+  }
+};
+
+static void print_hat_donors( FILE* file, sim_t* sim )
+{
+  std::vector<player_t*> hat_donors;
+
+  int num_players = sim -> players_by_name.size();
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    if( p -> procs.honor_among_thieves_donor -> count )
+    {
+      hat_donors.push_back( p );
+    }
+  }
+
+  int num_donors = hat_donors.size();
+  if( num_donors > 0 )
+  {
+    std::sort( hat_donors.begin(), hat_donors.end(), compare_hat_donor_interval()  );
+
+    util_t::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
+
+    for( int i=0; i < num_donors; i++ )
+    {
+      player_t* p = hat_donors[ i ];
+      proc_t* proc = p -> procs.honor_among_thieves_donor;
+
+      util_t::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> frequency, ( 1.0 / proc -> frequency ), p -> name() );
+    }
+  }
+}
+
 // print_html_menu_definition ================================================
 
 static void print_html_menu_definition( FILE*  file, sim_t* sim )
@@ -1183,6 +1225,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   if ( detail )
   {
     print_buffs        ( file, sim );
+    print_hat_donors   ( file, sim );
     print_waiting      ( file, sim );
     print_performance  ( file, sim );
     print_scale_factors( file, sim );

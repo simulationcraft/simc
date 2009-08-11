@@ -1384,7 +1384,6 @@ struct mind_flay_tick_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    ticking = 1; // Prevent HAT procs
     priest_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
