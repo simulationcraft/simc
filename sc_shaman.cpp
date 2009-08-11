@@ -1666,12 +1666,12 @@ struct flame_shock_t : public shaman_spell_t
   }
 };
 
-// Wind Shock Spell ========================================================
+// Wind Shear Spell ========================================================
 
-struct wind_shock_t : public shaman_spell_t
+struct wind_shear_t : public shaman_spell_t
 {
-  wind_shock_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "wind_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL )
+  wind_shear_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "wind_shear", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
     trigger_gcd = 0;
@@ -2837,7 +2837,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if ( name == "totem_of_wrath"          ) return new           totem_of_wrath_t( this, options_str );
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
-  if ( name == "wind_shock"              ) return new               wind_shock_t( this, options_str );
+  if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
   if ( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
@@ -3117,7 +3117,7 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      action_list_str += "/wind_shock/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
+      action_list_str += "/wind_shear/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
       action_list_str += "/auto_attack";
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";
@@ -3140,7 +3140,7 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      action_list_str += "/wind_shock";
+      action_list_str += "/wind_shear";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
       action_list_str += "/speed_potion";
