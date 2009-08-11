@@ -1718,15 +1718,21 @@ void player_t::regen( double periodicity )
     }
     else if ( resource_type == RESOURCE_MANA )
     {
-      double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
+      if( buffs.innervate -> check() )
+      {
+	resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
+      }
 
-      resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
+      double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
 
       if ( recent_cast() && mana_regen_while_casting < 1.0 )
       {
         spirit_regen *= mana_regen_while_casting;
       }
-      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
+      if( spirit_regen > 0 )
+      {
+	resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
+      }
 
       double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
 
