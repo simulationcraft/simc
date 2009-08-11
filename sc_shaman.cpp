@@ -968,7 +968,7 @@ void shaman_spell_t::consume_resource()
 {
   spell_t::consume_resource();
   shaman_t* p = player -> cast_shaman();
-  if ( p -> buffs_elemental_focus -> up() )
+  if ( resource_consumed > 0 && p -> buffs_elemental_focus -> up() )
   {
     p -> buffs_elemental_focus -> decrement();
   }
