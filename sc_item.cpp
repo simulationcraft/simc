@@ -348,7 +348,7 @@ bool item_t::decode_enchant()
     else if ( t.full == "pyrorocket" )
     {
       use.school = SCHOOL_FIRE;
-      use.amount = 1600;
+      use.amount = 1937;
       use.cooldown = 45;
     }
     else
