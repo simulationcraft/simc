@@ -86,9 +86,16 @@ static bool get_tti_value( std::string&       value,
 {
   xml_node_t* node = get_tti_node( root, name );
 
-  if ( node && xml_t::get_value( value, node, "." ) )
+  if ( node )
   {
-    return true;
+    if( xml_t::get_value( value, node, "." ) )
+    {
+      return true;
+    }
+    else if( xml_t::get_value( value, node, "a/." ) )
+    {
+      return true;
+    }
   }
 
   return false;
@@ -107,6 +114,10 @@ static int get_tti_value( std::vector<std::string>& values,
     {
       std::string value;
       if ( xml_t::get_value( value, root, "." ) )
+      {
+        values.push_back( value );
+      }
+      else if ( xml_t::get_value( value, root, "a/." ) )
       {
         values.push_back( value );
       }
@@ -200,8 +211,10 @@ static bool parse_weapon( item_t&     item,
        ! get_tti_value( slot_str,     node, "tti-slot"     ) )
     return false;
 
+  if( slot_str == "Main Hand" ) slot_str = "One-Hand";
+
   int weapon_type = WEAPON_NONE;
-  if     ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type = WEAPON_AXE;
+  if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type = WEAPON_AXE;
   else if ( subclass_str == "Axe" && slot_str == "Two-Hand"   ) weapon_type = WEAPON_AXE_2H;
   else if ( subclass_str == "Dagger"                          ) weapon_type = WEAPON_DAGGER;
   else if ( subclass_str == "Fist Weapon"                     ) weapon_type = WEAPON_FIST;
