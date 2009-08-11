@@ -38,6 +38,8 @@ struct warrior_t : public player_t
   buff_t* buffs_sword_and_board;
   buff_t* buffs_taste_for_blood;
   buff_t* buffs_wrecking_crew;
+  buff_t* buffs_tier7_4pc_dps;
+  buff_t* buffs_tier8_2pc_dps;
 
   // Cooldowns
   struct _cooldowns_t
@@ -342,49 +344,6 @@ static void trigger_blood_frenzy( action_t* a )
 
 }
 
-// trigger_tier7_4pc_dps ====================================================
-
-static void trigger_tier7_4pc_dps( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> tiers.t7_4pc_dps )
-    return;
-
-  if ( ! p -> rngs.tier7_4pc -> roll( 0.10 ) )
-    return;
-
-  struct heightened_reflexes_expiration_t : public event_t
-  {
-    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-    {
-      name = "Spirits of the Lost (tier7_4pc) Expiration";
-      player -> aura_gain( "Spirits of the Lost (tier7_4pc)" );
-      player -> buffs.tier7_4pc = 5;
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Heightened Reflexes" );
-      player -> buffs.tier7_4pc = 0;
-      player -> expirations.tier7_4pc = 0;
-    }
-  };
-
-  p -> procs.tier7_4pc -> occur();
-
-  event_t*& e = p -> expirations.tier7_4pc;
-
-  if ( e )
-  {
-    e -> reschedule( 30.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
-  }
-}
-
 // trigger_deep_wounds ======================================================
 
 static void trigger_deep_wounds( action_t* a )
@@ -428,8 +387,10 @@ static void trigger_deep_wounds( action_t* a )
     }
     virtual void tick()
     {
+
       warrior_attack_t::tick();
-      trigger_tier7_4pc_dps( this );
+      warrior_t* p = player -> cast_warrior();
+      p -> buffs_tier7_4pc_dps -> trigger();
     }
   };
 
@@ -565,54 +526,6 @@ static void trigger_unbridled_wrath( action_t* a )
   }
 }
 
-// trigger_tier8_2pc_dps ====================================================
-
-static void trigger_tier8_2pc_dps( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> tiers.t8_2pc_dps )
-    return;
-
-  if ( a -> result != RESULT_CRIT )
-    return;
-
-  if ( ! p -> rngs.tier8_2pc -> roll( 0.40 ) )
-    return;
-
-  struct heightened_reflexes_expiration_t : public event_t
-  {
-    heightened_reflexes_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-    {
-      name = "Heightened Reflexes (tier8_2pc) Expiration";
-      player -> aura_gain( "Heightened Reflexes (tier8_2pc)" );
-      player -> haste_rating += 150;
-      player -> recalculate_haste();
-      sim -> add_event( this, 5.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Heightened Reflexes" );
-      player -> haste_rating -= 150;
-      player -> recalculate_haste();
-      player -> expirations.tier8_2pc = 0;
-    }
-  };
-
-  p -> procs.tier8_2pc -> occur();
-
-  event_t*& e = p -> expirations.tier8_2pc;
-
-  if ( e )
-  {
-    e -> reschedule( 5.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) heightened_reflexes_expiration_t( a -> sim, p );
-  }
-}
-
 // trigger_trauma ===========================================================
 
 static void trigger_trauma( action_t* a )
@@ -682,7 +595,9 @@ double warrior_attack_t::cost() SC_CONST
   if ( harmful )
     c -= p -> talents.focused_rage;
 
-  c -= p -> buffs.tier7_4pc;
+  if ( p -> buffs_tier7_4pc_dps -> check() )
+    c -= 5;
+    
   if ( c < 0 )
     return 0;
 
@@ -716,9 +631,9 @@ void warrior_attack_t::consume_resource()
 void warrior_attack_t::execute()
 {
   attack_t::execute();
-  event_t::early( player -> expirations.tier7_4pc );
 
   warrior_t* p = player -> cast_warrior();
+  p -> buffs_tier7_4pc_dps -> expire();
 
 
   if ( result_is_hit() )
@@ -1139,14 +1054,17 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
 
-    trigger_tier8_2pc_dps( this );
     trigger_unbridled_wrath( this );
     if( result_is_hit() )
     {
       p -> buffs_bloodsurge -> trigger();
-      if ( p -> glyphs.heroic_strike && result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
-        p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
+        p -> buffs_tier8_2pc_dps -> trigger();
+        if ( p -> glyphs.heroic_strike )
+        {
+          p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
+        }
       }
     }
   }
@@ -1721,8 +1639,8 @@ struct rend_t : public warrior_attack_t
   virtual void tick()
   {
     warrior_attack_t::tick();
-    trigger_tier7_4pc_dps( this );
     warrior_t* p = player -> cast_warrior();
+    p -> buffs_tier7_4pc_dps -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
   virtual void execute()
@@ -1790,8 +1708,10 @@ struct slam_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
     p -> buffs_bloodsurge -> expire();
-
-    trigger_tier8_2pc_dps( this );
+    if ( result == RESULT_CRIT )
+    {
+      p -> buffs_tier8_2pc_dps -> trigger();
+    }
   }
 
   virtual void schedule_execute()
@@ -1960,8 +1880,9 @@ void warrior_spell_t::execute()
 
   // As it seems tier7 4pc is consumed by everything, no matter if it costs
   // rage. "Reduces the rage cost of your next ability is reduced by 5."
-  event_t::early( player -> expirations.tier7_4pc );
-
+  warrior_t* p = player -> cast_warrior();
+  p -> buffs_tier7_4pc_dps -> expire();
+  
   update_ready();
 }
 
@@ -2371,6 +2292,9 @@ void warrior_t::init_buffs()
   buffs_sword_and_board = new buff_t( sim, this, "sword_and_board", 1,  5.0,   0, talents.sword_and_board * 0.10 );
   buffs_taste_for_blood = new buff_t( sim, this, "taste_for_blood", 1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
   buffs_wrecking_crew   = new buff_t( sim, this, "wrecking_crew",   1, 12.0,   0, talents.wrecking_crew );
+  buffs_tier7_4pc_dps   = new buff_t( sim, this, "tier7_4pc_dps",   1, 30.0,   0, tiers.t7_4pc_dps * 0.10 );
+  
+  buffs_tier8_2pc_dps   = new stat_buff_t( sim, this, "tier8_2pc_dps", STAT_HASTE_RATING, 150, 1, 5.0, tiers.t8_2pc_dps * 0.40 );
 }
 
 // warrior_t::init_items =======================================================
