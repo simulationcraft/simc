@@ -77,7 +77,11 @@ static bool is_proc_description( const std::string& description_str )
   if ( description_str.find( "chance" ) != std::string::npos ) return true;
   if ( description_str.find( "stack"  ) != std::string::npos ) return true;
   if ( description_str.find( "time"   ) != std::string::npos ) return true;
-  if ( description_str.find( "_sec"   ) != std::string::npos ) return true;
+  if ( ( description_str.find( "_sec"   ) != std::string::npos ) &&
+       ! ( ( description_str.find( "restores" ) != std::string::npos ) &&
+           ( ( description_str.find( "_per_5_sec" ) != std::string::npos ) ||
+           ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
+    return true;
 
   return false;
 }
