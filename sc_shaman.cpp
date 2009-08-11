@@ -660,7 +660,7 @@ static void trigger_lightning_overload( spell_t* s,
 
 static void trigger_elemental_oath( spell_t* s )
 {
-  if ( s -> proc ) return;
+  if ( s -> pseudo_pet ) return;
 
   shaman_t* shaman = s -> player -> cast_shaman();
 
@@ -1023,7 +1023,7 @@ void shaman_spell_t::execute()
   {
     if ( result == RESULT_CRIT )
     {
-      if ( ! proc && ! ticking ) 
+      if ( ! proc && ! pseudo_pet ) 
       {
 	trigger_elemental_oath( this );
 	p -> buffs_elemental_devastation -> trigger();
@@ -2753,14 +2753,14 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talents.thunderstorm );
     cooldown = 45.0;
-    if ( p -> glyphs.thunderstorm ) cooldown -= 7.0;
   }
 
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
     update_ready();
-    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.08, p -> gains_thunderstorm );
+    double mana_pct = p -> glyphs.thunderstorm ? 0.10 : 0.10;
+    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * mana_pct, p -> gains_thunderstorm );
   }
 
   virtual bool ready()
