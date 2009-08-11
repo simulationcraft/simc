@@ -647,7 +647,8 @@ bool sim_t::init()
   deterministic_rng -> seed( 31459 + thread_index );
 
   if ( scaling -> smooth_scale_factors &&
-       scaling -> scale_stat != STAT_NONE )
+       scaling -> scale_stat != STAT_NONE &&
+       scaling -> scale_stat != STAT_HASTE_RATING )
   {
     smooth_rng = 1;
     average_range = 1;

@@ -1679,7 +1679,6 @@ struct wind_shock_t : public shaman_spell_t
     may_miss = may_resist = false;
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
     base_spell_power_multiplier = 0;
-    cooldown_group = "shock";
     cooldown = 6.0 - ( p -> talents.reverberation * 0.2 );
   }
 

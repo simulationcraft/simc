@@ -75,7 +75,7 @@ void scaling_t::init_deltas()
 
   if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -100 : -200;
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  100 :  250;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  100 :  250;
+  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  250 :  250;
 
   if ( stats.weapon_dps == 0 ) stats.weapon_dps = smooth_scale_factors ? 25 : 50;
 }
@@ -117,7 +117,7 @@ void scaling_t::analyze_stats()
     child_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     child_sim -> execute();
 
-    sim_t* ref_sim = baseline_sim;
+    sim_t* ref_sim = ( i == STAT_HASTE_RATING ) ? sim : baseline_sim;
     if ( center )
     {
       ref_sim = new sim_t( sim );
@@ -146,7 +146,7 @@ void scaling_t::analyze_stats()
       report_t::print_text( sim -> output_file, child_sim, true );
     }
 
-    if ( ref_sim != baseline_sim ) delete ref_sim;
+    if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
     delete child_sim;
   }
 
