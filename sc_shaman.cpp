@@ -2759,7 +2759,7 @@ struct thunderstorm_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     update_ready();
-    double mana_pct = p -> glyphs.thunderstorm ? 0.10 : 0.10;
+    double mana_pct = p -> glyphs.thunderstorm ? 0.10 : 0.08;
     p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * mana_pct, p -> gains_thunderstorm );
   }
 
