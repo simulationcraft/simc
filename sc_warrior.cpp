@@ -18,25 +18,26 @@ struct warrior_t : public player_t
   action_t* active_heroic_strike;
   int       active_stance;
 
-  // action_t* ;
-
   // Buffs
   struct _buffs_t
   {
-    int    bloodrage;
-    double bloodsurge;
-    double death_wish;
-    int    flurry;
-    double overpower;
-    int    recklessness;
-    double sudden_death;
-    double sword_and_board;
-    double titans_grip;
-    double wrecking_crew;
+    int bloodrage;
+
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
   };
   _buffs_t _buffs;
+
+  buff_t* buffs_bloodrage;
+  buff_t* buffs_bloodsurge;
+  buff_t* buffs_death_wish;
+  buff_t* buffs_flurry;
+  buff_t* buffs_overpower;
+  buff_t* buffs_recklessness;
+  buff_t* buffs_sudden_death;
+  buff_t* buffs_sword_and_board;
+  buff_t* buffs_taste_for_blood;
+  buff_t* buffs_wrecking_crew;
 
   // Cooldowns
   struct _cooldowns_t
@@ -52,12 +53,7 @@ struct warrior_t : public player_t
   struct _expirations_t
   {
     event_t* blood_frenzy;
-    event_t* bloodsurge;
-    event_t* death_wish;
-    event_t* recklessness;
     event_t* trauma;
-    event_t* wrecking_crew;
-    event_t* sword_and_board;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
     _expirations_t() { reset(); }
@@ -74,26 +70,18 @@ struct warrior_t : public player_t
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
   gain_t* gains_sudden_death;
-  gain_t* gains_sword_and_board;
   gain_t* gains_unbridled_wrath;
 
   // Procs
-  proc_t* procs_bloodsurge;
   proc_t* procs_glyph_overpower;
-  proc_t* procs_sudden_death;
-  proc_t* procs_sword_and_board;
   proc_t* procs_sword_specialization;
   proc_t* procs_taste_for_blood;
 
   // Up-Times
-  uptime_t* uptimes_flurry;
   uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
 
   // Random Number Generation
-  rng_t* rng_bloodsurge;
-  rng_t* rng_sudden_death;
-  rng_t* rng_sword_and_board;
   rng_t* rng_sword_specialization;
   rng_t* rng_taste_for_blood;
   rng_t* rng_unbridled_wrath;
@@ -220,6 +208,7 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_glyphs();
   virtual void      init_base();
+  virtual void      init_buffs();
   virtual void      init_items();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -353,52 +342,6 @@ static void trigger_blood_frenzy( action_t* a )
 
 }
 
-// trigger_bloodsurge =======================================================
-
-static void trigger_bloodsurge( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( a -> result_is_miss() )
-    return;
-
-  double chance = util_t::talent_rank( p -> talents.bloodsurge, 3, 0.07, 0.13, 0.20 );
-  if ( ! p -> rng_bloodsurge -> roll( chance ) )
-    return;
-
-  p -> procs_bloodsurge -> occur();
-
-  struct bloodsurge_expiration_t : public event_t
-  {
-    bloodsurge_expiration_t( sim_t* sim, warrior_t* player ) : event_t( sim, player )
-    {
-      name = "Bloodsurge Expiration";
-      player -> aura_gain( "Bloodsurge" );
-      player -> _buffs.bloodsurge = sim -> current_time;
-      sim -> add_event( this, 5.0 );
-    }
-    virtual void execute()
-    {
-      warrior_t* p = player -> cast_warrior();
-      p -> aura_loss( "Bloodsurge" );
-      p -> _buffs.bloodsurge = 0;
-      p -> _expirations.bloodsurge = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.bloodsurge;
-
-  if ( e )
-  {
-    e -> reschedule( 5.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) bloodsurge_expiration_t( a -> sim, p );
-  }
-
-}
-
 // trigger_tier7_4pc_dps ====================================================
 
 static void trigger_tier7_4pc_dps( action_t* a )
@@ -499,83 +442,6 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> execute();
 }
 
-// trigger_overpower_activation =============================================
-
-static void trigger_overpower_activation( attack_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  p -> _buffs.overpower = p -> sim -> current_time + 5.0;
-  p -> aura_gain( "Overpower Activation" );
-}
-
-// trigger_sudden_death =====================================================
-
-static void trigger_sudden_death( attack_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  if ( a -> result_is_miss() )
-    return;
-
-  // If the action did not deal direct damage it should not trigger SD
-  // E.g. Deep Wounds, Rend, ...
-  if ( ! ( a -> direct_dmg > 0 ) )
-    return;
-
-  if ( p -> rng_sudden_death -> roll( p -> talents.sudden_death * 0.03 ) )
-  {
-    p -> procs_sudden_death -> occur();
-    p -> _buffs.sudden_death = p -> sim -> current_time + 10.0;
-    p -> aura_gain( "Sudden Death" );
-  }
-}
-
-// trigger_sword_and_board =====================================================
-
-static void trigger_sword_and_board( attack_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  if ( a -> result_is_miss() )
-    return;
-
-  // If the action did not deal direct damage it should not trigger S&B
-  // E.g. Deep Wounds, Rend, ...
-  if ( ! ( a -> direct_dmg > 0 ) )
-    return;
-
-  if ( p -> rng_sword_and_board -> roll( p -> talents.sword_and_board * 0.10 ) )
-  {
-    p -> procs_sword_and_board -> occur();
-    struct sword_and_board_expiration_t : public event_t
-    {
-      sword_and_board_expiration_t( sim_t* sim, warrior_t* player ) : event_t( sim, player )
-      {
-        name = "Sword and Board Expiration";
-        player -> aura_gain( "Sword and Board" );
-        player -> _buffs.sword_and_board = sim -> current_time;
-        sim -> add_event( this, 5.0 );
-      }
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-        p -> aura_loss( "Sword and Board" );
-        p -> _buffs.sword_and_board = 0;
-        p -> _expirations.sword_and_board = 0;
-      }
-    };
-
-    event_t*& e = p -> _expirations.sword_and_board;
-
-    if ( e )
-    {
-      e -> reschedule( 5.0 );
-    }
-    else
-    {
-      e = new ( a -> sim ) sword_and_board_expiration_t( a -> sim, p );
-    }
-  }
-}
-
 // trigger_sword_specialization =============================================
 
 static void trigger_sword_specialization( attack_t* a )
@@ -623,26 +489,6 @@ static void trigger_sword_specialization( attack_t* a )
       p -> off_hand_attack -> proc = false;
     }
     */
-  }
-}
-
-// trigger_taste_for_blood ==================================================
-
-static void trigger_taste_for_blood( attack_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> talents.taste_for_blood )
-    return;
-
-  if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.taste_for_blood ) )
-    return;
-
-  if ( p -> rng_taste_for_blood -> roll( p -> talents.taste_for_blood / 3.0 ) )
-  {
-    p -> _cooldowns.taste_for_blood = a -> sim -> current_time + 6.0;
-    p -> procs_taste_for_blood -> occur();
-    trigger_overpower_activation( a );
   }
 }
 
@@ -806,45 +652,6 @@ static void trigger_trauma( action_t* a )
   }
 }
 
-// trigger_wrecking_crew ====================================================
-
-static void trigger_wrecking_crew( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  if ( p -> talents.wrecking_crew == 0 )
-    return;
-
-  if ( a -> result != RESULT_CRIT )
-    return;
-
-  struct wrecking_crew_expiration_t : public event_t
-  {
-    wrecking_crew_expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-    {
-      name = "Wrecking Crew Expiration";
-      p -> _buffs.wrecking_crew = p -> talents.wrecking_crew * 0.02;
-      sim -> add_event( this, 12.0 );
-    }
-    virtual void execute()
-    {
-      warrior_t* p = player -> cast_warrior();
-      p -> _buffs.wrecking_crew = 0;
-      p -> _expirations.wrecking_crew = 0;
-    }
-  };
-
-  event_t*& e = p -> _expirations.wrecking_crew;
-
-  if ( e )
-  {
-    e -> reschedule( 12.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) wrecking_crew_expiration_t( a -> sim, p );
-  }
-}
-
 // =========================================================================
 // Warrior Attacks
 // =========================================================================
@@ -913,35 +720,35 @@ void warrior_attack_t::execute()
 
   warrior_t* p = player -> cast_warrior();
 
-  trigger_sudden_death( this );
 
-  if ( result == RESULT_CRIT )
+  if ( result_is_hit() )
   {
+    p -> buffs_sudden_death -> trigger();
+
     // Critproccgalore
-    trigger_deep_wounds( this );
-    trigger_rampage( this );
-    trigger_wrecking_crew( this );
-    trigger_trauma( this );
-    if ( p -> talents.flurry )
+    if( result == RESULT_CRIT )
     {
-      p -> aura_gain( "Flurry (3)" );
-      p -> _buffs.flurry = 3;
+      trigger_deep_wounds( this );
+      trigger_rampage( this );
+      trigger_trauma( this );
+      p -> buffs_wrecking_crew -> trigger(1, p -> talents.wrecking_crew * 0.02 );
+      p -> buffs_flurry -> trigger( 3 );
     }
   }
   else if ( result == RESULT_DODGE  )
   {
-    trigger_overpower_activation( this );
+    p -> buffs_overpower -> trigger();
   }
   else if ( result == RESULT_PARRY )
   {
     if ( p -> glyphs.overpower )
     {
-      trigger_overpower_activation( this );
+      p -> buffs_overpower -> trigger();
       p -> procs_glyph_overpower -> occur();
     }
   }
-  if ( p -> _buffs.recklessness > 0 && special )
-    p -> _buffs.recklessness--;
+  if ( special && p -> buffs_recklessness -> check() )
+    p -> buffs_recklessness -> decrement();
 
   trigger_sword_specialization( this );
 }
@@ -1006,11 +813,12 @@ void warrior_attack_t::player_buff()
     player_multiplier *= 1.0 - 0.05;
   }
 
-  player_multiplier *= 1.0 + p -> _buffs.death_wish;
-  player_multiplier *= 1.0 + p -> _buffs.wrecking_crew;
-  player_multiplier *= 1.0 + p -> _buffs.titans_grip;
+  player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
+  player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
+  if( p -> talents.titans_grip )
+    player_multiplier *= 1.0 - 0.10;
 
-  if ( p -> _buffs.recklessness > 0 && special )
+  if ( special && p -> buffs_recklessness -> up() )
     player_crit += 1.0;
 
   if ( sim -> debug )
@@ -1086,11 +894,10 @@ struct melee_t : public warrior_attack_t
   {
     double t = warrior_attack_t::execute_time();
     warrior_t* p = player -> cast_warrior();
-    if ( p -> _buffs.flurry > 0 )
+    if ( p -> buffs_flurry -> up() )
     {
       t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry  ) ;
     }
-    p -> uptimes_flurry -> update( p -> _buffs.flurry > 0 );
     return t;
   }
 
@@ -1099,11 +906,8 @@ struct melee_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> _buffs.flurry > 0 )
-    {
-      p -> _buffs.flurry--;
-      if ( p -> _buffs.flurry == 0 ) p -> aura_loss( "Flurry" );
-    }
+    p -> buffs_flurry -> decrement();
+
     if ( weapon -> slot == SLOT_MAIN_HAND )
     {
       // We can't rely on the resource check from the time we queued the HS.
@@ -1186,15 +990,6 @@ struct auto_attack_t : public warrior_attack_t
       p -> off_hand_attack = new melee_t( "melee_off_hand", player );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-
-      // Dual-wielding, if one of the two weapons is a 2hander we have to have
-      // the Titan's Grip talent!
-      if ( p -> main_hand_weapon.group() == WEAPON_2H || p -> off_hand_weapon.group() == WEAPON_2H )
-      {
-        // assert( p -> talents.titans_grip != 0 );
-        // * Titan's Grip (Tier 11) now reduces physical damage you deal by 10%.
-        p -> _buffs.titans_grip = -0.10;
-      }
     }
 
     trigger_gcd = 0;
@@ -1343,11 +1138,17 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
 
-    if ( p -> glyphs.heroic_strike && result == RESULT_CRIT )
-      p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
 
     trigger_tier8_2pc_dps( this );
     trigger_unbridled_wrath( this );
+    if( result_is_hit() )
+    {
+      p -> buffs_bloodsurge -> trigger();
+      if ( p -> glyphs.heroic_strike && result == RESULT_CRIT )
+      {
+        p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
+      }
+    }
   }
   virtual bool ready()
   {
@@ -1394,7 +1195,8 @@ struct bloodthirst_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    trigger_bloodsurge( this );
+    warrior_t* p = player -> cast_warrior();
+    if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
   }
 };
 
@@ -1494,7 +1296,8 @@ struct devastate_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    trigger_sword_and_board( this );
+    warrior_t* p = player -> cast_warrior();
+    if ( result_is_hit() ) p -> buffs_sword_and_board -> trigger();
   }
 };
 
@@ -1540,7 +1343,8 @@ struct revenge_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    trigger_sword_and_board( this );
+    warrior_t* p = player -> cast_warrior();
+    if ( result_is_hit() ) p -> buffs_sword_and_board -> trigger();
   }
 };
 
@@ -1590,16 +1394,14 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     warrior_attack_t::execute();
-    if ( p -> _expirations.sword_and_board )
-    {
-      event_t::early( p -> _expirations.sword_and_board );
-    }
+    
+    p -> buffs_sword_and_board -> expire();
   }
 
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> _buffs.sword_and_board ) return 0;
+    if ( p -> buffs_sword_and_board -> check() ) return 0;
     double c = warrior_attack_t::cost();
     return c;
   }
@@ -1609,10 +1411,10 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( sword_and_board )
-      if ( ! p -> _buffs.sword_and_board )
+      if ( ! p -> buffs_sword_and_board -> check() )
         return false;
 
-    if ( p -> _buffs.sword_and_board )
+    if ( p -> buffs_sword_and_board -> check() )
       return true;
 
     return warrior_attack_t::ready();
@@ -1715,8 +1517,6 @@ struct execute_t : public warrior_attack_t
 
     resource_consumed = cost();
 
-    bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
-
     double max_consumed = 0;
     max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 );
 
@@ -1736,11 +1536,8 @@ struct execute_t : public warrior_attack_t
 
     base_dd_adder = ( excess_rage > 0 ) ? excess_rage_mod * excess_rage : 0.0;
 
-    if ( sudden_death_up )
+    if ( p -> buffs_sudden_death -> up() )
     {
-      p -> aura_loss( "Sudden Death" );
-      p -> _buffs.sudden_death = 0;
-
       double current_rage = p -> resource_current[ RESOURCE_RAGE ];
 
       if ( current_rage < 10 )
@@ -1750,6 +1547,13 @@ struct execute_t : public warrior_attack_t
     }
   }
 
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = player -> cast_warrior();
+    p -> buffs_sudden_death -> expire();
+  }
+  
   virtual bool ready()
   {
     if ( ! warrior_attack_t::ready() )
@@ -1757,9 +1561,7 @@ struct execute_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    bool sudden_death_up = ( p -> _buffs.sudden_death > sim -> current_time );
-
-    if ( ! sudden_death_up )
+    if ( ! p -> buffs_sudden_death -> check() )
     {
       if ( sim -> target -> health_percentage() > 20 )
         return false;
@@ -1846,10 +1648,16 @@ struct overpower_t : public warrior_attack_t
   }
   virtual void execute()
   {
-    warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> _buffs.overpower = 0;
+    // Track some information on what got us the overpower
+    // Talents or lack of expertise
+    p -> buffs_overpower -> up();
+    p -> buffs_taste_for_blood -> up();
+    warrior_attack_t::execute();
+    p -> buffs_overpower -> expire();
+    p -> buffs_taste_for_blood -> expire();
   }
+
   virtual bool ready()
   {
     if ( ! warrior_attack_t::ready() )
@@ -1857,7 +1665,7 @@ struct overpower_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> _buffs.overpower > p -> sim -> current_time )
+    if ( p -> buffs_overpower -> check() || p -> buffs_taste_for_blood -> check() )
       return true;
 
     return false;
@@ -1914,7 +1722,8 @@ struct rend_t : public warrior_attack_t
   {
     warrior_attack_t::tick();
     trigger_tier7_4pc_dps( this );
-    trigger_taste_for_blood( this );
+    warrior_t* p = player -> cast_warrior();
+    p -> buffs_taste_for_blood -> trigger();
   }
   virtual void execute()
   {
@@ -1970,7 +1779,7 @@ struct slam_t : public warrior_attack_t
   virtual double execute_time() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> _buffs.bloodsurge )
+    if ( p -> buffs_bloodsurge -> check() )
       return 0.0;
     else
       return warrior_attack_t::execute_time();
@@ -1980,12 +1789,11 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     warrior_t* p = player -> cast_warrior();
-    if ( p -> _buffs.bloodsurge )
-      event_t::early( p -> _expirations.bloodsurge );
+    p -> buffs_bloodsurge -> expire();
 
     trigger_tier8_2pc_dps( this );
-
   }
+
   virtual void schedule_execute()
   {
     warrior_attack_t::schedule_execute();
@@ -2023,7 +1831,7 @@ struct slam_t : public warrior_attack_t
     if ( bloodsurge )
     {
       // Player does not instantaneous become aware of the proc
-      if ( ! sim -> time_to_think( p -> _buffs.bloodsurge ) )
+      if ( ! p -> buffs_bloodsurge -> may_react() )
         return false;
     }
 
@@ -2054,8 +1862,8 @@ struct whirlwind_t : public warrior_attack_t
     cooldown         = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
     base_cost        = 25;
     base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
-
-    aoe = true;
+    
+    aoe  = true;
     stancemask = STANCE_BERSERKER;
   }
 
@@ -2073,19 +1881,20 @@ struct whirlwind_t : public warrior_attack_t
     */
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> _buffs.recklessness == 1 )
-        p -> _buffs.recklessness++;
+      if ( p -> buffs_recklessness -> stack() == 1 )
+        p -> buffs_recklessness -> current_stack++;
     }
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
-    trigger_bloodsurge( this );
+
+    if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( player -> off_hand_weapon );
       warrior_attack_t::execute();
-      trigger_bloodsurge( this );
+      if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
     }
 
     warrior_attack_t::consume_resource();
@@ -2339,29 +2148,9 @@ struct death_wish_t : public warrior_spell_t
 
   virtual void execute()
   {
-
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-      {
-        name = "Death Wish Expiration";
-        p -> aura_gain( "Death Wish" );
-        p -> _buffs.death_wish = 0.20;
-        sim -> add_event( this, 30.0 );
-      }
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-        p -> aura_loss( "Death Wish" );
-        p -> _buffs.death_wish = 0;
-        p -> _expirations.death_wish = 0;
-      }
-    };
-
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
-    p -> _expirations.death_wish = new ( sim ) expiration_t( sim, p );
+    p -> buffs_death_wish -> trigger( 1, 0.20 );
   }
 };
 
@@ -2373,7 +2162,6 @@ struct recklessness_t : public warrior_spell_t
       warrior_spell_t( "recklessness", player )
   {
     warrior_t* p = player -> cast_warrior();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2388,30 +2176,10 @@ struct recklessness_t : public warrior_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, warrior_t* p ) : event_t( sim, p )
-      {
-        name = "Recklessness Expiration";
-        p -> aura_gain( "Recklessness" );
-        p -> _buffs.recklessness = 3;
-        sim -> add_event( this, 12.0 );
-      }
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-        p -> aura_loss( "Recklessness" );
-        p -> _buffs.recklessness = 0;
-        p -> _expirations.recklessness = 0;
-      }
-    };
-
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
-    p -> _expirations.recklessness = new ( sim ) expiration_t( sim, p );
+    p -> buffs_recklessness -> trigger( 3 );
   }
-
 };
 
 // Stance ==================================================================
@@ -2586,6 +2354,25 @@ void warrior_t::init_base()
   base_gcd = 1.5;
 }
 
+// warrior_t::init_buffs =======================================================
+
+void warrior_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_bloodrage       = new buff_t( sim, this, "bloodrage" );
+  buffs_bloodsurge      = new buff_t( sim, this, "bloodsurge",      1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
+  buffs_death_wish      = new buff_t( sim, this, "death_wish",      1, 30.0,   0, talents.death_wish );
+  buffs_flurry          = new buff_t( sim, this, "flurry",          3, 15.0,   0, talents.flurry );
+  buffs_overpower       = new buff_t( sim, this, "overpower",       1,  6.0, 1.0 );
+  buffs_recklessness    = new buff_t( sim, this, "recklessness",    3, 12.0 );
+  buffs_sudden_death    = new buff_t( sim, this, "sudden_death",    1, 10.0,   0, talents.sudden_death * 0.03 );
+  buffs_sword_and_board = new buff_t( sim, this, "sword_and_board", 1,  5.0,   0, talents.sword_and_board * 0.10 );
+  buffs_taste_for_blood = new buff_t( sim, this, "taste_for_blood", 1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
+  buffs_wrecking_crew   = new buff_t( sim, this, "wrecking_crew",   1, 12.0,   0, talents.wrecking_crew );
+}
+
 // warrior_t::init_items =======================================================
 
 void warrior_t::init_items()
@@ -2631,7 +2418,6 @@ void warrior_t::init_gains()
   gains_oh_attack              = get_gain( "oh_attack" );
   gains_sudden_death           = get_gain( "sudden_death" );
   gains_unbridled_wrath        = get_gain( "unbridled_wrath" );
-  gains_sword_and_board        = get_gain( "sword_and_board" );
 }
 
 // warrior_t::init_procs =======================================================
@@ -2640,12 +2426,8 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_bloodsurge           = get_proc( "bloodsurge",           sim );
   procs_glyph_overpower      = get_proc( "glyph_of_overpower",   sim );
-  procs_sudden_death         = get_proc( "sudden_death",         sim );
-  procs_sword_and_board      = get_proc( "sword_and_board",      sim );
   procs_sword_specialization = get_proc( "sword_specialization", sim );
-  procs_taste_for_blood      = get_proc( "taste_for_blood",      sim );
 }
 
 // warrior_t::init_uptimes =====================================================
@@ -2654,7 +2436,6 @@ void warrior_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_flurry        = get_uptime( "flurry" );
   uptimes_heroic_strike = get_uptime( "heroic_strike" );
   uptimes_rage_cap      = get_uptime( "rage_cap" );
 }
@@ -2668,16 +2449,9 @@ void warrior_t::init_rng()
   // RNG_VARIABLE_PHASE_SHIFT provides excellent convergence, but poor distribution so it
   // is not suitable for modeling overlapping procs.
 
-  rng_bloodsurge           = get_rng( "bloodsurge"           );
   rng_sword_specialization = get_rng( "sword_specialization" );
-  rng_taste_for_blood      = get_rng( "taste_for_blood"      );
   rng_unbridled_wrath      = get_rng( "unbridled_wrath"      );
 
-  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
-  // also useful for frequent checks with low probability of proc and timed effect
-
-  rng_sudden_death    = get_rng( "sudden_death",    RNG_DISTRIBUTED );
-  rng_sword_and_board = get_rng( "sword_and_board", RNG_DISTRIBUTED );
 }
 
 // warrior_t::init_actions =====================================================
