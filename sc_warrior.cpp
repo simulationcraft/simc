@@ -730,8 +730,11 @@ void warrior_attack_t::player_buff()
 
   player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
   player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
-  if( p -> talents.titans_grip )
-    player_multiplier *= 1.0 - 0.10;
+  if ( p -> talents.titans_grip && p -> dual_wield() )
+  {
+    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H || p -> off_hand_attack -> weapon -> group() == WEAPON_2H ) 
+      player_multiplier *= 1.0 - 0.10;
+  }
 
   if ( special && p -> buffs_recklessness -> up() )
     player_crit += 1.0;
