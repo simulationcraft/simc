@@ -1034,7 +1034,27 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     }
   }
 
-  s += "&amp;Ver=6&amp;usr=&amp;ser=&amp;grp=www";
+  s += "&amp;Ver=6";
+
+  // If this was an armory import, then pass the armory info to lootrank
+  if( p -> origin_str.find( "wowarmory.com" ) != std::string::npos )
+  {
+    s += "&amp;grp=";
+    if( p -> region_str.compare("eu") )
+    {
+      s += "www";
+    } else {
+      s += "eu";
+    }
+
+    std::string formatted_name;
+    http_t::format( formatted_name, p -> name_str );
+
+    s += "&amp;ser=" + p -> server_str + "&amp;usr=" + formatted_name;
+
+  } else {
+    s += "&amp;usr=&amp;ser=&amp;grp=www";
+  }
 
   return s.c_str();
 }

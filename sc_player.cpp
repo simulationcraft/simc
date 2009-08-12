@@ -572,9 +572,6 @@ void player_t::init()
 
   initialized = 1;
 
-  region_str = sim -> default_region_str;
-  server_str = sim -> default_server_str;
-
   init_rating();
   init_glyphs();
   init_base();
