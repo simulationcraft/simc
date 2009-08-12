@@ -37,18 +37,18 @@ trinket2=reign_of_the_unliving,stats=168sp,equip=onspellcrit_2117fire_3stack_2.0
 back=jainas_radiance,stats=74int_74sta_57haste_65crit_105sp_182armor,gems=23sp_5sp,enchant=lightweave
 main_hand=miserys_end,stats=66int_66sta_66haste_44crit_701sp,gems=0sp,enchant=63sp,weapon=mace_1.80speed_125.3dps
 off_hand=symbol_of_transgression,stats=65int_65sta_57crit_100sp_57hit,gems=0sp
-ranged=rod_of_imprisoned_souls,stats=36sta_26int_28crit_21haste_44sp,gems=0sp
+ranged=rod_of_imprisoned_souls,stats=29int_40sta_24haste_31crit_50sp,gems=0sp
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
-# gear_stamina=1196
-# gear_intellect=1186
+# gear_stamina=1200
+# gear_intellect=1189
 # gear_spirit=440
-# gear_spell_power=3059
+# gear_spell_power=3065
 # gear_mp5=28
 # gear_hit_rating=297
-# gear_crit_rating=887
-# gear_haste_rating=534
+# gear_crit_rating=890
+# gear_haste_rating=537
 # gear_armor=2169
 # meta_gem=chaotic_skyflare
 # tier9_2pc=1
