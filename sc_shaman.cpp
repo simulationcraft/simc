@@ -1505,8 +1505,8 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p -> glyphs.shocking )
     {
-      trigger_gcd = 0.5;
-      min_gcd     = 0.5;
+      trigger_gcd = 1.0;
+      min_gcd     = 1.0;
     }
   }
 
@@ -1578,8 +1578,8 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p -> glyphs.shocking )
     {
-      trigger_gcd = 0.5;
-      min_gcd     = 0.5;
+      trigger_gcd = 1.0;
+      min_gcd     = 1.0;
     }
   }
 
@@ -1652,8 +1652,8 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p -> glyphs.shocking )
     {
-      trigger_gcd = 0.5;
-      min_gcd     = 0.5;
+      trigger_gcd = 1.0;
+      min_gcd     = 1.0;
     }
 
     observer = &( p -> active_flame_shock );
@@ -2962,6 +2962,7 @@ void shaman_t::init_items()
 
   if      ( totem == "stonebreakers_totem"        ) totems.stonebreaker = 1;
   else if ( totem == "totem_of_dueling"           ) totems.dueling = 1;
+  else if ( totem == "totem_of_electrifying_wind" ) totems.electrifying_wind = 1;
   else if ( totem == "totem_of_hex"               ) totems.hex = 1;
   else if ( totem == "totem_of_indomitability"    ) totems.indomitability = 1;
   else if ( totem == "totem_of_splintering"       ) totems.splintering = 1;
@@ -3051,7 +3052,7 @@ void shaman_t::init_buffs()
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
 
   buffs_dueling           = new stat_buff_t( sim, this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
-  buffs_electrifying_wind = new stat_buff_t( sim, this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0, 20.01, totems.electrifying_wind * 0.70 );
+  buffs_electrifying_wind = new stat_buff_t( sim, this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
   buffs_indomitability    = new stat_buff_t( sim, this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
   buffs_quaking_earth     = new stat_buff_t( sim, this, "quaking_earth",     STAT_ATTACK_POWER, 200, 1, 18.0, 20.01, totems.quaking_earth * 0.80 );
   buffs_stonebreaker      = new stat_buff_t( sim, this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
