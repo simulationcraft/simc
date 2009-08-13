@@ -1441,7 +1441,7 @@ struct shamans_swiftness_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talents.natures_swiftness );
     trigger_gcd = 0;
-    cooldown = sim -> 120.0;
+    cooldown = 120.0;
     if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
@@ -1682,12 +1682,6 @@ struct wind_shear_t : public shaman_spell_t
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
     base_spell_power_multiplier = 0;
     cooldown = 6.0 - ( p -> talents.reverberation * 0.2 );
-  }
-
-  virtual void execute()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::execute();
   }
 
   virtual bool ready()
