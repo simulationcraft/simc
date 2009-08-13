@@ -100,7 +100,7 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-    sim( p->sim ), player( p ), slot( SLOT_NONE ), enchant( ENCHANT_NONE ), unique( false ), options_str( o )
+    sim(p->sim), player(p), slot(SLOT_NONE), unique(false), unique_enchant(false), options_str(o)
 {
 }
 
@@ -238,14 +238,15 @@ bool item_t::init()
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_gems_str.empty()    ) encoded_gems_str    = option_gems_str;
   if ( ! option_enchant_str.empty() ) encoded_enchant_str = option_enchant_str;
-  if ( ! option_equip_str.empty()   ) encoded_equip_str   = option_equip_str;
-  if ( ! option_use_str.empty()     ) encoded_use_str     = option_use_str;
   if ( ! option_weapon_str.empty()  ) encoded_weapon_str  = option_weapon_str;
 
   if ( ! decode_stats()   ) return false;
   if ( ! decode_gems()    ) return false;
   if ( ! decode_enchant() ) return false;
   if ( ! decode_weapon()  ) return false;
+
+  if ( ! option_equip_str.empty() ) encoded_equip_str = option_equip_str;
+  if ( ! option_use_str.empty()   ) encoded_use_str   = option_use_str;
 
   if ( ! decode_special(   use, encoded_use_str   ) ) return false;
   if ( ! decode_special( equip, encoded_equip_str ) ) return false;
@@ -329,27 +330,40 @@ bool item_t::decode_gems()
 
 bool item_t::decode_enchant()
 {
+  if( encoded_enchant_str == "berserking"  ||
+      encoded_enchant_str == "executioner" ||
+      encoded_enchant_str == "mongoose"    ||
+      encoded_enchant_str == "spellsurge"  ) 
+  {
+    unique_enchant = true;
+    return true;
+  }
+
+  std::string use_str;
+  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str ) )
+  {
+    unique_enchant = true;
+    return decode_special( use, use_str );
+  }
+
+  std::string equip_str;
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str ) )
+  {
+    unique_enchant = true;
+    return decode_special( enchant, equip_str );
+  }
+
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoded_enchant_str );
 
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s, e;
+    int s;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
-    }
-    else if ( ( e = util_t::parse_enchant_type( t.name ) ) != ENCHANT_NONE )
-    {
-      enchant = e;
-    }
-    else if ( t.full == "pyrorocket" )
-    {
-      use.school = SCHOOL_FIRE;
-      use.amount = 1937;
-      use.cooldown = 45;
     }
     else
     {

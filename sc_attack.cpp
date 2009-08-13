@@ -70,8 +70,11 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
-    if ( p -> buffs.mongoose_mh ) h *= 1.0 / ( 1.0 + 0.02 );
-    if ( p -> buffs.mongoose_oh ) h *= 1.0 / ( 1.0 + 0.02 );
+    if ( p -> type != PLAYER_PET )
+    {
+      if ( p -> buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
+      if ( p -> buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
+    }
   }
 
   return h;

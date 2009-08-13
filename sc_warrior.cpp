@@ -19,15 +19,6 @@ struct warrior_t : public player_t
   int       active_stance;
 
   // Buffs
-  struct _buffs_t
-  {
-    int bloodrage;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
-    _buffs_t() { reset(); }
-  };
-  _buffs_t _buffs;
-
   buff_t* buffs_bloodrage;
   buff_t* buffs_bloodsurge;
   buff_t* buffs_death_wish;
@@ -2020,32 +2011,10 @@ struct bloodrage_t : public warrior_spell_t
 
   virtual void execute()
   {
-    struct bloodrage_buff_t : public event_t
-    {
-      bloodrage_buff_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Bloodrage Buff";
-        sim -> add_event( this, 1.0 );
-      }
-      virtual void execute()
-      {
-        warrior_t* p = player -> cast_warrior();
-        p -> resource_gain( RESOURCE_RAGE, 1 + p -> talents.improved_bloodrage * 0.25, p -> gains_bloodrage );
-        p -> _buffs.bloodrage--;
-        if ( p -> _buffs.bloodrage > 0 )
-        {
-          new ( sim ) bloodrage_buff_t( sim, p );
-        }
-      }
-    };
-
-    warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
-    p -> _buffs.bloodrage = 10;
+    warrior_spell_t::execute();
     p -> resource_gain( RESOURCE_RAGE, 20 * ( 1 + p -> talents.improved_bloodrage * 0.25 ), p -> gains_bloodrage );
-
-    new ( sim ) bloodrage_buff_t( sim, p );
+    p -> buffs_bloodrage -> trigger();
   }
 };
 
@@ -2285,7 +2254,7 @@ void warrior_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_bloodrage       = new buff_t( sim, this, "bloodrage" );
+  buffs_bloodrage       = new buff_t( sim, this, "bloodrage",       1, 10.0 );
   buffs_bloodsurge      = new buff_t( sim, this, "bloodsurge",      1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
   buffs_death_wish      = new buff_t( sim, this, "death_wish",      1, 30.0,   0, talents.death_wish );
   buffs_flurry          = new buff_t( sim, this, "flurry",          3, 15.0,   0, talents.flurry );
@@ -2481,7 +2450,6 @@ void warrior_t::reset()
   active_heroic_strike     = 0;
   active_stance            = STANCE_BATTLE;
 
-  _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
 }
@@ -2518,17 +2486,16 @@ double warrior_t::composite_armor() SC_CONST
 void warrior_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
-  // FIX ME! Is this approach better, or a repeating 3sec timer which gives
-  // 1.0 rage.
+
   if ( talents.anger_management )
   {
-    if ( sim -> infinite_resource[ RESOURCE_RAGE ] == 0 )
-    {
-      double rage_regen = 1.0 / 3.0; // 1 rage per 3 sec.
-      rage_regen *= periodicity;
-      resource_gain( RESOURCE_RAGE, rage_regen, gains_anger_management );
-    }
+    resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
+  if ( buffs_bloodrage -> up() )
+  {
+    resource_gain( RESOURCE_RAGE, ( periodicity / 1.0 ) * talents.improved_bloodrage * 0.25, gains_bloodrage );
+  }
+
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );
 

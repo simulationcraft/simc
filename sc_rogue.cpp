@@ -9,6 +9,8 @@
 // Rogue
 // ==========================================================================
 
+enum poison_type_t { POISON_NONE=0, ANESTHETIC_POISON, DEADLY_POISON, INSTANT_POISON, WOUND_POISON };
+
 static const int MAX_COMBO_POINTS=5;
 
 struct rogue_t : public player_t
@@ -479,22 +481,22 @@ static void trigger_apply_poisons( rogue_attack_t* a )
 
   rogue_t* p = a -> player -> cast_rogue();
 
-  if ( w -> buff == ANESTHETIC_POISON )
+  if ( w -> buff_type == ANESTHETIC_POISON )
   {
     p -> active_anesthetic_poison -> weapon = w;
     p -> active_anesthetic_poison -> execute();
   }
-  else if ( w -> buff == DEADLY_POISON )
+  else if ( w -> buff_type == DEADLY_POISON )
   {
     p -> active_deadly_poison -> weapon = w;
     p -> active_deadly_poison -> execute();
   }
-  else if ( w -> buff == INSTANT_POISON )
+  else if ( w -> buff_type == INSTANT_POISON )
   {
     p -> active_instant_poison -> weapon = w;
     p -> active_instant_poison -> execute();
   }
-  else if ( w -> buff == WOUND_POISON )
+  else if ( w -> buff_type == WOUND_POISON )
   {
     p -> active_wound_poison -> weapon = w;
     p -> active_wound_poison -> execute();
@@ -2976,8 +2978,7 @@ struct apply_poison_t : public rogue_poison_t
 
   apply_poison_t( player_t* player, const std::string& options_str ) :
       rogue_poison_t( "apply_poison", player ),
-      main_hand_poison( WEAPON_BUFF_NONE ),
-      off_hand_poison( WEAPON_BUFF_NONE )
+      main_hand_poison(0), off_hand_poison(0)
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -3029,8 +3030,8 @@ struct apply_poison_t : public rogue_poison_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    if ( main_hand_poison != WEAPON_BUFF_NONE ) p -> main_hand_weapon.buff = main_hand_poison;
-    if (  off_hand_poison != WEAPON_BUFF_NONE ) p ->  off_hand_weapon.buff =  off_hand_poison;
+    if ( main_hand_poison ) p -> main_hand_weapon.buff_type = main_hand_poison;
+    if (  off_hand_poison ) p ->  off_hand_weapon.buff_type =  off_hand_poison;
   };
 
   virtual bool ready()
@@ -3038,12 +3039,12 @@ struct apply_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE )
-      if ( main_hand_poison != WEAPON_BUFF_NONE )
-        return( main_hand_poison != p -> main_hand_weapon.buff );
+      if ( main_hand_poison )
+        return( main_hand_poison != p -> main_hand_weapon.buff_type );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      if ( off_hand_poison != WEAPON_BUFF_NONE )
-        return( off_hand_poison != p -> off_hand_weapon.buff );
+      if ( off_hand_poison )
+        return( off_hand_poison != p -> off_hand_weapon.buff_type );
 
     return false;
   }

@@ -1517,13 +1517,14 @@ void player_t::reset()
   in_combat = false;
   iteration_dmg = 0;
 
-  main_hand_weapon.buff = WEAPON_BUFF_NONE;
-  off_hand_weapon.buff = WEAPON_BUFF_NONE;
-  ranged_weapon.buff = WEAPON_BUFF_NONE;
+  main_hand_weapon.buff_type  = 0;
+  main_hand_weapon.buff_value = 0;
 
-  main_hand_weapon.buff_bonus = 0;
-  off_hand_weapon.buff_bonus = 0;
-  ranged_weapon.buff_bonus = 0;
+  off_hand_weapon.buff_type  = 0;
+  off_hand_weapon.buff_value = 0;
+
+  ranged_weapon.buff_type  = 0;
+  ranged_weapon.buff_value = 0;
 
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
@@ -2888,28 +2889,15 @@ bool player_t::save( FILE* file, int save_type )
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
-      if ( item.active() && ( ! item.encoded_weapon_str.empty() || item.enchant != ENCHANT_NONE ) )
+      if ( ! item.active() ) continue;
+      if ( item.unique || item.unique_enchant || ! item.encoded_weapon_str.empty() )
       {
         util_t::fprintf( file, "# %s=%s", item.slot_name(), item.name() );
         if ( ! item.encoded_weapon_str.empty() ) util_t::fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
-        if ( item.enchant != ENCHANT_NONE ) util_t::fprintf( file, ",enchant=%s", util_t::enchant_type_string( item.enchant ) );
+        if ( item.unique_enchant ) util_t::fprintf( file, ",enchant=%s", item.encoded_enchant_str.c_str() );
         util_t::fprintf( file, "\n" );
       }
     }
-
-    bool first = true;
-    int num_items = items.size();
-    for ( int i=0; i < num_items; i++ )
-    {
-      item_t& item = items[ i ];
-      if ( item.active() && ( item.use.active() || item.equip.active() || item.unique ) )
-      {
-        util_t::fprintf( file, "%s%s", ( first ? "# items=" : "/" ), item.name() );
-        first = false;
-      }
-    }
-
-    if ( ! first ) util_t::fprintf( file, "\n" );
   }
 
   return true;

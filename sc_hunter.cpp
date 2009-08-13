@@ -725,12 +725,12 @@ struct hunter_attack_t : public attack_t
 
   virtual void add_scope()
   {
-    if ( weapon -> enchant == ENCHANT_SCOPE )
+    if ( player -> items[ weapon -> slot ].encoded_enchant_str == "scope" )
     {
-      double bonus_damage = weapon -> enchant_bonus * weapon_multiplier;
+      double scope_damage = util_t::ability_rank( player -> level, 15.0,72,  12.0,67,  7.0,0 );
 
-      base_dd_min += bonus_damage;
-      base_dd_max += bonus_damage;
+      base_dd_min += scope_damage * weapon_multiplier;
+      base_dd_max += scope_damage * weapon_multiplier;
     }
   }
 

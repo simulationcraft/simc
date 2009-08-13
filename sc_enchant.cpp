@@ -74,7 +74,7 @@ static enchant_data_t enchant_db[] =
   { "3793",  "+40 Attack Power and +15 Resilience Rating",                "45AP"                           },
   { "3791",  "+24 Stamina",                                               "24Sta"                          },
   { "3790",  "+63 Spell Power",                                           "63SP"                           },
-  { "3789",  "Berserking",                                                ""                               },
+  { "3789",  "Berserking",                                                "berserking"                     },
   { "3788",  "Accuracy",                                                  "25Hit_25Crit"                   },
   { "3760",  "+60 Frost Resistance",                                      ""                               },
   { "3758",  "+67 Spell Power",                                           "67SP"                           },
@@ -85,7 +85,7 @@ static enchant_data_t enchant_db[] =
   { "3731",  "Titanium Weapon Chain",                                     ""                               },
   { "3730",  "Swordguard Embroidery",                                     ""                               },
   { "3728",  "Darkglow Embroidery",                                       ""                               },
-  { "3722",  "Lightweave Embroidery",                                     ""                               },
+  { "3722",  "Lightweave Embroidery",                                     "lightweave_embroidery"          },
   { "3721",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
   { "3720",  "+35 Spell Power and +20 Stamina",                           "35SP_20Sta"                     },
   { "3719",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
@@ -94,8 +94,8 @@ static enchant_data_t enchant_db[] =
   { "3607",  "+40 Ranged Haste Rating",                                   ""                               },
   { "3606",  "Nitro Boosts",                                              "24Crit"                         },
   { "3605",  "Flexweave Underlay",                                        "23Agi"                          },
-  { "3604",  "Hyperspeed Accelerators",                                   ""                               },
-  { "3603",  "Hand-Mounted Pyro Rocket",                                  ""                               },
+  { "3604",  "Hyperspeed Accelerators",                                   "hyperspeed_accelerators"        },
+  { "3603",  "Hand-Mounted Pyro Rocket",                                  "hand_mounted_pyro_rocket"       },
   { "3601",  "Belt-Clipped Spynoculars",                                  ""                               },
   { "3599",  "Electromagnetic Pulse Generator",                           ""                               },
   { "3595",  "Rune of Spellbreaking",                                     ""                               },
@@ -137,7 +137,7 @@ static enchant_data_t enchant_db[] =
   { "3231",  "+15 Expertise Rating",                                      "15Exp"                          },
   { "3230",  "+20 Frost Resistance",                                      ""                               },
   { "3229",  "+12 Resilience Rating",                                     ""                               },
-  { "3225",  "Executioner",                                               ""                               },
+  { "3225",  "Executioner",                                               "executioner"                    },
   { "3223",  "Adamantite Weapon Chain",                                   ""                               },
   { "3222",  "+20 Agility",                                               "20Agi"                          },
   { "3150",  "+6 mana every 5 sec.",                                      "6MP5"                           },
@@ -208,8 +208,8 @@ static enchant_data_t enchant_db[] =
   { "2682",  "+10 Frost Resistance",                                      ""                               },
   { "2679",  "6 Mana per 5 Sec.",                                         "6MP5"                           },
   { "2675",  "Battlemaster",                                              ""                               },
-  { "2674",  "Spellsurge",                                                ""                               },
-  { "2673",  "Mongoose",                                                  ""                               },
+  { "2674",  "Spellsurge",                                                "spellsurge"                     },
+  { "2673",  "Mongoose",                                                  "mongoose"                       },
   { "2672",  "Soulfrost",                                                 ""                               },
   { "2671",  "Sunfire",                                                   ""                               },
   { "2670",  "+35 Agility",                                               "35Agi"                          },
@@ -490,83 +490,32 @@ struct spellsurge_callback_t : public action_callback_t
 
 struct berserking_callback_t : public action_callback_t
 {
-  int       mh_buff, oh_buff;
-  event_t*  mh_expiration;
-  event_t*  oh_expiration;
-  uptime_t* mh_uptime;
-  uptime_t* oh_uptime;
-  rng_t*    mh_rng;
-  rng_t*    oh_rng;
+  int slot;
+  buff_t* buff;
 
-  berserking_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_buff( 0 ), oh_buff( 0 ), mh_expiration( 0 ), oh_expiration( 0 )
-  {
-    mh_uptime = p -> get_uptime( "berserking_mh" );
-    oh_uptime = p -> get_uptime( "berserking_oh" );
+  berserking_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-    mh_rng = p -> get_rng( "berserking_mh", RNG_DISTRIBUTED );
-    oh_rng = p -> get_rng( "berserking_oh", RNG_DISTRIBUTED );
-  }
-
-  virtual void reset() { mh_buff = oh_buff = 0; mh_expiration = oh_expiration = 0; }
+  virtual void reset() { buff -> reset(); }
 
   virtual void trigger( action_t* a )
   {
-    struct berserking_expiration_t : public event_t
-    {
-      int&   buffs_berserking;
-      event_t*& expirations_berserking;
+    if ( ! a -> weapon ) 
+      return;
 
-      berserking_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) :
-          event_t( sim, player ), buffs_berserking( b_m ), expirations_berserking( e_m )
-      {
-        name = "Berserking Expiration";
-        player -> aura_gain( "Berserking" );
-        player -> attack_power += 400;
-        buffs_berserking = 1;
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player -> aura_loss( "Berserking" );
-        player -> attack_power -= 400;
-        buffs_berserking = 0;
-        expirations_berserking = 0;
-      }
-    };
-
-    player_t* p = a -> player;
-    weapon_t* w = a -> weapon;
-    if ( ! w ) return;
-    if ( w -> enchant != ENCHANT_BERSERKING ) return;
+    if ( a -> weapon -> slot != slot ) 
+      return;
 
     // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
     // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-    bool mh = ( w -> slot == SLOT_MAIN_HAND );
-
-    int&       b = mh ? mh_buff       : oh_buff;
-    event_t*&  e = mh ? mh_expiration : oh_expiration;
-    uptime_t*  u = mh ? mh_uptime     : oh_uptime;
-    rng_t*     r = mh ? mh_rng        : oh_rng;
-
-    double PPM = 1.2;
+    double PPM        = 1.2;
     double swing_time = a -> time_to_execute;
-
-    if ( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
-    {
-      if ( e )
-      {
-        e -> reschedule( 15.0 );
-      }
-      else
-      {
-        e = new ( a -> sim ) berserking_expiration_t( a -> sim, p, b, e );
-      }
-    }
-
-    u -> update( b != 0 );
+    double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
+   
+    buff -> trigger( 1, 1.0, chance );
+    buff -> up();  // track uptime info
   }
 };
 
@@ -574,83 +523,31 @@ struct berserking_callback_t : public action_callback_t
 
 struct mongoose_callback_t : public action_callback_t
 {
-  event_t*  mh_expiration;
-  event_t*  oh_expiration;
-  uptime_t* mh_uptime;
-  uptime_t* oh_uptime;
-  rng_t*    mh_rng;
-  rng_t*    oh_rng;
+  int slot;
+  buff_t* buff;
 
-  mongoose_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), mh_expiration( 0 ), oh_expiration( 0 )
-  {
-    mh_uptime = p -> get_uptime( "mongoose_mh" );
-    oh_uptime = p -> get_uptime( "mongoose_oh" );
+  mongoose_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-    mh_rng = p -> get_rng( "mongoose_mh", RNG_DISTRIBUTED );
-    oh_rng = p -> get_rng( "mongoose_oh", RNG_DISTRIBUTED );
-  }
-
-  virtual void reset() { mh_expiration = oh_expiration = 0; }
+  virtual void reset() { buff -> reset(); }
 
   virtual void trigger( action_t* a )
   {
-    struct mongoose_expiration_t : public event_t
-    {
-      int& buffs_mongoose;
-      event_t*& expirations_mongoose;
-
-      mongoose_expiration_t( sim_t* sim, player_t* player, int& b_m, event_t*& e_m ) :
-          event_t( sim, player ), buffs_mongoose( b_m ), expirations_mongoose( e_m )
-      {
-        name = "Mongoose Expiration";
-        player -> aura_gain( "Mongoose Lightning Speed" );
-        player -> attribute[ ATTR_AGILITY ] += 120;
-        buffs_mongoose = 1;
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player -> aura_loss( "Mongoose Lightning Speed" );
-        player -> attribute[ ATTR_AGILITY ] -= 120;
-        buffs_mongoose = 0;
-        expirations_mongoose = 0;
-      }
-    };
-
     player_t* p = a -> player;
     weapon_t* w = a -> weapon;
     if ( ! w ) return;
-    if ( w -> enchant != ENCHANT_MONGOOSE ) return;
+    if ( w -> slot != slot ) return;
 
     // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
     // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-    bool mh = ( w -> slot == SLOT_MAIN_HAND );
 
-    int& b = mh ? p -> buffs.mongoose_mh : p -> buffs.mongoose_oh;
-
-    event_t*&  e = mh ? mh_expiration : oh_expiration;
-    uptime_t*  u = mh ? mh_uptime     : oh_uptime;
-    rng_t*     r = mh ? mh_rng        : oh_rng;
-
-    double PPM = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
+    double PPM        = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
     double swing_time = a -> time_to_execute;
+    double chance     = w -> proc_chance_on_swing( PPM, swing_time );
 
-    if ( r -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
-    {
-      if ( e )
-      {
-        e -> reschedule( 15.0 );
-      }
-      else
-      {
-        e = new ( a -> sim ) mongoose_expiration_t( a -> sim, p, b, e );
-      }
-    }
-
-    u -> update( b != 0 );
+    buff -> trigger( 1, 1.0, chance );
   }
 };
 
@@ -658,67 +555,29 @@ struct mongoose_callback_t : public action_callback_t
 
 struct executioner_callback_t : public action_callback_t
 {
-  int       buff;
-  event_t*  expiration;
-  uptime_t* uptime;
-  rng_t*    rng;
+  int slot;
+  buff_t* buff;
 
-  executioner_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), buff( 0 ), expiration( 0 )
-  {
-    uptime = p -> get_uptime( "executioner" );
-    rng    = p -> get_rng( "executioner", RNG_DISTRIBUTED );
-  }
+  executioner_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-  virtual void reset() { buff = 0; expiration = 0; }
+  virtual void reset() { buff -> reset(); }
 
   virtual void trigger( action_t* a )
   {
-    struct expiration_t : public event_t
-    {
-      executioner_callback_t* callback;
-      expiration_t( sim_t* sim, player_t* player, executioner_callback_t* cb ) : event_t( sim, player ), callback( cb )
-      {
-        name = "Executioner Expiration";
-        player -> aura_gain( "Executioner" );
-        player -> attack_penetration += 120 / player -> rating.armor_penetration;
-        callback -> buff = 1;
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player -> aura_loss( "Executioner" );
-        player -> attack_penetration -= 120 / player -> rating.armor_penetration;
-        callback -> buff       = 0;
-        callback -> expiration = 0;
-      }
-    };
-
-    player_t* p = a -> player;
-    weapon_t* w = a -> weapon;
-    if ( ! w ) return;
-    if ( w -> enchant != ENCHANT_EXECUTIONER ) return;
+    if ( ! a -> weapon ) return;
+    if ( a -> weapon -> slot != slot ) return;
 
     // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
     // We cannot use the base swing time because that would over-value haste.  Instead, we use
     // the hasted swing time which is represented in the "time_to_execute" field.  When this field
     // is zero, we are dealing with a "special" attack in which case the base swing time is used.
 
-    double PPM = 1.2;
+    double PPM        = 1.2;
     double swing_time = a -> time_to_execute;
+    double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
 
-    if ( rng -> roll( w -> proc_chance_on_swing( PPM, swing_time ) ) )
-    {
-      if ( expiration )
-      {
-        expiration -> reschedule( 15.0 );
-      }
-      else
-      {
-        expiration = new ( a -> sim ) expiration_t( a -> sim, p, this );
-      }
-    }
-
-    uptime -> update( buff != 0 );
+    buff -> trigger( 1, 1.0, chance );
+    buff -> up();  // track uptime info
   }
 };
 
@@ -732,38 +591,67 @@ void enchant_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
-  p -> main_hand_weapon.enchant = p -> items[ SLOT_MAIN_HAND ].enchant;
-  p ->  off_hand_weapon.enchant = p -> items[ SLOT_OFF_HAND  ].enchant;
-  p ->    ranged_weapon.enchant = p -> items[ SLOT_RANGED    ].enchant;
+  // Need to expose the Mongoose buffs for attack_t::haste()
+  p -> buffs.mongoose_mh = new stat_buff_t( p -> sim, p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+  p -> buffs.mongoose_oh = new stat_buff_t( p -> sim, p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
 
-  if ( p -> ranged_weapon.enchant == ENCHANT_SCOPE )
-  {
-    p -> ranged_weapon.enchant_bonus = util_t::ability_rank( p -> level, 15.0,72,  12.0,67,  7.0,0 );
-  }
+  std::string& mh_enchant = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
+  std::string& oh_enchant = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
 
-  if ( p -> main_hand_weapon.enchant == ENCHANT_BERSERKING ||
-       p ->  off_hand_weapon.enchant == ENCHANT_BERSERKING )
+  if ( mh_enchant == "berserking" )
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p ) );
+    buff_t* buff = new stat_buff_t( p -> sim, p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_MAIN_HAND, buff ) );
   }
-  if ( p -> main_hand_weapon.enchant == ENCHANT_EXECUTIONER ||
-       p ->  off_hand_weapon.enchant == ENCHANT_EXECUTIONER )
+  if ( oh_enchant == "berserking" )
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p ) );
+    buff_t* buff = new stat_buff_t( p -> sim, p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_OFF_HAND, buff ) );
   }
-  if ( p -> main_hand_weapon.enchant == ENCHANT_MONGOOSE ||
-       p ->  off_hand_weapon.enchant == ENCHANT_MONGOOSE )
+  if ( mh_enchant == "executioner" || oh_enchant == "executioner" )
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p ) );
+    // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
+
+    buff_t* buff = new stat_buff_t( p -> sim, p, "executioner", STAT_ARMOR_PENETRATION_RATING, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+
+    if ( mh_enchant == "executioner" )
+    {
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    }
+    if ( oh_enchant == "executioner" )
+    {
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p, SLOT_OFF_HAND, buff ) );
+    }
   }
-  if ( p -> main_hand_weapon.enchant == ENCHANT_SPELLSURGE ||
-       p ->  off_hand_weapon.enchant == ENCHANT_SPELLSURGE )
+  if ( mh_enchant == "mongoose" )
+  {
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_MAIN_HAND, p -> buffs.mongoose_mh ) );
+  }
+  if ( oh_enchant == "mongoose" )
+  {
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_OFF_HAND, p -> buffs.mongoose_oh ) );
+  }
+  if ( mh_enchant == "spellsurge" || 
+       oh_enchant == "spellsurge" )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }
-  if ( p -> items[ SLOT_BACK ].enchant == ENCHANT_LIGHTWEAVE )
+
+  int num_items = p -> items.size();
+  for ( int i=0; i < num_items; i++ )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "lightweave_embroidery", p, STAT_SPELL_POWER, 1, 295, 0.35, 15.0, 60.0 );
+    item_t& item = p -> items[ i ];
+
+    if ( item.enchant.stat )
+    {
+      unique_gear_t::register_stat_proc( item, item.enchant, item.encoded_enchant_str.c_str() );
+    }
+    else if ( item.enchant.school )
+    {
+      unique_gear_t::register_discharge_proc( item, item.enchant, item.encoded_enchant_str.c_str() );
+    }
   }
 }
 
@@ -800,15 +688,7 @@ bool enchant_t::download( item_t&            item,
   std::string enchant_name;
   if ( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
   {
-    if      ( enchant_name == "Lightweave Embroidery"    ) { item.armory_enchant_str = "lightweave";  }
-    else if ( enchant_name == "Hand-Mounted Pyro Rocket" ) { item.armory_enchant_str = "pyrorocket";  }
-    else if ( enchant_name == "Berserking"               ) { item.armory_enchant_str = "berserking";  }
-    else if ( enchant_name == "Mongoose"                 ) { item.armory_enchant_str = "mongoose";    }
-    else if ( enchant_name == "Executioner"              ) { item.armory_enchant_str = "executioner"; }
-    else if ( enchant_name == "Spellsurge"               ) { item.armory_enchant_str = "spellsurge";  }
-
     armory_t::format( item.armory_enchant_str );
-
     return true;
   }
 

@@ -508,38 +508,6 @@ struct dark_rune_t : public action_t
   }
 };
 
-// Wizard Oil Action =========================================================
-
-struct wizard_oil_t : public action_t
-{
-  int bonus_power;
-  int bonus_crit;
-
-  wizard_oil_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "wizard_oil", p )
-  {
-    trigger_gcd = 0;
-
-    bonus_power = util_t::ability_rank( p -> level,  56,72,  42,68,  36,0 );
-
-    bonus_crit = ( p -> level <= 55 ? 14 : 0 );
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    player -> main_hand_weapon.buff = WIZARD_OIL;
-    player -> spell_power[ SCHOOL_MAX ] += bonus_power;
-    player -> spell_crit                += bonus_crit / player -> rating.spell_crit;
-  };
-
-  virtual bool ready()
-  {
-    return( player -> main_hand_weapon.buff != WIZARD_OIL );
-  }
-};
-
 // ==========================================================================
 // consumable_t::init_flask
 // ==========================================================================
@@ -583,7 +551,6 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
   if ( name == "speed_potion"       ) return new       speed_potion_t( p, options_str );
   if ( name == "wild_magic_potion"  ) return new  wild_magic_potion_t( p, options_str );
-  if ( name == "wizard_oil"         ) return new         wizard_oil_t( p, options_str );
 
   return 0;
 }

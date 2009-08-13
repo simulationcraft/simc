@@ -212,22 +212,6 @@ enum weapon_type
   WEAPON_MAX
 };
 
-enum enchant_type
-{
-  ENCHANT_NONE=0,
-  ENCHANT_BERSERKING, ENCHANT_MONGOOSE, ENCHANT_EXECUTIONER, ENCHANT_DEATH_FROST, ENCHANT_SCOPE,
-  ENCHANT_LIGHTWEAVE, ENCHANT_SPELLSURGE,
-  ENCHANT_MAX
-};
-
-enum weapon_buff_type
-{
-  WEAPON_BUFF_NONE=0,
-  ANESTHETIC_POISON, DEADLY_POISON, FIRE_STONE, FLAMETONGUE, INSTANT_POISON,
-  SHARPENING_STONE,  SPELL_STONE,   WINDFURY,   WIZARD_OIL,  WOUND_POISON,
-  WEAPON_BUFF_MAX
-};
-
 enum slot_type   // these enum values match armory settings
 {
   SLOT_NONE      = -1,
@@ -516,7 +500,6 @@ struct util_t
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
   static const char* elixir_type_string        ( int type );
-  static const char* enchant_type_string       ( int type );
   static const char* flask_type_string         ( int type );
   static const char* food_type_string          ( int type );
   static const char* gem_type_string           ( int type );
@@ -532,13 +515,11 @@ struct util_t
   static const char* stat_type_abbrev          ( int type );
   static const char* stat_type_wowhead         ( int type );
   static const char* talent_tree_string        ( int tree );
-  static const char* weapon_buff_type_string   ( int type );
   static const char* weapon_type_string        ( int type );
 
   static int parse_attribute_type     ( const std::string& name );
   static int parse_dmg_type           ( const std::string& name );
   static int parse_elixir_type        ( const std::string& name );
-  static int parse_enchant_type       ( const std::string& name );
   static int parse_flask_type         ( const std::string& name );
   static int parse_food_type          ( const std::string& name );
   static int parse_gem_type           ( const std::string& name );
@@ -552,7 +533,6 @@ struct util_t
   static int parse_slot_type          ( const std::string& name );
   static int parse_stat_type          ( const std::string& name );
   static int parse_talent_tree        ( const std::string& name );
-  static int parse_weapon_buff_type   ( const std::string& name );
   static int parse_weapon_type        ( const std::string& name );
 
   static const char* class_id_string( int type );
@@ -1062,18 +1042,17 @@ struct weapon_t
   int    type, school;
   double damage, dps;
   double swing_time;
-  int    enchant, buff;
-  double enchant_bonus, buff_bonus;
   int    slot;
+  int    buff_type;
+  double buff_value;
 
   int    group() SC_CONST;
   double normalized_weapon_speed() SC_CONST;
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) SC_CONST;
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
-      type( t ), school( s ), damage( d ), swing_time( st ),
-      enchant( ENCHANT_NONE ), buff( WEAPON_BUFF_NONE ),
-      enchant_bonus( 0 ), buff_bonus( 0 ), slot( SLOT_NONE ) {}};
+      type(t), school(s), damage(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0) {}
+};
 
 // Item ======================================================================
 
@@ -1081,8 +1060,8 @@ struct item_t
 {
   sim_t* sim;
   player_t* player;
-  int slot, enchant;
-  bool unique;
+  int slot;
+  bool unique, unique_enchant;
 
   // Option Data
   std::string option_name_str;
@@ -1125,9 +1104,9 @@ struct item_t
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ) {}
     bool active() { return stat || school; }
-  } use, equip;
+  } use, equip, enchant;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), enchant( ENCHANT_NONE ), unique( false ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   const char* name() SC_CONST;
@@ -1339,6 +1318,8 @@ struct player_t
     // New Buffs
     buff_t* elemental_oath;
     buff_t* innervate;
+    buff_t* mongoose_mh;
+    buff_t* mongoose_oh;
     // Old Buffs
     int       old_buffs;
     int       abominations_might;
@@ -1361,8 +1342,6 @@ struct player_t
     double    mana_cost_reduction;
     double    mana_spring;
     double    mark_of_the_wild;
-    int       mongoose_mh;
-    int       mongoose_oh;
     int       power_infusion;
     int       rampage;
     int       replenishment;
@@ -2215,6 +2194,9 @@ struct unique_gear_t
                                                      int max_stacks, int school, double min_dmg, double max_dmg,
                                                      double proc_chance, double cooldown,
                                                      int rng_type=RNG_DEFAULT );
+
+  static action_callback_t* register_stat_proc     ( item_t&, item_t::special_effect_t&, const char* name=0 );
+  static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t&, const char* name=0 );
 
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,

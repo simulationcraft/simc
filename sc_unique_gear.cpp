@@ -118,15 +118,14 @@ void unique_gear_t::init( player_t* p )
   for ( int i=0; i < num_items; i++ )
   {
     item_t& item = p -> items[ i ];
-    item_t::special_effect_t& e = item.equip;
 
-    if ( e.stat )
+    if ( item.equip.stat )
     {
-      register_stat_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
+      register_stat_proc( item, item.equip );
     }
-    else if ( e.school )
+    else if ( item.equip.school )
     {
-      register_discharge_proc( e.trigger_type, e.trigger_mask, item.name(), p, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
+      register_discharge_proc( item, item.equip );
     }
   }
 
@@ -245,6 +244,30 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 }
 
 // ==========================================================================
+// unique_gear_t::register_stat_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_stat_proc( item_t& i, 
+						      item_t::special_effect_t& e,
+						      const char* name )
+{
+  if( ! name ) name = i.name();
+  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
+}
+
+// ==========================================================================
+// unique_gear_t::register_discharge_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_discharge_proc( item_t& i, 
+							   item_t::special_effect_t& e,
+							   const char* name )
+{
+  if( ! name ) name = i.name();
+  return register_discharge_proc( e.trigger_type, e.trigger_mask, i.name(), i.player, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
+}
+
+// ==========================================================================
 // unique_gear_t::get_equip_encoding
 // ==========================================================================
 
@@ -290,9 +313,13 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"            ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
 
+  // Some Normal/Heroic items have same name
+  else if ( name == "reign_of_the_unliving" ) e = ( id == "47182" ? "OnSpellCrit_1882Fire_3Stack_2.0Cd" : "OnSpellCrit_2117Fire_3Stack_2.0Cd" );
+  else if ( name == "reign_of_the_dead"     ) e = ( id == "47316" ? "OnSpellCrit_1882Fire_3Stack_2.0Cd" : "OnSpellCrit_2117Fire_3Stack_2.0Cd" );
 
-  else if ( name == "reign_of_the_unliving"        ) e = ( id == "47182" ? "OnSpellCrit_1882Fire_3Stack_2.0Cd" : "OnSpellCrit_2117Fire_3Stack_2.0Cd" );
-  else if ( name == "reign_of_the_dead"            ) e = ( id == "47316" ? "OnSpellCrit_1882Fire_3Stack_2.0Cd" : "OnSpellCrit_2117Fire_3Stack_2.0Cd" );
+  // Enchants
+  else if ( name == "lightweave"            ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
+  else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";
 
   if ( e.empty() ) return false;
 
@@ -314,7 +341,6 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   // Simple
   if      ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
-  else if ( name == "hyperspeed_accelerators"     ) e = "340Haste_12Dur_60Cd";
   else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
   else if ( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
   else if ( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
@@ -327,10 +353,15 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
-  if ( name == "fetish_of_volatile_power"   ) e = ( id == "47879" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
-  if ( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
-  if ( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
-  if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  else if ( name == "fetish_of_volatile_power"   ) e = ( id == "47879" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  else if ( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
+  else if ( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  else if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+
+  // Enchants
+  else if ( name == "pyrorocket"               ) e = "1937Fire_45Cd";  // temporary for backwards compatibility
+  else if ( name == "hand_mounted_pyro_rocket" ) e = "1937Fire_45Cd";
+  else if ( name == "hyperspeed_accelerators"  ) e = "340Haste_12Dur_60Cd";
 
   if ( e.empty() ) return false;
 
