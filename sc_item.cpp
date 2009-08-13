@@ -343,6 +343,7 @@ bool item_t::decode_enchant()
   if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str ) )
   {
     unique_enchant = true;
+    use.name_str = encoded_enchant_str;
     return decode_special( use, use_str );
   }
 
@@ -350,6 +351,7 @@ bool item_t::decode_enchant()
   if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str ) )
   {
     unique_enchant = true;
+    enchant.name_str = encoded_enchant_str;
     return decode_special( enchant, equip_str );
   }
 

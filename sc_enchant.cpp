@@ -646,11 +646,11 @@ void enchant_t::init( player_t* p )
 
     if ( item.enchant.stat )
     {
-      unique_gear_t::register_stat_proc( item, item.enchant, item.encoded_enchant_str.c_str() );
+      unique_gear_t::register_stat_proc( item, item.enchant );
     }
     else if ( item.enchant.school )
     {
-      unique_gear_t::register_discharge_proc( item, item.enchant, item.encoded_enchant_str.c_str() );
+      unique_gear_t::register_discharge_proc( item, item.enchant );
     }
   }
 }

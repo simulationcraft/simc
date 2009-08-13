@@ -1096,7 +1096,7 @@ struct item_t
   gear_stats_t stats;
   struct special_effect_t
   {
-    std::string trigger_str;
+    std::string name_str, trigger_str;
     int trigger_type, trigger_mask;
     int stat, school, max_stacks;
     double amount, proc_chance, duration, cooldown;
@@ -2195,8 +2195,8 @@ struct unique_gear_t
                                                      double proc_chance, double cooldown,
                                                      int rng_type=RNG_DEFAULT );
 
-  static action_callback_t* register_stat_proc     ( item_t&, item_t::special_effect_t&, const char* name=0 );
-  static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t&, const char* name=0 );
+  static action_callback_t* register_stat_proc     ( item_t&, item_t::special_effect_t& );
+  static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
 
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,

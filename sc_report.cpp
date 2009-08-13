@@ -28,12 +28,15 @@ static void simplify_html( std::string& buffer )
 
 // print_action ==============================================================
 
-static void print_action( FILE* file, stats_t* s )
+static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
   if ( s -> total_dmg == 0 ) return;
 
+  if( max_name_length == 0 ) max_name_length = 20;
+
   util_t::fprintf( file,
-                   "    %-20s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                   "    %-*s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+		   max_name_length,
                    s -> name_str.c_str(),
                    s -> num_executes,
                    s -> frequency,
@@ -122,11 +125,17 @@ static void print_actions( FILE* file, player_t* p )
 
   util_t::fprintf( file, "  Actions:\n" );
 
+  int max_length=0;
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+    if ( s -> total_dmg > 0 )
+      if( max_length < (int) s -> name_str.length() )
+	max_length = s -> name_str.length();
+
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     if ( s -> total_dmg > 0 )
     {
-      print_action( file, s );
+      print_action( file, s, max_length );
     }
   }
 
@@ -142,7 +151,7 @@ static void print_actions( FILE* file, player_t* p )
           util_t::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps );
           first = false;
         }
-        print_action( file, s );
+        print_action( file, s, max_length );
       }
     }
   }
@@ -476,6 +485,41 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     util_t::fprintf( file, "\n" );
   }
+}
+
+// print_scale_factors ========================================================
+
+static void print_scale_factors( FILE* file, player_t* p )
+{
+  if ( ! p -> sim -> scaling -> calculate_scale_factors ) return;
+
+  util_t::fprintf( file, "  Scale Factors:\n" );
+
+  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
+  
+  util_t::fprintf( file, "    Weights :" );
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( p -> scales_with[ i ] != 0 )
+    {
+      util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( i ), sf.get_stat( i ) );
+    }
+  }
+  if ( p -> sim -> scaling -> normalize_scale_factors )
+  {
+    util_t::fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
+  }
+  util_t::fprintf( file, "\n" );
+
+  std::string lootrank = p -> gear_weights_lootrank_link;
+  std::string wowhead  = p -> gear_weights_wowhead_link;
+  std::string pawn     = p -> gear_weights_pawn_string;
+
+  simplify_html( lootrank );
+  simplify_html( wowhead  );
+  simplify_html( pawn     );
+
+  util_t::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
 }
 
 // print_reference_dps ========================================================
@@ -1215,10 +1259,11 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
     if ( detail )
     {
-      print_buffs ( file, p );
-      print_uptime( file, p );
-      print_procs ( file, p );
-      print_gains ( file, p );
+      print_buffs        ( file, p );
+      print_uptime       ( file, p );
+      print_procs        ( file, p );
+      print_gains        ( file, p );
+      print_scale_factors( file, p );
     }
   }
 

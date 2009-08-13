@@ -2446,6 +2446,7 @@ struct use_item_t : public action_t
   spell_t* discharge;
   action_callback_t* trigger;
   stat_buff_t* buff;
+  std::string use_name;
 
   use_item_t( player_t* player, const std::string& options_str ) :
       action_t( ACTION_OTHER, "use_item", player ),
@@ -2479,16 +2480,18 @@ struct use_item_t : public action_t
 
     item_t::special_effect_t& e = item -> use;
 
+    use_name = e.name_str.empty() ? item_name : e.name_str;
+
     if ( e.trigger_type )
     {
       if ( e.stat )
       {
-        trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, item_name, player,
+        trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.amount, e.proc_chance, 0, 0 );
       }
       else if ( e.school )
       {
-        trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, item_name, player,
+        trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0 );
       }
 
@@ -2511,14 +2514,14 @@ struct use_item_t : public action_t
         }
       };
 
-      discharge = new discharge_spell_t( item -> name(), player, e.amount, e.school );
+      discharge = new discharge_spell_t( use_name.c_str(), player, e.amount, e.school );
     }
     else if ( e.stat )
     {
       if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
       if( e.proc_chance <= 0 ) e.proc_chance = 1;
       
-      buff = new stat_buff_t( sim, player, item -> name(), e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance );
+      buff = new stat_buff_t( sim, player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance );
     }
     else assert( false );
 
@@ -2534,7 +2537,7 @@ struct use_item_t : public action_t
     }
     else if ( trigger )
     {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
 
       trigger -> activate();
 
@@ -2561,7 +2564,7 @@ struct use_item_t : public action_t
     }
     else if( buff )
     {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), item -> name() );
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
 
       buff -> trigger();
     }

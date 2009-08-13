@@ -248,10 +248,10 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( item_t& i, 
-						      item_t::special_effect_t& e,
-						      const char* name )
+						      item_t::special_effect_t& e )
 {
-  if( ! name ) name = i.name();
+  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+
   return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
 }
 
@@ -260,11 +260,11 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( item_t& i, 
-							   item_t::special_effect_t& e,
-							   const char* name )
+							   item_t::special_effect_t& e )
 {
-  if( ! name ) name = i.name();
-  return register_discharge_proc( e.trigger_type, e.trigger_mask, i.name(), i.player, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
+  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+
+  return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player, e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, e.cooldown );
 }
 
 // ==========================================================================
