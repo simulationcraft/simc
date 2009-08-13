@@ -1502,6 +1502,7 @@ static void trigger_wild_quiver( attack_t* a )
         base_multiplier *= 0.80;
         add_ammunition();
         add_scope();
+	reset();
       }
     };
 
@@ -2797,6 +2798,7 @@ struct chimera_shot_t : public hunter_attack_t
             // This proc can miss.
             may_miss = true;
             may_crit = true;
+	    reset();
           }
           virtual double total_multiplier() SC_CONST { return 1.0; }
         };
