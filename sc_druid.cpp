@@ -348,6 +348,8 @@ struct treants_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    pet_t::init_base();
+
     attribute_base[ ATTR_STRENGTH  ] = 331;
     attribute_base[ ATTR_AGILITY   ] = 113;
     attribute_base[ ATTR_STAMINA   ] = 361;

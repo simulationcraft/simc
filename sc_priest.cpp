@@ -241,6 +241,8 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    pet_t::init_base();
+
     attribute_base[ ATTR_STRENGTH  ] = 153;
     attribute_base[ ATTR_AGILITY   ] = 108;
     attribute_base[ ATTR_STAMINA   ] = 280;

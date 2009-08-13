@@ -332,6 +332,8 @@ struct water_elemental_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    pet_t::init_base();
+
     // Stolen from Priest's Shadowfiend
     attribute_base[ ATTR_STRENGTH  ] = 145;
     attribute_base[ ATTR_AGILITY   ] =  38;
@@ -482,6 +484,8 @@ struct mirror_image_pet_t : public pet_t
   {}
   virtual void init_base()
   {
+    pet_t::init_base();
+
     // Stolen from Priest's Shadowfiend
     attribute_base[ ATTR_STRENGTH  ] = 145;
     attribute_base[ ATTR_AGILITY   ] =  38;

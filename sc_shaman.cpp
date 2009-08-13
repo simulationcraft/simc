@@ -326,6 +326,8 @@ struct spirit_wolf_pet_t : public pet_t
   }
   virtual void init_base()
   {
+    pet_t::init_base();
+
     attribute_base[ ATTR_STRENGTH  ] = 331;
     attribute_base[ ATTR_AGILITY   ] = 113;
     attribute_base[ ATTR_STAMINA   ] = 361;
@@ -334,7 +336,6 @@ struct spirit_wolf_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     melee = new melee_t( this );
   }

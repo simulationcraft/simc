@@ -494,20 +494,18 @@ struct hunter_pet_t : public pet_t
 
   virtual void init_base()
   {
+    pet_t::init_base();
+
     hunter_t* o = owner -> cast_hunter();
 
     attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331 );
     attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113 );
-    //stamina is different for every pet type (at least tenacity have more)
-    attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 );
+    attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
     attribute_base[ ATTR_INTELLECT ] = 100; // FIXME
     attribute_base[ ATTR_SPIRIT    ] = 100; // FIXME
 
-    // AP = (str-10)*2
     base_attack_power = -20;
-
     initial_attack_power_per_strength = 2.0;
-    // FIXME don't know level 60 value
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
 
     if ( sim -> P320 )

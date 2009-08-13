@@ -265,6 +265,8 @@ struct warlock_pet_t : public pet_t
 
   virtual void init_base()
   {
+    pet_t::init_base();
+
     warlock_t* o = owner -> cast_warlock();
 
     attribute_base[ ATTR_STRENGTH  ] = 314;
@@ -280,9 +282,6 @@ struct warlock_pet_t : public pet_t
                                                               o -> talents.fel_vitality  * 0.05 );
 
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/52.1 );
-
-    initial_spell_crit_per_intellect = 0; // FIXME!
 
     health_per_stamina = 10;
     mana_per_intellect = 10.8;

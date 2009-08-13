@@ -80,6 +80,15 @@ void pet_t::init()
   level = owner -> level;
 }
 
+// pet_t::init_base =========================================================
+
+void pet_t::init_base()
+{
+  initial_attack_power_per_strength = owner -> initial_attack_power_per_strength;
+  initial_attack_crit_per_agility   = owner -> initial_attack_crit_per_agility;
+  initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
+}
+
 // pet_t::reset =============================================================
 
 void pet_t::reset()

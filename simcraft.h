@@ -1725,6 +1725,7 @@ struct pet_t : public player_t
   virtual double intellect() SC_CONST;
 
   virtual void init();
+  virtual void init_base();
   virtual void reset();
   virtual void summon( double duration=0 );
   virtual void dismiss();
