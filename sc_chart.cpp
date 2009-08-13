@@ -1012,16 +1012,16 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   switch ( p -> type )
   {
-  case DEATH_KNIGHT: s += "Cla=2048"; break;
-  case DRUID:        s += "Cla=1024"; break;
-  case HUNTER:       s += "Cla=4";    break;
-  case MAGE:         s += "Cla=128";  break;
-  case PALADIN:      s += "Cla=2";    break;
-  case PRIEST:       s += "Cla=16";   break;
-  case ROGUE:        s += "Cla=8";    break;
-  case SHAMAN:       s += "Cla=64";   break;
-  case WARLOCK:      s += "Cla=256";  break;
-  case WARRIOR:      s += "Cla=1";    break;
+  case DEATH_KNIGHT: s += "&amp;Cla=2048"; break;
+  case DRUID:        s += "&amp;Cla=1024"; break;
+  case HUNTER:       s += "&amp;Cla=4";    break;
+  case MAGE:         s += "&amp;Cla=128";  break;
+  case PALADIN:      s += "&amp;Cla=2";    break;
+  case PRIEST:       s += "&amp;Cla=16";   break;
+  case ROGUE:        s += "&amp;Cla=8";    break;
+  case SHAMAN:       s += "&amp;Cla=64";   break;
+  case WARLOCK:      s += "&amp;Cla=256";  break;
+  case WARRIOR:      s += "&amp;Cla=1";    break;
   default: assert( 0 );
   }
 
