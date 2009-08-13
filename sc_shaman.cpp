@@ -593,9 +593,8 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
       base_cost       = 0;
       base_multiplier = 1.0;
       tick_power_mod  = 0;
-      // FIX ME! I shamelessly copied from the hunters piercing shots and currently there is no information about those values.
-      base_tick_time  = 1.0;
-      num_ticks       = 4;
+      base_tick_time  = 2.0;
+      num_ticks       = 2;
     }
     void player_buff() {}
     void target_debuff( int dmg_type ) {}
@@ -615,7 +614,7 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
     p -> active_lightning_bolt_dot -> cancel();
   }
 
-  p -> active_lightning_bolt_dot -> base_td = dmg / 4;
+  p -> active_lightning_bolt_dot -> base_td = dmg / p -> active_lightning_bolt_dot -> num_ticks;
   p -> active_lightning_bolt_dot -> schedule_tick();
 }
 
