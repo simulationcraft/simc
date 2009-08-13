@@ -14,8 +14,16 @@ static bool is_scaling_stat( sim_t* sim,
                              int    stat )
 {
   if ( ! sim -> scaling -> scale_only_str.empty() )
-    if ( util_t::parse_stat_type( sim -> scaling -> scale_only_str ) != stat )
-      return false;
+  {
+    std::vector<std::string> stat_list;
+    int num_stats = util_t::string_split( stat_list, sim -> scaling -> scale_only_str, ",:;/|" );
+    bool found = false;
+    for( int i=0; i < num_stats && ! found; i++ )
+    {
+      found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
+    }
+    if( ! found ) return false;
+  }
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
