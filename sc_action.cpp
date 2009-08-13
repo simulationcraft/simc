@@ -906,19 +906,34 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if ( ticking && ! channeled )
+  if ( num_ticks )
   {
-    assert( num_ticks && tick_event );
+    if ( ticking && ! channeled )
+    {
+      assert( num_ticks && tick_event );
 
-    int remaining_ticks = num_ticks - current_tick;
+      int remaining_ticks = num_ticks - current_tick;
 
-    double next_tick = tick_event -> occurs();
+      double next_tick = tick_event -> occurs();
 
-    duration_ready = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
+      duration_ready = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
 
-    if ( sim -> debug ) log_t::output( sim, "%s shares duration for %s (%s)", player -> name(), name(), duration_group.c_str() );
+      if ( sim -> debug )
+	log_t::output( sim, "%s shares duration (%.2f) for %s (%s)", 
+		       player -> name(), duration_ready, name(), duration_group.c_str() );
 
-    player -> share_duration( duration_group, duration_ready );
+      player -> share_duration( duration_group, duration_ready );
+    }
+    else if( result_is_miss() )
+    {
+      duration_ready = sim -> current_time + sim -> reaction_time + time_to_execute - 0.01;
+
+      if ( sim -> debug ) 
+	log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
+		       player -> name(), duration_ready, name(), duration_group.c_str() );
+
+      player -> share_duration( duration_group, duration_ready );
+    }
   }
 }
 
