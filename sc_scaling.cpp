@@ -62,7 +62,7 @@ scaling_t::scaling_t( sim_t* s ) :
     scale_lag( 0 ),
     scale_factor_noise( 0.05 ),
     normalize_scale_factors( 0 ),
-    smooth_scale_factors( 1 ),
+    smooth_scale_factors( 0 ),
     debug_scale_factors( 0 )
 {}
 
@@ -125,7 +125,7 @@ void scaling_t::analyze_stats()
     child_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     child_sim -> execute();
 
-    sim_t* ref_sim = ( i == STAT_HASTE_RATING ) ? sim : baseline_sim;
+    sim_t* ref_sim = baseline_sim;
     if ( center )
     {
       ref_sim = new sim_t( sim );

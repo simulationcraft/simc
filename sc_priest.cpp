@@ -1378,7 +1378,7 @@ struct mind_flay_tick_t : public priest_spell_t
 
     if ( p -> set_bonus.tier9_4pc() )
     {
-      base_crit      += 0.05;
+      base_crit += 0.05;
     }
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;

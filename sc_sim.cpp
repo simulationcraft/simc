@@ -308,7 +308,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
-    instant_only_gcd_lag( 0 ), armor_update_interval( 20 ),
+    armor_update_interval( 20 ),
     optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
@@ -647,13 +647,11 @@ bool sim_t::init()
   deterministic_rng -> seed( 31459 + thread_index );
 
   if ( scaling -> smooth_scale_factors &&
-       scaling -> scale_stat != STAT_NONE &&
-       scaling -> scale_stat != STAT_HASTE_RATING )
+       scaling -> scale_stat != STAT_NONE )
   {
     smooth_rng = 1;
     average_range = 1;
     deterministic_roll = 1;
-    instant_only_gcd_lag = 1;
   }
 
   P320 = patch.after( 3, 2, 0 );
@@ -1386,7 +1384,6 @@ std::vector<option_t>& sim_t::get_options()
       { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
       { "average_range",                    OPT_BOOL,   &( average_range                            ) },
       { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
-      { "instant_only_gcd_lag",             OPT_BOOL,   &( instant_only_gcd_lag                     ) },
       // @option_doc loc=global/party title="Party Composition"
       { "party",                            OPT_LIST,   &( party_encoding                           ) },
       // @option_doc loc=skip

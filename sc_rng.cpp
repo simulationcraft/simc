@@ -744,9 +744,9 @@ struct rng_distance_simple_t : public rng_normalized_t
   rng_distance_simple_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
       rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-    roll_d.actual = real() - 0.5;
-    range_d.actual = real() - 0.5;
-    gauss_d.actual = ( real() - 0.5 ) * 5.0;
+     roll_d.actual = real();
+    range_d.actual = real();
+    gauss_d.actual = real() * 2.5;
   }
   virtual int type() SC_CONST { return RNG_DISTANCE_SIMPLE; }
 
