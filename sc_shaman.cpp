@@ -1242,10 +1242,10 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_tier5_4pc_elemental( this );
       if ( result == RESULT_CRIT )
       {
-	if ( p -> tiers.t8_4pc_elemental ) 
-	{
-	  trigger_tier8_4pc_elemental( this );
-	}
+		if ( p -> tiers.t8_4pc_elemental ) 
+		{
+		  trigger_tier8_4pc_elemental( this );
+		}
       }
     }
     p -> buffs_electrifying_wind -> trigger();
@@ -1441,7 +1441,7 @@ struct shamans_swiftness_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talents.natures_swiftness );
     trigger_gcd = 0;
-    cooldown = sim -> P320 ? 120.0 : 180.0;
+    cooldown = sim -> 120.0;
     if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
@@ -1688,8 +1688,6 @@ struct wind_shear_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    p -> buffs_stonebreaker -> trigger();
-    p -> buffs_tundra       -> trigger();
   }
 
   virtual bool ready()
