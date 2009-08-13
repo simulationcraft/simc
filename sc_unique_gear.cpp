@@ -50,10 +50,12 @@ struct discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd, int rng_type=RNG_CYCLIC ) :
+  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ), cooldown( cd ), cooldown_ready( 0 )
   {
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
+
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) :

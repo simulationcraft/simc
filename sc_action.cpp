@@ -68,14 +68,7 @@ action_t::action_t( int         ty,
   while ( *last ) last = &( ( *last ) -> next );
   *last = this;
 
-  std::string buffer;
-  for ( int i=0; i < RESULT_MAX; i++ )
-  {
-    buffer  = name_str;
-    buffer += "_";
-    buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
-  }
+  for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
 
   stats = p -> get_stats( n );
   stats -> school = school;
@@ -1065,6 +1058,18 @@ bool action_t::ready()
 
 void action_t::reset()
 {
+  if( ! rng[ 0 ] )
+  {
+    std::string buffer;
+    for ( int i=0; i < RESULT_MAX; i++ )
+    {
+      buffer  = name();
+      buffer += "_";
+      buffer += util_t::result_type_string( i );
+      rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
+    }
+  }
+
   if ( ! sync_str.empty() && ! sync_action )
   {
     sync_action = player -> find_action( sync_str );

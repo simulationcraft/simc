@@ -1035,6 +1035,9 @@ struct devouring_plague_burst_t : public priest_spell_t
                                 p -> talents.improved_devouring_plague * 0.05 );
 
     base_hit += p -> talents.shadow_focus * 0.01;
+
+    // This helps log file and decouples the sooth RNG from the ticks.
+    name_str = "devouring_plague_burst";
   }
 
   virtual void execute()
