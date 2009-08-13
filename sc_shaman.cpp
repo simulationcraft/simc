@@ -3143,7 +3143,6 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      action_list_str += "/wind_shear";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
       action_list_str += "/speed_potion";
