@@ -700,7 +700,7 @@ void shaman_attack_t::execute()
     }
     if ( p -> buffs_shamanistic_rage -> up() )
     {
-      double mana = player_attack_power * sim -> P320 ? 0.15 : 0.30;
+      double mana = player_attack_power * 0.15;
       p -> resource_gain( RESOURCE_MANA, mana, p -> gains_shamanistic_rage );
     }
     trigger_flametongue_weapon( this );
@@ -2594,7 +2594,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown = sim -> P320 ? 60 : 120;
+    cooldown = 60;
   }
 
   virtual void execute()

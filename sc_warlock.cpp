@@ -1259,7 +1259,7 @@ void warlock_spell_t::player_buff()
     {
       if ( p -> buffs_empowered_imp -> up() )
       {
-        player_crit += ( sim -> P320 ? 1.00 : 0.20 );
+        player_crit += 1.00;
       }
     }
 
@@ -1852,10 +1852,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> active_immolate )
     {
-      if ( sim -> P320 )
-        player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
-      else
-        player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+      player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
     }
   }
 
@@ -2473,11 +2470,7 @@ struct haunt_t : public warlock_spell_t
     cooldown          = 8.0;
     may_crit          = true;
 
-    if ( p -> talents.pandemic && sim -> P320 )
-    {
-      base_crit_bonus_multiplier = 2;
-    }
-
+    if ( p -> talents.pandemic ) base_crit_bonus_multiplier = 2;
 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
@@ -2896,10 +2889,7 @@ struct incinerate_t : public warlock_spell_t
     if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
     if ( p -> active_immolate )
     {
-      if ( sim -> P320 )
-        player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
-      else
-        player_multiplier *= 1 + 0.03 * p -> talents.fire_and_brimstone;
+      player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
     }
     p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );
   }
@@ -3926,7 +3916,7 @@ void warlock_t::init_buffs()
   buffs_shadow_embrace = new buff_t( sim, this, "shadow_embrace", 2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance  = new buff_t( sim, this, "shadow_trance",  1,  0.0, 0.0, talents.nightfall );
 
-  buffs_life_tap_glyph = new buff_t( sim, this, "life_tap_glyph", 1, ( sim -> P320 ? 40 : 20 ), 0.0, glyphs.life_tap );
+  buffs_life_tap_glyph = new buff_t( sim, this, "life_tap_glyph", 1, 40.0, 0.0, glyphs.life_tap );
 
   buffs_fel_armor     = new buff_t( sim, this, "fel_armor"     );
   buffs_pet_sacrifice = new buff_t( sim, this, "pet_sacrifice" );

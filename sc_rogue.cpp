@@ -335,8 +335,6 @@ struct rogue_poison_t : public spell_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    proc = ! sim -> P320;
-
     base_hit  += p -> talents.precision * 0.01;
 
     base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vile_poisons,  3, 0.07, 0.14, 0.20 );
@@ -2563,7 +2561,7 @@ struct shadow_dance_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = sim -> P320 ? 60 : 120;
+    cooldown = 60;
   }
 
   virtual void execute()
@@ -2575,7 +2573,7 @@ struct shadow_dance_t : public rogue_attack_t
         name = "Shadow Dance Expiration";
         p -> aura_gain( "Shadow Dance" );
         p -> _buffs.shadow_dance = 1;
-        double duration = sim -> P320 ? 6 : 10;
+        double duration = 6;
         if ( p -> glyphs.shadow_dance ) duration += 4;
         sim -> add_event( this, duration );
       }

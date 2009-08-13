@@ -217,7 +217,7 @@ static void replenish_targets( player_t* provider )
       {
         player_t* p = player -> replenishment_targets[ i ];
         if ( p -> sleeping ) continue;
-        double replenishment_regen = p -> resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 );
+        double replenishment_regen = p -> resource_max[ RESOURCE_MANA ] * 0.0020;
         p -> resource_gain( RESOURCE_MANA, replenishment_regen, p -> gains.replenishment );
       }
 
@@ -1738,7 +1738,7 @@ void player_t::regen( double periodicity )
 
       if ( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
       {
-        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * ( sim -> P320 ? 0.0020 : 0.0025 ) / 1.0;
+        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0020 / 1.0;
 
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }

@@ -667,7 +667,7 @@ static void trigger_ignite( spell_t* s,
     {
       mage_t* p = player -> cast_mage();
       mage_spell_t::tick();
-      if ( sim -> P320 && p -> talents.empowered_fire )
+      if ( p -> talents.empowered_fire )
       {
         if ( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
         {
@@ -1365,7 +1365,7 @@ struct arcane_blast_t : public mage_spell_t
     };
     init_rank( ranks );
 
-    if ( sim -> P320 ) base_cost *= 0.88;
+    base_cost *= 0.88;
 
     base_execute_time = 2.5;
     may_crit          = true;
@@ -2300,14 +2300,12 @@ struct frost_bolt_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    double pct = sim -> P320 ? 0.11 : 0.13;
-
     static rank_t ranks[] =
     {
-      { 80, 16, 803, 866, 0, pct },
-      { 79, 16, 799, 861, 0, pct },
-      { 75, 15, 702, 758, 0, pct },
-      { 70, 14, 630, 680, 0, pct },
+      { 80, 16, 803, 866, 0, 0.11 },
+      { 79, 16, 799, 861, 0, 0.11 },
+      { 75, 15, 702, 758, 0, 0.11 },
+      { 70, 14, 630, 680, 0, 0.11 },
       { 68, 13, 597, 644, 0, 330 },
       { 62, 12, 522, 563, 0, 300 },
       { 60, 11, 515, 555, 0, 290 },
@@ -2331,14 +2329,7 @@ struct frost_bolt_t : public mage_spell_t
     base_crit         += p -> talents.arcane_instability * 0.01;
     direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
 
-    if ( sim -> P320 )
-    {
-      base_execute_time -= p -> talents.empowered_frost_bolt * 0.1;
-    }
-    else
-    {
-      base_crit += p -> talents.empowered_frost_bolt * 0.02;
-    }
+    base_execute_time -= p -> talents.empowered_frost_bolt * 0.1;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
@@ -2405,13 +2396,11 @@ struct ice_lance_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    double pct = sim -> P320 ? 0.06 : 0.07;
-
     static rank_t ranks[] =
     {
-      { 80, 3, 223, 258, 0, pct },
-      { 78, 3, 221, 255, 0, pct },
-      { 72, 2, 182, 210, 0, pct },
+      { 80, 3, 223, 258, 0, 0.06 },
+      { 78, 3, 221, 255, 0, 0.06 },
+      { 72, 2, 182, 210, 0, 0.06 },
       { 66, 1, 161, 187, 0, 150 },
       { 0, 0, 0, 0, 0, 0 }
     };

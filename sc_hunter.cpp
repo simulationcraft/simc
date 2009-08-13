@@ -507,12 +507,7 @@ struct hunter_pet_t : public pet_t
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
-
-    if ( sim -> P320 )
-      initial_attack_power_multiplier *= 1.0 + o -> talents.animal_handler * 0.05;
-    else
-      base_attack_expertise = 0.25 * o -> talents.animal_handler * 0.05;
-
+    initial_attack_power_multiplier *= 1.0 + o -> talents.animal_handler * 0.05;
 
     base_attack_crit = 0.032 + talents.spiders_bite * 0.03;
     base_attack_crit += o -> talents.ferocity * 0.02;
@@ -545,7 +540,7 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> stamina() * o -> talents.hunter_vs_wild * 0.1;
-    ap += o -> composite_attack_power() * 0.22 * ( 1 + talents.wild_hunt * ( sim -> P320 ? 0.15 : 0.10 ) );
+    ap += o -> composite_attack_power() * 0.22 * ( 1 + talents.wild_hunt * 0.15 );
     ap += _buffs.furious_howl;
 
     if ( o -> active_aspect == ASPECT_BEAST )
@@ -562,10 +557,7 @@ struct hunter_pet_t : public pet_t
 
   virtual double composite_spell_hit() SC_CONST
   {
-    if ( sim -> P320 )
-      return composite_attack_hit() * 17.0 / 8.0;
-    else
-      return pet_t::composite_spell_hit();
+    return composite_attack_hit() * 17.0 / 8.0;
   }
 
   virtual void summon( double duration=0 )
@@ -1144,7 +1136,7 @@ static void trigger_lock_and_load( attack_t* a )
 
   if ( ! p -> talents.lock_and_load )
     return;
-  if ( a -> sim -> P320 && ! a -> sim -> cooldown_ready( p -> _cooldowns.lock_and_load ) )
+  if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.lock_and_load ) )
     return;
 
   // NB: talent calc says 3%,7%,10%, assuming it's really 10% * (1/3,2/3,3/3)
@@ -3528,7 +3520,7 @@ struct kill_command_t : public hunter_spell_t
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
-    cooldown  = 60 - ( p -> sim -> P320 ? 10 * p -> talents.catlike_reflexes : 0 );
+    cooldown  = 60 - 10 * p -> talents.catlike_reflexes;
     trigger_gcd = 0;
   }
 
