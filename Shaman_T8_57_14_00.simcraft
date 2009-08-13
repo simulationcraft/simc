@@ -9,7 +9,6 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=tender_shoveltusk_steak
 actions+=/flametongue_weapon,weapon=main
 actions+=/water_shield
-actions+=/wind_shear
 actions+=/mana_spring_totem
 actions+=/wrath_of_air_totem
 actions+=/water_shield
