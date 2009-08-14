@@ -2706,7 +2706,7 @@ void druid_t::init_buffs()
   buffs_natures_grace      = new buff_t( sim, this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness  = new buff_t( sim, this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( sim, this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
-  buffs_t8_4pc_balance     = new buff_t( sim, this, "t8_4pc_balance"    , 1,  10.0,     0, 0.08 );
+  buffs_t8_4pc_balance     = new buff_t( sim, this, "t8_4pc_balance"    , 1,  10.0,     0, tiers.t8_4pc_balance * 0.08 );
   buffs_tigers_fury        = new buff_t( sim, this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( sim, this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
