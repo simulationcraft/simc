@@ -34,7 +34,7 @@ finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit,
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=19sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
 trinket2=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
-back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8hit_9sp_5sp,enchant=lightweave
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8hit_9sp_5sp,enchant=lightweave_embroidery
 main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
 off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
 ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
@@ -52,7 +52,6 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # meta_gem=chaotic_skyflare
 # tier8_2pc=1
 # tier8_4pc=1
-# back=drape_of_mortal_downfall,enchant=lightweave
+# back=drape_of_mortal_downfall,enchant=lightweave_embroidery
 # main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
-# items=flare_of_the_heavens/eye_of_the_broodmother
 armor_type=molten

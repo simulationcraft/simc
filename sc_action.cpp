@@ -53,7 +53,8 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), has_if_exp( -1 ), is_ifall( 0 ), if_exp( NULL ),
+    P322( -1 ), moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    has_if_exp( -1 ), is_ifall( 0 ), if_exp( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -102,6 +103,7 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
+    { "P322",               OPT_BOOL,   &P322                  },
     { "allow_early_cast",   OPT_INT,    &is_ifall              },
     { "allow_early_recast", OPT_INT,    &is_ifall              },
     { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
@@ -1032,6 +1034,10 @@ bool action_t::ready()
 
   if ( player -> moving )
     if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
+      return false;
+
+  if ( P322 != -1 )
+    if ( P322 != sim -> P322 )
       return false;
 
   if ( moving )

@@ -37,7 +37,7 @@ finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=19sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=19sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
 trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
-back=sunglimmer_cloak,stats=162armor_39haste_75sp_70sta_48int_48spi,gems=19sp,enchant=lightweave
+back=sunglimmer_cloak,stats=162armor_39haste_75sp_70sta_48int_48spi,gems=19sp,enchant=lightweave_embroidery
 main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
 off_hand=ironmender,stats=36haste_74sp_54sta_47int_45spi
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
@@ -54,7 +54,6 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # gear_armor=1988
 # meta_gem=chaotic_skyflare
 # tier8_2pc=1
-# back=sunglimmer_cloak,enchant=lightweave
+# back=sunglimmer_cloak,enchant=lightweave_embroidery
 # main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
-# items=flare_of_the_heavens/scale_of_fates
 armor_type=molten
