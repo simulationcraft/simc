@@ -712,6 +712,7 @@ void action_t::tick()
     if ( rng[ RESULT_CRIT ] -> roll( total_crit() ) )
     {
       result = RESULT_CRIT;
+      action_callback_t::trigger( player -> spell_result_callbacks[ RESULT_CRIT ], this );
     }
   }
 

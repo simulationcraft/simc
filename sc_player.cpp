@@ -1007,7 +1007,7 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
-  procs.honor_among_thieves_donor = ( is_pet() ? ( cast_pet() -> owner ) : this ) -> get_proc( "honor_among_thieves_donor", sim );
+  procs.hat_donor = get_proc( "hat_donor",   sim );
   procs.tier4_2pc = get_proc( "tier4_2pc",   sim );
   procs.tier4_4pc = get_proc( "tier4_4pc",   sim );
   procs.tier5_2pc = get_proc( "tier5_2pc",   sim );

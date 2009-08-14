@@ -116,9 +116,14 @@ double target_t::time_to_die() SC_CONST
 
 double target_t::health_percentage() SC_CONST
 {
-  if ( initial_health <= 0 ) return 100;
-
-  return 100.0 * current_health / initial_health;
+  if ( initial_health > 0 ) 
+  {
+    return 100.0 * current_health / initial_health;
+  }
+  else
+  {
+    return 100.0 * ( sim -> max_time - sim -> current_time ) / sim -> max_time;
+  }
 }
 
 // target_t::base_armor ======================================================

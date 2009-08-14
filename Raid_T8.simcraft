@@ -24,11 +24,11 @@ Priest_T8_13_00_58_SWD.simcraft
 # In Patch 3.2, crits from period damage can proc HAT, so the default interval and default party make-up is different than Raid_T8.simcraft
 
 Rogue_T8_07_51_13_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_08_20_43
-Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD  honor_among_thieves_interval=0.70
+Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD  
 Rogue_T8_15_51_05_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_15_51_05_S
 Rogue_T8_15_51_05_S.simcraft   tricks_of_the_trade_target=Rogue_T8_18_51_02_BS
 Rogue_T8_18_51_02_BS.simcraft  tricks_of_the_trade_target=Rogue_T8_23_05_43
-Rogue_T8_23_05_43.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13     honor_among_thieves_interval=0.70
+Rogue_T8_23_05_43.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13     
 Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13_NoM
 Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07     name=Rogue_T8_51_07_13_NoM murder=0
 Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07_NoM
@@ -53,6 +53,6 @@ Warrior_T8_19_52_00.simcraft
 
 # To get real simulation of HAT procs, the Rogues must be in a party in which case honor_among_thieves_interval is ignored
 # To put everybody in one big party to check HAT donor rates, simply use party=all (and be sure to ignore the HAT Rogues)
-# party=Rogue_T8_23_05_43/Mage_T8_57_03_11/Mage_T8_00_53_18/Mage_T8_18_00_53/Druid_T8_58_00_13
-# party=Rogue_T8_08_20_43/Mage_T8_53_18_00/Priest_T8_13_00_58/Priest_T8_13_00_58_SWD/Shaman_T8_16_55_00
+ party=Rogue_T8_23_05_43/Mage_T8_57_03_11/Mage_T8_00_53_18/Mage_T8_18_00_53/Druid_T8_58_00_13
+ party=Rogue_T8_08_20_43/Mage_T8_53_18_00/Priest_T8_13_00_58/Priest_T8_13_00_58_SWD/Shaman_T8_16_55_00
 

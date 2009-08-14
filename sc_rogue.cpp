@@ -54,6 +54,7 @@ struct rogue_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
+    double honor_among_thieves;
     double seal_fate;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
@@ -87,7 +88,7 @@ struct rogue_t : public player_t
   proc_t* procs_combo_points;
   proc_t* procs_combo_points_wasted;
   proc_t* procs_deadly_poison;
-  proc_t* procs_honor_among_thieves_receiver;
+  proc_t* procs_honor_among_thieves;
   proc_t* procs_ruthlessness;
   proc_t* procs_seal_fate;
   proc_t* procs_sword_specialization;
@@ -110,7 +111,7 @@ struct rogue_t : public player_t
   rng_t* rng_deadly_poison;
   rng_t* rng_focused_attacks;
   rng_t* rng_honor_among_thieves;
-  rng_t* rng_HAT_interval;
+  rng_t* rng_critical_strike_interval;
   rng_t* rng_initiative;
   rng_t* rng_instant_poison;
   rng_t* rng_relentless_strikes;
@@ -125,9 +126,10 @@ struct rogue_t : public player_t
   attack_t*  off_hand_attack;
 
   // Options
-  double      honor_among_thieves_interval;
+  std::vector<action_callback_t*> critical_strike_callbacks;
+  std::vector<double> critical_strike_intervals;
+  std::string critical_strike_intervals_str;
   std::string tricks_of_the_trade_target_str;
-  int         prey_on_the_weak_hp;
 
   struct talents_t
   {
@@ -236,8 +238,7 @@ struct rogue_t : public player_t
     off_hand_attack  = 0;
 
     // Options
-    honor_among_thieves_interval = 0;
-    prey_on_the_weak_hp          = 100; // assume prey_on_the_weak is always active by default
+    critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
   }
 
   // Character Definition
@@ -318,6 +319,7 @@ struct rogue_attack_t : public attack_t
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() SC_CONST;
+  virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
   virtual double armor() SC_CONST;
@@ -827,6 +829,21 @@ double rogue_attack_t::cost() SC_CONST
   return c;
 }
 
+// rogue_attack_t::consume_resource ========================================
+
+void rogue_attack_t::consume_resource()
+{
+  rogue_t* p = player -> cast_rogue();
+  attack_t::consume_resource();
+  if( result_is_hit() )
+  {
+    trigger_relentless_strikes( this );
+
+    if ( requires_combo_points ) clear_combo_points( p );
+    if (     adds_combo_points )   add_combo_point ( p );
+  }
+}
+
 // rogue_attack_t::execute =================================================
 
 void rogue_attack_t::execute()
@@ -837,11 +854,6 @@ void rogue_attack_t::execute()
 
   if ( result_is_hit() )
   {
-    trigger_relentless_strikes( this );
-
-    if ( requires_combo_points ) clear_combo_points( p );
-    if (     adds_combo_points )   add_combo_point ( p );
-
     trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
@@ -941,10 +953,9 @@ void rogue_attack_t::player_buff()
   }
   if ( p -> talents.prey_on_the_weak )
   {
-    // TODO: Add true uptime calculation (when/if we implement raid damage).
-    bool potw_active = sim -> target -> health_percentage() <= p -> prey_on_the_weak_hp;
-    if ( potw_active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
-    p -> uptimes_prey_on_the_weak -> update( potw_active );
+    bool active = sim -> target -> health_percentage() <= 100.0;
+    if ( active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    p -> uptimes_prey_on_the_weak -> update( active );
   }
   if ( p -> talents.hunger_for_blood )
   {
@@ -2444,8 +2455,6 @@ struct slice_and_dice_t : public rogue_attack_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     refresh_duration();
     consume_resource();
-    trigger_relentless_strikes( this );
-    clear_combo_points( p );
     trigger_ruthlessness( this );
     p -> active_slice_and_dice = this;
   }
@@ -2733,10 +2742,9 @@ void rogue_poison_t::player_buff()
   }
   if ( p -> talents.prey_on_the_weak )
   {
-    // TODO: Add true uptime calculation (when/if we implement raid damage).
-    bool potw_active = sim -> target -> health_percentage() <= p -> prey_on_the_weak_hp;
-    if ( potw_active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
-    p -> uptimes_prey_on_the_weak -> update( potw_active );
+    bool active = sim -> target -> health_percentage() <= 100.0;
+    if ( active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
+    p -> uptimes_prey_on_the_weak -> update( active );
   }
   if ( p -> talents.hunger_for_blood )
   {
@@ -3385,13 +3393,13 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points                 = get_proc( "combo_points",                 sim );
-  procs_combo_points_wasted          = get_proc( "combo_points_wasted",          sim );
-  procs_deadly_poison                = get_proc( "deadly_poisons",               sim );
-  procs_honor_among_thieves_receiver = get_proc( "honor_among_thieves_receiver", sim );
-  procs_ruthlessness                 = get_proc( "ruthlessness",                 sim );
-  procs_seal_fate                    = get_proc( "seal_fate",                    sim );
-  procs_sword_specialization         = get_proc( "sword_specialization",         sim );
+  procs_combo_points         = get_proc( "combo_points",         sim );
+  procs_combo_points_wasted  = get_proc( "combo_points_wasted",  sim );
+  procs_deadly_poison        = get_proc( "deadly_poisons",       sim );
+  procs_honor_among_thieves  = get_proc( "honor_among_thieves",  sim );
+  procs_ruthlessness         = get_proc( "ruthlessness",         sim );
+  procs_seal_fate            = get_proc( "seal_fate",            sim );
+  procs_sword_specialization = get_proc( "sword_specialization", sim );
 }
 
 // rogue_t::init_uptimes =====================================================
@@ -3435,8 +3443,8 @@ void rogue_t::init_rng()
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_HAT_interval = get_rng( "HAT_interval",     RNG_DISTRIBUTED );
-  rng_HAT_interval -> average_range = false;
+  rng_critical_strike_interval = get_rng( "critical_strike_interval", RNG_DISTRIBUTED );
+  rng_critical_strike_interval -> average_range = false;
 }
 
 // trigger_honor_among_thieves =============================================
@@ -3455,26 +3463,40 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> special || a -> aoe || a -> pseudo_pet ) 
-      return;
-
-    if( sim -> current_time < cooldown_ready ) 
-      return;
-
     rogue_t* rogue = listener -> cast_rogue();
+
+    if ( a )
+      if ( ! a -> special || a -> aoe || a -> pseudo_pet ) 
+	return;
+
+    if ( a )
+      a -> player -> procs.hat_donor -> occur();
+
+    if ( sim -> P322 )
+    {
+      if ( sim -> current_time < rogue -> _cooldowns.honor_among_thieves )
+	return;
+    }
+    else
+    {
+      if ( sim -> current_time < cooldown_ready ) 
+	return;
+    }
 
     if ( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
 
     add_combo_point( rogue );
 
-    a -> player -> procs.honor_among_thieves_donor -> occur();
+    rogue -> procs_honor_among_thieves -> occur();
 
-    if ( rogue != a -> player )
+    if ( sim -> P322 )
     {
-      rogue -> procs_honor_among_thieves_receiver -> occur();
+      rogue -> _cooldowns.honor_among_thieves = sim -> current_time + 1.0;
     }
-
-    cooldown_ready = sim -> current_time + 1.0;
+    else
+    {
+      cooldown_ready = sim -> current_time + 1.0;
+    }
   }
 };
 
@@ -3486,17 +3508,44 @@ void rogue_t::register_callbacks()
 
   if ( talents.honor_among_thieves )
   {
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    action_callback_t* cb = new honor_among_thieves_callback_t( this );
+
+    register_attack_result_callback( RESULT_CRIT_MASK, cb );
+    register_spell_result_callback ( RESULT_CRIT_MASK, cb );
+
+    if( party )
     {
-      if ( p != this )
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if ( p -> party == 0     ) continue;
+	if ( p == this           ) continue;
 	if ( p -> party != party ) continue;
         if ( p -> is_pet()       ) continue;
-      }
 
-      p -> register_attack_result_callback( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
-      p -> register_spell_result_callback ( RESULT_CRIT_MASK, new honor_among_thieves_callback_t( this ) );
+	cb = new honor_among_thieves_callback_t( this );
+
+	p -> register_attack_result_callback( RESULT_CRIT_MASK, cb );
+	p -> register_spell_result_callback ( RESULT_CRIT_MASK, cb );
+      }
+    }
+    else // Virtual Party
+    {
+      std::vector<std::string> intervals;
+      int num_intervals = util_t::string_split( intervals, critical_strike_intervals_str, ",;|/" );
+      if( num_intervals == 0 )
+      {
+	intervals.push_back( "1.0" );
+	num_intervals = 1;
+      }
+      while( num_intervals < 4 )
+      {
+	intervals.push_back( intervals[ num_intervals-1 ] );
+	num_intervals++;
+      }
+      for( int i=0; i < num_intervals; i++ )
+      {
+	critical_strike_intervals.push_back( atof( intervals[ i ].c_str() ) );
+	critical_strike_callbacks.push_back( new honor_among_thieves_callback_t( this ) );
+      }
     }
   }
 }
@@ -3509,38 +3558,33 @@ void rogue_t::combat_begin()
 
   if ( talents.honor_among_thieves )
   {
-    if ( party != 0 )
+    if ( party == 0 ) // Virtual Party
     {
-      // When in a party, ignore honor_among_thieves_interval option.
-    }
-    else if ( honor_among_thieves_interval > 0 )
-    {
-      struct honor_among_thieves_proc_t : public event_t
-      {
-        honor_among_thieves_proc_t( sim_t* sim, rogue_t* p, double interval ) : event_t( sim, p )
-        {
-          name = "Honor Among Thieves Proc";
-          sim -> add_event( this, interval );
-        }
-        virtual void execute()
-        {
-          rogue_t* p = player -> cast_rogue();
-          add_combo_point( p );
-          p -> procs_honor_among_thieves_receiver -> occur();
-          double mean     = p -> honor_among_thieves_interval;
-          double stddev   = mean * 0.5;
-          double interval = p -> rng_HAT_interval -> range( mean-stddev, mean+stddev );
-          new ( sim ) honor_among_thieves_proc_t( sim, p, interval );
-        }
-      };
+      int num_intervals = critical_strike_intervals.size();
 
-      // First proc comes 1.0 seconds into combat.
-      new ( sim ) honor_among_thieves_proc_t( sim, this, 1.0 );
-    }
-    else 
-    {
-      util_t::printf( "simcraft: %s must have a party specification or 'honor_among_thieves_interval' must be set.\n", name() );
-      exit( 0 );
+      for( int i=0; i < num_intervals; i++ )
+      {
+	struct critical_strike_t : public event_t
+        {
+	  action_callback_t* callback;
+	  double interval;
+
+	  critical_strike_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) : 
+	    event_t( sim, p ), callback(cb), interval(i)
+          {
+	    name = "Critical Strike";
+	    double time = p -> rng_critical_strike_interval -> range( interval*0.5, interval*1.5 );
+	    sim -> add_event( this, time );
+	  }
+	  virtual void execute()
+          {
+	    rogue_t* p = player -> cast_rogue();
+	    callback -> trigger( NULL );
+	    new ( sim ) critical_strike_t( sim, p, callback, interval );
+	  }
+	};
+	new ( sim ) critical_strike_t( sim, this, critical_strike_callbacks[ i ], critical_strike_intervals[ i ] );
+      }
     }
   }
 }
@@ -3558,6 +3602,13 @@ void rogue_t::reset()
   _buffs.reset();
   _cooldowns.reset();
   _expirations.reset();
+
+  // Reset the callbacks for the Virtual Party
+  int num_intervals = critical_strike_callbacks.size();
+  for( int i=0; i < num_intervals; i++ )
+  {
+    critical_strike_callbacks[ i ] -> reset();
+  }
 }
 
 // rogue_t::interrupt ======================================================
@@ -3726,9 +3777,8 @@ std::vector<option_t>& rogue_t::get_options()
       { "vitality",                   OPT_INT, &( talents.vitality                   ) },
       { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
       // @option_doc loc=player/rogue/misc title="Misc"
-      { "honor_among_thieves_interval", OPT_FLT,    &( honor_among_thieves_interval   ) },
-      { "tricks_of_the_trade_target",   OPT_STRING, &( tricks_of_the_trade_target_str ) },
-      { "prey_on_the_weak_hp",          OPT_INT,    &( prey_on_the_weak_hp            ) },
+      { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str   ) },
+      { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -3746,11 +3796,12 @@ bool rogue_t::save( FILE* file, int save_type )
 
   if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    if ( honor_among_thieves_interval != 0 )
+    if ( talents.honor_among_thieves )
     {
-      util_t::fprintf( file, "# When using this profile with a real raid AND party setups, override this value to zero.\n" );
-      util_t::fprintf( file, "# This does not include HAT procs generated by the Rogue himself.\n" );
-      util_t::fprintf( file, "honor_among_thieves_interval=%.2f\n", honor_among_thieves_interval );
+      util_t::fprintf( file, "# When using this profile with a real raid AND party setups, this parameter will be ignored.\n" );
+      util_t::fprintf( file, "# These values represent the avg donor intervals (unlimited by cooldown) of the Rogues's party members.\n" );
+      util_t::fprintf( file, "# This does not affect HAT procs generated by the Rogue himself.\n" );
+      util_t::fprintf( file, "critical_strike_intervals=%s\n", critical_strike_intervals_str.c_str() );
     }
   }
 

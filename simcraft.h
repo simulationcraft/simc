@@ -1452,7 +1452,7 @@ struct player_t
 
   struct procs_t
   {
-    proc_t* honor_among_thieves_donor;
+    proc_t* hat_donor;
     proc_t *tier4_2pc,  *tier4_4pc;
     proc_t *tier5_2pc,  *tier5_4pc;
     proc_t *tier6_2pc,  *tier6_4pc;

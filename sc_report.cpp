@@ -605,8 +605,8 @@ struct compare_hat_donor_interval
 {
   bool operator()( player_t* l, player_t* r ) SC_CONST
   {
-    return( l -> procs.honor_among_thieves_donor -> frequency < 
-	    r -> procs.honor_among_thieves_donor -> frequency );
+    return( l -> procs.hat_donor -> frequency < 
+	    r -> procs.hat_donor -> frequency );
   }
 };
 
@@ -615,19 +615,15 @@ static void print_hat_donors( FILE* file, sim_t* sim )
   std::vector<player_t*> hat_donors;
 
   int num_players = sim -> players_by_name.size();
-
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-
-    if( p -> procs.honor_among_thieves_donor -> count )
-    {
+    if( p -> procs.hat_donor -> count )
       hat_donors.push_back( p );
-    }
   }
 
   int num_donors = hat_donors.size();
-  if( num_donors > 0 )
+  if( num_donors )
   {
     std::sort( hat_donors.begin(), hat_donors.end(), compare_hat_donor_interval()  );
 
@@ -636,8 +632,7 @@ static void print_hat_donors( FILE* file, sim_t* sim )
     for( int i=0; i < num_donors; i++ )
     {
       player_t* p = hat_donors[ i ];
-      proc_t* proc = p -> procs.honor_among_thieves_donor;
-
+      proc_t* proc = p -> procs.hat_donor;
       util_t::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> frequency, ( 1.0 / proc -> frequency ), p -> name() );
     }
   }
@@ -1087,7 +1082,7 @@ static void print_wiki_scale_factors( FILE*  file,
     util_t::fprintf( file, "\n" );
   }
 
-  util_t::fprintf( file, "----\n" );
+  util_t::fprintf( file, "\n----\n\n" );
 
   util_t::fprintf( file, "|| profiles || lootrank || wowhead || pawn ||\n" );
 
