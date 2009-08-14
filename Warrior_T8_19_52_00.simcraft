@@ -30,8 +30,8 @@ neck=frigid_strength_of_hodir,stats=40hit_48arpen_74str_81sta,gems=8str_12sta_4s
 shoulders=valorous_siegebreaker_shoulderplates,stats=1741armor_43hit_50crit_83str_90sta,gems=16exp_4str,enchant=40ap_15crit
 shirt=orange_martial_shirt
 chest=conquerors_siegebreaker_battleplate,stats=2348armor_58crit_74arpen_113str_129sta,gems=16str_16str,enchant=10str_10agi_10sta_10int_10spi
-waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=27str_27str_16str_12ap
-legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16exp_27str_16str,enchant=75ap_22crit
+waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=34str_34str_16str_12ap
+legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16exp_34str_16str,enchant=75ap_22crit
 feet=melancholy_sabatons,stats=1614armor_54crit_84arpen_88str_81sta,enchant=12crit_12hit
 wrists=solar_bindings,stats=267armor_86ap_48haste_47exp_64agi_61sta,gems=16str_16str,enchant=50ap
 hands=conquerors_siegebreaker_gauntlets,stats=1467armor_38hit_60exp_90str_102sta,gems=16str_16arpen,enchant=44ap
@@ -44,7 +44,7 @@ main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,g
 off_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16str_16str,enchant=berserking,weapon=sword2h_3.60speed_244.6dps
 ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weapon=thrown_2.10speed_232.4dps
 # Gear Summary
-# gear_strength=1344
+# gear_strength=1365
 # gear_agility=453
 # gear_stamina=1390
 # gear_intellect=10
@@ -59,7 +59,7 @@ ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weap
 # meta_gem=chaotic_skyflare
 # tier8_2pc=1
 # tier8_4pc=1
+# trinket2=darkmoon_card_greatness
 # main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking
 # off_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking
 # ranged=twirling_blades,weapon=thrown_2.10speed_232.4dps
-# items=mjolnir_runestone/darkmoon_card_greatness

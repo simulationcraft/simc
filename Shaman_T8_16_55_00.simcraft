@@ -33,8 +33,8 @@ legs=conquerors_worldbreaker_warkilt,stats=1150armor_196ap_60hit_81haste_66agi_7
 feet=tempered_mercury_greaves,stats=903armor_138ap_48hit_38crit_57agi_66sta_40int,gems=16ap_8crit_32ap_12ap,enchant=12crit_12hit
 wrists=frostbound_chain_bracers,stats=575armor_126ap_33hit_36crit_46agi_49sta_33int,enchant=114ap
 hands=gloves_of_the_steady_hand,stats=846armor_106ap_50hit_55crit_79agi_75sta_49int,gems=16exp_16exp,enchant=44ap
-finger1=loop_of_the_agile,stats=76ap_45crit_32haste_63agi_52sta,gems=32ap,enchant=32ap
-finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=32ap,enchant=32ap
+finger1=loop_of_the_agile,stats=76ap_45crit_32haste_63agi_52sta,gems=32ap,enchant=40ap
+finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=32ap,enchant=40ap
 trinket1=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
 trinket2=blood_of_the_old_god,stats=108hit,equip=onattackcrit_1284ap_10%_10dur_50cd
 back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=32ap_16ap_8crit_6agi,enchant=22agi
@@ -47,7 +47,7 @@ ranged=furious_gladiators_totem_of_indomitability
 # gear_stamina=859
 # gear_intellect=403
 # gear_spirit=14
-# gear_attack_power=2781
+# gear_attack_power=2797
 # gear_expertise_rating=172
 # gear_armor_penetration_rating=63
 # gear_hit_rating=435
@@ -59,4 +59,3 @@ ranged=furious_gladiators_totem_of_indomitability
 # tier8_4pc=1
 # main_hand=golden_saronite_dragon,weapon=fist_2.70speed_188.1dps,enchant=berserking
 # off_hand=caress_of_insanity,weapon=mace_2.70speed_178.9dps,enchant=berserking
-# items=comets_trail/blood_of_the_old_god

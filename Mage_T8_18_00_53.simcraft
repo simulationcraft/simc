@@ -33,8 +33,8 @@ legs=conquerors_kirin_tor_leggings,stats=275armor_66hit_74crit_123sp_76sta_82int
 feet=boots_of_fiery_resolution,stats=223armor_55haste_102sp_72sta_72int_64spi,gems=19sp_8haste_9sp_6haste,enchant=12crit_12hit
 wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
 hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=19sp_19sp,enchant=28sp
-finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=19sp
-finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=19sp
+finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=23sp
+finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=23sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
 trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
 back=sunglimmer_cloak,stats=162armor_39haste_75sp_70sta_48int_48spi,gems=19sp,enchant=lightweave_embroidery
@@ -47,7 +47,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # gear_stamina=942
 # gear_intellect=894
 # gear_spirit=392
-# gear_spell_power=2562
+# gear_spell_power=2570
 # gear_hit_rating=286
 # gear_crit_rating=438
 # gear_haste_rating=650
