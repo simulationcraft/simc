@@ -3430,10 +3430,13 @@ double mage_t::resource_gain( int       resource,
 {
   double actual_amount = player_t::resource_gain( resource, amount, source, action );
 
-  if ( source != gains_evocation &&
-       source != gains_mana_gem )
+  if ( resource == RESOURCE_MANA )
   {
-    rotation.mana_gain += actual_amount;
+    if ( source != gains_evocation &&
+         source != gains_mana_gem )
+    {
+      rotation.mana_gain += actual_amount;
+    }
   }
 
   return actual_amount;
