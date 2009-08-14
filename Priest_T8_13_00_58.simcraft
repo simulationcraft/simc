@@ -13,12 +13,12 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/wild_magic_potion
 actions+=/shadow_fiend
-actions+=/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
+actions+=/dispersion
 actions+=/mind_flay
 actions+=/shadow_word_death
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
@@ -34,7 +34,7 @@ finger1=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=9sp_8spi_5sp,e
 finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=19sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
 trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
-back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave_embroidery
 main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
 off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
 ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
@@ -52,6 +52,5 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # meta_gem=chaotic_skyflare
 # tier8_2pc=1
 # tier8_4pc=1
-# back=drape_of_mortal_downfall,enchant=lightweave
+# back=drape_of_mortal_downfall,enchant=lightweave_embroidery
 # main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
-# items=flare_of_the_heavens/illustration_of_the_dragon_soul

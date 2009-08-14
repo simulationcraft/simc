@@ -32,7 +32,7 @@ finger1=signet_of_manifested_pain,stats=46crit_36haste_74sp_46sta_49int,enchant=
 finger2=lost_jewel,stats=42crit_65sp_45sta_38int_37spi,enchant=19sp
 trinket1=dying_curse,stats=71hit,equip=onspellhit_765sp_15%_10dur_45cd
 trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
-back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=9sp_8spi_5sp,enchant=lightweave
+back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=9sp_8spi_5sp,enchant=lightweave_embroidery
 main_hand=torch_of_holy_fire,stats=48haste_15mp5_520sp_36sta_49int,enchant=63sp,weapon=mace_1.80speed_98.9dps
 off_hand=accursed_spine,stats=43crit_65sp_42sta_41int_32spi
 ranged=gemmed_wand_of_the_nerubians,stats=18hit_22haste_37sp_27sta_22int
@@ -50,6 +50,5 @@ ranged=gemmed_wand_of_the_nerubians,stats=18hit_22haste_37sp_27sta_22int
 # gear_armor=1946
 # meta_gem=chaotic_skyflare
 # tier7_2pc=1
-# back=pennant_cloak,enchant=lightweave
+# back=pennant_cloak,enchant=lightweave_embroidery
 # main_hand=torch_of_holy_fire,weapon=mace_1.80speed_98.9dps
-# items=dying_curse/illustration_of_the_dragon_soul

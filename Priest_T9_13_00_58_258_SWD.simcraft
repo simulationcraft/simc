@@ -13,12 +13,12 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/wild_magic_potion
 actions+=/shadow_fiend
-actions+=/dispersion
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
+actions+=/dispersion
 actions+=/shadow_word_death,mb_wait=0,mb_priority=0
 actions+=/mind_flay
 actions+=/shadow_word_death
@@ -56,4 +56,3 @@ ranged=rod_of_imprisoned_souls,stats=29int_40sta_24haste_31crit_50sp,gems=0sp
 # tier9_4pc=1
 # back=jainas_radiance,enchant=lightweave
 # main_hand=miserys_end,weapon=mace_1.80speed_125.3dps
-# items=flare_of_the_heavens/reign_of_the_unliving

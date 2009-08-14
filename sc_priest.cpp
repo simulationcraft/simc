@@ -48,6 +48,7 @@ struct priest_t : public player_t
   struct _cooldowns_t
   {
     double mind_blast;
+    double shadow_fiend;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -68,6 +69,19 @@ struct priest_t : public player_t
   rng_t* rng_pain_and_suffering;
   rng_t* rng_shadow_weaving;
   rng_t* rng_surge_of_light;
+
+  // Mana Resource Tracker
+  struct _mana_resource_t
+  {
+    double mana_gain;
+    double mana_loss;
+
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _mana_resource_t ) ); }
+    _mana_resource_t() { reset(); }
+  };
+  _mana_resource_t _mana_resource;
+
+  double max_mana_cost;
 
   struct talents_t
   {
@@ -144,6 +158,8 @@ struct priest_t : public player_t
     // Tier 8 4-piece Delay
     devious_mind_delay = 0.0;
     use_shadow_word_death = false;
+
+    max_mana_cost = 0.0;
   }
 
   // Character Definition
@@ -163,6 +179,9 @@ struct priest_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : talents.penance ? TREE_DISCIPLINE : TREE_HOLY; }
   virtual void      regen( double periodicity );
+
+  virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
+  virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 };
 
 enum devious_mind_states_t { DEVIOUS_MIND_STATE_NONE=0, DEVIOUS_MIND_STATE_WAITING, DEVIOUS_MIND_STATE_ACTIVE };
@@ -617,6 +636,11 @@ void priest_spell_t::execute()
   priest_t* p = player -> cast_priest();
 
   spell_t::execute();
+
+  if ( cost() > p -> max_mana_cost )
+  {
+    p -> max_mana_cost = cost();
+  }
 
   if ( result_is_hit() )
   {
@@ -1553,26 +1577,52 @@ struct dispersion_t : public priest_spell_t
 
   virtual bool ready()
   {
-    double consumption_rate, time_to_oom;
-    double fudge_factor = 1.1;
-
     if ( ! priest_spell_t::ready() )
       return false;
 
-    consumption_rate  = ( player -> resource_initial[ RESOURCE_MANA ] -
-                          player -> resource_current[ RESOURCE_MANA ] ) /
-                        sim -> current_time;
-    consumption_rate *= fudge_factor;
+    priest_t* p = player -> cast_priest();
 
-    time_to_oom = player -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+    double regen_rate = p -> _mana_resource.mana_gain / sim -> current_time;
+    double consumption_rate = ( p -> _mana_resource.mana_loss / sim -> current_time ) - regen_rate;
+    double shadow_fiend_regen = 0.50 * p -> resource_max[ RESOURCE_MANA ];
+    double time_to_die = sim -> target -> time_to_die();
 
-    if ( sim -> target -> time_to_die() < time_to_oom )
-      return false;
+    if ( consumption_rate <= 0.00001 ) return false;
 
-    if ( player -> buffs.bloodlust && ( time_to_oom > 45.0 ) )
-      return false;
+    double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-    return player -> resource_current[ RESOURCE_MANA ] < 0.50 * player -> resource_max[ RESOURCE_MANA ];
+    if ( oom_time >= time_to_die ) return false;
+
+    if ( p -> _cooldowns.shadow_fiend <= sim -> current_time ) return false;
+
+    // Don't cast if Shadowfiend is still up
+    if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time ) > 
+         ( ( 300.0 - p -> talents.veiled_shadows * 60.0 ) - 15.0 ) ) return false;
+
+    if ( oom_time >= ( p -> _cooldowns.shadow_fiend - sim -> current_time) )
+    {
+      double new_mana = p -> resource_current[ RESOURCE_MANA ] - consumption_rate * ( p -> _cooldowns.shadow_fiend - sim -> current_time ) + shadow_fiend_regen;
+
+      if ( new_mana > p -> resource_max[ RESOURCE_MANA ] )
+        new_mana = p -> resource_max[ RESOURCE_MANA ];
+  
+      double oom_time2 = new_mana / consumption_rate;
+      if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time + oom_time2 ) >= time_to_die ) return false;
+
+      if ( consumption_rate < ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) ) ) return false;
+
+      double consumption_rate2 = consumption_rate - ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) );
+      double oom_time3 = new_mana / consumption_rate2;
+
+      if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time + oom_time3 ) >= time_to_die ) return false;
+    } 
+
+    double trigger = p -> resource_max[ RESOURCE_MANA ] - p -> max_mana_cost;
+
+    if ( ( p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA] ) <
+         trigger ) return false;
+
+    return true;
   }
 };
 
@@ -1835,6 +1885,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
     double duration = 15.1;
     if ( p -> set_bonus.tier4_2pc() ) duration += 3.0;
     p -> summon_pet( "shadow_fiend", duration );
+
+    p -> _cooldowns.shadow_fiend = cooldown_ready;
   }
 
   virtual bool ready()
@@ -1842,11 +1894,53 @@ struct shadow_fiend_spell_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
+    priest_t* p = player -> cast_priest();
+
     if ( sim -> infinite_resource [ RESOURCE_MANA ] )
       return true;
 
-    return( player -> resource_max    [ RESOURCE_MANA ] -
-            player -> resource_current[ RESOURCE_MANA ] ) >= trigger;
+    if ( trigger > 0 && 
+         ( ( p -> resource_max    [ RESOURCE_MANA ] -
+             p -> resource_current[ RESOURCE_MANA ] ) >= trigger ) ) return true;
+
+    if ( trigger > 0 ) return false;
+
+    // If it's not the first Shadowfiend just activate it anyway
+    if ( cooldown_ready > 0.0 ) return true;
+
+    if ( sim -> current_time < 15.0 ) return false;
+
+    double shadow_fiend_regen = 0.50 * p -> resource_max[ RESOURCE_MANA ];
+
+    if ( ( p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ] ) >=
+         shadow_fiend_regen ) return true;
+
+    double regen_rate = p -> _mana_resource.mana_gain / sim -> current_time;
+    double consumption_rate = ( p -> _mana_resource.mana_loss / sim -> current_time ) -
+                              regen_rate;
+
+
+    if ( consumption_rate <= ( shadow_fiend_regen / cooldown ) ) return true;
+
+    int max_fiends_available = (int)( ( sim -> max_time - sim -> current_time ) / cooldown ) + 1;
+    double mana_required = ( sim -> max_time - sim -> current_time ) * consumption_rate;
+    double min_fiends_needed = ( mana_required - p -> resource_current[ RESOURCE_MANA ] ) / shadow_fiend_regen;
+
+    double temp_trigger = shadow_fiend_regen;
+
+    if ( min_fiends_needed <= ( max_fiends_available - 1.0 ) ) return true;
+
+    if ( (int) min_fiends_needed <=  max_fiends_available ) 
+    {
+      temp_trigger = shadow_fiend_regen * ( min_fiends_needed - (double) max_fiends_available );
+      if ( temp_trigger > shadow_fiend_regen )
+        temp_trigger = shadow_fiend_regen;
+    }
+
+    if ( ( p -> resource_max    [ RESOURCE_MANA ] -
+           p -> resource_current[ RESOURCE_MANA ] ) >= temp_trigger ) return true;
+
+    return false;
   }
 };
 
@@ -1909,7 +2003,7 @@ void priest_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if     ( n == "dispersion" )        glyphs.dispersion = 1;
+    if      ( n == "dispersion"        ) glyphs.dispersion = 1;
     else if ( n == "penance"           ) glyphs.penance = 1;
     else if ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if ( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
@@ -2033,11 +2127,11 @@ void priest_t::init_actions()
       if ( talents.shadow_form ) action_list_str += "/shadow_form";
       action_list_str += "/wild_magic_potion";
       action_list_str += "/shadow_fiend";
-      if ( talents.dispersion ) action_list_str += "/dispersion";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
       if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
+      if ( talents.dispersion ) action_list_str += "/dispersion";
       if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_wait=0,mb_priority=0";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death"; // when moving
@@ -2085,6 +2179,7 @@ void priest_t::reset()
   _buffs.reset();
   _expirations.reset();
   _cooldowns.reset();
+  _mana_resource.reset();
 }
 
 // priest_t::regen  ==========================================================
@@ -2099,6 +2194,43 @@ void priest_t::regen( double periodicity )
   }
 
   player_t::regen( periodicity );
+}
+
+// priest_t::resource_gain ===================================================
+
+double priest_t::resource_gain( int       resource,
+                                double    amount,
+                                gain_t*   source,
+                                action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource, amount, source, action );
+
+  if ( resource == RESOURCE_MANA )
+  {
+    if ( source != gains_shadow_fiend &&
+         source != gains_dispersion )
+    {
+      _mana_resource.mana_gain += actual_amount;
+    }
+  }
+
+  return actual_amount;
+}
+
+// priest_t::resource_loss ===================================================
+
+double priest_t::resource_loss( int       resource,
+                                double    amount,
+                                action_t* action )
+{
+  double actual_amount = player_t::resource_loss( resource, amount, action );
+
+  if ( resource == RESOURCE_MANA )
+  {
+    _mana_resource.mana_loss += actual_amount;
+  }
+
+  return actual_amount;
 }
 
 // priest_t::get_talent_trees ===============================================
