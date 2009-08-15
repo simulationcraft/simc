@@ -83,6 +83,8 @@ struct priest_t : public player_t
 
   double max_mana_cost;
 
+  std::vector<player_t *> party_list;
+
   struct talents_t
   {
     int  aspiration;
@@ -170,6 +172,7 @@ struct priest_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
+  virtual void      init_party();
   virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -207,6 +210,7 @@ struct priest_spell_t : public spell_t
   virtual void   schedule_execute();
   virtual void   execute();
   virtual void   player_buff();
+  virtual void   assess_damage( double amount, int dmg_type );
 };
 
 // ==========================================================================
@@ -685,6 +689,46 @@ void priest_spell_t::player_buff()
   if ( p -> talents.focused_power )
   {
     player_multiplier *= 1.0 + p -> talents.focused_power * 0.02;
+  }
+}
+
+// priest_spell_t::assess_damage =============================================
+
+void priest_spell_t::assess_damage( double amount,
+                                    int    dmg_type )
+{
+  priest_t* p = player -> cast_priest();
+
+  spell_t::assess_damage( amount, dmg_type );
+  
+  if ( p -> active_vampiric_embrace )
+  {
+    p -> resource_gain( RESOURCE_HEALTH, amount * 0.15 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), p -> gains.vampiric_embrace );
+
+    pet_t* r = p -> pet_list;
+
+    while ( r )
+    {
+      r -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), r -> gains.vampiric_embrace );
+      r = r -> next_pet;
+    }
+
+    int num_players = p -> party_list.size();
+
+    for ( int i=0; i < num_players; i++ )
+    {
+      player_t* q = p -> party_list[ i ];
+      
+      q -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), q -> gains.vampiric_embrace );
+    
+      r = q -> pet_list;
+
+      while ( r )
+      {
+        r -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), r -> gains.vampiric_embrace );
+        r = r -> next_pet;
+      }
+    }    
   }
 }
 
@@ -1320,7 +1364,7 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
-      p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.20 ) );
+      p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.10 ) );
       if ( result == RESULT_CRIT )
       {
         trigger_improved_spirit_tap( this );
@@ -2163,6 +2207,23 @@ void priest_t::init_actions()
   player_t::init_actions();
 }
 
+// priest_t::init_party ======================================================
+
+void priest_t::init_party()
+{
+  party_list.clear();
+
+  player_t* p = sim -> player_list;
+  while ( p )
+  {
+     if ( ( p != this ) && ( p -> party == party ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
+     {
+       party_list.push_back( p );
+     }
+     p = p -> next;
+  }
+}
+
 // priest_t::reset ===========================================================
 
 void priest_t::reset()
@@ -2180,6 +2241,8 @@ void priest_t::reset()
   _expirations.reset();
   _cooldowns.reset();
   _mana_resource.reset();
+
+  init_party();
 }
 
 // priest_t::regen  ==========================================================

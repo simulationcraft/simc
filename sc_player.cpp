@@ -985,6 +985,7 @@ void player_t::init_gains()
   gains.restore_mana           = get_gain( "restore_mana" );
   gains.spellsurge             = get_gain( "spellsurge" );
   gains.spirit_intellect_regen = get_gain( "spirit_intellect_regen" );
+  gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
   gains.tier4_2pc              = get_gain( "tier4_2pc" );

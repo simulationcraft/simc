@@ -1436,6 +1436,7 @@ struct player_t
     gain_t* restore_mana;
     gain_t* spellsurge;
     gain_t* spirit_intellect_regen;
+    gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
     gain_t *tier4_2pc,  *tier4_4pc;
