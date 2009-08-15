@@ -361,8 +361,8 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
 
   // Enchants
-  else if ( name == "pyrorocket"               ) e = "1937Fire_45Cd";  // temporary for backwards compatibility
-  else if ( name == "hand_mounted_pyro_rocket" ) e = "1937Fire_45Cd";
+  else if ( name == "pyrorocket"               ) e = "1837Fire_45Cd";  // temporary for backwards compatibility
+  else if ( name == "hand_mounted_pyro_rocket" ) e = "1837Fire_45Cd";
   else if ( name == "hyperspeed_accelerators"  ) e = "340Haste_12Dur_60Cd";
 
   if ( e.empty() ) return false;
