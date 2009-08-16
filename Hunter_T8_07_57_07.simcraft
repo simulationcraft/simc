@@ -28,7 +28,7 @@ chest=conquerors_scourgestalker_tunic,stats=1314armor_194ap_57hit_59crit_86agi_6
 waist=belt_of_the_betrayed,stats=739armor_170ap_44crit_56arpen_57agi_67sta_43int,gems=16agi
 legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16agi_16agi_16agi,enchant=75ap_22crit
 feet=boots_of_living_scale,stats=903armor_138ap_48crit_45arpen_48agi_66sta_45int,gems=16agi_16agi,enchant=12crit_12hit
-wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=16agi,enchant=114ap
+wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=16agi,enchant=130ap
 hands=gloves_of_the_steady_hand,stats=846armor_106ap_50hit_55crit_79agi_75sta_49int,gems=16agi_16agi,enchant=20agi
 finger1=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=16agi_4agi,enchant=40ap
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16agi,enchant=40ap
@@ -43,7 +43,7 @@ ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weap
 # gear_stamina=965
 # gear_intellect=321
 # gear_spirit=10
-# gear_attack_power=2431
+# gear_attack_power=2447
 # gear_armor_penetration_rating=508
 # gear_hit_rating=240
 # gear_crit_rating=852

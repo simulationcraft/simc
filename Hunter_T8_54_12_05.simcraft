@@ -26,7 +26,7 @@ chest=conquerors_scourgestalker_tunic,stats=1314armor_194ap_57hit_59crit_86agi_6
 waist=belt_of_the_betrayed,stats=739armor_170ap_44crit_56arpen_57agi_67sta_43int,gems=16agi
 legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16agi_16agi_16agi,enchant=75ap_22crit
 feet=boots_of_the_renewed_flight,stats=903armor_122ap_50crit_37arpen_88agi_60sta_44int,enchant=12crit_12hit
-wrists=frostbound_chain_bracers,stats=575armor_126ap_33hit_36crit_46agi_49sta_33int,enchant=114ap
+wrists=frostbound_chain_bracers,stats=575armor_126ap_33hit_36crit_46agi_49sta_33int,enchant=130ap
 hands=conquerors_scourgestalker_handguards,stats=821armor_170ap_43hit_44haste_49agi_66sta_44int,gems=16agi_4agi,enchant=44ap
 finger1=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=16agi_4agi,enchant=40ap
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16agi,enchant=40ap
@@ -41,7 +41,7 @@ ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weap
 # gear_stamina=933
 # gear_intellect=327
 # gear_spirit=10
-# gear_attack_power=2609
+# gear_attack_power=2625
 # gear_armor_penetration_rating=383
 # gear_hit_rating=257
 # gear_crit_rating=689

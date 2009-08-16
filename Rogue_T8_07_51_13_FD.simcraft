@@ -28,7 +28,7 @@ chest=conquerors_terrorblade_breastplate,stats=591armor_162ap_66crit_76exp_97agi
 waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=16arpen_16arpen_16arpen_12ap
 legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=8crit_8agi_16arpen_8arpen_12sta_8agi,enchant=75ap_22crit
 feet=footpads_of_silence,stats=406armor_114ap_48hit_56crit_69agi_64sta,gems=8arpen_12sta_16arpen_6agi,enchant=12crit_12hit
-wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=8crit_8agi_4agi,enchant=114ap
+wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=8crit_8agi_4agi,enchant=130ap
 hands=conquerors_terrorblade_gauntlets,stats=369armor_130ap_54hit_43crit_85agi_59sta,gems=16arpen_4agi,enchant=44ap
 finger1=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16arpen,enchant=40ap
 finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=16arpen_4agi,enchant=40ap
@@ -44,7 +44,7 @@ ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16arpen_4agi,we
 # gear_stamina=967
 # gear_intellect=10
 # gear_spirit=10
-# gear_attack_power=2269
+# gear_attack_power=2285
 # gear_expertise_rating=132
 # gear_armor_penetration_rating=474
 # gear_hit_rating=334

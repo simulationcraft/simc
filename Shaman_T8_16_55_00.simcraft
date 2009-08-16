@@ -31,7 +31,7 @@ chest=conquerors_worldbreaker_chestguard,stats=1314armor_212ap_66hit_68crit_66ag
 waist=belt_of_dragons,stats=739armor_138ap_49crit_44haste_48agi_66sta_44int,gems=16exp_6str_6agi_6sta_6int_6spi_16exp_12ap
 legs=conquerors_worldbreaker_warkilt,stats=1150armor_196ap_60hit_81haste_66agi_77sta_51int,gems=32ap_16ap_12sta_12ap,enchant=75ap_22crit
 feet=tempered_mercury_greaves,stats=903armor_138ap_48hit_38crit_57agi_66sta_40int,gems=16ap_8crit_32ap_12ap,enchant=12crit_12hit
-wrists=frostbound_chain_bracers,stats=575armor_126ap_33hit_36crit_46agi_49sta_33int,enchant=114ap
+wrists=frostbound_chain_bracers,stats=575armor_126ap_33hit_36crit_46agi_49sta_33int,enchant=130ap
 hands=gloves_of_the_steady_hand,stats=846armor_106ap_50hit_55crit_79agi_75sta_49int,gems=16exp_16exp,enchant=44ap
 finger1=loop_of_the_agile,stats=76ap_45crit_32haste_63agi_52sta,gems=32ap,enchant=40ap
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=32ap,enchant=40ap
@@ -47,7 +47,7 @@ ranged=furious_gladiators_totem_of_indomitability
 # gear_stamina=859
 # gear_intellect=403
 # gear_spirit=14
-# gear_attack_power=2797
+# gear_attack_power=2813
 # gear_expertise_rating=172
 # gear_armor_penetration_rating=63
 # gear_hit_rating=435
