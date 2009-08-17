@@ -271,14 +271,7 @@ static bool parse_rawr( sim_t*             sim,
 {
   if ( name == "rawr" )
   {
-    FILE* file = fopen( value.c_str(), "r" );
-    if ( ! file )
-    {
-      util_t::printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", value.c_str() );
-      return false;
-    }
-    sim -> active_player = rawr_t::load_player( sim, file );
-    fclose( file );
+    sim -> active_player = rawr_t::load_player( sim, value );
     if ( ! sim -> active_player )
     {
       util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );

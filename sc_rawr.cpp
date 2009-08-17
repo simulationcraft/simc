@@ -192,13 +192,21 @@ static const char* translate_inventory_id( int slot )
 // rawr_t::load_player ======================================================
 
 player_t* rawr_t::load_player( sim_t* sim,
-                               FILE*  character_file )
+                               const std::string& character_file )
 {
+  FILE* f = fopen( character_file.c_str(), "r" );
+  if ( ! f )
+  {
+    util_t::printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
+    return false;
+  }
+
   std::string buffer;
   char c;
-  while ( ( c = fgetc( character_file ) ) != EOF ) buffer += c;
+  while ( ( c = fgetc( f ) ) != EOF ) buffer += c;
+  fclose( f );
 
-  player_t* p = load_player( sim, buffer );
+  player_t* p = load_player( sim, character_file, buffer );
 
   return p;
 }
@@ -206,6 +214,7 @@ player_t* rawr_t::load_player( sim_t* sim,
 // rawr_t::load_player ======================================================
 
 player_t* rawr_t::load_player( sim_t* sim,
+                               const std::string& character_file,
                                const std::string& character_xml )
 {
   xml_node_t* root_node = xml_t::create( character_xml );
@@ -217,13 +226,22 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   if ( sim -> debug ) xml_t::print( root_node );
 
-  std::string name_str, class_str;
-  if ( ! xml_t::get_value(  name_str, root_node, "Name/."  ) ||
-       ! xml_t::get_value( class_str, root_node, "Class/." ) )
+  std::string class_str;
+  if ( ! xml_t::get_value( class_str, root_node, "Class/." ) )
   {
-    util_t::printf( "\nsimcraft: Unable to determine character name and class in Rawr Character Save XML.\n" );
+    util_t::printf( "\nsimcraft: Unable to determine character class in Rawr Character Save XML.\n" );
     return 0;
   }
+
+  std::string name_str;
+  if ( ! xml_t::get_value(  name_str, root_node, "Name/."  ) )
+  {
+    std::vector<std::string> tokens;
+    int num_tokens = util_t::string_split( tokens, character_file, "\\/" );
+    assert( num_tokens > 0 );
+    name_str = tokens[ num_tokens-1 ];
+  }
+
   std::string talents_parm = class_str + "Talents/.";
 
   armory_t::format(  name_str );
@@ -241,6 +259,8 @@ player_t* rawr_t::load_player( sim_t* sim,
     util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
     return 0;
   }
+
+  p -> origin_str = character_file;
 
   xml_t::get_value( p -> region_str, root_node, "Region/." );
   xml_t::get_value( p -> server_str, root_node, "Realm/."  );

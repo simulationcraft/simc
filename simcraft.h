@@ -2475,8 +2475,8 @@ struct mmo_champion_t
 
 struct rawr_t
 {
-  static player_t* load_player( sim_t*, FILE* );
-  static player_t* load_player( sim_t*, const std::string& character_xml );
+  static player_t* load_player( sim_t*, const std::string& character_filename );
+  static player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
 };
 
 // HTTP Download  ============================================================
