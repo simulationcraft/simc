@@ -1318,7 +1318,7 @@ static void trigger_piercing_shots( action_t* a )
     void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma )
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() )
       {
         target_multiplier = 1.30;
       }

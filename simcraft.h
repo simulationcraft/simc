@@ -913,6 +913,7 @@ struct sim_t
     // New Buffs
     aura_t* moonkin;
     aura_t* improved_moonkin;
+    aura_t* rampage;
     // Old Buffs
     int old_buffs;
     int celerity;
@@ -1679,8 +1680,8 @@ struct player_t
   static void warlock_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Warrior buff maintenance
-  static void warrior_init        ( sim_t* sim ) {}
-  static void warrior_combat_begin( sim_t* sim ) {}
+  static void warrior_init        ( sim_t* sim );
+  static void warrior_combat_begin( sim_t* sim );
   static void warrior_combat_end  ( sim_t* sim ) {}
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
@@ -1779,14 +1780,15 @@ struct target_t
   struct debuffs_t
   {
     // New Buffs
+    debuff_t* blood_frenzy;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
     debuff_t* improved_faerie_fire;
     debuff_t* mangle;
+    debuff_t* trauma;
     // Old Buffs
     int    old_buffs;
     int    bleeding;
-    int    blood_frenzy;
     int    crypt_fever;
     int    curse_of_elements;
     double expose_armor;
@@ -1805,7 +1807,6 @@ struct target_t
     int    slow;
     int    snare;
     double sunder_armor;
-    int    trauma;
     int    thunder_clap;
     int    totem_of_wrath;
     int    winters_chill;

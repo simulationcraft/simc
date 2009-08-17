@@ -1348,6 +1348,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.misery",                  OPT_BOOL,   &( overrides.misery                         ) },
       { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
       { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
+      { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
       { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
       { "override.sanctified_retribution",  OPT_BOOL,   &( overrides.sanctified_retribution         ) },
       { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },

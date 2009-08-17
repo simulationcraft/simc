@@ -1224,7 +1224,7 @@ double player_t::composite_attack_crit() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( sim -> auras.leader_of_the_pack || buffs.rampage )
+    if ( sim -> auras.leader_of_the_pack || sim -> auras.rampage -> up() )
     {
       ac += 0.05;
     }
@@ -1412,7 +1412,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
-  if ( sim -> overrides.rampage                ) buffs.rampage = 1;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
   if ( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 178;
   if ( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
