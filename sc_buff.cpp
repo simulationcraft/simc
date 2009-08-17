@@ -12,7 +12,6 @@
 // buff_t::buff_t ===========================================================
 
 buff_t::buff_t( sim_t*             s,
-                player_t*          p,
                 const std::string& n,
                 int                ms,
                 double             d,
@@ -21,31 +20,63 @@ buff_t::buff_t( sim_t*             s,
                 bool               q,
                 int                rng_type,
                 int                id ) :
-    sim( s ), player( p ), name_str( n ), aura_str( 0 ),
-    current_stack( 0 ), max_stack( ms ), current_value( 0 ),
-    duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
-    last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
-    up_count( 0 ), down_count( 0 ), interval_count( 0 ),
-    start_count( 0 ), refresh_count( 0 ),
-    trigger_attempts( 0 ), trigger_successes( 0 ),
-    uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
-    avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
-    constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
+  sim( s ), player( 0 ), name_str( n ), aura_str( 0 ),
+  current_stack( 0 ), max_stack( ms ), current_value( 0 ),
+  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
+  last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
+  up_count( 0 ), down_count( 0 ), interval_count( 0 ),
+  start_count( 0 ), refresh_count( 0 ),
+  trigger_attempts( 0 ), trigger_successes( 0 ),
+  uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
+  avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
+  constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
 {
-  buff_t** tail = 0;
+  rng = sim -> get_rng( n, rng_type );
 
-  if ( player )
+  buff_t** tail = &( sim -> buff_list );
+  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
   {
-    // Player Buff
-    rng = player -> get_rng( n, rng_type );
-    tail = &(  player -> buff_list );
+    tail = &( ( *tail ) -> next );
   }
-  else
+  next = *tail;
+  *tail = this;
+
+  char *buffer = new char[name_str.size() + 16];
+  assert( buffer != NULL );
+
+  aura_str.resize( max_stack + 1 );
+  for ( int i=1; i <= max_stack; i++ )
   {
-    // Aura or Target De-Buff
-    rng = sim -> get_rng( n, rng_type );
-    tail = &( sim -> buff_list );
+    sprintf( buffer, "%s(%d)", name_str.c_str(), i );
+    aura_str[ i ] = buffer;
   }
+  delete [] buffer;
+}
+
+// buff_t::buff_t ===========================================================
+
+buff_t::buff_t( player_t*          p,
+                const std::string& n,
+                int                ms,
+                double             d,
+                double             cd,
+                double             ch,
+                bool               q,
+                int                rng_type,
+                int                id ) :
+  sim( p -> sim ), player( p ), name_str( n ), aura_str( 0 ),
+  current_stack( 0 ), max_stack( ms ), current_value( 0 ),
+  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
+  last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
+  up_count( 0 ), down_count( 0 ), interval_count( 0 ),
+  start_count( 0 ), refresh_count( 0 ),
+  trigger_attempts( 0 ), trigger_successes( 0 ),
+  uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
+  avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
+  constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
+{
+  rng = player -> get_rng( n, rng_type );
+  buff_t** tail = &(  player -> buff_list );
 
   while ( *tail && name_str > ( ( *tail ) -> name_str ) )
   {
@@ -195,14 +226,8 @@ void buff_t::start( int    stacks,
   current_stack = std::min( stacks, max_stack );
   current_value = value;
 
-  if ( player )
-  {
-    player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
-  }
-  else
-  {
-    sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
-  }
+  aura_gain();
+
   if ( last_start >= 0 )
   {
     interval_sum += sim -> current_time - last_start;
@@ -246,14 +271,7 @@ void buff_t::refresh( int    stacks,
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
-    if ( player )
-    {
-      player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
-    }
-    else
-    {
-      sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
-    }
+    aura_gain();
   }
 
   current_value = value;
@@ -287,14 +305,7 @@ void buff_t::expire()
   event_t::cancel( expiration );
   current_stack = 0;
   current_value = 0;
-  if ( player )
-  {
-    player -> aura_loss( name(), aura_id );
-  }
-  else
-  {
-    sim -> aura_loss( name(), aura_id );
-  }
+  aura_loss();
   if ( last_start >= 0 )
   {
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
@@ -304,6 +315,34 @@ void buff_t::expire()
        sim -> target -> current_health > 0 ) 
   {
     constant = false;
+  }
+}
+
+// buff_t::aura_gain ========================================================
+
+void buff_t::aura_gain()
+{
+  if ( player )
+  {
+    player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+  }
+  else
+  {
+    sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+  }
+}
+
+// buff_t::aura_loss ========================================================
+
+void buff_t::aura_loss()
+{
+  if ( player )
+  {
+    player -> aura_loss( name(), aura_id );
+  }
+  else
+  {
+    sim -> aura_loss( name(), aura_id );
   }
 }
 
@@ -386,8 +425,7 @@ buff_t* buff_t::find( player_t* p,
 
 // stat_buff_t::stat_buff_t =================================================
 
-stat_buff_t::stat_buff_t( sim_t*             s,
-			  player_t*          p,
+stat_buff_t::stat_buff_t( player_t*          p,
 			  const std::string& n,
 			  int                st,
 			  double             a,
@@ -398,7 +436,7 @@ stat_buff_t::stat_buff_t( sim_t*             s,
 			  bool               q,
 			  int                rng_type,
 			  int                id ) :
-  buff_t( s, p, n, ms, d, cd, ch, q, rng_type, id ), stat(st), amount(a)
+  buff_t( p, n, ms, d, cd, ch, q, rng_type, id ), stat(st), amount(a)
 {
 }
 
@@ -453,5 +491,38 @@ void stat_buff_t::expire()
     player -> stat_loss( stat, amount * current_stack );
     buff_t::expire();
   }
+}
+
+// ==========================================================================
+// DEBUFF
+// ==========================================================================
+
+// debuff_t::debuff_t =======================================================
+
+debuff_t::debuff_t( sim_t*             s,
+		    const std::string& n,
+		    int                ms,
+		    double             d,
+		    double             cd,
+		    double             ch,
+		    bool               q,
+		    int                rng_type,
+		    int                id ) :
+  buff_t( s, n, ms, d, cd, ch, q, rng_type, id )
+{
+}
+
+// debuff_t::aura_gain ======================================================
+
+void debuff_t::aura_gain()
+{
+  sim -> target -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+}
+
+// debuff_t::aura_loss ======================================================
+
+void debuff_t::aura_loss()
+{
+  sim -> target -> aura_loss( name(), aura_id );
 }
 

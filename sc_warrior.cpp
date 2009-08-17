@@ -2254,19 +2254,19 @@ void warrior_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_bloodrage       = new buff_t( sim, this, "bloodrage",       1, 10.0 );
-  buffs_bloodsurge      = new buff_t( sim, this, "bloodsurge",      1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
-  buffs_death_wish      = new buff_t( sim, this, "death_wish",      1, 30.0,   0, talents.death_wish );
-  buffs_flurry          = new buff_t( sim, this, "flurry",          3, 15.0,   0, talents.flurry );
-  buffs_overpower       = new buff_t( sim, this, "overpower",       1,  6.0, 1.0 );
-  buffs_recklessness    = new buff_t( sim, this, "recklessness",    3, 12.0 );
-  buffs_sudden_death    = new buff_t( sim, this, "sudden_death",    1, 10.0,   0, talents.sudden_death * 0.03 );
-  buffs_sword_and_board = new buff_t( sim, this, "sword_and_board", 1,  5.0,   0, talents.sword_and_board * 0.10 );
-  buffs_taste_for_blood = new buff_t( sim, this, "taste_for_blood", 1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
-  buffs_wrecking_crew   = new buff_t( sim, this, "wrecking_crew",   1, 12.0,   0, talents.wrecking_crew );
-  buffs_tier7_4pc_dps   = new buff_t( sim, this, "tier7_4pc_dps",   1, 30.0,   0, tiers.t7_4pc_dps * 0.10 );
+  buffs_bloodrage       = new buff_t( this, "bloodrage",       1, 10.0 );
+  buffs_bloodsurge      = new buff_t( this, "bloodsurge",      1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
+  buffs_death_wish      = new buff_t( this, "death_wish",      1, 30.0,   0, talents.death_wish );
+  buffs_flurry          = new buff_t( this, "flurry",          3, 15.0,   0, talents.flurry );
+  buffs_overpower       = new buff_t( this, "overpower",       1,  6.0, 1.0 );
+  buffs_recklessness    = new buff_t( this, "recklessness",    3, 12.0 );
+  buffs_sudden_death    = new buff_t( this, "sudden_death",    1, 10.0,   0, talents.sudden_death * 0.03 );
+  buffs_sword_and_board = new buff_t( this, "sword_and_board", 1,  5.0,   0, talents.sword_and_board * 0.10 );
+  buffs_taste_for_blood = new buff_t( this, "taste_for_blood", 1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
+  buffs_wrecking_crew   = new buff_t( this, "wrecking_crew",   1, 12.0,   0, talents.wrecking_crew );
+  buffs_tier7_4pc_dps   = new buff_t( this, "tier7_4pc_dps",   1, 30.0,   0, tiers.t7_4pc_dps * 0.10 );
   
-  buffs_tier8_2pc_dps   = new stat_buff_t( sim, this, "tier8_2pc_dps", STAT_HASTE_RATING, 150, 1, 5.0, tiers.t8_2pc_dps * 0.40 );
+  buffs_tier8_2pc_dps   = new stat_buff_t( this, "tier8_2pc_dps", STAT_HASTE_RATING, 150, 1, 5.0, tiers.t8_2pc_dps * 0.40 );
 }
 
 // warrior_t::init_items =======================================================

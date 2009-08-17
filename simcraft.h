@@ -678,11 +678,17 @@ struct buff_t
   buff_t* next;
 
   buff_t() : sim( 0 ) {}
-  buff_t( sim_t*, player_t*,
-          const std::string& name,
+  virtual ~buff_t() { };
+
+  // Raid Aura
+  buff_t( sim_t*, const std::string& name,
           int max_stack=1, double duration=0, double cooldown=0,
           double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
-  virtual ~buff_t() { };
+
+  // Player Buff
+  buff_t( player_t*, const std::string& name,
+          int max_stack=1, double duration=0, double cooldown=0,
+          double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -703,6 +709,8 @@ struct buff_t
   virtual void   override ( int stacks=1, double value=1.0 );
   virtual void   expire();
   virtual void   reset();
+  virtual void   aura_gain();
+  virtual void   aura_loss();
   virtual void   merge( buff_t* other_buff );
   virtual void   analyze();
   virtual const char* name() { return name_str.c_str(); }
@@ -715,8 +723,7 @@ struct stat_buff_t : public buff_t
 {
   int stat;
   double amount;
-  stat_buff_t( sim_t*, player_t*,
-	       const std::string& name,
+  stat_buff_t( player_t*, const std::string& name,
 	       int stat, double amount,
 	       int max_stack=1, double duration=0, double cooldown=0,
 	       double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
@@ -726,6 +733,17 @@ struct stat_buff_t : public buff_t
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
 };
+
+struct debuff_t : public buff_t
+{
+  debuff_t( sim_t*, const std::string& name,
+	    int max_stack=1, double duration=0, double cooldown=0,
+	    double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+  virtual void aura_gain();
+  virtual void aura_loss();
+};
+
+typedef struct buff_t aura_t;
 
 // Expressions =================================================================
 
@@ -1852,6 +1870,8 @@ struct target_t
   double time_to_die() SC_CONST;
   double health_percentage() SC_CONST;
   double base_armor() SC_CONST;
+  void aura_gain( const char* name, int aura_id=0 );
+  void aura_loss( const char* name, int aura_id=0 );
   uptime_t* get_uptime( const std::string& name );
   int get_options( std::vector<option_t>& );
   const char* name() SC_CONST { return name_str.c_str(); }

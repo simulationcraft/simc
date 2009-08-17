@@ -3905,21 +3905,21 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs_backdraft      = new buff_t( sim, this, "backdraft",      3, 15.0, 0.0, talents.backdraft );
-  buffs_decimation     = new buff_t( sim, this, "decimation",     1, 10.0, 0.0, talents.decimation );
-  buffs_empowered_imp  = new buff_t( sim, this, "empowered_imp",  1,  8.0, 0.0, talents.empowered_imp / 3.0 );
-  buffs_eradication    = new buff_t( sim, this, "eradication",    1, 10.0, 0.0, talents.eradication ? 0.06 : 0.00 );
-  buffs_haunted        = new buff_t( sim, this, "haunted",        1, 12.0, 0.0, talents.haunt );
-  buffs_metamorphosis  = new buff_t( sim, this, "metamorphosis",  1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
-  buffs_molten_core    = new buff_t( sim, this, "molten_core",    1, 12.0, 0.0, talents.molten_core * 0.05 );
-  buffs_pyroclasm      = new buff_t( sim, this, "pyroclasm",      1, 10.0, 0.0, talents.pyroclasm );
-  buffs_shadow_embrace = new buff_t( sim, this, "shadow_embrace", 2, 12.0, 0.0, talents.shadow_embrace );
-  buffs_shadow_trance  = new buff_t( sim, this, "shadow_trance",  1,  0.0, 0.0, talents.nightfall );
+  buffs_backdraft      = new buff_t( this, "backdraft",      3, 15.0, 0.0, talents.backdraft );
+  buffs_decimation     = new buff_t( this, "decimation",     1, 10.0, 0.0, talents.decimation );
+  buffs_empowered_imp  = new buff_t( this, "empowered_imp",  1,  8.0, 0.0, talents.empowered_imp / 3.0 );
+  buffs_eradication    = new buff_t( this, "eradication",    1, 10.0, 0.0, talents.eradication ? 0.06 : 0.00 );
+  buffs_haunted        = new buff_t( this, "haunted",        1, 12.0, 0.0, talents.haunt );
+  buffs_metamorphosis  = new buff_t( this, "metamorphosis",  1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
+  buffs_molten_core    = new buff_t( this, "molten_core",    1, 12.0, 0.0, talents.molten_core * 0.05 );
+  buffs_pyroclasm      = new buff_t( this, "pyroclasm",      1, 10.0, 0.0, talents.pyroclasm );
+  buffs_shadow_embrace = new buff_t( this, "shadow_embrace", 2, 12.0, 0.0, talents.shadow_embrace );
+  buffs_shadow_trance  = new buff_t( this, "shadow_trance",  1,  0.0, 0.0, talents.nightfall );
 
-  buffs_life_tap_glyph = new buff_t( sim, this, "life_tap_glyph", 1, 40.0, 0.0, glyphs.life_tap );
+  buffs_life_tap_glyph = new buff_t( this, "life_tap_glyph", 1, 40.0, 0.0, glyphs.life_tap );
 
-  buffs_fel_armor     = new buff_t( sim, this, "fel_armor"     );
-  buffs_pet_sacrifice = new buff_t( sim, this, "pet_sacrifice" );
+  buffs_fel_armor     = new buff_t( this, "fel_armor"     );
+  buffs_pet_sacrifice = new buff_t( this, "pet_sacrifice" );
 }
 
 // warlock_t::init_gains =====================================================

@@ -2035,13 +2035,13 @@ void death_knight_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_bloody_vengeance = new buff_t( sim, this, "bloody_vengeance", 3,                      0.0,  0.0, talents.bloody_vengeance );
-  buffs_scent_of_blood   = new buff_t( sim, this, "scent_of_blood",   talents.scent_of_blood, 0.0, 10.0, 0.15                     );
+  buffs_bloody_vengeance = new buff_t( this, "bloody_vengeance", 3,                      0.0,  0.0, talents.bloody_vengeance );
+  buffs_scent_of_blood   = new buff_t( this, "scent_of_blood",   talents.scent_of_blood, 0.0, 10.0, 0.15                     );
 
   struct bloodworms_buff_t : public buff_t
   {
     bloodworms_buff_t( death_knight_t* p ) :
-        buff_t( p -> sim, p, "bloodworms", 1, 19.99, 20.01, p -> talents.bloodworms * 0.03 ) {}
+        buff_t( p, "bloodworms", 1, 19.99, 20.01, p -> talents.bloodworms * 0.03 ) {}
     virtual void start( int stacks, double value )
     {
       buff_t::start( stacks, value );

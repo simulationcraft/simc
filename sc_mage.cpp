@@ -3184,21 +3184,21 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( sim, this, "arcane_blast",         ( sim -> P322 ? 4 : 3 ), 10.0 );
-  buffs_arcane_power         = new buff_t( sim, this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
-  buffs_brain_freeze         = new buff_t( sim, this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
-  buffs_clearcasting         = new buff_t( sim, this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
-  buffs_combustion           = new buff_t( sim, this, "combustion",           3 );
-  buffs_fingers_of_frost     = new buff_t( sim, this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
-  buffs_hot_streak_crits     = new buff_t( sim, this, "hot_streak_crits",     2,    0, 0, 1.0, true );
-  buffs_hot_streak           = new buff_t( sim, this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
-  buffs_icy_veins            = new buff_t( sim, this, "icy_veins",            1, 20.0 );
-  buffs_incanters_absorption = new buff_t( sim, this, "incanters_absorption", 1, 10.0 );
-  buffs_missile_barrage      = new buff_t( sim, this, "missile_barrage",      1, 15.0, 0, talents.missile_barrage * 0.04 );
+  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         ( sim -> P322 ? 4 : 3 ), 10.0 );
+  buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
+  buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
+  buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
+  buffs_combustion           = new buff_t( this, "combustion",           3 );
+  buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
+  buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
+  buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
+  buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
+  buffs_incanters_absorption = new buff_t( this, "incanters_absorption", 1, 10.0 );
+  buffs_missile_barrage      = new buff_t( this, "missile_barrage",      1, 15.0, 0, talents.missile_barrage * 0.04 );
 
-  buffs_ghost_charge = new buff_t( sim, this, "ghost_charge" );
-  buffs_mage_armor   = new buff_t( sim, this, "mage_armor" );
-  buffs_molten_armor = new buff_t( sim, this, "molten_armor" );
+  buffs_ghost_charge = new buff_t( this, "ghost_charge" );
+  buffs_mage_armor   = new buff_t( this, "mage_armor" );
+  buffs_molten_armor = new buff_t( this, "molten_armor" );
 }
 
 // mage_t::init_gains ======================================================

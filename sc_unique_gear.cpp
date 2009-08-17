@@ -23,7 +23,7 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new stat_buff_t( p -> sim, p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, rng_type );
+    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, rng_type );
   }
 
   virtual void deactivate()

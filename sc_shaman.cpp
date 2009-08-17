@@ -3029,26 +3029,26 @@ void shaman_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_elemental_devastation = new buff_t( sim, this, "elemental_devastation", 1,  10.0, 0.0, talents.elemental_devastation );
-  buffs_elemental_focus       = new buff_t( sim, this, "elemental_focus",       2,  15.0, 0.0, talents.elemental_focus       );
-  buffs_elemental_mastery     = new buff_t( sim, this, "elemental_mastery",     1,  15.0, 0.0, talents.elemental_mastery     );
-  buffs_flurry                = new buff_t( sim, this, "flurry",                3,   0.0, 0.0, talents.flurry                );
-  buffs_lightning_shield      = new buff_t( sim, this, "lightning_shield",      3 + 2 * talents.static_shock );
-  buffs_maelstrom_weapon      = new buff_t( sim, this, "maelstrom_weapon",      5,  30.0 );
-  buffs_nature_vulnerability  = new buff_t( sim, this, "nature_vulnerability",  4,  12.0 );
-  buffs_natures_swiftness     = new buff_t( sim, this, "natures_swiftness" );
-  buffs_shamanistic_rage      = new buff_t( sim, this, "shamanistic_rage",      1,  15.0 );
-  buffs_totem_of_wrath_glyph  = new buff_t( sim, this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
-  buffs_water_shield          = new buff_t( sim, this, "water_shield",          1, 600.0 );
+  buffs_elemental_devastation = new buff_t( this, "elemental_devastation", 1,  10.0, 0.0, talents.elemental_devastation );
+  buffs_elemental_focus       = new buff_t( this, "elemental_focus",       2,  15.0, 0.0, talents.elemental_focus       );
+  buffs_elemental_mastery     = new buff_t( this, "elemental_mastery",     1,  15.0, 0.0, talents.elemental_mastery     );
+  buffs_flurry                = new buff_t( this, "flurry",                3,   0.0, 0.0, talents.flurry                );
+  buffs_lightning_shield      = new buff_t( this, "lightning_shield",      3 + 2 * talents.static_shock );
+  buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
+  buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
+  buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
+  buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0 );
+  buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
+  buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_dueling           = new stat_buff_t( sim, this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
-  buffs_electrifying_wind = new stat_buff_t( sim, this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
-  buffs_indomitability    = new stat_buff_t( sim, this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
-  buffs_quaking_earth     = new stat_buff_t( sim, this, "quaking_earth",     STAT_ATTACK_POWER, 200, 1, 18.0, 20.01, totems.quaking_earth * 0.80 );
-  buffs_stonebreaker      = new stat_buff_t( sim, this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
-  buffs_tundra            = new stat_buff_t( sim, this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
+  buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
+  buffs_electrifying_wind = new stat_buff_t( this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
+  buffs_indomitability    = new stat_buff_t( this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
+  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, 200, 1, 18.0, 20.01, totems.quaking_earth * 0.80 );
+  buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
+  buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
 }
 
 // shaman_t::init_gains ======================================================
@@ -3384,7 +3384,7 @@ void player_t::shaman_init( sim_t* sim )
 {
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.elemental_oath = new buff_t( sim, p, "elemental_oath", 1, 15.0 );
+    p -> buffs.elemental_oath = new buff_t( p, "elemental_oath", 1, 15.0 );
   }
 }
 

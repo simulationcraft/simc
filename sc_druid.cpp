@@ -2700,30 +2700,30 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_berserk            = new buff_t( sim, this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( sim, this, "eclipse_lunar"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
-  buffs_eclipse_solar      = new buff_t( sim, this, "eclipse_solar"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
-  buffs_natures_grace      = new buff_t( sim, this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
-  buffs_natures_swiftness  = new buff_t( sim, this, "natures_swiftness" , 1, 180.0, 180.0 );
-  buffs_omen_of_clarity    = new buff_t( sim, this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
-  buffs_t8_4pc_balance     = new buff_t( sim, this, "t8_4pc_balance"    , 1,  10.0,     0, tiers.t8_4pc_balance * 0.08 );
-  buffs_tigers_fury        = new buff_t( sim, this, "tigers_fury"       , 1,   6.0 );
-  buffs_glyph_of_innervate = new buff_t( sim, this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
+  buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
+  buffs_eclipse_lunar      = new buff_t( this, "eclipse_lunar"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
+  buffs_eclipse_solar      = new buff_t( this, "eclipse_solar"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
+  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
+  buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
+  buffs_t8_4pc_balance     = new buff_t( this, "t8_4pc_balance"    , 1,  10.0,     0, tiers.t8_4pc_balance * 0.08 );
+  buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_lunar_fury  = new stat_buff_t( sim, this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
-  buffs_mutilation  = new stat_buff_t( sim, this, "mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
-  buffs_corruptor   = new stat_buff_t( sim, this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
-  buffs_terror      = new stat_buff_t( sim, this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
-  buffs_unseen_moon = new stat_buff_t( sim, this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
+  buffs_lunar_fury  = new stat_buff_t( this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
+  buffs_mutilation  = new stat_buff_t( this, "mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
+  buffs_corruptor   = new stat_buff_t( this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
+  buffs_terror      = new stat_buff_t( this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
+  buffs_unseen_moon = new stat_buff_t( this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
 
   // simple
-  buffs_bear_form    = new buff_t( sim, this, "bear_form" );
-  buffs_cat_form     = new buff_t( sim, this, "cat_form" );
-  buffs_combo_points = new buff_t( sim, this, "combo_points", 5 );
-  buffs_moonkin_form = new buff_t( sim, this, "moonkin_form" );
-  buffs_savage_roar  = new buff_t( sim, this, "savage_roar" );
-  buffs_stealthed    = new buff_t( sim, this, "stealthed" );
+  buffs_bear_form    = new buff_t( this, "bear_form" );
+  buffs_cat_form     = new buff_t( this, "cat_form" );
+  buffs_combo_points = new buff_t( this, "combo_points", 5 );
+  buffs_moonkin_form = new buff_t( this, "moonkin_form" );
+  buffs_savage_roar  = new buff_t( this, "savage_roar" );
+  buffs_stealthed    = new buff_t( this, "stealthed" );
 }
 
 // druid_t::init_items ======================================================
@@ -3198,19 +3198,19 @@ player_t* player_t::create_druid( sim_t*             sim,
 
 void player_t::druid_init( sim_t* sim )
 {
-  sim -> auras.moonkin          = new buff_t( sim, NULL, "moonkin" );
-  sim -> auras.improved_moonkin = new buff_t( sim, NULL, "improved_moonkin" );
+  sim -> auras.moonkin          = new aura_t( sim, "moonkin" );
+  sim -> auras.improved_moonkin = new aura_t( sim, "improved_moonkin" );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.innervate = new buff_t( sim, p, "innervate", 1, 10.0 );
+    p -> buffs.innervate = new buff_t( p, "innervate", 1, 10.0 );
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.earth_and_moon       = new buff_t( sim, NULL, "earth_and_moon",       1, ( sim -> overrides.earth_and_moon       ? 0.0 :  12.0 ) );
-  t -> debuffs.faerie_fire          = new buff_t( sim, NULL, "faerie_fire",          1, ( sim -> overrides.faerie_fire          ? 0.0 : 300.0 ) );
-  t -> debuffs.improved_faerie_fire = new buff_t( sim, NULL, "improved_faerie_fire", 1, ( sim -> overrides.improved_faerie_fire ? 0.0 : 300.0 ) );
-  t -> debuffs.mangle               = new buff_t( sim, NULL, "mangle",               1, ( sim -> overrides.mangle               ? 0.0 :  12.0 ) );
+  t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1, ( sim -> overrides.earth_and_moon       ? 0.0 :  12.0 ) );
+  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, ( sim -> overrides.faerie_fire          ? 0.0 : 300.0 ) );
+  t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, ( sim -> overrides.improved_faerie_fire ? 0.0 : 300.0 ) );
+  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1, ( sim -> overrides.mangle               ? 0.0 :  12.0 ) );
 }
 
 // player_t::druid_combat_begin =============================================

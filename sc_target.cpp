@@ -133,6 +133,20 @@ double target_t::base_armor() SC_CONST
   return armor;
 }
 
+// target_t::aura_gain ======================================================
+
+void target_t::aura_gain( const char* aura_name , int aura_id )
+{
+  if( sim -> log ) log_t::output( sim, "Target %s gains %s", name(), aura_name );
+}
+
+// target_t::aura_loss ======================================================
+
+void target_t::aura_loss( const char* aura_name , int aura_id )
+{
+  if( sim -> log ) log_t::output( sim, "Target %s loses %s", name(), aura_name );
+}
+
 // target_t::get_uptime =====================================================
 
 uptime_t* target_t::get_uptime( const std::string& name )
