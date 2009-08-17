@@ -911,8 +911,8 @@ struct sim_t
   struct auras_t
   {
     // New Buffs
-    buff_t* moonkin;
-    buff_t* improved_moonkin;
+    aura_t* moonkin;
+    aura_t* improved_moonkin;
     // Old Buffs
     int old_buffs;
     int celerity;
@@ -1779,10 +1779,10 @@ struct target_t
   struct debuffs_t
   {
     // New Buffs
-    buff_t* earth_and_moon;
-    buff_t* faerie_fire;
-    buff_t* improved_faerie_fire;
-    buff_t* mangle;
+    debuff_t* earth_and_moon;
+    debuff_t* faerie_fire;
+    debuff_t* improved_faerie_fire;
+    debuff_t* mangle;
     // Old Buffs
     int    old_buffs;
     int    bleeding;
