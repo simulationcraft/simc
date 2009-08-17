@@ -60,10 +60,6 @@ optimal_raid=0
 # Faction specific
 override.heroic_presence=0
 
-# Support for Feral Bear does not yet exist
-override.faerie_fire=1
-override.mangle=1
-
 # Support for Warrior class does not yet exist
 override.battle_shout=1
 override.sunder_armor=1

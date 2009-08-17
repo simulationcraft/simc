@@ -2869,7 +2869,7 @@ void druid_t::init_actions()
       action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
       action_list_str += "/cat_form/auto_attack";
       action_list_str += "/maim";
-      action_list_str += "/faerie_fire_feral";
+      action_list_str += "/faerie_fire_feral,debuff_only=1";
       action_list_str += use_str;
       action_list_str += "/shred,omen_of_clarity=1/tigers_fury,energy<=40";
       if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
