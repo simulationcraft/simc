@@ -40,6 +40,7 @@ struct warlock_t : public player_t
   buff_t* buffs_molten_core;
   buff_t* buffs_pyroclasm;
   buff_t* buffs_shadow_trance;
+  buff_t* buffs_tier7_4pc;
 
   // warlock specific expression functions
   struct warlock_expression_t: public act_expression_t
@@ -67,7 +68,6 @@ struct warlock_t : public player_t
   // Up-Times
   uptime_t* uptimes_demonic_pact;
   uptime_t* uptimes_demonic_soul;
-  uptime_t* uptimes_spirits_of_the_damned;
 
   // Random Number Generators
   rng_t* rng_soul_leech;
@@ -952,38 +952,9 @@ static void trigger_tier5_4pc( spell_t*  s,
 static void trigger_improved_shadow_bolt( spell_t* s )
 {
   warlock_t* p = s -> player -> cast_warlock();
+  target_t*  t = s -> sim -> target;
 
-  if ( ! p -> talents.improved_shadow_bolt ) return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, warlock_t* p ) : event_t( sim )
-    {
-      if ( sim -> log ) log_t::output( sim, "%s gains Improved Shadow Bolt %d", sim -> target -> name(), sim -> target -> debuffs.improved_shadow_bolt );
-      name = "Improved Shadow Bolt Expiration";
-      sim -> add_event( this, 30.0 );
-      sim -> target -> debuffs.improved_shadow_bolt = p -> talents.improved_shadow_bolt;
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "%s loses Improved Shadow Bolt", sim -> target -> name() );
-      sim -> target -> debuffs.improved_shadow_bolt = 0;
-      sim -> target -> expirations.improved_shadow_bolt = 0;
-    }
-  };
-
-  target_t* t = s -> sim -> target;
-
-  event_t*& e = t -> expirations.improved_shadow_bolt;
-
-  if ( e )
-  {
-    e -> reschedule( 30.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim, p );
-  }
+  t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talents.improved_shadow_bolt / 5.0 );
 }
 
 // trigger_nightfall ========================================================
@@ -1102,48 +1073,6 @@ static void trigger_everlasting_affliction( spell_t* s )
   }
 }
 
-// trigger_tier7_4pc ===============================================
-
-static void trigger_tier7_4pc( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Spirits of the Damned Expiration";
-      player -> aura_gain( "Spirits of the Damned",61082 );
-      player -> attribute[ ATTR_SPIRIT ] += 300;
-      player -> buffs.tier7_4pc = 1;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Spirits of the Damned",61082 );
-      player -> attribute[ ATTR_SPIRIT ] -= 300;
-      player -> expirations.tier7_4pc = 0;
-      player -> buffs.tier7_4pc = 0;
-    }
-  };
-
-  player_t* p = s -> player;
-
-  if ( p -> set_bonus.tier7_4pc() )
-  {
-    p -> procs.tier7_4pc -> occur();
-
-    event_t*& e = p -> expirations.tier7_4pc;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
 // ==========================================================================
 // Warlock Spell
 // ==========================================================================
@@ -1226,8 +1155,6 @@ void warlock_spell_t::player_buff()
     if ( p -> buffs_molten_core -> up() ) player_multiplier *= 1.10;
     if ( p -> buffs_pyroclasm   -> up() ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
   }
-
-  p -> uptimes_spirits_of_the_damned -> update( p -> buffs.tier7_4pc != 0 );
 
   if ( p -> active_pet )
   {
@@ -3082,7 +3009,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, mana );
     p -> buffs_life_tap_glyph -> trigger();
-    trigger_tier7_4pc( this );
+    p -> buffs_tier7_4pc -> trigger();
   }
 
   virtual bool ready()
@@ -3098,7 +3025,7 @@ struct life_tap_t : public warlock_spell_t
       if( ! p -> set_bonus.tier7_4pc() && ! p -> glyphs.life_tap )
 	return false;
 
-      if ( p -> buffs.tier7_4pc || p -> buffs_life_tap_glyph -> check() )
+      if ( p -> buffs_tier7_4pc -> check() || p -> buffs_life_tap_glyph -> check() )
 	return false;
     }
 
@@ -3416,8 +3343,7 @@ struct demonic_empowerment_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "target_pct",     OPT_DEPRECATED, ( void* ) "health_percentage<" },
-      { "demonic_frenzy", OPT_INT,        &demonic_frenzy              },
+      { "demonic_frenzy", OPT_INT, &demonic_frenzy },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3909,17 +3835,17 @@ void warlock_t::init_buffs()
   buffs_decimation     = new buff_t( this, "decimation",     1, 10.0, 0.0, talents.decimation );
   buffs_empowered_imp  = new buff_t( this, "empowered_imp",  1,  8.0, 0.0, talents.empowered_imp / 3.0 );
   buffs_eradication    = new buff_t( this, "eradication",    1, 10.0, 0.0, talents.eradication ? 0.06 : 0.00 );
+  buffs_fel_armor      = new buff_t( this, "fel_armor"     );
   buffs_haunted        = new buff_t( this, "haunted",        1, 12.0, 0.0, talents.haunt );
+  buffs_life_tap_glyph = new buff_t( this, "life_tap_glyph", 1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis  = new buff_t( this, "metamorphosis",  1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
   buffs_molten_core    = new buff_t( this, "molten_core",    1, 12.0, 0.0, talents.molten_core * 0.05 );
+  buffs_pet_sacrifice  = new buff_t( this, "pet_sacrifice" );
   buffs_pyroclasm      = new buff_t( this, "pyroclasm",      1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace = new buff_t( this, "shadow_embrace", 2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance  = new buff_t( this, "shadow_trance",  1,  0.0, 0.0, talents.nightfall );
 
-  buffs_life_tap_glyph = new buff_t( this, "life_tap_glyph", 1, 40.0, 0.0, glyphs.life_tap );
-
-  buffs_fel_armor     = new buff_t( this, "fel_armor"     );
-  buffs_pet_sacrifice = new buff_t( this, "pet_sacrifice" );
+  buffs_tier7_4pc = new stat_buff_t( this, "tier7_4pc", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc() );
 }
 
 // warlock_t::init_gains =====================================================
@@ -3952,9 +3878,8 @@ void warlock_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_demonic_pact          = get_uptime( "demonic_pact"          ); // kept in player_t::buffs
-  uptimes_demonic_soul          = get_uptime( "demonic_soul"          ); // tier7_2pc buff in player_t
-  uptimes_spirits_of_the_damned = get_uptime( "spirits_of_the_damned" ); // tier7_pc4 buff in player_t
+  uptimes_demonic_pact = get_uptime( "demonic_pact"          ); // kept in player_t::buffs
+  uptimes_demonic_soul = get_uptime( "demonic_soul"          ); // tier7_2pc buff in player_t
 }
 
 // warlock_t::init_rng =======================================================
@@ -4310,5 +4235,21 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
   new doomguard_pet_t( sim, p );
 
   return p;
+}
+
+// player_t::warlock_init ===================================================
+
+void player_t::warlock_init( sim_t* sim )
+{
+  target_t* t = sim -> target;
+  t -> debuffs.improved_shadow_bolt = new debuff_t( sim, "improved_shadow_bolt", 5, ( sim -> overrides.improved_shadow_bolt ? 0.0 : 30.0 ) );
+}
+
+// player_t::warlock_combat_begin ===========================================
+
+void player_t::warlock_combat_begin( sim_t* sim )
+{
+  target_t* t = sim -> target;
+  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> trigger( 5 );
 }
 

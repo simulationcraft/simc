@@ -121,13 +121,10 @@ void spell_t::target_debuff( int dmg_type )
 
   target_hit += std::max( t -> debuffs.improved_faerie_fire -> value(), (double) t -> debuffs.misery ) * 0.01;
 
-  int crit_debuff = std::max( t -> debuffs.winters_chill, t -> debuffs.improved_scorch );
-  crit_debuff = std::max( crit_debuff, t -> debuffs.improved_shadow_bolt );
+  int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
+					t -> debuffs.improved_scorch -> stack() ),
+			                t -> debuffs.improved_shadow_bolt -> stack() );
   target_crit += crit_debuff * 0.01;
-
-  t -> uptimes.winters_chill        -> update( t -> debuffs.winters_chill        != 0 );
-  t -> uptimes.improved_scorch      -> update( t -> debuffs.improved_scorch      != 0 );
-  t -> uptimes.improved_shadow_bolt -> update( t -> debuffs.improved_shadow_bolt != 0 );
 
   if ( sim -> debug )
     log_t::output( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f",

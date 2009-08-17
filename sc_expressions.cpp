@@ -511,7 +511,7 @@ act_expression_t* act_expression_t::create( action_t* action, std::string& expre
         // for now, hard-coded
         int* int_ptr=0;
         double* double_ptr=0;
-        if ( name=="isb" )        int_ptr= &action->sim->target->debuffs.improved_shadow_bolt;
+        if ( name=="isb" )        int_ptr= &action->sim->target->debuffs.improved_shadow_bolt->current_stack;
         // create if found
         if ( int_ptr!=0 )
         {

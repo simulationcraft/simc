@@ -589,7 +589,6 @@ void player_t::init()
   init_professions();
   init_scaling();
   init_consumables();
-  init_resources();
   init_actions();
   init_buffs();
   init_gains();
@@ -1336,7 +1335,7 @@ double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
 
-  a += buffs.mark_of_the_wild;
+  a += buffs.mark_of_the_wild -> current_value;
   a += buffs.strength_of_earth;
 
   return a * composite_attribute_multiplier( ATTR_STRENGTH );
@@ -1348,7 +1347,7 @@ double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
 
-  a += buffs.mark_of_the_wild;
+  a += buffs.mark_of_the_wild -> current_value;
   a += buffs.strength_of_earth;
 
   return a * composite_attribute_multiplier( ATTR_AGILITY );
@@ -1360,7 +1359,7 @@ double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
 
-  a += buffs.mark_of_the_wild;
+  a += buffs.mark_of_the_wild -> current_value;
   a += buffs.fortitude;
 
   return a * composite_attribute_multiplier( ATTR_STAMINA );
@@ -1372,8 +1371,8 @@ double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
 
-  a += buffs.mark_of_the_wild;
-  a += buffs.arcane_brilliance;
+  a += buffs.mark_of_the_wild -> current_value;
+  a += buffs.arcane_brilliance -> value();
 
   return a * composite_attribute_multiplier( ATTR_INTELLECT );
 }
@@ -1384,7 +1383,7 @@ double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
 
-  a += buffs.mark_of_the_wild;
+  a += buffs.mark_of_the_wild -> current_value;
   a += buffs.divine_spirit;
 
   return a * composite_attribute_multiplier( ATTR_SPIRIT );
@@ -1402,7 +1401,6 @@ void player_t::combat_begin()
   }
 
   if ( sim -> overrides.abominations_might     ) buffs.abominations_might = 1;
-  if ( sim -> overrides.arcane_brilliance      ) buffs.arcane_brilliance = 60;
   if ( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if ( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if ( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
@@ -1411,7 +1409,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.ferocious_inspiration  ) buffs.ferocious_inspiration = 1;
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
-  if ( sim -> overrides.mark_of_the_wild       ) buffs.mark_of_the_wild = 52;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
   if ( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 178;
   if ( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;

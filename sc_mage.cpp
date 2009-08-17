@@ -55,9 +55,7 @@ struct mage_t : public player_t
   rng_t* rng_empowered_fire;
   rng_t* rng_frostbite;
   rng_t* rng_ghost_charge;
-  rng_t* rng_improved_scorch;
   rng_t* rng_improved_water_elemental;
-  rng_t* rng_winters_chill;
   rng_t* rng_winters_grasp;
 
   // Options
@@ -212,62 +210,7 @@ struct mage_t : public player_t
   virtual double resource_loss( int resource, double amount, action_t* action=0 );
 };
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
-
-// stack_winters_chill =====================================================
-
-static void stack_winters_chill( spell_t* s,
-                                 double   chance )
-{
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Winters Chill Expiration";
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "Target %s loses Winters Chill", sim -> target -> name() );
-      sim -> target -> debuffs.winters_chill = 0;
-      sim -> target -> expirations.winters_chill = 0;
-    }
-  };
-
-  if ( chance < 1.0 )
-  {
-    mage_t* p = s -> player -> cast_mage();
-
-    if ( p -> rng_winters_chill -> roll( chance ) )
-      return;
-  }
-
-  target_t* t = s -> sim -> target;
-
-  if ( t -> debuffs.winters_chill < 5 )
-  {
-    t -> debuffs.winters_chill += 1;
-
-    if ( s -> sim -> log )
-      log_t::output( s -> sim, "Target %s gains Winters Chill %d",
-                     t -> name(), t -> debuffs.winters_chill );
-  }
-
-  event_t*& e = t -> expirations.winters_chill;
-
-  if ( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( s -> sim ) expiration_t( s -> sim );
-  }
-}
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Mage Spell
@@ -426,7 +369,7 @@ struct mirror_image_pet_t : public pet_t
       spell_t::execute();
       if ( o -> glyphs.mirror_image && result_is_hit() )
       {
-        stack_winters_chill( this, 1.00 );
+	sim -> target -> debuffs.winters_chill -> trigger();
       }
       if ( next_in_sequence )
       {
@@ -528,6 +471,19 @@ struct mirror_image_pet_t : public pet_t
     dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
+
+// stack_winters_chill =====================================================
+
+static void stack_winters_chill( spell_t* s )
+{
+  if ( s -> school != SCHOOL_FROST &&
+       s -> school != SCHOOL_FROSTFIRE ) return;
+
+  mage_t*   p = s -> player -> cast_mage();
+  target_t* t = s -> sim -> target;
+
+  t -> debuffs.winters_chill -> trigger( 1, 1.0, p -> talents.winters_chill / 3.0 );
+}
 
 // trigger_tier5_4pc ========================================================
 
@@ -947,60 +903,6 @@ static void trigger_hot_streak( spell_t* s )
   }
 }
 
-// stack_improved_scorch =========================================================
-
-static void stack_improved_scorch( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( ! p -> talents.improved_scorch ) return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Improved Scorch Expiration";
-      sim -> add_event( this, 30.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "%s loses Improved Scorch", sim -> target -> name() );
-      sim -> target -> debuffs.improved_scorch = 0;
-      sim -> target -> expirations.improved_scorch = 0;
-    }
-  };
-
-  if ( p -> rng_improved_scorch -> roll( p -> talents.improved_scorch / 3.0 ) )
-  {
-    target_t* t = s -> sim -> target;
-
-    if ( t -> debuffs.improved_scorch < 5 )
-    {
-      if ( p -> glyphs.improved_scorch )
-      {
-        t -> debuffs.improved_scorch += 5;
-        if ( t -> debuffs.improved_scorch > 5 ) t -> debuffs.improved_scorch = 5;
-      }
-      else
-      {
-        t -> debuffs.improved_scorch += 1;
-      }
-      if ( s -> sim -> log ) log_t::output( s -> sim, "%s gains Improved Scorch %d", t -> name(), t -> debuffs.improved_scorch );
-    }
-
-    event_t*& e = t -> expirations.improved_scorch;
-
-    if ( e )
-    {
-      e -> reschedule( 30.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim );
-    }
-  }
-}
-
 // trigger_replenishment ===========================================================
 
 static void trigger_replenishment( spell_t* s )
@@ -1144,7 +1046,7 @@ void mage_spell_t::execute()
     trigger_arcane_concentration( this );
     trigger_frostbite( this );
     trigger_winters_grasp( this );
-    stack_winters_chill( this, p -> talents.winters_chill / 3.0 );
+    stack_winters_chill( this );
 
     if ( result == RESULT_CRIT )
     {
@@ -2231,8 +2133,13 @@ struct scorch_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if ( result_is_hit() ) stack_improved_scorch( this );
+    if ( result_is_hit() ) 
+    {
+      int stack = p -> glyphs.improved_scorch ? 5 : 1;
+      sim -> target -> debuffs.improved_scorch -> trigger( stack, 1.0, ( p -> talents.improved_scorch / 3.0 ) );
+    }
     trigger_hot_streak( this );
   }
 
@@ -2245,16 +2152,14 @@ struct scorch_t : public mage_spell_t
     {
       target_t* t = sim -> target;
 
-      if ( t -> debuffs.improved_shadow_bolt )
+      if ( t -> debuffs.improved_shadow_bolt -> check() )
         return false;
 
-      event_t* e = t -> expirations.improved_scorch;
-
-      if ( e && sim -> current_time < ( e -> occurs() - 6.0 ) )
+      if ( t -> debuffs.winters_chill -> check() )
         return false;
 
-      if ( ! e && t -> debuffs.improved_scorch > 0 ) // override scenario
-        return false;
+      if ( t -> debuffs.improved_scorch -> remains_gt( 6.0 ) )
+	return false;
     }
 
     return true;
@@ -2719,14 +2624,15 @@ struct arcane_brilliance_t : public mage_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      p -> buffs.arcane_brilliance = bonus;
+      if ( p -> type == PLAYER_GUARDIAN ) continue;
+      p -> buffs.arcane_brilliance -> trigger( 1, bonus );
       p -> init_resources( true );
     }
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.arcane_brilliance < bonus );
+    return( player -> buffs.arcane_brilliance -> current_value < bonus );
   }
 };
 
@@ -3250,9 +3156,7 @@ void mage_t::init_rng()
   rng_empowered_fire           = get_rng( "empowered_fire"           );
   rng_frostbite                = get_rng( "frostbite"                );
   rng_ghost_charge             = get_rng( "ghost_charge"             );
-  rng_improved_scorch          = get_rng( "improved_scorch"          );
   rng_improved_water_elemental = get_rng( "improved_water_elemental" );
-  rng_winters_chill            = get_rng( "winters_chill"            );
   rng_winters_grasp            = get_rng( "winters_grasp"            );
 }
 
@@ -3659,5 +3563,34 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name )
   new water_elemental_pet_t( sim, p );
 
   return p;
+}
+
+// player_t::mage_init ======================================================
+
+void player_t::mage_init( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> buffs.arcane_brilliance = new buff_t( p, "arcane_brilliance", 1 );
+  }
+
+  target_t* t = sim -> target;
+  t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 5, ( sim -> overrides.improved_scorch ? 0.0 : 30.0 ) );
+  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, ( sim -> overrides.winters_chill   ? 0.0 : 15.0 ) );
+}
+
+// player_t::mage_combat_begin ==============================================
+
+void player_t::mage_combat_begin( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> type == PLAYER_GUARDIAN ) continue;
+    if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> trigger( 1, 60.0 );
+  }
+
+  target_t* t = sim -> target;
+  if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> trigger( 5 );
+  if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> trigger( 5 );
 }
 

@@ -3918,7 +3918,7 @@ void hunter_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if     ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
+    if      ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
     else if ( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
     else if ( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
     else if ( n == "chimera_shot"                ) glyphs.chimera_shot = 1;

@@ -2451,14 +2451,15 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      p -> buffs.mark_of_the_wild = bonus;
+      if ( p -> type == PLAYER_GUARDIAN ) continue;
+      p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
       p -> init_resources( true );
     }
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.mark_of_the_wild < bonus );
+    return( player -> buffs.mark_of_the_wild -> current_value < bonus );
   }
 };
 
@@ -3203,7 +3204,8 @@ void player_t::druid_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.innervate = new buff_t( p, "innervate", 1, 10.0 );
+    p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
+    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", 1 );
   }
 
   target_t* t = sim -> target;
@@ -3219,6 +3221,12 @@ void player_t::druid_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> trigger();
   if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin          -> trigger();
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> type == PLAYER_GUARDIAN ) continue;
+    if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> trigger( 1, 37.0 * 1.20 );
+  }
 
   target_t* t = sim -> target;
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> trigger( 1, 13 );

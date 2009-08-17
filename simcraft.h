@@ -1335,14 +1335,15 @@ struct player_t
   struct buffs_t
   {
     // New Buffs
+    buff_t* arcane_brilliance;
     buff_t* elemental_oath;
     buff_t* innervate;
+    buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     // Old Buffs
     int       old_buffs;
     int       abominations_might;
-    double    arcane_brilliance;
     int       battle_shout;
     int       blessing_of_kings;
     int       blessing_of_might;
@@ -1360,7 +1361,6 @@ struct player_t
     int       hysteria;
     double    mana_cost_reduction;
     double    mana_spring;
-    double    mark_of_the_wild;
     int       power_infusion;
     int       rampage;
     int       replenishment;
@@ -1650,8 +1650,8 @@ struct player_t
   static void hunter_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Mage buff maintenance
-  static void mage_init        ( sim_t* sim ) {}
-  static void mage_combat_begin( sim_t* sim ) {}
+  static void mage_init        ( sim_t* sim );
+  static void mage_combat_begin( sim_t* sim );
   static void mage_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Paladin buff maintenance
@@ -1664,7 +1664,7 @@ struct player_t
   static void priest_combat_begin( sim_t* sim ) {}
   static void priest_combat_end  ( sim_t* sim ) {}
 
-  // Raid-wide Rogeu buff maintenance
+  // Raid-wide Rogue buff maintenance
   static void rogue_init        ( sim_t* sim ) {}
   static void rogue_combat_begin( sim_t* sim ) {}
   static void rogue_combat_end  ( sim_t* sim ) {}
@@ -1675,8 +1675,8 @@ struct player_t
   static void shaman_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Warlock buff maintenance
-  static void warlock_init        ( sim_t* sim ) {}
-  static void warlock_combat_begin( sim_t* sim ) {}
+  static void warlock_init        ( sim_t* sim );
+  static void warlock_combat_begin( sim_t* sim );
   static void warlock_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Warrior buff maintenance
@@ -1784,8 +1784,11 @@ struct target_t
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
     debuff_t* improved_faerie_fire;
+    debuff_t* improved_scorch;
+    debuff_t* improved_shadow_bolt;
     debuff_t* mangle;
     debuff_t* trauma;
+    debuff_t* winters_chill;
     // Old Buffs
     int    old_buffs;
     int    bleeding;
@@ -1796,8 +1799,6 @@ struct target_t
     double hemorrhage;
     int    hemorrhage_charges;
     double hunters_mark;
-    int    improved_scorch;
-    int    improved_shadow_bolt;
     int    judgement_of_wisdom;
     int    master_poisoner;
     int    misery;
@@ -1809,7 +1810,6 @@ struct target_t
     double sunder_armor;
     int    thunder_clap;
     int    totem_of_wrath;
-    int    winters_chill;
     int    winters_grasp;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     void reset()
@@ -1828,13 +1828,10 @@ struct target_t
     event_t* frozen;
     event_t* hemorrhage;
     event_t* hunters_mark;
-    event_t* improved_scorch;
-    event_t* improved_shadow_bolt;
     event_t* misery;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
-    event_t* winters_chill;
     event_t* winters_grasp;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
@@ -1844,15 +1841,12 @@ struct target_t
   struct uptimes_t
   {
     uptime_t* blood_frenzy;
-    uptime_t* improved_scorch;
-    uptime_t* improved_shadow_bolt;
     uptime_t* invulnerable;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
     uptime_t* trauma;
     uptime_t* totem_of_wrath;
     uptime_t* vulnerable;
-    uptime_t* winters_chill;
     uptime_t* winters_grasp;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }

@@ -150,7 +150,7 @@ bool buff_t::trigger( int    stacks,
                       double value,
                       double chance )
 {
-  if ( max_stack == 0 ) return false;
+  if ( max_stack == 0 || chance == 0 ) return false;
 
   if ( cooldown_ready > 0 )
     if ( sim -> current_time < cooldown_ready )
