@@ -1734,7 +1734,7 @@ struct insect_swarm_t : public druid_spell_t
       if ( p -> buffs_eclipse_lunar -> check() )
         return false;
 
-    if ( min_eclipse_left > 0 && p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ))
+    if ( min_eclipse_left > 0 && p  -> buffs_eclipse_solar -> remains_lt( min_eclipse_left ))
     {
       return false;
     }
