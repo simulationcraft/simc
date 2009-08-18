@@ -3,6 +3,7 @@
 priest=Priest_T8_34_28_09
 origin=http://profiler.wowhead.com/?profile=13000020
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0533203100300502331000000000005551002020152000000000000324
 glyphs=smite/shadow_word_death/hymn_of_hope/fading/shadowfiend/levitate
 actions=flask,type=frost_wyrm
@@ -41,7 +42,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # gear_agility=10
 # gear_stamina=962
 # gear_intellect=882
-# gear_spirit=369
+# gear_spirit=370
 # gear_spell_power=2458
 # gear_hit_rating=374
 # gear_crit_rating=715

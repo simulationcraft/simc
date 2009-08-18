@@ -223,7 +223,7 @@ struct rogue_t : public player_t
   };
   glyphs_t glyphs;
 
-  rogue_t( sim_t* sim, const std::string& name ) : player_t( sim, ROGUE, name )
+  rogue_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, ROGUE, name, race_type )
   {
     // Active
     active_anesthetic_poison = 0;
@@ -243,6 +243,7 @@ struct rogue_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3339,15 +3340,45 @@ void rogue_t::init_glyphs()
   }
 }
 
+// rogue_t::init_race ======================================================
+
+void rogue_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DWARF:
+  case RACE_NIGHT_ELF:
+  case RACE_GNOME:
+  case RACE_UNDEAD:
+  case RACE_ORC:
+  case RACE_TROLL:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // rogue_t::init_base ========================================================
 
 void rogue_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 113;
-  attribute_base[ ATTR_AGILITY   ] = 189;
-  attribute_base[ ATTR_STAMINA   ] = 105;
-  attribute_base[ ATTR_INTELLECT ] =  37;
-  attribute_base[ ATTR_SPIRIT    ] =  65;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, ROGUE, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_AGILITY ] *= 1.0 + talents.sinister_calling * 0.03;
 
@@ -3357,12 +3388,8 @@ void rogue_t::init_base()
   initial_attack_power_multiplier  *= 1.0 + ( talents.savage_combat * 0.02 +
                                               talents.deadliness    * 0.02 );
 
-  base_attack_crit = -0.00298321;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.000355, 0.000250, 0.000120085 );
-
   base_attack_expertise = 0.25 * talents.weapon_expertise * 0.05;
 
-  resource_base[ RESOURCE_HEALTH ] = 3524;
   resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? ( glyphs.vigor ? 20 : 10 ) : 0 );
 
   health_per_stamina       = 10;
@@ -3825,8 +3852,8 @@ int rogue_t::decode_set( item_t& item )
 
 // player_t::create_rogue  ==================================================
 
-player_t* player_t::create_rogue( sim_t* sim, const std::string& name )
+player_t* player_t::create_rogue( sim_t* sim, const std::string& name, int race_type )
 {
-  return new rogue_t( sim, name );
+  return new rogue_t( sim, name, race_type );
 }
 

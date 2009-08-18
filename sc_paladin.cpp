@@ -95,7 +95,7 @@ struct paladin_t : public player_t
   };
   glyphs_t glyphs;
 
-  paladin_t( sim_t* sim, const std::string& name ) : player_t( sim, PALADIN, name )
+  paladin_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PALADIN, name, race_type )
   {
     active_seal                  = SEAL_NONE;
     active_seal_of_vengeance     = 0;
@@ -105,6 +105,7 @@ struct paladin_t : public player_t
     auto_attack = 0;
   }
 
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_glyphs();
@@ -999,31 +1000,46 @@ struct judgement_t : public paladin_attack_t
   }
 };
 
+// paladin_t::init_race ======================================================
 
+void paladin_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DWARF:
+  case RACE_DRAENEI:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_DWARF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
 
 
 void paladin_t::init_base()
 {
-  // FIXME: Verify
-  attribute_base[ ATTR_STRENGTH  ] = 153;
-  attribute_base[ ATTR_AGILITY   ] =  86;
-  attribute_base[ ATTR_STAMINA   ] = 146;
-  attribute_base[ ATTR_INTELLECT ] =  97;
-  attribute_base[ ATTR_SPIRIT    ] =  80;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, PALADIN, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + talents.divine_strength * 0.03;
 
-  base_spell_crit = 0.0334;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.6 );
-
   base_attack_power = ( level * 3 ) - 20;
-  base_attack_crit  = 0.0327;
   initial_attack_power_per_strength = 2.0;
   initial_attack_power_per_agility  = 0.0;
-  initial_attack_crit_per_agility = 0.01/52.08; // FIXME only level 80 value
-
-  resource_base[ RESOURCE_HEALTH ] = 3185; // FIXME
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1500/*FIXME*/, 2953, 4394 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -1230,8 +1246,8 @@ int paladin_t::decode_set( item_t& item )
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-player_t* player_t::create_paladin( sim_t* sim, const std::string& name )
+player_t* player_t::create_paladin( sim_t* sim, const std::string& name, int race_type )
 {
-  return new paladin_t( sim, name );
+  return new paladin_t( sim, name, race_type );
 }
 

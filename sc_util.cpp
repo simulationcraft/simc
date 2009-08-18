@@ -907,6 +907,27 @@ int util_t::translate_class_id( int cid )
   return PLAYER_NONE;
 }
 
+// util_t::translate_race_id ===============================================
+
+int util_t::translate_race_id( int rid )
+{
+  switch ( rid )
+  {
+  case  1: return RACE_HUMAN;
+  case  2: return RACE_ORC;
+  case  3: return RACE_DWARF;
+  case  4: return RACE_NIGHT_ELF;
+  case  5: return RACE_UNDEAD;
+  case  6: return RACE_TAUREN;
+  case  7: return RACE_GNOME;
+  case  8: return RACE_TROLL;
+  case 10: return RACE_BLOOD_ELF;
+  case 11: return RACE_DRAENEI;
+  }
+
+  return RACE_NONE;
+}
+
 // util_t::socket_gem_match ================================================
 
 bool util_t::socket_gem_match( int socket,
@@ -1336,6 +1357,20 @@ std::string& util_t::format_name( std::string& name )
   util_t::utf8_hex_to_ascii( name );
 
   return name;
+}
+
+void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b )
+{
+  result.level      = a.level      + b.level;
+  result.health     = a.health     + b.health;
+  result.mana       = a.mana       + b.mana;
+  result.strength   = a.strength   + b.strength;
+  result.agility    = a.agility    + b.agility;
+  result.stamina    = a.stamina    + b.stamina;
+  result.intellect  = a.intellect  + b.intellect;
+  result.spirit     = a.spirit     + b.spirit;
+  result.spell_crit = a.spell_crit + b.spell_crit;
+  result.melee_crit = a.melee_crit + b.melee_crit;
 }
 
 //-------------------------------

@@ -577,7 +577,15 @@ player_t* wowhead_t::download_player( sim_t* sim,
     return 0;
   }
 
-  player_t* p = player_t::create( sim, type_str, name_str );
+  std::string rid_str;
+  if ( ! js_t::get_value( rid_str, profile_js, "race" ) )
+  {
+    util_t::printf( "\nsimcraft: Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
+    return 0;
+  }
+  int race_type = util_t::translate_race_id( atoi( rid_str.c_str() ) );
+
+  player_t* p = player_t::create( sim, type_str, name_str, race_type );
   if ( ! p )
   {
     util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n",

@@ -321,7 +321,30 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Enchants
   else if ( name == "lightweave"            ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
-  else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  
+  else if ( name == "darkglow_embroidery"   ) e = "OnSpellHit_400Mana_35%_60Cd";
+
+  if ( e.empty() ) return false;
+
+  armory_t::format( e );
+  encoding = e;
+
+  return true;
+}
+
+// ==========================================================================
+// unique_gear_t::get_hidden_encoding
+// ==========================================================================
+
+bool unique_gear_t::get_hidden_encoding( std::string&       encoding,
+                                         const std::string& name,
+                                         const std::string& id )
+{
+  std::string e;
+
+  if      ( name == "lightweave"                 ) e = "1spi";
+  else if ( name == "lightweave_embroidery"      ) e = "1spi";  
+  else if ( name == "darkglow_embroidery"        ) e = "1spi";
 
   if ( e.empty() ) return false;
 

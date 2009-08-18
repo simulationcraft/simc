@@ -47,14 +47,24 @@ action_t* pet_t::create_action( const std::string& name,
 
 double pet_t::stamina() SC_CONST
 {
-  return player_t::stamina() + composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() );
+  double a = floor ( composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() ) );
+
+  if ( buffs.blessing_of_kings )
+    a = floor ( a * 1.10 );
+
+  return player_t::stamina() + a;
 }
 
 // pet_t::intellect =========================================================
 
 double pet_t::intellect() SC_CONST
 {
-  return player_t::intellect() + composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() );
+  double a = floor ( composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() ) );
+
+  if ( buffs.blessing_of_kings )
+    a = floor ( a * 1.10 );
+
+  return player_t::intellect() + a;
 }
 
 // player_t::id =============================================================

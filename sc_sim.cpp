@@ -118,11 +118,11 @@ static bool parse_player( sim_t*             sim,
 
     option_t options[] =
     {
-      { "wowhead", OPT_STRING, &wowhead },
-      { "region",  OPT_STRING, &region  },
-      { "server",  OPT_STRING, &server  },
-      { "talents", OPT_STRING, &talents },
-      { "cache",   OPT_BOOL,   &cache   },
+      { "wowhead", OPT_STRING, &wowhead  },
+      { "region",  OPT_STRING, &region   },
+      { "server",  OPT_STRING, &server   },
+      { "talents", OPT_STRING, &talents  },
+      { "cache",   OPT_BOOL,   &cache    },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

@@ -246,8 +246,8 @@ struct death_knight_t : public player_t
   };
   runes_t _runes;
 
-  death_knight_t( sim_t* sim, const std::string& name ) :
-      player_t( sim, DEATH_KNIGHT, name )
+  death_knight_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) :
+      player_t( sim, DEATH_KNIGHT, name, race_type )
   {
     // Active
     active_presence     = 0;
@@ -270,6 +270,7 @@ struct death_knight_t : public player_t
 
   // Character Definition
   virtual void      init_actions();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_gains();
@@ -1928,25 +1929,51 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   return player_t::create_action( name, options_str );
 }
 
+// death_knight_t::init_race ======================================================
+
+void death_knight_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DWARF:
+  case RACE_DRAENEI:
+  case RACE_NIGHT_ELF:
+  case RACE_GNOME:
+  case RACE_UNDEAD:
+  case RACE_ORC:
+  case RACE_TROLL:
+  case RACE_TAUREN:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 void death_knight_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 185;       // Human Level 80 Stats
-  attribute_base[ ATTR_AGILITY   ] = 112;
-  attribute_base[ ATTR_STAMINA   ] = 169;
-  attribute_base[ ATTR_INTELLECT ] = 35;
-  attribute_base[ ATTR_SPIRIT    ] = 60;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_HEALTH );
+  base_attack_crit                 = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + talents.veteran_of_the_third_war * 0.02 + talents.abominations_might * 0.01;
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
 
   base_attack_power = -20;
-  base_attack_crit = 0.0318669;
   base_attack_expertise = 0.0025 * talents.veteran_of_the_third_war * 2;
 
   initial_attack_power_per_strength = 2.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6244.965 );
 
-  resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 8121, 8121, 8121 );
   resource_base[ RESOURCE_RUNIC ]  = 100 + talents.runic_power_mastery * 15;
 
   health_per_stamina = 10;
@@ -2321,9 +2348,9 @@ int death_knight_t::decode_set( item_t& item )
 
 // player_t implementations ============================================
 
-player_t* player_t::create_death_knight( sim_t* sim, const std::string& name )
+player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, int race_type )
 {
-  death_knight_t* p = new death_knight_t( sim, name );
+  death_knight_t* p = new death_knight_t( sim, name, race_type );
 
   new bloodworm_pet_t( sim, p );
 

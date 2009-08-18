@@ -197,7 +197,7 @@ struct druid_t : public player_t
   };
   tiers_t tiers;
 
-  druid_t( sim_t* sim, const std::string& name ) : player_t( sim, DRUID, name )
+  druid_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, DRUID, name, race_type )
   {
     active_insect_swarm   = 0;
     active_moonfire       = 0;
@@ -213,6 +213,7 @@ struct druid_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_items();
@@ -227,6 +228,7 @@ struct druid_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
+  virtual void      recalculate_haste();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
@@ -1443,7 +1445,7 @@ double druid_spell_t::haste() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
-  if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
+//  if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
   if ( p -> buffs_natures_grace -> up() )
   {
     h *= 1.0 / ( 1.0 + 0.20 );
@@ -1527,11 +1529,18 @@ void druid_spell_t::consume_resource()
 void druid_spell_t::player_buff()
 {
   druid_t* p = player -> cast_druid();
+
   spell_t::player_buff();
+
+  if ( p -> talents.balance_of_power )
+  {
+    player_hit += p -> talents.balance_of_power * 0.02;
+  }
   if ( p -> buffs_moonkin_form -> check() )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
+
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
 
@@ -1940,6 +1949,13 @@ struct moonkin_form_t : public druid_spell_t
     {
       sim -> auras.improved_moonkin -> trigger();
     }
+
+    if ( p -> talents.furor )
+    {
+      p -> attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + p -> talents.furor * 0.02;
+    }
+
+    p -> spell_power_per_spirit += ( p -> talents.improved_moonkin_form * 0.10 );
   }
 
   virtual bool ready()
@@ -2650,50 +2666,61 @@ void druid_t::init_glyphs()
   }
 }
 
+// druid_t::init_race ======================================================
+
+void druid_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_NIGHT_ELF:
+  case RACE_TAUREN:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // druid_t::init_base =======================================================
 
 void druid_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  94;
-  attribute_base[ ATTR_AGILITY   ] =  77;
-  attribute_base[ ATTR_STAMINA   ] = 100;
-  attribute_base[ ATTR_INTELLECT ] = 138;
-  attribute_base[ ATTR_SPIRIT    ] = 161;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, DRUID, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
-  if ( talents.moonkin_form && talents.furor )
-  {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.furor * 0.02;
-  }
+  base_spell_crit += talents.natural_perfection * 0.01;
+
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
-    attribute_multiplier[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
+    attribute_multiplier_initial[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
 
-    attribute_multiplier[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
+    attribute_multiplier_initial[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
   }
 
-  base_spell_crit = 0.0185298;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
-  initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
-  initial_spell_power_per_spirit = ( talents.improved_moonkin_form * 0.10 );
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + 0.04 * talents.heart_of_the_wild;
 
-  base_attack_power = ( level * 2 ) - 20;
-  base_attack_crit  = 0.0747516;
+  initial_spell_power_per_intellect = talents.lunar_guidance * 0.04;
+  initial_spell_power_per_spirit = 0.0;
+
+  base_attack_power = -20;
   base_attack_expertise = 0.25 * talents.primal_precision * 0.05;
 
-  initial_attack_power_per_agility  = 1.0;
+  initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3104 );
 
-  // FIXME! Make this level-specific.
-  resource_base[ RESOURCE_HEALTH ] = 3600;
-  if ( talents.moonkin_form )
-  {
-    resource_base[ RESOURCE_MANA ] = rating_t::interpolate( level, 1103, 2090, 3496 );
-  }
-  else
-  {
-    resource_base[ RESOURCE_ENERGY ] = 100;
-  }
+  resource_base[ RESOURCE_ENERGY ] = 100;
 
   health_per_stamina      = 10;
   mana_per_intellect      = 15;
@@ -2978,6 +3005,15 @@ double druid_t::available() SC_CONST
   return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
 }
 
+// druid_t::recalculate_haste ==============================================
+
+void druid_t::recalculate_haste()
+{
+  player_t::recalculate_haste();
+
+  spell_haste = ( 1.0 - talents.celestial_focus * 0.01 ) / ( 1.0 + haste_rating / rating. spell_haste );
+}
+
 // druid_t::composite_attack_power ==========================================
 
 double druid_t::composite_attack_power() SC_CONST
@@ -2985,21 +3021,23 @@ double druid_t::composite_attack_power() SC_CONST
   double ap = player_t::composite_attack_power();
   double weapon_ap=0;
 
-  if( buffs_cat_form -> check() )
+  if ( buffs_cat_form -> check() )
   {
+    ap += floor( 1.0 * agility() );
     weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
-  }
-  if ( talents.predatory_strikes )
-  {
-    ap += level * talents.predatory_strikes * 0.5;
-    weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes, 3, 0.07, 0.14, 0.20 );
-  }
 
-  if ( buffs_cat_form -> check() ) ap += 160;
+    ap += level * 2;
+
+    if ( talents.predatory_strikes )
+    {
+      ap += level * talents.predatory_strikes * 0.5;
+      weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes, 3, 0.07, 0.14, 0.20 );
+    }
+  }
 
   ap += weapon_ap;
 
-  return ap;
+  return floor( ap );
 }
 
 // druid_t::composite_attack_power_multiplier ===============================
@@ -3028,7 +3066,7 @@ double druid_t::composite_attack_crit() SC_CONST
     c += 0.02 * talents.master_shapeshifter;
   }
 
-  return c;
+  return floor( c * 10000.0 ) / 10000.0;
 }
 
 // druid_t::composite_spell_hit =============================================
@@ -3037,12 +3075,7 @@ double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  if ( talents.balance_of_power )
-  {
-    hit += talents.balance_of_power * 0.02;
-  }
-
-  return hit;
+  return floor( hit * 10000.0 ) / 10000.0;
 }
 
 // druid_t::composite_spell_crit ============================================
@@ -3051,12 +3084,7 @@ double druid_t::composite_spell_crit() SC_CONST
 {
   double crit = player_t::composite_spell_crit();
 
-  if ( talents.natural_perfection )
-  {
-    crit += talents.natural_perfection * 0.01;
-  }
-
-  return crit;
+  return floor( crit * 10000.0 ) / 10000.0;
 }
 
 // druid_t::get_talent_trees ===============================================
@@ -3198,9 +3226,10 @@ int druid_t::decode_set( item_t& item )
 // player_t::create_druid  ==================================================
 
 player_t* player_t::create_druid( sim_t*             sim,
-                                  const std::string& name )
+                                  const std::string& name,
+                                  int race_type )
 {
-  druid_t* p = new druid_t( sim, name );
+  druid_t* p = new druid_t( sim, name, race_type );
 
   new treants_pet_t( sim, p, "treants" );
 

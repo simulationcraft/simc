@@ -94,7 +94,7 @@ struct priest_t : public player_t
     int  enlightenment;
     int  focused_mind;
     int  focused_power;
-    int  force_of_will;
+    int  focused_will;
     int  holy_specialization;
     int  improved_devouring_plague;
     int  improved_inner_fire;
@@ -148,7 +148,7 @@ struct priest_t : public player_t
   double devious_mind_delay;
   bool   use_shadow_word_death;
 
-  priest_t( sim_t* sim, const std::string& name ) : player_t( sim, PRIEST, name )
+  priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
   {
     // Active
     active_devouring_plague  = 0;
@@ -166,6 +166,7 @@ struct priest_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -201,9 +202,7 @@ struct priest_spell_t : public spell_t
   priest_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
-    priest_t* p = player -> cast_priest();
-    base_multiplier *= 1.0 + p -> talents.force_of_will * 0.01;
-    base_crit       += p -> talents.force_of_will * 0.01;
+
   }
 
   virtual double haste() SC_CONST;
@@ -2076,42 +2075,61 @@ void priest_t::init_glyphs()
   }
 }
 
+// priest_t::init_race ======================================================
+
+void priest_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DWARF:
+  case RACE_NIGHT_ELF:
+  case RACE_DRAENEI:
+  case RACE_UNDEAD:
+  case RACE_TROLL:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // priest_t::init_base =======================================================
 
 void priest_t::init_base()
 {
-  // Dwarf Priest base stats
-  static base_stats_t base_stats_60 = { 60, 1397, 1376, 37, 36, 53, 119, 124, 0.0123765, 0.0317927 };
-  static base_stats_t base_stats_70 = { 70, 3391, 2620, 41, 41, 61, 144, 150, 0.0123765, 0.0317927 };
-  static base_stats_t base_stats_80 = { 80, 6960, 3863, 45, 47, 70, 173, 180, 0.0123765, 0.0317927 };
-
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, base_stats_60.strength,  base_stats_70.strength,  base_stats_80.strength  );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, base_stats_60.agility,   base_stats_70.agility,   base_stats_80.agility   );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, base_stats_60.stamina,   base_stats_70.stamina,   base_stats_80.stamina   );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::interpolate( level, base_stats_60.intellect, base_stats_70.intellect, base_stats_80.intellect );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::interpolate( level, base_stats_60.spirit,    base_stats_70.spirit,    base_stats_80.spirit    );
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, PRIEST, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.improved_power_word_fortitude * 0.02;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.enlightenment * 0.02;
   attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.spirit_of_redemption * 0.05;
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
 
-  base_spell_crit = rating_t::interpolate( level, base_stats_60.spell_crit, base_stats_70.spell_crit, base_stats_80.spell_crit );
-
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
                                      talents.twisted_faith      * 0.02 );
 
   base_attack_power = -10;
-  base_attack_crit  = rating_t::interpolate( level, base_stats_60.melee_crit, base_stats_70.melee_crit, base_stats_80.melee_crit );
-  initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/21.92982456, 0.01/24.93765586, 0.01/52.19533582 );
 
-  resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, base_stats_60.health, base_stats_70.health, base_stats_80.health );
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, base_stats_60.mana,   base_stats_70.mana,   base_stats_80.mana   );
+  initial_attack_power_per_strength = 1.0;
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+  base_spell_crit += talents.focused_will * 0.01;
 }
 
 // priest_t::init_gains ======================================================
@@ -2212,6 +2230,9 @@ void priest_t::init_actions()
 void priest_t::init_party()
 {
   party_list.clear();
+
+  if ( party == 0 )
+    return;
 
   player_t* p = sim -> player_list;
   while ( p )
@@ -2321,7 +2342,7 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
     { { 15, NULL                                       }, { 15, &( talents.surge_of_light )       }, { 15, &( talents.improved_vampiric_embrace ) } },
     { { 16, &( talents.focused_power )                 }, { 16, NULL                              }, { 16, &( talents.focused_mind )              } },
     { { 17, &( talents.enlightenment )                 }, { 17, NULL                              }, { 17, &( talents.mind_melt )                 } },
-    { { 18, NULL                                       }, { 18, NULL                              }, { 18, &( talents.improved_devouring_plague ) } },
+    { { 18, &( talents.focused_will )                  }, { 18, NULL                              }, { 18, &( talents.improved_devouring_plague ) } },
     { { 19, &( talents.power_infusion )                }, { 19, NULL                              }, { 19, &( talents.shadow_form )               } },
     { { 20, NULL                                       }, { 20, NULL                              }, { 20, &( talents.shadow_power )              } },
     { { 21, NULL                                       }, { 21, NULL                              }, { 21, NULL                                   } },
@@ -2356,7 +2377,7 @@ std::vector<option_t>& priest_t::get_options()
       { "enlightenment",                 OPT_INT,  &( talents.enlightenment                 ) },
       { "focused_mind",                  OPT_INT,  &( talents.focused_mind                  ) },
       { "focused_power",                 OPT_INT,  &( talents.focused_power                 ) },
-      { "force_of_will",                 OPT_INT,  &( talents.force_of_will                 ) },
+      { "focused_will",                  OPT_INT,  &( talents.focused_will                  ) },
       { "holy_specialization",           OPT_INT,  &( talents.holy_specialization           ) },
       { "improved_devouring_plague",     OPT_INT,  &( talents.improved_devouring_plague     ) },
       { "improved_inner_fire",           OPT_INT,  &( talents.improved_inner_fire           ) },
@@ -2441,9 +2462,9 @@ int priest_t::decode_set( item_t& item )
 
 // player_t::create_priest  =================================================
 
-player_t* player_t::create_priest( sim_t* sim, const std::string& name )
+player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race_type )
 {
-  priest_t* p =  new priest_t( sim, name );
+  priest_t* p =  new priest_t( sim, name, race_type );
 
   new shadow_fiend_pet_t( sim, p );
 

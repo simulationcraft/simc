@@ -173,7 +173,7 @@ struct warrior_t : public player_t
   };
   tiers_t tiers;
 
-  warrior_t( sim_t* sim, const std::string& name ) : player_t( sim, WARRIOR, name )
+  warrior_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARRIOR, name, race_type )
   {
     // Active
     active_deep_wounds       = 0;
@@ -189,6 +189,7 @@ struct warrior_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_items();
@@ -2127,28 +2128,56 @@ void warrior_t::init_glyphs()
   }
 }
 
+// warrior_t::init_race ======================================================
+
+void warrior_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DWARF:
+  case RACE_DRAENEI:
+  case RACE_NIGHT_ELF:
+  case RACE_GNOME:
+  case RACE_UNDEAD:
+  case RACE_ORC:
+  case RACE_TROLL:
+  case RACE_TAUREN:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // warrior_t::init_base ========================================================
 
 void warrior_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 179; // Tauren lvl 80
-  attribute_base[ ATTR_AGILITY   ] = 108;
-  attribute_base[ ATTR_STAMINA   ] = 161;
-  attribute_base[ ATTR_INTELLECT ] =  31;
-  attribute_base[ ATTR_SPIRIT    ] =  61;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, WARRIOR, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   resource_base[  RESOURCE_RAGE  ] = 100;
-  resource_base[ RESOURCE_HEALTH ] = 4579;
 
   initial_attack_power_per_strength = 2.0;
   initial_attack_power_per_agility  = 0.0;
 
   // FIX ME!
   base_attack_power = level * 2 +60;
-  base_attack_crit = 0.031905;
   base_attack_expertise  = 0.25 * talents.vitality * 0.02;
   base_attack_expertise += 0.25 * talents.strength_of_arms * 0.02;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 1 / 2000, 1 / 3200, 1 / 6256.61 );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
   attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
@@ -2576,9 +2605,9 @@ int warrior_t::decode_set( item_t& item )
 
 // player_t::create_warrior ===============================================
 
-player_t* player_t::create_warrior( sim_t* sim, const std::string& name )
+player_t* player_t::create_warrior( sim_t* sim, const std::string& name, int race_type )
 {
-  return new warrior_t( sim, name );
+  return new warrior_t( sim, name, race_type );
 }
 
 // warrior_init ===================================================

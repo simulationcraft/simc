@@ -196,7 +196,7 @@ struct shaman_t : public player_t
   };
   tiers_t tiers;
 
-  shaman_t( sim_t* sim, const std::string& name ) : player_t( sim, SHAMAN, name )
+  shaman_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, SHAMAN, name, race_type )
   {
     for( int i=0; i < ELEMENT_MAX; i++ ) active_totems[ i ] = 0;
 
@@ -217,6 +217,7 @@ struct shaman_t : public player_t
   // Character Definition
   virtual void      init_rating();
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_items();
   virtual void      init_scaling();
@@ -2902,32 +2903,49 @@ void shaman_t::init_glyphs()
   }
 }
 
+// shaman_t::init_race ======================================================
+
+void shaman_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_DRAENEI:
+  case RACE_TAUREN:
+  case RACE_ORC:
+  case RACE_TROLL:
+    break;
+  default:
+    race = RACE_ORC;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // shaman_t::init_base ========================================================
 
 void shaman_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 125;
-  attribute_base[ ATTR_AGILITY   ] =  69;
-  attribute_base[ ATTR_STAMINA   ] = 135;
-  attribute_base[ ATTR_INTELLECT ] = 123;
-  attribute_base[ ATTR_SPIRIT    ] = 140;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, SHAMAN, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.toughness           * 0.02;
   base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
 
-  base_spell_crit = 0.0220045;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
-
   base_attack_power = ( level * 2 ) - 20;
-  base_attack_crit  = 0.0292234;
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.388 );
-
-
-  resource_base[ RESOURCE_HEALTH ] = 3185;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1415, 2680, 4396 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -3369,9 +3387,9 @@ int shaman_t::decode_set( item_t& item )
 
 // player_t::create_shaman  =================================================
 
-player_t* player_t::create_shaman( sim_t* sim, const std::string& name )
+player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race_type )
 {
-  shaman_t* p = new shaman_t( sim, name );
+  shaman_t* p = new shaman_t( sim, name, race_type );
 
   new spirit_wolf_pet_t( sim, p );
 

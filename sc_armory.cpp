@@ -363,7 +363,8 @@ static bool parse_item_enchant( item_t& item,
   {
     std::string& s = item.armory_enchant_str;
 
-    if     ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
+    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
+    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow";    }
     else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
     else if ( enchant == "Berserking"               ) { s += "_berserking";  }
     else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
@@ -635,21 +636,24 @@ player_t* armory_t::download_player( sim_t* sim,
     return 0;
   }
 
-  std::string type_str, cid_str, name_str;
+  std::string type_str, cid_str, name_str, race_str;
   int level;
 
   if ( ! xml_t::get_value( type_str, sheet_xml, "character/class"   ) ||
        ! xml_t::get_value(  cid_str, sheet_xml, "character/classId" ) ||
        ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ||
-       ! xml_t::get_value(    level, sheet_xml, "character/level"   ) )
+       ! xml_t::get_value(    level, sheet_xml, "character/level"   ) ||
+       ! xml_t::get_value( race_str, sheet_xml, "character/race"    )
+       )
   {
-    util_t::printf( "\nsimcraft: Unable to determine class/name/level from armory xml for %s|%s|%s.\n",
+    util_t::printf( "\nsimcraft: Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
                     region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   armory_t::format( type_str );
   armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
   util_t::format_name( name_str );
+  armory_t::format( race_str );
 
   if ( type_str == "death_knight" || type_str == "paladin" )
   {
@@ -657,7 +661,9 @@ player_t* armory_t::download_player( sim_t* sim,
     return 0;
   }
 
-  player_t* p = player_t::create( sim, type_str, name_str );
+  int race_type = util_t::parse_race_type( race_str );
+
+  player_t* p = player_t::create( sim, type_str, name_str, race_type );
   if ( ! p )
   {
     util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",

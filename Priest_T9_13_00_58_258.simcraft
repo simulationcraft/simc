@@ -3,6 +3,7 @@
 priest=Priest_T9_13_00_58_258
 origin=http://profiler.wowhead.com/?profile=13357966
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
@@ -22,7 +23,7 @@ actions+=/dispersion
 actions+=/mind_flay
 actions+=/shadow_word_death
 head=velens_cowl_of_triumph,stats=282armor_86crit_151sp_116sta_116int_94spi,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-neck=wail_of_the_valkyr,stats=65int_65sta_43haste_57crit_91sp,gems=12sp_10crit_5sp
+neck=wail_of_the_valkyr,stats=65sta_65int_91sp_57crit_43haste,gems=12sp_10crit_5sp
 shoulders=velens_mantle_of_triumph,stats=260armor_68crit_124sp_86sta_86int_76spi,gems=12sp_10crit_5sp,enchant=24sp_15crit
 chest=velens_raiments_of_triumph,stats=347armor_94haste_160sp_116sta_116int_94spi,gems=23sp_23sp,enchant=10all
 waist=cord_of_biting_cold,stats=195armor_58hit_73crit_114sp_86sta_86int,gems=12sp_10spi_23sp_23sp_7sp
@@ -30,20 +31,20 @@ legs=velens_pants_of_triumph,stats=303armor_102hit_86haste_160sp_116sta_116int,g
 feet=boots_of_the_mourning_widow,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=23sp_23sp,enchant=12crit_12hit
 wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=23sp,enchant=30sp
 hands=velens_handwraps_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=12sp_10crit_5sp,enchant=28sp
-finger1=band_of_deplorable_violence,stats=65int_50spi_65sta_53crit_91sp,gems=12sp_10crit_5sp,enchant=23sp
-finger2=ring_of_the_darkmender,stats=65int_65sta_49haste_28mp5_91sp,gems=12sp_10crit_5sp,enchant=23sp
+finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=12sp_10crit_5sp,enchant=23sp
+finger2=ring_of_the_darkmender,stats=65sta_65int_91sp_28mp5_49haste,gems=12sp_10crit_5sp,enchant=23sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
 trinket2=reign_of_the_unliving,stats=168sp,equip=onspellcrit_2117fire_3stack_2.0cd
-back=jainas_radiance,stats=74int_74sta_57haste_65crit_105sp_182armor,gems=23sp_5sp,enchant=lightweave
-main_hand=miserys_end,stats=66int_66sta_66haste_44crit_701sp,gems=0sp,enchant=63sp,weapon=mace_1.80speed_125.3dps
-off_hand=symbol_of_transgression,stats=65int_65sta_57crit_100sp_57hit,gems=0sp
-ranged=rod_of_imprisoned_souls,stats=29int_40sta_24haste_31crit_50sp,gems=0sp
+back=jainas_radiance,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=lightweave
+main_hand=miserys_end,stats=66sta_66int_701sp_44crit_66haste,gems=0sp,enchant=63sp,weapon=mace_1.80speed_125.3dps
+off_hand=symbol_of_transgression,stats=65sta_65int_57hit_100sp_57crit,gems=0sp
+ranged=rod_of_imprisoned_souls,stats=40sta_29int_50sp_31crit_24haste,gems=0sp
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
 # gear_stamina=1200
 # gear_intellect=1189
-# gear_spirit=440
+# gear_spirit=441
 # gear_spell_power=3065
 # gear_mp5=28
 # gear_hit_rating=297

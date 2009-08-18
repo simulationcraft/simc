@@ -170,7 +170,7 @@ struct mage_t : public player_t
   };
   glyphs_t glyphs;
 
-  mage_t( sim_t* sim, const std::string& name ) : player_t( sim, MAGE, name )
+  mage_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, MAGE, name, race_type )
   {
     // Active
     active_ignite          = 0;
@@ -182,6 +182,7 @@ struct mage_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_glyphs();
   virtual void      init_buffs();
@@ -1772,9 +1773,7 @@ struct fire_ball_t : public mage_spell_t
     base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier   *= 1.0 + p -> talents.spell_impact * 0.02;
-    base_crit         += p -> talents.arcane_instability * 0.01;
     base_crit         += p -> talents.critical_mass * 0.02;
-    base_crit         += p -> talents.pyromaniac * 0.01;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
@@ -1881,11 +1880,9 @@ struct fire_blast_t : public mage_spell_t
     cooldown         -= p -> talents.improved_fire_blast * 0.5;
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit        += p -> talents.incineration * 0.02;
     base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.pyromaniac * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
@@ -1936,9 +1933,7 @@ struct living_bomb_t : public mage_spell_t
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.pyromaniac * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
@@ -2032,9 +2027,7 @@ struct pyroblast_t : public mage_spell_t
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.pyromaniac * 0.01;
     base_crit        += p -> talents.world_in_flames * 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
@@ -2117,10 +2110,8 @@ struct scorch_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.spell_impact       * 0.02;
 
-    base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.incineration       * 0.02;
     base_crit        += p -> talents.critical_mass      * 0.02;
-    base_crit        += p -> talents.pyromaniac         * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
@@ -2419,9 +2410,7 @@ struct frostfire_bolt_t : public mage_spell_t
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
     base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.pyromaniac * 0.01;
     direct_power_mod += p -> talents.empowered_fire * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
@@ -3052,31 +3041,55 @@ void mage_t::init_glyphs()
   }
 }
 
+// mage_t::init_race ======================================================
+
+void mage_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_DRAENEI:
+  case RACE_GNOME:
+  case RACE_UNDEAD:
+  case RACE_TROLL:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_UNDEAD;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
+
 // mage_t::init_base =======================================================
 
 void mage_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  35;
-  attribute_base[ ATTR_AGILITY   ] =  41;
-  attribute_base[ ATTR_STAMINA   ] =  60;
-  attribute_base[ ATTR_INTELLECT ] = 179;
-  attribute_base[ ATTR_SPIRIT    ] = 179;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, MAGE, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.arcane_mind * 0.03;
-  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + talents.student_of_the_mind * ( 0.1 / 3.0 );
+  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + util_t::talent_rank( talents.student_of_the_mind, 3, 0.04, 0.07, 0.10 );
 
-  base_spell_crit = 0.00907381;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
+  base_spell_crit += talents.pyromaniac * 0.01;
+  base_spell_crit += talents.arcane_instability * 0.01;
+
   initial_spell_power_per_intellect = talents.mind_mastery * 0.03;
 
   base_attack_power = -10;
-  base_attack_crit  = 0.0345777;
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/51.84598 );
-
-  // FIXME! Make this level-specific.
-  resource_base[ RESOURCE_HEALTH ] = 3200;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1183, 2241, 3268 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -3555,9 +3568,9 @@ int mage_t::decode_set( item_t& item )
 
 // player_t::create_mage  ===================================================
 
-player_t* player_t::create_mage( sim_t* sim, const std::string& name )
+player_t* player_t::create_mage( sim_t* sim, const std::string& name, int race_type )
 {
-  mage_t* p = new mage_t( sim, name );
+  mage_t* p = new mage_t( sim, name, race_type );
 
   new    mirror_image_pet_t( sim, p );
   new water_elemental_pet_t( sim, p );

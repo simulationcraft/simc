@@ -183,7 +183,7 @@ struct warlock_t : public player_t
   glyphs_t glyphs;
 
 
-  warlock_t( sim_t* sim, const std::string& name ) : player_t( sim, WARLOCK, name )
+  warlock_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARLOCK, name, race_type )
   {
     distance = 30;
 
@@ -200,6 +200,7 @@ struct warlock_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -3783,31 +3784,50 @@ void warlock_t::init_glyphs()
   }
 }
 
+// warlock_t::init_race ======================================================
+
+void warlock_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_HUMAN:
+  case RACE_GNOME:
+  case RACE_UNDEAD:
+  case RACE_ORC:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_UNDEAD;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // warlock_t::init_base ======================================================
 
 void warlock_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] =  58; //54;
-  attribute_base[ ATTR_AGILITY   ] =  65; //55;
-  attribute_base[ ATTR_STAMINA   ] =  90; //78;
-  attribute_base[ ATTR_INTELLECT ] = 157; //130;
-  attribute_base[ ATTR_SPIRIT    ] = 171; //142;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, WARLOCK, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03
                                                   + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
 
-  base_spell_crit = 0.0169966;
   base_spell_crit+= talents.demonic_tactics * 0.02 + talents.backlash * 0.01;
-  initial_spell_crit_per_intellect = rating_t::interpolate( level, 0.01/60.0, 0.01/80.0, 0.01/166.79732 );
 
   base_attack_power = -10;
-  base_attack_crit  = 0.0262233;
   initial_attack_power_per_strength = 1.0;
-  initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/16.0, 0.01/24.9, 0.01/50.01500 );
-
-  // FIXME! Make this level-specific.
-  resource_base[ RESOURCE_HEALTH ] = 7164; //3200;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1383, 2620, 3863 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -4226,9 +4246,9 @@ int warlock_t::decode_set( item_t& item )
 
 // player_t::create_warlock ================================================
 
-player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
+player_t* player_t::create_warlock( sim_t* sim, const std::string& name, int race_type )
 {
-  warlock_t* p = new warlock_t( sim, name );
+  warlock_t* p = new warlock_t( sim, name, race_type );
 
   new  felguard_pet_t( sim, p );
   new felhunter_pet_t( sim, p );

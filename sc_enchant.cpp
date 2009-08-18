@@ -86,7 +86,7 @@ static enchant_data_t enchant_db[] =
   { "3748",  "Titanium Spike (45-67)",                                    ""                               },
   { "3731",  "Titanium Weapon Chain",                                     ""                               },
   { "3730",  "Swordguard Embroidery",                                     ""                               },
-  { "3728",  "Darkglow Embroidery",                                       ""                               },
+  { "3728",  "Darkglow Embroidery",                                       "darkglow_embroidery"            },
   { "3722",  "Lightweave Embroidery",                                     "lightweave_embroidery"          },
   { "3721",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
   { "3720",  "+35 Spell Power and +20 Stamina",                           "35SP_20Sta"                     },

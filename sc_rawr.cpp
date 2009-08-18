@@ -187,6 +187,22 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
+static int translate_rawr_race_str( const std::string& name )
+{
+  if ( ! name.compare( "Human"    ) ) return RACE_HUMAN;
+  if ( ! name.compare( "Orc"      ) ) return RACE_ORC;
+  if ( ! name.compare( "Dwarf"    ) ) return RACE_DWARF;
+  if ( ! name.compare( "NightElf" ) ) return RACE_NIGHT_ELF;
+  if ( ! name.compare( "Undead"   ) ) return RACE_UNDEAD;
+  if ( ! name.compare( "Tauren"   ) ) return RACE_TAUREN;
+  if ( ! name.compare( "Gnome"    ) ) return RACE_GNOME;
+  if ( ! name.compare( "Troll"    ) ) return RACE_TROLL;
+  if ( ! name.compare( "BloodElf" ) ) return RACE_BLOOD_ELF;
+  if ( ! name.compare( "Draenei"  ) ) return RACE_DRAENEI;
+
+  return RACE_NONE;
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // rawr_t::load_player ======================================================
@@ -226,10 +242,11 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   if ( sim -> debug ) xml_t::print( root_node );
 
-  std::string class_str;
-  if ( ! xml_t::get_value( class_str, root_node, "Class/." ) )
+  std::string class_str, race_str;
+  if ( ! xml_t::get_value( class_str, root_node, "Class/." ) ||
+       ! xml_t::get_value(  race_str, root_node, "Race/."  ) )
   {
-    util_t::printf( "\nsimcraft: Unable to determine character class in Rawr Character Save XML.\n" );
+    util_t::printf( "\nsimcraft: Unable to determine character class and race in Rawr Character Save XML.\n" );
     return 0;
   }
 
@@ -253,7 +270,9 @@ player_t* rawr_t::load_player( sim_t* sim,
     return 0;
   }
 
-  player_t* p = player_t::create( sim, class_str, name_str );
+  int race_type = translate_rawr_race_str( race_str );
+
+  player_t* p = player_t::create( sim, class_str, name_str, race_type );
   if ( ! p )
   {
     util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
@@ -334,4 +353,3 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   return p;
 }
-

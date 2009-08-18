@@ -3,6 +3,7 @@
 priest=Priest_T7_51_20_00
 origin=http://profiler.wowhead.com/?profile=13000003
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=053320313032051233100320005100555000032
 glyphs=hymn_of_hope/penance/smite/levitate/shadowfiend/fading
 actions=flask,type=frost_wyrm
@@ -42,7 +43,7 @@ ranged=gemmed_wand_of_the_nerubians,stats=18hit_22haste_37sp_27sta_22int
 # gear_agility=10
 # gear_stamina=859
 # gear_intellect=801
-# gear_spirit=290
+# gear_spirit=291
 # gear_spell_power=2190
 # gear_mp5=19
 # gear_hit_rating=366

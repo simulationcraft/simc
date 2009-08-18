@@ -3,6 +3,7 @@
 priest=Priest_T8_13_00_58_SWD
 origin=http://profiler.wowhead.com/?profile=13000014
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
@@ -44,7 +45,7 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # gear_agility=10
 # gear_stamina=957
 # gear_intellect=881
-# gear_spirit=347
+# gear_spirit=348
 # gear_spell_power=2442
 # gear_hit_rating=291
 # gear_crit_rating=774

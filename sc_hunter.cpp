@@ -210,7 +210,7 @@ struct hunter_t : public player_t
   };
   glyphs_t glyphs;
 
-  hunter_t( sim_t* sim, const std::string& name ) : player_t( sim, HUNTER, name )
+  hunter_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, HUNTER, name, race_type )
   {
     // Active
     active_pet             = 0;
@@ -232,6 +232,7 @@ struct hunter_t : public player_t
   // Character Definition
   virtual void      init();
   virtual void      init_glyphs();
+  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3947,16 +3948,44 @@ void hunter_t::init_glyphs()
   }
 }
 
+// hunter_t::init_race ======================================================
+
+void hunter_t::init_race()
+{
+  race = util_t::parse_race_type( race_str );
+  switch ( race )
+  {
+  case RACE_DWARF:
+  case RACE_DRAENEI:
+  case RACE_NIGHT_ELF:
+  case RACE_ORC:
+  case RACE_TROLL:
+  case RACE_TAUREN:
+  case RACE_BLOOD_ELF:
+    break;
+  default:
+    race = RACE_NIGHT_ELF;
+    race_str = util_t::race_type_string( race );
+  }
+
+  player_t::init_race();
+}
+
 // hunter_t::init_base ========================================================
 
 void hunter_t::init_base()
 {
-  // FIXME! Make this level-specific.
-  attribute_base[ ATTR_STRENGTH  ] =  76;
-  attribute_base[ ATTR_AGILITY   ] = 177;
-  attribute_base[ ATTR_STAMINA   ] = 131;
-  attribute_base[ ATTR_INTELLECT ] =  87;
-  attribute_base[ ATTR_SPIRIT    ] =  94;
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, HUNTER, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.combat_experience * 0.02;
   attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.combat_experience * 0.02;
@@ -3965,14 +3994,9 @@ void hunter_t::init_base()
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.survivalist * 0.02;
 
   base_attack_power = level * 2 - 10;
-  base_attack_crit  = -0.0153388;
 
   initial_attack_power_per_strength = 0.0;
   initial_attack_power_per_agility  = 1.0;
-  initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/33.0, 0.01/40.0, 0.01/83.2875252 );
-
-  resource_base[ RESOURCE_HEALTH ] = 4579;
-  resource_base[ RESOURCE_MANA   ] = rating_t::interpolate( level, 1500, 3383, 5046 );
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -4348,8 +4372,8 @@ int hunter_t::decode_set( item_t& item )
 
 // player_t::create_hunter  =================================================
 
-player_t* player_t::create_hunter( sim_t* sim, const std::string& name )
+player_t* player_t::create_hunter( sim_t* sim, const std::string& name, int race_type )
 {
-  return new hunter_t( sim, name );
+  return new hunter_t( sim, name, race_type );
 }
 
