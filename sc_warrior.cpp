@@ -292,12 +292,14 @@ static void trigger_blood_frenzy( action_t* a )
 
   target_t* t = a -> sim -> target;
 
-  double duration = a -> num_ticks * a -> base_tick_time;
+  // Don't alter the duration if it is set to 0 (override/optimal_raid)
+  if ( t -> debuffs.blood_frenzy -> duration > 0 )
+    t -> debuffs.blood_frenzy -> duration = a -> num_ticks * a -> base_tick_time;
+
   double value    = p -> talents.blood_frenzy * 2;
 
   if( value >= t -> debuffs.blood_frenzy -> current_value )
   {
-    t -> debuffs.blood_frenzy -> duration = duration;
     t -> debuffs.blood_frenzy -> trigger( 1, value );
   }
 }
@@ -455,8 +457,9 @@ static void trigger_trauma( action_t* a )
   if ( a -> result != RESULT_CRIT )
     return;
   
-  double value = p -> talents.trauma * 15;
   target_t* t = a -> sim -> target;
+
+  double value = p -> talents.trauma * 15;
 
   if( value >= t -> debuffs.trauma -> current_value )
   {

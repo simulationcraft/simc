@@ -1196,7 +1196,7 @@ struct berserk_t : public druid_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    p -> buffs_berserk -> start();
+    p -> buffs_berserk -> trigger();
     // Berserk cancels TF
     p -> buffs_tigers_fury -> expire();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
@@ -1250,7 +1250,7 @@ struct tigers_fury_t : public druid_attack_t
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle * 20, p -> gains_tigers_fury );
     }
 
-    p -> buffs_tigers_fury -> start( 1, tiger_value );
+    p -> buffs_tigers_fury -> trigger( 1, tiger_value );
     update_ready();
   }
 
