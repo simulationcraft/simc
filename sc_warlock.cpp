@@ -429,6 +429,7 @@ struct warlock_pet_attack_t : public attack_t
       attack_t( n, player, r, s, TREE_NONE, true )
   {
     special    = true;
+    may_crit   = true;
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     p -> adjust_base_modifiers( this );
   }
@@ -2642,7 +2643,9 @@ struct conflagrate_t : public warlock_spell_t
 
     base_multiplier *= 0.7;
 
-    base_multiplier  *= 1.0 + p -> talents.emberstorm * 0.03 + p -> set_bonus.tier8_2pc() * 0.10 ;
+    base_multiplier  *= 1.0 + p -> talents.emberstorm    * 0.03
+                            + p -> set_bonus.tier8_2pc() * 0.10
+                            + p -> set_bonus.tier9_4pc() * 0.10;
     base_crit        += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -4242,7 +4245,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name )
 void player_t::warlock_init( sim_t* sim )
 {
   target_t* t = sim -> target;
-  t -> debuffs.improved_shadow_bolt = new debuff_t( sim, "improved_shadow_bolt", 5, ( sim -> overrides.improved_shadow_bolt ? 0.0 : 30.0 ) );
+  t -> debuffs.improved_shadow_bolt = new debuff_t( sim, "improved_shadow_bolt", 1, ( sim -> overrides.improved_shadow_bolt ? 0.0 : 30.0 ) );
 }
 
 // player_t::warlock_combat_begin ===========================================
@@ -4250,6 +4253,6 @@ void player_t::warlock_init( sim_t* sim )
 void player_t::warlock_combat_begin( sim_t* sim )
 {
   target_t* t = sim -> target;
-  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> trigger( 5 );
+  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> trigger();
 }
 

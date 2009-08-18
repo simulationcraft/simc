@@ -123,7 +123,7 @@ void spell_t::target_debuff( int dmg_type )
 
   int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
 					t -> debuffs.improved_scorch -> stack() ),
-			                t -> debuffs.improved_shadow_bolt -> stack() );
+			                t -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 
   if ( sim -> debug )
