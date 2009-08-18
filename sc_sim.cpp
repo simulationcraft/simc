@@ -78,6 +78,19 @@ static bool parse_optimal_raid( sim_t*             sim,
   return true;
 }
 
+// parse_spell_crit_suppression =============================================
+// experimental
+static bool parse_spell_crit_suppression( sim_t*             sim,
+                                          const std::string& name,
+                                          const std::string& value )
+{
+  if ( name != "spell_crit_suppression" ) return false;
+
+  sim -> use_spell_crit_suppression( atoi( value.c_str() ) );
+
+  return true;
+}
+
 // parse_player =============================================================
 
 static bool parse_player( sim_t*             sim,
@@ -324,6 +337,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling = new scaling_t( this );
 
   use_optimal_buffs_and_debuffs( 1 );
+  // experimental spell crit suppression option
+  use_spell_crit_suppression( 0 );
 
   if ( parent )
   {
@@ -1190,6 +1205,13 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.wrath_of_air           = optimal_raid;
 }
 
+// sim_t::use_spell_crit_suppression =====================================
+// experimental
+void sim_t::use_spell_crit_suppression( int value )
+{
+  spell_crit_suppression = value;
+}
+
 // sim_t::aura_gain =========================================================
 
 void sim_t::aura_gain( const char* aura_name , int aura_id )
@@ -1292,6 +1314,8 @@ std::vector<option_t>& sim_t::get_options()
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
       { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
+      // experimental spell crit suppression option
+      { "spell_crit_suppression",           OPT_FUNC,   ( void* ) ::parse_spell_crit_suppression      },
       { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
@@ -1517,8 +1541,8 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   util_t::fprintf( output_file,
-                   "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
-                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
+                   "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d, spell_crit_suppression=%d )\n",
+                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng, spell_crit_suppression );
   fflush( output_file );
 
   if ( save_profiles )

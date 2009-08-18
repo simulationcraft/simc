@@ -826,7 +826,7 @@ struct sim_t
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval;
-  int         optimal_raid, log, debug, save_profiles;
+  int         optimal_raid, spell_crit_suppression, log, debug, save_profiles;
   std::string default_region_str, default_server_str;
   alias_t     alias;
 
@@ -1007,6 +1007,7 @@ struct sim_t
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   player_t* find_player( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
+  void      use_spell_crit_suppression( int value );
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
 };
@@ -2095,6 +2096,7 @@ struct spell_t : public action_t
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual double level_based_miss_chance( int player, int target ) SC_CONST;
+  virtual double crit_chance( int player, int target ) SC_CONST;
   virtual void   calculate_result();
   virtual void   execute();
 };

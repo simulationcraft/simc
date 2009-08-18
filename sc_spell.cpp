@@ -154,11 +154,30 @@ double spell_t::level_based_miss_chance( int player,
   return miss;
 }
 
+// spell_t::crit_chance ====================================================
+// experimental implementation of 3% crit chance reduction against +3 level
+// targets; should only be used with spell_crit_suppression=1
+
+double spell_t::crit_chance( int player,
+			     int target ) SC_CONST
+{
+  int delta_level = target - player;
+  double chance = total_crit();
+	
+  if ( delta_level > 2 && sim -> spell_crit_suppression )
+  {
+    chance -= 0.03;
+  }
+	
+  return chance;
+}
+
 // spell_t::caclulate_result ================================================
 
 void spell_t::calculate_result()
 {
   direct_dmg = 0;
+  double crit = 0;
 
   result = RESULT_NONE;
 
@@ -190,7 +209,9 @@ void spell_t::calculate_result()
 
     if ( may_crit )
     {
-      if ( rng[ RESULT_CRIT ] -> roll( total_crit() ) )
+      // Experimental check for spell crit suppression
+      crit = crit_chance( player -> level, sim -> target -> level );
+      if ( rng[ RESULT_CRIT ] -> roll( crit ) )
       {
         result = RESULT_CRIT;
       }
