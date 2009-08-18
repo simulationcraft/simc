@@ -3186,8 +3186,8 @@ int druid_t::decode_set( item_t& item )
 {
   if ( strstr( item.name(), "dreamwalker" ) ) return SET_T7;
   if ( strstr( item.name(), "nightsong"   ) ) return SET_T8;
-  if ( strstr( item.name(), "stormrage"   ) ) return SET_T9;
-  if ( strstr( item.name(), "runetotem"   ) ) return SET_T9;
+  if ( strstr( item.name(), "malfurions"  ) ) return SET_T9; // Alliance
+  if ( strstr( item.name(), "runetotem"   ) ) return SET_T9; // Horde
   return SET_NONE;
 }
 
