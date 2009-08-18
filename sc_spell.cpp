@@ -158,13 +158,13 @@ double spell_t::level_based_miss_chance( int player,
 // experimental implementation of 3% crit chance reduction against +3 level
 // targets; should only be used with spell_crit_suppression=1
 
-double spell_t::crit_chance( int player,
-			     int target ) SC_CONST
+double spell_t::crit_chance( int player_level,
+			     int target_level ) SC_CONST
 {
-  int delta_level = target - player;
+  int delta_level = target_level - player_level;
   double chance = total_crit();
 	
-  if ( delta_level > 2 && sim -> spell_crit_suppression )
+  if ( ! player -> is_pet() && delta_level > 2 && sim -> spell_crit_suppression )
   {
     chance -= 0.03;
   }
