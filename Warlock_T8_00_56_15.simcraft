@@ -3,6 +3,7 @@
 warlock=Warlock_T8_00_56_15
 origin=http://profiler.wowhead.com/?profile=13003861
 level=80
+race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000000000000000320330113520252013523135155000005
 glyphs=felguard/metamorphosis/life_tap
 actions=flask,type=frost_wyrm
@@ -46,7 +47,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=8hit_9sp_4spi
 # gear_agility=10
 # gear_stamina=946
 # gear_intellect=885
-# gear_spirit=368
+# gear_spirit=369
 # gear_spell_power=2395
 # gear_hit_rating=362
 # gear_crit_rating=604

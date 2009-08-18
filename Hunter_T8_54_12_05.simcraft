@@ -3,6 +3,7 @@
 hunter=Hunter_T8_54_12_05
 origin=http://profiler.wowhead.com/?profile=13000974
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=512002015051122431015313510053031000000000000000000005
 glyphs=bestial_wrath/kill_shot/the_hawk
 actions=flask,type=endless_rage

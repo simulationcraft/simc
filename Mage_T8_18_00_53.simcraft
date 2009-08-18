@@ -3,6 +3,7 @@
 mage=Mage_T8_18_00_53
 origin=http://profiler.wowhead.com/?profile=13000343
 level=80
+race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=23000503110003000000000000000000000000000000000000000000000533030310033100230152231351
 glyphs=molten_armor/frostbolt/water_elemental/slow_fall/arcane_intellect/fire_ward
 actions=flask,type=frost_wyrm
@@ -46,7 +47,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # gear_agility=10
 # gear_stamina=942
 # gear_intellect=894
-# gear_spirit=392
+# gear_spirit=393
 # gear_spell_power=2570
 # gear_hit_rating=286
 # gear_crit_rating=438

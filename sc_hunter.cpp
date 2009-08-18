@@ -1551,8 +1551,14 @@ struct hunter_pet_attack_t : public attack_t
 
     direct_power_mod = 1.0/14;
 
-    base_multiplier *= 1.05;
+    base_multiplier *= 1.05; // What is this from?
     base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
+
+    // Orc Command Racial
+    if ( o -> race == RACE_ORC )
+    {
+      base_multiplier *= 1.05;
+    }
 
     // Assume happy pet
     base_multiplier *= 1.25;

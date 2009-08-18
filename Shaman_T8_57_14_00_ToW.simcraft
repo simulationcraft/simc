@@ -3,6 +3,7 @@
 shaman=Shaman_T8_57_14_00_ToW
 origin=http://profiler.wowhead.com/?profile=13000116
 level=80
+race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
 glyphs=flame_shock/lava/lightning_bolt
 actions=flask,type=frost_wyrm
@@ -41,7 +42,7 @@ ranged=totem_of_hex
 # gear_agility=10
 # gear_stamina=973
 # gear_intellect=898
-# gear_spirit=53
+# gear_spirit=54
 # gear_spell_power=2311
 # gear_hit_rating=291
 # gear_crit_rating=758

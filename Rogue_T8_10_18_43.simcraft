@@ -3,6 +3,7 @@
 rogue=Rogue_T8_10_18_43
 origin=http://profiler.wowhead.com/?profile=13006220
 level=80
+race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=3023200000000000000000000000052030050030000000000000000502003203232012135010503
 glyphs=eviscerate/rupture/slice_and_dice
 actions=flask,type=endless_rage

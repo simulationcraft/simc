@@ -3,6 +3,7 @@
 warrior=Warrior_T8_19_52_00
 origin=http://profiler.wowhead.com/?profile=13001761
 level=80
+race=tauren
 professions=blacksmithing=450/jewelcrafting=450
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3202030123300000000000000000000325000005520310053120501351
 glyphs=whirlwind/heroic_strike/execution/charge/bloodrage/battle

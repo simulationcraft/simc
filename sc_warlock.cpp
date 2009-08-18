@@ -337,6 +337,12 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t* o = owner -> cast_warlock();
 
+    // Orc Command Racial
+    if ( o -> race == RACE_ORC )
+    {
+      a -> base_multiplier  *= 1.05;
+    }
+
     if ( pet_type != PET_INFERNAL && pet_type != PET_DOOMGUARD )
     {
       a -> base_crit        += o -> talents.demonic_tactics * 0.02;

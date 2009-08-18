@@ -309,6 +309,14 @@ struct bloodworm_pet_t : public pet_t
       may_crit    = true;
       background  = true;
       repeating   = true;
+
+      pet_t* p = player -> cast_pet();
+
+      // Orc Command Racial
+      if ( p -> owner -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
     }
     virtual void player_buff()
     {

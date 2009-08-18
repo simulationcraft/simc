@@ -3,6 +3,7 @@
 warrior=Warrior_T8_54_17_00_M
 origin=http://profiler.wowhead.com/?profile=13001883
 level=80
+race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=302203202333015010201220323125132500000502
 glyphs=mortal_strike/rending/execution
 actions=flask,type=endless_rage

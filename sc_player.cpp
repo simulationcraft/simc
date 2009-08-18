@@ -748,7 +748,7 @@ void player_t::init_spell()
 
   initial_spell_power[ SCHOOL_MAX ] = base_spell_power + stats.spell_power;
 
-  initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
+  initial_spell_hit = base_spell_hit + stats.hit_rating / rating.spell_hit;
 
   initial_spell_crit = base_spell_crit + stats.crit_rating / rating.spell_crit;
 
@@ -773,7 +773,7 @@ void player_t::init_attack()
 
   initial_attack_power = base_attack_power + stats.attack_power;
 
-  initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit + ( sim -> overrides.heroic_presence ? 0.01 : 0.00 );
+  initial_attack_hit = base_attack_hit + stats.hit_rating / rating.attack_hit;
 
   initial_attack_crit = base_attack_crit + stats.crit_rating / rating.attack_crit;
 
@@ -1454,6 +1454,23 @@ void player_t::combat_begin()
   if ( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
   if ( sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
   if ( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
+
+  if ( ( race == RACE_DRAENEI ) || sim -> overrides.heroic_presence )
+  {
+    buffs.heroic_presence = 0.01;
+  }
+  else if ( party != 0 )
+  {
+    player_t* q = sim -> player_list;
+    while ( q )
+    {
+       if ( ( q != this ) && ( q -> party == party ) && ( ! q -> quiet ) && ( ! q -> is_pet() ) )
+       {
+         q -> buffs.heroic_presence = 0.01;
+       }
+       q = q -> next;
+    }    
+  }
 
   init_resources( true );
 

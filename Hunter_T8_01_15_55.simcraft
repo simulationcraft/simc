@@ -3,6 +3,7 @@
 hunter=Hunter_T8_01_15_55
 origin=http://profiler.wowhead.com/?profile=13001196
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=100000000000000000000000000053051010000000000000000005000032500033330532135301311
 glyphs=kill_shot/serpent_sting/explosive_shot
 actions=flask,type=endless_rage

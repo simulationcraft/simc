@@ -258,7 +258,6 @@ struct shaman_attack_t : public attack_t
     base_dd_min = base_dd_max = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
-    base_crit += p -> talents.thundering_strikes * 0.01;
     if ( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.02;
   }
 
@@ -278,9 +277,7 @@ struct shaman_spell_t : public spell_t
   shaman_spell_t( const char* n, player_t* p, int s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 )
   {
-    shaman_t* shaman = p -> cast_shaman();
-    base_crit += shaman -> talents.thundering_strikes * 0.01;
-    base_crit += shaman -> talents.blessing_of_the_eternals * 0.02;
+
   }
 
   virtual double cost() SC_CONST;
@@ -310,6 +307,14 @@ struct spirit_wolf_pet_t : public pet_t
       background = true;
       repeating = true;
       may_crit = true;
+
+      pet_t* p = player -> cast_pet();
+
+      // Orc Command Racial
+      if ( p -> owner -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
 
       // There are actually two wolves.....
       base_multiplier *= 2.0;
@@ -2951,6 +2956,10 @@ void shaman_t::init_base()
   mana_per_intellect = 15;
 
   mp5_per_intellect = util_t::talent_rank( talents.unrelenting_storm, 3, 0.04 );
+
+  base_spell_crit  += talents.blessing_of_the_eternals * 0.02;
+  base_spell_crit  += talents.thundering_strikes * 0.01;
+  base_attack_crit += talents.thundering_strikes * 0.01;
 
   if ( tiers.t6_2pc_elemental )
   {

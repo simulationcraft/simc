@@ -1369,6 +1369,7 @@ struct player_t
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
+    double    heroic_presence;
     int       hysteria;
     double    mana_cost_reduction;
     double    mana_spring;
@@ -1556,17 +1557,17 @@ struct player_t
 
   virtual double composite_attack_power() SC_CONST;
   virtual double composite_attack_crit() SC_CONST;
-  virtual double composite_attack_expertise() SC_CONST   { return attack_expertise;   }
-  virtual double composite_attack_hit() SC_CONST         { return attack_hit;         }
-  virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
+  virtual double composite_attack_expertise() SC_CONST   { return attack_expertise;                   }
+  virtual double composite_attack_hit() SC_CONST         { return attack_hit + buffs.heroic_presence; }
+  virtual double composite_attack_penetration() SC_CONST { return attack_penetration;                 }
 
   virtual double composite_armor() SC_CONST;
   virtual double composite_armor_snapshot() SC_CONST    { return armor_snapshot; }
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
-  virtual double composite_spell_hit() SC_CONST         { return spell_hit;         }
-  virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
+  virtual double composite_spell_hit() SC_CONST         { return spell_hit + buffs.heroic_presence; }
+  virtual double composite_spell_penetration() SC_CONST { return spell_penetration;                 }
 
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }

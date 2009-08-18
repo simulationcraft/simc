@@ -302,6 +302,12 @@ void action_t::player_buff()
     player_spell_power_multiplier = p -> composite_spell_power_multiplier();
   }
 
+  if ( ( p -> race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
+  {
+    player_multiplier             *= 1.05;
+  }
+ 
+
   if ( sim -> debug )
     log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
                    name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );

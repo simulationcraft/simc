@@ -85,6 +85,7 @@ struct mage_t : public player_t
     int  arcane_empowerment;
     int  arcane_flows;
     int  arcane_focus;
+    int  arcane_fortitude;
     int  arcane_impact;
     int  arcane_instability;
     int  arcane_meditation;
@@ -202,6 +203,7 @@ struct mage_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
+  virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
 
@@ -3035,6 +3037,7 @@ void mage_t::init_glyphs()
     else if ( n == "ice_barrier"      ) ;
     else if ( n == "ice_block"        ) ;
     else if ( n == "icy_veins"        ) ;
+    else if ( n == "polymorph"        ) ;
     else if ( n == "slow_fall"        ) ;
     else if ( n == "the_penguin"      ) ;
     else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -3266,6 +3269,17 @@ int mage_t::primary_tree() SC_CONST
   return TALENT_TREE_MAX;
 }
 
+// mage_t::composite_armor =========================================
+
+double mage_t::composite_armor() SC_CONST
+{
+  double a = player_t::composite_armor();
+
+  a += floor( talents.arcane_fortitude * 0.5 * intellect() );
+
+  return a;
+}
+
 // mage_t::composite_spell_power ===========================================
 
 double mage_t::composite_spell_power( int school ) SC_CONST
@@ -3406,7 +3420,7 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
     { {  1, &( talents.arcane_subtlety      ) }, {  1, &( talents.improved_fire_blast ) }, {  1, &( talents.frostbite                ) } },
     { {  2, &( talents.arcane_focus         ) }, {  2, &( talents.incineration        ) }, {  2, &( talents.improved_frost_bolt      ) } },
     { {  3, NULL                              }, {  3, &( talents.improved_fire_ball  ) }, {  3, &( talents.ice_floes                ) } },
-    { {  4, NULL                              }, {  4, &( talents.ignite              ) }, {  4, &( talents.ice_shards               ) } },
+    { {  4, &( talents.arcane_fortitude     ) }, {  4, &( talents.ignite              ) }, {  4, &( talents.ice_shards               ) } },
     { {  5, NULL                              }, {  5, NULL                             }, {  5, NULL                                  } },
     { {  6, &( talents.arcane_concentration ) }, {  6, &( talents.world_in_flames     ) }, {  6, &( talents.precision                ) } },
     { {  7, NULL                              }, {  7, NULL                             }, {  7, NULL                                  } },
@@ -3455,6 +3469,7 @@ std::vector<option_t>& mage_t::get_options()
       { "arcane_empowerment",        OPT_INT,   &( talents.arcane_empowerment        ) },
       { "arcane_flows",              OPT_INT,   &( talents.arcane_flows              ) },
       { "arcane_focus",              OPT_INT,   &( talents.arcane_focus              ) },
+      { "arcane_fortitude",          OPT_INT,   &( talents.arcane_fortitude          ) },
       { "arcane_impact",             OPT_INT,   &( talents.arcane_impact             ) },
       { "arcane_instability",        OPT_INT,   &( talents.arcane_instability        ) },
       { "arcane_meditation",         OPT_INT,   &( talents.arcane_meditation         ) },

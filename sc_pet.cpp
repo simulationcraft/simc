@@ -121,6 +121,8 @@ void pet_t::summon( double duration )
   init_resources( true );
   summon_time = sim -> current_time;
 
+  buffs.heroic_presence = owner -> buffs.heroic_presence;
+
   if( duration > 0 )
   {
     struct expiration_t : public event_t
