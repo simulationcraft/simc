@@ -3,6 +3,7 @@
 druid=Druid_T8_00_55_16
 origin=http://profiler.wowhead.com/?profile=13000407
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202032322010053120030310511203503012
 glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
 actions=flask,type=endless_rage

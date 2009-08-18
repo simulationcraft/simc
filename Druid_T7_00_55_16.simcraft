@@ -2,6 +2,7 @@
 
 druid=Druid_T7_00_55_16
 level=80
+race=night_elf
 talents=http://www.wowhead.com/?talent#0ZEGMcfrz0eR0huVkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form

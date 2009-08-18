@@ -3,6 +3,7 @@
 druid=Druid_T8_58_00_13
 origin=http://profiler.wowhead.com/?profile=13000433
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=5012203125331323213305301031000000000000000000000000000000205003012
 glyphs=starfire/moonfire/insect_swarm/the_wild/unburdened_rebirth/thorns
 actions=flask,type=frost_wyrm
