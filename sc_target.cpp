@@ -231,7 +231,6 @@ void target_t::combat_begin()
   if ( sim -> overrides.misery                ) debuffs.misery = 3;
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
-  if ( sim -> overrides.snare                 ) debuffs.snare = 1;
   if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 0.20;
   if ( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
   if ( sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;

@@ -870,7 +870,6 @@ struct sim_t
     int crypt_fever;
     int judgement_of_wisdom;
     int sanctified_retribution;
-    int snare;
     int sunder_armor;
     int swift_retribution;
     int thunder_clap;
@@ -1796,19 +1795,21 @@ struct target_t
     debuff_t* blood_frenzy;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
+    debuff_t* frostbite;
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* mangle;
+    debuff_t* slow;
     debuff_t* trauma;
     debuff_t* winters_chill;
+    debuff_t* winters_grasp;
     // Old Buffs
     int    old_buffs;
     int    bleeding;
     int    crypt_fever;
     int    curse_of_elements;
     double expose_armor;
-    double frozen;
     double hemorrhage;
     int    hemorrhage_charges;
     double hunters_mark;
@@ -1818,19 +1819,17 @@ struct target_t
     int    misery_stack;
     int    poisoned;
     int    savage_combat;
-    int    slow;
-    int    snare;
     double sunder_armor;
     int    thunder_clap;
     int    totem_of_wrath;
-    int    winters_grasp;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     void reset()
     { 
       size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
       memset( (void*) &old_buffs, 0x0, sizeof( debuffs_t ) - delta );
     }
-    bool snared() { return frozen || slow || snare || thunder_clap; }
+    bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
+    bool snared() { return frozen() || slow -> check() || thunder_clap; }
   };
   debuffs_t debuffs;
 

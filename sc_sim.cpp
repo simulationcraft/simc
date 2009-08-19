@@ -1190,7 +1190,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.replenishment          = optimal_raid;
   overrides.sanctified_retribution = optimal_raid;
   overrides.savage_combat          = optimal_raid;
-  overrides.snare                  = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.swift_retribution      = optimal_raid;
@@ -1376,7 +1375,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
       { "override.sanctified_retribution",  OPT_BOOL,   &( overrides.sanctified_retribution         ) },
       { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
-      { "override.snare",                   OPT_BOOL,   &( overrides.snare                          ) },
       { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
       { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
       { "override.swift_retribution",       OPT_BOOL,   &( overrides.swift_retribution              ) },

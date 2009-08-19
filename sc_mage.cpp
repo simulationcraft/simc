@@ -32,6 +32,9 @@ struct mage_t : public player_t
   buff_t* buffs_mage_armor;
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
+  buff_t* buffs_tier5_4pc;
+  buff_t* buffs_tier7_2pc;
+  buff_t* buffs_tier8_2pc;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -53,10 +56,8 @@ struct mage_t : public player_t
 
   // Random Number Generation
   rng_t* rng_empowered_fire;
-  rng_t* rng_frostbite;
   rng_t* rng_ghost_charge;
   rng_t* rng_improved_water_elemental;
-  rng_t* rng_winters_grasp;
 
   // Options
   std::string focus_magic_target_str;
@@ -488,96 +489,6 @@ static void stack_winters_chill( spell_t* s )
   t -> debuffs.winters_chill -> trigger( 1, 1.0, p -> talents.winters_chill / 3.0 );
 }
 
-// trigger_tier5_4pc ========================================================
-
-static void trigger_tier5_4pc( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Tier5 Buff Expiration";
-      player -> aura_gain( "Tier5 Buff" );
-      player -> spell_power[ SCHOOL_MAX ] += 70;
-      sim -> add_event( this, 6.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Tier5 Buff" );
-      player -> spell_power[ SCHOOL_MAX ] -= 70;
-      player -> expirations.tier5_4pc = 0;
-    }
-  };
-
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> set_bonus.tier5_4pc() )
-  {
-    p -> procs.tier5_4pc -> occur();
-
-    event_t*& e = p -> expirations.tier5_4pc;
-
-    if ( e )
-    {
-      e -> reschedule( 6.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// trigger_tier8_2pc ========================================================
-
-static void trigger_tier8_2pc( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( ! p -> set_bonus.tier8_2pc() )
-    return;
-
-  // http://ptr.wowhead.com/?spell=64867
-  if ( ! p -> rngs.tier8_2pc -> roll( 0.25 ) )
-    return;
-
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Tier 8 2 Piece Expiration";
-      player -> aura_gain( "Tier 8 2 Piece" );
-      player -> spell_power[ SCHOOL_MAX ] += 350;
-      player -> cooldowns.tier8_2pc        = sim -> current_time + 45;
-      player -> buffs.tier8_2pc            = 1;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Tier 8 2 Piece" );
-      player -> spell_power[ SCHOOL_MAX ] -= 350;
-      player -> buffs.tier8_2pc            = 0;
-      player -> expirations.tier8_2pc      = 0;
-    }
-  };
-
-  if ( s -> sim -> cooldown_ready( p -> cooldowns.tier8_2pc ) )
-  {
-    p -> procs.tier8_2pc -> occur();
-
-    event_t*& e = p -> expirations.tier8_2pc;
-
-    if ( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
 // trigger_tier8_4pc ========================================================
 
 static bool trigger_tier8_4pc( spell_t* s )
@@ -737,40 +648,14 @@ static void trigger_frostbite( spell_t* s )
   if ( s -> school != SCHOOL_FROST &&
        s -> school != SCHOOL_FROSTFIRE ) return;
 
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Frozen Expiration";
-      if ( sim -> log ) log_t::output( sim, "Target %s gains Frozen", sim -> target -> name() );
-      sim -> target -> debuffs.frozen = sim -> current_time;
-      sim -> add_event( this, 5.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "Target %s loses Frozen", sim -> target -> name() );
-      sim -> target -> debuffs.frozen = 0;
-      sim -> target -> expirations.frozen = 0;
-    }
-  };
-
   mage_t*   p = s -> player -> cast_mage();
   target_t* t = s -> sim -> target;
 
   int level_diff = t -> level - p -> level;
 
-  if ( ( level_diff <= 1 ) && p -> rng_frostbite -> roll( p -> talents.frostbite * 0.05 ) )
+  if ( level_diff <= 1 )
   {
-    event_t*& e = t -> expirations.frozen;
-
-    if ( e )
-    {
-      e -> reschedule( 5.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim );
-    }
+    t -> debuffs.frostbite -> trigger( 1, 1.0, p -> talents.frostbite * 0.05 );
   }
 }
 
@@ -781,40 +666,10 @@ static void trigger_winters_grasp( spell_t* s )
   if ( s -> school != SCHOOL_FROST &&
        s -> school != SCHOOL_FROSTFIRE ) return;
 
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Winters Grasp Expiration";
-      if ( sim -> log ) log_t::output( sim, "Target %s gains Winters Grasp", sim -> target -> name() );
-      sim -> target -> debuffs.frozen = sim -> current_time;
-      sim -> target -> debuffs.winters_grasp = 1;
-      sim -> add_event( this, 5.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "Target %s loses Winters Grasp", sim -> target -> name() );
-      sim -> target -> debuffs.frozen = 0;
-      sim -> target -> debuffs.winters_grasp = 0;
-      sim -> target -> expirations.winters_grasp = 0;
-    }
-  };
+  target_t* t = s -> sim -> target;
+  mage_t*   p = s -> player -> cast_mage();
 
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> rng_winters_grasp -> roll( p -> talents.winters_grasp * 0.05 ) )
-  {
-    event_t*& e = s -> sim -> target -> expirations.winters_grasp;
-
-    if ( e )
-    {
-      e -> reschedule( 5.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim );
-    }
-  }
+  t -> debuffs.winters_grasp -> trigger( 1, 1.0, p -> talents.winters_grasp * 0.05 );
 }
 
 // clear_fingers_of_frost =========================================================
@@ -949,15 +804,17 @@ static void trigger_incanters_absorption( mage_t* p,
 
 static int target_is_frozen( mage_t* p )
 {
-  if ( p -> buffs_fingers_of_frost -> may_react() ||
-       p -> sim -> time_to_think( p -> sim -> target -> debuffs.frozen ) )
-  {
+  if ( p -> buffs_fingers_of_frost -> may_react() )
     return 1;
-  }
-  else
-  {
-    return 0;
-  }
+
+  target_t* t = p -> sim -> target;
+
+  if ( t -> debuffs.frozen() )
+    if ( t -> debuffs.frostbite     -> may_react() ||
+	 t -> debuffs.winters_grasp -> may_react() )
+    return 1;
+
+  return 0;
 }
 
 // =========================================================================
@@ -1039,7 +896,6 @@ void mage_spell_t::execute()
 
   p -> uptimes_dps_rotation -> update( p -> rotation.current == ROTATION_DPS );
   p -> uptimes_dpm_rotation -> update( p -> rotation.current == ROTATION_DPM );
-  p -> uptimes.tier8_2pc    -> update( p -> buffs.tier8_2pc == 1 );
 
   spell_t::execute();
 
@@ -1056,7 +912,7 @@ void mage_spell_t::execute()
       trigger_burnout( this );
       trigger_ignite( this, direct_dmg );
       trigger_master_of_elements( this, 1.0 );
-      trigger_tier5_4pc( this );
+      p -> buffs_tier5_4pc -> trigger();
     }
   }
   trigger_combustion( this );
@@ -1120,7 +976,7 @@ void mage_spell_t::player_buff()
   }
   if ( p -> talents.shatter && may_crit )
   {
-    if ( sim -> target -> debuffs.frozen )
+    if ( sim -> target -> debuffs.frozen() )
     {
       player_crit += p -> talents.shatter * 0.5/3;
     }
@@ -1304,7 +1160,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * ( sim -> P322 ? 0.08 : 0.04 ) );
-      trigger_tier8_2pc( this );
+      p -> buffs_tier8_2pc -> trigger();
     }
     p -> buffs_arcane_blast -> increment();
   }
@@ -1382,15 +1238,14 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
-
     if ( result == RESULT_CRIT )
     {
       trigger_master_of_elements( this, 0.20 );
-      trigger_tier5_4pc( this );
+      p -> buffs_tier5_4pc -> trigger();
     }
   }
 };
@@ -1520,22 +1375,6 @@ struct arcane_power_t : public mage_spell_t
 
 struct slow_t : public mage_spell_t
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Slow Expiration";
-      if ( sim -> log ) log_t::output( sim, "Target %s gains Slow", sim -> target -> name() );
-      sim -> target -> debuffs.slow = 1;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "Target %s loses Slow", sim -> target -> name() );
-      sim -> target -> debuffs.slow = 0;
-    }
-  };
-
   slow_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "slow", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
@@ -1549,15 +1388,15 @@ struct slow_t : public mage_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim );
+    sim -> target -> debuffs.slow -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( ! mage_spell_t::ready() )
+    if ( sim -> target -> debuffs.snared() )
       return false;
 
-    return( ! sim -> target -> debuffs.snared() );
+    return mage_spell_t::ready();
   }
 };
 
@@ -1818,7 +1657,7 @@ struct fire_ball_t : public mage_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
-      trigger_tier8_2pc( this );
+      p -> buffs_tier8_2pc -> trigger();
     }
     trigger_hot_streak( this );
     consume_brain_freeze( this );
@@ -2252,8 +2091,8 @@ struct frost_bolt_t : public mage_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
+      p -> buffs_tier8_2pc -> trigger();
       trigger_replenishment( this );
-      trigger_tier8_2pc( this );
     }
   }
 
@@ -2332,7 +2171,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> buffs_ghost_charge -> value() > 0 || p -> buffs_fingers_of_frost -> up() || t -> debuffs.frozen )
+    if ( p -> buffs_ghost_charge -> value() > 0 || p -> buffs_fingers_of_frost -> up() || t -> debuffs.frozen() )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {
@@ -2441,7 +2280,7 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
-      trigger_tier8_2pc( this );
+      p -> buffs_tier8_2pc -> trigger();
     }
     trigger_hot_streak( this );
   }
@@ -2791,27 +2630,7 @@ struct mana_gem_t : public action_t
 
     double gain = sim -> rng -> range( min, max );
 
-    if ( p -> set_bonus.tier7_2pc() )
-    {
-      struct expiration_t : public event_t
-      {
-        expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-        {
-          name = "Tier7 2-Piece Expiration";
-          player -> aura_gain( "Tier7 2-Piece" );
-          player -> spell_power[ SCHOOL_MAX ] += 225;
-          sim -> add_event( this, 15.0 );
-        }
-        virtual void execute()
-        {
-          player -> aura_loss( "Tier7 2-Piece" );
-          player -> spell_power[ SCHOOL_MAX ] -= 225;
-        }
-      };
-
-      new ( sim ) expiration_t( sim, p );
-    }
-
+    p -> buffs_tier7_2pc -> trigger();
     p -> resource_gain( RESOURCE_MANA, gain, p -> gains_mana_gem );
     p -> share_cooldown( cooldown_group, cooldown );
   }
@@ -2879,7 +2698,7 @@ struct choose_rotation_t : public action_t
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows * 60.0 );
 
     // Mana Gem
-    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> set_bonus.tier7_2pc() * 0.40 ) / 120.0;
+    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> set_bonus.tier7_2pc() * 0.25 ) / 120.0;
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -3123,6 +2942,10 @@ void mage_t::init_buffs()
   buffs_ghost_charge = new buff_t( this, "ghost_charge" );
   buffs_mage_armor   = new buff_t( this, "mage_armor" );
   buffs_molten_armor = new buff_t( this, "molten_armor" );
+
+  buffs_tier5_4pc = new stat_buff_t( this, "tier5_4pc", STAT_SPELL_POWER,  70, 1,  6.0,    0, set_bonus.tier5_4pc() );
+  buffs_tier7_2pc = new stat_buff_t( this, "tier7_2pc", STAT_SPELL_POWER, 225, 1, 15.0,    0, set_bonus.tier7_2pc() );
+  buffs_tier8_2pc = new stat_buff_t( this, "tier8_2pc", STAT_SPELL_POWER, 350, 1, 15.0, 45.0, set_bonus.tier8_2pc() * 0.25 );
 }
 
 // mage_t::init_gains ======================================================
@@ -3172,10 +2995,8 @@ void mage_t::init_rng()
   player_t::init_rng();
 
   rng_empowered_fire           = get_rng( "empowered_fire"           );
-  rng_frostbite                = get_rng( "frostbite"                );
   rng_ghost_charge             = get_rng( "ghost_charge"             );
   rng_improved_water_elemental = get_rng( "improved_water_elemental" );
-  rng_winters_grasp            = get_rng( "winters_grasp"            );
 }
 
 // mage_t::init_actions ======================================================
@@ -3605,8 +3426,11 @@ void player_t::mage_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
+  t -> debuffs.frostbite       = new debuff_t( sim, "frostbite",       1,  5.0 );
   t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 5, 30.0 );
+  t -> debuffs.slow            = new debuff_t( sim, "slow",            1, 15.0 );
   t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, 15.0 );
+  t -> debuffs.winters_grasp   = new debuff_t( sim, "winters_grasp",   1,  5.0 );
 }
 
 // player_t::mage_combat_begin ==============================================

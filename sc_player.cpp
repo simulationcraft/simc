@@ -1321,7 +1321,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
-
+  if ( buffs.blessing_of_kings ) m *= 1.10;
   return m;
 }
 
@@ -1330,17 +1330,9 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  double b = a - attribute_base[ ATTR_STRENGTH ];
-  double m = composite_attribute_multiplier( ATTR_STRENGTH );
-  double r;
-
-  b += buffs.strength_of_earth;
-
-  r = floor( attribute_base[ ATTR_STRENGTH ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor( r * 1.10 );
-
-  return r;
+  a += buffs.strength_of_earth;
+  a *= composite_attribute_multiplier( ATTR_STRENGTH );
+  return floor( a );
 }
 
 // player_t::agility() =====================================================
@@ -1348,17 +1340,9 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  double b = a - attribute_base[ ATTR_AGILITY ];
-  double m = composite_attribute_multiplier( ATTR_AGILITY );
-  double r;
-
-  b += buffs.strength_of_earth;
-
-  r = floor( attribute_base[ ATTR_AGILITY ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor( r * 1.10 );
-
-  return r;
+  a += buffs.strength_of_earth;
+  a *= composite_attribute_multiplier( ATTR_AGILITY );
+  return floor( a );
 }
 
 // player_t::stamina() =====================================================
@@ -1366,17 +1350,9 @@ double player_t::agility() SC_CONST
 double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
-  double b = a - attribute_base[ ATTR_STAMINA ];
-  double m = composite_attribute_multiplier( ATTR_STAMINA );
-  double r;
-
-  b += buffs.fortitude;
-
-  r = floor( attribute_base[ ATTR_STAMINA ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor( r * 1.10 );
-
-  return r;
+  a += buffs.fortitude;
+  a *= composite_attribute_multiplier( ATTR_STAMINA );
+  return floor( a );
 }
 
 // player_t::intellect() ===================================================
@@ -1384,20 +1360,12 @@ double player_t::stamina() SC_CONST
 double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
-  double b = a - attribute_base[ ATTR_INTELLECT ];
-  double m = composite_attribute_multiplier( ATTR_INTELLECT );
-  double r;
-
   if ( race == RACE_GNOME )
   {
-    b = floor( b * 1.05 );
+    a += floor( ( a - attribute_base[ ATTR_INTELLECT ] ) * 0.05 );
   }
-
-  r = floor( attribute_base[ ATTR_INTELLECT ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor( r * 1.10 );
-
-  return r;
+  a *= composite_attribute_multiplier( ATTR_INTELLECT );
+  return floor( a );
 }
 
 // player_t::spirit() ======================================================
@@ -1405,22 +1373,13 @@ double player_t::intellect() SC_CONST
 double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
-  double b = a - attribute_base[ ATTR_SPIRIT ];
-  double m = composite_attribute_multiplier( ATTR_SPIRIT );
-  double r;
-
-  b += buffs.divine_spirit;
-
+  a += buffs.divine_spirit;
   if ( race == RACE_HUMAN )
   {
-    b = floor( b * 1.03 );
+    a += floor( ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03 );
   }
-
-  r = floor( attribute_base[ ATTR_SPIRIT ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor( r * 1.10 );
-
-  return r;
+  a *= composite_attribute_multiplier( ATTR_SPIRIT );
+  return floor( a );
 }
 
 // player_t::combat_begin ==================================================
