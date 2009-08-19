@@ -1466,7 +1466,15 @@ void player_t::combat_begin()
     {
        if ( ( q != this ) && ( q -> party == party ) && ( ! q -> quiet ) && ( ! q -> is_pet() ) )
        {
-         q -> buffs.heroic_presence = 0.01;
+         switch ( q -> race )
+         {
+         case RACE_HUMAN:
+         case RACE_DWARF:
+         case RACE_NIGHT_ELF:
+         case RACE_GNOME:
+           q -> buffs.heroic_presence = 0.01;
+           break;
+         }
        }
        q = q -> next;
     }    

@@ -409,6 +409,8 @@ struct hunter_pet_t : public pet_t
 
     stamina_per_owner = 0.45;
 
+    health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
+
     if ( group() == PET_FEROCITY )
     {
       talents.call_of_the_wild = 1;
@@ -532,6 +534,15 @@ struct hunter_pet_t : public pet_t
     uptimes_frenzy         = owner -> get_uptime( "frenzy" );
     uptimes_monstrous_bite = owner -> get_uptime( "monstrous_bite" );
     uptimes_savage_rend    = owner -> get_uptime( "savage_rend" );
+  }
+
+  virtual double composite_armor() SC_CONST
+  {
+    double a = player_t::composite_armor();
+
+    a *= 1.05; // 3.1 change: # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
+
+    return a;
   }
 
   virtual double composite_attack_power() SC_CONST
@@ -1551,7 +1562,7 @@ struct hunter_pet_attack_t : public attack_t
 
     direct_power_mod = 1.0/14;
 
-    base_multiplier *= 1.05; // What is this from?
+    base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
     base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
 
     // Orc Command Racial
@@ -1944,7 +1955,7 @@ struct hunter_pet_spell_t : public spell_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
-    base_multiplier *= 1.05;
+    base_multiplier *= 1.05; // 3.1.0 change: # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses.
     base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
 
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
