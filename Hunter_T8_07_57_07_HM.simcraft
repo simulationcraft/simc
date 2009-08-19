@@ -1,11 +1,11 @@
 #!simcraft
 
-hunter=Hunter_T8_07_57_07
-origin=http://profiler.wowhead.com/?profile=13001144
+hunter=Hunter_T8_07_57_07_HM
+origin=http://profiler.wowhead.com/?profile=13630091
 level=80
 race=night_elf
-talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000153051012300132331352313515000002
-glyphs=serpent_sting/steady_shot/chimera_shot
+talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000053351012300132331152313515000002
+glyphs=serpent_sting/chimera_shot/hunters_mark
 actions=flask,type=endless_rage
 actions+=/food,type=blackened_dragonfin
 actions+=/hunters_mark
@@ -35,19 +35,19 @@ finger1=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=20agi_4agi,ench
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20agi,enchant=40ap
 trinket1=dark_matter,stats=222ap,equip=onattackhit_612crit_15%_10dur_45cd
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_10crit_10agi_6agi,enchant=22agi
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_20hit_6agi,enchant=22agi
 main_hand=lotrafen_spear_of_the_damned,stats=160ap_87crit_80arpen_120agi_105sta,enchant=110ap,weapon=polearm_3.40speed_232.5dps
 ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weapon=crossbow_2.80speed_200.4dps
 # Gear Summary
 # gear_strength=10
-# gear_agility=1340
+# gear_agility=1330
 # gear_stamina=968
 # gear_intellect=321
 # gear_spirit=10
 # gear_attack_power=2447
 # gear_armor_penetration_rating=568
-# gear_hit_rating=240
-# gear_crit_rating=854
+# gear_hit_rating=260
+# gear_crit_rating=844
 # gear_armor=6803
 # meta_gem=relentless_earthsiege
 # tier8_2pc=1
