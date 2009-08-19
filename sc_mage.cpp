@@ -2615,9 +2615,11 @@ struct arcane_brilliance_t : public mage_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> type == PLAYER_GUARDIAN ) continue;
-      p -> buffs.arcane_brilliance -> trigger( 1, bonus );
-      p -> init_resources( true );
+      if ( p -> ooc_buffs() )
+      {
+	p -> buffs.arcane_brilliance -> trigger( 1, bonus );
+	p -> init_resources( true );
+      }
     }
   }
 
@@ -3613,8 +3615,10 @@ void player_t::mage_combat_begin( sim_t* sim )
 {
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( p -> type == PLAYER_GUARDIAN ) continue;
-    if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, 60.0 );
+    if ( p -> ooc_buffs() )
+    {
+      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, 60.0 );
+    }
   }
 
   target_t* t = sim -> target;

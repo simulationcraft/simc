@@ -2479,9 +2479,11 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> type == PLAYER_GUARDIAN ) continue;
-      p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
-      p -> init_resources( true );
+      if ( p -> ooc_buffs() )
+      {
+	p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
+	p -> init_resources( true );
+      }
     }
   }
 
@@ -3265,8 +3267,10 @@ void player_t::druid_combat_begin( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( p -> type == PLAYER_GUARDIAN ) continue;
-    if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override( 1, 37.0 * 1.20 );
+    if ( p -> ooc_buffs() )
+    {
+      if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override( 1, 37.0 * 1.20 );
+    }
   }
 
   target_t* t = sim -> target;

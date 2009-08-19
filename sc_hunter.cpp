@@ -495,6 +495,8 @@ struct hunter_pet_t : public pet_t
     return PET_NONE;
   }
 
+  virtual bool ooc_buffs() { return true; }
+
   virtual void init_base()
   {
     pet_t::init_base();

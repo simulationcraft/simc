@@ -1599,6 +1599,7 @@ struct player_t
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
 
+  virtual bool ooc_buffs() { return true; }
   virtual void target_swing() {}
 
   virtual void register_callbacks();
@@ -1736,10 +1737,8 @@ struct pet_t : public player_t
   std::string full_name_str;
   player_t* owner;
   pet_t* next_pet;
-
-  double   stamina_per_owner;
+  double stamina_per_owner;
   double intellect_per_owner;
-
   double summon_time;
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
@@ -1756,6 +1755,7 @@ struct pet_t : public player_t
   virtual void reset();
   virtual void summon( double duration=0 );
   virtual void dismiss();
+  virtual bool ooc_buffs() { return false; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() SC_CONST { return full_name_str.c_str(); }

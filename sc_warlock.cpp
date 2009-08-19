@@ -264,6 +264,8 @@ struct warlock_pet_t : public pet_t
       pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {}
 
+  virtual bool ooc_buffs() { return true; }
+
   virtual void init_base()
   {
     pet_t::init_base();
