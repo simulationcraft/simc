@@ -1255,8 +1255,8 @@ double player_t::composite_spell_power( int school ) SC_CONST
 
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
-  sp += floor( spell_power_per_intellect * intellect() );
-  sp += floor( spell_power_per_spirit    * spirit() );
+  sp += spell_power_per_intellect * intellect();
+  sp += spell_power_per_spirit    * spirit();
 
   if ( type != PLAYER_GUARDIAN )
   {

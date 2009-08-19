@@ -3152,7 +3152,7 @@ void shaman_t::init_actions()
     }
     else
     {
-      action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield";
+      action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/bloodlust,time_to_die<=59";
       int num_items = items.size();
       for ( int i=0; i < num_items; i++ )
       {
