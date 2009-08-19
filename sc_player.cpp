@@ -1276,7 +1276,7 @@ double player_t::composite_spell_power( int school ) SC_CONST
     sp += best_buff;
   }
 
-  return sp;
+  return floor( sp );
 }
 
 // player_t::composite_spell_crit ==========================================
@@ -1387,8 +1387,6 @@ double player_t::intellect() SC_CONST
   double b = a - attribute_base[ ATTR_INTELLECT ];
   double m = composite_attribute_multiplier( ATTR_INTELLECT );
   double r;
-
-  b += buffs.fortitude;
 
   if ( race == RACE_GNOME )
   {
