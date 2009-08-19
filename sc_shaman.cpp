@@ -2896,6 +2896,7 @@ void shaman_t::init_glyphs()
     else if ( n == "earth_shield"         ) ;
     else if ( n == "ghost_wolf"           ) ;
     else if ( n == "healing_stream_totem" ) ;
+    else if ( n == "healing_wave"         ) ;
     else if ( n == "lesser_healing_wave"  ) ;
     else if ( n == "renewed_life"         ) ;
     else if ( n == "riptide"              ) ;
