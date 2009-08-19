@@ -182,12 +182,10 @@ void buff_t::increment( int    stacks,
 
   if ( current_stack == 0 )
   {
-    if ( value < 0 ) value = 1.0;
     start( stacks, value );
   }
   else
   {
-    if ( value < 0 ) value = current_value;
     refresh( stacks, value );
   }
 }
@@ -224,7 +222,8 @@ void buff_t::start( int    stacks,
   start_count++;
 
   current_stack = std::min( stacks, max_stack );
-  current_value = value;
+
+  if ( value >= 0 ) current_value = value;
 
   aura_gain();
 
@@ -274,7 +273,7 @@ void buff_t::refresh( int    stacks,
     aura_gain();
   }
 
-  current_value = value;
+  if ( value >= 0 ) current_value = value;
 
   if ( duration > 0 )
   {
@@ -446,8 +445,10 @@ void stat_buff_t::start( int    stacks,
 			 double value )
 {
   if ( max_stack == 0 ) return;
-  buff_t::start( stacks, value );
-  player -> stat_gain( stat, amount * current_stack );
+  if ( value > 0 ) amount = value;
+  buff_t::start( stacks );
+  current_value = amount * current_stack;
+  player -> stat_gain( stat, current_value );
 }
 
 // stat_buff_t::refresh =====================================================
@@ -456,12 +457,19 @@ void stat_buff_t::refresh( int    stacks,
 			   double value )
 {
   if ( max_stack == 0 ) return;
-  int before = current_stack;
-  buff_t::refresh( stacks, value );
-  if( current_stack > before ) 
+  if ( value > 0 ) 
   {
-    player -> stat_gain( stat, amount * ( current_stack - before ) );
+    if ( value < amount ) return;
+    amount = value;
   }
+  buff_t::refresh( stacks );
+  double delta = amount * current_stack - current_value;
+  if( delta > 0 )
+  {
+    player -> stat_gain( stat, delta );
+    current_value += delta;
+  }
+  else assert( delta == 0 );
 }
 
 // stat_buff_t::decrement ===================================================
@@ -476,9 +484,10 @@ void stat_buff_t::decrement( int    stacks,
   }
   else
   {
-    player -> stat_loss( stat, amount * stacks );
+    double delta = amount * stacks;
+    player -> stat_loss( stat, delta );
     current_stack -= stacks;
-    if ( value >= 0 ) current_value = value;
+    current_value -= delta;
   }
 }
 
@@ -488,7 +497,7 @@ void stat_buff_t::expire()
 {
   if ( current_stack > 0 )
   {
-    player -> stat_loss( stat, amount * current_stack );
+    player -> stat_loss( stat, current_value );
     buff_t::expire();
   }
 }

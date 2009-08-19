@@ -710,12 +710,12 @@ struct buff_t
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
   virtual bool   may_react();
-  virtual bool   trigger  ( int stacks=1, double value=1.0, double chance=-1.0 );
+  virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   virtual void   decrement( int stacks=1, double value=-1.0 );
-  virtual void   start    ( int stacks=1, double value=1.0 );
-  virtual void   refresh  ( int stacks=0, double value=1.0 );
-  virtual void   override ( int stacks=1, double value=1.0 );
+  virtual void   start    ( int stacks=1, double value=-1.0 );
+  virtual void   refresh  ( int stacks=0, double value=-1.0 );
+  virtual void   override ( int stacks=1, double value=-1.0 );
   virtual void   expire();
   virtual void   reset();
   virtual void   aura_gain();
@@ -737,8 +737,8 @@ struct stat_buff_t : public buff_t
 	       int max_stack=1, double duration=0, double cooldown=0,
 	       double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~stat_buff_t() { };
-  virtual void start    ( int stacks=1, double value=1.0 );
-  virtual void refresh  ( int stacks=0, double value=1.0 );
+  virtual void start    ( int stacks=1, double value=-1.0 );
+  virtual void refresh  ( int stacks=0, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
 };

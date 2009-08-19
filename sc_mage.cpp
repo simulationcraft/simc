@@ -3599,12 +3599,12 @@ void player_t::mage_init( sim_t* sim )
 {
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.arcane_brilliance = new buff_t( p, "arcane_brilliance", 1 );
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_INTELLECT, 60.0, 1 );
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 5, ( sim -> overrides.improved_scorch ? 0.0 : 30.0 ) );
-  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, ( sim -> overrides.winters_chill   ? 0.0 : 15.0 ) );
+  t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 5, 30.0 );
+  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, 15.0 );
 }
 
 // player_t::mage_combat_begin ==============================================
@@ -3614,11 +3614,11 @@ void player_t::mage_combat_begin( sim_t* sim )
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> type == PLAYER_GUARDIAN ) continue;
-    if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> trigger( 1, 60.0 );
+    if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, 60.0 );
   }
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> trigger( 5 );
-  if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> trigger( 5 );
+  if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> override( 5 );
+  if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> override( 5 );
 }
 

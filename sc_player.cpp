@@ -592,6 +592,7 @@ void player_t::init()
   init_professions();
   init_scaling();
   init_consumables();
+  init_resources();
   init_actions();
   init_buffs();
   init_gains();
@@ -663,7 +664,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
 
-  if     ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  if      ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
   else if ( meta_gem == META_BEAMING_EARTHSIEGE      ) item_stats.crit_rating += 21;
   else if ( meta_gem == META_BRACING_EARTHSIEGE      ) item_stats.spell_power += 25;
   else if ( meta_gem == META_BRACING_EARTHSTORM      ) item_stats.spell_power += 14;
@@ -1320,6 +1321,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
+  if ( buffs.blessing_of_kings ) m *= 1.10;
   return m;
 }
 
@@ -1328,18 +1330,11 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  double b = a - attribute_base[ ATTR_STRENGTH ];
-  double m = composite_attribute_multiplier( ATTR_STRENGTH );
-  double r;
 
-  b += buffs.mark_of_the_wild -> current_value;
-  b += buffs.strength_of_earth;
+  a += buffs.strength_of_earth;
+  a *= composite_attribute_multiplier( ATTR_STRENGTH );
 
-  r = floor( attribute_base[ ATTR_STRENGTH ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor ( r * 1.10 );
-
-  return r;
+  return floor( a );
 }
 
 // player_t::agility() =====================================================
@@ -1347,18 +1342,11 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  double b = a - attribute_base[ ATTR_AGILITY ];
-  double m = composite_attribute_multiplier( ATTR_AGILITY );
-  double r;
 
-  b += buffs.mark_of_the_wild -> current_value;
-  b += buffs.strength_of_earth;
+  a += buffs.strength_of_earth;
+  a *= composite_attribute_multiplier( ATTR_AGILITY );
 
-  r = floor( attribute_base[ ATTR_AGILITY ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor ( r * 1.10 );
-
-  return r;
+  return floor( a );
 }
 
 // player_t::stamina() =====================================================
@@ -1366,18 +1354,11 @@ double player_t::agility() SC_CONST
 double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
-  double b = a - attribute_base[ ATTR_STAMINA ];
-  double m = composite_attribute_multiplier( ATTR_STAMINA );
-  double r;
 
-  b += buffs.mark_of_the_wild -> current_value;
-  b += buffs.fortitude;
+  a += buffs.fortitude;
+  a *= composite_attribute_multiplier( ATTR_STAMINA );
 
-  r = floor( attribute_base[ ATTR_STAMINA ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor ( r * 1.10 );
-
-  return r;
+  return floor( a );
 }
 
 // player_t::intellect() ===================================================
@@ -1385,23 +1366,14 @@ double player_t::stamina() SC_CONST
 double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
-  double b = a - attribute_base[ ATTR_INTELLECT ];
-  double m = composite_attribute_multiplier( ATTR_INTELLECT );
-  double r;
-
-  b += buffs.mark_of_the_wild -> current_value;
-  b += buffs.arcane_brilliance -> value();
 
   if ( race == RACE_GNOME )
   {
-    b = floor( b * 1.05 );
+    a += ( a - attribute_base[ ATTR_INTELLECT ] ) * 0.05;
   }
+  a *= composite_attribute_multiplier( ATTR_INTELLECT );
 
-  r = floor( attribute_base[ ATTR_INTELLECT ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor ( r * 1.10 );
-
-  return r;
+  return floor( a );
 }
 
 // player_t::spirit() ======================================================
@@ -1409,23 +1381,15 @@ double player_t::intellect() SC_CONST
 double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
-  double b = a - attribute_base[ ATTR_SPIRIT ];
-  double m = composite_attribute_multiplier( ATTR_SPIRIT );
-  double r;
 
-  b += buffs.mark_of_the_wild -> current_value;
-  b += buffs.divine_spirit;
-
+  a += buffs.divine_spirit;
   if ( race == RACE_HUMAN )
   {
-    b = floor( b * 1.03 );
+    a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.05;
   }
+  a *= composite_attribute_multiplier( ATTR_SPIRIT );
 
-  r = floor( attribute_base[ ATTR_SPIRIT ] * m ) + floor( b * m );
-
-  if ( buffs.blessing_of_kings ) r = floor ( r * 1.10 );
-
-  return r;
+  return floor( a );
 }
 
 // player_t::combat_begin ==================================================
@@ -1931,6 +1895,8 @@ void player_t::stat_gain( int    stat,
   case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] += amount; break;
   case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] += amount; break;
 
+  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) attribute[ i ] += amount; break;
+
   case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
   case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
   case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
@@ -1978,6 +1944,8 @@ void player_t::stat_loss( int    stat,
   case STAT_STAMINA:   attribute[ ATTR_STAMINA   ] -= amount; break;
   case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] -= amount; break;
   case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] -= amount; break;
+
+  case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) attribute[ i ] -= amount; break;
 
   case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount ); break;
   case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount ); break;

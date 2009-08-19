@@ -2614,20 +2614,20 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, int rac
 
 void player_t::warrior_init( sim_t* sim )
 {
-  sim -> auras.rampage = new aura_t( sim, "rampage", 1, ( sim -> overrides.rampage ? 0.0 : 10.0 ));
+  sim -> auras.rampage = new aura_t( sim, "rampage", 1, 10.0 );
 
   target_t* t = sim -> target;
-  t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, ( sim -> overrides.blood_frenzy ? 0.0 : 15.0 ) );
-  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, ( sim -> overrides.trauma       ? 0.0 : 15.0 ) );
+  t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );
+  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, 15.0 );
 }
 
 // player_t::warrior_combat_begin ===========================================
 
 void player_t::warrior_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.rampage ) sim -> auras.rampage -> trigger();
+  if ( sim -> overrides.rampage ) sim -> auras.rampage -> override();
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> trigger();
-  if ( sim -> overrides.blood_frenzy ) t -> debuffs.blood_frenzy -> trigger();
+  if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> override();
+  if ( sim -> overrides.blood_frenzy ) t -> debuffs.blood_frenzy -> override();
 }

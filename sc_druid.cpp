@@ -3245,34 +3245,34 @@ void player_t::druid_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
-    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", 1 );
+    p -> buffs.innervate        = new      buff_t( p, "innervate",                      1, 10.0 );
+    p -> buffs.mark_of_the_wild = new stat_buff_t( p, "mark_of_the_wild", STAT_MAX, 37, 1 );
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1, ( sim -> overrides.earth_and_moon       ? 0.0 :  12.0 ) );
-  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, ( sim -> overrides.faerie_fire          ? 0.0 : 300.0 ) );
-  t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, ( sim -> overrides.improved_faerie_fire ? 0.0 : 300.0 ) );
-  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1, ( sim -> overrides.mangle               ? 0.0 :  12.0 ) );
+  t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
+  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, 300.0 );
+  t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, 300.0 );
+  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  12.0 );
 }
 
 // player_t::druid_combat_begin =============================================
 
 void player_t::druid_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> trigger();
-  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin          -> trigger();
+  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> override();
+  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin          -> override();
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> type == PLAYER_GUARDIAN ) continue;
-    if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> trigger( 1, 37.0 * 1.20 );
+    if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override( 1, 37.0 * 1.20 );
   }
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> trigger( 1, 13 );
-  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> trigger();
-  if ( sim -> overrides.improved_faerie_fire ) t -> debuffs.improved_faerie_fire -> trigger( 1, 3 );
-  if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> trigger();
+  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
+  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override();
+  if ( sim -> overrides.improved_faerie_fire ) t -> debuffs.improved_faerie_fire -> override( 1, 3 );
+  if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
 }
 

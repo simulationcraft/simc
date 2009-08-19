@@ -4271,7 +4271,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, int rac
 void player_t::warlock_init( sim_t* sim )
 {
   target_t* t = sim -> target;
-  t -> debuffs.improved_shadow_bolt = new debuff_t( sim, "improved_shadow_bolt", 1, ( sim -> overrides.improved_shadow_bolt ? 0.0 : 30.0 ) );
+  t -> debuffs.improved_shadow_bolt = new debuff_t( sim, "improved_shadow_bolt", 1, 30.0 );
 }
 
 // player_t::warlock_combat_begin ===========================================
@@ -4279,6 +4279,6 @@ void player_t::warlock_init( sim_t* sim )
 void player_t::warlock_combat_begin( sim_t* sim )
 {
   target_t* t = sim -> target;
-  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> trigger();
+  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
 }
 

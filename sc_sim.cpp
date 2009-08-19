@@ -1548,9 +1548,6 @@ int sim_t::main( int argc, char** argv )
   if ( save_profiles )
   {
     init();
-    combat_begin();
-    combat_end();
-
     util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
   }
