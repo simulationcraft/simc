@@ -674,12 +674,13 @@ struct buff_t
   player_t* player;
   std::string name_str;
   std::vector<std::string> aura_str;
+  std::vector<double> stack_occurrence;
   int current_stack, max_stack;
   double current_value, react, duration, cooldown, cooldown_ready, default_chance;
-  double last_start, interval_sum, uptime_sum;
-  int64_t up_count, down_count, interval_count, start_count, refresh_count;
+  double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
+  int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
-  double uptime_pct, benefit_pct, trigger_pct, avg_interval, avg_start, avg_refresh;
+  double uptime_pct, benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
   bool constant, quiet;
   int aura_id;
   event_t* expiration;
@@ -709,7 +710,7 @@ struct buff_t
   virtual double remains();
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
-  virtual bool   may_react();
+  virtual bool   may_react( int stacks=0 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   virtual void   decrement( int stacks=1, double value=-1.0 );
@@ -722,6 +723,7 @@ struct buff_t
   virtual void   aura_loss();
   virtual void   merge( buff_t* other_buff );
   virtual void   analyze();
+  virtual void   init();
   virtual const char* name() { return name_str.c_str(); }
 
   static buff_t* find(    sim_t*, const std::string& name );

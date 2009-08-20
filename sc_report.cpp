@@ -202,8 +202,9 @@ static void print_buffs( FILE* file, player_t* p )
 
     if ( ! b -> constant )
     {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%-5.1f  uptime=%2.0f%%",
-                       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct );
+      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
+                       max_length, b -> name(), b -> avg_start, b -> avg_refresh, 
+		       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
       if( b -> benefit_pct > 0 &&
 	  b -> benefit_pct < 100 )
@@ -269,8 +270,9 @@ static void print_buffs( FILE* file, sim_t* sim )
 
     if ( ! b -> constant )
     {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%-5.1f  uptime=%2.0f%%",
-                       max_length, b -> name(), b -> avg_start, b -> avg_refresh, b -> avg_interval, b -> uptime_pct );
+      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
+                       max_length, b -> name(), b -> avg_start, b -> avg_refresh, 
+		       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
       if( b -> benefit_pct > 0 &&
 	  b -> benefit_pct < 100 )

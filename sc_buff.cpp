@@ -20,17 +20,12 @@ buff_t::buff_t( sim_t*             s,
                 bool               q,
                 int                rng_type,
                 int                id ) :
-  sim( s ), player( 0 ), name_str( n ), aura_str( 0 ),
-  current_stack( 0 ), max_stack( ms ), current_value( 0 ),
-  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
-  last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
-  up_count( 0 ), down_count( 0 ), interval_count( 0 ),
-  start_count( 0 ), refresh_count( 0 ),
-  trigger_attempts( 0 ), trigger_successes( 0 ),
-  uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
-  avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
-  constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
+  sim( s ), player( 0 ), name_str( n ), 
+  max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
+  quiet( q ), aura_id( id )
 {
+  init();
+
   rng = sim -> get_rng( n, rng_type );
 
   buff_t** tail = &( sim -> buff_list );
@@ -40,17 +35,6 @@ buff_t::buff_t( sim_t*             s,
   }
   next = *tail;
   *tail = this;
-
-  char *buffer = new char[name_str.size() + 16];
-  assert( buffer != NULL );
-
-  aura_str.resize( max_stack + 1 );
-  for ( int i=1; i <= max_stack; i++ )
-  {
-    sprintf( buffer, "%s(%d)", name_str.c_str(), i );
-    aura_str[ i ] = buffer;
-  }
-  delete [] buffer;
 }
 
 // buff_t::buff_t ===========================================================
@@ -64,17 +48,12 @@ buff_t::buff_t( player_t*          p,
                 bool               q,
                 int                rng_type,
                 int                id ) :
-  sim( p -> sim ), player( p ), name_str( n ), aura_str( 0 ),
-  current_stack( 0 ), max_stack( ms ), current_value( 0 ),
-  duration( d ), cooldown( cd ), cooldown_ready( 0 ), default_chance( ch ),
-  last_start( -1 ), interval_sum( 0 ), uptime_sum( 0 ),
-  up_count( 0 ), down_count( 0 ), interval_count( 0 ),
-  start_count( 0 ), refresh_count( 0 ),
-  trigger_attempts( 0 ), trigger_successes( 0 ),
-  uptime_pct( 0 ), benefit_pct( 0 ), trigger_pct( 0 ),
-  avg_interval( 0 ), avg_start( 0 ), avg_refresh( 0 ),
-  constant( false ), quiet( q ), aura_id( id ), expiration( 0 ), rng( 0 ), next( 0 )
+  sim( p -> sim ), player( p ), name_str( n ), 
+  max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
+  quiet( q ), aura_id( id )
 {
+  init();
+
   rng = player -> get_rng( n, rng_type );
   buff_t** tail = &(  player -> buff_list );
 
@@ -84,11 +63,44 @@ buff_t::buff_t( player_t*          p,
   }
   next = *tail;
   *tail = this;
+}
+
+// buff_t::init =============================================================
+
+void buff_t::init()
+{
+  current_stack = 0;
+  current_value = 0;
+  cooldown_ready = 0;
+  last_start = -1;
+  last_trigger = -1;
+  start_intervals_sum = 0;
+  trigger_intervals_sum = 0;
+  uptime_sum = 0;
+  up_count = 0;
+  down_count = 0;
+  start_intervals = 0;
+  trigger_intervals = 0;
+  start_count = 0;
+  refresh_count = 0;
+  trigger_attempts = 0;
+  trigger_successes = 0;
+  uptime_pct = 0;
+  benefit_pct = 0;
+  trigger_pct = 0;
+  avg_start_interval = 0;
+  avg_trigger_interval = 0;
+  avg_start = 0;
+  avg_refresh = 0;
+  constant = false;
+  expiration = 0;
+
+  stack_occurrence.resize( max_stack + 1 );
+  aura_str.resize( max_stack + 1 );
 
   char *buffer = new char[name_str.size() + 16];
   assert( buffer != NULL );
 
-  aura_str.resize( max_stack + 1 );
   for ( int i=1; i <= max_stack; i++ )
   {
     sprintf( buffer, "%s(%d)", name_str.c_str(), i );
@@ -99,10 +111,14 @@ buff_t::buff_t( player_t*          p,
 
 // buff_t::may_react ========================================================
 
-bool buff_t::may_react()
+bool buff_t::may_react( int stack )
 {
-  if ( current_stack == 0 ) return false;
-  return sim -> time_to_think( last_start );
+  if ( current_stack == 0    ) return false;
+  if ( stack > current_stack ) return false;
+
+  if( stack == 0 ) return sim -> time_to_think( last_start );
+
+  return sim -> time_to_think( stack_occurrence[ stack ] );
 }
 
 // buff_t::remains ==========================================================
@@ -163,6 +179,13 @@ bool buff_t::trigger( int    stacks,
   if ( ! rng -> roll( chance ) )
     return false;
 
+  if( last_trigger > 0 ) 
+  {
+    trigger_intervals_sum += sim -> current_time - last_trigger;
+    trigger_intervals++;
+  }
+  last_trigger = sim -> current_time;
+
   increment( stacks, value );
 
   if ( cooldown > 0 )
@@ -215,7 +238,7 @@ void buff_t::start( int    stacks,
 {
   if ( max_stack == 0 ) return;
 
-  assert( current_stack < max_stack );
+  assert( current_stack == 0 );
 
   if ( sim -> current_time <= 0.01 ) constant = true;
 
@@ -229,10 +252,15 @@ void buff_t::start( int    stacks,
 
   if ( last_start >= 0 )
   {
-    interval_sum += sim -> current_time - last_start;
-    interval_count++;
+    start_intervals_sum += sim -> current_time - last_start;
+    start_intervals++;
   }
   last_start = sim -> current_time;
+
+  for( int i=1; i <= current_stack; i++ ) 
+  {
+    stack_occurrence[ i ] = sim -> current_time;
+  }
 
   if ( duration > 0 )
   {
@@ -266,11 +294,18 @@ void buff_t::refresh( int    stacks,
 
   if ( current_stack < max_stack )
   {
+    int before_stack = current_stack;
+
     current_stack += stacks;
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
     aura_gain();
+
+    for( int i=before_stack+1; i <= current_stack; i++ )
+    {
+      stack_occurrence[ i ] = sim -> current_time;
+    }
   }
 
   if ( value >= 0 ) current_value = value;
@@ -352,21 +387,24 @@ void buff_t::reset()
   cooldown_ready = 0;
   expire();
   last_start = -1;
+  last_trigger = -1;
 }
 
 // buff_t::merge ============================================================
 
 void buff_t::merge( buff_t* other )
 {
-  interval_sum      += other -> interval_sum;
-  uptime_sum        += other -> uptime_sum;
-  up_count          += other -> up_count;
-  down_count        += other -> down_count;
-  interval_count    += other -> interval_count;
-  start_count       += other -> start_count;
-  refresh_count     += other -> refresh_count;
-  trigger_attempts  += other -> trigger_attempts;
-  trigger_successes += other -> trigger_successes;
+  start_intervals_sum   += other -> start_intervals_sum;
+  trigger_intervals_sum += other -> trigger_intervals_sum;
+  uptime_sum            += other -> uptime_sum;
+  up_count              += other -> up_count;
+  down_count            += other -> down_count;
+  start_intervals       += other -> start_intervals;
+  trigger_intervals     += other -> trigger_intervals;
+  start_count           += other -> start_count;
+  refresh_count         += other -> refresh_count;
+  trigger_attempts      += other -> trigger_attempts;
+  trigger_successes     += other -> trigger_successes;
 }
 
 // buff_t::analyze ==========================================================
@@ -386,9 +424,13 @@ void buff_t::analyze()
   {
     trigger_pct = 100.0 * trigger_successes / trigger_attempts;
   }
-  if ( interval_count > 0 )
+  if ( start_intervals > 0 )
   {
-    avg_interval = interval_sum / interval_count;
+    avg_start_interval = start_intervals_sum / start_intervals;
+  }
+  if ( trigger_intervals > 0 )
+  {
+    avg_trigger_interval = trigger_intervals_sum / trigger_intervals;
   }
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
