@@ -516,7 +516,7 @@ struct berserking_callback_t : public action_callback_t
     double swing_time = a -> time_to_execute;
     double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
    
-    buff -> trigger( 1, 1.0, chance );
+    buff -> trigger( 1, 0, chance );
     buff -> up();  // track uptime info
   }
 };
@@ -549,7 +549,7 @@ struct mongoose_callback_t : public action_callback_t
     double swing_time = a -> time_to_execute;
     double chance     = w -> proc_chance_on_swing( PPM, swing_time );
 
-    buff -> trigger( 1, 1.0, chance );
+    buff -> trigger( 1, 0, chance );
   }
 };
 
@@ -578,7 +578,7 @@ struct executioner_callback_t : public action_callback_t
     double swing_time = a -> time_to_execute;
     double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
 
-    buff -> trigger( 1, 1.0, chance );
+    buff -> trigger( 1, 0, chance );
     buff -> up();  // track uptime info
   }
 };
