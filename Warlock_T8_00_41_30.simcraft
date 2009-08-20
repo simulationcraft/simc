@@ -4,7 +4,7 @@ warlock=Warlock_T8_00_41_30
 origin=http://profiler.wowhead.com/?profile=13003812
 level=80
 race=undead
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000000000000000332003011352025300322010000520320521013105
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000000000000000320330113520253003220100005203205210131050000000000
 glyphs=felguard/incinerate/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=tender_shoveltusk_steak
