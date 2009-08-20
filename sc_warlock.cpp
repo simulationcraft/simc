@@ -46,6 +46,7 @@ struct warlock_t : public player_t
   buff_t* buffs_molten_core;
   buff_t* buffs_pyroclasm;
   buff_t* buffs_shadow_trance;
+  buff_t* buffs_tier7_2pc;
   buff_t* buffs_tier7_4pc;
 
   // warlock specific expression functions
@@ -70,9 +71,6 @@ struct warlock_t : public player_t
   // Procs
   proc_t* procs_dark_pact;
   proc_t* procs_life_tap;
-
-  // Up-Times
-  uptime_t* uptimes_demonic_soul;
 
   // Random Number Generators
   rng_t* rng_soul_leech;
@@ -213,7 +211,6 @@ struct warlock_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
@@ -946,21 +943,6 @@ struct warlock_spell_t : public spell_t
   virtual bool   ready();
 };
 
-// trigger_tier7_2pc =======================================================
-
-static void trigger_tier7_2pc( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if (   p ->  set_bonus.tier7_2pc() &&
-         ! p -> buffs.tier7_2pc )
-  {
-    p -> buffs.tier7_2pc = p -> rngs.tier7_2pc -> roll( 0.15 );
-
-    if ( p -> buffs.tier7_2pc ) p -> aura_gain( "Demonic Soul" ,61595 );
-  }
-}
-
 // trigger_tier5_4pc ========================================================
 
 static void trigger_tier5_4pc( spell_t*  s,
@@ -974,39 +956,6 @@ static void trigger_tier5_4pc( spell_t*  s,
     {
       dot_spell -> base_td *= 1.10;
     }
-  }
-}
-
-
-// trigger_improved_shadow_bolt ===========================================
-
-static void trigger_improved_shadow_bolt( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-  target_t*  t = s -> sim -> target;
-
-  t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talents.improved_shadow_bolt / 5.0 );
-}
-
-// trigger_nightfall ========================================================
-
-static void trigger_nightfall( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-  if ( p -> talents.nightfall )
-  {
-    p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talents.nightfall * 0.02 );
-  }
-}
-
-// trigger_corruption_glyph =================================================
-
-static void trigger_corruption_glyph( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-  if ( p -> glyphs.corruption )
-  {
-    p -> buffs_shadow_trance -> trigger( 1, 1.0, 0.04 );
   }
 }
 
@@ -1306,7 +1255,6 @@ void warlock_spell_t::tick()
 {
   spell_t::tick();
   trigger_molten_core( this );
-  trigger_tier7_2pc( this );
 }
 
 // warlock_spell_t::parse_options =============================================
@@ -1609,10 +1557,8 @@ struct shadow_bolt_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm  * 0.03 +
-                               ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) +
-                               p -> glyphs.shadow_bolt * 0.10 );
+    base_hit   += p -> talents.suppression * 0.01;
+    base_cost  *= 1.0 - ( util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 ) + p -> glyphs.shadow_bolt * 0.10 );
 
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
@@ -1641,20 +1587,17 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual void execute()
   {
+    target_t*  t = sim -> target;
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
       p -> buffs_shadow_embrace -> trigger();
+      t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talents.improved_shadow_bolt / 5.0 );
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_corruption );
-      trigger_improved_shadow_bolt( this );
     }
-    if ( p -> buffs.tier7_2pc )
-    {
-      p -> aura_loss( "Demonic Soul" , 61595 );
-      p -> buffs.tier7_2pc = 0;
-    }
+    p -> buffs_tier7_2pc -> expire();
   }
 
   virtual void schedule_travel()
@@ -1673,11 +1616,8 @@ struct shadow_bolt_t : public warlock_spell_t
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
-
     warlock_spell_t::player_buff();
-
-    if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
-    p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );
+    if ( p -> buffs_tier7_2pc -> up() ) player_crit += 0.10;
   }
 
   virtual bool ready()
@@ -1732,14 +1672,12 @@ struct chaos_bolt_t : public warlock_spell_t
 
     base_execute_time = 2.5;
     direct_power_mod  = base_execute_time / 3.5;
-    cooldown          = 12.0;
-    if ( p -> glyphs.chaos_bolt ) cooldown -= 2;
+    cooldown          = 12.0 - ( p -> glyphs.chaos_bolt * 2.0 );
     may_crit          = true;
     may_resist        = false;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -=  p -> talents.bane * 0.1;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -1861,9 +1799,8 @@ struct shadow_burn_t : public warlock_spell_t
     cooldown         = 15;
     direct_power_mod = ( 1.5 / 3.5 );
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
@@ -1941,10 +1878,8 @@ struct shadowfury_t : public warlock_spell_t
     trigger_gcd = 0.5; // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
     if ( cast_gcd>=0 ) trigger_gcd=cast_gcd;
 
-
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit         += p -> talents.devastation * 0.05;
@@ -2017,9 +1952,10 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
     p -> buffs_eradication -> trigger();
-    trigger_nightfall( this );
-    trigger_corruption_glyph( this );
-    if ( player -> set_bonus.tier6_2pc() ) player -> resource_gain( RESOURCE_HEALTH, 70 );
+    p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talents.nightfall * 0.02 );
+    p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> glyphs.corruption * 0.04 );
+    p -> buffs_tier7_2pc -> trigger();
+    if ( p -> set_bonus.tier6_2pc() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
   }
 };
 
@@ -2073,9 +2009,9 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void player_buff()
   {
-    warlock_spell_t::player_buff();
-
     warlock_t* p = player -> cast_warlock();
+
+    warlock_spell_t::player_buff();
 
     double min_multiplier[] = { 0, 0.03, 0.06 };
     double max_multiplier[] = { 0, 0.09, 0.18 };
@@ -2095,8 +2031,9 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void tick()
   {
+    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    trigger_nightfall( this );
+    p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talents.nightfall * 0.02 );
   }
 };
 
@@ -2343,7 +2280,6 @@ struct immolate_t : public warlock_spell_t
 
     option_t options[] =
     {
-      { "target_pct", OPT_DEPRECATED, ( void* ) "health_percentage>" },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2366,9 +2302,8 @@ struct immolate_t : public warlock_spell_t
     direct_power_mod  = 0.20;
     tick_power_mod    = 0.20;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.bane * 0.1;
     base_crit         += p -> talents.devastation * 0.05;
@@ -2403,8 +2338,10 @@ struct immolate_t : public warlock_spell_t
 
   virtual void tick()
   {
+    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    if ( player -> set_bonus.tier6_2pc() ) player -> resource_gain( RESOURCE_HEALTH, 35 );
+    p -> buffs_tier7_2pc -> trigger(); 
+    if ( p -> set_bonus.tier6_2pc() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
   }
 };
 
@@ -2439,15 +2376,13 @@ struct shadowflame_t : public warlock_spell_t
     tick_power_mod    = 0.28;
     cooldown          = 15.0;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
     base_crit += p -> talents.devastation * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
     base_dd_multiplier *= 1.0 + ( p -> talents.shadow_mastery * 0.03 );
-
     base_td_multiplier *= 1.0 + ( p -> talents.emberstorm * 0.03 );
 
     observer = &( p -> active_shadowflame );
@@ -2501,19 +2436,20 @@ struct conflagrate_t : public warlock_spell_t
     direct_power_mod  = ( 1.5/3.5 );
     cooldown          = 10;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
+
     base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
-                       + p -> talents.improved_immolate * 0.10
-                       + p -> glyphs.immolate           * 0.10;
+                           + p -> talents.improved_immolate * 0.10
+                           + p -> glyphs.immolate           * 0.10;
 
-    base_multiplier *= 0.7;
+    base_multiplier *= 1.0 + p -> talents.emberstorm    * 0.03
+                           + p -> set_bonus.tier8_2pc() * 0.10
+                           + p -> set_bonus.tier9_4pc() * 0.10;
 
-    base_multiplier  *= 1.0 + p -> talents.emberstorm    * 0.03
-                            + p -> set_bonus.tier8_2pc() * 0.10
-                            + p -> set_bonus.tier9_4pc() * 0.10;
-    base_crit        += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
+    base_multiplier *= 0.7; // Nerf!
+
+    base_crit += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
@@ -2631,16 +2567,18 @@ struct incinerate_t : public warlock_spell_t
     may_crit           = true;
     direct_power_mod   = ( 2.5/3.5 );
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.emberstorm * 0.05;
-    base_multiplier   *= 1.0 + ( p -> talents.emberstorm    * 0.03 +
-                                 p -> set_bonus.tier6_4pc() * 0.06 +
-                                 p -> glyphs.incinerate     * 0.05 );
-    base_crit         += ( p -> talents.devastation   * 0.05 +
-                           p -> set_bonus.tier8_4pc() * 0.05 );
+
+    base_multiplier *= 1.0 + ( p -> talents.emberstorm    * 0.03 +
+                               p -> set_bonus.tier6_4pc() * 0.06 +
+                               p -> glyphs.incinerate     * 0.05 );
+
+    base_crit += ( p -> talents.devastation   * 0.05 +
+		   p -> set_bonus.tier8_4pc() * 0.05 );
+
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -2658,11 +2596,7 @@ struct incinerate_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_tier5_4pc( this, p -> active_immolate );
     }
-    if ( p -> buffs.tier7_2pc )
-    {
-      p -> aura_loss( "Demonic Soul", 61595 );
-      p -> buffs.tier7_2pc = 0;
-    }
+    p -> buffs_tier7_2pc -> expire();
   }
 
   virtual void schedule_travel()
@@ -2682,12 +2616,11 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> buffs.tier7_2pc ) player_crit += 0.10;
+    if ( p -> buffs_tier7_2pc -> up() ) player_crit += 0.10;
     if ( p -> active_immolate )
     {
       player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
     }
-    p -> uptimes_demonic_soul -> update( p -> buffs.tier7_2pc != 0 );
   }
 
 };
@@ -2722,9 +2655,8 @@ struct searing_pain_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
     base_crit       += p -> talents.devastation * 0.05;
@@ -2780,9 +2712,8 @@ struct soul_fire_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = 1.15;
 
-    base_hit        += p -> talents.suppression * 0.01;
-    base_cost       *= 1.0 - ( p -> talents.cataclysm * 0.03
-                               + ( ( p -> talents.cataclysm ) ? 0.01 : 0 ) );
+    base_hit  += p -> talents.suppression * 0.01;
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -3667,6 +3598,7 @@ void warlock_t::init_buffs()
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance       = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talents.nightfall );
 
+  buffs_tier7_2pc = new      buff_t( this, "tier7_2pc",                   1, 10.0, 0.0, set_bonus.tier7_2pc() * 0.15 );
   buffs_tier7_4pc = new stat_buff_t( this, "tier7_4pc", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc() );
 }
 
@@ -3694,15 +3626,6 @@ void warlock_t::init_procs()
   procs_life_tap  = get_proc( "life_tap",  sim );
 }
 
-// warlock_t::init_uptimes ===================================================
-
-void warlock_t::init_uptimes()
-{
-  player_t::init_uptimes();
-
-  uptimes_demonic_soul = get_uptime( "demonic_soul"          ); // tier7_2pc buff in player_t
-}
-
 // warlock_t::init_rng =======================================================
 
 void warlock_t::init_rng()
@@ -3712,10 +3635,6 @@ void warlock_t::init_rng()
   rng_soul_leech             = get_rng( "soul_leech"             );
   rng_improved_soul_leech    = get_rng( "improved_soul_leech"    );
   rng_everlasting_affliction = get_rng( "everlasting_affliction" );
-
-  // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
-  // If used pbuff_t, its default. Force "normal" rng with negarive chance there
-  // rng_nightfall     = get_rng( "nightfall",     RNG_DISTRIBUTED );
 }
 
 // warlock_t::init_actions ===================================================
