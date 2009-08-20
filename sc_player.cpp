@@ -1261,13 +1261,13 @@ double player_t::composite_spell_power( int school ) SC_CONST
   if ( type != PLAYER_GUARDIAN )
   {
     double best_buff = 0;
-    if ( buffs.totem_of_wrath )
+    if ( sim -> auras.totem_of_wrath -> up() )
     {
-      if ( best_buff < buffs.totem_of_wrath ) best_buff = buffs.totem_of_wrath;
+      if ( best_buff < sim -> auras.totem_of_wrath -> current_value ) best_buff = sim -> auras.totem_of_wrath -> current_value;
     }
-    if ( buffs.flametongue_totem )
+    if ( sim -> auras.flametongue_totem -> up() )
     {
-      if ( best_buff < buffs.flametongue_totem ) best_buff = buffs.flametongue_totem;
+      if ( best_buff < sim -> auras.flametongue_totem -> current_value ) best_buff = sim -> auras.flametongue_totem -> current_value;
     }
     if ( buffs.demonic_pact -> up() )
     {
@@ -1310,7 +1310,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
   }
   else
   {
-    m *= 1.0 + buffs.unleashed_rage * 0.01;
+    m *= 1.0 + buffs.unleashed_rage -> value() * 0.01;
   }
 
   return m;
@@ -1330,7 +1330,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  a += buffs.strength_of_earth;
+  a += sim -> auras.strength_of_earth -> value();
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
   return floor( a );
 }
@@ -1340,7 +1340,7 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  a += buffs.strength_of_earth;
+  a += sim -> auras.strength_of_earth -> value();
   a *= composite_attribute_multiplier( ATTR_AGILITY );
   return floor( a );
 }
@@ -1403,11 +1403,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
-  if ( sim -> overrides.strength_of_earth      ) buffs.strength_of_earth = 178;
-  if ( sim -> overrides.totem_of_wrath         ) buffs.totem_of_wrath = 280;
-  if ( sim -> overrides.unleashed_rage         ) buffs.unleashed_rage = 1;
-  if ( sim -> overrides.windfury_totem         ) buffs.windfury_totem = 0.20;
-  if ( sim -> overrides.wrath_of_air           ) buffs.wrath_of_air = 1;
 
   if ( ( race == RACE_DRAENEI ) || sim -> overrides.heroic_presence )
   {
@@ -2941,12 +2936,11 @@ act_expression_t* player_t::create_expression( std::string& name,std::string& pr
     bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
     if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
     if ( name=="tier8_2pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier8_2pc,  ex?&expirations.tier8_2pc:0 ); else
-        if ( name=="tier8_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0 ); else
-            if ( name=="tier7_2pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0 ); else
-                if ( name=="tier7_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0 ); else
-                    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
-                        if ( name=="bloodlust" )            node= new oldbuff_expression_t( e_name, &buffs.bloodlust ); else
-                if ( name=="cast_time_reduction" )  node= new oldbuff_expression_t( e_name, &buffs.cast_time_reduction ,0, 2 );
+      if ( name=="tier8_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0 ); else
+	if ( name=="tier7_2pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0 ); else
+	  if ( name=="tier7_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0 ); else
+	    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
+	      if ( name=="cast_time_reduction" )  node= new oldbuff_expression_t( e_name, &buffs.cast_time_reduction ,0, 2 );
   }
   if ( ( prefix=="player" )&&( node==0 ) )
   {

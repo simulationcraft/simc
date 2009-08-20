@@ -30,15 +30,15 @@ double spell_t::haste() SC_CONST
 
   if ( p -> type != PLAYER_GUARDIAN )
   {
-    if (      p -> buffs.bloodlust      ) h *= 1.0 / ( 1.0 + 0.30 );
-    else if ( p -> buffs.power_infusion ) h *= 1.0 / ( 1.0 + 0.20 );
+    if (      p -> buffs.bloodlust -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
+    else if ( p -> buffs.power_infusion       ) h *= 1.0 / ( 1.0 + 0.20 );
 
     if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
 
-    if ( p -> buffs.wrath_of_air )
+    if ( sim -> auras.wrath_of_air -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }

@@ -64,7 +64,6 @@ struct shaman_t : public player_t
 
   // Up-Times
   uptime_t* uptimes_tundra;
-  uptime_t* uptimes_unleashed_rage;
 
   // Random Number Generators
   rng_t* rng_improved_stormstrike;
@@ -224,7 +223,6 @@ struct shaman_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
@@ -359,45 +357,6 @@ struct spirit_wolf_pet_t : public pet_t
   }
 };
 
-// ==========================================================================
-// Pet Totems
-// ==========================================================================
-
-struct totem_t : public pet_t
-{
-  int element;
-
-  totem_t( sim_t* sim, player_t* owner, const std::string& n, int e ) :
-    pet_t( sim, owner, n, true/*guardian*/ ), element(e)
-  {
-  }
-  virtual void init_base()
-  {
-    attribute_base[ ATTR_STAMINA ] = 100;
-  }
-  virtual double composite_spell_power( int school ) SC_CONST
-  {
-    return owner -> composite_spell_power( school );
-  }
-  virtual double composite_spell_crit() SC_CONST
-  {
-    return owner -> composite_spell_crit();
-  }
-  virtual void summon( double duration=0 )
-  {
-    shaman_t* o = owner -> cast_shaman();
-    if( o -> active_totems[ element ] ) o -> active_totems[ element ] -> dismiss();
-    pet_t::summon( duration );
-    o -> active_totems[ element ] = this;
-  }
-  virtual void dismiss()
-  {
-    shaman_t* o = owner -> cast_shaman();
-    pet_t::dismiss();
-    o -> active_totems[ element ] = 0;
-  }
-};
-
 // trigger_flametongue_weapon ===============================================
 
 static void trigger_flametongue_weapon( attack_t* a )
@@ -505,54 +464,20 @@ static void stack_maelstrom_weapon( attack_t* a )
 
 static void trigger_unleashed_rage( attack_t* a )
 {
-  struct unleashed_rage_expiration_t : public event_t
-  {
-    unleashed_rage_expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Unleashed Rage Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> buffs.unleashed_rage > 0 )
-        {
-          p -> buffs.unleashed_rage = 0;
-          p -> aura_loss( "Unleashed Rage" );
-        }
-      }
-      sim -> expirations.unleashed_rage = 0;
-    }
-  };
-
   if ( a -> proc ) return;
 
   shaman_t* s = a -> player -> cast_shaman();
-  int ur=0;
 
   if ( s -> talents.unleashed_rage == 0 ) return;
 
-  ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
+  int ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
 
-  if ( ur < s -> buffs.unleashed_rage ) return;
+  if ( ur < s -> buffs.unleashed_rage -> current_value ) return;
 
   for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
   {
     if ( p -> sleeping ) continue;
-    if ( p -> buffs.unleashed_rage == 0 ) p -> aura_gain( "Unleashed Rage" );
-    p -> buffs.unleashed_rage = ur;
-  }
-
-  event_t*& e = a -> sim -> expirations.unleashed_rage;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) unleashed_rage_expiration_t( a -> sim );
+    p -> buffs.unleashed_rage -> trigger( 1, ur );
   }
 }
 
@@ -725,7 +650,6 @@ void shaman_attack_t::player_buff()
   {
     player_crit += p -> talents.elemental_devastation * 0.03;
   }
-  p -> uptimes_unleashed_rage -> update( p ->  buffs.unleashed_rage != 0 );
 }
 
 // shaman_attack_t::assess_damage ==========================================
@@ -1901,41 +1825,11 @@ struct totem_of_wrath_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-
     consume_resource();
     update_ready();
-
-    if ( p -> buffs.totem_of_wrath == 0 )
-    {
-      struct totem_expiration_t : public event_t
-      {
-        totem_expiration_t( sim_t* sim, player_t* player, double bonus_spell_power ) : event_t( sim, player )
-        {
-          name = "Totem of Wrath Expiration";
-          sim -> target -> debuffs.totem_of_wrath++;
-          for ( player_t* p = sim -> player_list; p; p = p -> next )
-          {
-            p -> aura_gain( "Totem of Wrath" );
-            p -> buffs.totem_of_wrath = bonus_spell_power;
-          }
-          sim -> add_event( this, 300.0 );
-        }
-        virtual void execute()
-        {
-          sim -> target -> debuffs.totem_of_wrath--;
-          for ( player_t* p = sim -> player_list; p; p = p -> next )
-          {
-            p -> aura_loss( "Totem of Wrath" );
-            p -> buffs.totem_of_wrath = 0;
-          }
-        }
-      };
-
-      new ( sim ) totem_expiration_t( sim, p, bonus_spell_power );
-    }
-
+    sim -> auras.totem_of_wrath -> trigger( 1, bonus_spell_power );
+    sim -> target -> debuffs.totem_of_wrath -> trigger();
     p -> buffs_totem_of_wrath_glyph -> trigger( 1, 0.30 * bonus_spell_power );
   }
 
@@ -1946,7 +1840,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     if ( ! shaman_spell_t::ready() )
       return false;
 
-    if ( p -> buffs.totem_of_wrath == 0 )
+    if ( ! sim -> auras.totem_of_wrath -> check() )
       return true;
 
     if ( p -> glyphs.totem_of_wrath && ! p -> buffs_totem_of_wrath_glyph -> check() )
@@ -1999,43 +1893,18 @@ struct flametongue_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      flametongue_totem_t* totem;
-
-      expiration_t( sim_t* sim, player_t* player, flametongue_totem_t* t ) : event_t( sim, player ), totem( t )
-      {
-        name = "Flametongue Totem Expiration";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_gain( "Flametongue Totem" );
-          p -> buffs.flametongue_totem = t -> bonus;
-        }
-        sim -> add_event( this, 300.0 );
-      }
-
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_loss( "Flametongue Totem" );
-          p -> buffs.flametongue_totem = 0;
-        }
-      }
-    };
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player, this );
+    sim -> auras.flametongue_totem -> trigger( 1, bonus );
   }
 
   virtual bool ready()
   {
-    if ( ! shaman_spell_t::ready() )
+    if( sim -> auras.flametongue_totem -> check() )
       return false;
 
-    return( player -> buffs.flametongue_totem == 0 );
+    return shaman_spell_t::ready();
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
@@ -2070,46 +1939,18 @@ struct windfury_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      windfury_totem_t* totem;
-
-      expiration_t( sim_t* sim, player_t* player, windfury_totem_t* t ) : event_t( sim, player ), totem( t )
-      {
-        name = "Windfury Totem Expiration";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_gain( "Windfury Totem" );
-          p -> buffs.windfury_totem = t -> bonus;
-        }
-        sim -> add_event( this, 300.0 );
-      }
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          // Make sure it hasn't already been overriden by a more powerful totem.
-          if ( totem -> bonus < p -> buffs.windfury_totem )
-            continue;
-
-          p -> aura_loss( "Windfury Totem" );
-          p -> buffs.windfury_totem = 0;
-        }
-      }
-    };
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player, this );
+    sim -> auras.windfury_totem -> trigger( 1, bonus );
   }
 
   virtual bool ready()
   {
-    if ( ! shaman_spell_t::ready() )
+    if( sim -> auras.windfury_totem -> current_value >= bonus )
       return false;
 
-    return( player -> buffs.windfury_totem < bonus );
+    return shaman_spell_t::ready();
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
@@ -2292,46 +2133,18 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      double bonus;
-
-      expiration_t( sim_t* sim, player_t* player, double b ) : event_t( sim, player ), bonus( b )
-      {
-        name = "Strength of Earth Totem Expiration";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_gain( "Strength of Earth Totem" );
-          p -> buffs.strength_of_earth = bonus;
-        }
-        sim -> add_event( this, 300.0 );
-      }
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          // Make sure it hasn't already been overriden by a more powerful totem.
-          if ( bonus < p -> buffs.strength_of_earth )
-            continue;
-
-          p -> aura_loss( "Strength of Earth Totem" );
-          p -> buffs.strength_of_earth = 0;
-        }
-      }
-    };
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player, bonus );
+    sim -> auras.strength_of_earth -> trigger( 1, bonus );
   }
 
   virtual bool ready()
   {
-    if ( ! shaman_spell_t::ready() )
+    if ( sim -> auras.strength_of_earth -> current_value >= bonus )
       return false;
 
-    return( player -> buffs.strength_of_earth < bonus );
+    return shaman_spell_t::ready();
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
@@ -2362,40 +2175,18 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Wrath of Air Totem Expiration";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_gain( "Wrath of Air Totem" );
-          p -> buffs.wrath_of_air = 1;
-        }
-        sim -> add_event( this, 300.0 );
-      }
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          p -> aura_loss( "Wrath of Air Totem" );
-          p -> buffs.wrath_of_air = 0;
-        }
-      }
-    };
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player );
+    sim -> auras.wrath_of_air -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( ! shaman_spell_t::ready() )
+    if ( sim -> auras.wrath_of_air -> check() )
       return false;
 
-    return( player -> buffs.wrath_of_air == 0 );
+    return shaman_spell_t::ready();
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
@@ -2539,48 +2330,22 @@ struct bloodlust_t : public shaman_spell_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Bloodlust Expiration";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          if ( p -> sleeping ) continue;
-          if ( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
-          {
-            p -> aura_gain( "Bloodlust" );
-            p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + 600;
-          }
-        }
-        sim -> add_event( this, 40.0 );
-      }
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          if ( p -> buffs.bloodlust > 0 )
-          {
-            p -> aura_loss( "Bloodlust" );
-            p -> buffs.bloodlust = 0;
-          }
-        }
-      }
-    };
-
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player );
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if ( p -> sleeping ) continue;
+      p -> buffs.bloodlust -> trigger();
+    }
   }
 
   virtual bool ready()
   {
-    if ( player -> buffs.bloodlust )
+    if ( player -> buffs.bloodlust -> check() )
       return false;
 
-    if ( ! sim -> cooldown_ready( player -> cooldowns.bloodlust ) )
+    if ( ! sim -> cooldown_ready( player -> buffs.bloodlust -> cooldown_ready ) )
       return false;
 
     return shaman_spell_t::ready();
@@ -3101,15 +2866,6 @@ void shaman_t::init_procs()
   procs_windfury           = get_proc( "windfury",           sim );
 }
 
-// shaman_t::init_uptimes ====================================================
-
-void shaman_t::init_uptimes()
-{
-  player_t::init_uptimes();
-
-  uptimes_unleashed_rage = get_uptime( "unleashed_rage" );
-}
-
 // shaman_t::init_rng ========================================================
 
 void shaman_t::init_rng()
@@ -3410,9 +3166,41 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race
 
 void player_t::shaman_init( sim_t* sim )
 {
+  sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
+  sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
+  sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
+  sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
+  sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
+
+  sim -> target -> debuffs.totem_of_wrath = new debuff_t( sim, "totem_of_wrath_db" );
+  
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
+    p -> buffs.bloodlust      = new buff_t( p, "bloodlust",      1, 40.0, 600.0 );
     p -> buffs.elemental_oath = new buff_t( p, "elemental_oath", 1, 15.0 );
+    p -> buffs.unleashed_rage = new buff_t( p, "unleashed_rage", 1, 10.0 );
+  }
+}
+
+// player_t::shaman_combat_begin ============================================
+
+void player_t::shaman_combat_begin( sim_t* sim )
+{
+  if ( sim -> overrides.totem_of_wrath ) 
+  {
+    sim -> auras.totem_of_wrath -> override( 1, 280.0 );
+    sim -> target -> debuffs.totem_of_wrath -> override();
+  }
+  if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 144 * 1.15);
+  if ( sim -> overrides.   windfury_totem ) sim -> auras.   windfury_totem -> override( 1, 0.20 );
+
+  if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 155 * 1.15);
+  if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.20 );
+  
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( sim -> overrides.elemental_oath ) p -> buffs.elemental_oath -> override();
+    if ( sim -> overrides.unleashed_rage ) p -> buffs.unleashed_rage -> override( 1, 10 );
   }
 }
 

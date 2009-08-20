@@ -1168,8 +1168,10 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.curse_of_elements      = optimal_raid;
   overrides.divine_spirit          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
+  overrides.elemental_oath         = optimal_raid;
   overrides.faerie_fire            = optimal_raid;
   overrides.ferocious_inspiration  = optimal_raid;
+  overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
@@ -1194,7 +1196,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.swift_retribution      = optimal_raid;
   overrides.trauma                 = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
-  overrides.totem_of_wrath         = optimal_raid;
   overrides.totem_of_wrath         = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
@@ -1352,8 +1353,10 @@ std::vector<option_t>& sim_t::get_options()
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "override.divine_spirit",           OPT_BOOL,   &( overrides.divine_spirit                  ) },
       { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
+      { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
       { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
       { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
+      { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
@@ -1378,7 +1381,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
       { "override.swift_retribution",       OPT_BOOL,   &( overrides.swift_retribution              ) },
       { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
-      { "override.totem_of_wrath",          OPT_BOOL,   &( overrides.totem_of_wrath                 ) },
       { "override.totem_of_wrath",          OPT_BOOL,   &( overrides.totem_of_wrath                 ) },
       { "override.trauma",                  OPT_BOOL,   &( overrides.trauma                         ) },
       { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },

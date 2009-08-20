@@ -883,8 +883,10 @@ struct sim_t
     int curse_of_elements;
     int divine_spirit;
     int earth_and_moon;
+    int elemental_oath;
     int faerie_fire;
     int ferocious_inspiration;
+    int flametongue_totem;
     int fortitude;
     int heroic_presence;
     int hunters_mark;
@@ -920,11 +922,15 @@ struct sim_t
   {
     // New Buffs
     aura_t* ferocious_inspiration;
+    aura_t* flametongue_totem;
     aura_t* improved_moonkin;
     aura_t* moonkin;
     aura_t* rampage;
+    aura_t* strength_of_earth;
+    aura_t* totem_of_wrath;
     aura_t* trueshot;
-
+    aura_t* windfury_totem;
+    aura_t* wrath_of_air;
     // Old Buffs
     int old_buffs;
     int celerity;
@@ -946,7 +952,6 @@ struct sim_t
     event_t* abominations_might;
     event_t* ferocious_inspiration;
     event_t* rampage;
-    event_t* unleashed_rage;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1354,6 +1359,8 @@ struct player_t
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
+    buff_t* unleashed_rage;
+    buff_t* bloodlust;
     // Old Buffs
     int       old_buffs;
     int       abominations_might;
@@ -1362,11 +1369,9 @@ struct player_t
     int       blessing_of_might;
     double    blessing_of_wisdom;
     double    divine_spirit;
-    int       bloodlust;
     double    cast_time_reduction;
     pet_t*    demonic_pact_pet;
     int       ferocious_inspiration;
-    double    flametongue_totem;
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
@@ -1378,13 +1383,8 @@ struct player_t
     int       rampage;
     int       replenishment;
     int       shadow_form;
-    double    strength_of_earth;
-    double    totem_of_wrath;
     int       tricks_of_the_trade;
-    int       unleashed_rage;
-    double    windfury_totem;
     int       water_elemental;
-    int       wrath_of_air;
     int       tier4_2pc,  tier4_4pc;
     int       tier5_2pc,  tier5_4pc;
     int       tier6_2pc,  tier6_4pc;
@@ -1687,7 +1687,7 @@ struct player_t
 
   // Raid-wide Shaman buff maintenance
   static void shaman_init        ( sim_t* sim );
-  static void shaman_combat_begin( sim_t* sim ) {}
+  static void shaman_combat_begin( sim_t* sim );
   static void shaman_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Warlock buff maintenance
@@ -1805,6 +1805,7 @@ struct target_t
     debuff_t* improved_shadow_bolt;
     debuff_t* mangle;
     debuff_t* slow;
+    debuff_t* totem_of_wrath;
     debuff_t* trauma;
     debuff_t* winters_chill;
     debuff_t* winters_grasp;
@@ -1823,7 +1824,6 @@ struct target_t
     int    savage_combat;
     double sunder_armor;
     int    thunder_clap;
-    int    totem_of_wrath;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     void reset()
     { 
@@ -1837,7 +1837,6 @@ struct target_t
 
   struct expirations_t
   {
-    event_t* curse_of_elements;
     event_t* expose_armor;
     event_t* frozen;
     event_t* hemorrhage;
@@ -1846,7 +1845,6 @@ struct target_t
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;
-    event_t* winters_grasp;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1854,14 +1852,11 @@ struct target_t
 
   struct uptimes_t
   {
-    uptime_t* blood_frenzy;
     uptime_t* invulnerable;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
     uptime_t* trauma;
-    uptime_t* totem_of_wrath;
     uptime_t* vulnerable;
-    uptime_t* winters_grasp;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };

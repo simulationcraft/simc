@@ -362,7 +362,7 @@ void action_t::target_debuff( int dmg_type )
     target_dd_adder += t -> debuffs.hemorrhage;
   }
 
-  if ( t -> debuffs.totem_of_wrath  ||
+  if ( t -> debuffs.totem_of_wrath -> up()  ||
        t -> debuffs.master_poisoner )
   {
     target_crit += 0.03;
@@ -382,11 +382,9 @@ void action_t::target_debuff( int dmg_type )
 
   if ( t -> vulnerable ) target_multiplier *= 2.0;
 
-  t -> uptimes.totem_of_wrath  -> update( t -> debuffs.totem_of_wrath  != 0 );
   t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
 
-  if ( t -> debuffs.winters_grasp ) target_hit += 0.02;
-  t -> uptimes.winters_grasp -> update( t -> debuffs.winters_grasp != 0 );
+  if ( t -> debuffs.winters_grasp -> up() ) target_hit += 0.02;
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
@@ -1026,11 +1024,11 @@ bool action_t::ready()
       return false;
 
   if ( bloodlust_active > 0 )
-    if ( ! player -> buffs.bloodlust )
+    if ( ! player -> buffs.bloodlust -> check() )
       return false;
 
   if ( bloodlust_active < 0 )
-    if ( player -> buffs.bloodlust )
+    if ( player -> buffs.bloodlust -> check() )
       return false;
 
   if ( sync_action && ! sync_action -> ready() )

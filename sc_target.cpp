@@ -197,9 +197,7 @@ void target_t::init()
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
   uptimes.trauma               = get_uptime( "trauma"               );
-  uptimes.totem_of_wrath       = get_uptime( "totem_of_wrath"       );
   uptimes.vulnerable           = get_uptime( "vulnerable"           );
-  uptimes.winters_grasp        = get_uptime( "winters_grasp"        );
 }
 
 // target_t::reset ===========================================================
@@ -231,41 +229,11 @@ void target_t::combat_begin()
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
   if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 0.20;
   if ( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
-  if ( sim -> overrides.totem_of_wrath        ) debuffs.totem_of_wrath = 1;
 
   if ( sim -> overrides.bloodlust )
   {
     // Setup a periodic check for Bloodlust
 
-    struct bloodlust_proc_t : public event_t
-    {
-      bloodlust_proc_t( sim_t* sim ) : event_t( sim, 0 )
-      {
-        name = "Bloodlust Proc";
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          if ( p -> sleeping ) continue;
-          if ( sim -> cooldown_ready( p -> cooldowns.bloodlust ) )
-          {
-            p -> aura_gain( "Bloodlust" );
-            p -> buffs.bloodlust = 1;
-            p -> cooldowns.bloodlust = sim -> current_time + 600;
-          }
-        }
-        sim -> add_event( this, 40.0 );
-      }
-      virtual void execute()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          if ( p -> buffs.bloodlust > 0 )
-          {
-            p -> aura_loss( "Bloodlust" );
-            p -> buffs.bloodlust = 0;
-          }
-        }
-      }
-    };
     struct bloodlust_check_t : public event_t
     {
       bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
@@ -280,7 +248,11 @@ void target_t::combat_begin()
              ( t -> health_percentage() < 25 ) ||
              ( t -> time_to_die()       < 60 ) )
         {
-          new ( sim ) bloodlust_proc_t( sim );
+	  for ( player_t* p = sim -> player_list; p; p = p -> next )
+          {
+	    if ( p -> sleeping ) continue;
+	    p -> buffs.bloodlust -> trigger();
+	  }
         }
         else
         {

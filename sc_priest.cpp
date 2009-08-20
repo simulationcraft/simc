@@ -1712,7 +1712,7 @@ struct power_infusion_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( player -> buffs.bloodlust )
+    if ( player -> buffs.bloodlust -> check() )
       return false;
 
     return true;

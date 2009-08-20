@@ -50,7 +50,7 @@ double attack_t::haste() SC_CONST
 
   if ( p -> type != PLAYER_GUARDIAN )
   {
-    if ( p -> buffs.bloodlust )
+    if ( p -> buffs.bloodlust -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.30 );
     }
@@ -60,9 +60,9 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.03 );
     }
 
-    if ( p -> position != POSITION_RANGED && p -> buffs.windfury_totem != 0 )
+    if ( p -> position != POSITION_RANGED && sim -> auras.windfury_totem -> check() )
     {
-      h *= 1.0 / ( 1.0 + p -> buffs.windfury_totem );
+      h *= 1.0 / ( 1.0 + sim -> auras.windfury_totem -> value() );
     }
 
     if ( sim -> auras.celerity )
