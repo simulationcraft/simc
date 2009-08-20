@@ -921,6 +921,7 @@ struct sim_t
   struct auras_t
   {
     // New Buffs
+    aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
     aura_t* improved_moonkin;
@@ -929,6 +930,7 @@ struct sim_t
     aura_t* strength_of_earth;
     aura_t* totem_of_wrath;
     aura_t* trueshot;
+    aura_t* unleashed_rage;
     aura_t* windfury_totem;
     aura_t* wrath_of_air;
     // Old Buffs
@@ -1354,12 +1356,10 @@ struct player_t
     // New Buffs
     buff_t* arcane_brilliance;
     buff_t* demonic_pact;
-    buff_t* elemental_oath;
     buff_t* innervate;
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
-    buff_t* unleashed_rage;
     buff_t* bloodlust;
     // Old Buffs
     int       old_buffs;

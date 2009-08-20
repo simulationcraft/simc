@@ -472,12 +472,9 @@ static void trigger_unleashed_rage( attack_t* a )
 
   int ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
 
-  if ( ur < s -> buffs.unleashed_rage -> current_value ) return;
-
-  for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
+  if ( ur >= s -> sim -> auras.unleashed_rage -> current_value )
   {
-    if ( p -> sleeping ) continue;
-    p -> buffs.unleashed_rage -> trigger( 1, ur );
+    s -> sim -> auras.unleashed_rage -> trigger( 1, ur );
   }
 }
 
@@ -599,11 +596,7 @@ static void trigger_elemental_oath( spell_t* s )
 
   if ( shaman -> talents.elemental_oath == 0 ) return;
 
-  for ( player_t* p = s -> sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> sleeping ) continue;
-    p -> buffs.elemental_oath -> trigger();
-  }
+  s -> sim -> auras.elemental_oath -> trigger();
 }
 
 // =========================================================================
@@ -938,8 +931,7 @@ void shaman_spell_t::player_buff()
       player_crit += 0.02;
     }
   }
-  if ( p -> buffs.elemental_oath  -> up() &&
-       p -> buffs_elemental_focus -> up() )
+  if ( sim -> auras.elemental_oath -> up() && p -> buffs_elemental_focus -> up() )
   {
     player_multiplier *= 1.0 + p -> talents.elemental_oath * 0.05;
   }
@@ -3166,19 +3158,19 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race
 
 void player_t::shaman_init( sim_t* sim )
 {
+  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, 15.0 );
   sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
-  sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
   sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
+  sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
+  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, 10.0 );
   sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
   sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
 
-  sim -> target -> debuffs.totem_of_wrath = new debuff_t( sim, "totem_of_wrath_db" );
+  sim -> target -> debuffs.totem_of_wrath = new debuff_t( sim, "totem_of_wrath_debuff" );
   
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.bloodlust      = new buff_t( p, "bloodlust",      1, 40.0, 600.0 );
-    p -> buffs.elemental_oath = new buff_t( p, "elemental_oath", 1, 15.0 );
-    p -> buffs.unleashed_rage = new buff_t( p, "unleashed_rage", 1, 10.0 );
+    p -> buffs.bloodlust = new buff_t( p, "bloodlust", 1, 40.0, 600.0 );
   }
 }
 
@@ -3197,10 +3189,7 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 155 * 1.15);
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.20 );
   
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( sim -> overrides.elemental_oath ) p -> buffs.elemental_oath -> override();
-    if ( sim -> overrides.unleashed_rage ) p -> buffs.unleashed_rage -> override( 1, 10 );
-  }
+  if ( sim -> overrides.elemental_oath ) sim -> auras.elemental_oath -> override();
+  if ( sim -> overrides.unleashed_rage ) sim -> auras.unleashed_rage -> override( 1, 10 );
 }
 

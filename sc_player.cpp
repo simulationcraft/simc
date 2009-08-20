@@ -1289,7 +1289,7 @@ double player_t::composite_spell_crit() SC_CONST
   {
     if ( buffs.focus_magic ) sc += 0.03;
 
-    if ( buffs.elemental_oath -> up() || sim -> auras.moonkin -> up() )
+    if ( sim -> auras.elemental_oath -> up() || sim -> auras.moonkin -> up() )
     {
       sc += 0.05;
     }
@@ -1310,7 +1310,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
   }
   else
   {
-    m *= 1.0 + buffs.unleashed_rage -> value() * 0.01;
+    m *= 1.0 + sim -> auras.unleashed_rage -> value() * 0.01;
   }
 
   return m;

@@ -35,7 +35,6 @@ struct warlock_t : public player_t
   buff_t* buffs_decimation;
   buff_t* buffs_demonic_empowerment;
   buff_t* buffs_demonic_frenzy;
-  buff_t* buffs_demonic_pact;
   buff_t* buffs_empowered_imp;
   buff_t* buffs_eradication;
   buff_t* buffs_fel_armor;

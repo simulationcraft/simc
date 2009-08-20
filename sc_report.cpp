@@ -226,10 +226,9 @@ static void print_buffs( FILE* file, player_t* p )
 
 static void print_buffs( FILE* file, sim_t* sim )
 {
-  util_t::fprintf( file, "\nAuras and De-Buffs:\n" );
-  util_t::fprintf( file, "  Constant:" );
+  util_t::fprintf( file, "\nAuras and De-Buffs:" );
   char prefix = ' ';
-  int count = -1;
+  int total_length = 80;
   for ( buff_t* b = sim -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count )
@@ -237,14 +236,16 @@ static void print_buffs( FILE* file, sim_t* sim )
 
     if ( b -> constant )
     {
-      if( ++count == 10 )
+      int length = strlen( b -> name() );
+      if( ( total_length + length ) > 80 )
       {
 	util_t::fprintf( file, "\n  Constant:" );
 	prefix = ' ';
-	count=0;
+	total_length = 0;
       }
       util_t::fprintf( file, "%c%s", prefix, b -> name() );
       prefix = '/';
+      total_length += length;
     }
   }
   util_t::fprintf( file, "\n" );
