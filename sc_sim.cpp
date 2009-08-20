@@ -582,7 +582,6 @@ void sim_t::combat_begin()
   if ( overrides.leader_of_the_pack     ) auras.leader_of_the_pack = 1;
   if ( overrides.sanctified_retribution ) auras.sanctified_retribution = 1;
   if ( overrides.swift_retribution      ) auras.swift_retribution = 1;
-  if ( overrides.trueshot_aura          ) auras.trueshot = 1;
 
   target -> combat_begin();
 

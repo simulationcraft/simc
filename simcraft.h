@@ -919,16 +919,18 @@ struct sim_t
   struct auras_t
   {
     // New Buffs
-    aura_t* moonkin;
+    aura_t* ferocious_inspiration;
     aura_t* improved_moonkin;
+    aura_t* moonkin;
     aura_t* rampage;
+    aura_t* trueshot;
+
     // Old Buffs
     int old_buffs;
     int celerity;
     int leader_of_the_pack;
     int sanctified_retribution;
     int swift_retribution;
-    int trueshot;
     auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
     void reset()
     { 
@@ -1659,8 +1661,8 @@ struct player_t
   static void druid_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Hunter buff maintenance
-  static void hunter_init        ( sim_t* sim ) {}
-  static void hunter_combat_begin( sim_t* sim ) {}
+  static void hunter_init        ( sim_t* sim );
+  static void hunter_combat_begin( sim_t* sim );
   static void hunter_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Mage buff maintenance
@@ -1797,6 +1799,7 @@ struct target_t
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
+    debuff_t* hunters_mark;
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
@@ -1812,7 +1815,6 @@ struct target_t
     double expose_armor;
     double hemorrhage;
     int    hemorrhage_charges;
-    double hunters_mark;
     int    judgement_of_wisdom;
     int    master_poisoner;
     int    misery;

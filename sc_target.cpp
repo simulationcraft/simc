@@ -224,7 +224,6 @@ void target_t::combat_begin()
 {
   if ( sim -> overrides.bleeding              ) debuffs.bleeding = 1;
   if ( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
-  if ( sim -> overrides.hunters_mark          ) debuffs.hunters_mark = 500 * 1.5;
   if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
   if ( sim -> overrides.misery                ) debuffs.misery = 3;

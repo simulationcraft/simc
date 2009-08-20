@@ -279,7 +279,7 @@ void action_t::player_buff()
       player_multiplier *= 1.2;
     }
 
-    if ( sim -> auras.sanctified_retribution || p -> buffs.ferocious_inspiration  )
+    if ( sim -> auras.sanctified_retribution || sim -> auras.ferocious_inspiration -> up() )
     {
       player_multiplier *= 1.03;
     }
@@ -372,7 +372,7 @@ void action_t::target_debuff( int dmg_type )
   {
     if ( p -> position == POSITION_RANGED )
     {
-      target_attack_power += t -> debuffs.hunters_mark;
+      target_attack_power += t -> debuffs.hunters_mark -> value();
     }
   }
   if ( base_spell_power_multiplier > 0 )

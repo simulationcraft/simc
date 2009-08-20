@@ -3214,10 +3214,10 @@ std::vector<option_t>& druid_t::get_options()
 
 int druid_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "dreamwalker" ) ) return SET_T7;
-  if ( strstr( item.name(), "nightsong"   ) ) return SET_T8;
-  if ( strstr( item.name(), "malfurions"  ) ) return SET_T9; // Alliance
-  if ( strstr( item.name(), "runetotem"   ) ) return SET_T9; // Horde
+  if      ( strstr( item.name(), "dreamwalker" ) ) return SET_T7;
+  else if ( strstr( item.name(), "nightsong"   ) ) return SET_T8;
+  else if ( strstr( item.name(), "malfurion"   ) ) return SET_T9; // Alliance
+  else if ( strstr( item.name(), "runetotem"   ) ) return SET_T9; // Horde
   return SET_NONE;
 }
 
