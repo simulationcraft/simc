@@ -176,14 +176,6 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\opt_raid.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\opt_raid_mov.simcraft"
-			>
-		</File>
-		<File
 			RelativePath=".\sc_action.cpp"
 			>
 		</File>
@@ -373,54 +365,6 @@
 		</File>
 		<File
 			RelativePath=".\simcraft.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_Filler.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_00_13_58.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_00_40_31.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_00_41_30.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_00_56_15.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_03_13_55.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_03_52_16.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_53_00_18.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_53_00_18_DG.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_Gear.simcraft"
-			>
-		</File>
-		<File
-			RelativePath=".\Warlock_T8_Hit_Gear.simcraft"
 			>
 		</File>
 	</Files>
