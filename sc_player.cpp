@@ -1269,9 +1269,9 @@ double player_t::composite_spell_power( int school ) SC_CONST
     {
       if ( best_buff < buffs.flametongue_totem ) best_buff = buffs.flametongue_totem;
     }
-    if ( buffs.demonic_pact )
+    if ( buffs.demonic_pact -> up() )
     {
-      if ( best_buff < buffs.demonic_pact ) best_buff = buffs.demonic_pact;
+      if ( best_buff < buffs.demonic_pact -> current_value ) best_buff = buffs.demonic_pact -> current_value;
     }
     sp += best_buff;
   }

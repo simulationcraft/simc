@@ -1346,6 +1346,7 @@ struct player_t
   {
     // New Buffs
     buff_t* arcane_brilliance;
+    buff_t* demonic_pact;
     buff_t* elemental_oath;
     buff_t* innervate;
     buff_t* mark_of_the_wild;
@@ -1361,7 +1362,6 @@ struct player_t
     double    divine_spirit;
     int       bloodlust;
     double    cast_time_reduction;
-    double    demonic_pact;
     pet_t*    demonic_pact_pet;
     int       ferocious_inspiration;
     double    flametongue_totem;
@@ -1793,6 +1793,7 @@ struct target_t
   {
     // New Buffs
     debuff_t* blood_frenzy;
+    debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
@@ -1808,7 +1809,6 @@ struct target_t
     int    old_buffs;
     int    bleeding;
     int    crypt_fever;
-    int    curse_of_elements;
     double expose_armor;
     double hemorrhage;
     int    hemorrhage_charges;

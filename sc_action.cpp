@@ -342,8 +342,10 @@ void action_t::target_debuff( int dmg_type )
   }
   else
   {
-    target_multiplier *= 1.0 + ( std::max( (double) t -> debuffs.curse_of_elements, t -> debuffs.earth_and_moon -> value() ) * 0.01 );
-    if ( t -> debuffs.curse_of_elements ) target_penetration += 88;
+    target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements -> value(), 
+					   t -> debuffs.earth_and_moon    -> value() ) * 0.01 );
+
+    if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
   }
 
   if ( school == SCHOOL_BLEED )
