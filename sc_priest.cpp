@@ -292,31 +292,10 @@ static void trigger_misery( action_t* a )
   priest_t* p = a -> player -> cast_priest();
   target_t* t = p -> sim -> target;
 
-  if ( ! p -> talents.misery )
+  if( t -> debuffs.improved_faerie_fire -> check() >= p -> talents.misery )
     return;
 
-  if ( t -> debuffs.faerie_fire -> check() )
-  {
-      if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.misery )
-	      return;
-  }
-
-  if ( p -> talents.misery >= t -> debuffs.misery -> current_value )
-  {
-    t -> debuffs.misery -> trigger( 1, p -> talents.misery );
-  }
-}
-
-// trigger_replenishment ===================================================
-
-static void trigger_replenishment( spell_t* s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> active_vampiric_touch )
-  {
-    p -> trigger_replenishment();
-  }
+  t -> debuffs.misery -> trigger( 1, p -> talents.misery, p -> talents.misery );
 }
 
 // ==========================================================================
@@ -612,14 +591,8 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    cooldown        = 12;
-
-    if ( p -> glyphs.penance )
-    {
-      cooldown       -= 2;
-    }
-
-    cooldown         *= 1.0 - p -> talents.aspiration * 0.10;
+    cooldown  = 12 - ( p -> glyphs.penance * 2 );
+    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
 
     penance_tick = new penance_tick_t( p );
   }
@@ -707,13 +680,12 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( ! priest_spell_t::ready() )
-      return false;
+    if ( shadow_weaving_wait )
+      if ( p -> talents.shadow_weaving )
+	if ( p -> buffs_shadow_weaving -> check() < 5 )
+	  return false;
 
-    if ( shadow_weaving_wait && ( p -> talents.shadow_weaving != 0 ) && p -> buffs_shadow_weaving -> check() < 5 )
-      return false;
-
-    return true;
+    return priest_spell_t::ready();
   }
 };
 
@@ -1003,10 +975,13 @@ struct mind_blast_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_devious_mind -> trigger();
-      trigger_replenishment( this );
       if ( result == RESULT_CRIT )
       {
         p -> buffs_improved_spirit_tap -> trigger();
+      }
+      if ( p -> active_vampiric_touch )
+      {
+	p -> trigger_replenishment();
       }
     }
     p -> _cooldowns.mind_blast = cooldown_ready;
@@ -1543,8 +1518,8 @@ struct fortitude_t : public priest_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-	      p -> buffs.fortitude -> trigger( 1, bonus );
-	      p -> init_resources( true );
+	p -> buffs.fortitude -> trigger( 1, bonus );
+	p -> init_resources( true );
       }
     }
   }
@@ -1768,24 +1743,24 @@ double priest_t::composite_spell_power( int school ) SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "devouring_plague" ) return new devouring_plague_t  ( this, options_str );
-  if ( name == "dispersion"       ) return new dispersion_t        ( this, options_str );
-  if ( name == "divine_spirit"    ) return new divine_spirit_t     ( this, options_str );
-  if ( name == "fortitude"        ) return new fortitude_t         ( this, options_str );
-  if ( name == "holy_fire"        ) return new holy_fire_t         ( this, options_str );
-  if ( name == "inner_fire"       ) return new inner_fire_t        ( this, options_str );
-  if ( name == "inner_focus"      ) return new inner_focus_t       ( this, options_str );
-  if ( name == "mind_blast"       ) return new mind_blast_t        ( this, options_str );
-  if ( name == "mind_flay"        ) return new mind_flay_t         ( this, options_str );
-  if ( name == "penance"          ) return new penance_t           ( this, options_str );
-  if ( name == "power_infusion"   ) return new power_infusion_t    ( this, options_str );
+  if ( name == "devouring_plague"  ) return new devouring_plague_t  ( this, options_str );
+  if ( name == "dispersion"        ) return new dispersion_t        ( this, options_str );
+  if ( name == "divine_spirit"     ) return new divine_spirit_t     ( this, options_str );
+  if ( name == "fortitude"         ) return new fortitude_t         ( this, options_str );
+  if ( name == "holy_fire"         ) return new holy_fire_t         ( this, options_str );
+  if ( name == "inner_fire"        ) return new inner_fire_t        ( this, options_str );
+  if ( name == "inner_focus"       ) return new inner_focus_t       ( this, options_str );
+  if ( name == "mind_blast"        ) return new mind_blast_t        ( this, options_str );
+  if ( name == "mind_flay"         ) return new mind_flay_t         ( this, options_str );
+  if ( name == "penance"           ) return new penance_t           ( this, options_str );
+  if ( name == "power_infusion"    ) return new power_infusion_t    ( this, options_str );
   if ( name == "shadow_word_death" ) return new shadow_word_death_t ( this, options_str );
-  if ( name == "shadow_word_pain" ) return new shadow_word_pain_t  ( this, options_str );
-  if ( name == "shadow_form"      ) return new shadow_form_t       ( this, options_str );
-  if ( name == "smite"            ) return new smite_t             ( this, options_str );
-  if ( name == "shadow_fiend"     ) return new shadow_fiend_spell_t( this, options_str );
-  if ( name == "vampiric_embrace" ) return new vampiric_embrace_t  ( this, options_str );
-  if ( name == "vampiric_touch"   ) return new vampiric_touch_t    ( this, options_str );
+  if ( name == "shadow_word_pain"  ) return new shadow_word_pain_t  ( this, options_str );
+  if ( name == "shadow_form"       ) return new shadow_form_t       ( this, options_str );
+  if ( name == "smite"             ) return new smite_t             ( this, options_str );
+  if ( name == "shadow_fiend"      ) return new shadow_fiend_spell_t( this, options_str );
+  if ( name == "vampiric_embrace"  ) return new vampiric_embrace_t  ( this, options_str );
+  if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1939,13 +1914,13 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new      buff_t( this, "glyph_of_shadow"                                                                  );
-  buffs_improved_spirit_tap = new      buff_t( this, "improved_spirit_tap",                  1, 8.0                                     );
-  buffs_inner_fire          = new      buff_t( this, "inner_fire"                                                                       );
-  buffs_inner_fire_armor    = new      buff_t( this, "inner_fire_armor"                                                                 );
-  buffs_shadow_weaving      = new      buff_t( this, "shadow_weaving",                       5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
-  buffs_surge_of_light      = new      buff_t( this, "surge_of_light",                       1, 10.0                                    );
-  buffs_tier5_2pc           = new      buff_t( this, "tier5_2pc",                            1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
+  buffs_glyph_of_shadow     = new      buff_t( this, "glyph_of_shadow"                                                 );
+  buffs_improved_spirit_tap = new      buff_t( this, "improved_spirit_tap", 1, 8.0                                     );
+  buffs_inner_fire          = new      buff_t( this, "inner_fire"                                                      );
+  buffs_inner_fire_armor    = new      buff_t( this, "inner_fire_armor"                                                );
+  buffs_shadow_weaving      = new      buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
+  buffs_surge_of_light      = new      buff_t( this, "surge_of_light",      1, 10.0                                    );
+  buffs_tier5_2pc           = new      buff_t( this, "tier5_2pc",           1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_devious_mind        = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc()        );

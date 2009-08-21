@@ -843,9 +843,7 @@ void rogue_attack_t::consume_resource()
   if( result_is_hit() )
   {
     trigger_relentless_strikes( this );
-
     if ( requires_combo_points ) clear_combo_points( p );
-    if (     adds_combo_points )   add_combo_point ( p );
   }
 }
 
@@ -859,6 +857,8 @@ void rogue_attack_t::execute()
 
   if ( result_is_hit() )
   {
+    if ( adds_combo_points ) add_combo_point ( p );
+
     trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
@@ -958,7 +958,7 @@ void rogue_attack_t::player_buff()
   }
   if ( p -> talents.prey_on_the_weak )
   {
-    bool active = sim -> target -> health_percentage() <= 100.0;
+    bool active = ( sim -> target -> health_percentage() <= 100.0 );
     if ( active ) player_crit_multiplier *= 1.0 + p -> talents.prey_on_the_weak * 0.04;
     p -> uptimes_prey_on_the_weak -> update( active );
   }
