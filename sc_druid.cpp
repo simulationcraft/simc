@@ -1899,12 +1899,7 @@ struct cat_form_t : public druid_spell_t
 
     if ( d -> talents.leader_of_the_pack )
     {
-      sim -> auras.leader_of_the_pack = 1;
-
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( ! p -> sleeping ) p -> aura_gain( "Leader of the Pack" );
-      }
+      sim -> auras.leader_of_the_pack -> trigger();
     }
   }
 
@@ -3234,8 +3229,9 @@ player_t* player_t::create_druid( sim_t*             sim,
 
 void player_t::druid_init( sim_t* sim )
 {
-  sim -> auras.moonkin          = new aura_t( sim, "moonkin" );
-  sim -> auras.improved_moonkin = new aura_t( sim, "improved_moonkin" );
+  sim -> auras.leader_of_the_pack = new aura_t( sim, "leader_of_the_pack" );
+  sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
+  sim -> auras.improved_moonkin   = new aura_t( sim, "improved_moonkin" );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -3254,8 +3250,9 @@ void player_t::druid_init( sim_t* sim )
 
 void player_t::druid_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin -> override();
-  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin          -> override();
+  if ( sim -> overrides.leader_of_the_pack     ) sim -> auras.leader_of_the_pack -> override();
+  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin            -> override();
+  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin   -> override();
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {

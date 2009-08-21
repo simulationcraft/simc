@@ -33,17 +33,17 @@ double spell_t::haste() SC_CONST
     if (      p -> buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
     else if ( p -> buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin -> up() )
+    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
 
-    if ( sim -> auras.wrath_of_air -> up() )
+    if ( sim -> auras.wrath_of_air -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
 
-    if ( sim -> auras.celerity )
+    if ( sim -> auras.celerity -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }

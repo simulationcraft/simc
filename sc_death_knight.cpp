@@ -82,7 +82,6 @@ struct death_knight_t : public player_t
   proc_t* procs_sudden_doom;
 
   // Up-Times
-  uptime_t* uptimes_abominations_might;
   uptime_t* uptimes_blood_plague;
   uptime_t* uptimes_frost_fever;
 
@@ -556,55 +555,9 @@ static void refund_runes( player_t* player, const bool* use )
 
 static void trigger_abominations_might( action_t* a, double base_chance )
 {
-  struct abominations_might_expiration_t : public event_t
-  {
-    abominations_might_expiration_t( sim_t* sim ) : event_t( sim )
-    {
-      name = "Abomination's Might Expiration";
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> buffs.abominations_might )
-        {
-          p -> aura_loss( "Abomination's Might" );
-          p -> buffs.abominations_might = 0;
-        }
-      }
-      sim -> expirations.abominations_might = NULL;
-    }
-  };
-
   death_knight_t* dk = a -> player -> cast_death_knight();
 
-  if ( ! a -> sim -> roll( base_chance * dk -> talents.abominations_might ) ) return;
-
-  dk -> procs_abominations_might -> occur();
-
-  if ( a -> sim -> overrides.abominations_might ) return;
-
-  for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> sleeping ) continue;
-    if ( p -> buffs.abominations_might == 0 )
-    {
-      p -> aura_gain( "Abomination's Might" );
-      p -> buffs.abominations_might = 1;
-    }
-  }
-
-  event_t*& e = a -> sim -> expirations.abominations_might;
-
-  if ( e )
-  {
-    e -> reschedule( 10.0 );
-  }
-  else
-  {
-    e = new ( a -> sim ) abominations_might_expiration_t( a -> sim );
-  }
+  a -> sim -> auras.abominations_might -> trigger( 1, 1.0, base_chance * dk -> talents.abominations_might );
 }
 
 static void trigger_sudden_doom( action_t* a )
@@ -705,8 +658,6 @@ void death_knight_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
-
-  p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
   if ( p->talents.blood_gorged )
   {
@@ -879,8 +830,6 @@ void death_knight_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
-
-  p -> uptimes_abominations_might -> update( p -> buffs.abominations_might != 0 );
 
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
@@ -2070,8 +2019,8 @@ void death_knight_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_bloody_vengeance = new buff_t( this, "bloody_vengeance", 3,                      0.0,  0.0, talents.bloody_vengeance );
-  buffs_scent_of_blood   = new buff_t( this, "scent_of_blood",   talents.scent_of_blood, 0.0, 10.0, 0.15                     );
+  buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,  0.0, talents.bloody_vengeance );
+  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0, 10.0, 0.15                     );
 
   struct bloodworms_buff_t : public buff_t
   {
@@ -2114,7 +2063,6 @@ void death_knight_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_abominations_might = get_uptime( "abominations_might" );
   uptimes_blood_plague       = get_uptime( "blood_plague" );
   uptimes_frost_fever        = get_uptime( "frost_fever" );
 }
@@ -2363,5 +2311,19 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, in
   new bloodworm_pet_t( sim, p );
 
   return p;
+}
+
+// player_t::death_knight_init ==============================================
+
+void player_t::death_knight_init( sim_t* sim )
+{
+  sim -> auras.abominations_might = new aura_t( sim, "abominations_might" );
+}
+
+// player_t::death_knight_combat_begin ======================================
+
+void player_t::death_knight_combat_begin( sim_t* sim )
+{
+  if ( sim -> overrides.abominations_might ) sim -> auras.abominations_might -> override();
 }
 

@@ -636,6 +636,9 @@ struct raid_event_t
   virtual const char* name() SC_CONST { return name_str.c_str(); }
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
+  static void reset( sim_t* );
+  static void combat_begin( sim_t* );
+  static void combat_end( sim_t* ) {}
 };
 
 // Gear Stats ================================================================
@@ -922,43 +925,28 @@ struct sim_t
   // Auras
   struct auras_t
   {
-    // New Buffs
+    aura_t* abominations_might;
+    aura_t* celerity;
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
     aura_t* improved_moonkin;
+    aura_t* leader_of_the_pack;
     aura_t* moonkin;
     aura_t* rampage;
+    aura_t* sanctified_retribution;
     aura_t* strength_of_earth;
+    aura_t* swift_retribution;
     aura_t* totem_of_wrath;
     aura_t* trueshot;
     aura_t* unleashed_rage;
     aura_t* windfury_totem;
     aura_t* wrath_of_air;
-    // Old Buffs
-    int old_buffs;
-    int celerity;
-    int leader_of_the_pack;
-    int sanctified_retribution;
-    int swift_retribution;
     auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
-    void reset()
-    { 
-      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
-      memset( (void*) &old_buffs, 0x0, sizeof( auras_t ) - delta );
-    }
   };
   auras_t auras;
 
-  // Expirations
-  struct expirations_t
-  {
-    event_t* abominations_might;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
-    expirations_t() { reset(); }
-  };
-  expirations_t expirations;
-
+  // Auras and De-Buffs
   buff_t* buff_list;
 
   // Replenishment
@@ -1367,7 +1355,6 @@ struct player_t
 
     // Old Buffs
     int       old_buffs;
-    int       abominations_might;
     int       battle_shout;
     int       blessing_of_kings;
     int       blessing_of_might;
@@ -1588,8 +1575,8 @@ struct player_t
   static player_t * create_warrior     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
 
   // Raid-wide Death Knight buff maintenance
-  static void death_knight_init        ( sim_t* sim ) {}
-  static void death_knight_combat_begin( sim_t* sim ) {}
+  static void death_knight_init        ( sim_t* sim );
+  static void death_knight_combat_begin( sim_t* sim );
   static void death_knight_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Druid buff maintenance
@@ -1608,8 +1595,8 @@ struct player_t
   static void mage_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Paladin buff maintenance
-  static void paladin_init        ( sim_t* sim ) {}
-  static void paladin_combat_begin( sim_t* sim ) {}
+  static void paladin_init        ( sim_t* sim );
+  static void paladin_combat_begin( sim_t* sim );
   static void paladin_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Priest buff maintenance
@@ -1720,14 +1707,6 @@ struct target_t
   double total_dmg;
   uptime_t* uptime_list;
 
-  struct cooldowns_t
-  {
-    double place_holder;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( cooldowns_t ) ); }
-    cooldowns_t() { reset(); }
-  };
-  cooldowns_t cooldowns;
-
   struct debuffs_t
   {
     // New Buffs
@@ -1740,11 +1719,13 @@ struct target_t
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
+    debuff_t* invulnerable;
     debuff_t* mangle;
     debuff_t* misery;
     debuff_t* slow;
     debuff_t* totem_of_wrath;
     debuff_t* trauma;
+    debuff_t* vulnerable;
     debuff_t* winters_chill;
     debuff_t* winters_grasp;
     // Old Buffs
@@ -1774,12 +1755,7 @@ struct target_t
   struct expirations_t
   {
     event_t* expose_armor;
-    event_t* frozen;
     event_t* hemorrhage;
-    event_t* hunters_mark;
-    event_t* nature_vulnerability;
-    event_t* shadow_vulnerability;
-    event_t* shadow_weaving;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1790,7 +1766,6 @@ struct target_t
     uptime_t* invulnerable;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
-    uptime_t* trauma;
     uptime_t* vulnerable;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }

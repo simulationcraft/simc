@@ -1162,7 +1162,7 @@ double player_t::composite_attack_crit() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( sim -> auras.leader_of_the_pack || sim -> auras.rampage -> up() )
+    if ( sim -> auras.leader_of_the_pack -> check() || sim -> auras.rampage -> up() )
     {
       ac += 0.05;
     }
@@ -1247,7 +1247,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
-  if ( sim -> auras.trueshot || buffs.abominations_might )
+  if ( sim -> auras.abominations_might -> up() || sim -> auras.trueshot -> up() )
   {
     m *= 1.10;
   }
@@ -1334,7 +1334,6 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  if ( sim -> overrides.abominations_might     ) buffs.abominations_might = 1;
   if ( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
   if ( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if ( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;

@@ -271,7 +271,7 @@ void action_t::player_buff()
       }
     }
 
-    if ( sim -> auras.sanctified_retribution || sim -> auras.ferocious_inspiration -> up() )
+    if ( sim -> auras.sanctified_retribution -> check() || sim -> auras.ferocious_inspiration -> up() )
     {
       player_multiplier *= 1.03;
     }
@@ -346,7 +346,6 @@ void action_t::target_debuff( int dmg_type )
     {
       target_multiplier *= 1.30;
     }
-    t -> uptimes.trauma -> update( t -> debuffs.trauma != 0 );
   }
 
   if ( school == SCHOOL_PHYSICAL )

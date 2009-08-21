@@ -221,9 +221,6 @@ regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 
 void regen_event_t::execute()
 {
-  sim -> target -> uptimes.  vulnerable -> update( sim -> target ->   vulnerable != 0 );
-  sim -> target -> uptimes.invulnerable -> update( sim -> target -> invulnerable != 0 );
-
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> sleeping ) continue;

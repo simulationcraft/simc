@@ -196,7 +196,6 @@ void target_t::init()
   uptimes.invulnerable         = get_uptime( "invulnerable"         );
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
-  uptimes.trauma               = get_uptime( "trauma"               );
   uptimes.vulnerable           = get_uptime( "vulnerable"           );
 }
 
@@ -210,7 +209,6 @@ void target_t::reset()
   current_health = initial_health;
   debuffs.reset();
   expirations.reset();
-  cooldowns.reset();
   invulnerable = 0;
   vulnerable = 0;
   casting = 0;

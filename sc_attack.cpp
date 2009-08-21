@@ -55,7 +55,7 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.30 );
     }
 
-    if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin -> up() )
+    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
@@ -65,7 +65,7 @@ double attack_t::haste() SC_CONST
       h *= 1.0 / ( 1.0 + sim -> auras.windfury_totem -> value() );
     }
 
-    if ( sim -> auras.celerity )
+    if ( sim -> auras.celerity -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }

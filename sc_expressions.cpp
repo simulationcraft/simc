@@ -143,10 +143,10 @@ struct global_expression_t: public act_expression_t
     {
     case EFG_GCD:        return action->gcd();
     case EFG_TIME:       return action->sim->current_time;
-    case EFG_TTD:        return action->sim -> target ->time_to_die();
+    case EFG_TTD:        return action->sim -> target -> time_to_die();
     case EFG_HP:         return action->sim -> target -> health_percentage();
-    case EFG_VULN:       return action->sim -> target ->vulnerable;
-    case EFG_INVUL:      return action->sim -> target ->invulnerable;
+    case EFG_VULN:       return action->sim -> target -> vulnerable;
+    case EFG_INVUL:      return action->sim -> target -> invulnerable;
     case EFG_TICKING:    return action->ticking;
     case EFG_CTICK:      return action->current_tick;
     case EFG_NTICKS:     return action->num_ticks;

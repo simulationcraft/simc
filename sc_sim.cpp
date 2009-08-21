@@ -555,19 +555,12 @@ void sim_t::reset()
   {
     b -> reset();
   }
-  auras.reset();
-  expirations.reset();
   target -> reset();
   for ( player_t* p = player_list; p; p = p -> next )
   {
     p -> reset();
   }
-
-  int num_events = raid_events.size();
-  for ( int i=0; i < num_events; i++ )
-  {
-    raid_events[ i ] -> reset();
-  }
+  raid_event_t::reset( this );
 }
 
 // sim_t::combat_begin ======================================================
@@ -577,11 +570,6 @@ void sim_t::combat_begin()
   if ( debug ) log_t::output( this, "Combat Begin" );
 
   reset();
-
-  if ( overrides.celerity               ) auras.celerity = 1;
-  if ( overrides.leader_of_the_pack     ) auras.leader_of_the_pack = 1;
-  if ( overrides.sanctified_retribution ) auras.sanctified_retribution = 1;
-  if ( overrides.swift_retribution      ) auras.swift_retribution = 1;
 
   target -> combat_begin();
 
@@ -596,17 +584,13 @@ void sim_t::combat_begin()
   player_t::warlock_combat_begin     ( this );
   player_t::warrior_combat_begin     ( this );
 
+  raid_event_t::combat_begin( this );
+
   for ( player_t* p = player_list; p; p = p -> next )
   {
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
-
-  int num_events = raid_events.size();
-  for ( int i=0; i < num_events; i++ )
-  {
-    raid_events[ i ] -> schedule();
-  }
 }
 
 // sim_t::combat_end ========================================================
@@ -632,6 +616,8 @@ void sim_t::combat_end()
   player_t::shaman_combat_end      ( this );
   player_t::warlock_combat_end     ( this );
   player_t::warrior_combat_end     ( this );
+
+  raid_event_t::combat_begin( this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -712,6 +698,8 @@ bool sim_t::init()
   player_t::warlock_init     ( this );
   player_t::warrior_init     ( this );
 
+  raid_event_t::init( this );
+
   // Defer party creation after player_t::init() calls to handle any pets created there.
 
   int party_index=0;
@@ -761,8 +749,6 @@ bool sim_t::init()
   {
     p -> register_callbacks();
   }
-
-  raid_event_t::init( this );
 
   // initialize aliases
   alias.init_parse();

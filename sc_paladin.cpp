@@ -1251,3 +1251,30 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name, int rac
   return new paladin_t( sim, name, race_type );
 }
 
+// player_t::paladin_init ====================================================
+
+void player_t::paladin_init( sim_t* sim )
+{
+  sim -> auras.sanctified_retribution = new buff_t( sim, "sanctified_retribution", 1 );
+  sim -> auras.swift_retribution      = new buff_t( sim, "swift_retribution",      1 );
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+  }
+
+}
+
+// player_t::paladin_combat_begin ============================================
+
+void player_t::paladin_combat_begin( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> ooc_buffs() )
+    {
+    }
+  }
+
+  if( sim -> overrides.sanctified_retribution ) sim -> auras.sanctified_retribution -> override();
+  if( sim -> overrides.swift_retribution      ) sim -> auras.swift_retribution      -> override();
+}
