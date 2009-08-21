@@ -295,35 +295,13 @@ struct water_elemental_pet_t : public pet_t
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
-
     mage_t* o = cast_pet() -> owner -> cast_mage();
-
     o -> active_water_elemental = this;
-
-    if ( o -> talents.improved_water_elemental )
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> buffs.water_elemental == 0 ) p -> aura_gain( "Water Elemental Regen" );
-        p -> buffs.water_elemental++;
-      }
-    }
   }
   virtual void dismiss()
   {
     pet_t::dismiss();
-
     mage_t* o = cast_pet() -> owner -> cast_mage();
-
-    if ( o -> talents.improved_water_elemental )
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.water_elemental--;
-        if ( p -> buffs.water_elemental == 0 ) p -> aura_loss( "Water Elemental Regen" );
-      }
-    }
-
     o -> active_water_elemental = 0;
   }
   virtual action_t* create_action( const std::string& name,

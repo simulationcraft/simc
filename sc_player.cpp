@@ -2872,8 +2872,7 @@ act_expression_t* player_t::create_expression( std::string& name,std::string& pr
   {
     bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
     if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
-    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
-      if ( name=="cast_time_reduction" )  node= new oldbuff_expression_t( e_name, &buffs.cast_time_reduction ,0, 2 );
+    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 );
   }
   if ( ( prefix=="player" )&&( node==0 ) )
   {

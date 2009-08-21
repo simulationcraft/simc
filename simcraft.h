@@ -1372,17 +1372,13 @@ struct player_t
     int       blessing_of_kings;
     int       blessing_of_might;
     double    blessing_of_wisdom;
-    double    cast_time_reduction;
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    heroic_presence;
     int       hysteria;
-    double    mana_cost_reduction;
     double    mana_spring;
     int       replenishment;
-    int       shadow_form;
     int       tricks_of_the_trade;
-    int       water_elemental;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
     void reset()
     { 

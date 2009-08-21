@@ -69,13 +69,9 @@ double spell_t::gcd() SC_CONST
 
 double spell_t::execute_time() SC_CONST
 {
-  if ( base_execute_time == 0 ) return 0;
-
-  double t = base_execute_time - player -> buffs.cast_time_reduction;
-  if ( t < 0 ) t = 0;
-
+  double t = base_execute_time;
+  if ( t <= 0 ) return 0;
   t *= haste();
-
   return t;
 }
 

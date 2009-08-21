@@ -197,9 +197,6 @@ double action_t::cost() SC_CONST
 
   if ( resource == RESOURCE_MANA )
   {
-    c -= player -> buffs.mana_cost_reduction;
-    if ( c < 0 ) c = 0;
-
     if ( player -> buffs.power_infusion -> check() ) c *= 0.80;
   }
 
@@ -266,17 +263,12 @@ void action_t::player_buff()
 
   if ( p -> type != PLAYER_GUARDIAN )
   {
-    if ( school == SCHOOL_SHADOW )
+    if ( school == SCHOOL_PHYSICAL )
     {
-      // That needs to be here because shadow form affects ALL shadow damage (e.g. trinkets)
-      if ( p -> buffs.shadow_form )
+      if ( p -> buffs.hysteria )
       {
-        player_multiplier *= 1.15;
+	player_multiplier *= 1.2;
       }
-    }
-    else if ( p -> buffs.hysteria && school == SCHOOL_PHYSICAL )
-    {
-      player_multiplier *= 1.2;
     }
 
     if ( sim -> auras.sanctified_retribution || sim -> auras.ferocious_inspiration -> up() )

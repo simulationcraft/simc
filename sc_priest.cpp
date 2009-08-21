@@ -24,6 +24,7 @@ struct priest_t : public player_t
   buff_t* buffs_improved_spirit_tap;
   buff_t* buffs_inner_fire;
   buff_t* buffs_inner_fire_armor;
+  buff_t* buffs_shadow_form;
   buff_t* buffs_shadow_weaving;
   buff_t* buffs_surge_of_light;
   buff_t* buffs_tier5_2pc;
@@ -374,7 +375,8 @@ void priest_spell_t::player_buff()
 
   if ( school == SCHOOL_SHADOW )
   {
-    player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> check() * 0.02;
+    player_multiplier *= 1.0 + p -> buffs_shadow_form -> check() * 0.15;
+    player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> stack() * 0.02;
   }
 
   if ( p -> talents.focused_power )
@@ -655,8 +657,8 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs.shadow_form != 0;
-    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
+    tick_may_crit = p -> buffs_shadow_form -> check();
+    base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
@@ -735,8 +737,8 @@ struct vampiric_touch_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs.shadow_form != 0;
-    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
+    tick_may_crit = p -> buffs_shadow_form -> check();
+    base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
@@ -864,8 +866,8 @@ struct devouring_plague_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs.shadow_form != 0;
-    base_crit_bonus_multiplier = 1.0 + ( p -> buffs.shadow_form != 0 );
+    tick_may_crit = p -> buffs_shadow_form -> check();
+    base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( devouring_plague_burst ) devouring_plague_burst -> execute();
   }
@@ -1585,13 +1587,15 @@ struct shadow_form_t : public priest_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-    player -> buffs.shadow_form = 1;
+    priest_t* p = player -> cast_priest();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_shadow_form -> trigger();
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.shadow_form == 0 );
+    priest_t* p = player -> cast_priest();
+    return( ! p -> buffs_shadow_form -> check() );
   }
 };
 
@@ -1914,13 +1918,14 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new      buff_t( this, "glyph_of_shadow"                                                 );
-  buffs_improved_spirit_tap = new      buff_t( this, "improved_spirit_tap", 1, 8.0                                     );
-  buffs_inner_fire          = new      buff_t( this, "inner_fire"                                                      );
-  buffs_inner_fire_armor    = new      buff_t( this, "inner_fire_armor"                                                );
-  buffs_shadow_weaving      = new      buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
-  buffs_surge_of_light      = new      buff_t( this, "surge_of_light",      1, 10.0                                    );
-  buffs_tier5_2pc           = new      buff_t( this, "tier5_2pc",           1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
+  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow"                                                 );
+  buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1, 8.0                                     );
+  buffs_inner_fire          = new buff_t( this, "inner_fire"                                                      );
+  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                );
+  buffs_shadow_form         = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
+  buffs_shadow_weaving      = new buff_t( this, "shadow_form",         1                                          );
+  buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                    );
+  buffs_tier5_2pc           = new buff_t( this, "tier5_2pc",           1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_devious_mind        = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc()        );
