@@ -1592,10 +1592,10 @@ struct faerie_fire_t : public druid_spell_t
     if ( t -> debuffs.faerie_fire -> up() )
     {
       if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.improved_faerie_fire )
-	return false;
+	      return false;
 
-      if ( t -> debuffs.misery >= p -> talents.improved_faerie_fire )
-	return false;
+      if ( t -> debuffs.misery -> current_value > p -> talents.improved_faerie_fire )
+	      return false;
     }
 
     return druid_spell_t::ready();

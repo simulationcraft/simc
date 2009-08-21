@@ -30,8 +30,8 @@ double spell_t::haste() SC_CONST
 
   if ( p -> type != PLAYER_GUARDIAN )
   {
-    if (      p -> buffs.bloodlust -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
-    else if ( p -> buffs.power_infusion       ) h *= 1.0 / ( 1.0 + 0.20 );
+    if (      p -> buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
+    else if ( p -> buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 
     if ( sim -> auras.swift_retribution || sim -> auras.improved_moonkin -> up() )
     {
@@ -119,7 +119,7 @@ void spell_t::target_debuff( int dmg_type )
 
   target_t* t = sim -> target;
 
-  target_hit += std::max( t -> debuffs.improved_faerie_fire -> value(), (double) t -> debuffs.misery ) * 0.01;
+  target_hit += std::max( t -> debuffs.improved_faerie_fire -> value(), t -> debuffs.misery -> value() ) * 0.01;
 
   int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
 					t -> debuffs.improved_scorch -> stack() ),

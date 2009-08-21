@@ -1355,12 +1355,16 @@ struct player_t
   {
     // New Buffs
     buff_t* arcane_brilliance;
+    buff_t* bloodlust;
     buff_t* demonic_pact;
+    buff_t* divine_spirit;
+    buff_t* fortitude;
     buff_t* innervate;
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
-    buff_t* bloodlust;
+    buff_t* power_infusion;
+
     // Old Buffs
     int       old_buffs;
     int       abominations_might;
@@ -1368,16 +1372,13 @@ struct player_t
     int       blessing_of_kings;
     int       blessing_of_might;
     double    blessing_of_wisdom;
-    double    divine_spirit;
     double    cast_time_reduction;
     player_t* focus_magic;
     int       focus_magic_feedback;
-    double    fortitude;
     double    heroic_presence;
     int       hysteria;
     double    mana_cost_reduction;
     double    mana_spring;
-    int       power_infusion;
     int       replenishment;
     int       shadow_form;
     int       tricks_of_the_trade;
@@ -1616,8 +1617,8 @@ struct player_t
   static void paladin_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Priest buff maintenance
-  static void priest_init        ( sim_t* sim ) {}
-  static void priest_combat_begin( sim_t* sim ) {}
+  static void priest_init        ( sim_t* sim );
+  static void priest_combat_begin( sim_t* sim );
   static void priest_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Rogue buff maintenance
@@ -1744,6 +1745,7 @@ struct target_t
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* mangle;
+    debuff_t* misery;
     debuff_t* slow;
     debuff_t* totem_of_wrath;
     debuff_t* trauma;
@@ -1758,8 +1760,6 @@ struct target_t
     int    hemorrhage_charges;
     int    judgement_of_wisdom;
     int    master_poisoner;
-    int    misery;
-    int    misery_stack;
     int    poisoned;
     int    savage_combat;
     double sunder_armor;
@@ -1781,7 +1781,6 @@ struct target_t
     event_t* frozen;
     event_t* hemorrhage;
     event_t* hunters_mark;
-    event_t* misery;
     event_t* nature_vulnerability;
     event_t* shadow_vulnerability;
     event_t* shadow_weaving;

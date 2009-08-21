@@ -200,12 +200,12 @@ double action_t::cost() SC_CONST
     c -= player -> buffs.mana_cost_reduction;
     if ( c < 0 ) c = 0;
 
-    if ( player -> buffs.power_infusion ) c *= 0.80;
+    if ( player -> buffs.power_infusion -> check() ) c *= 0.80;
   }
 
   if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
 
-  return c;
+  return floor( c );
 }
 
 // action_t::travel_time =====================================================

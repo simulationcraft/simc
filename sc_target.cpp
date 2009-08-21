@@ -224,7 +224,6 @@ void target_t::combat_begin()
   if ( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
   if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
   if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
-  if ( sim -> overrides.misery                ) debuffs.misery = 3;
   if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
   if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
   if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 0.20;

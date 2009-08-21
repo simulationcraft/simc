@@ -19,34 +19,15 @@ struct priest_t : public player_t
 
   // Buffs
 
+  buff_t* buffs_devious_mind;
+  buff_t* buffs_glyph_of_shadow;
+  buff_t* buffs_improved_spirit_tap;
+  buff_t* buffs_inner_fire;
+  buff_t* buffs_inner_fire_armor;
+  buff_t* buffs_shadow_weaving;
+  buff_t* buffs_surge_of_light;
   buff_t* buffs_tier5_2pc;
   buff_t* buffs_tier5_4pc;
-
-  struct _buffs_t
-  {
-    int inner_fire;
-    int improved_spirit_tap;
-    int shadow_weaving;
-    int surge_of_light;
-    int glyph_of_shadow;
-    int devious_mind;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
-    _buffs_t() { reset(); }
-  };
-  _buffs_t _buffs;
-
-  // Expirations
-  struct _expirations_t
-  {
-    event_t* glyph_of_shadow;
-    event_t* improved_spirit_tap;
-    event_t* shadow_weaving;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _expirations_t ) ); }
-    _expirations_t() { reset(); }
-  };
-  _expirations_t _expirations;
 
   // Cooldowns
   struct _cooldowns_t
@@ -60,19 +41,20 @@ struct priest_t : public player_t
   _cooldowns_t _cooldowns;
 
   // Gains
-  gain_t* gains_shadow_fiend;
+  gain_t* gains_devious_mind;
   gain_t* gains_dispersion;
+  gain_t* gains_glyph_of_shadow;
+  gain_t* gains_improved_spirit_tap;
+  gain_t* gains_shadow_fiend;
+  gain_t* gains_surge_of_light;
 
   // Up-Times
-  uptime_t* uptimes_improved_spirit_tap;
-  uptime_t* uptimes_glyph_of_shadow;
-  uptime_t* uptimes_devious_mind;
-  uptime_t* uptimes_devious_mind_mf;
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
-  rng_t* rng_shadow_weaving;
-  rng_t* rng_surge_of_light;
+
+  // Options
+  std::string power_infusion_target_str;
 
   // Mana Resource Tracker
   struct _mana_resource_t
@@ -138,18 +120,18 @@ struct priest_t : public player_t
 
   struct glyphs_t
   {
+    int dispersion;
     int hymn_of_hope;
+    int inner_fire;
+    int penance;
+    int shadow;
     int shadow_word_death;
     int shadow_word_pain;
-    int shadow;
     int smite;
-    int penance;
-    int dispersion;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
-  double devious_mind_delay;
   bool   use_shadow_word_death;
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
@@ -161,8 +143,6 @@ struct priest_t : public player_t
     active_vampiric_touch    = 0;
     active_vampiric_embrace  = 0;
 
-    // Tier 8 4-piece Delay
-    devious_mind_delay = 0.0;
     use_shadow_word_death = false;
 
     max_mana_cost = 0.0;
@@ -181,19 +161,22 @@ struct priest_t : public player_t
   virtual void      init_party();
   virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual std::vector<option_t>& get_options();
+  virtual bool      save( FILE* file, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : talents.penance ? TREE_DISCIPLINE : TREE_HOLY; }
+  virtual double    composite_armor() SC_CONST;
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_spell_power( int school ) SC_CONST;
+
   virtual void      regen( double periodicity );
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 };
-
-enum devious_mind_states_t { DEVIOUS_MIND_STATE_NONE=0, DEVIOUS_MIND_STATE_WAITING, DEVIOUS_MIND_STATE_ACTIVE };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -212,7 +195,6 @@ struct priest_spell_t : public spell_t
 
   virtual double haste() SC_CONST;
   virtual double cost() SC_CONST;
-  virtual void   schedule_execute();
   virtual void   execute();
   virtual void   player_buff();
   virtual void   assess_damage( double amount, int dmg_type );
@@ -283,8 +265,11 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual double composite_spell_power( int school ) SC_CONST
   {
-    double sp = owner -> composite_spell_power( school );
-    sp -= owner -> spell_power_per_spirit * owner -> spirit();
+    priest_t* p = owner -> cast_priest();
+
+    double sp = p -> composite_spell_power( school );
+    sp -= owner -> spirit() *   p -> spell_power_per_spirit;
+    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.1 : 0.0 );
     return sp;
   }
   virtual void schedule_ready( double delta_time=0,
@@ -300,240 +285,25 @@ struct shadow_fiend_pet_t : public pet_t
   }
 };
 
-// stack_shadow_weaving =====================================================
-
-static void stack_shadow_weaving( spell_t* s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> talents.shadow_weaving == 0 ) return;
-
-  struct shadow_weaving_expiration_t : public event_t
-  {
-    shadow_weaving_expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-    {
-      name = "Shadow Weaving Expiration";
-      sim -> add_event( this, 15.01 );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log ) log_t::output( sim, "%s loses Shadow Weaving", sim -> target -> name() );
-      priest_t* p = player -> cast_priest();
-      p -> _buffs.shadow_weaving = 0;
-      p -> _expirations.shadow_weaving = 0;
-    }
-  };
-
-  if ( p -> rng_shadow_weaving -> roll( p -> talents.shadow_weaving * ( 1.0/3 ) ) )
-  {
-    sim_t* sim = s -> sim;
-
-    if ( p -> _buffs.shadow_weaving < 5 )
-    {
-      p -> _buffs.shadow_weaving++;
-      if ( sim -> log ) log_t::output( sim, "%s gains Shadow Weaving %d", p -> name(), p -> _buffs.shadow_weaving );
-    }
-
-    event_t*& e = p -> _expirations.shadow_weaving;
-
-    if ( e )
-    {
-      e -> reschedule( 15.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) shadow_weaving_expiration_t( s -> sim, p );
-    }
-  }
-}
-
 // trigger_misery ==============================================
 
 static void trigger_misery( action_t* a )
 {
   priest_t* p = a -> player -> cast_priest();
+  target_t* t = p -> sim -> target;
 
   if ( ! p -> talents.misery )
     return;
 
-  if ( a -> sim -> target -> debuffs.misery > p -> talents.misery )
-    return;
-
-  struct expiration_t : public event_t
+  if ( t -> debuffs.faerie_fire -> check() )
   {
-    expiration_t( sim_t* sim, player_t* p, int misery_stacks ) : event_t( sim, p )
-    {
-      sim -> target -> debuffs.misery = misery_stacks;
-      sim -> add_event( this, 24.0 );
-    }
-    virtual void execute()
-    {
-      sim -> target -> debuffs.misery = 0;
-      sim -> target -> expirations.misery = 0;
-    }
-  };
-
-  event_t*& e = a -> sim -> target -> expirations.misery;
-
-  if ( e )
-  {
-    e -> reschedule( 24.0 );
+      if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.misery )
+	      return;
   }
-  else
+
+  if ( p -> talents.misery >= t -> debuffs.misery -> current_value )
   {
-    e = new ( a -> sim ) expiration_t( a -> sim, a -> player, p -> talents.misery );
-  }
-}
-
-// trigger_surge_of_light =====================================================
-
-static void trigger_surge_of_light( spell_t* s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> talents.surge_of_light )
-    if ( p -> rng_surge_of_light -> roll( p -> talents.surge_of_light * 0.25 ) )
-      p -> _buffs.surge_of_light = 1;
-}
-
-// trigger_improved_spirit_tap ================================================
-
-static void trigger_improved_spirit_tap( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    double spirit_bonus;
-    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
-    {
-      name = "Improved Spirit Tap Expiration";
-      p -> _buffs.improved_spirit_tap = 1;
-      p -> aura_gain( "improved_spirit_tap" );
-      spirit_bonus = p -> spirit() * p -> talents.improved_spirit_tap * 0.05;
-      p -> attribute[ ATTR_SPIRIT ] += spirit_bonus;
-      sim -> add_event( this, 8.0 );
-    }
-    virtual void execute()
-    {
-      priest_t* p = player -> cast_priest();
-      p -> _buffs.improved_spirit_tap = 0;
-      p -> aura_loss( "improved_spirit_tap" );
-      p -> attribute[ ATTR_SPIRIT ] -= spirit_bonus;
-      p -> _expirations.improved_spirit_tap = 0;
-    }
-  };
-
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> talents.improved_spirit_tap )
-  {
-    event_t*& e = p -> _expirations.improved_spirit_tap;
-
-    if ( e )
-    {
-      e -> reschedule( 8.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// trigger_glyph_of_shadow ====================================================
-
-static void trigger_glyph_of_shadow( spell_t* s )
-{
-  struct expiration_t : public event_t
-  {
-    double spellpower_bonus;
-    expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
-    {
-      name = "Glyph of Shadow Expiration";
-      p -> _buffs.glyph_of_shadow = 1;
-      p -> aura_gain( "glyph_of_shadow" );
-      spellpower_bonus = p -> spirit() * 0.1;
-      p -> spell_power[ SCHOOL_MAX ] += spellpower_bonus;
-      sim -> add_event( this, 10.0 );
-    }
-    virtual void execute()
-    {
-      priest_t* p = player -> cast_priest();
-      p -> _buffs.glyph_of_shadow = 0;
-      p -> aura_loss( "glyph_of_shadow" );
-      p -> spell_power[ SCHOOL_MAX ] -= spellpower_bonus;
-      p -> _expirations.glyph_of_shadow = 0;
-    }
-  };
-
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> glyphs.shadow && p -> buffs.shadow_form )
-  {
-    event_t*& e = p -> _expirations.glyph_of_shadow;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( s -> sim ) expiration_t( s -> sim, p );
-    }
-  }
-}
-
-// trigger_devious_mind ====================================================
-
-static void trigger_devious_mind( spell_t* s )
-{
-  struct devious_mind_expiration_t : public event_t
-  {
-    devious_mind_expiration_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
-    {
-      name = "Devious Mind Expiration";
-      p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_ACTIVE;
-      p -> aura_gain( "devious_mind" );
-      p -> haste_rating += 240;
-      p -> recalculate_haste();
-      sim -> add_event( this, 4.0 );
-    }
-    virtual void execute()
-    {
-      priest_t* p = player -> cast_priest();
-      p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_NONE;
-      p -> aura_loss( "devious_mind" );
-      p -> haste_rating -= 240;
-      p -> recalculate_haste();
-    }
-  };
-
-  struct devious_mind_delay_t : public event_t
-  {
-    devious_mind_delay_t( sim_t* sim, priest_t* p ) : event_t( sim, p )
-    {
-      name = "Devious Mind Delay";
-      p -> _buffs.devious_mind = DEVIOUS_MIND_STATE_WAITING;
-      sim -> add_event( this, p -> devious_mind_delay );
-    }
-    virtual void execute()
-    {
-      priest_t* p = player -> cast_priest();
-      new ( sim ) devious_mind_expiration_t( sim, p );
-    }
-  };
-
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> set_bonus.tier8_4pc() )
-  {
-    if ( p -> devious_mind_delay < 0.01 )
-    {
-      new ( s -> sim ) devious_mind_expiration_t( s -> sim, p );
-    }
-    else
-    {
-      new ( s -> sim ) devious_mind_delay_t( s -> sim, p );
-    }
+    t -> debuffs.misery -> trigger( 1, p -> talents.misery );
   }
 }
 
@@ -558,6 +328,7 @@ static void trigger_replenishment( spell_t* s )
 double priest_spell_t::haste() SC_CONST
 {
   priest_t* p = player -> cast_priest();
+
   double h = spell_t::haste();
   if ( p -> talents.enlightenment )
   {
@@ -580,17 +351,6 @@ double priest_spell_t::cost() SC_CONST
   return c;
 }
 
-// priest_spell_t::schedule_execute =========================================
-
-void priest_spell_t::schedule_execute()
-{
-  priest_t* p = player -> cast_priest();
-
-  spell_t::schedule_execute();
-
-  p -> uptimes_devious_mind -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
-}
-
 // priest_spell_t::execute ==================================================
 
 void priest_spell_t::execute()
@@ -608,12 +368,12 @@ void priest_spell_t::execute()
   {
     if ( school == SCHOOL_SHADOW )
     {
-      stack_shadow_weaving( this );
+      p -> buffs_shadow_weaving -> increment();
     }
     if ( result == RESULT_CRIT )
     {
-      trigger_surge_of_light( this );
-      trigger_glyph_of_shadow( this );
+      p -> buffs_surge_of_light  -> trigger( 1, 1.0, p -> talents.surge_of_light * 0.25 );
+      p -> buffs_glyph_of_shadow -> trigger();
     }
   }
 
@@ -623,9 +383,6 @@ void priest_spell_t::execute()
     p -> buffs_tier5_4pc -> expire();
     p -> buffs_tier5_2pc -> trigger();
   }
-
-  p -> uptimes_improved_spirit_tap -> update( p -> _buffs.improved_spirit_tap != 0 );
-  p -> uptimes_glyph_of_shadow     -> update( p -> _buffs.glyph_of_shadow     != 0 );
 }
 
 // priest_spell_t::player_buff ==============================================
@@ -638,10 +395,7 @@ void priest_spell_t::player_buff()
 
   if ( school == SCHOOL_SHADOW )
   {
-    if ( p -> _buffs.shadow_weaving )
-    {
-      player_multiplier *= 1.0 + p -> _buffs.shadow_weaving * 0.02;
-    }
+    player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> check() * 0.02;
   }
 
   if ( p -> talents.focused_power )
@@ -773,25 +527,25 @@ struct smite_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
-    player -> cast_priest() -> _buffs.surge_of_light = 0;
+    player -> cast_priest() -> buffs_surge_of_light -> expire();
   }
   virtual double execute_time() SC_CONST
   {
     priest_t* p = player -> cast_priest();
-    return p -> _buffs.surge_of_light ? 0 : priest_spell_t::execute_time();
+    return p -> buffs_surge_of_light -> up() ? 0 : priest_spell_t::execute_time();
   }
 
   virtual double cost() SC_CONST
   {
     priest_t* p = player -> cast_priest();
-    return p -> _buffs.surge_of_light ? 0 : priest_spell_t::cost();
+    return p -> buffs_surge_of_light -> check() ? 0 : priest_spell_t::cost();
   }
 
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
-    may_crit = ! ( p -> _buffs.surge_of_light );
+    may_crit = ! ( p -> buffs_surge_of_light -> check() );
     if ( p -> active_holy_fire && p -> glyphs.smite ) player_multiplier *= 1.20;
   }
 };
@@ -956,7 +710,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( shadow_weaving_wait && ( p -> talents.shadow_weaving != 0 ) && p -> _buffs.shadow_weaving < 5 )
+    if ( shadow_weaving_wait && ( p -> talents.shadow_weaving != 0 ) && p -> buffs_shadow_weaving -> check() < 5 )
       return false;
 
     return true;
@@ -1075,7 +829,8 @@ struct devouring_plague_burst_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     priest_spell_t::player_buff();
-    player_spell_power -= p -> spell_power_per_spirit * p -> spirit();
+    player_spell_power -= p -> spirit() *   p -> spell_power_per_spirit;
+    player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.1 : 0.0 );
   }
 
   virtual void target_debuff( int dmg_type )
@@ -1247,11 +1002,11 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
-      trigger_devious_mind( this );
+      p -> buffs_devious_mind -> trigger();
       trigger_replenishment( this );
       if ( result == RESULT_CRIT )
       {
-        trigger_improved_spirit_tap( this );
+        p -> buffs_improved_spirit_tap -> trigger();
       }
     }
     p -> _cooldowns.mind_blast = cooldown_ready;
@@ -1324,7 +1079,7 @@ struct shadow_word_death_t : public priest_spell_t
       p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.10 ) );
       if ( result == RESULT_CRIT )
       {
-        trigger_improved_spirit_tap( this );
+        p -> buffs_improved_spirit_tap -> trigger();
       }
     }
   }
@@ -1363,7 +1118,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( devious_mind_filler )
     {
-      if ( p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_WAITING )
+      if ( p -> buffs_devious_mind -> check() )
         return false;
     }
 
@@ -1448,11 +1203,10 @@ struct mind_flay_t : public priest_spell_t
 
   double mb_wait;
   int    swp_refresh;
-  int    devious_mind_wait;
   int    devious_mind_priority;
 
   mind_flay_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_wait( 0 ), devious_mind_priority( 0 )
+      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_priority( 0 )
   {
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.mind_flay );
@@ -1461,7 +1215,6 @@ struct mind_flay_t : public priest_spell_t
     {
       { "swp_refresh",           OPT_BOOL, &swp_refresh           },
       { "mb_wait",               OPT_FLT,  &mb_wait               },
-      { "devious_mind_wait",     OPT_BOOL, &devious_mind_wait     },
       { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -1478,13 +1231,6 @@ struct mind_flay_t : public priest_spell_t
     base_hit  += p -> talents.shadow_focus * 0.01;
 
     mind_flay_tick = new mind_flay_tick_t( p );
-  }
-
-  virtual void schedule_execute()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::schedule_execute();
-    p -> uptimes_devious_mind_mf -> update( p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_ACTIVE );
   }
 
   virtual void execute()
@@ -1526,15 +1272,9 @@ struct mind_flay_t : public priest_spell_t
         return false;
     }
 
-    if ( devious_mind_wait )
-    {
-      if ( p -> set_bonus.tier8_4pc() && p -> _buffs.devious_mind == DEVIOUS_MIND_STATE_WAITING )
-        return false;
-    }
-
     if ( devious_mind_priority )
     {
-      if ( p -> set_bonus.tier8_4pc() && p -> _buffs.devious_mind != DEVIOUS_MIND_STATE_ACTIVE )
+      if ( p -> set_bonus.tier8_4pc() && ! p -> buffs_devious_mind -> check() )
         return false;
     }
 
@@ -1629,27 +1369,33 @@ struct dispersion_t : public priest_spell_t
 
 struct power_infusion_t : public priest_spell_t
 {
-  struct expiration_t : public event_t
-  {
-    expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-    {
-      name = "Power Infusion Expiration";
-      player -> aura_gain( "Power Infusion" );
-      player -> buffs.power_infusion = 1;
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      player -> aura_loss( "Power Infusion" );
-      player -> buffs.power_infusion = 0;
-    }
-  };
+  player_t* power_infusion_target;
 
   power_infusion_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "power_infusion", player, SCHOOL_ARCANE, TREE_DISCIPLINE )
+      priest_spell_t( "power_infusion", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.power_infusion );
+
+    std::string target_str = p -> power_infusion_target_str;
+    option_t options[] =
+    {
+      { "target", OPT_STRING, &target_str },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( target_str.empty() )
+    {
+      power_infusion_target = p;
+    }
+    else
+    {
+      power_infusion_target = sim -> find_player( target_str );
+
+      assert ( power_infusion_target != 0 );
+    }
+
     trigger_gcd = 0;
     cooldown = 120.0;
     cooldown *= 1.0 - p -> talents.aspiration * 0.10;
@@ -1657,10 +1403,15 @@ struct power_infusion_t : public priest_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    priest_t* p = player -> cast_priest();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+
+    if ( sim -> log ) log_t::output( sim, "%s grants %s Power Infusion", p -> name(), power_infusion_target -> name() );
+
+    power_infusion_target -> buffs.power_infusion -> trigger();
+
     consume_resource();
     update_ready();
-    new ( sim ) expiration_t( sim, player );
   }
 
   virtual bool ready()
@@ -1668,7 +1419,13 @@ struct power_infusion_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( player -> buffs.bloodlust -> check() )
+    if ( power_infusion_target == 0 )
+      return false;
+
+    if ( power_infusion_target -> buffs.bloodlust -> check() )
+      return false;
+
+    if ( power_infusion_target -> buffs.power_infusion -> check() )
       return false;
 
     return true;
@@ -1735,6 +1492,8 @@ struct divine_spirit_t : public priest_spell_t
   {
     trigger_gcd = 0;
     bonus = util_t::ability_rank( player -> level,  80.0,80,  50.0,70,  40.0,0 );
+
+    id = 48073;
   }
 
   virtual void execute()
@@ -1743,14 +1502,17 @@ struct divine_spirit_t : public priest_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      p -> buffs.divine_spirit = bonus;
-      p -> init_resources( true );
+      if ( p -> ooc_buffs() )
+      {
+        p -> buffs.divine_spirit -> trigger( 1, bonus );
+        p -> init_resources( true );
+      }
     }
   }
 
   virtual bool ready()
   {
-    return player -> buffs.divine_spirit < bonus;
+    return player -> buffs.divine_spirit -> current_value < bonus;
   }
 };
 
@@ -1770,6 +1532,7 @@ struct fortitude_t : public priest_spell_t
     bonus = util_t::ability_rank( player -> level,  165.0,80,  79.0,70,  54.0,0 );
 
     bonus *= 1.0 + p -> talents.improved_power_word_fortitude * 0.15;
+    id = 48161;
   }
 
   virtual void execute()
@@ -1778,14 +1541,17 @@ struct fortitude_t : public priest_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      p -> buffs.fortitude = bonus;
-      p -> init_resources( true );
+      if ( p -> ooc_buffs() )
+      {
+	      p -> buffs.fortitude -> trigger( 1, bonus );
+	      p -> init_resources( true );
+      }
     }
   }
 
   virtual bool ready()
   {
-    return player -> buffs.fortitude < bonus;
+    return player -> buffs.fortitude -> current_value < bonus;
   }
 };
 
@@ -1793,10 +1559,24 @@ struct fortitude_t : public priest_spell_t
 
 struct inner_fire_t : public priest_spell_t
 {
+  double bonus_spell_power;
+  double bonus_armor;
+
   inner_fire_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "inner_fire", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+      priest_spell_t( "inner_fire", player, SCHOOL_HOLY, TREE_DISCIPLINE ), bonus_spell_power( 0 ), bonus_armor( 0 )
   {
+    priest_t* p = player -> cast_priest();
+
     trigger_gcd = 0;
+
+    bonus_spell_power = util_t::ability_rank( player -> level,  120.0,77,  95.0,71,  0.0,0     );
+    bonus_armor       = util_t::ability_rank( player -> level,  2440.0,77, 1800.0,71, 1580.0,0 );
+
+    bonus_spell_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
+    bonus_armor       *= 1.0 + p -> talents.improved_inner_fire * 0.15;
+    bonus_armor       *= 1.0 + p -> glyphs.inner_fire * 0.5;
+
+    id = 48168;
   }
 
   virtual void execute()
@@ -1804,18 +1584,15 @@ struct inner_fire_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-
-    double bonus_power = util_t::ability_rank( p -> level,  120.0,77,  95.0,71,  0.0,0  );
-
-    bonus_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
-
-    p -> spell_power[ SCHOOL_MAX ] += bonus_power;
-    p -> _buffs.inner_fire = 1;
+    
+    p -> buffs_inner_fire       -> start( 1, bonus_spell_power );
+    p -> buffs_inner_fire_armor -> start( 1, bonus_armor       );
   }
 
   virtual bool ready()
   {
-    return ! player -> cast_priest() -> _buffs.inner_fire;
+    priest_t* p = player -> cast_priest();
+    return ! p -> buffs_inner_fire -> check() || ! p -> buffs_inner_fire_armor -> check();
   }
 };
 
@@ -1947,6 +1724,45 @@ struct shadow_fiend_spell_t : public priest_spell_t
 // Priest Character Definition
 // ==========================================================================
 
+// priest_t::composite_armor =========================================
+
+double priest_t::composite_armor() SC_CONST
+{
+  double a = player_t::composite_armor();
+
+  a += buffs_inner_fire_armor -> value();
+
+  return floor( a );
+}
+
+// priest_t::composite_attribute_multiplier ================================
+
+double priest_t::composite_attribute_multiplier( int attr ) SC_CONST
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( ( attr == ATTR_SPIRIT ) && ( buffs_improved_spirit_tap -> check() ) )
+    m *= 1.0 + talents.improved_spirit_tap * 0.05;
+
+  return m;
+}
+
+// priest_t::composite_spell_power =========================================
+
+double priest_t::composite_spell_power( int school ) SC_CONST
+{
+  double sp = player_t::composite_spell_power( school );
+
+  sp += buffs_inner_fire -> value();
+
+  if ( buffs_glyph_of_shadow -> up() )
+  {
+    sp += spirit() * 0.10;
+  }
+
+  return floor( sp );
+}
+
 // priest_t::create_action ===================================================
 
 action_t* priest_t::create_action( const std::string& name,
@@ -2002,9 +1818,11 @@ void priest_t::init_glyphs()
 
     if      ( n == "dispersion"        ) glyphs.dispersion = 1;
     else if ( n == "penance"           ) glyphs.penance = 1;
+    else if ( n == "hymn_of_hope"      ) glyphs.hymn_of_hope = 1;
+    else if ( n == "inner_fire"        ) glyphs.inner_fire = 1;
+    else if ( n == "shadow"            ) glyphs.shadow = 1;
     else if ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if ( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
-    else if ( n == "shadow"            ) glyphs.shadow = 1;
     else if ( n == "smite"             ) glyphs.smite = 1;
     // Just to prevent warnings....
     else if ( n == "circle_of_healing" ) ;
@@ -2013,8 +1831,6 @@ void priest_t::init_glyphs()
     else if ( n == "flash_heal"        ) ;
     else if ( n == "fortitude"         ) ;
     else if ( n == "guardian_spirit"   ) ;
-    else if ( n == "hymn_of_hope"      ) ;
-    else if ( n == "inner_fire"        ) ;
     else if ( n == "levitate"          ) ;
     else if ( n == "mind_flay"         ) ;
     else if ( n == "pain_suppression"  ) ;
@@ -2092,8 +1908,12 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_dispersion   = get_gain( "dispersion" );
-  gains_shadow_fiend = get_gain( "shadow_fiend" );
+  gains_devious_mind        = get_gain( "devious_mind" );
+  gains_dispersion          = get_gain( "dispersion" );
+  gains_glyph_of_shadow     = get_gain( "glyph_of_shadow" );
+  gains_improved_spirit_tap = get_gain( "improved_spirit_tap" );
+  gains_shadow_fiend        = get_gain( "shadow_fiend" );
+  gains_surge_of_light      = get_gain( "surge_of_light" );
 }
 
 // priest_t::init_uptimes ====================================================
@@ -2101,11 +1921,6 @@ void priest_t::init_gains()
 void priest_t::init_uptimes()
 {
   player_t::init_uptimes();
-
-  uptimes_improved_spirit_tap = get_uptime( "improved_spirit_tap" );
-  uptimes_glyph_of_shadow     = get_uptime( "glyph_of_shadow" );
-  uptimes_devious_mind        = get_uptime( "devious_mind" );
-  uptimes_devious_mind_mf     = get_uptime( "devious_mind_mf" );
 }
 
 // priest_t::init_rng ========================================================
@@ -2115,8 +1930,6 @@ void priest_t::init_rng()
   player_t::init_rng();
 
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
-  rng_shadow_weaving     = get_rng( "shadow_weaving" );
-  rng_surge_of_light     = get_rng( "surge_of_light" );
 }
 
 // priest_t::init_buffs ======================================================
@@ -2126,9 +1939,17 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_glyph_of_shadow     = new      buff_t( this, "glyph_of_shadow"                                                                  );
+  buffs_improved_spirit_tap = new      buff_t( this, "improved_spirit_tap",                  1, 8.0                                     );
+  buffs_inner_fire          = new      buff_t( this, "inner_fire"                                                                       );
+  buffs_inner_fire_armor    = new      buff_t( this, "inner_fire_armor"                                                                 );
+  buffs_shadow_weaving      = new      buff_t( this, "shadow_weaving",                       5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
+  buffs_surge_of_light      = new      buff_t( this, "surge_of_light",                       1, 10.0                                    );
+  buffs_tier5_2pc           = new      buff_t( this, "tier5_2pc",                            1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
 
-  buffs_tier5_2pc = new      buff_t( this, "tier5_2pc",                        1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
-  buffs_tier5_4pc = new stat_buff_t( this, "tier5_4pc", STAT_SPELL_POWER, 100, 1, 10.0, 0.0, set_bonus.tier5_4pc() * 0.40 );
+  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_devious_mind        = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc()        );
+  buffs_tier5_4pc           = new stat_buff_t( this, "tier5_4pc",    STAT_SPELL_POWER,  100, 1, 10.0, 0.0, set_bonus.tier5_4pc() * 0.40 );
 }
 
 // priest_t::init_actions =====================================================
@@ -2224,8 +2045,6 @@ void priest_t::reset()
   active_vampiric_touch   = 0;
   active_vampiric_embrace = 0;
 
-  _buffs.reset();
-  _expirations.reset();
   _cooldowns.reset();
   _mana_resource.reset();
 
@@ -2238,7 +2057,7 @@ void priest_t::regen( double periodicity )
 {
   mana_regen_while_casting = util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
 
-  if ( _buffs.improved_spirit_tap )
+  if ( buffs_improved_spirit_tap -> check() )
   {
     mana_regen_while_casting += util_t::talent_rank( talents.improved_spirit_tap, 2, 0.17, 0.33 );
   }
@@ -2336,56 +2155,56 @@ std::vector<option_t>& priest_t::get_options()
     option_t priest_options[] =
     {
       // @option_doc loc=player/priest/talents title="Talents"
-      { "aspiration",                    OPT_INT,  &( talents.aspiration                    ) },
-      { "darkness",                      OPT_INT,  &( talents.darkness                      ) },
-      { "dispersion",                    OPT_INT,  &( talents.dispersion                    ) },
-      { "divine_fury",                   OPT_INT,  &( talents.divine_fury                   ) },
-      { "enlightenment",                 OPT_INT,  &( talents.enlightenment                 ) },
-      { "focused_mind",                  OPT_INT,  &( talents.focused_mind                  ) },
-      { "focused_power",                 OPT_INT,  &( talents.focused_power                 ) },
-      { "focused_will",                  OPT_INT,  &( talents.focused_will                  ) },
-      { "holy_specialization",           OPT_INT,  &( talents.holy_specialization           ) },
-      { "improved_devouring_plague",     OPT_INT,  &( talents.improved_devouring_plague     ) },
-      { "improved_inner_fire",           OPT_INT,  &( talents.improved_inner_fire           ) },
-      { "improved_mind_blast",           OPT_INT,  &( talents.improved_mind_blast           ) },
-      { "improved_power_word_fortitude", OPT_INT,  &( talents.improved_power_word_fortitude ) },
-      { "improved_shadow_word_pain",     OPT_INT,  &( talents.improved_shadow_word_pain     ) },
-      { "improved_spirit_tap",           OPT_INT,  &( talents.improved_spirit_tap           ) },
-      { "improved_vampiric_embrace",     OPT_INT,  &( talents.improved_vampiric_embrace     ) },
-      { "inner_focus",                   OPT_INT,  &( talents.inner_focus                   ) },
-      { "meditation",                    OPT_INT,  &( talents.meditation                    ) },
-      { "mental_agility",                OPT_INT,  &( talents.mental_agility                ) },
-      { "mental_strength",               OPT_INT,  &( talents.mental_strength               ) },
-      { "mind_flay",                     OPT_INT,  &( talents.mind_flay                     ) },
-      { "mind_melt",                     OPT_INT,  &( talents.mind_melt                     ) },
-      { "misery",                        OPT_INT,  &( talents.misery                        ) },
-      { "pain_and_suffering",            OPT_INT,  &( talents.pain_and_suffering            ) },
-      { "penance",                       OPT_INT,  &( talents.penance                       ) },
-      { "power_infusion",                OPT_INT,  &( talents.power_infusion                ) },
-      { "searing_light",                 OPT_INT,  &( talents.searing_light                 ) },
-      { "shadow_affinity",               OPT_INT,  &( talents.shadow_affinity               ) },
-      { "shadow_focus",                  OPT_INT,  &( talents.shadow_focus                  ) },
-      { "shadow_form",                   OPT_INT,  &( talents.shadow_form                   ) },
-      { "shadow_power",                  OPT_INT,  &( talents.shadow_power                  ) },
-      { "shadow_weaving",                OPT_INT,  &( talents.shadow_weaving                ) },
-      { "spirit_of_redemption",          OPT_INT,  &( talents.spirit_of_redemption          ) },
-      { "spiritual_guidance",            OPT_INT,  &( talents.spiritual_guidance            ) },
-      { "surge_of_light",                OPT_INT,  &( talents.surge_of_light                ) },
-      { "twin_disciplines",              OPT_INT,  &( talents.twin_disciplines              ) },
-      { "twisted_faith",                 OPT_INT,  &( talents.twisted_faith                 ) },
-      { "vampiric_embrace",              OPT_INT,  &( talents.vampiric_embrace              ) },
-      { "vampiric_touch",                OPT_INT,  &( talents.vampiric_touch                ) },
-      { "veiled_shadows",                OPT_INT,  &( talents.veiled_shadows                ) },
+      { "aspiration",                    OPT_INT,    &( talents.aspiration                    ) },
+      { "darkness",                      OPT_INT,    &( talents.darkness                      ) },
+      { "dispersion",                    OPT_INT,    &( talents.dispersion                    ) },
+      { "divine_fury",                   OPT_INT,    &( talents.divine_fury                   ) },
+      { "enlightenment",                 OPT_INT,    &( talents.enlightenment                 ) },
+      { "focused_mind",                  OPT_INT,    &( talents.focused_mind                  ) },
+      { "focused_power",                 OPT_INT,    &( talents.focused_power                 ) },
+      { "focused_will",                  OPT_INT,    &( talents.focused_will                  ) },
+      { "holy_specialization",           OPT_INT,    &( talents.holy_specialization           ) },
+      { "improved_devouring_plague",     OPT_INT,    &( talents.improved_devouring_plague     ) },
+      { "improved_inner_fire",           OPT_INT,    &( talents.improved_inner_fire           ) },
+      { "improved_mind_blast",           OPT_INT,    &( talents.improved_mind_blast           ) },
+      { "improved_power_word_fortitude", OPT_INT,    &( talents.improved_power_word_fortitude ) },
+      { "improved_shadow_word_pain",     OPT_INT,    &( talents.improved_shadow_word_pain     ) },
+      { "improved_spirit_tap",           OPT_INT,    &( talents.improved_spirit_tap           ) },
+      { "improved_vampiric_embrace",     OPT_INT,    &( talents.improved_vampiric_embrace     ) },
+      { "inner_focus",                   OPT_INT,    &( talents.inner_focus                   ) },
+      { "meditation",                    OPT_INT,    &( talents.meditation                    ) },
+      { "mental_agility",                OPT_INT,    &( talents.mental_agility                ) },
+      { "mental_strength",               OPT_INT,    &( talents.mental_strength               ) },
+      { "mind_flay",                     OPT_INT,    &( talents.mind_flay                     ) },
+      { "mind_melt",                     OPT_INT,    &( talents.mind_melt                     ) },
+      { "misery",                        OPT_INT,    &( talents.misery                        ) },
+      { "pain_and_suffering",            OPT_INT,    &( talents.pain_and_suffering            ) },
+      { "penance",                       OPT_INT,    &( talents.penance                       ) },
+      { "power_infusion",                OPT_INT,    &( talents.power_infusion                ) },
+      { "searing_light",                 OPT_INT,    &( talents.searing_light                 ) },
+      { "shadow_affinity",               OPT_INT,    &( talents.shadow_affinity               ) },
+      { "shadow_focus",                  OPT_INT,    &( talents.shadow_focus                  ) },
+      { "shadow_form",                   OPT_INT,    &( talents.shadow_form                   ) },
+      { "shadow_power",                  OPT_INT,    &( talents.shadow_power                  ) },
+      { "shadow_weaving",                OPT_INT,    &( talents.shadow_weaving                ) },
+      { "spirit_of_redemption",          OPT_INT,    &( talents.spirit_of_redemption          ) },
+      { "spiritual_guidance",            OPT_INT,    &( talents.spiritual_guidance            ) },
+      { "surge_of_light",                OPT_INT,    &( talents.surge_of_light                ) },
+      { "twin_disciplines",              OPT_INT,    &( talents.twin_disciplines              ) },
+      { "twisted_faith",                 OPT_INT,    &( talents.twisted_faith                 ) },
+      { "vampiric_embrace",              OPT_INT,    &( talents.vampiric_embrace              ) },
+      { "vampiric_touch",                OPT_INT,    &( talents.vampiric_touch                ) },
+      { "veiled_shadows",                OPT_INT,    &( talents.veiled_shadows                ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
-      { "glyph_hymn_of_hope",            OPT_BOOL, &( glyphs.hymn_of_hope                   ) },
-      { "glyph_penance",                 OPT_BOOL, &( glyphs.penance                        ) },
-      { "glyph_shadow_word_death",       OPT_BOOL, &( glyphs.shadow_word_death              ) },
-      { "glyph_shadow_word_pain",        OPT_BOOL, &( glyphs.shadow_word_pain               ) },
-      { "glyph_shadow",                  OPT_BOOL, &( glyphs.shadow                         ) },
-      { "glyph_smite",                   OPT_BOOL, &( glyphs.smite                          ) },
+      { "glyph_hymn_of_hope",            OPT_BOOL,   &( glyphs.hymn_of_hope                   ) },
+      { "glyph_penance",                 OPT_BOOL,   &( glyphs.penance                        ) },
+      { "glyph_shadow_word_death",       OPT_BOOL,   &( glyphs.shadow_word_death              ) },
+      { "glyph_shadow_word_pain",        OPT_BOOL,   &( glyphs.shadow_word_pain               ) },
+      { "glyph_shadow",                  OPT_BOOL,   &( glyphs.shadow                         ) },
+      { "glyph_smite",                   OPT_BOOL,   &( glyphs.smite                          ) },
       // @option_doc loc=player/priest/misc title="Misc"
-      { "devious_mind_delay",            OPT_FLT,  &( devious_mind_delay                    ) },
-      { "use_shadow_word_death",         OPT_BOOL, &( use_shadow_word_death                 ) },
+      { "use_shadow_word_death",         OPT_BOOL,   &( use_shadow_word_death                 ) },
+      { "power_infusion_target",         OPT_STRING, &( power_infusion_target_str             ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -2393,6 +2212,20 @@ std::vector<option_t>& priest_t::get_options()
   }
 
   return options;
+}
+
+// priest_t::save =============================================================
+
+bool priest_t::save( FILE* file, int save_type )
+{
+  player_t::save( file, save_type );
+
+  if ( save_type == SAVE_ALL )
+  {
+    if ( ! power_infusion_target_str.empty() ) util_t::fprintf( file, "power_infusion_target=%s\n", power_infusion_target_str.c_str() );
+  }
+
+  return true;
 }
 
 // priest_t::decode_set =====================================================
@@ -2437,3 +2270,34 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race
   return p;
 }
 
+// player_t::priest_init =====================================================
+
+void player_t::priest_init( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
+    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
+    p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
+  }
+
+  target_t* t = sim -> target;
+  t -> debuffs.misery        = new debuff_t( sim, "misery", 1, 24.0 );
+}
+
+// player_t::priest_combat_begin =============================================
+
+void player_t::priest_combat_begin( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> ooc_buffs() )
+    {
+      if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, 165.0 * 1.30 );
+      if ( sim -> overrides.divine_spirit ) p -> buffs.divine_spirit -> override( 1, 80.0 );
+    }
+  }
+
+  target_t* t = sim -> target;
+  if ( sim -> overrides.misery ) t -> debuffs.misery -> override( 1, 3 );
+}

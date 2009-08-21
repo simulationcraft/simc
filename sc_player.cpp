@@ -1293,7 +1293,6 @@ double player_t::agility() SC_CONST
 double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
-  a += buffs.fortitude;
   a *= composite_attribute_multiplier( ATTR_STAMINA );
   return floor( a );
 }
@@ -1316,7 +1315,6 @@ double player_t::intellect() SC_CONST
 double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
-  a += buffs.divine_spirit;
   if ( race == RACE_HUMAN )
   {
     a += floor( ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03 );
@@ -1341,8 +1339,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
   if ( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
   if ( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91*1.2;
-  if ( sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
-  if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
 
