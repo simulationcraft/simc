@@ -1922,8 +1922,8 @@ void priest_t::init_buffs()
   buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1, 8.0                                     );
   buffs_inner_fire          = new buff_t( this, "inner_fire"                                                      );
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                );
-  buffs_shadow_form         = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
-  buffs_shadow_weaving      = new buff_t( this, "shadow_form",         1                                          );
+  buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
+  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                          );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                    );
   buffs_tier5_2pc           = new buff_t( this, "tier5_2pc",           1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
 
