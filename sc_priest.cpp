@@ -18,6 +18,10 @@ struct priest_t : public player_t
   action_t* active_vampiric_embrace;
 
   // Buffs
+
+  buff_t* buffs_tier5_2pc;
+  buff_t* buffs_tier5_4pc;
+
   struct _buffs_t
   {
     int inner_fire;
@@ -171,6 +175,7 @@ struct priest_t : public player_t
   virtual void      init_gains();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_buffs();
   virtual void      init_actions();
   virtual void      reset();
   virtual void      init_party();
@@ -206,6 +211,7 @@ struct priest_spell_t : public spell_t
   }
 
   virtual double haste() SC_CONST;
+  virtual double cost() SC_CONST;
   virtual void   schedule_execute();
   virtual void   execute();
   virtual void   player_buff();
@@ -272,8 +278,6 @@ struct shadow_fiend_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-
-    if ( owner -> set_bonus.tier4_2pc() ) attribute_base[ ATTR_STAMINA ] += 75;
 
     melee = new melee_t( this );
   }
@@ -378,65 +382,6 @@ static void trigger_misery( action_t* a )
   else
   {
     e = new ( a -> sim ) expiration_t( a -> sim, a -> player, p -> talents.misery );
-  }
-}
-
-// push_tier5_2pc =============================================================
-
-static void push_tier5_2pc( spell_t*s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  assert( p -> buffs.tier5_2pc == 0 );
-
-  if ( p -> set_bonus.tier5_2pc() && p -> rngs.tier5_2pc -> roll( 0.06 ) )
-  {
-    p -> buffs.tier5_2pc = 1;
-    p -> buffs.mana_cost_reduction += 150;
-    p -> procs.tier5_2pc -> occur();
-  }
-
-}
-
-// pop_tier5_2pc =============================================================
-
-static void pop_tier5_2pc( spell_t*s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> buffs.tier5_2pc )
-  {
-    p -> buffs.tier5_2pc = 0;
-    p -> buffs.mana_cost_reduction -= 150;
-  }
-}
-
-// push_tier5_4pc =============================================================
-
-static void push_tier5_4pc( spell_t*s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( ! p -> buffs.tier5_4pc &&
-       p -> set_bonus.tier5_4pc() &&
-       p -> rngs.tier5_4pc -> roll( 0.40 ) )
-  {
-    p -> buffs.tier5_4pc = 1;
-    p -> spell_power[ SCHOOL_MAX ] += 100;
-    p -> procs.tier5_4pc -> occur();
-  }
-}
-
-// pop_tier5_4pc =============================================================
-
-static void pop_tier5_4pc( spell_t*s )
-{
-  priest_t* p = s -> player -> cast_priest();
-
-  if ( p -> buffs.tier5_4pc )
-  {
-    p -> buffs.tier5_4pc = 0;
-    p -> spell_power[ SCHOOL_MAX ] -= 100;
   }
 }
 
@@ -621,6 +566,20 @@ double priest_spell_t::haste() SC_CONST
   return h;
 }
 
+// priest_spell_t::cost =====================================================
+
+double priest_spell_t::cost() SC_CONST
+{
+  priest_t* p = player -> cast_priest();
+  double c = spell_t::cost();
+  if ( c > 0 )
+  {
+    if ( p -> buffs_tier5_2pc -> check() ) c -= 150;
+    if ( c < 0 ) c = 0;
+  }
+  return c;
+}
+
 // priest_spell_t::schedule_execute =========================================
 
 void priest_spell_t::schedule_execute()
@@ -660,10 +619,10 @@ void priest_spell_t::execute()
 
   if ( harmful )
   {
-    pop_tier5_2pc ( this );
-    push_tier5_2pc( this );
+    p -> buffs_tier5_2pc -> expire();
+    p -> buffs_tier5_4pc -> expire();
+    p -> buffs_tier5_2pc -> trigger();
   }
-  pop_tier5_4pc( this );
 
   p -> uptimes_improved_spirit_tap -> update( p -> _buffs.improved_spirit_tap != 0 );
   p -> uptimes_glyph_of_shadow     -> update( p -> _buffs.glyph_of_shadow     != 0 );
@@ -809,8 +768,6 @@ struct smite_t : public priest_spell_t
     base_execute_time -= p -> talents.divine_fury * 0.1;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
-
-    if ( p -> set_bonus.tier4_4pc() ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -982,8 +939,9 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual void tick()
   {
+    priest_t* p = player -> cast_priest();
     priest_spell_t::tick();
-    push_tier5_4pc( this );
+    p -> buffs_tier5_4pc -> trigger();
   }
 
   virtual void last_tick()
@@ -1449,8 +1407,6 @@ struct mind_flay_tick_t : public priest_spell_t
     }
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
-
-    if ( p -> set_bonus.tier4_4pc() ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1926,9 +1882,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     consume_resource();
     update_ready();
     double duration = 15.1;
-    if ( p -> set_bonus.tier4_2pc() ) duration += 3.0;
     p -> summon_pet( "shadow_fiend", duration );
-
     p -> _cooldowns.shadow_fiend = cooldown_ready;
   }
 
@@ -2163,6 +2117,18 @@ void priest_t::init_rng()
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
   rng_shadow_weaving     = get_rng( "shadow_weaving" );
   rng_surge_of_light     = get_rng( "surge_of_light" );
+}
+
+// priest_t::init_buffs ======================================================
+
+void priest_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+
+  buffs_tier5_2pc = new      buff_t( this, "tier5_2pc",                        1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
+  buffs_tier5_4pc = new stat_buff_t( this, "tier5_4pc", STAT_SPELL_POWER, 100, 1, 10.0, 0.0, set_bonus.tier5_4pc() * 0.40 );
 }
 
 // priest_t::init_actions =====================================================

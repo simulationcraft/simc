@@ -24,6 +24,8 @@ struct rogue_t : public player_t
   action_t* active_slice_and_dice;
 
   // Buffs
+  buff_t* buffs_tier9_2pc;
+
   struct _buffs_t
   {
     int adrenaline_rush;
@@ -44,7 +46,6 @@ struct rogue_t : public player_t
     int tricks_ready;
     player_t* tricks_target;
     double combo_points_proc[ MAX_COMBO_POINTS+1 ];
-    int tier9_2pc;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _buffs_t ) ); }
     _buffs_t() { reset(); }
@@ -83,6 +84,8 @@ struct rogue_t : public player_t
   gain_t* gains_overkill;
   gain_t* gains_quick_recovery;
   gain_t* gains_relentless_strikes;
+  gain_t* gains_tier8_2pc;
+  gain_t* gains_tier9_2pc;
 
   // Procs
   proc_t* procs_combo_points;
@@ -249,6 +252,7 @@ struct rogue_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_buffs();
   virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
@@ -881,11 +885,11 @@ void rogue_attack_t::execute()
 
   p -> _buffs.shadowstep = 0;
 
-  if ( p -> _buffs.tier9_2pc && base_cost > 0 )
+  if ( p -> buffs_tier9_2pc -> check() && base_cost > 0 )
   {
-    p -> _buffs.tier9_2pc = 0;
+    p -> buffs_tier9_2pc -> expire();
     double refund = resource_consumed > 40 ? 40 : resource_consumed;
-    p -> resource_gain( RESOURCE_ENERGY, refund, p -> gains.tier9_2pc );
+    p -> resource_gain( RESOURCE_ENERGY, refund, p -> gains_tier9_2pc );
   }
 }
 
@@ -2288,12 +2292,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_attack_t::tick();
-
-    if ( p -> set_bonus.tier9_2pc() && p -> rngs.tier9_2pc -> roll( .02 ) )
-    {
-      p -> procs.tier9_2pc -> occur();
-      p -> _buffs.tier9_2pc = 1;
-    }
+    p -> buffs_tier9_2pc -> trigger();
   }
 };
 
@@ -2854,7 +2853,7 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_poison_t::tick();
     if ( p -> set_bonus.tier8_2pc() )
     {
-      p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains.tier8_2pc );
+      p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains_tier8_2pc );
     }
   }
 
@@ -3412,6 +3411,8 @@ void rogue_t::init_gains()
   gains_overkill           = get_gain( "overkill" );
   gains_quick_recovery     = get_gain( "quick_recovery" );
   gains_relentless_strikes = get_gain( "relentless_strikes" );
+  gains_tier8_2pc          = get_gain( "tier8_2pc" );
+  gains_tier9_2pc          = get_gain( "tier9_2pc" );
 }
 
 // rogue_t::init_procs =======================================================
@@ -3472,6 +3473,17 @@ void rogue_t::init_rng()
 
   rng_critical_strike_interval = get_rng( "critical_strike_interval", RNG_DISTRIBUTED );
   rng_critical_strike_interval -> average_range = false;
+}
+
+// rogue_t::init_buffs ======================================================
+
+void rogue_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+
+  buffs_tier9_2pc = new buff_t( this, "tier9_2pc", 1, 10.0, 0.0, set_bonus.tier9_2pc() * 0.02 );
 }
 
 // trigger_honor_among_thieves =============================================

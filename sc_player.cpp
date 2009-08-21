@@ -983,41 +983,13 @@ void player_t::init_gains()
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
-  gains.tier4_2pc              = get_gain( "tier4_2pc" );
-  gains.tier4_4pc              = get_gain( "tier4_4pc" );
-  gains.tier5_2pc              = get_gain( "tier5_2pc" );
-  gains.tier5_4pc              = get_gain( "tier5_4pc" );
-  gains.tier6_2pc              = get_gain( "tier6_2pc" );
-  gains.tier6_4pc              = get_gain( "tier6_4pc" );
-  gains.tier7_2pc              = get_gain( "tier7_2pc" );
-  gains.tier7_4pc              = get_gain( "tier7_4pc" );
-  gains.tier8_2pc              = get_gain( "tier8_2pc" );
-  gains.tier8_4pc              = get_gain( "tier8_4pc" );
-  gains.tier9_2pc              = get_gain( "tier9_2pc" );
-  gains.tier9_4pc              = get_gain( "tier9_4pc" );
-  gains.tier10_2pc             = get_gain( "tier10_2pc" );
-  gains.tier10_4pc             = get_gain( "tier10_4pc" );
 }
 
 // player_t::init_procs ====================================================
 
 void player_t::init_procs()
 {
-  procs.hat_donor = get_proc( "hat_donor",   sim );
-  procs.tier4_2pc = get_proc( "tier4_2pc",   sim );
-  procs.tier4_4pc = get_proc( "tier4_4pc",   sim );
-  procs.tier5_2pc = get_proc( "tier5_2pc",   sim );
-  procs.tier5_4pc = get_proc( "tier5_4pc",   sim );
-  procs.tier6_2pc = get_proc( "tier6_2pc",   sim );
-  procs.tier6_4pc = get_proc( "tier6_4pc",   sim );
-  procs.tier7_2pc = get_proc( "tier7_2pc",   sim );
-  procs.tier7_4pc = get_proc( "tier7_4pc",   sim );
-  procs.tier8_2pc = get_proc( "tier8_2pc",   sim );
-  procs.tier8_4pc = get_proc( "tier8_4pc",   sim );
-  procs.tier9_2pc = get_proc( "tier9_2pc",   sim );
-  procs.tier9_4pc = get_proc( "tier9_4pc",   sim );
-  procs.tier10_2pc = get_proc( "tier10_2pc", sim );
-  procs.tier10_4pc = get_proc( "tier10_4pc", sim );
+  procs.hat_donor = get_proc( "hat_donor", sim );
 }
 
 // player_t::init_uptimes ==================================================
@@ -1027,41 +999,12 @@ void player_t::init_uptimes()
   uptimes.moving        = get_uptime( "moving" );
   uptimes.replenishment = get_uptime( "replenishment" );
   uptimes.stunned       = get_uptime( "stunned" );
-  uptimes.tier4_2pc = get_uptime( "tier4_2pc" );
-  uptimes.tier4_4pc = get_uptime( "tier4_4pc" );
-  uptimes.tier5_2pc = get_uptime( "tier5_2pc" );
-  uptimes.tier5_4pc = get_uptime( "tier5_4pc" );
-  uptimes.tier6_2pc = get_uptime( "tier6_2pc" );
-  uptimes.tier6_4pc = get_uptime( "tier6_4pc" );
-  uptimes.tier7_2pc = get_uptime( "tier7_2pc" );
-  uptimes.tier7_4pc = get_uptime( "tier7_4pc" );
-  uptimes.tier8_2pc = get_uptime( "tier8_2pc" );
-  uptimes.tier8_4pc = get_uptime( "tier8_4pc" );
-  uptimes.tier9_2pc = get_uptime( "tier9_2pc" );
-  uptimes.tier9_4pc = get_uptime( "tier9_4pc" );
-  uptimes.tier10_2pc = get_uptime( "tier10_2pc" );
-  uptimes.tier10_4pc = get_uptime( "tier10_4pc" );
 }
 
 // player_t::init_rng ======================================================
 
 void player_t::init_rng()
 {
-  rngs.tier4_2pc = get_rng( "tier4_2pc" );
-  rngs.tier4_4pc = get_rng( "tier4_4pc" );
-  rngs.tier5_2pc = get_rng( "tier5_2pc" );
-  rngs.tier5_4pc = get_rng( "tier5_4pc" );
-  rngs.tier6_2pc = get_rng( "tier6_2pc" );
-  rngs.tier6_4pc = get_rng( "tier6_4pc" );
-  rngs.tier7_2pc = get_rng( "tier7_2pc" );
-  rngs.tier7_4pc = get_rng( "tier7_4pc" );
-  rngs.tier8_2pc = get_rng( "tier8_2pc" );
-  rngs.tier8_4pc = get_rng( "tier8_4pc" );
-  rngs.tier9_2pc = get_rng( "tier9_2pc" );
-  rngs.tier9_4pc = get_rng( "tier9_4pc" );
-  rngs.tier10_2pc = get_rng( "tier10_2pc" );
-  rngs.tier10_4pc = get_rng( "tier10_4pc" );
-
   rngs.lag_channel = get_rng( "lag_channel" );
   rngs.lag_gcd     = get_rng( "lag_gcd"     );
   rngs.lag_queue   = get_rng( "lag_queue"   );
@@ -1399,7 +1342,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
   if ( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91*1.2;
   if ( sim -> overrides.divine_spirit          ) buffs.divine_spirit = 80;
-  if ( sim -> overrides.ferocious_inspiration  ) buffs.ferocious_inspiration = 1;
   if ( sim -> overrides.fortitude              ) buffs.fortitude = 215;
   if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
   if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
@@ -1543,7 +1485,6 @@ void player_t::reset()
 
   buffs.reset();
   expirations.reset();
-  cooldowns.reset();
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -2935,12 +2876,8 @@ act_expression_t* player_t::create_expression( std::string& name,std::string& pr
   {
     bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
     if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
-    if ( name=="tier8_2pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier8_2pc,  ex?&expirations.tier8_2pc:0 ); else
-      if ( name=="tier8_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier8_4pc,  ex?&expirations.tier8_4pc:0 ); else
-	if ( name=="tier7_2pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_2pc,  ex?&expirations.tier7_2pc:0 ); else
-	  if ( name=="tier7_4pc" )            node= new oldbuff_expression_t( e_name, &buffs.tier7_4pc,  ex?&expirations.tier7_4pc:0 ); else
-	    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
-	      if ( name=="cast_time_reduction" )  node= new oldbuff_expression_t( e_name, &buffs.cast_time_reduction ,0, 2 );
+    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 ); else
+      if ( name=="cast_time_reduction" )  node= new oldbuff_expression_t( e_name, &buffs.cast_time_reduction ,0, 2 );
   }
   if ( ( prefix=="player" )&&( node==0 ) )
   {

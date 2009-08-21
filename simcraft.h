@@ -954,8 +954,6 @@ struct sim_t
   struct expirations_t
   {
     event_t* abominations_might;
-    event_t* ferocious_inspiration;
-    event_t* rampage;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
@@ -1372,8 +1370,6 @@ struct player_t
     double    blessing_of_wisdom;
     double    divine_spirit;
     double    cast_time_reduction;
-    pet_t*    demonic_pact_pet;
-    int       ferocious_inspiration;
     player_t* focus_magic;
     int       focus_magic_feedback;
     double    fortitude;
@@ -1382,18 +1378,10 @@ struct player_t
     double    mana_cost_reduction;
     double    mana_spring;
     int       power_infusion;
-    int       rampage;
     int       replenishment;
     int       shadow_form;
     int       tricks_of_the_trade;
     int       water_elemental;
-    int       tier4_2pc,  tier4_4pc;
-    int       tier5_2pc,  tier5_4pc;
-    int       tier6_2pc,  tier6_4pc;
-    int       tier7_2pc,  tier7_4pc;
-    int       tier8_2pc,  tier8_4pc;
-    int       tier9_2pc,  tier9_4pc;
-    int       tier10_2pc, tier10_4pc;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
     void reset()
     { 
@@ -1409,45 +1397,16 @@ struct player_t
     event_t* hysteria;
     event_t* replenishment;
     event_t* tricks_of_the_trade;
-    event_t *tier4_2pc,  *tier4_4pc;
-    event_t *tier5_2pc,  *tier5_4pc;
-    event_t *tier6_2pc,  *tier6_4pc;
-    event_t *tier7_2pc,  *tier7_4pc;
-    event_t *tier8_2pc,  *tier8_4pc;
-    event_t *tier9_2pc,  *tier9_4pc;
-    event_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
     expirations_t() { reset(); }
   };
   expirations_t expirations;
-
-  struct cooldowns_t
-  {
-    double bloodlust;
-    double tier4_2pc,  tier4_4pc;
-    double tier5_2pc,  tier5_4pc;
-    double tier6_2pc,  tier6_4pc;
-    double tier7_2pc,  tier7_4pc;
-    double tier8_2pc,  tier8_4pc;
-    double tier9_2pc,  tier9_4pc;
-    double tier10_2pc, tier10_4pc;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( cooldowns_t ) ); }
-    cooldowns_t() { reset(); }
-  };
-  cooldowns_t cooldowns;
 
   struct uptimes_t
   {
     uptime_t* moving;
     uptime_t* replenishment;
     uptime_t* stunned;
-    uptime_t *tier4_2pc,  *tier4_4pc;
-    uptime_t *tier5_2pc,  *tier5_4pc;
-    uptime_t *tier6_2pc,  *tier6_4pc;
-    uptime_t *tier7_2pc,  *tier7_4pc;
-    uptime_t *tier8_2pc,  *tier8_4pc;
-    uptime_t *tier9_2pc,  *tier9_4pc;
-    uptime_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };
@@ -1473,13 +1432,6 @@ struct player_t
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
-    gain_t *tier4_2pc,  *tier4_4pc;
-    gain_t *tier5_2pc,  *tier5_4pc;
-    gain_t *tier6_2pc,  *tier6_4pc;
-    gain_t *tier7_2pc,  *tier7_4pc;
-    gain_t *tier8_2pc,  *tier8_4pc;
-    gain_t *tier9_2pc,  *tier9_4pc;
-    gain_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };
@@ -1488,13 +1440,6 @@ struct player_t
   struct procs_t
   {
     proc_t* hat_donor;
-    proc_t *tier4_2pc,  *tier4_4pc;
-    proc_t *tier5_2pc,  *tier5_4pc;
-    proc_t *tier6_2pc,  *tier6_4pc;
-    proc_t *tier7_2pc,  *tier7_4pc;
-    proc_t *tier8_2pc,  *tier8_4pc;
-    proc_t *tier9_2pc,  *tier9_4pc;
-    proc_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( procs_t ) ); }
     procs_t() { reset(); }
   };
@@ -1507,13 +1452,6 @@ struct player_t
     rng_t* lag_channel;
     rng_t* lag_gcd;
     rng_t* lag_queue;
-    rng_t *tier4_2pc,  *tier4_4pc;
-    rng_t *tier5_2pc,  *tier5_4pc;
-    rng_t *tier6_2pc,  *tier6_4pc;
-    rng_t *tier7_2pc,  *tier7_4pc;
-    rng_t *tier8_2pc,  *tier8_4pc;
-    rng_t *tier9_2pc,  *tier9_4pc;
-    rng_t *tier10_2pc, *tier10_4pc;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };

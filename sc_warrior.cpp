@@ -495,15 +495,9 @@ double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
-  if ( harmful )
-    c -= p -> talents.focused_rage;
-
-  if ( p -> buffs_tier7_4pc_dps -> check() )
-    c -= 5;
-    
-  if ( c < 0 )
-    return 0;
-
+  if ( harmful ) c -= p -> talents.focused_rage;
+  if ( p -> buffs_tier7_4pc_dps -> check() ) c -= 5;
+  if ( c < 0 ) c = 0;
   return c;
 }
 // warrior_attack_t::consume_resource ========================================
@@ -1798,14 +1792,9 @@ double warrior_spell_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = spell_t::cost();
-  if ( harmful )
-    c -= p -> talents.focused_rage;
-
-  c -= p -> buffs.tier7_4pc;
-
-  if ( c < 0 )
-    return 0;
-
+  if ( harmful ) c -= p -> talents.focused_rage;
+  if ( p -> buffs_tier7_4pc_dps -> check() ) c -= 5;
+  if ( c < 0 ) c = 0;
   return c;
 }
 

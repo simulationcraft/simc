@@ -57,6 +57,7 @@ struct shaman_t : public player_t
   gain_t* gains_shamanistic_rage;
   gain_t* gains_thunderstorm;
   gain_t* gains_water_shield;
+  gain_t* gains_tier5_4pc_elemental;
 
   // Procs
   proc_t* procs_lightning_overload;
@@ -70,6 +71,7 @@ struct shaman_t : public player_t
   rng_t* rng_lightning_overload;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
+  rng_t* rng_tier5_4pc_elemental;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -177,14 +179,12 @@ struct shaman_t : public player_t
 
   struct tiers_t
   {
-    int  t4_2pc_elemental,  t4_4pc_elemental;
     int  t5_2pc_elemental,  t5_4pc_elemental;
     int  t6_2pc_elemental,  t6_4pc_elemental;
     int  t7_2pc_elemental,  t7_4pc_elemental;
     int  t8_2pc_elemental,  t8_4pc_elemental;
     int  t9_2pc_elemental,  t9_4pc_elemental;
     int t10_2pc_elemental, t10_4pc_elemental;
-    int  t4_2pc_enhancement,  t4_4pc_enhancement;
     int  t5_2pc_enhancement,  t5_4pc_enhancement;
     int  t6_2pc_enhancement,  t6_4pc_enhancement;
     int  t7_2pc_enhancement,  t7_4pc_enhancement;
@@ -494,13 +494,13 @@ static void trigger_improved_stormstrike( attack_t* a )
 
 static void trigger_tier5_4pc_elemental( spell_t* s )
 {
-  if ( s -> result != RESULT_CRIT ) return;
-
   shaman_t* p = s -> player -> cast_shaman();
 
-  if ( p -> tiers.t5_4pc_elemental && p -> rngs.tier5_4pc -> roll( 0.25 ) )
+  if ( ! p -> tiers.t5_4pc_elemental ) return;
+
+  if ( p -> rng_tier5_4pc_elemental -> roll( 0.25 ) )
   {
-    p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains.tier5_4pc );
+    p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains_tier5_4pc_elemental );
   }
 }
 
@@ -509,6 +509,8 @@ static void trigger_tier5_4pc_elemental( spell_t* s )
 static void trigger_tier8_4pc_elemental( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
+
+  if ( ! p -> tiers.t8_4pc_elemental ) return;
 
   struct lightning_bolt_dot_t : public shaman_spell_t
   {
@@ -882,7 +884,6 @@ double shaman_spell_t::cost() SC_CONST
   double cr = cost_reduction();
   if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
   c *= 1.0 - cr;
-  if ( p -> buffs.tier4_4pc ) c -= 270;
   if ( c < 0 ) c = 0;
   return c;
 }
@@ -897,7 +898,6 @@ void shaman_spell_t::consume_resource()
   {
     p -> buffs_elemental_focus -> decrement();
   }
-  p -> buffs.tier4_4pc = 0;
 }
 
 // shaman_spell_t::execute_time ============================================
@@ -952,10 +952,6 @@ void shaman_spell_t::execute()
 	trigger_elemental_oath( this );
 	p -> buffs_elemental_devastation -> trigger();
 	p -> buffs_elemental_focus -> trigger( 2 );
-      }
-      if ( p -> tiers.t4_4pc_elemental )
-      {
-        p -> buffs.tier4_4pc = p -> rngs.tier4_4pc -> roll( 0.11 ) ;
       }
     }
   }
@@ -1161,13 +1157,10 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
-      trigger_tier5_4pc_elemental( this );
       if ( result == RESULT_CRIT )
       {
-		if ( p -> tiers.t8_4pc_elemental ) 
-		{
-		  trigger_tier8_4pc_elemental( this );
-		}
+	trigger_tier5_4pc_elemental( this );
+	trigger_tier8_4pc_elemental( this );
       }
     }
     p -> buffs_electrifying_wind -> trigger();
@@ -2763,8 +2756,6 @@ void shaman_t::init_items()
 
   if ( talents.dual_wield )
   {
-    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_enhancement = 1;
-    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_enhancement = 1;
     if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_enhancement = 1;
     if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_enhancement = 1;
     if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_enhancement = 1;
@@ -2780,8 +2771,6 @@ void shaman_t::init_items()
   }
   else
   {
-    if ( set_bonus.tier4_2pc() ) tiers.t4_2pc_elemental = 1;
-    if ( set_bonus.tier4_4pc() ) tiers.t4_4pc_elemental = 1;
     if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_elemental = 1;
     if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_elemental = 1;
     if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_elemental = 1;
@@ -2843,9 +2832,10 @@ void shaman_t::init_gains()
   player_t::init_gains();
 
   gains_improved_stormstrike = get_gain( "improved_stormstrike" );
-  gains_shamanistic_rage     = get_gain( "shamanistic_rage" );
-  gains_thunderstorm         = get_gain( "thunderstorm"     );
-  gains_water_shield         = get_gain( "water_shield"     );
+  gains_shamanistic_rage     = get_gain( "shamanistic_rage"     );
+  gains_thunderstorm         = get_gain( "thunderstorm"         );
+  gains_water_shield         = get_gain( "water_shield"         );
+  gains_tier5_4pc_elemental  = get_gain( "tier5_4pc_elemental"  );
 }
 
 // shaman_t::init_procs ======================================================
@@ -2868,6 +2858,7 @@ void shaman_t::init_rng()
   rng_lightning_overload   = get_rng( "lightning_overload"   );
   rng_static_shock         = get_rng( "static_shock"         );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
+  rng_tier5_4pc_elemental  = get_rng( "tier5_4pc_elemental"  );
 }
 
 // shaman_t::init_actions =====================================================

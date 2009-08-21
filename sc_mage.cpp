@@ -46,6 +46,7 @@ struct mage_t : public player_t
   // Procs
   proc_t* procs_deferred_ignite;
   proc_t* procs_mana_gem;
+  proc_t* procs_tier8_4pc;
 
   // Up-Times
   uptime_t* uptimes_arcane_blast[ 5 ];
@@ -58,6 +59,7 @@ struct mage_t : public player_t
   rng_t* rng_empowered_fire;
   rng_t* rng_ghost_charge;
   rng_t* rng_improved_water_elemental;
+  rng_t* rng_tier8_4pc;
 
   // Options
   std::string focus_magic_target_str;
@@ -498,10 +500,10 @@ static bool trigger_tier8_4pc( spell_t* s )
   if ( ! p -> set_bonus.tier8_4pc() )
     return false;
 
-  if ( ! p -> rngs.tier8_4pc -> roll( 0.25 ) )
+  if ( ! p -> rng_tier8_4pc -> roll( 0.25 ) )
     return false;
 
-  p -> procs.tier8_4pc -> occur();
+  p -> procs_tier8_4pc -> occur();
 
   return true;
 }
@@ -1522,7 +1524,6 @@ struct presence_of_mind_t : public mage_spell_t
     check_talent( p -> talents.presence_of_mind );
 
     cooldown = 120.0;
-    if ( p -> set_bonus.tier4_4pc() ) cooldown -= 24.0;
     cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
 
     if ( options_str.empty() )
@@ -2968,7 +2969,8 @@ void mage_t::init_procs()
   player_t::init_procs();
 
   procs_deferred_ignite = get_proc( "deferred_ignite",      sim );
-  procs_mana_gem        = get_proc( "mana_gem"            , sim );
+  procs_mana_gem        = get_proc( "mana_gem",             sim );
+  procs_tier8_4pc       = get_proc( "tier8_4pc",            sim );
 }
 
 // mage_t::init_uptimes ====================================================
@@ -2997,6 +2999,7 @@ void mage_t::init_rng()
   rng_empowered_fire           = get_rng( "empowered_fire"           );
   rng_ghost_charge             = get_rng( "ghost_charge"             );
   rng_improved_water_elemental = get_rng( "improved_water_elemental" );
+  rng_tier8_4pc                = get_rng( "tier8_4pc"                );
 }
 
 // mage_t::init_actions ======================================================
