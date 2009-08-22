@@ -700,7 +700,7 @@ const char* chart_t::gains( std::string& s,
   for ( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * g -> actual / total_gain ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), (int) floor( 100.0 * g -> actual / total_gain + 0.5 ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
