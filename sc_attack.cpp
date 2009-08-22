@@ -100,50 +100,53 @@ void attack_t::player_buff()
   player_expertise = p -> composite_attack_expertise();
   player_crit      = p -> composite_attack_crit();
 
-  if ( p -> race == RACE_ORC )
+  if ( weapon )
   {
-    switch ( weapon -> type )
+    if ( p -> race == RACE_ORC )
     {
-    case WEAPON_AXE:
-    case WEAPON_AXE_2H:
-    case WEAPON_FIST:
-      player_expertise += 0.25 * 0.05;
-      break;
+      switch ( weapon -> type )
+      {
+      case WEAPON_AXE:
+      case WEAPON_AXE_2H:
+      case WEAPON_FIST:
+	player_expertise += 0.25 * 0.05;
+	break;
+      }
     }
-  }
-  else if ( p -> race == RACE_TROLL )
-  {
-    switch ( weapon -> type )
+    else if ( p -> race == RACE_TROLL )
     {
-    case WEAPON_THROWN:
-    case WEAPON_BOW:
-      player_crit += 0.01;
-      break;
+      switch ( weapon -> type )
+      {
+      case WEAPON_THROWN:
+      case WEAPON_BOW:
+	player_crit += 0.01;
+	break;
+      }
     }
-  }
-  else if ( p -> race == RACE_HUMAN )
-  {
-    switch ( weapon -> type )
+    else if ( p -> race == RACE_HUMAN )
     {
-    case WEAPON_MACE:
-    case WEAPON_MACE_2H:
-    case WEAPON_SWORD:
-    case WEAPON_SWORD_2H:
-      player_expertise += 0.25 * 0.03;
-      break;
+      switch ( weapon -> type )
+      {
+      case WEAPON_MACE:
+      case WEAPON_MACE_2H:
+      case WEAPON_SWORD:
+      case WEAPON_SWORD_2H:
+	player_expertise += 0.25 * 0.03;
+	break;
+      }
     }
-  }
-  else if ( p -> race == RACE_DWARF )
-  {
-    switch ( weapon -> type )
+    else if ( p -> race == RACE_DWARF )
     {
-    case WEAPON_GUN: 
-      player_crit += 0.01;
-      break;
-    case WEAPON_MACE:
-    case WEAPON_MACE_2H:
-      player_expertise += 0.25 * 0.05;
-      break;
+      switch ( weapon -> type )
+      {
+      case WEAPON_GUN: 
+	player_crit += 0.01;
+	break;
+      case WEAPON_MACE:
+      case WEAPON_MACE_2H:
+	player_expertise += 0.25 * 0.05;
+	break;
+      }
     }
   }
 

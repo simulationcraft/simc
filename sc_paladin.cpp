@@ -9,7 +9,7 @@
 // Paladin
 // ==========================================================================
 
-enum { SEAL_NONE, SEAL_OF_COMMAND, SEAL_OF_VENGEANCE, SEAL_MAX };
+enum { SEAL_NONE=0, SEAL_OF_COMMAND, SEAL_OF_VENGEANCE, SEAL_MAX };
 
 struct paladin_t : public player_t
 {
@@ -216,6 +216,8 @@ static void trigger_righteous_vengeance( attack_t* a )
       base_tick_time = 1;
       num_ticks      = 8;
       tick_power_mod = 0;
+
+      reset();
     }
     void player_buff()   {}
     void target_debuff( int dmg_type ) {}
@@ -256,6 +258,8 @@ static void trigger_seal_of_command( attack_t* a )
       weapon                 = &( p -> main_hand_weapon );
       normalize_weapon_speed = true;
       weapon_multiplier      = 0.33;
+
+      reset();
     }
   };
 
@@ -296,6 +300,8 @@ static void trigger_seal_of_vengeance_dot( attack_t* a )
       base_spell_power_multiplier = 1;
 
       base_multiplier *= ( 1 + p -> talents.seals_of_the_pure * 0.03 );
+
+      reset();
     }
 
     virtual void execute()
@@ -383,6 +389,8 @@ static void trigger_seal_of_vengeance_attack( attack_t* a )
       weapon                 = &( p -> main_hand_weapon );
       normalize_weapon_speed = true;
       weapon_multiplier      = 0.33;
+
+      reset();
     }
   };
 
