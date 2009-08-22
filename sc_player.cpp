@@ -718,15 +718,15 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 
 void player_t::init_core()
 {
-  stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating;
-  stats. crit_rating = gear. crit_rating + enchant. crit_rating;
-  stats.haste_rating = gear.haste_rating + enchant.haste_rating;
+  stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating + sim -> enchant.  hit_rating;
+  stats. crit_rating = gear. crit_rating + enchant. crit_rating + sim -> enchant. crit_rating;
+  stats.haste_rating = gear.haste_rating + enchant.haste_rating + sim -> enchant.haste_rating;
 
   initial_haste_rating = stats.haste_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
-    stats.attribute[ i ] = gear.attribute[ i ] + enchant.attribute[ i ];
+    stats.attribute[ i ] = gear.attribute[ i ] + enchant.attribute[ i ] + sim -> enchant.attribute[ i ];
 
     attribute[ i ] = attribute_initial[ i ] = attribute_base[ i ] + stats.attribute[ i ];
   }
@@ -743,9 +743,9 @@ void player_t::init_race()
 
 void player_t::init_spell()
 {
-  stats.spell_power       = gear.spell_power       + enchant.spell_power;
-  stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration;
-  stats.mp5               = gear.mp5               + enchant.mp5;
+  stats.spell_power       = gear.spell_power       + enchant.spell_power       + sim -> enchant.spell_power;
+  stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration + sim -> enchant.spell_penetration;
+  stats.mp5               = gear.mp5               + enchant.mp5               + sim -> enchant.mp5;
 
   initial_spell_power[ SCHOOL_MAX ] = base_spell_power + stats.spell_power;
 
@@ -768,9 +768,9 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  stats.attack_power             = gear.attack_power             + enchant.attack_power;
-  stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating;
-  stats.armor_penetration_rating = gear.armor_penetration_rating + enchant.armor_penetration_rating;
+  stats.attack_power             = gear.attack_power             + enchant.attack_power             + sim -> enchant.attack_power;
+  stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating         + sim -> enchant.expertise_rating;
+  stats.armor_penetration_rating = gear.armor_penetration_rating + enchant.armor_penetration_rating + sim -> enchant.armor_penetration_rating;
 
   initial_attack_power = base_attack_power + stats.attack_power;
 
@@ -787,7 +787,7 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  stats.armor = gear.armor + enchant.armor;
+  stats.armor = gear.armor + enchant.armor + sim -> enchant.armor;
 
   initial_armor = base_armor + stats.armor;
 }
@@ -829,7 +829,7 @@ void player_t::init_resources( bool force )
   {
     if ( force || resource_initial[ i ] == 0 )
     {
-      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ];
+      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ] + sim -> enchant.resource[ i ];
 
       if ( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
       if ( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;

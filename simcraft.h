@@ -844,6 +844,9 @@ struct sim_t
   std::string default_region_str, default_server_str;
   alias_t     alias;
 
+  // Default stat enchants
+  gear_stats_t enchant;
+
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
 

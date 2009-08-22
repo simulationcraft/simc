@@ -1425,6 +1425,27 @@ std::vector<option_t>& sim_t::get_options()
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
       { "alias+",                           OPT_APPEND, &( alias.alias_str                          ) },
+      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
+      { "default_enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
+      { "default_enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
+      { "default_enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
+      { "default_enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
+      { "default_enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
+      { "default_enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
+      { "default_enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
+      { "default_enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
+      { "default_enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
+      { "default_enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
+      { "default_enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
+      { "default_enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
+      { "default_enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
+      { "default_enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
+      { "default_enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
+      { "default_enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
+      { "default_enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
+      { "default_enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
+      { "default_enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
+      { "default_enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

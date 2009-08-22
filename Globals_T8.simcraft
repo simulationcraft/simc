@@ -76,6 +76,28 @@ override.swift_retribution=1
 # Support for Death Knights does not yet exist.
 override.crypt_fever=1
 
+# Default stat modifications applying to all players.
+default_enchant_strength=0
+default_enchant_agility=0
+default_enchant_stamina=0
+default_enchant_intellect=0
+default_enchant_spirit=0
+default_enchant_spell_power=0
+default_enchant_mp5=0
+default_enchant_attack_power=0
+default_enchant_expertise_rating=0
+default_enchant_armor_penetration_rating=0
+default_enchant_armor=0
+default_enchant_haste_rating=0
+default_enchant_hit_rating=0
+default_enchant_crit_rating=0
+default_enchant_health=0
+default_enchant_mana=0
+default_enchant_rage=0
+default_enchant_energy=0
+default_enchant_focus=0
+default_enchant_runic=0
+
 # To generate scale factors, set calculate_scale_factors=1
 # To generate scale factors for just one stat, add scale_only=xxx
 calculate_scale_factors=0
