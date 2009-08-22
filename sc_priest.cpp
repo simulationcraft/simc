@@ -657,7 +657,7 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs_shadow_form -> check();
+    tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( result_is_hit() )
@@ -737,7 +737,7 @@ struct vampiric_touch_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs_shadow_form -> check();
+    tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( result_is_hit() )
@@ -866,7 +866,7 @@ struct devouring_plague_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = p -> buffs_shadow_form -> check();
+    tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
     priest_spell_t::execute();
     if ( devouring_plague_burst ) devouring_plague_burst -> execute();
