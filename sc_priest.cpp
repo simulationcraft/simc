@@ -348,7 +348,7 @@ void priest_spell_t::execute()
   {
     if ( school == SCHOOL_SHADOW )
     {
-      p -> buffs_shadow_weaving -> increment();
+      p -> buffs_shadow_weaving -> trigger();
     }
     if ( result == RESULT_CRIT )
     {

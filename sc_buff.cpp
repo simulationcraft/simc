@@ -95,18 +95,20 @@ void buff_t::init()
   constant = false;
   expiration = 0;
 
-  stack_occurrence.resize( max_stack + 1 );
-  aura_str.resize( max_stack + 1 );
-
-  char *buffer = new char[name_str.size() + 16];
-  assert( buffer != NULL );
-
-  for ( int i=1; i <= max_stack; i++ )
+  if( max_stack >= 0 )
   {
-    sprintf( buffer, "%s(%d)", name_str.c_str(), i );
-    aura_str[ i ] = buffer;
+    stack_occurrence.resize( max_stack + 1 );
+    aura_str.resize( max_stack + 1 );
+
+    char *buffer = new char[ name_str.size() + 16 ];
+
+    for ( int i=1; i <= max_stack; i++ )
+    {
+      sprintf( buffer, "%s(%d)", name_str.c_str(), i );
+      aura_str[ i ] = buffer;
+    }
+    delete [] buffer;
   }
-  delete [] buffer;
 }
 
 // buff_t::may_react ========================================================
@@ -117,6 +119,8 @@ bool buff_t::may_react( int stack )
   if ( stack > current_stack ) return false;
 
   if( stack == 0 ) return sim -> time_to_think( last_start );
+
+  assert( max_stack > 0 );
 
   return sim -> time_to_think( stack_occurrence[ stack ] );
 }
@@ -244,7 +248,14 @@ void buff_t::start( int    stacks,
 
   start_count++;
 
-  current_stack = std::min( stacks, max_stack );
+  if ( max_stack < 0 )
+  {
+    current_stack = stacks;
+  }
+  else
+  {
+    current_stack = std::min( stacks, max_stack );
+  }
 
   if ( value >= 0 ) current_value = value;
 
@@ -292,7 +303,11 @@ void buff_t::refresh( int    stacks,
 
   refresh_count++;
 
-  if ( current_stack < max_stack )
+  if ( max_stack < 0 )
+  {
+    current_stack += stacks;
+  }
+  else if ( current_stack < max_stack )
   {
     int before_stack = current_stack;
 
@@ -325,7 +340,7 @@ void buff_t::refresh( int    stacks,
 void buff_t::override( int    stacks,
 		       double value )
 {
-  assert( max_stack > 0 );
+  assert( max_stack != 0 );
   assert( current_stack == 0 );
   duration = 0;
   start( stacks, value );
@@ -356,13 +371,18 @@ void buff_t::expire()
 
 void buff_t::aura_gain()
 {
-  if ( player )
+  if ( sim -> log )
   {
-    player -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
-  }
-  else
-  {
-    sim -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+    const char* s = ( max_stack < 0 ) ? name() : aura_str[ current_stack ].c_str();
+
+    if ( player )
+    {
+      player -> aura_gain( s, aura_id );
+    }
+    else
+    {
+      sim -> aura_gain( s, aura_id );
+    }
   }
 }
 
@@ -567,7 +587,12 @@ debuff_t::debuff_t( sim_t*             s,
 
 void debuff_t::aura_gain()
 {
-  sim -> target -> aura_gain( aura_str[ current_stack ].c_str(), aura_id );
+  if ( sim -> log )
+  {
+    const char* s = ( max_stack < 0 ) ? name() : aura_str[ current_stack ].c_str();
+
+    sim -> target -> aura_gain( s, aura_id );
+  }
 }
 
 // debuff_t::aura_loss ======================================================

@@ -2245,7 +2245,7 @@ struct haunt_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
-      p -> buffs_haunted -> increment();
+      p -> buffs_haunted -> trigger();
       p -> buffs_shadow_embrace -> trigger();
       trigger_everlasting_affliction( this );
     }

@@ -805,7 +805,7 @@ void death_knight_spell_t::execute()
 
     if ( result == RESULT_CRIT )
     {
-      p -> buffs_bloody_vengeance -> increment();
+      p -> buffs_bloody_vengeance -> trigger();
     }
   }
   else
@@ -2020,7 +2020,7 @@ void death_knight_t::init_buffs()
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
   buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,  0.0, talents.bloody_vengeance );
-  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0, 10.0, 0.15                     );
+  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0, 10.0, talents.scent_of_blood ? 0.15 : 0.00 );
 
   struct bloodworms_buff_t : public buff_t
   {

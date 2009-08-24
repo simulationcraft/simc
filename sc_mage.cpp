@@ -726,7 +726,7 @@ static void trigger_hot_streak( spell_t* s )
     }
     if ( result == RESULT_CRIT )
     {
-      p -> buffs_hot_streak_crits -> increment();
+      p -> buffs_hot_streak_crits -> trigger();
 
       if ( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
@@ -777,7 +777,7 @@ static void trigger_incanters_absorption( mage_t* p,
 
   if ( bonus_spell_power > bonus_max ) bonus_spell_power = bonus_max;
 
-  buff -> increment( 1, bonus_spell_power );
+  buff -> trigger( 1, bonus_spell_power );
 }
 
 // target_is_frozen ========================================================
@@ -1142,7 +1142,7 @@ struct arcane_blast_t : public mage_spell_t
       p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * ( sim -> P322 ? 0.08 : 0.04 ) );
       p -> buffs_tier8_2pc -> trigger();
     }
-    p -> buffs_arcane_blast -> increment();
+    p -> buffs_arcane_blast -> trigger();
   }
 
   virtual bool ready()
