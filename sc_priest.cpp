@@ -1181,18 +1181,21 @@ struct mind_flay_t : public priest_spell_t
   double mb_wait;
   int    swp_refresh;
   int    devious_mind_priority;
+  int    cut_for_mb;
 
   mind_flay_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_priority( 0 )
+      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_priority( 0 ),
+                                                                         cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.mind_flay );
 
     option_t options[] =
     {
-      { "swp_refresh",           OPT_BOOL, &swp_refresh           },
-      { "mb_wait",               OPT_FLT,  &mb_wait               },
       { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
+      { "cut_for_mb",            OPT_BOOL, &cut_for_mb            },
+      { "mb_wait",               OPT_FLT,  &mb_wait               },
+      { "swp_refresh",           OPT_BOOL, &swp_refresh           },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1212,6 +1215,16 @@ struct mind_flay_t : public priest_spell_t
 
   virtual void execute()
   {
+    priest_t* p = player -> cast_priest();
+
+    if ( cut_for_mb )
+    {
+      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) <= ( 2 * base_tick_time * haste() ) )
+      {
+        num_ticks = 2;
+      }
+    }
+
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
@@ -1233,7 +1246,11 @@ struct mind_flay_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( swp_refresh )
+    // Optional check to only cast Mind Flay if there's 2 or less ticks left on SW:P
+    // This allows a action+=/mind_flay,swp_refresh to be added as a higher priority to ensure that SW:P doesn't fall off
+    // Won't be necessary as part of a standard rotation, but if there's movement or other delays in casting it would have
+    // it's uses.
+    if ( swp_refresh && ( p -> talents.pain_and_suffering > 0 ) )
     {
       if ( ! p -> active_shadow_word_pain )
         return false;
@@ -1243,12 +1260,15 @@ struct mind_flay_t : public priest_spell_t
         return false;
     }
 
+    // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast 
+    // is about to come off it's cooldown.
     if ( mb_wait )
     {
       if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_wait )
         return false;
     }
 
+    // If this option is set, don't cast Mind Flay if we don't have the Tier8 4pc bonus up (only if the character has tier8_4pc=1)
     if ( devious_mind_priority )
     {
       if ( p -> set_bonus.tier8_4pc() && ! p -> buffs_devious_mind -> check() )
@@ -1963,7 +1983,7 @@ void priest_t::init_actions()
       if ( talents.dispersion ) action_list_str += "/dispersion";
       if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_wait=0,mb_priority=0";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
-      action_list_str += "/shadow_word_death"; // when moving
+      action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     case TREE_DISCIPLINE:
       action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
