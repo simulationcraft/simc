@@ -1127,7 +1127,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if ( c != 0 )
     {
-      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P322 ? 1.30 : 2.00 );
+      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P322 ? 1.75 : 2.00 );
       if ( p -> set_bonus.tier5_2pc() ) c += base_cost * 0.05;
     }
     return c;
@@ -2906,7 +2906,7 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         ( sim -> P322 ? 4 : 3 ), 10.0 );
+  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         ( sim -> P322 ? 4 : 3 ), ( sim -> P322 ? 6.0 : 10.0 ) );
   buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
   buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );

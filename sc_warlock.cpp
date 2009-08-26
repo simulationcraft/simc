@@ -313,7 +313,12 @@ struct warlock_pet_t : public pet_t
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + ( o -> talents.fel_intellect * 0.03 +
                                                               o -> talents.fel_vitality  * 0.05 );
 
+    base_attack_crit = 0.0328;
+    base_spell_crit  = 0.0092;
+    
     initial_attack_power_per_strength = 2.0;
+    initial_attack_crit_per_agility   = owner -> initial_attack_crit_per_agility;
+    initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
 
     health_per_stamina = 10;
     mana_per_intellect = 10.8;
@@ -556,7 +561,7 @@ struct imp_pet_t : public warlock_pet_t
     attribute_base[ ATTR_STRENGTH  ] = 297;
     attribute_base[ ATTR_AGILITY   ] =  79;
     attribute_base[ ATTR_STAMINA   ] = 118;
-    attribute_base[ ATTR_INTELLECT ] = 369;
+    attribute_base[ ATTR_INTELLECT ] = 424;
     attribute_base[ ATTR_SPIRIT    ] = 367;
 
     resource_base[ RESOURCE_HEALTH ] = 4011;

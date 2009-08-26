@@ -22,7 +22,7 @@ pet_t::pet_t( sim_t*             s,
   next_pet = owner -> pet_list;
   owner -> pet_list = this;
 
-  // Pets have inherent 5% critical strike chance
+  // Pets have inherent 5% critical strike chance if not overridden.
   base_spell_crit  = 0.05;
   base_attack_crit = 0.05;
 
@@ -94,9 +94,6 @@ void pet_t::init()
 
 void pet_t::init_base()
 {
-  initial_attack_power_per_strength = owner -> initial_attack_power_per_strength;
-  initial_attack_crit_per_agility   = owner -> initial_attack_crit_per_agility;
-  initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
 }
 
 // pet_t::reset =============================================================

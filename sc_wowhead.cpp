@@ -45,7 +45,7 @@ std::string& format_server( std::string& name )
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id )
 {
-  std::string url = "http://profiler.wowhead.com/?profile=load&id=" + id;
+  std::string url = "http://www.wowhead.com/?profile=load&id=" + id;
   std::string result;
 
   if ( http_t::download( result, url ) )
