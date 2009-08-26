@@ -567,7 +567,7 @@ struct auto_attack_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> auto_attack -> execute_event == 0 ); // not swinging
   }
 };

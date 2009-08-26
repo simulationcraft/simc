@@ -816,7 +816,7 @@ struct auto_attack_t : public warrior_attack_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1741,7 +1741,7 @@ struct pummel_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return warrior_attack_t::ready();
   }
 };

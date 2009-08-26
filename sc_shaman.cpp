@@ -758,7 +758,7 @@ struct auto_attack_t : public shaman_attack_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1601,7 +1601,7 @@ struct wind_shear_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
 };

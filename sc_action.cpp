@@ -370,7 +370,7 @@ void action_t::target_debuff( int dmg_type )
     // no spell power based debuffs at this time
   }
 
-  if ( t -> vulnerable ) target_multiplier *= 2.0;
+  if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= 2.0;
 
   t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
 
@@ -1024,11 +1024,11 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if ( sim -> target -> invulnerable )
+  if ( sim -> target -> debuffs.invulnerable -> check() )
     if ( harmful )
       return false;
 
-  if ( player -> moving )
+  if ( player -> buffs.moving -> check() )
     if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
       return false;
 
@@ -1037,15 +1037,15 @@ bool action_t::ready()
       return false;
 
   if ( moving )
-    if ( ! player -> moving )
+    if ( ! player -> buffs.moving -> check() )
       return false;
 
   if ( vulnerable )
-    if ( ! t -> vulnerable )
+    if ( ! t -> debuffs.vulnerable -> check() )
       return false;
 
   if ( invulnerable )
-    if ( ! t -> invulnerable )
+    if ( ! t -> debuffs.invulnerable -> check() )
       return false;
 
   //check action expression if any

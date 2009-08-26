@@ -1678,7 +1678,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 };

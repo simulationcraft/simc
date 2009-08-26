@@ -1127,7 +1127,7 @@ struct auto_attack_t : public rogue_attack_t
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1978,7 +1978,7 @@ struct kick_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return rogue_attack_t::ready();
   }
 };

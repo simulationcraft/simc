@@ -227,9 +227,6 @@ void regen_event_t::execute()
     if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
     p -> regen( sim -> regen_periodicity );
-
-    p -> uptimes.moving  -> update( p -> moving  != 0 );
-    p -> uptimes.stunned -> update( p -> stunned != 0 );
   }
 
   new ( sim ) regen_event_t( sim );

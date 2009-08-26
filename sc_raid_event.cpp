@@ -22,17 +22,12 @@ struct casting_event_t : public raid_event_t
   {
     target_t* t = sim -> target;
     raid_event_t::start();
-    t -> casting++;
-    if ( sim -> log ) log_t::output( sim, "%s is casting (%d).", t -> name(), t -> casting );
+    t -> debuffs.casting -> increment();
   }
   virtual void finish()
   {
     target_t* t = sim -> target;
-    t -> casting--;
-    if ( ! t -> casting )
-    {
-      if ( sim -> log ) log_t::output( sim, "%s is no longer casting.", t -> name() );
-    }
+    t -> debuffs.casting -> decrement();
     raid_event_t::finish();
   }
 };
@@ -56,16 +51,14 @@ struct invulnerable_event_t : public raid_event_t
       p -> interrupt();
       p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
     }
-    t -> invulnerable++;
-    if ( sim -> log ) log_t::output( sim, "%s is invulnerable (%d).", t -> name(), t -> invulnerable );
+    t -> debuffs.invulnerable -> increment();
   }
   virtual void finish()
   {
     target_t* t = sim -> target;
-    t -> invulnerable--;
-    if ( ! t -> invulnerable )
+    t -> debuffs.invulnerable -> decrement();
+    if ( ! t -> debuffs.invulnerable -> check() )
     {
-      if ( sim -> log ) log_t::output( sim, "%s is no longer invulnerable.", t -> name() );
       // FIXME! restoring optimal_raid target debuffs?
     }
     raid_event_t::finish();
@@ -95,10 +88,9 @@ struct movement_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> moving++;
+      p -> buffs.moving -> increment();
       if ( p -> sleeping ) continue;
       p -> interrupt();
-      if ( sim -> log ) log_t::output( sim, "%s is moving (%d).", p -> name(), p -> moving );
     }
   }
   virtual void finish()
@@ -107,12 +99,8 @@ struct movement_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> moving--;
+      p -> buffs.moving -> decrement();
       if ( p -> sleeping ) continue;
-      if ( ! p -> moving )
-      {
-        if ( sim -> log ) log_t::output( sim, "%s is no longer moving.", p -> name() );
-      }
     }
     raid_event_t::finish();
   }
@@ -134,10 +122,9 @@ struct stun_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> stunned++;
+      p -> buffs.stunned -> increment();
       if ( p -> sleeping ) continue;
       p -> interrupt();
-      if ( sim -> log ) log_t::output( sim, "%s is stunned (%d).", p -> name(), p -> stunned );
     }
   }
   virtual void finish()
@@ -146,11 +133,10 @@ struct stun_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> stunned--;
+      p -> buffs.stunned -> decrement();
       if ( p -> sleeping ) continue;
-      if ( ! p -> stunned )
+      if ( ! p -> buffs.stunned -> check() )
       {
-        if ( sim -> log ) log_t::output( sim, "%s is no longer stunned.", p -> name() );
         p -> schedule_ready();
       }
     }
@@ -206,17 +192,12 @@ struct vulnerable_event_t : public raid_event_t
   {
     target_t* t = sim -> target;
     raid_event_t::start();
-    t -> vulnerable++;
-    if ( sim -> log ) log_t::output( sim, "%s is vulnerable (%d).", t -> name(), t -> vulnerable );
+    t -> debuffs.vulnerable -> increment();
   }
   virtual void finish()
   {
     target_t* t = sim -> target;
-    t -> vulnerable--;
-    if ( ! t -> vulnerable )
-    {
-      if ( sim -> log ) log_t::output( sim, "%s is no longer vulnerable.", t -> name() );
-    }
+    t -> debuffs.vulnerable -> decrement();
     raid_event_t::finish();
   }
 };

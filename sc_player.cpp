@@ -281,7 +281,7 @@ player_t::player_t( sim_t*             s,
     next( 0 ), index( -1 ), type( t ), level( 80 ), tank( 0 ),
     party( 0 ), member( 0 ),
     skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
-    potion_used( 0 ), stunned( 0 ), moving( 0 ), sleeping( 0 ), initialized( 0 ),
+    potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), spell_haste( 1.0 ), attack_haste( 1.0 ),
@@ -854,6 +854,10 @@ void player_t::init_buffs()
 {
   buffs.heroic_presence = new buff_t( this, "heroic_presence", 1 );
   buffs.replenishment   = new buff_t( this, "replenishment", 1, 15.0 );
+
+  // Infinite-Stacking Buffs
+  buffs.moving  = new buff_t( this, "moving",  -1 );
+  buffs.stunned = new buff_t( this, "stunned", -1 );
 }
 
 // player_t::init_gains ====================================================
@@ -890,8 +894,6 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  uptimes.moving        = get_uptime( "moving" );
-  uptimes.stunned       = get_uptime( "stunned" );
 }
 
 // player_t::init_rng ======================================================
@@ -1438,8 +1440,6 @@ void player_t::reset()
   }
 
   potion_used = 0;
-  stunned = 0;
-  moving = 0;
 
   if ( sleeping ) quiet = 1;
 }
@@ -1516,7 +1516,7 @@ void player_t::interrupt()
   if ( executing  ) executing  -> cancel();
   if ( channeling ) channeling -> cancel();
 
-  if ( stunned )
+  if ( buffs.stunned -> check() )
   {
     if ( readying ) event_t::cancel( readying );
   }

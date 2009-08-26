@@ -1198,7 +1198,7 @@ struct player_t
   player_t*   next;
   int         index, type, level, tank, party, member;
   double      skill, distance, gcd_ready, base_gcd;
-  int         potion_used, stunned, moving, sleeping, initialized;
+  int         potion_used, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;
@@ -1364,22 +1364,15 @@ struct player_t
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
+    buff_t* moving;
     buff_t* power_infusion;
     buff_t* hysteria;
     buff_t* replenishment;
+    buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
-
-  struct uptimes_t
-  {
-    uptime_t* moving;
-    uptime_t* stunned;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
-    uptimes_t() { reset(); }
-  };
-  uptimes_t uptimes;
 
   struct gains_t
   {
@@ -1689,9 +1682,6 @@ struct target_t
   int initial_armor, armor;
   int block_value;
   int shield;
-  int vulnerable;
-  int invulnerable;
-  int casting;
   double attack_speed, attack_damage;
   double initial_health, current_health;
   double total_dmg;
@@ -1699,8 +1689,8 @@ struct target_t
 
   struct debuffs_t
   {
-    // New Buffs
     debuff_t* blood_frenzy;
+    debuff_t* casting;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
@@ -1718,7 +1708,7 @@ struct target_t
     debuff_t* vulnerable;
     debuff_t* winters_chill;
     debuff_t* winters_grasp;
-    // Old Buffs
+
     int    old_buffs;
     int    bleeding;
     int    crypt_fever;
@@ -1753,10 +1743,8 @@ struct target_t
 
   struct uptimes_t
   {
-    uptime_t* invulnerable;
     uptime_t* master_poisoner;
     uptime_t* savage_combat;
-    uptime_t* vulnerable;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
   };

@@ -14,7 +14,6 @@
 target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
     initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ),
-    vulnerable( 0 ), invulnerable( 0 ), casting( 0 ),
     attack_speed( 2.0 ), attack_damage( 2000 ),
     initial_health( 0 ), current_health( 0 ), total_dmg( 0 ), uptime_list( 0 )
 {
@@ -193,10 +192,13 @@ void target_t::init()
     }
   }
 
-  uptimes.invulnerable         = get_uptime( "invulnerable"         );
+  // Infinite-Stacking De-Buffs
+  debuffs.casting      = new debuff_t( sim, "casting",      -1 );
+  debuffs.invulnerable = new debuff_t( sim, "invulnerable", -1 );
+  debuffs.vulnerable   = new debuff_t( sim, "vulnerable",   -1 );
+
   uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
   uptimes.savage_combat        = get_uptime( "savage_combat"        );
-  uptimes.vulnerable           = get_uptime( "vulnerable"           );
 }
 
 // target_t::reset ===========================================================
@@ -209,9 +211,6 @@ void target_t::reset()
   current_health = initial_health;
   debuffs.reset();
   expirations.reset();
-  invulnerable = 0;
-  vulnerable = 0;
-  casting = 0;
 }
 
 // target_t::combat_begin ====================================================

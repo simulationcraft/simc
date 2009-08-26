@@ -745,7 +745,7 @@ struct auto_attack_t : public druid_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> moving ) return false;
+    if ( p -> buffs.moving -> check() ) return false;
     return( p -> melee_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -870,7 +870,7 @@ struct maim_t : public druid_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return druid_attack_t::ready();
   }
 };

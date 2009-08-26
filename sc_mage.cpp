@@ -2486,7 +2486,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> casting ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return mage_spell_t::ready();
   }
 };
