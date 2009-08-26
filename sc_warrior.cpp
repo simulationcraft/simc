@@ -2607,6 +2607,8 @@ void player_t::warrior_init( sim_t* sim )
 
   target_t* t = sim -> target;
   t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );
+  t -> debuffs.sunder_armor = new debuff_t( sim, "sunder_armor", 1, 30.0 );
+  t -> debuffs.thunder_clap = new debuff_t( sim, "thunder_clap", 1, 30.0 );
   t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, 15.0 );
 }
 
@@ -2618,6 +2620,8 @@ void player_t::warrior_combat_begin( sim_t* sim )
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> override();
   if ( sim -> overrides.blood_frenzy ) t -> debuffs.blood_frenzy -> override();
+  if ( sim -> overrides.sunder_armor ) t -> debuffs.sunder_armor -> override( 1, 0.20 );
+  if ( sim -> overrides.thunder_clap ) t -> debuffs.thunder_clap -> override();
+  if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> override();
 }

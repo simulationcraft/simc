@@ -1152,7 +1152,7 @@ struct shred_t : public druid_attack_t
 
     if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() ) player_multiplier *= 1.30;
 
-    if ( t -> debuffs.bleeding )
+    if ( t -> debuffs.bleeding -> check() )
     {
       player_multiplier *= 1 + 0.04 * p -> talents.rend_and_tear;
     }
@@ -1371,7 +1371,7 @@ struct ferocious_bite_t : public druid_attack_t
 
     druid_attack_t::player_buff();
 
-    if ( sim -> target -> debuffs.bleeding > 0 )
+    if ( sim -> target -> debuffs.bleeding -> check() )
     {
       player_crit += 0.05 * p -> talents.rend_and_tear;
     }

@@ -1273,12 +1273,17 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", 1 );
   }
 
+  target_t* t = sim -> target;
+  t -> debuffs.judgement_of_wisdom = new debuff_t( sim, "judgement_of_wisdom", 1 );
 }
 
 // player_t::paladin_combat_begin ============================================
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
+  if( sim -> overrides.sanctified_retribution ) sim -> auras.sanctified_retribution -> override();
+  if( sim -> overrides.swift_retribution      ) sim -> auras.swift_retribution      -> override();
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> ooc_buffs() )
@@ -1289,6 +1294,6 @@ void player_t::paladin_combat_begin( sim_t* sim )
     }
   }
 
-  if( sim -> overrides.sanctified_retribution ) sim -> auras.sanctified_retribution -> override();
-  if( sim -> overrides.swift_retribution      ) sim -> auras.swift_retribution      -> override();
+  target_t* t = sim -> target;
+  if ( sim -> overrides.judgement_of_wisdom ) t -> debuffs.judgement_of_wisdom -> override();
 }

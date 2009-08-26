@@ -1631,15 +1631,12 @@ struct expose_armor_t : public rogue_attack_t
   {
     target_t* t = sim -> target;
 
-    if ( override_sunder )
-    {
-      return ( t -> debuffs.expose_armor == 0 );
-    }
-    else
-    {
-      return ( t -> debuffs.expose_armor == 0 &&
-               t -> debuffs.sunder_armor == 0 );
-    }
+    if ( t -> debuffs.expose_armor != 0 )
+      return false;
+    
+    if ( ! override_sunder )
+      if ( t -> debuffs.sunder_armor -> check() )
+	return false;
 
     return rogue_attack_t::ready();
   }
@@ -1944,7 +1941,7 @@ struct hunger_for_blood_t : public rogue_attack_t
     if ( ! rogue_attack_t::ready() )
       return false;
 
-    if ( ! sim -> target -> debuffs.bleeding )
+    if ( ! sim -> target -> debuffs.bleeding -> check() )
       return false;
 
     if ( p -> _buffs.hunger_for_blood == 15 )

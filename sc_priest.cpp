@@ -818,7 +818,7 @@ struct devouring_plague_burst_t : public priest_spell_t
   virtual void target_debuff( int dmg_type )
   {
     priest_spell_t::target_debuff( dmg_type );
-    if ( sim -> target -> debuffs.crypt_fever ) target_multiplier *= 1.30;
+    if ( sim -> target -> debuffs.crypt_fever -> up() ) target_multiplier *= 1.30;
   }
 };
 
@@ -889,7 +889,7 @@ struct devouring_plague_t : public priest_spell_t
   virtual void target_debuff( int dmg_type )
   {
     priest_spell_t::target_debuff( dmg_type );
-    if ( sim -> target -> debuffs.crypt_fever ) target_multiplier *= 1.30;
+    if ( sim -> target -> debuffs.crypt_fever -> up() ) target_multiplier *= 1.30;
   }
 
   virtual void update_stats( int type )

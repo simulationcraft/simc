@@ -1689,8 +1689,10 @@ struct target_t
 
   struct debuffs_t
   {
+    debuff_t* bleeding;
     debuff_t* blood_frenzy;
     debuff_t* casting;
+    debuff_t* crypt_fever;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
@@ -1700,9 +1702,12 @@ struct target_t
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* invulnerable;
+    debuff_t* judgement_of_wisdom;
     debuff_t* mangle;
     debuff_t* misery;
     debuff_t* slow;
+    debuff_t* sunder_armor;
+    debuff_t* thunder_clap;
     debuff_t* totem_of_wrath;
     debuff_t* trauma;
     debuff_t* vulnerable;
@@ -1710,17 +1715,12 @@ struct target_t
     debuff_t* winters_grasp;
 
     int    old_buffs;
-    int    bleeding;
-    int    crypt_fever;
     double expose_armor;
     double hemorrhage;
     int    hemorrhage_charges;
-    int    judgement_of_wisdom;
     int    master_poisoner;
     int    poisoned;
     int    savage_combat;
-    double sunder_armor;
-    int    thunder_clap;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     void reset()
     { 
@@ -1728,7 +1728,7 @@ struct target_t
       memset( (void*) &old_buffs, 0x0, sizeof( debuffs_t ) - delta );
     }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
-    bool snared() { return frozen() || slow -> check() || thunder_clap; }
+    bool snared() { return frozen() || slow -> check() || thunder_clap -> check(); }
   };
   debuffs_t debuffs;
 

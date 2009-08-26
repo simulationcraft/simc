@@ -2310,5 +2310,8 @@ void player_t::death_knight_init( sim_t* sim )
 void player_t::death_knight_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.abominations_might ) sim -> auras.abominations_might -> override();
+
+  target_t* t = sim -> target;
+  if ( sim -> overrides.crypt_fever ) t -> debuffs.crypt_fever -> override();
 }
 

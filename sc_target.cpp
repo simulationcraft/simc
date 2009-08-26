@@ -193,7 +193,9 @@ void target_t::init()
   }
 
   // Infinite-Stacking De-Buffs
+  debuffs.bleeding     = new debuff_t( sim, "bleeding",     -1 );
   debuffs.casting      = new debuff_t( sim, "casting",      -1 );
+  debuffs.crypt_fever  = new debuff_t( sim, "crypt_fever",  -1 );
   debuffs.invulnerable = new debuff_t( sim, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( sim, "vulnerable",   -1 );
 
@@ -217,14 +219,10 @@ void target_t::reset()
 
 void target_t::combat_begin()
 {
-  if ( sim -> overrides.bleeding              ) debuffs.bleeding = 1;
-  if ( sim -> overrides.crypt_fever           ) debuffs.crypt_fever = 1;
-  if ( sim -> overrides.judgement_of_wisdom   ) debuffs.judgement_of_wisdom = 1;
-  if ( sim -> overrides.master_poisoner       ) debuffs.master_poisoner = 1;
-  if ( sim -> overrides.poisoned              ) debuffs.poisoned = 1;
-  if ( sim -> overrides.savage_combat         ) debuffs.savage_combat = 1;
-  if ( sim -> overrides.sunder_armor          ) debuffs.sunder_armor = 0.20;
-  if ( sim -> overrides.thunder_clap          ) debuffs.thunder_clap = 1;
+  if ( sim -> overrides.bleeding        ) debuffs.bleeding -> override();
+  if ( sim -> overrides.master_poisoner ) debuffs.master_poisoner = 1;
+  if ( sim -> overrides.poisoned        ) debuffs.poisoned = 1;
+  if ( sim -> overrides.savage_combat   ) debuffs.savage_combat = 1;
 
   if ( sim -> overrides.bloodlust )
   {

@@ -255,6 +255,11 @@ void buff_t::start( int    stacks,
   else
   {
     current_stack = std::min( stacks, max_stack );
+
+    for( int i=1; i <= current_stack; i++ ) 
+    {
+      stack_occurrence[ i ] = sim -> current_time;
+    }
   }
 
   if ( value >= 0 ) current_value = value;
@@ -267,11 +272,6 @@ void buff_t::start( int    stacks,
     start_intervals++;
   }
   last_start = sim -> current_time;
-
-  for( int i=1; i <= current_stack; i++ ) 
-  {
-    stack_occurrence[ i ] = sim -> current_time;
-  }
 
   if ( duration > 0 )
   {

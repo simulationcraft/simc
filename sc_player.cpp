@@ -26,7 +26,7 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
   {
     sim_t* sim = a -> sim;
 
-    if ( ! sim -> target -> debuffs.judgement_of_wisdom )
+    if ( ! sim -> target -> debuffs.judgement_of_wisdom -> check() )
       return;
 
     player_t* p = a -> player;

@@ -409,7 +409,7 @@ double action_t::armor() SC_CONST
 
   double adjusted_armor =  t -> base_armor();
 
-  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor, t -> debuffs.expose_armor );
+  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor -> value(), t -> debuffs.expose_armor );
 
   if( t -> debuffs.faerie_fire -> up() ) adjusted_armor *= 0.95;
 
@@ -729,7 +729,7 @@ void action_t::last_tick()
   ticking = 0;
   time_to_tick = 0;
 
-  if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding--;
+  if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding -> decrement();
 
   if ( observer ) *observer = 0;
 }
@@ -810,7 +810,7 @@ void action_t::schedule_tick()
 
   if ( current_tick == 0 )
   {
-    if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding++;
+    if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding -> increment();
 
     if ( tick_zero )
     {
