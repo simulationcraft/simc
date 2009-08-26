@@ -161,7 +161,7 @@ static void print_actions( FILE* file, player_t* p )
 
 static void print_buffs( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "  Constant Buffs:" );
+  bool first=true;
   char prefix = ' ';
   int total_length = 100;
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
@@ -174,7 +174,8 @@ static void print_buffs( FILE* file, player_t* p )
       int length = strlen( b -> name() );
       if( ( total_length + length ) > 100 )
       {
-	util_t::fprintf( file, "\n  Constant:" );
+	if ( ! first ) util_t::fprintf( file, "\n" ); first=false;
+	util_t::fprintf( file, "  Constant Buffs:" );
 	prefix = ' ';
 	total_length = 0;
       }
