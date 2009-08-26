@@ -35,7 +35,6 @@ struct warrior_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    double taste_for_blood;
     double sword_specialization;
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -57,15 +56,12 @@ struct warrior_t : public player_t
   // Procs
   proc_t* procs_glyph_overpower;
   proc_t* procs_sword_specialization;
-  proc_t* procs_taste_for_blood;
-
   // Up-Times
   uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
 
   // Random Number Generation
   rng_t* rng_sword_specialization;
-  rng_t* rng_taste_for_blood;
   rng_t* rng_unbridled_wrath;
 
   // Auto-Attack
@@ -386,8 +382,8 @@ static void trigger_sword_specialization( attack_t* a )
 
   if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
     return;
-
-  if ( p -> rng_sword_specialization -> roll( p -> talents.sword_specialization * 0.01 ) )
+  double chance = ( a -> sim -> P322 ? 0.02 : 0.01 ) * p -> talents.sword_specialization;
+  if ( p -> rng_sword_specialization -> roll( chance ) )
   {
     if ( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
@@ -2104,6 +2100,7 @@ void warrior_t::init_glyphs()
     else if ( n == "bloodthirst"      ) ;
     else if ( n == "charge"           ) ;
     else if ( n == "cleaving"         ) ;
+    else if ( n == "command"          ) ;
     else if ( n == "devastate"        ) ;
     else if ( n == "enduring_victory" ) ;
     else if ( n == "hamstring"        ) ;
@@ -2285,7 +2282,7 @@ void warrior_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
+    action_list_str = "flask,type=endless_rage/food,type=hearty_rhino";
 
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
@@ -2581,10 +2578,10 @@ std::vector<option_t>& warrior_t::get_options()
 
 int warrior_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
-  if ( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
-  if ( strstr( item.name(), "wrynn"        ) ) return SET_T9;
-  if ( strstr( item.name(), "hellscream"   ) ) return SET_T9;
+  if      ( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
+  else if ( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
+  else if ( strstr( item.name(), "wrynn"        ) ) return SET_T9;
+  else if ( strstr( item.name(), "hellscream"   ) ) return SET_T9;
   return SET_NONE;
 }
 

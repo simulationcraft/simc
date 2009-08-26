@@ -117,6 +117,7 @@ struct rogue_t : public player_t
   rng_t* rng_critical_strike_interval;
   rng_t* rng_initiative;
   rng_t* rng_instant_poison;
+  rng_t* rng_master_poisoner;
   rng_t* rng_relentless_strikes;
   rng_t* rng_ruthlessness;
   rng_t* rng_seal_fate;
@@ -1461,7 +1462,15 @@ struct envenom_t : public rogue_attack_t
 
     if ( result_is_hit() )
     {
-      p -> _buffs.poison_doses -= doses_consumed;
+      if ( sim -> P322 )
+      {
+        if ( ! p -> rng_master_poisoner -> roll( p -> talents.master_poisoner / 3.0 ) )
+          p -> _buffs.poison_doses -= doses_consumed;
+      }
+      else
+      {
+        p -> _buffs.poison_doses -= doses_consumed;
+      }
 
       if ( p -> _buffs.poison_doses == 0 )
       {
@@ -3461,6 +3470,7 @@ void rogue_t::init_rng()
   rng_honor_among_thieves   = get_rng( "honor_among_thieves"   );
   rng_initiative            = get_rng( "initiative"            );
   rng_instant_poison        = get_rng( "instant_poison"        );
+  rng_master_poisoner       = get_rng( "master_poisoner"       );
   rng_relentless_strikes    = get_rng( "relentless_strikes"    );
   rng_ruthlessness          = get_rng( "ruthlessness"          );
   rng_seal_fate             = get_rng( "seal_fate"             );
