@@ -1836,7 +1836,9 @@ struct battle_shout_t : public warrior_spell_t
       warrior_spell_t( "battle_shout", player ),
       refresh_early( 0.0 ),
       shout_base_bonus( 0 )
-  {}
+  {
+  }
+  virtual bool ready() { return false; }
 };
 
 // warrior_spell_t::parse_options ===========================================
@@ -2600,7 +2602,8 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, int rac
 
 void player_t::warrior_init( sim_t* sim )
 {
-  sim -> auras.rampage = new aura_t( sim, "rampage", 1, 10.0 );
+  sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
+  sim -> auras.rampage      = new aura_t( sim, "rampage",      1,  10.0 );
 
   target_t* t = sim -> target;
   t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );
@@ -2611,7 +2614,8 @@ void player_t::warrior_init( sim_t* sim )
 
 void player_t::warrior_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.rampage ) sim -> auras.rampage -> override();
+  if ( sim -> overrides.battle_shout ) sim -> auras.battle_shout -> override( 1, 548 );
+  if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   target_t* t = sim -> target;
   if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> override();

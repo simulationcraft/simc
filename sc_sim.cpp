@@ -573,16 +573,7 @@ void sim_t::combat_begin()
 
   target -> combat_begin();
 
-  player_t::death_knight_combat_begin( this );
-  player_t::druid_combat_begin       ( this );
-  player_t::hunter_combat_begin      ( this );
-  player_t::mage_combat_begin        ( this );
-  player_t::paladin_combat_begin     ( this );
-  player_t::priest_combat_begin      ( this );
-  player_t::rogue_combat_begin       ( this );
-  player_t::shaman_combat_begin      ( this );
-  player_t::warlock_combat_begin     ( this );
-  player_t::warrior_combat_begin     ( this );
+  player_t::combat_begin( this );
 
   raid_event_t::combat_begin( this );
 
@@ -606,18 +597,9 @@ void sim_t::combat_end()
 
   target -> combat_end();
 
-  player_t::death_knight_combat_end( this );
-  player_t::druid_combat_end       ( this );
-  player_t::hunter_combat_end      ( this );
-  player_t::mage_combat_end        ( this );
-  player_t::paladin_combat_end     ( this );
-  player_t::priest_combat_end      ( this );
-  player_t::rogue_combat_end       ( this );
-  player_t::shaman_combat_end      ( this );
-  player_t::warlock_combat_end     ( this );
-  player_t::warrior_combat_end     ( this );
+  player_t::combat_end( this );
 
-  raid_event_t::combat_begin( this );
+  raid_event_t::combat_end( this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -687,16 +669,7 @@ bool sim_t::init()
     assert( false );
   }
 
-  player_t::death_knight_init( this );
-  player_t::druid_init       ( this );
-  player_t::hunter_init      ( this );
-  player_t::mage_init        ( this );
-  player_t::paladin_init     ( this );
-  player_t::priest_init      ( this );
-  player_t::rogue_init       ( this );
-  player_t::shaman_init      ( this );
-  player_t::warlock_init     ( this );
-  player_t::warrior_init     ( this );
+  player_t::init( this );
 
   raid_event_t::init( this );
 
@@ -1166,7 +1139,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.judgement_of_wisdom    = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
-  overrides.mana_spring            = optimal_raid;
+  overrides.mana_spring_totem      = optimal_raid;
   overrides.mangle                 = optimal_raid;
   overrides.mark_of_the_wild       = optimal_raid;
   overrides.master_poisoner        = optimal_raid;
@@ -1317,6 +1290,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=skip
       { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
+      { "report_buffed_stats",              OPT_BOOL  , &( report_buffed_stats                      ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
       { "xml",                              OPT_STRING, &( xml_file_str                             ) },
@@ -1343,6 +1317,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
       { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
       { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
+      { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
@@ -1352,7 +1327,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
       { "override.judgement_of_wisdom",     OPT_BOOL,   &( overrides.judgement_of_wisdom            ) },
       { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
-      { "override.mana_spring",             OPT_BOOL,   &( overrides.mana_spring                    ) },
+      { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
       { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
       { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
       { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
@@ -1568,6 +1543,8 @@ int sim_t::main( int argc, char** argv )
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
     execute();
     scaling -> analyze();
+
+    if( report_buffed_stats ) combat_begin();
 
     util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
     report_t::print_suite( this );

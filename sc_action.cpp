@@ -265,20 +265,19 @@ void action_t::player_buff()
   {
     if ( school == SCHOOL_PHYSICAL )
     {
-      if ( p -> buffs.hysteria )
+      if ( p -> buffs.hysteria -> up() )
       {
 	player_multiplier *= 1.2;
       }
     }
-
-    if ( sim -> auras.sanctified_retribution -> check() || sim -> auras.ferocious_inspiration -> up() )
+    if ( p -> buffs.tricks_of_the_trade -> up() )
+    {
+      player_multiplier *= 1.15;
+    }
+    if ( sim -> auras.ferocious_inspiration -> up() || 
+	 sim -> auras.sanctified_retribution -> check() )
     {
       player_multiplier *= 1.03;
-    }
-
-    if ( p -> buffs.tricks_of_the_trade )
-    {
-      player_multiplier *= 1.0 + p -> buffs.tricks_of_the_trade * 0.01;
     }
   }
 

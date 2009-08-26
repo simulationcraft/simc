@@ -1523,33 +1523,13 @@ struct hysteria_t : public action_t
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s grants %s Hysteria", player -> name(), hysteria_target -> name() );
-
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Hysteria Expiration";
-        player -> buffs.hysteria++;
-        if ( player -> buffs.hysteria == 1 )
-          player -> aura_gain( "Hysteria" );
-        sim -> add_event( this, 30.0 );
-      }
-      virtual void execute()
-      {
-        player -> buffs.hysteria--;
-        if ( player -> buffs.hysteria == 0 )
-          player -> aura_loss( "Hysteria" );
-      }
-    };
-
-    new ( sim ) expiration_t( sim, player );
-
+    hysteria_target -> buffs.hysteria -> trigger();
     update_ready();
   }
 
   virtual bool ready()
   {
-    if ( hysteria_target -> buffs.hysteria )
+    if ( hysteria_target -> buffs.hysteria -> check() )
       return false;
 
     return action_t::ready();
@@ -2318,6 +2298,11 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, in
 void player_t::death_knight_init( sim_t* sim )
 {
   sim -> auras.abominations_might = new aura_t( sim, "abominations_might" );
+
+  for( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> buffs.hysteria = new buff_t( p, "hysteria", 1, 30.0 );
+  }
 }
 
 // player_t::death_knight_combat_begin ======================================

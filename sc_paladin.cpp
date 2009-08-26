@@ -1268,6 +1268,9 @@ void player_t::paladin_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
+    p -> buffs.blessing_of_kings  = new buff_t( p, "blessing_of_kings",  1 );
+    p -> buffs.blessing_of_might  = new buff_t( p, "blessing_of_might",  1 );
+    p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", 1 );
   }
 
 }
@@ -1280,6 +1283,9 @@ void player_t::paladin_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
+      if ( sim -> overrides.blessing_of_kings  ) p -> buffs.blessing_of_kings  -> override();
+      if ( sim -> overrides.blessing_of_might  ) p -> buffs.blessing_of_might  -> override( 1, 688 );
+      if ( sim -> overrides.blessing_of_wisdom ) p -> buffs.blessing_of_wisdom -> override( 1, 91 * 1.2 );
     }
   }
 

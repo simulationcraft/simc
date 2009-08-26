@@ -47,10 +47,7 @@ action_t* pet_t::create_action( const std::string& name,
 
 double pet_t::stamina() SC_CONST
 {
-  double a = floor ( composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() ) );
-
-  if ( buffs.blessing_of_kings )
-    a = floor ( a * 1.10 );
+  double a = floor( composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() ) );
 
   return player_t::stamina() + a;
 }
@@ -59,10 +56,7 @@ double pet_t::stamina() SC_CONST
 
 double pet_t::intellect() SC_CONST
 {
-  double a = floor ( composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() ) );
-
-  if ( buffs.blessing_of_kings )
-    a = floor ( a * 1.10 );
+  double a = floor( composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() ) );
 
   return player_t::intellect() + a;
 }
@@ -114,11 +108,10 @@ void pet_t::summon( double duration )
     log_t::output( sim, "%s summons %s.", owner -> name(), name() );
     log_t::summon_event( this );
   }
+
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;
-
-  buffs.heroic_presence = owner -> buffs.heroic_presence;
 
   if( duration > 0 )
   {

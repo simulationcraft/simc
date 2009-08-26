@@ -24,6 +24,7 @@ struct mage_t : public player_t
   buff_t* buffs_clearcasting;
   buff_t* buffs_combustion;
   buff_t* buffs_fingers_of_frost;
+  buff_t* buffs_focus_magic_feedback;
   buff_t* buffs_ghost_charge;
   buff_t* buffs_hot_streak;
   buff_t* buffs_hot_streak_crits;
@@ -52,7 +53,6 @@ struct mage_t : public player_t
   uptime_t* uptimes_arcane_blast[ 5 ];
   uptime_t* uptimes_dps_rotation;
   uptime_t* uptimes_dpm_rotation;
-  uptime_t* uptimes_focus_magic_feedback;
   uptime_t* uptimes_water_elemental;
 
   // Random Number Generation
@@ -997,11 +997,10 @@ void mage_spell_t::player_buff()
     player_crit += p -> spirit() * spirit_contribution / p -> rating.spell_crit;
   }
 
-  if ( p -> buffs.focus_magic_feedback )
+  if ( p -> buffs_focus_magic_feedback -> up() )
   {
     player_crit += 0.03;
   }
-  p -> uptimes_focus_magic_feedback -> update( p -> buffs.focus_magic_feedback != 0 );
 
   if ( sim -> debug )
     log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f",
@@ -1384,10 +1383,12 @@ struct slow_t : public mage_spell_t
 
 struct focus_magic_t : public mage_spell_t
 {
-  player_t* focus_magic_target;
+  player_t*          focus_magic_target;
+  action_callback_t* focus_magic_cb;
 
   focus_magic_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "focus_magic", player, SCHOOL_ARCANE, TREE_ARCANE )
+    mage_spell_t( "focus_magic", player, SCHOOL_ARCANE, TREE_ARCANE ),
+    focus_magic_target(0), focus_magic_cb(0)
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.focus_magic );
@@ -1414,6 +1415,20 @@ struct focus_magic_t : public mage_spell_t
     }
 
     trigger_gcd = 0;
+
+    struct focus_magic_feedback_callback_t : public action_callback_t
+    {
+      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+
+      virtual void trigger( action_t* a )
+      {
+	listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
+      }
+    };
+
+    focus_magic_cb = new focus_magic_feedback_callback_t( p );
+    focus_magic_cb -> active = false;
+    focus_magic_target -> register_spell_result_callback( RESULT_CRIT_MASK, focus_magic_cb );
   }
 
   virtual void execute()
@@ -1423,12 +1438,13 @@ struct focus_magic_t : public mage_spell_t
     if ( focus_magic_target == p )
     {
       if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Focus Magic", p -> name() );
-      p -> buffs.focus_magic_feedback = 1;
+      p -> buffs_focus_magic_feedback -> override();
     }
     else
     {
       if ( sim -> log ) log_t::output( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
-      focus_magic_target -> buffs.focus_magic = p;
+      focus_magic_target -> buffs.focus_magic -> trigger();
+      focus_magic_cb -> active = true;
     }
   }
 
@@ -1438,11 +1454,11 @@ struct focus_magic_t : public mage_spell_t
 
     if ( focus_magic_target == p )
     {
-      return p -> buffs.focus_magic_feedback == 0;
+      return ! p -> buffs_focus_magic_feedback -> check();
     }
     else
     {
-      return focus_magic_target -> buffs.focus_magic == 0;
+      return ! focus_magic_target -> buffs.focus_magic -> check();
     }
   }
 };
@@ -2912,6 +2928,7 @@ void mage_t::init_buffs()
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
+  buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
   buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
@@ -2964,7 +2981,6 @@ void mage_t::init_uptimes()
   uptimes_arcane_blast[ 4 ]    = get_uptime( "arcane_blast_4" );
   uptimes_dps_rotation         = get_uptime( "dps_rotation" );
   uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
-  uptimes_focus_magic_feedback = get_uptime( "focus_magic_feedback" );
   uptimes_water_elemental      = get_uptime( "water_elemental" );
 }
 
@@ -3404,6 +3420,7 @@ void player_t::mage_init( sim_t* sim )
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_INTELLECT, 60.0, 1 );
+    p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
   }
 
   target_t* t = sim -> target;
@@ -3423,6 +3440,7 @@ void player_t::mage_combat_begin( sim_t* sim )
     if ( p -> ooc_buffs() )
     {
       if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, 60.0 );
+      if ( sim -> overrides.focus_magic       ) p -> buffs.focus_magic       -> override();
     }
   }
 

@@ -842,7 +842,8 @@ struct sim_t
   int         seed, id, iterations, current_iteration;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval;
-  int         optimal_raid, spell_crit_suppression, log, debug, save_profiles;
+  int         optimal_raid, spell_crit_suppression, log, debug;
+  int         report_buffed_stats, save_profiles;
   std::string default_region_str, default_server_str;
   alias_t     alias;
 
@@ -897,6 +898,7 @@ struct sim_t
     int faerie_fire;
     int ferocious_inspiration;
     int flametongue_totem;
+    int focus_magic;
     int fortitude;
     int heroic_presence;
     int hunters_mark;
@@ -905,7 +907,7 @@ struct sim_t
     int improved_scorch;
     int improved_shadow_bolt;
     int leader_of_the_pack;
-    int mana_spring;
+    int mana_spring_totem;
     int mangle;
     int mark_of_the_wild;
     int master_poisoner;
@@ -931,12 +933,14 @@ struct sim_t
   struct auras_t
   {
     aura_t* abominations_might;
+    aura_t* battle_shout;
     aura_t* celerity;
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
     aura_t* improved_moonkin;
     aura_t* leader_of_the_pack;
+    aura_t* mana_spring_totem;
     aura_t* moonkin;
     aura_t* rampage;
     aura_t* sanctified_retribution;
@@ -1346,55 +1350,31 @@ struct player_t
 
   struct buffs_t
   {
-    // New Buffs
     buff_t* arcane_brilliance;
+    buff_t* blessing_of_kings;
+    buff_t* blessing_of_might;
+    buff_t* blessing_of_wisdom;
     buff_t* bloodlust;
     buff_t* demonic_pact;
     buff_t* divine_spirit;
+    buff_t* focus_magic;
     buff_t* fortitude;
+    buff_t* heroic_presence;
     buff_t* innervate;
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* power_infusion;
-
-    // Old Buffs
-    int       old_buffs;
-    int       battle_shout;
-    int       blessing_of_kings;
-    int       blessing_of_might;
-    double    blessing_of_wisdom;
-    player_t* focus_magic;
-    int       focus_magic_feedback;
-    double    heroic_presence;
-    int       hysteria;
-    double    mana_spring;
-    int       replenishment;
-    int       tricks_of_the_trade;
+    buff_t* hysteria;
+    buff_t* replenishment;
+    buff_t* tricks_of_the_trade;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
-    void reset()
-    { 
-      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
-      memset( (void*) &old_buffs, 0x0, sizeof( buffs_t ) - delta );
-    }
   };
   buffs_t buffs;
-
-  struct expirations_t
-  {
-    event_t* focus_magic_feedback;
-    event_t* hysteria;
-    event_t* replenishment;
-    event_t* tricks_of_the_trade;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
-    expirations_t() { reset(); }
-  };
-  expirations_t expirations;
 
   struct uptimes_t
   {
     uptime_t* moving;
-    uptime_t* replenishment;
     uptime_t* stunned;
     void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
     uptimes_t() { reset(); }
@@ -1411,7 +1391,7 @@ struct player_t
     gain_t* glyph_of_innervate;
     gain_t* judgement_of_wisdom;
     gain_t* mana_potion;
-    gain_t* mana_spring;
+    gain_t* mana_spring_totem;
     gain_t* mana_tide;
     gain_t* mp5_regen;
     gain_t* replenishment;
@@ -1487,17 +1467,17 @@ struct player_t
 
   virtual double composite_attack_power() SC_CONST;
   virtual double composite_attack_crit() SC_CONST;
-  virtual double composite_attack_expertise() SC_CONST   { return attack_expertise;                   }
-  virtual double composite_attack_hit() SC_CONST         { return attack_hit + buffs.heroic_presence; }
-  virtual double composite_attack_penetration() SC_CONST { return attack_penetration;                 }
+  virtual double composite_attack_expertise() SC_CONST   { return attack_expertise; }
+  virtual double composite_attack_hit() SC_CONST;
+  virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
   virtual double composite_armor() SC_CONST;
   virtual double composite_armor_snapshot() SC_CONST    { return armor_snapshot; }
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
-  virtual double composite_spell_hit() SC_CONST         { return spell_hit + buffs.heroic_presence; }
-  virtual double composite_spell_penetration() SC_CONST { return spell_penetration;                 }
+  virtual double composite_spell_hit() SC_CONST;
+  virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
 
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }
@@ -1579,6 +1559,11 @@ struct player_t
   static player_t * create_warlock     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
   static player_t * create_warrior     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
 
+  // Raid-wide aura/buff/debuff maintenance
+  static void init        ( sim_t* sim );
+  static void combat_begin( sim_t* sim );
+  static void combat_end  ( sim_t* sim );
+
   // Raid-wide Death Knight buff maintenance
   static void death_knight_init        ( sim_t* sim );
   static void death_knight_combat_begin( sim_t* sim );
@@ -1610,8 +1595,8 @@ struct player_t
   static void priest_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Rogue buff maintenance
-  static void rogue_init        ( sim_t* sim ) {}
-  static void rogue_combat_begin( sim_t* sim ) {}
+  static void rogue_init        ( sim_t* sim );
+  static void rogue_combat_begin( sim_t* sim );
   static void rogue_combat_end  ( sim_t* sim ) {}
 
   // Raid-wide Shaman buff maintenance

@@ -104,7 +104,6 @@ struct rogue_t : public player_t
   uptime_t* uptimes_poisoned;
   uptime_t* uptimes_rupture;
   uptime_t* uptimes_slice_and_dice;
-  uptime_t* uptimes_tricks_of_the_trade;
   uptime_t* uptimes_prey_on_the_weak;
 
   // Random Number Generation
@@ -730,37 +729,12 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
   if ( p -> _buffs.tricks_ready )
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, rogue_t* p, player_t* t, double duration ) : event_t( sim, t )
-      {
-        name = "Tricks of the Trade Expiration";
-        t -> aura_gain( "Tricks of the Trade" );
-        t -> buffs.tricks_of_the_trade = 15;
-        sim -> add_event( this, duration );
-      }
-      virtual void execute()
-      {
-        player_t* t = player;
-        t -> aura_loss( "Tricks of the Trade" );
-        t -> buffs.tricks_of_the_trade = 0;
-        t -> expirations.tricks_of_the_trade = 0;
-      }
-    };
+    double duration = ( p -> glyphs.tricks_of_the_trade ? 10.0 : 6.0 );
 
-    player_t* t = p -> _buffs.tricks_target;
-    event_t*& e = t -> expirations.tricks_of_the_trade;
-    double duration = 6;
-    if ( p -> glyphs.tricks_of_the_trade ) duration += 4;
-
-    if ( e )
+    if ( p -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
-      // FIXME: Do different tricks actually refresh the buff on the target?
-      e -> reschedule( duration );
-    }
-    else
-    {
-      e = new ( a -> sim ) expiration_t( a -> sim, p, t, duration );
+      p -> buffs.tricks_of_the_trade -> duration = duration;
+      p -> buffs.tricks_of_the_trade -> trigger();
     }
 
     p -> _buffs.tricks_ready = 0;
@@ -863,7 +837,6 @@ void rogue_attack_t::execute()
     trigger_apply_poisons( this );
     trigger_ruthlessness( this );
     trigger_sword_specialization( this );
-
     trigger_tricks_of_the_trade( this );
 
     if ( result == RESULT_CRIT )
@@ -967,7 +940,6 @@ void rogue_attack_t::player_buff()
   {
     p -> uptimes_hunger_for_blood -> update( p -> _buffs.hunger_for_blood == 15 );
   }
-  p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
 
 
@@ -2674,7 +2646,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
   {
     if ( ! tricks_target ) return false;
 
-    if ( tricks_target -> buffs.tricks_of_the_trade )
+    if ( tricks_target -> buffs.tricks_of_the_trade -> check() )
       return false;
 
     return rogue_attack_t::ready();
@@ -2763,7 +2735,6 @@ void rogue_poison_t::player_buff()
   {
     p -> uptimes_hunger_for_blood -> update( p -> _buffs.hunger_for_blood == 15 );
   }
-  p -> uptimes_tricks_of_the_trade -> update( p -> buffs.tricks_of_the_trade != 0 );
 }
 
 // Anesthetic Poison ========================================================
@@ -3456,7 +3427,6 @@ void rogue_t::init_uptimes()
   uptimes_poisoned            = get_uptime( "poisoned" );
   uptimes_rupture             = get_uptime( "rupture" );
   uptimes_slice_and_dice      = get_uptime( "slice_and_dice" );
-  uptimes_tricks_of_the_trade = get_uptime( "tricks_of_the_trade" );
   uptimes_prey_on_the_weak    = get_uptime( "prey_on_the_weak" );
 }
 
@@ -3881,5 +3851,21 @@ int rogue_t::decode_set( item_t& item )
 player_t* player_t::create_rogue( sim_t* sim, const std::string& name, int race_type )
 {
   return new rogue_t( sim, name, race_type );
+}
+
+// player_t::rogue_init =====================================================
+
+void player_t::rogue_init( sim_t* sim )
+{
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 15.0 );
+  }
+}
+
+// player_t::rogue_combat_begin =============================================
+
+void player_t::rogue_combat_begin( sim_t* sim )
+{
 }
 

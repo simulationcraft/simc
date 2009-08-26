@@ -163,7 +163,7 @@ static void print_buffs( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "  Constant Buffs:" );
   char prefix = ' ';
-  int count = -1;
+  int total_length = 100;
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count )
@@ -171,14 +171,16 @@ static void print_buffs( FILE* file, player_t* p )
 
     if ( b -> constant )
     {
-      if( ++count == 10 )
+      int length = strlen( b -> name() );
+      if( ( total_length + length ) > 100 )
       {
 	util_t::fprintf( file, "\n  Constant:" );
 	prefix = ' ';
-	count=0;
+	total_length = 0;
       }
       util_t::fprintf( file, "%c%s", prefix, b -> name() );
       prefix = '/';
+      total_length += length;
     }
   }
   util_t::fprintf( file, "\n" );
@@ -229,7 +231,7 @@ static void print_buffs( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "\nAuras and De-Buffs:" );
   char prefix = ' ';
-  int total_length = 80;
+  int total_length = 100;
   for ( buff_t* b = sim -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count )
@@ -238,7 +240,7 @@ static void print_buffs( FILE* file, sim_t* sim )
     if ( b -> constant )
     {
       int length = strlen( b -> name() );
-      if( ( total_length + length ) > 80 )
+      if( ( total_length + length ) > 100 )
       {
 	util_t::fprintf( file, "\n  Constant:" );
 	prefix = ' ';
@@ -346,8 +348,6 @@ static void print_defense_stats( FILE* file, player_t* p )
 
 static void print_gains( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "  Gains:\n" );
-
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
@@ -357,6 +357,10 @@ static void print_gains( FILE* file, player_t* p )
       if ( length > max_length ) max_length = length;
     }
   }
+  if( max_length == 0 ) return;
+
+  util_t::fprintf( file, "  Gains:\n" );
+
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     if ( g -> actual > 0 )
@@ -373,12 +377,13 @@ static void print_gains( FILE* file, player_t* p )
 
 static void print_procs( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "  Procs:\n" );
+  bool first=true;
 
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
     if ( proc -> count > 0 )
     {
+      if ( first ) util_t::fprintf( file, "  Procs:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
                        proc -> count, proc -> frequency, proc -> name() );
     }
@@ -389,12 +394,13 @@ static void print_procs( FILE* file, player_t* p )
 
 static void print_uptime( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "  Up-Times:\n" );
+  bool first=true;
 
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
     if ( u -> percentage() > 0 )
     {
+      if( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> percentage(), u -> name() );
     }
   }

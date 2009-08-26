@@ -58,50 +58,6 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
   }
 };
 
-// trigger_focus_magic_feedback =============================================
-
-struct focus_magic_feedback_callback_t : public action_callback_t
-{
-  focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
-
-  virtual void trigger( action_t* a )
-  {
-    struct expiration_t : public event_t
-    {
-      player_t* mage;
-
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p ), mage( p -> buffs.focus_magic )
-      {
-        name = "Focus Magic Feedback Expiration";
-        mage -> aura_gain( "Focus Magic Feedback" );
-        mage -> buffs.focus_magic_feedback = 1;
-        sim -> add_event( this, 10.0 );
-      }
-      virtual void execute()
-      {
-        mage -> aura_loss( "Focus Magic Feedback" );
-        mage -> buffs.focus_magic_feedback = 0;
-        mage -> expirations.focus_magic_feedback = 0;
-      }
-    };
-
-    player_t* p = a -> player;
-
-    if ( ! p -> buffs.focus_magic ) return;
-
-    event_t*& e = p -> buffs.focus_magic -> expirations.focus_magic_feedback;
-
-    if ( e )
-    {
-      e -> reschedule( 10.0 );
-    }
-    else
-    {
-      e = new ( p -> sim ) expiration_t( p -> sim, p );
-    }
-  }
-};
-
 // init_replenish_targets ================================================
 
 static void init_replenish_targets( sim_t* sim )
@@ -136,7 +92,7 @@ static void choose_replenish_targets( player_t* provider )
   {
     player_t* p = candidates[ i ];
 
-    if ( ! p -> sleeping && ! p -> buffs.replenishment )
+    if ( ! p -> sleeping && ! p -> buffs.replenishment -> check() )
     {
       replenishment_missing = true;
       break;
@@ -149,7 +105,7 @@ static void choose_replenish_targets( player_t* provider )
 
   for ( int i = targets.size() - 1; i >= 0; i-- )
   {
-    targets[ i ] -> buffs.replenishment = -1;
+    targets[ i ] -> buffs.replenishment -> current_value = -1.0;
   }
   targets.clear();
 
@@ -162,7 +118,7 @@ static void choose_replenish_targets( player_t* provider )
     {
       player_t* p = candidates[ j ];
 
-      if ( p -> sleeping || ( p -> buffs.replenishment == 1 ) ) continue;
+      if ( p -> sleeping || ( p -> buffs.replenishment -> current_value == 1.0 ) ) continue;
 
       if ( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
       {
@@ -172,8 +128,7 @@ static void choose_replenish_targets( player_t* provider )
     }
     if ( min_player )
     {
-      if ( min_player -> buffs.replenishment == 0 ) min_player -> aura_gain( "Replenishment" );
-      min_player -> buffs.replenishment = 1;
+      min_player -> buffs.replenishment -> trigger( 1, 1.0 );
       targets.push_back( min_player );
     }
     else break;
@@ -183,70 +138,10 @@ static void choose_replenish_targets( player_t* provider )
   {
     player_t* p = candidates[ i ];
 
-    if ( p -> buffs.replenishment < 0 )
+    if ( p -> buffs.replenishment -> current_value < 0 )
     {
-      p -> aura_loss( "Replenishment" );
-      p -> buffs.replenishment = 0;
+      p -> buffs.replenishment -> expire();
     }
-  }
-}
-
-// replenish_targets =====================================================
-
-static void replenish_targets( player_t* provider )
-{
-  sim_t* sim = provider -> sim;
-
-  choose_replenish_targets( provider );
-
-  if ( provider -> replenishment_targets.empty() )
-    return;
-
-  struct replenish_tick_t : public event_t
-  {
-    int ticks_remaining;
-
-    replenish_tick_t( sim_t* sim, player_t* provider, int ticks ) : event_t( sim, provider ), ticks_remaining( ticks )
-    {
-      name = "Replenishment Tick";
-      sim -> add_event( this, 1.0 );
-    }
-    virtual void execute()
-    {
-      for ( int i = player -> replenishment_targets.size() - 1; i >= 0; i-- )
-      {
-        player_t* p = player -> replenishment_targets[ i ];
-        if ( p -> sleeping ) continue;
-        double replenishment_regen = p -> resource_max[ RESOURCE_MANA ] * 0.0020;
-        p -> resource_gain( RESOURCE_MANA, replenishment_regen, p -> gains.replenishment );
-      }
-
-      event_t*& e = player -> expirations.replenishment;
-
-      if ( --ticks_remaining == 0 )
-      {
-        e = 0;
-      }
-      else
-      {
-        e = new ( sim ) replenish_tick_t( sim, player, ticks_remaining );
-      }
-    }
-    virtual void reschedule( double new_time )
-    {
-      ticks_remaining = 15; // Just refresh, do not reschedule.
-    }
-  };
-
-  event_t*& e = provider -> expirations.replenishment;
-
-  if ( e )
-  {
-    e -> reschedule( 0.0 );
-  }
-  else
-  {
-    e = new ( sim ) replenish_tick_t( sim, provider, 15 );
   }
 }
 
@@ -254,40 +149,9 @@ static void replenish_targets( player_t* provider )
 
 static void replenish_raid( player_t* provider )
 {
-  sim_t* sim = provider -> sim;
-
-  struct replenish_expiration_t : public event_t
+  for ( player_t* p = provider -> sim -> player_list; p; p = p -> next )
   {
-    replenish_expiration_t( sim_t* sim, player_t* provider ) : event_t( sim, provider )
-    {
-      name = "Replenishment Expiration";
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( p -> buffs.replenishment == 0 ) p -> aura_gain( "Replenishment" );
-        p -> buffs.replenishment++;
-      }
-      sim -> add_event( this, 15.0 );
-    }
-    virtual void execute()
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        p -> buffs.replenishment--;
-        if ( p -> buffs.replenishment == 0 ) p -> aura_loss( "Replenishment" );
-      }
-      player -> expirations.replenishment = 0;
-    }
-  };
-
-  event_t*& e = provider -> expirations.replenishment;
-
-  if ( e )
-  {
-    e -> reschedule( 15.0 );
-  }
-  else
-  {
-    e = new ( sim ) replenish_expiration_t( sim, provider );
+    p -> buffs.replenishment -> trigger();
   }
 }
 
@@ -569,6 +433,33 @@ const char* player_t::id()
 
 // player_t::init ==========================================================
 
+void player_t::init( sim_t* sim )
+{
+  if ( sim -> debug ) log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
+
+  player_t::death_knight_init( sim );
+  player_t::druid_init       ( sim );
+  player_t::hunter_init      ( sim );
+  player_t::mage_init        ( sim );
+  player_t::paladin_init     ( sim );
+  player_t::priest_init      ( sim );
+  player_t::rogue_init       ( sim );
+  player_t::shaman_init      ( sim );
+  player_t::warlock_init     ( sim );
+  player_t::warrior_init     ( sim );
+
+  if ( sim -> overrides.replenishment ) sim -> replenishment_targets = 0;
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( sim -> overrides.replenishment ) p -> buffs.replenishment -> override();
+
+    p -> init_resources( true );
+  }  
+}
+
+// player_t::init ==========================================================
+
 void player_t::init()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
@@ -592,9 +483,8 @@ void player_t::init()
   init_professions();
   init_scaling();
   init_consumables();
-  init_resources();
-  init_actions();
   init_buffs();
+  init_actions();
   init_gains();
   init_procs();
   init_uptimes();
@@ -962,6 +852,8 @@ void player_t::init_rating()
 
 void player_t::init_buffs()
 {
+  buffs.heroic_presence = new buff_t( this, "heroic_presence", 1 );
+  buffs.replenishment   = new buff_t( this, "replenishment", 1, 15.0 );
 }
 
 // player_t::init_gains ====================================================
@@ -975,7 +867,7 @@ void player_t::init_gains()
   gains.innervate              = get_gain( "innervate" );
   gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
   gains.mana_potion            = get_gain( "mana_potion" );
-  gains.mana_spring            = get_gain( "mana_spring" );
+  gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
   gains.mana_tide              = get_gain( "mana_tide" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.replenishment          = get_gain( "replenishment" );
@@ -999,7 +891,6 @@ void player_t::init_procs()
 void player_t::init_uptimes()
 {
   uptimes.moving        = get_uptime( "moving" );
-  uptimes.replenishment = get_uptime( "replenishment" );
   uptimes.stunned       = get_uptime( "stunned" );
 }
 
@@ -1151,7 +1042,7 @@ double player_t::composite_attack_power() SC_CONST
   ap += floor( attack_power_per_strength * strength() );
   ap += floor( attack_power_per_agility  * agility() );
 
-  ap += std::max( buffs.blessing_of_might, buffs.battle_shout );
+  ap += std::max( buffs.blessing_of_might -> value(), sim -> auras.battle_shout -> value() );
 
   return ap;
 }
@@ -1171,6 +1062,17 @@ double player_t::composite_attack_crit() SC_CONST
   }
 
   return ac;
+}
+
+// player_t::composite_attack_hit ==========================================
+
+double player_t::composite_attack_hit() SC_CONST
+{
+  double ah = attack_hit;
+
+  if ( buffs.heroic_presence -> check() ) ah += 0.01;
+
+  return ah;
 }
 
 // player_t::composite_armor =========================================
@@ -1232,15 +1134,26 @@ double player_t::composite_spell_crit() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( buffs.focus_magic ) sc += 0.03;
+    if ( buffs.focus_magic -> check() ) sc += 0.03;
 
-    if ( sim -> auras.elemental_oath -> up() || sim -> auras.moonkin -> up() )
+    if ( sim -> auras.elemental_oath -> up() || sim -> auras.moonkin -> check() )
     {
       sc += 0.05;
     }
   }
 
   return sc;
+}
+
+// player_t::composite_spell_hit ===========================================
+
+double player_t::composite_spell_hit() SC_CONST
+{
+  double sh = spell_hit;
+
+  if ( buffs.heroic_presence -> check() ) sh += 0.01;
+
+  return sh;
 }
 
 // player_t::composite_attack_power_multiplier =============================
@@ -1266,7 +1179,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
-  if ( buffs.blessing_of_kings ) m *= 1.10;
+  if ( buffs.blessing_of_kings -> check() ) m *= 1.10;
   return m;
 }
 
@@ -1327,6 +1240,22 @@ double player_t::spirit() SC_CONST
 
 // player_t::combat_begin ==================================================
 
+void player_t::combat_begin( sim_t* sim )
+{
+  player_t::death_knight_combat_begin( sim );
+  player_t::druid_combat_begin       ( sim );
+  player_t::hunter_combat_begin      ( sim );
+  player_t::mage_combat_begin        ( sim );
+  player_t::paladin_combat_begin     ( sim );
+  player_t::priest_combat_begin      ( sim );
+  player_t::rogue_combat_begin       ( sim );
+  player_t::shaman_combat_begin      ( sim );
+  player_t::warlock_combat_begin     ( sim );
+  player_t::warrior_combat_begin     ( sim );
+}
+
+// player_t::combat_begin ==================================================
+
 void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
@@ -1336,36 +1265,25 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  if ( sim -> overrides.battle_shout           ) buffs.battle_shout = 548;
-  if ( sim -> overrides.blessing_of_kings      ) buffs.blessing_of_kings = 1;
-  if ( sim -> overrides.blessing_of_might      ) buffs.blessing_of_might = 688;
-  if ( sim -> overrides.blessing_of_wisdom     ) buffs.blessing_of_wisdom = 91*1.2;
-  if ( sim -> overrides.mana_spring            ) buffs.mana_spring = 91.0 * 1.2;
-  if ( sim -> overrides.replenishment          ) buffs.replenishment = 1;
-
-  if ( ( race == RACE_DRAENEI ) || sim -> overrides.heroic_presence )
+  if ( sim -> overrides.heroic_presence )
   {
-    buffs.heroic_presence = 0.01;
+    buffs.heroic_presence -> trigger();
   }
-  else if ( party != 0 )
+  else if ( race == RACE_DRAENEI )
   {
-    player_t* q = sim -> player_list;
-    while ( q )
+    buffs.heroic_presence -> trigger();
+
+    if ( party != 0 )
     {
-       if ( ( q != this ) && ( q -> party == party ) && ( ! q -> quiet ) && ( ! q -> is_pet() ) )
-       {
-         switch ( q -> race )
-         {
-         case RACE_HUMAN:
-         case RACE_DWARF:
-         case RACE_NIGHT_ELF:
-         case RACE_GNOME:
-           q -> buffs.heroic_presence = 0.01;
-           break;
-         }
-       }
-       q = q -> next;
-    }    
+      for( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+	if( p -> party == party &&
+	    p -> type != PLAYER_GUARDIAN )
+	{
+	  p -> buffs.heroic_presence -> trigger();
+	}
+      }
+    }
   }
 
   init_resources( true );
@@ -1378,6 +1296,22 @@ void player_t::combat_begin()
   if ( use_armor_snapshot ) trigger_armor_snapshots( this );
 
   if ( tank ) trigger_target_swings( this );
+}
+
+// player_t::combat_end ====================================================
+
+void player_t::combat_end( sim_t* sim )
+{
+  player_t::death_knight_combat_end( sim );
+  player_t::druid_combat_end       ( sim );
+  player_t::hunter_combat_end      ( sim );
+  player_t::mage_combat_end        ( sim );
+  player_t::paladin_combat_end     ( sim );
+  player_t::priest_combat_end      ( sim );
+  player_t::rogue_combat_end       ( sim );
+  player_t::shaman_combat_end      ( sim );
+  player_t::warlock_combat_end     ( sim );
+  player_t::warrior_combat_end     ( sim );
 }
 
 // player_t::combat_end ====================================================
@@ -1479,9 +1413,6 @@ void player_t::reset()
   elixir_guardian = ELIXIR_NONE;
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
-
-  buffs.reset();
-  expirations.reset();
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1664,9 +1595,9 @@ void player_t::regen( double periodicity )
     }
     else if ( resource_type == RESOURCE_MANA )
     {
-      if( buffs.innervate -> check() )
+      if( buffs.innervate -> up() )
       {
-	resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
+	resource_gain( RESOURCE_MANA, buffs.innervate -> current_value * periodicity, gains.innervate );
       }
 
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
@@ -1684,26 +1615,27 @@ void player_t::regen( double periodicity )
 
       resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
-      if ( sim -> overrides.replenishment || ( buffs.replenishment && sim -> replenishment_targets <= 0 ) )
+      if ( buffs.replenishment -> up() )
       {
         double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0020 / 1.0;
 
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }
-      uptimes.replenishment -> update( buffs.replenishment != 0 );
 
-      if ( buffs.blessing_of_wisdom && ( buffs.blessing_of_wisdom >= buffs.mana_spring ) )
+      double bow = buffs.blessing_of_wisdom -> current_value;
+      double ms  = sim -> auras.mana_spring_totem -> current_value;
+
+      if ( ms > bow )
       {
-        double wisdom_regen = periodicity * buffs.blessing_of_wisdom / 5.0;
+        double mana_spring_regen = periodicity * ms / 2.0;
+
+        resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
+      }
+      else if ( bow > 0 )
+      {
+        double wisdom_regen = periodicity * bow / 5.0;
 
         resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
-      }
-
-      if ( buffs.mana_spring > buffs.blessing_of_wisdom )
-      {
-        double mana_spring_regen = periodicity * buffs.mana_spring / 2.0;
-
-        resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring );
       }
     }
   }
@@ -1946,8 +1878,6 @@ void player_t::register_callbacks()
     register_attack_result_callback( RESULT_HIT_MASK, cb );
     register_spell_result_callback ( RESULT_HIT_MASK, cb );
   }
-
-  register_spell_result_callback( RESULT_CRIT_MASK, new focus_magic_feedback_callback_t( this ) );
 }
 
 // player_t::register_resource_gain_callback ================================
@@ -2566,7 +2496,7 @@ void player_t::trigger_replenishment()
 
   if ( sim -> replenishment_targets > 0 )
   {
-    replenish_targets( this );
+    choose_replenish_targets( this );
   }
   else
   {
@@ -2873,7 +2803,6 @@ act_expression_t* player_t::create_expression( std::string& name,std::string& pr
   {
     bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
     if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
-    if ( name=="tricks_of_the_trade" )  node= new oldbuff_expression_t( e_name, &buffs.tricks_of_the_trade, ex?&expirations.tricks_of_the_trade:0 );
   }
   if ( ( prefix=="player" )&&( node==0 ) )
   {

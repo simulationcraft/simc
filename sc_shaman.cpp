@@ -2274,16 +2274,13 @@ struct mana_spring_totem_t : public shaman_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      p -> buffs.mana_spring = regen;
-    }
+    sim -> auras.mana_spring_totem -> trigger( 1, regen );
     update_ready();
   }
 
   virtual bool ready()
   {
-    if ( player -> buffs.mana_spring >= regen )
+    if ( sim -> auras.mana_spring_totem -> current_value >= regen )
       return false;
 
     return shaman_spell_t::ready();
@@ -3151,6 +3148,7 @@ void player_t::shaman_init( sim_t* sim )
 {
   sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, 15.0 );
   sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
+  sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, 300.0 );
   sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
   sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
   sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, 10.0 );
@@ -3174,13 +3172,12 @@ void player_t::shaman_combat_begin( sim_t* sim )
     sim -> auras.totem_of_wrath -> override( 1, 280.0 );
     sim -> target -> debuffs.totem_of_wrath -> override();
   }
-  if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 144 * 1.15);
+  if ( sim -> overrides.mana_spring_totem ) sim -> auras.mana_spring_totem -> override( 1, 91.0 * 1.2 );
+  if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 144 * 1.15 );
   if ( sim -> overrides.   windfury_totem ) sim -> auras.   windfury_totem -> override( 1, 0.20 );
-
-  if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 155 * 1.15);
+  if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 155 * 1.15 );
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.20 );
-  
-  if ( sim -> overrides.elemental_oath ) sim -> auras.elemental_oath -> override();
-  if ( sim -> overrides.unleashed_rage ) sim -> auras.unleashed_rage -> override( 1, 10 );
+  if ( sim -> overrides.elemental_oath    ) sim -> auras.elemental_oath    -> override();
+  if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 10 );
 }
 
