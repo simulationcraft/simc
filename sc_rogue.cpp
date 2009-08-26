@@ -1487,7 +1487,11 @@ struct envenom_t : public rogue_attack_t
 
     int doses_consumed = std::min( p -> _buffs.poison_doses, p -> _buffs.combo_points );
 
-    direct_power_mod = p -> _buffs.combo_points * 0.07;
+    if ( sim -> P322 )
+      direct_power_mod = p -> _buffs.combo_points * 0.09;
+    else
+      direct_power_mod = p -> _buffs.combo_points * 0.07;
+        
     base_dd_min = base_dd_max = doses_consumed * dose_dmg;
     rogue_attack_t::player_buff();
 
