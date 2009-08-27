@@ -151,8 +151,6 @@ double spell_t::level_based_miss_chance( int player,
 }
 
 // spell_t::crit_chance ====================================================
-// experimental implementation of 3% crit chance reduction against +3 level
-// targets; should only be used with spell_crit_suppression=1
 
 double spell_t::crit_chance( int player_level,
 			     int target_level ) SC_CONST

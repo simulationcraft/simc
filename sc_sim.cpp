@@ -78,19 +78,6 @@ static bool parse_optimal_raid( sim_t*             sim,
   return true;
 }
 
-// parse_spell_crit_suppression =============================================
-// experimental
-static bool parse_spell_crit_suppression( sim_t*             sim,
-                                          const std::string& name,
-                                          const std::string& value )
-{
-  if ( name != "spell_crit_suppression" ) return false;
-
-  sim -> use_spell_crit_suppression( atoi( value.c_str() ) );
-
-  return true;
-}
-
 // parse_player =============================================================
 
 static bool parse_player( sim_t*             sim,
@@ -315,7 +302,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
     armor_update_interval( 20 ),
-    optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
+    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), report_buffed_stats( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
@@ -337,8 +324,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling = new scaling_t( this );
 
   use_optimal_buffs_and_debuffs( 1 );
-  // experimental spell crit suppression option
-  use_spell_crit_suppression( 0 );
 
   if ( parent )
   {
@@ -1163,13 +1148,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.wrath_of_air           = optimal_raid;
 }
 
-// sim_t::use_spell_crit_suppression =====================================
-// experimental
-void sim_t::use_spell_crit_suppression( int value )
-{
-  spell_crit_suppression = value;
-}
-
 // sim_t::aura_gain =========================================================
 
 void sim_t::aura_gain( const char* aura_name , int aura_id )
@@ -1272,8 +1250,6 @@ std::vector<option_t>& sim_t::get_options()
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
       { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
-      // experimental spell crit suppression option
-      { "spell_crit_suppression",           OPT_FUNC,   ( void* ) ::parse_spell_crit_suppression      },
       { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
       { "threads",                          OPT_INT,    &( threads                                  ) },
       // @option_doc loc=global/lag title="Lag"
@@ -1365,7 +1341,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/party title="Party Composition"
       { "party",                            OPT_LIST,   &( party_encoding                           ) },
       // @option_doc loc=skip
-      { "active",                           OPT_FUNC,   ( void* ) ::parse_active                        },
+      { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
       { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
       { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
       { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
@@ -1379,48 +1355,49 @@ std::vector<option_t>& sim_t::get_options()
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
       // @option_doc loc=skip
-      { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "player",                           OPT_FUNC,   ( void* ) ::parse_player                        },
-      { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                        },
-      { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                        },
-      { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                       },
-      { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                          },
-      { "http_cache_clear",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache                 },
+      { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+      { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
+      { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
+      { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
+      { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
+      { "http_cache_clear",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
       { "alias+",                           OPT_APPEND, &( alias.alias_str                          ) },
+      { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
       // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
-      { "default_enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
-      { "default_enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
-      { "default_enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
-      { "default_enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
-      { "default_enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
-      { "default_enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
-      { "default_enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
-      { "default_enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
-      { "default_enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
-      { "default_enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
-      { "default_enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
-      { "default_enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
-      { "default_enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
-      { "default_enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
-      { "default_enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
-      { "default_enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
-      { "default_enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
-      { "default_enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
-      { "default_enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
-      { "default_enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
+      { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
+      { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
+      { "default_enchant_stamina",                  OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ] ) },
+      { "default_enchant_intellect",                OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ] ) },
+      { "default_enchant_spirit",                   OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ] ) },
+      { "default_enchant_spell_power",              OPT_FLT,  &( enchant.spell_power                 ) },
+      { "default_enchant_mp5",                      OPT_FLT,  &( enchant.mp5                         ) },
+      { "default_enchant_attack_power",             OPT_FLT,  &( enchant.attack_power                ) },
+      { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
+      { "default_enchant_armor_penetration_rating", OPT_FLT,  &( enchant.armor_penetration_rating    ) },
+      { "default_enchant_armor",                    OPT_FLT,  &( enchant.armor                       ) },
+      { "default_enchant_haste_rating",             OPT_FLT,  &( enchant.haste_rating                ) },
+      { "default_enchant_hit_rating",               OPT_FLT,  &( enchant.hit_rating                  ) },
+      { "default_enchant_crit_rating",              OPT_FLT,  &( enchant.crit_rating                 ) },
+      { "default_enchant_health",                   OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ] ) },
+      { "default_enchant_mana",                     OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ] ) },
+      { "default_enchant_rage",                     OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ] ) },
+      { "default_enchant_energy",                   OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ] ) },
+      { "default_enchant_focus",                    OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ] ) },
+      { "default_enchant_runic",                    OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ] ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
@@ -1522,8 +1499,8 @@ int sim_t::main( int argc, char** argv )
   patch.decode( &arch, &version, &revision );
 
   util_t::fprintf( output_file,
-                   "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d, spell_crit_suppression=%d )\n",
-                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng, spell_crit_suppression );
+                   "\nSimulationCraft for World of Warcraft build %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
+                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
 
   if ( save_profiles )
@@ -1544,7 +1521,7 @@ int sim_t::main( int argc, char** argv )
     execute();
     scaling -> analyze();
 
-    if( report_buffed_stats ) combat_begin();
+    if( report_buffed_stats ) player_t::combat_begin( this );
 
     util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
     report_t::print_suite( this );
