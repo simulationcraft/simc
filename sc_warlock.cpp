@@ -1709,18 +1709,6 @@ struct chaos_bolt_t : public warlock_spell_t
       player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
     }
   }
-
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( !p->talents.chaos_bolt ) return false;
-
-    if ( ! warlock_spell_t::ready() )
-      return false;
-
-    return true;
-  }
 };
 
 // Death Coil Spell ===========================================================
@@ -1832,16 +1820,7 @@ struct shadow_burn_t : public warlock_spell_t
       }
     }
   }
-
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-    if ( !p->talents.shadow_burn )         return false;
-    return warlock_spell_t::ready();
-  }
 };
-
-
 
 // Shadowfury Spell ===========================================================
 

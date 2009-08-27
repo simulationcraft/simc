@@ -120,7 +120,7 @@ bool buff_t::may_react( int stack )
 
   if( stack == 0 ) return sim -> time_to_think( last_start );
 
-  assert( max_stack > 0 );
+  if( stack > max_stack ) return false;
 
   return sim -> time_to_think( stack_occurrence[ stack ] );
 }
