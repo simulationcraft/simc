@@ -489,7 +489,7 @@ act_expression_t* act_expression_t::create( action_t* action, std::string& expre
         {
           bool sfx_stacks=( suffix=="value" )||( suffix=="buff" ) || ( suffix=="stacks" );
           if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) sfx_stacks=true;
-          if ( !sfx_stacks )
+          if ( sfx_stacks )
           {
             int method=1;
             if ( ( suffix=="time_to_think" )||( suffix=="think" ) ) method=2;
