@@ -2475,7 +2475,7 @@ struct deadly_poison_t : public rogue_poison_t
       chance += p -> talents.improved_poisons * 0.02;
       if ( p -> buffs_envenom -> up() )
       {
-        chance += 0.15 + p -> talents.master_poisoner * 0.15;
+        chance += 0.15 + ( sim -> P322 ? 0.0 : ( p -> talents.master_poisoner * 0.15 ) );
       }
       success = p -> rng_deadly_poison -> roll( chance );
     }

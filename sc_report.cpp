@@ -1242,21 +1242,23 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    util_t::fprintf( file, "\nPlayer=%s (%s)  DPS=%.1f (Error=+/-%.1f Range=+/-%.0f)",
-                     p -> name(), util_t::talent_tree_string( p -> primary_tree() ),
+    util_t::fprintf( file, "\nPlayer: %s %s %s %s %d\n",
+                     p -> name(), p -> race_str.c_str(), 
+		     util_t::player_type_string( p -> type ),
+		     util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+
+    util_t::fprintf( file, "  DPS: %.1f  Error=%.1f  Range=%.0f",
                      p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
 
     if ( p -> rps_loss > 0 )
     {
-      util_t::fprintf( file, "  DPR=%.1f  RS=%.1f/%.1f  (%s)",
+      util_t::fprintf( file, "  DPR=%.1f  RPS=%.1f/%.1f  (%s)",
                        p -> dpr, p -> rps_loss, p -> rps_gain,
                        util_t::resource_type_string( p -> primary_resource() ) );
     }
 
     util_t::fprintf( file, "\n" );
     util_t::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
-    util_t::fprintf( file, "  Race: %s\n",   p -> race_str.c_str() );
-    util_t::fprintf( file, "  Level: %d\n",  p -> level );
 
     print_core_stats   ( file, p );
     print_spell_stats  ( file, p );
