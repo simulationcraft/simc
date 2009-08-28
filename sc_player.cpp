@@ -448,12 +448,8 @@ void player_t::init( sim_t* sim )
   player_t::warlock_init     ( sim );
   player_t::warrior_init     ( sim );
 
-  if ( sim -> overrides.replenishment ) sim -> replenishment_targets = 0;
-
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( sim -> overrides.replenishment ) p -> buffs.replenishment -> override();
-
     p -> init_resources( true );
   }  
 }
@@ -1287,6 +1283,8 @@ void player_t::combat_begin()
       }
     }
   }
+
+  if ( sim -> overrides.replenishment ) buffs.replenishment -> override();
 
   init_resources( true );
 
