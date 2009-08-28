@@ -562,6 +562,22 @@ player_t* wowhead_t::download_player( sim_t* sim,
   armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
   util_t::format_name ( name_str );
 
+  std::string level_str;
+  if ( ! js_t::get_value( level_str, profile_js, "level"  ) )
+  {
+    util_t::printf( "\nsimcraft: Unable to extract player level from wowhead id '%s'.\n", id.c_str() );
+    return 0;
+  }
+  int level = atoi( level_str.c_str() );
+  if ( level < 60 )
+  {
+    level = 60;
+  }
+  else if ( level > 80 )
+  {
+    level = 80;
+  }
+
   std::string cid_str;
   if ( ! js_t::get_value( cid_str, profile_js, "classs" ) )
   {
@@ -592,6 +608,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
                     type_str.c_str(), name_str.c_str(), id.c_str() );
     return 0;
   }
+
+  p -> level = level;
 
   std::vector<std::string> region_data;
   int num_region = js_t::get_value( region_data, profile_js, "region" );

@@ -1256,6 +1256,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     util_t::fprintf( file, "\n" );
     util_t::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
     util_t::fprintf( file, "  Race: %s\n",   p -> race_str.c_str() );
+    util_t::fprintf( file, "  Level: %d\n",  p -> level );
 
     print_core_stats   ( file, p );
     print_spell_stats  ( file, p );
