@@ -13,7 +13,7 @@ actions+=/fel_armor
 actions+=/summon_pet,felguard
 actions+=/life_tap,buff_refresh=1
 actions+=/demonic_empowerment
-actions+=/life_tap,trigger=10000,health_percentage>=35,metamorphosis=0
+actions+=/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0
 actions+=/soul_fire,decimation=1
 actions+=/metamorphosis
 actions+=/curse_of_doom,time_to_die>=90

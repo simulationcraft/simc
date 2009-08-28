@@ -3673,7 +3673,7 @@ void warlock_t::init_actions()
     else if ( talents.metamorphosis ) // 00_56_15
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/life_tap,trigger=10000,health_percentage>=35,metamorphosis=0";
+      action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
       if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
       action_list_str += "/metamorphosis/curse_of_doom,time_to_die>=90";
       action_list_str += "/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
