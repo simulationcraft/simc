@@ -2906,8 +2906,11 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
       if ( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
-      action_list_str += "/chain_lightning";
-      if ( level >= 75 ) action_list_str += ",lvb_cd<=1.5";
+	  if ( ! tiers.t8_4pc_elemental )
+		{
+			action_list_str += "/chain_lightning";
+			if ( level >= 75 ) action_list_str += ",lvb_cd<=1.5";
+		}
       action_list_str += "/lightning_bolt";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }

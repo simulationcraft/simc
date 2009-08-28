@@ -18,7 +18,6 @@ actions+=/speed_potion
 actions+=/elemental_mastery
 actions+=/flame_shock
 actions+=/lava_burst,flame_shock=1
-actions+=/chain_lightning,lvb_cd<=1.5
 actions+=/lightning_bolt
 actions+=/thunderstorm
 head=conquerors_worldbreaker_helm,stats=1067armor_60hit_60crit_115sp_85sta_86int,gems=chaotic_skyflare_8haste_9sp_9sp,enchant=30sp_20crit
