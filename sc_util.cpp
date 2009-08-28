@@ -1062,7 +1062,7 @@ int util_t::string_split( const std::string& str,
 
 int64_t util_t::milliseconds()
 {
-  return clock()/( CLOCKS_PER_SEC/1000 );
+  return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
 // util_t::parse_date ======================================================
