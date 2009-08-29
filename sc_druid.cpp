@@ -2987,11 +2987,13 @@ void druid_t::regen( double periodicity )
 
 double druid_t::available() SC_CONST
 {
+  if( primary_resource() != RESOURCE_ENERGY ) return 0.1;
+
   double energy = resource_current[ RESOURCE_ENERGY ];
 
-  if ( energy > 20 ) return 0.1;
+  if ( energy > 25 ) return 0.1;
 
-  return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
+  return std::max( ( 25 - energy ) / energy_regen_per_second, 0.1 );
 }
 
 // druid_t::recalculate_haste ==============================================

@@ -3326,9 +3326,9 @@ double rogue_t::available() SC_CONST
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 
-  if ( energy > 20 ) return 0.1;
+  if ( energy > 25 ) return 0.1;
 
-  return std::max( ( 20 - energy ) / energy_regen_per_second, 0.1 );
+  return std::max( ( 25 - energy ) / energy_regen_per_second, 0.1 );
 }
 
 // rogue_t::get_talent_trees ==============================================
