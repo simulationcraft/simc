@@ -736,12 +736,6 @@ static void print_html_raid( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> downtime_chart.c_str() );
   }
 
-  if ( ! sim -> uptimes_chart.empty() )
-  {
-    util_t::fprintf( file, "\n<!-- Global Up-Times: -->\n" );
-    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> uptimes_chart.c_str() );
-  }
-
   count = sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
@@ -915,11 +909,6 @@ static void print_xml_raid( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "    <chart name=\"Raid Downtime\" url=\"%s\" />\n", sim -> downtime_chart.c_str() );
   }
 
-  if ( ! sim -> uptimes_chart.empty() )
-  {
-    util_t::fprintf( file, "    <chart name=\"Global Up-Times\" url=\"%s\" />\n", sim -> uptimes_chart.c_str() );
-  }
-
   count = sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
@@ -1017,20 +1006,14 @@ static void print_wiki_raid( FILE*  file,
   }
 
   std::string raid_downtime = "No chart for Raid Down-Time";
-  std::string raid_uptimes  = "No chart for Raid Up-Times";
 
   if ( ! sim -> downtime_chart.empty() )
   {
     raid_downtime = sim -> downtime_chart + "&dummy=dummy.png";
     simplify_html( raid_downtime );
   }
-  if ( ! sim -> uptimes_chart.empty() )
-  {
-    raid_uptimes = sim -> uptimes_chart + "&dummy=dummy.png";
-    simplify_html( raid_uptimes );
-  }
 
-  util_t::fprintf( file, "|| %s || %s ||\n", raid_downtime.c_str(), raid_uptimes.c_str() );
+  util_t::fprintf( file, "|| %s || ||\n", raid_downtime.c_str() );
 
   count = sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )

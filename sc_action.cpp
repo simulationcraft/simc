@@ -324,12 +324,11 @@ void action_t::target_debuff( int dmg_type )
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
-    if ( t -> debuffs.blood_frenzy -> up() ||
-         t -> debuffs.savage_combat )
+    if ( t -> debuffs.blood_frenzy  -> up() ||
+         t -> debuffs.savage_combat -> up() )
     {
       target_multiplier *= 1.04;
     }
-    t -> uptimes.savage_combat -> update( t -> debuffs.savage_combat != 0 );
   }
   else
   {
@@ -349,11 +348,11 @@ void action_t::target_debuff( int dmg_type )
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    target_dd_adder += t -> debuffs.hemorrhage;
+    target_dd_adder += t -> debuffs.hemorrhage -> value();
   }
 
-  if ( t -> debuffs.totem_of_wrath -> up()  ||
-       t -> debuffs.master_poisoner )
+  if ( t -> debuffs.totem_of_wrath  -> up() ||
+       t -> debuffs.master_poisoner -> up() )
   {
     target_crit += 0.03;
   }
@@ -371,8 +370,6 @@ void action_t::target_debuff( int dmg_type )
   }
 
   if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= 2.0;
-
-  t -> uptimes.master_poisoner -> update( t -> debuffs.master_poisoner != 0 );
 
   if ( t -> debuffs.winters_grasp -> up() ) target_hit += 0.02;
 
@@ -409,7 +406,8 @@ double action_t::armor() SC_CONST
 
   double adjusted_armor =  t -> base_armor();
 
-  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor -> value(), t -> debuffs.expose_armor );
+  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor -> value(), 
+				    t -> debuffs.expose_armor -> value() );
 
   if( t -> debuffs.faerie_fire -> up() ) adjusted_armor *= 0.95;
 

@@ -871,30 +871,23 @@ struct sim_t
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
-    // Overrides for Encounter buffs
-    int celerity;
-    // Overrides for NYI classes
+    int abominations_might;
+    int arcane_brilliance;
     int battle_shout;
+    int bleeding;
     int blessing_of_kings;
     int blessing_of_might;
     int blessing_of_wisdom;
-    int crypt_fever;
-    int judgement_of_wisdom;
-    int sanctified_retribution;
-    int sunder_armor;
-    int swift_retribution;
-    int thunder_clap;
-    // Overrides for supported classes
-    int abominations_might;
-    int arcane_brilliance;
-    int bleeding;
     int blood_frenzy;
     int bloodlust;
     int bloodlust_early;
+    int celerity;
+    int crypt_fever;
     int curse_of_elements;
     int divine_spirit;
     int earth_and_moon;
     int elemental_oath;
+    int expose_armor;
     int faerie_fire;
     int ferocious_inspiration;
     int flametongue_totem;
@@ -906,6 +899,7 @@ struct sim_t
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
+    int judgement_of_wisdom;
     int leader_of_the_pack;
     int mana_spring_totem;
     int mangle;
@@ -916,8 +910,12 @@ struct sim_t
     int poisoned;
     int rampage;
     int replenishment;
+    int sanctified_retribution;
     int savage_combat;
     int strength_of_earth;
+    int sunder_armor;
+    int swift_retribution;
+    int thunder_clap;
     int totem_of_wrath;
     int trauma;
     int trueshot_aura;
@@ -973,7 +971,7 @@ struct sim_t
   std::vector<player_t*> players_by_name;
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
-  std::string downtime_chart, uptimes_chart;
+  std::string downtime_chart;
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
   std::deque<std::string> active_files;
   FILE* output_file;
@@ -1684,7 +1682,6 @@ struct target_t
   double attack_speed, attack_damage;
   double initial_health, current_health;
   double total_dmg;
-  uptime_t* uptime_list;
 
   struct debuffs_t
   {
@@ -1712,42 +1709,16 @@ struct target_t
     debuff_t* vulnerable;
     debuff_t* winters_chill;
     debuff_t* winters_grasp;
-
-    int    old_buffs;
-    double expose_armor;
-    double hemorrhage;
-    int    hemorrhage_charges;
-    int    master_poisoner;
-    int    poisoned;
-    int    savage_combat;
+    debuff_t* master_poisoner;
+    debuff_t* poisoned;
+    debuff_t* savage_combat;
+    debuff_t* expose_armor;
+    debuff_t* hemorrhage;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
-    void reset()
-    { 
-      size_t delta = ( (uintptr_t) &old_buffs ) - ( (uintptr_t) this );
-      memset( (void*) &old_buffs, 0x0, sizeof( debuffs_t ) - delta );
-    }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
     bool snared() { return frozen() || slow -> check() || thunder_clap -> check(); }
   };
   debuffs_t debuffs;
-
-  struct expirations_t
-  {
-    event_t* expose_armor;
-    event_t* hemorrhage;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t ) ); }
-    expirations_t() { reset(); }
-  };
-  expirations_t expirations;
-
-  struct uptimes_t
-  {
-    uptime_t* master_poisoner;
-    uptime_t* savage_combat;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( uptimes_t ) ); }
-    uptimes_t() { reset(); }
-  };
-  uptimes_t uptimes;
 
   target_t( sim_t* s );
   ~target_t();
@@ -1763,7 +1734,6 @@ struct target_t
   double base_armor() SC_CONST;
   void aura_gain( const char* name, int aura_id=0 );
   void aura_loss( const char* name, int aura_id=0 );
-  uptime_t* get_uptime( const std::string& name );
   int get_options( std::vector<option_t>& );
   const char* name() SC_CONST { return name_str.c_str(); }
   const char* id();
@@ -2231,7 +2201,6 @@ struct chart_t
   static int raid_gear( std::vector<std::string>& images, sim_t* );
 
   static const char* raid_downtime    ( std::string& s, sim_t* );
-  static const char* raid_uptimes     ( std::string& s, sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t* );

@@ -2393,13 +2393,13 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     p -> cancel_sting();
     hunter_attack_t::execute();
-    if ( result_is_hit() ) sim -> target -> debuffs.poisoned++;
+    if ( result_is_hit() ) sim -> target -> debuffs.poisoned -> increment();
   }
 
   virtual void last_tick()
   {
     hunter_attack_t::last_tick();
-    sim -> target -> debuffs.poisoned--;
+    sim -> target -> debuffs.poisoned -> decrement();
   }
 
   virtual bool ready()

@@ -372,52 +372,6 @@ const char* chart_t::raid_downtime( std::string& s,
   return s.c_str();
 }
 
-// chart_t::raid_uptimes ========================================================
-
-const char* chart_t::raid_uptimes( std::string& s,
-                                   sim_t* sim )
-{
-  std::vector<uptime_t*> uptime_list;
-
-  for ( uptime_t* u = sim -> target -> uptime_list; u; u = u -> next )
-  {
-    if ( u -> up <= 0 ) continue;
-    uptime_list.push_back( u );
-  }
-
-  int num_uptimes = uptime_list.size();
-  if ( num_uptimes == 0 ) return 0;
-
-  char buffer[ 1024 ];
-
-  s = "http://chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_uptimes * 30 + 30 ); s += buffer;
-  s += "&amp;";
-  s += "cht=bhs";
-  s += "&amp;";
-  s += "chd=t:";
-  for ( int i=0; i < num_uptimes; i++ )
-  {
-    uptime_t* u = uptime_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), u -> percentage() ); s += buffer;
-  }
-  s += "&amp;";
-  s += "chds=0,200";
-  s += "&amp;";
-  s += "chm=";
-  for ( int i=0; i < num_uptimes; i++ )
-  {
-    uptime_t* u = uptime_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,000000,0,%d,15", ( i?"|":"" ), u -> percentage(), u -> name(), i ); s += buffer;
-  }
-  s += "&amp;";
-  s += "chtt=Global+Up-Times";
-  s += "&amp;";
-  s += "chts=000000,20";
-
-  return s.c_str();
-}
-
 // chart_t::raid_dpet ========================================================
 
 struct compare_dpet

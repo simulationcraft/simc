@@ -222,7 +222,7 @@ void buff_t::increment( int    stacks,
 void buff_t::decrement( int    stacks,
                         double value )
 {
-  if ( max_stack == 0 ) return;
+  if ( max_stack == 0 || current_stack <= 0 ) return;
 
   if ( stacks == 0 || current_stack <= stacks )
   {

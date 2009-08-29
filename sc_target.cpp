@@ -15,7 +15,7 @@ target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
     initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ),
     attack_speed( 2.0 ), attack_damage( 2000 ),
-    initial_health( 0 ), current_health( 0 ), total_dmg( 0 ), uptime_list( 0 )
+    initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -24,11 +24,6 @@ target_t::target_t( sim_t* s ) :
 
 target_t::~target_t()
 {
-  while ( uptime_t* u = uptime_list )
-  {
-    uptime_list = u -> next;
-    delete u;
-  }
 }
 
 // target_t::id =============================================================
@@ -64,10 +59,9 @@ void target_t::assess_damage( double amount,
 
   // FIXME! Someday create true "callbacks" for the various events to clean up crap like this.
 
-  if ( ( school == SCHOOL_PHYSICAL ) && ( dmg_type == DMG_DIRECT ) && ( debuffs.hemorrhage_charges > 0 ) )
+  if ( ( school == SCHOOL_PHYSICAL ) && ( dmg_type == DMG_DIRECT ) )
   {
-    debuffs.hemorrhage_charges--;
-    if ( debuffs.hemorrhage_charges == 0 ) event_t::early( expirations.hemorrhage );
+    debuffs.hemorrhage -> decrement();
   }
 }
 
@@ -146,33 +140,6 @@ void target_t::aura_loss( const char* aura_name , int aura_id )
   if( sim -> log ) log_t::output( sim, "Target %s loses %s", name(), aura_name );
 }
 
-// target_t::get_uptime =====================================================
-
-uptime_t* target_t::get_uptime( const std::string& name )
-{
-  uptime_t* u=0;
-
-  for ( u = uptime_list; u; u = u -> next )
-  {
-    if ( u -> name_str == name )
-      return u;
-  }
-
-  u = new uptime_t( name );
-
-  uptime_t** tail = &uptime_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  u -> next = *tail;
-  *tail = u;
-
-  return u;
-}
-
 // target_t::init ============================================================
 
 void target_t::init()
@@ -195,12 +162,8 @@ void target_t::init()
   // Infinite-Stacking De-Buffs
   debuffs.bleeding     = new debuff_t( sim, "bleeding",     -1 );
   debuffs.casting      = new debuff_t( sim, "casting",      -1 );
-  debuffs.crypt_fever  = new debuff_t( sim, "crypt_fever",  -1 );
   debuffs.invulnerable = new debuff_t( sim, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( sim, "vulnerable",   -1 );
-
-  uptimes.master_poisoner      = get_uptime( "master_poisoner"      );
-  uptimes.savage_combat        = get_uptime( "savage_combat"        );
 }
 
 // target_t::reset ===========================================================
@@ -211,18 +174,13 @@ void target_t::reset()
   total_dmg = 0;
   armor = initial_armor;
   current_health = initial_health;
-  debuffs.reset();
-  expirations.reset();
 }
 
 // target_t::combat_begin ====================================================
 
 void target_t::combat_begin()
 {
-  if ( sim -> overrides.bleeding        ) debuffs.bleeding -> override();
-  if ( sim -> overrides.master_poisoner ) debuffs.master_poisoner = 1;
-  if ( sim -> overrides.poisoned        ) debuffs.poisoned = 1;
-  if ( sim -> overrides.savage_combat   ) debuffs.savage_combat = 1;
+  if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
 
   if ( sim -> overrides.bloodlust )
   {

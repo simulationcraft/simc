@@ -658,10 +658,10 @@ static void apply_poison_debuff( rogue_t* p )
 {
   target_t* t = p -> sim -> target;
 
-  if ( p -> talents.master_poisoner ) t -> debuffs.master_poisoner++;
-  if ( p -> talents.savage_combat   ) t -> debuffs.savage_combat++;
+  if ( p -> talents.master_poisoner ) t -> debuffs.master_poisoner -> increment();
+  if ( p -> talents.savage_combat   ) t -> debuffs.savage_combat   -> increment();
 
-  t -> debuffs.poisoned++;
+  t -> debuffs.poisoned -> increment();
 }
 
 // remove_poison_debuff =====================================================
@@ -670,10 +670,10 @@ static void remove_poison_debuff( rogue_t* p )
 {
   target_t* t = p -> sim -> target;
 
-  if ( p -> talents.master_poisoner ) t -> debuffs.master_poisoner--;
-  if ( p -> talents.savage_combat   ) t -> debuffs.savage_combat--;
+  if ( p -> talents.master_poisoner ) t -> debuffs.master_poisoner -> decrement();
+  if ( p -> talents.savage_combat   ) t -> debuffs.savage_combat   -> decrement();
 
-  t -> debuffs.poisoned--;
+  t -> debuffs.poisoned -> decrement();
 }
 
 // =========================================================================
@@ -1414,39 +1414,13 @@ struct expose_armor_t : public rogue_attack_t
     {
       target_t* t = sim -> target;
 
-      double debuff = 0.2;
+      double duration = 6 * p -> buffs_combo_points -> current_stack;
+      if ( p -> glyphs.expose_armor ) duration += 10;
 
-      if ( debuff >= t -> debuffs.expose_armor )
+      if( t -> debuffs.expose_armor -> remains_lt( duration ) )
       {
-        struct expiration_t : public event_t
-        {
-          expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
-          {
-            name = "Expose Armor Expiration";
-            sim -> add_event( this, duration );
-          }
-          virtual void execute()
-          {
-            sim -> target -> debuffs.expose_armor = 0;
-            sim -> target -> expirations.expose_armor = 0;
-          }
-        };
-
-        double duration = 6 * p -> buffs_combo_points -> current_stack;
-        if ( p -> glyphs.expose_armor ) duration += 10;
-
-        t -> debuffs.expose_armor = debuff;
-
-        event_t*& e = t -> expirations.expose_armor;
-
-        if ( e )
-        {
-          e -> reschedule( duration );
-        }
-        else
-        {
-          e = new ( sim ) expiration_t( sim, p, duration );
-        }
+	t -> debuffs.expose_armor -> duration = duration;
+	t -> debuffs.expose_armor -> trigger( 1, 0.2 );
       }
     }
   };
@@ -1455,7 +1429,7 @@ struct expose_armor_t : public rogue_attack_t
   {
     target_t* t = sim -> target;
 
-    if ( t -> debuffs.expose_armor != 0 )
+    if ( t -> debuffs.expose_armor -> check() )
       return false;
     
     if ( ! override_sunder )
@@ -1619,52 +1593,25 @@ struct hemorrhage_t : public rogue_attack_t
                                           p -> talents.surprise_attacks * 0.10 +
                                           p -> set_bonus.tier6_4pc()    * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
+
+    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
 
     if ( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
   }
 
   virtual void execute()
   {
-    rogue_t* p = player -> cast_rogue();
     rogue_attack_t::execute();
     if ( result_is_hit() )
     {
       target_t* t = sim -> target;
 
-      if ( damage_adder >= t -> debuffs.hemorrhage )
+      if ( damage_adder >= t -> debuffs.hemorrhage -> current_value )
       {
-        struct expiration_t : public event_t
-        {
-          expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-          {
-            name = "Hemorrhage Expiration";
-            sim -> add_event( this, 15.0 );
-          }
-          virtual void execute()
-          {
-            sim -> target -> debuffs.hemorrhage = 0;
-            sim -> target -> debuffs.hemorrhage_charges = 0;
-            sim -> target -> expirations.hemorrhage = 0;
-          }
-        };
-
-        t -> debuffs.hemorrhage = damage_adder;
-        t -> debuffs.hemorrhage_charges = 10;
-
-        event_t*& e = t -> expirations.hemorrhage;
-
-        if ( e )
-        {
-          e -> reschedule( 15.0 );
-        }
-        else
-        {
-          e = new ( sim ) expiration_t( sim, p );
-        }
+	t -> debuffs.hemorrhage -> trigger( 10, damage_adder );
       }
     }
   }
@@ -3559,11 +3506,23 @@ void player_t::rogue_init( sim_t* sim )
   {
     p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 15.0 );
   }
+
+  target_t* t = sim -> target;
+  t -> debuffs.expose_armor    = new debuff_t( sim, "expose_armor",     1 );
+  t -> debuffs.hemorrhage      = new debuff_t( sim, "hemorrhage",      10, 15.0 );
+  t -> debuffs.master_poisoner = new debuff_t( sim, "master_poisoner", -1 );
+  t -> debuffs.poisoned        = new debuff_t( sim, "poisoned",        -1 );
+  t -> debuffs.savage_combat   = new debuff_t( sim, "savage_combat",   -1 );
 }
 
 // player_t::rogue_combat_begin =============================================
 
 void player_t::rogue_combat_begin( sim_t* sim )
 {
+  target_t* t = sim -> target;
+  if( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.2 );
+  if( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
+  if( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
+  if( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();
 }
 

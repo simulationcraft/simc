@@ -2303,6 +2303,9 @@ void player_t::death_knight_init( sim_t* sim )
   {
     p -> buffs.hysteria = new buff_t( p, "hysteria", 1, 30.0 );
   }
+
+  target_t* t = sim -> target;
+  t -> debuffs.crypt_fever  = new debuff_t( sim, "crypt_fever", -1 );
 }
 
 // player_t::death_knight_combat_begin ======================================

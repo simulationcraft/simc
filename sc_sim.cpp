@@ -913,7 +913,6 @@ void sim_t::analyze()
   chart_t::raid_dpet    ( dpet_charts,    this );
   chart_t::raid_gear    ( gear_charts,    this );
   chart_t::raid_downtime( downtime_chart, this );
-  chart_t::raid_uptimes ( uptimes_chart,  this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -1113,6 +1112,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.divine_spirit          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
   overrides.elemental_oath         = optimal_raid;
+  overrides.expose_armor           = optimal_raid;
   overrides.faerie_fire            = optimal_raid;
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
