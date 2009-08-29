@@ -860,6 +860,7 @@ void player_t::init_buffs()
 
 void player_t::init_gains()
 {
+  gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
@@ -2166,6 +2167,65 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
+// Arcane Torrent ==========================================================
+
+struct arcane_torrent_t : public action_t
+{
+  arcane_torrent_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "arcane_torrent", player )
+  {
+    assert( player -> race == RACE_BLOOD_ELF );
+
+    trigger_gcd = 0;
+    cooldown    = 120;
+  }
+
+  virtual void execute()
+  {
+    int resource = player -> primary_resource();
+    double gain = 0;
+    switch( resource )
+    {
+      case RESOURCE_MANA:
+        gain = player -> resource_max [ RESOURCE_MANA ] * 0.06;
+        break;
+      case RESOURCE_ENERGY:
+      case RESOURCE_RUNIC:
+        gain = 15;
+        break;
+      default:
+        break;
+    }
+
+    if( gain > 0 )
+      player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
+  }
+
+  virtual bool ready()
+  {
+    if( ! action_t::ready() )
+      return false;
+
+    int resource = player -> primary_resource();
+    switch( resource )
+    {
+      case RESOURCE_MANA:
+        if( player -> resource_current [ resource ] / player -> resource_max [ resource ] <= 0.94 )
+          return true;
+        break;
+      case RESOURCE_ENERGY:
+      case RESOURCE_RUNIC:
+        if( player -> resource_max [ resource ] - player -> resource_current [ resource ] <= 15 )
+          return true;
+        break;
+      default:
+        break;
+    }
+
+    return false;
+  }
+};
+
 // Cycle Action ============================================================
 
 struct cycle_t : public action_t
@@ -2465,6 +2525,7 @@ struct use_item_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );

@@ -1373,6 +1373,7 @@ struct player_t
 
   struct gains_t
   {
+    gain_t* arcane_torrent;
     gain_t* blessing_of_wisdom;
     gain_t* dark_rune;
     gain_t* energy_regen;
