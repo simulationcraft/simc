@@ -150,8 +150,10 @@ void attack_t::player_buff()
     }
   }
 
-  if ( p -> meta_gem == META_CHAOTIC_SKYFLARE ||
-       p -> meta_gem == META_RELENTLESS_EARTHSIEGE )
+  if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM )
   {
     player_crit_multiplier *= 1.03;
   }
