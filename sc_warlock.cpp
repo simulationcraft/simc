@@ -1636,11 +1636,11 @@ struct shadow_bolt_t : public warlock_spell_t
         return false;
 
     if ( isb_benefit )
-      if ( ! sim -> target -> debuffs.improved_shadow_bolt )
+      if ( ! sim -> target -> debuffs.improved_shadow_bolt -> check() )
         return false;
 
     if ( isb_trigger )
-      if ( sim -> target -> debuffs.improved_shadow_bolt )
+      if ( sim -> target -> debuffs.improved_shadow_bolt -> check() )
         return false;
 
     return true;
