@@ -1933,6 +1933,25 @@ void death_knight_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    if ( race == RACE_DWARF )
+    {
+      if ( talents.bladed_armor > 0 )
+        action_list_str += "/stoneform";
+    }
+    else if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     action_list_str += "/auto_attack";
 
     action_list_default = 1;

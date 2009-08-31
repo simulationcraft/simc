@@ -3656,6 +3656,15 @@ void warlock_t::init_actions()
       }
     }
 
+    if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     if ( talents.haunt || talents.unstable_affliction ) // 41+_xx_xx
     {
       if ( talents.haunt ) action_list_str += "/haunt,debuff=1";

@@ -2876,6 +2876,16 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
+
+      if ( race == RACE_ORC )
+      {
+        action_list_str += "/blood_fury";
+      }
+      else if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking";
+      }
+
       action_list_str += "/wind_shear/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
       action_list_str += "/auto_attack";
       action_list_str += "/speed_potion";
@@ -2899,6 +2909,16 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
+
+      if ( race == RACE_ORC )
+      {
+        action_list_str += "/blood_fury";
+      }
+      else if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking";
+      }
+
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
       action_list_str += "/speed_potion";

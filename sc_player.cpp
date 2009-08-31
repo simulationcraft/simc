@@ -848,12 +848,18 @@ void player_t::init_rating()
 
 void player_t::init_buffs()
 {
-  buffs.heroic_presence = new buff_t( this, "heroic_presence", 1 );
-  buffs.replenishment   = new buff_t( this, "replenishment", 1, 15.0 );
+  buffs.berserking      = new buff_t( this, "berserking",      1, 10.0 );
+  buffs.heroic_presence = new buff_t( this, "heroic_presence", 1       );
+  buffs.replenishment   = new buff_t( this, "replenishment",   1, 15.0 );
+  buffs.stoneform       = new buff_t( this, "stoneform",       1,  8.0 );
 
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  -1 );
   buffs.stunned = new buff_t( this, "stunned", -1 );
+
+  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs.blood_fury_ap   = new stat_buff_t( this, "blood_fury_ap", STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
+  buffs.blood_fury_sp   = new stat_buff_t( this, "blood_fury_sp", STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
 }
 
 // player_t::init_gains ====================================================
@@ -1083,6 +1089,8 @@ double player_t::composite_armor() SC_CONST
   if ( meta_gem == META_AUSTERE_EARTHSIEGE ) a *= 1.02;
 
   a += floor( armor_per_agility * agility() );
+
+  if ( buffs.stoneform -> check() ) a *= 1.10;
 
   return a;
 }
@@ -2167,6 +2175,8 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
+// ===== Racial Abilities ==================================================
+
 // Arcane Torrent ==========================================================
 
 struct arcane_torrent_t : public action_t
@@ -2174,8 +2184,6 @@ struct arcane_torrent_t : public action_t
   arcane_torrent_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "arcane_torrent", player )
   {
-    assert( player -> race == RACE_BLOOD_ELF );
-
     trigger_gcd = 0;
     cooldown    = 120;
   }
@@ -2199,11 +2207,16 @@ struct arcane_torrent_t : public action_t
 
     if( gain > 0 )
       player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
+
+    update_ready();
   }
 
   virtual bool ready()
   {
     if( ! action_t::ready() )
+      return false;
+
+    if ( player -> race != RACE_BLOOD_ELF )
       return false;
 
     int resource = player -> primary_resource();
@@ -2223,6 +2236,111 @@ struct arcane_torrent_t : public action_t
     }
 
     return false;
+  }
+};
+
+// Berserking ==========================================================
+
+struct berserking_t : public action_t
+{
+  berserking_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "berserking", player )
+  {
+    trigger_gcd = 0;
+    cooldown    = 180;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
+
+    player -> buffs.berserking -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if( ! action_t::ready() )
+      return false;
+
+    if ( player -> race != RACE_TROLL )
+      return false;
+
+    return true;
+  }
+};
+
+// Blood Fury ==========================================================
+
+struct blood_fury_t : public action_t
+{
+  blood_fury_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "blood_fury", player )
+  {
+    trigger_gcd = 0;
+    cooldown    = 120;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
+
+    if ( player -> type == WARRIOR || player -> type == ROGUE || player -> type == DEATH_KNIGHT ||
+         player -> type == HUNTER  || player -> type == SHAMAN )
+    {
+      player -> buffs.blood_fury_ap -> trigger();
+    }
+
+    if ( player -> type == SHAMAN  || player -> type == WARLOCK )
+    {
+      player -> buffs.blood_fury_sp -> trigger();
+    }
+  }
+
+  virtual bool ready()
+  {
+    if( ! action_t::ready() )
+      return false;
+
+    if ( player -> race != RACE_ORC )
+      return false;
+
+    return true;
+  }
+};
+
+// Stoneform ==========================================================
+
+struct stoneform_t : public action_t
+{
+  stoneform_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "stoneform", player )
+  {
+    trigger_gcd = 0;
+    cooldown    = 120;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
+
+    player -> buffs.stoneform -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if( ! action_t::ready() )
+      return false;
+
+    if ( player -> race != RACE_DWARF )
+      return false;
+
+    return true;
   }
 };
 
@@ -2526,9 +2644,12 @@ action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
+  if ( name == "berserking"       ) return new       berserking_t( this, options_str );
+  if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new wait_until_ready_t( this, options_str );
 

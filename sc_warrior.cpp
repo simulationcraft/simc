@@ -2296,6 +2296,20 @@ void warrior_t::init_actions()
       }
     }
 
+    if ( race == RACE_DWARF )
+    {
+      if ( talents.armored_to_the_teeth > 0 )
+        action_list_str += "/stoneform";
+    }
+    else if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+
     if ( primary_tree() == TREE_ARMS )
     {
       action_list_str += "/stance,choose=battle/auto_attack";

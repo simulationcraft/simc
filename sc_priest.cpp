@@ -1995,6 +1995,8 @@ void priest_t::init_actions()
       action_list_str += "/devouring_plague/mind_blast";
       if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
       if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_wait=0,mb_priority=0";
+      if ( race == RACE_TROLL ) action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death,moving=1"; // when moving
       if ( talents.dispersion ) action_list_str += "/dispersion";
@@ -2006,6 +2008,8 @@ void priest_t::init_actions()
       if ( talents.power_infusion ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast/";
       if ( talents.penance ) action_list_str += "/penance";
+      if ( race == RACE_TROLL ) action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/smite";
       action_list_str += "/shadow_word_death"; // when moving
       break;
@@ -2015,7 +2019,10 @@ void priest_t::init_actions()
       if ( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
       action_list_str += "/shadow_word_pain";
       if ( talents.power_infusion ) action_list_str += "/power_infusion";
-      action_list_str += "/holy_fire/mind_blast/smite";
+      action_list_str += "/holy_fire/mind_blast";
+      if ( race == RACE_TROLL     ) action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      action_list_str += "/smite";
       action_list_str += "/shadow_word_death"; // when moving
       break;
     }

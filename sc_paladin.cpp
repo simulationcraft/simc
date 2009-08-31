@@ -1107,6 +1107,12 @@ void paladin_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     action_list_str += "/avenging_wrath";
     action_list_str += "/hammer_of_wrath/judgement";
     if ( talents.divine_storm )

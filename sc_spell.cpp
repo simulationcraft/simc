@@ -33,6 +33,8 @@ double spell_t::haste() SC_CONST
     if (      p -> buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
     else if ( p -> buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 
+    if ( p -> buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
+
     if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );

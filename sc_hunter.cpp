@@ -3302,6 +3302,20 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     if ( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
     action_list_str += "/aspect";
     if ( talents.chimera_shot ) action_list_str += "/serpent_sting";

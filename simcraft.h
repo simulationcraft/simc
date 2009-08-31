@@ -1348,9 +1348,12 @@ struct player_t
   struct buffs_t
   {
     buff_t* arcane_brilliance;
+    buff_t* berserking; 
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
     buff_t* blessing_of_wisdom;
+    buff_t* blood_fury_ap;
+    buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* demonic_pact;
     buff_t* divine_spirit;
@@ -1365,6 +1368,7 @@ struct player_t
     buff_t* power_infusion;
     buff_t* hysteria;
     buff_t* replenishment;
+    buff_t* stoneform;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }

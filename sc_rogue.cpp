@@ -2810,6 +2810,19 @@ void rogue_t::init_actions()
       }
     }
 
+    if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     if ( primary_tree() == TREE_ASSASSINATION )
     {
       if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";

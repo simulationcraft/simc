@@ -3016,6 +3016,16 @@ void mage_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+
     if ( talents.combustion   ) action_list_str += "/combustion";
     if ( talents.arcane_power ) action_list_str += "/arcane_power";
     if ( talents.icy_veins    ) action_list_str += "/icy_veins";
