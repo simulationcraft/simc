@@ -682,10 +682,6 @@ static void print_html_menu_triggers( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dpet'));\">+</a> " );
   util_t::fprintf( file, "DamagePerExecutionTime<br />\n" );
 
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_uptimes'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_uptimes'));\">+</a> " );
-  util_t::fprintf( file, "Up-Times and Procs<br />\n" );
-
   util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_sources'));\">-</a> " );
   util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_sources'));\">+</a> " );
   util_t::fprintf( file, "Damage Sources<br />\n" );
@@ -694,6 +690,10 @@ static void print_html_menu_triggers( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_gains'));\">+</a> " );
   util_t::fprintf( file, "Resource Gains<br />\n" );
 
+  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
+  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_resource_timeline'));\">+</a> " );
+  util_t::fprintf( file, "Resource Timeline<br />\n" );
+
   util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_timeline'));\">-</a> " );
   util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_timeline'));\">+</a> " );
   util_t::fprintf( file, "DPS Timeline<br />\n" );
@@ -701,10 +701,6 @@ static void print_html_menu_triggers( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_distribution'));\">-</a> " );
   util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_distribution'));\">+</a> " );
   util_t::fprintf( file, "DPS Distribution<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_resource_timeline'));\">+</a> " );
-  util_t::fprintf( file, "Resource Timeline<br />\n" );
 
   util_t::fprintf( file, "</div>\n" );//trigger_menu
 
@@ -832,24 +828,23 @@ static void print_html_player( FILE* file, player_t* p )
     util_t::fprintf( file, "<img name=\"chart_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
   }
 
-  if ( ! p -> uptimes_and_procs_chart.empty() )
-  {
-    util_t::fprintf( file, "\n<!-- %s Up-Times and Procs: -->\n", p -> name() );
-    util_t::fprintf( file, "<img name=\"chart_uptimes\" src=\"%s\" />\n", p -> uptimes_and_procs_chart.c_str() );
-  }
-  util_t::fprintf( file, "<br />\n" );
-
   if ( ! p -> action_dmg_chart.empty() )
   {
     util_t::fprintf( file, "\n<!-- %s Damage Sources: -->\n", p -> name() );
     util_t::fprintf( file, "<img name=\"chart_sources\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
   }
 
+  util_t::fprintf( file, "<br />\n" );
+
   if ( ! p -> gains_chart.empty() )
   {
     util_t::fprintf( file, "\n<!-- %s Resource Gains: -->\n", p -> name() );
     util_t::fprintf( file, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
   }
+
+  util_t::fprintf( file, "\n<!-- %s Resource Timeline: -->\n", p -> name() );
+  util_t::fprintf( file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+
   util_t::fprintf( file, "<br />\n" );
 
   util_t::fprintf( file, "\n<!-- %s DPS Timeline: -->\n", p -> name() );
@@ -857,9 +852,6 @@ static void print_html_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, "\n<!-- %s DPS Distribution: -->\n", p -> name() );
   util_t::fprintf( file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
-
-  util_t::fprintf( file, "\n<!-- %s Resource Timeline: -->\n", p -> name() );
-  util_t::fprintf( file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
 
   util_t::fprintf( file, "<hr />\n" );
 }
@@ -925,11 +917,6 @@ static void print_xml_player( FILE* file, player_t* p )
     util_t::fprintf( file, "      <chart name=\"Damage Per Execute Time\" type=\"chart_dpet\" url=\"%s\" />\n", p -> action_dpet_chart.c_str() );
   }
 
-  if ( ! p -> uptimes_and_procs_chart.empty() )
-  {
-    util_t::fprintf( file, "      <chart name=\"Up-Times and Procs\" type=\"chart_uptimes\" url=\"%s\" />\n", p -> uptimes_and_procs_chart.c_str() );
-  }
-
   if ( ! p -> action_dmg_chart.empty() )
   {
     util_t::fprintf( file, "      <chart name=\"Damage Sources\" type=\"chart_sources\" url=\"%s\" />\n", p -> action_dmg_chart.c_str() );
@@ -940,11 +927,11 @@ static void print_xml_player( FILE* file, player_t* p )
     util_t::fprintf( file, "      <chart name=\"Resource Gains\" type=\"chart_gains\" url=\"%s\" />\n", p -> gains_chart.c_str() );
   }
 
+  util_t::fprintf( file, "      <chart name=\"Resource Timeline\" type=\"chart_resource_timeline\" url=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+
   util_t::fprintf( file, "      <chart name=\"DPS Timeline\" type=\"chart_dps_timeline\" url=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
 
   util_t::fprintf( file, "      <chart name=\"DPS Distribution\" type=\"chart_dps_distribution\" url=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
-
-  util_t::fprintf( file, "      <chart name=\"Resource Timeline\" type=\"chart_resource_timeline\" url=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
 }
 
 // print_xml_scale_factors ===================================================
@@ -1106,7 +1093,6 @@ static void print_wiki_player( FILE*     file,
                                player_t* p )
 {
   std::string action_dpet       = "No chart for Damage Per Execute Time";
-  std::string uptimes_and_procs = "No chart for Up-Times and Procs";
   std::string action_dmg        = "No chart for Damage Sources";
   std::string gains             = "No chart for Resource Gains";
   std::string timeline_dps      = "No chart for DPS Timeline";
@@ -1118,12 +1104,6 @@ static void print_wiki_player( FILE*     file,
     action_dpet = p -> action_dpet_chart;
     action_dpet += "&dummy=dummy.png";
     simplify_html( action_dpet );
-  }
-  if ( ! p -> uptimes_and_procs_chart.empty() )
-  {
-    uptimes_and_procs = p -> uptimes_and_procs_chart;
-    uptimes_and_procs += "&dummy=dummy.png";
-    simplify_html( uptimes_and_procs );
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
@@ -1137,6 +1117,12 @@ static void print_wiki_player( FILE*     file,
     gains += "&dummy=dummy.png";
     simplify_html( gains );
   }
+  if ( ! p -> timeline_resource_chart.empty() )
+  {
+    timeline_resource = p -> timeline_resource_chart;
+    timeline_resource += "&dummy=dummy.png";
+    simplify_html( timeline_resource );
+  }
   if ( ! p -> timeline_dps_chart.empty() )
   {
     timeline_dps = p -> timeline_dps_chart;
@@ -1149,12 +1135,6 @@ static void print_wiki_player( FILE*     file,
     distribution_dps += "&dummy=dummy.png";
     simplify_html( distribution_dps );
   }
-  if ( ! p -> timeline_resource_chart.empty() )
-  {
-    timeline_resource = p -> timeline_resource_chart;
-    timeline_resource += "&dummy=dummy.png";
-    simplify_html( timeline_resource );
-  }
 
   util_t::fprintf( file, "\n" );
   util_t::fprintf( file, "----\n" );
@@ -1163,10 +1143,10 @@ static void print_wiki_player( FILE*     file,
   util_t::fprintf( file, "= %s =\n", p -> name() );
   util_t::fprintf( file, " * [%s Talents]\n * [%s Origin]\n", p -> talents_str.c_str(), p -> origin_str.c_str() );
   util_t::fprintf( file, "\n" );
-  util_t::fprintf( file, "|| %s || %s ||\n", action_dpet.c_str(), uptimes_and_procs.c_str() );
-  util_t::fprintf( file, "|| %s || %s ||\n", action_dmg.c_str(),  gains.c_str() );
-  util_t::fprintf( file, "|| %s || %s ||\n", timeline_dps.c_str(), distribution_dps.c_str() );
-  util_t::fprintf( file, "|| %s || ||\n", timeline_resource.c_str() );
+  util_t::fprintf( file, "|| %s || %s ||\n",  action_dpet.c_str(),        action_dmg.c_str() );
+  util_t::fprintf( file, "|| %s || %s ||\n",        gains.c_str(), timeline_resource.c_str() );
+  util_t::fprintf( file, "|| %s || %s ||\n", timeline_dps.c_str(),  distribution_dps.c_str() );
+  util_t::fprintf( file, "\n" );
 }
 
 // print_wiki_text ===========================================================

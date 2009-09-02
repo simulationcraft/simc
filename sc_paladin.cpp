@@ -1323,7 +1323,7 @@ struct holy_shock_t : public paladin_spell_t
     may_crit         = true;
     direct_power_mod = 1.5/3.5;
     base_cost       *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown        = 6;
+    cooldown         = 6;
   }
 };
 
@@ -1357,6 +1357,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "seal_of_vengeance"       ) return new paladin_seal_t( this, "seal_of_vengeance",     SEAL_OF_VENGEANCE,     options_str );
   if ( name == "seal_of_wisdom"          ) return new paladin_seal_t( this, "seal_of_wisdom",        SEAL_OF_WISDOM,        options_str );
 
+//if ( name == "aura_mastery"            ) return new aura_mastery_t           ( this, options_str );
 //if ( name == "blessings"               ) return new blessings_t              ( this, options_str );
 //if ( name == "concentration_aura"      ) return new concentration_aura_t     ( this, options_str );
 //if ( name == "devotion_aura"           ) return new devotion_aura_t          ( this, options_str );
