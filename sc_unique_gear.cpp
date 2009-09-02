@@ -307,7 +307,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "embrace_of_the_spider"           ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
   else if ( name == "eye_of_magtheridon"              ) e = "OnSpellMiss_170SP_10Dur";
   else if ( name == "eye_of_the_broodmother"          ) e = "OnSpellHit_25SP_5Stack_10Dur";
-  else if ( name == "flare_of_the_heavens"            ) e = "OnSpellHit_850SP_10%_10Dur_45Cd";
+  else if ( name == "flare_of_the_heavens"            ) e = "OnSpellCast_850SP_10%_10Dur_45Cd";
   else if ( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16AP_20Stack_10Dur";
   else if ( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
@@ -320,7 +320,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
   else if ( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"             ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
-  else if ( name == "sundial_of_the_exiled"           ) e = "OnSpellHit_590SP_10%_10Dur_45Cd";
+  else if ( name == "sundial_of_the_exiled"           ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
   // Discharge Procs
