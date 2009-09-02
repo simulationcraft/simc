@@ -295,7 +295,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   std::string e;
 
   // Stat Procs
-  if     ( name == "abyssal_rune"                    ) e = "OnSpellHit_590SP_25%_10Dur_45Cd";
+  if      ( name == "abyssal_rune"                    ) e = "OnSpellHit_590SP_25%_10Dur_45Cd";
   else if ( name == "banner_of_victory"               ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
   else if ( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"     ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";

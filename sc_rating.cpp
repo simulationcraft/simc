@@ -9,8 +9,7 @@
 // Rating
 // ==========================================================================
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct _stat_list_t {
   int id;
@@ -295,7 +294,7 @@ static const _stat_list_t warrior_stats[] =
 
 // rating_60 =================================================================
 
-static rating_t& rating_60()
+static rating_t& rating_60( sim_t* sim )
 {
   static rating_t r;
 
@@ -308,7 +307,7 @@ static rating_t& rating_60()
     r.attack_hit        = 1000;
     r.attack_crit       = 1400;
     r.expertise         = 1000;
-    r.armor_penetration =  375.6097412;
+    r.armor_penetration = sim -> P322 ? 426.8292514 : 375.6097412;
   }
 
   return r;
@@ -316,7 +315,7 @@ static rating_t& rating_60()
 
 // rating_70 =================================================================
 
-static rating_t& rating_70()
+static rating_t& rating_70( sim_t* sim )
 {
   static rating_t r;
 
@@ -329,7 +328,7 @@ static rating_t& rating_70()
     r.attack_hit        = 1576.923275;
     r.attack_crit       = 2207.692337;
     r.expertise         = 1576.923275;
-    r.armor_penetration =  592.307663;
+    r.armor_penetration = sim -> P322 ? 673.0768897 : 592.307663;
   }
 
   return r;
@@ -337,7 +336,7 @@ static rating_t& rating_70()
 
 // rating_80 =================================================================
 
-static rating_t& rating_80()
+static rating_t& rating_80( sim_t* sim )
 {
   static rating_t r;
 
@@ -350,7 +349,7 @@ static rating_t& rating_80()
     r.attack_hit        = 100.0/0.030500;
     r.attack_crit       = 100.0/0.021786;
     r.expertise         = 100.0/0.030500;
-    r.armor_penetration = 1231.623993;
+    r.armor_penetration = sim -> P322 ? 1399.572719 : 1231.623993;
   }
 
   return r;
@@ -360,11 +359,11 @@ static rating_t& rating_80()
 
 // rating_t::init ============================================================
 
-void rating_t::init( int level )
+void rating_t::init( sim_t* sim, int level )
 {
-  rating_t& r_60 = rating_60();
-  rating_t& r_70 = rating_70();
-  rating_t& r_80 = rating_80();
+  rating_t& r_60 = rating_60( sim );
+  rating_t& r_70 = rating_70( sim );
+  rating_t& r_80 = rating_80( sim );
 
   spell_haste       = interpolate( level, r_60.spell_haste,       r_70.spell_haste,       r_80.spell_haste       );
   spell_hit         = interpolate( level, r_60.spell_hit,         r_70.spell_hit,         r_80.spell_hit         );

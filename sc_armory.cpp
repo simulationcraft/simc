@@ -516,9 +516,9 @@ bool armory_t::download_guild( sim_t* sim,
   std::string formatted_guild_name = guild_name;
   armory_t::format( formatted_guild_name, FORMAT_GUILD_NAME_MASK | FORMAT_ASCII_MASK );
 
-  if ( player_filter == DEATH_KNIGHT || player_filter == PALADIN )
+  if ( player_filter == DEATH_KNIGHT )
   {
-    util_t::printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
+    util_t::printf( "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
     return false;
   }
 
@@ -565,7 +565,7 @@ bool armory_t::download_guild( sim_t* sim,
         continue;
 
       int player_type = util_t::translate_class_id( character_cid );
-      if ( player_type == DEATH_KNIGHT || player_type == PALADIN )
+      if ( player_type == DEATH_KNIGHT )
         continue;
 
       if ( player_filter != PLAYER_NONE )
@@ -655,9 +655,9 @@ player_t* armory_t::download_player( sim_t* sim,
   util_t::format_name( name_str );
   armory_t::format( race_str );
 
-  if ( type_str == "death_knight" || type_str == "paladin" )
+  if ( type_str == "death_knight" )
   {
-    util_t::printf( "simcraft: The Death Knight and Paladin modules are still in development, so Armory downloads are disabled.\n" );
+    util_t::printf( "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
     return 0;
   }
 

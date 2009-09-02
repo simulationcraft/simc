@@ -841,7 +841,7 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-  rating.init( level );
+  rating.init( sim, level );
 }
 
 // player_t::init_buffs ====================================================

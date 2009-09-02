@@ -179,12 +179,12 @@ struct shaman_t : public player_t
 
   struct tiers_t
   {
-    int  t5_2pc_elemental,  t5_4pc_elemental;
-    int  t6_2pc_elemental,  t6_4pc_elemental;
-    int  t7_2pc_elemental,  t7_4pc_elemental;
-    int  t8_2pc_elemental,  t8_4pc_elemental;
-    int  t9_2pc_elemental,  t9_4pc_elemental;
-    int t10_2pc_elemental, t10_4pc_elemental;
+    int  t5_2pc_elemental,    t5_4pc_elemental;
+    int  t6_2pc_elemental,    t6_4pc_elemental;
+    int  t7_2pc_elemental,    t7_4pc_elemental;
+    int  t8_2pc_elemental,    t8_4pc_elemental;
+    int  t9_2pc_elemental,    t9_4pc_elemental;
+    int t10_2pc_elemental,   t10_4pc_elemental;
     int  t5_2pc_enhancement,  t5_4pc_enhancement;
     int  t6_2pc_enhancement,  t6_4pc_enhancement;
     int  t7_2pc_enhancement,  t7_4pc_enhancement;
@@ -2970,7 +2970,7 @@ double shaman_t::composite_attack_power() SC_CONST
 
   if ( talents.mental_dexterity )
   {
-    ap += composite_attack_power_multiplier() * intellect() * talents.mental_dexterity / 3.0;
+    ap += intellect() * talents.mental_dexterity / 3.0;
   }
 
   return ap;
@@ -2984,7 +2984,9 @@ double shaman_t::composite_spell_power( int school ) SC_CONST
 
   if ( talents.mental_quickness )
   {
-    sp += composite_attack_power() * 0.30 * talents.mental_quickness / 3.0;
+    double ap = composite_attack_power_multiplier() * composite_attack_power();
+
+    sp += ap * 0.30 * talents.mental_quickness / 3.0;
   }
 
   if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )

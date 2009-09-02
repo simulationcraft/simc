@@ -128,7 +128,7 @@ enum race_type
 {
   RACE_NONE=0,
   // Target Races
-  RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID,
+  RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_DEMON, RACE_ELEMENTAL,
   // Player Races
   RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN,
   RACE_MAX
@@ -1064,7 +1064,7 @@ struct rating_t
   double attack_haste, attack_hit, attack_crit;
   double expertise, armor_penetration;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
-  void init( int level );
+  void init( sim_t*, int level );
   static double interpolate( int level, double val_60, double val_70, double val_80 );
   static double get_attribute_base( int level, int class_type, int race, int stat_type );
 };
