@@ -451,6 +451,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_TICK;
     }
+    else if ( t.full == "onspellcast" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_SPELL;
+      effect.trigger_mask = RESULT_ALL_MASK;
+    }
     else if ( t.full == "onspellhit" )
     {
       effect.trigger_str  = t.full;
@@ -486,6 +492,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_SPELL_DIRECT;
       effect.trigger_mask = RESULT_MISS_MASK;
+    }
+    else if ( t.full == "onattackcast" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_ATTACK;
+      effect.trigger_mask = RESULT_ALL_MASK;
     }
     else if ( t.full == "onattackhit" )
     {
