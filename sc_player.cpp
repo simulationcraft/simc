@@ -1430,8 +1430,10 @@ void player_t::reset()
   }
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    action_callback_t::reset( attack_result_callbacks[ i ] );
-    action_callback_t::reset(  spell_result_callbacks[ i ] );
+    action_callback_t::reset( attack_result_callbacks       [ i ] );
+    action_callback_t::reset( spell_result_callbacks        [ i ] );
+    action_callback_t::reset( attack_direct_result_callbacks[ i ] );
+    action_callback_t::reset( spell_direct_result_callbacks [ i ] );
   }
   action_callback_t::reset( tick_callbacks );
   action_callback_t::reset( tick_damage_callbacks );
@@ -1882,8 +1884,10 @@ void player_t::register_callbacks()
   {
     action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
 
-    register_attack_result_callback( RESULT_HIT_MASK, cb );
-    register_spell_result_callback ( RESULT_HIT_MASK, cb );
+    register_attack_result_callback       ( RESULT_HIT_MASK, cb );
+    register_spell_result_callback        ( RESULT_HIT_MASK, cb );
+    register_attack_direct_result_callback( RESULT_HIT_MASK, cb );
+    register_spell_direct_result_callback ( RESULT_HIT_MASK, cb );
   }
 }
 
@@ -1927,6 +1931,34 @@ void player_t::register_spell_result_callback( int                mask,
     if ( mask < 0 || ( mask & ( 1 << i ) ) )
     {
       spell_result_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_attack_direct_result_callback ================================
+
+void player_t::register_attack_direct_result_callback( int                mask,
+                                                       action_callback_t* cb )
+{
+  for ( int i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    {
+      attack_direct_result_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_spell_direct_result_callback =================================
+
+void player_t::register_spell_direct_result_callback( int                mask,
+                                                      action_callback_t* cb )
+{
+  for ( int i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    {
+      spell_direct_result_callbacks[ i ].push_back( cb );
     }
   }
 }

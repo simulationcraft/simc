@@ -34,7 +34,7 @@ hands=velens_handwraps_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,
 finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=12sp_10crit_5sp,enchant=23sp
 finger2=ring_of_the_darkmender,stats=65sta_65int_91sp_28mp5_49haste,gems=12sp_10crit_5sp,enchant=23sp
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
-trinket2=reign_of_the_unliving,stats=168sp,equip=onspellcrit_2117fire_3stack_2.0cd
+trinket2=reign_of_the_unliving,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 back=jainas_radiance,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=lightweave
 main_hand=miserys_end,stats=66sta_66int_701sp_44crit_66haste,gems=0sp,enchant=63sp,weapon=mace_1.80speed_125.3dps
 off_hand=chalice_of_searing_light,stats=65sta_57spi_65int_100sp_57crit,gems=0sp

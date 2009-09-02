@@ -407,4 +407,5 @@ void attack_t::execute()
   action_t::execute();
 
   action_callback_t::trigger( player -> attack_result_callbacks[ result ], this );
+  action_callback_t::trigger( player -> attack_direct_result_callbacks[ result ], this );
 }

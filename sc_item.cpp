@@ -469,6 +469,24 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_SPELL;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
+    else if ( t.full == "onspelldirecthit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL_DIRECT;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if ( t.full == "onspelldirectcrit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL_DIRECT;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onspelldirectmiss" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL_DIRECT;
+      effect.trigger_mask = RESULT_MISS_MASK;
+    }
     else if ( t.full == "onattackhit" )
     {
       effect.trigger_str  = t.full;
@@ -485,6 +503,24 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_ATTACK;
+      effect.trigger_mask = RESULT_MISS_MASK;
+    }
+    else if ( t.full == "onattackdirecthit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK_DIRECT;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if ( t.full == "onattackdirectcrit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK_DIRECT;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onattackdirectmiss" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_ATTACK_DIRECT;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
     else

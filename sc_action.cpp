@@ -706,6 +706,10 @@ void action_t::tick()
     {
       result = RESULT_CRIT;
       action_callback_t::trigger( player -> spell_result_callbacks[ RESULT_CRIT ], this );
+      if ( channeled )
+      {
+        action_callback_t::trigger( player -> spell_direct_result_callbacks[ RESULT_CRIT ], this );
+      }
     }
   }
 

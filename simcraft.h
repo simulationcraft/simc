@@ -179,6 +179,8 @@ enum proc_type
   PROC_ATTACK,
   PROC_SPELL,
   PROC_TICK,
+  PROC_ATTACK_DIRECT,
+  PROC_SPELL_DIRECT,
   PROC_MAX
 };
 
@@ -1288,10 +1290,12 @@ struct player_t
   bool      action_queued;
 
   // Callbacks
-  std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
-  std::vector<action_callback_t*> resource_loss_callbacks[ RESOURCE_MAX ];
-  std::vector<action_callback_t*> attack_result_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>  spell_result_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*> resource_gain_callbacks       [ RESOURCE_MAX ];
+  std::vector<action_callback_t*> resource_loss_callbacks       [ RESOURCE_MAX ];
+  std::vector<action_callback_t*> attack_result_callbacks       [ RESULT_MAX ];
+  std::vector<action_callback_t*> spell_result_callbacks        [ RESULT_MAX ];
+  std::vector<action_callback_t*> attack_direct_result_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*> spell_direct_result_callbacks [ RESULT_MAX ];
   std::vector<action_callback_t*> tick_callbacks;
   std::vector<action_callback_t*> tick_damage_callbacks;
   std::vector<action_callback_t*> direct_damage_callbacks;
@@ -1508,13 +1512,15 @@ struct player_t
   virtual void target_swing() {}
 
   virtual void register_callbacks();
-  virtual void register_resource_gain_callback( int resource, action_callback_t* );
-  virtual void register_resource_loss_callback( int resource, action_callback_t* );
-  virtual void register_attack_result_callback( int result_mask, action_callback_t* );
-  virtual void register_spell_result_callback ( int result_mask, action_callback_t* );
-  virtual void register_tick_callback         ( action_callback_t* );
-  virtual void register_tick_damage_callback  ( action_callback_t* );
-  virtual void register_direct_damage_callback( action_callback_t* );
+  virtual void register_resource_gain_callback       ( int resource, action_callback_t* );
+  virtual void register_resource_loss_callback       ( int resource, action_callback_t* );
+  virtual void register_attack_result_callback       ( int result_mask, action_callback_t* );
+  virtual void register_spell_result_callback        ( int result_mask, action_callback_t* );
+  virtual void register_attack_direct_result_callback( int result_mask, action_callback_t* );
+  virtual void register_spell_direct_result_callback ( int result_mask, action_callback_t* );
+  virtual void register_tick_callback                ( action_callback_t* );
+  virtual void register_tick_damage_callback         ( action_callback_t* );
+  virtual void register_direct_damage_callback       ( action_callback_t* );
 
   virtual bool get_talent_translation( std::vector<int*>& tree, talent_translation_t translation[] );
   virtual bool get_talent_translation( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
