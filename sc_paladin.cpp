@@ -155,13 +155,12 @@ struct paladin_t : public player_t
 
   struct tiers_t
   {
-    int  t5_2pc_dps,    t5_4pc_dps;
+    // Consider all NYI
     int  t6_2pc_dps,    t6_4pc_dps;
     int  t7_2pc_dps,    t7_4pc_dps;
     int  t8_2pc_dps,    t8_4pc_dps;
     int  t9_2pc_dps,    t9_4pc_dps;
     int t10_2pc_dps,   t10_4pc_dps;
-    int  t5_2pc_tank,  t5_4pc_tank;
     int  t6_2pc_tank,  t6_4pc_tank;
     int  t7_2pc_tank,  t7_4pc_tank;
     int  t8_2pc_tank,  t8_4pc_tank;
@@ -1573,8 +1572,6 @@ void paladin_t::init_items()
 
   if ( talents.holy_shield )
   {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_tank = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_tank = 1;
     if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_tank = 1;
     if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_tank = 1;
     if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_tank = 1;
@@ -1588,8 +1585,6 @@ void paladin_t::init_items()
   }
   else
   {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_dps = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_dps = 1;
     if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_dps = 1;
     if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_dps = 1;
     if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_dps = 1;
