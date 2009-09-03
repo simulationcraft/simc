@@ -1,3 +1,5 @@
 #!simcraft max_time=300
 
 Raid_T8.simcraft
+
+patch=3.2.2
