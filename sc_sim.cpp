@@ -1116,12 +1116,14 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
+  overrides.heart_of_the_crusader  = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
   overrides.improved_moonkin_aura  = optimal_raid;
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.judgement_of_wisdom    = optimal_raid;
+  overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
   overrides.mana_spring_totem      = optimal_raid;
   overrides.mangle                 = optimal_raid;
@@ -1294,6 +1296,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
       { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
+      { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_faerie_fire",    OPT_BOOL,   &( overrides.improved_faerie_fire           ) },
@@ -1301,6 +1304,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
       { "override.judgement_of_wisdom",     OPT_BOOL,   &( overrides.judgement_of_wisdom            ) },
+      { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
       { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
       { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
       { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },

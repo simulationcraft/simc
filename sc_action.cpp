@@ -351,8 +351,10 @@ void action_t::target_debuff( int dmg_type )
     target_dd_adder += t -> debuffs.hemorrhage -> value();
   }
 
-  if ( t -> debuffs.totem_of_wrath  -> up() ||
-       t -> debuffs.master_poisoner -> up() )
+  // FIXME! HotC and MP are 1%/2%/3%
+  if ( t -> debuffs.heart_of_the_crusader -> up() ||
+       t -> debuffs.totem_of_wrath        -> up() ||
+       t -> debuffs.master_poisoner       -> up() )
   {
     target_crit += 0.03;
   }

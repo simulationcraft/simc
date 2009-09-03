@@ -2819,7 +2819,8 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
 
-      action_list_str += "/wind_shear/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
+      action_list_str += "/wind_shear";
+      action_list_str += "/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
       action_list_str += "/auto_attack";
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";

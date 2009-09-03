@@ -903,6 +903,7 @@ struct sim_t
     int flametongue_totem;
     int focus_magic;
     int fortitude;
+    int heart_of_the_crusader;
     int heroic_presence;
     int hunters_mark;
     int improved_faerie_fire;
@@ -910,6 +911,7 @@ struct sim_t
     int improved_scorch;
     int improved_shadow_bolt;
     int judgement_of_wisdom;
+    int judgements_of_the_just;
     int leader_of_the_pack;
     int mana_spring_totem;
     int mangle;
@@ -1708,12 +1710,14 @@ struct target_t
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
+    debuff_t* heart_of_the_crusader;
     debuff_t* hunters_mark;
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* invulnerable;
     debuff_t* judgement_of_wisdom;
+    debuff_t* judgements_of_the_just;
     debuff_t* mangle;
     debuff_t* misery;
     debuff_t* slow;
@@ -1731,7 +1735,7 @@ struct target_t
     debuff_t* hemorrhage;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
-    bool snared() { return frozen() || slow -> check() || thunder_clap -> check(); }
+    bool snared() { return frozen() || judgements_of_the_just -> check() || slow -> check() || thunder_clap -> check(); }
   };
   debuffs_t debuffs;
 
