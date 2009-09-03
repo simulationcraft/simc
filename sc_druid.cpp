@@ -34,7 +34,7 @@ struct druid_t : public player_t
   buff_t* buffs_omen_of_clarity;
   buff_t* buffs_savage_roar;
   buff_t* buffs_stealthed;
-  buff_t* buffs_t8_4pc_balance;
+  buff_t* buffs_t8_4pc_caster;
   buff_t* buffs_terror;
   buff_t* buffs_tigers_fury;
   buff_t* buffs_unseen_moon;
@@ -163,40 +163,6 @@ struct druid_t : public player_t
     idols_t() { memset( ( void* ) this, 0x0, sizeof( idols_t ) ); }
   };
   idols_t idols;
-
-  struct tiers_t
-  {
-    int t4_2pc_balance;
-    int t4_4pc_balance;
-    int t5_2pc_balance;
-    int t5_4pc_balance;
-    int t6_2pc_balance;
-    int t6_4pc_balance;
-    int t7_2pc_balance;
-    int t7_4pc_balance;
-    int t8_2pc_balance;
-    int t8_4pc_balance;
-    int t9_2pc_balance;
-    int t9_4pc_balance;
-    int t10_2pc_balance;
-    int t10_4pc_balance;
-    int t4_2pc_feral;
-    int t4_4pc_feral;
-    int t5_2pc_feral;
-    int t5_4pc_feral;
-    int t6_2pc_feral;
-    int t6_4pc_feral;
-    int t7_2pc_feral;
-    int t7_4pc_feral;
-    int t8_2pc_feral;
-    int t8_4pc_feral;
-    int t9_2pc_feral;
-    int t9_4pc_feral;
-    int t10_2pc_feral;
-    int t10_4pc_feral;
-    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
-  };
-  tiers_t tiers;
 
   druid_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, DRUID, name, race_type )
   {
@@ -426,18 +392,18 @@ static void trigger_earth_and_moon( spell_t* s )
   }
 }
 
-// trigger_t8_2pc_feral =====================================================
+// trigger_t8_2pc_melee ====================================================
 
-static void trigger_t8_2pc_feral( action_t* a )
+static void trigger_t8_2pc_melee( action_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( ! p -> tiers.t8_2pc_feral )
+  if ( ! p -> set_bonus.tier8_2pc_melee() )
     return;
 
   /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
   /  It is just another chance to procc the same clearcasting
-  /  buff that OoC provides. OoC and t8_2pc_feral overwrite
+  /  buff that OoC provides. OoC and t8_2pc_melee overwrite
   /  each other. Easier to treat it just (ab)use the OoC handling */
 
   if ( p -> buffs_omen_of_clarity -> trigger( 1, 1, 0.02 ) )
@@ -964,7 +930,7 @@ struct rake_t : public druid_attack_t
     may_crit          = true;
     base_tick_time    = 3.0;
     num_ticks         = 3;
-    if ( p -> tiers.t9_2pc_feral ) num_ticks++;
+    if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
 
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
@@ -976,7 +942,7 @@ struct rake_t : public druid_attack_t
   virtual void tick()
   {
     druid_attack_t::tick();
-    trigger_t8_2pc_feral( this );
+    trigger_t8_2pc_melee( this );
   }
 };
 
@@ -1004,7 +970,7 @@ struct rip_t : public druid_attack_t
     base_cost             = 30;
     base_tick_time        = 2.0;
 
-    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
+    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> set_bonus.tier7_2pc_melee() ? 2 : 0 );
 
     static double dmg_80[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
     static double dmg_71[] = { 30+67*1, 30+67*2, 30+67*3, 30+67*4, 30+67*5 };
@@ -1018,7 +984,7 @@ struct rip_t : public druid_attack_t
                         dmg_60 );
 
     tick_may_crit = ( p -> talents.primal_gore != 0 );
-    if ( p -> tiers.t9_4pc_feral ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
     observer = &( p -> active_rip );
   }
 
@@ -1029,7 +995,7 @@ struct rip_t : public druid_attack_t
     if ( result_is_hit() )
     {
       added_ticks = 0;
-      num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> tiers.t7_2pc_feral ? 2 : 0 );
+      num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> set_bonus.tier7_2pc_melee() ? 2 : 0 );
       update_ready();
     }
   }
@@ -1037,7 +1003,7 @@ struct rip_t : public druid_attack_t
   virtual void tick()
   {
     druid_attack_t::tick();
-    trigger_t8_2pc_feral( this );
+    trigger_t8_2pc_melee( this );
   }
 
   virtual void player_buff()
@@ -1079,7 +1045,7 @@ struct savage_roar_t : public druid_attack_t
     druid_t* p = player -> cast_druid();
 
     double duration = 9.0 + p -> buffs_combo_points -> stack();
-    if ( p -> tiers.t8_4pc_feral ) duration += 8.0;
+    if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
     p -> buffs_savage_roar -> duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
     p -> buffs_combo_points -> expire();
@@ -1236,7 +1202,7 @@ struct tigers_fury_t : public druid_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown    = 30.0 - 3.0 * p -> tiers.t7_4pc_feral;
+    cooldown    = 30.0 - 3.0 * p -> set_bonus.tier7_4pc_melee();
     trigger_gcd = 0;
     tiger_value = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
     id = 50213;
@@ -1291,7 +1257,7 @@ struct ferocious_bite_t : public druid_attack_t
 
     requires_combo_points = true;
     may_crit  = true;
-    if ( p -> tiers.t9_4pc_feral ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
     base_cost = 35;
 
@@ -1630,7 +1596,6 @@ struct innervate_t : public druid_spell_t
     cooldown  = 240;
 
     harmful   = false;
-    if ( p -> tiers.t4_4pc_balance ) cooldown -= 48.0;
 
     // If no target is set, assume we have innervate for ourself
     innervate_target = target_str.empty() ? p : sim -> find_player( target_str );
@@ -1706,9 +1671,9 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks         = 6;
     tick_power_mod    = 0.2;
 
-    base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.genesis, 5, 0.01 ) +
-                       ( p -> glyphs.insect_swarm  ? 0.30 : 0.00 ) +
-                       ( p -> tiers.t7_2pc_balance ? 0.10 : 0.00 );
+    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.genesis, 5, 0.01 ) +
+			       ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 )  +
+			       ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
 
     if ( p -> idols.crying_wind )
     {
@@ -1724,7 +1689,7 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
-    p -> buffs_t8_4pc_balance -> trigger();
+    p -> buffs_t8_4pc_caster -> trigger();
   }
   
   virtual bool ready()
@@ -1788,7 +1753,7 @@ struct moonfire_t : public druid_spell_t
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
-    tick_may_crit     = ( p -> tiers.t9_2pc_balance != 0 );
+    tick_may_crit     = ( p -> set_bonus.tier9_2pc_caster() != 0 );
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
     base_crit += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
@@ -1823,8 +1788,8 @@ struct moonfire_t : public druid_spell_t
     {
       num_ticks = 4;
       added_ticks = 0;
-      if ( p -> talents.natures_splendor ) num_ticks++;
-      if ( p -> tiers.t6_2pc_balance     ) num_ticks++;
+      if ( p -> talents.natures_splendor     ) num_ticks++;
+      if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
       p -> buffs_unseen_moon -> trigger();
     }
@@ -2037,7 +2002,6 @@ struct starfire_t : public druid_spell_t
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
     base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
-    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.04 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
@@ -2048,8 +2012,9 @@ struct starfire_t : public druid_spell_t
       base_dd_min += 165;
       base_dd_max += 165;
     }
-    if ( p -> tiers.t6_4pc_balance ) base_crit += 0.05;
-    if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
+    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.04;
   }
 
   virtual void player_buff()
@@ -2059,20 +2024,12 @@ struct starfire_t : public druid_spell_t
 
     if( p -> buffs_eclipse_lunar -> up() )
     {
-      player_crit += 0.30 + ( p -> tiers.t8_2pc_balance ? 0.15 : 0.0 );
+      player_crit += 0.30 + ( p -> set_bonus.tier8_2pc_caster() ? 0.15 : 0.0 );
     }
 
     if ( p -> active_moonfire )
     {
       player_crit += 0.01 * p -> talents.improved_insect_swarm;
-    }
-    if ( p -> tiers.t5_4pc_balance )
-    {
-      if ( p -> active_moonfire     ||
-           p -> active_insect_swarm )
-      {
-        player_multiplier *= 1.10;
-      }
     }
   }
 
@@ -2080,7 +2037,7 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::schedule_execute();
     druid_t* p = player -> cast_druid();
-    p -> buffs_t8_4pc_balance -> expire();
+    p -> buffs_t8_4pc_caster -> expire();
   }
 
   virtual void execute()
@@ -2109,7 +2066,7 @@ struct starfire_t : public druid_spell_t
   virtual double execute_time() SC_CONST
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> buffs_t8_4pc_balance -> check() )
+    if ( p -> buffs_t8_4pc_caster -> check() )
       return 0;
 
     return druid_spell_t::execute_time();
@@ -2122,7 +2079,7 @@ struct starfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( instant )
-      if ( ! p -> buffs_t8_4pc_balance -> may_react() )
+      if ( ! p -> buffs_t8_4pc_caster -> may_react() )
 	return false;
 
     if ( extend_moonfire && p -> glyphs.starfire )
@@ -2223,8 +2180,8 @@ struct wrath_t : public druid_spell_t
     // The % bonus from eclipse and moonfury are additive, so have to sum them up in player_buff()
     moonfury_bonus = util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
 
-    if ( p -> tiers.t7_4pc_balance ) base_crit += 0.05;
-    if ( p -> tiers.t9_4pc_balance ) base_multiplier   *= 1.04;
+    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
 
     if ( p -> idols.steadfast_renewal )
     {
@@ -2261,7 +2218,7 @@ struct wrath_t : public druid_spell_t
 
     if( p -> buffs_eclipse_solar -> up() ) 
     {
-      bonus += 0.30 + ( p -> tiers.t8_2pc_balance ? 0.15 : 0.0 );
+      bonus += 0.30 + ( p -> set_bonus.tier8_2pc_caster() ? 0.15 : 0.0 );
     }
 
     player_multiplier *= 1.0 + bonus;
@@ -2738,7 +2695,7 @@ void druid_t::init_buffs()
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
-  buffs_t8_4pc_balance     = new buff_t( this, "t8_4pc_balance"    , 1,  10.0,     0, tiers.t8_4pc_balance * 0.08 );
+  buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_balance"    , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
@@ -2788,37 +2745,6 @@ void druid_t::init_items()
   }
 
   if ( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );
-
-  if ( talents.moonkin_form )
-  {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_balance = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_balance = 1;
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_balance = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_balance = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_balance = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_balance = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_balance = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_balance = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_balance = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_balance = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_balance = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_balance = 1;
-  }
-  else
-  {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_feral = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_feral = 1;
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_feral = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_feral = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_feral = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_feral = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_feral = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_feral = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_feral = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_feral = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_feral = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_feral = 1;
-  }
 }
 
 // druid_t::init_scaling ====================================================
@@ -3203,10 +3129,46 @@ std::vector<option_t>& druid_t::get_options()
 
 int druid_t::decode_set( item_t& item )
 {
-  if      ( strstr( item.name(), "dreamwalker" ) ) return SET_T7;
-  else if ( strstr( item.name(), "nightsong"   ) ) return SET_T8;
-  else if ( strstr( item.name(), "malfurion"   ) ) return SET_T9; // Alliance
-  else if ( strstr( item.name(), "runetotem"   ) ) return SET_T9; // Horde
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_caster = ( strstr( s, "cover"     ) || 
+		     strstr( s, "mantle"    ) ||
+		     strstr( s, "vestments" ) ||
+		     strstr( s, "trousers"  ) ||
+		     strstr( s, "gloves"    ) );
+  
+  bool is_melee = ( strstr( s, "headguard"    ) || 
+		    strstr( s, "shoulderpads" ) ||
+		    strstr( s, "raiments"     ) ||
+		    strstr( s, "legguards"    ) ||
+		    strstr( s, "handgrips"    ) );
+
+  if ( strstr( s, "dreamwalker" ) ) 
+  {
+    if ( is_caster ) return SET_T7_CASTER;
+    if ( is_melee  ) return SET_T7_MELEE;
+  }
+  if ( strstr( s, "nightsong" ) ) 
+  {
+    if ( is_caster ) return SET_T8_CASTER;
+    if ( is_melee  ) return SET_T8_MELEE;
+  }
+  if ( strstr( s, "malfurions" ) ||
+       strstr( s, "runetotems" ) ) 
+  {
+    if ( is_caster ) return SET_T9_CASTER;
+    if ( is_melee  ) return SET_T9_MELEE;
+  }
+
   return SET_NONE;
 }
 

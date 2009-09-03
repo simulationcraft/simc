@@ -2975,14 +2975,34 @@ bool player_t::save( FILE* file, int save_type )
       if ( value != 0 ) util_t::fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
     }
     if ( meta_gem != META_GEM_NONE ) util_t::fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
-    if ( set_bonus.tier7_2pc() ) util_t::fprintf( file, "# tier7_2pc=1\n" );
-    if ( set_bonus.tier7_4pc() ) util_t::fprintf( file, "# tier7_4pc=1\n" );
-    if ( set_bonus.tier8_2pc() ) util_t::fprintf( file, "# tier8_2pc=1\n" );
-    if ( set_bonus.tier8_4pc() ) util_t::fprintf( file, "# tier8_4pc=1\n" );
-    if ( set_bonus.tier9_2pc() ) util_t::fprintf( file, "# tier9_2pc=1\n" );
-    if ( set_bonus.tier9_4pc() ) util_t::fprintf( file, "# tier9_4pc=1\n" );
-    if ( set_bonus.tier10_2pc() ) util_t::fprintf( file, "# tier10_2pc=1\n" );
-    if ( set_bonus.tier10_4pc() ) util_t::fprintf( file, "# tier10_4pc=1\n" );
+
+    if ( set_bonus.tier7_2pc_caster() ) util_t::fprintf( file, "# tier7_2pc_caster=1\n" );
+    if ( set_bonus.tier7_4pc_caster() ) util_t::fprintf( file, "# tier7_4pc_caster=1\n" );
+    if ( set_bonus.tier7_2pc_melee()  ) util_t::fprintf( file, "# tier7_2pc_melee=1\n"  );
+    if ( set_bonus.tier7_4pc_melee()  ) util_t::fprintf( file, "# tier7_4pc_melee=1\n"  );
+    if ( set_bonus.tier7_2pc_tank()   ) util_t::fprintf( file, "# tier7_2pc_tank=1\n"   );
+    if ( set_bonus.tier7_4pc_tank()   ) util_t::fprintf( file, "# tier7_4pc_tank=1\n"   );
+
+    if ( set_bonus.tier8_2pc_caster() ) util_t::fprintf( file, "# tier8_2pc_caster=1\n" );
+    if ( set_bonus.tier8_4pc_caster() ) util_t::fprintf( file, "# tier8_4pc_caster=1\n" );
+    if ( set_bonus.tier8_2pc_melee()  ) util_t::fprintf( file, "# tier8_2pc_melee=1\n"  );
+    if ( set_bonus.tier8_4pc_melee()  ) util_t::fprintf( file, "# tier8_4pc_melee=1\n"  );
+    if ( set_bonus.tier8_2pc_tank()   ) util_t::fprintf( file, "# tier8_2pc_tank=1\n"   );
+    if ( set_bonus.tier8_4pc_tank()   ) util_t::fprintf( file, "# tier8_4pc_tank=1\n"   );
+
+    if ( set_bonus.tier9_2pc_caster() ) util_t::fprintf( file, "# tier9_2pc_caster=1\n" );
+    if ( set_bonus.tier9_4pc_caster() ) util_t::fprintf( file, "# tier9_4pc_caster=1\n" );
+    if ( set_bonus.tier9_2pc_melee()  ) util_t::fprintf( file, "# tier9_2pc_melee=1\n"  );
+    if ( set_bonus.tier9_4pc_melee()  ) util_t::fprintf( file, "# tier9_4pc_melee=1\n"  );
+    if ( set_bonus.tier9_2pc_tank()   ) util_t::fprintf( file, "# tier9_2pc_tank=1\n"   );
+    if ( set_bonus.tier9_4pc_tank()   ) util_t::fprintf( file, "# tier9_4pc_tank=1\n"   );
+
+    if ( set_bonus.tier10_2pc_caster() ) util_t::fprintf( file, "# tier10_2pc_caster=1\n" );
+    if ( set_bonus.tier10_4pc_caster() ) util_t::fprintf( file, "# tier10_4pc_caster=1\n" );
+    if ( set_bonus.tier10_2pc_melee()  ) util_t::fprintf( file, "# tier10_2pc_melee=1\n"  );
+    if ( set_bonus.tier10_4pc_melee()  ) util_t::fprintf( file, "# tier10_4pc_melee=1\n"  );
+    if ( set_bonus.tier10_2pc_tank()   ) util_t::fprintf( file, "# tier10_2pc_tank=1\n"   );
+    if ( set_bonus.tier10_4pc_tank()   ) util_t::fprintf( file, "# tier10_4pc_tank=1\n"   );
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
@@ -3059,6 +3079,7 @@ std::vector<option_t>& player_t::get_options()
       { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
       { "comment",                              OPT_STRING,   &( comment_str                                  ) },
       // @option_doc loc=player/all/items title="Items"
+      { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
       { "items",                                OPT_STRING,   &( items_str                                    ) },
       { "items+",                               OPT_APPEND,   &( items_str                                    ) },
       { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str          ) },
@@ -3080,21 +3101,37 @@ std::vector<option_t>& player_t::get_options()
       { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
       { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
       { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str          ) },
-      { "tier4_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_2PC ]                ) },
-      { "tier4_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T4_4PC ]                ) },
-      { "tier5_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T5_2PC ]                ) },
-      { "tier5_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T5_4PC ]                ) },
-      { "tier6_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC ]                ) },
-      { "tier6_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC ]                ) },
-      { "tier7_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC ]                ) },
-      { "tier7_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC ]                ) },
-      { "tier8_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC ]                ) },
-      { "tier8_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC ]                ) },
-      { "tier9_2pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC ]                ) },
-      { "tier9_4pc",                            OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC ]                ) },
-      { "tier10_2pc",                           OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC ]               ) },
-      { "tier10_4pc",                           OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC ]               ) },
-      { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
+      // @option_doc loc=player/all/items title="Items"
+      { "tier6_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_CASTER ]         ) },
+      { "tier6_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_CASTER ]         ) },
+      { "tier6_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_MELEE ]          ) },
+      { "tier6_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_MELEE ]          ) },
+      { "tier6_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_TANK ]           ) },
+      { "tier6_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_TANK ]           ) },
+      { "tier7_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_CASTER ]         ) },
+      { "tier7_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_CASTER ]         ) },
+      { "tier7_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_MELEE ]          ) },
+      { "tier7_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_MELEE ]          ) },
+      { "tier7_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_TANK ]           ) },
+      { "tier7_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_TANK ]           ) },
+      { "tier8_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_CASTER ]         ) },
+      { "tier8_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_CASTER ]         ) },
+      { "tier8_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_MELEE ]          ) },
+      { "tier8_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_MELEE ]          ) },
+      { "tier8_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_TANK ]           ) },
+      { "tier8_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_TANK ]           ) },
+      { "tier9_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_CASTER ]         ) },
+      { "tier9_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_CASTER ]         ) },
+      { "tier9_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_MELEE ]          ) },
+      { "tier9_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_MELEE ]          ) },
+      { "tier9_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_TANK ]           ) },
+      { "tier9_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_TANK ]           ) },
+      { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]        ) },
+      { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]        ) },
+      { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]         ) },
+      { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]         ) },
+      { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]          ) },
+      { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]          ) },
       // @option_doc loc=skip
       { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
       { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },

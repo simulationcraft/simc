@@ -716,7 +716,7 @@ double rogue_attack_t::cost() SC_CONST
   rogue_t* p = player -> cast_rogue();
   double c = attack_t::cost();
   if ( c <= 0 ) return 0;
-  if ( adds_combo_points && p -> set_bonus.tier7_4pc() ) c *= 0.95;
+  if ( adds_combo_points && p -> set_bonus.tier7_4pc_melee() ) c *= 0.95;
   return c;
 }
 
@@ -975,7 +975,7 @@ struct melee_t : public rogue_attack_t
     }
 
     if ( p -> buffs_blade_flurry   -> up() ) h *= 1.0 / ( 1.0 + 0.20 );
-    if ( p -> buffs_slice_and_dice -> up() ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> set_bonus.tier6_2pc() ? 0.05 : 0.00 ) );
+    if ( p -> buffs_slice_and_dice -> up() ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> set_bonus.tier6_2pc_melee() ? 0.05 : 0.00 ) );
 
     return h;
   }
@@ -1142,16 +1142,17 @@ struct backstab_t : public rogue_attack_t
     base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.02;
 
-    base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
-                               p -> talents.blade_twisting   * 0.05 +
-                               p -> talents.find_weakness    * 0.02 +
-                               p -> talents.opportunity      * 0.10 +
-                               p -> talents.surprise_attacks * 0.10 +
-                               p -> set_bonus.tier6_4pc()    * 0.06 );
+    base_multiplier *= 1.0 + ( p -> talents.aggression          * 0.03 +
+                               p -> talents.blade_twisting      * 0.05 +
+                               p -> talents.find_weakness       * 0.02 +
+                               p -> talents.opportunity         * 0.10 +
+                               p -> talents.surprise_attacks    * 0.10 +
+                               p -> set_bonus.tier6_4pc_melee() * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
   }
@@ -1588,16 +1589,16 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
-    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling * 0.02;
-    base_multiplier            *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-                                          p -> talents.surprise_attacks * 0.10 +
-                                          p -> set_bonus.tier6_4pc()    * 0.06 );
+    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling     * 0.02;
+    base_multiplier            *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
+                                          p -> talents.surprise_attacks    * 0.10 +
+                                          p -> set_bonus.tier6_4pc_melee() * 0.06 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
 
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
 
     if ( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
   }
@@ -1826,13 +1827,14 @@ struct mutilate_t : public rogue_attack_t
     adds_combo_points      = true;
     normalize_weapon_speed = true;
 
-    base_multiplier  *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
-                                p -> talents.opportunity      * 0.10 +
-                                p -> set_bonus.tier6_4pc()    * 0.06 );
+    base_multiplier  *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
+                                p -> talents.opportunity         * 0.10 +
+                                p -> set_bonus.tier6_4pc_melee() * 0.06 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
+
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -1927,13 +1929,14 @@ struct rupture_t : public rogue_attack_t
     base_cost             = 25;
     base_tick_time        = 2.0;
     num_ticks             = 3;
-    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter   * 0.15 +
-                                    p -> talents.find_weakness   * 0.02 +
-                                    p -> talents.serrated_blades * 0.10 +
-                                    p -> set_bonus.tier7_2pc()   * 0.10 );
+    base_multiplier      *= 1.0 + ( p -> talents.blood_spatter       * 0.15 +
+                                    p -> talents.find_weakness       * 0.02 +
+                                    p -> talents.serrated_blades     * 0.10 +
+                                    p -> set_bonus.tier7_2pc_melee() * 0.10 );
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
-    if ( p -> set_bonus.tier8_4pc() ) tick_may_crit = true;
+
+    if ( p -> set_bonus.tier8_4pc_melee() ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2082,15 +2085,16 @@ struct sinister_strike_t : public rogue_attack_t
 
     base_cost -= util_t::talent_rank( p -> talents.improved_sinister_strike, 2, 3.0, 5.0 );
 
-    base_multiplier *= 1.0 + ( p -> talents.aggression       * 0.03 +
-                               p -> talents.blade_twisting   * 0.05 +
-                               p -> talents.find_weakness    * 0.02 +
-                               p -> talents.surprise_attacks * 0.10 +
-                               p -> set_bonus.tier6_4pc()    * 0.06 );
+    base_multiplier *= 1.0 + ( p -> talents.aggression          * 0.03 +
+                               p -> talents.blade_twisting      * 0.05 +
+                               p -> talents.find_weakness       * 0.02 +
+                               p -> talents.surprise_attacks    * 0.10 +
+                               p -> set_bonus.tier6_4pc_melee() * 0.06 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += .05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
+
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
   }
 
   virtual void execute()
@@ -2464,7 +2468,7 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
     rogue_poison_t::tick();
-    if ( p -> set_bonus.tier8_2pc() )
+    if ( p -> set_bonus.tier8_2pc_melee() )
     {
       p -> resource_gain( RESOURCE_ENERGY, 1, p -> gains_tier8_2pc );
     }
@@ -3111,21 +3115,21 @@ void rogue_t::init_buffs()
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   
   buffs_adrenaline_rush    = new buff_t( this, "adrenaline_rush",    1, ( glyphs.adrenaline_rush ? 20.0 : 15.0 ) );
-  buffs_blade_flurry       = new buff_t( this, "blade_flurry",       1, 15.0                                     );
-  buffs_cold_blood         = new buff_t( this, "cold_blood",         1                                           );
-  buffs_combo_points       = new buff_t( this, "combo_points",       5                                           );
-  buffs_envenom            = new buff_t( this, "envenom",            1,  6.0                                     );
-  buffs_hunger_for_blood   = new buff_t( this, "hunger_for_blood",   1, 60.0                                     );
-  buffs_killing_spree      = new buff_t( this, "killing_spree",      1                                           );
-  buffs_master_of_subtlety = new buff_t( this, "master_of_subtlety", 1,  6.0                                     );
-  buffs_overkill           = new buff_t( this, "overkill",           1, 20.0                                     );
-  buffs_poison_doses       = new buff_t( this, "poison_doses",       5                                           );
-  buffs_shadow_dance       = new buff_t( this, "shadow_dance",       1,  6.0                                     );
-  buffs_shadowstep         = new buff_t( this, "shadowstep",         1, 10.0                                     );
-  buffs_shiv               = new buff_t( this, "shiv",               1                                           );
-  buffs_stealthed          = new buff_t( this, "stealthed",          1                                           );
-  buffs_slice_and_dice     = new buff_t( this, "slice_and_dice",     1                                           );
-  buffs_tier9_2pc          = new buff_t( this, "tier9_2pc",          1, 10.0, 0.0, set_bonus.tier9_2pc() * 0.02  );
+  buffs_blade_flurry       = new buff_t( this, "blade_flurry",       1, 15.0  );
+  buffs_cold_blood         = new buff_t( this, "cold_blood",         1        );
+  buffs_combo_points       = new buff_t( this, "combo_points",       5        );
+  buffs_envenom            = new buff_t( this, "envenom",            1,  6.0  );
+  buffs_hunger_for_blood   = new buff_t( this, "hunger_for_blood",   1, 60.0  );
+  buffs_killing_spree      = new buff_t( this, "killing_spree",      1        );
+  buffs_master_of_subtlety = new buff_t( this, "master_of_subtlety", 1,  6.0  );
+  buffs_overkill           = new buff_t( this, "overkill",           1, 20.0  );
+  buffs_poison_doses       = new buff_t( this, "poison_doses",       5        );
+  buffs_shadow_dance       = new buff_t( this, "shadow_dance",       1,  6.0  );
+  buffs_shadowstep         = new buff_t( this, "shadowstep",         1, 10.0  );
+  buffs_shiv               = new buff_t( this, "shiv",               1        );
+  buffs_stealthed          = new buff_t( this, "stealthed",          1        );
+  buffs_slice_and_dice     = new buff_t( this, "slice_and_dice",     1        );
+  buffs_tier9_2pc          = new buff_t( this, "tier9_2pc",          1, 10.0, 0.0, set_bonus.tier9_2pc_melee() * 0.02  );
 }
 
 // trigger_honor_among_thieves =============================================
@@ -3493,10 +3497,22 @@ bool rogue_t::save( FILE* file, int save_type )
 
 int rogue_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "bonescythe"  ) ) return SET_T7;
-  if ( strstr( item.name(), "terrorblade" ) ) return SET_T8;
-  if ( strstr( item.name(), "vancleef"    ) ) return SET_T9;
-  if ( strstr( item.name(), "garona"      ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  if ( strstr( s, "bonescythe"  ) ) return SET_T7_MELEE;
+  if ( strstr( s, "terrorblade" ) ) return SET_T8_MELEE;
+  if ( strstr( s, "vancleefs"   ) ) return SET_T9_MELEE;
+  if ( strstr( s, "garonas"     ) ) return SET_T9_MELEE;
+
   return SET_NONE;
 }
 

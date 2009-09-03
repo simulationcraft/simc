@@ -27,8 +27,6 @@ struct priest_t : public player_t
   buff_t* buffs_shadow_form;
   buff_t* buffs_shadow_weaving;
   buff_t* buffs_surge_of_light;
-  buff_t* buffs_tier5_2pc;
-  buff_t* buffs_tier5_4pc;
 
   // Cooldowns
   struct _cooldowns_t
@@ -195,7 +193,6 @@ struct priest_spell_t : public spell_t
   }
 
   virtual double haste() SC_CONST;
-  virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual void   assess_damage( double amount, int dmg_type );
@@ -317,20 +314,6 @@ double priest_spell_t::haste() SC_CONST
   return h;
 }
 
-// priest_spell_t::cost =====================================================
-
-double priest_spell_t::cost() SC_CONST
-{
-  priest_t* p = player -> cast_priest();
-  double c = spell_t::cost();
-  if ( c > 0 )
-  {
-    if ( p -> buffs_tier5_2pc -> check() ) c -= 150;
-    if ( c < 0 ) c = 0;
-  }
-  return c;
-}
-
 // priest_spell_t::execute ==================================================
 
 void priest_spell_t::execute()
@@ -354,13 +337,6 @@ void priest_spell_t::execute()
     {
       p -> buffs_surge_of_light  -> trigger( 1, 1.0, p -> talents.surge_of_light * 0.25 );
     }
-  }
-
-  if ( harmful )
-  {
-    p -> buffs_tier5_2pc -> expire();
-    p -> buffs_tier5_4pc -> expire();
-    p -> buffs_tier5_2pc -> trigger();
   }
 }
 
@@ -648,7 +624,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> talents.mind_melt * 0.03;
 
-    if ( p -> set_bonus.tier6_2pc() ) num_ticks++;
+    if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
 
     observer = &( p -> active_shadow_word_pain );
   }
@@ -663,18 +639,6 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       trigger_misery( this );
     }
-  }
-
-  virtual void tick()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::tick();
-    p -> buffs_tier5_4pc -> trigger();
-  }
-
-  virtual void last_tick()
-  {
-    priest_spell_t::last_tick();
   }
 
   virtual bool ready()
@@ -720,7 +684,6 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5;
     base_tick_time    = 3.0;
     num_ticks         = 5;
-    if ( p -> set_bonus.tier9_2pc() ) num_ticks += 2;
     tick_power_mod    = base_tick_time / 15.0;
     tick_power_mod   *= 2.0;
 
@@ -729,6 +692,8 @@ struct vampiric_touch_t : public priest_spell_t
     base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
     base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit       += p -> talents.mind_melt * 0.03;
+
+    if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
 
     observer = &( p -> active_vampiric_touch );
   }
@@ -743,11 +708,6 @@ struct vampiric_touch_t : public priest_spell_t
     {
       trigger_misery( this );
     }
-  }
-
-  virtual void last_tick()
-  {
-    priest_spell_t::last_tick();
   }
 };
 
@@ -859,7 +819,7 @@ struct devouring_plague_t : public priest_spell_t
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
                                 p -> talents.twin_disciplines          * 0.01 +
                                 p -> talents.improved_devouring_plague * 0.05 +
-                                p -> set_bonus.tier8_2pc()             * 0.15 );
+                                p -> set_bonus.tier8_2pc_caster()      * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.03;
 
@@ -965,7 +925,7 @@ struct mind_blast_t : public priest_spell_t
 
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
                                 p -> talents.shadow_focus * 0.02 +
-                                p -> set_bonus.tier7_2pc() ? 0.1 : 0.0  );
+                                p -> set_bonus.tier7_2pc_caster() ? 0.1 : 0.0  );
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
     base_hit         += p -> talents.shadow_focus * 0.01;
@@ -975,7 +935,7 @@ struct mind_blast_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.10;
   }
 
   virtual void execute()
@@ -1053,7 +1013,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
-    if ( p -> set_bonus.tier7_4pc() ) base_crit += 0.1;
+    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.1;
   }
 
   virtual void execute()
@@ -1143,10 +1103,7 @@ struct mind_flay_tick_t : public priest_spell_t
                                 p -> talents.twin_disciplines * 0.01 );
     base_crit        += p -> talents.mind_melt * 0.02;
 
-    if ( p -> set_bonus.tier9_4pc() )
-    {
-      base_crit += 0.05;
-    }
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
   }
@@ -1285,7 +1242,7 @@ struct mind_flay_t : public priest_spell_t
     // If this option is set, don't cast Mind Flay if we don't have the Tier8 4pc bonus up (only if the character has tier8_4pc=1)
     if ( devious_mind_priority )
     {
-      if ( p -> set_bonus.tier8_4pc() && ! p -> buffs_devious_mind -> check() )
+      if ( p -> set_bonus.tier8_4pc_caster() && ! p -> buffs_devious_mind -> check() )
         return false;
     }
 
@@ -1959,11 +1916,9 @@ void priest_t::init_buffs()
   buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                          );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                    );
-  buffs_tier5_2pc           = new buff_t( this, "tier5_2pc",           1, 10.0, 0.0, set_bonus.tier5_2pc() * 0.06 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_devious_mind        = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc()        );
-  buffs_tier5_4pc           = new stat_buff_t( this, "tier5_4pc",    STAT_SPELL_POWER,  100, 1, 10.0, 0.0, set_bonus.tier5_4pc() * 0.40 );
+  buffs_devious_mind = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc_caster() );
 }
 
 // priest_t::init_actions =====================================================
@@ -2253,26 +2208,37 @@ bool priest_t::save( FILE* file, int save_type )
 
 int priest_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "circlet_of_faith"            ) ) return SET_T7;
-  if ( strstr( item.name(), "mantle_of_faith"             ) ) return SET_T7;
-  if ( strstr( item.name(), "raiments_of_faith"           ) ) return SET_T7;
-  if ( strstr( item.name(), "handwraps_of_faith"          ) ) return SET_T7;
-  if ( strstr( item.name(), "pants_of_faith"              ) ) return SET_T7;
-  if ( strstr( item.name(), "circlet_of_sanctification"   ) ) return SET_T8;
-  if ( strstr( item.name(), "mantle_of_sanctification"    ) ) return SET_T8;
-  if ( strstr( item.name(), "raiments_of_sanctification"  ) ) return SET_T8;
-  if ( strstr( item.name(), "handwraps_of_sanctification" ) ) return SET_T8;
-  if ( strstr( item.name(), "pants_of_sanctification"     ) ) return SET_T8;
-  if ( strstr( item.name(), "zabras_circlet_"             ) ) return SET_T9;
-  if ( strstr( item.name(), "zabras_mantle_"              ) ) return SET_T9;
-  if ( strstr( item.name(), "zabras_raiments_"            ) ) return SET_T9;
-  if ( strstr( item.name(), "zabras_handwraps_"           ) ) return SET_T9;
-  if ( strstr( item.name(), "zabras_pants_"               ) ) return SET_T9;
-  if ( strstr( item.name(), "velens_circlet_"             ) ) return SET_T9;
-  if ( strstr( item.name(), "velens_mantle_"              ) ) return SET_T9;
-  if ( strstr( item.name(), "velens_raiments_"            ) ) return SET_T9;
-  if ( strstr( item.name(), "velens_handwraps_"           ) ) return SET_T9;
-  if ( strstr( item.name(), "velens_pants_"               ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_caster = ( strstr( s, "circlet"   ) ||
+		     strstr( s, "mantle"    ) ||
+		     strstr( s, "raiments"  ) ||
+		     strstr( s, "handwraps" ) ||
+		     strstr( s, "pants"     ) );
+
+  if ( strstr( s, "faith" ) )
+  {
+    if ( is_caster ) return SET_T7_CASTER;
+  }
+  if ( strstr( s, "sanctification" ) )
+  {
+    if ( is_caster ) return SET_T8_CASTER;
+  }
+  if ( strstr( s, "zabras" ) ||
+       strstr( s, "velens" ) )
+  {
+    if ( is_caster ) return SET_T9_CASTER;
+  }
+
   return SET_NONE;
 }
 

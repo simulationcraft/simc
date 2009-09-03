@@ -1047,7 +1047,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     }
     base_execute_time *= 1.0 / ( 1.0 + 0.04 * o -> talents.serpents_swiftness );
 
-    if ( o -> set_bonus.tier7_2pc() ) base_multiplier *= 1.05;
+    if ( o -> set_bonus.tier7_2pc_melee() ) base_multiplier *= 1.05;
   }
 };
 
@@ -2381,9 +2381,9 @@ struct serpent_sting_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
-    base_multiplier *= 1.0 + ( p -> talents.improved_stings * 0.1 +
-                               p -> set_bonus.tier8_2pc() * 0.1   );
-    tick_may_crit    = ( p -> set_bonus.tier9_2pc() == 1 );
+    base_multiplier *= 1.0 + ( p -> talents.improved_stings     * 0.1 +
+                               p -> set_bonus.tier8_2pc_melee() * 0.1 );
+    tick_may_crit    = ( p -> set_bonus.tier9_2pc_melee() );
 
     observer = &( p -> active_serpent_sting );
   }
@@ -3215,8 +3215,8 @@ void hunter_t::init_buffs()
   buffs_master_tactician            = new buff_t( this, "master_tactician",            1, 10.0,  0.0, ( talents.master_tactician ? 0.10 : 0.0 ) );
   buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
   
-  buffs_tier8_4pc = new stat_buff_t( this, "tier8_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier8_4pc() ? 0.1  : 0 ) );
-  buffs_tier9_4pc = new stat_buff_t( this, "tier9_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier9_4pc() ? 0.35 : 0 ) );
+  buffs_tier8_4pc = new stat_buff_t( this, "tier8_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier8_4pc_melee() ? 0.1  : 0 ) );
+  buffs_tier9_4pc = new stat_buff_t( this, "tier9_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier9_4pc_melee() ? 0.35 : 0 ) );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, "trueshot_aura");
@@ -3572,10 +3572,21 @@ bool hunter_t::save( FILE* file, int save_type )
 
 int hunter_t::decode_set( item_t& item )
 {
-  if      ( strstr( item.name(), "cryptstalker"   ) ) return SET_T7;
-  else if ( strstr( item.name(), "scourgestalker" ) ) return SET_T8;
-  else if ( strstr( item.name(), "windrunner"     ) ) return SET_T9;
-  // Horde and alliacne set use "Winderunner's ..."
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  if ( strstr( s, "cryptstalker"   ) ) return SET_T7_MELEE;
+  if ( strstr( s, "scourgestalker" ) ) return SET_T7_MELEE;
+  if ( strstr( s, "windrunners"    ) ) return SET_T7_MELEE;
+
   return SET_NONE;
 }
 

@@ -33,7 +33,6 @@ struct mage_t : public player_t
   buff_t* buffs_mage_armor;
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
-  buff_t* buffs_tier5_4pc;
   buff_t* buffs_tier7_2pc;
   buff_t* buffs_tier8_2pc;
 
@@ -475,7 +474,7 @@ static bool trigger_tier8_4pc( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> set_bonus.tier8_4pc() )
+  if ( ! p -> set_bonus.tier8_4pc_caster() )
     return false;
 
   if ( ! p -> rng_tier8_4pc -> roll( 0.25 ) )
@@ -892,7 +891,6 @@ void mage_spell_t::execute()
       trigger_burnout( this );
       trigger_ignite( this, direct_dmg );
       trigger_master_of_elements( this, 1.0 );
-      p -> buffs_tier5_4pc -> trigger();
     }
   }
   trigger_combustion( this );
@@ -992,7 +990,7 @@ void mage_spell_t::player_buff()
   {
     double spirit_contribution = p -> glyphs.molten_armor ? 0.55 : 0.35;
 
-    if ( p -> set_bonus.tier9_2pc() ) spirit_contribution += 0.15;
+    if ( p -> set_bonus.tier9_2pc_caster() ) spirit_contribution += 0.15;
 
     player_crit += p -> spirit() * spirit_contribution / p -> rating.spell_crit;
   }
@@ -1050,7 +1048,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     may_torment = true;
   }
@@ -1112,10 +1110,9 @@ struct arcane_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) +
                                           ( p -> talents.burnout     * 0.10   ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
-    if ( p -> set_bonus.tier5_2pc() ) base_multiplier *= 1.05;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
     may_torment = true;
   }
@@ -1127,7 +1124,6 @@ struct arcane_blast_t : public mage_spell_t
     if ( c != 0 )
     {
       c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P322 ? 1.75 : 2.00 );
-      if ( p -> set_bonus.tier5_2pc() ) c += base_cost * 0.05;
     }
     return c;
   }
@@ -1196,10 +1192,10 @@ struct arcane_missiles_tick_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
-                                          ( p -> set_bonus.tier7_4pc()  ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
-    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit       += 0.05;
 
     clearcast = false;
     may_torment = true;
@@ -1217,14 +1213,12 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
       trigger_master_of_elements( this, 0.20 );
-      p -> buffs_tier5_4pc -> trigger();
     }
   }
 };
@@ -1485,7 +1479,7 @@ struct evocation_t : public mage_spell_t
     cooldown      -= p -> talents.arcane_flows * 60.0;
     harmful        = false;
 
-    if ( p -> set_bonus.tier6_2pc() ) num_ticks++;
+    if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
   }
 
   virtual void tick()
@@ -1614,12 +1608,12 @@ struct fire_ball_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
-    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit       += 0.05;
 
     if ( p -> glyphs.fire_ball )
     {
@@ -1722,7 +1716,7 @@ struct fire_blast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
   }
   virtual void execute()
   {
@@ -1773,7 +1767,7 @@ struct living_bomb_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
@@ -1868,7 +1862,7 @@ struct pyroblast_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
   }
 
   virtual void execute()
@@ -1951,7 +1945,7 @@ struct scorch_t : public mage_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -2068,13 +2062,14 @@ struct frost_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.winters_chill * 0.01;
 
-    if ( p -> set_bonus.tier6_4pc() ) base_multiplier *= 1.05;
-    if ( p -> set_bonus.tier9_4pc() ) base_crit       += 0.05;
-    if ( p -> glyphs.frost_bolt     ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit       += 0.05;
+
+    if ( p -> glyphs.frost_bolt ) base_multiplier *= 1.05;
 
     may_torment = true;
   }
@@ -2156,7 +2151,7 @@ struct ice_lance_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
   }
 
   virtual void player_buff()
@@ -2252,11 +2247,11 @@ struct frostfire_bolt_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
-                                          ( p -> set_bonus.tier7_4pc() ? 0.05 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
-    if ( p -> set_bonus.tier9_4pc() ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
     if ( p -> glyphs.frostfire )
     {
@@ -2601,7 +2596,7 @@ struct mana_gem_t : public action_t
       max *= 1.40;
       trigger *= 1.40;
     }
-    if ( p -> set_bonus.tier7_2pc() )
+    if ( p -> set_bonus.tier7_2pc_caster() )
     {
       min *= 1.40;
       max *= 1.40;
@@ -2693,7 +2688,7 @@ struct choose_rotation_t : public action_t
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows * 60.0 );
 
     // Mana Gem
-    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> set_bonus.tier7_2pc() * 0.25 ) / 120.0;
+    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) * ( 1.0 + p -> set_bonus.tier7_2pc_caster() * 0.25 ) / 120.0;
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -2939,9 +2934,8 @@ void mage_t::init_buffs()
   buffs_mage_armor   = new buff_t( this, "mage_armor" );
   buffs_molten_armor = new buff_t( this, "molten_armor" );
 
-  buffs_tier5_4pc = new stat_buff_t( this, "tier5_4pc", STAT_SPELL_POWER,  70, 1,  6.0,    0, set_bonus.tier5_4pc() );
-  buffs_tier7_2pc = new stat_buff_t( this, "tier7_2pc", STAT_SPELL_POWER, 225, 1, 15.0,    0, set_bonus.tier7_2pc() );
-  buffs_tier8_2pc = new stat_buff_t( this, "tier8_2pc", STAT_SPELL_POWER, 350, 1, 15.0, 45.0, set_bonus.tier8_2pc() * 0.25 );
+  buffs_tier7_2pc = new stat_buff_t( this, "tier7_2pc", STAT_SPELL_POWER, 225, 1, 15.0,    0, set_bonus.tier7_2pc_caster() );
+  buffs_tier8_2pc = new stat_buff_t( this, "tier8_2pc", STAT_SPELL_POWER, 350, 1, 15.0, 45.0, set_bonus.tier8_2pc_caster() * 0.25 );
 }
 
 // mage_t::init_gains ======================================================
@@ -3394,16 +3388,22 @@ bool mage_t::save( FILE* file, int save_type )
 
 int mage_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "frostfire"  ) ) return SET_T7;
-  if ( strstr( item.name(), "kirin_tor"  ) )
-    if ( item.slot == SLOT_HEAD      ||
-         item.slot == SLOT_SHOULDERS ||
-         item.slot == SLOT_CHEST     ||
-         item.slot == SLOT_HANDS     ||
-         item.slot == SLOT_LEGS      )
-      return SET_T8;
-  if ( strstr( item.name(), "sunstrider" ) ) return SET_T9;
-  if ( strstr( item.name(), "khadgar"    ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  if ( strstr( s, "frostfire"   ) ) return SET_T7_CASTER;
+  if ( strstr( s, "kirin_tor"   ) ) return SET_T8_CASTER;
+  if ( strstr( s, "sunstriders" ) ) return SET_T9_CASTER;
+  if ( strstr( s, "khadgars"    ) ) return SET_T9_CASTER;
+
   return SET_NONE;
 }
 

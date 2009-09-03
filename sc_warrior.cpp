@@ -29,8 +29,8 @@ struct warrior_t : public player_t
   buff_t* buffs_sword_and_board;
   buff_t* buffs_taste_for_blood;
   buff_t* buffs_wrecking_crew;
-  buff_t* buffs_tier7_4pc_dps;
-  buff_t* buffs_tier8_2pc_dps;
+  buff_t* buffs_tier7_4pc_melee;
+  buff_t* buffs_tier8_2pc_melee;
 
   // Cooldowns
   struct _cooldowns_t
@@ -147,28 +147,6 @@ struct warrior_t : public player_t
   };
   glyphs_t glyphs;
 
-  struct tiers_t
-  {
-    int t7_2pc_dps;
-    int t7_4pc_dps;
-    int t8_2pc_dps;
-    int t8_4pc_dps;
-    int t9_2pc_dps;
-    int t9_4pc_dps;
-    int t10_2pc_dps;
-    int t10_4pc_dps;
-    int t7_2pc_tank;
-    int t7_4pc_tank;
-    int t8_2pc_tank;
-    int t8_4pc_tank;
-    int t9_2pc_tank;
-    int t9_4pc_tank;
-    int t10_2pc_tank;
-    int t10_4pc_tank;
-    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
-  };
-  tiers_t tiers;
-
   warrior_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARRIOR, name, race_type )
   {
     // Active
@@ -188,7 +166,6 @@ struct warrior_t : public player_t
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
-  virtual void      init_items();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
@@ -347,7 +324,7 @@ static void trigger_deep_wounds( action_t* a )
 
       warrior_attack_t::tick();
       warrior_t* p = player -> cast_warrior();
-      p -> buffs_tier7_4pc_dps -> trigger();
+      p -> buffs_tier7_4pc_melee -> trigger();
     }
   };
 
@@ -492,7 +469,7 @@ double warrior_attack_t::cost() SC_CONST
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
   if ( harmful ) c -= p -> talents.focused_rage;
-  if ( p -> buffs_tier7_4pc_dps -> check() ) c -= 5;
+  if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
   return c;
 }
@@ -526,7 +503,7 @@ void warrior_attack_t::execute()
   attack_t::execute();
 
   warrior_t* p = player -> cast_warrior();
-  p -> buffs_tier7_4pc_dps -> expire();
+  p -> buffs_tier7_4pc_melee -> expire();
 
 
   if ( result_is_hit() )
@@ -608,12 +585,12 @@ void warrior_attack_t::player_buff()
   if ( p -> active_stance == STANCE_BATTLE )
   {
     player_penetration += 0.10;
-    if ( player -> set_bonus.tier9_2pc() ) player_penetration += 0.06;
+    if ( player -> set_bonus.tier9_2pc_melee() ) player_penetration += 0.06;
   }
   else if ( p -> active_stance == STANCE_BERSERKER )
   {
     player_crit += 0.03;
-    if ( player -> set_bonus.tier9_2pc() ) player_crit += 0.02;
+    if ( player -> set_bonus.tier9_2pc_melee() ) player_crit += 0.02;
 
   }
   else if ( p -> active_stance == STANCE_DEFENSE )
@@ -924,12 +901,12 @@ struct heroic_strike_t : public warrior_attack_t
     may_crit        = true;
     base_cost      -= p -> talents.improved_heroic_strike;
     base_crit      += p -> talents.incite * 0.05;
-    if ( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
-
     trigger_gcd     = 0;
 
     weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
+
+    if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
     // Heroic Strike needs swinging auto_attack!
     assert( p -> main_hand_attack -> execute_event == 0 );
@@ -956,7 +933,7 @@ struct heroic_strike_t : public warrior_attack_t
       p -> buffs_bloodsurge -> trigger();
       if ( result == RESULT_CRIT )
       {
-        p -> buffs_tier8_2pc_dps -> trigger();
+        p -> buffs_tier8_2pc_melee -> trigger();
         if ( p -> glyphs.heroic_strike )
         {
           p -> resource_gain( RESOURCE_RAGE, 10.0, p -> gains_glyph_of_heroic_strike );
@@ -1003,8 +980,8 @@ struct bloodthirst_t : public warrior_attack_t
     base_cost         = 20;
     base_multiplier *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod = 0.50;
-    if ( p -> set_bonus.tier8_4pc() )
-      base_crit += 0.10;
+
+    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
   virtual void execute()
   {
@@ -1100,12 +1077,13 @@ struct devastate_t : public warrior_attack_t
     base_dd_min = 1010;
     base_dd_max = 1010;
     weapon_multiplier = 1.00;
-    if ( p -> set_bonus.tier9_2pc() ) base_multiplier   *= 1.05;
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;
-    base_crit += ( ( p -> talents.sword_and_board * 0.05 ) +
-                   ( p -> set_bonus.tier8_2pc() ? 0.10 : 0.0 ) );
+    base_crit += p -> talents.sword_and_board * 0.05;
+
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_crit += 0.10;
+    if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
   }
   virtual void execute()
   {
@@ -1193,11 +1171,14 @@ struct shield_slam_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    may_crit          = true;
-    cooldown          = 6.0;
-    direct_power_mod  = 0.0;
-    base_multiplier   *= 1 + ( p -> talents.gag_order * 0.05 ) + ( p -> set_bonus.tier7_2pc() ? 0.10 : 0.0 ) + ( p -> glyphs.blocking ? 0.10 : 0.0 );
-    base_crit         += ( p -> talents.critical_block * 0.05 );
+    may_crit         = true;
+    cooldown         = 6.0;
+    direct_power_mod = 0.0;
+    base_multiplier *= 1 + ( ( p -> talents.gag_order * 0.05 ) + 
+			      ( p -> set_bonus.tier7_2pc_tank() ? 0.10 : 0.0 ) + 
+			      ( p -> glyphs.blocking            ? 0.10 : 0.0 ) );
+
+    base_crit += ( p -> talents.critical_block * 0.05 );
 
     //FIXME Ugly hack for 1200 baseline block value, change when block value is included in player data
     base_dd_min += 1200;
@@ -1416,10 +1397,10 @@ struct mortal_strike_t : public warrior_attack_t
 
     may_crit         = true;
     cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
-    base_multiplier *= 1 + util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10 )
-                       + ( p -> glyphs.mortal_strike ? 0.10 : 0 );
-    if ( p -> set_bonus.tier8_4pc() )
-      base_crit += 0.10;
+    base_multiplier *= 1.0 + ( ( util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10 ) ) +
+			       ( p -> glyphs.mortal_strike ? 0.10 : 0 ) );
+
+    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
 
     weapon_multiplier = 1;
     weapon = &( p -> main_hand_weapon );
@@ -1536,7 +1517,7 @@ struct rend_t : public warrior_attack_t
   {
     warrior_attack_t::tick();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_tier7_4pc_dps -> trigger();
+    p -> buffs_tier7_4pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
   virtual void execute()
@@ -1576,13 +1557,14 @@ struct slam_t : public warrior_attack_t
     };
     init_rank( ranks );
 
-    may_crit = true;
-    if ( player -> set_bonus.tier9_4pc() ) base_crit += 0.05;
-    base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
-    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> set_bonus.tier7_2pc() ? 0.10 : 0.0 );
-
-    normalize_weapon_speed = false;
     weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = false;
+
+    may_crit = true;
+    base_execute_time  = 1.5 - p -> talents.improved_slam * 0.5;
+    base_multiplier   *= 1 + p -> talents.unending_fury * 0.02 + ( p -> set_bonus.tier7_2pc_melee() ? 0.10 : 0.0 );
+
+    if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
   virtual double haste() SC_CONST
   {
@@ -1606,7 +1588,7 @@ struct slam_t : public warrior_attack_t
     p -> buffs_bloodsurge -> expire();
     if ( result == RESULT_CRIT )
     {
-      p -> buffs_tier8_2pc_dps -> trigger();
+      p -> buffs_tier8_2pc_melee -> trigger();
     }
   }
 
@@ -1777,7 +1759,7 @@ void warrior_spell_t::execute()
   // As it seems tier7 4pc is consumed by everything, no matter if it costs
   // rage. "Reduces the rage cost of your next ability is reduced by 5."
   warrior_t* p = player -> cast_warrior();
-  p -> buffs_tier7_4pc_dps -> expire();
+  p -> buffs_tier7_4pc_melee -> expire();
   
   update_ready();
 }
@@ -1789,7 +1771,7 @@ double warrior_spell_t::cost() SC_CONST
   warrior_t* p = player -> cast_warrior();
   double c = spell_t::cost();
   if ( harmful ) c -= p -> talents.focused_rage;
-  if ( p -> buffs_tier7_4pc_dps -> check() ) c -= 5;
+  if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
   return c;
 }
@@ -2192,38 +2174,9 @@ void warrior_t::init_buffs()
   buffs_sword_and_board = new buff_t( this, "sword_and_board", 1,  5.0,   0, talents.sword_and_board * 0.10 );
   buffs_taste_for_blood = new buff_t( this, "taste_for_blood", 1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
   buffs_wrecking_crew   = new buff_t( this, "wrecking_crew",   1, 12.0,   0, talents.wrecking_crew );
-  buffs_tier7_4pc_dps   = new buff_t( this, "tier7_4pc_dps",   1, 30.0,   0, tiers.t7_4pc_dps * 0.10 );
+  buffs_tier7_4pc_melee = new buff_t( this, "tier7_4pc_melee", 1, 30.0,   0, set_bonus.tier7_4pc_melee() * 0.10 );
   
-  buffs_tier8_2pc_dps   = new stat_buff_t( this, "tier8_2pc_dps", STAT_HASTE_RATING, 150, 1, 5.0, tiers.t8_2pc_dps * 0.40 );
-}
-
-// warrior_t::init_items =======================================================
-
-void warrior_t::init_items()
-{
-  player_t::init_items();
-  if ( talents.devastate )
-  {
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_dps = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_dps = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_dps = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_dps = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_dps = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_dps = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_dps = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_dps = 1;
-  }
-  else if ( talents.mortal_strike || talents.bloodthirst )
-  {
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_tank = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_tank = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_tank = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_tank = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_tank = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_tank = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_tank = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_tank = 1;
-  }
+  buffs_tier8_2pc_melee = new stat_buff_t( this, "tier8_2pc_melee", STAT_HASTE_RATING, 150, 1, 5.0, 0, set_bonus.tier8_2pc_melee() * 0.40 );
 }
 
 // warrior_t::init_gains =======================================================
@@ -2594,10 +2547,46 @@ std::vector<option_t>& warrior_t::get_options()
 
 int warrior_t::decode_set( item_t& item )
 {
-  if      ( strstr( item.name(), "dreadnaught"  ) ) return SET_T7;
-  else if ( strstr( item.name(), "siegebreaker" ) ) return SET_T8;
-  else if ( strstr( item.name(), "wrynn"        ) ) return SET_T9;
-  else if ( strstr( item.name(), "hellscream"   ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_melee = ( strstr( s, "helmet"         ) || 
+		    strstr( s, "shoulderplates" ) ||
+		    strstr( s, "battleplate"    ) ||
+		    strstr( s, "legplates"      ) ||
+		    strstr( s, "gauntlets"      ) );
+
+  bool is_tank = ( strstr( s, "greathelm"   ) || 
+		   strstr( s, "pauldrons"   ) ||
+		   strstr( s, "breastplate" ) ||
+		   strstr( s, "legguards"   ) ||
+		   strstr( s, "handguards"  ) );
+  
+  if ( strstr( s, "dreadnaught" ) ) 
+  {
+    if ( is_melee ) return SET_T7_MELEE;
+    if ( is_tank  ) return SET_T7_TANK;
+  }
+  if ( strstr( s, "siegebreaker" ) )
+  {
+    if ( is_melee ) return SET_T8_MELEE;
+    if ( is_tank  ) return SET_T8_TANK;
+  }
+  if ( strstr( s, "wrynns" ) ||
+       strstr( s, "hellscreams"  ) ) 
+  {
+    if ( is_melee ) return SET_T9_MELEE;
+    if ( is_tank  ) return SET_T9_TANK;
+  }
+
   return SET_NONE;
 }
 

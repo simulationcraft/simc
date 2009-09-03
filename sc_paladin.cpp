@@ -153,23 +153,6 @@ struct paladin_t : public player_t
   };
   librams_t librams;
 
-  struct tiers_t
-  {
-    // Consider all NYI
-    int  t6_2pc_dps,    t6_4pc_dps;
-    int  t7_2pc_dps,    t7_4pc_dps;
-    int  t8_2pc_dps,    t8_4pc_dps;
-    int  t9_2pc_dps,    t9_4pc_dps;
-    int t10_2pc_dps,   t10_4pc_dps;
-    int  t6_2pc_tank,  t6_4pc_tank;
-    int  t7_2pc_tank,  t7_4pc_tank;
-    int  t8_2pc_tank,  t8_4pc_tank;
-    int  t9_2pc_tank,  t9_4pc_tank;
-    int t10_2pc_tank, t10_4pc_tank;
-    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
-  };
-  tiers_t tiers;
-
   paladin_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PALADIN, name, race_type )
   {
     active_seal = SEAL_NONE;
@@ -482,7 +465,7 @@ struct crusader_strike_t : public paladin_attack_t
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
 
-    if ( p -> tiers.t8_4pc_dps ) base_crit += 0.10;
+    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
 
   virtual void execute()
@@ -523,8 +506,8 @@ struct divine_storm_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
 
-    if ( p -> tiers.t7_2pc_dps ) base_multiplier *= 1.1;
-    if ( p -> tiers.t8_4pc_dps ) base_crit += 0.10;
+    if ( p -> set_bonus.tier7_2pc_melee() ) base_multiplier *= 1.1;
+    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
 
   virtual void execute()
@@ -665,7 +648,7 @@ struct seal_of_command_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 };
 
@@ -710,7 +693,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 };
 
@@ -760,7 +743,7 @@ struct seal_of_light_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 };
 
@@ -806,7 +789,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 };
 
@@ -913,7 +896,7 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 
   virtual void player_buff()
@@ -967,7 +950,7 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.1;
 
-    if ( p -> tiers.t7_4pc_dps ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
   }
 };
 
@@ -1570,43 +1553,53 @@ void paladin_t::init_items()
   {
     util_t::printf( "simcraft: %s has unknown libram %s\n", name(), libram.c_str() );
   }
-
-  if ( talents.holy_shield )
-  {
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_tank = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_tank = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_tank = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_tank = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_tank = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_tank = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_tank = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_tank = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_tank = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_tank = 1;
-  }
-  else
-  {
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_dps = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_dps = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_dps = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_dps = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_dps = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_dps = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_dps = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_dps = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_dps = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_dps = 1;
-  }
 }
 
 // paladin_t::decode_set ====================================================
 
 int paladin_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "redemption" ) ) return SET_T7;
-  if ( strstr( item.name(), "aegis"      ) ) return SET_T8;
-  if ( strstr( item.name(), "turalyon"   ) ) return SET_T9;
-  if ( strstr( item.name(), "liadrin"    ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_melee = ( strstr( s, "helm"           ) || 
+		    strstr( s, "shoulderplates" ) ||
+		    strstr( s, "battleplate"    ) ||
+		    strstr( s, "chestpiece"     ) ||
+		    strstr( s, "legplates"      ) ||
+		    strstr( s, "gauntlets"      ) );
+
+  bool is_tank = ( strstr( s, "faceguard"      ) || 
+		   strstr( s, "shoulderguards" ) ||
+		   strstr( s, "breastplate"    ) ||
+		   strstr( s, "legguards"      ) ||
+		   strstr( s, "handguards"     ) );
+  
+  if ( strstr( s, "redemption" ) ) 
+  {
+    if ( is_melee ) return SET_T7_MELEE;
+    if ( is_tank  ) return SET_T7_TANK;
+  }
+  if ( strstr( s, "aegis" ) )
+  {
+    if ( is_melee ) return SET_T8_MELEE;
+    if ( is_tank  ) return SET_T8_TANK;
+  }
+  if ( strstr( s, "turalyons" ) ||
+       strstr( s, "liadrins"  ) ) 
+  {
+    if ( is_melee ) return SET_T9_MELEE;
+    if ( is_tank  ) return SET_T9_TANK;
+  }
+
   return SET_NONE;
 }
 

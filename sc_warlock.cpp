@@ -45,8 +45,8 @@ struct warlock_t : public player_t
   buff_t* buffs_molten_core;
   buff_t* buffs_pyroclasm;
   buff_t* buffs_shadow_trance;
-  buff_t* buffs_tier7_2pc;
-  buff_t* buffs_tier7_4pc;
+  buff_t* buffs_tier7_2pc_caster;
+  buff_t* buffs_tier7_4pc_caster;
 
   // warlock specific expression functions
   struct warlock_expression_t: public act_expression_t
@@ -395,9 +395,9 @@ struct warlock_pet_t : public pet_t
       }
     }
 
-    if ( o -> set_bonus.tier9_2pc() )
+    if ( o -> set_bonus.tier9_2pc_caster() )
     {
-      a -> base_crit       +=       0.10;
+      a -> base_crit += 0.10;
     }
   }
 
@@ -946,22 +946,6 @@ struct warlock_spell_t : public spell_t
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
 };
-
-// trigger_tier5_4pc ========================================================
-
-static void trigger_tier5_4pc( spell_t*  s,
-                               action_t* dot_spell )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if ( p -> set_bonus.tier5_4pc() )
-  {
-    if ( dot_spell )
-    {
-      dot_spell -> base_td *= 1.10;
-    }
-  }
-}
 
 // trigger_soul_leech =======================================================
 
@@ -1565,11 +1549,14 @@ struct shadow_bolt_t : public warlock_spell_t
     base_cost  *= 1.0 - ( util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 ) + p -> glyphs.shadow_bolt * 0.10 );
 
     base_execute_time -=  p -> talents.bane * 0.1;
-    base_multiplier   *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
-                                 p -> set_bonus.tier6_4pc()        * 0.06 +
-                                 p -> talents.improved_shadow_bolt * 0.01 );
-    base_crit         += ( p -> talents.devastation   * 0.05 +
-                           p -> set_bonus.tier8_4pc() * 0.05 );
+
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
+			       p -> set_bonus.tier6_4pc_caster() * 0.06 +
+			       p -> talents.improved_shadow_bolt * 0.01 );
+
+    base_crit += ( p -> talents.devastation          * 0.05 +
+		   p -> set_bonus.tier8_4pc_caster() * 0.05 );
+
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -1599,9 +1586,8 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> buffs_shadow_embrace -> trigger();
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talents.improved_shadow_bolt / 5.0 );
       trigger_soul_leech( this );
-      trigger_tier5_4pc( this, p -> active_corruption );
     }
-    p -> buffs_tier7_2pc -> expire();
+    p -> buffs_tier7_2pc_caster -> expire();
   }
 
   virtual void schedule_travel()
@@ -1621,7 +1607,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> buffs_tier7_2pc -> up() ) player_crit += 0.10;
+    if ( p -> buffs_tier7_2pc_caster -> up() ) player_crit += 0.10;
   }
 
   virtual bool ready()
@@ -1904,11 +1890,11 @@ struct corruption_t : public warlock_spell_t
 
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
     base_hit        +=  p -> talents.suppression * 0.01;
-    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery      * 0.03 +
-                               p -> talents.contagion           * 0.01 +
-                               p -> talents.improved_corruption * 0.02 +
-                               p -> set_bonus.tier9_4pc()       * 0.10 +
-                               ( ( p -> talents.siphon_life ) ?   0.05 : 0 ) );
+    base_multiplier *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
+                               p -> talents.contagion            * 0.01 +
+                               p -> talents.improved_corruption  * 0.02 +
+                               p -> set_bonus.tier9_4pc_caster() * 0.10 +
+                               ( ( p -> talents.siphon_life ) ?  0.05 : 0 ) );
     tick_power_mod  += p -> talents.empowered_corruption * 0.02;
     tick_power_mod  += p -> talents.everlasting_affliction * 0.01;
 
@@ -1918,8 +1904,6 @@ struct corruption_t : public warlock_spell_t
       tick_may_crit = true;
       base_crit += p -> talents.malediction * 0.03;
     }
-
-    if ( p -> set_bonus.tier4_4pc() ) num_ticks++;
 
     observer = &( p -> active_corruption );
   }
@@ -1937,8 +1921,8 @@ struct corruption_t : public warlock_spell_t
     p -> buffs_eradication -> trigger();
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talents.nightfall * 0.02 );
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> glyphs.corruption * 0.04 );
-    p -> buffs_tier7_2pc -> trigger();
-    if ( p -> set_bonus.tier6_2pc() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
+    p -> buffs_tier7_2pc_caster -> trigger();
+    if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
   }
 };
 
@@ -2155,8 +2139,8 @@ struct unstable_affliction_t : public warlock_spell_t
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
     base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
-                                p -> set_bonus.tier8_2pc()  * 0.20 + //FIXME assuming additive
-                                p -> set_bonus.tier9_4pc()  * 0.10 +
+                                p -> set_bonus.tier8_2pc_caster() * 0.20 + // FIXME! assuming additive
+                                p -> set_bonus.tier9_4pc_caster() * 0.10 +
                                 ( ( p -> talents.siphon_life ) ? 0.05 : 0 ) );
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
@@ -2292,23 +2276,21 @@ struct immolate_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
-    base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
-                                  p -> talents.improved_immolate * 0.10 +
-                                  p -> set_bonus.tier8_2pc()     * 0.10 +
-                                  p -> set_bonus.tier9_4pc()     * 0.10 );
+    base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
+                                  p -> talents.improved_immolate    * 0.10 +
+                                  p -> set_bonus.tier8_2pc_caster() * 0.10 +
+                                  p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
-    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm        * 0.03 +
-                                  p -> talents.improved_immolate * 0.10 +
-                                  p -> glyphs.immolate           * 0.10 +
-                                  p -> talents.aftermath         * 0.03 +
-                                  p -> set_bonus.tier8_2pc()     * 0.10 +
-                                  p -> set_bonus.tier9_4pc()     * 0.10 );
+    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
+                                  p -> talents.improved_immolate    * 0.10 +
+                                  p -> glyphs.immolate              * 0.10 +
+                                  p -> talents.aftermath            * 0.03 +
+                                  p -> set_bonus.tier8_2pc_caster() * 0.10 +
+                                  p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
 
     tick_power_mod    += p -> talents.fire_and_brimstone * 0.02 / num_ticks;
     direct_power_mod  += p -> talents.fire_and_brimstone * 0.01;
-
-    if ( p -> set_bonus.tier4_4pc() ) num_ticks++;
 
     observer = &( p -> active_immolate );
   }
@@ -2323,8 +2305,8 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    p -> buffs_tier7_2pc -> trigger(); 
-    if ( p -> set_bonus.tier6_2pc() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
+    p -> buffs_tier7_2pc_caster -> trigger(); 
+    if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
   }
 };
 
@@ -2426,9 +2408,9 @@ struct conflagrate_t : public warlock_spell_t
                            + p -> talents.improved_immolate * 0.10
                            + p -> glyphs.immolate           * 0.10;
 
-    base_multiplier *= 1.0 + p -> talents.emberstorm    * 0.03
-                           + p -> set_bonus.tier8_2pc() * 0.10
-                           + p -> set_bonus.tier9_4pc() * 0.10;
+    base_multiplier *= 1.0 + p -> talents.emberstorm           * 0.03
+                           + p -> set_bonus.tier8_2pc_caster() * 0.10
+                           + p -> set_bonus.tier9_4pc_caster() * 0.10;
 
     base_multiplier *= 0.7; // Nerf!
 
@@ -2555,12 +2537,12 @@ struct incinerate_t : public warlock_spell_t
 
     base_execute_time -= p -> talents.emberstorm * 0.05;
 
-    base_multiplier *= 1.0 + ( p -> talents.emberstorm    * 0.03 +
-                               p -> set_bonus.tier6_4pc() * 0.06 +
-                               p -> glyphs.incinerate     * 0.05 );
+    base_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
+                               p -> set_bonus.tier6_4pc_caster() * 0.06 +
+                               p -> glyphs.incinerate            * 0.05 );
 
-    base_crit += ( p -> talents.devastation   * 0.05 +
-		   p -> set_bonus.tier8_4pc() * 0.05 );
+    base_crit += ( p -> talents.devastation          * 0.05 +
+		   p -> set_bonus.tier8_4pc_caster() * 0.05 );
 
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -2577,9 +2559,8 @@ struct incinerate_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       trigger_soul_leech( this );
-      trigger_tier5_4pc( this, p -> active_immolate );
     }
-    p -> buffs_tier7_2pc -> expire();
+    p -> buffs_tier7_2pc_caster -> expire();
   }
 
   virtual void schedule_travel()
@@ -2599,7 +2580,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> buffs_tier7_2pc -> up() ) player_crit += 0.10;
+    if ( p -> buffs_tier7_2pc_caster -> up() ) player_crit += 0.10;
     if ( p -> active_immolate )
     {
       player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
@@ -2789,7 +2770,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, mana );
     p -> buffs_life_tap_glyph -> trigger();
-    p -> buffs_tier7_4pc -> trigger();
+    p -> buffs_tier7_4pc_caster -> trigger();
   }
 
   virtual bool ready()
@@ -2802,10 +2783,10 @@ struct life_tap_t : public warlock_spell_t
 
     if ( buff_refresh )
     {
-      if( ! p -> set_bonus.tier7_4pc() && ! p -> glyphs.life_tap )
+      if( ! p -> set_bonus.tier7_4pc_caster() && ! p -> glyphs.life_tap )
 	return false;
 
-      if ( p -> buffs_tier7_4pc -> check() || p -> buffs_life_tap_glyph -> check() )
+      if ( p -> buffs_tier7_4pc_caster -> check() || p -> buffs_life_tap_glyph -> check() )
 	return false;
     }
 
@@ -3581,8 +3562,8 @@ void warlock_t::init_buffs()
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance       = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talents.nightfall );
 
-  buffs_tier7_2pc = new      buff_t( this, "tier7_2pc",                   1, 10.0, 0.0, set_bonus.tier7_2pc() * 0.15 );
-  buffs_tier7_4pc = new stat_buff_t( this, "tier7_4pc", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc() );
+  buffs_tier7_2pc_caster = new      buff_t( this, "tier7_2pc_caster",                   1, 10.0, 0.0, set_bonus.tier7_2pc_caster() * 0.15 );
+  buffs_tier7_4pc_caster = new stat_buff_t( this, "tier7_4pc_caster", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc_caster() );
 }
 
 // warlock_t::init_gains =====================================================
@@ -3641,7 +3622,7 @@ void warlock_t::init_actions()
     }
     action_list_str += "," + summon_pet_str;
 
-    if( set_bonus.tier7_4pc() || glyphs.life_tap )
+    if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
     {
       action_list_str+="/life_tap,buff_refresh=1";
     }
@@ -3954,10 +3935,22 @@ std::vector<option_t>& warlock_t::get_options()
 
 int warlock_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "plagueheart"  ) ) return SET_T7;
-  if ( strstr( item.name(), "deathbringer" ) ) return SET_T8;
-  if ( strstr( item.name(), "kelthuzad"    ) ) return SET_T9;
-  if ( strstr( item.name(), "guldan"       ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  if ( strstr( s, "plagueheart"  ) ) return SET_T7_CASTER;
+  if ( strstr( s, "deathbringer" ) ) return SET_T8_CASTER;
+  if ( strstr( s, "kelthuzads"   ) ) return SET_T9_CASTER;
+  if ( strstr( s, "guldans"      ) ) return SET_T9_CASTER;
+
   return SET_NONE;
 }
 

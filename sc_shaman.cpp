@@ -57,7 +57,6 @@ struct shaman_t : public player_t
   gain_t* gains_shamanistic_rage;
   gain_t* gains_thunderstorm;
   gain_t* gains_water_shield;
-  gain_t* gains_tier5_4pc_elemental;
 
   // Procs
   proc_t* procs_lightning_overload;
@@ -71,7 +70,6 @@ struct shaman_t : public player_t
   rng_t* rng_lightning_overload;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
-  rng_t* rng_tier5_4pc_elemental;
 
   // Auto-Attack
   attack_t* main_hand_attack;
@@ -176,24 +174,6 @@ struct shaman_t : public player_t
     totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
   };
   totems_t totems;
-
-  struct tiers_t
-  {
-    int  t5_2pc_elemental,    t5_4pc_elemental;
-    int  t6_2pc_elemental,    t6_4pc_elemental;
-    int  t7_2pc_elemental,    t7_4pc_elemental;
-    int  t8_2pc_elemental,    t8_4pc_elemental;
-    int  t9_2pc_elemental,    t9_4pc_elemental;
-    int t10_2pc_elemental,   t10_4pc_elemental;
-    int  t5_2pc_enhancement,  t5_4pc_enhancement;
-    int  t6_2pc_enhancement,  t6_4pc_enhancement;
-    int  t7_2pc_enhancement,  t7_4pc_enhancement;
-    int  t8_2pc_enhancement,  t8_4pc_enhancement;
-    int  t9_2pc_enhancement,  t9_4pc_enhancement;
-    int t10_2pc_enhancement, t10_4pc_enhancement;
-    tiers_t() { memset( ( void* ) this, 0x0, sizeof( tiers_t ) ); }
-  };
-  tiers_t tiers;
 
   shaman_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, SHAMAN, name, race_type )
   {
@@ -455,7 +435,7 @@ static void stack_maelstrom_weapon( attack_t* a )
 
   double chance = a -> weapon -> proc_chance_on_swing( p -> talents.maelstrom_weapon * 2.0 );
 
-  if ( p -> tiers.t8_4pc_enhancement ) chance *= 1.0 + 0.20;
+  if ( p -> set_bonus.tier8_4pc_melee() ) chance *= 1.20;
 
   p -> buffs_maelstrom_weapon -> trigger( 1, 1, chance );
 }
@@ -490,27 +470,13 @@ static void trigger_improved_stormstrike( attack_t* a )
   }
 }
 
-// trigger_tier5_4pc_elemental ===============================================
-
-static void trigger_tier5_4pc_elemental( spell_t* s )
-{
-  shaman_t* p = s -> player -> cast_shaman();
-
-  if ( ! p -> tiers.t5_4pc_elemental ) return;
-
-  if ( p -> rng_tier5_4pc_elemental -> roll( 0.25 ) )
-  {
-    p -> resource_gain( RESOURCE_MANA, 120.0, p -> gains_tier5_4pc_elemental );
-  }
-}
-
 // trigger_tier8_4pc_elemental ===============================================
 
 static void trigger_tier8_4pc_elemental( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
-  if ( ! p -> tiers.t8_4pc_elemental ) return;
+  if ( ! p -> set_bonus.tier8_4pc_caster() ) return;
 
   struct lightning_bolt_dot_t : public shaman_spell_t
   {
@@ -658,7 +624,7 @@ void shaman_attack_t::assess_damage( double amount,
 
   if ( num_ticks == 0 && p -> talents.static_shock && p -> buffs_lightning_shield -> stack() )
   {
-    double chance = p -> talents.static_shock * 0.02 + p -> tiers.t9_2pc_enhancement * 0.03;
+    double chance = p -> talents.static_shock * 0.02 + p -> set_bonus.tier9_2pc_melee() * 0.03;
     if ( p -> rng_static_shock -> roll( chance ) )
     {
       p -> buffs_lightning_shield -> decrement();
@@ -695,7 +661,7 @@ struct melee_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_flurry -> up() )
     {
-      t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> tiers.t7_4pc_enhancement ) );
+      t *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> set_bonus.tier7_4pc_melee() ) );
     }
     return t;
   }
@@ -786,7 +752,7 @@ struct lava_lash_t : public shaman_attack_t
     may_crit    = true;
     cooldown    = 6;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
-    if ( p -> tiers.t8_2pc_enhancement ) base_multiplier *= 1.0 + 0.20;
+    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
   }
 
   virtual void execute()
@@ -831,10 +797,9 @@ struct stormstrike_t : public shaman_attack_t
     may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     cooldown  = 8.0;
-    if ( p -> tiers.t8_2pc_enhancement )
-      base_multiplier *= 1.0 + 0.20;
 
-    // Shaman T8 Enhancement Relic -- Increases weapon damage when you use Stormstrike by 155.
+    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
+
     if ( p -> totems.dancing_flame )
     {
       base_dd_max += 155;
@@ -1137,10 +1102,11 @@ struct lightning_bolt_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if ( p -> tiers.t6_4pc_elemental ) base_multiplier     *= 1.05;
-    if ( p -> tiers.t7_2pc_elemental ) base_cost_reduction += 0.05;
-    if ( p -> glyphs.lightning_bolt  ) base_multiplier     *= 1.04;
-    if ( p -> totems.hex             ) base_spell_power    += 165;
+    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier     *= 1.05;
+    if ( p -> set_bonus.tier7_2pc_caster() ) base_cost_reduction += 0.05;
+
+    if ( p -> glyphs.lightning_bolt  ) base_multiplier  *= 1.04;
+    if ( p -> totems.hex             ) base_spell_power += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
     lightning_overload_stats -> school = SCHOOL_NATURE;
@@ -1159,7 +1125,6 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
       if ( result == RESULT_CRIT )
       {
-	trigger_tier5_4pc_elemental( this );
 	trigger_tier8_4pc_elemental( this );
       }
     }
@@ -1234,17 +1199,17 @@ struct lava_burst_t : public shaman_spell_t
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
     base_multiplier     *= 1.0 + p -> talents.call_of_flame * 0.02;
-    if ( p -> tiers.t9_4pc_elemental )
-      base_multiplier   *= 1.2;
     base_hit            += p -> talents.elemental_precision * 0.01;
     direct_power_mod    += p -> talents.shamanism * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.lava_flows,     3, 0.06, 0.12, 0.24 ) +
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
-                                          ( p -> tiers.t7_4pc_elemental ? 0.10 : 0.00 ) );
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.10 : 0.00 ) );
+
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.2;
+
     if ( p -> totems.thunderfall )
     {
-      // Shaman T8 Elemental Relic -- Increases the base damage of your Lavaburst by 215.
       base_dd_min += 215;
       base_dd_max += 215;
     }
@@ -1409,7 +1374,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown          = 6.0;
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation * 0.2 );
-    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01 + p -> tiers.t9_4pc_enhancement * 0.25;
+    base_multiplier  *= 1.0 + p -> talents.concussion * 0.01 + p -> set_bonus.tier9_4pc_melee() * 0.25;
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1480,9 +1445,9 @@ struct frost_shock_t : public shaman_spell_t
     cooldown_group    = "shock";
     cooldown         -= ( p -> talents.reverberation  * 0.2 +
                           p -> talents.booming_echoes * 1.0 );
-    base_multiplier  *= 1.0 + ( p -> talents.concussion       * 0.01 +
-                                p -> talents.booming_echoes   * 0.10 +
-                                p -> tiers.t9_4pc_enhancement * 0.25 );
+    base_multiplier  *= 1.0 + ( p -> talents.concussion          * 0.01 +
+                                p -> talents.booming_echoes      * 0.10 +
+                                p -> set_bonus.tier9_4pc_melee() * 0.25 );
     base_hit         += p -> talents.elemental_precision * 0.01;
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1535,16 +1500,12 @@ struct flame_shock_t : public shaman_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 4;
-    if ( p -> tiers.t9_2pc_elemental ) num_ticks += 3;
 
     direct_power_mod  = 0.215;
     tick_power_mod    = 0.100;
     may_crit          = true;
     cooldown          = 6.0;
     cooldown_group    = "shock";
-    tick_may_crit     = ( p -> tiers.t8_2pc_elemental != 0 );
-
-    if ( p -> glyphs.flame_shock ) num_ticks += 2;
 
     cooldown -= ( p -> talents.reverberation  * 0.2 +
                   p -> talents.booming_echoes * 1.0 );
@@ -1553,10 +1514,10 @@ struct flame_shock_t : public shaman_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
                                   p -> talents.booming_echoes   * 0.10 +
-                                  p -> tiers.t9_4pc_enhancement * 0.25 );
+                                  p -> set_bonus.tier9_4pc_melee() * 0.25 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
-                                  p -> tiers.t9_4pc_enhancement * 0.25 +
+                                  p -> set_bonus.tier9_4pc_melee() * 0.25 +
                                   util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
@@ -1564,6 +1525,11 @@ struct flame_shock_t : public shaman_spell_t
                               p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
+
+    if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
+    if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 3;
+
+    if ( p -> glyphs.flame_shock ) num_ticks += 2;
 
     if ( p -> glyphs.shocking )
     {
@@ -2387,7 +2353,7 @@ struct lightning_shield_t : public shaman_spell_t
       direct_power_mod = 0.33;
 
       base_hit        += p -> talents.elemental_precision * 0.01;
-      base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05 + ( p -> tiers.t7_2pc_enhancement ? 0.10 : 0.00 );
+      base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05 + ( p -> set_bonus.tier7_2pc_melee() ? 0.10 : 0.00 );
 
       base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -2709,7 +2675,7 @@ void shaman_t::init_base()
   base_spell_crit  += talents.thundering_strikes * 0.01;
   base_attack_crit += talents.thundering_strikes * 0.01;
 
-  if ( tiers.t6_2pc_elemental )
+  if ( set_bonus.tier6_2pc_caster() )
   {
     // Simply assume the totems are out all the time.
 
@@ -2749,37 +2715,6 @@ void shaman_t::init_items()
   else
   {
     util_t::printf( "simcraft: %s has unknown totem %s\n", name(), totem.c_str() );
-  }
-
-  if ( talents.dual_wield )
-  {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_enhancement = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_enhancement = 1;
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_enhancement = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_enhancement = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_enhancement = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_enhancement = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_enhancement = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_enhancement = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_enhancement = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_enhancement = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_enhancement = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_enhancement = 1;
-  }
-  else
-  {
-    if ( set_bonus.tier5_2pc() ) tiers.t5_2pc_elemental = 1;
-    if ( set_bonus.tier5_4pc() ) tiers.t5_4pc_elemental = 1;
-    if ( set_bonus.tier6_2pc() ) tiers.t6_2pc_elemental = 1;
-    if ( set_bonus.tier6_4pc() ) tiers.t6_4pc_elemental = 1;
-    if ( set_bonus.tier7_2pc() ) tiers.t7_2pc_elemental = 1;
-    if ( set_bonus.tier7_4pc() ) tiers.t7_4pc_elemental = 1;
-    if ( set_bonus.tier8_2pc() ) tiers.t8_2pc_elemental = 1;
-    if ( set_bonus.tier8_4pc() ) tiers.t8_4pc_elemental = 1;
-    if ( set_bonus.tier9_2pc() ) tiers.t9_2pc_elemental = 1;
-    if ( set_bonus.tier9_4pc() ) tiers.t9_4pc_elemental = 1;
-    if ( set_bonus.tier10_2pc() ) tiers.t10_2pc_elemental = 1;
-    if ( set_bonus.tier10_4pc() ) tiers.t10_4pc_elemental = 1;
   }
 }
 
@@ -2832,7 +2767,6 @@ void shaman_t::init_gains()
   gains_shamanistic_rage     = get_gain( "shamanistic_rage"     );
   gains_thunderstorm         = get_gain( "thunderstorm"         );
   gains_water_shield         = get_gain( "water_shield"         );
-  gains_tier5_4pc_elemental  = get_gain( "tier5_4pc_elemental"  );
 }
 
 // shaman_t::init_procs ======================================================
@@ -2855,7 +2789,6 @@ void shaman_t::init_rng()
   rng_lightning_overload   = get_rng( "lightning_overload"   );
   rng_static_shock         = get_rng( "static_shock"         );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
-  rng_tier5_4pc_elemental  = get_rng( "tier5_4pc_elemental"  );
 }
 
 // shaman_t::init_actions =====================================================
@@ -2926,11 +2859,11 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
       if ( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
-	  if ( ! tiers.t8_4pc_elemental )
-		{
-			action_list_str += "/chain_lightning";
-			if ( level >= 75 ) action_list_str += ",lvb_cd<=1.5";
-		}
+      if ( ! set_bonus.tier8_4pc_caster() )
+      {
+	action_list_str += "/chain_lightning";
+	if ( level >= 75 ) action_list_str += ",lvb_cd<=1.5";
+      }
       action_list_str += "/lightning_bolt";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
@@ -3145,10 +3078,46 @@ std::vector<option_t>& shaman_t::get_options()
 
 int shaman_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "earthshatter" ) ) return SET_T7;
-  if ( strstr( item.name(), "worldbreaker" ) ) return SET_T8;
-  if ( strstr( item.name(), "nobundo"      ) ) return SET_T9;
-  if ( strstr( item.name(), "thrall"       ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_caster = ( strstr( s, "helm    "     ) || 
+		     strstr( s, "shoulderpads" ) ||
+		     strstr( s, "hauberk"      ) ||
+		     strstr( s, "kilt"         ) ||
+		     strstr( s, "gloves"       ) );
+  
+  bool is_melee = ( strstr( s, "faceguard"      ) || 
+		    strstr( s, "shoulderguards" ) ||
+		    strstr( s, "chestguard"     ) ||
+		    strstr( s, "warkilt"        ) ||
+		    strstr( s, "grips"          ) );
+
+  if ( strstr( s, "earthshatter" ) )
+  {
+    if ( is_melee  ) return SET_T7_MELEE;
+    if ( is_caster ) return SET_T7_CASTER;
+  }
+  if ( strstr( s, "worldbreaker" ) ) 
+  {
+    if ( is_melee  ) return SET_T8_MELEE;
+    if ( is_caster ) return SET_T8_CASTER;
+  }
+  if ( strstr( s, "nobundos" ) ||
+       strstr( s, "thralls"  ) ) 
+  {
+    if ( is_melee  ) return SET_T9_MELEE;
+    if ( is_caster ) return SET_T9_CASTER;
+  }
+
   return SET_NONE;
 }
 

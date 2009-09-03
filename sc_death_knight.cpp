@@ -2294,10 +2294,45 @@ std::vector<option_t>& death_knight_t::get_options()
 
 int death_knight_t::decode_set( item_t& item )
 {
-  if ( strstr( item.name(), "scourgeborne" ) ) return SET_T7;
-  if ( strstr( item.name(), "darkruned"    ) ) return SET_T8;
-  if ( strstr( item.name(), "koltira"      ) ) return SET_T9;
-  if ( strstr( item.name(), "thassarian"   ) ) return SET_T9;
+  if ( item.slot != SLOT_HEAD      &&
+       item.slot != SLOT_SHOULDERS &&
+       item.slot != SLOT_CHEST     &&
+       item.slot != SLOT_HANDS     &&
+       item.slot != SLOT_LEGS      )
+  {
+    return SET_NONE;
+  }
+
+  const char* s = item.name();
+
+  bool is_melee = ( strstr( s, "helmet"         ) || 
+		    strstr( s, "shoulderplates" ) ||
+		    strstr( s, "battleplate"    ) ||
+		    strstr( s, "legplates"      ) ||
+		    strstr( s, "gauntlets"      ) );
+
+  bool is_tank = ( strstr( s, "faceguard"  ) || 
+		   strstr( s, "pauldrons"  ) ||
+		   strstr( s, "chestguard" ) ||
+		   strstr( s, "legguards"  ) ||
+		   strstr( s, "handguards" ) );
+    
+  if ( strstr( s, "scourgeborne" ) ) 
+  {
+    if ( is_melee ) return SET_T7_MELEE;
+    if ( is_tank  ) return SET_T7_TANK;
+  }
+  if ( strstr( s, "darkruned" ) )
+  {
+    if ( is_melee ) return SET_T8_MELEE;
+    if ( is_tank  ) return SET_T8_TANK;
+  }
+  if ( strstr( s, "koltiras"    ) ||
+       strstr( s, "thassarians" ) ) 
+  {
+    if ( is_melee ) return SET_T9_MELEE;
+    if ( is_tank  ) return SET_T9_TANK;
+  }
   return SET_NONE;
 }
 
