@@ -2063,8 +2063,8 @@ void paladin_t::init_items()
   else if ( libram == "libram_of_reciprocation"                   ) librams.reciprocation = 1;
   else if ( libram == "libram_of_resurgence"                      ) librams.resurgence = 1;
   else if ( libram == "libram_of_valiance"                        ) librams.valiance = 1;
-  else if ( libram == "venture_co._libram_of_protection"           ) librams.venture_co_protection = 1;
-  else if ( libram == "venture_co._libram_of_retribution"          ) librams.venture_co_retribution = 1;
+  else if ( libram == "venture_co._libram_of_protection"          ) librams.venture_co_protection = 1;
+  else if ( libram == "venture_co._libram_of_retribution"         ) librams.venture_co_retribution = 1;
   else if ( libram == "libram_of_wracking"                        ) librams.wracking = 1;
   // To prevent warnings...
   else if ( libram == "blessed_book_of_nagrand" ) ;
@@ -2220,14 +2220,15 @@ void paladin_t::init_actions()
     if ( talents.avengers_shield && 
           glyphs.avengers_shield ) action_list_str += "/avengers_shield";
     action_list_str += "/hammer_of_wrath";
+    if ( talents.hammer_of_the_righteous ) action_list_str += "/hammer_of_the_righteous";
     action_list_str += "/judgement";
-    if ( talents.holy_shock      ) action_list_str += "/holy_shock";
     if ( talents.divine_storm    ) action_list_str += "/divine_storm";
     if ( talents.crusader_strike ) action_list_str += "/crusader_strike";
     action_list_str += "/exorcism";
+    if ( talents.holy_shock ) action_list_str += "/holy_shock";
     action_list_str += "/consecration";
     if ( main_hand_weapon.group() == WEAPON_1H ) action_list_str += "/shield_of_righteousness";
-    action_list_str += "/mana_potion";
+    action_list_str += "/speed_potion";
 
     action_list_default = 1;
   }
