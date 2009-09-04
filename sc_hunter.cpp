@@ -2383,7 +2383,7 @@ struct serpent_sting_t : public hunter_attack_t
     tick_power_mod   = 0.2 / 5.0;
     base_multiplier *= 1.0 + ( p -> talents.improved_stings     * 0.1 +
                                p -> set_bonus.tier8_2pc_melee() * 0.1 );
-    tick_may_crit    = ( p -> set_bonus.tier9_2pc_melee() );
+    tick_may_crit    = ( p -> set_bonus.tier9_2pc_melee() != 0 );
 
     observer = &( p -> active_serpent_sting );
   }
