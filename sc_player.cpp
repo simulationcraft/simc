@@ -696,6 +696,8 @@ void player_t::init_defense()
   initial_parry       = base_parry       + stats.parry   / rating.parry;
   initial_block       = base_block       + stats.block   / rating.block;
   initial_block_value = base_block_value + stats.block_value;
+
+  if ( tank > 0 ) position = POSITION_FRONT;
 }
 
 // player_t::init_weapon ===================================================
@@ -1123,6 +1125,17 @@ double player_t::composite_armor() SC_CONST
   if ( buffs.stoneform -> check() ) a *= 1.10;
 
   return a;
+}
+
+// player_t::composite_block_value ===================================
+
+double player_t::composite_block_value() SC_CONST
+{
+  double bv = block_value;
+
+  bv += strength() / 2.0;
+
+  return bv;
 }
 
 // player_t::composite_spell_power ========================================

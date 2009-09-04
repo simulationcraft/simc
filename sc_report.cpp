@@ -77,6 +77,12 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                      "  Dodge=%.1f%%",
                      s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
   }
+  if ( s -> execute_results[ RESULT_PARRY ].count > 0 )
+  {
+    util_t::fprintf( file,
+                     "  Parry=%.1f%%",
+                     s -> execute_results[ RESULT_PARRY ].count * 100.0 / s -> num_executes );
+  }
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
 

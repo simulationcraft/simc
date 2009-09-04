@@ -203,7 +203,7 @@ double attack_t::dodge_chance( int delta_level ) SC_CONST
 
 double attack_t::parry_chance( int delta_level ) SC_CONST
 {
-  return 0.05 + delta_level * 0.005 - total_expertise();
+  return 0.14 + delta_level * 0.005 - total_expertise();
 }
 
 // attack_t::glance_chance ==================================================

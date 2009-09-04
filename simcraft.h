@@ -1488,13 +1488,13 @@ struct player_t
   virtual double composite_attack_hit() SC_CONST;
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
-  virtual double composite_armor() SC_CONST;
+  virtual double composite_armor()          SC_CONST;
   virtual double composite_armor_snapshot() SC_CONST { return armor_snapshot; }
   virtual double composite_defense()        SC_CONST { return defense; }
   virtual double composite_dodge()          SC_CONST { return dodge; }
   virtual double composite_parry()          SC_CONST { return parry; }
   virtual double composite_block()          SC_CONST { return block; }
-  virtual double composite_block_value()    SC_CONST { return block_value; }
+  virtual double composite_block_value()    SC_CONST;
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
