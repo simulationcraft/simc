@@ -385,10 +385,10 @@ void action_t::target_debuff( int dmg_type )
 bool action_t::result_is_hit() SC_CONST
 {
   return( result == RESULT_HIT    ||
-  result == RESULT_CRIT   ||
-  result == RESULT_GLANCE ||
-  result == RESULT_BLOCK  ||
-  result == RESULT_NONE   );
+	  result == RESULT_CRIT   ||
+	  result == RESULT_GLANCE ||
+	  result == RESULT_BLOCK  ||
+	  result == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================

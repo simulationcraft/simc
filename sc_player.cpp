@@ -278,7 +278,7 @@ player_t::player_t( sim_t*             s,
                     int                r ) :
     sim( s ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 80 ), tank( 0 ),
+    next( 0 ), index( -1 ), type( t ), level( 80 ), tank( -1 ),
     party( 0 ), member( 0 ),
     skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
@@ -1334,7 +1334,7 @@ void player_t::combat_begin()
 
   if ( use_armor_snapshot ) trigger_armor_snapshots( this );
 
-  if ( tank ) trigger_target_swings( this );
+  if ( tank > 0 ) trigger_target_swings( this );
 }
 
 // player_t::combat_end ====================================================

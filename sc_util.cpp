@@ -512,6 +512,7 @@ const char* util_t::talent_tree_string( int tree )
   case TREE_ARCANE:        return "arcane";
   case TREE_FIRE:          return "fire";
   case TREE_FROST:         return "frost";
+  case TREE_RETRIBUTION:   return "retribution";
   case TREE_DISCIPLINE:    return "discipline";
   case TREE_HOLY:          return "holy";
   case TREE_SHADOW:        return "shadow";
