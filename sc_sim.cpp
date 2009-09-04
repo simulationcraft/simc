@@ -1392,6 +1392,7 @@ std::vector<option_t>& sim_t::get_options()
       { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
       { "default_enchant_armor_penetration_rating", OPT_FLT,  &( enchant.armor_penetration_rating    ) },
       { "default_enchant_armor",                    OPT_FLT,  &( enchant.armor                       ) },
+      { "default_enchant_block_value",              OPT_FLT,  &( enchant.block_value                 ) },
       { "default_enchant_haste_rating",             OPT_FLT,  &( enchant.haste_rating                ) },
       { "default_enchant_hit_rating",               OPT_FLT,  &( enchant.hit_rating                  ) },
       { "default_enchant_crit_rating",              OPT_FLT,  &( enchant.crit_rating                 ) },

@@ -247,7 +247,8 @@ static bool parse_item_stats( item_t& item,
   if ( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
   if ( xml_t::get_value( value, xml, "bonusHasteRating/." ) ) s += "_" + value + "haste";
 
-  if ( xml_t::get_value( value, xml, "armor/." ) ) s += "_" + value + "armor";
+  if ( xml_t::get_value( value, xml, "armor/."      ) ) s += "_" + value + "armor";
+  if ( xml_t::get_value( value, xml, "blockValue/." ) ) s += "_" + value + "blockv";
 
   xml_node_t* spell_data = xml_t::get_node( xml, "spellData" );
   if ( spell_data )
@@ -477,6 +478,8 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
+
+  stat_search( encoding_str, splits, STAT_BLOCK_VALUE,  "block value of your shield" );
 }
 
 // armory_t::parse_meta_gem =================================================

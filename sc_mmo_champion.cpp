@@ -275,6 +275,15 @@ static bool parse_item_stats( item_t&     item,
     item.armory_stats_str += armor_str + "armor";
   }
 
+  std::string block_str;;
+  if ( get_tti_value( armor_str, node, "tti-block" ) )
+  {
+    std::string::size_type pos = block_str.find( " " );
+    if ( pos != std::string::npos ) block_str.erase( pos );
+    item.armory_stats_str += "_";
+    item.armory_stats_str += block_str + "blockv";
+  }
+
   armory_t::format( item.armory_stats_str );
 
   return true;

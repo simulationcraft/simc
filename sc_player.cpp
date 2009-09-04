@@ -311,7 +311,9 @@ player_t::player_t( sim_t*             s,
     attack_crit_per_agility( 0 ),   initial_attack_crit_per_agility( 0 ),
     position( POSITION_BACK ),
     // Defense Mechanics
-    target_auto_attack( 0 ), base_armor( 0 ), initial_armor( 0 ), armor( 0 ), armor_snapshot( 0 ),
+    target_auto_attack( 0 ), 
+    base_armor( 0 ), initial_armor( 0 ), armor( 0 ), armor_snapshot( 0 ),
+    base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), 
     armor_per_agility( 2.0 ), use_armor_snapshot( false ),
     // Resources
     mana_per_intellect( 0 ), health_per_stamina( 0 ),
@@ -675,9 +677,11 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  stats.armor = gear.armor + enchant.armor + sim -> enchant.armor;
+  stats.armor       = gear.armor       + enchant.armor       + sim -> enchant.armor;
+  stats.block_value = gear.block_value + enchant.block_value + sim -> enchant.block_value;
 
-  initial_armor = base_armor + stats.armor;
+  initial_armor       = base_armor       + stats.armor;
+  initial_block_value = base_block_value + stats.block_value;
 }
 
 // player_t::init_weapon ===================================================
@@ -999,7 +1003,8 @@ void player_t::init_scaling()
         ranged_weapon.damage    += ranged_weapon.swing_time * v;
         break;
 
-      case STAT_ARMOR: initial_armor += v; break;
+      case STAT_ARMOR:       initial_armor       += v; break;
+      case STAT_BLOCK_VALUE: initial_block_value += v; break;
 
       case STAT_MAX: break;
 
@@ -1384,6 +1389,7 @@ void player_t::reset()
 
   armor              = initial_armor;
   armor_snapshot     = initial_armor;
+  block_value        = initial_block_value;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -1788,7 +1794,8 @@ void player_t::stat_gain( int    stat,
 
   case STAT_HASTE_RATING: haste_rating += amount; recalculate_haste(); break;
 
-  case STAT_ARMOR: armor += amount; break;
+  case STAT_ARMOR:       armor       += amount; break;
+  case STAT_BLOCK_VALUE: block_value += amount; break;
 
   default: assert( 0 );
   }
@@ -1838,7 +1845,8 @@ void player_t::stat_loss( int    stat,
 
   case STAT_HASTE_RATING: haste_rating -= amount; recalculate_haste(); break;
 
-  case STAT_ARMOR: armor -= amount; break;
+  case STAT_ARMOR:       armor       -= amount; break;
+  case STAT_BLOCK_VALUE: block_value -= amount; break;
 
   default: assert( 0 );
   }
@@ -3161,6 +3169,7 @@ std::vector<option_t>& player_t::get_options()
       { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]                 ) },
       { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
       { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
+      { "gear_block_value",                     OPT_FLT,  &( gear.block_value                                 ) },
       // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
       { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
       { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
@@ -3173,6 +3182,7 @@ std::vector<option_t>& player_t::get_options()
       { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
       { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
       { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
+      { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                              ) },
       { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
       { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
       { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },

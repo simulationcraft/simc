@@ -742,7 +742,8 @@ const char* util_t::stat_type_string( int stat )
   case STAT_WEAPON_DPS:   return "weapon_dps";
   case STAT_WEAPON_SPEED: return "weapon_speed";
 
-  case STAT_ARMOR: return "armor";
+  case STAT_ARMOR:       return "armor";
+  case STAT_BLOCK_VALUE: return "block_value";
 
   case STAT_MAX: return "all";
   }
@@ -783,7 +784,8 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_WEAPON_DPS:   return "Wdps";
   case STAT_WEAPON_SPEED: return "Wspeed";
 
-  case STAT_ARMOR: return "Armor";
+  case STAT_ARMOR:       return "Armor";
+  case STAT_BLOCK_VALUE: return "BlockV";
 
   case STAT_MAX: return "All";
   }
@@ -824,7 +826,8 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_WEAPON_DPS:   return "__wdps";
   case STAT_WEAPON_SPEED: return "__wspeed";
 
-  case STAT_ARMOR: return "armor";
+  case STAT_ARMOR:       return "armor";
+  case STAT_BLOCK_VALUE: return "block";
 
   case STAT_MAX: return "__all";
   }

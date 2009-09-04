@@ -46,7 +46,8 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   += value; break;
   case STAT_WEAPON_SPEED: weapon_speed += value; break;
 
-  case STAT_ARMOR: armor += value; break;
+  case STAT_ARMOR:       armor       += value; break;
+  case STAT_BLOCK_VALUE: block_value += value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
     break;
@@ -92,7 +93,8 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   = value; break;
   case STAT_WEAPON_SPEED: weapon_speed = value; break;
 
-  case STAT_ARMOR: armor = value; break;
+  case STAT_ARMOR:       armor       = value; break;
+  case STAT_BLOCK_VALUE: block_value = value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
     break;
@@ -137,7 +139,8 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
   case STAT_WEAPON_DPS:   return weapon_dps;
   case STAT_WEAPON_SPEED: return weapon_speed;
 
-  case STAT_ARMOR: return armor;
+  case STAT_ARMOR:       return armor;
+  case STAT_BLOCK_VALUE: return block_value;
 
   default: assert( 0 );
   }

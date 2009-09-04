@@ -1180,16 +1180,12 @@ struct shield_slam_t : public warrior_attack_t
 
     base_crit += ( p -> talents.critical_block * 0.05 );
 
-    //FIXME Ugly hack for 1200 baseline block value, change when block value is included in player data
-    base_dd_min += 1200;
-    base_dd_max += 1200;
   }
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
-
+    base_dd_adder = p -> composite_block_value();
     warrior_attack_t::execute();
-    
     p -> buffs_sword_and_board -> expire();
   }
 
