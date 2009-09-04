@@ -49,6 +49,7 @@ struct paladin_t : public player_t
   buff_t* buffs_libram_of_furious_blows;
   buff_t* buffs_libram_of_reciprocation;
   buff_t* buffs_libram_of_valiance;
+  buff_t* buffs_tier8_4pc_tank;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -625,6 +626,8 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     base_cost       *= 1.0 - p -> talents.benediction * 0.02;
     base_multiplier *= 4.0;
     cooldown         = 6;
+
+    if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
   }
 
   virtual void player_buff()
@@ -667,6 +670,8 @@ struct hammer_of_wrath_t : public paladin_attack_t
     direct_power_mod = 1.0;
     base_spell_power_multiplier  = 0.15;
     base_attack_power_multiplier = 0.15;
+
+    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.10;
 
     if ( p -> glyphs.hammer_of_wrath ) base_cost = 0;
   }
@@ -726,7 +731,9 @@ struct shield_of_righteousness_t : public paladin_attack_t
 
   virtual void execute()
   {
-    base_dd_adder = 1.30 * player -> composite_block_value();
+    paladin_t* p = player -> cast_paladin();
+    base_dd_adder = 1.30 * p -> composite_block_value();
+    if ( p -> set_bonus.tier8_4pc_tank() ) p -> buffs_tier8_4pc_tank -> trigger();
     paladin_attack_t::execute();
   }
 };
@@ -966,6 +973,8 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     base_spell_power_multiplier = 0.044;
     base_attack_power_multiplier = 0.022;
 
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10;
 
     if ( p -> librams.divine_purpose ) base_spell_power += 94;
@@ -998,6 +1007,8 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
 
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+
     if ( p -> glyphs.judgement             ) base_multiplier *= 1.10;
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10; // FIXME! Does it affect judgement?
 
@@ -1027,6 +1038,8 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
 			       0.03 * p -> talents.seals_of_the_pure      );
+
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
   }
 
   virtual void player_buff()
@@ -1094,6 +1107,8 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
 			       0.03 * p -> talents.seals_of_the_pure      );
+
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
   }
 };
 
@@ -1125,6 +1140,8 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+
+    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
   }
 
   virtual void player_buff()
@@ -1589,6 +1606,8 @@ struct exorcism_t : public paladin_spell_t
     base_attack_power_multiplier = 0.15;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
+
+    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.10;
 
     if ( p -> glyphs.exorcism ) base_multiplier *= 1.20;
   }
@@ -2064,6 +2083,7 @@ void paladin_t::init_buffs()
   buffs_libram_of_furious_blows    = new stat_buff_t( this, "libram_of_furious_blows",     STAT_CRIT_RATING,   61, 1,  5.0            );
   buffs_libram_of_reciprocation    = new stat_buff_t( this, "libram_of_reciprocation",     STAT_CRIT_RATING,  173, 1, 10.0, 0.0, 0.15 );
   buffs_libram_of_valiance         = new stat_buff_t( this, "libram_of_valiance",          STAT_STRENGTH,     200, 1, 16.0, 6.0, 0.70 );
+  buffs_tier8_4pc_tank             = new stat_buff_t( this, "tier8_4pc_tank",              STAT_BLOCK_VALUE,  225, 1,  6.0            );
 }
 
 // paladin_t::init_actions ==================================================
