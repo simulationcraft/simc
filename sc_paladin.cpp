@@ -1989,8 +1989,8 @@ void paladin_t::init_items()
   else if ( libram == "libram_of_reciprocation"                   ) librams.reciprocation = 1;
   else if ( libram == "libram_of_resurgence"                      ) librams.resurgence = 1;
   else if ( libram == "libram_of_valiance"                        ) librams.valiance = 1;
-  else if ( libram == "venture_co_libram_of_protection"           ) librams.venture_co_protection = 1;
-  else if ( libram == "venture_co_libram_of_retribution"          ) librams.venture_co_retribution = 1;
+  else if ( libram == "venture_co._libram_of_protection"           ) librams.venture_co_protection = 1;
+  else if ( libram == "venture_co._libram_of_retribution"          ) librams.venture_co_retribution = 1;
   else if ( libram == "libram_of_wracking"                        ) librams.wracking = 1;
   // To prevent warnings...
   else if ( libram == "blessed_book_of_nagrand" ) ;
