@@ -249,9 +249,10 @@ static void trigger_righteous_vengeance( action_t* a )
       trigger_gcd    = 0;
       base_tick_time = 2;
       num_ticks      = 4;
+      tick_may_crit  = p -> set_bonus.tier9_2pc_melee(); // FIXME! Assuming bug-fix gives full chance to crit.
       reset(); // required since construction occurs after player_t::init()
     }
-    void player_buff()   {}
+    void player_buff() {}
     void target_debuff( int dmg_type ) {}
   };
 
@@ -628,6 +629,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     cooldown         = 6;
 
     if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
   }
 
   virtual void player_buff()
@@ -832,6 +834,7 @@ struct seal_of_command_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
   virtual void execute()
@@ -897,6 +900,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
 
@@ -951,6 +955,7 @@ struct seal_of_light_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
 
@@ -1006,8 +1011,8 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     base_attack_power_multiplier = 0.20;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
-
-    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier8_2pc_tank()  ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
     if ( p -> glyphs.judgement             ) base_multiplier *= 1.10;
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10; // FIXME! Does it affect judgement?
@@ -1140,8 +1145,8 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
-
-    if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier8_2pc_tank()  ) base_multiplier *= 1.10;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
   virtual void player_buff()
@@ -1198,6 +1203,7 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
 
