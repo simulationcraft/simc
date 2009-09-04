@@ -40,9 +40,22 @@ static void stat_search( std::string&              encoding_str,
       {
         match = false;
       }
-      else if ( stat_tokens[ j ] != description_tokens[ i + j ] )
+      else 
       {
-        match = false;
+	if ( stat_tokens[ j ][ 0 ] == '!' )
+	{
+	  if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
+	  {
+	    match = false;
+	  }
+	}
+	else
+	{
+	  if ( stat_tokens[ j ] != description_tokens[ i + j ] )
+	  {
+	    match = false;
+	  }
+	}
       }
     }
 
@@ -247,8 +260,12 @@ static bool parse_item_stats( item_t& item,
   if ( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
   if ( xml_t::get_value( value, xml, "bonusHasteRating/." ) ) s += "_" + value + "haste";
 
-  if ( xml_t::get_value( value, xml, "armor/."      ) ) s += "_" + value + "armor";
-  if ( xml_t::get_value( value, xml, "blockValue/." ) ) s += "_" + value + "blockv";
+  if ( xml_t::get_value( value, xml, "armor/."                   ) ) s += "_" + value + "armor";
+  if ( xml_t::get_value( value, xml, "bonusDefenseSkillRating/." ) ) s += "_" + value + "def";
+  if ( xml_t::get_value( value, xml, "bonusDodgeRating/."        ) ) s += "_" + value + "dodge";
+  if ( xml_t::get_value( value, xml, "bonusParryRating/."        ) ) s += "_" + value + "parry";
+  if ( xml_t::get_value( value, xml, "bonusBlockRating/."        ) ) s += "_" + value + "block";
+  if ( xml_t::get_value( value, xml, "blockValue/."              ) ) s += "_" + value + "blockv";
 
   xml_node_t* spell_data = xml_t::get_node( xml, "spellData" );
   if ( spell_data )
@@ -479,7 +496,12 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
 
-  stat_search( encoding_str, splits, STAT_BLOCK_VALUE,  "block value of your shield" );
+  stat_search( encoding_str, splits, STAT_ARMOR,          "armor !penetration" );
+  stat_search( encoding_str, splits, STAT_DEFENSE_RATING, "defense rating" );
+  stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
+  stat_search( encoding_str, splits, STAT_PARRY_RATING,   "parry rating" );
+  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block rating" );
+  stat_search( encoding_str, splits, STAT_BLOCK_VALUE,    "block value of your shield" );
 }
 
 // armory_t::parse_meta_gem =================================================

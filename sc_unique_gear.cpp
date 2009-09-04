@@ -338,6 +338,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightweave"            ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
   else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  
   else if ( name == "darkglow_embroidery"   ) e = "OnSpellHit_400Mana_35%_60Cd";
+  else if ( name == "swordguard_embroidery" ) e = "OnAttackHit_400AP_25%_60Cd";
 
   if ( e.empty() ) return false;
 

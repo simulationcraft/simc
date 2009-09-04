@@ -158,6 +158,7 @@ struct paladin_t : public player_t
     int valiance;
     int venture_co_protection;
     int venture_co_retribution;
+    int wracking;
     librams_t() { memset( ( void* ) this, 0x0, sizeof( librams_t ) ); }
   };
   librams_t librams;
@@ -301,7 +302,7 @@ struct paladin_attack_t : public attack_t
     }
     if ( p -> main_hand_weapon.group() == WEAPON_1H ) 
     {
-      base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.one_handed_weapon_spec, 3, 0.04, 0.07, 10.0 );
+      base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.one_handed_weapon_spec, 3, 0.04, 0.07, 0.10 );
     }
   }
 
@@ -1316,7 +1317,7 @@ struct paladin_spell_t : public spell_t
     }
     if ( p -> main_hand_weapon.group() == WEAPON_1H ) 
     {
-      base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.one_handed_weapon_spec, 3, 0.04, 0.07, 10.0 );
+      base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.one_handed_weapon_spec, 3, 0.04, 0.07, 0.10 );
     }
     // FIXME! Are there any spells that do not benefit from Holy Power
     base_crit += p -> talents.holy_power * 0.01;
@@ -1572,6 +1573,13 @@ struct divine_plea_t : public paladin_spell_t
     update_ready();
     p -> buffs_divine_plea -> trigger();
   }
+
+  virtual bool ready()
+  {
+    paladin_t* p = player -> cast_paladin();
+    if ( p -> buffs_divine_plea -> check() ) return false;
+    return paladin_spell_t::ready();
+  }
 };
 
 // Exorcism ================================================================
@@ -1616,6 +1624,8 @@ struct exorcism_t : public paladin_spell_t
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.10;
 
     if ( p -> glyphs.exorcism ) base_multiplier *= 1.20;
+
+    if ( p -> librams.wracking ) base_spell_power += 120;
   }
 
   virtual double execute_time() SC_CONST
@@ -1749,6 +1759,8 @@ struct holy_wrath_t : public paladin_spell_t
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.07;
     base_attack_power_multiplier = 0.07;
+
+    if ( p -> librams.wracking ) base_spell_power += 120;
   }
 };
 
@@ -1938,6 +1950,7 @@ void paladin_t::init_glyphs()
     else if ( n == "hammer_of_the_righteous" ) ;
     else if ( n == "holy_light"              ) ;
     else if ( n == "lay_on_hands"            ) ;
+    else if ( n == "righteous_defense"       ) ;
     else if ( n == "salvation"               ) ;
     else if ( n == "seal_of_light"           ) ;
     else if ( n == "seal_of_wisdom"          ) ;
@@ -1978,7 +1991,9 @@ void paladin_t::init_items()
   else if ( libram == "libram_of_valiance"                        ) librams.valiance = 1;
   else if ( libram == "venture_co_libram_of_protection"           ) librams.venture_co_protection = 1;
   else if ( libram == "venture_co_libram_of_retribution"          ) librams.venture_co_retribution = 1;
+  else if ( libram == "libram_of_wracking"                        ) librams.wracking = 1;
   // To prevent warnings...
+  else if ( libram == "blessed_book_of_nagrand" ) ;
   else if ( libram == "brutal_gladiators_libram_of_fortitude" ) ;
   else if ( libram == "brutal_gladiators_libram_of_justice" ) ;
   else if ( libram == "brutal_gladiators_libram_of_vengeance" ) ;
@@ -2108,6 +2123,7 @@ void paladin_t::init_actions()
   {
     action_list_str = "flask,type=endless_rage/food,type=fish_feast/seal_of_vengeance/auto_attack";
     action_list_str += "/hammer_of_justice";
+    action_list_str += "/divine_plea";
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {

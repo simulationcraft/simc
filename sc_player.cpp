@@ -312,7 +312,11 @@ player_t::player_t( sim_t*             s,
     position( POSITION_BACK ),
     // Defense Mechanics
     target_auto_attack( 0 ), 
-    base_armor( 0 ), initial_armor( 0 ), armor( 0 ), armor_snapshot( 0 ),
+    base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ), armor_snapshot( 0 ),
+    base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),
+    base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),
+    base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),
+    base_block( 0 ),       initial_block( 0 ),       block( 0 ),
     base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), 
     armor_per_agility( 2.0 ), use_armor_snapshot( false ),
     // Resources
@@ -677,10 +681,20 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
+  if ( base_defense == 0 ) base_defense = 5.0 * level;
+
   stats.armor       = gear.armor       + enchant.armor       + sim -> enchant.armor;
+  stats.defense     = gear.defense     + enchant.defense     + sim -> enchant.defense;
+  stats.dodge       = gear.dodge       + enchant.dodge       + sim -> enchant.dodge;
+  stats.parry       = gear.parry       + enchant.parry       + sim -> enchant.parry;
+  stats.block       = gear.block       + enchant.block       + sim -> enchant.block;
   stats.block_value = gear.block_value + enchant.block_value + sim -> enchant.block_value;
 
   initial_armor       = base_armor       + stats.armor;
+  initial_defense     = base_defense     + stats.defense / rating.defense;
+  initial_dodge       = base_dodge       + stats.dodge   / rating.dodge;
+  initial_parry       = base_parry       + stats.parry   / rating.parry;
+  initial_block       = base_block       + stats.block   / rating.block;
   initial_block_value = base_block_value + stats.block_value;
 }
 
@@ -964,7 +978,13 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = 0;
 
-    scales_with[ STAT_ARMOR ] = 0;
+    scales_with[ STAT_ARMOR          ] = 0;
+    scales_with[ STAT_DEFENSE_RATING ] = 0;
+    scales_with[ STAT_DODGE_RATING   ] = 0;
+    scales_with[ STAT_PARRY_RATING   ] = 0;
+
+    scales_with[ STAT_BLOCK_RATING ] = 0;
+    scales_with[ STAT_BLOCK_VALUE  ] = 0;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE )
     {
@@ -1003,8 +1023,13 @@ void player_t::init_scaling()
         ranged_weapon.damage    += ranged_weapon.swing_time * v;
         break;
 
-      case STAT_ARMOR:       initial_armor       += v; break;
-      case STAT_BLOCK_VALUE: initial_block_value += v; break;
+      case STAT_ARMOR:          initial_armor   += v; break;
+      case STAT_DEFENSE_RATING: initial_defense += v; break;
+      case STAT_DODGE_RATING:   initial_dodge   += v; break;
+      case STAT_PARRY_RATING:   initial_parry   += v; break;
+
+      case STAT_BLOCK_RATING: initial_block       += v; break;
+      case STAT_BLOCK_VALUE:  initial_block_value += v; break;
 
       case STAT_MAX: break;
 
@@ -1389,6 +1414,10 @@ void player_t::reset()
 
   armor              = initial_armor;
   armor_snapshot     = initial_armor;
+  defense            = initial_defense;
+  dodge              = initial_dodge;
+  parry              = initial_parry;
+  block              = initial_block;
   block_value        = initial_block_value;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
@@ -1794,8 +1823,13 @@ void player_t::stat_gain( int    stat,
 
   case STAT_HASTE_RATING: haste_rating += amount; recalculate_haste(); break;
 
-  case STAT_ARMOR:       armor       += amount; break;
-  case STAT_BLOCK_VALUE: block_value += amount; break;
+  case STAT_ARMOR:          armor   += amount;                  break;
+  case STAT_DEFENSE_RATING: defense += amount / rating.defense; break;
+  case STAT_DODGE_RATING:   dodge   += amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   parry   += amount / rating.parry;   break;
+
+  case STAT_BLOCK_RATING: block       += amount / rating.block; break;
+  case STAT_BLOCK_VALUE:  block_value += amount;                break;
 
   default: assert( 0 );
   }
@@ -1845,8 +1879,13 @@ void player_t::stat_loss( int    stat,
 
   case STAT_HASTE_RATING: haste_rating -= amount; recalculate_haste(); break;
 
-  case STAT_ARMOR:       armor       -= amount; break;
-  case STAT_BLOCK_VALUE: block_value -= amount; break;
+  case STAT_ARMOR:          armor   -= amount; break;
+  case STAT_DEFENSE_RATING: defense -= amount / rating.defense; break;
+  case STAT_DODGE_RATING:   dodge   -= amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   parry   -= amount / rating.parry;   break;
+
+  case STAT_BLOCK_RATING: block       -= amount / rating.block; break;
+  case STAT_BLOCK_VALUE:  block_value -= amount; break;
 
   default: assert( 0 );
   }

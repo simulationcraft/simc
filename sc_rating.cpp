@@ -308,6 +308,10 @@ static rating_t& rating_60( sim_t* sim )
     r.attack_crit       = 1400;
     r.expertise         = 1000;
     r.armor_penetration = sim -> P322 ? 426.8292514 : 375.6097412;
+    r.defense           =  150;
+    r.dodge             = 1380;
+    r.parry             = 1380;
+    r.block             =  500;
   }
 
   return r;
@@ -329,6 +333,10 @@ static rating_t& rating_70( sim_t* sim )
     r.attack_crit       = 2207.692337;
     r.expertise         = 1576.923275;
     r.armor_penetration = sim -> P322 ? 673.0768897 : 592.307663;
+    r.defense           = 236.5385056;
+    r.dodge             = 2176.153945;
+    r.parry             = 2176.153945;
+    r.block             = 788.4614944;
   }
 
   return r;
@@ -350,6 +358,10 @@ static rating_t& rating_80( sim_t* sim )
     r.attack_crit       = 100.0/0.021786;
     r.expertise         = 100.0/0.030500;
     r.armor_penetration = sim -> P322 ? 1399.572719 : 1231.623993;
+    r.defense           = 491.8498039;
+    r.dodge             = 4525.018692;
+    r.parry             = 4525.018692;
+    r.block             = 1639.499474;
   }
 
   return r;
@@ -373,6 +385,10 @@ void rating_t::init( sim_t* sim, int level )
   attack_crit       = interpolate( level, r_60.attack_crit,       r_70.attack_crit,       r_80.attack_crit       );
   expertise         = interpolate( level, r_60.expertise,         r_70.expertise,         r_80.expertise         );
   armor_penetration = interpolate( level, r_60.armor_penetration, r_70.armor_penetration, r_80.armor_penetration );
+  defense           = interpolate( level, r_60.defense,           r_70.defense,           r_80.defense           );
+  dodge             = interpolate( level, r_60.dodge  ,           r_70.dodge,             r_80.dodge             );
+  parry             = interpolate( level, r_60.parry,             r_70.parry,             r_80.parry             );
+  block             = interpolate( level, r_60.block,             r_70.block,             r_80.block             );
 }
 
 // rating_t::interpolate ======================================================
@@ -431,38 +447,19 @@ double rating_t::get_attribute_base( int level, int class_type, int race, int st
 
   switch ( class_type )
   {
-  case DEATH_KNIGHT:
-    stat_list = death_knight_stats;
-    break;
-  case DRUID:
-    stat_list = druid_stats;
-    break;
-  case HUNTER:
-    stat_list = hunter_stats;
-    break;
-  case MAGE:
-    stat_list = mage_stats;
-    break;
-  case PALADIN:
-    stat_list = paladin_stats;
-    break;
-  case PRIEST:
-    stat_list = priest_stats;
-    break;
-  case ROGUE:
-    stat_list = rogue_stats;
-    break;
-  case SHAMAN:
-    stat_list = shaman_stats;
-    break;
-  case WARLOCK:
-    stat_list = warlock_stats;
-    break;
-  case WARRIOR:
-    stat_list = warrior_stats;
-  default:
-    assert( stat_list != NULL );
+  case DEATH_KNIGHT: stat_list = death_knight_stats; break;
+  case DRUID:        stat_list = druid_stats;        break;
+  case HUNTER:       stat_list = hunter_stats;       break;
+  case MAGE:         stat_list = mage_stats;         break;
+  case PALADIN:      stat_list = paladin_stats;      break;
+  case PRIEST:       stat_list = priest_stats;       break;
+  case ROGUE:        stat_list = rogue_stats;        break;
+  case SHAMAN:       stat_list = shaman_stats;       break;
+  case WARLOCK:      stat_list = warlock_stats;      break;
+  case WARRIOR:      stat_list = warrior_stats;      break;
+  default: assert(0);
   };
+  
 
   int i;
 

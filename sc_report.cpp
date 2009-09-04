@@ -341,8 +341,12 @@ static void print_attack_stats( FILE* file, player_t* p )
 static void print_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Defense Stats:  armor=%.0f(%.0f)  blockv=%.0f(%.0f)\n",
-                   p -> composite_armor(),       p -> stats.armor,
+                   "  Defense Stats:  armor=%.0f(%.0f)  defense=%.0f(%.0f)  dodge=%.0f%%(%.0f)  parry=%.0f%%(%.0f)  block=%.0f%%(%.0f)  blockv=%.0f(%.0f)\n",
+                   p -> composite_armor(),         p -> stats.armor,
+                   p -> composite_defense(),       p -> stats.defense,
+                   p -> composite_dodge()   * 100, p -> stats.dodge,
+                   p -> composite_parry()   * 100, p -> stats.parry,
+                   p -> composite_block()   * 100, p -> stats.block,
                    p -> composite_block_value(), p -> stats.block_value );
 }
 

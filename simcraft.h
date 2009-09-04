@@ -323,7 +323,8 @@ enum stat_type
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
-  STAT_ARMOR, STAT_BLOCK_VALUE,
+  STAT_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING, 
+  STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
   STAT_MAX
 };
 
@@ -671,6 +672,10 @@ struct gear_stats_t
   double weapon_dps;
   double weapon_speed;
   double armor;
+  double defense;
+  double dodge;
+  double parry;
+  double block;
   double block_value;
 
   gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
@@ -1074,6 +1079,7 @@ struct rating_t
   double  spell_haste,  spell_hit,  spell_crit;
   double attack_haste, attack_hit, attack_crit;
   double expertise, armor_penetration;
+  double defense, dodge, parry, block;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
   void init( sim_t*, int level );
   static double interpolate( int level, double val_60, double val_70, double val_80 );
@@ -1262,7 +1268,11 @@ struct player_t
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double base_armor, initial_armor, armor, armor_snapshot;
+  double base_armor,       initial_armor,       armor, armor_snapshot;
+  double base_defense,     initial_defense,     defense;
+  double base_dodge,       initial_dodge,       dodge;
+  double base_parry,       initial_parry,       parry;
+  double base_block,       initial_block,       block;
   double base_block_value, initial_block_value, block_value;
   double armor_per_agility;
   bool   use_armor_snapshot;
@@ -1480,7 +1490,11 @@ struct player_t
 
   virtual double composite_armor() SC_CONST;
   virtual double composite_armor_snapshot() SC_CONST { return armor_snapshot; }
-  virtual double composite_block_value() SC_CONST { return block_value; }
+  virtual double composite_defense()        SC_CONST { return defense; }
+  virtual double composite_dodge()          SC_CONST { return dodge; }
+  virtual double composite_parry()          SC_CONST { return parry; }
+  virtual double composite_block()          SC_CONST { return block; }
+  virtual double composite_block_value()    SC_CONST { return block_value; }
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
