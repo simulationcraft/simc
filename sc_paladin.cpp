@@ -257,10 +257,14 @@ static void trigger_righteous_vengeance( action_t* a )
       trigger_gcd    = 0;
       base_tick_time = 2;
       num_ticks      = 4;
-      tick_may_crit  = p -> set_bonus.tier9_2pc_melee(); // FIXME! Assuming bug-fix gives full chance to crit.
+      tick_may_crit  = p -> set_bonus.tier9_2pc_melee();
       reset(); // required since construction occurs after player_t::init()
     }
-    void player_buff() {}
+    void player_buff() 
+    {
+       // FIXME! Assuming bug-fixed value.
+      player_crit = 0.40;
+    }
     void target_debuff( int dmg_type ) {}
   };
 
@@ -427,7 +431,6 @@ struct melee_t : public paladin_attack_t
     if ( p -> buffs_reckoning -> up() )
     {
       p -> buffs_reckoning -> decrement();
-      // FIXME!  Do I need to set "trigger_seal=false"?
       paladin_attack_t::execute();
     }
   }
@@ -648,7 +651,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_attack_t::player_buff();
-    // FIXME! Assuming "4xDPS" is dynamic and includes both AP and Haste effects
+    // Normalize damage via adjusted swing time.
     player_multiplier /= haste() * weapon -> swing_time;
   }
 
@@ -850,7 +853,6 @@ struct seal_of_command_judgement_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.19;
-    weapon_power_mod  = 0.14/0.18;  // Painful due to base_attack_multiplier adjustment.
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
