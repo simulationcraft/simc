@@ -348,7 +348,6 @@ struct paladin_attack_t : public attack_t
       if ( trigger_seal )
       {
         paladin_t* p = player -> cast_paladin();
-        // FIXME! Do any of these procs occur on melee attacks only?
         switch ( p -> active_seal )
         {
         case SEAL_OF_COMMAND:       p -> active_seal_of_command_proc       -> execute(); break;
@@ -367,7 +366,7 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     attack_t::player_buff();
-    if ( p -> talents.two_handed_weapon_spec ) // FIXME! Anything this does not affect?
+    if ( p -> talents.two_handed_weapon_spec )
     {
       if ( weapon && weapon -> group() == WEAPON_2H )
       {
@@ -408,9 +407,7 @@ struct melee_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-
     paladin_attack_t::execute();
-
     if ( result_is_hit() )
     {
       if ( result == RESULT_CRIT )
@@ -484,6 +481,10 @@ struct avengers_shield_t : public paladin_attack_t
     init_rank( ranks );
 
     trigger_seal = true;
+
+    may_parry = false;
+    may_dodge = false;
+    may_block = false;
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     cooldown   = 30;
@@ -646,6 +647,19 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     // FIXME! Assuming "4xDPS" is dynamic and includes both AP and Haste effects
     player_multiplier /= haste() * weapon -> swing_time;
   }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    paladin_attack_t::execute();
+    if ( result_is_hit() )
+    {
+      if ( p -> active_seal == SEAL_OF_VENGEANCE )
+      {
+        p -> active_seal_of_vengeance_dot -> execute();
+      }
+    }
+  }
 };
 
 // Hammer of Wrath =========================================================
@@ -672,6 +686,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
     may_parry = false;
     may_dodge = false;
+    may_block = false;
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     base_crit += 0.25 * p -> talents.sanctified_wrath;
@@ -725,7 +740,9 @@ struct shield_of_righteousness_t : public paladin_attack_t
     };
     init_rank( ranks );
 
-    // FIXME!  Parry?  Dodge?
+    may_parry = false;
+    may_dodge = false;
+    may_block = false;
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     cooldown   = 6;
@@ -812,7 +829,6 @@ struct seal_of_command_proc_t : public paladin_attack_t
     trigger_gcd       = 0;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.36;
-    weapon_power_mod  = 0;  // FIXME! Assume no weapon-speed adjusted AP contribution.
     base_multiplier  *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
   }
 };
@@ -830,14 +846,13 @@ struct seal_of_command_judgement_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.19;
-    weapon_power_mod  = 0;  // FIXME! Assume no weapon-speed adjusted AP contribution.
+    weapon_power_mod  = 0.14/0.18;  // Painful due to base_attack_multiplier adjustment.
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_crit       += p -> talents.holy_power * 0.01; // FIXME! Does Holy Power affect judgements?
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
     base_multiplier *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
 
@@ -903,7 +918,6 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_crit       += p -> talents.holy_power * 0.01; // FIXME! Does Holy Power affect judgements?
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
     base_multiplier *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
 
@@ -958,7 +972,6 @@ struct seal_of_light_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_crit       += 0.01 * p -> talents.holy_power; // FIXME! Does Holy Power affect judgements?
     base_multiplier *= 1.0 + ( 0.05 * p -> talents.the_art_of_war         +
                                0.05 * p -> talents.judgements_of_the_pure );
 
@@ -1028,8 +1041,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     if ( p -> set_bonus.tier8_2pc_tank()  ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
-    if ( p -> glyphs.judgement             ) base_multiplier *= 1.10;
-    if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10; // FIXME! Does it affect judgement?
+    if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
     if ( p -> librams.divine_purpose ) base_spell_power += 94;
   }
@@ -1070,7 +1082,6 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
 
   virtual void execute()
   {
-    // FIXME! Application requires an attack roll?
     paladin_t* p = player -> cast_paladin();
     player_buff();
     target_debuff( DMG_DIRECT );
@@ -1122,7 +1133,6 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.33;
-    weapon_power_mod  = 0;  // FIXME! Assume no weapon-speed adjusted AP contribution.
 
     base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
                                0.03 * p -> talents.seals_of_the_pure      );
@@ -1147,7 +1157,6 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_crit       += p -> talents.holy_power * 0.01; // FIXME! Does Holy Power affect judgements?
     base_multiplier *= 1.0 + ( 0.05 * p -> talents.the_art_of_war         +
                                0.05 * p -> talents.judgements_of_the_pure +
                                0.03 * p -> talents.seals_of_the_pure      );
@@ -1206,7 +1215,6 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_crit       += p -> talents.holy_power * 0.01; // FIXME! Does Holy Power affect judgements?
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
     base_multiplier *= 1.0 + 0.05 * p -> talents.judgements_of_the_pure;
 
@@ -1300,6 +1308,8 @@ struct judgement_t : public paladin_attack_t
     
     if ( p -> librams.avengement    ) p -> buffs_libram_of_avengement    -> trigger();
     if ( p -> librams.furious_blows ) p -> buffs_libram_of_furious_blows -> trigger();
+
+    p -> last_foreground_action = seal; // Necessary for DPET calculations.
   }
 
   virtual bool ready()
@@ -1332,7 +1342,6 @@ struct paladin_spell_t : public spell_t
     {
       base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.one_handed_weapon_spec, 3, 0.04, 0.07, 0.10 );
     }
-    // FIXME! Are there any spells that do not benefit from Holy Power
     base_crit += p -> talents.holy_power * 0.01;
   }
 
