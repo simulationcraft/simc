@@ -279,16 +279,11 @@ static void trigger_righteous_vengeance( action_t* a )
 
     dmg += p -> active_righteous_vengeance -> base_td * remaining_ticks;
 
-    p -> active_righteous_vengeance -> base_td = dmg / 4;
-    p -> active_righteous_vengeance -> current_tick = 0;
-  }
-  else
-  {
-    p -> active_righteous_vengeance -> base_td = dmg / 4;
-    p -> active_righteous_vengeance -> schedule_tick();
+    p -> active_righteous_vengeance -> cancel();
   }
 
-  // FIXME! Does the DoT tick get "refreshed" or "rescheduled" (ie: delayed similar to Ignite)
+  p -> active_righteous_vengeance -> base_td = dmg / 4;
+  p -> active_righteous_vengeance -> schedule_tick();
 }
 
 // =========================================================================
