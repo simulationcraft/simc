@@ -2365,10 +2365,12 @@ double warrior_t::composite_attack_power() SC_CONST
 
 double warrior_t::composite_armor() SC_CONST
 {
-  double final_armor = player_t::composite_armor() - armor_per_agility * agility();
-  final_armor *= 1 +  ( talents.toughness ? talents.toughness * 0.02 : 0 );
-  final_armor += armor_per_agility * agility();
-  return final_armor;
+  double a = player_t::composite_armor();
+  if ( talents.toughness )
+  {
+    a += armor * 0.02 * talents.toughness;
+  }
+  return a;
 }
 
 // warrior_t::regen ==========================================================

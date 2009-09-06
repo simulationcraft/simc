@@ -318,7 +318,9 @@ player_t::player_t( sim_t*             s,
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),
     base_block( 0 ),       initial_block( 0 ),       block( 0 ),
     base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), 
-    armor_per_agility( 2.0 ), use_armor_snapshot( false ),
+    armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
+    dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
+    use_armor_snapshot( false ),
     // Resources
     mana_per_intellect( 0 ), health_per_stamina( 0 ),
     // Consumables
@@ -1127,6 +1129,88 @@ double player_t::composite_armor() SC_CONST
   return a;
 }
 
+// player_t::composite_miss ==========================================
+
+double player_t::composite_miss() SC_CONST
+{
+  double m = 0.05;
+
+  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  
+  if( delta > 0 )
+  {
+    m += delta * 0.0004;
+  }
+  else
+  {
+    m -= delta * 0.0002;
+  }
+
+  return m;
+}
+
+// player_t::composite_dodge =========================================
+
+double player_t::composite_dodge() SC_CONST
+{
+  double d = dodge;
+
+  d += agility() * dodge_per_agility;
+
+  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  
+  if( delta > 0 )
+  {
+    d += delta * 0.0004;
+  }
+  else
+  {
+    d -= delta * 0.0002;
+  }
+
+  return d;
+}
+
+// player_t::composite_parry =========================================
+
+double player_t::composite_parry() SC_CONST
+{
+  double p = parry;
+
+  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  
+  if( delta > 0 )
+  {
+    p += delta * 0.0004;
+  }
+  else
+  {
+    p -= delta * 0.0002;
+  }
+
+  return p;
+}
+
+// player_t::composite_block =========================================
+
+double player_t::composite_block() SC_CONST
+{
+  double b = block;
+
+  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  
+  if( delta > 0 )
+  {
+    b += delta * 0.0004;
+  }
+  else
+  {
+    b -= delta * 0.0002;
+  }
+
+  return b;
+}
+
 // player_t::composite_block_value ===================================
 
 double player_t::composite_block_value() SC_CONST
@@ -1442,6 +1526,9 @@ void player_t::reset()
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
+
+  armor_per_agility = initial_armor_per_agility;
+  dodge_per_agility = initial_dodge_per_agility;
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {

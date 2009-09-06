@@ -1274,7 +1274,8 @@ struct player_t
   double base_parry,       initial_parry,       parry;
   double base_block,       initial_block,       block;
   double base_block_value, initial_block_value, block_value;
-  double armor_per_agility;
+  double armor_per_agility, initial_armor_per_agility;
+  double dodge_per_agility, initial_dodge_per_agility;
   bool   use_armor_snapshot;
 
   // Weapons
@@ -1491,9 +1492,10 @@ struct player_t
   virtual double composite_armor()          SC_CONST;
   virtual double composite_armor_snapshot() SC_CONST { return armor_snapshot; }
   virtual double composite_defense()        SC_CONST { return defense; }
-  virtual double composite_dodge()          SC_CONST { return dodge; }
-  virtual double composite_parry()          SC_CONST { return parry; }
-  virtual double composite_block()          SC_CONST { return block; }
+  virtual double composite_miss()           SC_CONST;
+  virtual double composite_dodge()          SC_CONST;
+  virtual double composite_parry()          SC_CONST;
+  virtual double composite_block()          SC_CONST;
   virtual double composite_block_value()    SC_CONST;
 
   virtual double composite_spell_power( int school ) SC_CONST;
