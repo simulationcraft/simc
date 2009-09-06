@@ -1491,21 +1491,21 @@ struct player_t
   virtual double composite_attack_hit() SC_CONST;
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
-  virtual double composite_armor()          SC_CONST;
-  virtual double composite_armor_snapshot() SC_CONST { return armor_snapshot; }
-  virtual double composite_defense()        SC_CONST { return defense; }
-  virtual double composite_miss()           SC_CONST;
-  virtual double composite_dodge()          SC_CONST;
-  virtual double composite_parry()          SC_CONST;
-  virtual double composite_block()          SC_CONST;
-  virtual double composite_block_value()    SC_CONST;
+  virtual double composite_armor()                  SC_CONST;
+  virtual double composite_armor_snapshot()         SC_CONST { return armor_snapshot; }
+  virtual double composite_defense()                SC_CONST { return defense; }
+  virtual double composite_miss_melee()             SC_CONST;
+  virtual double composite_miss_ranged()            SC_CONST;
+  virtual double composite_miss_spell( int school ) SC_CONST;
+  virtual double composite_dodge()                  SC_CONST;
+  virtual double composite_parry()                  SC_CONST;
+  virtual double composite_block()                  SC_CONST;
+  virtual double composite_block_value()            SC_CONST;
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
   virtual double composite_spell_hit() SC_CONST;
   virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
-
-  virtual double composite_spell_miss( int school ) SC_CONST;
 
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }

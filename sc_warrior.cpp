@@ -99,8 +99,9 @@ struct warrior_t : public player_t
     int improved_mortal_strike;
     int improved_overpower;
     int improved_rend;
-    int improved_slam;
     int improved_revenge;
+    int improved_slam;
+    int improved_spell_reflection;
     int improved_thunderclap;
     int improved_whirlwind;
     int incite;
@@ -175,6 +176,7 @@ struct warrior_t : public player_t
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_armor() SC_CONST;
+  virtual double    composite_miss_spell( int school ) SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -2022,6 +2024,22 @@ struct stance_t : public warrior_spell_t
 // Warrior Character Definition
 // =========================================================================
 
+// warrior_t::composite_miss_spell ==========================================
+
+double warrior_t::composite_miss_spell( int school ) SC_CONST
+{
+  double m = player_t::composite_miss_spell( school );
+
+  m += talents.improved_spell_reflection * 0.02;
+
+  if ( m > 1.0)
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
 // warrior_t::create_action  =================================================
 
 action_t* warrior_t::create_action( const std::string& name,
@@ -2435,7 +2453,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
     { {  7, &( talents.improved_overpower              ) }, {  7, NULL                                   }, {  7, &( talents.improved_revenge           ) } },
     { {  8, &( talents.anger_management                ) }, {  8, NULL                                   }, {  8, &( talents.shield_mastery             ) } },
     { {  9, &( talents.impale                          ) }, {  9, &( talents.commanding_presence       ) }, {  9, &( talents.toughness                  ) } },
-    { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, NULL                                    } },
+    { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, &( talents.improved_spell_reflection  ) } },
     { { 11, &( talents.twohanded_weapon_specialization ) }, { 11, &( talents.improved_execute          ) }, { 11, NULL                                    } },
     { { 12, &( talents.taste_for_blood                 ) }, { 12, NULL                                   }, { 12, &( talents.puncture                   ) } },
     { { 13, &( talents.poleaxe_specialization          ) }, { 13, &( talents.precision                 ) }, { 13, NULL                                    } },
@@ -2504,6 +2522,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "improved_rend",                   OPT_INT, &( talents.improved_rend                   ) },
       { "improved_revenge",                OPT_INT, &( talents.improved_revenge                ) },
       { "improved_slam",                   OPT_INT, &( talents.improved_slam                   ) },
+      { "improved_spell_reflection",       OPT_INT, &( talents.improved_spell_reflection       ) },
       { "improved_thunderclap",            OPT_INT, &( talents.improved_thunderclap            ) },
       { "improved_whirlwind",              OPT_INT, &( talents.improved_whirlwind              ) },
       { "incite",                          OPT_INT, &( talents.incite                          ) },

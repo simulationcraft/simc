@@ -1129,9 +1129,9 @@ double player_t::composite_armor() SC_CONST
   return a;
 }
 
-// player_t::composite_miss ==========================================
+// player_t::composite_miss_melee ==========================================
 
-double player_t::composite_miss() SC_CONST
+double player_t::composite_miss_melee() SC_CONST
 {
   double m = 0.05;
 
@@ -1157,8 +1157,91 @@ double player_t::composite_miss() SC_CONST
     m += 0.03;
   }
 
+  if ( m > 1.0)
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
   return m;
 }
+
+// player_t::composite_miss_ranged ==========================================
+
+double player_t::composite_miss_ranged() SC_CONST
+{
+  double m = 0.05;
+
+  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  
+  if( delta > 0 )
+  {
+    m += delta * 0.0004;
+  }
+  else
+  {
+    m -= delta * 0.0002;
+  }
+
+  // Quickness passive
+  if ( race == RACE_NIGHT_ELF )
+  {
+    m += 0.02;
+  }
+
+  if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
+  {
+    m += 0.03;
+  }
+
+  if ( m > 1.0)
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
+// player_t::composite_miss_spell ==========================================
+
+double player_t::composite_miss_spell( int school ) SC_CONST
+{
+  double m = 0.04;
+
+  int delta = level - sim -> target -> level;
+  
+  if( delta > 0 )
+  {
+    m -= delta * 0.01;
+  }
+  else if ( delta > -2 )
+  {
+    m += - ( delta * 0.01 );
+  }
+  else
+  {
+    m += 0.02 - ( 2 + delta ) * 0.07;
+  }
+
+  // Racials
+  if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
+       ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
+       ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
+       ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
+       ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
+       ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
+       ( race == RACE_BLOOD_ELF ) )
+  {
+    m += 0.02;
+  }
+
+  if ( m > 1.0 )
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
 
 // player_t::composite_dodge =========================================
 
@@ -1299,47 +1382,6 @@ double player_t::composite_spell_hit() SC_CONST
   if ( buffs.heroic_presence -> check() ) sh += 0.01;
 
   return sh;
-}
-
-// player_t::composite_spell_miss ==========================================
-
-double player_t::composite_spell_miss( int school ) SC_CONST
-{
-  double m = 0.04;
-
-  int delta = level - sim -> target -> level;
-  
-  if( delta > 0 )
-  {
-    m -= delta * 0.01;
-  }
-  else if ( delta > -2 )
-  {
-    m += - ( delta * 0.01 );
-  }
-  else
-  {
-    m += 0.02 - ( 2 + delta ) * 0.07;
-  }
-
-  // Racials
-  if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
-       ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
-       ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
-       ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
-       ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
-       ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
-       ( race == RACE_BLOOD_ELF ) )
-  {
-    m += 0.02;
-  }
-
-  if ( m > 1.0 )
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
-
-  return m;
 }
 
 // player_t::composite_attack_power_multiplier =============================

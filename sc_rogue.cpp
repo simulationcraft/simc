@@ -131,6 +131,7 @@ struct rogue_t : public player_t
     int find_weakness;
     int focused_attacks;
     int ghostly_strike;
+    int heightened_senses;
     int hemorrhage;
     int hunger_for_blood;
     int improved_ambush;
@@ -224,6 +225,8 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
+  virtual double    composite_miss_ranged() SC_CONST;
+  virtual double    composite_miss_spell( int school ) SC_CONST;
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -2781,6 +2784,38 @@ struct stealth_t : public spell_t
 // Rogue Character Definition
 // =========================================================================
 
+// rogue_t::composite_miss_ranged ==========================================
+
+double rogue_t::composite_miss_ranged() SC_CONST
+{
+  double m = player_t::composite_miss_ranged();
+
+  m += talents.heightened_senses * 0.02;
+
+  if ( m > 1.0)
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
+// rogue_t::composite_miss_spell ==========================================
+
+double rogue_t::composite_miss_spell( int school ) SC_CONST
+{
+  double m = player_t::composite_miss_spell( school );
+
+  m += talents.heightened_senses * 0.02;
+
+  if ( m > 1.0)
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
 // rogue_t::primary_tree ===================================================
 
 int rogue_t::primary_tree() SC_CONST
@@ -3368,7 +3403,7 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
     { { 10, &( talents.vile_poisons          ) }, { 10, NULL                                   }, { 10, NULL                                    } },
     { { 11, &( talents.improved_poisons      ) }, { 11, NULL                                   }, { 11, &( talents.initiative                 ) } },
     { { 12, NULL                               }, { 12, &( talents.lightning_reflexes        ) }, { 12, &( talents.improved_ambush            ) } },
-    { { 13, &( talents.cold_blood            ) }, { 13, &( talents.aggression                ) }, { 13, NULL                                    } },
+    { { 13, &( talents.cold_blood            ) }, { 13, &( talents.aggression                ) }, { 13, &( talents.heightened_senses          ) } },
     { { 14, NULL                               }, { 14, &( talents.mace_specialization       ) }, { 14, &( talents.preparation                ) } },
     { { 15, &( talents.quick_recovery        ) }, { 15, &( talents.blade_flurry              ) }, { 15, &( talents.dirty_deeds                ) } },
     { { 16, &( talents.seal_fate             ) }, { 16, &( talents.sword_specialization      ) }, { 16, &( talents.hemorrhage                 ) } },
@@ -3428,6 +3463,7 @@ std::vector<option_t>& rogue_t::get_options()
       { "improved_slice_and_dice",    OPT_INT, &( talents.improved_slice_and_dice    ) },
       { "initiative",                 OPT_INT, &( talents.initiative                 ) },
       { "killing_spree",              OPT_INT, &( talents.killing_spree              ) },
+      { "heightened_senses",          OPT_INT, &( talents.heightened_senses          ) },
       { "lethality",                  OPT_INT, &( talents.lethality                  ) },
       { "lightning_reflexes",         OPT_INT, &( talents.lightning_reflexes         ) },
       { "mace_specialization",        OPT_INT, &( talents.mace_specialization        ) },
