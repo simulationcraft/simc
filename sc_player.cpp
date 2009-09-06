@@ -1301,6 +1301,47 @@ double player_t::composite_spell_hit() SC_CONST
   return sh;
 }
 
+// player_t::composite_spell_miss ==========================================
+
+double player_t::composite_spell_miss( int school ) SC_CONST
+{
+  double m = 0.04;
+
+  int delta = level - sim -> target -> level;
+  
+  if( delta > 0 )
+  {
+    m -= delta * 0.01;
+  }
+  else if ( delta > -2 )
+  {
+    m += - ( delta * 0.01 );
+  }
+  else
+  {
+    m += 0.02 - ( 2 + delta ) * 0.07;
+  }
+
+  // Racials
+  if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
+       ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
+       ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
+       ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
+       ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
+       ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
+       ( race == RACE_BLOOD_ELF ) )
+  {
+    m += 0.02;
+  }
+
+  if ( m > 1.0 )
+    m = 1.0;
+  else if ( m < 0.0 )
+    m = 0.0;
+
+  return m;
+}
+
 // player_t::composite_attack_power_multiplier =============================
 
 double player_t::composite_attack_power_multiplier() SC_CONST

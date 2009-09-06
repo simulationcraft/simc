@@ -1505,6 +1505,8 @@ struct player_t
   virtual double composite_spell_hit() SC_CONST;
   virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
 
+  virtual double composite_spell_miss( int school ) SC_CONST;
+
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
