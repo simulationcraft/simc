@@ -916,6 +916,7 @@ struct sim_t
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
+    int insect_swarm;
     int judgement_of_wisdom;
     int judgements_of_the_just;
     int leader_of_the_pack;
@@ -930,6 +931,7 @@ struct sim_t
     int replenishment;
     int sanctified_retribution;
     int savage_combat;
+    int scorpid_sting;
     int strength_of_earth;
     int sunder_armor;
     int swift_retribution;
@@ -1734,11 +1736,13 @@ struct target_t
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
+    debuff_t* insect_swarm;
     debuff_t* invulnerable;
     debuff_t* judgement_of_wisdom;
     debuff_t* judgements_of_the_just;
     debuff_t* mangle;
     debuff_t* misery;
+    debuff_t* scorpid_sting;
     debuff_t* slow;
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;

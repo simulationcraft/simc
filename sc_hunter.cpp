@@ -3610,7 +3610,8 @@ void player_t::hunter_init( sim_t* sim )
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration", 1, 10.0 );
 
   target_t* t = sim -> target;
-  t -> debuffs.hunters_mark = new debuff_t( sim, "hunters_mark", 1, 300.0 );
+  t -> debuffs.hunters_mark  = new debuff_t( sim, "hunters_mark",  1, 300.0 );
+  t -> debuffs.scorpid_sting = new debuff_t( sim, "scorpid_sting", 1, 20.0  );
 }
 
 // player_t::hunter_combat_begin ============================================

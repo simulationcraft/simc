@@ -257,7 +257,7 @@ static void trigger_righteous_vengeance( action_t* a )
       trigger_gcd    = 0;
       base_tick_time = 2;
       num_ticks      = 4;
-      tick_may_crit  = p -> set_bonus.tier9_2pc_melee();
+      tick_may_crit  = p -> set_bonus.tier9_2pc_melee() != 0;
       reset(); // required since construction occurs after player_t::init()
     }
     void player_buff() 

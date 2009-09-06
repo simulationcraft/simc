@@ -1146,6 +1146,17 @@ double player_t::composite_miss() SC_CONST
     m -= delta * 0.0002;
   }
 
+  // Quickness passive
+  if ( race == RACE_NIGHT_ELF )
+  {
+    m += 0.02;
+  }
+
+  if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
+  {
+    m += 0.03;
+  }
+
   return m;
 }
 

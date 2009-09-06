@@ -1685,6 +1685,15 @@ struct insect_swarm_t : public druid_spell_t
 
     observer = &( p -> active_insect_swarm );
   }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    druid_t* p = player -> cast_druid();
+    if ( ! p -> glyphs.insect_swarm )
+      p -> sim -> target -> debuffs.insect_swarm -> trigger();
+  }
+
   virtual void tick()
   {
     druid_spell_t::tick();
@@ -3207,6 +3216,7 @@ void player_t::druid_init( sim_t* sim )
   t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
   t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, 300.0 );
   t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, 300.0 );
+  t -> debuffs.insect_swarm         = new debuff_t( sim, "insect_swarm",         1,  12.0 );
   t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  12.0 );
 }
 
@@ -3230,6 +3240,7 @@ void player_t::druid_combat_begin( sim_t* sim )
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
   if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override();
   if ( sim -> overrides.improved_faerie_fire ) t -> debuffs.improved_faerie_fire -> override( 1, 3 );
+  if ( sim -> overrides.insect_swarm         ) t -> debuffs.insect_swarm         -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
 }
 

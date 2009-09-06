@@ -1122,6 +1122,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.improved_moonkin_aura  = optimal_raid;
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
+  overrides.insect_swarm           = optimal_raid;
   overrides.judgement_of_wisdom    = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
@@ -1136,6 +1137,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.replenishment          = optimal_raid;
   overrides.sanctified_retribution = optimal_raid;
   overrides.savage_combat          = optimal_raid;
+  overrides.scorpid_sting          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.swift_retribution      = optimal_raid;
@@ -1303,6 +1305,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.improved_moonkin_aura",   OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
+      { "override.insect_swarm",            OPT_BOOL,   &( overrides.insect_swarm                   ) },
       { "override.judgement_of_wisdom",     OPT_BOOL,   &( overrides.judgement_of_wisdom            ) },
       { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
       { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
@@ -1317,6 +1320,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
       { "override.sanctified_retribution",  OPT_BOOL,   &( overrides.sanctified_retribution         ) },
       { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
+      { "override.scorpid_sting",           OPT_BOOL,   &( overrides.scorpid_sting                  ) },
       { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
       { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
       { "override.swift_retribution",       OPT_BOOL,   &( overrides.swift_retribution              ) },
