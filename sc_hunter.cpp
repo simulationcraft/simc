@@ -2348,6 +2348,53 @@ struct scatter_shot_t : public hunter_attack_t
   }
 };
 
+// Scorpid Sting Attack =========================================================
+
+struct scorpid_sting_t : public hunter_attack_t
+{
+  int force;
+
+  scorpid_sting_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "scorpid_sting", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
+      force( 0 )
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    option_t options[] =
+    {
+      { "force", OPT_BOOL, &force },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    may_crit = false;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.11;
+    base_dd_min = base_dd_max = 0;
+    base_multiplier = 0;
+
+    observer = &( p -> active_scorpid_sting );
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    p -> cancel_sting();
+    hunter_attack_t::execute();
+    if ( result_is_hit() ) sim -> target -> debuffs.scorpid_sting -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    if ( ! force )
+      if ( p -> active_sting() )
+        return false;
+
+    return hunter_attack_t::ready();
+  }
+};
+
 
 // Serpent Sting Attack =========================================================
 
@@ -2938,7 +2985,7 @@ action_t* hunter_t::create_action( const std::string& name,
 //if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "readiness"             ) return new              readiness_t( this, options_str );
   if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
-//if ( name == "scorpid_sting"         ) return new          scorpid_sting_t( this, options_str );
+  if ( name == "scorpid_sting"         ) return new          scorpid_sting_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
   if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
