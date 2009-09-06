@@ -5,6 +5,8 @@
 
 #include "simcraft.h"
 
+bool my_isdigit( char c );
+
 // util_t::talent_rank =====================================================
 
 double util_t::talent_rank( int    num,

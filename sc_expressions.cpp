@@ -5,7 +5,7 @@
 
 #include "simcraft.h"
 
-
+std::string bracket_mask( std::string& src, std::string& dst );
 
 
 // **************************************************************************

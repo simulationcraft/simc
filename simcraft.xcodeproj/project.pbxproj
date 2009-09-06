@@ -1,0 +1,758 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		44E3D1E810545A7500677DEB /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1B910545A7500677DEB /* sc_action.cpp */; };
+		44E3D1E910545A7500677DEB /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */; };
+		44E3D1EA10545A7500677DEB /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BB10545A7500677DEB /* sc_attack.cpp */; };
+		44E3D1EB10545A7500677DEB /* sc_buff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BC10545A7500677DEB /* sc_buff.cpp */; };
+		44E3D1EC10545A7500677DEB /* sc_chart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BD10545A7500677DEB /* sc_chart.cpp */; };
+		44E3D1ED10545A7500677DEB /* sc_consumable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BE10545A7500677DEB /* sc_consumable.cpp */; };
+		44E3D1EE10545A7500677DEB /* sc_death_knight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BF10545A7500677DEB /* sc_death_knight.cpp */; };
+		44E3D1EF10545A7500677DEB /* sc_druid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C010545A7500677DEB /* sc_druid.cpp */; };
+		44E3D1F010545A7500677DEB /* sc_enchant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C110545A7500677DEB /* sc_enchant.cpp */; };
+		44E3D1F110545A7500677DEB /* sc_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C210545A7500677DEB /* sc_event.cpp */; };
+		44E3D1F210545A7500677DEB /* sc_expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C310545A7500677DEB /* sc_expressions.cpp */; };
+		44E3D1F310545A7500677DEB /* sc_gear_stats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C410545A7500677DEB /* sc_gear_stats.cpp */; };
+		44E3D1F410545A7500677DEB /* sc_http.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C510545A7500677DEB /* sc_http.cpp */; };
+		44E3D1F510545A7500677DEB /* sc_hunter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C610545A7500677DEB /* sc_hunter.cpp */; };
+		44E3D1F610545A7500677DEB /* sc_item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C710545A7500677DEB /* sc_item.cpp */; };
+		44E3D1F710545A7500677DEB /* sc_js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C810545A7500677DEB /* sc_js.cpp */; };
+		44E3D1F810545A7500677DEB /* sc_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1C910545A7500677DEB /* sc_log.cpp */; };
+		44E3D1F910545A7500677DEB /* sc_mage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CA10545A7500677DEB /* sc_mage.cpp */; };
+		44E3D1FA10545A7500677DEB /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */; };
+		44E3D1FB10545A7500677DEB /* sc_mmo_champion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CC10545A7500677DEB /* sc_mmo_champion.cpp */; };
+		44E3D1FC10545A7500677DEB /* sc_option.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CD10545A7500677DEB /* sc_option.cpp */; };
+		44E3D1FD10545A7500677DEB /* sc_paladin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CE10545A7500677DEB /* sc_paladin.cpp */; };
+		44E3D1FE10545A7500677DEB /* sc_pet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CF10545A7500677DEB /* sc_pet.cpp */; };
+		44E3D1FF10545A7500677DEB /* sc_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D010545A7500677DEB /* sc_player.cpp */; };
+		44E3D20010545A7500677DEB /* sc_priest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D110545A7500677DEB /* sc_priest.cpp */; };
+		44E3D20110545A7500677DEB /* sc_raid_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D210545A7500677DEB /* sc_raid_event.cpp */; };
+		44E3D20210545A7500677DEB /* sc_rating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D310545A7500677DEB /* sc_rating.cpp */; };
+		44E3D20310545A7500677DEB /* sc_rawr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D410545A7500677DEB /* sc_rawr.cpp */; };
+		44E3D20410545A7500677DEB /* sc_report.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D510545A7500677DEB /* sc_report.cpp */; };
+		44E3D20510545A7500677DEB /* sc_rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D610545A7500677DEB /* sc_rng.cpp */; };
+		44E3D20610545A7500677DEB /* sc_rogue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D710545A7500677DEB /* sc_rogue.cpp */; };
+		44E3D20710545A7500677DEB /* sc_scaling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D810545A7500677DEB /* sc_scaling.cpp */; };
+		44E3D20810545A7500677DEB /* sc_sequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1D910545A7500677DEB /* sc_sequence.cpp */; };
+		44E3D20910545A7500677DEB /* sc_set_bonus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DA10545A7500677DEB /* sc_set_bonus.cpp */; };
+		44E3D20A10545A7500677DEB /* sc_shaman.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DB10545A7500677DEB /* sc_shaman.cpp */; };
+		44E3D20B10545A7500677DEB /* sc_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DC10545A7500677DEB /* sc_sim.cpp */; };
+		44E3D20C10545A7500677DEB /* sc_spell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DD10545A7500677DEB /* sc_spell.cpp */; };
+		44E3D20D10545A7500677DEB /* sc_stats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DE10545A7500677DEB /* sc_stats.cpp */; };
+		44E3D20E10545A7500677DEB /* sc_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1DF10545A7500677DEB /* sc_target.cpp */; };
+		44E3D20F10545A7500677DEB /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E010545A7500677DEB /* sc_thread.cpp */; };
+		44E3D21010545A7500677DEB /* sc_unique_gear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E110545A7500677DEB /* sc_unique_gear.cpp */; };
+		44E3D21110545A7500677DEB /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E210545A7500677DEB /* sc_util.cpp */; };
+		44E3D21210545A7500677DEB /* sc_warlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E310545A7500677DEB /* sc_warlock.cpp */; };
+		44E3D21310545A7500677DEB /* sc_warrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E410545A7500677DEB /* sc_warrior.cpp */; };
+		44E3D21410545A7500677DEB /* sc_weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E510545A7500677DEB /* sc_weapon.cpp */; };
+		44E3D21510545A7500677DEB /* sc_wowhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E610545A7500677DEB /* sc_wowhead.cpp */; };
+		44E3D21610545A7500677DEB /* sc_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E710545A7500677DEB /* sc_xml.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		44E3D12510545A4F00677DEB /* Death_Knight_T8_51_00_20.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_T8_51_00_20.simcraft; sourceTree = "<group>"; };
+		44E3D12610545A4F00677DEB /* Death_Knight_Test.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Test.simcraft; sourceTree = "<group>"; };
+		44E3D12710545A4F00677DEB /* Deathknight_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Deathknight_T7.simcraft; sourceTree = "<group>"; };
+		44E3D12810545A4F00677DEB /* Deathknight_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Deathknight_T8.simcraft; sourceTree = "<group>"; };
+		44E3D12910545A4F00677DEB /* Deathknight_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Deathknight_T9.simcraft; sourceTree = "<group>"; };
+		44E3D12A10545A4F00677DEB /* Druid_T7_00_55_16_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T7_00_55_16_M.simcraft; sourceTree = "<group>"; };
+		44E3D12B10545A4F00677DEB /* Druid_T7_00_55_16.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T7_00_55_16.simcraft; sourceTree = "<group>"; };
+		44E3D12C10545A4F00677DEB /* Druid_T7_58_00_13_SF.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T7_58_00_13_SF.simcraft; sourceTree = "<group>"; };
+		44E3D12D10545A4F00677DEB /* Druid_T7_58_00_13_W.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T7_58_00_13_W.simcraft; sourceTree = "<group>"; };
+		44E3D12E10545A4F00677DEB /* Druid_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T7.simcraft; sourceTree = "<group>"; };
+		44E3D12F10545A4F00677DEB /* Druid_T8_00_55_16_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T8_00_55_16_M.simcraft; sourceTree = "<group>"; };
+		44E3D13010545A4F00677DEB /* Druid_T8_00_55_16.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T8_00_55_16.simcraft; sourceTree = "<group>"; };
+		44E3D13110545A4F00677DEB /* Druid_T8_58_00_13.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T8_58_00_13.simcraft; sourceTree = "<group>"; };
+		44E3D13210545A4F00677DEB /* Druid_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T8.simcraft; sourceTree = "<group>"; };
+		44E3D13310545A4F00677DEB /* Druid_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T9.simcraft; sourceTree = "<group>"; };
+		44E3D13410545A4F00677DEB /* Globals_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Globals_T7.simcraft; sourceTree = "<group>"; };
+		44E3D13510545A4F00677DEB /* Globals_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Globals_T8.simcraft; sourceTree = "<group>"; };
+		44E3D13610545A4F00677DEB /* Globals_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Globals_T9.simcraft; sourceTree = "<group>"; };
+		44E3D13710545A4F00677DEB /* Hunter_Cat.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_Cat.simcraft; sourceTree = "<group>"; };
+		44E3D13810545A4F00677DEB /* Hunter_Devilsaur.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_Devilsaur.simcraft; sourceTree = "<group>"; };
+		44E3D13910545A4F00677DEB /* Hunter_Raptor.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_Raptor.simcraft; sourceTree = "<group>"; };
+		44E3D13A10545A4F00677DEB /* Hunter_T7_01_15_55.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T7_01_15_55.simcraft; sourceTree = "<group>"; };
+		44E3D13B10545A4F00677DEB /* Hunter_T7_15_51_05.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T7_15_51_05.simcraft; sourceTree = "<group>"; };
+		44E3D13C10545A4F00677DEB /* Hunter_T7_53_13_05.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T7_53_13_05.simcraft; sourceTree = "<group>"; };
+		44E3D13D10545A4F00677DEB /* Hunter_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T7.simcraft; sourceTree = "<group>"; };
+		44E3D13E10545A4F00677DEB /* Hunter_T8_01_15_55.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8_01_15_55.simcraft; sourceTree = "<group>"; };
+		44E3D13F10545A4F00677DEB /* Hunter_T8_07_57_07_HM.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8_07_57_07_HM.simcraft; sourceTree = "<group>"; };
+		44E3D14010545A4F00677DEB /* Hunter_T8_07_57_07.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8_07_57_07.simcraft; sourceTree = "<group>"; };
+		44E3D14110545A4F00677DEB /* Hunter_T8_54_12_05.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8_54_12_05.simcraft; sourceTree = "<group>"; };
+		44E3D14210545A4F00677DEB /* Hunter_T8_Pets.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8_Pets.simcraft; sourceTree = "<group>"; };
+		44E3D14310545A4F00677DEB /* Hunter_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T8.simcraft; sourceTree = "<group>"; };
+		44E3D14410545A4F00677DEB /* Hunter_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_T9.simcraft; sourceTree = "<group>"; };
+		44E3D14510545A4F00677DEB /* Hunter_Wind_Serpent.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_Wind_Serpent.simcraft; sourceTree = "<group>"; };
+		44E3D14610545A4F00677DEB /* Hunter_Wolf.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_Wolf.simcraft; sourceTree = "<group>"; };
+		44E3D14710545A4F00677DEB /* Mage_T7_00_53_18.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7_00_53_18.simcraft; sourceTree = "<group>"; };
+		44E3D14810545A4F00677DEB /* Mage_T7_18_00_53.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7_18_00_53.simcraft; sourceTree = "<group>"; };
+		44E3D14910545A4F00677DEB /* Mage_T7_20_51_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7_20_51_00.simcraft; sourceTree = "<group>"; };
+		44E3D14A10545A4F00677DEB /* Mage_T7_53_18_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7_53_18_00.simcraft; sourceTree = "<group>"; };
+		44E3D14B10545A4F00677DEB /* Mage_T7_57_03_11.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7_57_03_11.simcraft; sourceTree = "<group>"; };
+		44E3D14C10545A4F00677DEB /* Mage_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T7.simcraft; sourceTree = "<group>"; };
+		44E3D14D10545A4F00677DEB /* Mage_T8_00_53_18.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8_00_53_18.simcraft; sourceTree = "<group>"; };
+		44E3D14E10545A4F00677DEB /* Mage_T8_18_00_53.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8_18_00_53.simcraft; sourceTree = "<group>"; };
+		44E3D14F10545A4F00677DEB /* Mage_T8_20_51_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8_20_51_00.simcraft; sourceTree = "<group>"; };
+		44E3D15010545A4F00677DEB /* Mage_T8_53_18_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8_53_18_00.simcraft; sourceTree = "<group>"; };
+		44E3D15110545A4F00677DEB /* Mage_T8_57_03_11.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8_57_03_11.simcraft; sourceTree = "<group>"; };
+		44E3D15210545A4F00677DEB /* Mage_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T8.simcraft; sourceTree = "<group>"; };
+		44E3D15310545A4F00677DEB /* Mage_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_T9.simcraft; sourceTree = "<group>"; };
+		44E3D15410545A4F00677DEB /* opt_raid_mov.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = opt_raid_mov.simcraft; sourceTree = "<group>"; };
+		44E3D15510545A4F00677DEB /* opt_raid.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = opt_raid.simcraft; sourceTree = "<group>"; };
+		44E3D15610545A4F00677DEB /* Paladin_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Paladin_T7.simcraft; sourceTree = "<group>"; };
+		44E3D15710545A4F00677DEB /* Paladin_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Paladin_T8.simcraft; sourceTree = "<group>"; };
+		44E3D15810545A4F00677DEB /* Paladin_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Paladin_T9.simcraft; sourceTree = "<group>"; };
+		44E3D15910545A4F00677DEB /* Priest_T7_13_00_58_SWD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T7_13_00_58_SWD.simcraft; sourceTree = "<group>"; };
+		44E3D15A10545A4F00677DEB /* Priest_T7_13_00_58.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T7_13_00_58.simcraft; sourceTree = "<group>"; };
+		44E3D15B10545A4F00677DEB /* Priest_T7_34_28_09.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T7_34_28_09.simcraft; sourceTree = "<group>"; };
+		44E3D15C10545A4F00677DEB /* Priest_T7_51_20_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T7_51_20_00.simcraft; sourceTree = "<group>"; };
+		44E3D15D10545A4F00677DEB /* Priest_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T7.simcraft; sourceTree = "<group>"; };
+		44E3D15E10545A4F00677DEB /* Priest_T8_13_00_58_SWD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T8_13_00_58_SWD.simcraft; sourceTree = "<group>"; };
+		44E3D15F10545A4F00677DEB /* Priest_T8_13_00_58.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T8_13_00_58.simcraft; sourceTree = "<group>"; };
+		44E3D16010545A4F00677DEB /* Priest_T8_34_28_09.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T8_34_28_09.simcraft; sourceTree = "<group>"; };
+		44E3D16110545A4F00677DEB /* Priest_T8_51_20_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T8_51_20_00.simcraft; sourceTree = "<group>"; };
+		44E3D16210545A4F00677DEB /* Priest_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T8.simcraft; sourceTree = "<group>"; };
+		44E3D16310545A4F00677DEB /* Priest_T9_13_00_58_232_SWD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_232_SWD.simcraft; sourceTree = "<group>"; };
+		44E3D16410545A4F00677DEB /* Priest_T9_13_00_58_232.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_232.simcraft; sourceTree = "<group>"; };
+		44E3D16510545A4F00677DEB /* Priest_T9_13_00_58_245_SWD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_245_SWD.simcraft; sourceTree = "<group>"; };
+		44E3D16610545A4F00677DEB /* Priest_T9_13_00_58_245.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_245.simcraft; sourceTree = "<group>"; };
+		44E3D16710545A4F00677DEB /* Priest_T9_13_00_58_258_draenei.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_258_draenei.simcraft; sourceTree = "<group>"; };
+		44E3D16810545A4F00677DEB /* Priest_T9_13_00_58_258_SWD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_258_SWD.simcraft; sourceTree = "<group>"; };
+		44E3D16910545A4F00677DEB /* Priest_T9_13_00_58_258_troll.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_258_troll.simcraft; sourceTree = "<group>"; };
+		44E3D16A10545A4F00677DEB /* Priest_T9_13_00_58_258.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_13_00_58_258.simcraft; sourceTree = "<group>"; };
+		44E3D16B10545A4F00677DEB /* Priest_T9_34_28_09_232.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_34_28_09_232.simcraft; sourceTree = "<group>"; };
+		44E3D16C10545A4F00677DEB /* Priest_T9_34_28_09_245.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_34_28_09_245.simcraft; sourceTree = "<group>"; };
+		44E3D16D10545A4F00677DEB /* Priest_T9_34_28_09_258.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_34_28_09_258.simcraft; sourceTree = "<group>"; };
+		44E3D16E10545A4F00677DEB /* Priest_T9_51_20_00_232.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_51_20_00_232.simcraft; sourceTree = "<group>"; };
+		44E3D16F10545A4F00677DEB /* Priest_T9_51_20_00_245.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_51_20_00_245.simcraft; sourceTree = "<group>"; };
+		44E3D17010545A4F00677DEB /* Priest_T9_51_20_00_258.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9_51_20_00_258.simcraft; sourceTree = "<group>"; };
+		44E3D17110545A4F00677DEB /* Priest_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T9.simcraft; sourceTree = "<group>"; };
+		44E3D17210545A4F00677DEB /* Raid_PTR.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_PTR.simcraft; sourceTree = "<group>"; };
+		44E3D17310545A4F00677DEB /* Raid_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T7.simcraft; sourceTree = "<group>"; };
+		44E3D17410545A4F00677DEB /* Raid_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T8.simcraft; sourceTree = "<group>"; };
+		44E3D17510545A4F00677DEB /* Rogue_T7_07_51_13.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_07_51_13.simcraft; sourceTree = "<group>"; };
+		44E3D17610545A4F00677DEB /* Rogue_T7_08_20_43.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_08_20_43.simcraft; sourceTree = "<group>"; };
+		44E3D17710545A4F00677DEB /* Rogue_T7_18_51_02_BS.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_18_51_02_BS.simcraft; sourceTree = "<group>"; };
+		44E3D17810545A4F00677DEB /* Rogue_T7_18_51_02_FD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_18_51_02_FD.simcraft; sourceTree = "<group>"; };
+		44E3D17910545A4F00677DEB /* Rogue_T7_18_51_02_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_18_51_02_M.simcraft; sourceTree = "<group>"; };
+		44E3D17A10545A4F00677DEB /* Rogue_T7_18_51_02_S.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_18_51_02_S.simcraft; sourceTree = "<group>"; };
+		44E3D17B10545A4F00677DEB /* Rogue_T7_20_51_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_20_51_00.simcraft; sourceTree = "<group>"; };
+		44E3D17C10545A4F00677DEB /* Rogue_T7_23_05_43.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_23_05_43.simcraft; sourceTree = "<group>"; };
+		44E3D17D10545A4F00677DEB /* Rogue_T7_51_13_07.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_51_13_07.simcraft; sourceTree = "<group>"; };
+		44E3D17E10545A4F00677DEB /* Rogue_T7_51_18_02.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7_51_18_02.simcraft; sourceTree = "<group>"; };
+		44E3D17F10545A4F00677DEB /* Rogue_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T7.simcraft; sourceTree = "<group>"; };
+		44E3D18010545A4F00677DEB /* Rogue_T8_07_51_13_FD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_07_51_13_FD.simcraft; sourceTree = "<group>"; };
+		44E3D18110545A4F00677DEB /* Rogue_T8_08_20_43.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_08_20_43.simcraft; sourceTree = "<group>"; };
+		44E3D18210545A4F00677DEB /* Rogue_T8_10_18_43.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_10_18_43.simcraft; sourceTree = "<group>"; };
+		44E3D18310545A4F00677DEB /* Rogue_T8_15_51_05_FD.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_15_51_05_FD.simcraft; sourceTree = "<group>"; };
+		44E3D18410545A4F00677DEB /* Rogue_T8_15_51_05_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_15_51_05_M.simcraft; sourceTree = "<group>"; };
+		44E3D18510545A4F00677DEB /* Rogue_T8_15_51_05_S.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_15_51_05_S.simcraft; sourceTree = "<group>"; };
+		44E3D18610545A4F00677DEB /* Rogue_T8_18_51_02_BS.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_18_51_02_BS.simcraft; sourceTree = "<group>"; };
+		44E3D18710545A4F00677DEB /* Rogue_T8_23_05_43.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_23_05_43.simcraft; sourceTree = "<group>"; };
+		44E3D18810545A4F00677DEB /* Rogue_T8_51_07_13.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_51_07_13.simcraft; sourceTree = "<group>"; };
+		44E3D18910545A4F00677DEB /* Rogue_T8_51_13_07.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8_51_13_07.simcraft; sourceTree = "<group>"; };
+		44E3D18A10545A4F00677DEB /* Rogue_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T8.simcraft; sourceTree = "<group>"; };
+		44E3D18B10545A4F00677DEB /* Rogue_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_T9.simcraft; sourceTree = "<group>"; };
+		44E3D18C10545A4F00677DEB /* save_Shraak.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = save_Shraak.simcraft; sourceTree = "<group>"; };
+		44E3D18D10545A4F00677DEB /* Shaman_T7_18_53_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T7_18_53_00.simcraft; sourceTree = "<group>"; };
+		44E3D18E10545A4F00677DEB /* Shaman_T7_57_14_00_noToW.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T7_57_14_00_noToW.simcraft; sourceTree = "<group>"; };
+		44E3D18F10545A4F00677DEB /* Shaman_T7_57_14_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T7_57_14_00.simcraft; sourceTree = "<group>"; };
+		44E3D19010545A4F00677DEB /* Shaman_T7_Best_Elemental_Gear.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T7_Best_Elemental_Gear.simcraft; sourceTree = "<group>"; };
+		44E3D19110545A4F00677DEB /* Shaman_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T7.simcraft; sourceTree = "<group>"; };
+		44E3D19210545A4F00677DEB /* Shaman_T8_16_55_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T8_16_55_00.simcraft; sourceTree = "<group>"; };
+		44E3D19310545A4F00677DEB /* Shaman_T8_57_14_00_ToW.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T8_57_14_00_ToW.simcraft; sourceTree = "<group>"; };
+		44E3D19410545A4F00677DEB /* Shaman_T8_57_14_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T8_57_14_00.simcraft; sourceTree = "<group>"; };
+		44E3D19510545A4F00677DEB /* Shaman_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T8.simcraft; sourceTree = "<group>"; };
+		44E3D19610545A4F00677DEB /* Shaman_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_T9.simcraft; sourceTree = "<group>"; };
+		44E3D19710545A4F00677DEB /* Warlock_Filler.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Filler.simcraft; sourceTree = "<group>"; };
+		44E3D19810545A4F00677DEB /* Warlock_T7_00_13_58.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_00_13_58.simcraft; sourceTree = "<group>"; };
+		44E3D19910545A4F00677DEB /* Warlock_T7_00_40_31.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_00_40_31.simcraft; sourceTree = "<group>"; };
+		44E3D19A10545A4F00677DEB /* Warlock_T7_00_41_30.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_00_41_30.simcraft; sourceTree = "<group>"; };
+		44E3D19B10545A4F00677DEB /* Warlock_T7_00_56_15.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_00_56_15.simcraft; sourceTree = "<group>"; };
+		44E3D19C10545A4F00677DEB /* Warlock_T7_03_13_55.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_03_13_55.simcraft; sourceTree = "<group>"; };
+		44E3D19D10545A4F00677DEB /* Warlock_T7_03_52_16.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_03_52_16.simcraft; sourceTree = "<group>"; };
+		44E3D19E10545A4F00677DEB /* Warlock_T7_53_00_18_DG.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_53_00_18_DG.simcraft; sourceTree = "<group>"; };
+		44E3D19F10545A4F00677DEB /* Warlock_T7_53_00_18.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_53_00_18.simcraft; sourceTree = "<group>"; };
+		44E3D1A010545A4F00677DEB /* Warlock_T7_Gear.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_Gear.simcraft; sourceTree = "<group>"; };
+		44E3D1A110545A4F00677DEB /* Warlock_T7_Hit_Gear.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7_Hit_Gear.simcraft; sourceTree = "<group>"; };
+		44E3D1A210545A4F00677DEB /* Warlock_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T7.simcraft; sourceTree = "<group>"; };
+		44E3D1A310545A4F00677DEB /* Warlock_T8_00_13_58.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_00_13_58.simcraft; sourceTree = "<group>"; };
+		44E3D1A410545A4F00677DEB /* Warlock_T8_00_40_31.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_00_40_31.simcraft; sourceTree = "<group>"; };
+		44E3D1A510545A4F00677DEB /* Warlock_T8_00_41_30.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_00_41_30.simcraft; sourceTree = "<group>"; };
+		44E3D1A610545A4F00677DEB /* Warlock_T8_00_56_15.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_00_56_15.simcraft; sourceTree = "<group>"; };
+		44E3D1A710545A4F00677DEB /* Warlock_T8_03_13_55.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_03_13_55.simcraft; sourceTree = "<group>"; };
+		44E3D1A810545A4F00677DEB /* Warlock_T8_03_52_16.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_03_52_16.simcraft; sourceTree = "<group>"; };
+		44E3D1A910545A4F00677DEB /* Warlock_T8_53_00_18_DG.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_53_00_18_DG.simcraft; sourceTree = "<group>"; };
+		44E3D1AA10545A4F00677DEB /* Warlock_T8_53_00_18.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8_53_00_18.simcraft; sourceTree = "<group>"; };
+		44E3D1AB10545A4F00677DEB /* Warlock_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T8.simcraft; sourceTree = "<group>"; };
+		44E3D1AC10545A4F00677DEB /* Warlock_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T9.simcraft; sourceTree = "<group>"; };
+		44E3D1AD10545A4F00677DEB /* Warrior_T7_18_53_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T7_18_53_00.simcraft; sourceTree = "<group>"; };
+		44E3D1AE10545A4F00677DEB /* Warrior_T7.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T7.simcraft; sourceTree = "<group>"; };
+		44E3D1AF10545A4F00677DEB /* Warrior_T8_19_52_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T8_19_52_00.simcraft; sourceTree = "<group>"; };
+		44E3D1B010545A4F00677DEB /* Warrior_T8_54_17_00_A.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T8_54_17_00_A.simcraft; sourceTree = "<group>"; };
+		44E3D1B110545A4F00677DEB /* Warrior_T8_54_17_00_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T8_54_17_00_M.simcraft; sourceTree = "<group>"; };
+		44E3D1B210545A4F00677DEB /* Warrior_T8_54_17_00_S.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T8_54_17_00_S.simcraft; sourceTree = "<group>"; };
+		44E3D1B310545A4F00677DEB /* Warrior_T8.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T8.simcraft; sourceTree = "<group>"; };
+		44E3D1B410545A4F00677DEB /* Warrior_T9_19_52_00.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T9_19_52_00.simcraft; sourceTree = "<group>"; };
+		44E3D1B510545A4F00677DEB /* Warrior_T9_54_17_00_A.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T9_54_17_00_A.simcraft; sourceTree = "<group>"; };
+		44E3D1B610545A4F00677DEB /* Warrior_T9_54_17_00_M.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T9_54_17_00_M.simcraft; sourceTree = "<group>"; };
+		44E3D1B710545A4F00677DEB /* Warrior_T9_54_17_00_S.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T9_54_17_00_S.simcraft; sourceTree = "<group>"; };
+		44E3D1B810545A4F00677DEB /* Warrior_T9.simcraft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T9.simcraft; sourceTree = "<group>"; };
+		44E3D1B910545A7500677DEB /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_action.cpp; sourceTree = "<group>"; };
+		44E3D1BA10545A7500677DEB /* sc_armory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_armory.cpp; sourceTree = "<group>"; };
+		44E3D1BB10545A7500677DEB /* sc_attack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_attack.cpp; sourceTree = "<group>"; };
+		44E3D1BC10545A7500677DEB /* sc_buff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_buff.cpp; sourceTree = "<group>"; };
+		44E3D1BD10545A7500677DEB /* sc_chart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_chart.cpp; sourceTree = "<group>"; };
+		44E3D1BE10545A7500677DEB /* sc_consumable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_consumable.cpp; sourceTree = "<group>"; };
+		44E3D1BF10545A7500677DEB /* sc_death_knight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_death_knight.cpp; sourceTree = "<group>"; };
+		44E3D1C010545A7500677DEB /* sc_druid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_druid.cpp; sourceTree = "<group>"; };
+		44E3D1C110545A7500677DEB /* sc_enchant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_enchant.cpp; sourceTree = "<group>"; };
+		44E3D1C210545A7500677DEB /* sc_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_event.cpp; sourceTree = "<group>"; };
+		44E3D1C310545A7500677DEB /* sc_expressions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_expressions.cpp; sourceTree = "<group>"; };
+		44E3D1C410545A7500677DEB /* sc_gear_stats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_gear_stats.cpp; sourceTree = "<group>"; };
+		44E3D1C510545A7500677DEB /* sc_http.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_http.cpp; sourceTree = "<group>"; };
+		44E3D1C610545A7500677DEB /* sc_hunter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_hunter.cpp; sourceTree = "<group>"; };
+		44E3D1C710545A7500677DEB /* sc_item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_item.cpp; sourceTree = "<group>"; };
+		44E3D1C810545A7500677DEB /* sc_js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_js.cpp; sourceTree = "<group>"; };
+		44E3D1C910545A7500677DEB /* sc_log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_log.cpp; sourceTree = "<group>"; };
+		44E3D1CA10545A7500677DEB /* sc_mage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_mage.cpp; sourceTree = "<group>"; };
+		44E3D1CB10545A7500677DEB /* sc_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_main.cpp; sourceTree = "<group>"; };
+		44E3D1CC10545A7500677DEB /* sc_mmo_champion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_mmo_champion.cpp; sourceTree = "<group>"; };
+		44E3D1CD10545A7500677DEB /* sc_option.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_option.cpp; sourceTree = "<group>"; };
+		44E3D1CE10545A7500677DEB /* sc_paladin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_paladin.cpp; sourceTree = "<group>"; };
+		44E3D1CF10545A7500677DEB /* sc_pet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_pet.cpp; sourceTree = "<group>"; };
+		44E3D1D010545A7500677DEB /* sc_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_player.cpp; sourceTree = "<group>"; };
+		44E3D1D110545A7500677DEB /* sc_priest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_priest.cpp; sourceTree = "<group>"; };
+		44E3D1D210545A7500677DEB /* sc_raid_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_raid_event.cpp; sourceTree = "<group>"; };
+		44E3D1D310545A7500677DEB /* sc_rating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_rating.cpp; sourceTree = "<group>"; };
+		44E3D1D410545A7500677DEB /* sc_rawr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_rawr.cpp; sourceTree = "<group>"; };
+		44E3D1D510545A7500677DEB /* sc_report.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_report.cpp; sourceTree = "<group>"; };
+		44E3D1D610545A7500677DEB /* sc_rng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_rng.cpp; sourceTree = "<group>"; };
+		44E3D1D710545A7500677DEB /* sc_rogue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_rogue.cpp; sourceTree = "<group>"; };
+		44E3D1D810545A7500677DEB /* sc_scaling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_scaling.cpp; sourceTree = "<group>"; };
+		44E3D1D910545A7500677DEB /* sc_sequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_sequence.cpp; sourceTree = "<group>"; };
+		44E3D1DA10545A7500677DEB /* sc_set_bonus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_set_bonus.cpp; sourceTree = "<group>"; };
+		44E3D1DB10545A7500677DEB /* sc_shaman.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_shaman.cpp; sourceTree = "<group>"; };
+		44E3D1DC10545A7500677DEB /* sc_sim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_sim.cpp; sourceTree = "<group>"; };
+		44E3D1DD10545A7500677DEB /* sc_spell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_spell.cpp; sourceTree = "<group>"; };
+		44E3D1DE10545A7500677DEB /* sc_stats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_stats.cpp; sourceTree = "<group>"; };
+		44E3D1DF10545A7500677DEB /* sc_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_target.cpp; sourceTree = "<group>"; };
+		44E3D1E010545A7500677DEB /* sc_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_thread.cpp; sourceTree = "<group>"; };
+		44E3D1E110545A7500677DEB /* sc_unique_gear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_unique_gear.cpp; sourceTree = "<group>"; };
+		44E3D1E210545A7500677DEB /* sc_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_util.cpp; sourceTree = "<group>"; };
+		44E3D1E310545A7500677DEB /* sc_warlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_warlock.cpp; sourceTree = "<group>"; };
+		44E3D1E410545A7500677DEB /* sc_warrior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_warrior.cpp; sourceTree = "<group>"; };
+		44E3D1E510545A7500677DEB /* sc_weapon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_weapon.cpp; sourceTree = "<group>"; };
+		44E3D1E610545A7500677DEB /* sc_wowhead.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_wowhead.cpp; sourceTree = "<group>"; };
+		44E3D1E710545A7500677DEB /* sc_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_xml.cpp; sourceTree = "<group>"; };
+		44E3D21810545A9800677DEB /* simcraft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simcraft.h; sourceTree = "<group>"; };
+		44E3D21C10545AD700677DEB /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		8DD76F6C0486A84900D96B5E /* simcraft */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simcraft; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* simcraft */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				44E3D21710545A7B00677DEB /* Headers */,
+				44E3D12410545A2400677DEB /* Config Files */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = simcraft;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				44E3D1B910545A7500677DEB /* sc_action.cpp */,
+				44E3D1BA10545A7500677DEB /* sc_armory.cpp */,
+				44E3D1BB10545A7500677DEB /* sc_attack.cpp */,
+				44E3D1BC10545A7500677DEB /* sc_buff.cpp */,
+				44E3D1BD10545A7500677DEB /* sc_chart.cpp */,
+				44E3D1BE10545A7500677DEB /* sc_consumable.cpp */,
+				44E3D1BF10545A7500677DEB /* sc_death_knight.cpp */,
+				44E3D1C010545A7500677DEB /* sc_druid.cpp */,
+				44E3D1C110545A7500677DEB /* sc_enchant.cpp */,
+				44E3D1C210545A7500677DEB /* sc_event.cpp */,
+				44E3D1C310545A7500677DEB /* sc_expressions.cpp */,
+				44E3D1C410545A7500677DEB /* sc_gear_stats.cpp */,
+				44E3D1C510545A7500677DEB /* sc_http.cpp */,
+				44E3D1C610545A7500677DEB /* sc_hunter.cpp */,
+				44E3D1C710545A7500677DEB /* sc_item.cpp */,
+				44E3D1C810545A7500677DEB /* sc_js.cpp */,
+				44E3D1C910545A7500677DEB /* sc_log.cpp */,
+				44E3D1CA10545A7500677DEB /* sc_mage.cpp */,
+				44E3D1CB10545A7500677DEB /* sc_main.cpp */,
+				44E3D1CC10545A7500677DEB /* sc_mmo_champion.cpp */,
+				44E3D1CD10545A7500677DEB /* sc_option.cpp */,
+				44E3D1CE10545A7500677DEB /* sc_paladin.cpp */,
+				44E3D1CF10545A7500677DEB /* sc_pet.cpp */,
+				44E3D1D010545A7500677DEB /* sc_player.cpp */,
+				44E3D1D110545A7500677DEB /* sc_priest.cpp */,
+				44E3D1D210545A7500677DEB /* sc_raid_event.cpp */,
+				44E3D1D310545A7500677DEB /* sc_rating.cpp */,
+				44E3D1D410545A7500677DEB /* sc_rawr.cpp */,
+				44E3D1D510545A7500677DEB /* sc_report.cpp */,
+				44E3D1D610545A7500677DEB /* sc_rng.cpp */,
+				44E3D1D710545A7500677DEB /* sc_rogue.cpp */,
+				44E3D1D810545A7500677DEB /* sc_scaling.cpp */,
+				44E3D1D910545A7500677DEB /* sc_sequence.cpp */,
+				44E3D1DA10545A7500677DEB /* sc_set_bonus.cpp */,
+				44E3D1DB10545A7500677DEB /* sc_shaman.cpp */,
+				44E3D1DC10545A7500677DEB /* sc_sim.cpp */,
+				44E3D1DD10545A7500677DEB /* sc_spell.cpp */,
+				44E3D1DE10545A7500677DEB /* sc_stats.cpp */,
+				44E3D1DF10545A7500677DEB /* sc_target.cpp */,
+				44E3D1E010545A7500677DEB /* sc_thread.cpp */,
+				44E3D1E110545A7500677DEB /* sc_unique_gear.cpp */,
+				44E3D1E210545A7500677DEB /* sc_util.cpp */,
+				44E3D1E310545A7500677DEB /* sc_warlock.cpp */,
+				44E3D1E410545A7500677DEB /* sc_warrior.cpp */,
+				44E3D1E510545A7500677DEB /* sc_weapon.cpp */,
+				44E3D1E610545A7500677DEB /* sc_wowhead.cpp */,
+				44E3D1E710545A7500677DEB /* sc_xml.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* simcraft */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		44E3D12410545A2400677DEB /* Config Files */ = {
+			isa = PBXGroup;
+			children = (
+				44E3D12510545A4F00677DEB /* Death_Knight_T8_51_00_20.simcraft */,
+				44E3D12610545A4F00677DEB /* Death_Knight_Test.simcraft */,
+				44E3D12710545A4F00677DEB /* Deathknight_T7.simcraft */,
+				44E3D12810545A4F00677DEB /* Deathknight_T8.simcraft */,
+				44E3D12910545A4F00677DEB /* Deathknight_T9.simcraft */,
+				44E3D12A10545A4F00677DEB /* Druid_T7_00_55_16_M.simcraft */,
+				44E3D12B10545A4F00677DEB /* Druid_T7_00_55_16.simcraft */,
+				44E3D12C10545A4F00677DEB /* Druid_T7_58_00_13_SF.simcraft */,
+				44E3D12D10545A4F00677DEB /* Druid_T7_58_00_13_W.simcraft */,
+				44E3D12E10545A4F00677DEB /* Druid_T7.simcraft */,
+				44E3D12F10545A4F00677DEB /* Druid_T8_00_55_16_M.simcraft */,
+				44E3D13010545A4F00677DEB /* Druid_T8_00_55_16.simcraft */,
+				44E3D13110545A4F00677DEB /* Druid_T8_58_00_13.simcraft */,
+				44E3D13210545A4F00677DEB /* Druid_T8.simcraft */,
+				44E3D13310545A4F00677DEB /* Druid_T9.simcraft */,
+				44E3D13410545A4F00677DEB /* Globals_T7.simcraft */,
+				44E3D13510545A4F00677DEB /* Globals_T8.simcraft */,
+				44E3D13610545A4F00677DEB /* Globals_T9.simcraft */,
+				44E3D13710545A4F00677DEB /* Hunter_Cat.simcraft */,
+				44E3D13810545A4F00677DEB /* Hunter_Devilsaur.simcraft */,
+				44E3D13910545A4F00677DEB /* Hunter_Raptor.simcraft */,
+				44E3D13A10545A4F00677DEB /* Hunter_T7_01_15_55.simcraft */,
+				44E3D13B10545A4F00677DEB /* Hunter_T7_15_51_05.simcraft */,
+				44E3D13C10545A4F00677DEB /* Hunter_T7_53_13_05.simcraft */,
+				44E3D13D10545A4F00677DEB /* Hunter_T7.simcraft */,
+				44E3D13E10545A4F00677DEB /* Hunter_T8_01_15_55.simcraft */,
+				44E3D13F10545A4F00677DEB /* Hunter_T8_07_57_07_HM.simcraft */,
+				44E3D14010545A4F00677DEB /* Hunter_T8_07_57_07.simcraft */,
+				44E3D14110545A4F00677DEB /* Hunter_T8_54_12_05.simcraft */,
+				44E3D14210545A4F00677DEB /* Hunter_T8_Pets.simcraft */,
+				44E3D14310545A4F00677DEB /* Hunter_T8.simcraft */,
+				44E3D14410545A4F00677DEB /* Hunter_T9.simcraft */,
+				44E3D14510545A4F00677DEB /* Hunter_Wind_Serpent.simcraft */,
+				44E3D14610545A4F00677DEB /* Hunter_Wolf.simcraft */,
+				44E3D14710545A4F00677DEB /* Mage_T7_00_53_18.simcraft */,
+				44E3D14810545A4F00677DEB /* Mage_T7_18_00_53.simcraft */,
+				44E3D14910545A4F00677DEB /* Mage_T7_20_51_00.simcraft */,
+				44E3D14A10545A4F00677DEB /* Mage_T7_53_18_00.simcraft */,
+				44E3D14B10545A4F00677DEB /* Mage_T7_57_03_11.simcraft */,
+				44E3D14C10545A4F00677DEB /* Mage_T7.simcraft */,
+				44E3D14D10545A4F00677DEB /* Mage_T8_00_53_18.simcraft */,
+				44E3D14E10545A4F00677DEB /* Mage_T8_18_00_53.simcraft */,
+				44E3D14F10545A4F00677DEB /* Mage_T8_20_51_00.simcraft */,
+				44E3D15010545A4F00677DEB /* Mage_T8_53_18_00.simcraft */,
+				44E3D15110545A4F00677DEB /* Mage_T8_57_03_11.simcraft */,
+				44E3D15210545A4F00677DEB /* Mage_T8.simcraft */,
+				44E3D15310545A4F00677DEB /* Mage_T9.simcraft */,
+				44E3D15410545A4F00677DEB /* opt_raid_mov.simcraft */,
+				44E3D15510545A4F00677DEB /* opt_raid.simcraft */,
+				44E3D15610545A4F00677DEB /* Paladin_T7.simcraft */,
+				44E3D15710545A4F00677DEB /* Paladin_T8.simcraft */,
+				44E3D15810545A4F00677DEB /* Paladin_T9.simcraft */,
+				44E3D15910545A4F00677DEB /* Priest_T7_13_00_58_SWD.simcraft */,
+				44E3D15A10545A4F00677DEB /* Priest_T7_13_00_58.simcraft */,
+				44E3D15B10545A4F00677DEB /* Priest_T7_34_28_09.simcraft */,
+				44E3D15C10545A4F00677DEB /* Priest_T7_51_20_00.simcraft */,
+				44E3D15D10545A4F00677DEB /* Priest_T7.simcraft */,
+				44E3D15E10545A4F00677DEB /* Priest_T8_13_00_58_SWD.simcraft */,
+				44E3D15F10545A4F00677DEB /* Priest_T8_13_00_58.simcraft */,
+				44E3D16010545A4F00677DEB /* Priest_T8_34_28_09.simcraft */,
+				44E3D16110545A4F00677DEB /* Priest_T8_51_20_00.simcraft */,
+				44E3D16210545A4F00677DEB /* Priest_T8.simcraft */,
+				44E3D16310545A4F00677DEB /* Priest_T9_13_00_58_232_SWD.simcraft */,
+				44E3D16410545A4F00677DEB /* Priest_T9_13_00_58_232.simcraft */,
+				44E3D16510545A4F00677DEB /* Priest_T9_13_00_58_245_SWD.simcraft */,
+				44E3D16610545A4F00677DEB /* Priest_T9_13_00_58_245.simcraft */,
+				44E3D16710545A4F00677DEB /* Priest_T9_13_00_58_258_draenei.simcraft */,
+				44E3D16810545A4F00677DEB /* Priest_T9_13_00_58_258_SWD.simcraft */,
+				44E3D16910545A4F00677DEB /* Priest_T9_13_00_58_258_troll.simcraft */,
+				44E3D16A10545A4F00677DEB /* Priest_T9_13_00_58_258.simcraft */,
+				44E3D16B10545A4F00677DEB /* Priest_T9_34_28_09_232.simcraft */,
+				44E3D16C10545A4F00677DEB /* Priest_T9_34_28_09_245.simcraft */,
+				44E3D16D10545A4F00677DEB /* Priest_T9_34_28_09_258.simcraft */,
+				44E3D16E10545A4F00677DEB /* Priest_T9_51_20_00_232.simcraft */,
+				44E3D16F10545A4F00677DEB /* Priest_T9_51_20_00_245.simcraft */,
+				44E3D17010545A4F00677DEB /* Priest_T9_51_20_00_258.simcraft */,
+				44E3D17110545A4F00677DEB /* Priest_T9.simcraft */,
+				44E3D17210545A4F00677DEB /* Raid_PTR.simcraft */,
+				44E3D17310545A4F00677DEB /* Raid_T7.simcraft */,
+				44E3D17410545A4F00677DEB /* Raid_T8.simcraft */,
+				44E3D17510545A4F00677DEB /* Rogue_T7_07_51_13.simcraft */,
+				44E3D17610545A4F00677DEB /* Rogue_T7_08_20_43.simcraft */,
+				44E3D17710545A4F00677DEB /* Rogue_T7_18_51_02_BS.simcraft */,
+				44E3D17810545A4F00677DEB /* Rogue_T7_18_51_02_FD.simcraft */,
+				44E3D17910545A4F00677DEB /* Rogue_T7_18_51_02_M.simcraft */,
+				44E3D17A10545A4F00677DEB /* Rogue_T7_18_51_02_S.simcraft */,
+				44E3D17B10545A4F00677DEB /* Rogue_T7_20_51_00.simcraft */,
+				44E3D17C10545A4F00677DEB /* Rogue_T7_23_05_43.simcraft */,
+				44E3D17D10545A4F00677DEB /* Rogue_T7_51_13_07.simcraft */,
+				44E3D17E10545A4F00677DEB /* Rogue_T7_51_18_02.simcraft */,
+				44E3D17F10545A4F00677DEB /* Rogue_T7.simcraft */,
+				44E3D18010545A4F00677DEB /* Rogue_T8_07_51_13_FD.simcraft */,
+				44E3D18110545A4F00677DEB /* Rogue_T8_08_20_43.simcraft */,
+				44E3D18210545A4F00677DEB /* Rogue_T8_10_18_43.simcraft */,
+				44E3D18310545A4F00677DEB /* Rogue_T8_15_51_05_FD.simcraft */,
+				44E3D18410545A4F00677DEB /* Rogue_T8_15_51_05_M.simcraft */,
+				44E3D18510545A4F00677DEB /* Rogue_T8_15_51_05_S.simcraft */,
+				44E3D18610545A4F00677DEB /* Rogue_T8_18_51_02_BS.simcraft */,
+				44E3D18710545A4F00677DEB /* Rogue_T8_23_05_43.simcraft */,
+				44E3D18810545A4F00677DEB /* Rogue_T8_51_07_13.simcraft */,
+				44E3D18910545A4F00677DEB /* Rogue_T8_51_13_07.simcraft */,
+				44E3D18A10545A4F00677DEB /* Rogue_T8.simcraft */,
+				44E3D18B10545A4F00677DEB /* Rogue_T9.simcraft */,
+				44E3D18C10545A4F00677DEB /* save_Shraak.simcraft */,
+				44E3D18D10545A4F00677DEB /* Shaman_T7_18_53_00.simcraft */,
+				44E3D18E10545A4F00677DEB /* Shaman_T7_57_14_00_noToW.simcraft */,
+				44E3D18F10545A4F00677DEB /* Shaman_T7_57_14_00.simcraft */,
+				44E3D19010545A4F00677DEB /* Shaman_T7_Best_Elemental_Gear.simcraft */,
+				44E3D19110545A4F00677DEB /* Shaman_T7.simcraft */,
+				44E3D19210545A4F00677DEB /* Shaman_T8_16_55_00.simcraft */,
+				44E3D19310545A4F00677DEB /* Shaman_T8_57_14_00_ToW.simcraft */,
+				44E3D19410545A4F00677DEB /* Shaman_T8_57_14_00.simcraft */,
+				44E3D19510545A4F00677DEB /* Shaman_T8.simcraft */,
+				44E3D19610545A4F00677DEB /* Shaman_T9.simcraft */,
+				44E3D19710545A4F00677DEB /* Warlock_Filler.simcraft */,
+				44E3D19810545A4F00677DEB /* Warlock_T7_00_13_58.simcraft */,
+				44E3D19910545A4F00677DEB /* Warlock_T7_00_40_31.simcraft */,
+				44E3D19A10545A4F00677DEB /* Warlock_T7_00_41_30.simcraft */,
+				44E3D19B10545A4F00677DEB /* Warlock_T7_00_56_15.simcraft */,
+				44E3D19C10545A4F00677DEB /* Warlock_T7_03_13_55.simcraft */,
+				44E3D19D10545A4F00677DEB /* Warlock_T7_03_52_16.simcraft */,
+				44E3D19E10545A4F00677DEB /* Warlock_T7_53_00_18_DG.simcraft */,
+				44E3D19F10545A4F00677DEB /* Warlock_T7_53_00_18.simcraft */,
+				44E3D1A010545A4F00677DEB /* Warlock_T7_Gear.simcraft */,
+				44E3D1A110545A4F00677DEB /* Warlock_T7_Hit_Gear.simcraft */,
+				44E3D1A210545A4F00677DEB /* Warlock_T7.simcraft */,
+				44E3D1A310545A4F00677DEB /* Warlock_T8_00_13_58.simcraft */,
+				44E3D1A410545A4F00677DEB /* Warlock_T8_00_40_31.simcraft */,
+				44E3D1A510545A4F00677DEB /* Warlock_T8_00_41_30.simcraft */,
+				44E3D1A610545A4F00677DEB /* Warlock_T8_00_56_15.simcraft */,
+				44E3D1A710545A4F00677DEB /* Warlock_T8_03_13_55.simcraft */,
+				44E3D1A810545A4F00677DEB /* Warlock_T8_03_52_16.simcraft */,
+				44E3D1A910545A4F00677DEB /* Warlock_T8_53_00_18_DG.simcraft */,
+				44E3D1AA10545A4F00677DEB /* Warlock_T8_53_00_18.simcraft */,
+				44E3D1AB10545A4F00677DEB /* Warlock_T8.simcraft */,
+				44E3D1AC10545A4F00677DEB /* Warlock_T9.simcraft */,
+				44E3D1AD10545A4F00677DEB /* Warrior_T7_18_53_00.simcraft */,
+				44E3D1AE10545A4F00677DEB /* Warrior_T7.simcraft */,
+				44E3D1AF10545A4F00677DEB /* Warrior_T8_19_52_00.simcraft */,
+				44E3D1B010545A4F00677DEB /* Warrior_T8_54_17_00_A.simcraft */,
+				44E3D1B110545A4F00677DEB /* Warrior_T8_54_17_00_M.simcraft */,
+				44E3D1B210545A4F00677DEB /* Warrior_T8_54_17_00_S.simcraft */,
+				44E3D1B310545A4F00677DEB /* Warrior_T8.simcraft */,
+				44E3D1B410545A4F00677DEB /* Warrior_T9_19_52_00.simcraft */,
+				44E3D1B510545A4F00677DEB /* Warrior_T9_54_17_00_A.simcraft */,
+				44E3D1B610545A4F00677DEB /* Warrior_T9_54_17_00_M.simcraft */,
+				44E3D1B710545A4F00677DEB /* Warrior_T9_54_17_00_S.simcraft */,
+				44E3D1B810545A4F00677DEB /* Warrior_T9.simcraft */,
+			);
+			name = "Config Files";
+			sourceTree = "<group>";
+		};
+		44E3D21710545A7B00677DEB /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				44E3D21810545A9800677DEB /* simcraft.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				44E3D21C10545AD700677DEB /* README.txt */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* simcraft */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "simcraft" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = simcraft;
+			productInstallPath = "$(HOME)/bin";
+			productName = simcraft;
+			productReference = 8DD76F6C0486A84900D96B5E /* simcraft */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				ORGANIZATIONNAME = "Craig Hughes";
+			};
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "simcraft" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* simcraft */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* simcraft */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44E3D1E810545A7500677DEB /* sc_action.cpp in Sources */,
+				44E3D1E910545A7500677DEB /* sc_armory.cpp in Sources */,
+				44E3D1EA10545A7500677DEB /* sc_attack.cpp in Sources */,
+				44E3D1EB10545A7500677DEB /* sc_buff.cpp in Sources */,
+				44E3D1EC10545A7500677DEB /* sc_chart.cpp in Sources */,
+				44E3D1ED10545A7500677DEB /* sc_consumable.cpp in Sources */,
+				44E3D1EE10545A7500677DEB /* sc_death_knight.cpp in Sources */,
+				44E3D1EF10545A7500677DEB /* sc_druid.cpp in Sources */,
+				44E3D1F010545A7500677DEB /* sc_enchant.cpp in Sources */,
+				44E3D1F110545A7500677DEB /* sc_event.cpp in Sources */,
+				44E3D1F210545A7500677DEB /* sc_expressions.cpp in Sources */,
+				44E3D1F310545A7500677DEB /* sc_gear_stats.cpp in Sources */,
+				44E3D1F410545A7500677DEB /* sc_http.cpp in Sources */,
+				44E3D1F510545A7500677DEB /* sc_hunter.cpp in Sources */,
+				44E3D1F610545A7500677DEB /* sc_item.cpp in Sources */,
+				44E3D1F710545A7500677DEB /* sc_js.cpp in Sources */,
+				44E3D1F810545A7500677DEB /* sc_log.cpp in Sources */,
+				44E3D1F910545A7500677DEB /* sc_mage.cpp in Sources */,
+				44E3D1FA10545A7500677DEB /* sc_main.cpp in Sources */,
+				44E3D1FB10545A7500677DEB /* sc_mmo_champion.cpp in Sources */,
+				44E3D1FC10545A7500677DEB /* sc_option.cpp in Sources */,
+				44E3D1FD10545A7500677DEB /* sc_paladin.cpp in Sources */,
+				44E3D1FE10545A7500677DEB /* sc_pet.cpp in Sources */,
+				44E3D1FF10545A7500677DEB /* sc_player.cpp in Sources */,
+				44E3D20010545A7500677DEB /* sc_priest.cpp in Sources */,
+				44E3D20110545A7500677DEB /* sc_raid_event.cpp in Sources */,
+				44E3D20210545A7500677DEB /* sc_rating.cpp in Sources */,
+				44E3D20310545A7500677DEB /* sc_rawr.cpp in Sources */,
+				44E3D20410545A7500677DEB /* sc_report.cpp in Sources */,
+				44E3D20510545A7500677DEB /* sc_rng.cpp in Sources */,
+				44E3D20610545A7500677DEB /* sc_rogue.cpp in Sources */,
+				44E3D20710545A7500677DEB /* sc_scaling.cpp in Sources */,
+				44E3D20810545A7500677DEB /* sc_sequence.cpp in Sources */,
+				44E3D20910545A7500677DEB /* sc_set_bonus.cpp in Sources */,
+				44E3D20A10545A7500677DEB /* sc_shaman.cpp in Sources */,
+				44E3D20B10545A7500677DEB /* sc_sim.cpp in Sources */,
+				44E3D20C10545A7500677DEB /* sc_spell.cpp in Sources */,
+				44E3D20D10545A7500677DEB /* sc_stats.cpp in Sources */,
+				44E3D20E10545A7500677DEB /* sc_target.cpp in Sources */,
+				44E3D20F10545A7500677DEB /* sc_thread.cpp in Sources */,
+				44E3D21010545A7500677DEB /* sc_unique_gear.cpp in Sources */,
+				44E3D21110545A7500677DEB /* sc_util.cpp in Sources */,
+				44E3D21210545A7500677DEB /* sc_warlock.cpp in Sources */,
+				44E3D21310545A7500677DEB /* sc_warrior.cpp in Sources */,
+				44E3D21410545A7500677DEB /* sc_weapon.cpp in Sources */,
+				44E3D21510545A7500677DEB /* sc_wowhead.cpp in Sources */,
+				44E3D21610545A7500677DEB /* sc_xml.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_GLIBCXX_DEBUG=1",
+					"_GLIBCXX_DEBUG_PEDANTIC=1",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = simcraft;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = simcraft;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = NO;
+				MACH_O_TYPE = mh_execute;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "simcraft" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "simcraft" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
