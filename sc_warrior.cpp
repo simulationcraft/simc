@@ -70,6 +70,7 @@ struct warrior_t : public player_t
 
   struct talents_t
   {
+    int anticipation;           
     int armored_to_the_teeth;
     int anger_management;
     int bladestorm;
@@ -83,6 +84,7 @@ struct warrior_t : public player_t
     int cruelty;
     int death_wish;
     int deep_wounds;
+    int deflection;
     int devastate;
     int dual_wield_specialization;
     int endless_rage;
@@ -2165,7 +2167,8 @@ void warrior_t::init_base()
   // FIXME! Level-specific!
   base_defense = level * 5;
   base_miss    = 0.05;
-  base_dodge   = 0.03664;
+  base_dodge   = 0.03664 + 0.01 * talents.anticipation;
+  base_parry   = 0.01 * talents.deflection;
   initial_dodge_per_agility = 0.0001180;
   initial_armor_per_agility = 2.0;
 
@@ -2456,10 +2459,10 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
   talent_translation_t translation[][3] =
   {
     { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage         ) } },
-    { {  2, NULL                                         }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
+    { {  2, &( talents.deflection                      ) }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
     { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap       ) } },
     { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                     ) } },
-    { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, NULL                                    } },
+    { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, &( talents.anticipation               ) } },
     { {  6, NULL                                         }, {  6, NULL                                   }, {  6, NULL                                    } },
     { {  7, &( talents.improved_overpower              ) }, {  7, NULL                                   }, {  7, &( talents.improved_revenge           ) } },
     { {  8, &( talents.anger_management                ) }, {  8, NULL                                   }, {  8, &( talents.shield_mastery             ) } },
@@ -2502,6 +2505,7 @@ std::vector<option_t>& warrior_t::get_options()
     option_t warrior_options[] =
     {
       // @option_doc loc=player/warrior/talents title="Talents"
+      { "anticipation",                    OPT_INT, &( talents.anticipation                    ) },
       { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
       { "anger_management",                OPT_INT, &( talents.anger_management                ) },
       { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
@@ -2515,6 +2519,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "cruelty",                         OPT_INT, &( talents.cruelty                         ) },
       { "death_wish",                      OPT_INT, &( talents.death_wish                      ) },
       { "deep_wounds",                     OPT_INT, &( talents.deep_wounds                     ) },
+      { "deflection",                      OPT_INT, &( talents.deflection                      ) },
       { "devastate",                       OPT_INT, &( talents.devastate                       ) },
       { "dual_wield_specialization",       OPT_INT, &( talents.dual_wield_specialization       ) },
       { "endless_rage",                    OPT_INT, &( talents.endless_rage                    ) },
