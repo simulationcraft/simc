@@ -347,16 +347,16 @@ static void print_attack_stats( FILE* file, player_t* p )
 static void print_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Defense Stats:  armor=%.0f(%.0f)  miss=%.0f/%.0f/%.0f  dodge=%.0f%%(%.0f)  parry=%.0f%%(%.0f)  block=%.0f%%(%.0f)  blockv=%.0f(%.0f)  defense=%.0f(%.0f)\n",
+                   "  Defense Stats:  armor=%.0f(%.0f)  miss=%.2f%%/%.2f%%/%.2f%%  dodge=%.2f%%(%.0f)  parry=%.2f%%(%.0f)  block=%.2f%%(%.0f)  blockv=%.0f(%.0f)  defense=%.0f(%.0f)\n",
                    p -> composite_armor(),   p -> stats.armor,
-                   p -> composite_defense(), p -> stats.defense_rating,
                    100 * ( p -> composite_miss_melee()  - p -> diminished_miss() ),
                    100 * ( p -> composite_miss_ranged() - p -> diminished_miss() ),
 		   100 * p -> composite_miss_spell( SCHOOL_MAX ),
                    100 * ( p -> composite_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
                    100 * ( p -> composite_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
                    100 * p -> composite_block(), p -> stats.block_rating,
-                   p -> composite_block_value(), p -> stats.block_value );
+                   p -> composite_block_value(), p -> stats.block_value,
+                   p -> composite_defense(), p -> stats.defense_rating );
 }
 
 // print_gains ===============================================================
