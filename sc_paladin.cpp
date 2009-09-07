@@ -1945,6 +1945,18 @@ void paladin_t::init_base()
   base_spell_crit += talents.conviction * 0.01;
   base_spell_crit += talents.sanctity_of_battle * 0.01;
 
+  // FIXME! Level-specific!
+  base_defense = level * 5;
+  base_miss    = 0.05;
+  base_dodge   = 0.0349430;
+  initial_dodge_per_agility = 0.0001670;
+  initial_armor_per_agility = 2.0;
+
+  diminished_kfactor    = 0.9560;
+  diminished_miss_capi  = 1.0 / 0.16;
+  diminished_dodge_capi = 1.0 / 0.88129021;
+  diminished_parry_capi = 1.0 / 0.47003525;
+
   health_per_stamina = 10;
   mana_per_intellect = 15;
 

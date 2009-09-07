@@ -672,10 +672,10 @@ struct gear_stats_t
   double weapon_dps;
   double weapon_speed;
   double armor;
-  double defense;
-  double dodge;
-  double parry;
-  double block;
+  double defense_rating;
+  double dodge_rating;
+  double parry_rating;
+  double block_rating;
   double block_value;
 
   gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
@@ -1272,12 +1272,14 @@ struct player_t
   event_t* target_auto_attack;
   double base_armor,       initial_armor,       armor, armor_snapshot;
   double base_defense,     initial_defense,     defense;
+  double base_miss,        initial_miss,        miss;
   double base_dodge,       initial_dodge,       dodge;
   double base_parry,       initial_parry,       parry;
   double base_block,       initial_block,       block;
   double base_block_value, initial_block_value, block_value;
   double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
+  double diminished_miss_capi, diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
   bool   use_armor_snapshot;
 
   // Weapons
@@ -1359,7 +1361,7 @@ struct player_t
   // Gear
   std::string items_str, meta_gem_str;
   std::vector<item_t> items;
-  gear_stats_t stats, gear, enchant;
+  gear_stats_t stats, initial_stats, gear, enchant;
   set_bonus_t set_bonus;
   int meta_gem;
 
@@ -1501,6 +1503,10 @@ struct player_t
   virtual double composite_parry()                  SC_CONST;
   virtual double composite_block()                  SC_CONST;
   virtual double composite_block_value()            SC_CONST;
+
+  virtual double diminished_miss()  SC_CONST;
+  virtual double diminished_dodge() SC_CONST;
+  virtual double diminished_parry() SC_CONST;
 
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
@@ -1719,7 +1725,7 @@ struct target_t
   int initial_armor, armor;
   int block_value;
   int shield;
-  double attack_speed, attack_damage;
+  double attack_speed, attack_damage, weapon_skill;
   double initial_health, current_health;
   double total_dmg;
 

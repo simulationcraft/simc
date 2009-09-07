@@ -2158,10 +2158,21 @@ void warrior_t::init_base()
   initial_attack_power_per_strength = 2.0;
   initial_attack_power_per_agility  = 0.0;
 
-  // FIX ME!
-  base_attack_power = level * 2 +60;
+  base_attack_power = level * 2 + 60;
   base_attack_expertise  = 0.25 * talents.vitality * 0.02;
   base_attack_expertise += 0.25 * talents.strength_of_arms * 0.02;
+
+  // FIXME! Level-specific!
+  base_defense = level * 5;
+  base_miss    = 0.05;
+  base_dodge   = 0.03664;
+  initial_dodge_per_agility = 0.0001180;
+  initial_armor_per_agility = 2.0;
+
+  diminished_kfactor    = 0.9560;
+  diminished_miss_capi  = 1.0 / 0.16;
+  diminished_dodge_capi = 1.0 / 0.88129021;
+  diminished_parry_capi = 1.0 / 0.47003525;
 
   attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
   attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;

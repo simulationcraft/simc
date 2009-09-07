@@ -46,13 +46,13 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   += value; break;
   case STAT_WEAPON_SPEED: weapon_speed += value; break;
 
-  case STAT_ARMOR:          armor   += value; break;
-  case STAT_DEFENSE_RATING: defense += value; break;
-  case STAT_DODGE_RATING:   dodge   += value; break;
-  case STAT_PARRY_RATING:   parry   += value; break;
+  case STAT_ARMOR:          armor          += value; break;
+  case STAT_DEFENSE_RATING: defense_rating += value; break;
+  case STAT_DODGE_RATING:   dodge_rating   += value; break;
+  case STAT_PARRY_RATING:   parry_rating   += value; break;
 
-  case STAT_BLOCK_RATING: block       += value; break;
-  case STAT_BLOCK_VALUE:  block_value += value; break;
+  case STAT_BLOCK_RATING: block_rating += value; break;
+  case STAT_BLOCK_VALUE:  block_value  += value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
     break;
@@ -98,13 +98,13 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   = value; break;
   case STAT_WEAPON_SPEED: weapon_speed = value; break;
 
-  case STAT_ARMOR:          armor   = value; break;
-  case STAT_DEFENSE_RATING: defense = value; break;
-  case STAT_DODGE_RATING:   dodge   = value; break;
-  case STAT_PARRY_RATING:   parry   = value; break;
+  case STAT_ARMOR:          armor          = value; break;
+  case STAT_DEFENSE_RATING: defense_rating = value; break;
+  case STAT_DODGE_RATING:   dodge_rating   = value; break;
+  case STAT_PARRY_RATING:   parry_rating   = value; break;
 
-  case STAT_BLOCK_RATING: block       = value; break;
-  case STAT_BLOCK_VALUE:  block_value = value; break;
+  case STAT_BLOCK_RATING: block_rating = value; break;
+  case STAT_BLOCK_VALUE:  block_value  = value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
     break;
@@ -150,11 +150,11 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
   case STAT_WEAPON_SPEED: return weapon_speed;
 
   case STAT_ARMOR:          return armor;
-  case STAT_DEFENSE_RATING: return defense;
-  case STAT_DODGE_RATING:   return dodge;
-  case STAT_PARRY_RATING:   return parry;
+  case STAT_DEFENSE_RATING: return defense_rating;
+  case STAT_DODGE_RATING:   return dodge_rating;
+  case STAT_PARRY_RATING:   return parry_rating;
 
-  case STAT_BLOCK_RATING: return block;
+  case STAT_BLOCK_RATING: return block_rating;
   case STAT_BLOCK_VALUE:  return block_value;
 
   default: assert( 0 );

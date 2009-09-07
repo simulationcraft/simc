@@ -14,7 +14,7 @@
 target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
     initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ),
-    attack_speed( 2.0 ), attack_damage( 2000 ),
+    attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
     initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
@@ -146,6 +146,8 @@ void target_t::init()
 {
   if ( initial_armor < 0 ) initial_armor = 10643;
 
+  if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
+
   if ( ! race_str.empty() )
   {
     for ( race = RACE_NONE; race < RACE_MAX; race++ )
@@ -247,6 +249,7 @@ int target_t::get_options( std::vector<option_t>& options )
     // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
     { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
     { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
+    { "target_weapon_skill",   OPT_FLT,    &( weapon_skill                      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
