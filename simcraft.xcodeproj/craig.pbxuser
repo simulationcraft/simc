@@ -87,12 +87,35 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 273968810;
-			PBXWorkspaceStateSaveDate = 273968810;
+			PBXPerProjectTemplateStateSaveDate = 273997869;
+			PBXWorkspaceStateSaveDate = 273997869;
+		};
+		perUserProjectItems = {
+			443740351054E3810060E3EC /* XCBuildMessageTextBookmark */ = 443740351054E3810060E3EC /* XCBuildMessageTextBookmark */;
+			443740401054E5D10060E3EC /* PBXTextBookmark */ = 443740401054E5D10060E3EC /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	443740351054E3810060E3EC /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "Declaration of 'name' shadows a member of 'this'";
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 1565;
+		rType = 1;
+	};
+	443740401054E5D10060E3EC /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		name = "simcraft.h: 1566";
+		rLen = 0;
+		rLoc = 52128;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	44E3D112105459F100677DEB /* simcraft */ = {
 		isa = PBXExecutable;
@@ -169,9 +192,9 @@
 	};
 	44E3D1B910545A7500677DEB /* sc_action.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1139, 14742}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1139, 15236}}";
 			sepNavSelRange = "{25863, 28}";
-			sepNavVisRange = "{25597, 1505}";
+			sepNavVisRange = "{25626, 421}";
 			sepNavWindowFrame = "{{15, 140}, {1076, 733}}";
 		};
 	};
@@ -199,9 +222,9 @@
 	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1111, 30888}}";
-			sepNavSelRange = "{51824, 0}";
-			sepNavVisRange = "{51899, 444}";
+			sepNavIntBoundsRect = "{{0, 0}, {1111, 31239}}";
+			sepNavSelRange = "{77052, 0}";
+			sepNavVisRange = "{76851, 373}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* README.txt */ = {
