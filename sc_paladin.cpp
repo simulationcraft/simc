@@ -71,12 +71,14 @@ struct paladin_t : public player_t
 
   struct talents_t
   {
+    int anticipation;
     int avengers_shield;
     int benediction; 
     int combat_expertise;
     int conviction;
     int crusade;
     int crusader_strike;
+    int deflection;
     int divine_favor;
     int divine_illumination;
     int divine_intellect;
@@ -110,6 +112,7 @@ struct paladin_t : public player_t
     int sheath_of_light;
     int the_art_of_war;
     int touched_by_the_light;
+    int toughness;
     int two_handed_weapon_spec;
     int vengeance;
 
@@ -1940,15 +1943,20 @@ void paladin_t::init_base()
   base_attack_hit       += talents.enlightened_judgements * 0.02;
   base_attack_crit      += talents.conviction * 0.01;
   base_attack_crit      += talents.sanctity_of_battle * 0.01;
+  base_attack_crit      += talents.combat_expertise * 0.02;
 
   base_spell_hit  += talents.enlightened_judgements * 0.02;
   base_spell_crit += talents.conviction * 0.01;
   base_spell_crit += talents.sanctity_of_battle * 0.01;
+  base_spell_crit += talents.combat_expertise * 0.02;
 
   // FIXME! Level-specific!
   base_defense = level * 5;
   base_miss    = 0.05;
-  base_dodge   = 0.0349430;
+  base_dodge   = 0.0349430 + 0.01 * talents.anticipation;
+  base_parry   = 0.05 + 0.01 * talents.deflection;
+  base_block   = 0.05;
+  initial_armor_multiplier *= 1.0 + 0.02 * talents.toughness;
   initial_dodge_per_agility = 0.0001670;
   initial_armor_per_agility = 2.0;
 
@@ -2361,14 +2369,14 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, NULL                                     }, {  1, NULL                                      }, {  1, NULL                                    } },
+    { {  1, NULL                                     }, {  1, NULL                                      }, {  1, &( talents.deflection                 ) } },
     { {  2, &( talents.seals_of_the_pure           ) }, {  2, &( talents.divine_strength              ) }, {  2, &( talents.benediction                ) } },
     { {  3, &( talents.healing_light               ) }, {  3, NULL                                      }, {  3, &( talents.improved_judgements        ) } },
     { {  4, &( talents.divine_intellect            ) }, {  4, NULL                                      }, {  4, &( talents.heart_of_the_crusader      ) } },
-    { {  5, NULL                                     }, {  5, NULL                                      }, {  5, &( talents.improved_blessing_of_might ) } },
+    { {  5, NULL                                     }, {  5, &( talents.anticipation                 ) }, {  5, &( talents.improved_blessing_of_might ) } },
     { {  6, &( talents.aura_mastery                ) }, {  6, NULL                                      }, {  6, NULL                                    } },
     { {  7, NULL                                     }, {  7, NULL                                      }, {  7, &( talents.conviction                 ) } },
-    { {  8, NULL                                     }, {  8, NULL                                      }, {  8, &( talents.seal_of_command            ) } },
+    { {  8, NULL                                     }, {  8, &( talents.toughness                    ) }, {  8, &( talents.seal_of_command            ) } },
     { {  9, &( talents.improved_concentration_aura ) }, {  9, NULL                                      }, {  9, NULL                                    } },
     { { 10, &( talents.improved_blessing_of_wisdom ) }, { 10, &( talents.improved_hammer_of_justice   ) }, { 10, NULL                                    } },
     { { 11, NULL                                     }, { 11, NULL                                      }, { 11, &( talents.sanctity_of_battle         ) } },
@@ -2404,6 +2412,7 @@ std::vector<option_t>& paladin_t::get_options()
     option_t paladin_options[] =
     {
       // @option_doc loc=player/paladin/talents title="Talents"
+      { "anticipation",                OPT_INT, &( talents.anticipation                ) },
       { "aura_mastery",                OPT_INT, &( talents.aura_mastery                ) },
       { "avengers_shield",             OPT_INT, &( talents.avengers_shield             ) },
       { "benediction;",                OPT_INT, &( talents.benediction                 ) },
@@ -2412,6 +2421,7 @@ std::vector<option_t>& paladin_t::get_options()
       { "conviction",                  OPT_INT, &( talents.conviction                  ) },
       { "crusade",                     OPT_INT, &( talents.crusade                     ) },
       { "crusader_strike",             OPT_INT, &( talents.crusader_strike             ) },
+      { "deflection",                  OPT_INT, &( talents.deflection                  ) },
       { "divine_favor",                OPT_INT, &( talents.divine_favor                ) },
       { "divine_illumination",         OPT_INT, &( talents.divine_illumination         ) },
       { "divine_intellect",            OPT_INT, &( talents.divine_intellect            ) },
@@ -2450,6 +2460,7 @@ std::vector<option_t>& paladin_t::get_options()
       { "sheath_of_light",             OPT_INT, &( talents.sheath_of_light             ) },
       { "swift_retribution",           OPT_INT, &( talents.swift_retribution           ) },
       { "the_art_of_war",              OPT_INT, &( talents.the_art_of_war              ) },
+      { "toughness",                   OPT_INT, &( talents.toughness                   ) },
       { "touched_by_the_light",        OPT_INT, &( talents.touched_by_the_light        ) },
       { "two_handed_weapon_spec",      OPT_INT, &( talents.two_handed_weapon_spec      ) },
       { "vengeance",                   OPT_INT, &( talents.vengeance                   ) },
