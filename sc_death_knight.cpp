@@ -276,7 +276,7 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
-  virtual void      target_swing();
+  virtual int       target_swing();
   virtual void      combat_begin();
   virtual bool      get_talent_trees( std::vector<int*>& blood, std::vector<int*>& frost, std::vector<int*>& unholy );
   virtual std::vector<option_t>& get_options();
@@ -2102,11 +2102,13 @@ void death_knight_t::combat_begin()
   }
 }
 
-void death_knight_t::target_swing()
+int death_knight_t::target_swing()
 {
-  player_t::target_swing();
+  int result = player_t::target_swing();
 
   buffs_scent_of_blood -> trigger( 3 );
+
+  return result;
 }
 
 double death_knight_t::composite_attack_power() SC_CONST

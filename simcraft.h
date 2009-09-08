@@ -1504,6 +1504,7 @@ struct player_t
   virtual double composite_parry()                  SC_CONST;
   virtual double composite_block()                  SC_CONST;
   virtual double composite_block_value()            SC_CONST;
+  virtual double composite_crit_melee()             SC_CONST;
 
   virtual double diminished_miss()  SC_CONST;
   virtual double diminished_dodge() SC_CONST;
@@ -1545,7 +1546,7 @@ struct player_t
   virtual void dismiss_pet( const char* name );
 
   virtual bool ooc_buffs() { return true; }
-  virtual void target_swing() {}
+  virtual int  target_swing();
 
   virtual void register_callbacks();
   virtual void register_resource_gain_callback       ( int resource, action_callback_t* );

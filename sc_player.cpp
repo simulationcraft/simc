@@ -1126,11 +1126,10 @@ double player_t::composite_miss_melee() SC_CONST
   }
   else
   {
-    m -= delta * 0.0002;
+    m += delta * 0.0002;
   }
 
-  // Quickness passive
-  if ( race == RACE_NIGHT_ELF )
+  if ( race == RACE_NIGHT_ELF ) // Quickness
   {
     m += 0.02;
   }
@@ -1140,10 +1139,8 @@ double player_t::composite_miss_melee() SC_CONST
     m += 0.03;
   }
 
-  if ( m > 1.0)
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
+  if      ( m > 1.0 ) m = 1.0;
+  else if ( m < 0.0 ) m = 0.0;
 
   return m;
 }
@@ -1154,7 +1151,7 @@ double player_t::composite_miss_ranged() SC_CONST
 {
   double m = 0.05;
 
-  double delta = composite_defense() - ( sim -> target -> level * 5.0 );
+  double delta = composite_defense() - sim -> target -> weapon_skill;
   
   if( delta > 0 )
   {
@@ -1162,11 +1159,10 @@ double player_t::composite_miss_ranged() SC_CONST
   }
   else
   {
-    m -= delta * 0.0002;
+    m += delta * 0.0002;
   }
-
-  // Quickness passive
-  if ( race == RACE_NIGHT_ELF )
+  
+  if ( race == RACE_NIGHT_ELF ) // Quickness
   {
     m += 0.02;
   }
@@ -1176,10 +1172,8 @@ double player_t::composite_miss_ranged() SC_CONST
     m += 0.03;
   }
 
-  if ( m > 1.0)
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
+  if      ( m > 1.0 ) m = 1.0;
+  else if ( m < 0.0 ) m = 0.0;
 
   return m;
 }
@@ -1194,11 +1188,11 @@ double player_t::composite_miss_spell( int school ) SC_CONST
   
   if( delta > 0 )
   {
-    m -= delta * 0.01;
+    m += delta * 0.01;
   }
   else if ( delta > -2 )
   {
-    m += - ( delta * 0.01 );
+    m += delta * 0.01;
   }
   else
   {
@@ -1217,10 +1211,8 @@ double player_t::composite_miss_spell( int school ) SC_CONST
     m += 0.02;
   }
 
-  if ( m > 1.0 )
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
+  if      ( m > 1.0 ) m = 1.0;
+  else if ( m < 0.0 ) m = 0.0;
 
   return m;
 }
@@ -1242,8 +1234,11 @@ double player_t::composite_dodge() SC_CONST
   }
   else
   {
-    d -= delta * 0.0002;
+    d += delta * 0.0002;
   }
+
+  if      ( d > 1.0 ) d = 1.0;
+  else if ( d < 0.0 ) d = 0.0;
 
   return d;
 }
@@ -1262,8 +1257,11 @@ double player_t::composite_parry() SC_CONST
   }
   else
   {
-    p -= delta * 0.0002;
+    p += delta * 0.0002;
   }
+
+  if      ( p > 1.0 ) p = 1.0;
+  else if ( p < 0.0 ) p = 0.0;
 
   return p;
 }
@@ -1282,8 +1280,11 @@ double player_t::composite_block() SC_CONST
   }
   else
   {
-    b -= delta * 0.0002;
+    b += delta * 0.0002;
   }
+
+  if      ( b > 1.0 ) b = 1.0;
+  else if ( b < 0.0 ) b = 0.0;
 
   return b;
 }
@@ -1297,6 +1298,29 @@ double player_t::composite_block_value() SC_CONST
   bv += strength() / 2.0;
 
   return bv;
+}
+
+// player_t::composite_crit_melee ==========================================
+
+double player_t::composite_crit_melee() SC_CONST
+{
+  double c = 0.05 + 0.002 * ( sim -> target -> level - level );
+
+  double delta = composite_defense() - sim -> target -> weapon_skill;
+  
+  if( delta > 0 )
+  {
+    c -= delta * 0.0004;
+  }
+  else
+  {
+    c -= delta * 0.0002;
+  }
+
+  if      ( c > 1.0 ) c = 1.0;
+  else if ( c < 0.0 ) c = 0.0;
+
+  return c;
 }
 
 // player_t::diminished_miss =========================================
@@ -2509,6 +2533,31 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   }
 
   return rng;
+}
+
+// player_t::target_swing ==================================================
+
+int player_t::target_swing()
+{
+  double roll = sim -> rng -> real();
+  double chance = 0;
+
+  chance += ( composite_miss_melee() - diminished_miss() );
+  if ( roll <= chance ) return RESULT_MISS;
+
+  chance += ( composite_dodge() - diminished_dodge() );
+  if ( roll <= chance ) return RESULT_DODGE;
+
+  chance += ( composite_parry() - diminished_parry() );
+  if ( roll <= chance ) return RESULT_PARRY;
+
+  chance += composite_block();
+  if ( roll <= chance ) return RESULT_BLOCK;
+
+  chance += composite_crit_melee();
+  if ( roll <= chance ) return RESULT_CRIT;
+
+  return RESULT_HIT;
 }
 
 // ===== Racial Abilities ==================================================

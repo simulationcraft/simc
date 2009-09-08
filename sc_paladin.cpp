@@ -210,7 +210,7 @@ struct paladin_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual int       primary_tree() SC_CONST;
   virtual void      regen( double periodicity );
-  virtual void      target_swing();
+  virtual int       target_swing();
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -2328,10 +2328,9 @@ void paladin_t::regen( double periodicity )
 
 // paladin_t::target_swing ==================================================
 
-void paladin_t::target_swing()
+int paladin_t::target_swing()
 {
-  // FIXME! Need tank attack table calculations.
-  int result = sim -> roll( composite_block() ) ? RESULT_BLOCK : RESULT_NONE; 
+  int result = player_t::target_swing();
 
   if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
 
@@ -2361,6 +2360,8 @@ void paladin_t::target_swing()
       buffs_redoubt -> trigger( 5 );
     }
   }
+
+  return result;
 }
 
 // paladin_t::get_talents_trees ==============================================
