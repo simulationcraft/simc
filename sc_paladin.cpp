@@ -60,6 +60,9 @@ struct paladin_t : public player_t
   gain_t* gains_seal_of_command_glyph;
   gain_t* gains_seal_of_wisdom;
 
+  // Procs
+  proc_t* procs_parry_haste;
+
   // Random Number Generation
   rng_t* rng_guarded_by_the_light;
   rng_t* rng_judgements_of_the_wise;
@@ -199,6 +202,7 @@ struct paladin_t : public player_t
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
+  virtual void      init_procs();
   virtual void      init_glyphs();
   virtual void      init_rng();
   virtual void      init_scaling();
@@ -2009,6 +2013,15 @@ void paladin_t::init_gains()
   gains_seal_of_wisdom         = get_gain( "seal_of_wisdom"         );
 }
 
+// paladin_t::init_procs ====================================================
+
+void paladin_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_parry_haste = get_proc( "parry_haste", sim );
+}
+
 // paladin_t::init_rng ======================================================
 
 void paladin_t::init_rng()
@@ -2365,7 +2378,20 @@ int paladin_t::target_swing()
       buffs_redoubt -> trigger( 5 );
     }
   }
+  if ( result == RESULT_PARRY )
+  {
+    if ( auto_attack && auto_attack -> execute_event )
+    {
+      double swing_time = auto_attack -> time_to_execute;
+      double max_reschedule = ( auto_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
+      if ( max_reschedule > 0 )
+      {
+	auto_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+	procs_parry_haste -> occur();
+      }
+    }
+  }
   return result;
 }
 

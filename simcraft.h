@@ -1942,6 +1942,7 @@ struct action_t
   virtual void   schedule_execute();
   virtual void   schedule_tick();
   virtual void   schedule_travel();
+  virtual void   reschedule_execute( double time );
   virtual void   refresh_duration();
   virtual void   extend_duration( int extra_ticks );
   virtual void   update_ready();

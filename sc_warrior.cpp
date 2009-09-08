@@ -63,7 +63,9 @@ struct warrior_t : public player_t
 
   // Procs
   proc_t* procs_glyph_overpower;
+  proc_t* procs_parry_haste;
   proc_t* procs_sword_specialization;
+
   // Up-Times
   uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
@@ -2351,6 +2353,7 @@ void warrior_t::init_procs()
   player_t::init_procs();
 
   procs_glyph_overpower      = get_proc( "glyph_of_overpower",   sim );
+  procs_parry_haste          = get_proc( "parry_haste",          sim );
   procs_sword_specialization = get_proc( "sword_specialization", sim );
 }
 
@@ -2632,7 +2635,20 @@ int warrior_t::target_swing()
       active_damage_shield -> execute();
     }
   }
+  if ( result == RESULT_PARRY )
+  {
+    if ( main_hand_attack && main_hand_attack -> execute_event )
+    {
+      double swing_time = main_hand_attack -> time_to_execute;
+      double max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
+      if ( max_reschedule > 0 )
+      {
+	main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+	procs_parry_haste -> occur();
+      }
+    }
+  }
   return result;
 }
 
