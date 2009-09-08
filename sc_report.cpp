@@ -333,7 +333,7 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f%%(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
+                   "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
                    p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
                    p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
                    p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
@@ -348,7 +348,7 @@ static void print_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                    "  Defense Stats:  armor=%.0f(%.0f)  miss=%.2f%%/%.2f%%/%.2f%%  dodge=%.2f%%(%.0f)  parry=%.2f%%(%.0f)  block=%.2f%%(%.0f)  blockv=%.0f(%.0f)  defense=%.0f(%.0f)\n",
-                   p -> composite_armor(),   p -> stats.armor,
+                   p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
                    100 * ( p -> composite_miss_melee()  - p -> diminished_miss() ),
                    100 * ( p -> composite_miss_ranged() - p -> diminished_miss() ),
 		   100 * p -> composite_miss_spell( SCHOOL_MAX ),

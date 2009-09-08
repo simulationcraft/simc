@@ -323,7 +323,7 @@ enum stat_type
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
-  STAT_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING, 
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING, 
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
   STAT_MAX
 };
@@ -672,6 +672,7 @@ struct gear_stats_t
   double weapon_dps;
   double weapon_speed;
   double armor;
+  double bonus_armor;
   double defense_rating;
   double dodge_rating;
   double parry_rating;
@@ -1270,17 +1271,18 @@ struct player_t
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double base_armor,       initial_armor,       armor, armor_snapshot;
+  double base_armor,       initial_armor,       armor;
+  double base_bonus_armor, initial_bonus_armor, bonus_armor;
   double base_defense,     initial_defense,     defense;
   double base_miss,        initial_miss,        miss;
   double base_dodge,       initial_dodge,       dodge;
   double base_parry,       initial_parry,       parry;
   double base_block,       initial_block,       block;
   double base_block_value, initial_block_value, block_value;
+  double armor_multiplier,  initial_armor_multiplier;
   double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
   double diminished_miss_capi, diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
-  bool   use_armor_snapshot;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -1494,7 +1496,6 @@ struct player_t
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
   virtual double composite_armor()                  SC_CONST;
-  virtual double composite_armor_snapshot()         SC_CONST { return armor_snapshot; }
   virtual double composite_defense()                SC_CONST { return defense; }
   virtual double composite_miss_melee()             SC_CONST;
   virtual double composite_miss_ranged()            SC_CONST;

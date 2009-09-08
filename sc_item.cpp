@@ -271,6 +271,22 @@ bool item_t::decode_stats()
 
     if ( s != STAT_NONE )
     {
+      if ( s == STAT_ARMOR )
+      {
+	if ( slot != SLOT_HEAD      &&
+	     slot != SLOT_SHOULDERS &&
+	     slot != SLOT_CHEST     &&
+	     slot != SLOT_WAIST     &&
+	     slot != SLOT_LEGS      &&
+	     slot != SLOT_FEET      &&
+	     slot != SLOT_WRISTS    &&
+	     slot != SLOT_HANDS     &&
+	     slot != SLOT_BACK      &&
+	     slot != SLOT_OFF_HAND )
+	{
+	  s = STAT_BONUS_ARMOR;
+	}
+      }
       stats.add_stat( s, t.value );
     }
     else

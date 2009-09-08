@@ -116,6 +116,7 @@ struct warrior_t : public player_t
     int puncture;
     int rampage;
     int shield_mastery;
+    int shield_specialization;
     int shockwave;
     int strength_of_arms;
     int sudden_death;
@@ -157,8 +158,6 @@ struct warrior_t : public player_t
     active_heroic_strike     = 0;
     active_stance            = STANCE_BATTLE;
 
-    use_armor_snapshot       = true;
-
     // Auto-Attack
     main_hand_attack = 0;
     off_hand_attack  = 0;
@@ -177,7 +176,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
-  virtual double    composite_armor() SC_CONST;
+  virtual double    composite_block_value() SC_CONST;
   virtual double    composite_miss_spell( int school ) SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
@@ -2169,6 +2168,8 @@ void warrior_t::init_base()
   base_miss    = 0.05;
   base_dodge   = 0.03664 + 0.01 * talents.anticipation;
   base_parry   = 0.05 + 0.01 * talents.deflection;
+  base_block   = 0.05 + 0.01 * talents.shield_specialization;
+  initial_armor_multiplier *= 1.0 + 0.02 * talents.toughness;
   initial_dodge_per_agility = 0.0001180;
   initial_armor_per_agility = 2.0;
 
@@ -2390,19 +2391,24 @@ void warrior_t::interrupt()
 
 double warrior_t::composite_attack_power() SC_CONST
 {
-  return player_t::composite_attack_power() + ( talents.armored_to_the_teeth ? talents.armored_to_the_teeth * composite_armor_snapshot() / 108 : 0 );
+  double ap = player_t::composite_attack_power();
+  if ( talents.armored_to_the_teeth ) 
+  {
+    ap += talents.armored_to_the_teeth * composite_armor() / 108.0;
+  }
+  return ap;
 }
 
-// warrior_t::composite_armor ================================================
+// warrior_t::composite_block_value ==========================================
 
-double warrior_t::composite_armor() SC_CONST
+double warrior_t::composite_block_value() SC_CONST
 {
-  double a = player_t::composite_armor();
-  if ( talents.toughness )
+  double bv = player_t::composite_block_value();
+  if ( talents.shield_mastery )
   {
-    a += armor * 0.02 * talents.toughness;
+    bv *= 1.0 + 0.15 * talents.shield_mastery;
   }
-  return a;
+  return bv;
 }
 
 // warrior_t::regen ==========================================================
@@ -2459,7 +2465,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
   talent_translation_t translation[][3] =
   {
     { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage         ) } },
-    { {  2, &( talents.deflection                      ) }, {  2, &( talents.booming_voice             ) }, {  2, NULL                                    } },
+    { {  2, &( talents.deflection                      ) }, {  2, &( talents.booming_voice             ) }, {  2, &( talents.shield_specialization      ) } },
     { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap       ) } },
     { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                     ) } },
     { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, &( talents.anticipation               ) } },
@@ -2551,6 +2557,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "puncture",                        OPT_INT, &( talents.puncture                        ) },
       { "rampage",                         OPT_INT, &( talents.rampage                         ) },
       { "shield_mastery",                  OPT_INT, &( talents.shield_mastery                  ) },
+      { "shield_specialization",           OPT_INT, &( talents.shield_specialization           ) },
       { "shockwave",                       OPT_INT, &( talents.shockwave                       ) },
       { "strength_of_arms",                OPT_INT, &( talents.strength_of_arms                ) },
       { "sudden_death",                    OPT_INT, &( talents.sudden_death                    ) },

@@ -262,9 +262,6 @@ struct death_knight_t : public player_t
     off_hand_attack     = NULL;
 
     sudden_doom         = NULL;
-
-    // Settings
-    use_armor_snapshot  = true;
   }
 
   // Character Definition
@@ -2115,7 +2112,12 @@ void death_knight_t::target_swing()
 
 double death_knight_t::composite_attack_power() SC_CONST
 {
-  return player_t::composite_attack_power() + ( talents.bladed_armor ? talents.bladed_armor * composite_armor_snapshot() / 180 : 0 );
+  double ap = player_t::composite_attack_power();
+  if ( talents.bladed_armor )
+  { 
+    ap += talents.bladed_armor * composite_armor() / 180;
+  }
+  return ap;
 }
 
 void death_knight_t::regen( double periodicity )

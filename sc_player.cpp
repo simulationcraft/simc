@@ -155,35 +155,6 @@ static void replenish_raid( player_t* provider )
   }
 }
 
-// trigger_armor_snapshots ==================================================
-
-static void trigger_armor_snapshots( player_t* p )
-{
-  assert( p -> sim -> armor_update_interval > 0 );
-
-  struct armor_snapshot_event_t : public event_t
-  {
-    armor_snapshot_event_t( sim_t* sim, player_t* player, double interval ) : event_t( sim, player )
-    {
-      name = "Armor Snapshot";
-      sim -> add_event( this, interval );
-    }
-    virtual void execute()
-    {
-      if ( sim -> debug )
-        log_t::output( sim, "Armor Snapshot: %.02f -> %.02f", player -> armor_snapshot, player -> composite_armor() );
-
-      player -> armor_snapshot = player -> composite_armor();
-
-      new ( sim ) armor_snapshot_event_t( sim, player, sim -> armor_update_interval );
-    }
-  };
-
-  p -> armor_snapshot = p -> composite_armor();
-
-  new ( p -> sim ) armor_snapshot_event_t( p -> sim, p, p -> sim -> current_iteration % p -> sim -> armor_update_interval );
-}
-
 // trigger_target_swings ====================================================
 
 static void trigger_target_swings( player_t* p )
@@ -312,17 +283,18 @@ player_t::player_t( sim_t*             s,
     position( POSITION_BACK ),
     // Defense Mechanics
     target_auto_attack( 0 ), 
-    base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ), armor_snapshot( 0 ),
+    base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ), 
+    base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ), 
     base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),
     base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),
     base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),
     base_block( 0 ),       initial_block( 0 ),       block( 0 ),
     base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), 
+    armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
     armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
     diminished_miss_capi( 0 ), diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
-    use_armor_snapshot( false ),
     // Resources
     mana_per_intellect( 0 ), health_per_stamina( 0 ),
     // Consumables
@@ -590,7 +562,11 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if ( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
   else if ( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
 
-  if ( meta_gem == META_EMBER_SKYFLARE )
+  if ( meta_gem == META_AUSTERE_EARTHSIEGE )
+  {
+    initial_armor_multiplier *= 1.02;
+  }
+  else if ( meta_gem == META_EMBER_SKYFLARE )
   {
     attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
   }
@@ -686,6 +662,7 @@ void player_t::init_attack()
 void player_t::init_defense()
 {
   initial_stats.armor          = gear.armor          + enchant.armor          + sim -> enchant.armor;
+  initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + sim -> enchant.bonus_armor;
   initial_stats.defense_rating = gear.defense_rating + enchant.defense_rating + sim -> enchant.defense_rating;
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + sim -> enchant.dodge_rating;
   initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + sim -> enchant.parry_rating;
@@ -693,6 +670,7 @@ void player_t::init_defense()
   initial_stats.block_value    = gear.block_value    + enchant.block_value    + sim -> enchant.block_value;
 
   initial_armor       = base_armor       + initial_stats.armor;
+  initial_bonus_armor = base_bonus_armor + initial_stats.bonus_armor;
   initial_defense     = base_defense     + initial_stats.defense_rating / rating.defense;
   initial_miss        = base_miss;
   initial_dodge       = base_dodge       + initial_stats.dodge_rating / rating.dodge;
@@ -984,6 +962,7 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_SPEED ] = 0;
 
     scales_with[ STAT_ARMOR          ] = 0;
+    scales_with[ STAT_BONUS_ARMOR    ] = 0;
     scales_with[ STAT_DEFENSE_RATING ] = 0;
     scales_with[ STAT_DODGE_RATING   ] = 0;
     scales_with[ STAT_PARRY_RATING   ] = 0;
@@ -1028,10 +1007,11 @@ void player_t::init_scaling()
         ranged_weapon.damage    += ranged_weapon.swing_time * v;
         break;
 
-      case STAT_ARMOR:          initial_armor   += v; break;
-      case STAT_DEFENSE_RATING: initial_defense += v; break;
-      case STAT_DODGE_RATING:   initial_dodge   += v; break;
-      case STAT_PARRY_RATING:   initial_parry   += v; break;
+      case STAT_ARMOR:          initial_armor       += v; break;
+      case STAT_BONUS_ARMOR:    initial_bonus_armor += v; break;
+      case STAT_DEFENSE_RATING: initial_defense     += v; break;
+      case STAT_DODGE_RATING:   initial_dodge       += v; break;
+      case STAT_PARRY_RATING:   initial_parry       += v; break;
 
       case STAT_BLOCK_RATING: initial_block       += v; break;
       case STAT_BLOCK_VALUE:  initial_block_value += v; break;
@@ -1121,7 +1101,9 @@ double player_t::composite_armor() SC_CONST
 {
   double a = armor;
 
-  if ( meta_gem == META_AUSTERE_EARTHSIEGE ) a *= 1.02;
+  a *= armor_multiplier;
+
+  a += bonus_armor;
 
   a += floor( armor_per_agility * agility() );
 
@@ -1589,8 +1571,6 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if ( use_armor_snapshot ) trigger_armor_snapshots( this );
-
   if ( tank > 0 ) trigger_target_swings( this );
 }
 
@@ -1672,7 +1652,7 @@ void player_t::reset()
   attack_penetration = initial_attack_penetration;
 
   armor              = initial_armor;
-  armor_snapshot     = initial_armor;
+  bonus_armor        = initial_bonus_armor;
   defense            = initial_defense;
   dodge              = initial_dodge;
   parry              = initial_parry;
@@ -1688,7 +1668,8 @@ void player_t::reset()
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
-
+  
+  armor_multiplier  = initial_armor_multiplier;
   armor_per_agility = initial_armor_per_agility;
   dodge_per_agility = initial_dodge_per_agility;
 
@@ -2091,10 +2072,11 @@ void player_t::stat_gain( int    stat,
     recalculate_haste(); 
     break;
 
-  case STAT_ARMOR:          stats.armor          += amount; armor   += amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating += amount; defense += amount / rating.defense; break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   += amount; dodge   += amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   += amount; parry   += amount / rating.parry;   break;
+  case STAT_ARMOR:          stats.armor          += amount; armor       += amount;                  break;
+  case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; bonus_armor += amount;                  break;
+  case STAT_DEFENSE_RATING: stats.defense_rating += amount; defense     += amount / rating.defense; break;
+  case STAT_DODGE_RATING:   stats.dodge_rating   += amount; dodge       += amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   stats.parry_rating   += amount; parry       += amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating += amount; block       += amount / rating.block; break;
   case STAT_BLOCK_VALUE:  stats.block_value  += amount; block_value += amount;                break;
@@ -2153,10 +2135,11 @@ void player_t::stat_loss( int    stat,
     recalculate_haste(); 
     break;
 
-  case STAT_ARMOR:          stats.armor          -= amount; armor   -= amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating -= amount; defense -= amount / rating.defense; break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; dodge   -= amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   -= amount; parry   -= amount / rating.parry;   break;
+  case STAT_ARMOR:          stats.armor          -= amount; armor       -= amount;                  break;
+  case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; bonus_armor -= amount;                  break;
+  case STAT_DEFENSE_RATING: stats.defense_rating -= amount; defense     -= amount / rating.defense; break;
+  case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; dodge       -= amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   stats.parry_rating   -= amount; parry       -= amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating -= amount; block       -= amount / rating.block; break;
   case STAT_BLOCK_VALUE:  stats.block_value  -= amount; block_value -= amount;                break;

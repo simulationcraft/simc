@@ -695,6 +695,7 @@ const char* util_t::stat_type_string( int stat )
   case STAT_WEAPON_SPEED: return "weapon_speed";
 
   case STAT_ARMOR:          return "armor";
+  case STAT_BONUS_ARMOR:    return "bonus_armor";
   case STAT_DEFENSE_RATING: return "defense_rating";
   case STAT_DODGE_RATING:   return "dodge_rating";
   case STAT_PARRY_RATING:   return "parry_rating";
@@ -742,6 +743,7 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_WEAPON_SPEED: return "Wspeed";
 
   case STAT_ARMOR:          return "Armor";
+  case STAT_BONUS_ARMOR:    return "BArmor";
   case STAT_DEFENSE_RATING: return "Def";
   case STAT_DODGE_RATING:   return "Dodge";
   case STAT_PARRY_RATING:   return "Parry";
@@ -789,6 +791,7 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_WEAPON_SPEED: return "__wspeed";
 
   case STAT_ARMOR:          return "armor";
+  case STAT_BONUS_ARMOR:    return "__armor"; // FIXME! Does wowhead distinguish "bonus" armor?
   case STAT_DEFENSE_RATING: return "defrtng";
   case STAT_DODGE_RATING:   return "dodgertng";
   case STAT_PARRY_RATING:   return "parryrtng";
