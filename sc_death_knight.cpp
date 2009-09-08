@@ -660,13 +660,12 @@ void death_knight_attack_t::player_buff()
   {
     player_penetration += p -> talents.blood_gorged * 0.02;
 
-    if ( p->resource_current[ RESOURCE_HEALTH ] >= p->resource_max[ RESOURCE_HEALTH ] * 0.75  )
+    if ( p -> resource_current[ RESOURCE_HEALTH ] >= 
+	 p -> resource_max    [ RESOURCE_HEALTH ] * 0.75 )
+    {
       player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
+    }
   }
-
-  if ( sim -> debug )
-    log_t::output( sim, "death_knight_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
-                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier, player_spell_power, player_penetration, player_multiplier );
 }
 
 bool death_knight_attack_t::ready()
@@ -1904,7 +1903,7 @@ void death_knight_t::init_base()
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
 
   base_attack_power = -20;
-  base_attack_expertise = 0.0025 * talents.veteran_of_the_third_war * 2;
+  base_attack_expertise = 0.01 * talents.veteran_of_the_third_war * 2;
 
   initial_attack_power_per_strength = 2.0;
 

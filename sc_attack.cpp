@@ -114,7 +114,7 @@ void attack_t::player_buff()
       case WEAPON_AXE:
       case WEAPON_AXE_2H:
       case WEAPON_FIST:
-	player_expertise += 0.25 * 0.05;
+	player_expertise += 0.05;
 	break;
       }
     }
@@ -136,7 +136,7 @@ void attack_t::player_buff()
       case WEAPON_MACE_2H:
       case WEAPON_SWORD:
       case WEAPON_SWORD_2H:
-	player_expertise += 0.25 * 0.03;
+	player_expertise += 0.03;
 	break;
       }
     }
@@ -149,7 +149,7 @@ void attack_t::player_buff()
 	break;
       case WEAPON_MACE:
       case WEAPON_MACE_2H:
-	player_expertise += 0.25 * 0.05;
+	player_expertise += 0.05;
 	break;
       }
     }
@@ -196,14 +196,14 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
 
 double attack_t::dodge_chance( int delta_level ) SC_CONST
 {
-  return 0.05 + delta_level * 0.005 - total_expertise();
+  return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::parry_chance ===================================================
 
 double attack_t::parry_chance( int delta_level ) SC_CONST
 {
-  return 0.14 + delta_level * 0.005 - total_expertise();
+  return 0.14 + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::glance_chance ==================================================

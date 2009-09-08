@@ -306,7 +306,7 @@ static rating_t& rating_60( sim_t* sim )
     r.attack_haste      = 1000;
     r.attack_hit        = 1000;
     r.attack_crit       = 1400;
-    r.expertise         = 1000;
+    r.expertise         =  250;
     r.armor_penetration = sim -> P322 ? 426.8292514 : 375.6097412;
     r.defense           =  1.5;
     r.dodge             = 1380;
@@ -331,7 +331,7 @@ static rating_t& rating_70( sim_t* sim )
     r.attack_haste      = 1576.923275;
     r.attack_hit        = 1576.923275;
     r.attack_crit       = 2207.692337;
-    r.expertise         = 1576.923275;
+    r.expertise         =  394.230819;
     r.armor_penetration = sim -> P322 ? 673.0768897 : 592.307663;
     r.defense           = 2.365385056;
     r.dodge             = 2176.153945;
@@ -351,12 +351,12 @@ static rating_t& rating_80( sim_t* sim )
   if ( r.spell_haste == 0 )
   {
     r.spell_haste       = 100.0/0.030500;
-    r.spell_hit         = 100.0/0.038125;  // 0.038125 == 0.030500 * 1.25
-    r.spell_crit        = 100.0/0.021786;  // 0.021786 == 0.030500 / 1.40
+    r.spell_hit         = 125.0/0.030500;
+    r.spell_crit        = 140.0/0.030500;
     r.attack_haste      = 100.0/0.030500;
     r.attack_hit        = 100.0/0.030500;
-    r.attack_crit       = 100.0/0.021786;
-    r.expertise         = 100.0/0.030500;
+    r.attack_crit       = 140.0/0.030500;
+    r.expertise         =  25.0/0.030500;
     r.armor_penetration = sim -> P322 ? 1399.572719 : 1231.623993;
     r.defense           = 4.918498039;
     r.dodge             = 4525.018692;

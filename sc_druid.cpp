@@ -2673,7 +2673,7 @@ void druid_t::init_base()
   initial_spell_power_per_spirit = 0.0;
 
   base_attack_power = -20;
-  base_attack_expertise = 0.25 * talents.primal_precision * 0.05;
+  base_attack_expertise = talents.primal_precision * 0.05;
 
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;

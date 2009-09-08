@@ -3058,7 +3058,7 @@ void rogue_t::init_base()
   initial_attack_power_multiplier  *= 1.0 + ( talents.savage_combat * 0.02 +
                                               talents.deadliness    * 0.02 );
 
-  base_attack_expertise = 0.25 * talents.weapon_expertise * 0.05;
+  base_attack_expertise = talents.weapon_expertise * 0.05;
 
   resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? ( glyphs.vigor ? 20 : 10 ) : 0 );
 

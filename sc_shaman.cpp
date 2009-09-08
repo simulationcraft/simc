@@ -2660,7 +2660,7 @@ void shaman_t::init_base()
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.ancestral_knowledge * 0.02;
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talents.toughness           * 0.02;
-  base_attack_expertise = 0.25 * talents.unleashed_rage * 0.03;
+  base_attack_expertise = talents.unleashed_rage * 0.03;
 
   base_attack_power = ( level * 2 ) - 20;
   initial_attack_power_per_strength = 1.0;

@@ -378,7 +378,7 @@ struct paladin_attack_t : public attack_t
     }
     if ( p -> active_seal == SEAL_OF_VENGEANCE && p -> glyphs.seal_of_vengeance )
     {
-      player_expertise += 0.25 * 0.10;
+      player_expertise += 0.10;
     }
     if ( p -> talents.vengeance )
     {
@@ -1936,10 +1936,10 @@ void paladin_t::init_base()
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.divine_intellect * 0.02;
 
   base_attack_power = ( level * 3 ) - 20;
-  base_attack_expertise += 0.25 * talents.combat_expertise * 0.02;
-  base_attack_hit  += talents.enlightened_judgements * 0.02;
-  base_attack_crit += talents.conviction * 0.01;
-  base_attack_crit += talents.sanctity_of_battle * 0.01;
+  base_attack_expertise += talents.combat_expertise * 0.02;
+  base_attack_hit       += talents.enlightened_judgements * 0.02;
+  base_attack_crit      += talents.conviction * 0.01;
+  base_attack_crit      += talents.sanctity_of_battle * 0.01;
 
   base_spell_hit  += talents.enlightened_judgements * 0.02;
   base_spell_crit += talents.conviction * 0.01;
