@@ -2168,7 +2168,7 @@ void warrior_t::init_base()
   base_defense = level * 5;
   base_miss    = 0.05;
   base_dodge   = 0.03664 + 0.01 * talents.anticipation;
-  base_parry   = 0.01 * talents.deflection;
+  base_parry   = 0.05 + 0.01 * talents.deflection;
   initial_dodge_per_agility = 0.0001180;
   initial_armor_per_agility = 2.0;
 
