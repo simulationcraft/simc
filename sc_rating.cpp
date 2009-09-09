@@ -351,7 +351,7 @@ static rating_t& rating_80( sim_t* sim )
   if ( r.spell_haste == 0 )
   {
     r.spell_haste       = 100.0/0.030500;
-    r.spell_hit         = 125.0/0.030500;
+    r.spell_hit         =  80.0/0.030500;
     r.spell_crit        = 140.0/0.030500;
     r.attack_haste      = 100.0/0.030500;
     r.attack_hit        = 100.0/0.030500;
