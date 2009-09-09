@@ -19,9 +19,9 @@ actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
-actions+=/dispersion
 actions+=/mind_flay
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 neck=wail_of_the_valkyr,stats=58crit_38haste_89sp_58sta_58int
 shoulders=conquerors_mantle_of_sanctification,stats=236armor_62crit_90sp_53sta_65int_49spi,gems=23sp_5sp,enchant=24sp_15crit
@@ -33,10 +33,10 @@ wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,
 hands=velens_handwraps_of_triumph,stats=207armor_59hit_67crit_109sp_77sta_77int,gems=10crit_12sp_5sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=23sp,enchant=23sp
 finger2=band_of_deplorable_violence,stats=54crit_89sp_58sta_58int_44spi,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=23sp,enchant=lightweave_embroidery
-main_hand=blade_of_the_silver_disciple,stats=44sta_49int_621sp_58haste_37crit,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
+main_hand=blade_of_the_silver_disciple,stats=37crit_58haste_621sp_44sta_49int,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
 off_hand=chalice_of_searing_light,stats=50crit_89sp_58sta_58int_50spi
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=23sp
 # Gear Summary
@@ -51,7 +51,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=23sp
 # gear_haste_rating=521
 # gear_armor=2036
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier9_2pc=1
+# tier8_2pc_caster=1
+# tier9_2pc_caster=1
 # back=pennant_cloak,enchant=lightweave_embroidery
 # main_hand=blade_of_the_silver_disciple,weapon=dagger_1.80speed_113.3dps

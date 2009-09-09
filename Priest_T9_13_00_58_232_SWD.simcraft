@@ -19,10 +19,10 @@ actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
-actions+=/dispersion
 actions+=/shadow_word_death,mb_wait=0,mb_priority=0
 actions+=/mind_flay
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 neck=pendant_of_the_shallow_grave,stats=41crit_31haste_74sp_45sta_43int,gems=23sp
 shoulders=valorous_mantle_of_sanctification,stats=233armor_57crit_83sp_48sta_60int_46spi,gems=23sp_5sp,enchant=24sp_15crit
@@ -37,7 +37,7 @@ finger2=band_of_the_invoker,stats=50haste_89sp_58sta_58int_50spi,enchant=23sp
 trinket1=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
 trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
 back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=23sp,enchant=lightweave_embroidery
-main_hand=blade_of_the_silver_disciple,stats=44sta_49int_621sp_58haste_37crit,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
+main_hand=blade_of_the_silver_disciple,stats=37crit_58haste_621sp_44sta_49int,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
 off_hand=chalice_of_benedictus,stats=37hit_45haste_69sp_51sta_48int,gems=10crit_12sp_5sp
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=23sp
 # Gear Summary
@@ -52,7 +52,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=23sp
 # gear_haste_rating=592
 # gear_armor=1994
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier9_2pc=1
+# tier8_2pc_caster=1
+# tier9_2pc_caster=1
 # back=pennant_cloak,enchant=lightweave_embroidery
 # main_hand=blade_of_the_silver_disciple,weapon=dagger_1.80speed_113.3dps

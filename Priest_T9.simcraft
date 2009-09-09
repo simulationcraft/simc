@@ -148,4 +148,4 @@ Priest_T9_13_00_58_258_troll.simcraft
 #wowhead=13043856 name=Priest_T9_34_28_09_245 save=Priest_T9_34_28_09_245.simcraft comment="*** Not yet updated ***"
 #wowhead=13043857 name=Priest_T9_34_28_09_258 save=Priest_T9_34_28_09_258.simcraft comment="*** Not yet updated ***"
 
-save_profiles=1
+#save_profiles=1
