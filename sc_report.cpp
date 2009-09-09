@@ -477,6 +477,9 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   int num_players = sim -> players_by_name.size();
   int max_length=0;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
@@ -496,16 +499,16 @@ static void print_scale_factors( FILE* file, sim_t* sim )
     {
       if ( p -> scales_with[ j ] != 0 )
       {
-        util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), sf.get_stat( j ) );
+        util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( j ), sim -> report_precision, sf.get_stat( j ) );
       }
     }
 
     if ( sim -> scaling -> normalize_scale_factors )
     {
-      util_t::fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
+      util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalized_to ), sim -> report_precision, p -> scaling.get_stat( p -> normalized_to ) );
     }
 
-    util_t::fprintf( file, "  Lag=%.2f", p -> scaling_lag );
+    util_t::fprintf( file, "  Lag=%.*f", sim -> report_precision, p -> scaling_lag );
 
     util_t::fprintf( file, "\n" );
   }
@@ -517,6 +520,9 @@ static void print_scale_factors( FILE* file, player_t* p )
 {
   if ( ! p -> sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( p -> sim -> report_precision < 0 )
+    p -> sim -> report_precision = 2;
+
   util_t::fprintf( file, "  Scale Factors:\n" );
 
   gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
@@ -526,12 +532,12 @@ static void print_scale_factors( FILE* file, player_t* p )
   {
     if ( p -> scales_with[ i ] != 0 )
     {
-      util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( i ), sf.get_stat( i ) );
+      util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, sf.get_stat( i ) );
     }
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )
   {
-    util_t::fprintf( file, "  DPS/%s=%.2f", util_t::stat_type_abbrev( p -> normalized_to ), p -> scaling.get_stat( p -> normalized_to ) );
+    util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalized_to ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalized_to ) );
   }
   util_t::fprintf( file, "\n" );
 
@@ -551,6 +557,9 @@ static void print_scale_factors( FILE* file, player_t* p )
 static void print_reference_dps( FILE* file, sim_t* sim )
 {
   if ( sim -> reference_player_str.empty() ) return;
+
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
 
   util_t::fprintf( file, "\nReference DPS:\n" );
 
@@ -581,7 +590,7 @@ static void print_reference_dps( FILE* file, sim_t* sim )
     {
       if ( ref_p -> scales_with[ j ] != 0 )
       {
-        util_t::fprintf( file, "  %s=%.2f", util_t::stat_type_abbrev( j ), ref_p -> scaling.get_stat( j ) );
+        util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( j ), sim -> report_precision, ref_p -> scaling.get_stat( j ) );
       }
     }
   }
@@ -761,6 +770,9 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   util_t::fprintf( file, "<h1>DPS Scale Factors (dps increase per unit stat)</h1>\n" );
 
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
@@ -789,11 +801,11 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        util_t::fprintf( file, "    <td>%.2f</td>\n", p -> scaling.get_stat( j ) );
+        util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling.get_stat( j ) );
       }
     }
 
-    util_t::fprintf( file, "    <td>%.2f</td>\n", p -> scaling_lag );
+    util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling_lag );
     util_t::fprintf( file, "  </tr>\n" );
   }
   util_t::fprintf( file, "</table>\n" );
@@ -954,17 +966,20 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   util_t::fprintf( file, "      <scale_factors>\n" );
 
   for ( int j=0; j < STAT_MAX; j++ )
   {
     if ( sim -> scaling -> stats.get_stat( j ) != 0 )
     {
-      util_t::fprintf( file, "        <scale_factor name=\"%s\" value=\"%.2f\" />\n", util_t::stat_type_abbrev( j ), p -> scaling.get_stat( j ) );
+      util_t::fprintf( file, "        <scale_factor name=\"%s\" value=\"%.*f\" />\n", util_t::stat_type_abbrev( j ), sim -> report_precision, p -> scaling.get_stat( j ) );
     }
   }
 
-  util_t::fprintf( file, "        <scale_factor name=\"Lag\" value=\"%.2f\" />\n", p -> scaling_lag );
+  util_t::fprintf( file, "        <scale_factor name=\"Lag\" value=\"%.*f\" />\n", sim -> report_precision, p -> scaling_lag );
   util_t::fprintf( file, "        <scale_factor_link type=\"lootrank\" url=\"%s\" />\n", p -> gear_weights_lootrank_link.c_str() );
   util_t::fprintf( file, "        <scale_factor_link type=\"wowhead\" url=\"%s\" />\n", p -> gear_weights_wowhead_link.c_str() );
   util_t::fprintf( file, "        <pawn_string>%s</pawn_string>\n", p -> gear_weights_pawn_string.c_str() );
@@ -1041,6 +1056,9 @@ static void print_wiki_scale_factors( FILE*  file,
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   util_t::fprintf( file, "----\n" );
   util_t::fprintf( file, "----\n" );
   util_t::fprintf( file, "----\n" );
@@ -1069,10 +1087,10 @@ static void print_wiki_scale_factors( FILE*  file,
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        util_t::fprintf( file, " %.2f ||", p -> scaling.get_stat( j ) );
+        util_t::fprintf( file, " %.*f ||", sim -> report_precision, p -> scaling.get_stat( j ) );
       }
     }
-    util_t::fprintf( file, " %.2f ||", p -> scaling_lag );
+    util_t::fprintf( file, " %.*f ||", sim -> report_precision, p -> scaling_lag );
     util_t::fprintf( file, "\n" );
   }
 

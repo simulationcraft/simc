@@ -312,7 +312,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
     output_file( stdout ), log_file( 0 ), armory_throttle( 2 ), current_throttle( 2 ), duration_uptimes( 0 ), debug_exp( 0 ),
-    threads( 0 ), thread_handle( 0 ), thread_index( index )
+    report_precision( 2 ), threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1361,6 +1361,7 @@ std::vector<option_t>& sim_t::get_options()
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
+      { "report_precision",                 OPT_INT,    &( report_precision                         ) },
       // @option_doc loc=skip
       { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
       { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },

@@ -1002,6 +1002,8 @@ struct sim_t
   int duration_uptimes;
   int debug_exp;
 
+  int report_precision;
+
   // Multi-Threading
   int threads;
   std::vector<sim_t*> children;

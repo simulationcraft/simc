@@ -922,7 +922,10 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
     if ( name )
     {
-      snprintf( buffer, sizeof( buffer ), "&amp;%s=%.2f", name, value );
+      if ( p -> sim -> report_precision < 0 )
+        p -> sim -> report_precision = 2;
+
+      snprintf( buffer, sizeof( buffer ), "&amp;%s=%.*f", name, p -> sim -> report_precision, value );
       s += buffer;
     }
   }
@@ -1000,7 +1003,10 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
       snprintf( buffer, sizeof( buffer ), "%d", id );
       id_string += buffer;
 
-      snprintf( buffer, sizeof( buffer ), "%.2f", value );
+      if ( p -> sim -> report_precision < 0 )
+        p -> sim -> report_precision = 2;
+
+      snprintf( buffer, sizeof( buffer ), "%.*f", p -> sim -> report_precision, value );
       value_string += buffer;
     }
   }
@@ -1033,6 +1039,10 @@ const char* chart_t::gear_weights_pawn( std::string& s,
 
   char buffer[ 1024 ];
   bool first = true;
+
+  if ( p -> sim -> report_precision < 0 )
+     p -> sim -> report_precision = 2;
+
 
   s = "";
   snprintf( buffer, sizeof( buffer ), "( Pawn: v1: \"%s\": ", p -> name() );
@@ -1072,7 +1082,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     {
       if ( ! first ) s += ",";
       first = false;
-      snprintf( buffer, sizeof( buffer ), " %s=%.2f", name, value );
+      snprintf( buffer, sizeof( buffer ), " %s=%.*f", name, p -> sim -> report_precision, value );
       s += buffer;
     }
   }
@@ -1087,17 +1097,17 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   s += ",";
   if ( maxR == maxG ) { value = maxR; }
   else { value = maxR/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " RedSocket=%.2f", value );
+  snprintf( buffer, sizeof( buffer ), " RedSocket=%.*f", p -> sim -> report_precision, value );
   s += buffer;
   s += ",";
   if ( maxY == maxG ) { value = maxY; }
   else { value = maxY/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " YellowSocket=%.2f", value );
+  snprintf( buffer, sizeof( buffer ), " YellowSocket=%.*f", p -> sim -> report_precision, value );
   s += buffer;
   s += ",";
   if ( maxB == maxG ) { value = maxB; }
   else { value = maxB/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " BlueSocket=%.2f", value );
+  snprintf( buffer, sizeof( buffer ), " BlueSocket=%.*f", p -> sim -> report_precision, value );
   s += buffer;
 
   s += " )";
