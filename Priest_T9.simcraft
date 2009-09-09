@@ -70,8 +70,8 @@ Priest_T9_13_00_58_258_troll.simcraft
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=flare_of_the_heavens,id=45518
-#trinket2=reign_of_the_unliving,id=47188
+#trinket1=reign_of_the_unliving,id=47182,gems=0sp
+#trinket2=reign_of_the_unliving,id=47188,gems=0sp
 
 
 #wowhead=13357966 name=Priest_T9_13_00_58_258_SWD  save=Priest_T9_13_00_58_258_SWD.simcraft	use_shadow_word_death=1
@@ -90,12 +90,12 @@ Priest_T9_13_00_58_258_troll.simcraft
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=flare_of_the_heavens,id=45518
-#trinket2=reign_of_the_unliving,id=47188
+#trinket1=reign_of_the_unliving,id=47182,gems=0sp
+#trinket2=reign_of_the_unliving,id=47188,gems=0sp
 
-# Different races
+## Different races
 
-# Draenei (or other alliance priest with a Draenei in the group)
+## Draenei (or other alliance priest with a Draenei in the group)
 #wowhead=13357966 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simcraft race=draenei
 #waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
 #off_hand=chalice_of_searing_light,id=47146,gems=0sp
@@ -112,11 +112,11 @@ Priest_T9_13_00_58_258_troll.simcraft
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=flare_of_the_heavens,id=45518
-#trinket2=reign_of_the_unliving,id=47188
+#trinket1=reign_of_the_unliving,id=47182,gems=0sp
+#trinket2=reign_of_the_unliving,id=47188,gems=0sp
 
 
-# Troll
+## Troll
 #wowhead=13357966 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simcraft race=troll
 #waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
 #off_hand=symbol_of_transgression,id=47064,gems=0sp
@@ -133,8 +133,8 @@ Priest_T9_13_00_58_258_troll.simcraft
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=flare_of_the_heavens,id=45518
-#trinket2=reign_of_the_unliving,id=47188
+#trinket1=reign_of_the_unliving,id=47182,gems=0sp
+#trinket2=reign_of_the_unliving,id=47188,gems=0sp
 
 
 
@@ -148,4 +148,4 @@ Priest_T9_13_00_58_258_troll.simcraft
 #wowhead=13043856 name=Priest_T9_34_28_09_245 save=Priest_T9_34_28_09_245.simcraft comment="*** Not yet updated ***"
 #wowhead=13043857 name=Priest_T9_34_28_09_258 save=Priest_T9_34_28_09_258.simcraft comment="*** Not yet updated ***"
 
-#save_profiles=1
+save_profiles=1

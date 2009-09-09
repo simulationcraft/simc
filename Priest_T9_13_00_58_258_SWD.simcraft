@@ -19,10 +19,10 @@ actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
-actions+=/dispersion
 actions+=/shadow_word_death,mb_wait=0,mb_priority=0
 actions+=/mind_flay
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
 head=velens_cowl_of_triumph,stats=282armor_86crit_151sp_116sta_116int_94spi,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
 neck=wail_of_the_valkyr,stats=65sta_65int_91sp_57crit_43haste,gems=12sp_10crit_5sp
 shoulders=velens_mantle_of_triumph,stats=260armor_68crit_124sp_86sta_86int_76spi,gems=12sp_10crit_5sp,enchant=24sp_15crit
@@ -34,8 +34,8 @@ wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,
 hands=velens_handwraps_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=12sp_10crit_5sp,enchant=28sp
 finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=12sp_10crit_5sp,enchant=23sp
 finger2=ring_of_the_darkmender,stats=65sta_65int_91sp_28mp5_49haste,gems=12sp_10crit_5sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
-trinket2=reign_of_the_unliving,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
+trinket1=reign_of_the_unliving,stats=150sp,gems=0sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
+trinket2=reign_of_the_unliving,stats=168sp,gems=0sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 back=jainas_radiance,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=lightweave
 main_hand=miserys_end,stats=66sta_66int_701sp_44crit_66haste,gems=0sp,enchant=63sp,weapon=mace_1.80speed_125.3dps
 off_hand=symbol_of_transgression,stats=65sta_65int_57hit_100sp_57crit,gems=0sp
@@ -46,14 +46,14 @@ ranged=rod_of_imprisoned_souls,stats=40sta_29int_50sp_31crit_24haste,gems=0sp
 # gear_stamina=1200
 # gear_intellect=1189
 # gear_spirit=441
-# gear_spell_power=3065
+# gear_spell_power=3215
 # gear_mp5=28
 # gear_hit_rating=297
-# gear_crit_rating=890
+# gear_crit_rating=770
 # gear_haste_rating=537
 # gear_armor=2169
 # meta_gem=chaotic_skyflare
-# tier9_2pc=1
-# tier9_4pc=1
+# tier9_2pc_caster=1
+# tier9_4pc_caster=1
 # back=jainas_radiance,enchant=lightweave
 # main_hand=miserys_end,weapon=mace_1.80speed_125.3dps
