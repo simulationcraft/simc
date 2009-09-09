@@ -1068,7 +1068,6 @@ struct concussion_blow_t : public warrior_attack_t
     cooldown          = 30.0;
     base_cost         = 15;
     direct_power_mod  = 0.75;
-    trigger_gcd       = 0;
   }
 };
 
@@ -1119,17 +1118,14 @@ struct devastate_t : public warrior_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 505, 505, 0, 15 },
-      { 75, 4, 425, 425, 0, 15 },
-      { 70, 3, 280, 280, 0, 15 },
+      { 80, 5, 1010, 1010, 0, 15 },
+      { 75, 4,  850,  850, 0, 15 },
+      { 70, 3,  560,  560, 0, 15 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
-
     weapon = &( p -> main_hand_weapon );
-    base_dd_min = 1010;
-    base_dd_max = 1010;
     weapon_multiplier = 1.00;
 
     may_crit   = true;
@@ -2449,11 +2445,13 @@ void warrior_t::init_actions()
     {
       action_list_str += "/stance,choose=defensive/auto_attack";
       action_list_str += "/bloodrage,rage<=85";
-      action_list_str += "/heroic_strike,rage>=75";
+      action_list_str += "/heroic_strike,rage>=50";
       action_list_str += "/shield_block,sync=shield_slam";
       action_list_str += "/shield_slam";
       action_list_str += "/revenge";
       if ( talents.concussion_blow ) action_list_str += "/concussion_blow";
+      if ( talents.shockwave       ) action_list_str += "/shockwave";
+      if ( talents.devastate       ) action_list_str += "/devastate";
     }
     else
     {
@@ -2669,38 +2667,38 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, &( talents.improved_heroic_strike          ) }, {  1, &( talents.armored_to_the_teeth      ) }, {  1, &( talents.improved_bloodrage             ) } },
-    { {  2, &( talents.deflection                      ) }, {  2, &( talents.booming_voice             ) }, {  2, &( talents.shield_specialization          ) } },
-    { {  3, &( talents.improved_rend                   ) }, {  3, &( talents.cruelty                   ) }, {  3, &( talents.improved_thunderclap           ) } },
-    { {  4, NULL                                         }, {  4, NULL                                   }, {  4, &( talents.incite                         ) } },
-    { {  5, NULL                                         }, {  5, &( talents.unbridled_wrath           ) }, {  5, &( talents.anticipation                   ) } },
-    { {  6, NULL                                         }, {  6, NULL                                   }, {  6, NULL                                        } },
-    { {  7, &( talents.improved_overpower              ) }, {  7, NULL                                   }, {  7, &( talents.improved_revenge               ) } },
-    { {  8, &( talents.anger_management                ) }, {  8, NULL                                   }, {  8, &( talents.shield_mastery                 ) } },
-    { {  9, &( talents.impale                          ) }, {  9, &( talents.commanding_presence       ) }, {  9, &( talents.toughness                      ) } },
-    { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, &( talents.improved_spell_reflection      ) } },
-    { { 11, &( talents.twohanded_weapon_specialization ) }, { 11, &( talents.improved_execute          ) }, { 11, NULL                                        } },
-    { { 12, &( talents.taste_for_blood                 ) }, { 12, &( talents.enrage                    ) }, { 12, &( talents.puncture                       ) } },
-    { { 13, &( talents.poleaxe_specialization          ) }, { 13, &( talents.precision                 ) }, { 13, NULL                                        } },
-    { { 14, NULL                                         }, { 14, &( talents.death_wish                ) }, { 14, &( talents.concussion_blow                ) } },
-    { { 15, &( talents.mace_specialization             ) }, { 15, NULL                                   }, { 15, &( talents.gag_order                      ) } },
-    { { 16, &( talents.sword_specialization            ) }, { 16, &( talents.improved_berserker_rage   ) }, { 16, &( talents.onhanded_weapon_specialization ) } },
-    { { 17, &( talents.weapon_mastery                  ) }, { 17, &( talents.flurry                    ) }, { 17, &( talents.improved_defensive_stance      ) } },
-    { { 18, NULL                                         }, { 18, &( talents.intensify_rage            ) }, { 18, &( talents.vigilance                      ) } },
-    { { 19, &( talents.trauma                          ) }, { 19, &( talents.bloodthirst               ) }, { 19, &( talents.focused_rage                   ) } },
-    { { 20, NULL                                         }, { 20, &( talents.improved_whirlwind        ) }, { 20, &( talents.vitality                       ) } },
-    { { 21, &( talents.mortal_strike                   ) }, { 21, NULL                                   }, { 21, NULL                                        } },
-    { { 22, &( talents.strength_of_arms                ) }, { 22, &( talents.improved_berserker_stance ) }, { 22, NULL                                        } },
-    { { 23, &( talents.improved_slam                   ) }, { 23, NULL                                   }, { 23, &( talents.devastate                      ) } },
-    { { 24, NULL                                         }, { 24, &( talents.rampage                   ) }, { 24, &( talents.critical_block                 ) } },
-    { { 25, &( talents.improved_mortal_strike          ) }, { 25, &( talents.bloodsurge                ) }, { 25, &( talents.sword_and_board                ) } },
-    { { 26, &( talents.unrelenting_assault             ) }, { 26, &( talents.unending_fury             ) }, { 26, &( talents.damage_shield                  ) } },
-    { { 27, &( talents.sudden_death                    ) }, { 27, &( talents.titans_grip               ) }, { 27, &( talents.shockwave                      ) } },
-    { { 28, &( talents.endless_rage                    ) }, {  0, NULL                                   }, {  0, NULL                                        } },
-    { { 29, &( talents.blood_frenzy                    ) }, {  0, NULL                                   }, {  0, NULL                                        } },
-    { { 30, &( talents.wrecking_crew                   ) }, {  0, NULL                                   }, {  0, NULL                                        } },
-    { { 31, &( talents.bladestorm                      ) }, {  0, NULL                                   }, {  0, NULL                                        } },
-    { {  0, NULL                                         }, {  0, NULL                                   }, {  0, NULL                                        } }
+    { {  1, 3, &( talents.improved_heroic_strike          ) }, {  1, 3, &( talents.armored_to_the_teeth      ) }, {  1, 2, &( talents.improved_bloodrage             ) } },
+    { {  2, 5, &( talents.deflection                      ) }, {  2, 2, &( talents.booming_voice             ) }, {  2, 5, &( talents.shield_specialization          ) } },
+    { {  3, 2, &( talents.improved_rend                   ) }, {  3, 5, &( talents.cruelty                   ) }, {  3, 3, &( talents.improved_thunderclap           ) } },
+    { {  4, 0, NULL                                         }, {  4, 0, NULL                                   }, {  4, 3, &( talents.incite                         ) } },
+    { {  5, 0, NULL                                         }, {  5, 5, &( talents.unbridled_wrath           ) }, {  5, 5, &( talents.anticipation                   ) } },
+    { {  6, 0, NULL                                         }, {  6, 0, NULL                                   }, {  6, 0, NULL                                        } },
+    { {  7, 2, &( talents.improved_overpower              ) }, {  7, 0, NULL                                   }, {  7, 2, &( talents.improved_revenge               ) } },
+    { {  8, 1, &( talents.anger_management                ) }, {  8, 0, NULL                                   }, {  8, 2, &( talents.shield_mastery                 ) } },
+    { {  9, 2, &( talents.impale                          ) }, {  9, 5, &( talents.commanding_presence       ) }, {  9, 5, &( talents.toughness                      ) } },
+    { { 10, 3, &( talents.deep_wounds                     ) }, { 10, 5, &( talents.dual_wield_specialization ) }, { 10, 2, &( talents.improved_spell_reflection      ) } },
+    { { 11, 3, &( talents.twohanded_weapon_specialization ) }, { 11, 2, &( talents.improved_execute          ) }, { 11, 0, NULL                                        } },
+    { { 12, 3, &( talents.taste_for_blood                 ) }, { 12, 5, &( talents.enrage                    ) }, { 12, 3, &( talents.puncture                       ) } },
+    { { 13, 5, &( talents.poleaxe_specialization          ) }, { 13, 3, &( talents.precision                 ) }, { 13, 0, NULL                                        } },
+    { { 14, 0, NULL                                         }, { 14, 1, &( talents.death_wish                ) }, { 14, 1, &( talents.concussion_blow                ) } },
+    { { 15, 5, &( talents.mace_specialization             ) }, { 15, 0, NULL                                   }, { 15, 2, &( talents.gag_order                      ) } },
+    { { 16, 5, &( talents.sword_specialization            ) }, { 16, 2, &( talents.improved_berserker_rage   ) }, { 16, 5, &( talents.onhanded_weapon_specialization ) } },
+    { { 17, 2, &( talents.weapon_mastery                  ) }, { 17, 5, &( talents.flurry                    ) }, { 17, 2, &( talents.improved_defensive_stance      ) } },
+    { { 18, 0, NULL                                         }, { 18, 3, &( talents.intensify_rage            ) }, { 18, 1, &( talents.vigilance                      ) } },
+    { { 19, 2, &( talents.trauma                          ) }, { 19, 1, &( talents.bloodthirst               ) }, { 19, 3, &( talents.focused_rage                   ) } },
+    { { 20, 0, NULL                                         }, { 20, 2, &( talents.improved_whirlwind        ) }, { 20, 3, &( talents.vitality                       ) } },
+    { { 21, 1, &( talents.mortal_strike                   ) }, { 21, 0, NULL                                   }, { 21, 0, NULL                                        } },
+    { { 22, 2, &( talents.strength_of_arms                ) }, { 22, 5, &( talents.improved_berserker_stance ) }, { 22, 0, NULL                                        } },
+    { { 23, 2, &( talents.improved_slam                   ) }, { 23, 0, NULL                                   }, { 23, 1, &( talents.devastate                      ) } },
+    { { 24, 0, NULL                                         }, { 24, 1, &( talents.rampage                   ) }, { 24, 3, &( talents.critical_block                 ) } },
+    { { 25, 3, &( talents.improved_mortal_strike          ) }, { 25, 3, &( talents.bloodsurge                ) }, { 25, 3, &( talents.sword_and_board                ) } },
+    { { 26, 2, &( talents.unrelenting_assault             ) }, { 26, 5, &( talents.unending_fury             ) }, { 26, 2, &( talents.damage_shield                  ) } },
+    { { 27, 3, &( talents.sudden_death                    ) }, { 27, 1, &( talents.titans_grip               ) }, { 27, 1, &( talents.shockwave                      ) } },
+    { { 28, 1, &( talents.endless_rage                    ) }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } },
+    { { 29, 2, &( talents.blood_frenzy                    ) }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } },
+    { { 30, 5, &( talents.wrecking_crew                   ) }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } },
+    { { 31, 1, &( talents.bladestorm                      ) }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } },
+    { {  0, 0, NULL                                         }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } }
   };
   return get_talent_translation( arms, fury, protection, translation );
 }

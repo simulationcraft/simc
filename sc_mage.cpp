@@ -56,9 +56,18 @@ struct mage_t : public player_t
 
   // Random Number Generation
   rng_t* rng_empowered_fire;
+  rng_t* rng_enduring_winter;
   rng_t* rng_ghost_charge;
-  rng_t* rng_improved_water_elemental;
   rng_t* rng_tier8_4pc;
+
+  // Cooldowns
+  struct _cooldowns_t
+  {
+    double enduring_winter;
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
+    _cooldowns_t() { reset(); }
+  };
+  _cooldowns_t _cooldowns;
 
   // Options
   std::string focus_magic_target_str;
@@ -108,6 +117,7 @@ struct mage_t : public player_t
     int  empowered_arcane_missiles;
     int  empowered_fire;
     int  empowered_frost_bolt;
+    int  enduring_winter;
     int  fingers_of_frost;
     int  fire_power;
     int  focus_magic;
@@ -122,7 +132,6 @@ struct mage_t : public player_t
     int  improved_fire_blast;
     int  improved_frost_bolt;
     int  improved_scorch;
-    int  improved_water_elemental;
     int  incanters_absorption;
     int  incineration;
     int  living_bomb;
@@ -746,13 +755,18 @@ static void trigger_replenishment( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( ! p -> talents.improved_water_elemental )
+  if ( ! p -> talents.enduring_winter )
     return;
 
-  if ( ! p -> rng_improved_water_elemental -> roll( p -> talents.improved_water_elemental / 3.0 ) )
+  if ( p -> sim -> current_time < p -> _cooldowns.enduring_winter ) 
+    return;
+
+  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter / 3.0 ) )
     return;
 
   p -> trigger_replenishment();
+
+  p -> _cooldowns.enduring_winter = p -> sim -> current_time + 6.0;
 }
 
 // trigger_incanters_absorption ====================================================
@@ -2514,7 +2528,7 @@ struct water_elemental_spell_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     consume_resource();
     update_ready();
-    p -> summon_pet( "water_elemental", 45.0 + p -> talents.improved_water_elemental * 5.0 );
+    p -> summon_pet( "water_elemental", 45.0 + p -> talents.enduring_winter * 5.0 );
   }
 
   virtual bool ready()
@@ -2984,10 +2998,10 @@ void mage_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_empowered_fire           = get_rng( "empowered_fire"           );
-  rng_ghost_charge             = get_rng( "ghost_charge"             );
-  rng_improved_water_elemental = get_rng( "improved_water_elemental" );
-  rng_tier8_4pc                = get_rng( "tier8_4pc"                );
+  rng_empowered_fire  = get_rng( "empowered_fire"  );
+  rng_ghost_charge    = get_rng( "ghost_charge"    );
+  rng_enduring_winter = get_rng( "enduring_winter" );
+  rng_tier8_4pc       = get_rng( "tier8_4pc"       );
 }
 
 // mage_t::init_actions ======================================================
@@ -3165,6 +3179,7 @@ void mage_t::reset()
   active_water_elemental = 0;
 
   rotation.reset();
+  _cooldowns.reset();
 }
 
 // mage_t::regen  ==========================================================
@@ -3241,37 +3256,37 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, &( talents.arcane_subtlety      ) }, {  1, &( talents.improved_fire_blast ) }, {  1, &( talents.frostbite                ) } },
-    { {  2, &( talents.arcane_focus         ) }, {  2, &( talents.incineration        ) }, {  2, &( talents.improved_frost_bolt      ) } },
-    { {  3, NULL                              }, {  3, &( talents.improved_fire_ball  ) }, {  3, &( talents.ice_floes                ) } },
-    { {  4, &( talents.arcane_fortitude     ) }, {  4, &( talents.ignite              ) }, {  4, &( talents.ice_shards               ) } },
-    { {  5, NULL                              }, {  5, NULL                             }, {  5, NULL                                  } },
-    { {  6, &( talents.arcane_concentration ) }, {  6, &( talents.world_in_flames     ) }, {  6, &( talents.precision                ) } },
-    { {  7, NULL                              }, {  7, NULL                             }, {  7, NULL                                  } },
-    { {  8, &( talents.spell_impact         ) }, {  8, NULL                             }, {  8, &( talents.piercing_ice             ) } },
-    { {  9, &( talents.student_of_the_mind  ) }, {  9, &( talents.pyroblast           ) }, {  9, &( talents.icy_veins                ) } },
-    { { 10, &( talents.focus_magic          ) }, { 10, &( talents.burning_soul        ) }, { 10, NULL                                  } },
-    { { 11, NULL                              }, { 11, &( talents.improved_scorch     ) }, { 11, NULL                                  } },
-    { { 12, NULL                              }, { 12, NULL                             }, { 12, &( talents.frost_channeling         ) } },
-    { { 13, &( talents.arcane_meditation    ) }, { 13, &( talents.master_of_elements  ) }, { 13, &( talents.shatter                  ) } },
-    { { 14, &( talents.torment_the_weak     ) }, { 14, &( talents.playing_with_fire   ) }, { 14, &( talents.cold_snap                ) } },
-    { { 15, NULL                              }, { 15, &( talents.critical_mass       ) }, { 15, NULL                                  } },
-    { { 16, &( talents.presence_of_mind     ) }, { 16, NULL                             }, { 16, NULL                                  } },
-    { { 17, &( talents.arcane_mind          ) }, { 17, NULL                             }, { 17, &( talents.cold_as_ice              ) } },
-    { { 18, NULL                              }, { 18, &( talents.fire_power          ) }, { 18, &( talents.winters_chill            ) } },
-    { { 19, &( talents.arcane_instability   ) }, { 19, &( talents.pyromaniac          ) }, { 19, NULL                                  } },
-    { { 20, &( talents.arcane_potency       ) }, { 20, &( talents.combustion          ) }, { 20, NULL                                  } },
-    { { 21, &( talents.arcane_empowerment   ) }, { 21, &( talents.molten_fury         ) }, { 21, &( talents.arctic_winds             ) } },
-    { { 22, &( talents.arcane_power         ) }, { 22, NULL                             }, { 22, &( talents.empowered_frost_bolt     ) } },
-    { { 23, &( talents.incanters_absorption ) }, { 23, &( talents.empowered_fire      ) }, { 23, &( talents.fingers_of_frost         ) } },
-    { { 24, &( talents.arcane_flows         ) }, { 24, NULL                             }, { 24, &( talents.brain_freeze             ) } },
-    { { 25, &( talents.mind_mastery         ) }, { 25, NULL                             }, { 25, &( talents.summon_water_elemental   ) } },
-    { { 26, &( talents.slow                 ) }, { 26, &( talents.hot_streak          ) }, { 26, &( talents.improved_water_elemental ) } },
-    { { 27, &( talents.missile_barrage      ) }, { 27, &( talents.burnout             ) }, { 27, &( talents.chilled_to_the_bone      ) } },
-    { { 28, &( talents.netherwind_presence  ) }, { 28, &( talents.living_bomb         ) }, { 28, NULL                                  } },
-    { { 29, &( talents.spell_power          ) }, {  0, NULL                             }, {  0, NULL                                  } },
-    { { 30, &( talents.arcane_barrage       ) }, {  0, NULL                             }, {  0, NULL                                  } },
-    { {  0, NULL                              }, {  0, NULL                             }, {  0, NULL                                  } }
+    { {  1, 2, &( talents.arcane_subtlety      ) }, {  1, 2, &( talents.improved_fire_blast ) }, {  1, 3, &( talents.frostbite                ) } },
+    { {  2, 3, &( talents.arcane_focus         ) }, {  2, 3, &( talents.incineration        ) }, {  2, 5, &( talents.improved_frost_bolt      ) } },
+    { {  3, 0, NULL                              }, {  3, 5, &( talents.improved_fire_ball  ) }, {  3, 3, &( talents.ice_floes                ) } },
+    { {  4, 3, &( talents.arcane_fortitude     ) }, {  4, 5, &( talents.ignite              ) }, {  4, 3, &( talents.ice_shards               ) } },
+    { {  5, 0, NULL                              }, {  5, 0, NULL                             }, {  5, 0, NULL                                  } },
+    { {  6, 5, &( talents.arcane_concentration ) }, {  6, 3, &( talents.world_in_flames     ) }, {  6, 3, &( talents.precision                ) } },
+    { {  7, 0, NULL                              }, {  7, 0, NULL                             }, {  7, 0, NULL                                  } },
+    { {  8, 3, &( talents.spell_impact         ) }, {  8, 0, NULL                             }, {  8, 3, &( talents.piercing_ice             ) } },
+    { {  9, 3, &( talents.student_of_the_mind  ) }, {  9, 1, &( talents.pyroblast           ) }, {  9, 1, &( talents.icy_veins                ) } },
+    { { 10, 1, &( talents.focus_magic          ) }, { 10, 2, &( talents.burning_soul        ) }, { 10, 0, NULL                                  } },
+    { { 11, 0, NULL                              }, { 11, 3, &( talents.improved_scorch     ) }, { 11, 0, NULL                                  } },
+    { { 12, 0, NULL                              }, { 12, 0, NULL                             }, { 12, 3, &( talents.frost_channeling         ) } },
+    { { 13, 3, &( talents.arcane_meditation    ) }, { 13, 3, &( talents.master_of_elements  ) }, { 13, 3, &( talents.shatter                  ) } },
+    { { 14, 3, &( talents.torment_the_weak     ) }, { 14, 3, &( talents.playing_with_fire   ) }, { 14, 1, &( talents.cold_snap                ) } },
+    { { 15, 0, NULL                              }, { 15, 3, &( talents.critical_mass       ) }, { 15, 0, NULL                                  } },
+    { { 16, 1, &( talents.presence_of_mind     ) }, { 16, 0, NULL                             }, { 16, 0, NULL                                  } },
+    { { 17, 5, &( talents.arcane_mind          ) }, { 17, 0, NULL                             }, { 17, 2, &( talents.cold_as_ice              ) } },
+    { { 18, 0, NULL                              }, { 18, 5, &( talents.fire_power          ) }, { 18, 3, &( talents.winters_chill            ) } },
+    { { 19, 3, &( talents.arcane_instability   ) }, { 19, 3, &( talents.pyromaniac          ) }, { 19, 0, NULL                                  } },
+    { { 20, 2, &( talents.arcane_potency       ) }, { 20, 1, &( talents.combustion          ) }, { 20, 0, NULL                                  } },
+    { { 21, 3, &( talents.arcane_empowerment   ) }, { 21, 2, &( talents.molten_fury         ) }, { 21, 5, &( talents.arctic_winds             ) } },
+    { { 22, 1, &( talents.arcane_power         ) }, { 22, 0, NULL                             }, { 22, 2, &( talents.empowered_frost_bolt     ) } },
+    { { 23, 3, &( talents.incanters_absorption ) }, { 23, 3, &( talents.empowered_fire      ) }, { 23, 2, &( talents.fingers_of_frost         ) } },
+    { { 24, 2, &( talents.arcane_flows         ) }, { 24, 0, NULL                             }, { 24, 3, &( talents.brain_freeze             ) } },
+    { { 25, 5, &( talents.mind_mastery         ) }, { 25, 0, NULL                             }, { 25, 1, &( talents.summon_water_elemental   ) } },
+    { { 26, 1, &( talents.slow                 ) }, { 26, 3, &( talents.hot_streak          ) }, { 26, 3, &( talents.enduring_winter          ) } },
+    { { 27, 5, &( talents.missile_barrage      ) }, { 27, 5, &( talents.burnout             ) }, { 27, 5, &( talents.chilled_to_the_bone      ) } },
+    { { 28, 3, &( talents.netherwind_presence  ) }, { 28, 1, &( talents.living_bomb         ) }, { 28, 0, NULL                                  } },
+    { { 29, 2, &( talents.spell_power          ) }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } },
+    { { 30, 1, &( talents.arcane_barrage       ) }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } },
+    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } }
   };
 
   return get_talent_translation( arcane, fire, frost, translation );
@@ -3314,6 +3329,7 @@ std::vector<option_t>& mage_t::get_options()
       { "empowered_arcane_missiles", OPT_INT,   &( talents.empowered_arcane_missiles ) },
       { "empowered_fire",            OPT_INT,   &( talents.empowered_fire            ) },
       { "empowered_frost_bolt",      OPT_INT,   &( talents.empowered_frost_bolt      ) },
+      { "enduring_winter",           OPT_INT,   &( talents.enduring_winter           ) },
       { "fingers_of_frost",          OPT_INT,   &( talents.fingers_of_frost          ) },
       { "fire_power",                OPT_INT,   &( talents.fire_power                ) },
       { "focus_magic",               OPT_INT,   &( talents.focus_magic               ) },
@@ -3327,7 +3343,6 @@ std::vector<option_t>& mage_t::get_options()
       { "improved_fire_blast",       OPT_INT,   &( talents.improved_fire_blast       ) },
       { "improved_frost_bolt",       OPT_INT,   &( talents.improved_frost_bolt       ) },
       { "improved_scorch",           OPT_INT,   &( talents.improved_scorch           ) },
-      { "improved_water_elemental",  OPT_INT,   &( talents.improved_water_elemental  ) },
       { "incanters_absorption",      OPT_INT,   &( talents.incanters_absorption      ) },
       { "incineration",              OPT_INT,   &( talents.incineration              ) },
       { "living_bomb",               OPT_INT,   &( talents.living_bomb               ) },

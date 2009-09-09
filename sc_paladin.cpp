@@ -120,6 +120,7 @@ struct paladin_t : public player_t
     int vengeance;
 
     // NYI
+    int ardent_defender;
     int aura_mastery;
     int blessed_life;
     int blessing_of_sanctuary;
@@ -2401,33 +2402,33 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, NULL                                     }, {  1, NULL                                      }, {  1, &( talents.deflection                 ) } },
-    { {  2, &( talents.seals_of_the_pure           ) }, {  2, &( talents.divine_strength              ) }, {  2, &( talents.benediction                ) } },
-    { {  3, &( talents.healing_light               ) }, {  3, NULL                                      }, {  3, &( talents.improved_judgements        ) } },
-    { {  4, &( talents.divine_intellect            ) }, {  4, NULL                                      }, {  4, &( talents.heart_of_the_crusader      ) } },
-    { {  5, NULL                                     }, {  5, &( talents.anticipation                 ) }, {  5, &( talents.improved_blessing_of_might ) } },
-    { {  6, &( talents.aura_mastery                ) }, {  6, NULL                                      }, {  6, &( talents.vindication                ) } },
-    { {  7, NULL                                     }, {  7, &( talents.improved_righteous_fury      ) }, {  7, &( talents.conviction                 ) } },
-    { {  8, NULL                                     }, {  8, &( talents.toughness                    ) }, {  8, &( talents.seal_of_command            ) } },
-    { {  9, &( talents.improved_concentration_aura ) }, {  9, NULL                                      }, {  9, NULL                                    } },
-    { { 10, &( talents.improved_blessing_of_wisdom ) }, { 10, &( talents.improved_hammer_of_justice   ) }, { 10, &( talents.eye_for_an_eye             ) } },
-    { { 11, NULL                                     }, { 11, &( talents.improved_devotion_aura       ) }, { 11, &( talents.sanctity_of_battle         ) } },
-    { { 12, NULL                                     }, { 12, &( talents.blessing_of_sanctuary        ) }, { 12, &( talents.crusade                    ) } },
-    { { 13, &( talents.divine_favor                ) }, { 13, &( talents.reckoning                    ) }, { 13, &( talents.two_handed_weapon_spec     ) } },
-    { { 14, &( talents.sanctified_light            ) }, { 14, &( talents.sacred_duty                  ) }, { 14, &( talents.sanctified_retribution     ) } },
-    { { 15, &( talents.purifying_power             ) }, { 15, &( talents.one_handed_weapon_spec       ) }, { 15, &( talents.vengeance                  ) } },
-    { { 16, &( talents.holy_power                  ) }, { 16, &( talents.spiritual_attunement         ) }, { 16, &( talents.divine_purpose             ) } },
-    { { 17, NULL                                     }, { 17, &( talents.holy_shield                  ) }, { 17, &( talents.the_art_of_war             ) } },
-    { { 18, &( talents.holy_shock                  ) }, { 18, NULL                                      }, { 18, NULL                                    } },
-    { { 19, &( talents.blessed_life                ) }, { 19, &( talents.redoubt                      ) }, { 19, &( talents.judgements_of_the_wise     ) } },
-    { { 20, NULL                                     }, { 20, &( talents.combat_expertise             ) }, { 20, &( talents.fanaticism                 ) } },
-    { { 21, &( talents.holy_guidance               ) }, { 21, &( talents.touched_by_the_light         ) }, { 21, &( talents.sanctified_wrath           ) } },
-    { { 22, &( talents.divine_illumination         ) }, { 22, &( talents.avengers_shield              ) }, { 22, &( talents.swift_retribution          ) } },
-    { { 23, &( talents.judgements_of_the_pure      ) }, { 23, &( talents.guarded_by_the_light         ) }, { 23, &( talents.crusader_strike            ) } },
-    { { 24, NULL                                     }, { 24, &( talents.shield_of_the_templar        ) }, { 24, &( talents.sheath_of_light            ) } },
-    { { 25, &( talents.enlightened_judgements      ) }, { 25, &( talents.judgements_of_the_just       ) }, { 25, &( talents.righteous_vengeance        ) } },
-    { { 26, NULL                                     }, { 26, &( talents.hammer_of_the_righteous      ) }, { 26, &( talents.divine_storm               ) } },
-    { {  0, NULL                                     }, {  0, NULL                                      }, {  0, NULL                                    } }
+    { {  1, 0, NULL                                     }, {  1, 0, NULL                                      }, {  1, 5, &( talents.deflection                 ) } },
+    { {  2, 5, &( talents.seals_of_the_pure           ) }, {  2, 5, &( talents.divine_strength              ) }, {  2, 5, &( talents.benediction                ) } },
+    { {  3, 3, &( talents.healing_light               ) }, {  3, 0, NULL                                      }, {  3, 2, &( talents.improved_judgements        ) } },
+    { {  4, 5, &( talents.divine_intellect            ) }, {  4, 0, NULL                                      }, {  4, 3, &( talents.heart_of_the_crusader      ) } },
+    { {  5, 0, NULL                                     }, {  5, 5, &( talents.anticipation                 ) }, {  5, 2, &( talents.improved_blessing_of_might ) } },
+    { {  6, 1, &( talents.aura_mastery                ) }, {  6, 0, NULL                                      }, {  6, 2, &( talents.vindication                ) } },
+    { {  7, 0, NULL                                     }, {  7, 3, &( talents.improved_righteous_fury      ) }, {  7, 5, &( talents.conviction                 ) } },
+    { {  8, 0, NULL                                     }, {  8, 5, &( talents.toughness                    ) }, {  8, 1, &( talents.seal_of_command            ) } },
+    { {  9, 3, &( talents.improved_concentration_aura ) }, {  9, 0, NULL                                      }, {  9, 0, NULL                                    } },
+    { { 10, 2, &( talents.improved_blessing_of_wisdom ) }, { 10, 2, &( talents.improved_hammer_of_justice   ) }, { 10, 2, &( talents.eye_for_an_eye             ) } },
+    { { 11, 0, NULL                                     }, { 11, 3, &( talents.improved_devotion_aura       ) }, { 11, 3, &( talents.sanctity_of_battle         ) } },
+    { { 12, 0, NULL                                     }, { 12, 1, &( talents.blessing_of_sanctuary        ) }, { 12, 3, &( talents.crusade                    ) } },
+    { { 13, 1, &( talents.divine_favor                ) }, { 13, 5, &( talents.reckoning                    ) }, { 13, 3, &( talents.two_handed_weapon_spec     ) } },
+    { { 14, 3, &( talents.sanctified_light            ) }, { 14, 2, &( talents.sacred_duty                  ) }, { 14, 1, &( talents.sanctified_retribution     ) } },
+    { { 15, 2, &( talents.purifying_power             ) }, { 15, 3, &( talents.one_handed_weapon_spec       ) }, { 15, 3, &( talents.vengeance                  ) } },
+    { { 16, 5, &( talents.holy_power                  ) }, { 16, 2, &( talents.spiritual_attunement         ) }, { 16, 2, &( talents.divine_purpose             ) } },
+    { { 17, 0, NULL                                     }, { 17, 1, &( talents.holy_shield                  ) }, { 17, 2, &( talents.the_art_of_war             ) } },
+    { { 18, 1, &( talents.holy_shock                  ) }, { 18, 3, &( talents.ardent_defender              ) }, { 18, 0, NULL                                    } },
+    { { 19, 3, &( talents.blessed_life                ) }, { 19, 3, &( talents.redoubt                      ) }, { 19, 3, &( talents.judgements_of_the_wise     ) } },
+    { { 20, 0, NULL                                     }, { 20, 3, &( talents.combat_expertise             ) }, { 20, 3, &( talents.fanaticism                 ) } },
+    { { 21, 5, &( talents.holy_guidance               ) }, { 21, 3, &( talents.touched_by_the_light         ) }, { 21, 2, &( talents.sanctified_wrath           ) } },
+    { { 22, 1, &( talents.divine_illumination         ) }, { 22, 1, &( talents.avengers_shield              ) }, { 22, 3, &( talents.swift_retribution          ) } },
+    { { 23, 5, &( talents.judgements_of_the_pure      ) }, { 23, 2, &( talents.guarded_by_the_light         ) }, { 23, 1, &( talents.crusader_strike            ) } },
+    { { 24, 0, NULL                                     }, { 24, 3, &( talents.shield_of_the_templar        ) }, { 24, 3, &( talents.sheath_of_light            ) } },
+    { { 25, 2, &( talents.enlightened_judgements      ) }, { 25, 2, &( talents.judgements_of_the_just       ) }, { 25, 3, &( talents.righteous_vengeance        ) } },
+    { { 26, 0, NULL                                     }, { 26, 1, &( talents.hammer_of_the_righteous      ) }, { 26, 1, &( talents.divine_storm               ) } },
+    { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                    } }
   };
 
   return get_talent_translation( holy, protection, retribution, translation );
@@ -2445,6 +2446,7 @@ std::vector<option_t>& paladin_t::get_options()
     {
       // @option_doc loc=player/paladin/talents title="Talents"
       { "anticipation",                OPT_INT, &( talents.anticipation                ) },
+      { "ardent_defender",             OPT_INT, &( talents.ardent_defender             ) },
       { "aura_mastery",                OPT_INT, &( talents.aura_mastery                ) },
       { "avengers_shield",             OPT_INT, &( talents.avengers_shield             ) },
       { "benediction;",                OPT_INT, &( talents.benediction                 ) },

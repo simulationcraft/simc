@@ -102,94 +102,94 @@ struct death_knight_t : public player_t
   // Talents
   struct talents_t
   {
-    int butchery;
-    int subversion;
+    int abominations_might;
+    int acclimation;
+    int annihilation;
+    int anti_magic_zone;
+    int anticipation;
+    int black_ice;
     int blade_barrier;
     int bladed_armor;
-    int scent_of_blood;
-    int two_handed_weapon_specialization;
-    int rune_tap;
+    int blood_caked_blade;
+    int blood_gorged;
+    int blood_of_the_north;
+    int bloodworms;
+    int bloody_strikes;
+    int bloody_vengeance;
+    int bone_shield;
+    int butchery;
+    int chilblains;
+    int chill_of_the_grave;
+    int corpse_explosion;
+    int crypt_fever;
+    int dancing_rune_weapon;
     int dark_conviction;
     int death_rune_mastery;
-    int improved_rune_tap;
-    int spell_reflection;
-    int vendetta;
-    int bloody_strikes;
-    int veteran_of_the_third_war;
-    int mark_of_blood;
-    int bloody_vengeance;
-    int abominations_might;
-    int bloodworms;
+    int deathchill;
+    int desecration;
+    int desolation;
+    int dirge;
+    int ebon_plaguebringer;
+    int endless_winter;
+    int epidemic;
+    int frigid_deathplate;
+    int frost_strike;
+    int ghoul_frenzy;
+    int glacier_rot;
+    int guile_of_gorefiend;
+    int heart_strike;
+    int howling_blast;
+    int hungering_cold;
     int hysteria;
+    int icy_reach;
+    int icy_talons;
     int improved_blood_presence;
     int improved_death_strike;
-    int sudden_doom;
-    int vampiric_blood;
-    int will_of_the_necropolis;
-    int heart_strike;
-    int might_of_mograine;
-    int blood_gorged;
-    int dancing_rune_weapon;
-
-    int improved_icy_touch;
-    int runic_power_mastery;
-    int toughness;
-    int icy_reach;
-    int black_ice;
-    int nerves_of_cold_steel;
-    int icy_talons;
-    int lichborne;
-    int annihilation;
-    int killing_machine;
-    int chill_of_the_grave;
-    int endless_winter;
-    int frigid_deathplate;
-    int glacier_rot;
-    int deathchill;
-    int improved_icy_talons;
-    int merciless_combat;
-    int rime;
-    int chilblains;
-    int hungering_cold;
     int improved_frost_presence;
-    int blood_of_the_north;
-    int unbreakable_armor;
-    int acclimation;
-    int frost_strike;
-    int guile_of_gorefiend;
+    int improved_icy_talons;
+    int improved_icy_touch;
+    int improved_rune_tap;
+    int improved_unholy_presence;
+    int impurity;
+    int killing_machine;
+    int lichborne;
+    int magic_supression;
+    int mark_of_blood;
+    int master_of_ghouls;
+    int merciless_combat;
+    int might_of_mograine;
+    int morbidity;
+    int necrosis;
+    int nerves_of_cold_steel;
+    int night_of_the_dead;
+    int on_a_pale_horse;
+    int outbreak;
+    int rage_of_rivendare;
+    int ravenous_dead;
+    int reaping;
+    int rime;
+    int rune_tap;
+    int runic_power_mastery;
+    int scent_of_blood;
+    int scourge_strike;
+    int spell_reflection;
+    int subversion;
+    int sudden_doom;
+    int summon_gargoyle;
+    int threat_of_thassarian;
+    int toughness;
     int tundra_stalker;
-    int howling_blast;
-
+    int two_handed_weapon_specialization;
+    int unbreakable_armor;
+    int unholy_blight;
+    int unholy_command;
+    int vampiric_blood;
+    int vendetta;
+    int veteran_of_the_third_war;
     int vicious_strikes;
     int virulence;
-    int anticipation;
-    int epidemic;
-    int morbidity;
-    int unholy_command;
-    int ravenous_dead;
-    int outbreak;
-    int necrosis;
-    int corpse_explosion;
-    int on_a_pale_horse;
-    int blood_caked_blade;
-    int night_of_the_dead;
-    int unholy_blight;
-    int impurity;
-    int dirge;
-    int magic_supression;
-    int reaping;
-    int master_of_ghouls;
-    int desecration;
-    int anti_magic_zone;
-    int improved_unholy_presence;
-    int ghoul_frenzy;
-    int crypt_fever;
-    int bone_shield;
     int wandering_plague;
-    int ebon_plaguebringer;
-    int scourge_strike;
-    int rage_of_rivendare;
-    int summon_gargoyle;
+    int will_of_the_necropolis;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -2146,37 +2146,38 @@ bool death_knight_t::get_talent_trees( std::vector<int*>& blood, std::vector<int
 {
   talent_translation_t translation[][3] =
   {
-    { {  1, &( talents.butchery                         ) }, {  1, &( talents.improved_icy_touch      ) }, {  1, &( talents.vicious_strikes          ) } },
-    { {  2, &( talents.subversion                       ) }, {  2, &( talents.runic_power_mastery     ) }, {  2, &( talents.virulence                ) } },
-    { {  3, &( talents.blade_barrier                    ) }, {  3, &( talents.toughness               ) }, {  3, &( talents.anticipation             ) } },
-    { {  4, &( talents.bladed_armor                     ) }, {  4, &( talents.icy_reach               ) }, {  4, &( talents.epidemic                 ) } },
-    { {  5, &( talents.scent_of_blood                   ) }, {  5, &( talents.black_ice               ) }, {  5, &( talents.morbidity                ) } },
-    { {  6, &( talents.two_handed_weapon_specialization ) }, {  6, &( talents.nerves_of_cold_steel    ) }, {  6, &( talents.unholy_command           ) } },
-    { {  6, &( talents.rune_tap                         ) }, {  7, &( talents.icy_talons              ) }, {  7, &( talents.ravenous_dead            ) } },
-    { {  8, &( talents.dark_conviction                  ) }, {  8, &( talents.lichborne               ) }, {  8, &( talents.outbreak                 ) } },
-    { {  9, &( talents.death_rune_mastery               ) }, {  9, &( talents.annihilation            ) }, {  9, &( talents.necrosis                 ) } },
-    { { 10, &( talents.improved_rune_tap                ) }, { 10, &( talents.killing_machine         ) }, { 10, &( talents.corpse_explosion         ) } },
-    { { 11, &( talents.spell_reflection                 ) }, { 11, &( talents.chill_of_the_grave      ) }, { 11, &( talents.on_a_pale_horse          ) } },
-    { { 12, &( talents.vendetta                         ) }, { 12, &( talents.endless_winter          ) }, { 12, &( talents.blood_caked_blade        ) } },
-    { { 13, &( talents.bloody_strikes                   ) }, { 13, &( talents.frigid_deathplate       ) }, { 13, &( talents.night_of_the_dead        ) } },
-    { { 14, &( talents.veteran_of_the_third_war         ) }, { 14, &( talents.glacier_rot             ) }, { 14, &( talents.unholy_blight            ) } },
-    { { 15, &( talents.mark_of_blood                    ) }, { 15, &( talents.deathchill              ) }, { 15, &( talents.impurity                 ) } },
-    { { 16, &( talents.bloody_vengeance                 ) }, { 16, &( talents.improved_icy_talons     ) }, { 16, &( talents.dirge                    ) } },
-    { { 17, &( talents.abominations_might               ) }, { 17, &( talents.merciless_combat        ) }, { 17, &( talents.magic_supression         ) } },
-    { { 18, &( talents.bloodworms                       ) }, { 18, &( talents.rime                    ) }, { 18, &( talents.reaping                  ) } },
-    { { 19, &( talents.hysteria                         ) }, { 19, &( talents.chilblains              ) }, { 19, &( talents.master_of_ghouls         ) } },
-    { { 20, &( talents.improved_blood_presence          ) }, { 20, &( talents.hungering_cold          ) }, { 20, &( talents.desecration              ) } },
-    { { 21, &( talents.improved_death_strike            ) }, { 21, &( talents.improved_frost_presence ) }, { 21, &( talents.anti_magic_zone          ) } },
-    { { 22, &( talents.sudden_doom                      ) }, { 22, &( talents.blood_of_the_north      ) }, { 22, &( talents.improved_unholy_presence ) } },
-    { { 23, &( talents.vampiric_blood                   ) }, { 23, &( talents.unbreakable_armor       ) }, { 23, &( talents.ghoul_frenzy             ) } },
-    { { 24, &( talents.will_of_the_necropolis           ) }, { 24, &( talents.acclimation             ) }, { 24, &( talents.crypt_fever              ) } },
-    { { 25, &( talents.heart_strike                     ) }, { 25, &( talents.frost_strike            ) }, { 25, &( talents.bone_shield              ) } },
-    { { 26, &( talents.might_of_mograine                ) }, { 26, &( talents.guile_of_gorefiend      ) }, { 26, &( talents.wandering_plague         ) } },
-    { { 27, &( talents.blood_gorged                     ) }, { 27, &( talents.tundra_stalker          ) }, { 27, &( talents.ebon_plaguebringer       ) } },
-    { { 28, &( talents.dancing_rune_weapon              ) }, { 28, &( talents.howling_blast           ) }, { 28, &( talents.scourge_strike           ) } },
-    { {  0, NULL                                          }, {  0, NULL                                 }, { 29, &( talents.rage_of_rivendare        ) } },
-    { {  0, NULL                                          }, {  0, NULL                                 }, { 30, &( talents.summon_gargoyle          ) } },
-    { {  0, NULL                                          }, {  0, NULL                                 }, {  0, NULL                                  } }
+    { {  1, 2, &( talents.butchery                         ) }, {  1, 3, &( talents.improved_icy_touch      ) }, {  1, 2, &( talents.vicious_strikes          ) } },
+    { {  2, 3, &( talents.subversion                       ) }, {  2, 2, &( talents.runic_power_mastery     ) }, {  2, 3, &( talents.virulence                ) } },
+    { {  3, 5, &( talents.blade_barrier                    ) }, {  3, 5, &( talents.toughness               ) }, {  3, 5, &( talents.anticipation             ) } },
+    { {  4, 5, &( talents.bladed_armor                     ) }, {  4, 2, &( talents.icy_reach               ) }, {  4, 2, &( talents.epidemic                 ) } },
+    { {  5, 3, &( talents.scent_of_blood                   ) }, {  5, 5, &( talents.black_ice               ) }, {  5, 3, &( talents.morbidity                ) } },
+    { {  6, 2, &( talents.two_handed_weapon_specialization ) }, {  6, 3, &( talents.nerves_of_cold_steel    ) }, {  6, 2, &( talents.unholy_command           ) } },
+    { {  6, 1, &( talents.rune_tap                         ) }, {  7, 5, &( talents.icy_talons              ) }, {  7, 3, &( talents.ravenous_dead            ) } },
+    { {  8, 5, &( talents.dark_conviction                  ) }, {  8, 1, &( talents.lichborne               ) }, {  8, 3, &( talents.outbreak                 ) } },
+    { {  9, 3, &( talents.death_rune_mastery               ) }, {  9, 3, &( talents.annihilation            ) }, {  9, 5, &( talents.necrosis                 ) } },
+    { { 10, 3, &( talents.improved_rune_tap                ) }, { 10, 5, &( talents.killing_machine         ) }, { 10, 1, &( talents.corpse_explosion         ) } },
+    { { 11, 3, &( talents.spell_reflection                 ) }, { 11, 2, &( talents.chill_of_the_grave      ) }, { 11, 2, &( talents.on_a_pale_horse          ) } },
+    { { 12, 3, &( talents.vendetta                         ) }, { 12, 2, &( talents.endless_winter          ) }, { 12, 3, &( talents.blood_caked_blade        ) } },
+    { { 13, 3, &( talents.bloody_strikes                   ) }, { 13, 3, &( talents.frigid_deathplate       ) }, { 13, 2, &( talents.night_of_the_dead        ) } },
+    { { 14, 3, &( talents.veteran_of_the_third_war         ) }, { 14, 3, &( talents.glacier_rot             ) }, { 14, 1, &( talents.unholy_blight            ) } },
+    { { 15, 1, &( talents.mark_of_blood                    ) }, { 15, 1, &( talents.deathchill              ) }, { 15, 5, &( talents.impurity                 ) } },
+    { { 16, 3, &( talents.bloody_vengeance                 ) }, { 16, 1, &( talents.improved_icy_talons     ) }, { 16, 2, &( talents.dirge                    ) } },
+    { { 17, 2, &( talents.abominations_might               ) }, { 17, 2, &( talents.merciless_combat        ) }, { 17, 2, &( talents.desecration              ) } },
+    { { 18, 3, &( talents.bloodworms                       ) }, { 18, 4, &( talents.rime                    ) }, { 18, 3, &( talents.magic_supression         ) } },
+    { { 19, 1, &( talents.hysteria                         ) }, { 19, 3, &( talents.chilblains              ) }, { 19, 3, &( talents.reaping                  ) } },
+    { { 20, 2, &( talents.improved_blood_presence          ) }, { 20, 1, &( talents.hungering_cold          ) }, { 20, 1, &( talents.master_of_ghouls         ) } },
+    { { 21, 2, &( talents.improved_death_strike            ) }, { 21, 2, &( talents.improved_frost_presence ) }, { 21, 5, &( talents.desolation               ) } },
+    { { 22, 3, &( talents.sudden_doom                      ) }, { 22, 3, &( talents.threat_of_thassarian    ) }, { 22, 1, &( talents.anti_magic_zone          ) } },
+    { { 23, 1, &( talents.vampiric_blood                   ) }, { 23, 3, &( talents.blood_of_the_north      ) }, { 23, 2, &( talents.improved_unholy_presence ) } },
+    { { 24, 3, &( talents.will_of_the_necropolis           ) }, { 24, 1, &( talents.unbreakable_armor       ) }, { 24, 1, &( talents.ghoul_frenzy             ) } },
+    { { 25, 1, &( talents.heart_strike                     ) }, { 25, 3, &( talents.acclimation             ) }, { 25, 3, &( talents.crypt_fever              ) } },
+    { { 26, 3, &( talents.might_of_mograine                ) }, { 26, 1, &( talents.frost_strike            ) }, { 26, 1, &( talents.bone_shield              ) } },
+    { { 27, 5, &( talents.blood_gorged                     ) }, { 27, 3, &( talents.guile_of_gorefiend      ) }, { 27, 3, &( talents.wandering_plague         ) } },
+    { { 28, 1, &( talents.dancing_rune_weapon              ) }, { 28, 5, &( talents.tundra_stalker          ) }, { 28, 3, &( talents.ebon_plaguebringer       ) } },
+    { {  0, 0, NULL                                          }, { 29, 1,&( talents.howling_blast            ) }, { 29, 1, &( talents.scourge_strike           ) } },
+    { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, { 30, 5, &( talents.rage_of_rivendare        ) } },
+    { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, { 31, 1, &( talents.summon_gargoyle          ) } },
+    { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, {  0, 0, NULL                                  } }
   };
 
   return get_talent_translation( blood, frost, unholy, translation );
@@ -2192,95 +2193,95 @@ std::vector<option_t>& death_knight_t::get_options()
 
     option_t death_knight_options[] =
     {
-      // @option_doc loc=player/deathknight/misc title="Misc"
-      { "butchery",                         OPT_INT, &( talents.butchery                         ) },
-      { "subversion",                       OPT_INT, &( talents.subversion                       ) },
+      // @option_doc loc=player/deathknight/misc title="Talents"
+      { "abominations_might",               OPT_INT, &( talents.abominations_might               ) },
+      { "acclimation",                      OPT_INT, &( talents.acclimation                      ) },
+      { "annihilation",                     OPT_INT, &( talents.annihilation                     ) },
+      { "anti_magic_zone",                  OPT_INT, &( talents.anti_magic_zone                  ) },
+      { "anticipation",                     OPT_INT, &( talents.anticipation                     ) },
+      { "black_ice",                        OPT_INT, &( talents.black_ice                        ) },
       { "blade_barrier",                    OPT_INT, &( talents.blade_barrier                    ) },
       { "bladed_armor",                     OPT_INT, &( talents.bladed_armor                     ) },
-      { "scent_of_blood",                   OPT_INT, &( talents.scent_of_blood                   ) },
-      { "two_handed_weapon_specialization", OPT_INT, &( talents.two_handed_weapon_specialization ) },
-      { "rune_tap",                         OPT_INT, &( talents.rune_tap                         ) },
+      { "blood_caked_blade",                OPT_INT, &( talents.blood_caked_blade                ) },
+      { "blood_gorged",                     OPT_INT, &( talents.blood_gorged                     ) },
+      { "blood_of_the_north",               OPT_INT, &( talents.blood_of_the_north               ) },
+      { "bloodworms",                       OPT_INT, &( talents.bloodworms                       ) },
+      { "bloody_strikes",                   OPT_INT, &( talents.bloody_strikes                   ) },
+      { "bloody_vengeance",                 OPT_INT, &( talents.bloody_vengeance                 ) },
+      { "bone_shield",                      OPT_INT, &( talents.bone_shield                      ) },
+      { "butchery",                         OPT_INT, &( talents.butchery                         ) },
+      { "chilblains",                       OPT_INT, &( talents.chilblains                       ) },
+      { "chill_of_the_grave",               OPT_INT, &( talents.chill_of_the_grave               ) },
+      { "corpse_explosion",                 OPT_INT, &( talents.corpse_explosion                 ) },
+      { "crypt_fever",                      OPT_INT, &( talents.crypt_fever                      ) },
+      { "dancing_rune_weapon",              OPT_INT, &( talents.dancing_rune_weapon              ) },
       { "dark_conviction",                  OPT_INT, &( talents.dark_conviction                  ) },
       { "death_rune_mastery",               OPT_INT, &( talents.death_rune_mastery               ) },
-      { "improved_rune_tap",                OPT_INT, &( talents.improved_rune_tap                ) },
-      { "spell_reflection",                 OPT_INT, &( talents.spell_reflection                 ) },
-      { "vendetta",                         OPT_INT, &( talents.vendetta                         ) },
-      { "bloody_strikes",                   OPT_INT, &( talents.bloody_strikes                   ) },
-      { "veteran_of_the_third_war",         OPT_INT, &( talents.veteran_of_the_third_war         ) },
-      { "mark_of_blood",                    OPT_INT, &( talents.mark_of_blood                    ) },
-      { "bloody_vengeance",                 OPT_INT, &( talents.bloody_vengeance                 ) },
-      { "abominations_might",               OPT_INT, &( talents.abominations_might               ) },
-      { "bloodworms",                       OPT_INT, &( talents.bloodworms                       ) },
+      { "deathchill",                       OPT_INT, &( talents.deathchill                       ) },
+      { "desecration",                      OPT_INT, &( talents.desecration                      ) },
+      { "desolation",                       OPT_INT, &( talents.desolation                       ) },
+      { "dirge",                            OPT_INT, &( talents.dirge                            ) },
+      { "ebon_plaguebringer",               OPT_INT, &( talents.ebon_plaguebringer               ) },
+      { "endless_winter",                   OPT_INT, &( talents.endless_winter                   ) },
+      { "epidemic",                         OPT_INT, &( talents.epidemic                         ) },
+      { "frigid_deathplate",                OPT_INT, &( talents.frigid_deathplate                ) },
+      { "frost_strike",                     OPT_INT, &( talents.frost_strike                     ) },
+      { "ghoul_frenzy",                     OPT_INT, &( talents.ghoul_frenzy                     ) },
+      { "glacier_rot",                      OPT_INT, &( talents.glacier_rot                      ) },
+      { "guile_of_gorefiend",               OPT_INT, &( talents.guile_of_gorefiend               ) },
+      { "heart_strike",                     OPT_INT, &( talents.heart_strike                     ) },
+      { "howling_blast",                    OPT_INT, &( talents.howling_blast                    ) },
+      { "hungering_cold",                   OPT_INT, &( talents.hungering_cold                   ) },
       { "hysteria",                         OPT_INT, &( talents.hysteria                         ) },
+      { "icy_reach",                        OPT_INT, &( talents.icy_reach                        ) },
+      { "icy_talons",                       OPT_INT, &( talents.icy_talons                       ) },
       { "improved_blood_presence",          OPT_INT, &( talents.improved_blood_presence          ) },
       { "improved_death_strike",            OPT_INT, &( talents.improved_death_strike            ) },
-      { "sudden_doom",                      OPT_INT, &( talents.sudden_doom                      ) },
-      { "vampiric_blood",                   OPT_INT, &( talents.vampiric_blood                   ) },
-      { "will_of_the_necropolis",           OPT_INT, &( talents.will_of_the_necropolis           ) },
-      { "heart_strike",                     OPT_INT, &( talents.heart_strike                     ) },
-      { "might_of_mograine",                OPT_INT, &( talents.might_of_mograine                ) },
-      { "blood_gorged",                     OPT_INT, &( talents.blood_gorged                     ) },
-      { "dancing_rune_weapon",              OPT_INT, &( talents.dancing_rune_weapon              ) },
-
-      { "improved_icy_touch",               OPT_INT, &( talents.improved_icy_touch               ) },
-      { "runic_power_mastery",              OPT_INT, &( talents.runic_power_mastery              ) },
-      { "toughness",                        OPT_INT, &( talents.toughness                        ) },
-      { "icy_reach",                        OPT_INT, &( talents.icy_reach                        ) },
-      { "black_ice",                        OPT_INT, &( talents.black_ice                        ) },
-      { "nerves_of_cold_steel",             OPT_INT, &( talents.nerves_of_cold_steel             ) },
-      { "icy_talons",                       OPT_INT, &( talents.icy_talons                       ) },
-      { "lichborne",                        OPT_INT, &( talents.lichborne                        ) },
-      { "annihilation",                     OPT_INT, &( talents.annihilation                     ) },
-      { "killing_machine",                  OPT_INT, &( talents.killing_machine                  ) },
-      { "chill_of_the_grave",               OPT_INT, &( talents.chill_of_the_grave               ) },
-      { "endless_winter",                   OPT_INT, &( talents.endless_winter                   ) },
-      { "frigid_deathplate",                OPT_INT, &( talents.frigid_deathplate                ) },
-      { "glacier_rot",                      OPT_INT, &( talents.glacier_rot                      ) },
-      { "deathchill",                       OPT_INT, &( talents.deathchill                       ) },
-      { "improved_icy_talons",              OPT_INT, &( talents.improved_icy_talons              ) },
-      { "merciless_combat",                 OPT_INT, &( talents.merciless_combat                 ) },
-      { "rime",                             OPT_INT, &( talents.rime                             ) },
-      { "chilblains",                       OPT_INT, &( talents.chilblains                       ) },
-      { "hungering_cold",                   OPT_INT, &( talents.hungering_cold                   ) },
       { "improved_frost_presence",          OPT_INT, &( talents.improved_frost_presence          ) },
-      { "blood_of_the_north",               OPT_INT, &( talents.blood_of_the_north               ) },
-      { "unbreakable_armor",                OPT_INT, &( talents.unbreakable_armor                ) },
-      { "acclimation",                      OPT_INT, &( talents.acclimation                      ) },
-      { "frost_strike",                     OPT_INT, &( talents.frost_strike                     ) },
-      { "guile_of_gorefiend",               OPT_INT, &( talents.guile_of_gorefiend               ) },
+      { "improved_icy_talons",              OPT_INT, &( talents.improved_icy_talons              ) },
+      { "improved_icy_touch",               OPT_INT, &( talents.improved_icy_touch               ) },
+      { "improved_rune_tap",                OPT_INT, &( talents.improved_rune_tap                ) },
+      { "improved_unholy_presence",         OPT_INT, &( talents.improved_unholy_presence         ) },
+      { "impurity",                         OPT_INT, &( talents.impurity                         ) },
+      { "killing_machine",                  OPT_INT, &( talents.killing_machine                  ) },
+      { "lichborne",                        OPT_INT, &( talents.lichborne                        ) },
+      { "magic_supression",                 OPT_INT, &( talents.magic_supression                 ) },
+      { "mark_of_blood",                    OPT_INT, &( talents.mark_of_blood                    ) },
+      { "master_of_ghouls",                 OPT_INT, &( talents.master_of_ghouls                 ) },
+      { "merciless_combat",                 OPT_INT, &( talents.merciless_combat                 ) },
+      { "might_of_mograine",                OPT_INT, &( talents.might_of_mograine                ) },
+      { "morbidity",                        OPT_INT, &( talents.morbidity                        ) },
+      { "necrosis",                         OPT_INT, &( talents.necrosis                         ) },
+      { "nerves_of_cold_steel",             OPT_INT, &( talents.nerves_of_cold_steel             ) },
+      { "night_of_the_dead",                OPT_INT, &( talents.night_of_the_dead                ) },
+      { "on_a_pale_horse",                  OPT_INT, &( talents.on_a_pale_horse                  ) },
+      { "outbreak",                         OPT_INT, &( talents.outbreak                         ) },
+      { "rage_of_rivendare",                OPT_INT, &( talents.rage_of_rivendare                ) },
+      { "ravenous_dead",                    OPT_INT, &( talents.ravenous_dead                    ) },
+      { "reaping",                          OPT_INT, &( talents.reaping                          ) },
+      { "rime",                             OPT_INT, &( talents.rime                             ) },
+      { "rune_tap",                         OPT_INT, &( talents.rune_tap                         ) },
+      { "runic_power_mastery",              OPT_INT, &( talents.runic_power_mastery              ) },
+      { "scent_of_blood",                   OPT_INT, &( talents.scent_of_blood                   ) },
+      { "scourge_strike",                   OPT_INT, &( talents.scourge_strike                   ) },
+      { "spell_reflection",                 OPT_INT, &( talents.spell_reflection                 ) },
+      { "subversion",                       OPT_INT, &( talents.subversion                       ) },
+      { "sudden_doom",                      OPT_INT, &( talents.sudden_doom                      ) },
+      { "summon_gargoyle",                  OPT_INT, &( talents.summon_gargoyle                  ) },
+      { "threat_of_thassarian",             OPT_INT, &( talents.threat_of_thassarian             ) },
+      { "toughness",                        OPT_INT, &( talents.toughness                        ) },
       { "tundra_stalker",                   OPT_INT, &( talents.tundra_stalker                   ) },
-      { "howling_blast",                    OPT_INT, &( talents.howling_blast                    ) },
-
+      { "two_handed_weapon_specialization", OPT_INT, &( talents.two_handed_weapon_specialization ) },
+      { "unbreakable_armor",                OPT_INT, &( talents.unbreakable_armor                ) },
+      { "unholy_blight",                    OPT_INT, &( talents.unholy_blight                    ) },
+      { "unholy_command",                   OPT_INT, &( talents.unholy_command                   ) },
+      { "vampiric_blood",                   OPT_INT, &( talents.vampiric_blood                   ) },
+      { "vendetta",                         OPT_INT, &( talents.vendetta                         ) },
+      { "veteran_of_the_third_war",         OPT_INT, &( talents.veteran_of_the_third_war         ) },
       { "vicious_strikes",                  OPT_INT, &( talents.vicious_strikes                  ) },
       { "virulence",                        OPT_INT, &( talents.virulence                        ) },
-      { "anticipation",                     OPT_INT, &( talents.anticipation                     ) },
-      { "epidemic",                         OPT_INT, &( talents.epidemic                         ) },
-      { "morbidity",                        OPT_INT, &( talents.morbidity                        ) },
-      { "unholy_command",                   OPT_INT, &( talents.unholy_command                   ) },
-      { "ravenous_dead",                    OPT_INT, &( talents.ravenous_dead                    ) },
-      { "outbreak",                         OPT_INT, &( talents.outbreak                         ) },
-      { "necrosis",                         OPT_INT, &( talents.necrosis                         ) },
-      { "corpse_explosion",                 OPT_INT, &( talents.corpse_explosion                 ) },
-      { "on_a_pale_horse",                  OPT_INT, &( talents.on_a_pale_horse                  ) },
-      { "blood_caked_blade",                OPT_INT, &( talents.blood_caked_blade                ) },
-      { "night_of_the_dead",                OPT_INT, &( talents.night_of_the_dead                ) },
-      { "unholy_blight",                    OPT_INT, &( talents.unholy_blight                    ) },
-      { "impurity",                         OPT_INT, &( talents.impurity                         ) },
-      { "dirge",                            OPT_INT, &( talents.dirge                            ) },
-      { "magic_supression",                 OPT_INT, &( talents.magic_supression                 ) },
-      { "reaping",                          OPT_INT, &( talents.reaping                          ) },
-      { "master_of_ghouls",                 OPT_INT, &( talents.master_of_ghouls                 ) },
-      { "desecration",                      OPT_INT, &( talents.desecration                      ) },
-      { "anti_magic_zone",                  OPT_INT, &( talents.anti_magic_zone                  ) },
-      { "improved_unholy_presence",         OPT_INT, &( talents.improved_unholy_presence         ) },
-      { "ghoul_frenzy",                     OPT_INT, &( talents.ghoul_frenzy                     ) },
-      { "crypt_fever",                      OPT_INT, &( talents.crypt_fever                      ) },
-      { "bone_shield",                      OPT_INT, &( talents.bone_shield                      ) },
       { "wandering_plague",                 OPT_INT, &( talents.wandering_plague                 ) },
-      { "ebon_plaguebringer",               OPT_INT, &( talents.ebon_plaguebringer               ) },
-      { "scourge_strike",                   OPT_INT, &( talents.scourge_strike                   ) },
-      { "rage_of_rivendare",                OPT_INT, &( talents.rage_of_rivendare                ) },
-      { "summon_gargoyle",                  OPT_INT, &( talents.summon_gargoyle                  ) },
+      { "will_of_the_necropolis",           OPT_INT, &( talents.will_of_the_necropolis           ) },
       // @option_doc loc=player/deathknight/misc title="Misc"
       { "hysteria_target",                  OPT_STRING, &( hysteria_target_str                   ) },
       { "sigil",                            OPT_STRING, &( items[ SLOT_RANGED ].options_str      ) },

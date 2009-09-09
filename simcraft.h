@@ -2273,6 +2273,7 @@ struct chart_t
 struct talent_translation_t
 {
   int  index;
+  int  max_rank;
   int* address;
 };
 
