@@ -23,6 +23,7 @@ struct warrior_t : public player_t
   buff_t* buffs_bloodrage;
   buff_t* buffs_bloodsurge;
   buff_t* buffs_death_wish;
+  buff_t* buffs_enrage;
   buff_t* buffs_flurry;
   buff_t* buffs_improved_defensive_stance;
   buff_t* buffs_overpower;
@@ -92,6 +93,7 @@ struct warrior_t : public player_t
     int booming_voice;
     int commanding_presence;
     int concussion_blow;
+    int critical_block;
     int cruelty;
     int damage_shield;
     int death_wish;
@@ -100,6 +102,7 @@ struct warrior_t : public player_t
     int devastate;
     int dual_wield_specialization;
     int endless_rage;
+    int enrage;
     int flurry;
     int focused_rage;
     int gag_order;
@@ -146,9 +149,6 @@ struct warrior_t : public player_t
     int vitality;
     int weapon_mastery;
     int wrecking_crew;
-
-    // NYI
-    int critical_block;
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
@@ -634,7 +634,8 @@ void warrior_attack_t::player_buff()
   }
 
   player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
-  player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
+  player_multiplier *= 1.0 + std::max( p -> buffs_enrage        -> value(), 
+				       p -> buffs_wrecking_crew -> value() );
 
   if ( p -> talents.titans_grip && p -> dual_wield() )
   {
@@ -2310,6 +2311,7 @@ void warrior_t::init_buffs()
   buffs_bloodrage                 = new buff_t( this, "bloodrage",                 1, 10.0 );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0,   0, talents.death_wish );
+  buffs_enrage                    = new buff_t( this, "enrage",                    1, 12.0,   0, talents.enrage ? 0.30 : 0.00 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry );
   buffs_improved_defensive_stance = new buff_t( this, "improved_defensive_stance", 1, 12.0,   0, talents.improved_defensive_stance / 2.0 );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
@@ -2596,6 +2598,13 @@ int warrior_t::target_swing()
 
   if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
 
+  if ( result == RESULT_HIT    ||
+       result == RESULT_CRIT   ||
+       result == RESULT_GLANCE ||
+       result == RESULT_BLOCK  )
+  {
+    buffs_enrage -> trigger( 1, 0.02 * talents.enrage );
+  }
   if ( result == RESULT_BLOCK ||
        result == RESULT_DODGE ||
        result == RESULT_PARRY )
@@ -2671,7 +2680,7 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
     { {  9, &( talents.impale                          ) }, {  9, &( talents.commanding_presence       ) }, {  9, &( talents.toughness                      ) } },
     { { 10, &( talents.deep_wounds                     ) }, { 10, &( talents.dual_wield_specialization ) }, { 10, &( talents.improved_spell_reflection      ) } },
     { { 11, &( talents.twohanded_weapon_specialization ) }, { 11, &( talents.improved_execute          ) }, { 11, NULL                                        } },
-    { { 12, &( talents.taste_for_blood                 ) }, { 12, NULL                                   }, { 12, &( talents.puncture                       ) } },
+    { { 12, &( talents.taste_for_blood                 ) }, { 12, &( talents.enrage                    ) }, { 12, &( talents.puncture                       ) } },
     { { 13, &( talents.poleaxe_specialization          ) }, { 13, &( talents.precision                 ) }, { 13, NULL                                        } },
     { { 14, NULL                                         }, { 14, &( talents.death_wish                ) }, { 14, &( talents.concussion_blow                ) } },
     { { 15, &( talents.mace_specialization             ) }, { 15, NULL                                   }, { 15, &( talents.gag_order                      ) } },
@@ -2726,6 +2735,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "devastate",                       OPT_INT, &( talents.devastate                       ) },
       { "dual_wield_specialization",       OPT_INT, &( talents.dual_wield_specialization       ) },
       { "endless_rage",                    OPT_INT, &( talents.endless_rage                    ) },
+      { "enrage",                          OPT_INT, &( talents.enrage                          ) },
       { "flurry",                          OPT_INT, &( talents.flurry                          ) },
       { "focused_rage",                    OPT_INT, &( talents.focused_rage                    ) },
       { "gag_order",                       OPT_INT, &( talents.gag_order                       ) },
