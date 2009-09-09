@@ -5,6 +5,9 @@ Globals_T9.simcraft
 Priest_T9_13_00_58_258.simcraft
 Priest_T9_13_00_58_258_SWD.simcraft
 
+Shaman_T9_57_14_00_258.simcraft
+Shaman_T9_57_14_00_258_ToW.simcraft
+
 # In Patch 3.2, crits from period damage can proc HAT, so the default interval and default party make-up is different than Raid_T8.simcraft
 
 Warrior_T9_19_52_00.simcraft

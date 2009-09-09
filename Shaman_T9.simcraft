@@ -4,14 +4,24 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-Shaman_T8_16_55_00.simcraft
-Shaman_T8_57_14_00.simcraft
-Shaman_T8_57_14_00_ToW.simcraft
+# Elemental
+Shaman_T9_57_14_00_245.simcraft
+Shaman_T9_57_14_00_258.simcraft
+Shaman_T9_57_14_00_258_ToW.simcraft
 
-# simcraftshamant9
+#simcraftshamant9
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000114 name=Shaman_T8_16_55_00     save=Shaman_T8_16_55_00.simcraft     trinket1=comets_trail,id=45609
-#wowhead=13000116 name=Shaman_T8_57_14_00     save=Shaman_T8_57_14_00.simcraft     totem_of_wrath=0
-#wowhead=13000116 name=Shaman_T8_57_14_00_ToW save=Shaman_T8_57_14_00_ToW.simcraft
+#wowhead=14125991 name=Shaman_T9_57_14_00_245     	save=Shaman_T9_57_14_00_245.simcraft     
+
+#wowhead=14165873 name=Shaman_T9_57_14_00_258     	save=Shaman_T9_57_14_00_258.simcraft     totem_of_wrath=0
+#legs=leggings_of_the_awakening,stats=570armor_116sta_116int_86crit_94haste_151sp,gems=23sp_12sp_15sta_12sp_10haste_9sp,enchant=50sp_30sta
+#trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
+#back=aethas_intensity,stats=182armor_74sta_74int_65crit_57haste_105sp,gems=23sp_5sp
+
+#wowhead=14165873 name=Shaman_T9_57_14_00_258_ToW 	save=Shaman_T9_57_14_00_258_ToW.simcraft
+#legs=leggings_of_the_awakening,stats=570armor_116sta_116int_86crit_94haste_151sp,gems=23sp_12sp_15sta_12sp_10haste_9sp,enchant=50sp_30sta
+#trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
+#back=aethas_intensity,stats=182armor_74sta_74int_65crit_57haste_105sp,gems=23sp_5sp
+
 #save_profiles=1
