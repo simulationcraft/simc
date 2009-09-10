@@ -55,86 +55,87 @@ Priest_T9_13_00_58_258_troll.simcraft
 
 
 #wowhead=13357966 name=Priest_T9_13_00_58_258      save=Priest_T9_13_00_58_258.simcraft
-#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
-#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
-#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
 #head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
 #wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
+#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
 #feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit		
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
-#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
-#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
+#finger2=firestorm_ring,id=47928,gems=23sp_5sp,enchant=23sp
 #trinket1=reign_of_the_unliving,id=47182,gems=0sp
 #trinket2=reign_of_the_unliving,id=47188,gems=0sp
+#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47146,gems=0sp
+#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
 
 
 #wowhead=13357966 name=Priest_T9_13_00_58_258_SWD  save=Priest_T9_13_00_58_258_SWD.simcraft	use_shadow_word_death=1
-#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
-#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
-#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
 #head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
 #wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
+#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
 #feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit		
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
-#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
-#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
+#finger2=firestorm_ring,id=47928,gems=23sp_5sp,enchant=23sp
 #trinket1=reign_of_the_unliving,id=47182,gems=0sp
 #trinket2=reign_of_the_unliving,id=47188,gems=0sp
+#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47146,gems=0sp
+#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
+
 
 ## Different races
 
 ## Draenei (or other alliance priest with a Draenei in the group)
 #wowhead=13357966 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simcraft race=draenei
-#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
-#off_hand=chalice_of_searing_light,id=47146,gems=0sp
-#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
-#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
 #head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
 #wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
+#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
 #feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit		
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#ranged=petrified_ivy_sprig,id=45294,gems=23sp
-#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
-#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
+#finger2=firestorm_ring,id=47928,gems=23sp_5sp,enchant=23sp
 #trinket1=reign_of_the_unliving,id=47182,gems=0sp
 #trinket2=reign_of_the_unliving,id=47188,gems=0sp
+#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47146,gems=0sp
+#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
 
 
 ## Troll
 #wowhead=13357966 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simcraft race=troll
-#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
-#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
-#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
 #head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
+#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
 #wrists=bejeweled_wizards_bracers,id=47585,gems=23sp,enchant=30sp
+#hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
+#waist=cord_of_biting_cold,id=47084,gems=12sp_10spi_23sp_23sp_7sp
+#legs=velens_pants_of_triumph,id=48084,gems=23sp_23sp,enchant=50sp_20spi
 #feet=boots_of_the_mourning_widow,id=47097,gems=23sp_23sp,enchant=12crit_12hit		
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
-#neck=wail_of_the_valkyr,id=47144,gems=12sp_10crit_5sp
-#shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=ring_of_the_darkmender,id=47224,gems=12sp_10crit_5sp,enchant=23sp
+#finger2=firestorm_ring,id=47928,gems=23sp_5sp,enchant=23sp
 #trinket1=reign_of_the_unliving,id=47182,gems=0sp
 #trinket2=reign_of_the_unliving,id=47188,gems=0sp
+#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#off_hand=chalice_of_searing_light,id=47146,gems=0sp
+#ranged=rod_of_imprisoned_souls,id=47922,gems=0sp
 
 
 
