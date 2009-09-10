@@ -458,7 +458,7 @@ struct hunter_pet_t : public pet_t
     pet_t::init_buffs();
     hunter_pet_t* p = ( hunter_pet_t* ) this -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
-    buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, 18.0 );
+    buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, sim -> P322 ? 10.0 : 18.0 );
     buffs_call_of_the_wild  = new buff_t( this, "call_of_the_wild",  1, 10.0 );
     buffs_frenzy            = new buff_t( this, "frenzy",            1,  8.0, 0.0, o -> talents.frenzy * 0.2 );
     buffs_furious_howl      = new buff_t( this, "furious_howl",      1, 20.0 );
@@ -1595,7 +1595,7 @@ void hunter_attack_t::player_buff()
 
   player_multiplier *=  1.0 + p -> buffs_aspect_of_the_viper -> value();
 
-  if ( p -> buffs_beast_within -> up() )
+  if ( sim -> P322 ? p -> talents.beast_within > 0 : p -> buffs_beast_within -> up() )
   {
     player_multiplier *= 1.10;
   }
@@ -3253,7 +3253,7 @@ void hunter_t::init_buffs()
   
   buffs_aspect_of_the_hawk          = new buff_t( this, "aspect_of_the_hawk",          1,  0.0 );
   buffs_aspect_of_the_viper         = new buff_t( this, "aspect_of_the_viper",         1,  0.0 );
-  buffs_beast_within                = new buff_t( this, "beast_within",                1, 18.0,  0.0, talents.beast_within );
+  buffs_beast_within                = new buff_t( this, "beast_within",                1, sim -> P322 ? 10.0 : 18.0,  0.0, talents.beast_within );
   buffs_call_of_the_wild            = new buff_t( this, "call_of_the_wild",            1, 10.0 );
   buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               3, 10.0,  0.0, talents.cobra_strikes * 0.20 );
   buffs_expose_weakness             = new buff_t( this, "expose_weakness",             1,  7.0,  0.0, talents.expose_weakness / 3.0 );
