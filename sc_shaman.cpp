@@ -1223,7 +1223,7 @@ struct lava_burst_t : public shaman_spell_t
     p -> buffs_elemental_mastery -> current_value = 0;
     if ( result_is_hit() )
     {
-      if ( p -> active_flame_shock && ! p -> glyphs.flame_shock )
+      if ( p -> active_flame_shock && ! p -> glyphs.flame_shock && ! sim -> P322 )
       {
         p -> active_flame_shock -> cancel();
       }
@@ -1526,10 +1526,20 @@ struct flame_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
+    if ( sim -> P322 )
+    {
+      num_ticks += 2;
+      if ( p -> glyphs.flame_shock ) tick_may_crit = true;
+    }
+    else
+    {
+      if ( p -> glyphs.flame_shock ) num_ticks += 2;
+    }
+    
+    // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 3;
 
-    if ( p -> glyphs.flame_shock ) num_ticks += 2;
 
     if ( p -> glyphs.shocking )
     {
