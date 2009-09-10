@@ -16,8 +16,10 @@ struct warrior_t : public player_t
   // Active
   action_t* active_damage_shield;
   action_t* active_deep_wounds;
-  action_t* active_heroic_strike;
   int       active_stance;
+
+  std::vector<action_t*> active_heroic_strikes;
+  int num_active_heroic_strikes;
 
   // Buffs
   buff_t* buffs_bloodrage;
@@ -68,7 +70,6 @@ struct warrior_t : public player_t
   proc_t* procs_sword_specialization;
 
   // Up-Times
-  uptime_t* uptimes_heroic_strike;
   uptime_t* uptimes_rage_cap;
 
   // Random Number Generation
@@ -171,10 +172,9 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARRIOR, name, race_type )
   {
     // Active
-    active_damage_shield     = 0;
-    active_deep_wounds       = 0;
-    active_heroic_strike     = 0;
-    active_stance            = STANCE_BATTLE;
+    active_damage_shield = 0;
+    active_deep_wounds   = 0;
+    active_stance        = STANCE_BATTLE;
 
     // Auto-Attack
     main_hand_attack = 0;
@@ -360,6 +360,33 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> execute();
 }
 
+// trigger_rage_gain ========================================================
+
+static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
+{
+  // Basic Formula:      http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=1
+  // Blue Clarification: http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
+
+  warrior_t* p = a -> player -> cast_warrior();
+  weapon_t*  w = a -> weapon;
+
+  double hit_factor = 3.5;
+  if ( a -> result == RESULT_CRIT ) hit_factor *= 2.0;
+  if ( w -> slot == SLOT_OFF_HAND ) hit_factor /= 2.0;
+
+  double rage_from_damage = 7.5 * a -> direct_dmg / rage_conversion_value;
+  double rage_from_hit    = w -> swing_time * hit_factor;
+
+  double rage_gain_avg = ( rage_from_damage + rage_from_hit ) / 2.0;
+  double rage_gain_max = 15 * a -> direct_dmg / rage_conversion_value;
+
+  double rage_gain = std::min( rage_gain_avg, rage_gain_max );
+
+  if ( p -> talents.endless_rage ) rage_gain *= 1.25;
+
+  p -> resource_gain( RESOURCE_RAGE, rage_gain, w -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
+}
+
 // trigger_sword_specialization =============================================
 
 static void trigger_sword_specialization( attack_t* a )
@@ -439,9 +466,6 @@ static void trigger_sword_and_board( attack_t* a )
 static void trigger_unbridled_wrath( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
-
-  if ( a -> result_is_miss() )
-    return;
 
   if ( ! p -> talents.unbridled_wrath )
     return;
@@ -705,6 +729,7 @@ struct melee_t : public warrior_attack_t
     normalize_weapon_speed = false;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
+
     // Rage Conversion Value, needed for: damage done => rage gained
     if ( p -> level == 80 )
       rage_conversion_value = 453.3;
@@ -722,84 +747,53 @@ struct melee_t : public warrior_attack_t
     return h;
   }
 
-
   virtual double execute_time() SC_CONST
   {
     double t = warrior_attack_t::execute_time();
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_flurry -> up() )
     {
-      t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry  ) ;
+      t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry );
     }
     return t;
   }
 
   virtual void execute()
   {
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_flurry -> decrement();
 
-    if ( weapon -> slot == SLOT_MAIN_HAND )
+    // If any of our Heroic Strike actions are "ready", the executen HS in place of the regular melee swing.
+    action_t* active_heroic_strike = 0;
+
+    if ( weapon -> slot == SLOT_MAIN_HAND && ! proc )
     {
-      // We can't rely on the resource check from the time we queued the HS.
-      // Easily possible that at the time we reach the MH hit, we have spent
-      // all the rage and therefor have to check again if we have enough rage.
-      if ( p -> active_heroic_strike && p -> resource_current[ RESOURCE_RAGE ] < p -> active_heroic_strike -> cost() )
+      for( int i=0; i < p -> num_active_heroic_strikes; i++ )
       {
-        p -> active_heroic_strike -> cancel();
-      }
-      p -> uptimes_heroic_strike -> update( p -> active_heroic_strike != 0 );
-      if ( p -> active_heroic_strike && ! proc )
-      {
-        p -> active_heroic_strike -> execute();
-        schedule_execute();
-        return;
+	action_t* a = p -> active_heroic_strikes[ i ];
+	if ( a -> ready() )
+        {
+	  active_heroic_strike = a;
+	  break;
+	}
       }
     }
 
-    warrior_attack_t::execute();
-
-    if ( result_is_hit() )
+    if ( active_heroic_strike )
     {
-      /* http://www.wowwiki.com/Formulas:Rage_generation
-      Definitions
-
-      For the purposes of the formulae presented here, we define:
-      R:        rage generated
-      d:        damage amount
-      c:        rage conversion value
-      s:        weapon speed ( time_to_execute )
-      f:        hit factor, 3.5 MH, 1.75 OH, Crit = *2
-      Rage Generated By Dealing Damage
-
-      Rage is generated by successful autoattack swings ('white' damage) that damage an opponent. Special attacks ('yellow' damage) do not generate rage.
-      R = 15d / 4c + fs / 2 */
-      double hitfactor = 3.5;
-      if ( result == RESULT_CRIT )
-        hitfactor *= 2.0;
-      if ( weapon -> slot == SLOT_OFF_HAND )
-        hitfactor /= 2.0;
-
-      // double rage_gained = 15.0 * direct_dmg / ( 4.0 * rage_conversion_value ) + time_to_execute * hitfactor / 2.0;
-
-      // http://elitistjerks.com/f81/t60632-rage_generation_changed/
-      // double rage_gained = 3.0/8.0 * ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value );
-
-      // http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
-      //
-      double rage_gain = ( weapon -> swing_time * hitfactor  + 7.5 * direct_dmg / rage_conversion_value ) / 2.0;
-      double rage_gain_max = 7.5 * direct_dmg / rage_conversion_value * 2.0;
-
-      double real_rage_gain = std::min( rage_gain, rage_gain_max );
-
-      if ( p -> talents.endless_rage )
-        real_rage_gain *= 1.25;
-
-      p -> resource_gain( RESOURCE_RAGE, real_rage_gain, weapon -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
+      active_heroic_strike -> execute();
+      schedule_execute();
     }
-    trigger_unbridled_wrath( this );
+    else
+    {
+      warrior_attack_t::execute();
+      if ( result_is_hit() )
+      {
+	trigger_rage_gain( this, rage_conversion_value );
+	trigger_unbridled_wrath( this );
+      }
+    }
   }
 };
 
@@ -943,19 +937,18 @@ struct heroic_strike_t : public warrior_attack_t
     };
     init_rank( ranks );
 
-    may_crit        = true;
-    base_cost      -= p -> talents.improved_heroic_strike;
-    base_crit      += p -> talents.incite * 0.05;
-    trigger_gcd     = 0;
+    background   = true;
+    may_crit     = true;    
+    base_cost   -= p -> talents.improved_heroic_strike;
+    base_crit   += p -> talents.incite * 0.05;
+    trigger_gcd  = 0;
 
-    weapon                 = &( p -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
 
-    if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
+    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
-    // Heroic Strike needs swinging auto_attack!
-    assert( p -> main_hand_attack -> execute_event == 0 );
-    observer = &( p -> active_heroic_strike );
+    p -> active_heroic_strikes.push_back( this );
   }
 
   virtual double cost() SC_CONST
@@ -965,23 +958,14 @@ struct heroic_strike_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  virtual void schedule_execute()
-  {
-    // We don't actually create a event to execute Heroic Strike instead of the
-    // MH attack.
-    if ( observer ) *observer = this;
-    if ( sim -> log ) log_t::output( sim, "%s queues %s", player -> name(), name() );
-    player -> schedule_ready( 0 );
-  }
-
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
     p -> buffs_glyph_of_revenge -> expire();
-    trigger_unbridled_wrath( this );
     if( result_is_hit() )
     {
+      trigger_unbridled_wrath( this );
       p -> buffs_bloodsurge -> trigger();
       if ( result == RESULT_CRIT )
       {
@@ -992,19 +976,6 @@ struct heroic_strike_t : public warrior_attack_t
         }
       }
     }
-  }
-
-  virtual bool ready()
-  {
-    if ( ! warrior_attack_t::ready() )
-      return false;
-
-    warrior_t* p = player -> cast_warrior();
-    // Allready queued up heroic strike?
-    if ( p -> active_heroic_strike )
-      return false;
-
-    return true;
   }
 };
 
@@ -2361,8 +2332,7 @@ void warrior_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_heroic_strike = get_uptime( "heroic_strike" );
-  uptimes_rage_cap      = get_uptime( "rage_cap" );
+  uptimes_rage_cap = get_uptime( "rage_cap" );
 }
 
 // warrior_t::init_rng =========================================================
@@ -2462,6 +2432,8 @@ void warrior_t::init_actions()
   }
 
   player_t::init_actions();
+
+  num_active_heroic_strikes = active_heroic_strikes.size();
 }
 
 // warrior_t::primary_tree ====================================================
@@ -2491,10 +2463,7 @@ void warrior_t::combat_begin()
 void warrior_t::reset()
 {
   player_t::reset();
-
-  active_heroic_strike     = 0;
-  active_stance            = STANCE_BATTLE;
-
+  active_stance = STANCE_BATTLE;
   _cooldowns.reset();
 }
 

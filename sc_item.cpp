@@ -652,20 +652,19 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   bool success = false;
 
   // Check URL caches
-  success = wowhead_t::download_item( item, item_id, 1 ) ||
-            mmo_champion_t::download_item( item, item_id, 1 ) ||
-            armory_t::download_item( item, item_id, 1 );
+  success = ( mmo_champion_t::download_item( item, item_id, 1 ) ||
+              wowhead_t     ::download_item( item, item_id, 1 ) ||
+              armory_t      ::download_item( item, item_id, 1 ) );
 
-  if ( success )
-    return true;
-
-  success = wowhead_t::download_item( item, item_id, 0 );
   if ( ! success )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to download item '%s' info from wowhead.  Trying mmo-champion....\n", p -> name(), item.name() );
     success = mmo_champion_t::download_item( item, item_id, 0 );
   }
-
+  if ( ! success )
+  {
+    util_t::printf( "\nsimcraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", p -> name(), item.name() );
+    success = wowhead_t::download_item( item, item_id, 0 );
+  }
   if ( ! success )
   {
     util_t::printf( "\nsimcraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", p -> name(), item.name() );
