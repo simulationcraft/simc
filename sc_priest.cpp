@@ -1126,7 +1126,7 @@ struct mind_flay_tick_t : public priest_spell_t
       if ( result == RESULT_CRIT )
       {
         if ( p -> sim -> P322 )
-          p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, 0.5 );
+          p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, p -> talents.improved_spirit_tap ? 0.5 : 0.0 );
         p -> buffs_glyph_of_shadow -> trigger();
       }
     }
@@ -1910,13 +1910,13 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0                                    );
-  buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1, 8.0                                     );
-  buffs_inner_fire          = new buff_t( this, "inner_fire"                                                      );
-  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                );
-  buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0 );
-  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                          );
-  buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                    );
+  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0                                                   );
+  buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1, 8.0,  0.0, talents.improved_spirit_tap > 0 ? 1.0 : 0.0 );
+  buffs_inner_fire          = new buff_t( this, "inner_fire"                                                                     );
+  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                               );
+  buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0                );
+  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
+  buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_devious_mind = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc_caster() );
