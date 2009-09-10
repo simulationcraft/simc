@@ -1248,6 +1248,9 @@ struct envenom_t : public rogue_attack_t
     dose_dmg = ( p -> level >= 80 ? 216 :
                  p -> level >= 74 ? 176 :
                  p -> level >= 69 ? 148 : 118 );
+
+    if ( sim -> P322 )
+      dose_dmg -= 1;
   }
 
   virtual void execute()
