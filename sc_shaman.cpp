@@ -1499,7 +1499,7 @@ struct flame_shock_t : public shaman_spell_t
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 4;
+	num_ticks         = sim -> P322 ? 6 : 4;
 
     direct_power_mod  = 0.215;
     tick_power_mod    = 0.100;
