@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
-    initial_armor( -1 ), armor( 0 ), block_value( 0 ), shield( 0 ),
+    initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
     initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
 {
@@ -224,6 +224,18 @@ void target_t::combat_begin()
 void target_t::combat_end()
 {}
 
+// target_t::debuffs_t::snared ===============================================
+
+bool target_t::debuffs_t::snared()
+{
+  if ( frozen() ) return true;
+  if (  slow -> check() ) return true;
+  if ( thunder_clap -> check() ) return true;
+  if ( infected_wounds -> check() ) return true;
+  if ( judgements_of_the_just -> check() ) return true;
+  return false;
+}
+
 // target_t::get_options =======================================================
 
 int target_t::get_options( std::vector<option_t>& options )
@@ -244,7 +256,6 @@ int target_t::get_options( std::vector<option_t>& options )
     { "target_resist_fire",    OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
     { "target_resist_nature",  OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
     { "target_armor",          OPT_INT,    &( initial_armor                     ) },
-    { "target_shield",         OPT_INT,    &( shield                            ) },
     { "target_block",          OPT_INT,    &( block_value                       ) },
     // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
     { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },

@@ -764,7 +764,7 @@ struct melee_t : public warrior_attack_t
 
     p -> buffs_flurry -> decrement();
 
-    // If any of our Heroic Strike actions are "ready", the executen HS in place of the regular melee swing.
+    // If any of our Heroic Strike actions are "ready", then execute HS in place of the regular melee swing.
     action_t* active_heroic_strike = 0;
 
     if ( weapon -> slot == SLOT_MAIN_HAND && ! proc )
@@ -2570,6 +2570,7 @@ int warrior_t::target_swing()
        result == RESULT_GLANCE ||
        result == RESULT_BLOCK  )
   {
+    resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
     buffs_enrage -> trigger( 1, 0.02 * talents.enrage );
   }
   if ( result == RESULT_BLOCK ||

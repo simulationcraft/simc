@@ -144,6 +144,8 @@ enum player_type
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
+enum dot_behavior_type { DOT_WAIT=0, DOT_CLIP, DOT_REFRESH };
+
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
 enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT, 
@@ -917,6 +919,7 @@ struct sim_t
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
+    int infected_wounds;
     int insect_swarm;
     int judgement_of_wisdom;
     int judgements_of_the_just;
@@ -1728,7 +1731,6 @@ struct target_t
   int spell_resistance[ SCHOOL_MAX ];
   int initial_armor, armor;
   int block_value;
-  int shield;
   double attack_speed, attack_damage, weapon_skill;
   double initial_health, current_health;
   double total_dmg;
@@ -1748,6 +1750,7 @@ struct target_t
     debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
+    debuff_t* infected_wounds;
     debuff_t* insect_swarm;
     debuff_t* invulnerable;
     debuff_t* judgement_of_wisdom;
@@ -1770,7 +1773,7 @@ struct target_t
     debuff_t* hemorrhage;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
-    bool snared() { return frozen() || judgements_of_the_just -> check() || slow -> check() || thunder_clap -> check(); }
+    bool snared();
   };
   debuffs_t debuffs;
 
@@ -1863,7 +1866,8 @@ struct action_t
   int id, school, resource, tree, result;
   bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, pseudo_pet;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero, clip_dot;
+  bool tick_may_crit, tick_zero;
+  int dot_behavior;
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   double base_execute_time, base_tick_time, base_cost;

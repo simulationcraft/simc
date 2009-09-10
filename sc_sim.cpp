@@ -1122,6 +1122,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.improved_moonkin_aura  = optimal_raid;
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
+  overrides.infected_wounds        = optimal_raid;
   overrides.insect_swarm           = optimal_raid;
   overrides.judgement_of_wisdom    = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
@@ -1305,6 +1306,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.improved_moonkin_aura",   OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
+      { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
       { "override.insect_swarm",            OPT_BOOL,   &( overrides.insect_swarm                   ) },
       { "override.judgement_of_wisdom",     OPT_BOOL,   &( overrides.judgement_of_wisdom            ) },
       { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },

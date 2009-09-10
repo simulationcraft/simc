@@ -255,7 +255,7 @@ int attack_t::build_table( double* chances,
   if ( may_parry  )  parry =  parry_chance( delta_level );
   if ( may_glance ) glance = glance_chance( delta_level );
 
-  if ( may_block && sim -> target -> shield )
+  if ( may_block && sim -> target -> block_value > 0 )
   {
     block = block_chance( delta_level );
   }

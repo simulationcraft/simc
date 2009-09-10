@@ -1114,7 +1114,7 @@ struct rake_t : public hunter_pet_attack_t
     cooldown        = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
-    clip_dot = true;
+    dot_behavior = DOT_CLIP;
 
     id = 59886;
   }
@@ -1179,7 +1179,7 @@ struct savage_rend_t : public hunter_pet_attack_t
     cooldown       = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
-    clip_dot = true;
+    dot_behavior = DOT_CLIP;
   }
 
   virtual void execute()

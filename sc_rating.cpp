@@ -31,6 +31,8 @@ static const _stat_list_t race_stats[] =
   { RACE_NONE, { 0 } }
 };
 
+//             Str    Agi  Sta   Int   Spi  Health    Mana  Crit/Agi Crit/Int Ddg/Agi   MeleCrit  SpellCrit
+
 static const _stat_list_t death_knight_stats[] =
 {
   {	60, {  100,   60,   90,   10,   25,   1689,    100,  0.0505,  0.0000,  0.0431,  3.16649,  0.0000 } },

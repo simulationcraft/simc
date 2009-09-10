@@ -23,7 +23,7 @@ action_t::action_t( int         ty,
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), clip_dot( false ),
+    tick_may_crit( false ), tick_zero( false ), dot_behavior( DOT_WAIT ),
     min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
     weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
     base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
@@ -644,7 +644,11 @@ void action_t::consume_resource()
 
 void action_t::execute()
 {
-  if ( sim -> log && ! dual ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+  if ( sim -> log && ! dual ) 
+  {
+    log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(), 
+		   player -> resource_current[ player -> primary_resource() ] );
+  }
 
   if ( observer ) *observer = 0;
 
@@ -666,10 +670,16 @@ void action_t::execute()
     }
     if ( num_ticks > 0 )
     {
-      if ( ticking ) cancel();
-      current_tick = 0;
-      added_ticks = 0;
-      schedule_tick();
+      if ( dot_behavior == DOT_REFRESH )
+      {
+	current_tick = 0;
+	if ( ! ticking ) schedule_tick();
+      }
+      else
+      {
+	if ( ticking ) cancel();
+	schedule_tick();
+      }
     }
   }
   else
@@ -886,7 +896,7 @@ void action_t::refresh_duration()
   // Recalculate state of current player buffs.
   player_buff();
 
-  if ( ! clip_dot )
+  if ( dot_behavior == DOT_WAIT )
   {
     // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
@@ -906,7 +916,7 @@ void action_t::extend_duration( int extra_ticks )
   num_ticks += extra_ticks;
   added_ticks += extra_ticks;
 
-  if ( ! clip_dot )
+  if ( dot_behavior == DOT_WAIT )
   {
     duration_ready += tick_time() * extra_ticks;
     player -> share_duration( duration_group, duration_ready );
@@ -925,7 +935,7 @@ void action_t::update_ready()
 
     player -> share_cooldown( cooldown_group, cooldown );
   }
-  if ( num_ticks )
+  if ( num_ticks && ( dot_behavior == DOT_WAIT ) )
   {
     if ( ticking && ! channeled )
     {
