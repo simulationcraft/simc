@@ -246,6 +246,7 @@ struct mage_spell_t : public spell_t
       arcane_power( 0 ),
       icy_veins( 0 )
   {
+
   }
 
   virtual void   parse_options( option_t*, const std::string& );
@@ -613,7 +614,10 @@ static void trigger_combustion( spell_t* s )
 
     if ( s -> result == RESULT_CRIT )
     {
-      p -> buffs_combustion -> decrement();
+      if ( ! p -> sim -> P322 || ( s -> direct_dmg > 0.0 ) )          
+      {
+        p -> buffs_combustion -> decrement();
+      }
     }
   }
 }
@@ -965,6 +969,14 @@ void mage_spell_t::player_buff()
             school == SCHOOL_FROSTFIRE )
   {
     player_crit += ( p -> buffs_combustion -> value() * 0.10 );
+
+    if ( sim -> P322 )
+    {
+      if ( p -> buffs_combustion -> check() )
+      {
+        player_crit_bonus_multiplier *= 1.0 + 0.5;
+      }
+    }
   }
   if ( p -> talents.shatter && may_crit )
   {
