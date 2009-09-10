@@ -1125,6 +1125,8 @@ struct mind_flay_tick_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
+        if ( p -> sim -> P322 )
+          p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, 0.5 );
         p -> buffs_glyph_of_shadow -> trigger();
       }
     }
@@ -1138,8 +1140,7 @@ struct mind_flay_tick_t : public priest_spell_t
     {
       if ( p -> active_shadow_word_pain )
       {
-        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
-        if ( p -> glyphs.shadow_word_pain ) player_multiplier *= 1.10;
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 );
       }
     }
   }
@@ -1860,7 +1861,7 @@ void priest_t::init_base()
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.mental_strength * 0.03;
 
   initial_spell_power_per_spirit = ( talents.spiritual_guidance * 0.05 +
-                                     talents.twisted_faith      * 0.02 );
+                                     talents.twisted_faith      * ( sim -> P322 ? 0.04 : 0.02 ) );
 
   base_attack_power = -10;
 
