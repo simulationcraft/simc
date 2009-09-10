@@ -1529,7 +1529,7 @@ double hunter_attack_t::cost() SC_CONST
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.03;
-  if ( p -> buffs_beast_within -> check() ) c *= 0.80;
+  if ( p -> buffs_beast_within -> up() ) c *= 0.80;
   return c;
 }
 
@@ -1595,7 +1595,7 @@ void hunter_attack_t::player_buff()
 
   player_multiplier *=  1.0 + p -> buffs_aspect_of_the_viper -> value();
 
-  if ( sim -> P322 ? p -> talents.beast_within > 0 : p -> buffs_beast_within -> up() )
+  if ( sim -> P322 ? p -> talents.beast_within > 0 : p -> buffs_beast_within -> check() )
   {
     player_multiplier *= 1.10;
   }
