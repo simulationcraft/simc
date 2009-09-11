@@ -267,7 +267,7 @@ void action_t::player_buff()
     {
       if ( p -> buffs.hysteria -> up() )
       {
-	player_multiplier *= 1.2;
+        player_multiplier *= 1.2;
       }
     }
     if ( p -> buffs.tricks_of_the_trade -> up() )
@@ -275,7 +275,7 @@ void action_t::player_buff()
       player_multiplier *= 1.15;
     }
     if ( sim -> auras.ferocious_inspiration -> up() || 
-	 sim -> auras.sanctified_retribution -> check() )
+         sim -> auras.sanctified_retribution -> check() )
     {
       player_multiplier *= 1.03;
     }
@@ -333,7 +333,7 @@ void action_t::target_debuff( int dmg_type )
   else
   {
     target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements -> value(), 
-					   t -> debuffs.earth_and_moon    -> value() ) * 0.01 );
+                                           t -> debuffs.earth_and_moon    -> value() ) * 0.01 );
 
     if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
   }
@@ -385,10 +385,10 @@ void action_t::target_debuff( int dmg_type )
 bool action_t::result_is_hit() SC_CONST
 {
   return( result == RESULT_HIT    ||
-	  result == RESULT_CRIT   ||
-	  result == RESULT_GLANCE ||
-	  result == RESULT_BLOCK  ||
-	  result == RESULT_NONE   );
+          result == RESULT_CRIT   ||
+          result == RESULT_GLANCE ||
+          result == RESULT_BLOCK  ||
+          result == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================
@@ -409,7 +409,7 @@ double action_t::armor() SC_CONST
   double adjusted_armor =  t -> base_armor();
 
   adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor -> value(), 
-				    t -> debuffs.expose_armor -> value() );
+                                    t -> debuffs.expose_armor -> value() );
 
   if( t -> debuffs.faerie_fire -> up() ) adjusted_armor *= 0.95;
 
@@ -488,12 +488,12 @@ double action_t::resistance() SC_CONST
 double action_t::total_crit_bonus() SC_CONST
 {
   double crit_multiplier = (   base_crit_multiplier *
-  player_crit_multiplier *
-  target_crit_multiplier );
+                             player_crit_multiplier *
+                             target_crit_multiplier );
 
   double crit_bonus_multiplier = (   base_crit_bonus_multiplier *
-                                     player_crit_bonus_multiplier *
-                                     target_crit_bonus_multiplier );
+                                   player_crit_bonus_multiplier *
+                                   target_crit_bonus_multiplier );
 
   double crit_bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
 
@@ -647,7 +647,7 @@ void action_t::execute()
   if ( sim -> log && ! dual ) 
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(), 
-		   player -> resource_current[ player -> primary_resource() ] );
+                   player -> resource_current[ player -> primary_resource() ] );
   }
 
   if ( observer ) *observer = 0;
@@ -672,13 +672,13 @@ void action_t::execute()
     {
       if ( dot_behavior == DOT_REFRESH )
       {
-	current_tick = 0;
-	if ( ! ticking ) schedule_tick();
+        current_tick = 0;
+        if ( ! ticking ) schedule_tick();
       }
       else
       {
-	if ( ticking ) cancel();
-	schedule_tick();
+        if ( ticking ) cancel();
+        schedule_tick();
       }
     }
   }
@@ -948,8 +948,8 @@ void action_t::update_ready()
       duration_ready = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
 
       if ( sim -> debug )
-	log_t::output( sim, "%s shares duration (%.2f) for %s (%s)", 
-		       player -> name(), duration_ready, name(), duration_group.c_str() );
+        log_t::output( sim, "%s shares duration (%.2f) for %s (%s)", 
+                       player -> name(), duration_ready, name(), duration_group.c_str() );
 
       player -> share_duration( duration_group, duration_ready );
     }
@@ -958,8 +958,8 @@ void action_t::update_ready()
       duration_ready = sim -> current_time + sim -> reaction_time + time_to_execute - 0.01;
 
       if ( sim -> debug ) 
-	log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
-		       player -> name(), duration_ready, name(), duration_group.c_str() );
+        log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
+                       player -> name(), duration_ready, name(), duration_group.c_str() );
 
       player -> share_duration( duration_group, duration_ready );
     }
