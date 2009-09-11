@@ -4,24 +4,24 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-#Warlock_T9_00_13_58.simcraft
-#Warlock_T9_03_13_55.simcraft
-#Warlock_T9_53_00_18.simcraft
-#Warlock_T9_53_00_18_DG.simcraft
-#Warlock_T9_00_40_31.simcraft
-#Warlock_T9_00_41_30.simcraft
-#Warlock_T9_03_52_16.simcraft
-#Warlock_T9_00_56_15.simcraft
+Warlock_T9_00_13_58.simcraft
+Warlock_T9_03_13_55.simcraft
+Warlock_T9_53_00_18.simcraft
+Warlock_T9_53_00_18_DG.simcraft
+Warlock_T9_00_40_31.simcraft
+Warlock_T9_00_41_30.simcraft
+Warlock_T9_03_52_16.simcraft
+Warlock_T9_00_56_15.simcraft
 
 # scwarlockt9
 # Uncomment below and comment out above to download profiles.
 
-wowhead=13808359 name=Warlock_T9_00_13_58    save=Warlock_T9_00_13_58.simcraft
-wowhead=13808443 name=Warlock_T9_03_13_55    save=Warlock_T9_03_13_55.simcraft
-wowhead=13808502 name=Warlock_T9_03_52_16    save=Warlock_T9_03_52_16.simcraft
-wowhead=13808508 name=Warlock_T9_53_00_18    save=Warlock_T9_53_00_18.simcraft
-wowhead=13808508 name=Warlock_T9_53_00_18_DG save=Warlock_T9_53_00_18_DG.simcraft summon_pet=doomguard
-wowhead=13808517 name=Warlock_T9_00_40_31    save=Warlock_T9_00_40_31.simcraft
-wowhead=13808566 name=Warlock_T9_00_41_30    save=Warlock_T9_00_41_30.simcraft
-wowhead=13808619 name=Warlock_T9_00_56_15    save=Warlock_T9_00_56_15.simcraft
-save_profiles=1
+#wowhead=13808359 name=Warlock_T9_00_13_58    Warlock_T9_Hit_gear.simcraft  save=Warlock_T9_00_13_58.simcraft
+#wowhead=13808443 name=Warlock_T9_03_13_55    Warlock_T9_Hit_gear.simcraft  waist=cord_of_the_tenebrous_mist,id=46973,gems=23sp_23sp_23sp  save=Warlock_T9_03_13_55.simcraft
+#wowhead=13808502 name=Warlock_T9_03_52_16    Warlock_T9_Hit_gear.simcraft  waist=cord_of_the_tenebrous_mist,id=46973,gems=23sp_23sp_23sp  save=Warlock_T9_03_52_16.simcraft
+#wowhead=13808508 name=Warlock_T9_53_00_18    Warlock_T9_Hit_gear.simcraft  waist=cord_of_the_tenebrous_mist,id=46973,gems=23sp_23sp_23sp  save=Warlock_T9_53_00_18.simcraft
+#wowhead=13808508 name=Warlock_T9_53_00_18_DG Warlock_T9_Hit_gear.simcraft  waist=cord_of_the_tenebrous_mist,id=46973,gems=23sp_23sp_23sp  save=Warlock_T9_53_00_18_DG.simcraft summon_pet=doomguard
+#wowhead=13808517 name=Warlock_T9_00_40_31    Warlock_T9_Hit_gear.simcraft  save=Warlock_T9_00_40_31.simcraft
+#wowhead=13808566 name=Warlock_T9_00_41_30    Warlock_T9_Hit_gear.simcraft  save=Warlock_T9_00_41_30.simcraft
+#wowhead=13808619 name=Warlock_T9_00_56_15    Warlock_T9_Hit_gear.simcraft  save=Warlock_T9_00_56_15.simcraft
+#save_profiles=1
