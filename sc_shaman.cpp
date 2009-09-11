@@ -3100,7 +3100,7 @@ int shaman_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_caster = ( strstr( s, "helm    "     ) || 
+  bool is_caster = ( strstr( s, "helm"     ) || 
 		     strstr( s, "shoulderpads" ) ||
 		     strstr( s, "hauberk"      ) ||
 		     strstr( s, "kilt"         ) ||
