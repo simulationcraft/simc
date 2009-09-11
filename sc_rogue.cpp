@@ -1557,6 +1557,7 @@ struct ghostly_strike_t : public rogue_attack_t
     parse_options( options, options_str );
 
     weapon = &( p -> main_hand_weapon );
+    base_dd_min = base_dd_max   = 1;
     may_crit                    = true;
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
