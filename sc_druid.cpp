@@ -135,6 +135,7 @@ struct druid_t : public player_t
     int  shredding_attacks;
     int  starfall;
     int  starlight_wrath;
+    int  survival_instincts;
     int  survival_of_the_fittest;
     int  thick_hide;
     int  vengeance;
@@ -147,6 +148,13 @@ struct druid_t : public player_t
     int owlkin_frenzy;
     int typhoon;
 
+    bool is_tank_spec(void)
+    {
+        bool bear_essentials = thick_hide==3 && survival_instincts==1 && natural_reaction==3 && protector_of_the_pack==3;
+        bool kitty_playthings = predatory_instincts > 0;
+        
+        return bear_essentials && !kitty_playthings;
+    }
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
@@ -3294,6 +3302,8 @@ void druid_t::init_base()
   mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
 
   base_gcd = 1.5;
+
+  if ( tank == -1 && talents.is_tank_spec() ) tank = 1;
 }
 
 // druid_t::init_buffs ======================================================
@@ -3707,7 +3717,7 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
     { {  4, 2, &( talents.natures_majesty       ) }, {  4, 2, &( talents.savage_fury             ) }, {  4, 5, &( talents.naturalist                ) } },
     { {  5, 2, &( talents.improved_moonfire     ) }, {  5, 3, &( talents.thick_hide              ) }, {  5, 0, NULL                                   } },
     { {  6, 3, &( talents.brambles              ) }, {  6, 2, &( talents.feral_swiftness         ) }, {  6, 0, NULL                                   } },
-    { {  7, 3, &( talents.natures_grace         ) }, {  7, 0, NULL                                 }, {  7, 3, &( talents.intensity                 ) } },
+    { {  7, 3, &( talents.natures_grace         ) }, {  7, 1, &( talents.survival_instincts      ) }, {  7, 3, &( talents.intensity                 ) } },
     { {  8, 1, &( talents.natures_splendor      ) }, {  8, 3, &( talents.sharpened_claws         ) }, {  8, 1, &( talents.omen_of_clarity           ) } },
     { {  9, 2, &( talents.natures_reach         ) }, {  9, 2, &( talents.shredding_attacks       ) }, {  9, 2, &( talents.master_shapeshifter       ) } },
     { { 10, 5, &( talents.vengeance             ) }, { 10, 3, &( talents.predatory_strikes       ) }, { 10, 0, NULL                                   } },
@@ -3803,7 +3813,8 @@ std::vector<option_t>& druid_t::get_options()
       { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
       { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
       { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
-      { "survival_of_the_fittest",   OPT_INT,  &( talents.survival_of_the_fittest   ) },
+      { "survival_instincts",        OPT_INT,  &( talents.survival_of_the_fittest   ) },
+      { "survival_of_the_fittest",   OPT_INT,  &( talents.survival_instincts        ) },
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
