@@ -2810,6 +2810,10 @@ void shaman_t::init_actions()
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
       action_list_str  = "flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
+      action_list_str += "/strength_of_earth_totem/windfury_totem";
+      action_list_str += "/auto_attack";
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/bloodlust,time_to_die<=60";
       int num_items = items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -2819,7 +2823,6 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-
       if ( race == RACE_ORC )
       {
         action_list_str += "/blood_fury";
@@ -2828,10 +2831,7 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-
       action_list_str += "/wind_shear";
-      action_list_str += "/strength_of_earth_totem/windfury_totem/bloodlust,time_to_die<=60";
-      action_list_str += "/auto_attack";
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
@@ -2843,7 +2843,11 @@ void shaman_t::init_actions()
     }
     else
     {
-      action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield/bloodlust,time_to_die<=59";
+      action_list_str  = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/flametongue_weapon,weapon=main/water_shield";
+      action_list_str += "/mana_spring_totem/wrath_of_air_totem";
+      if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/bloodlust,time_to_die<=59";
       int num_items = items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -2853,7 +2857,6 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-
       if ( race == RACE_ORC )
       {
         action_list_str += "/blood_fury";
@@ -2862,9 +2865,6 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-
-      action_list_str += "/mana_spring_totem/wrath_of_air_totem";
-      if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
       action_list_str += "/speed_potion";
       if ( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
       action_list_str += "/flame_shock";

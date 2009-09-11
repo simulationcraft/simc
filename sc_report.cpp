@@ -305,13 +305,14 @@ static void print_buffs( FILE* file, sim_t* sim )
 static void print_core_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Core Stats:  strength=%.0f(%.0f)  agility=%.0f(%.0f)  stamina=%.0f(%.0f)  intellect=%.0f(%.0f)  spirit=%.0f(%.0f)  health=%.0f  mana=%.0f\n",
-                   p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
-                   p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
-                   p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
-                   p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
-                   p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
-                   p -> resource_max[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_MANA ] );
+                   "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
+                   p -> attribute_buffed[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
+                   p -> attribute_buffed[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
+                   p -> attribute_buffed[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
+                   p -> attribute_buffed[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
+                   p -> attribute_buffed[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
+                   p -> resource_buffed[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_HEALTH ], 
+		   p -> resource_buffed[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ] );
 }
 
 // print_spell_stats ==========================================================
@@ -319,13 +320,13 @@ static void print_core_stats( FILE* file, player_t* p )
 static void print_spell_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Spell Stats:  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  penetration=%.0f(%.0f)  haste=%.2f%%(%.0f)  mp5=%.0f\n",
-                   p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
-                   p -> composite_spell_hit()  * 100.0,    p -> stats.hit_rating,
-                   p -> composite_spell_crit() * 100.0,    p -> stats.crit_rating,
-                   p -> composite_spell_penetration(),     p -> stats.spell_penetration,
-                   ( 1.0 / p -> spell_haste - 1 ) * 100.0, p -> stats.haste_rating,
-                   p -> initial_mp5 );
+                   "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  penetration=%.0f|%.0f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f\n",
+                   p -> buffed_spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
+                   100 * p -> buffed_spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
+                   100 * p -> buffed_spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
+                   100 * p -> buffed_spell_penetration,  100 * p -> composite_spell_penetration(),  p -> stats.spell_penetration,
+                   100 * ( 1 / p -> buffed_spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
+                   p -> buffed_mp5, p -> composite_mp5() );
 }
 
 // print_attack_stats =========================================================
@@ -333,13 +334,13 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Attack Stats  power=%.0f(%.0f)  hit=%.2f%%(%.0f)  crit=%.2f%%(%.0f)  expertise=%.2f(%.0f)  penetration=%.2f%%(%.0f)  haste=%.2f%%(%.0f)\n",
-                   p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
-                   p -> composite_attack_hit()         * 100.0, p -> stats.hit_rating,
-                   p -> composite_attack_crit()        * 100.0, p -> stats.crit_rating,
-                   p -> composite_attack_expertise()   * 100.0, p -> stats.expertise_rating,
-                   p -> composite_attack_penetration() * 100.0, p -> stats.armor_penetration_rating,
-                   ( 1.0 / p -> attack_haste - 1 )     * 100.0, p -> stats.haste_rating );
+                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f|%.2f(%.0f)  penetration=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)\n",
+                   p -> buffed_attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
+                   100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
+                   100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
+                   100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating,
+                   100 * p -> buffed_attack_penetration, 100 * p -> composite_attack_penetration(), p -> stats.armor_penetration_rating,
+                   100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ), p -> stats.haste_rating );
 }
 
 // print_defense_stats =======================================================
@@ -347,16 +348,15 @@ static void print_attack_stats( FILE* file, player_t* p )
 static void print_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Defense Stats:  armor=%.0f(%.0f)  miss=%.2f%%/%.2f%%/%.2f%%  dodge=%.2f%%(%.0f)  parry=%.2f%%(%.0f)  block=%.2f%%(%.0f)  blockv=%.0f(%.0f)  defense=%.0f(%.0f)\n",
-                   p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
-                   100 * ( p -> composite_miss_melee()  - p -> diminished_miss() ),
-                   100 * ( p -> composite_miss_ranged() - p -> diminished_miss() ),
-		   100 * p -> composite_miss_spell( SCHOOL_MAX ),
-                   100 * ( p -> composite_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
-                   100 * ( p -> composite_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
-                   100 * p -> composite_block(), p -> stats.block_rating,
-                   p -> composite_block_value(), p -> stats.block_value,
-                   p -> composite_defense(), p -> stats.defense_rating );
+                   "  Defense Stats:  armor=%.0f|%.0f(%.0f)  blockv=%.0f|%.0f(%.0f)  defense=%.0f|%.0f(%.0f)  miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
+                   p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
+                   p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value,
+                   p -> buffed_defense,     p -> composite_defense(), p -> stats.defense_rating,
+                   100 * p -> buffed_miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL ) ),
+                   100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
+                   100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
+                   100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating,
+		   100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
 // print_gains ===============================================================

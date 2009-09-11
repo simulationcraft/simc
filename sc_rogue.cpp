@@ -229,8 +229,7 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual double    composite_miss_ranged() SC_CONST;
-  virtual double    composite_miss_spell( int school ) SC_CONST;
+  virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -2793,34 +2792,19 @@ struct stealth_t : public spell_t
 // Rogue Character Definition
 // =========================================================================
 
-// rogue_t::composite_miss_ranged ==========================================
+// rogue_t::composite_tank_miss ============================================
 
-double rogue_t::composite_miss_ranged() SC_CONST
+double rogue_t::composite_tank_miss( int school ) SC_CONST
 {
-  double m = player_t::composite_miss_ranged();
+  double m = player_t::composite_tank_miss( school );
 
-  m += talents.heightened_senses * 0.02;
+  if ( school != SCHOOL_PHYSICAL )
+  {
+    m += talents.heightened_senses * 0.02;
+  }
 
-  if ( m > 1.0)
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
-
-  return m;
-}
-
-// rogue_t::composite_miss_spell ==========================================
-
-double rogue_t::composite_miss_spell( int school ) SC_CONST
-{
-  double m = player_t::composite_miss_spell( school );
-
-  m += talents.heightened_senses * 0.02;
-
-  if ( m > 1.0)
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
+  if      ( m > 1.0 ) m = 1.0;
+  else if ( m < 0.0 ) m = 0.0;
 
   return m;
 }
@@ -2845,9 +2829,10 @@ void rogue_t::init_actions()
     action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
     action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
     action_list_str += ",off_hand=deadly";
+    action_list_str += "/auto_attack";
+    action_list_str += "/snapshot_stats";
     if ( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
-    action_list_str += "/auto_attack/kick";
-
+    action_list_str += "/kick";
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -2857,7 +2842,6 @@ void rogue_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     if ( race == RACE_ORC )
     {
       action_list_str += "/blood_fury";
@@ -2870,7 +2854,6 @@ void rogue_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-
     if ( primary_tree() == TREE_ASSASSINATION )
     {
       if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";

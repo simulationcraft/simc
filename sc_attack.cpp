@@ -45,44 +45,7 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
 
 double attack_t::haste() SC_CONST
 {
-  player_t* p = player;
-  double h = p -> attack_haste;
-
-  if ( p -> type != PLAYER_GUARDIAN )
-  {
-    if ( p -> buffs.bloodlust -> up() )
-    {
-      h *= 1.0 / ( 1.0 + 0.30 );
-    }
-
-    if ( p -> buffs.berserking -> up() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
-    if ( p -> position != POSITION_RANGED && sim -> auras.windfury_totem -> check() )
-    {
-      h *= 1.0 / ( 1.0 + sim -> auras.windfury_totem -> value() );
-    }
-
-    if ( sim -> auras.celerity -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-
-    if ( p -> type != PLAYER_PET )
-    {
-      if ( p -> buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
-      if ( p -> buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
-    }
-  }
-
-  return h;
+  return player -> composite_attack_haste();
 }
 
 // attack_t::execute_time ===================================================

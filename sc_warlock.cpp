@@ -3609,7 +3609,6 @@ void warlock_t::init_actions()
     action_list_str += "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak";
     action_list_str += talents.emberstorm ? "/fire_stone" :  "/spell_stone";
     action_list_str += "/fel_armor/summon_pet";
-
     if ( summon_pet_str.empty() )
     {
       if ( talents.summon_felguard )
@@ -3620,12 +3619,11 @@ void warlock_t::init_actions()
         summon_pet_str = "succubus";
     }
     action_list_str += "," + summon_pet_str;
-
+    action_list_str += "/snapshot_stats";
     if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
     {
       action_list_str+="/life_tap,buff_refresh=1";
     }
-
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -3635,7 +3633,6 @@ void warlock_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     if ( race == RACE_ORC )
     {
       action_list_str += "/blood_fury";
@@ -3644,7 +3641,6 @@ void warlock_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-
     if ( talents.haunt || talents.unstable_affliction ) // 41+_xx_xx
     {
       if ( talents.haunt ) action_list_str += "/haunt,debuff=1";

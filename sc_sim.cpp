@@ -302,7 +302,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
     armor_update_interval( 20 ),
-    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), report_buffed_stats( 0 ), save_profiles( 0 ),
+    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
@@ -1270,7 +1270,6 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=skip
       { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
-      { "report_buffed_stats",              OPT_BOOL  , &( report_buffed_stats                      ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
       { "xml",                              OPT_STRING, &( xml_file_str                             ) },
@@ -1535,8 +1534,6 @@ int sim_t::main( int argc, char** argv )
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
     execute();
     scaling -> analyze();
-
-    if( report_buffed_stats ) player_t::combat_begin( this );
 
     util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
     report_t::print_suite( this );

@@ -3344,6 +3344,7 @@ void hunter_t::init_actions()
     action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark/summon_pet";
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
+    action_list_str += "/snapshot_stats";
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -3353,7 +3354,6 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     if ( race == RACE_ORC )
     {
       action_list_str += "/blood_fury";
@@ -3366,7 +3366,6 @@ void hunter_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-
     if ( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
     action_list_str += "/aspect";
     if ( talents.chimera_shot ) action_list_str += "/serpent_sting";

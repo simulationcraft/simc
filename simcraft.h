@@ -862,7 +862,7 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval;
   int         optimal_raid, spell_crit_suppression, log, debug;
-  int         report_buffed_stats, save_profiles;
+  int         save_profiles;
   std::string default_region_str, default_server_str;
   alias_t     alias;
 
@@ -1236,7 +1236,8 @@ struct player_t
 
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;
-  double spell_haste, attack_haste;
+  double spell_haste, buffed_spell_haste;
+  double attack_haste, buffed_attack_haste;
 
   // Attributes
   double attribute                   [ ATTRIBUTE_MAX ];
@@ -1244,13 +1245,14 @@ struct player_t
   double attribute_initial           [ ATTRIBUTE_MAX ];
   double attribute_multiplier        [ ATTRIBUTE_MAX ];
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
+  double attribute_buffed            [ ATTRIBUTE_MAX ];
 
   // Spell Mechanics
-  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
-  double base_spell_hit,         initial_spell_hit,                   spell_hit;
-  double base_spell_crit,        initial_spell_crit,                  spell_crit;
-  double base_spell_penetration, initial_spell_penetration,           spell_penetration;
-  double base_mp5,               initial_mp5,                         mp5;
+  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
+  double base_spell_hit,         initial_spell_hit,                   spell_hit,                   buffed_spell_hit;
+  double base_spell_crit,        initial_spell_crit,                  spell_crit,                  buffed_spell_crit;
+  double base_spell_penetration, initial_spell_penetration,           spell_penetration,           buffed_spell_penetration;
+  double base_mp5,               initial_mp5,                         mp5,                         buffed_mp5;
   double spell_power_multiplier,    initial_spell_power_multiplier;
   double spell_power_per_intellect, initial_spell_power_per_intellect;
   double spell_power_per_spirit,    initial_spell_power_per_spirit;
@@ -1263,11 +1265,11 @@ struct player_t
   double last_cast;
 
   // Attack Mechanics
-  double base_attack_power,       initial_attack_power,        attack_power;
-  double base_attack_hit,         initial_attack_hit,          attack_hit;
-  double base_attack_expertise,   initial_attack_expertise,    attack_expertise;
-  double base_attack_crit,        initial_attack_crit,         attack_crit;
-  double base_attack_penetration, initial_attack_penetration,  attack_penetration;
+  double base_attack_power,       initial_attack_power,        attack_power,       buffed_attack_power;
+  double base_attack_hit,         initial_attack_hit,          attack_hit,         buffed_attack_hit;
+  double base_attack_expertise,   initial_attack_expertise,    attack_expertise,   buffed_attack_expertise;
+  double base_attack_crit,        initial_attack_crit,         attack_crit,        buffed_attack_crit;
+  double base_attack_penetration, initial_attack_penetration,  attack_penetration, buffed_attack_penetration;
   double attack_power_multiplier,   initial_attack_power_multiplier;
   double attack_power_per_strength, initial_attack_power_per_strength;
   double attack_power_per_agility,  initial_attack_power_per_agility;
@@ -1276,14 +1278,14 @@ struct player_t
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double base_armor,       initial_armor,       armor;
+  double base_armor,       initial_armor,       armor,       buffed_armor;
   double base_bonus_armor, initial_bonus_armor, bonus_armor;
-  double base_defense,     initial_defense,     defense;
-  double base_miss,        initial_miss,        miss;
-  double base_dodge,       initial_dodge,       dodge;
-  double base_parry,       initial_parry,       parry;
-  double base_block,       initial_block,       block;
-  double base_block_value, initial_block_value, block_value;
+  double base_block_value, initial_block_value, block_value, buffed_block_value;
+  double base_defense,     initial_defense,     defense,     buffed_defense;
+  double base_miss,        initial_miss,        miss,        buffed_miss, buffed_crit;
+  double base_dodge,       initial_dodge,       dodge,       buffed_dodge;
+  double base_parry,       initial_parry,       parry,       buffed_parry;
+  double base_block,       initial_block,       block,       buffed_block;
   double armor_multiplier,  initial_armor_multiplier;
   double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
@@ -1299,6 +1301,7 @@ struct player_t
   double  resource_initial[ RESOURCE_MAX ];
   double  resource_max    [ RESOURCE_MAX ];
   double  resource_current[ RESOURCE_MAX ];
+  double  resource_buffed [ RESOURCE_MAX ];
   double  mana_per_intellect;
   double  health_per_stamina;
 
@@ -1494,31 +1497,32 @@ struct player_t
   virtual void combat_begin();
   virtual void combat_end();
 
+  virtual double composite_attack_haste() SC_CONST;
   virtual double composite_attack_power() SC_CONST;
   virtual double composite_attack_crit() SC_CONST;
   virtual double composite_attack_expertise() SC_CONST { return attack_expertise; }
   virtual double composite_attack_hit() SC_CONST;
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
-  virtual double composite_armor()                  SC_CONST;
-  virtual double composite_defense()                SC_CONST { return defense; }
-  virtual double composite_miss_melee()             SC_CONST;
-  virtual double composite_miss_ranged()            SC_CONST;
-  virtual double composite_miss_spell( int school ) SC_CONST;
-  virtual double composite_dodge()                  SC_CONST;
-  virtual double composite_parry()                  SC_CONST;
-  virtual double composite_block()                  SC_CONST;
-  virtual double composite_block_value()            SC_CONST;
-  virtual double composite_crit_melee()             SC_CONST;
-
-  virtual double diminished_miss()  SC_CONST;
-  virtual double diminished_dodge() SC_CONST;
-  virtual double diminished_parry() SC_CONST;
-
+  virtual double composite_spell_haste() SC_CONST;
   virtual double composite_spell_power( int school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
   virtual double composite_spell_hit() SC_CONST;
   virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
+  virtual double composite_mp5() SC_CONST;
+
+  virtual double composite_armor()                 SC_CONST;
+  virtual double composite_block_value()           SC_CONST;
+  virtual double composite_defense()               SC_CONST { return defense; }
+  virtual double composite_tank_miss( int school ) SC_CONST;
+  virtual double composite_tank_dodge()            SC_CONST;
+  virtual double composite_tank_parry()            SC_CONST;
+  virtual double composite_tank_block()            SC_CONST;
+  virtual double composite_tank_crit( int school ) SC_CONST;
+
+  virtual double diminished_miss( int school )  SC_CONST;
+  virtual double diminished_dodge()             SC_CONST;
+  virtual double diminished_parry()             SC_CONST;
 
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }

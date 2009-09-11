@@ -194,9 +194,9 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
-  virtual double    composite_block() SC_CONST;
   virtual double    composite_block_value() SC_CONST;
-  virtual double    composite_miss_spell( int school ) SC_CONST;
+  virtual double    composite_tank_miss( int school ) SC_CONST;
+  virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -2101,18 +2101,19 @@ struct stance_t : public warrior_spell_t
 // Warrior Character Definition
 // =========================================================================
 
-// warrior_t::composite_miss_spell ==========================================
+// warrior_t::composite_tank_miss ==========================================
 
-double warrior_t::composite_miss_spell( int school ) SC_CONST
+double warrior_t::composite_tank_miss( int school ) SC_CONST
 {
-  double m = player_t::composite_miss_spell( school );
+  double m = player_t::composite_tank_miss( school );
 
-  m += talents.improved_spell_reflection * 0.02;
+  if ( school != SCHOOL_PHYSICAL )
+  {
+    m += talents.improved_spell_reflection * 0.02;
+  }
 
-  if ( m > 1.0)
-    m = 1.0;
-  else if ( m < 0.0 )
-    m = 0.0;
+  if      ( m > 1.0 ) m = 1.0;
+  else if ( m < 0.0 ) m = 0.0;
 
   return m;
 }
@@ -2354,7 +2355,11 @@ void warrior_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=hearty_rhino";
-
+    if      ( primary_tree() == TREE_ARMS       ) action_list_str += "/stance,choose=battle";
+    else if ( primary_tree() == TREE_FURY       ) action_list_str += "/stance,choose=berserker";
+    else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive";
+    action_list_str += "/auto_attack";
+    action_list_str += "/snapshot_stats";
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -2364,7 +2369,6 @@ void warrior_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     if ( race == RACE_DWARF )
     {
       if ( talents.armored_to_the_teeth > 0 )
@@ -2378,10 +2382,8 @@ void warrior_t::init_actions()
     {
       action_list_str += "/berserking";
     }
-
     if ( primary_tree() == TREE_ARMS )
     {
-      action_list_str += "/stance,choose=battle/auto_attack";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=95";
       action_list_str += "/mortal_strike";
@@ -2394,7 +2396,6 @@ void warrior_t::init_actions()
     }
     else if ( primary_tree() == TREE_FURY )
     {
-      action_list_str += "/stance,choose=berserker/auto_attack";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=75,health_percentage<=20";
       action_list_str += "/whirlwind,rage<=95,health_percentage<=20";
@@ -2413,7 +2414,6 @@ void warrior_t::init_actions()
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
-      action_list_str += "/stance,choose=defensive/auto_attack";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=50";
       action_list_str += "/shield_block,sync=shield_slam";
@@ -2489,11 +2489,11 @@ double warrior_t::composite_attack_power() SC_CONST
   return ap;
 }
 
-// warrior_t::composite_block ================================================
+// warrior_t::composite_tank_block ===========================================
 
-double warrior_t::composite_block() SC_CONST
+double warrior_t::composite_tank_block() SC_CONST
 {
-  double b = player_t::composite_block();
+  double b = player_t::composite_tank_block();
   if ( buffs_shield_block -> up() ) b *= 2.0;
   if ( buffs_glyph_of_blocking -> up() ) b *= 1.10;
   return b;

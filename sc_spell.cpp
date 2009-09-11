@@ -25,33 +25,7 @@ spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
 
 double spell_t::haste() SC_CONST
 {
-  player_t* p = player;
-  double h = p -> spell_haste;
-
-  if ( p -> type != PLAYER_GUARDIAN )
-  {
-    if (      p -> buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
-    else if ( p -> buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
-
-    if ( p -> buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
-
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
-    if ( sim -> auras.wrath_of_air -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.05 );
-    }
-
-    if ( sim -> auras.celerity -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-  }
-
-  return h;
+  return player -> composite_spell_haste();
 }
 
 // spell_t::gcd =============================================================

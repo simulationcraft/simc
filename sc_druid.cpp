@@ -225,10 +225,10 @@ struct druid_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    composite_parry() SC_CONST { return 0; }
-  virtual double    composite_block() SC_CONST { return 0; }
   virtual double    composite_block_value() SC_CONST { return 0; }
-  virtual double    composite_crit_melee() SC_CONST;
+  virtual double    composite_tank_parry() SC_CONST { return 0; }
+  virtual double    composite_tank_block() SC_CONST { return 0; }
+  virtual double    composite_tank_crit( int school ) SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3448,8 +3448,10 @@ void druid_t::init_actions()
 	action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
 	action_list_str += "/bear_form";
 	action_list_str += "/auto_attack";
+	action_list_str += "/snapshot_stats";
 	action_list_str += "/maul,rage>=50";
 	if ( talents.berserk ) action_list_str+="/berserk";
+        action_list_str += use_str;
 	action_list_str += "/mangle_bear";
 	action_list_str += "/lacerate";
 	action_list_str += "/enrage";
@@ -3459,6 +3461,7 @@ void druid_t::init_actions()
 	action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
 	action_list_str += "/cat_form";
 	action_list_str += "/auto_attack";
+	action_list_str += "/snapshot_stats";
 	action_list_str += "/maim";
 	action_list_str += "/faerie_fire_feral,debuff_only=1";
 	action_list_str += use_str;
@@ -3474,6 +3477,7 @@ void druid_t::init_actions()
     {
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
+      action_list_str += "/snapshot_stats";
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
       action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
@@ -3671,16 +3675,19 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-// druid_t::composite_crit_melee ============================================
+// druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_crit_melee() SC_CONST
+double druid_t::composite_tank_crit( int school ) SC_CONST
 {
-  double c = player_t::composite_crit_melee();
+  double c = player_t::composite_tank_crit( school );
 
-  if ( buffs_bear_form -> check() )
+  if ( school == SCHOOL_PHYSICAL )
   {
-    c -= 0.02 * talents.survival_of_the_fittest;
-    if ( c < 0 ) c = 0;
+    if ( buffs_bear_form -> check() )
+    {
+      c -= 0.02 * talents.survival_of_the_fittest;
+      if ( c < 0 ) c = 0;
+    }
   }
 
   return c;

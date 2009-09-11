@@ -1929,7 +1929,7 @@ void priest_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire";
-
+    action_list_str += "/snapshot_stats";
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -1939,7 +1939,6 @@ void priest_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     switch ( primary_tree() )
     {
     case TREE_SHADOW:

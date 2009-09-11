@@ -214,7 +214,7 @@ struct paladin_t : public player_t
   virtual void      interrupt();
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double    composite_block_value() SC_CONST;
-  virtual double    composite_block() SC_CONST;
+  virtual double    composite_tank_block() SC_CONST;
   virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -2255,6 +2255,7 @@ void paladin_t::init_actions()
     if      ( glyphs.seal_of_command       ) action_list_str += "/seal_of_command";
     else if ( glyphs.seal_of_righteousness ) action_list_str += "/seal_of_righteousness";
     else                                     action_list_str += "/seal_of_vengeance";
+    action_list_str += "/snapshot_stats";
     action_list_str += "/hammer_of_justice";
     action_list_str += "/divine_plea";
     if ( talents.holy_shield && tank > 0 ) action_list_str += "/holy_shield";
@@ -2316,11 +2317,11 @@ double paladin_t::composite_block_value() SC_CONST
   return bv;
 }
 
-// paladin_t::composite_block ================================================
+// paladin_t::composite_tank_block ===========================================
 
-double paladin_t::composite_block() SC_CONST
+double paladin_t::composite_tank_block() SC_CONST
 {
-  double b = player_t::composite_block();
+  double b = player_t::composite_tank_block();
   if ( buffs_holy_shield -> up() ) b += 0.30;
   if ( buffs_redoubt     -> up() ) b += 0.10 * talents.redoubt;
   return b;

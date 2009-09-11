@@ -255,13 +255,15 @@ player_t::player_t( sim_t*             s,
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
     // Haste
-    base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), spell_haste( 1.0 ), attack_haste( 1.0 ),
+    base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), 
+    spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
+    attack_haste( 1.0 ), buffed_attack_haste( 0 ),
     // Spell Mechanics
     base_spell_power( 0 ),
-    base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),
-    base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),
-    base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ),
-    base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),
+    base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
+    base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),        buffed_spell_crit( 0 ),
+    base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ), buffed_spell_penetration( 0 ),
+    base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),               buffed_mp5( 0 ),
     spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
     spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
     spell_power_per_spirit( 0 ),    initial_spell_power_per_spirit( 0 ),
@@ -271,11 +273,11 @@ player_t::player_t( sim_t*             s,
     energy_regen_per_second( 0 ), focus_regen_per_second( 0 ),
     last_cast( 0 ),
     // Attack Mechanics
-    base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),
-    base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),
-    base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),
-    base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),
-    base_attack_penetration( 0 ), initial_attack_penetration( 0 ),  attack_penetration( 0 ),
+    base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
+    base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
+    base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_attack_expertise( 0 ),
+    base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),        buffed_attack_crit( 0 ),
+    base_attack_penetration( 0 ), initial_attack_penetration( 0 ),  attack_penetration( 0 ), buffed_attack_penetration( 0 ),
     attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
     attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
     attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
@@ -283,14 +285,14 @@ player_t::player_t( sim_t*             s,
     position( POSITION_BACK ),
     // Defense Mechanics
     target_auto_attack( 0 ), 
-    base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ), 
+    base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
     base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ), 
-    base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),
-    base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),
-    base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),
-    base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),
-    base_block( 0 ),       initial_block( 0 ),       block( 0 ),
-    base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), 
+    base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), buffed_block_value( 0 ),
+    base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),     buffed_defense( 0 ),
+    base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
+    base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
+    base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
+    base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
     armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
     armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
@@ -330,6 +332,7 @@ player_t::player_t( sim_t*             s,
   {
     attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ] = 1.0;
+    attribute_buffed[ i ] = 0;
   }
 
   for ( int i=0; i <= SCHOOL_MAX; i++ )
@@ -1053,6 +1056,49 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
+// player_t::composite_attack_hasete ========================================
+
+double player_t::composite_attack_haste() SC_CONST
+{
+  double h = attack_haste;
+
+  if ( type != PLAYER_GUARDIAN )
+  {
+    if ( buffs.bloodlust -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.30 );
+    }
+
+    if ( buffs.berserking -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+
+    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
+    {
+      h *= 1.0 / ( 1.0 + 0.03 );
+    }
+
+    if ( position != POSITION_RANGED && sim -> auras.windfury_totem -> check() )
+    {
+      h *= 1.0 / ( 1.0 + sim -> auras.windfury_totem -> value() );
+    }
+
+    if ( sim -> auras.celerity -> check() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+
+    if ( type != PLAYER_PET )
+    {
+      if ( buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
+      if ( buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
+    }
+  }
+
+  return h;
+}
+
 // player_t::composite_attack_power ========================================
 
 double player_t::composite_attack_power() SC_CONST
@@ -1112,31 +1158,66 @@ double player_t::composite_armor() SC_CONST
   return a;
 }
 
-// player_t::composite_miss_melee ==========================================
+// player_t::composite_tank_miss ===========================================
 
-double player_t::composite_miss_melee() SC_CONST
+double player_t::composite_tank_miss( int school ) SC_CONST
 {
-  double m = 0.05;
+  double m = 0;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
-  
-  if( delta > 0 )
+  if ( school == SCHOOL_PHYSICAL )
   {
-    m += delta * 0.0004;
+    m = 0.05;
+
+    double delta = composite_defense() - sim -> target -> weapon_skill;
+  
+    if( delta > 0 )
+    {
+      m += delta * 0.0004;
+    }
+    else
+    {
+      m += delta * 0.0002;
+    }
+
+    if ( race == RACE_NIGHT_ELF ) // Quickness
+    {
+      m += 0.02;
+    }
+
+    if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
+    {
+      m += 0.03;
+    }
   }
   else
   {
-    m += delta * 0.0002;
-  }
+    m = 0.04;
 
-  if ( race == RACE_NIGHT_ELF ) // Quickness
-  {
-    m += 0.02;
-  }
+    int delta = level - sim -> target -> level;
+  
+    if( delta > 0 )
+    {
+      m += delta * 0.01;
+    }
+    else if ( delta > -2 )
+    {
+      m += delta * 0.01;
+    }
+    else
+    {
+      m += 0.02 - ( 2 + delta ) * 0.07;
+    }
 
-  if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
-  {
-    m += 0.03;
+    if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
+	 ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
+	 ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
+	 ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
+	 ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
+	 ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
+	 ( race == RACE_BLOOD_ELF ) )
+    {
+      m += 0.02;
+    }
   }
 
   if      ( m > 1.0 ) m = 1.0;
@@ -1145,82 +1226,9 @@ double player_t::composite_miss_melee() SC_CONST
   return m;
 }
 
-// player_t::composite_miss_ranged ==========================================
+// player_t::composite_tank_dodge ====================================
 
-double player_t::composite_miss_ranged() SC_CONST
-{
-  double m = 0.05;
-
-  double delta = composite_defense() - sim -> target -> weapon_skill;
-  
-  if( delta > 0 )
-  {
-    m += delta * 0.0004;
-  }
-  else
-  {
-    m += delta * 0.0002;
-  }
-  
-  if ( race == RACE_NIGHT_ELF ) // Quickness
-  {
-    m += 0.02;
-  }
-
-  if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
-  {
-    m += 0.03;
-  }
-
-  if      ( m > 1.0 ) m = 1.0;
-  else if ( m < 0.0 ) m = 0.0;
-
-  return m;
-}
-
-// player_t::composite_miss_spell ==========================================
-
-double player_t::composite_miss_spell( int school ) SC_CONST
-{
-  double m = 0.04;
-
-  int delta = level - sim -> target -> level;
-  
-  if( delta > 0 )
-  {
-    m += delta * 0.01;
-  }
-  else if ( delta > -2 )
-  {
-    m += delta * 0.01;
-  }
-  else
-  {
-    m += 0.02 - ( 2 + delta ) * 0.07;
-  }
-
-  // Racials
-  if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
-       ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
-       ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
-       ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
-       ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
-       ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
-       ( race == RACE_BLOOD_ELF ) )
-  {
-    m += 0.02;
-  }
-
-  if      ( m > 1.0 ) m = 1.0;
-  else if ( m < 0.0 ) m = 0.0;
-
-  return m;
-}
-
-
-// player_t::composite_dodge =========================================
-
-double player_t::composite_dodge() SC_CONST
+double player_t::composite_tank_dodge() SC_CONST
 {
   double d = dodge;
 
@@ -1243,9 +1251,9 @@ double player_t::composite_dodge() SC_CONST
   return d;
 }
 
-// player_t::composite_parry =========================================
+// player_t::composite_tank_parry ====================================
 
-double player_t::composite_parry() SC_CONST
+double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
 
@@ -1266,9 +1274,9 @@ double player_t::composite_parry() SC_CONST
   return p;
 }
 
-// player_t::composite_block =========================================
+// player_t::composite_tank_block ===================================
 
-double player_t::composite_block() SC_CONST
+double player_t::composite_tank_block() SC_CONST
 {
   double b = block;
 
@@ -1300,21 +1308,30 @@ double player_t::composite_block_value() SC_CONST
   return bv;
 }
 
-// player_t::composite_crit_melee ==========================================
+// player_t::composite_tank_crit ==========================================
 
-double player_t::composite_crit_melee() SC_CONST
+double player_t::composite_tank_crit( int school ) SC_CONST
 {
-  double c = 0.05 + 0.002 * ( sim -> target -> level - level );
+  double c = 0;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
-  
-  if( delta > 0 )
+  if ( school == SCHOOL_PHYSICAL )
   {
-    c -= delta * 0.0004;
+    c = 0.05 + 0.002 * ( sim -> target -> level - level );
+
+    double delta = composite_defense() - sim -> target -> weapon_skill;
+  
+    if( delta > 0 )
+    {
+      c -= delta * 0.0004;
+    }
+    else
+    {
+      c -= delta * 0.0002;
+    }
   }
   else
   {
-    c -= delta * 0.0002;
+    c = 0.05;
   }
 
   if      ( c > 1.0 ) c = 1.0;
@@ -1325,9 +1342,12 @@ double player_t::composite_crit_melee() SC_CONST
 
 // player_t::diminished_miss =========================================
 
-double player_t::diminished_miss() SC_CONST
+double player_t::diminished_miss( int school ) SC_CONST
 {
   if ( diminished_kfactor == 0 || diminished_miss_capi == 0 ) return 0;
+
+  if ( school != SCHOOL_PHYSICAL )
+    return 0;
 
   // Only contributions from gear are subject to diminishing returns;
 
@@ -1386,6 +1406,38 @@ double player_t::diminished_parry() SC_CONST
   double loss = p - diminished_p;
 
   return loss > 0 ? loss : 0;
+}
+
+// player_t::composite_spell_haste ========================================
+
+double player_t::composite_spell_haste() SC_CONST
+{
+  double h = spell_haste;
+
+  if ( type != PLAYER_GUARDIAN )
+  {
+    if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
+    else if ( buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
+
+    if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
+
+    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
+    {
+      h *= 1.0 / ( 1.0 + 0.03 );
+    }
+
+    if ( sim -> auras.wrath_of_air -> check() )
+    {
+      h *= 1.0 / ( 1.0 + 0.05 );
+    }
+
+    if ( sim -> auras.celerity -> check() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+  }
+
+  return h;
 }
 
 // player_t::composite_spell_power ========================================
@@ -1454,6 +1506,13 @@ double player_t::composite_spell_hit() SC_CONST
   if ( buffs.heroic_presence -> check() ) sh += 0.01;
 
   return sh;
+}
+
+// player_t::composite_mp5 =================================================
+
+double player_t::composite_mp5() SC_CONST
+{
+  return mp5 + mp5_per_intellect * intellect();
 }
 
 // player_t::composite_attack_power_multiplier =============================
@@ -1922,7 +1981,7 @@ void player_t::regen( double periodicity )
 	resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
       }
 
-      double mp5_regen = periodicity * ( mp5 + intellect() * mp5_per_intellect ) / 5.0;
+      double mp5_regen = periodicity * composite_mp5() / 5.0;
 
       resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
 
@@ -2542,19 +2601,19 @@ int player_t::target_swing()
   double roll = sim -> rng -> real();
   double chance = 0;
 
-  chance += ( composite_miss_melee() - diminished_miss() );
+  chance += ( composite_tank_miss( SCHOOL_PHYSICAL ) - diminished_miss( SCHOOL_PHYSICAL ) );
   if ( roll <= chance ) return RESULT_MISS;
 
-  chance += ( composite_dodge() - diminished_dodge() );
+  chance += ( composite_tank_dodge() - diminished_dodge() );
   if ( roll <= chance ) return RESULT_DODGE;
 
-  chance += ( composite_parry() - diminished_parry() );
+  chance += ( composite_tank_parry() - diminished_parry() );
   if ( roll <= chance ) return RESULT_PARRY;
 
-  chance += composite_block();
+  chance += composite_tank_block();
   if ( roll <= chance ) return RESULT_BLOCK;
 
-  chance += composite_crit_melee();
+  chance += composite_tank_crit( SCHOOL_PHYSICAL );
   if ( roll <= chance ) return RESULT_CRIT;
 
   return RESULT_HIT;
@@ -2839,6 +2898,65 @@ struct restore_mana_t : public action_t
   }
 };
 
+// Snapshot Stats ============================================================
+
+struct snapshot_stats_t : public action_t
+{
+  snapshot_stats_t( player_t* player, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "snapshot_stats", player )
+  {
+    base_execute_time = 0.001; // Needs to be non-zero to ensure all the buffs have been setup.
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    player_t* p = player;
+
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+
+    p -> buffed_spell_haste  = p -> composite_spell_haste();
+    p -> buffed_attack_haste = p -> composite_attack_haste();
+
+    p -> attribute_buffed[ ATTR_STRENGTH  ] = p -> strength();
+    p -> attribute_buffed[ ATTR_AGILITY   ] = p -> agility();
+    p -> attribute_buffed[ ATTR_STAMINA   ] = p -> stamina();
+    p -> attribute_buffed[ ATTR_INTELLECT ] = p -> intellect();
+    p -> attribute_buffed[ ATTR_SPIRIT    ] = p -> spirit();
+
+    for( int i=0; i < RESOURCE_MAX; i++ ) p -> resource_buffed[ i ] = p -> resource_max[ i ];
+
+    p -> buffed_spell_power       = p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier();
+    p -> buffed_spell_hit         = p -> composite_spell_hit();
+    p -> buffed_spell_crit        = p -> composite_spell_crit();
+    p -> buffed_spell_penetration = p -> composite_spell_penetration();
+    p -> buffed_mp5               = p -> composite_mp5();
+
+    p -> buffed_attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
+    p -> buffed_attack_hit         = p -> composite_attack_hit();
+    p -> buffed_attack_expertise   = p -> composite_attack_expertise();
+    p -> buffed_attack_crit        = p -> composite_attack_crit();
+    p -> buffed_attack_penetration = p -> composite_attack_penetration();
+
+    p -> buffed_armor       = p -> composite_armor();
+    p -> buffed_block_value = p -> composite_block_value();
+    p -> buffed_defense     = p -> composite_defense();
+    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL );
+    p -> buffed_dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
+    p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();
+    p -> buffed_block       = p -> composite_tank_block();
+    p -> buffed_crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
+
+    p -> attribute_buffed[ ATTRIBUTE_NONE ] = 1;
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> current_iteration > 0 ) return false;
+    return player -> attribute_buffed[ ATTRIBUTE_NONE ] == 0;
+  }
+};
+
 // Wait Until Ready Action ===================================================
 
 struct wait_until_ready_t : public action_t
@@ -3034,6 +3152,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
   if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new wait_until_ready_t( this, options_str );

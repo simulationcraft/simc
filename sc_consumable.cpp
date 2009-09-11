@@ -54,16 +54,16 @@ struct flask_t : public action_t
       player -> spell_power[ SCHOOL_NATURE ] += 80;
       break;
     case FLASK_DISTILLED_WISDOM:
-      player -> attribute[ ATTR_INTELLECT ] += 65;
+      player -> stat_gain( STAT_INTELLECT, 65 );
       break;
     case FLASK_ENDLESS_RAGE:
-      player -> attack_power += 180;
+      player -> stat_gain( STAT_ATTACK_POWER, 180 );
       break;
     case FLASK_FROST_WYRM:
-      player -> spell_power[ SCHOOL_MAX ] += 125;
+      player -> stat_gain( STAT_SPELL_POWER, 125 );
       break;
     case FLASK_MIGHTY_RESTORATION:
-      player -> mp5 += 25;
+      player -> stat_gain( STAT_MP5, 25 );
       break;
     case FLASK_PURE_DEATH:
       player -> spell_power[ SCHOOL_FIRE   ] += 80;
@@ -71,10 +71,10 @@ struct flask_t : public action_t
       player -> spell_power[ SCHOOL_SHADOW ] += 80;
       break;
     case FLASK_RELENTLESS_ASSAULT:
-      player -> attack_power += 120;
+      player -> stat_gain( STAT_ATTACK_POWER, 120 );
       break;
     case FLASK_SUPREME_POWER:
-      player -> spell_power[ SCHOOL_MAX ] += 70;
+      player -> stat_gain( STAT_SPELL_POWER, 70 );
       break;
     default: assert( 0 );
     }
@@ -128,55 +128,55 @@ struct food_t : public action_t
     switch ( type )
     {
     case FOOD_TENDER_SHOVELTUSK_STEAK:
-      player -> spell_power[ SCHOOL_MAX ] += 46;
-      player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> stat_gain( STAT_SPELL_POWER, 46 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_SNAPPER_EXTREME:
-      player -> spell_hit += 40 / player -> rating.spell_hit;
-      player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> stat_gain( STAT_HIT_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_SMOKED_SALMON:
-      player -> spell_power[ SCHOOL_MAX ] += 35;
-      player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> stat_gain( STAT_SPELL_POWER, 35 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_POACHED_BLUEFISH:
-      player -> spell_power[ SCHOOL_MAX ] += 23;
-      player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_BLACKENED_BASILISK:
-      player -> spell_power[ SCHOOL_MAX ] += 23;
-      player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_GOLDEN_FISHSTICKS:
-      player -> spell_power[ SCHOOL_MAX ] += 23;
-      player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_CRUNCHY_SERPENT:
-      player -> spell_power[ SCHOOL_MAX ] += 23;
-      player -> attribute[ ATTR_SPIRIT ]  += 20;
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_BLACKENED_DRAGONFIN:
-      player -> attribute[ ATTR_AGILITY ] += 40;
-      player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> stat_gain( STAT_AGILITY, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_DRAGONFIN_FILET:
-      player -> attribute[ ATTR_STRENGTH ] += 40;
-      player -> attribute[ ATTR_STAMINA  ] += 40;
+      player -> stat_gain( STAT_STRENGTH, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_HEARTY_RHINO:
-      player -> attribute[ ATTR_STRENGTH ] += 40;
+      player -> stat_gain( STAT_STRENGTH, 40 );
       player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
-      player -> attribute[ ATTR_STAMINA  ] += 40;
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_GREAT_FEAST:
-      player -> attack_power              += 60;
-      player -> spell_power[ SCHOOL_MAX ] += 35;
-      player -> attribute[ ATTR_STAMINA ] += 30;
+      player -> stat_gain( STAT_ATTACK_POWER, 60 );
+      player -> stat_gain( STAT_SPELL_POWER,  35 );
+      player -> stat_gain( STAT_STAMINA, 30 );
       break;
     case FOOD_FISH_FEAST:
-      player -> attack_power              += 80;
-      player -> spell_power[ SCHOOL_MAX ] += 46;
-      player -> attribute[ ATTR_STAMINA ] += 40;
+      player -> stat_gain( STAT_ATTACK_POWER, 80 );
+      player -> stat_gain( STAT_SPELL_POWER,  46 );
+      player -> stat_gain( STAT_STAMINA, 40 );
       break;
     default: assert( 0 );
     }
@@ -215,7 +215,6 @@ struct destruction_potion_t : public action_t
       {
         name = "Destruction Potion Expiration";
         p -> aura_gain( "Destruction Potion Buff" );
-        p -> spell_power[ SCHOOL_MAX ] += 120;
         p -> spell_crit += 0.02;
         sim -> add_event( this, 15.0 );
       }
@@ -269,16 +268,14 @@ struct speed_potion_t : public action_t
       {
         name = "Speed Potion Expiration";
         p -> aura_gain( "Speed Potion Buff" );
-        p -> haste_rating += 500;
-        p -> recalculate_haste();
+	p -> stat_gain( STAT_HASTE_RATING, 500 );
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
         player_t* p = player;
         p -> aura_loss( "Speed Potion Buff" );
-        p -> haste_rating -= 500;
-        p -> recalculate_haste();
+	p -> stat_loss( STAT_HASTE_RATING, 500 );
       }
     };
 
@@ -323,17 +320,16 @@ struct wild_magic_potion_t : public action_t
       {
         name = "Wild Magic Potion Expiration";
         p -> aura_gain( "Wild Magic Potion Buff" );
-        p -> attack_crit += 200 / p -> rating.attack_crit;
-        p ->  spell_crit += 200 / p -> rating.spell_crit;
-        p -> spell_power[ SCHOOL_MAX ] += 200;
+        p -> stat_gain( STAT_CRIT_RATING, 200 );
+        p -> stat_gain( STAT_SPELL_POWER, 200 );
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
         player_t* p = player;
         p -> aura_loss( "Wild Magic Potion Buff" );
-        p -> attack_crit -= 200 / p -> rating.attack_crit;
-        p ->  spell_crit -= 200 / p -> rating.spell_crit;
+        p -> stat_loss( STAT_CRIT_RATING, 200 );
+        p -> stat_loss( STAT_SPELL_POWER, 200 );
         p -> spell_power[ SCHOOL_MAX ] -= 200;
       }
     };

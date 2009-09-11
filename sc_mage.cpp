@@ -3024,6 +3024,7 @@ void mage_t::init_actions()
   {
     action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
     if ( talents.focus_magic ) action_list_str += "/focus_magic";
+    action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
     if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
     action_list_str += "/mirror_image";
@@ -3036,7 +3037,6 @@ void mage_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-
     if ( race == RACE_TROLL )
     {
       action_list_str += "/berserking";
@@ -3045,7 +3045,6 @@ void mage_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-
     if ( talents.combustion   ) action_list_str += "/combustion";
     if ( talents.arcane_power ) action_list_str += "/arcane_power";
     if ( talents.icy_veins    ) action_list_str += "/icy_veins";
