@@ -3259,7 +3259,7 @@ bool player_t::save( FILE* file, int save_type )
 {
   if ( save_type == SAVE_ALL )
   {
-    util_t::fprintf( file, "#!simcraft\n\n" );
+    util_t::fprintf( file, "#!simcraft \n\n" );
   }
 
   if ( !comment_str.empty() )
