@@ -259,7 +259,7 @@ player_t::player_t( sim_t*             s,
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
     // Spell Mechanics
-    base_spell_power( 0 ),
+    base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
     base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),        buffed_spell_crit( 0 ),
     base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ), buffed_spell_penetration( 0 ),
@@ -343,8 +343,8 @@ player_t::player_t( sim_t*             s,
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
-
     resource_lost[ i ] = resource_gained[ i ] = 0;
+    resource_buffed[ i ] = 0;
   }
 
   for ( int i=0; i < PROFESSION_MAX; i++ ) profession[ i ] = 0;

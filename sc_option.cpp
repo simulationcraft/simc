@@ -46,6 +46,32 @@ static void remove_white_space( std::string& buffer,
   buffer = line;
 }
 
+// open_file ================================================================
+
+static FILE* open_file( sim_t* sim, const std::string& name )
+{
+  if ( sim -> path_str.empty() ) 
+  {
+    return fopen( name.c_str(), "r" );
+  }
+
+  std::string buffer;
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, sim -> path_str, ",;|" );
+
+  for( int i=0; i < num_splits; i++ )
+  {
+    buffer = splits[ i ];
+    buffer += "/";
+    buffer += name;
+
+    FILE* f = fopen( buffer.c_str(), "r" );
+    if ( f ) return f;
+  }
+
+  return 0;
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // option_t::print ==========================================================
@@ -301,7 +327,7 @@ bool option_t::parse_token( sim_t*       sim,
 
   if ( cut_pt == token.npos )
   {
-    FILE* file = fopen( token.c_str(), "r" );
+    FILE* file = open_file( sim, token );
     if ( ! file )
     {
       util_t::printf( "simcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
@@ -321,7 +347,7 @@ bool option_t::parse_token( sim_t*       sim,
 
   if ( name == "input" )
   {
-    FILE* file = fopen( value.c_str(), "r" );
+    FILE* file = open_file( sim, value );
     if ( ! file )
     {
       util_t::printf( "simcraft: Unable to open input parameter file '%s'\n", value.c_str() );

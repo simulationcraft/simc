@@ -1276,6 +1276,8 @@ std::vector<option_t>& sim_t::get_options()
       { "log",                              OPT_BOOL,   &( log                                      ) },
       { "output",                           OPT_STRING, &( output_file_str                          ) },
       { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
+      { "path",                             OPT_STRING, &( path_str                                 ) },
+      { "path+",                            OPT_APPEND, &( path_str                                 ) },
       // @option_doc loc=global/overrides title="Buff/Debuff Overrides"
       { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
       { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },

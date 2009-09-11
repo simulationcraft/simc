@@ -997,6 +997,7 @@ struct sim_t
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart;
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
+  std::string path_str;
   std::deque<std::string> active_files;
   FILE* output_file;
   FILE* log_file;
