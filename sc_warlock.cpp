@@ -2409,10 +2409,9 @@ struct conflagrate_t : public warlock_spell_t
                            + p -> glyphs.immolate           * 0.10;
 
     base_multiplier *= 1.0 + p -> talents.emberstorm           * 0.03
-                           + p -> set_bonus.tier8_2pc_caster() * 0.10
-                           + p -> set_bonus.tier9_4pc_caster() * 0.10;
+                           + p -> set_bonus.tier8_2pc_caster() * 0.10;
 
-    base_multiplier *= 0.7; // Nerf!
+    base_multiplier *= 0.8; // 12 seconds of immolate means 80% of immolate damage
 
     base_crit += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
