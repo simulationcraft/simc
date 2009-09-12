@@ -3341,7 +3341,9 @@ void hunter_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=blackened_dragonfin/hunters_mark/summon_pet";
+    action_list_str = "flask,type=endless_rage";
+    action_list_str += ( sim -> P322 || ( primary_tree() != TREE_MARKSMANSHIP ) ) ? "/food,type=blackened_dragonfin" : "/food,type=hearty_rhino";
+    action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
