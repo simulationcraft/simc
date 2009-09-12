@@ -3473,7 +3473,7 @@ void druid_t::init_actions()
       }
       else
       {
-	action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
+	action_list_str += "flask,type=endless_rage/food,type=hearty_rhino";
 	action_list_str += "/cat_form";
 	action_list_str += "/auto_attack";
 	action_list_str += "/snapshot_stats";
