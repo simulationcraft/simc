@@ -1382,7 +1382,7 @@ std::vector<option_t>& sim_t::get_options()
       { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
       { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
       { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
-      { "http_cache_clear",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
+      { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
       { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
