@@ -217,6 +217,7 @@ struct mage_t : public player_t
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
+  virtual double    composite_spell_crit() SC_CONST;
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -1010,20 +1011,6 @@ void mage_spell_t::player_buff()
   if ( p -> buffs_clearcasting -> up() && ! dual )
   {
     player_crit += p -> talents.arcane_potency * 0.15;
-  }
-
-  if ( p -> buffs_molten_armor -> up() )
-  {
-    double spirit_contribution = p -> glyphs.molten_armor ? 0.55 : 0.35;
-
-    if ( p -> set_bonus.tier9_2pc_caster() ) spirit_contribution += 0.15;
-
-    player_crit += p -> spirit() * spirit_contribution / p -> rating.spell_crit;
-  }
-
-  if ( p -> buffs_focus_magic_feedback -> up() )
-  {
-    player_crit += 0.03;
   }
 
   if ( sim -> debug )
@@ -3150,6 +3137,26 @@ double mage_t::composite_spell_hit() SC_CONST
   double c = player_t::composite_spell_hit();
 
   c += talents.precision * 0.01;
+
+  return c;
+}
+
+// mage_t::composite_spell_crit ============================================
+
+double mage_t::composite_spell_crit() SC_CONST
+{
+  double c = player_t::composite_spell_crit();
+
+  if ( buffs_molten_armor -> up() )
+  {
+    double spirit_contribution = glyphs.molten_armor ? 0.55 : 0.35;
+
+    if ( set_bonus.tier9_2pc_caster() ) spirit_contribution += 0.15;
+
+    c += spirit() * spirit_contribution / rating.spell_crit;
+  }
+
+  if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
 
   return c;
 }

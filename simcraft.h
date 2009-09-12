@@ -1193,17 +1193,17 @@ struct item_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier6_2pc_caster(); int tier6_2pc_melee(); int tier6_2pc_tank();
-  int tier6_4pc_caster(); int tier6_4pc_melee(); int tier6_4pc_tank();
-  int tier7_2pc_caster(); int tier7_2pc_melee(); int tier7_2pc_tank();
-  int tier7_4pc_caster(); int tier7_4pc_melee(); int tier7_4pc_tank();
-  int tier8_2pc_caster(); int tier8_2pc_melee(); int tier8_2pc_tank();
-  int tier8_4pc_caster(); int tier8_4pc_melee(); int tier8_4pc_tank();
-  int tier9_2pc_caster(); int tier9_2pc_melee(); int tier9_2pc_tank();
-  int tier9_4pc_caster(); int tier9_4pc_melee(); int tier9_4pc_tank();
-  int tier10_2pc_caster(); int tier10_2pc_melee(); int tier10_2pc_tank();
-  int tier10_4pc_caster(); int tier10_4pc_melee(); int tier10_4pc_tank();
-  int spellstrike();
+  int tier6_2pc_caster() SC_CONST; int tier6_2pc_melee() SC_CONST; int tier6_2pc_tank() SC_CONST;
+  int tier6_4pc_caster() SC_CONST; int tier6_4pc_melee() SC_CONST; int tier6_4pc_tank() SC_CONST;
+  int tier7_2pc_caster() SC_CONST; int tier7_2pc_melee() SC_CONST; int tier7_2pc_tank() SC_CONST;
+  int tier7_4pc_caster() SC_CONST; int tier7_4pc_melee() SC_CONST; int tier7_4pc_tank() SC_CONST;
+  int tier8_2pc_caster() SC_CONST; int tier8_2pc_melee() SC_CONST; int tier8_2pc_tank() SC_CONST;
+  int tier8_4pc_caster() SC_CONST; int tier8_4pc_melee() SC_CONST; int tier8_4pc_tank() SC_CONST;
+  int tier9_2pc_caster() SC_CONST; int tier9_2pc_melee() SC_CONST; int tier9_2pc_tank() SC_CONST;
+  int tier9_4pc_caster() SC_CONST; int tier9_4pc_melee() SC_CONST; int tier9_4pc_tank() SC_CONST;
+  int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST;
+  int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST;
+  int spellstrike() SC_CONST;
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();
