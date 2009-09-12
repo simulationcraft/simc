@@ -215,6 +215,7 @@ struct destruction_potion_t : public action_t
       {
         name = "Destruction Potion Expiration";
         p -> aura_gain( "Destruction Potion Buff" );
+        p -> stat_gain( STAT_SPELL_POWER, 120 );
         p -> spell_crit += 0.02;
         sim -> add_event( this, 15.0 );
       }
@@ -222,7 +223,7 @@ struct destruction_potion_t : public action_t
       {
         player_t* p = player;
         p -> aura_loss( "Destruction Potion Buff" );
-        p -> spell_power[ SCHOOL_MAX ] -= 120;
+        p -> stat_loss( STAT_SPELL_POWER, 120 );
         p -> spell_crit -= 0.02;
       }
     };
@@ -330,7 +331,6 @@ struct wild_magic_potion_t : public action_t
         p -> aura_loss( "Wild Magic Potion Buff" );
         p -> stat_loss( STAT_CRIT_RATING, 200 );
         p -> stat_loss( STAT_SPELL_POWER, 200 );
-        p -> spell_power[ SCHOOL_MAX ] -= 200;
       }
     };
 
