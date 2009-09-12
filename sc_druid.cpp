@@ -2404,6 +2404,9 @@ struct bear_form_t : public druid_spell_t
     p -> base_gcd = 1.0;
     p -> reset_gcd();
 
+    p -> dodge += 0.02 * p -> talents.feral_swiftness + 0.02 * p -> talents.natural_reaction;
+    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.survival_of_the_fittest );
+
     if ( p -> talents.leader_of_the_pack )
     {
       sim -> auras.leader_of_the_pack -> trigger();
@@ -2456,6 +2459,8 @@ struct cat_form_t : public druid_spell_t
 
     if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
+
+    p -> dodge += 0.02 * p -> talents.feral_swiftness;
 
     p -> buffs_cat_form -> start();
     p -> base_gcd = 1.0;
@@ -3280,8 +3285,8 @@ void druid_t::init_base()
   // FIXME! Level-specific!  Should be form-specific!
   base_defense = level * 5;
   base_miss    = 0.05;
-  base_dodge   = 0.0560970 + 0.02 * talents.feral_swiftness + 0.02 * talents.natural_reaction;
-  initial_armor_multiplier *= 1.0 + 0.11 * talents.survival_of_the_fittest + util_t::talent_rank( talents.thick_hide, 3, 0.04, 0.07, 0.10 );
+  base_dodge   = 0.0560970;
+  initial_armor_multiplier  = 1.0 + util_t::talent_rank( talents.thick_hide, 3, 0.04, 0.07, 0.10 );
   initial_dodge_per_agility = 0.0002090;
   initial_armor_per_agility = 2.0;
 
