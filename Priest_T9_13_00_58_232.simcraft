@@ -11,6 +11,7 @@ actions+=/food,type=tender_shoveltusk_steak
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
+actions+=/snapshot_stats
 actions+=/shadow_form
 actions+=/wild_magic_potion
 actions+=/shadow_fiend
