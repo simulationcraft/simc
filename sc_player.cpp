@@ -1056,7 +1056,7 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
-// player_t::composite_attack_hasete ========================================
+// player_t::composite_attack_haste ========================================
 
 double player_t::composite_attack_haste() SC_CONST
 {
