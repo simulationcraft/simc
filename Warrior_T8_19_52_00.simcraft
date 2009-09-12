@@ -11,6 +11,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/stance,choose=berserker
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=75,health_percentage<=20
 actions+=/whirlwind,rage<=95,health_percentage<=20

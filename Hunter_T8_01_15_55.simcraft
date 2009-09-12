@@ -11,6 +11,7 @@ actions+=/food,type=blackened_dragonfin
 actions+=/hunters_mark
 actions+=/summon_pet
 actions+=/auto_shot
+actions+=/snapshot_stats
 actions+=/aspect
 actions+=/rapid_fire
 actions+=/kill_shot

@@ -10,6 +10,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=blackened_dragonfin
 actions+=/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/kick
 actions+=/slice_and_dice,min_combo_points=1,time<=4
 actions+=/slice_and_dice,min_combo_points=3,snd<=2

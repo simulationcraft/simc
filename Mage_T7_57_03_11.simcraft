@@ -3,7 +3,8 @@
 mage=Mage_T7_57_03_11
 level=80
 talents=http://www.wowhead.com/?talent#of0Vcu0IzxGuMtedcZbGc0o
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/focus_magic
+actions=flask,type=frost_wyrm/food,type=fish_feast/arcane_brilliance/focus_magic
+actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/mirror_image/arcane_power/icy_veins
 actions+=/presence_of_mind,arcane_blast

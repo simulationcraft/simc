@@ -7,9 +7,10 @@ race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050311002300000000000000000055031012303330053020300351
 glyphs=fireball/living_bomb/molten_armor
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/arcane_brilliance
 actions+=/focus_magic
+actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/scorch,debuff=1
 actions+=/mirror_image

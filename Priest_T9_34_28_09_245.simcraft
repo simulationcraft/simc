@@ -7,7 +7,7 @@ level=80
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0533203100300502331000000000005551002020152000000000000324
 glyphs=smite/shadow_word_death/hymn_of_hope/fading/shadowfiend/levitate
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire

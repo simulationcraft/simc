@@ -7,10 +7,11 @@ race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=235002200102351005350033115100000000000000000000000000055001205
 glyphs=curse_of_agony/haunt/life_tap
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/spell_stone
 actions+=/fel_armor
 actions+=/summon_pet,succubus
+actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
 actions+=/haunt,debuff=1
 actions+=/corruption

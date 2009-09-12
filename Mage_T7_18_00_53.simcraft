@@ -3,7 +3,8 @@
 mage=Mage_T7_18_00_53
 level=80
 talents=http://www.wowhead.com/?talent#of0Vck0cZZVIccRcu0f0gfsx
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance/molten_armor/focus_magic
+actions=flask,type=frost_wyrm/food,type=fish_feast/arcane_brilliance/molten_armor/focus_magic
+actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
 actions+=/frost_bolt,frozen=1/mirror_image/water_elemental/icy_veins/cold_snap/fire_ball,brain_freeze=1/frost_bolt

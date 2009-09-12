@@ -3,7 +3,8 @@
 mage=Mage_T7_00_53_18
 level=80
 talents=http://www.wowhead.com/?talent#oZfVc0RhIuVubhstbIccoc
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance
+actions=flask,type=frost_wyrm/food,type=fish_feast/arcane_brilliance
+actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/mana_gem,trigger=1000/speed_potion
 # Scorch will not be invoked if Improved Shadow Bolt is up

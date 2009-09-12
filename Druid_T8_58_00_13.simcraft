@@ -10,6 +10,7 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/mark_of_the_wild
 actions+=/moonkin_form
+actions+=/snapshot_stats
 actions+=/faerie_fire
 actions+=/speed_potion
 actions+=/innervate,trigger=-2000

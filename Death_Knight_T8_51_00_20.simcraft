@@ -10,6 +10,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/blood_presence
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/icy_touch,frost_fever<=1
 actions+=/plague_strike,blood_plague<=1
 #actions+=/dancing_rune_weapon

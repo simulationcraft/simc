@@ -7,12 +7,12 @@ race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
-actions+=/snapshot_stats
 actions+=/shadow_form
+actions+=/snapshot_stats
 actions+=/wild_magic_potion
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1

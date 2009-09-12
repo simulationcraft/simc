@@ -7,10 +7,11 @@ race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=030000000000000000000000000000320330113520253013523130155001005
 glyphs=felguard/metamorphosis/life_tap
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/spell_stone
 actions+=/fel_armor
 actions+=/summon_pet,felguard
+actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
 actions+=/demonic_empowerment
 actions+=/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0

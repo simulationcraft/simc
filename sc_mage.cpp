@@ -3022,7 +3022,7 @@ void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/arcane_brilliance";
+    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/arcane_brilliance";
     if ( talents.focus_magic ) action_list_str += "/focus_magic";
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";

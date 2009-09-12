@@ -9,6 +9,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino
 actions+=/stance,choose=battle
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=95
 actions+=/rend

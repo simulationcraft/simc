@@ -10,6 +10,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/stance,choose=battle
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=95
 actions+=/mortal_strike

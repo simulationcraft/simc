@@ -6,7 +6,7 @@ talents=http://www.wowhead.com/?talent#ctbMzLZ0eVsRhzrIotuVox
 
 # Action queue
 actions=flask,type=endless_rage/food,type=blackened_dragonfin/summon_pet/hunters_mark/trueshot_aura
-actions+=/auto_shot/aspect/silencing_shot/serpent_sting/rapid_fire/kill_command/kill_shot/chimera_shot/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
+actions+=/auto_shot/snapshot_stats/aspect/silencing_shot/serpent_sting/rapid_fire/kill_command/kill_shot/chimera_shot/readiness,wait_for_rapid_fire=1/arcane_shot/aimed_shot/steady_shot
 
 # Gear: http://www.chardev.org/?template=148672
 gear_stamina=901

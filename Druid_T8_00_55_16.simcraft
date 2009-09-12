@@ -10,6 +10,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
 actions+=/shred,omen_of_clarity=1

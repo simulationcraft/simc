@@ -11,6 +11,7 @@ actions+=/food,type=blackened_dragonfin
 actions+=/apply_poison,main_hand=wound,off_hand=deadly
 actions+=/stealth
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/kick
 actions+=/pool_energy,for_next=1
 actions+=/slice_and_dice,min_combo_points=4,snd<=3

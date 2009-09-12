@@ -11,6 +11,7 @@ talents=http://www.wowhead.com/?talent#fheb0fxZ0xZxbrbhGzdAzqc
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3
 actions+=/tricks_of_the_trade
 # CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers

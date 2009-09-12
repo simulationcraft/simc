@@ -7,6 +7,7 @@ talents=http://www.wowhead.com/?talent#0ZEMMcfrz0eR0huAkbAczb
 actions=flask,type=endless_rage/food,type=blackened_dragonfin
 actions+=/cat_form
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/maim
 actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40

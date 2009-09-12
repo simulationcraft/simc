@@ -10,6 +10,7 @@ talents=http://www.wowhead.com/?talent#f0ec0egoVboIuVo0xV0xcZ0b
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/auto_attack
+actions+=/snapshot_stats
 actions+=/pool_energy,for_next=1/hunger_for_blood,refresh_at=2
 actions+=/slice_and_dice,min_combo_points=2,snd<=2
 actions+=/cold_blood,sync=envenom

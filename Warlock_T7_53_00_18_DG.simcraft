@@ -3,7 +3,8 @@
 warlock=Warlock_T7_53_00_18_DG
 level=80
 talents=http://talent.mmo-champion.com/?warlock=235002200102351005350033115100000000000000000000000000055001205000000000000000000
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,doomguard
+actions=flask,type=frost_wyrm/food,type=fish_feast/spell_stone/fel_armor/summon_pet,doomguard
+actions+=/snapshot_stats
 actions+=/haunt,debuff=1/life_tap,buff_refresh=1/curse_of_agony/corruption/unstable_affliction/haunt
 actions+=/drain_soul,health_percentage<=25,interrupt=1/shadow_bolt/life_tap
 Warlock_T7_Gear.simcraft

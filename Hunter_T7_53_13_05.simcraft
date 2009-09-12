@@ -6,7 +6,7 @@ talents=http://www.wowhead.com/?talent#ctbMzxtRwu0est0emoZx
 
 # Action queue
 actions=flask,type=endless_rage/food,type=fish_feast/summon_pet/hunters_mark
-actions+=/auto_shot/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
+actions+=/auto_shot/snapshot_stats/kill_command,sync=bestial_wrath/bestial_wrath/aspect/rapid_fire
 actions+=/kill_shot/arcane_shot/serpent_sting/multi_shot/steady_shot
 
 # Gear: http://www.chardev.org/?template=148665

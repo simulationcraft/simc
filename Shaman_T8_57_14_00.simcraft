@@ -7,12 +7,13 @@ race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
 glyphs=flame_shock/lava/lightning_bolt
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/flametongue_weapon,weapon=main
 actions+=/water_shield
-actions+=/bloodlust,time_to_die<=59
 actions+=/mana_spring_totem
 actions+=/wrath_of_air_totem
+actions+=/snapshot_stats
+actions+=/bloodlust,time_to_die<=59
 actions+=/speed_potion
 actions+=/elemental_mastery
 actions+=/flame_shock

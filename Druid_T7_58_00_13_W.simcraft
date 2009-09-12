@@ -4,7 +4,7 @@ druid=Druid_T7_58_00_13_W
 level=80
 race=night_elf
 talents=http://www.wowhead.com/?talent#0xRbuiIsfdIVhouZbxczb
-actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/mana_potion
+actions=flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild/moonkin_form/snapshot_stats/mana_potion
 actions+=/innervate,trigger=19000
 actions+=/treants
 actions+=/starfall,skip_on_eclipse=1

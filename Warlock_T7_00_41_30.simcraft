@@ -3,7 +3,8 @@
 warlock=Warlock_T7_00_41_30
 level=80
 talents=http://talent.mmo-champion.com/?warlock=000000000000000000000000000000320330113520252003320100005203015220131050000000000
-actions=flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/spell_stone/fel_armor/summon_pet,felguard
+actions=flask,type=frost_wyrm/food,type=fish_feast/spell_stone/fel_armor/summon_pet,felguard
+actions+=/snapshot_stats
 actions+=/soul_fire,decimation=1/life_tap,buff_refresh=1/immolate/curse_of_agony/corruption,health_percentage>=35/incinerate/life_tap
 Warlock_T7_Hit_Gear.simcraft
 glyphs=life_tap/felguard/incinerate

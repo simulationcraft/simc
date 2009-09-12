@@ -1928,8 +1928,12 @@ void priest_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=frost_wyrm/food,type=tender_shoveltusk_steak/fortitude/divine_spirit/inner_fire";
+    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/divine_spirit/inner_fire";
+
+    if ( talents.shadow_form ) action_list_str += "/shadow_form";
+
     action_list_str += "/snapshot_stats";
+
     int num_items = items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -1942,7 +1946,6 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-      if ( talents.shadow_form ) action_list_str += "/shadow_form";
       action_list_str += "/wild_magic_potion";
       action_list_str += "/shadow_fiend";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
