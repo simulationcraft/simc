@@ -973,19 +973,19 @@ struct mind_blast_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
-  double mb_wait;
-  int    mb_priority;
+  double mb_min_wait;
+  double mb_max_wait;
   int    devious_mind_filler;
 
   shadow_word_death_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), mb_priority( 0 ), devious_mind_filler( 0 )
+      priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_min_wait( 0 ), mb_max_wait( 0 ), devious_mind_filler( 0 )
   {
     priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
-      { "mb_wait",             OPT_FLT,  &mb_wait             },
-      { "mb_priority",         OPT_BOOL, &mb_priority         },
+      { "mb_min_wait",         OPT_FLT,  &mb_min_wait         },
+      { "mb_max_wait",         OPT_FLT,  &mb_max_wait         },
       { "devious_mind_filler", OPT_BOOL, &devious_mind_filler },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -1051,15 +1051,15 @@ struct shadow_word_death_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( mb_wait )
+    if ( mb_min_wait )
     {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_wait )
+      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_min_wait )
         return false;
     }
 
-    if ( mb_priority )
+    if ( mb_max_wait )
     {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) > ( haste() * 1.5 + sim -> gcd_lag + mb_wait ) )
+      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) > mb_max_wait )
         return false;
     }
 
@@ -1952,7 +1952,7 @@ void priest_t::init_actions()
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
       if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
-      if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_wait=0,mb_priority=0";
+      if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
@@ -1969,7 +1969,7 @@ void priest_t::init_actions()
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/smite";
-      action_list_str += "/shadow_word_death"; // when moving
+      action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     case TREE_HOLY:
     default:
@@ -1981,7 +1981,7 @@ void priest_t::init_actions()
       if ( race == RACE_TROLL     ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/smite";
-      action_list_str += "/shadow_word_death"; // when moving
+      action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     }
 

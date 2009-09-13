@@ -21,7 +21,7 @@ actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
 actions+=/dispersion
-actions+=/shadow_word_death,mb_wait=0,mb_priority=0
+actions+=/shadow_word_death,mb_min_wait=0.2,mb_max_wait=1.2
 actions+=/mind_flay
 actions+=/shadow_word_death
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit

@@ -20,7 +20,7 @@ actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
 actions+=/vampiric_embrace
-actions+=/shadow_word_death,mb_wait=0,mb_priority=0
+actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.0
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
