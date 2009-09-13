@@ -34,7 +34,7 @@ wrists=armbands_of_the_ashen_saint,stats=152armor_49haste_91sp_65sta_65int_57spi
 hands=guldans_gloves_of_triumph,stats=217armor_76crit_68hit_124sp_86sta_86int,gems=23sp_4crit,enchant=28sp
 finger1=band_of_deplorable_violence,stats=53crit_91sp_65sta_65int_50spi,gems=12sp_10haste_5sp,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=12sp_10spi_5sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket1=reign_of_the_unliving,stats=150sp,gems=0sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 trinket2=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 back=bolvars_devotion,stats=182armor_105sp_57haste_74sta_74int_65spi,gems=23sp_5sp,enchant=lightweave_embroidery
 main_hand=barb_of_tarasque,stats=692sp_57haste_51hit_48sta_65int,gems=12sp_10spi_5sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
@@ -46,9 +46,9 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=12sp_10haste_
 # gear_stamina=1146
 # gear_intellect=1139
 # gear_spirit=652
-# gear_spell_power=3038
+# gear_spell_power=3188
 # gear_hit_rating=368
-# gear_crit_rating=660
+# gear_crit_rating=540
 # gear_haste_rating=589
 # gear_armor=2167
 # meta_gem=chaotic_skyflare
