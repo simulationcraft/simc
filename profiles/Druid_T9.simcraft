@@ -28,9 +28,10 @@ Druid_T9_00_55_16_M.simcraft
 #main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
 #off_hand=chalice_of_searing_light,stats=65sta_57spi_65int_100sp_57crit,gems=0sp
 
-#wowhead=14186823 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simcraft   mangle=0
+#wowhead=14202460 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simcraft   mangle=0
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
-#wowhead=14186823 name=Druid_T9_00_55_16_M save=Druid_T9_00_55_16_M.simcraft
+
+#wowhead=14202460 name=Druid_T9_00_55_16_M save=Druid_T9_00_55_16_M.simcraft
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
 
 #save_profiles=1
