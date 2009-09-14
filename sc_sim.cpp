@@ -311,7 +311,8 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    output_file( stdout ), log_file( 0 ), armory_throttle( 2 ), current_throttle( 2 ), duration_uptimes( 0 ), debug_exp( 0 ),
+    path_str( ".|profiles" ), output_file( stdout ), log_file( 0 ), 
+    armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
     report_precision( 2 ), threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1377,7 +1378,6 @@ std::vector<option_t>& sim_t::get_options()
       { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
       { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
       { "armory_throttle",                  OPT_INT,    &( armory_throttle                          ) },
-      { "duration_uptimes",                 OPT_INT,    &( duration_uptimes                         ) },
       { "reference_player",                 OPT_STRING, &( reference_player_str                     ) },
       { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },

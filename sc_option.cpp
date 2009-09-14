@@ -62,7 +62,7 @@ static FILE* open_file( sim_t* sim, const std::string& name )
   for( int i=0; i < num_splits; i++ )
   {
     buffer = splits[ i ];
-    buffer += "/";
+    buffer += DIRECTORY_DELIMITER;
     buffer += name;
 
     FILE* f = fopen( buffer.c_str(), "r" );

@@ -11,6 +11,9 @@
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  define _CRT_SECURE_NO_WARNINGS
+#  define DIRECTORY_DELIMITER "\\"
+#else
+#  define DIRECTORY_DELIMITER "/"
 #endif
 
 // Switching of using 'const'-flag on methods possible ======================
@@ -1003,9 +1006,7 @@ struct sim_t
   FILE* log_file;
   int armory_throttle;
   int current_throttle;
-  int duration_uptimes;
   int debug_exp;
-
   int report_precision;
 
   // Multi-Threading
