@@ -163,8 +163,11 @@ struct food_t : public action_t
       player -> stat_gain( STAT_STRENGTH, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
+    case FOOD_RHINOLICIOUS_WORMSTEAK:
+      player -> stat_gain( STAT_EXPERTISE_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
     case FOOD_HEARTY_RHINO:
-      player -> stat_gain( STAT_STRENGTH, 40 );
       player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
