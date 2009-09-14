@@ -5,6 +5,7 @@
 		activeExecutable = 44E3D112105459F100677DEB /* simcraft */;
 		activeTarget = 8DD76F620486A84900D96B5E /* simcraft */;
 		addToTargets = (
+			8DD76F620486A84900D96B5E /* simcraft */,
 		);
 		codeSenseManager = 44E3D117105459FA00677DEB /* Code sense */;
 		executables = (
@@ -87,35 +88,36 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 273997869;
-			PBXWorkspaceStateSaveDate = 273997869;
+			PBXPerProjectTemplateStateSaveDate = 274636030;
+			PBXWorkspaceStateSaveDate = 274636030;
 		};
 		perUserProjectItems = {
-			443740351054E3810060E3EC /* XCBuildMessageTextBookmark */ = 443740351054E3810060E3EC /* XCBuildMessageTextBookmark */;
-			443740401054E5D10060E3EC /* PBXTextBookmark */ = 443740401054E5D10060E3EC /* PBXTextBookmark */;
+			44726034105E9DDA00F367F2 /* PBXTextBookmark */ = 44726034105E9DDA00F367F2 /* PBXTextBookmark */;
+			44726035105E9DDA00F367F2 /* PBXTextBookmark */ = 44726035105E9DDA00F367F2 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
 		};
 	};
-	443740351054E3810060E3EC /* XCBuildMessageTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "Declaration of 'name' shadows a member of 'this'";
-		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
-		fallbackIsa = XCBuildMessageTextBookmark;
-		rLen = 1;
-		rLoc = 1565;
-		rType = 1;
-	};
-	443740401054E5D10060E3EC /* PBXTextBookmark */ = {
+	44726034105E9DDA00F367F2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
-		name = "simcraft.h: 1566";
+		name = "simcraft.h: 2190";
 		rLen = 0;
-		rLoc = 52128;
+		rLoc = 77052;
 		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
+		vrLen = 520;
+		vrLoc = 76766;
+	};
+	44726035105E9DDA00F367F2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		name = "simcraft.h: 2190";
+		rLen = 0;
+		rLoc = 77052;
+		rType = 0;
+		vrLen = 520;
+		vrLoc = 76766;
 	};
 	44E3D112105459F100677DEB /* simcraft */ = {
 		isa = PBXExecutable;
@@ -222,9 +224,9 @@
 	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1111, 31239}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32006}}";
 			sepNavSelRange = "{77052, 0}";
-			sepNavVisRange = "{76851, 373}";
+			sepNavVisRange = "{76766, 520}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* README.txt */ = {
