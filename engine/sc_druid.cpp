@@ -324,13 +324,15 @@ struct druid_bear_attack_t : public attack_t
   double min_rage, max_rage;
   double min_mangle_expire, max_mangle_expire;
   double min_lacerate_expire, max_lacerate_expire;
+  int    min_lacerate_stack, max_lacerate_stack;
 
   druid_bear_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, true ),
       berserk( 0 ),
       min_rage( 0 ), max_rage( 0 ),
       min_mangle_expire( 0 ), max_mangle_expire( 0 ),
-      min_lacerate_expire( 0 ), max_lacerate_expire( 0 )
+      min_lacerate_expire( 0 ), max_lacerate_expire( 0 ),
+      min_lacerate_stack( 0 ), max_lacerate_stack( 0 )
   {
   }
 
@@ -1354,13 +1356,15 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",    OPT_BOOL, &berserk             },
-    { "rage>",      OPT_FLT,  &min_rage            },
-    { "rage<",      OPT_FLT,  &max_rage            },
-    { "mangle>",    OPT_FLT,  &min_mangle_expire   },
-    { "mangle<",    OPT_FLT,  &max_mangle_expire   },
-    { "lacerate>",  OPT_FLT,  &min_lacerate_expire },
-    { "lacerate<",  OPT_FLT,  &max_lacerate_expire },
+    { "berserk",         OPT_BOOL, &berserk             },
+    { "rage>",           OPT_FLT,  &min_rage            },
+    { "rage<",           OPT_FLT,  &max_rage            },
+    { "mangle>",         OPT_FLT,  &min_mangle_expire   },
+    { "mangle<",         OPT_FLT,  &max_mangle_expire   },
+    { "lacerate>",       OPT_FLT,  &min_lacerate_expire },
+    { "lacerate<",       OPT_FLT,  &max_lacerate_expire },
+    { "lacerate_stack>", OPT_INT,  &min_lacerate_stack  },
+    { "lacerate_stack<", OPT_INT,  &max_lacerate_stack  },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -1469,6 +1473,14 @@ bool druid_bear_attack_t::ready()
     if ( p -> buffs_lacerate -> remains_gt( max_lacerate_expire ) )
       return false;
 
+  if ( min_lacerate_stack > 0 )
+    if ( p -> buffs_lacerate -> current_stack < min_lacerate_stack )
+      return false;
+
+  if ( max_lacerate_stack > 0 )
+    if ( p -> buffs_lacerate -> current_stack > max_lacerate_stack )
+      return false;
+
   return true;
 }
 
@@ -1561,7 +1573,7 @@ struct lacerate_t : public druid_bear_attack_t
 
     option_t options[] =
     {
-      { NULL, OPT_UNKNOWN, NULL }
+      { NULL,     OPT_UNKNOWN, NULL       }
     };
     parse_options( options, options_str );
 
@@ -3518,8 +3530,8 @@ void druid_t::init_actions()
         action_list_str += use_str;
 	action_list_str += "/mangle_bear";
 	action_list_str += "/faerie_fire_feral";
-	action_list_str += "/lacerate,lacerate<=1.5";   //FIXME: lacerate<=1.5 || lacerate_stack<=4
-	action_list_str += "/swipe_bear";
+	action_list_str += "/swipe_bear,lacerate>=5.0,lacerate_stack>=5";
+	action_list_str += "/lacerate";
       }
       else
       {
