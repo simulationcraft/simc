@@ -451,6 +451,8 @@ struct hunter_pet_t : public pet_t
 
     focus_regen_per_second  = ( 24.5 / 4.0 );
     focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline * 0.50;
+
+    base_gcd = 1.20;
   }
 
   virtual void init_buffs()
@@ -1088,6 +1090,7 @@ struct focus_dump_t : public hunter_pet_attack_t
     parse_options( 0, options_str );
     base_dd_min = base_dd_max = 143;
     base_cost = 25;
+    auto_cast = true;
   }
 };
 
@@ -1112,6 +1115,7 @@ struct rake_t : public hunter_pet_attack_t
     base_tick_time  = 3;
     tick_power_mod  = 0.0175;
     cooldown        = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast       = true;
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     dot_behavior = DOT_CLIP;
@@ -1144,6 +1148,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
     base_dd_min = base_dd_max = 107;
     base_cost = 20;
     cooldown  = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast = true;
   }
 
   virtual void execute()
@@ -1177,6 +1182,7 @@ struct savage_rend_t : public hunter_pet_attack_t
     base_tick_time = 5;
     tick_power_mod = 0.0175; // FIXME Check
     cooldown       = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast      = true;
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     dot_behavior = DOT_CLIP;
@@ -1214,6 +1220,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     base_dd_min = base_dd_max  = 5 * p -> level;
     base_cost   = 0;
     cooldown    = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast   = true;
 
     may_dodge = may_block = may_parry = false;
   }
@@ -1335,6 +1342,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     base_cost        = 20;
     direct_power_mod = 1.5 / 3.5;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast        = true;
   }
 };
 
@@ -1356,6 +1364,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     base_cost        = 20;
     direct_power_mod = 1.5 / 3.5;
     cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast        = true;
   }
 };
 
@@ -1376,6 +1385,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     base_cost = 0;
     cooldown  = 5 * 60 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
+    auto_cast = true;
   }
 
   virtual void execute()
@@ -1406,6 +1416,7 @@ struct furious_howl_t : public hunter_pet_spell_t
     base_cost = 20;
     cooldown  = 40 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
+    auto_cast = true;
   }
 
   virtual void execute()
@@ -1438,6 +1449,7 @@ struct rabid_t : public hunter_pet_spell_t
     base_cost = 0;
     cooldown  = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
+    auto_cast = true;
   }
 
   virtual void execute()
@@ -1471,6 +1483,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     num_ticks      = 3;
     base_tick_time = 3;
     cooldown       = 360 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast      = true;
   }
 
   virtual void tick()

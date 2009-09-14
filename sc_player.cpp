@@ -1836,7 +1836,7 @@ void player_t::schedule_ready( double delta_time,
   {
     double lag = 0;
 
-    if ( last_foreground_action )
+    if ( last_foreground_action && ! last_foreground_action -> auto_cast )
     {
       if ( last_foreground_action -> trigger_gcd == 0 )
       {

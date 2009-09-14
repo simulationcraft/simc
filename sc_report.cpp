@@ -388,6 +388,45 @@ static void print_gains( FILE* file, player_t* p )
   }
 }
 
+// print_pet_gains ===============================================================
+
+static void print_pet_gains( FILE* file, player_t* p )
+{
+  if ( ! p -> pet_list )
+    return;
+
+  pet_t* pet = p -> pet_list;
+
+  while ( pet )
+  {
+    int max_length = 0;
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 )
+      {
+        int length = strlen( g -> name() );
+        if ( length > max_length ) max_length = length;
+      }
+    }
+    if( max_length == 0 ) return;
+
+    util_t::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
+
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 )
+      {
+        util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
+        util_t::fprintf( file, "\n" );
+      }
+    }
+
+    pet = pet -> next_pet;
+  }
+}
+
 // print_procs ================================================================
 
 static void print_procs( FILE* file, player_t* p )
@@ -1267,6 +1306,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
       print_uptime       ( file, p );
       print_procs        ( file, p );
       print_gains        ( file, p );
+      print_pet_gains    ( file, p );
       print_scale_factors( file, p );
     }
   }

@@ -823,6 +823,15 @@ void sim_t::analyze()
       p -> resource_gained[ i ] /= iterations;
     }
 
+    for ( pet_t *pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for ( int i=0; i < RESOURCE_MAX; i++ )
+      {
+        pet -> resource_lost  [ i ] /= iterations;
+        pet -> resource_gained[ i ] /= iterations;
+      }
+    }
+
     p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
 
     p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
@@ -833,6 +842,15 @@ void sim_t::analyze()
 
     for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
       proc -> analyze( this );
+
+    for ( pet_t *pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+        g -> analyze( this );
+
+      for ( proc_t* proc = pet -> proc_list; proc; proc = proc -> next )
+        proc -> analyze( this );
+    }
 
     p -> timeline_dmg.clear();
     p -> timeline_dps.clear();

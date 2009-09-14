@@ -20,7 +20,7 @@ action_t::action_t( int         ty,
                     bool        sp ) :
     sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
     dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), 
-    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ),
+    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
     tick_may_crit( false ), tick_zero( false ), dot_behavior( DOT_WAIT ),
