@@ -268,13 +268,17 @@
 								<string>C6859E8C029090F304C91782</string>
 								<string>1AB674ADFE9D54B511CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>44CB0975105EA10A00E98270</string>
+								<string>44CB0974105EA0D800E98270</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>0</integer>
+									<integer>11</integer>
+									<integer>8</integer>
+									<integer>7</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -325,10 +329,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>44726035105E9DDA00F367F2</string>
+										<string>44CB0989105EA22F00E98270</string>
 										<key>history</key>
 										<array>
-											<string>44726034105E9DDA00F367F2</string>
+											<string>44726035105E9DDA00F367F2</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -340,14 +344,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {876, 198}}</string>
+								<string>{{0, 0}, {876, 183}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>198pt</string>
+							<string>183pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -360,14 +364,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 203}, {876, 461}}</string>
+								<string>{{0, 188}, {876, 476}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>461pt</string>
+							<string>476pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -386,9 +390,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>44726036105E9DDA00F367F2</string>
+				<string>44CB0977105EA10A00E98270</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>44726037105E9DDA00F367F2</string>
+				<string>44CB0978105EA10A00E98270</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,6 +530,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>44E3D11B10545A0700677DEB</string>
 		<string>/Users/craig/code/simcraft/simcraft.xcodeproj</string>
 	</array>
@@ -568,6 +573,8 @@
 							<string>178pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -607,7 +614,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>44E3D11B10545A0700677DEB</string>
-				<string>44726038105E9DDA00F367F2</string>
+				<string>44CB0979105EA10A00E98270</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -729,13 +736,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>443740261054E2A20060E3EC</string>
+				<string>44CB097A105EA10A00E98270</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>443740271054E2A20060E3EC</string>
-				<string>443740281054E2A20060E3EC</string>
-				<string>443740291054E2A20060E3EC</string>
-				<string>4437402A1054E2A20060E3EC</string>
-				<string>4437402B1054E2A20060E3EC</string>
+				<string>44CB097B105EA10A00E98270</string>
+				<string>44CB097C105EA10A00E98270</string>
+				<string>44CB097D105EA10A00E98270</string>
+				<string>44CB097E105EA10A00E98270</string>
+				<string>44CB097F105EA10A00E98270</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>

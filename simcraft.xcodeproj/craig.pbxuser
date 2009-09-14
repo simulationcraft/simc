@@ -88,18 +88,40 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 274636030;
-			PBXWorkspaceStateSaveDate = 274636030;
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					597,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 274636857;
+			PBXWorkspaceStateSaveDate = 274636857;
 		};
 		perUserProjectItems = {
-			44726034105E9DDA00F367F2 /* PBXTextBookmark */ = 44726034105E9DDA00F367F2 /* PBXTextBookmark */;
 			44726035105E9DDA00F367F2 /* PBXTextBookmark */ = 44726035105E9DDA00F367F2 /* PBXTextBookmark */;
+			44CB0989105EA22F00E98270 /* PBXTextBookmark */ = 44CB0989105EA22F00E98270 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
 		};
 	};
-	44726034105E9DDA00F367F2 /* PBXTextBookmark */ = {
+	44726035105E9DDA00F367F2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
 		name = "simcraft.h: 2190";
@@ -109,7 +131,7 @@
 		vrLen = 520;
 		vrLoc = 76766;
 	};
-	44726035105E9DDA00F367F2 /* PBXTextBookmark */ = {
+	44CB0989105EA22F00E98270 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
 		name = "simcraft.h: 2190";
@@ -224,7 +246,7 @@
 	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 32006}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32071}}";
 			sepNavSelRange = "{77052, 0}";
 			sepNavVisRange = "{76766, 520}";
 		};

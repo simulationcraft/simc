@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44CB0981105EA1D500E98270 /* simcraft in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DD76F6C0486A84900D96B5E /* simcraft */; };
 		44E3D1E810545A7500677DEB /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1B910545A7500677DEB /* sc_action.cpp */; };
 		44E3D1E910545A7500677DEB /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */; };
 		44E3D1EA10545A7500677DEB /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BB10545A7500677DEB /* sc_attack.cpp */; };
@@ -57,14 +58,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+		44CB0980105EA10A00E98270 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 2147483647;
+			dstPath = ../..;
+			dstSubfolderSpec = 16;
 			files = (
+				44CB0981105EA1D500E98270 /* simcraft in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -562,7 +564,7 @@
 			buildPhases = (
 				8DD76F640486A84900D96B5E /* Sources */,
 				8DD76F660486A84900D96B5E /* Frameworks */,
-				8DD76F690486A84900D96B5E /* CopyFiles */,
+				44CB0980105EA10A00E98270 /* CopyFiles */,
 			);
 			buildRules = (
 			);
