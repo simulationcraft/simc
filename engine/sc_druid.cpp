@@ -1102,15 +1102,18 @@ struct savage_roar_t : public druid_cat_attack_t
 struct shred_t : public druid_cat_attack_t
 {
   int omen_of_clarity;
+  int extend_rip;
 
   shred_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "shred", player, SCHOOL_PHYSICAL, TREE_FERAL ), omen_of_clarity( 0 )
+    druid_cat_attack_t( "shred", player, SCHOOL_PHYSICAL, TREE_FERAL ), 
+    omen_of_clarity( 0 ), extend_rip( 0 )
   {
     druid_t* p = player -> cast_druid();
 
     option_t options[] =
     {
       { "omen_of_clarity", OPT_BOOL, &omen_of_clarity },
+      { "extend_rip",      OPT_BOOL, &extend_rip      },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1180,6 +1183,12 @@ struct shred_t : public druid_cat_attack_t
 
     if ( omen_of_clarity )
       if ( ! p -> buffs_omen_of_clarity -> may_react() )
+	return false;
+
+    if ( extend_rip )
+      if ( ! p -> glyphs.shred ||
+	   ! p -> active_rip   ||
+	   ( p -> active_rip -> added_ticks == 3 ) )
 	return false;
 
     return druid_cat_attack_t::ready();
