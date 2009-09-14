@@ -3549,12 +3549,16 @@ void druid_t::init_actions()
 	action_list_str += "/maim";
 	action_list_str += "/faerie_fire_feral,debuff_only=1";
 	action_list_str += use_str;
-	action_list_str += "/shred,omen_of_clarity=1/tigers_fury,energy<=40";
+	action_list_str += "/shred,omen_of_clarity=1";
+	action_list_str += "/tigers_fury,energy<=40";
 	if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
-	action_list_str += "/savage_roar,cp>=1,savage_roar<=4/rip,cp>=5,time_to_die>=10";
+	action_list_str += "/savage_roar,cp>=1,savage_roar<=4";
+	if ( glyphs.shred ) action_list_str += "/shred,extend_rip=1,rip<=4";
+	action_list_str += "/rip,cp>=5,time_to_die>=10";
 	action_list_str += "/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
 	if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=2";
-	action_list_str += "/rake/shred";
+	action_list_str += "/rake";
+	action_list_str += "/shred";
       }
     }
     else
