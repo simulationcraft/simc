@@ -154,17 +154,28 @@ void unique_gear_t::init( player_t* p )
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
   }
-  if ( item_t* item = p -> find_item( "deaths_choice" ) )
+
+  for ( int i=0; i < num_items; i++ )
   {
-    item -> unique = true;
+    std::string str = p -> items[ i ].name();
 
-    int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
+    if ( str == "deaths_choice" || str == "deaths_verdict" )
+    {
+      item_t* item = &( p -> items[ i ] );
 
-    action_callback_t* cb = new stat_proc_callback_t( "deaths_choice", p, stat, 1, 450, 0.35, 15.0, 45.0 );
+      item -> unique = true;
 
-    p -> register_tick_damage_callback( cb );
-    p -> register_direct_damage_callback( cb );
+      double value = ( item -> encoded_stats_str == "288ap" ) ? 510.0 : 450.0;
+
+      int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
+
+      action_callback_t* cb = new stat_proc_callback_t( str, p, stat, 1, value, 0.35, 15.0, 45.0 );
+
+      p -> register_tick_damage_callback( cb );
+      p -> register_direct_damage_callback( cb );
+    }
   }
+
   if ( p -> set_bonus.spellstrike() )
   {
     unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
