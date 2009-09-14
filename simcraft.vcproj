@@ -176,195 +176,195 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\sc_action.cpp"
+			RelativePath=".\engine\sc_action.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_armory.cpp"
+			RelativePath=".\engine\sc_armory.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_attack.cpp"
+			RelativePath=".\engine\sc_attack.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_buff.cpp"
+			RelativePath=".\engine\sc_buff.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_chart.cpp"
+			RelativePath=".\engine\sc_chart.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_consumable.cpp"
+			RelativePath=".\engine\sc_consumable.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_death_knight.cpp"
+			RelativePath=".\engine\sc_death_knight.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_druid.cpp"
+			RelativePath=".\engine\sc_druid.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_enchant.cpp"
+			RelativePath=".\engine\sc_enchant.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_event.cpp"
+			RelativePath=".\engine\sc_event.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_expressions.cpp"
+			RelativePath=".\engine\sc_expressions.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_gear_stats.cpp"
+			RelativePath=".\engine\sc_gear_stats.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_http.cpp"
+			RelativePath=".\engine\sc_http.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_hunter.cpp"
+			RelativePath=".\engine\sc_hunter.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_item.cpp"
+			RelativePath=".\engine\sc_item.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_js.cpp"
+			RelativePath=".\engine\sc_js.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_log.cpp"
+			RelativePath=".\engine\sc_log.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_mage.cpp"
+			RelativePath=".\engine\sc_mage.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_main.cpp"
+			RelativePath=".\engine\sc_main.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_mmo_champion.cpp"
+			RelativePath=".\engine\sc_mmo_champion.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_option.cpp"
+			RelativePath=".\engine\sc_option.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_paladin.cpp"
+			RelativePath=".\engine\sc_paladin.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_pet.cpp"
+			RelativePath=".\engine\sc_pet.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_player.cpp"
+			RelativePath=".\engine\sc_player.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_priest.cpp"
+			RelativePath=".\engine\sc_priest.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_raid_event.cpp"
+			RelativePath=".\engine\sc_raid_event.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_rating.cpp"
+			RelativePath=".\engine\sc_rating.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_rawr.cpp"
+			RelativePath=".\engine\sc_rawr.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_report.cpp"
+			RelativePath=".\engine\sc_report.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_rng.cpp"
+			RelativePath=".\engine\sc_rng.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_rogue.cpp"
+			RelativePath=".\engine\sc_rogue.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_scaling.cpp"
+			RelativePath=".\engine\sc_scaling.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_sequence.cpp"
+			RelativePath=".\engine\sc_sequence.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_set_bonus.cpp"
+			RelativePath=".\engine\sc_set_bonus.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_shaman.cpp"
+			RelativePath=".\engine\sc_shaman.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_sim.cpp"
+			RelativePath=".\engine\sc_sim.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_spell.cpp"
+			RelativePath=".\engine\sc_spell.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_stats.cpp"
+			RelativePath=".\engine\sc_stats.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_target.cpp"
+			RelativePath=".\engine\sc_target.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_thread.cpp"
+			RelativePath=".\engine\sc_thread.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_unique_gear.cpp"
+			RelativePath=".\engine\sc_unique_gear.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_util.cpp"
+			RelativePath=".\engine\sc_util.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_warlock.cpp"
+			RelativePath=".\engine\sc_warlock.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_warrior.cpp"
+			RelativePath=".\engine\sc_warrior.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_weapon.cpp"
+			RelativePath=".\engine\sc_weapon.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_wowhead.cpp"
+			RelativePath=".\engine\sc_wowhead.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\sc_xml.cpp"
+			RelativePath=".\engine\sc_xml.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\simcraft.h"
+			RelativePath=".\engine\simcraft.h"
 			>
 		</File>
 	</Files>
