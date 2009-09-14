@@ -4,11 +4,11 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-Mage_T8_00_53_18.simcraft
-Mage_T8_18_00_53.simcraft   focus_magic_target=Mage_T8_20_51_00
-Mage_T8_20_51_00.simcraft   focus_magic_target=Mage_T8_53_18_00
-Mage_T8_53_18_00.simcraft   focus_magic_target=Mage_T8_57_03_11
-Mage_T8_57_03_11.simcraft   focus_magic_target=Mage_T8_18_00_53
+Mage_T9_00_53_18.simcraft
+Mage_T9_18_00_53.simcraft   focus_magic_target=Mage_T9_20_51_00
+Mage_T9_20_51_00.simcraft   focus_magic_target=Mage_T9_53_18_00
+Mage_T9_53_18_00.simcraft   focus_magic_target=Mage_T9_57_03_11
+Mage_T9_57_03_11.simcraft   focus_magic_target=Mage_T9_18_00_53
 
 # scmaget9
 # Uncomment below and comment out above to download profiles.

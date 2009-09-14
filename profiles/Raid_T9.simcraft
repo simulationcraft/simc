@@ -9,10 +9,14 @@ Druid_T9_58_00_13.simcraft
 Priest_T9_13_00_58_258.simcraft
 Priest_T9_13_00_58_258_SWD.simcraft
 
+Mage_T9_00_53_18.simcraft
+Mage_T9_18_00_53.simcraft   focus_magic_target=Mage_T9_20_51_00
+Mage_T9_20_51_00.simcraft   focus_magic_target=Mage_T9_53_18_00
+Mage_T9_53_18_00.simcraft   focus_magic_target=Mage_T9_57_03_11
+Mage_T9_57_03_11.simcraft   focus_magic_target=Mage_T9_18_00_53
+
 Shaman_T9_57_14_00_258.simcraft
 Shaman_T9_57_14_00_258_ToW.simcraft
-
-# In Patch 3.2, crits from period damage can proc HAT, so the default interval and default party make-up is different than Raid_T8.simcraft
 
 Warlock_T9_00_13_58.simcraft
 Warlock_T9_00_40_31.simcraft
@@ -27,9 +31,4 @@ Warrior_T9_19_52_00.simcraft
 Warrior_T9_54_17_00_A.simcraft
 Warrior_T9_54_17_00_M.simcraft
 Warrior_T9_54_17_00_S.simcraft
-
-# To get real simulation of HAT procs, the Rogues must be in a party in which case honor_among_thieves_interval is ignored
-# To put everybody in one big party to check HAT donor rates, simply use party=all (and be sure to ignore the HAT Rogues)
-# party=Rogue_T8_23_05_43/Mage_T8_57_03_11/Mage_T8_00_53_18/Mage_T8_18_00_53/Druid_T8_58_00_13
-# party=Rogue_T8_08_20_43/Mage_T8_53_18_00/Priest_T9_13_00_58/Priest_T9_13_00_58_SWD/Shaman_T8_16_55_00
 
