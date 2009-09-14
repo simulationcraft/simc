@@ -2002,14 +2002,19 @@ struct berserk_t : public druid_spell_t
 
 struct enrage_t : public druid_spell_t
 {
+  double max_rage;
+
   enrage_t( player_t* player, const std::string& options_str ) :
     druid_spell_t( "enrage", player, RESOURCE_NONE, TREE_FERAL )
   {
     option_t options[] =
     {
-      { NULL, OPT_UNKNOWN, NULL }
+      { "rage<", OPT_FLT,     &max_rage },
+      { NULL,    OPT_UNKNOWN, NULL      }
     };
+    max_rage = 0;
     parse_options( options, options_str );
+    trigger_gcd = 0;
     cooldown = 60;
   }
 
@@ -2027,6 +2032,9 @@ struct enrage_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     if ( ! p -> buffs_bear_form -> check() )
       return false;
+    if ( max_rage > 0 )
+      if ( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
+        return false;
     return druid_spell_t::ready();
   }
 };
@@ -3504,14 +3512,14 @@ void druid_t::init_actions()
 	action_list_str += "/bear_form";
 	action_list_str += "/auto_attack";
 	action_list_str += "/snapshot_stats";
-	action_list_str += "/maul,rage>=50";
+	action_list_str += "/enrage,rage<=80";
+	action_list_str += "/maul,rage>=30";
 	if ( talents.berserk ) action_list_str+="/berserk";
         action_list_str += use_str;
 	action_list_str += "/mangle_bear";
 	action_list_str += "/faerie_fire_feral";
 	action_list_str += "/lacerate,lacerate<=1.5";   //FIXME: lacerate<=1.5 || lacerate_stack<=4
 	action_list_str += "/swipe_bear";
-	action_list_str += "/enrage";
       }
       else
       {
