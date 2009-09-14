@@ -22,6 +22,7 @@ LINK_FLAGS =
 LINK_LIBS  = -lpthread
 OPTS       = -O3 -ffast-math
 BITS       = 32
+COPY       = cp
 ifeq (64,${BITS})
 CPP_FLAGS  += -m64
 LINK_FLAGS += -m64
@@ -42,12 +43,14 @@ endif
 
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
+MODULE     = simcraft.exe
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -malign-double
 LINK_FLAGS = 
 LINK_LIBS  = -lwsock32
 OPTS       = -O3
 BITS       = 32
+COPY       = copy
 endif
 
 SRC =\
@@ -109,6 +112,9 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)/%.$(OBJ_EXT))
 .PHONY:	all mostlyclean clean
 
 all: $(MODULE)
+
+install: $(MODULE)
+	$(COPY) $(MODULE) ..
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
