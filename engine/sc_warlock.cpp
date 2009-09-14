@@ -534,6 +534,8 @@ struct imp_pet_t : public warlock_pet_t
       direct_power_mod  = ( base_execute_time / 3.5 ); // was 2.0/3.5
       may_crit          = true;
 
+      min_gcd           = 1.0;
+
       base_execute_time -= 0.25 * ( o -> talents.improved_fire_bolt + o -> talents.demonic_power );
 
       base_multiplier *= 1.0 + ( o -> talents.empowered_imp * 0.05 + // o -> talents.improved_imp moved up
