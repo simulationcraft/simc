@@ -539,7 +539,7 @@ static void trigger_lightning_overload( spell_t* s,
     s -> pseudo_pet           = true; // Prevent Honor Among Thieves
     s -> base_cost            = 0;
     s -> base_multiplier     /= 2.0;
-    s -> direct_power_mod    += p -> talents.shamanism * 0.02; // Reapplied here because Shamanism isn't affected by the *0.5.
+    s -> direct_power_mod    += p -> talents.shamanism * ( p -> sim -> P322 ? 0.03 : 0.02 ); // Reapplied here because Shamanism isn't affected by the *0.5.
     s -> stats                = lightning_overload_stats;
 
     s -> time_to_execute      = 0;
@@ -994,10 +994,10 @@ struct chain_lightning_t : public shaman_spell_t
     may_crit             = true;
     cooldown             = 6.0;
     direct_power_mod     = ( base_execute_time / 3.5 );
-	if (sim -> P322)
-	{
-		direct_power_mod    += p -> talents.shamanism * 0.03;
-	}
+	  if ( sim -> P322 )
+	  {
+		  direct_power_mod  += p -> talents.shamanism * 0.03;
+	  }
     cooldown            -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_cost_reduction += p -> talents.convection * 0.02;
@@ -1102,7 +1102,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_hit            += p -> talents.elemental_precision * 0.01;
     base_crit           += p -> talents.call_of_thunder * 0.05;
     base_crit           += p -> talents.tidal_mastery * 0.01;
-	direct_power_mod    += p -> talents.shamanism * sim -> P322 ? 0.03 : 0.02;
+  	direct_power_mod    += p -> talents.shamanism * sim -> P322 ? 0.03 : 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
