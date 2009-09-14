@@ -23,7 +23,7 @@
 #define SC_CONST const
 
 #if defined( _MSC_VER )
-#  include "./vs/stdint.h"
+#  include "../vs/stdint.h"
 #  define snprintf _snprintf
 #else
 #  include <stdint.h>
