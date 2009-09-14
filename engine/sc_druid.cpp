@@ -91,6 +91,7 @@ struct druid_t : public player_t
     int  earth_and_moon;
     int  eclipse;
     int  feral_aggression;
+    int  feral_instinct;
     int  feral_swiftness;
     int  ferocity;
     int  force_of_nature;
@@ -142,7 +143,6 @@ struct druid_t : public player_t
     int  wrath_of_cenarius;
 
     // NYI
-    int feral_instinct;
     int gale_winds;
     int infected_wounds;
     int owlkin_frenzy;
@@ -1734,6 +1734,46 @@ struct maul_t : public druid_bear_attack_t
 
 };
 
+// Swipe (Bear) ============================================================
+
+struct swipe_bear_t : public druid_bear_attack_t
+{
+  swipe_bear_t( player_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "swipe_bear", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 77, 8, 108, 108, 0, 20 },
+      { 72, 7,  95,  95, 0, 20 },
+      { 64, 6,  76,  76, 0, 20 },
+      { 54, 5,  54,  54, 0, 20 },
+      { 44, 4,  37,  37, 0, 20 },
+      { 34, 3,  19,  19, 0, 20 },
+      { 24, 2,  13,  13, 0, 20 },
+      { 16, 1,   9,   9, 0, 20 },
+      {  0, 0,   0,   0, 0,  0 }
+    };
+    init_rank( ranks, 48562 );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier *= 1.15;
+
+    //FIXME: AP scaling factor?
+    may_crit = true;
+    base_cost -= p -> talents.ferocity;
+
+    base_multiplier *= 1.0 + p -> talents.feral_instinct * 0.10;
+  }
+};
+
 // ==========================================================================
 // Druid Spell
 // ==========================================================================
@@ -3139,6 +3179,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "starfire"          ) return new          starfire_t( this, options_str );
   if ( name == "starfall"          ) return new          starfall_t( this, options_str );
   if ( name == "stealth"           ) return new           stealth_t( this, options_str );
+  if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
   if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
   if ( name == "treants"           ) return new     treants_spell_t( this, options_str );
   if ( name == "wrath"             ) return new             wrath_t( this, options_str );
@@ -3148,8 +3189,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "prowl"             ) return new             prowl_t( this, options_str );
   if ( name == "ravage"            ) return new            ravage_t( this, options_str );
   if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
-  if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
-#endif
+  #endif
 
   return player_t::create_action( name, options_str );
 }
@@ -3460,7 +3500,7 @@ void druid_t::init_actions()
     {
       if ( tank > 0 )
       {
-	action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin";
+	action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
 	action_list_str += "/bear_form";
 	action_list_str += "/auto_attack";
 	action_list_str += "/snapshot_stats";
@@ -3468,7 +3508,9 @@ void druid_t::init_actions()
 	if ( talents.berserk ) action_list_str+="/berserk";
         action_list_str += use_str;
 	action_list_str += "/mangle_bear";
-	action_list_str += "/lacerate";
+	action_list_str += "/faerie_fire_feral";
+	action_list_str += "/lacerate,lacerate<=1.5";   //FIXME: lacerate<=1.5 || lacerate_stack<=4
+	action_list_str += "/swipe_bear";
 	action_list_str += "/enrage";
       }
       else
