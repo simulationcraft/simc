@@ -1761,24 +1761,19 @@ struct swipe_bear_t : public druid_bear_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 77, 8, 108, 108, 0, 20 },
-      { 72, 7,  95,  95, 0, 20 },
-      { 64, 6,  76,  76, 0, 20 },
-      { 54, 5,  54,  54, 0, 20 },
-      { 44, 4,  37,  37, 0, 20 },
-      { 34, 3,  19,  19, 0, 20 },
-      { 24, 2,  13,  13, 0, 20 },
-      { 16, 1,   9,   9, 0, 20 },
-      {  0, 0,   0,   0, 0,  0 }
-    };
-    init_rank( ranks, 48562 );
+    id = 48562;
 
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.15;
+    base_dd_adder = ( p -> level >= 77 ? 108 :
+                      p -> level >= 72 ?  95 :
+                      p -> level >= 64 ?  76 :
+                      p -> level >= 54 ?  54 :
+                      p -> level >= 44 ?  37 :
+                      p -> level >= 34 ?  19 :
+                      p -> level >= 24 ?  13 :
+                      p -> level >= 16 ?   9 :
+                      0 );
+    direct_power_mod  = 0.07;
 
-    //FIXME: AP scaling factor?
     may_crit = true;
     base_cost -= p -> talents.ferocity;
 
