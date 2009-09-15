@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
     welcome_label->setAlignment( Qt::AlignLeft|Qt::AlignTop );
     tab_widget->addTab( welcome_label, "Welcome" );
 
+    QLabel* globals_label = new QLabel( "\n Global options here: Region, Patch, Iterations, MaxTime, Latency, FightStyle" );
+    globals_label->setAlignment( Qt::AlignLeft|Qt::AlignTop );
+    tab_widget->addTab( globals_label, "Globals" );
+
     armory_view = new QWebView();
     armory_view->setUrl( QUrl( "http://www.wowarmory.com" ) );
     tab_widget->addTab( armory_view, "Armory" );
