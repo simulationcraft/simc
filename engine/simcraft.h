@@ -1583,14 +1583,14 @@ struct player_t
   virtual bool save( FILE*, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name ) { return 0; }
+  virtual pet_t*    create_pet   ( const std::string& name ) { assert( ! name.empty() ); return 0; }
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
   virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 
-  virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) {}
-  virtual int  decode_set( item_t& item ) { return SET_NONE; }
+  virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) { assert( sheet_xml ); assert( talents_xml ); }
+  virtual int  decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
 
   virtual void recalculate_haste();
 
@@ -1617,52 +1617,52 @@ struct player_t
   // Raid-wide Death Knight buff maintenance
   static void death_knight_init        ( sim_t* sim );
   static void death_knight_combat_begin( sim_t* sim );
-  static void death_knight_combat_end  ( sim_t* sim ) {}
+  static void death_knight_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Druid buff maintenance
   static void druid_init        ( sim_t* sim );
   static void druid_combat_begin( sim_t* sim );
-  static void druid_combat_end  ( sim_t* sim ) {}
+  static void druid_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Hunter buff maintenance
   static void hunter_init        ( sim_t* sim );
   static void hunter_combat_begin( sim_t* sim );
-  static void hunter_combat_end  ( sim_t* sim ) {}
+  static void hunter_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Mage buff maintenance
   static void mage_init        ( sim_t* sim );
   static void mage_combat_begin( sim_t* sim );
-  static void mage_combat_end  ( sim_t* sim ) {}
+  static void mage_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Paladin buff maintenance
   static void paladin_init        ( sim_t* sim );
   static void paladin_combat_begin( sim_t* sim );
-  static void paladin_combat_end  ( sim_t* sim ) {}
+  static void paladin_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Priest buff maintenance
   static void priest_init        ( sim_t* sim );
   static void priest_combat_begin( sim_t* sim );
-  static void priest_combat_end  ( sim_t* sim ) {}
+  static void priest_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Rogue buff maintenance
   static void rogue_init        ( sim_t* sim );
   static void rogue_combat_begin( sim_t* sim );
-  static void rogue_combat_end  ( sim_t* sim ) {}
+  static void rogue_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Shaman buff maintenance
   static void shaman_init        ( sim_t* sim );
   static void shaman_combat_begin( sim_t* sim );
-  static void shaman_combat_end  ( sim_t* sim ) {}
+  static void shaman_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Warlock buff maintenance
   static void warlock_init        ( sim_t* sim );
   static void warlock_combat_begin( sim_t* sim );
-  static void warlock_combat_end  ( sim_t* sim ) {}
+  static void warlock_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Warrior buff maintenance
   static void warrior_init        ( sim_t* sim );
   static void warrior_combat_begin( sim_t* sim );
-  static void warrior_combat_end  ( sim_t* sim ) {}
+  static void warrior_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 

@@ -955,11 +955,13 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.torment_the_weak * 0.04;
   }
 
+  double arcane_blast_multiplier = 0;
+
   if ( school == SCHOOL_ARCANE )
   {
     int ab_stack = p ->  buffs_arcane_blast -> stack();
 
-    player_multiplier *= 1.0 + ab_stack * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
+    arcane_blast_multiplier = ab_stack * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
 
     for ( int i=0; i < ( sim -> P322 ? 5 : 4 ); i++ )
     {
@@ -1001,7 +1003,9 @@ void mage_spell_t::player_buff()
     }
   }
 
-  if ( p -> buffs_arcane_power -> up() ) player_multiplier *= 1.20;
+  double arcane_power_multiplier = p -> buffs_arcane_power -> up() ? 0.20 : 0.0;
+
+  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier;
 
   if ( p -> talents.playing_with_fire )
   {
