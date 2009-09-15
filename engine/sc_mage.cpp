@@ -238,6 +238,7 @@ struct mage_spell_t : public spell_t
   int dpm_rotation;
   int arcane_power;
   int icy_veins;
+  bool spell_impact;
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
@@ -245,7 +246,8 @@ struct mage_spell_t : public spell_t
       dps_rotation( 0 ),
       dpm_rotation( 0 ),
       arcane_power( 0 ),
-      icy_veins( 0 )
+      icy_veins( 0 ),
+      spell_impact( false )
   {
 
   }
@@ -956,6 +958,7 @@ void mage_spell_t::player_buff()
   }
 
   double arcane_blast_multiplier = 0;
+  double fire_power_multiplier = 0;
 
   if ( school == SCHOOL_ARCANE )
   {
@@ -972,6 +975,8 @@ void mage_spell_t::player_buff()
             school == SCHOOL_FROSTFIRE )
   {
     player_crit += ( p -> buffs_combustion -> value() * 0.10 );
+
+    fire_power_multiplier = p -> talents.fire_power * 0.02;
 
     if ( sim -> P322 )
     {
@@ -1005,7 +1010,9 @@ void mage_spell_t::player_buff()
 
   double arcane_power_multiplier = p -> buffs_arcane_power -> up() ? 0.20 : 0.0;
 
-  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier;
+  double spell_impact_multiplier = spell_impact ? p -> talents.spell_impact * 0.02 : 0.0;
+
+  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier + fire_power_multiplier + spell_impact_multiplier;
 
   if ( p -> talents.playing_with_fire )
   {
@@ -1117,7 +1124,6 @@ struct arcane_blast_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.arcane_impact * 0.02;
@@ -1131,7 +1137,8 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
-    may_torment = true;
+    may_torment  = true;
+    spell_impact = true;
   }
 
   virtual double cost() SC_CONST
@@ -1617,9 +1624,7 @@ struct fire_ball_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_execute_time -= p -> talents.improved_fire_ball * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier   *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit         += p -> talents.critical_mass * 0.02;
     direct_power_mod  += p -> talents.empowered_fire * 0.05;
 
@@ -1638,7 +1643,8 @@ struct fire_ball_t : public mage_spell_t
       num_ticks = 0;
     }
 
-    may_torment = true;
+    may_torment  = true;
+    spell_impact = true;
   }
 
   virtual double cost() SC_CONST
@@ -1725,15 +1731,15 @@ struct fire_blast_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     cooldown         -= p -> talents.improved_fire_blast * 0.5;
-    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_crit        += p -> talents.incineration * 0.02;
     base_crit        += p -> talents.critical_mass * 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    spell_impact = true;
   }
   virtual void execute()
   {
@@ -1778,7 +1784,6 @@ struct living_bomb_t : public mage_spell_t
     tick_may_crit     = p -> glyphs.living_bomb != 0;
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
 
@@ -1872,7 +1877,6 @@ struct pyroblast_t : public mage_spell_t
     tick_power_mod    = 0.20 / num_ticks;
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.critical_mass * 0.02;
     base_crit        += p -> talents.world_in_flames * 0.02;
@@ -1953,9 +1957,7 @@ struct scorch_t : public mage_spell_t
     direct_power_mod  = ( 1.5/3.5 );
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.fire_power         * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.spell_impact       * 0.02;
 
     base_crit        += p -> talents.incineration       * 0.02;
     base_crit        += p -> talents.critical_mass      * 0.02;
@@ -1965,6 +1967,8 @@ struct scorch_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
+
+    spell_impact = true;
 
     if ( debuff ) check_talent( p -> talents.improved_scorch );
   }
@@ -2159,7 +2163,6 @@ struct ice_lance_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
-    base_multiplier  *= 1.0 + p -> talents.spell_impact * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
     base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
@@ -2169,6 +2172,8 @@ struct ice_lance_t : public mage_spell_t
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    spell_impact = true;
   }
 
   virtual void player_buff()
@@ -2253,7 +2258,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.fire_power * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
     base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
