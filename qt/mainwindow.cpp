@@ -20,6 +20,36 @@ void MainWindow::updateProgress()
 {
 }
 
+void MainWindow::mainButtonClicked( bool checked )
+{
+    switch( main_tab->currentIndex() )
+    {
+        case 0: printf( "Launch http://code.google.com/p/simulationcraft/\n" ); break;
+        case 1: printf( "Save state of all options\n" ); break;
+        case 2:
+        {
+            QString profile = "";
+            switch( import_tab->currentIndex() )
+            {
+                case 0: profile = "# Armory Profile Here\n"; break;
+                case 1: profile = "# Wowhead Profile Here\n"; break;
+                case 2: profile = "# CharDev not yet supported.\n"; break;
+                case 3: profile = "# Warcrafter not yet supported.\n"; break;
+                case 4: profile = "# Rawr Character Import Here\n"; break;
+                default: assert(0);
+            }
+            simulate_text->document()->setPlainText( profile );
+            break;
+        }
+        case 3: printf( "Run Simulation.\n" ); break;
+        case 4: printf( "Run Simulation.\n" ); break;
+        case 5: printf( "Run Simulation.\n" ); break;
+        case 6: printf( "Save Results: %d\n", results_tab->currentIndex() ); break;
+        default: assert(0);
+    }
+    fflush(stdout);
+}
+
 void MainWindow::mainTabChanged( int index )
 {
     switch( index )
@@ -31,6 +61,7 @@ void MainWindow::mainTabChanged( int index )
         case 4: main_button->setText( "Simulate!" ); break;
         case 5: main_button->setText( "Simulate!" ); break;
         case 6: main_button->setText( "Save!"     ); break;
+        default: assert(0);
     }
 }
 
@@ -47,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     cmd_line_layout->addWidget( main_button = new QPushButton( "Go!" ) );
     progress_bar->setMaximum( 100 );
     progress_bar->setMaximumWidth( 100 );
+    connect( main_button, SIGNAL(clicked(bool)), this, SLOT(mainButtonClicked()) );
     QGroupBox* cmd_line_groupbox = new QGroupBox();
     cmd_line_groupbox->setLayout( cmd_line_layout );
 
@@ -92,6 +124,14 @@ MainWindow::MainWindow(QWidget *parent)
     warcrafter_view = new QWebView();
     warcrafter_view->setUrl( QUrl( "http://www.warcrafter.net" ) );
     import_tab->addTab( warcrafter_view, "Warcrafter" );
+
+    QVBoxLayout* rawr_layout = new QVBoxLayout();
+    rawr_layout->addWidget( new QLabel( "\nhttp://rawr.codeplex.com\n\n" ) );
+    rawr_layout->addWidget( rawr_file = new QLineEdit() );
+    rawr_layout->addWidget( new QLabel( "" ), 1 );
+    QGroupBox* rawr_groupbox = new QGroupBox( "Rawr Character XML File" );
+    rawr_groupbox->setLayout( rawr_layout );
+    import_tab->addTab( rawr_groupbox, "Rawr" );
 
     simulate_text = new QPlainTextEdit();
     simulate_text->document()->setPlainText( "# Profiles will be downloaded into here.  Right-Click menu will Open/Save scripts." );

@@ -30,6 +30,7 @@ class MainWindow : public QWidget
     QWebView* wowhead_view;
     QWebView* chardev_view;
     QWebView* warcrafter_view;
+    QLineEdit* rawr_file;
     QPlainTextEdit* simulate_text;
     QPlainTextEdit* overrides_text;
     QPlainTextEdit* log_text;
@@ -41,6 +42,7 @@ class MainWindow : public QWidget
 
 private slots:
     void updateProgress();
+    void mainButtonClicked( bool checked=false );
     void mainTabChanged( int index );
     void importTabChanged( int index );
 
