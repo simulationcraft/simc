@@ -39,11 +39,21 @@ void MainWindow::mainButtonClicked( bool checked )
                 default: assert(0);
             }
             simulate_text->document()->setPlainText( profile );
+            main_tab->setCurrentIndex( 3 );
             break;
         }
-        case 3: printf( "Run Simulation.\n" ); break;
-        case 4: printf( "Run Simulation.\n" ); break;
-        case 5: printf( "Run Simulation.\n" ); break;
+        case 3:
+        case 4:
+        case 5:
+        {
+            QString results_name = QString( "Results %1" ).arg( results_tab->count()+1 );
+            QTextBrowser* results_browser = new QTextBrowser();
+            results_browser->document()->setPlainText( "Results Here.\n" );
+            results_tab->addTab( results_browser, results_name );
+            results_tab->setCurrentWidget( results_browser );
+            main_tab->setCurrentIndex( 6 );
+            break;
+        }
         case 6: printf( "Save Results: %d\n", results_tab->currentIndex() ); break;
         default: assert(0);
     }
