@@ -533,7 +533,7 @@ static void trigger_ignite( spell_t* s,
       {
         if ( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
         {
-          p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_empowered_fire );
+          p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.02, p -> gains_empowered_fire );
         }
       }
     }
