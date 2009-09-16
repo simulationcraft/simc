@@ -1542,7 +1542,7 @@ double hunter_attack_t::cost() SC_CONST
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
   c *= 1.0 - p -> talents.efficiency * 0.03;
-  if ( p -> buffs_beast_within -> up() ) c *= 0.80;
+  if ( p -> buffs_beast_within -> up() ) c *= sim -> P322 ? 0.50 : 0.80;
   return c;
 }
 
