@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // is_scaling_stat ===========================================================
 
@@ -54,17 +53,52 @@ static bool stat_may_cap( int stat )
 // scaling_t::scaling_t =====================================================
 
 scaling_t::scaling_t( sim_t* s ) :
-    sim( s ),
-    scale_stat( STAT_NONE ),
-    scale_value( 0 ),
-    calculate_scale_factors( 0 ),
-    center_scale_delta( 0 ),
-    scale_lag( 0 ),
-    scale_factor_noise( 0.05 ),
-    normalize_scale_factors( 0 ),
-    smooth_scale_factors( 0 ),
-    debug_scale_factors( 0 )
+  sim( s ), ref_sim( 0 ), delta_sim( 0 ),
+  scale_stat( STAT_NONE ),
+  scale_value( 0 ),
+  calculate_scale_factors( 0 ),
+  center_scale_delta( 0 ),
+  scale_lag( 0 ),
+  scale_factor_noise( 0.05 ),
+  normalize_scale_factors( 0 ),
+  smooth_scale_factors( 0 ),
+  debug_scale_factors( 0 ),
+  current_scaling_stat( -1 ),
+  num_scaling_stats( -1 )
 {}
+
+// scaling_t::progress ======================================================
+
+double scaling_t::progress()
+{
+  if ( ! calculate_scale_factors ) return 1.0;
+
+  if ( num_scaling_stats < 0 )
+  {
+    num_scaling_stats = 0;
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) > 0 ) )
+	num_scaling_stats++;
+  }
+
+  double divisor = num_scaling_stats + 1;
+
+  if ( ref_sim && delta_sim )
+  {
+    double stat_progress = ( current_scaling_stat + 1 ) / divisor;
+
+    double   ref_progress =   ref_sim -> current_iteration / (double)   ref_sim -> iterations;
+    double delta_progress = delta_sim -> current_iteration / (double) delta_sim -> iterations;
+
+    stat_progress += ( ref_progress + delta_progress ) / ( 2 * divisor );
+
+    return stat_progress;
+  }
+  else // Still working on baseline
+  {
+    return sim -> current_iteration / ( sim -> iterations * divisor );
+  }
+}
 
 // scaling_t::init_deltas ===================================================
 
@@ -72,18 +106,18 @@ void scaling_t::init_deltas()
 {
   for ( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 100 : 250;
+    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 75 : 150;
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 100 : 250;
+  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 75 : 150;
 
-  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  100 :  250;
-  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  100 :  250;
-  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ?  -75 : -150;
+  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  75 :  150;
+  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  75 :  150;
+  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ? -75 : -150;
 
-  if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -100 : -200;
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  100 :  250;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  250 :  250;
+  if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -50 : -100;
+  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
+  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
 
   if ( stats.weapon_dps == 0 ) stats.weapon_dps = smooth_scale_factors ? 25 : 50;
 }
@@ -110,22 +144,26 @@ void scaling_t::analyze_stats()
 
   for ( int i=0; i < STAT_MAX; i++ )
   {
+    if ( sim -> canceled ) break;
+
     if ( ! is_scaling_stat( sim, i ) ) continue;
 
     int scale_delta = ( int ) stats.get_stat( i );
     if ( scale_delta == 0 ) continue;
+
+    current_scaling_stat++;
 
     util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
     fflush( stdout );
 
     bool center = center_scale_delta && ! stat_may_cap( i );
 
-    sim_t* child_sim = new sim_t( sim );
-    child_sim -> scaling -> scale_stat = i;
-    child_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
-    child_sim -> execute();
+    delta_sim = new sim_t( sim );
+    delta_sim -> scaling -> scale_stat = i;
+    delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
+    delta_sim -> execute();
 
-    sim_t* ref_sim = baseline_sim;
+    ref_sim = baseline_sim;
     if ( center )
     {
       ref_sim = new sim_t( sim );
@@ -141,9 +179,9 @@ void scaling_t::analyze_stats()
       if ( ! p -> scales_with[ i ] ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
-      player_t* child_p = child_sim -> find_player( p -> name() );
+      player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-      double f = ( child_p -> dps - ref_p -> dps ) / scale_delta;
+      double f = ( delta_p -> dps - ref_p -> dps ) / scale_delta;
 
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }
@@ -151,11 +189,12 @@ void scaling_t::analyze_stats()
     if ( debug_scale_factors )
     {
       report_t::print_text( sim -> output_file,   ref_sim, true );
-      report_t::print_text( sim -> output_file, child_sim, true );
+      report_t::print_text( sim -> output_file, delta_sim, true );
     }
 
     if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
-    delete child_sim;
+    delete delta_sim;
+    delta_sim = ref_sim = 0;
   }
 
   if ( baseline_sim != sim ) delete baseline_sim;
@@ -173,31 +212,32 @@ void scaling_t::analyze_lag()
   util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
   fflush( stdout );
 
-  sim_t* ref_sim = new sim_t( sim );
+  ref_sim = new sim_t( sim );
   ref_sim -> scaling -> scale_stat = STAT_MAX;
   ref_sim -> execute();
 
-  sim_t* child_sim = new sim_t( sim );
-  child_sim ->   queue_lag += 0.100;
-  child_sim ->     gcd_lag += 0.100;
-  child_sim -> channel_lag += 0.100;
-  child_sim -> scaling -> scale_stat = STAT_MAX;
-  child_sim -> execute();
+  delta_sim = new sim_t( sim );
+  delta_sim ->   queue_lag += 0.100;
+  delta_sim ->     gcd_lag += 0.100;
+  delta_sim -> channel_lag += 0.100;
+  delta_sim -> scaling -> scale_stat = STAT_MAX;
+  delta_sim -> execute();
 
   for ( int i=0; i < num_players; i++ )
   {
     player_t*       p =       sim -> players_by_name[ i ];
     player_t*   ref_p =   ref_sim -> find_player( p -> name() );
-    player_t* child_p = child_sim -> find_player( p -> name() );
+    player_t* delta_p = delta_sim -> find_player( p -> name() );
 
     // Calculate DPS difference per millisecond of lag
-    double f = ( ref_p -> dps - child_p -> dps ) / ( ( child_sim -> queue_lag - sim -> queue_lag ) * 1000 );
+    double f = ( ref_p -> dps - delta_p -> dps ) / ( ( delta_sim -> queue_lag - sim -> queue_lag ) * 1000 );
 
     if ( f >= scale_factor_noise ) p -> scaling_lag = f;
   }
 
   if ( ref_sim != sim ) delete ref_sim;
-  delete child_sim;
+  delete delta_sim;
+  delta_sim = ref_sim = 0;
 }
 
 // scaling_t::analyze_gear_weights ==========================================
@@ -245,6 +285,7 @@ void scaling_t::normalize()
 
 void scaling_t::analyze()
 {
+  if ( sim -> canceled ) return;
   init_deltas();
   analyze_stats();
   analyze_lag();

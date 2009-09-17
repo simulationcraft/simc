@@ -568,6 +568,9 @@ struct util_t
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
 
+  static std::string& to_string( int i );
+  static std::string& to_string( double f, int precision );
+
   static int64_t milliseconds();
   static int64_t parse_date( const std::string& month_day_year );
 
@@ -854,6 +857,7 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
+  int         canceled;
   double      queue_lag, queue_lag_stddev;
   double      gcd_lag, gcd_lag_stddev;
   double      channel_lag, channel_lag_stddev;
@@ -862,7 +866,7 @@ struct sim_t
   double      current_time, max_time;
   int         events_remaining, max_events_remaining;
   int         events_processed, total_events_processed;
-  int         seed, id, iterations, current_iteration;
+  int         seed, id, iterations, current_iteration, current_slot;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval;
   int         optimal_raid, spell_crit_suppression, log, debug;
@@ -1020,6 +1024,8 @@ struct sim_t
   virtual ~sim_t();
 
   int       main( int argc, char** argv );
+  void      cancel();
+  double    progress();
   void      combat( int iteration );
   void      combat_begin();
   void      combat_end();
@@ -1057,6 +1063,8 @@ struct sim_t
 struct scaling_t
 {
   sim_t* sim;
+  sim_t* ref_sim;
+  sim_t* delta_sim;
   int    scale_stat;
   double scale_value;
   int    calculate_scale_factors;
@@ -1067,6 +1075,7 @@ struct scaling_t
   int    smooth_scale_factors;
   int    debug_scale_factors;
   std::string scale_only_str;
+  int    current_scaling_stat, num_scaling_stats;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -1080,7 +1089,8 @@ struct scaling_t
   void analyze_gear_weights();
   void normalize();
   void derive();
-  int  get_options( std::vector<option_t>& );
+  double progress();
+  int get_options( std::vector<option_t>& );
 };
 
 // Gear Rating Conversions ===================================================
@@ -1580,7 +1590,7 @@ struct player_t
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
   virtual std::vector<option_t>& get_options();
-  virtual bool save( FILE*, int save_type=SAVE_ALL );
+  virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name ) { assert( ! name.empty() ); return 0; }

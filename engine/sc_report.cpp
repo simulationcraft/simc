@@ -1485,7 +1485,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-        p -> save( file, SAVE_GEAR );
+	std::string profile_str = "";
+        p -> create_profile( profile_str, SAVE_GEAR );
+	fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }
@@ -1499,7 +1501,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-        p -> save( file, SAVE_TALENTS );
+	std::string profile_str = "";
+        p -> create_profile( profile_str, SAVE_TALENTS );
+	fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }
@@ -1513,7 +1517,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-        p -> save( file, SAVE_ACTIONS );
+	std::string profile_str = "";
+        p -> create_profile( profile_str, SAVE_ACTIONS );
+	fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }
@@ -1536,8 +1542,9 @@ void report_t::print_profiles( sim_t* sim )
       continue;
     }
 
-    p -> save( file );
-
+    std::string profile_str = "";
+    p -> create_profile( profile_str );
+    fprintf( file, "%s", profile_str.c_str() );
     fclose( file );
   }
 }

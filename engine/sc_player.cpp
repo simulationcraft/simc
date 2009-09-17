@@ -3372,30 +3372,30 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
-// player_t::save ===========================================================
+// player_t::create_profile =================================================
 
-bool player_t::save( FILE* file, int save_type )
+bool player_t::create_profile( std::string& profile_str, int save_type )
 {
   if ( save_type == SAVE_ALL )
   {
-    util_t::fprintf( file, "#!simcraft \n\n" );
+    profile_str += "#!./simcraft \n\n";
   }
 
-  if ( !comment_str.empty() )
+  if ( ! comment_str.empty() )
   {
-    util_t::fprintf( file, "# %s\n", comment_str.c_str() );
+    profile_str += "# " + comment_str + "\n";
   }
 
   if ( save_type == SAVE_ALL )
   {
-    util_t::fprintf( file, "%s=%s\n", util_t::player_type_string( type ), name() );
-    util_t::fprintf( file, "origin=%s\n", origin_str.c_str() );
-    util_t::fprintf( file, "level=%d\n", level );
-    util_t::fprintf( file, "race=%s\n", race_str.c_str() );
+    profile_str += util_t::player_type_string( type ); profile_str += "=" + name_str + "\n";
+    profile_str += "origin=" + origin_str + "\n";
+    profile_str += "level=" + util_t::to_string( level ) + "\n";
+    profile_str += "race=" + race_str + "\n";
 
     if ( professions_str.size() > 0 )
     {
-      util_t::fprintf( file, "professions=%s\n", professions_str.c_str() );
+      profile_str += "professions=" + professions_str + "\n";
     };
   }
 
@@ -3403,11 +3403,11 @@ bool player_t::save( FILE* file, int save_type )
   {
     if ( talents_str.size() > 0 )
     {
-      util_t::fprintf( file, "talents=%s\n", talents_str.c_str() );
+      profile_str += "talents=" + talents_str + "\n";
     };
     if ( glyphs_str.size() > 0 )
     {
-      util_t::fprintf( file, "glyphs=%s\n", glyphs_str.c_str() );
+      profile_str += "glyphs=" + glyphs_str + "\n";
     }
   }
 
@@ -3419,7 +3419,9 @@ bool player_t::save( FILE* file, int save_type )
       int num_splits = util_t::string_split( splits, action_list_str, "/" );
       for ( int i=0; i < num_splits; i++ )
       {
-        util_t::fprintf( file, "actions%s%s\n", ( i ? "+=/" : "=" ), splits[ i ].c_str() );
+	profile_str += "actions";
+	profile_str += i ? "+=/" : "=";
+	profile_str += splits[ i ] + "\n";
       }
     }
   }
@@ -3432,49 +3434,60 @@ bool player_t::save( FILE* file, int save_type )
 
       if ( item.active() )
       {
-        util_t::fprintf( file, "%s=%s\n", item.slot_name(), item.options_str.c_str() );
+	profile_str += item.slot_name();
+	profile_str += "=" + item.options_str + "\n";
       }
     }
     if ( ! items_str.empty() )
     {
-      util_t::fprintf( file, "items=%s\n", items_str.c_str() );
+      profile_str += "items=" + items_str + "\n";
     }
 
-    util_t::fprintf( file, "# Gear Summary\n" );
+    profile_str += "# Gear Summary\n";
     for ( int i=0; i < STAT_MAX; i++ )
     {
       double value = initial_stats.get_stat( i );
-      if ( value != 0 ) util_t::fprintf( file, "# gear_%s=%.0f\n", util_t::stat_type_string( i ), value );
+      if ( value != 0 ) 
+      {
+	profile_str += "# gear_";
+	profile_str += util_t::stat_type_string( i );
+	profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
+      }
     }
-    if ( meta_gem != META_GEM_NONE ) util_t::fprintf( file, "# meta_gem=%s\n", util_t::meta_gem_type_string( meta_gem ) );
+    if ( meta_gem != META_GEM_NONE ) 
+    {
+      profile_str += "# meta_gem=";
+      profile_str += util_t::meta_gem_type_string( meta_gem );
+      profile_str += "\n";
+    }
 
-    if ( set_bonus.tier7_2pc_caster() ) util_t::fprintf( file, "# tier7_2pc_caster=1\n" );
-    if ( set_bonus.tier7_4pc_caster() ) util_t::fprintf( file, "# tier7_4pc_caster=1\n" );
-    if ( set_bonus.tier7_2pc_melee()  ) util_t::fprintf( file, "# tier7_2pc_melee=1\n"  );
-    if ( set_bonus.tier7_4pc_melee()  ) util_t::fprintf( file, "# tier7_4pc_melee=1\n"  );
-    if ( set_bonus.tier7_2pc_tank()   ) util_t::fprintf( file, "# tier7_2pc_tank=1\n"   );
-    if ( set_bonus.tier7_4pc_tank()   ) util_t::fprintf( file, "# tier7_4pc_tank=1\n"   );
+    if ( set_bonus.tier7_2pc_caster() ) profile_str += "# tier7_2pc_caster=1\n";
+    if ( set_bonus.tier7_4pc_caster() ) profile_str += "# tier7_4pc_caster=1\n";
+    if ( set_bonus.tier7_2pc_melee()  ) profile_str += "# tier7_2pc_melee=1\n";
+    if ( set_bonus.tier7_4pc_melee()  ) profile_str += "# tier7_4pc_melee=1\n";
+    if ( set_bonus.tier7_2pc_tank()   ) profile_str += "# tier7_2pc_tank=1\n";
+    if ( set_bonus.tier7_4pc_tank()   ) profile_str += "# tier7_4pc_tank=1\n";
 
-    if ( set_bonus.tier8_2pc_caster() ) util_t::fprintf( file, "# tier8_2pc_caster=1\n" );
-    if ( set_bonus.tier8_4pc_caster() ) util_t::fprintf( file, "# tier8_4pc_caster=1\n" );
-    if ( set_bonus.tier8_2pc_melee()  ) util_t::fprintf( file, "# tier8_2pc_melee=1\n"  );
-    if ( set_bonus.tier8_4pc_melee()  ) util_t::fprintf( file, "# tier8_4pc_melee=1\n"  );
-    if ( set_bonus.tier8_2pc_tank()   ) util_t::fprintf( file, "# tier8_2pc_tank=1\n"   );
-    if ( set_bonus.tier8_4pc_tank()   ) util_t::fprintf( file, "# tier8_4pc_tank=1\n"   );
+    if ( set_bonus.tier8_2pc_caster() ) profile_str += "# tier8_2pc_caster=1\n";
+    if ( set_bonus.tier8_4pc_caster() ) profile_str += "# tier8_4pc_caster=1\n";
+    if ( set_bonus.tier8_2pc_melee()  ) profile_str += "# tier8_2pc_melee=1\n";
+    if ( set_bonus.tier8_4pc_melee()  ) profile_str += "# tier8_4pc_melee=1\n";
+    if ( set_bonus.tier8_2pc_tank()   ) profile_str += "# tier8_2pc_tank=1\n";
+    if ( set_bonus.tier8_4pc_tank()   ) profile_str += "# tier8_4pc_tank=1\n";
 
-    if ( set_bonus.tier9_2pc_caster() ) util_t::fprintf( file, "# tier9_2pc_caster=1\n" );
-    if ( set_bonus.tier9_4pc_caster() ) util_t::fprintf( file, "# tier9_4pc_caster=1\n" );
-    if ( set_bonus.tier9_2pc_melee()  ) util_t::fprintf( file, "# tier9_2pc_melee=1\n"  );
-    if ( set_bonus.tier9_4pc_melee()  ) util_t::fprintf( file, "# tier9_4pc_melee=1\n"  );
-    if ( set_bonus.tier9_2pc_tank()   ) util_t::fprintf( file, "# tier9_2pc_tank=1\n"   );
-    if ( set_bonus.tier9_4pc_tank()   ) util_t::fprintf( file, "# tier9_4pc_tank=1\n"   );
+    if ( set_bonus.tier9_2pc_caster() ) profile_str += "# tier9_2pc_caster=1\n";
+    if ( set_bonus.tier9_4pc_caster() ) profile_str += "# tier9_4pc_caster=1\n";
+    if ( set_bonus.tier9_2pc_melee()  ) profile_str += "# tier9_2pc_melee=1\n";
+    if ( set_bonus.tier9_4pc_melee()  ) profile_str += "# tier9_4pc_melee=1\n";
+    if ( set_bonus.tier9_2pc_tank()   ) profile_str += "# tier9_2pc_tank=1\n";
+    if ( set_bonus.tier9_4pc_tank()   ) profile_str += "# tier9_4pc_tank=1\n";
 
-    if ( set_bonus.tier10_2pc_caster() ) util_t::fprintf( file, "# tier10_2pc_caster=1\n" );
-    if ( set_bonus.tier10_4pc_caster() ) util_t::fprintf( file, "# tier10_4pc_caster=1\n" );
-    if ( set_bonus.tier10_2pc_melee()  ) util_t::fprintf( file, "# tier10_2pc_melee=1\n"  );
-    if ( set_bonus.tier10_4pc_melee()  ) util_t::fprintf( file, "# tier10_4pc_melee=1\n"  );
-    if ( set_bonus.tier10_2pc_tank()   ) util_t::fprintf( file, "# tier10_2pc_tank=1\n"   );
-    if ( set_bonus.tier10_4pc_tank()   ) util_t::fprintf( file, "# tier10_4pc_tank=1\n"   );
+    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1\n";
+    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1\n";
+    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1\n";
+    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1\n";
+    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1\n";
+    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1\n";
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
@@ -3482,10 +3495,13 @@ bool player_t::save( FILE* file, int save_type )
       if ( ! item.active() ) continue;
       if ( item.unique || item.unique_enchant || ! item.encoded_weapon_str.empty() )
       {
-        util_t::fprintf( file, "# %s=%s", item.slot_name(), item.name() );
-        if ( ! item.encoded_weapon_str.empty() ) util_t::fprintf( file, ",weapon=%s", item.encoded_weapon_str.c_str() );
-        if ( item.unique_enchant ) util_t::fprintf( file, ",enchant=%s", item.encoded_enchant_str.c_str() );
-        util_t::fprintf( file, "\n" );
+	profile_str += "# ";
+	profile_str += item.slot_name();
+	profile_str += "=";
+	profile_str += item.name();
+        if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
+        if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
+	profile_str += "\n";
       }
     }
   }

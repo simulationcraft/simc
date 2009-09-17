@@ -22,10 +22,9 @@ bool http_t::clear_cache( sim_t* sim,
   return true;
 }
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char*  url_cache_file = "url_cache.dat";
+static const char*  url_cache_file = "simcraft_cache.dat";
 static const double url_cache_version = 2.0;
 
 static void* cache_mutex = 0;

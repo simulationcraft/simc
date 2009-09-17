@@ -820,6 +820,9 @@ player_t* armory_t::download_player( sim_t* sim,
   int num_items = xml_t::get_nodes( item_nodes, sheet_xml, "item" );
   for ( int i=0; i < num_items; i++ )
   {
+    sim -> current_slot = i;
+    if( sim -> canceled ) return 0;
+
     std::string id_str;
     int slot;
 

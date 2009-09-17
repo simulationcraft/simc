@@ -207,7 +207,7 @@ struct mage_t : public player_t
   virtual void      reset();
   virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
   virtual std::vector<option_t>& get_options();
-  virtual bool      save( FILE* file, int save_type=SAVE_ALL );
+  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       decode_set( item_t& item );
@@ -3406,20 +3406,20 @@ std::vector<option_t>& mage_t::get_options()
   return options;
 }
 
-// mage_t::save =============================================================
+// mage_t::create_profile ===================================================
 
-bool mage_t::save( FILE* file, int save_type )
+bool mage_t::create_profile( std::string& profile_str, int save_type )
 {
-  player_t::save( file, save_type );
+  player_t::create_profile( profile_str, save_type );
 
   if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
   {
-    if ( ! armor_type_str.empty() ) util_t::fprintf( file, "armor_type=%s\n", armor_type_str.c_str() );
+    if ( ! armor_type_str.empty() ) profile_str += "armor_type=" + armor_type_str + "\n";
   }
 
   if ( save_type == SAVE_ALL )
   {
-    if ( ! focus_magic_target_str.empty() ) util_t::fprintf( file, "focus_magic_target=%s\n", focus_magic_target_str.c_str() );
+    if ( ! focus_magic_target_str.empty() ) profile_str += "focus_magic_target=" + focus_magic_target_str + "\n";
   }
 
   return true;

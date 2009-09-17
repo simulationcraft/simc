@@ -1017,6 +1017,28 @@ int util_t::string_split( const std::string& str,
   return str_size;
 }
 
+// util_t::to_string =======================================================
+
+std::string& util_t::to_string( int i )
+{
+  static std::string s;
+  char buffer[ 1024 ];
+  sprintf( buffer, "%d", i );
+  s = buffer;
+  return s;
+}
+
+// util_t::to_string =======================================================
+
+std::string& util_t::to_string( double f, int precision )
+{
+  static std::string s;
+  char buffer[ 1024 ];
+  sprintf( buffer, "%.*f", precision, f );
+  s = buffer;
+  return s;
+}
+
 // util_t::milliseconds ====================================================
 
 int64_t util_t::milliseconds()

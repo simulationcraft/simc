@@ -160,7 +160,7 @@ struct priest_t : public player_t
   virtual void      init_party();
   virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
   virtual std::vector<option_t>& get_options();
-  virtual bool      save( FILE* file, int save_type=SAVE_ALL );
+  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       decode_set( item_t& item );
@@ -2193,15 +2193,15 @@ std::vector<option_t>& priest_t::get_options()
   return options;
 }
 
-// priest_t::save =============================================================
+// priest_t::create_profile ===================================================
 
-bool priest_t::save( FILE* file, int save_type )
+bool priest_t::create_profile( std::string& profile_str, int save_type )
 {
-  player_t::save( file, save_type );
+  player_t::create_profile( profile_str, save_type );
 
   if ( save_type == SAVE_ALL )
   {
-    if ( ! power_infusion_target_str.empty() ) util_t::fprintf( file, "power_infusion_target=%s\n", power_infusion_target_str.c_str() );
+    if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
   }
 
   return true;

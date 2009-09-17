@@ -291,7 +291,7 @@ static bool parse_rawr( sim_t*             sim,
 
 sim_t::sim_t( sim_t* p, int index ) :
     parent( p ), P322( false ),
-    free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ),
+    free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), canceled( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
     channel_lag( 0.250 ), channel_lag_stddev( 0 ),
@@ -300,7 +300,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
-    seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( 0 ),
+    seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
     armor_update_interval( 20 ),
     optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
@@ -957,6 +957,12 @@ void sim_t::iterate()
 
   for ( int i=0; i < iterations; i++ )
   {
+    if ( canceled ) 
+    {
+      iterations = current_iteration + 1;
+      break;
+    }
+
     if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) && ( message_index > 0 ) )
     {
       util_t::fprintf( stdout, "%d... ", message_index-- );
@@ -965,7 +971,7 @@ void sim_t::iterate()
     combat( i );
   }
   if ( report_progress ) util_t::fprintf( stdout, "\n" );
-
+  
   reset();
 }
 
@@ -1449,6 +1455,8 @@ std::vector<option_t>& sim_t::get_options()
 bool sim_t::parse_option( const std::string& name,
                           const std::string& value )
 {
+  if ( canceled ) return false;
+
   if ( active_player )
     if ( option_t::parse( this, active_player -> get_options(), name, value ) )
       return true;
@@ -1508,6 +1516,42 @@ bool sim_t::parse_options( int    _argc,
   }
 
   return true;
+}
+
+// sim_t::cancel ============================================================
+
+void sim_t::cancel()
+{
+  canceled = 1;
+
+  int num_children = children.size();
+
+  for ( int i=0; i < num_children; i++ )
+  {
+    children[ i ] -> cancel();
+  }
+}
+
+// sim_t::progress ==========================================================
+
+double sim_t::progress()
+{
+  if ( canceled ) return 1.0;
+
+  if ( scaling -> calculate_scale_factors )
+  {
+    return scaling -> progress();
+  }
+  else if ( current_iteration >= 0 )
+  {
+    return current_iteration / (double) iterations;
+  }
+  else if ( current_slot >= 0 )
+  {
+    return current_slot / (double) SLOT_MAX;
+  }
+
+  return 0.0;
 }
 
 // sim_t::main ==============================================================

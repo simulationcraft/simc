@@ -687,6 +687,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {
+    sim -> current_slot = i;
+    if( sim -> canceled ) return 0;
+
     std::vector<std::string> inventory_data;
     if ( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
     {
