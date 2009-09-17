@@ -274,12 +274,7 @@ static void trigger_righteous_vengeance( action_t* a )
       tick_may_crit  = p -> set_bonus.tier9_2pc_melee() != 0;
       reset(); // required since construction occurs after player_t::init()
     }
-    void player_buff() 
-    {
-       // FIXME! Assuming bug-fixed value.
-      player_crit = 0.40;
-    }
-    void target_debuff( int dmg_type ) {}
+    virtual double total_multiplier() SC_CONST { return 1.0; } // No double-dip!
   };
 
   if ( ! p -> active_righteous_vengeance ) p -> active_righteous_vengeance = new righteous_vengeance_t( p );
