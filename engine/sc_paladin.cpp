@@ -66,8 +66,6 @@ struct paladin_t : public player_t
   // Random Number Generation
   rng_t* rng_guarded_by_the_light;
   rng_t* rng_judgements_of_the_wise;
-  rng_t* rng_reckoning;
-  rng_t* rng_redoubt;
 
   // Auto-Attack
   attack_t* auto_attack;
@@ -442,7 +440,9 @@ struct melee_t : public paladin_attack_t
     if ( p -> buffs_reckoning -> up() )
     {
       p -> buffs_reckoning -> decrement();
+      proc = true;
       paladin_attack_t::execute();
+      proc = false;
     }
   }
 };
@@ -2031,8 +2031,6 @@ void paladin_t::init_rng()
 
   rng_guarded_by_the_light   = get_rng( "guarded_by_the_light"   );
   rng_judgements_of_the_wise = get_rng( "judgements_of_the_wise" );
-  rng_reckoning              = get_rng( "reckoning"              );
-  rng_redoubt                = get_rng( "redoubt"                );
 }
 
 // paladin_t::init_glyphs ===================================================
@@ -2218,8 +2216,8 @@ void paladin_t::init_buffs()
   buffs_divine_plea            = new buff_t( this, "divine_plea",            1, 15.0 );
   buffs_holy_shield            = new buff_t( this, "holy_shield",            8, 10.0 );
   buffs_judgements_of_the_pure = new buff_t( this, "judgements_of_the_pure", 1, 60.0 );
-  buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0 );
-  buffs_redoubt                = new buff_t( this, "redoubt",                5, 10.0 );
+  buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning * 0.02 );
+  buffs_redoubt                = new buff_t( this, "redoubt",                5, 10.0, 0, talents.redoubt ? 0.10 : 0.0 );
   buffs_seal_of_vengeance      = new buff_t( this, "seal_of_vengeance",      5       );
   buffs_the_art_of_war         = new buff_t( this, "the_art_of_war",         1, 15.0, 0, talents.the_art_of_war );
   buffs_vengeance              = new buff_t( this, "vengeance",              3, 30.0 );
@@ -2371,14 +2369,8 @@ int paladin_t::target_swing()
        result == RESULT_GLANCE ||
        result == RESULT_BLOCK  )
   {
-    if ( talents.reckoning && rng_reckoning -> roll( talents.reckoning * 0.02 ) )
-    {
-      buffs_reckoning -> trigger();
-    }
-    if ( talents.redoubt && rng_redoubt -> roll( 0.10 ) )
-    {
-      buffs_redoubt -> trigger( 5 );
-    }
+    buffs_reckoning -> trigger();
+    buffs_redoubt   -> trigger( 5 );
   }
   if ( result == RESULT_PARRY )
   {
