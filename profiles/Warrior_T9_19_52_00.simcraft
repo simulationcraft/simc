@@ -29,38 +29,39 @@ actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
 head=hellscreams_helmet_of_triumph,stats=2102armor_94hit_86crit_150str_174sta,gems=relentless_earthsiege_10str_10agi_10sta_10int_10spi_8str,enchant=50ap_20crit
 neck=collar_of_unending_torment,stats=97ap_46crit_42arpen_67agi_57sta,gems=8str_12sta
-shoulders=hellscreams_shoulderplates_of_triumph,stats=1941armor_76crit_68arpen_122str_130sta,gems=20str_4str,enchant=40ap_15crit
+shoulders=hellscreams_shoulderplates_of_triumph,stats=1941armor_76crit_68arpen_122str_130sta,gems=20arpen_4str,enchant=40ap_15crit
 shirt=orange_martial_shirt
-chest=hellscreams_battleplate_of_triumph,stats=2588armor_94crit_94arpen_158str_174sta,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
-waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=27str_27str_20str_12ap
-legs=hellscreams_legplates_of_triumph,stats=2264armor_94crit_94exp_158str_174sta,gems=10hit_10str_27str_16str_6str,enchant=75ap_22crit
+chest=hellscreams_battleplate_of_triumph,stats=2588armor_94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
+waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=34arpen_34arpen_20arpen_12ap
+legs=hellscreams_legplates_of_triumph,stats=2264armor_94crit_94exp_158str_174sta,gems=10hit_10str_34arpen_16str_6str,enchant=75ap_22crit
 feet=greaves_of_the_7th_legion,stats=1700armor_67crit_59exp_107str_115sta,gems=10hit_10str_4str,enchant=12crit_12hit
-wrists=titanium_spikeguards,stats=1082armor_42crit_50arpen_78str_86sta,gems=20str,enchant=50ap
-hands=hellscreams_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=10hit_10str_20str_4str,enchant=44ap
-finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20str
+wrists=titanium_spikeguards,stats=1082armor_42crit_50arpen_78str_86sta,gems=20arpen_20arpen,enchant=50ap
+hands=hellscreams_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=10hit_10str_20arpen_4str,enchant=44ap
+finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen
 finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=16str
-trinket1=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
+trinket1=deaths_choice,stats=256ap
 trinket2=deaths_choice,stats=288ap
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20str_10hit_10str_6agi,enchant=22agi
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_20str,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
-off_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_20str,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_10hit_10str_6agi,enchant=22agi
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
+off_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
 ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps
 # Gear Summary
-# gear_strength=1674
+# gear_strength=1353
 # gear_agility=486
 # gear_stamina=1720
 # gear_intellect=20
 # gear_spirit=20
-# gear_attack_power=1118
+# gear_attack_power=1374
 # gear_expertise_rating=237
-# gear_armor_penetration_rating=550
+# gear_armor_penetration_rating=912
 # gear_hit_rating=214
-# gear_crit_rating=1094
+# gear_crit_rating=992
 # gear_haste_rating=100
 # gear_armor=13784
 # meta_gem=relentless_earthsiege
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
+# trinket1=deaths_choice
 # trinket2=deaths_choice
 # main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps,enchant=berserking
 # off_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps,enchant=berserking

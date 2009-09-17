@@ -26,14 +26,14 @@ chest=hellscreams_battleplate_of_triumph,stats=2588armor_94crit_94arpen_158str_1
 waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=20arpen_20arpen_20arpen_12ap
 legs=hellscreams_legplates_of_triumph,stats=2264armor_94crit_94exp_158str_174sta,gems=10hit_10str_20arpen_16str_6str,enchant=75ap_22crit
 feet=melancholy_sabatons,stats=1614armor_54crit_84arpen_88str_81sta,enchant=12crit_12hit
-wrists=titanium_spikeguards,stats=1082armor_42crit_50arpen_78str_86sta,gems=20arpen_27arpen,enchant=50ap
-hands=hellscreams_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=20arpen_27arpen,enchant=44ap
+wrists=titanium_spikeguards,stats=1082armor_42crit_50arpen_78str_86sta,gems=20arpen_34arpen,enchant=50ap
+hands=hellscreams_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=20arpen_34arpen,enchant=44ap
 finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen
 finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=20arpen_4agi
 trinket1=deaths_choice,stats=288ap
 trinket2=deaths_choice,stats=256ap
 back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_20arpen,enchant=22agi
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=27arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=34arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
 ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps
 # Gear Summary
 # gear_strength=1188
@@ -43,7 +43,7 @@ ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=throw
 # gear_spirit=20
 # gear_attack_power=1274
 # gear_expertise_rating=178
-# gear_armor_penetration_rating=908
+# gear_armor_penetration_rating=929
 # gear_hit_rating=270
 # gear_crit_rating=839
 # gear_haste_rating=50
