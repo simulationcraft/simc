@@ -3533,12 +3533,12 @@ void druid_t::init_actions()
 	action_list_str += "/snapshot_stats";
 	action_list_str += "/enrage,rage<=80";
 	action_list_str += "/maul,rage>=30";
+	action_list_str += "/mangle_bear,lacerate>=5.0";
+	action_list_str += "/faerie_fire_feral";
+	action_list_str += "/swipe_bear,lacerate>=6.0,lacerate_stack>=5";
+	action_list_str += "/lacerate";
 	if ( talents.berserk ) action_list_str+="/berserk";
         action_list_str += use_str;
-	action_list_str += "/mangle_bear";
-	action_list_str += "/faerie_fire_feral";
-	action_list_str += "/swipe_bear,lacerate>=5.0,lacerate_stack>=5";
-	action_list_str += "/lacerate";
       }
       else
       {
