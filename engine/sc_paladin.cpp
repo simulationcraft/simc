@@ -2221,7 +2221,7 @@ void paladin_t::init_buffs()
   buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0 );
   buffs_redoubt                = new buff_t( this, "redoubt",                5, 10.0 );
   buffs_seal_of_vengeance      = new buff_t( this, "seal_of_vengeance",      5       );
-  buffs_the_art_of_war         = new buff_t( this, "the_art_of_war",         1, 15.0 );
+  buffs_the_art_of_war         = new buff_t( this, "the_art_of_war",         1, 15.0, 0, talents.the_art_of_war );
   buffs_vengeance              = new buff_t( this, "vengeance",              3, 30.0 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
