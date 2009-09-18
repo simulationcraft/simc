@@ -1,12 +1,17 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
+#ifndef SIMCRAFTQT_H
+#define SIMCRAFTQT_H
 
 #include <QtGui>
 #include <simcraft.h>
 
 class QWebView;
 
-class MainWindow : public QWidget
+class SimcraftWindow : public QWidget
 {
     Q_OBJECT
     QTabWidget* mainTab;
@@ -53,8 +58,7 @@ private slots:
     void importTabChanged( int index );
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    SimcraftWindow(QWidget *parent = 0);
 };
 
-#endif // MAINWINDOW_H
+#endif // SIMCRAFTQT_H

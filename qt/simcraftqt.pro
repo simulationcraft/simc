@@ -5,7 +5,7 @@ QT += webkit
 TARGET = simcraftqt
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp
-HEADERS += mainwindow.h
+    sc_window.cpp
+HEADERS += simcraftqt.h
 INCLUDEPATH += ../engine
 
