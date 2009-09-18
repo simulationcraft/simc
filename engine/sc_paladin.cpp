@@ -647,18 +647,11 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.06;
     base_cost       *= 1.0 - p -> talents.benediction * 0.02;
-    base_multiplier *= 4.0;
+    base_multiplier *= 4.0 / weapon -> swing_time; // This effectively gets us 4x Base Weapon-DPS 
     cooldown         = 6;
 
     if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
-  }
-
-  virtual void player_buff()
-  {
-    paladin_attack_t::player_buff();
-    // Normalize damage via adjusted swing time.
-    player_multiplier /= haste() * weapon -> swing_time;
   }
 
   virtual void execute()

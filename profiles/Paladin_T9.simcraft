@@ -1,13 +1,13 @@
-#!simcraft
+#!./simcraft
 
 Globals_T9.simcraft
 
 optimal_raid=1
 
-Priest_T7_13_00_58.simcraft
+Paladin_T9_05_11_55.simcraft
 
-# scpaladint9
+# dedmonwakeen
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000000 name=Priest_T7_13_00_58      save=Priest_T7_13_00_58.simcraft
+#wowhead=14320165 name=Paladin_T9_05_11_55 save=Paladin_T9_05_11_55.simcraft back=garroshs_rage,id=47548
 #save_profiles=1

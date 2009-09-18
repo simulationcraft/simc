@@ -1,0 +1,58 @@
+#!./simcraft 
+
+paladin=Paladin_T8_05_11_55
+origin=http://profiler.wowhead.com/?profile=14319567
+level=80
+race=blood_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050000000000000000000000005500010000000000000000000005232250203331302133221331
+glyphs=judgement/seal_of_vengeance/consecration
+actions=flask,type=endless_rage
+actions+=/food,type=fish_feast
+actions+=/auto_attack
+actions+=/seal_of_vengeance
+actions+=/snapshot_stats
+actions+=/hammer_of_justice
+actions+=/divine_plea
+actions+=/arcane_torrent
+actions+=/avenging_wrath
+actions+=/hammer_of_wrath
+actions+=/judgement
+actions+=/divine_storm
+actions+=/crusader_strike
+actions+=/exorcism
+actions+=/consecration
+actions+=/speed_potion
+head=warhelm_of_the_champion,stats=1966armor_61hit_86crit_122str_145sta,gems=chaotic_skyflare_10crit_10str_8str,enchant=50ap_20crit
+neck=frigid_strength_of_hodir,stats=40hit_48arpen_74str_81sta,gems=16str
+shoulders=conquerors_aegis_shoulderplates,stats=1761armor_56crit_45haste_90str_102sta,gems=16str,enchant=40ap_15crit
+chest=conquerors_aegis_battleplate,stats=2348armor_79hit_49crit_113str_129sta,gems=16str_16str,enchant=10str_10agi_10sta_10int_10spi
+waist=starfall_girdle,stats=1321armor_40crit_56exp_82str_96sta,gems=16str_10crit_10str_16str_6str
+legs=conquerors_aegis_legplates,stats=2054armor_58hit_74crit_113str_129sta,gems=16str_10str_15sta_6str,enchant=75ap_22crit
+feet=sabatons_of_lifeless_night,stats=1663armor_64crit_47haste_93str_108sta,gems=16str_16str,enchant=32ap
+wrists=armbands_of_bedlam,stats=1059armor_48crit_40haste_74str_81sta,gems=16str_6crit,enchant=50ap
+hands=conquerors_aegis_gauntlets,stats=1467armor_60crit_38exp_90str_102sta,gems=16str,enchant=35ap
+finger1=seal_of_the_betrayed_king,stats=40hit_48crit_74str_81sta,gems=10str_15sta_4str
+finger2=sifs_promise,stats=42crit_42exp_72str_72sta
+trinket1=darkmoon_card_greatness,stats=90str
+trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16str_16str,enchant=23haste
+main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16str_16str,enchant=berserking,weapon=sword2h_3.60speed_244.6dps
+ranged=furious_gladiators_libram_of_fortitude
+# Gear Summary
+# gear_strength=1531
+# gear_agility=79
+# gear_stamina=1342
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=614
+# gear_expertise_rating=136
+# gear_armor_penetration_rating=147
+# gear_hit_rating=278
+# gear_crit_rating=797
+# gear_haste_rating=155
+# gear_armor=13796
+# meta_gem=chaotic_skyflare
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
+# trinket1=darkmoon_card_greatness
+# main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking

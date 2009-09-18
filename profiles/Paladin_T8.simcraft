@@ -1,13 +1,13 @@
-#!simcraft
+#!./simcraft
 
 Globals_T8.simcraft
 
 optimal_raid=1
 
-Priest_T7_13_00_58.simcraft
+Paladin_T8_05_11_55.simcraft
 
-# scpaladint8
+# dedmonwakeen
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000000 name=Priest_T7_13_00_58      save=Priest_T7_13_00_58.simcraft
+#wowhead=14319567 name=Paladin_T8_05_11_55 save=Paladin_T8_05_11_55.simcraft
 #save_profiles=1
