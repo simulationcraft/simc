@@ -6,7 +6,8 @@
 #ifndef SIMCRAFTQT_H
 #define SIMCRAFTQT_H
 
-#include <QtGui>
+#include <QtGui/QtGui>
+#include <QtNetwork/QtNetwork>
 #include <simcraft.h>
 
 class QWebView;
@@ -39,6 +40,9 @@ class SimcraftWindow : public QWidget
     QPushButton* mainButton;
     QTimer* timer;
 
+    sim_t* sim;
+    int numResults;
+    
     void createCmdLine();
     void createWelcomeTab();
     void createGlobalsTab();
@@ -47,6 +51,12 @@ class SimcraftWindow : public QWidget
     void createOverridesTab();
     void createLogTab();
     void createResultsTab();
+
+    bool armoryImport    ( QString& profile );
+    bool wowheadImport   ( QString& profile );
+    bool chardevImport   ( QString& profile );
+    bool warcrafterImport( QString& profile );
+    bool rawrImport      ( QString& profile );
 
 protected:
     virtual void closeEvent( QCloseEvent* e );
