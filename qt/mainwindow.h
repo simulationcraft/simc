@@ -1,44 +1,50 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QWidget>
+#include <QtGui>
 #include <simcraft.h>
 
-class QComboBox;
-class QLineEdit;
-class QPlainTextEdit;
-class QProgressBar;
-class QPushButton;
-class QTabWidget;
-class QTimer;
 class QWebView;
 
 class MainWindow : public QWidget
 {
     Q_OBJECT
-    QTabWidget* main_tab;
-    QComboBox* region_choice;
-    QComboBox* patch_choice;
-    QComboBox* latency_choice;
-    QComboBox* iterations_choice;
-    QComboBox* fight_length_choice;
-    QComboBox* fight_style_choice;
-    QComboBox* scale_factors_choice;
-    QComboBox* threads_choice;
-    QTabWidget* import_tab;
-    QWebView* armory_view;
-    QWebView* wowhead_view;
-    QWebView* chardev_view;
-    QWebView* warcrafter_view;
-    QLineEdit* rawr_file;
-    QPlainTextEdit* simulate_text;
-    QPlainTextEdit* overrides_text;
-    QPlainTextEdit* log_text;
-    QTabWidget* results_tab;
-    QLineEdit* cmd_line;
-    QProgressBar* progress_bar;
-    QPushButton* main_button;
+    QTabWidget* mainTab;
+    QComboBox* regionChoice;
+    QComboBox* patchChoice;
+    QComboBox* latencyChoice;
+    QComboBox* iterationsChoice;
+    QComboBox* fightLengthChoice;
+    QComboBox* fightStyleChoice;
+    QComboBox* scaleFactorsChoice;
+    QComboBox* threadsChoice;
+    QTabWidget* importTab;
+    QWebView* armoryView;
+    QWebView* wowheadView;
+    QWebView* chardevView;
+    QWebView* warcrafterView;
+    QLineEdit* rawrFile;
+    QPlainTextEdit* simulateText;
+    QPlainTextEdit* overridesText;
+    QPlainTextEdit* logText;
+    QTabWidget* resultsTab;
+    QLineEdit* cmdLine;
+    QGroupBox* cmdLineGroupBox;
+    QProgressBar* progressBar;
+    QPushButton* mainButton;
     QTimer* timer;
+
+    void createCmdLine();
+    void createWelcomeTab();
+    void createGlobalsTab();
+    void createImportTab();
+    void createSimulateTab();
+    void createOverridesTab();
+    void createLogTab();
+    void createResultsTab();
+
+protected:
+    virtual void closeEvent( QCloseEvent* e );
 
 private slots:
     void updateProgress();

@@ -1,8 +1,7 @@
 #include "mainwindow.h"
-#include <QtGui>
 #include <QtWebKit>
 
-static QComboBox* create_choice( int count, ... )
+static QComboBox* createChoice( int count, ... )
 {
     QComboBox* choice = new QComboBox();
     va_list vap;
@@ -16,20 +15,133 @@ static QComboBox* create_choice( int count, ... )
     return choice;
 }
 
+void MainWindow::createCmdLine()
+{
+    QHBoxLayout* cmdLineLayout = new QHBoxLayout();
+    cmdLineLayout->addWidget( cmdLine = new QLineEdit() );
+    cmdLineLayout->addWidget( progressBar = new QProgressBar() );
+    cmdLineLayout->addWidget( mainButton = new QPushButton( "Go!" ) );
+    progressBar->setMaximum( 100 );
+    progressBar->setMaximumWidth( 100 );
+    connect( mainButton, SIGNAL(clicked(bool)), this, SLOT(mainButtonClicked()) );
+    cmdLineGroupBox = new QGroupBox();
+    cmdLineGroupBox->setLayout( cmdLineLayout );
+}
+
+void MainWindow::createWelcomeTab()
+{
+    QLabel* welcomeLabel = new QLabel( "\n  Welcome to SimulationCraft!\n\n  Help text will be here.\n" );
+    welcomeLabel->setAlignment( Qt::AlignLeft|Qt::AlignTop );
+    mainTab->addTab( welcomeLabel, "Welcome" );
+}
+ 
+void MainWindow::createGlobalsTab()
+{
+    QFormLayout* globalsLayout = new QFormLayout();
+    globalsLayout->addRow( "Region", regionChoice = createChoice( 2, "US", "EU" ) );
+    globalsLayout->addRow( "Patch", patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
+    globalsLayout->addRow( "Latency", latencyChoice = createChoice( 2, "Low", "High" ) );
+    globalsLayout->addRow( "Iterations", iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+    globalsLayout->addRow( "Length (sec)", fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
+    globalsLayout->addRow( "Fight Style", fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+    globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
+    globalsLayout->addRow( "Threads", threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+    iterationsChoice->setCurrentIndex( 1 );
+    fightLengthChoice->setCurrentIndex( 1 );
+    threadsChoice->setCurrentIndex( 1 );
+    QGroupBox* globalsGroupBox = new QGroupBox( "Global Options" );
+    globalsGroupBox->setLayout( globalsLayout );
+    mainTab->addTab( globalsGroupBox, "Globals" );
+}
+
+void MainWindow::createImportTab()
+{
+    importTab = new QTabWidget();
+    connect( importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
+    mainTab->addTab( importTab, "Import" );
+
+    armoryView = new QWebView();
+    armoryView->setUrl( QUrl( "http://www.wowarmory.com" ) );
+    importTab->addTab( armoryView, "Armory" );
+
+    wowheadView = new QWebView();
+    wowheadView->setUrl( QUrl( "http://www.wowhead.com/?profiles" ) );
+    importTab->addTab( wowheadView, "Wowhead" );
+
+    chardevView = new QWebView();
+    chardevView->setUrl( QUrl( "http://www.chardev.org" ) );
+    importTab->addTab( chardevView, "CharDev" );
+
+    warcrafterView = new QWebView();
+    warcrafterView->setUrl( QUrl( "http://www.warcrafter.net" ) );
+    importTab->addTab( warcrafterView, "Warcrafter" );
+
+    QVBoxLayout* rawrLayout = new QVBoxLayout();
+    QLabel* rawrLabel = new QLabel( " http://rawr.codeplex.com\n\n"
+                                     "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
+                                     " The key architectural difference between Rawr and SimulationCraft is one of"
+                                     " formulation vs simulation.  There are strengths and weaknesses to each"
+                                     " approach.  Since they come from different directions, one can be confident"
+                                     " in the result when they arrive at the same destination.\n\n"
+                                     " SimulationCraft can import the character xml file written by Rawr:" );
+    rawrLabel->setWordWrap( true );
+    rawrLayout->addWidget( rawrLabel );
+    rawrLayout->addWidget( rawrFile = new QLineEdit() );
+    rawrLayout->addWidget( new QLabel( "" ), 1 );
+    QGroupBox* rawrGroupBox = new QGroupBox( "Rawr Character XML File" );
+    rawrGroupBox->setLayout( rawrLayout );
+    importTab->addTab( rawrGroupBox, "Rawr" );
+}
+
+void MainWindow::createSimulateTab()
+{
+    simulateText = new QPlainTextEdit();
+    simulateText->document()->setPlainText( "# Profiles will be downloaded into here.  Right-Click menu will Open/Save scripts." );
+    mainTab->addTab( simulateText, "Simulate" );
+}
+ 
+void MainWindow::createOverridesTab()
+{
+    overridesText = new QPlainTextEdit();
+    overridesText->document()->setPlainText( "# Examples of all available global and player parms will shown here." );
+    mainTab->addTab( overridesText, "Overrides" );
+}
+
+void MainWindow::createLogTab()
+{
+    logText = new QPlainTextEdit();
+    logText->setReadOnly(true);
+    logText->document()->setPlainText( "Standard-Out will end up here....." );
+    mainTab->addTab( logText, "Log" );
+}
+
+void MainWindow::createResultsTab()
+{
+    resultsTab = new QTabWidget();
+    resultsTab->setTabsClosable( true );
+    mainTab->addTab( resultsTab, "Results" );
+}
+
+void MainWindow::closeEvent( QCloseEvent* e ) 
+{ 
+  QCoreApplication::exit(); 
+  exit(0);
+}
+
 void MainWindow::updateProgress()
 {
 }
 
 void MainWindow::mainButtonClicked( bool checked )
 {
-    switch( main_tab->currentIndex() )
+    switch( mainTab->currentIndex() )
     {
         case 0: printf( "Launch http://code.google.com/p/simulationcraft/\n" ); break;
         case 1: printf( "Save state of all options\n" ); break;
         case 2:
         {
             QString profile = "";
-            switch( import_tab->currentIndex() )
+            switch( importTab->currentIndex() )
             {
                 case 0: profile = "# Armory Profile Here\n"; break;
                 case 1: profile = "# Wowhead Profile Here\n"; break;
@@ -38,23 +150,23 @@ void MainWindow::mainButtonClicked( bool checked )
                 case 4: profile = "# Rawr Character Import Here\n"; break;
                 default: assert(0);
             }
-            simulate_text->document()->setPlainText( profile );
-            main_tab->setCurrentIndex( 3 );
+            simulateText->document()->setPlainText( profile );
+            mainTab->setCurrentIndex( 3 );
             break;
         }
         case 3:
         case 4:
         case 5:
         {
-            QString results_name = QString( "Results %1" ).arg( results_tab->count()+1 );
-            QTextBrowser* results_browser = new QTextBrowser();
-            results_browser->document()->setPlainText( "Results Here.\n" );
-            results_tab->addTab( results_browser, results_name );
-            results_tab->setCurrentWidget( results_browser );
-            main_tab->setCurrentIndex( 6 );
+            QString resultsName = QString( "Results %1" ).arg( resultsTab->count()+1 );
+            QTextBrowser* resultsBrowser = new QTextBrowser();
+            resultsBrowser->document()->setPlainText( "Results Here.\n" );
+            resultsTab->addTab( resultsBrowser, resultsName );
+            resultsTab->setCurrentWidget( resultsBrowser );
+            mainTab->setCurrentIndex( 6 );
             break;
         }
-        case 6: printf( "Save Results: %d\n", results_tab->currentIndex() ); break;
+        case 6: printf( "Save Results: %d\n", resultsTab->currentIndex() ); break;
         default: assert(0);
     }
     fflush(stdout);
@@ -64,13 +176,13 @@ void MainWindow::mainTabChanged( int index )
 {
     switch( index )
     {
-        case 0: main_button->setText( "Go!"       ); break;
-        case 1: main_button->setText( "Save!"     ); break;
-        case 2: main_button->setText( "Import!"   ); break;
-        case 3: main_button->setText( "Simulate!" ); break;
-        case 4: main_button->setText( "Simulate!" ); break;
-        case 5: main_button->setText( "Simulate!" ); break;
-        case 6: main_button->setText( "Save!"     ); break;
+        case 0: mainButton->setText( "Go!"       ); break;
+        case 1: mainButton->setText( "Save!"     ); break;
+        case 2: mainButton->setText( "Import!"   ); break;
+        case 3: mainButton->setText( "Simulate!" ); break;
+        case 4: mainButton->setText( "Simulate!" ); break;
+        case 5: mainButton->setText( "Simulate!" ); break;
+        case 6: mainButton->setText( "Save!"     ); break;
         default: assert(0);
     }
 }
@@ -82,94 +194,28 @@ void MainWindow::importTabChanged( int index )
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
-    QHBoxLayout* cmd_line_layout = new QHBoxLayout();
-    cmd_line_layout->addWidget( cmd_line = new QLineEdit() );
-    cmd_line_layout->addWidget( progress_bar = new QProgressBar() );
-    cmd_line_layout->addWidget( main_button = new QPushButton( "Go!" ) );
-    progress_bar->setMaximum( 100 );
-    progress_bar->setMaximumWidth( 100 );
-    connect( main_button, SIGNAL(clicked(bool)), this, SLOT(mainButtonClicked()) );
-    QGroupBox* cmd_line_groupbox = new QGroupBox();
-    cmd_line_groupbox->setLayout( cmd_line_layout );
+    mainTab = new QTabWidget();
 
-    main_tab = new QTabWidget();
-    connect( main_tab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
+    createWelcomeTab();
+    createGlobalsTab();
+    createImportTab();
+    createSimulateTab();
+    createOverridesTab();
+    createLogTab();
+    createResultsTab();
+    createCmdLine();
 
-    QLabel* welcome_label = new QLabel( "\n  Welcome to SimulationCraft!\n\n  Help text will be here.\n" );
-    welcome_label->setAlignment( Qt::AlignLeft|Qt::AlignTop );
-    main_tab->addTab( welcome_label, "Welcome" );
-
-    QFormLayout* globals_layout = new QFormLayout();
-    globals_layout->addRow( "Region", region_choice = create_choice( 2, "US", "EU" ) );
-    globals_layout->addRow( "Patch", patch_choice = create_choice( 2, "3.2.0", "3.2.2" ) );
-    globals_layout->addRow( "Latency", latency_choice = create_choice( 2, "Low", "High" ) );
-    globals_layout->addRow( "Iterations", iterations_choice = create_choice( 3, "100", "1000", "10000" ) );
-    globals_layout->addRow( "Length (sec)", fight_length_choice = create_choice( 3, "100", "300", "500" ) );
-    globals_layout->addRow( "Fight Style", fight_style_choice = create_choice( 2, "Patchwerk", "Helter Skelter" ) );
-    globals_layout->addRow( "Scale Factors", scale_factors_choice = create_choice( 2, "No", "Yes" ) );
-    globals_layout->addRow( "Threads", threads_choice = create_choice( 4, "1", "2", "4", "8" ) );
-    iterations_choice->setCurrentIndex( 1 );
-    fight_length_choice->setCurrentIndex( 1 );
-    threads_choice->setCurrentIndex( 1 );
-    QGroupBox* globals_groupbox = new QGroupBox( "Global Options" );
-    globals_groupbox->setLayout( globals_layout );
-    main_tab->addTab( globals_groupbox, "Globals" );
-
-    import_tab = new QTabWidget();
-    connect( import_tab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
-    main_tab->addTab( import_tab, "Import" );
-
-    armory_view = new QWebView();
-    armory_view->setUrl( QUrl( "http://www.wowarmory.com" ) );
-    import_tab->addTab( armory_view, "Armory" );
-
-    wowhead_view = new QWebView();
-    wowhead_view->setUrl( QUrl( "http://www.wowhead.com/?profiles" ) );
-    import_tab->addTab( wowhead_view, "Wowhead" );
-
-    chardev_view = new QWebView();
-    chardev_view->setUrl( QUrl( "http://www.chardev.org" ) );
-    import_tab->addTab( chardev_view, "CharDev" );
-
-    warcrafter_view = new QWebView();
-    warcrafter_view->setUrl( QUrl( "http://www.warcrafter.net" ) );
-    import_tab->addTab( warcrafter_view, "Warcrafter" );
-
-    QVBoxLayout* rawr_layout = new QVBoxLayout();
-    rawr_layout->addWidget( new QLabel( "\nhttp://rawr.codeplex.com\n\n" ) );
-    rawr_layout->addWidget( rawr_file = new QLineEdit() );
-    rawr_layout->addWidget( new QLabel( "" ), 1 );
-    QGroupBox* rawr_groupbox = new QGroupBox( "Rawr Character XML File" );
-    rawr_groupbox->setLayout( rawr_layout );
-    import_tab->addTab( rawr_groupbox, "Rawr" );
-
-    simulate_text = new QPlainTextEdit();
-    simulate_text->document()->setPlainText( "# Profiles will be downloaded into here.  Right-Click menu will Open/Save scripts." );
-    main_tab->addTab( simulate_text, "Simulate" );
-
-    overrides_text = new QPlainTextEdit();
-    overrides_text->document()->setPlainText( "# Examples of all available global and player parms will shown here." );
-    main_tab->addTab( overrides_text, "Overrides" );
-
-    log_text = new QPlainTextEdit();
-    log_text->setReadOnly(true);
-    log_text->document()->setPlainText( "Standard-Out will end up here....." );
-    main_tab->addTab( log_text, "Log" );
-
-    results_tab = new QTabWidget();
-    results_tab->setTabsClosable( true );
-    main_tab->addTab( results_tab, "Results" );
-
-    QVBoxLayout* v_layout = new QVBoxLayout();
-    v_layout->addWidget( main_tab );
-    v_layout->addWidget( cmd_line_groupbox );
-    setLayout( v_layout );
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->addWidget( mainTab );
+    vLayout->addWidget( cmdLineGroupBox );
+    setLayout( vLayout );
 
     timer = new QTimer();
     connect( timer, SIGNAL(timeout()), this, SLOT(updateProgress()) );
+
+    connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
 }
 
 MainWindow::~MainWindow()
 {
-    exit(0);
 }
