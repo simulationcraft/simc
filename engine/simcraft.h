@@ -2072,8 +2072,8 @@ struct action_callback_t
   virtual void deactivate() { active=false; }
   static void trigger( std::vector<action_callback_t*>& v, action_t* a )
   {
-    int size = v.size();
-    for ( int i=0; i < size; i++ )
+    size_t size = v.size();
+    for ( size_t i=0; i < size; i++ )
     {
       action_callback_t* cb = v[ i ];
       if ( cb -> active ) cb -> trigger( a );
@@ -2081,8 +2081,8 @@ struct action_callback_t
   }
   static void   reset( std::vector<action_callback_t*>& v )
   {
-    int size = v.size();
-    for ( int i=0; i < size; i++ )
+    size_t size = v.size();
+    for ( size_t i=0; i < size; i++ )
     {
       v[ i ] -> reset();
     }

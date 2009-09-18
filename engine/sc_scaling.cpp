@@ -128,7 +128,7 @@ void scaling_t::analyze_stats()
 {
   if ( ! calculate_scale_factors ) return;
 
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
   sim_t* baseline_sim = sim;
@@ -206,7 +206,7 @@ void scaling_t::analyze_lag()
 {
   if ( ! calculate_scale_factors || ! scale_lag ) return;
 
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
   util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
@@ -326,5 +326,5 @@ int scaling_t::get_options( std::vector<option_t>& options )
 
   option_t::copy( options, scaling_options );
 
-  return options.size();
+  return ( int ) options.size();
 }

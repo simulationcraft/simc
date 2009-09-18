@@ -12,7 +12,7 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 static bool is_number( const std::string s )
 {
-  int size = s.size();
+  int size = ( int ) s.size();
   for ( int i=0; i < size; i++ )
     if ( ! isdigit( s[ i ] ) )
       return false;
@@ -28,7 +28,7 @@ static void stat_search( std::string&              encoding_str,
 {
   std::vector<std::string> stat_tokens;
   int num_stats = util_t::string_split( stat_tokens, stat_str, " " );
-  int num_descriptions = description_tokens.size();
+  int num_descriptions = ( int ) description_tokens.size();
 
   for ( int i=0; i < num_descriptions; i++ )
   {
@@ -604,7 +604,7 @@ bool armory_t::download_guild( sim_t* sim,
     }
   }
 
-  num_characters = character_names.size();
+  num_characters = ( int ) character_names.size();
   if ( num_characters > 0 )
   {
     std::sort( character_names.begin(), character_names.end() );
@@ -963,7 +963,7 @@ std::string& armory_t::format( std::string& name, int format_type )
     break;
   }
 
-  int size = name.size();
+  int size = ( int ) name.size();
   for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];

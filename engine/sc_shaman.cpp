@@ -2818,7 +2818,7 @@ void shaman_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
       action_list_str += "/bloodlust,time_to_die<=60";
-      int num_items = items.size();
+      int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
         if ( items[ i ].use.active() )
@@ -2852,7 +2852,7 @@ void shaman_t::init_actions()
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
       action_list_str += "/snapshot_stats";
       action_list_str += "/bloodlust,time_to_die<=59";
-      int num_items = items.size();
+      int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
         if ( items[ i ].use.active() )

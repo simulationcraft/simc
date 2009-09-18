@@ -266,6 +266,6 @@ int target_t::get_options( std::vector<option_t>& options )
 
   option_t::copy( options, target_options );
 
-  return options.size();
+  return ( int ) options.size();
 }
 

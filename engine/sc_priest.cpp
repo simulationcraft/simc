@@ -381,7 +381,7 @@ void priest_spell_t::assess_damage( double amount,
       r = r -> next_pet;
     }
 
-    int num_players = p -> party_list.size();
+    int num_players = ( int ) p -> party_list.size();
 
     for ( int i=0; i < num_players; i++ )
     {
@@ -1934,7 +1934,7 @@ void priest_t::init_actions()
 
     action_list_str += "/snapshot_stats";
 
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

@@ -3626,7 +3626,7 @@ void warlock_t::init_actions()
     {
       action_list_str+="/life_tap,buff_refresh=1";
     }
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

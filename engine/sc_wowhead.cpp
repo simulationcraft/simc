@@ -16,7 +16,7 @@ std::string& format_server( std::string& name )
 
   std::string buffer="";
 
-  int size = name.size();
+  int size = ( int ) name.size();
   for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];

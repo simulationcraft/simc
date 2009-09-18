@@ -595,7 +595,7 @@ void druid_cat_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",          OPT_BOOL, &berserk                },
+    { "berserk",          OPT_INT,  &berserk                },
     { "min_combo_points", OPT_INT,  &min_combo_points       },
     { "max_combo_points", OPT_INT,  &max_combo_points       },
     { "cp>",              OPT_INT,  &min_combo_points       },
@@ -1365,7 +1365,7 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",         OPT_BOOL, &berserk             },
+    { "berserk",         OPT_INT,  &berserk             },
     { "rage>",           OPT_FLT,  &min_rage            },
     { "rage<",           OPT_FLT,  &max_rage            },
     { "mangle>",         OPT_FLT,  &min_mangle_expire   },
@@ -1978,10 +1978,11 @@ struct auto_attack_t : public action_t
 
 struct berserk_t : public druid_spell_t
 {
-  int tigers_fury;
+  bool tigers_fury;
 
   berserk_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "berserk", player, RESOURCE_NONE, TREE_FERAL )
+    druid_spell_t( "berserk", player, RESOURCE_NONE, TREE_FERAL ),
+    tigers_fury( false )
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.berserk );
@@ -3513,7 +3514,7 @@ void druid_t::init_actions()
   if ( action_list_str.empty() )
   {
     std::string use_str = "";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )
@@ -3594,7 +3595,7 @@ void druid_t::init_actions()
 
   player_t::init_actions();
 
-  num_active_mauls = active_mauls.size();
+  num_active_mauls = ( int ) active_mauls.size();
 }
 
 // druid_t::reset ===========================================================

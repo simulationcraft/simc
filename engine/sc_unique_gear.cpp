@@ -115,7 +115,7 @@ void unique_gear_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
-  int num_items = p -> items.size();
+  int num_items = ( int ) p -> items.size();
 
   for ( int i=0; i < num_items; i++ )
   {

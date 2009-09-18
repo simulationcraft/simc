@@ -84,7 +84,7 @@ struct movement_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = affected_players.size();
+    int num_affected = ( int )affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
@@ -95,7 +95,7 @@ struct movement_event_t : public raid_event_t
   }
   virtual void finish()
   {
-    int num_affected = affected_players.size();
+    int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
@@ -118,7 +118,7 @@ struct stun_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = affected_players.size();
+    int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
@@ -129,7 +129,7 @@ struct stun_event_t : public raid_event_t
   }
   virtual void finish()
   {
-    int num_affected = affected_players.size();
+    int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
@@ -168,7 +168,7 @@ struct damage_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = affected_players.size();
+    int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
@@ -448,7 +448,7 @@ void raid_event_t::init( sim_t* sim )
 
 void raid_event_t::reset( sim_t* sim )
 {
-  int num_events = sim -> raid_events.size();
+  int num_events = ( int ) sim -> raid_events.size();
   for ( int i=0; i < num_events; i++ )
   {
     sim -> raid_events[ i ] -> reset();
@@ -461,7 +461,7 @@ void raid_event_t::combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.celerity ) sim -> auras.celerity -> override();
 
-  int num_events = sim -> raid_events.size();
+  int num_events = ( int ) sim -> raid_events.size();
   for ( int i=0; i < num_events; i++ )
   {
     sim -> raid_events[ i ] -> schedule();

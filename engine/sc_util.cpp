@@ -12,8 +12,8 @@ bool my_isdigit( char c );
 static bool str_compare_ci( const std::string& l,
 			    const std::string& r )
 {
-  int l_size = l.size();
-  int r_size = r.size();
+  int l_size = ( int ) l.size();
+  int r_size = ( int ) r.size();
 
   if( l_size != r_size ) return false;
 
@@ -1156,7 +1156,7 @@ std::string& util_t::utf8_binary_to_hex( std::string& name )
   std::string buffer="";
   char buffer2[32];
 
-  int size = name.size();
+  int size = ( int ) name.size();
   for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
@@ -1183,7 +1183,7 @@ std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
   std::string buffer="";
   char buffer2[32];
 
-  int size = name.size();
+  int size = ( int ) name.size();
   for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
@@ -1218,7 +1218,7 @@ std::string& util_t::utf8_hex_to_ascii( std::string& name )
 
   std::string buffer="";
 
-  int size = name.size();
+  int size = ( int ) name.size();
   for ( int i=0; i < size; i++ )
   {
     unsigned char c = name[ i ];
@@ -1380,7 +1380,7 @@ std::string trim( std::string src )
   if ( p>0 )
     dest.erase( 0,p );
   //remove right
-  p=dest.length()-1;
+  p= ( int ) dest.length()-1;
   while ( ( p>=0 )&&( dest[p]==' ' ) ) p--;
   if ( p<( int )dest.length()-1 )
     dest.erase( p+1 );

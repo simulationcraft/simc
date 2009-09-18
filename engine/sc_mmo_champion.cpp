@@ -75,7 +75,7 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
     get_tti_nodes( nodes, children[ i ], name );
   }
 
-  return nodes.size();
+  return ( int ) nodes.size();
 }
 
 // get_tti_value ===========================================================
@@ -131,7 +131,7 @@ static int get_tti_value( std::vector<std::string>& values,
     get_tti_value( values, children[ i ], name );
   }
 
-  return values.size();
+  return ( int ) values.size();
 }
 
 // parse_gems ===============================================================

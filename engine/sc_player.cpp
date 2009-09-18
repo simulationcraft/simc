@@ -88,7 +88,7 @@ static void choose_replenish_targets( player_t* provider )
 
   bool replenishment_missing = false;
 
-  for ( int i = candidates.size() - 1; i >= 0; i-- )
+  for ( int i = ( int ) candidates.size() - 1; i >= 0; i-- )
   {
     player_t* p = candidates[ i ];
 
@@ -103,7 +103,7 @@ static void choose_replenish_targets( player_t* provider )
 
   if ( ! replenishment_missing ) return;
 
-  for ( int i = targets.size() - 1; i >= 0; i-- )
+  for ( int i = ( int ) targets.size() - 1; i >= 0; i-- )
   {
     targets[ i ] -> buffs.replenishment -> current_value = -1.0;
   }
@@ -114,7 +114,7 @@ static void choose_replenish_targets( player_t* provider )
     player_t* min_player=0;
     double    min_mana=0;
 
-    for ( int j = candidates.size() - 1; j >= 0; j-- )
+    for ( int j = ( int ) candidates.size() - 1; j >= 0; j-- )
     {
       player_t* p = candidates[ j ];
 
@@ -134,7 +134,7 @@ static void choose_replenish_targets( player_t* provider )
     else break;
   }
 
-  for ( int i = candidates.size() - 1; i >= 0; i-- )
+  for ( int i = ( int ) candidates.size() - 1; i >= 0; i-- )
   {
     player_t* p = candidates[ i ];
 
@@ -493,7 +493,7 @@ void player_t::init_items()
 
   gear_stats_t item_stats;
 
-  int num_items = items.size();
+  int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
     item_t& item = items[ i ];
@@ -1048,7 +1048,7 @@ void player_t::init_expressions()
 
 item_t* player_t::find_item( const std::string& str )
 {
-  int num_items = items.size();
+  int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
     if ( str == items[ i ].name() )
       return &( items[ i ] );
@@ -2013,7 +2013,7 @@ void player_t::regen( double periodicity )
   if ( resource_type != RESOURCE_NONE )
   {
     int index = ( int ) sim -> current_time;
-    int size = timeline_resource.size();
+    int size = ( int ) timeline_resource.size();
 
     if ( index >= size ) timeline_resource.insert( timeline_resource.begin() + size, size, 0 );
 
@@ -3227,7 +3227,7 @@ bool player_t::parse_talent_tree( std::vector<int*>& talent_tree,
 {
   const char* s = talent_string.c_str();
 
-  unsigned int size = std::min( talent_tree.size(), talent_string.size() );
+  unsigned int size = ( unsigned int ) std::min( talent_tree.size(), talent_string.size() );
 
   for ( unsigned int i=0; i < size; i++ )
   {
@@ -3254,9 +3254,9 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   if ( ! get_talent_trees( talent_tree1, talent_tree2, talent_tree3 ) )
     return false;
 
-  int size1 = talent_tree1.size();
-  int size2 = talent_tree2.size();
-  int size3 = talent_tree3.size();
+  int size1 = ( int ) talent_tree1.size();
+  int size2 = ( int ) talent_tree2.size();
+  int size3 = ( int ) talent_tree3.size();
 
   std::string buffer = talent_string;
 
@@ -3313,7 +3313,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   for ( int i=0; i < 3; i++ )
   {
-    tree_size[ i ] = talent_trees[ i ].size();
+    tree_size[ i ] = ( unsigned int ) talent_trees[ i ].size();
   }
 
   std::string talent_strings[ 3 ];

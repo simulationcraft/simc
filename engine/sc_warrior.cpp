@@ -2360,7 +2360,7 @@ void warrior_t::init_actions()
     else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive";
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )
@@ -2433,7 +2433,7 @@ void warrior_t::init_actions()
 
   player_t::init_actions();
 
-  num_active_heroic_strikes = active_heroic_strikes.size();
+  num_active_heroic_strikes = ( int ) active_heroic_strikes.size();
 }
 
 // warrior_t::primary_tree ====================================================

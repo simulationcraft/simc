@@ -365,13 +365,13 @@ sim_t::~sim_t()
   if ( target  ) delete target;
   if ( scaling ) delete scaling;
 
-  int num_events = raid_events.size();
+  int num_events = ( int ) raid_events.size();
   for ( int i=0; i < num_events; i++ )
   {
     delete raid_events[ i ];
   }
 
-  int num_children = children.size();
+  int num_children = ( int ) children.size();
   for ( int i=0; i < num_children; i++ )
   {
     delete children[ i ];
@@ -780,7 +780,7 @@ void sim_t::analyze()
       }
     }
 
-    int num_stats = stats_list.size();
+    int num_stats = ( int ) stats_list.size();
 
     for ( int i=0; i < num_stats; i++ )
     {
@@ -809,7 +809,7 @@ void sim_t::analyze()
     if ( ! p -> is_pet() ) total_dmg += p -> total_dmg;
 
     int max_buckets = ( int ) p -> total_seconds;
-    int num_buckets = p -> timeline_resource.size();
+    int num_buckets = ( int ) p -> timeline_resource.size();
 
     if ( num_buckets > max_buckets ) p -> timeline_resource.resize( max_buckets );
 
@@ -1003,7 +1003,7 @@ void sim_t::merge( sim_t& other_sim )
       p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
     }
 
-    int num_buckets = std::min(       p -> timeline_resource.size(),
+    int num_buckets = ( int ) std::min(       p -> timeline_resource.size(),
 				other_p -> timeline_resource.size() );
 
     for ( int i=0; i < num_buckets; i++ )
@@ -1048,7 +1048,7 @@ void sim_t::merge( sim_t& other_sim )
 
 void sim_t::merge()
 {
-  int num_children = children.size();
+  int num_children = ( int ) children.size();
 
   for ( int i=0; i < num_children; i++ )
   {
@@ -1249,7 +1249,7 @@ void sim_t::print_options()
   util_t::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
   std::vector<option_t>& options = get_options();
-  int num_options = options.size();
+  int num_options = ( int ) options.size();
 
   util_t::fprintf( output_file, "\nSimulation Engine:\n" );
   for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
@@ -1257,7 +1257,7 @@ void sim_t::print_options()
   for ( player_t* p = player_list; p; p = p -> next )
   {
     std::vector<option_t>& options = p -> get_options();
-    int num_options = options.size();
+    int num_options = ( int ) options.size();
 
     util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
     for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
@@ -1524,7 +1524,7 @@ void sim_t::cancel()
 {
   canceled = 1;
 
-  int num_children = children.size();
+  int num_children = ( int ) children.size();
 
   for ( int i=0; i < num_children; i++ )
   {

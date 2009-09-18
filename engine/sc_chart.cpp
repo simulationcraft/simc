@@ -98,7 +98,7 @@ static const char* extended_encoding( int number )
 int chart_t::raid_dps( std::vector<std::string>& images,
                        sim_t* sim )
 {
-  int num_players = sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_rank.size();
   assert( num_players != 0 );
 
   double max_dps = sim -> players_by_rank[ 0 ] -> dps;
@@ -153,11 +153,11 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     images.push_back( s );
 
     player_list.erase( player_list.begin(), player_list.begin() + num_players );
-    num_players = player_list.size();
+    num_players = ( int ) player_list.size();
     if ( num_players == 0 ) break;
   }
 
-  return images.size();
+  return ( int ) images.size();
 }
 
 // chart_t::raid_gear ========================================================
@@ -165,7 +165,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
 {
-  int num_players = sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_rank.size();
   assert( num_players != 0 );
 
   std::vector<double> data_points[ STAT_MAX ];
@@ -301,11 +301,11 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     }
 
     player_list.erase( player_list.begin(), player_list.begin() + num_players );
-    num_players = player_list.size();
+    num_players = ( int ) player_list.size();
     if ( num_players == 0 ) break;
   }
 
-  return images.size();
+  return ( int ) images.size();
 }
 
 // chart_t::raid_downtime =====================================================
@@ -313,7 +313,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 const char* chart_t::raid_downtime( std::string& s,
                                     sim_t* sim )
 {
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   assert( num_players != 0 );
 
   std::vector<player_t*> waiting_list;
@@ -327,7 +327,7 @@ const char* chart_t::raid_downtime( std::string& s,
     }
   }
 
-  int num_waiting = waiting_list.size();
+  int num_waiting = ( int ) waiting_list.size();
   if ( num_waiting == 0 ) return 0;
 
   char buffer[ 1024 ];
@@ -385,7 +385,7 @@ struct compare_dpet
 int chart_t::raid_dpet( std::vector<std::string>& images,
                         sim_t* sim )
 {
-  int num_players = sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_rank.size();
   assert( num_players != 0 );
 
   std::vector<stats_t*> stats_list;
@@ -404,7 +404,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     }
   }
 
-  int num_stats = stats_list.size();
+  int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
@@ -462,11 +462,11 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     images.push_back( s );
 
     stats_list.erase( stats_list.begin(), stats_list.begin() + num_stats );
-    num_stats = stats_list.size();
+    num_stats = ( int ) stats_list.size();
     if ( num_stats == 0 ) break;
   }
 
-  return images.size();
+  return ( int ) images.size();
 }
 
 // chart_t::action_dpet ======================================================
@@ -497,7 +497,7 @@ const char* chart_t::action_dpet( std::string& s,
     }
   }
 
-  int num_stats = stats_list.size();
+  int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
@@ -573,7 +573,7 @@ const char* chart_t::action_dmg( std::string& s,
     }
   }
 
-  int num_stats = stats_list.size();
+  int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dmg() );
@@ -638,7 +638,7 @@ const char* chart_t::gains( std::string& s,
     gains_list.push_back( g );
   }
 
-  int num_gains = gains_list.size();
+  int num_gains = ( int ) gains_list.size();
   if ( num_gains == 0 ) return 0;
 
   std::sort( gains_list.begin(), gains_list.end(), compare_gain() );
@@ -683,7 +683,7 @@ const char* chart_t::gains( std::string& s,
 const char* chart_t::timeline_dps( std::string& s,
                                    player_t* p )
 {
-  int max_buckets = p -> timeline_dps.size();
+  int max_buckets = ( int ) p -> timeline_dps.size();
   int max_points  = 600;
   int increment   = 1;
 
@@ -744,7 +744,7 @@ const char* chart_t::timeline_resource( std::string& s,
 {
   if ( p -> primary_resource() == RESOURCE_NONE ) return 0;
 
-  int max_buckets = p -> timeline_resource.size();
+  int max_buckets = ( int ) p -> timeline_resource.size();
   int max_points  = 600;
   int increment   = 1;
 
@@ -803,7 +803,7 @@ const char* chart_t::timeline_resource( std::string& s,
 const char* chart_t::distribution_dps( std::string& s,
                                        player_t* p )
 {
-  int max_buckets = p -> distribution_dps.size();
+  int max_buckets = ( int ) p -> distribution_dps.size();
 
   int count_max=0;
   for ( int i=0; i < max_buckets; i++ )

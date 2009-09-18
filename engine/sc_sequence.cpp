@@ -90,7 +90,7 @@ void sequence_t::reset()
 
 bool sequence_t::ready()
 {
-  int size = sub_actions.size();
+  int size = ( int ) sub_actions.size();
   if ( size == 0 ) return false;
 
   wait_on_ready = 0;

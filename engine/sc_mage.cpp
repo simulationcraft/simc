@@ -3023,7 +3023,7 @@ void mage_t::init_actions()
     action_list_str += "/counterspell";
     if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
     action_list_str += "/mirror_image";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

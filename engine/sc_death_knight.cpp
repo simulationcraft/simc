@@ -1924,7 +1924,7 @@ void death_knight_t::init_actions()
     action_list_str += "/blood_presence";
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

@@ -23,7 +23,7 @@ struct xml_node_t
   const char* name() { return name_str.c_str(); }
   xml_parm_t* get_parm( const std::string& name_str )
   {
-    int num_parms = parameters.size();
+    int num_parms = ( int ) parameters.size();
     for ( int i=0; i < num_parms; i++ )
       if ( name_str == parameters[ i ].name() )
         return &( parameters[ i ] );
@@ -237,7 +237,7 @@ static int create_children( xml_node_t*             root,
     }
   }
 
-  return root -> children.size();
+  return ( int ) root -> children.size();
 }
 
 // search_tree =============================================================
@@ -248,7 +248,7 @@ static xml_node_t* search_tree( xml_node_t*        root,
   if ( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
     return root;
 
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = search_tree( root -> children[ i ], name_str );
@@ -307,7 +307,7 @@ xml_node_t* xml_t::download( const std::string& url,
   thread_t::mutex_lock( xml_mutex );
 
   static std::vector<xml_cache_t> xml_cache;
-  int size = xml_cache.size();
+  int size = ( int ) xml_cache.size();
 
   xml_node_t* node = 0;
 
@@ -340,7 +340,7 @@ xml_node_t* xml_t::download_cache( const std::string& url,
   thread_t::mutex_lock( xml_mutex );
 
   static std::vector<xml_cache_t> xml_cache;
-  int size = xml_cache.size();
+  int size = ( int ) xml_cache.size();
 
   if ( timestamp < 0 ) timestamp = 0;
 
@@ -400,7 +400,7 @@ xml_node_t* xml_t::create( FILE* input )
 xml_node_t* xml_t::get_child( xml_node_t*        root,
                               const std::string& name_str )
 {
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = root -> children[ i ];
@@ -416,7 +416,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
                          xml_node_t*               root,
                          const std::string&        name_str )
 {
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = root -> children[ i ];
@@ -426,7 +426,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
     }
   }
 
-  return nodes.size();
+  return ( int ) nodes.size();
 }
 
 // xml_t::get_node =========================================================
@@ -460,14 +460,14 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
     std::string name_str;
     xml_node_t* node = split_path( root, name_str, path );
 
-    int num_children = node -> children.size();
+    int num_children = ( int ) node -> children.size();
     for ( int i=0; i < num_children; i++ )
     {
       get_nodes( nodes, node -> children[ i ], name_str );
     }
   }
 
-  return nodes.size();
+  return ( int ) nodes.size();
 }
 
 // xml_t::get_value ========================================================
@@ -536,7 +536,7 @@ void xml_t::print( xml_node_t* root,
 
   util_t::fprintf( file, "%*s%s", spacing, "", root -> name() );
 
-  int num_parms = root -> parameters.size();
+  int num_parms = ( int ) root -> parameters.size();
   for ( int i=0; i < num_parms; i++ )
   {
     xml_parm_t& parm = root -> parameters[ i ];
@@ -544,7 +544,7 @@ void xml_t::print( xml_node_t* root,
   }
   util_t::fprintf( file, "\n" );
 
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     print( root -> children[ i ], file, spacing+2 );

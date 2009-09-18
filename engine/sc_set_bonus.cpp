@@ -116,7 +116,7 @@ int set_bonus_t::decode( player_t* p,
 
 bool set_bonus_t::init( player_t* p )
 {
-  int num_items = p -> items.size();
+  int num_items = ( int ) p -> items.size();
 
   for ( int i=0; i < num_items; i++ )
   {

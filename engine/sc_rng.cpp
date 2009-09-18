@@ -418,7 +418,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     if ( average_range ) return ( min + max ) / 2.0;
     num_range++;
-    int size = range_distribution.size();
+    int size = ( int ) range_distribution.size();
     if ( ++range_index >= size ) range_index = 0;
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
@@ -429,7 +429,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     if ( average_gauss ) return mean;
     num_gauss++;
-    int size = gauss_distribution.size();
+    int size = ( int ) gauss_distribution.size();
     if ( ++gauss_index >= size ) gauss_index = 0;
     double result = mean + gauss_distribution[ gauss_index ] * stddev;
     expected_gauss += mean;
@@ -494,7 +494,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     if ( chance >= 1 ) return 1;
     double avg_chance = ( num_roll > 0 ) ? ( expected_roll / num_roll ) : chance;
     num_roll++;
-    int size = roll_distribution.size();
+    int size = ( int ) roll_distribution.size();
     if ( ++roll_index >= size )
     {
       double exact_procs = avg_chance * size + expected_roll - actual_roll;
@@ -530,7 +530,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   virtual double range( double min, double max )
   {
     if ( average_range ) return ( min + max ) / 2.0;
-    int size = range_distribution.size();
+    int size = ( int ) range_distribution.size();
     if ( ++range_index >= size )
     {
       for ( int i=0; i < size; i++ )
@@ -550,7 +550,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   virtual double gauss( double mean, double stddev )
   {
     if ( average_gauss ) return mean;
-    int size = gauss_distribution.size();
+    int size = ( int ) gauss_distribution.size();
     if ( ++gauss_index >= size )
     {
       for ( int i=0; i < size; i++ )

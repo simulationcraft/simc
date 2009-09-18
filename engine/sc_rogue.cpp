@@ -2833,7 +2833,7 @@ void rogue_t::init_actions()
     action_list_str += "/snapshot_stats";
     if ( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
     action_list_str += "/kick";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )
@@ -3272,7 +3272,7 @@ void rogue_t::combat_begin()
   {
     if ( party == 0 ) // Virtual Party
     {
-      int num_intervals = critical_strike_intervals.size();
+      int num_intervals = ( int ) critical_strike_intervals.size();
 
       for( int i=0; i < num_intervals; i++ )
       {
@@ -3314,7 +3314,7 @@ void rogue_t::reset()
   _expirations.reset();
 
   // Reset the callbacks for the Virtual Party
-  int num_intervals = critical_strike_callbacks.size();
+  int num_intervals = ( int ) critical_strike_callbacks.size();
   for( int i=0; i < num_intervals; i++ )
   {
     critical_strike_callbacks[ i ] -> reset();

@@ -213,7 +213,7 @@ static js_node_t* search_tree( js_node_t*          root,
   if ( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
     return root;
 
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = search_tree( root -> children[ i ], name_str );
@@ -273,7 +273,7 @@ js_node_t* js_t::create( FILE* input )
 js_node_t* js_t::get_child( js_node_t*         root,
                             const std::string& name_str )
 {
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = root -> children[ i ];
@@ -289,14 +289,14 @@ int js_t::get_children( std::vector<js_node_t*>& nodes,
                         js_node_t*               root,
                         const std::string&       name_str )
 {
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = root -> children[ i ];
     if ( name_str == node -> name() ) nodes.push_back( node );
   }
 
-  return nodes.size();
+  return ( int ) nodes.size();
 }
 
 // js_t::get_node =========================================================
@@ -338,14 +338,14 @@ int js_t::get_nodes( std::vector<js_node_t*>& nodes,
       name_str = splits[ num_splits-1 ];
     }
 
-    int num_children = node -> children.size();
+    int num_children = ( int ) node -> children.size();
     for ( int i=0; i < num_children; i++ )
     {
       get_nodes( nodes, node -> children[ i ], name_str );
     }
   }
 
-  return nodes.size();
+  return ( int ) nodes.size();
 }
 
 // js_t::get_value ========================================================
@@ -397,7 +397,7 @@ int js_t::get_value( std::vector<std::string>& value,
   if ( ! node ) return 0;
   if ( node -> vector_value.empty() ) return 0;
   value = node -> vector_value;
-  return value.size();
+  return ( int ) value.size();
 }
 
 // js_t::print ============================================================
@@ -416,7 +416,7 @@ void js_t::print( js_node_t* root,
   {
     util_t::fprintf( file, " : '%s'", root -> scalar_value.c_str() );
   }
-  int num_vector_values = root -> vector_value.size();
+  int num_vector_values = ( int ) root -> vector_value.size();
   if ( num_vector_values > 0 )
   {
     util_t::fprintf( file, " : [" );
@@ -428,7 +428,7 @@ void js_t::print( js_node_t* root,
   }
   util_t::fprintf( file, "\n" );
 
-  int num_children = root -> children.size();
+  int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
     print( root -> children[ i ], file, spacing+2 );

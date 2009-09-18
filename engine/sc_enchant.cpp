@@ -642,7 +642,7 @@ void enchant_t::init( player_t* p )
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }
 
-  int num_items = p -> items.size();
+  int num_items = ( int ) p -> items.size();
   for ( int i=0; i < num_items; i++ )
   {
     item_t& item = p -> items[ i ];

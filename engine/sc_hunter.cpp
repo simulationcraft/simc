@@ -3360,7 +3360,7 @@ void hunter_t::init_actions()
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

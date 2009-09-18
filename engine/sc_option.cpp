@@ -158,7 +158,7 @@ void option_t::save( FILE* file )
 void option_t::copy( std::vector<option_t>& opt_vector,
                      option_t*              opt_array )
 {
-  int vector_size = opt_vector.size();
+  int vector_size = ( int ) opt_vector.size();
   int  array_size = 0;
 
   for ( int i=0; opt_array[ i ].name; i++ ) array_size++;
@@ -212,7 +212,7 @@ bool option_t::parse( sim_t*                 sim,
                       const std::string&     name,
                       const std::string&     value )
 {
-  int num_options = options.size();
+  int num_options = ( int ) options.size();
 
   for ( int i=0; i < num_options; i++ )
     if ( options[ i ].parse( sim, name, value ) )

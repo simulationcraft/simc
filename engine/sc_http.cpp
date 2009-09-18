@@ -152,13 +152,13 @@ bool http_t::cache_save()
   FILE* file = fopen( url_cache_file, "wb" );
   if ( file )
   {
-    uint32_t num_records = url_cache_db.size();
+    uint32_t num_records = ( uint32_t ) url_cache_db.size();
     uint32_t max_size=0;
 
     for ( unsigned i=0; i < num_records; i++ )
     {
       url_cache_t& c = url_cache_db[ i ];
-      uint32_t size = std::max( c.url.size(), c.result.size() );
+      uint32_t size = ( uint32_t ) std::max( c.url.size(), c.result.size() );
       if ( size > max_size ) max_size = size;
     }
 
@@ -173,8 +173,8 @@ bool http_t::cache_save()
     {
       url_cache_t& c = url_cache_db[ i ];
 
-      uint32_t    url_size = c.   url.size();
-      uint32_t result_size = c.result.size();
+      uint32_t    url_size = ( uint32_t ) c.   url.size();
+      uint32_t result_size = ( uint32_t ) c.result.size();
 
       if ( 1 != fwrite( &( c.timestamp ), sizeof(  int64_t ), 1, file ) ||
            1 != fwrite( &url_size,        sizeof( uint32_t ), 1, file ) ||
@@ -213,7 +213,7 @@ bool http_t::cache_get( std::string&       result,
 
   bool success = false;
 
-  int num_records = url_cache_db.size();
+  int num_records = ( int ) url_cache_db.size();
   for ( int i=0; i < num_records && ! success; i++ )
   {
     url_cache_t& c = url_cache_db[ i ];
@@ -242,7 +242,7 @@ void http_t::cache_set( const std::string& url,
 {
   thread_t::mutex_lock( cache_mutex );
 
-  int num_records = url_cache_db.size();
+  int num_records = ( int ) url_cache_db.size();
   bool success = false;
 
   for ( int i=0; i < num_records; i++ )
@@ -315,7 +315,7 @@ std::string& http_t::format( std::string& encoded_url,
 {
   encoded_url.clear();
 
-  int size = url.size();
+  int size = ( int ) url.size();
   for ( int i=0; i < size; i++ )
   {
     char c = url[ i ];

@@ -2252,7 +2252,7 @@ void paladin_t::init_actions()
     action_list_str += "/hammer_of_justice";
     action_list_str += "/divine_plea";
     if ( talents.holy_shield && tank > 0 ) action_list_str += "/holy_shield";
-    int num_items = items.size();
+    int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )

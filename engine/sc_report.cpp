@@ -124,7 +124,7 @@ static void print_actions( FILE* file, player_t* p )
         length = 0;
       }
       util_t::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
-      length += action_list[ i ].size();
+      length += ( int ) action_list[ i ].size();
     }
     util_t::fprintf( file, "\n" );
   }
@@ -135,7 +135,7 @@ static void print_actions( FILE* file, player_t* p )
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
     if ( s -> total_dmg > 0 )
       if( max_length < (int) s -> name_str.length() )
-	max_length = s -> name_str.length();
+	max_length = ( int ) s -> name_str.length();
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -177,7 +177,7 @@ static void print_buffs( FILE* file, player_t* p )
 
     if ( b -> constant )
     {
-      int length = strlen( b -> name() );
+      int length = ( int ) strlen( b -> name() );
       if( ( total_length + length ) > 100 )
       {
 	if ( ! first ) util_t::fprintf( file, "\n" ); first=false;
@@ -199,7 +199,7 @@ static void print_buffs( FILE* file, player_t* p )
   {
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
     {
-      int length = strlen( b -> name() );
+      int length = ( int ) strlen( b -> name() );
       if ( length > max_length ) max_length = length;
     }
   }
@@ -246,7 +246,7 @@ static void print_buffs( FILE* file, sim_t* sim )
 
     if ( b -> constant )
     {
-      int length = strlen( b -> name() );
+      int length = ( int ) strlen( b -> name() );
       if( ( total_length + length ) > 100 )
       {
 	util_t::fprintf( file, "\n  Constant:" );
@@ -267,7 +267,7 @@ static void print_buffs( FILE* file, sim_t* sim )
   {
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
     {
-      int length = strlen( b -> name() );
+      int length = ( int ) strlen( b -> name() );
       if ( length > max_length ) max_length = length;
     }
   }
@@ -368,7 +368,7 @@ static void print_gains( FILE* file, player_t* p )
   {
     if ( g -> actual > 0 )
     {
-      int length = strlen( g -> name() );
+      int length = ( int ) strlen( g -> name() );
       if ( length > max_length ) max_length = length;
     }
   }
@@ -404,7 +404,7 @@ static void print_pet_gains( FILE* file, player_t* p )
     {
       if ( g -> actual > 0 )
       {
-        int length = strlen( g -> name() );
+        int length = ( int ) strlen( g -> name() );
         if ( length > max_length ) max_length = length;
       }
     }
@@ -513,7 +513,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
   util_t::fprintf( file, "\nScale Factors:\n" );
 
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   int max_length=0;
 
   if ( sim -> report_precision < 0 )
@@ -522,7 +522,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    int length = strlen( p -> name() );
+    int length = ( int ) strlen( p -> name() );
     if ( length > max_length ) max_length = length;
   }
 
@@ -610,13 +610,13 @@ static void print_reference_dps( FILE* file, sim_t* sim )
     return;
   }
 
-  int num_players = sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_rank.size();
   int max_length=0;
 
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_rank[ i ];
-    int length = strlen( p -> name() );
+    int length = ( int ) strlen( p -> name() );
     if ( length > max_length ) max_length = length;
   }
 
@@ -686,7 +686,7 @@ static void print_hat_donors( FILE* file, sim_t* sim )
 {
   std::vector<player_t*> hat_donors;
 
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
@@ -694,7 +694,7 @@ static void print_hat_donors( FILE* file, sim_t* sim )
       hat_donors.push_back( p );
   }
 
-  int num_donors = hat_donors.size();
+  int num_donors = ( int ) hat_donors.size();
   if( num_donors )
   {
     std::sort( hat_donors.begin(), hat_donors.end(), compare_hat_donor_interval()  );
@@ -778,7 +778,7 @@ static void print_html_raid( FILE*  file, sim_t* sim )
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
 
-  int count = sim -> dps_charts.size();
+  int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file, "\n<!-- DPS Ranking: -->\n" );
@@ -794,7 +794,7 @@ static void print_html_raid( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> downtime_chart.c_str() );
   }
 
-  count = sim -> dpet_charts.size();
+  count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file, "\n<!-- Raid Damage Per Execute Time: -->\n" );
@@ -828,7 +828,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "    <th>Lag</th>\n      </tr>\n" );
 
   std::string buffer;
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
 
   for ( int i=0; i < num_players; i++ )
   {
@@ -953,7 +953,7 @@ static void print_xml_raid( FILE*  file, sim_t* sim )
 {
   assert( sim ->  dps_charts.size() == sim -> gear_charts.size() );
 
-  int count = sim -> dps_charts.size();
+  int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file, "    <chart name=\"DPS Ranking\" url=\"%s\" />\n", sim -> dps_charts[ i ].c_str() );
@@ -966,7 +966,7 @@ static void print_xml_raid( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "    <chart name=\"Raid Downtime\" url=\"%s\" />\n", sim -> downtime_chart.c_str() );
   }
 
-  count = sim -> dpet_charts.size();
+  count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file, "    <chart name=\"Raid Damage Per Execute Time\" url=\"%s\" />\n", sim -> dpet_charts[ i ].c_str() );
@@ -1048,7 +1048,7 @@ static void print_wiki_raid( FILE*  file,
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
 
-  int count = sim -> dps_charts.size();
+  int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     std::string  dps_chart = sim ->  dps_charts[ i ];
@@ -1070,7 +1070,7 @@ static void print_wiki_raid( FILE*  file,
 
   util_t::fprintf( file, "|| %s || ||\n", raid_downtime.c_str() );
 
-  count = sim -> dpet_charts.size();
+  count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
     std::string raid_dpet = sim -> dpet_charts[ i ] + "&dummy=dummy.png";
@@ -1114,7 +1114,7 @@ static void print_wiki_scale_factors( FILE*  file,
   util_t::fprintf( file, "lag ||\n" );
 
   std::string buffer;
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
 
   for ( int i=0; i < num_players; i++ )
   {
@@ -1259,7 +1259,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 {
   if ( sim -> total_seconds == 0 ) return;
 
-  int num_players = sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_rank.size();
 
   if ( detail )
   {
@@ -1328,7 +1328,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
 void report_t::print_html( sim_t* sim )
 {
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
 
   if ( num_players == 0 ) return;
   if ( sim -> total_seconds == 0 ) return;
@@ -1379,7 +1379,7 @@ void report_t::print_html( sim_t* sim )
 
 void report_t::print_wiki( sim_t* sim )
 {
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
 
   if ( num_players == 0 ) return;
   if ( sim -> total_seconds == 0 ) return;
@@ -1410,7 +1410,7 @@ void report_t::print_wiki( sim_t* sim )
 
 void report_t::print_xml( sim_t* sim )
 {
-  int num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
 
   if ( num_players == 0 ) return;
   if ( sim -> total_seconds == 0 ) return;

@@ -81,7 +81,7 @@ static int default_id( sim_t*      sim,
                        const char* name )
 {
   int offset = 1000000;
-  int dictionary_size = sim -> id_dictionary.size();
+  int dictionary_size = ( int ) sim -> id_dictionary.size();
 
   for ( int i=0; i < dictionary_size; i++ )
     if ( sim -> id_dictionary[ i ] == name )
