@@ -109,25 +109,22 @@ static void print_actions( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
-  if ( p -> action_list_default )
-  {
-    util_t::fprintf( file, "  Priorities:\n" );
+  util_t::fprintf( file, "  Priorities:\n" );
 
-    std::vector<std::string> action_list;
-    int num_actions = util_t::string_split( action_list, p -> action_list_str, "/" );
-    int length = 0;
-    for ( int i=0; i < num_actions; i++ )
+  std::vector<std::string> action_list;
+  int num_actions = util_t::string_split( action_list, p -> action_list_str, "/" );
+  int length = 0;
+  for ( int i=0; i < num_actions; i++ )
+  {
+    if ( length > 80 )
     {
-      if ( length > 80 )
-      {
-        util_t::fprintf( file, "\n" );
-        length = 0;
-      }
-      util_t::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
-      length += ( int ) action_list[ i ].size();
+      util_t::fprintf( file, "\n" );
+      length = 0;
     }
-    util_t::fprintf( file, "\n" );
+    util_t::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
+    length += ( int ) action_list[ i ].size();
   }
+  util_t::fprintf( file, "\n" );
 
   util_t::fprintf( file, "  Actions:\n" );
 
@@ -495,8 +492,8 @@ static void print_performance( FILE* file, sim_t* sim )
                    "  SimSeconds    = %.0f\n"
                    "  CpuSeconds    = %.3f\n"
                    "  SpeedUp       = %.0f\n\n",
-                   sim -> total_events_processed,
-                   sim -> max_events_remaining,
+                   (long) sim -> total_events_processed,
+                   (long) sim -> max_events_remaining,
                    sim -> target -> initial_health,
                    sim -> iterations * sim -> total_seconds,
                    sim -> elapsed_cpu_seconds,

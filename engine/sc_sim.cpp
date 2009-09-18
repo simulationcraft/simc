@@ -1102,7 +1102,7 @@ void sim_t::execute()
   merge();
   analyze();
 
-  elapsed_cpu_seconds = ( util_t::milliseconds() - start_time )/1000.0;
+  elapsed_cpu_seconds = ( util_t::milliseconds() - start_time ) / 1000.0;
 }
 
 // sim_t::find_player =======================================================
