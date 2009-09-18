@@ -630,7 +630,7 @@ struct raid_event_t
 {
   sim_t* sim;
   std::string name_str;
-  int num_starts;
+  int64_t num_starts;
   double first, last;
   double cooldown;
   double cooldown_stddev;
@@ -864,8 +864,8 @@ struct sim_t
   double      queue_gcd_reduction;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time;
-  int         events_remaining, max_events_remaining;
-  int         events_processed, total_events_processed;
+  int64_t     events_remaining, max_events_remaining;
+  int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval;

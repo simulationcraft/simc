@@ -489,8 +489,8 @@ static void print_performance( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file,
                    "\nBaseline Performance:\n"
-                   "  TotalEvents   = %d\n"
-                   "  MaxEventQueue = %d\n"
+                   "  TotalEvents   = %ld\n"
+                   "  MaxEventQueue = %ld\n"
                    "  TargetHealth  = %.0f\n"
                    "  SimSeconds    = %.0f\n"
                    "  CpuSeconds    = %.3f\n"
