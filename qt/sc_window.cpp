@@ -1,4 +1,9 @@
-#include "mainwindow.h"
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
+#include "simcraftqt.h"
 #include <QtWebKit>
 
 static QComboBox* createChoice( int count, ... )
@@ -15,7 +20,7 @@ static QComboBox* createChoice( int count, ... )
     return choice;
 }
 
-void MainWindow::createCmdLine()
+void SimcraftWindow::createCmdLine()
 {
     QHBoxLayout* cmdLineLayout = new QHBoxLayout();
     cmdLineLayout->addWidget( cmdLine = new QLineEdit() );
@@ -28,14 +33,14 @@ void MainWindow::createCmdLine()
     cmdLineGroupBox->setLayout( cmdLineLayout );
 }
 
-void MainWindow::createWelcomeTab()
+void SimcraftWindow::createWelcomeTab()
 {
     QLabel* welcomeLabel = new QLabel( "\n  Welcome to SimulationCraft!\n\n  Help text will be here.\n" );
     welcomeLabel->setAlignment( Qt::AlignLeft|Qt::AlignTop );
     mainTab->addTab( welcomeLabel, "Welcome" );
 }
  
-void MainWindow::createGlobalsTab()
+void SimcraftWindow::createGlobalsTab()
 {
     QFormLayout* globalsLayout = new QFormLayout();
     globalsLayout->addRow( "Region", regionChoice = createChoice( 2, "US", "EU" ) );
@@ -54,7 +59,7 @@ void MainWindow::createGlobalsTab()
     mainTab->addTab( globalsGroupBox, "Globals" );
 }
 
-void MainWindow::createImportTab()
+void SimcraftWindow::createImportTab()
 {
     importTab = new QTabWidget();
     connect( importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
@@ -93,21 +98,21 @@ void MainWindow::createImportTab()
     importTab->addTab( rawrGroupBox, "Rawr" );
 }
 
-void MainWindow::createSimulateTab()
+void SimcraftWindow::createSimulateTab()
 {
     simulateText = new QPlainTextEdit();
     simulateText->document()->setPlainText( "# Profiles will be downloaded into here.  Right-Click menu will Open/Save scripts." );
     mainTab->addTab( simulateText, "Simulate" );
 }
  
-void MainWindow::createOverridesTab()
+void SimcraftWindow::createOverridesTab()
 {
     overridesText = new QPlainTextEdit();
     overridesText->document()->setPlainText( "# Examples of all available global and player parms will shown here." );
     mainTab->addTab( overridesText, "Overrides" );
 }
 
-void MainWindow::createLogTab()
+void SimcraftWindow::createLogTab()
 {
     logText = new QPlainTextEdit();
     logText->setReadOnly(true);
@@ -115,24 +120,28 @@ void MainWindow::createLogTab()
     mainTab->addTab( logText, "Log" );
 }
 
-void MainWindow::createResultsTab()
+void SimcraftWindow::createResultsTab()
 {
     resultsTab = new QTabWidget();
     resultsTab->setTabsClosable( true );
     mainTab->addTab( resultsTab, "Results" );
 }
 
-void MainWindow::closeEvent( QCloseEvent* e ) 
+void SimcraftWindow::closeEvent( QCloseEvent* e ) 
 { 
-  QCoreApplication::exit(); 
-  exit(0);
+  printf( "close event\n" ); fflush( stdout );
+  // Seems necessary to handle these WebViews with extra-special care.
+  armoryView->deleteLater();
+  wowheadView->deleteLater();
+  chardevView->deleteLater();
+  warcrafterView->deleteLater();
 }
 
-void MainWindow::updateProgress()
+void SimcraftWindow::updateProgress()
 {
 }
 
-void MainWindow::mainButtonClicked( bool checked )
+void SimcraftWindow::mainButtonClicked( bool checked )
 {
     switch( mainTab->currentIndex() )
     {
@@ -172,7 +181,7 @@ void MainWindow::mainButtonClicked( bool checked )
     fflush(stdout);
 }
 
-void MainWindow::mainTabChanged( int index )
+void SimcraftWindow::mainTabChanged( int index )
 {
     switch( index )
     {
@@ -187,15 +196,14 @@ void MainWindow::mainTabChanged( int index )
     }
 }
 
-void MainWindow::importTabChanged( int index )
+void SimcraftWindow::importTabChanged( int index )
 {
 }
 
-MainWindow::MainWindow(QWidget *parent)
+SimcraftWindow::SimcraftWindow(QWidget *parent)
     : QWidget(parent)
 {
     mainTab = new QTabWidget();
-
     createWelcomeTab();
     createGlobalsTab();
     createImportTab();
@@ -204,6 +212,7 @@ MainWindow::MainWindow(QWidget *parent)
     createLogTab();
     createResultsTab();
     createCmdLine();
+    connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
 
     QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->addWidget( mainTab );
@@ -213,9 +222,4 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer();
     connect( timer, SIGNAL(timeout()), this, SLOT(updateProgress()) );
 
-    connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
-}
-
-MainWindow::~MainWindow()
-{
 }
