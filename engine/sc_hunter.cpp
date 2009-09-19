@@ -3651,8 +3651,8 @@ int hunter_t::decode_set( item_t& item )
   const char* s = item.name();
 
   if ( strstr( s, "cryptstalker"   ) ) return SET_T7_MELEE;
-  if ( strstr( s, "scourgestalker" ) ) return SET_T7_MELEE;
-  if ( strstr( s, "windrunners"    ) ) return SET_T7_MELEE;
+  if ( strstr( s, "scourgestalker" ) ) return SET_T8_MELEE;
+  if ( strstr( s, "windrunners"    ) ) return SET_T9_MELEE;
 
   return SET_NONE;
 }
