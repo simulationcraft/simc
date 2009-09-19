@@ -41,7 +41,6 @@ struct hunter_t : public player_t
   buff_t* buffs_rapid_fire;
   buff_t* buffs_trueshot_aura;
   buff_t* buffs_tier8_4pc;
-  buff_t* buffs_tier9_4pc;
 
   // Gains
   gain_t* gains_chimera_viper;
@@ -298,8 +297,9 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_rabid_power_stack;
   buff_t* buffs_savage_rend;
   buff_t* buffs_wolverine_bite;
+  buff_t* buffs_tier9_4pc;
 
-    // Gains
+  // Gains
   gain_t* gains_go_for_the_throat;
 
   // Auto-Attack
@@ -471,6 +471,7 @@ struct hunter_pet_t : public pet_t
     buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0, talents.rabid * 0.5 );   // FIXME: Probably a ppm, not flat chance
     buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
     buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0, talents.wolverine_bite );
+    buffs_tier9_4pc    = new stat_buff_t( this, "tier9_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( o -> set_bonus.tier9_4pc_melee() ? 0.35 : 0 ) );
   }
 
   virtual void init_gains()
@@ -1557,7 +1558,8 @@ void hunter_attack_t::execute()
   {
     trigger_aspect_of_the_viper( this );
     p -> buffs_master_tactician -> trigger( 1, p -> talents.master_tactician * 0.02 );
-    p -> buffs_tier9_4pc -> trigger();
+    if ( p -> active_pet )
+      p -> active_pet -> buffs_tier9_4pc -> trigger();
 
     if ( result == RESULT_CRIT )
     {
@@ -3280,7 +3282,6 @@ void hunter_t::init_buffs()
   buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
   
   buffs_tier8_4pc = new stat_buff_t( this, "tier8_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier8_4pc_melee() ? 0.1  : 0 ) );
-  buffs_tier9_4pc = new stat_buff_t( this, "tier9_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier9_4pc_melee() ? 0.35 : 0 ) );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, "trueshot_aura");
@@ -3355,7 +3356,7 @@ void hunter_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage";
-    action_list_str += ( sim -> P322 || ( primary_tree() != TREE_MARKSMANSHIP ) ) ? "/food,type=blackened_dragonfin" : "/food,type=hearty_rhino";
+    action_list_str += ( primary_tree() != TREE_MARKSMANSHIP ) ? "/food,type=blackened_dragonfin" : "/food,type=hearty_rhino";
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
     action_list_str += "/auto_shot";
