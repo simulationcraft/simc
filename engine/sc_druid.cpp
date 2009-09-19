@@ -2006,6 +2006,18 @@ struct berserk_t : public druid_spell_t
     p -> buffs_berserk -> trigger();
     // Berserk cancels TF
     p -> buffs_tigers_fury -> expire();
+    
+    // It also resets Mangle (Bear) cooldown. Note Mangle talent is not mandatory for Berserk
+    // and there is no guarantee that there will be a mangle_bear in the action list.
+    if ( p -> talents.mangle )
+    {
+      action_t* a = p -> find_action("mangle_bear");
+      if ( a )
+      {
+        a -> cooldown_ready = 0;
+      }
+    }
+
     update_ready();
   }
 
@@ -3528,38 +3540,38 @@ void druid_t::init_actions()
     {
       if ( tank > 0 )
       {
-	action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
-	action_list_str += "/bear_form";
-	action_list_str += "/auto_attack";
-	action_list_str += "/snapshot_stats";
-	action_list_str += "/enrage,rage<=80";
-	action_list_str += "/maul,rage>=30";
-	action_list_str += "/mangle_bear,lacerate>=5.0";
-	action_list_str += "/faerie_fire_feral";
-	action_list_str += "/swipe_bear,lacerate>=6.0,lacerate_stack>=5";
-	action_list_str += "/lacerate";
-	if ( talents.berserk ) action_list_str+="/berserk";
+        action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
+        action_list_str += "/bear_form";
+        action_list_str += "/auto_attack";
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
+        if ( talents.mangle )  action_list_str += "/mangle_bear,mangle<=0.5";
+        action_list_str += "/lacerate,lacerate<=6.9";           // This seems to be the sweet spot to prevent Lacerate falling off.
+        if ( talents.berserk ) action_list_str+="/berserk";
         action_list_str += use_str;
+        if ( talents.mangle )  action_list_str += "/mangle_bear";
+        action_list_str += "/faerie_fire_feral";
+        action_list_str += "/swipe_bear,berserk=0,lacerate_stack>=5";
       }
       else
       {
-	action_list_str += "flask,type=endless_rage/food,type=hearty_rhino";
-	action_list_str += "/cat_form";
-	action_list_str += "/auto_attack";
-	action_list_str += "/snapshot_stats";
-	action_list_str += "/maim";
-	action_list_str += "/faerie_fire_feral,debuff_only=1";
-	action_list_str += use_str;
-	action_list_str += "/shred,omen_of_clarity=1";
-	action_list_str += "/tigers_fury,energy<=40";
-	if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
-	action_list_str += "/savage_roar,cp>=1,savage_roar<=4";
-	if ( glyphs.shred ) action_list_str += "/shred,extend_rip=1,rip<=4";
-	action_list_str += "/rip,cp>=5,time_to_die>=10";
-	action_list_str += "/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
-	if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=2";
-	action_list_str += "/rake";
-	action_list_str += "/shred";
+        action_list_str += "flask,type=endless_rage/food,type=hearty_rhino";
+        action_list_str += "/cat_form";
+        action_list_str += "/auto_attack";
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/maim";
+        action_list_str += "/faerie_fire_feral,debuff_only=1";
+        action_list_str += use_str;
+        action_list_str += "/shred,omen_of_clarity=1";
+        action_list_str += "/tigers_fury,energy<=40";
+        if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
+        action_list_str += "/savage_roar,cp>=1,savage_roar<=4";
+        if ( glyphs.shred ) action_list_str += "/shred,extend_rip=1,rip<=4";
+        action_list_str += "/rip,cp>=5,time_to_die>=10";
+        action_list_str += "/ferocious_bite,cp>=5,rip>=5,savage_roar>=6";
+        if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=2";
+        action_list_str += "/rake";
+        action_list_str += "/shred";
       }
     }
     else
