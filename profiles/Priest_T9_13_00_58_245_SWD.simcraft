@@ -38,22 +38,21 @@ finger2=firestorm_ring,stats=56hit_33crit_80sp_54sta_59int,gems=23sp_5sp,enchant
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=12sp_10spi_5sp,enchant=lightweave_embroidery
-main_hand=blade_of_the_silver_disciple,stats=37crit_58haste_621sp_44sta_49int,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_113.3dps
-off_hand=chalice_of_searing_light,stats=50crit_89sp_58sta_58int_50spi
+main_hand=enlightenment,stats=73sta_103int_621sp_117haste_122crit,gems=23sp_23sp_23sp,enchant=81sp,weapon=staff_3.10speed_172.5dps
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=23sp
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
-# gear_stamina=984
-# gear_intellect=979
-# gear_spirit=223
-# gear_spell_power=2749
+# gear_stamina=955
+# gear_intellect=975
+# gear_spirit=173
+# gear_spell_power=2724
 # gear_hit_rating=297
-# gear_crit_rating=911
-# gear_haste_rating=454
+# gear_crit_rating=942
+# gear_haste_rating=513
 # gear_armor=2036
 # meta_gem=chaotic_skyflare
 # tier8_2pc_caster=1
 # tier9_2pc_caster=1
 # back=pennant_cloak,enchant=lightweave_embroidery
-# main_hand=blade_of_the_silver_disciple,weapon=dagger_1.80speed_113.3dps
+# main_hand=enlightenment,weapon=staff_3.10speed_172.5dps
