@@ -23,12 +23,18 @@ static QComboBox* createChoice( int count, ... )
 void SimcraftWindow::createCmdLine()
 {
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
+  cmdLineLayout->addWidget( backButton = new QPushButton( "<" ) );
+  cmdLineLayout->addWidget( forwardButton = new QPushButton( ">" ) );
   cmdLineLayout->addWidget( cmdLine = new QLineEdit() );
   cmdLineLayout->addWidget( progressBar = new QProgressBar() );
   cmdLineLayout->addWidget( mainButton = new QPushButton( "Go!" ) );
+  backButton->setMaximumWidth( 30 );
+  forwardButton->setMaximumWidth( 30 );
   progressBar->setMaximum( 100 );
   progressBar->setMaximumWidth( 100 );
-  connect( mainButton, SIGNAL(clicked(bool)), this, SLOT(mainButtonClicked()) );
+  connect( backButton,    SIGNAL(clicked(bool)), this, SLOT(   backButtonClicked()) );
+  connect( forwardButton, SIGNAL(clicked(bool)), this, SLOT(forwardButtonClicked()) );
+  connect( mainButton,    SIGNAL(clicked(bool)), this, SLOT(   mainButtonClicked()) );
   cmdLineGroupBox = new QGroupBox();
   cmdLineGroupBox->setLayout( cmdLineLayout );
 }
@@ -43,7 +49,6 @@ void SimcraftWindow::createWelcomeTab()
 void SimcraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
-  globalsLayout->addRow( "Region", regionChoice = createChoice( 2, "US", "EU" ) );
   globalsLayout->addRow( "Patch", patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
   globalsLayout->addRow( "Latency", latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow( "Iterations", iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
@@ -54,7 +59,7 @@ void SimcraftWindow::createGlobalsTab()
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
   threadsChoice->setCurrentIndex( 1 );
-  QGroupBox* globalsGroupBox = new QGroupBox( "Global Options" );
+  QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
   mainTab->addTab( globalsGroupBox, "Globals" );
 }
@@ -62,12 +67,15 @@ void SimcraftWindow::createGlobalsTab()
 void SimcraftWindow::createImportTab()
 {
   importTab = new QTabWidget();
-  connect( importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
   mainTab->addTab( importTab, "Import" );
 
-  armoryView = new QWebView();
-  armoryView->setUrl( QUrl( "http://www.wowarmory.com" ) );
-  importTab->addTab( armoryView, "Armory" );
+  armoryUsView = new QWebView();
+  armoryUsView->setUrl( QUrl( "http://us.wowarmory.com" ) );
+  importTab->addTab( armoryUsView, "Armory-US" );
+  
+  armoryEuView = new QWebView();
+  armoryEuView->setUrl( QUrl( "http://eu.wowarmory.com" ) );
+  importTab->addTab( armoryEuView, "Armory-EU" );
   
   wowheadView = new QWebView();
   wowheadView->setUrl( QUrl( "http://www.wowhead.com/?profiles" ) );
@@ -93,9 +101,15 @@ void SimcraftWindow::createImportTab()
   rawrLayout->addWidget( rawrLabel );
   rawrLayout->addWidget( rawrFile = new QLineEdit() );
   rawrLayout->addWidget( new QLabel( "" ), 1 );
-  QGroupBox* rawrGroupBox = new QGroupBox( "Rawr Character XML File" );
+  QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
+
+  historyList = new QListWidget();
+  historyList->setSortingEnabled( true );
+  importTab->addTab( historyList, "History" );
+
+  connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
 }
 
 void SimcraftWindow::createSimulateTab()
@@ -127,9 +141,29 @@ void SimcraftWindow::createResultsTab()
   mainTab->addTab( resultsTab, "Results" );
 }
 
-bool SimcraftWindow::armoryImport( QString& profile )
+void SimcraftWindow::addHistoryItem( const QString& name, const QString& origin )
 {
-  profile = armoryView->url().toString();
+  QString label = name;
+  while( label.size() < 20 ) label += " ";
+  label += origin;
+
+  for( int i=0; i < historyList->count(); i++ )
+    if( historyList->item( i )->text() == label )
+      return;
+
+  historyList->addItem( label );
+  historyList->sortItems();
+}
+
+bool SimcraftWindow::armoryUsImport( QString& profile )
+{
+  profile = armoryUsView->url().toString();
+  return false;
+}
+
+bool SimcraftWindow::armoryEuImport( QString& profile )
+{
+  profile = armoryEuView->url().toString();
   return false;
 }
 
@@ -158,6 +192,7 @@ bool SimcraftWindow::wowheadImport( QString& profile )
       sim->init();
       player->create_profile( buffer );
       profile = buffer.c_str();
+      addHistoryItem( QString( player->name_str.c_str() ), QString( player->origin_str.c_str() ) );
     }
     else
     {
@@ -194,34 +229,60 @@ bool SimcraftWindow::rawrImport( QString& profile )
 void SimcraftWindow::closeEvent( QCloseEvent* e ) 
 { 
   printf( "close event\n" ); fflush( stdout );
-  // Seems necessary to handle these WebViews with extra-special care.
-  armoryView->deleteLater();
-  wowheadView->deleteLater();
-  chardevView->deleteLater();
-  warcrafterView->deleteLater();
 }
 
 void SimcraftWindow::updateProgress()
 {
 }
 
+void SimcraftWindow::backButtonClicked( bool checked )
+{
+  if( mainTab->currentIndex() == TAB_IMPORT )
+  {
+    switch( importTab->currentIndex() )
+    {
+    case TAB_ARMORY_US:  armoryUsView  ->back(); break;
+    case TAB_ARMORY_EU:  armoryEuView  ->back(); break;
+    case TAB_WOWHEAD:    wowheadView   ->back(); break;
+    case TAB_CHARDEV:    chardevView   ->back(); break;
+    case TAB_WARCRAFTER: warcrafterView->back(); break;
+    }
+  }
+}
+
+void SimcraftWindow::forwardButtonClicked( bool checked )
+{
+  if( mainTab->currentIndex() == TAB_IMPORT )
+  {
+    switch( importTab->currentIndex() )
+    {
+    case TAB_ARMORY_US:  armoryUsView  ->forward(); break;
+    case TAB_ARMORY_EU:  armoryEuView  ->forward(); break;
+    case TAB_WOWHEAD:    wowheadView   ->forward(); break;
+    case TAB_CHARDEV:    chardevView   ->forward(); break;
+    case TAB_WARCRAFTER: warcrafterView->forward(); break;
+    }
+  }
+}
+
 void SimcraftWindow::mainButtonClicked( bool checked )
 {
   switch( mainTab->currentIndex() )
   {
-  case 0: printf( "Launch http://code.google.com/p/simulationcraft/\n" ); break;
-  case 1: printf( "Save state of all options\n" ); break;
-  case 2:
+  case TAB_WELCOME: printf( "Launch http://code.google.com/p/simulationcraft/\n" ); break;
+  case TAB_GLOBALS: printf( "Save state of all options\n" ); break;
+  case TAB_IMPORT:
     {
       QString profile = "";
       bool success = false;
       switch( importTab->currentIndex() )
       {
-      case 0: success =     armoryImport( profile ); break;
-      case 1: success =    wowheadImport( profile ); break;
-      case 2: success =    chardevImport( profile ); break;
-      case 3: success = warcrafterImport( profile ); break;
-      case 4: success =       rawrImport( profile ); break;
+      case TAB_ARMORY_US:  success =   armoryUsImport( profile ); break;
+      case TAB_ARMORY_EU:  success =   armoryEuImport( profile ); break;
+      case TAB_WOWHEAD:    success =    wowheadImport( profile ); break;
+      case TAB_CHARDEV:    success =    chardevImport( profile ); break;
+      case TAB_WARCRAFTER: success = warcrafterImport( profile ); break;
+      case TAB_RAWR:       success =       rawrImport( profile ); break;
       default: assert(0);
       }
       if ( success )
@@ -229,22 +290,23 @@ void SimcraftWindow::mainButtonClicked( bool checked )
 	// Change button to "Cancel!"
       }
       simulateText->document()->setPlainText( profile );
-      mainTab->setCurrentIndex( 3 );
+      mainTab->setCurrentIndex( TAB_SIMULATE );
       break;
     }
-  case 3:
-  case 4:
-  case 5:
+  case TAB_SIMULATE:
+  case TAB_OVERRIDES:
+  case TAB_LOG:
     {
       QString resultsName = QString( "Results %1" ).arg( ++numResults );
       QTextBrowser* resultsBrowser = new QTextBrowser();
       resultsBrowser->document()->setPlainText( "Results Here.\n" );
       resultsTab->addTab( resultsBrowser, resultsName );
       resultsTab->setCurrentWidget( resultsBrowser );
-      mainTab->setCurrentIndex( 6 );
+      mainTab->setCurrentIndex( TAB_RESULTS );
       break;
     }
-  case 6: printf( "Save Results: %d\n", resultsTab->currentIndex() ); fflush(stdout); break;
+  case TAB_RESULTS: printf( "Save Results: %d\n", resultsTab->currentIndex() ); fflush(stdout); break;
+  case TAB_HELP: break;
   default: assert(0);
   }
   
@@ -254,19 +316,52 @@ void SimcraftWindow::mainTabChanged( int index )
 {
   switch( index )
   {
-  case 0: mainButton->setText( "Go!"       ); break;
-  case 1: mainButton->setText( "Save!"     ); break;
-  case 2: mainButton->setText( "Import!"   ); break;
-  case 3: mainButton->setText( "Simulate!" ); break;
-  case 4: mainButton->setText( "Simulate!" ); break;
-  case 5: mainButton->setText( "Simulate!" ); break;
-  case 6: mainButton->setText( "Save!"     ); break;
+  case TAB_WELCOME:   mainButton->setText( "Go!"       ); break;
+  case TAB_GLOBALS:   mainButton->setText( "Save!"     ); break;
+  case TAB_IMPORT:    mainButton->setText( "Import!"   ); break;
+  case TAB_SIMULATE:  mainButton->setText( "Simulate!" ); break;
+  case TAB_OVERRIDES: mainButton->setText( "Simulate!" ); break;
+  case TAB_LOG:       mainButton->setText( "Simulate!" ); break;
+  case TAB_RESULTS:   mainButton->setText( "Save!"     ); break;
   default: assert(0);
   }
 }
 
-void SimcraftWindow::importTabChanged( int index )
+void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
 {
+  QString text = item->text();
+  QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
+
+  if( text.count( "us.wowarmory." ) )
+  {
+    importTab->setCurrentIndex( TAB_ARMORY_US );
+    armoryUsView->setUrl( url );
+  }
+  else if( url.count( "eu.wowarmory." ) )
+  {
+    importTab->setCurrentIndex( TAB_ARMORY_EU );
+    armoryEuView->setUrl( url );
+  }
+  else if( url.count( ".wowhead." ) )
+  {
+    importTab->setCurrentIndex( TAB_WOWHEAD );
+    wowheadView->setUrl( url );
+  }
+  else if( url.count( ".chardev." ) )
+  {
+    importTab->setCurrentIndex( TAB_CHARDEV );
+    chardevView->setUrl( url );
+  }
+  else if( url.count( ".warcrafter." ) )
+  {
+    importTab->setCurrentIndex( TAB_WARCRAFTER );
+    warcrafterView->setUrl( url );
+  }
+  else
+  {
+    importTab->setCurrentIndex( TAB_RAWR );
+    rawrFile->setText( url );
+  }
 }
 
 SimcraftWindow::SimcraftWindow(QWidget *parent)
