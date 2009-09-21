@@ -44,6 +44,15 @@ struct druid_t : public player_t
   buff_t* buffs_tigers_fury;
   buff_t* buffs_unseen_moon;
 
+  // Cooldowns
+  struct _cooldowns_t
+  {
+    double mangle_bear;
+    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
+    _cooldowns_t() { reset(); }
+  };
+  _cooldowns_t _cooldowns;
+
   // Gains
   gain_t* gains_bear_melee;
   gain_t* gains_energy_refund;
@@ -1663,7 +1672,6 @@ struct mangle_bear_t : public druid_bear_attack_t
 
     may_crit = true;
     base_cost -= p -> talents.ferocity;
-    cooldown = 6.0 - p -> talents.improved_mangle * 0.5;
 
     base_multiplier *= 1.0 + p -> talents.savage_fury * 0.10;
   }
@@ -1671,8 +1679,11 @@ struct mangle_bear_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    cooldown = p -> buffs_berserk -> up() ? 0.0 : 6.0 - p -> talents.improved_mangle * 0.5;
     druid_bear_attack_t::execute();
+    if ( ! p -> buffs_berserk -> up() )
+    {
+      p -> _cooldowns.mangle_bear = sim -> current_time + ( 6.0 - p -> talents.improved_mangle * 0.5 );
+    }
     if ( result_is_hit() )
     {
       target_t* t = sim -> target;
@@ -1686,6 +1697,13 @@ struct mangle_bear_t : public druid_bear_attack_t
       p -> buffs_corruptor -> trigger();
       p -> buffs_mutilation -> trigger();
     }
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+    if ( sim -> current_time < p -> _cooldowns.mangle_bear ) return false;
+    return druid_bear_attack_t::ready();
   }
 };
 
@@ -2006,18 +2024,7 @@ struct berserk_t : public druid_spell_t
     p -> buffs_berserk -> trigger();
     // Berserk cancels TF
     p -> buffs_tigers_fury -> expire();
-    
-    // It also resets Mangle (Bear) cooldown. Note Mangle talent is not mandatory for Berserk
-    // and there is no guarantee that there will be a mangle_bear in the action list.
-    if ( p -> talents.mangle )
-    {
-      action_t* a = p -> find_action("mangle_bear");
-      if ( a )
-      {
-        a -> cooldown_ready = 0;
-      }
-    }
-
+    p -> _cooldowns.mangle_bear = 0;
     update_ready();
   }
 
@@ -3623,6 +3630,8 @@ void druid_t::reset()
   active_rip          = 0;
 
   base_gcd = 1.5;
+
+  _cooldowns.reset();
 }
 
 // druid_t::interrupt =======================================================
