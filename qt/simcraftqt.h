@@ -59,6 +59,12 @@ class SimcraftWindow : public QWidget
     QGroupBox* cmdLineGroupBox;
     QTimer* timer;
 
+    int armoryUsProgress;
+    int armoryEuProgress;
+    int wowheadProgress;
+    int chardevProgress;
+    int warcrafterProgress;
+
     sim_t* sim;
     int numResults;
     
@@ -84,11 +90,28 @@ protected:
     virtual void closeEvent( QCloseEvent* e );
 
 private slots:
-    void updateProgress();
+    void updateSimProgress();
+    void updateArmoryUsProgress( int progress );
+    void updateArmoryEuProgress( int progress );
+    void updateWowheadProgress( int progress );
+    void updateChardevProgress( int progress );
+    void updateWarcrafterProgress( int progress );
+    void updateArmoryUsFinished( bool ok );
+    void updateArmoryEuFinished( bool ok );
+    void updateWowheadFinished( bool ok );
+    void updateChardevFinished( bool ok );
+    void updateWarcrafterFinished( bool ok );
+    void updateArmoryUsChanged( const QUrl& );
+    void updateArmoryEuChanged( const QUrl& );
+    void updateWowheadChanged( const QUrl& );
+    void updateChardevChanged( const QUrl& );
+    void updateWarcrafterChanged( const QUrl& );
+    void cmdLineReturnPressed();
     void backButtonClicked( bool checked=false );
     void forwardButtonClicked( bool checked=false );
     void mainButtonClicked( bool checked=false );
     void mainTabChanged( int index );
+    void importTabChanged( int index );
     void historyDoubleClicked( QListWidgetItem* item );
 
 public:
