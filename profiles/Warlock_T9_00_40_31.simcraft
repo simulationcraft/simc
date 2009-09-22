@@ -13,6 +13,7 @@ actions+=/fel_armor
 actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
+actions+=/wild_magic_potion,bloodlust=1
 actions+=/soul_fire,decimation=1
 actions+=/immolate
 actions+=/conflagrate

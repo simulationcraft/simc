@@ -13,6 +13,7 @@ actions+=/fel_armor
 actions+=/summon_pet,felguard
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
+actions+=/wild_magic_potion,bloodlust=1
 actions+=/demonic_empowerment
 actions+=/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0
 actions+=/soul_fire,decimation=1

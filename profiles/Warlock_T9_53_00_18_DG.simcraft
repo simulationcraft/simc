@@ -13,6 +13,7 @@ actions+=/fel_armor
 actions+=/summon_pet,doomguard
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
+actions+=/wild_magic_potion,bloodlust=1
 actions+=/haunt,debuff=1
 actions+=/corruption
 actions+=/curse_of_agony

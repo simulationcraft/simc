@@ -13,10 +13,11 @@ actions+=/fel_armor
 actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
-actions+=/curse_of_doom,time_to_die>=80
-actions+=/immolate
+actions+=/wild_magic_potion,bloodlust=1
 actions+=/conflagrate
 actions+=/chaos_bolt
+actions+=/curse_of_doom,time_to_die>=80
+actions+=/immolate
 actions+=/incinerate
 actions+=/life_tap,mana_percentage<=20,buff_refresh=1,moving=1
 actions+=/corruption,time_to_die>=20,moving=1
