@@ -3643,6 +3643,7 @@ void warlock_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
+    action_list_str += "/wild_magic_potion,bloodlust=1";
     if ( talents.haunt || talents.unstable_affliction ) // 41+_xx_xx
     {
       if ( talents.haunt ) action_list_str += "/haunt,debuff=1";
@@ -3653,9 +3654,9 @@ void warlock_t::init_actions()
     }
     else if ( talents.chaos_bolt ) // 00_13_58
     {
-      action_list_str += "/curse_of_doom,time_to_die>=80/immolate";
       if ( talents.conflagrate ) action_list_str += "/conflagrate";
       action_list_str += "/chaos_bolt";
+      action_list_str += "/curse_of_doom,time_to_die>=80/immolate";
     }
     else if ( talents.metamorphosis ) // 00_56_15
     {
