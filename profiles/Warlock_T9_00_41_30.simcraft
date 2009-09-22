@@ -23,7 +23,7 @@ actions+=/corruption,time_to_die>=20,moving=1
 actions+=/curse_of_agony,time_to_die>=30,moving=1
 actions+=/life_tap
 head=guldans_hood_of_triumph,stats=282armor_94crit_151sp_116sta_116int_86spi,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-neck=cry_of_the_valkyr,stats=65sta_65int_91sp_57crit_43haste,gems=12sp_10crit_5sp
+neck=cry_of_the_valkyr,stats=65sta_65int_91sp_57crit_43haste,gems=12sp_10haste_5sp
 shoulders=guldans_shoulderpads_of_triump,stats=260armor_76crit_124sp_86sta_86int_68spi,gems=12sp_10haste_5sp,enchant=24sp_15crit
 chest=guldans_robe_of_triumph,stats=347armor_94hit_160sp_116sta_116int_94spi,gems=23sp_12sp_10spi_7sp,enchant=10str_10agi_10sta_10int_10spi
 waist=icehowl_binding,stats=186armor_61hit_67haste_99sp_77sta_67int,gems=12sp_10haste_23sp_23sp_6haste
@@ -47,8 +47,8 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=12sp_10haste_
 # gear_spirit=652
 # gear_spell_power=3188
 # gear_hit_rating=368
-# gear_crit_rating=540
-# gear_haste_rating=589
+# gear_crit_rating=530
+# gear_haste_rating=599
 # gear_armor=2167
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1
