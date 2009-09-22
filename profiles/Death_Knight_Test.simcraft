@@ -1,6 +1,6 @@
 #!simcraft max_time=300 optimal_raid=1
 
-patch=3.1.0
+patch=3.2.2
 death_knight=Death_Knight_Test
 level=80
 talents=http://www.wowhead.com/?talent#jfVRVh0Icfof0stZfMhhxM
