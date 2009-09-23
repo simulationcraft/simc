@@ -247,6 +247,33 @@ QString SimcraftWindow::mergeOptions()
   return options;
 }
 
+void SimcraftWindow::saveLog()
+{
+  QFile file( cmdLine->text() );
+
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( logText->document()->toPlainText().toAscii() );
+    file.close();
+  }
+}
+
+void SimcraftWindow::saveResults()
+{
+  int index = resultsTab->currentIndex();
+  if( index < 0 ) return;
+
+  if( visibleWebView->url().toString() != "about:blank" ) return;
+
+  QFile file( cmdLine->text() );
+
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( resultsHtml[ index ].toAscii() );
+    file.close();
+  }
+}
+
 void SimcraftWindow::createCmdLine()
 {
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
@@ -464,6 +491,21 @@ void SimcraftWindow::updateSimProgress()
   }
 }
 
+void SimcraftWindow::cmdLineTextEdited( const QString& s )
+{
+  switch( mainTab->currentIndex() )
+  {
+  case TAB_WELCOME:   cmdLineText = s; break;
+  case TAB_GLOBALS:   cmdLineText = s; break;
+  case TAB_SIMULATE:  cmdLineText = s; break;
+  case TAB_OVERRIDES: cmdLineText = s; break;
+  case TAB_HELP:      cmdLineText = s; break;
+  case TAB_LOG:       logFileText = s; break;
+  case TAB_RESULTS:   resultsFileText = s; break;
+  case TAB_IMPORT:    break;
+  }
+}
+
 void SimcraftWindow::cmdLineReturnPressed()
 {
   switch( mainTab->currentIndex() )
@@ -499,15 +541,35 @@ void SimcraftWindow::cmdLineReturnPressed()
       importTab->setCurrentIndex( TAB_WARCRAFTER );
     }
     break;
-  case TAB_LOG:       break;
-  case TAB_RESULTS:   break;
-  case TAB_HELP:      break;
+  case TAB_LOG: saveLog(); break;
+  case TAB_RESULTS: saveResults();  break;
+  case TAB_HELP: break;
   }
 }
 
-void SimcraftWindow::cmdLineTextEdited( const QString& s )
+void SimcraftWindow::mainButtonClicked( bool checked )
 {
-  cmdLineText = s;
+  switch( mainTab->currentIndex() )
+  {
+  case TAB_WELCOME:   startSim(); break;
+  case TAB_GLOBALS:   startSim(); break;
+  case TAB_SIMULATE:  startSim(); break;
+  case TAB_OVERRIDES: startSim(); break;
+  case TAB_IMPORT:
+    switch( importTab->currentIndex() )
+    {
+    case TAB_ARMORY_US:  startImport(   armoryUsView->url().toString() ); break;
+    case TAB_ARMORY_EU:  startImport(   armoryEuView->url().toString() ); break;
+    case TAB_WOWHEAD:    startImport(    wowheadView->url().toString() ); break;
+    case TAB_CHARDEV:    startImport(    chardevView->url().toString() ); break;
+    case TAB_WARCRAFTER: startImport( warcrafterView->url().toString() ); break;
+    case TAB_RAWR:       startImport( rawrFile->text() ); break;
+    }
+    break;
+  case TAB_LOG: saveLog(); break;
+  case TAB_RESULTS: saveResults(); break;
+  case TAB_HELP: break;
+  }
 }
 
 void SimcraftWindow::backButtonClicked( bool checked )
@@ -534,44 +596,17 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
   }
 }
 
-void SimcraftWindow::mainButtonClicked( bool checked )
-{
-  switch( mainTab->currentIndex() )
-  {
-  case TAB_WELCOME:   startSim(); break;
-  case TAB_GLOBALS:   startSim(); break;
-  case TAB_SIMULATE:  startSim(); break;
-  case TAB_OVERRIDES: startSim(); break;
-  case TAB_IMPORT:
-    switch( importTab->currentIndex() )
-    {
-    case TAB_ARMORY_US:  startImport(   armoryUsView->url().toString() ); break;
-    case TAB_ARMORY_EU:  startImport(   armoryEuView->url().toString() ); break;
-    case TAB_WOWHEAD:    startImport(    wowheadView->url().toString() ); break;
-    case TAB_CHARDEV:    startImport(    chardevView->url().toString() ); break;
-    case TAB_WARCRAFTER: startImport( warcrafterView->url().toString() ); break;
-    case TAB_RAWR:       startImport( rawrFile->text() ); break;
-    }
-    break;
-  case TAB_LOG:       /* save log */ break;
-  case TAB_RESULTS:   /* save results */ break;
-  case TAB_HELP:      /* go to web site */ break;
-  default: assert(0);
-  }
-  
-}
-
 void SimcraftWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
   switch( index )
   {
-  case TAB_WELCOME:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_GLOBALS:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_SIMULATE:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_OVERRIDES: cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_LOG:       cmdLine->setText( "log.txt"   ); mainButton->setText( "Save!" ); break;
-  case TAB_HELP:      cmdLine->setText( ""          ); mainButton->setText( "Help!" ); break;
+  case TAB_WELCOME:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_GLOBALS:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_SIMULATE:  cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_OVERRIDES: cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_LOG:       cmdLine->setText(     logFileText ); mainButton->setText( "Save!" ); break;
+  case TAB_HELP:      cmdLine->setText( resultsFileText ); mainButton->setText( "Help!" ); break;
   case TAB_IMPORT:    
     mainButton->setText( sim ? "Cancel!" : "Import!" ); 
     importTabChanged( importTab->currentIndex() ); 
@@ -613,7 +648,7 @@ void SimcraftWindow::resultsTabChanged( int index )
     visibleWebView = (SimcraftWebView*) resultsTab->widget( index );
     progressBar->setValue( visibleWebView->progress );
     QString s = visibleWebView->url().toString();
-    if( s == "about:blank" ) s = "results.html";
+    if( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
   }
 }
@@ -659,6 +694,8 @@ SimcraftWindow::SimcraftWindow(QWidget *parent)
   : QWidget(parent), sim(0), simProgress(100), simResults(0)
 {
   cmdLineText = "";
+  logFileText = "log.txt";
+  resultsFileText = "results.html";
 
   mainTab = new QTabWidget();
   createWelcomeTab();

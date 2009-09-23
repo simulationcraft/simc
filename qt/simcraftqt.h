@@ -93,6 +93,8 @@ public:
     QPushButton* forwardButton;
     QLineEdit* cmdLine;
     QString cmdLineText;
+    QString logFileText;
+    QString resultsFileText;
     QProgressBar* progressBar;
     QPushButton* mainButton;
     QGroupBox* cmdLineGroupBox;
@@ -117,6 +119,9 @@ public:
     sim_t*  initSim();
     void    deleteSim();
     QString mergeOptions();
+
+    void saveLog();
+    void saveResults();
     
     void createCmdLine();
     void createWelcomeTab();
