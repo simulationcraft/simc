@@ -23,7 +23,7 @@ static QComboBox* createChoice( int count, ... )
 void ImportThread::importArmoryUs()
 {
   QString server, character;
-  QStringList tokens = url.split( QRegExp( "[\?&=]" ), QString::SkipEmptyParts );
+  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
   int count = tokens.count();
   for( int i=0; i < count-1; i++ ) 
   {
@@ -37,13 +37,20 @@ void ImportThread::importArmoryUs()
       character = tokens[ i+1 ];
     }
   }
-  player = armory_t::download_player( sim, "us", server.toStdString(), character.toStdString(), "active" );
+  if( server.isEmpty() || character.isEmpty() )
+  {
+    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
+  }
+  else
+  {
+    player = armory_t::download_player( sim, "us", server.toStdString(), character.toStdString(), "active" );
+  }
 }
 
 void ImportThread::importArmoryEu()
 {
   QString server, character;
-  QStringList tokens = url.split( QRegExp( "[\?&=]" ), QString::SkipEmptyParts );
+  QStringList tokens = url.split( QRegExp( "[?&=#]" ), QString::SkipEmptyParts );
   int count = tokens.count();
   for( int i=0; i < count-1; i++ ) 
   {
@@ -57,16 +64,45 @@ void ImportThread::importArmoryEu()
       character = tokens[ i+1 ];
     }
   }
-  player = armory_t::download_player( sim, "eu", server.toStdString(), character.toStdString(), "active" );
+  if( server.isEmpty() || character.isEmpty() )
+  {
+    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
+  }
+  else
+  {
+    player = armory_t::download_player( sim, "eu", server.toStdString(), character.toStdString(), "active" );
+  }
 }
 
 void ImportThread::importWowhead()
 {
-  QStringList tokens = url.split( QRegExp( "[\?&=]" ), QString::SkipEmptyParts );
+  QString id;
+  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
   int count = tokens.count();
-  for( int i=0; i < count; i++ ) printf( " %s", tokens[ i ].toAscii().data() );
-  printf( "\n" );
-  fflush( stdout );
+  for( int i=0; i < count-1; i++ ) 
+  {
+    if( tokens[ i ] == "profile" )
+    {
+      id = tokens[ i+1 ];
+    }
+  }
+  if( id.isEmpty() )
+  {
+    fprintf( sim->output_file, "Import from Wowhead requires use of Profiler!\n" );
+  }
+  else
+  {
+    tokens = id.split( '.', QString::SkipEmptyParts );
+    count = tokens.count();
+    if( count == 1 )
+    {
+      player = wowhead_t::download_player( sim, id.toStdString() );
+    }
+    else if( count == 3 )
+    {
+      player = wowhead_t::download_player( sim, tokens[ 0 ].toStdString(), tokens[ 1 ].toStdString(), tokens[ 2 ].toStdString() ); 
+    }
+  }
 }
 
 void ImportThread::importChardev()
@@ -133,6 +169,7 @@ void SimcraftWindow::startImport( const QString& url )
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   importThread->start( initSim(), url );
+  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
   mainTab->setCurrentIndex( TAB_SIMULATE );
   timer->start( 500 );
 }
@@ -290,7 +327,7 @@ void SimcraftWindow::createSimulateTab()
   simulateText = new QPlainTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->document()->setDefaultFont( QFont( "fixed" ) );
-  simulateText->document()->setPlainText( "# Profiles will be downloaded into here." );
+  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
   mainTab->addTab( simulateText, "Simulate" );
 }
 
@@ -359,8 +396,9 @@ void SimcraftWindow::importFinished()
   {
     simulateText->setPlainText( QString( "# Unable to generate profile from: " ) + importThread->url );
   }
-  mainTab->setCurrentIndex( TAB_SIMULATE );
   deleteSim();
+  mainButton->setText( "Simulate!" );
+  mainTab->setCurrentIndex( TAB_SIMULATE );
 }
 
 void SimcraftWindow::simulateFinished()
@@ -369,6 +407,7 @@ void SimcraftWindow::simulateFinished()
   simProgress = 100;
   progressBar->setValue( 100 );
   QFile file( sim->html_file_str.c_str() );
+  deleteSim();
   if( file.open( QIODevice::ReadOnly ) )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
@@ -377,9 +416,15 @@ void SimcraftWindow::simulateFinished()
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
+    mainButton->setText( "Save!" );
     mainTab->setCurrentIndex( TAB_RESULTS );
   }
-  deleteSim();
+  else
+  {
+    logText->appendPlainText( "Unable to open html report!\n" );
+    mainButton->setText( "Save!" );
+    mainTab->setCurrentIndex( TAB_LOG );
+  }
 }
 
 void SimcraftWindow::updateSimProgress()
