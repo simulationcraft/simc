@@ -510,11 +510,13 @@ player_t* wowhead_t::download_player( sim_t* sim,
   std::string server_name = server;
   format_server( server_name );
 
-  std::string url = "http://profiler.wowhead.com/?profile=" + region + "." + server_name + "." + character_name;
+  std::string url = "http://www.wowhead.com/?profile=" + region + "." + server_name + "." + character_name;
   std::string result;
 
   if ( http_t::download( result, url ) )
   {
+    if ( sim -> debug ) util_t::printf( "%s\n%s\n", url.c_str(), result.c_str() );
+
     std::string::size_type start = result.find( "profilah.initialize(" );
     if ( start != std::string::npos )
     {

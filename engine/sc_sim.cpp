@@ -1522,6 +1522,10 @@ bool sim_t::parse_options( int    _argc,
 
 void sim_t::cancel()
 {
+  if( canceled ) return;
+
+  util_t::fprintf( output_file, "Simulation has been canceled!" );
+
   canceled = 1;
 
   int num_children = ( int ) children.size();

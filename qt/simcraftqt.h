@@ -7,7 +7,7 @@
 #define SIMCRAFTQT_H
 
 #include <QtGui/QtGui>
-#include <QtNetwork/QtNetwork>
+#include <QtWebKit>
 #include <simcraft.h>
 
 #define TAB_WELCOME   0
@@ -25,12 +25,49 @@
 #define TAB_CHARDEV    3
 #define TAB_WARCRAFTER 4
 #define TAB_RAWR       5
+#define TAB_HISTORY    6
 
-class QWebView;
+class SimcraftWebView;
+
+class SimulateThread : public QThread
+{
+    Q_OBJECT
+    sim_t* sim;
+    QString options;
+
+public:
+    void start( sim_t* s, const QString& o ) { sim=s; options=o; QThread::start(); }
+    virtual void run();
+    SimulateThread() : sim(0) {}
+};
+
+class ImportThread : public QThread
+{
+    Q_OBJECT
+
+public:
+    sim_t* sim;
+    QString url;
+    QString profile;
+    player_t* player;
+
+    void importArmoryUs();
+    void importArmoryEu();
+    void importWowhead();
+    void importChardev();
+    void importWarcrafter();
+    void importRawr();
+
+    void start( sim_t* s, const QString& u ) { sim=s; url=u; profile=""; player=0; QThread::start(); }
+    virtual void run();
+    ImportThread() : sim(0), player(0) {}
+};
 
 class SimcraftWindow : public QWidget
 {
     Q_OBJECT
+
+public:
     QTabWidget* mainTab;
     QComboBox* patchChoice;
     QComboBox* latencyChoice;
@@ -40,11 +77,12 @@ class SimcraftWindow : public QWidget
     QComboBox* scaleFactorsChoice;
     QComboBox* threadsChoice;
     QTabWidget* importTab;
-    QWebView* armoryUsView;
-    QWebView* armoryEuView;
-    QWebView* wowheadView;
-    QWebView* chardevView;
-    QWebView* warcrafterView;
+    SimcraftWebView* armoryUsView;
+    SimcraftWebView* armoryEuView;
+    SimcraftWebView* wowheadView;
+    SimcraftWebView* chardevView;
+    SimcraftWebView* warcrafterView;
+    SimcraftWebView* visibleWebView;
     QLineEdit* rawrFile;
     QListWidget* historyList;
     QPlainTextEdit* simulateText;
@@ -54,10 +92,14 @@ class SimcraftWindow : public QWidget
     QPushButton* backButton;
     QPushButton* forwardButton;
     QLineEdit* cmdLine;
+    QString cmdLineText;
     QProgressBar* progressBar;
     QPushButton* mainButton;
     QGroupBox* cmdLineGroupBox;
+
     QTimer* timer;
+    ImportThread* importThread;
+    SimulateThread* simulateThread;
 
     int armoryUsProgress;
     int armoryEuProgress;
@@ -66,7 +108,15 @@ class SimcraftWindow : public QWidget
     int warcrafterProgress;
 
     sim_t* sim;
-    int numResults;
+    int simProgress;
+    int simResults;
+    QStringList resultsHtml;
+
+    void    startImport( const QString& url );
+    void    startSim();
+    sim_t*  initSim();
+    void    deleteSim();
+    QString mergeOptions();
     
     void createCmdLine();
     void createWelcomeTab();
@@ -79,43 +129,71 @@ class SimcraftWindow : public QWidget
 
     void addHistoryItem( const QString& name, const QString& origin );
 
-    bool armoryUsImport  ( QString& profile );
-    bool armoryEuImport  ( QString& profile );
-    bool wowheadImport   ( QString& profile );
-    bool chardevImport   ( QString& profile );
-    bool warcrafterImport( QString& profile );
-    bool rawrImport      ( QString& profile );
-
 protected:
     virtual void closeEvent( QCloseEvent* e );
 
 private slots:
+    void importFinished();
+    void simulateFinished();
     void updateSimProgress();
-    void updateArmoryUsProgress( int progress );
-    void updateArmoryEuProgress( int progress );
-    void updateWowheadProgress( int progress );
-    void updateChardevProgress( int progress );
-    void updateWarcrafterProgress( int progress );
-    void updateArmoryUsFinished( bool ok );
-    void updateArmoryEuFinished( bool ok );
-    void updateWowheadFinished( bool ok );
-    void updateChardevFinished( bool ok );
-    void updateWarcrafterFinished( bool ok );
-    void updateArmoryUsChanged( const QUrl& );
-    void updateArmoryEuChanged( const QUrl& );
-    void updateWowheadChanged( const QUrl& );
-    void updateChardevChanged( const QUrl& );
-    void updateWarcrafterChanged( const QUrl& );
     void cmdLineReturnPressed();
+    void cmdLineTextEdited( const QString& );
     void backButtonClicked( bool checked=false );
     void forwardButtonClicked( bool checked=false );
     void mainButtonClicked( bool checked=false );
     void mainTabChanged( int index );
     void importTabChanged( int index );
+    void resultsTabChanged( int index );
     void historyDoubleClicked( QListWidgetItem* item );
 
 public:
     SimcraftWindow(QWidget *parent = 0);
+};
+
+class SimcraftWebView : public QWebView
+{
+  Q_OBJECT
+
+public:
+  SimcraftWindow* mainWindow;
+  int progress;
+
+private slots:
+  void loadProgressSlot( int p )
+  {
+    progress = p;
+    if( mainWindow->visibleWebView == this )
+    {
+      mainWindow->progressBar->setValue( progress );
+    }
+  }
+  void loadFinishedSlot( bool ok )
+  {
+    progress = 100;
+    if( mainWindow->visibleWebView == this )
+    {
+      mainWindow->progressBar->setValue( 100 );
+    }
+  }
+  void urlChangedSlot( const QUrl& url )
+  {
+    if( mainWindow->visibleWebView == this )
+    {
+      QString s = url.toString();
+      if( s == "about:blank" ) s = "results.html";
+      mainWindow->cmdLine->setText( s );
+    }
+  }
+
+public:
+  SimcraftWebView( SimcraftWindow* mw ) : 
+    mainWindow(mw), progress(0) 
+  {
+    connect( this, SIGNAL(loadProgress(int)),       this, SLOT(loadProgressSlot(int)) );
+    connect( this, SIGNAL(loadFinished(bool)),      this, SLOT(loadFinishedSlot(bool)) );
+    connect( this, SIGNAL(urlChanged(const QUrl&)), this, SLOT(urlChangedSlot(const QUrl&)) );
+  }
+  virtual ~SimcraftWebView() {}
 };
 
 #endif // SIMCRAFTQT_H

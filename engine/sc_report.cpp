@@ -939,7 +939,7 @@ static void print_html_text( FILE*  file, sim_t* sim )
                    " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
                    "</ul>\n" );
 
-  util_t::fprintf( file, "<pre>\n" );
+  util_t::fprintf( file, "<pre style=\"font-size: small; font-family:'fixed'\" >\n" );
   report_t::print_text( file, sim );
   util_t::fprintf( file, "</pre>\n" );
 }

@@ -28,22 +28,15 @@ static bool only_white_space( char* s )
   return true;
 }
 
-// remove_space =============================================================
+// remove_comment ===========================================================
 
-static void remove_white_space( std::string& buffer,
-                                char*        line )
+static void remove_comment( std::string& line )
 {
-  while ( is_white_space( *line ) ) line++;
-
-  char* endl = line + strlen( line ) - 1;
-
-  while ( endl > line && is_white_space( *endl ) )
+  std::string::size_type pos = line.find( '#' );
+  if ( pos != std::string::npos ) 
   {
-    *endl = '\0';
-    endl--;
+    line.erase( pos );
   }
-
-  buffer = line;
 }
 
 // open_file ================================================================
@@ -297,13 +290,13 @@ bool option_t::parse_file( sim_t* sim,
 bool option_t::parse_line( sim_t* sim,
                            char*  line )
 {
-  std::string buffer;
+  std::string buffer = line;
 
-  remove_white_space( buffer, line );
+  remove_comment( buffer );
 
   std::vector<std::string> tokens;
 
-  int num_tokens = util_t::string_split( tokens, buffer, " \t\n", true );
+  int num_tokens = util_t::string_split( tokens, buffer, " \t\n\r", true );
 
   for ( int i=0; i < num_tokens; i++ )
     if ( ! parse_token( sim, tokens[ i ] ) )
