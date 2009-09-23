@@ -888,7 +888,7 @@ void sim_t::analyze()
       p -> timeline_dps[ i ] = window_dmg / window_size;
     }
 
-    assert( p -> iteration_dps.size() == ( size_t ) iterations );
+    assert( p -> iteration_dps.size() >= ( size_t ) iterations );
 
     p -> dps_min = 0;
     p -> dps_max = 0;
@@ -1004,7 +1004,7 @@ void sim_t::merge( sim_t& other_sim )
     }
 
     int num_buckets = ( int ) std::min(       p -> timeline_resource.size(),
-				other_p -> timeline_resource.size() );
+					other_p -> timeline_resource.size() );
 
     for ( int i=0; i < num_buckets; i++ )
     {
