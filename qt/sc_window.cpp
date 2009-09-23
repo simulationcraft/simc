@@ -218,6 +218,26 @@ void SimcraftWindow::deleteSim()
 QString SimcraftWindow::mergeOptions()
 {
   QString options = "";
+  options += "patch=" + patchChoice->currentText() + "\n";
+  if( latencyChoice->currentText() == "Low" )
+  {
+    options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
+  }
+  else
+  {
+    options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
+  }
+  options += "iterations=" + iterationsChoice->currentText() + "\n";
+  options += "max_time=" + fightLengthChoice->currentText() + "\n";
+  if( fightStyleChoice->currentText() == "Helter Skelter" )
+  {
+    options += "raid_events=casting,cooldown=30,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
+  }
+  if( scaleFactorsChoice->currentText() == "Yes" )
+  {
+    options += "create_scale_factors=1\n";
+  }
+  options += "threads=" + threadsChoice->currentText() + "\n";
   options += simulateText->document()->toPlainText();
   options += "\n";
   options += overridesText->document()->toPlainText();
@@ -265,9 +285,9 @@ void SimcraftWindow::createGlobalsTab()
   globalsLayout->addRow( "Fight Style", fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow( "Threads", threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  patchChoice->setCurrentIndex( 1 );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
-  threadsChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
   mainTab->addTab( globalsGroupBox, "Globals" );
