@@ -1910,8 +1910,8 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0                                                   );
-  buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1, 8.0,  0.0, talents.improved_spirit_tap > 0 ? 1.0 : 0.0 );
+  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0, 0.0, glyphs.shadow                               );
+  buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1,  8.0, 0.0, talents.improved_spirit_tap > 0 ? 1.0 : 0.0 );
   buffs_inner_fire          = new buff_t( this, "inner_fire"                                                                     );
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                               );
   buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0                );
