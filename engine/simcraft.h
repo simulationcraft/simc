@@ -12,8 +12,10 @@
 #  define VC_EXTRALEAN
 #  define _CRT_SECURE_NO_WARNINGS
 #  define DIRECTORY_DELIMITER "\\"
+#  define SIGACTION 0
 #else
 #  define DIRECTORY_DELIMITER "/"
+#  define SIGACTION 1
 #endif
 
 // Switching of using 'const'-flag on methods possible ======================
@@ -58,6 +60,10 @@
 #  if !defined(CLOCKS_PER_SEC)
 #    define CLOCKS_PER_SEC 1000000
 #  endif
+#endif
+
+#if SIGACTION
+#include <signal.h>
 #endif
 
 // Patch Specific Modeling ==================================================

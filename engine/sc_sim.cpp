@@ -5,8 +5,51 @@
 
 #include "simcraft.h"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// POSIX-only signal handler ================================================
+
+struct sim_signal_handler_t
 {
+  static sim_t* global_sim;
+
+  static void callback_func( int signal )
+  {
+    if( signal == SIGSEGV ||
+	signal == SIGBUS  )
+    {
+      const char* name = ( signal == SIGSEGV ) ? "SIGSEGV" : "SIGBUS";
+      if( global_sim )
+      {
+	fprintf( stderr, "sim_signal_handler:  %s!  Seed=%d  Iteration=%d\n", name, global_sim -> seed, global_sim -> current_iteration );
+	fflush( stderr );
+      }
+      exit(0);
+    }
+    else if( signal == SIGINT )
+    {
+      if( global_sim ) 
+      {
+	if( global_sim -> canceled ) exit(0);
+	global_sim -> cancel();
+      }
+    }
+  }
+  static void init( sim_t* sim )
+  {
+    global_sim = sim;
+#if SIGACTION
+    struct sigaction sa;
+    sigemptyset( &sa.sa_mask );
+    sa.sa_flags = 0;
+    sa.sa_handler = callback_func;
+    sigaction( SIGSEGV, &sa, 0 );
+    sigaction( SIGINT,  &sa, 0 );
+#endif
+  }
+};
+
+sim_t* sim_signal_handler_t::global_sim = 0;
 
 // parse_patch ==============================================================
 
@@ -1524,7 +1567,9 @@ void sim_t::cancel()
 {
   if( canceled ) return;
 
-  util_t::fprintf( output_file, "Simulation has been canceled!" );
+  util_t::fprintf( output_file, "\nSimulation has been canceled!\n" );
+  if( current_iteration >= 0 ) util_t::fprintf( output_file, "Completed %d iterations, attempting to generate reports...\n", current_iteration+1 );
+  fflush( output_file );
 
   canceled = 1;
 
@@ -1562,6 +1607,8 @@ double sim_t::progress()
 
 int sim_t::main( int argc, char** argv )
 {
+  sim_signal_handler_t::init( this );
+
   thread_t::init();
 
   http_t::cache_load();
@@ -1611,6 +1658,8 @@ int sim_t::main( int argc, char** argv )
   if ( log_file ) fclose( log_file );
 
   http_t::cache_save();
+
+  sim_signal_handler_t::init( 0 );
 
   return 0;
 }
