@@ -9,6 +9,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // POSIX-only signal handler ================================================
 
+#if SIGACTION
 struct sim_signal_handler_t
 {
   static sim_t* global_sim;
@@ -38,18 +39,21 @@ struct sim_signal_handler_t
   static void init( sim_t* sim )
   {
     global_sim = sim;
-#if SIGACTION
     struct sigaction sa;
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
     sa.sa_handler = callback_func;
     sigaction( SIGSEGV, &sa, 0 );
     sigaction( SIGINT,  &sa, 0 );
-#endif
   }
 };
-
 sim_t* sim_signal_handler_t::global_sim = 0;
+#else
+struct sim_signal_handler_t
+{
+  static void init( sim_t* sim ) {}
+};
+#endif
 
 // parse_patch ==============================================================
 

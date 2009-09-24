@@ -297,7 +297,18 @@ void SimcraftWindow::createCmdLine()
 
 void SimcraftWindow::createWelcomeTab()
 {
-  QLabel* welcomeLabel = new QLabel( "<br><div align=center><h1>Welcome to SimulationCraft!</h1></div>" );
+  const char* s =
+    "<br>"
+    "<div align=center><h1>Welcome to SimulationCraft!</h1></div>"
+    "<dl>"
+    "<dt><h4>Overview</h4></dt>"
+    "<dd>Some discription.</dd>"
+    "<br>"
+    "<dt>Importing profiles</dt>"
+    "<dd>Some discription.</dd>"
+    "</dl>";
+
+  QLabel* welcomeLabel = new QLabel( s );
   welcomeLabel->setAlignment( Qt::AlignLeft|Qt::AlignTop );
   mainTab->addTab( welcomeLabel, "Welcome" );
 }
