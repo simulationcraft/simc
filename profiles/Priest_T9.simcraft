@@ -13,12 +13,12 @@ Priest_T9_13_00_58_258.simcraft
 Priest_T9_13_00_58_258_SWD.simcraft
 Priest_T9_13_00_58_258_draenei.simcraft
 Priest_T9_13_00_58_258_troll.simcraft
-#Priest_T9_13_00_58_258_0t9258.simcraft
-#Priest_T9_13_00_58_258_1t9258.simcraft
-#Priest_T9_13_00_58_258_2t9258.simcraft
-#Priest_T9_13_00_58_258_3t9258.simcraft
-#Priest_T9_13_00_58_258_4t9258.simcraft
-#Priest_T9_13_00_58_258_5t9258.simcraft
+Priest_T9_13_00_58_258_0t9258.simcraft
+Priest_T9_13_00_58_258_1t9258.simcraft
+Priest_T9_13_00_58_258_2t9258.simcraft
+Priest_T9_13_00_58_258_3t9258.simcraft
+Priest_T9_13_00_58_258_4t9258.simcraft
+Priest_T9_13_00_58_258_5t9258.simcraft
 
 # Discipline DPS
 #Priest_T9_51_20_00_232.simcraft
@@ -44,39 +44,37 @@ Priest_T9_13_00_58_258_troll.simcraft
 #wowhead=13043847 name=Priest_T9_13_00_58_245_SWD  save=Priest_T9_13_00_58_245_SWD.simcraft	use_shadow_word_death=1
 
 #wowhead=13043848 name=Priest_T9_13_00_58_258      save=Priest_T9_13_00_58_258.simcraft
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
+#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 #wowhead=13043848 name=Priest_T9_13_00_58_258_SWD  save=Priest_T9_13_00_58_258_SWD.simcraft	use_shadow_word_death=1
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
+#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Different races
 
 ## Draenei (or other alliance priest with a Draenei in the group)
 #wowhead=13043848 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simcraft race=draenei
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
+#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Troll
 #wowhead=13043848 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simcraft race=troll
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
+#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
+#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Extra intermediate profiles
 
 ## 0 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_0t9258      save=Priest_T9_13_00_58_258_0t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
-#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
-#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
 #wrists=bindings_of_dark_essence,id=47143,gems=12sp_10crit_5sp,enchant=30sp
 #hands=velens_handwraps_of_triumph,id=48077,gems=12sp_10crit_5sp,enchant=28sp
 #legs=velens_pants_of_triumph,id=48079,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
@@ -87,11 +85,9 @@ Priest_T9_13_00_58_258_troll.simcraft
 ## 1 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_1t9258      save=Priest_T9_13_00_58_258_1t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
-#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
-#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
 #wrists=bindings_of_dark_essence,id=47143,gems=12sp_10crit_5sp,enchant=30sp
 #hands=velens_handwraps_of_triumph,id=48077,gems=12sp_10crit_5sp,enchant=28sp
 #legs=velens_pants_of_triumph,id=48084,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
@@ -102,11 +98,9 @@ Priest_T9_13_00_58_258_troll.simcraft
 ## 2 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_2t9258      save=Priest_T9_13_00_58_258_2t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
-#shoulders=conquerors_mantle_of_sanctification,id=46165,gems=23sp_5sp,enchant=24sp_15crit
+#shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
-#chest=merlins_robe,id=47603,gems=23sp_23sp_23sp,enchant=10all
+#chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
 #wrists=bindings_of_dark_essence,id=47143,gems=12sp_10crit_5sp,enchant=30sp
 #hands=velens_handwraps_of_triumph,id=48086,gems=12sp_10crit_5sp,enchant=28sp
 #legs=velens_pants_of_triumph,id=48084,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
@@ -117,8 +111,6 @@ Priest_T9_13_00_58_258_troll.simcraft
 ## 3 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_3t9258      save=Priest_T9_13_00_58_258_3t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
@@ -132,8 +124,6 @@ Priest_T9_13_00_58_258_troll.simcraft
 ## 4 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_4t9258      save=Priest_T9_13_00_58_258_4t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=conquerors_circlet_of_sanctification,id=46172,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
@@ -148,8 +138,6 @@ Priest_T9_13_00_58_258_troll.simcraft
 ## 5 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_5t9258      save=Priest_T9_13_00_58_258_5t9258.simcraft
 #finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#head=velens_cowl_of_triumph,id=48035,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
@@ -172,3 +160,5 @@ Priest_T9_13_00_58_258_troll.simcraft
 #wowhead=13043857 name=Priest_T9_34_28_09_258 save=Priest_T9_34_28_09_258.simcraft comment="*** Not yet updated ***"
 
 #save_profiles=1
+
+
