@@ -1098,18 +1098,17 @@ struct lightning_bolt_t : public shaman_spell_t
     direct_power_mod     = ( base_execute_time / 3.5 );
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_cost_reduction += p -> talents.convection * 0.02;
-    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01 + ( p -> glyphs.lightning_bolt != 0 ? 0.04 : 0.0 );
     base_hit            += p -> talents.elemental_precision * 0.01;
     base_crit           += p -> talents.call_of_thunder * 0.05;
     base_crit           += p -> talents.tidal_mastery * 0.01;
-  	direct_power_mod    += p -> talents.shamanism * sim -> P322 ? 0.03 : 0.02;
+  	direct_power_mod    += p -> talents.shamanism * ( sim -> P322 ? 0.03 : 0.02 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier     *= 1.05;
     if ( p -> set_bonus.tier7_2pc_caster() ) base_cost_reduction += 0.05;
 
-    if ( p -> glyphs.lightning_bolt  ) base_multiplier  *= 1.04;
     if ( p -> totems.hex             ) base_spell_power += 165;
 
     lightning_overload_stats = p -> get_stats( "lightning_overload" );
@@ -1201,8 +1200,7 @@ struct lava_burst_t : public shaman_spell_t
     cooldown             = 8.0;
     base_cost_reduction += p -> talents.convection * 0.02;
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
-    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01;
-    base_multiplier     *= 1.0 + p -> talents.call_of_flame * 0.02;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.01 + p -> talents.call_of_flame * 0.02;
     base_hit            += p -> talents.elemental_precision * 0.01;
     direct_power_mod    += p -> talents.shamanism * 0.04;
 
@@ -1505,7 +1503,7 @@ struct flame_shock_t : public shaman_spell_t
     base_tick_time    = 3.0;
 	num_ticks         = 4;
 
-    direct_power_mod  = 0.215;
+    direct_power_mod  = 0.5*1.5/3.5;
     tick_power_mod    = 0.100;
     may_crit          = true;
     cooldown          = 6.0;
