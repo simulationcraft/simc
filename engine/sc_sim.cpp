@@ -1571,8 +1571,14 @@ void sim_t::cancel()
 {
   if( canceled ) return;
 
-  util_t::fprintf( output_file, "\nSimulation has been canceled!\n" );
-  if( current_iteration >= 0 ) util_t::fprintf( output_file, "Completed %d iterations, attempting to generate reports...\n", current_iteration+1 );
+  if( current_iteration >= 0 ) 
+  {
+    util_t::fprintf( output_file, "\nSimulation has been canceled after %d iterations! (thread=%d)\n", current_iteration+1, thread_index );
+  }
+  else
+  {
+    util_t::fprintf( output_file, "\nSimulation has been canceled during player setup! (thread=%d)\n", thread_index );
+  }
   fflush( output_file );
 
   canceled = 1;
