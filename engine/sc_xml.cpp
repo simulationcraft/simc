@@ -73,7 +73,9 @@ static bool is_white_space( char c )
   return( c == ' '  ||
           c == '\t' ||
           c == '\n' ||
-          c == '\r' );
+          c == '\r' ||
+          // FIX-ME: Need proper UTF-8 support
+          c < 0 );
 }
 
 // is_name_char ============================================================
@@ -150,7 +152,8 @@ static xml_node_t* create_node( const std::string&      input,
 
   xml_node_t* node = new xml_node_t( name_str );
 
-  while ( input[ index ] == ' ' )
+//  while ( input[ index ] == ' ' )
+  while ( is_white_space( input[ index ] ) )
   {
     create_parameter( node, input, ++index );
   }
