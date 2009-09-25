@@ -559,7 +559,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
   {
     util_t::printf( "\nsimcraft: Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
-    return 0;
+    name_str = "wowhead" + id;
   }
   armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
   util_t::format_name ( name_str );
