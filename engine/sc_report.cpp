@@ -54,13 +54,14 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   if ( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {
-    util_t::fprintf( file, "  Hit=%4.0f", s -> execute_results[ RESULT_HIT ].avg_dmg );
+    util_t::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f", s -> execute_results[ RESULT_HIT ].avg_dmg, s -> execute_results[ RESULT_HIT ].min_dmg, s -> execute_results[ RESULT_HIT ].max_dmg );
   }
   if ( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-                     "  Crit=%5.0f|%5.0f|%.1f%%",
+                     "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
                      s -> execute_results[ RESULT_CRIT ].avg_dmg,
+                     s -> execute_results[ RESULT_CRIT ].min_dmg,
                      s -> execute_results[ RESULT_CRIT ].max_dmg,
                      s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
   }
@@ -89,13 +90,14 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-                     "  Tick=%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg );
+                     "  Tick=%.0f|%.0f|%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg, s -> tick_results[ RESULT_HIT ].min_dmg, s -> tick_results[ RESULT_HIT ].max_dmg );
   }
   if ( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-                     "  CritTick=%.0f|%.0f|%.1f%%",
+                     "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
                      s -> tick_results[ RESULT_CRIT ].avg_dmg,
+                     s -> tick_results[ RESULT_CRIT ].min_dmg,
                      s -> tick_results[ RESULT_CRIT ].max_dmg,
                      s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
   }
@@ -932,9 +934,9 @@ static void print_html_text( FILE*  file, sim_t* sim )
                    " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
                    " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
                    " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
-                   " <li><b>Hit=Num:</b> <i>Num</i> is the average damage per non-crit hit</li>\n"
-                   " <li><b>Crit=Num1|Num2|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
-                   " <li><b>Tick=Num:</b> <i>Num</i> is the average tick of damage for the <i>damage over time</i> portion of actions</li>\n"
+                   " <li><b>Hit=Num1|Num2|Num3:</b> <i>Num1</i> is the average damage per non-crit hit, <i>Num2</i> is the min non-crit damage, and <i>Num3</i> is the max non-crit damage</li>\n"
+                   " <li><b>Crit=Num1|Num2|Num3|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the min crit damage, <i>Num3</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
+                   " <li><b>Tick=Num1|Num2|Num3:</b> <i>Num1</i> is the average tick of damage for the <i>damage over time</i> portion of actions, <i>Num2</i> is the minimum non-crit tick, and <i>Num3</i> is the maximum non-crit tick</li>\n"
                    " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
                    " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
                    "</ul>\n" );
@@ -1232,9 +1234,9 @@ static void print_wiki_text( FILE*  file,
                    " * *Count=Num|Time:* _Num_ is number of casts per fight and _Time_ is average time between casts\n"
                    " * *DPE=Num:* _Num_ is the _damage per execute_\n"
                    " * *DPET=Num:* _Num_ is the _damage per execute_ divided by the _time to execute_ (this value includes GCD costs and Lag in the calculation of _time to execute_)\n"
-                   " * *Hit=Num:* _Num_ is the average damage per non-crit hit\n"
-                   " * *Crit=Num1|Num2|Pct:* _Num1_ is average crit damage, _Num2_ is the max crit damage, and _Pct_ is the percentage of crits _per execute_ (not _per hit_)\n"
-                   " * *Tick=Num:* _Num_ is the average tick of damage for the _damage over time_ portion of actions\n"
+                   " * *Hit=Num1|Num2|Num3:* _Num1_ is the average damage per non-crit hit, _Num2_ is the min non-crit damage, and _Num3_ is the max non-crit damage\n"
+                   " * *Crit=Num1|Num2|Num3|Pct:* _Num1_ is average crit damage, _Num2_ is the min crit damage, _Num3_ is the max crit damage, and _Pct_ is the percentage of crits _per execute_ (not _per hit_)\n"
+                   " * *Tick=Num1|Num2|Num3:* _Num1_ is the average tick of damage for the _damage over time_ portion of actions, _Num2_ is the min non-crit tick, and _Num3_ is the max non-crit tick\n"
                    " * *Up-Time:* This is _not_ the percentage of time the buff/debuff is present, but rather the ratio of _actions it affects_ over _total number of actions it could affect_.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.\n"
                    " * *Waiting*: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).\n"
                    "\n" );
