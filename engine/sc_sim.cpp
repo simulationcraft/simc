@@ -208,13 +208,19 @@ static bool parse_armory( sim_t*             sim,
     for ( int i=2; i < num_splits; i++ )
     {
       std::string player_name = splits[ i ];
-      int active = 1;
+      std::string description = "active";
       if ( player_name[ 0 ] == '!' )
       {
         player_name.erase( 0, 1 );
-        active = 0;
+        description = "inactive";
       }
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, ( active ? "active" : "inactive" ) );
+      std::vector<std::string> encoding;
+      if ( util_t::string_split( encoding, player_name, "|" ) > 1 )
+      {
+	player_name = encoding[ 0 ];
+	description = encoding[ 1 ];
+      }
+      sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
       if ( ! sim -> active_player ) return false;
     }
     return true;
