@@ -391,13 +391,10 @@ static void print_gains( FILE* file, player_t* p )
 
 static void print_pet_gains( FILE* file, player_t* p )
 {
-  if ( ! p -> pet_list )
-    return;
-
-  pet_t* pet = p -> pet_list;
-
-  while ( pet )
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
+    if ( pet -> total_dmg <= 0 ) continue;
+
     int max_length = 0;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
@@ -407,22 +404,21 @@ static void print_pet_gains( FILE* file, player_t* p )
         if ( length > max_length ) max_length = length;
       }
     }
-    if( max_length == 0 ) return;
-
-    util_t::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
-
-    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    if( max_length > 0 )
     {
-      if ( g -> actual > 0 )
+      util_t::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
+
+      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
       {
-        util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
-        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-        if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
-        util_t::fprintf( file, "\n" );
+	if ( g -> actual > 0 )
+        {
+	  util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
+	  double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+	  if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
+	  util_t::fprintf( file, "\n" );
+	}
       }
     }
-
-    pet = pet -> next_pet;
   }
 }
 

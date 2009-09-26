@@ -2033,6 +2033,7 @@ struct drain_soul_t : public warlock_spell_t
       // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
       for ( action_t* action = p -> action_list; action != this; action = action -> next )
       {
+	if ( action -> background ) continue;
         if ( action -> ready() )
         {
           current_tick = num_ticks;
