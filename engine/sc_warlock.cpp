@@ -939,8 +939,6 @@ struct warlock_spell_t : public spell_t
 
   // Overridden Methods
   virtual double haste() SC_CONST;
-  virtual double execute_time() SC_CONST;
-  virtual double gcd() SC_CONST;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   execute();
@@ -1059,36 +1057,11 @@ double warlock_spell_t::haste() SC_CONST
     assert( p -> talents.eradication <= 3 );
     h *= 1.0 / ( 1.0 + ranks[ p -> talents.eradication ] );
   }
-  return h;
-}
-
-// warlock_spell_t::execute_time ============================================
-
-double warlock_spell_t::execute_time() SC_CONST
-{
-  warlock_t* p = player -> cast_warlock();
-  double t = spell_t::execute_time();
-  if ( t > 0 )
-  {
-    if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() )
-    {
-      t *= 1.0 - p -> talents.backdraft * 0.10;
-    }
-  }
-  return t;
-}
-
-// warlock_spell_t::gcd ============================================
-
-double warlock_spell_t::gcd() SC_CONST
-{
-  double t = spell_t::gcd();
-  warlock_t* p = player -> cast_warlock();
   if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() )
   {
-    t *= 1.0 - p -> talents.backdraft * 0.10;
+    h *= 1.0 - p -> talents.backdraft * 0.10;
   }
-  return t;
+  return h;
 }
 
 // warlock_spell_t::player_buff =============================================
