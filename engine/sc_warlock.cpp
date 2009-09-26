@@ -875,8 +875,7 @@ struct infernal_pet_t : public warlock_pet_t
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
   {
-    warlock_pet_t::schedule_ready( delta_time, waiting );
-
+    melee -> schedule_execute();
     immolation -> schedule_execute();
   }
   virtual double composite_attack_hit() SC_CONST { return 0; }
@@ -917,8 +916,7 @@ struct doomguard_pet_t : public warlock_pet_t
   }
 };
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Warlock Spell

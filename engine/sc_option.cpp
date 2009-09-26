@@ -51,7 +51,7 @@ static FILE* open_file( sim_t* sim, const std::string& name )
     if ( f ) return f;
   }
 
-  return 0;
+  return fopen( name.c_str(), "r" );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
