@@ -2138,7 +2138,7 @@ void paladin_t::init_items()
   else if ( libram == "venture_co_libram_of_mostly_holy_deeds" ) ;
   else if ( ! libram.empty() )
   {
-    util_t::printf( "simcraft: %s has unknown libram %s\n", name(), libram.c_str() );
+    log_t::output( sim, "simcraft: %s has unknown libram %s", name(), libram.c_str() );
   }
 }
 

@@ -2705,6 +2705,8 @@ void shaman_t::init_items()
 
   std::string& totem = items[ SLOT_RANGED ].encoded_name_str;
 
+  if ( totem.empty() ) return;
+
   if      ( totem == "stonebreakers_totem"        ) totems.stonebreaker = 1;
   else if ( totem == "totem_of_dueling"           ) totems.dueling = 1;
   else if ( totem == "totem_of_electrifying_wind" ) totems.electrifying_wind = 1;
@@ -2726,7 +2728,7 @@ void shaman_t::init_items()
   else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
   else
   {
-    util_t::printf( "simcraft: %s has unknown totem %s\n", name(), totem.c_str() );
+    log_t::output( sim, "simcraft: %s has unknown totem %s", name(), totem.c_str() );
   }
 }
 

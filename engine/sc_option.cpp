@@ -28,17 +28,6 @@ static bool only_white_space( char* s )
   return true;
 }
 
-// remove_comment ===========================================================
-
-static void remove_comment( std::string& line )
-{
-  std::string::size_type pos = line.find( '#' );
-  if ( pos != std::string::npos ) 
-  {
-    line.erase( pos );
-  }
-}
-
 // open_file ================================================================
 
 static FILE* open_file( sim_t* sim, const std::string& name )
@@ -290,9 +279,9 @@ bool option_t::parse_file( sim_t* sim,
 bool option_t::parse_line( sim_t* sim,
                            char*  line )
 {
-  std::string buffer = line;
+  if ( *line == '#' ) return true;
 
-  remove_comment( buffer );
+  std::string buffer = line;
 
   std::vector<std::string> tokens;
 

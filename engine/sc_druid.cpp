@@ -3441,6 +3441,8 @@ void druid_t::init_items()
 
   std::string& idol = items[ SLOT_RANGED ].encoded_name_str;
 
+  if ( idol.empty() ) return;
+
   if      ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
   else if ( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
   else if ( idol == "idol_of_terror"             ) idols.terror = 1;
@@ -3459,7 +3461,7 @@ void druid_t::init_items()
   else if ( idol == "harolds_rejuvenating_broach"  ) ;
   else
   {
-    util_t::printf( "simcraft: %s has unknown idol %s\n", name(), idol.c_str() );
+    log_t::output( sim, "simcraft: %s has unknown idol %s", name(), idol.c_str() );
   }
 
   if ( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );
