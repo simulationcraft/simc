@@ -2290,10 +2290,6 @@ struct immolate_t : public warlock_spell_t
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
-
-    tick_power_mod    += p -> talents.fire_and_brimstone * 0.02 / num_ticks;
-    direct_power_mod  += p -> talents.fire_and_brimstone * 0.01;
-
     observer = &( p -> active_immolate );
   }
 
