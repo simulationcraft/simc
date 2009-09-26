@@ -131,6 +131,25 @@ struct priest_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct constants_t
+  {
+    double darkness_value;
+    double devouring_plague_power_mod;
+    double improved_devouring_plague_value;
+    double improved_shadow_word_pain_value;
+    double mind_blast_power_mod;
+    double mind_flay_power_mod;
+    double misery_power_mod;
+    double shadow_form_value;
+    double shadow_weaving_value;
+    double shadow_word_death_power_mod;
+    double shadow_word_pain_power_mod;
+    double twin_disciplines_value;
+    double vampiric_touch_power_mod;
+    constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
+  };
+  constants_t constants;
+
   bool   use_shadow_word_death;
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
@@ -145,6 +164,20 @@ struct priest_t : public player_t
     use_shadow_word_death = false;
 
     max_mana_cost = 0.0;
+
+    constants.darkness_value                  = 0.02;
+    constants.devouring_plague_power_mod      = 3.0 / 15.0 * 0.925;
+    constants.improved_devouring_plague_value = 0.05;
+    constants.improved_shadow_word_pain_value = 0.03;
+    constants.mind_blast_power_mod            = 1.5 / 3.5;
+    constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
+    constants.misery_power_mod                = 0.05;
+    constants.shadow_form_value               = 0.15;
+    constants.shadow_weaving_value            = 0.02;
+    constants.shadow_word_death_power_mod     = 1.5 / 3.5;
+    constants.shadow_word_pain_power_mod      = 3.0 / 15.0 * 0.915;
+    constants.twin_disciplines_value          = 0.01;
+    constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
   }
 
   // Character Definition
@@ -350,8 +383,8 @@ void priest_spell_t::player_buff()
 
   if ( school == SCHOOL_SHADOW )
   {
-    player_multiplier *= 1.0 + p -> buffs_shadow_form -> check() * 0.15;
-    player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> stack() * 0.02;
+    player_multiplier *= 1.0 + p -> buffs_shadow_form -> check() * p -> constants.shadow_form_value;
+    player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> stack() * p -> constants.shadow_weaving_value;
   }
 
   if ( p -> talents.focused_power )
@@ -531,7 +564,7 @@ struct penance_tick_t : public priest_spell_t
 
     direct_power_mod  = 0.8 / 3.5;
 
-    base_multiplier *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
     base_crit       += p -> talents.holy_specialization * 0.01;
   }
 
@@ -613,14 +646,13 @@ struct shadow_word_pain_t : public priest_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 6;
-    tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.915;  // Nerf Bat! Determined to be 0.915 after more rigorous testing.
+    tick_power_mod    = p -> constants.shadow_word_pain_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                                 p -> talents.shadow_focus    * 0.02 );
 
-    base_multiplier *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-                               p -> talents.twin_disciplines          * 0.01 +
-                               p -> talents.improved_shadow_word_pain * 0.03 );
+    base_multiplier *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
+                               p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
+                               p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
     base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> talents.mind_melt * 0.03;
 
@@ -684,12 +716,11 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5;
     base_tick_time    = 3.0;
     num_ticks         = 5;
-    tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 2.0;
+    tick_power_mod    = p -> constants.vampiric_touch_power_mod;
 
     base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_cost        = floor( base_cost );
-    base_multiplier *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit       += p -> talents.mind_melt * 0.03;
 
@@ -739,12 +770,11 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.05;
 
-    direct_power_mod  = 3.0 / 15.0;
-    direct_power_mod *= 0.925;
+    direct_power_mod  = p -> constants.devouring_plague_power_mod;
 
-    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-                                p -> talents.twin_disciplines          * 0.01 +
-                                p -> talents.improved_devouring_plague * 0.05 );
+    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
+                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
+                                p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value );
 
     base_hit += p -> talents.shadow_focus * 0.01;
 
@@ -812,13 +842,12 @@ struct devouring_plague_t : public priest_spell_t
     num_ticks         = 8;
     cooldown          = 0.0;
     binary            = true;
-    tick_power_mod    = base_tick_time / 15.0;
-    tick_power_mod   *= 0.925;
+    tick_power_mod    = p -> constants.devouring_plague_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) + p -> talents.shadow_focus * 0.02 );
     base_cost         = floor( base_cost );
-    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * 0.02 +
-                                p -> talents.twin_disciplines          * 0.01 +
-                                p -> talents.improved_devouring_plague * 0.05 +
+    base_multiplier  *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
+                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
+                                p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value +
                                 p -> set_bonus.tier8_2pc_caster()      * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.03;
@@ -921,17 +950,17 @@ struct mind_blast_t : public priest_spell_t
     base_execute_time = 1.5;
     cooldown          = 8.0;
     may_crit          = true;
-    direct_power_mod  = base_execute_time / 3.5;
+    direct_power_mod  = p -> constants.mind_blast_power_mod;
 
     base_cost        *= 1.0 - ( p -> talents.focused_mind * 0.05 +
                                 p -> talents.shadow_focus * 0.02 +
                                 p -> set_bonus.tier7_2pc_caster() ? 0.1 : 0.0  );
     base_cost         = floor( base_cost );
-    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.02;
     cooldown         -= p -> talents.improved_mind_blast * 0.5;
-    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
+    direct_power_mod *= 1.0 + p -> talents.misery * p -> constants.misery_power_mod;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
@@ -1004,11 +1033,12 @@ struct shadow_word_death_t : public priest_spell_t
     base_execute_time = 0;
     may_crit          = true;
     cooldown          = 12.0;
-    direct_power_mod  = ( 1.5/3.5 );
+    direct_power_mod  = p -> constants.shadow_word_death_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                                 p -> talents.shadow_focus * 0.02 );
     base_cost         = floor( base_cost );
-    base_multiplier  *= 1.0 + p -> talents.darkness * 0.02 + p -> talents.twin_disciplines * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.darkness         * p -> constants.darkness_value +
+                              p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
     base_hit         += p -> talents.shadow_focus * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
@@ -1095,12 +1125,11 @@ struct mind_flay_tick_t : public priest_spell_t
     dual              = true;
     background        = true;
     may_crit          = true;
-    direct_power_mod  = 1.0 / 3.5;
-    direct_power_mod *= 0.9;  // Nerf Bat!
-    direct_power_mod *= 1.0 + p -> talents.misery * 0.05;
+    direct_power_mod  = p -> constants.mind_flay_power_mod;
+    direct_power_mod *= 1.0 + p -> talents.misery * p -> constants.misery_power_mod;
     base_hit         += p -> talents.shadow_focus * 0.01;
-    base_multiplier  *= 1.0 + ( p -> talents.darkness         * 0.02 +
-                                p -> talents.twin_disciplines * 0.01 );
+    base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
+                                p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
     base_crit        += p -> talents.mind_melt * 0.02;
 
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
@@ -2134,56 +2163,70 @@ std::vector<option_t>& priest_t::get_options()
     option_t priest_options[] =
     {
       // @option_doc loc=player/priest/talents title="Talents"
-      { "aspiration",                    OPT_INT,    &( talents.aspiration                    ) },
-      { "darkness",                      OPT_INT,    &( talents.darkness                      ) },
-      { "dispersion",                    OPT_INT,    &( talents.dispersion                    ) },
-      { "divine_fury",                   OPT_INT,    &( talents.divine_fury                   ) },
-      { "enlightenment",                 OPT_INT,    &( talents.enlightenment                 ) },
-      { "focused_mind",                  OPT_INT,    &( talents.focused_mind                  ) },
-      { "focused_power",                 OPT_INT,    &( talents.focused_power                 ) },
-      { "focused_will",                  OPT_INT,    &( talents.focused_will                  ) },
-      { "holy_specialization",           OPT_INT,    &( talents.holy_specialization           ) },
-      { "improved_devouring_plague",     OPT_INT,    &( talents.improved_devouring_plague     ) },
-      { "improved_inner_fire",           OPT_INT,    &( talents.improved_inner_fire           ) },
-      { "improved_mind_blast",           OPT_INT,    &( talents.improved_mind_blast           ) },
-      { "improved_power_word_fortitude", OPT_INT,    &( talents.improved_power_word_fortitude ) },
-      { "improved_shadow_word_pain",     OPT_INT,    &( talents.improved_shadow_word_pain     ) },
-      { "improved_spirit_tap",           OPT_INT,    &( talents.improved_spirit_tap           ) },
-      { "improved_vampiric_embrace",     OPT_INT,    &( talents.improved_vampiric_embrace     ) },
-      { "inner_focus",                   OPT_INT,    &( talents.inner_focus                   ) },
-      { "meditation",                    OPT_INT,    &( talents.meditation                    ) },
-      { "mental_agility",                OPT_INT,    &( talents.mental_agility                ) },
-      { "mental_strength",               OPT_INT,    &( talents.mental_strength               ) },
-      { "mind_flay",                     OPT_INT,    &( talents.mind_flay                     ) },
-      { "mind_melt",                     OPT_INT,    &( talents.mind_melt                     ) },
-      { "misery",                        OPT_INT,    &( talents.misery                        ) },
-      { "pain_and_suffering",            OPT_INT,    &( talents.pain_and_suffering            ) },
-      { "penance",                       OPT_INT,    &( talents.penance                       ) },
-      { "power_infusion",                OPT_INT,    &( talents.power_infusion                ) },
-      { "searing_light",                 OPT_INT,    &( talents.searing_light                 ) },
-      { "shadow_affinity",               OPT_INT,    &( talents.shadow_affinity               ) },
-      { "shadow_focus",                  OPT_INT,    &( talents.shadow_focus                  ) },
-      { "shadow_form",                   OPT_INT,    &( talents.shadow_form                   ) },
-      { "shadow_power",                  OPT_INT,    &( talents.shadow_power                  ) },
-      { "shadow_weaving",                OPT_INT,    &( talents.shadow_weaving                ) },
-      { "spirit_of_redemption",          OPT_INT,    &( talents.spirit_of_redemption          ) },
-      { "spiritual_guidance",            OPT_INT,    &( talents.spiritual_guidance            ) },
-      { "surge_of_light",                OPT_INT,    &( talents.surge_of_light                ) },
-      { "twin_disciplines",              OPT_INT,    &( talents.twin_disciplines              ) },
-      { "twisted_faith",                 OPT_INT,    &( talents.twisted_faith                 ) },
-      { "vampiric_embrace",              OPT_INT,    &( talents.vampiric_embrace              ) },
-      { "vampiric_touch",                OPT_INT,    &( talents.vampiric_touch                ) },
-      { "veiled_shadows",                OPT_INT,    &( talents.veiled_shadows                ) },
+      { "aspiration",                               OPT_INT,    &( talents.aspiration                         ) },
+      { "darkness",                                 OPT_INT,    &( talents.darkness                           ) },
+      { "dispersion",                               OPT_INT,    &( talents.dispersion                         ) },
+      { "divine_fury",                              OPT_INT,    &( talents.divine_fury                        ) },
+      { "enlightenment",                            OPT_INT,    &( talents.enlightenment                      ) },
+      { "focused_mind",                             OPT_INT,    &( talents.focused_mind                       ) },
+      { "focused_power",                            OPT_INT,    &( talents.focused_power                      ) },
+      { "focused_will",                             OPT_INT,    &( talents.focused_will                       ) },
+      { "holy_specialization",                      OPT_INT,    &( talents.holy_specialization                ) },
+      { "improved_devouring_plague",                OPT_INT,    &( talents.improved_devouring_plague          ) },
+      { "improved_inner_fire",                      OPT_INT,    &( talents.improved_inner_fire                ) },
+      { "improved_mind_blast",                      OPT_INT,    &( talents.improved_mind_blast                ) },
+      { "improved_power_word_fortitude",            OPT_INT,    &( talents.improved_power_word_fortitude      ) },
+      { "improved_shadow_word_pain",                OPT_INT,    &( talents.improved_shadow_word_pain          ) },
+      { "improved_spirit_tap",                      OPT_INT,    &( talents.improved_spirit_tap                ) },
+      { "improved_vampiric_embrace",                OPT_INT,    &( talents.improved_vampiric_embrace          ) },
+      { "inner_focus",                              OPT_INT,    &( talents.inner_focus                        ) },
+      { "meditation",                               OPT_INT,    &( talents.meditation                         ) },
+      { "mental_agility",                           OPT_INT,    &( talents.mental_agility                     ) },
+      { "mental_strength",                          OPT_INT,    &( talents.mental_strength                    ) },
+      { "mind_flay",                                OPT_INT,    &( talents.mind_flay                          ) },
+      { "mind_melt",                                OPT_INT,    &( talents.mind_melt                          ) },
+      { "misery",                                   OPT_INT,    &( talents.misery                             ) },
+      { "pain_and_suffering",                       OPT_INT,    &( talents.pain_and_suffering                 ) },
+      { "penance",                                  OPT_INT,    &( talents.penance                            ) },
+      { "power_infusion",                           OPT_INT,    &( talents.power_infusion                     ) },
+      { "searing_light",                            OPT_INT,    &( talents.searing_light                      ) },
+      { "shadow_affinity",                          OPT_INT,    &( talents.shadow_affinity                    ) },
+      { "shadow_focus",                             OPT_INT,    &( talents.shadow_focus                       ) },
+      { "shadow_form",                              OPT_INT,    &( talents.shadow_form                        ) },
+      { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
+      { "shadow_weaving",                           OPT_INT,    &( talents.shadow_weaving                     ) },
+      { "spirit_of_redemption",                     OPT_INT,    &( talents.spirit_of_redemption               ) },
+      { "spiritual_guidance",                       OPT_INT,    &( talents.spiritual_guidance                 ) },
+      { "surge_of_light",                           OPT_INT,    &( talents.surge_of_light                     ) },
+      { "twin_disciplines",                         OPT_INT,    &( talents.twin_disciplines                   ) },
+      { "twisted_faith",                            OPT_INT,    &( talents.twisted_faith                      ) },
+      { "vampiric_embrace",                         OPT_INT,    &( talents.vampiric_embrace                   ) },
+      { "vampiric_touch",                           OPT_INT,    &( talents.vampiric_touch                     ) },
+      { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
-      { "glyph_hymn_of_hope",            OPT_BOOL,   &( glyphs.hymn_of_hope                   ) },
-      { "glyph_penance",                 OPT_BOOL,   &( glyphs.penance                        ) },
-      { "glyph_shadow_word_death",       OPT_BOOL,   &( glyphs.shadow_word_death              ) },
-      { "glyph_shadow_word_pain",        OPT_BOOL,   &( glyphs.shadow_word_pain               ) },
-      { "glyph_shadow",                  OPT_BOOL,   &( glyphs.shadow                         ) },
-      { "glyph_smite",                   OPT_BOOL,   &( glyphs.smite                          ) },
+      { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
+      { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
+      { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
+      { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
+      { "glyph_shadow",                             OPT_BOOL,   &( glyphs.shadow                              ) },
+      { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
+      // @option_doc loc=player/priest/coefficients title="Coefficients"
+      { "const.darkness_value",                     OPT_FLT,    &( constants.darkness_value                   ) },
+      { "const.devouring_plague_power_mod",         OPT_FLT,    &( constants.devouring_plague_power_mod       ) },
+      { "const.improved_devouring_plague_value",    OPT_FLT,    &( constants.improved_devouring_plague_value  ) },
+      { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
+      { "const.mind_blast_power_mod",               OPT_FLT,    &( constants.mind_blast_power_mod             ) },
+      { "const.mind_flay_power_mod",                OPT_FLT,    &( constants.mind_flay_power_mod              ) },
+      { "const.misery_power_mod",                   OPT_FLT,    &( constants.misery_power_mod                 ) },
+      { "const.shadow_form_value",                  OPT_FLT,    &( constants.shadow_form_value                ) },
+      { "const.shadow_weaving_value",               OPT_FLT,    &( constants.shadow_weaving_value             ) },
+      { "const.shadow_word_death_power_mod",        OPT_FLT,    &( constants.shadow_word_death_power_mod      ) },
+      { "const.shadow_word_pain_power_mod",         OPT_FLT,    &( constants.shadow_word_pain_power_mod       ) },
+      { "const.twin_disciplines_value",             OPT_FLT,    &( constants.twin_disciplines_value           ) },
+      { "const.vampiric_touch_power_mod",           OPT_FLT,    &( constants.vampiric_touch_power_mod         ) },
       // @option_doc loc=player/priest/misc title="Misc"
-      { "use_shadow_word_death",         OPT_BOOL,   &( use_shadow_word_death                 ) },
-      { "power_infusion_target",         OPT_STRING, &( power_infusion_target_str             ) },
+      { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
+      { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
