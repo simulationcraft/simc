@@ -3087,7 +3087,24 @@ struct use_item_t : public action_t
     else assert( false );
 
     cooldown = item -> use.cooldown;
+    cooldown_group = use_name;
     trigger_gcd = 0;
+  }
+
+  void lockout( double duration )
+  {
+    if( duration <= 0 ) return;
+    double ready = sim -> current_time + duration;
+    for( action_t* a = player -> action_list; a; a = a -> next )
+    {
+      if( a -> name_str == "use_item" )
+      {
+	if( ready > a -> cooldown_ready )
+	{
+	  a -> cooldown_ready = ready;
+	}
+      }
+    }
   }
 
   virtual void execute()
@@ -3121,13 +3138,15 @@ struct use_item_t : public action_t
         };
 
         new ( sim ) trigger_expiration_t( sim, player, item, trigger );
+
+	lockout( item -> use.duration );
       }
     }
     else if( buff )
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
-
       buff -> trigger();
+      lockout( buff -> duration );
     }
     else assert( false );
 
