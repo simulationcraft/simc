@@ -6,10 +6,7 @@ Druid_T9_00_55_16.simcraft
 Druid_T9_00_55_16_M.simcraft
 Druid_T9_58_00_13.simcraft
 
-Paladin_T9_05_11_55.simcraft
-
-Priest_T9_13_00_58_258.simcraft
-Priest_T9_13_00_58_258_SWD.simcraft
+Hunter_T9_07_57_07.simcraft
 
 Mage_T9_00_53_18.simcraft
 Mage_T9_18_00_53.simcraft   focus_magic_target=Mage_T9_20_51_00
@@ -17,6 +14,13 @@ Mage_T9_20_51_00.simcraft   focus_magic_target=Mage_T9_53_18_00
 Mage_T9_53_18_00.simcraft   focus_magic_target=Mage_T9_57_03_11
 Mage_T9_57_03_11.simcraft   focus_magic_target=Mage_T9_18_00_53
 
+Paladin_T9_05_11_55.simcraft
+
+Priest_T9_13_00_58_258.simcraft
+Priest_T9_13_00_58_258_SWD.simcraft
+
+Shaman_T9_16_55_00_258.simcraft
+Shaman_T9_20_51_00_258.simcraft
 Shaman_T9_57_14_00_258.simcraft
 Shaman_T9_57_14_00_258_ToW.simcraft
 
