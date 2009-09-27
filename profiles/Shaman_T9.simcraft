@@ -4,13 +4,23 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-# Elemental
+Shaman_T9_16_55_00_258.simcraft
+Shaman_T9_20_51_00_258.simcraft
 Shaman_T9_57_14_00_245.simcraft
 Shaman_T9_57_14_00_258.simcraft
 Shaman_T9_57_14_00_258_ToW.simcraft
 
 #simcraftshamant9
 # Uncomment below and comment out above to download profiles.
+
+#wowhead=14376831 name=Shaman_T9_20_51_00_258     save=Shaman_T9_20_51_00_258.simcraft
+#back=sylvanas_cunning,id=47546,gems=20exp,enchant=23haste
+#waist=waistguard_of_deathly_dominion,id=47472,gems=20haste_20ap_10haste_20haste_6agi
+
+#wowhead=14376943 name=Shaman_T9_16_55_00_258     save=Shaman_T9_16_55_00_258.simcraft
+#back=sylvanas_cunning,id=47546,gems=20exp,enchant=23haste
+#waist=waistguard_of_deathly_dominion,id=47472,gems=20haste_20ap_10haste_20haste_6agi
+
 
 #wowhead=14125991 name=Shaman_T9_57_14_00_245     	save=Shaman_T9_57_14_00_245.simcraft     
 
@@ -24,4 +34,8 @@ Shaman_T9_57_14_00_258_ToW.simcraft
 #trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 #back=aethas_intensity,stats=182armor_74sta_74int_65crit_57haste_105sp,gems=23sp_5sp
 
+
 #save_profiles=1
+
+
+
