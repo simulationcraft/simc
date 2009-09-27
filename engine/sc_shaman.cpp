@@ -2766,7 +2766,7 @@ void shaman_t::init_buffs()
   buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
   buffs_electrifying_wind = new stat_buff_t( this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
   buffs_indomitability    = new stat_buff_t( this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
-  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, ( sim -> P322 ? 400 : 200 ), 1, 18.0, 20.01, totems.quaking_earth * 0.80 );
+  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, ( sim -> P322 ? 400 : 200 ), 1, 18.0, 9.01, totems.quaking_earth * 0.80 );
   buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
   buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
 }
@@ -2836,13 +2836,15 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
       action_list_str += "/wind_shear";
+      if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
+      if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";
-      if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
+
       if ( talents.stormstrike      ) action_list_str += "/stormstrike";
+      if ( sim -> P322 ) action_list_str += "/flame_shock";
       action_list_str += "/earth_shock/magma_totem/lightning_shield";
       if ( talents.lava_lash    ) action_list_str += "/lava_lash";
-      if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/lightning_bolt,maelstrom=4";
     }
     else
