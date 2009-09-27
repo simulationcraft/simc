@@ -19,7 +19,7 @@ actions+=/speed_potion
 actions+=/elemental_mastery
 actions+=/flame_shock
 actions+=/lava_burst,flame_shock=1
-actions+=/chain_lightning,lvb_cd<=1.5
+actions+=/chain_lightning
 actions+=/lightning_bolt
 actions+=/thunderstorm
 head=thralls_helm_of_triumph,stats=1124armor_80crit_84haste_131sp_103sta_103int,gems=chaotic_skyflare_10haste_12sp_9sp,enchant=30sp_20crit
