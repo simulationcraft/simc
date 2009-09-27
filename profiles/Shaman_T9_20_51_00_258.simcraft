@@ -5,7 +5,7 @@ origin=http://profiler.wowhead.com/?profile=14376831
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053034050000000000000000030205013105021333031131031051
-glyphs=windfury_weapon/stormstrike/feral_spirit
+glyphs=flame_shock/stormstrike/feral_spirit
 actions=flask,type=endless_rage
 actions+=/food,type=fish_feast
 actions+=/windfury_weapon,weapon=main
@@ -20,6 +20,7 @@ actions+=/speed_potion
 actions+=/lightning_bolt,maelstrom=5
 actions+=/shamanistic_rage
 actions+=/stormstrike
+actions+=/flame_shock
 actions+=/earth_shock
 actions+=/magma_totem
 actions+=/lightning_shield
@@ -50,7 +51,7 @@ ranged=totem_of_electrifying_wind
 # gear_intellect=592
 # gear_spirit=26
 # gear_attack_power=3060
-# gear_expertise_rating=128
+# gear_expertise_rating=148
 # gear_armor_penetration_rating=282
 # gear_hit_rating=402
 # gear_crit_rating=818
@@ -62,4 +63,3 @@ ranged=totem_of_electrifying_wind
 # trinket2=deaths_choice
 # main_hand=cudgel_of_the_damned,weapon=mace_2.60speed_216.5dps,enchant=berserking
 # off_hand=cudgel_of_the_damned,weapon=mace_2.60speed_216.5dps,enchant=berserking
-

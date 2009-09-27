@@ -21,7 +21,6 @@ Shaman_T9_57_14_00_258_ToW.simcraft
 #back=sylvanas_cunning,id=47546,gems=20exp,enchant=23haste
 #waist=waistguard_of_deathly_dominion,id=47472,gems=20haste_20ap_10haste_20haste_6agi
 
-
 #wowhead=14125991 name=Shaman_T9_57_14_00_245     	save=Shaman_T9_57_14_00_245.simcraft     
 
 #wowhead=14165873 name=Shaman_T9_57_14_00_258     	save=Shaman_T9_57_14_00_258.simcraft     totem_of_wrath=0
@@ -33,7 +32,6 @@ Shaman_T9_57_14_00_258_ToW.simcraft
 #legs=leggings_of_the_awakening,stats=570armor_116sta_116int_86crit_94haste_151sp,gems=23sp_12sp_15sta_12sp_10haste_9sp,enchant=50sp_30sta
 #trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 #back=aethas_intensity,stats=182armor_74sta_74int_65crit_57haste_105sp,gems=23sp_5sp
-
 
 #save_profiles=1
 
