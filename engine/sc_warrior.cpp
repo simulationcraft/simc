@@ -201,7 +201,7 @@ struct warrior_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    resource_loss( int resurce, double amount, action_t* );
-  virtual bool      get_talent_trees( std::vector<int*>& arms, std::vector<int*>& fury, std::vector<int*>& protection );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
@@ -2631,12 +2631,12 @@ int warrior_t::target_swing()
 
 // warrior_t::get_talent_trees ==============================================
 
-bool warrior_t::get_talent_trees( std::vector<int*>& arms,
-                                  std::vector<int*>& fury,
-                                  std::vector<int*>& protection )
+std::vector<talent_translation_t>& warrior_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 3, &( talents.improved_heroic_strike          ) }, {  1, 3, &( talents.armored_to_the_teeth      ) }, {  1, 2, &( talents.improved_bloodrage             ) } },
     { {  2, 5, &( talents.deflection                      ) }, {  2, 2, &( talents.booming_voice             ) }, {  2, 5, &( talents.shield_specialization          ) } },
     { {  3, 2, &( talents.improved_rend                   ) }, {  3, 5, &( talents.cruelty                   ) }, {  3, 3, &( talents.improved_thunderclap           ) } },
@@ -2670,8 +2670,32 @@ bool warrior_t::get_talent_trees( std::vector<int*>& arms,
     { { 31, 1, &( talents.bladestorm                      ) }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } },
     { {  0, 0, NULL                                         }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } }
   };
-  return get_talent_translation( arms, fury, protection, translation );
-}
+
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;}
 
 // warrior_t::get_options ================================================
 

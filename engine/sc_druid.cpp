@@ -246,7 +246,7 @@ struct druid_t : public player_t
   virtual double    composite_tank_parry() SC_CONST { return 0; }
   virtual double    composite_tank_block() SC_CONST { return 0; }
   virtual double    composite_tank_crit( int school ) SC_CONST;
-  virtual bool      get_talent_trees( std::vector<int*>& balance, std::vector<int*>& feral, std::vector<int*>& restoration );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -3807,12 +3807,12 @@ double druid_t::composite_tank_crit( int school ) SC_CONST
 
 // druid_t::get_talent_trees ===============================================
 
-bool druid_t::get_talent_trees( std::vector<int*>& balance,
-                                std::vector<int*>& feral,
-                                std::vector<int*>& restoration )
+std::vector<talent_translation_t>& druid_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 5, &( talents.starlight_wrath       ) }, {  1, 5, &( talents.ferocity                ) }, {  1, 2, &( talents.improved_mark_of_the_wild ) } },
     { {  2, 5, &( talents.genesis               ) }, {  2, 5, &( talents.feral_aggression        ) }, {  2, 0, NULL                                   } },
     { {  3, 3, &( talents.moonglow              ) }, {  3, 3, &( talents.feral_instinct          ) }, {  3, 5, &( talents.furor                     ) } },
@@ -3846,8 +3846,31 @@ bool druid_t::get_talent_trees( std::vector<int*>& balance,
     { {  0, 0, NULL                               }, {  0, 0, NULL                                 }, {  0, 0, NULL                                   } },
   };
 
-  return get_talent_translation( balance, feral, restoration, translation );
-}
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;}
 
 // druid_t::get_options ================================================
 

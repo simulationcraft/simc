@@ -9,6 +9,13 @@
 // Hunter
 // ==========================================================================
 
+#define PET_MAX_TALENT_POINTS 20
+#define PET_TALENT_ROW_MULTIPLIER 3
+#define PET_MAX_TALENT_ROW 6
+#define PET_MAX_TALENT_TREES 1
+#define PET_MAX_TALENT_COL 4
+#define PET_MAX_TALENT_SLOTS (PET_MAX_TALENT_TREES*PET_MAX_TALENT_ROW*PET_MAX_TALENT_COL)
+
 struct hunter_pet_t;
 
 enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_BEAST, ASPECT_MAX };
@@ -198,7 +205,7 @@ struct hunter_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
-  virtual bool      get_talent_trees( std::vector<int*>& beastmastery, std::vector<int*>& marksmanship, std::vector<int*>& survival );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
@@ -564,71 +571,84 @@ struct hunter_pet_t : public pet_t
     return options;
   }
 
-  virtual bool parse_talents_armory( const std::string& talent_string )
+  virtual std::vector<talent_translation_t>& hunter_pet_t::get_talent_list()
   {
-    std::vector<int*> tree;
+	if(this->talent_list.empty())
+	{
+		talent_translation_t *translation_table;
+		if ( group() == PET_FEROCITY )
+		{
+		  talent_translation_t group_table[] = 
+		  {
+			{  1, 2, &( talents.cobra_reflexes         ) },
+			{  2, 0, NULL                                },
+			{  3, 0, NULL                                },
+			{  4, 0, NULL                                },
+			{  5, 0, NULL                                },
+			{  6, 0, NULL                                },
+			{  7, 3, &( talents.spiked_collar          ) },
+			{  8, 0, NULL                                },
+			{  9, 0, NULL                                },
+			{ 10, 0, NULL                                },
+			{ 11, 0, NULL                                },
+			{ 12, 0, NULL                                },
+			{ 13, 3, &( talents.spiders_bite           ) },
+			{ 14, 0, NULL                                },
+			{ 15, 1, &( talents.rabid                  ) },
+			{ 16, 0, NULL                                },
+			{ 17, 1, &( talents.call_of_the_wild       ) },
+			{ 18, 2, &( talents.shark_attack           ) },
+			{ 19, 2, &( talents.wild_hunt              ) },
+			{  0, 0, NULL                                }
+		  };
+		  translation_table = group_table;
+		}
+		else if ( group() == PET_CUNNING )
+		{
+		  talent_translation_t group_table[] = 
+		  {
+			{  1, 2, &( talents.cobra_reflexes         ) },
+			{  2, 0, NULL                                },
+			{  3, 0, NULL                                },
+			{  4, 0, NULL                                },
+			{  5, 0, NULL                                },
+			{  6, 0, NULL                                },
+			{  7, 2, &( talents.owls_focus             ) },
+			{  8, 3, &( talents.spiked_collar          ) },
+			{  9, 0, NULL                                },
+			{ 10, 0, NULL                                },
+			{ 11, 0, NULL                                },
+			{ 12, 0, NULL                                },
+			{ 13, 0, NULL                                },
+			{ 14, 2, &( talents.feeding_frenzy         ) },
+			{ 15, 1, &( talents.wolverine_bite         ) },
+			{ 16, 1, &( talents.roar_of_recovery       ) },
+			{ 17, 0, NULL                                },
+			{ 18, 0, NULL                                },
+			{ 19, 2, &( talents.wild_hunt              ) },
+			{ 20, 0, NULL                                },
+			{  0, 0, NULL                                }
+		  };
+		  translation_table = group_table;
+		}
+		else // TENACITY
+		{
+		  return talent_list;
+		}
 
-    if ( group() == PET_FEROCITY )
-    {
-      talent_translation_t translation[] =
-      {
-        {  1, 2, &( talents.cobra_reflexes         ) },
-        {  2, 0, NULL                                },
-        {  3, 0, NULL                                },
-        {  4, 0, NULL                                },
-        {  5, 0, NULL                                },
-        {  6, 0, NULL                                },
-        {  7, 3, &( talents.spiked_collar          ) },
-        {  8, 0, NULL                                },
-        {  9, 0, NULL                                },
-        { 10, 0, NULL                                },
-        { 11, 0, NULL                                },
-        { 12, 0, NULL                                },
-        { 13, 3, &( talents.spiders_bite           ) },
-        { 14, 0, NULL                                },
-        { 15, 1, &( talents.rabid                  ) },
-        { 16, 0, NULL                                },
-        { 17, 1, &( talents.call_of_the_wild       ) },
-        { 18, 2, &( talents.shark_attack           ) },
-        { 19, 2, &( talents.wild_hunt              ) },
-        {  0, 0, NULL                                }
-      };
-      get_talent_translation( tree, translation );
-      return parse_talent_tree( tree, talent_string );
-    }
-    else if ( group() == PET_CUNNING )
-    {
-      talent_translation_t translation[] =
-      {
-        {  1, 2, &( talents.cobra_reflexes         ) },
-        {  2, 0, NULL                                },
-        {  3, 0, NULL                                },
-        {  4, 0, NULL                                },
-        {  5, 0, NULL                                },
-        {  6, 0, NULL                                },
-        {  7, 2, &( talents.owls_focus             ) },
-        {  8, 3, &( talents.spiked_collar          ) },
-        {  9, 0, NULL                                },
-        { 10, 0, NULL                                },
-        { 11, 0, NULL                                },
-        { 12, 0, NULL                                },
-        { 13, 0, NULL                                },
-        { 14, 2, &( talents.feeding_frenzy         ) },
-        { 15, 1, &( talents.wolverine_bite         ) },
-        { 16, 1, &( talents.roar_of_recovery       ) },
-        { 17, 0, NULL                                },
-        { 18, 0, NULL                                },
-        { 19, 2, &( talents.wild_hunt              ) },
-        { 20, 0, NULL                                },
-        {  0, 0, NULL                                }
-      };
-      get_talent_translation( tree, translation );
-      return parse_talent_tree( tree, talent_string );
-    }
-    else // TENACITY
-    {
-      return false;
-    }
+		int count = 0;
+
+	  	for(int i=0;i < sizeof(*translation_table)/sizeof(talent_translation_t)/PET_MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i].index > 0)
+			{
+				talent_list.push_back(translation_table[i]);
+				talent_list[count].tree = i;
+				talent_list[count].index = count++;
+			}
+		}
+	}
+    return talent_list;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -3493,12 +3513,12 @@ void hunter_t::regen( double periodicity )
 
 // hunter_t::get_talent_trees ==============================================
 
-bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
-                                 std::vector<int*>& marksmanship,
-                                 std::vector<int*>& survival )
+std::vector<talent_translation_t>& hunter_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 5, &( talents.improved_aspect_of_the_hawk ) }, {  1, 0, NULL                                      }, {  1, 5, &( talents.improved_tracking        ) } },
     { {  2, 5, &( talents.endurance_training          ) }, {  2, 3, &( talents.focused_aim                  ) }, {  2, 0, NULL                                  } },
     { {  3, 2, &( talents.focused_fire                ) }, {  3, 5, &( talents.lethal_shots                 ) }, {  3, 2, &( talents.savage_strikes           ) } },
@@ -3529,8 +3549,31 @@ bool hunter_t::get_talent_trees( std::vector<int*>& beastmastery,
     { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, { 28, 1, &( talents.explosive_shot           ) } },
     { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                  } }
   };
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
 
-  return get_talent_translation( beastmastery, marksmanship, survival, translation );
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;
 }
 
 

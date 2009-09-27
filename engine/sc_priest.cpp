@@ -191,7 +191,7 @@ struct priest_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      init_party();
-  virtual bool      get_talent_trees( std::vector<int*>& discipline, std::vector<int*>& holy, std::vector<int*>& shadow );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -2112,12 +2112,12 @@ double priest_t::resource_loss( int       resource,
 
 // priest_t::get_talent_trees ===============================================
 
-bool priest_t::get_talent_trees( std::vector<int*>& discipline,
-                                 std::vector<int*>& holy,
-                                 std::vector<int*>& shadow )
+std::vector<talent_translation_t>& priest_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 0, NULL                                       }, {  1, 0, NULL                              }, {  1, 0, NULL                                   } },
     { {  2, 5, &( talents.twin_disciplines )              }, {  2, 0, NULL                              }, {  2, 2, &( talents.improved_spirit_tap )       } },
     { {  3, 0, NULL                                       }, {  3, 5, &( talents.holy_specialization )  }, {  3, 5, &( talents.darkness )                  } },
@@ -2149,8 +2149,31 @@ bool priest_t::get_talent_trees( std::vector<int*>& discipline,
     { {  0, 0, NULL                                       }, {  0, 0, NULL                              }, {  0, 0, NULL                                   } }
   };
 
-  return get_talent_translation( discipline, holy, shadow, translation );
-}
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;}
 
 // priest_t::get_options ===================================================
 

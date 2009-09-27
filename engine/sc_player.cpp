@@ -216,7 +216,7 @@ static bool parse_talent_url( sim_t* sim,
     int part_count = util_t::string_split( parts, url, "&" );
     assert( part_count > 0 );
 
-    if ( ( cut_pt = parts[ 0 ].find_first_of( "=" ) ) != parts[ 0 ].npos )
+    if ( ( cut_pt = parts[ 0 ].find_first_of( "?" ) ) != parts[ 0 ].npos )
     {
       return p -> parse_talents_mmo( parts[ 0 ].substr( cut_pt + 1 ) );
     }
@@ -3207,58 +3207,24 @@ void player_t::trigger_replenishment()
   }
 }
 
+// player_t::get_talent_list ======================================================
 
-// player_t::get_talent_translation ===============================================
-
-bool player_t::get_talent_translation( std::vector<int*>& tree,
-                                       talent_translation_t translation[] )
+std::vector<talent_translation_t>& player_t::get_talent_list()
 {
-  for ( int i=0; translation[ i ].index > 0; i++ ) tree.push_back( translation[ i ].address );
-
-  return true;
+	return talent_list;
 }
 
-bool player_t::get_talent_translation( std::vector<int*>& tree1,
-                                       std::vector<int*>& tree2,
-                                       std::vector<int*>& tree3,
-                                       talent_translation_t translation[][3] )
+// player_t::parse_talent_trees ===================================================
+
+bool player_t::parse_talent_trees( int talents[] )
 {
-  for ( int i=0; translation[ i ][ 0 ].index > 0; i++ ) tree1.push_back( translation[ i ][ 0 ].address );
-  for ( int i=0; translation[ i ][ 1 ].index > 0; i++ ) tree2.push_back( translation[ i ][ 1 ].address );
-  for ( int i=0; translation[ i ][ 2 ].index > 0; i++ ) tree3.push_back( translation[ i ][ 2 ].address );
+  std::vector<talent_translation_t> translations = this->get_talent_list();
 
-  return true;
-}
-
-// player_t::get_talent_trees ===============================================
-
-bool player_t::get_talent_trees( std::vector<int*>& tree1,
-                                 std::vector<int*>& tree2,
-                                 std::vector<int*>& tree3 )
-{
-  return false;
-}
-
-// player_t::parse_talent_tree ==============================================
-
-bool player_t::parse_talent_tree( std::vector<int*>& talent_tree,
-                                  const std::string& talent_string )
-{
-  const char* s = talent_string.c_str();
-
-  unsigned int size = ( unsigned int ) std::min( talent_tree.size(), talent_string.size() );
-
-  for ( unsigned int i=0; i < size; i++ )
+  for(unsigned int i = 0; i < translations.size(); i++)
   {
-    int* address = talent_tree[ i ];
-    if ( ! address ) continue;
-    char c = s[ i ];
-    if ( c < '0' || c > '5' )
-    {
-      util_t::printf( "\nsimcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
-      return false;
-    }
-    *address = c - '0';
+	  int *address = translations[i].address;
+	  if ( ! address ) continue;
+	  *address = talents[i];
   }
 
   return true;
@@ -3268,37 +3234,44 @@ bool player_t::parse_talent_tree( std::vector<int*>& talent_tree,
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  std::vector<int*> talent_tree1, talent_tree2, talent_tree3;
+	int talents[MAX_TALENT_SLOTS] = {0};
 
-  if ( ! get_talent_trees( talent_tree1, talent_tree2, talent_tree3 ) )
-    return false;
+  const char *buffer = talent_string.c_str();
 
-  int size1 = ( int ) talent_tree1.size();
-  int size2 = ( int ) talent_tree2.size();
-  int size3 = ( int ) talent_tree3.size();
-
-  std::string buffer = talent_string;
-
-  int total_size = ( size1 + size2 + size3 );
-  if ( ( total_size - buffer.size() ) > 0 )
+  for(unsigned int i = 0; i < talent_string.size(); i++)
   {
-    buffer.resize( total_size, '0' );
+	char c = buffer[ i ];
+    if ( c < '0' || c > '5' )
+    {
+      util_t::printf( "\nsimcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      return false;
+    }
+    talents[i] = c - '0';
   }
 
-  std::string talent_string1( buffer,     0,  size1 );
-  std::string talent_string2( buffer, size1,  size2 );
-  std::string talent_string3( buffer, size1 + size2 );
-
-  return( parse_talent_tree( talent_tree1, talent_string1 ) &&
-          parse_talent_tree( talent_tree2, talent_string2 ) &&
-          parse_talent_tree( talent_tree3, talent_string3 ) );
+  return parse_talent_trees(talents);
 }
 
 // player_t::parse_talents_mmo ==============================================
 
 bool player_t::parse_talents_mmo( const std::string& talent_string )
 {
-  return parse_talents_armory( talent_string );
+  std::string player_class, talent_string_extract;
+  unsigned int cut_pos1 = talent_string.find_first_of("#");
+  unsigned int cut_pos2 = talent_string.find_first_of(",");
+
+  if((cut_pos1 < cut_pos2) && (cut_pos2 < talent_string.npos))
+  {
+	player_class = talent_string.substr(0, cut_pos1);
+	talent_string_extract = talent_string.substr(cut_pos1+1, cut_pos2-cut_pos1);
+	return mmo_champion_t::parse_talents( this, talent_string_extract );
+  }
+  else if((cut_pos1 = talent_string.find_first_of("=")) != talent_string.npos)
+  {
+	  return parse_talents_armory( talent_string.substr( cut_pos1 + 1 ) );
+  }
+
+  return false;
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -3324,25 +3297,24 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     { '\0', '\0', '\0' }
   };
 
-  std::vector<int*> talent_trees[ 3 ];
-  unsigned int tree_size[ 3 ];
+  this->get_talent_list();
+  int talents[ MAX_TALENT_SLOTS ] = {0};
+  unsigned int tree_size[ MAX_TALENT_TREES ] = {0};
+  unsigned int tree_count[ MAX_TALENT_TREES ] = {0};
 
-  if ( ! get_talent_trees( talent_trees[ 0 ], talent_trees[ 1 ] , talent_trees[ 2 ] ) )
-    return false;
-
-  for ( int i=0; i < 3; i++ )
+  for (unsigned int i=0; i < talent_list.size(); i++ )
   {
-    tree_size[ i ] = ( unsigned int ) talent_trees[ i ].size();
+    tree_size[ talent_list[i].tree ]++;
   }
 
-  std::string talent_strings[ 3 ];
-  int tree=0;
+  unsigned int tree = 0;
+  unsigned int count = 0;
 
   for ( unsigned int i=1; i < talent_string.length(); i++ )
   {
-    if ( tree > 2 )
+    if ( (tree >= MAX_TALENT_TREES) || (count > talent_list.size()) )
     {
-      util_t::fprintf( sim -> output_file, "Malformed wowhead talent string. Too many trees specified.\n" );
+      util_t::fprintf( sim -> output_file, "Malformed wowhead talent string. Too many talents or trees specified.\n" );
       assert( 0 );
     }
 
@@ -3352,7 +3324,10 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     if ( c == 'Z' )
     {
-      tree++;
+		count = 0;
+		for(unsigned int j=0; j <= tree; j++)
+			count += tree_size[j];
+		tree++;
       continue;
     }
 
@@ -3368,25 +3343,26 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
       assert( 0 );
     }
 
-    talent_strings[ tree ] += decode -> first;
-    talent_strings[ tree ] += decode -> second;
+    talents[ count++ ] += decode -> first - '0';
+    talents[ count++ ] += decode -> second - '0';
+	tree_count[ tree ] += 2;
 
-    if ( talent_strings[ tree ].size() >= tree_size[ tree ] )
+    if ( tree_count[ tree ] >= tree_size[ tree ] )
+	{
       tree++;
+	}
   }
 
   if ( sim -> debug )
   {
-    util_t::fprintf( sim -> output_file, "%s tree1: %s\n", name(), talent_strings[ 0 ].c_str() );
-    util_t::fprintf( sim -> output_file, "%s tree2: %s\n", name(), talent_strings[ 1 ].c_str() );
-    util_t::fprintf( sim -> output_file, "%s tree3: %s\n", name(), talent_strings[ 2 ].c_str() );
+	  std::string str_out = "";
+	  for(unsigned int i=0; i < talent_list.size(); i++)
+		str_out += (char)talents[i];
+    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out );
   }
 
-  for ( int i=0; i < 3; i++ )
-  {
-    if ( ! parse_talent_tree( talent_trees[ i ], talent_strings[ i ] ) )
-      return false;
-  }
+  if ( ! parse_talent_trees( talents ) )
+    return false;
 
   return true;
 }

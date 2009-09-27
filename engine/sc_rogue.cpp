@@ -245,7 +245,7 @@ struct rogue_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
-  virtual bool      get_talent_trees( std::vector<int*>& assassination, std::vector<int*>& combat, std::vector<int*>& subtlety );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
@@ -3377,12 +3377,12 @@ double rogue_t::available() SC_CONST
 
 // rogue_t::get_talent_trees ==============================================
 
-bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
-                                std::vector<int*>& combat,
-                                std::vector<int*>& subtlety )
-{
-  talent_translation_t translation[][3] =
+std::vector<talent_translation_t>& rogue_t::get_talent_list()
+{  
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 3, &( talents.improved_eviscerate   ) }, {  1, 0, NULL                                   }, {  1, 5, &( talents.relentless_strikes         ) } },
     { {  2, 0, NULL                               }, {  2, 2, &( talents.improved_sinister_strike  ) }, {  2, 0, NULL                                    } },
     { {  3, 5, &( talents.malice                ) }, {  3, 5, &( talents.dual_wield_specialization ) }, {  3, 2, &( talents.opportunity                ) } },
@@ -3414,7 +3414,32 @@ bool rogue_t::get_talent_trees( std::vector<int*>& assassination,
     { {  0, 0, NULL                               }, {  0, 0, NULL                                   }, {  0, 0, NULL                                    } }
   };
 
-  return get_talent_translation( assassination, combat, subtlety, translation );
+
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;
 }
 
 // rogue_t::get_options ================================================

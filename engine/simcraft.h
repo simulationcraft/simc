@@ -1245,6 +1245,9 @@ struct player_t
   // Option Parsing
   std::vector<option_t> options;
 
+  // Talent Parsing
+  std::vector<talent_translation_t> talent_list;
+
   // Profs
   std::string professions_str;
   int profession[ PROFESSION_MAX ];
@@ -1587,10 +1590,8 @@ struct player_t
   virtual void register_tick_damage_callback         ( action_callback_t* );
   virtual void register_direct_damage_callback       ( action_callback_t* );
 
-  virtual bool get_talent_translation( std::vector<int*>& tree, talent_translation_t translation[] );
-  virtual bool get_talent_translation( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3, talent_translation_t translation[][3] );
-  virtual bool get_talent_trees( std::vector<int*>& tree1, std::vector<int*>& tree2, std::vector<int*>& tree3 );
-  virtual bool parse_talent_tree( std::vector<int*>& talent_tree, const std::string& talent_string );
+  virtual std::vector<talent_translation_t>& get_talent_list();
+  virtual bool parse_talent_trees( int talents[] );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
@@ -2297,11 +2298,21 @@ struct chart_t
 
 // Talent Translation =========================================================
 
+#define MAX_TALENT_POINTS 71
+#define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
+#define MAX_TALENT_TREES 3
+#define MAX_TALENT_COL 4
+#define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
+
 struct talent_translation_t
 {
   int  index;
-  int  max_rank;
+  int  max;
   int* address;
+  int  row;
+  int  tree;
+  int  req;
+  std::string name;
 };
 
 // Log =======================================================================
@@ -2416,6 +2427,9 @@ struct mmo_champion_t
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
+  static bool parse_talents( player_t* player, const std::string& talent_string );
+
+  static void get_next_range_byte(unsigned int* rangeval, char** src);
 };
 
 // Rawr ======================================================================

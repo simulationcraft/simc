@@ -205,7 +205,7 @@ struct mage_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual bool      get_talent_trees( std::vector<int*>& arcane, std::vector<int*>& fire, std::vector<int*>& frost );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3276,12 +3276,12 @@ double mage_t::resource_loss( int       resource,
 
 // mage_t::get_talent_trees ================================================
 
-bool mage_t::get_talent_trees( std::vector<int*>& arcane,
-                               std::vector<int*>& fire,
-                               std::vector<int*>& frost )
+std::vector<talent_translation_t>& mage_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
     { {  1, 2, &( talents.arcane_subtlety      ) }, {  1, 2, &( talents.improved_fire_blast ) }, {  1, 3, &( talents.frostbite                ) } },
     { {  2, 3, &( talents.arcane_focus         ) }, {  2, 3, &( talents.incineration        ) }, {  2, 5, &( talents.improved_frost_bolt      ) } },
     { {  3, 0, NULL                              }, {  3, 5, &( talents.improved_fire_ball  ) }, {  3, 3, &( talents.ice_floes                ) } },
@@ -3315,8 +3315,31 @@ bool mage_t::get_talent_trees( std::vector<int*>& arcane,
     { {  0, 0, NULL                              }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } }
   };
 
-  return get_talent_translation( arcane, fire, frost, translation );
-}
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;}
 
 // mage_t::get_options ====================================================
 

@@ -213,7 +213,7 @@ struct paladin_t : public player_t
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double    composite_block_value() SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
-  virtual bool      get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
@@ -2379,11 +2379,13 @@ int paladin_t::target_swing()
 
 // paladin_t::get_talents_trees ==============================================
 
-bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& protection, std::vector<int*>& retribution )
+std::vector<talent_translation_t>& paladin_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
-    { {  1, 0, NULL                                     }, {  1, 0, NULL                                      }, {  1, 5, &( talents.deflection                 ) } },
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	  {
+		  { {  1, 0, NULL                                     }, {  1, 0, NULL                                      }, {  1, 5, &( talents.deflection                 ) } },
     { {  2, 5, &( talents.seals_of_the_pure           ) }, {  2, 5, &( talents.divine_strength              ) }, {  2, 5, &( talents.benediction                ) } },
     { {  3, 3, &( talents.healing_light               ) }, {  3, 0, NULL                                      }, {  3, 2, &( talents.improved_judgements        ) } },
     { {  4, 5, &( talents.divine_intellect            ) }, {  4, 0, NULL                                      }, {  4, 3, &( talents.heart_of_the_crusader      ) } },
@@ -2412,8 +2414,31 @@ bool paladin_t::get_talent_trees( std::vector<int*>& holy, std::vector<int*>& pr
     { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                    } }
   };
 
-  return get_talent_translation( holy, protection, retribution, translation );
-}
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;}
 
 // paladin_t::get_options ====================================================
 

@@ -209,7 +209,7 @@ struct shaman_t : public player_t
   virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
-  virtual bool      get_talent_trees( std::vector<int*>& elemental, std::vector<int*>& enhancement, std::vector<int*>& restoration );
+  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -2985,12 +2985,12 @@ int shaman_t::primary_tree() SC_CONST
 
 // shaman_t::get_talent_trees ==============================================
 
-bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
-                                 std::vector<int*>& enhancement,
-                                 std::vector<int*>& restoration )
+std::vector<talent_translation_t>& shaman_t::get_talent_list()
 {
-  talent_translation_t translation[][3] =
+  if(talent_list.empty())
   {
+	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
+	{
     { {  1, 5, &( talents.convection            ) }, {  1, 3, &( talents.enhancing_totems          ) }, {  1, 0, NULL                                  } },
     { {  2, 5, &( talents.concussion            ) }, {  2, 0, NULL                                   }, {  2, 5, &( talents.totemic_focus            ) } },
     { {  3, 3, &( talents.call_of_flame         ) }, {  3, 5, &( talents.ancestral_knowledge       ) }, {  3, 0, NULL                                  } },
@@ -3023,7 +3023,32 @@ bool shaman_t::get_talent_trees( std::vector<int*>& elemental,
     { {  0, 0, NULL                               }, {  0, 0, NULL                                   }, {  0, 0, NULL                                  } }
   };
 
-  return get_talent_translation( elemental, enhancement, restoration, translation );
+
+	  int count = 0;
+	  int trees[MAX_TALENT_TREES];
+
+	  for(int j=0; j < MAX_TALENT_TREES; j++)
+	  {
+	    trees[j] = 0;
+	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
+		{
+			if(translation_table[i][j].index > 0)
+			{
+				talent_list.push_back(translation_table[i][j]);
+				talent_list[count].tree = j;
+				talent_list[count].name = "";
+				if(talent_list[count].req > 0)
+				{
+					for(int k = 0; k < j; k++)
+						talent_list[count].req += trees[k];
+				}
+				talent_list[count].index = count++;
+				trees[j]++;
+			}
+		}
+	  }
+  }
+  return talent_list;
 }
 
 // shaman_t::get_options ================================================
