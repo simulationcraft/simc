@@ -599,7 +599,7 @@ struct hunter_pet_t : public pet_t
 			{ 17, 1, &( talents.call_of_the_wild       ) },
 			{ 18, 2, &( talents.shark_attack           ) },
 			{ 19, 2, &( talents.wild_hunt              ) },
-			{  0, 0, NULL                                }
+			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
 		}
@@ -627,7 +627,7 @@ struct hunter_pet_t : public pet_t
 			{ 18, 0, NULL                                },
 			{ 19, 2, &( talents.wild_hunt              ) },
 			{ 20, 0, NULL                                },
-			{  0, 0, NULL                                }
+			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
 		}
@@ -638,7 +638,7 @@ struct hunter_pet_t : public pet_t
 
 		int count = 0;
 
-	  	for(int i=0;i < sizeof(*translation_table)/sizeof(talent_translation_t)/PET_MAX_TALENT_TREES;i++)
+	  	for(int i=0; translation_table[i].index;i++)
 		{
 			if(translation_table[i].index > 0)
 			{
