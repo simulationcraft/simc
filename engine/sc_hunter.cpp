@@ -571,7 +571,7 @@ struct hunter_pet_t : public pet_t
     return options;
   }
 
-  virtual std::vector<talent_translation_t>& hunter_pet_t::get_talent_list()
+  virtual std::vector<talent_translation_t>& get_talent_list()
   {
 	if(this->talent_list.empty())
 	{
