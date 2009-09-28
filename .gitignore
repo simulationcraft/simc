@@ -1,6 +1,8 @@
 /simcraft
+engine/simcraft
 /*.d
 /Debug
+simcraft_cache.dat
 /Darkwood_T7.simcraft
 /Gear_T7_Darkwood.simcraft
 /Rogue_T7_Darkwood_Assassination.simcraft
@@ -13,4 +15,7 @@
 /simcraft.exe
 /url_cache.dat
 /*.o
+engine/*.o
+*.a
+engine/*.a
 /build
