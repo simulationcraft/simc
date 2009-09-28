@@ -513,6 +513,25 @@ struct option_t
   static bool parse_token( sim_t*, std::string& token );
 };
 
+// Talent Translation =========================================================
+
+#define MAX_TALENT_POINTS 71
+#define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
+#define MAX_TALENT_TREES 3
+#define MAX_TALENT_COL 4
+#define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
+
+struct talent_translation_t
+{
+  int  index;
+  int  max;
+  int* address;
+  int  row;
+  int  tree;
+  int  req;
+  std::string name;
+};
+
 // Utilities =================================================================
 
 struct util_t
@@ -589,6 +608,8 @@ struct util_t
   static std::string& format_name( std::string& name );
 
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
+
+  static void translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size );
 };
 
 // Event =====================================================================
@@ -2294,25 +2315,6 @@ struct chart_t
   static const char* gear_weights_lootrank( std::string& s, player_t* );
   static const char* gear_weights_wowhead ( std::string& s, player_t* );
   static const char* gear_weights_pawn ( std::string& s, player_t* );
-};
-
-// Talent Translation =========================================================
-
-#define MAX_TALENT_POINTS 71
-#define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
-#define MAX_TALENT_TREES 3
-#define MAX_TALENT_COL 4
-#define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
-
-struct talent_translation_t
-{
-  int  index;
-  int  max;
-  int* address;
-  int  row;
-  int  tree;
-  int  req;
-  std::string name;
 };
 
 // Log =======================================================================

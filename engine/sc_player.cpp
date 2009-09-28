@@ -3358,7 +3358,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 	  std::string str_out = "";
 	  for(unsigned int i=0; i < talent_list.size(); i++)
 		str_out += (char)talents[i];
-    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out );
+    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 
   if ( ! parse_talent_trees( talents ) )

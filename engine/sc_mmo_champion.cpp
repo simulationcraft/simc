@@ -506,7 +506,6 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
   int trees[3] = {0};
   int numleft = MAX_TALENT_POINTS;
   int thismax;
-  double numbits = 0;
   unsigned int rangelow = 0;
   unsigned int rangehigh = RANGE_HIGH;
   unsigned int rangeval = 0;

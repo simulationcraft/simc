@@ -3315,29 +3315,7 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
     { {  0, 0, NULL                              }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } }
   };
 
-	  int count = 0;
-	  int trees[MAX_TALENT_TREES];
-
-	  for(int j=0; j < MAX_TALENT_TREES; j++)
-	  {
-	    trees[j] = 0;
-	  	for(int i=0;i < sizeof(translation_table)/sizeof(talent_translation_t)/MAX_TALENT_TREES;i++)
-		{
-			if(translation_table[i][j].index > 0)
-			{
-				talent_list.push_back(translation_table[i][j]);
-				talent_list[count].tree = j;
-				talent_list[count].name = "";
-				if(talent_list[count].req > 0)
-				{
-					for(int k = 0; k < j; k++)
-						talent_list[count].req += trees[k];
-				}
-				talent_list[count].index = count++;
-				trees[j]++;
-			}
-		}
-	  }
+    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
   }
   return talent_list;}
 
