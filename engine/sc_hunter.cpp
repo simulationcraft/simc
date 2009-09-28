@@ -580,25 +580,25 @@ struct hunter_pet_t : public pet_t
 		{
 		  talent_translation_t group_table[] = 
 		  {
-			{  1, 2, &( talents.cobra_reflexes         ) },
-			{  2, 0, NULL                                },
-			{  3, 0, NULL                                },
-			{  4, 0, NULL                                },
-			{  5, 0, NULL                                },
-			{  6, 0, NULL                                },
-			{  7, 3, &( talents.spiked_collar          ) },
-			{  8, 0, NULL                                },
-			{  9, 0, NULL                                },
-			{ 10, 0, NULL                                },
-			{ 11, 0, NULL                                },
-			{ 12, 0, NULL                                },
-			{ 13, 3, &( talents.spiders_bite           ) },
-			{ 14, 0, NULL                                },
-			{ 15, 1, &( talents.rabid                  ) },
-			{ 16, 0, NULL                                },
-			{ 17, 1, &( talents.call_of_the_wild       ) },
-			{ 18, 2, &( talents.shark_attack           ) },
-			{ 19, 2, &( talents.wild_hunt              ) },
+			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
+			{  2, 0, NULL                               , 0, 0 },
+			{  3, 0, NULL                               , 0, 0 },
+			{  4, 0, NULL                               , 0, 0 },
+			{  5, 0, NULL                               , 1, 0 },
+			{  6, 0, NULL                               , 1, 0 },
+			{  7, 3, &( talents.spiked_collar          ), 1, 0 },
+			{  8, 0, NULL                               , 1, 0 },
+			{  9, 0, NULL                               , 2, 0 },
+			{ 10, 0, NULL                               , 2, 0 },
+			{ 11, 0, NULL                               , 2, 0 },
+			{ 12, 0, NULL                               , 3, 6 },
+			{ 13, 3, &( talents.spiders_bite           ), 3, 0 },
+			{ 14, 0, NULL                               , 3, 0 },
+			{ 15, 1, &( talents.rabid                  ), 4, 9 },
+			{ 16, 0, NULL                               , 4, 12 },
+			{ 17, 1, &( talents.call_of_the_wild       ), 4, 13 },
+			{ 18, 2, &( talents.shark_attack           ), 5, 0 },
+			{ 19, 2, &( talents.wild_hunt              ), 5, 17 },
 			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
@@ -607,26 +607,26 @@ struct hunter_pet_t : public pet_t
 		{
 		  talent_translation_t group_table[] = 
 		  {
-			{  1, 2, &( talents.cobra_reflexes         ) },
-			{  2, 0, NULL                                },
-			{  3, 0, NULL                                },
-			{  4, 0, NULL                                },
-			{  5, 0, NULL                                },
-			{  6, 0, NULL                                },
-			{  7, 2, &( talents.owls_focus             ) },
-			{  8, 3, &( talents.spiked_collar          ) },
-			{  9, 0, NULL                                },
-			{ 10, 0, NULL                                },
-			{ 11, 0, NULL                                },
-			{ 12, 0, NULL                                },
-			{ 13, 0, NULL                                },
-			{ 14, 2, &( talents.feeding_frenzy         ) },
-			{ 15, 1, &( talents.wolverine_bite         ) },
-			{ 16, 1, &( talents.roar_of_recovery       ) },
-			{ 17, 0, NULL                                },
-			{ 18, 0, NULL                                },
-			{ 19, 2, &( talents.wild_hunt              ) },
-			{ 20, 0, NULL                                },
+			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
+			{  2, 0, NULL                               , 0, 0 },
+			{  3, 0, NULL                               , 0, 0 },
+			{  4, 0, NULL                               , 0, 0 },
+			{  5, 0, NULL                               , 1, 0 },
+			{  6, 0, NULL                               , 1, 2 },
+			{  7, 2, &( talents.owls_focus             ), 1, 0 },
+			{  8, 3, &( talents.spiked_collar          ), 1, 0 },
+			{  9, 0, NULL                               , 2, 0 },
+			{ 10, 0, NULL                               , 2, 0 },
+			{ 11, 0, NULL                               , 2, 0 },
+			{ 12, 0, NULL                               , 3, 0 },
+			{ 13, 0, NULL                               , 3, 0 },
+			{ 14, 2, &( talents.feeding_frenzy         ), 3, 8 },
+			{ 15, 1, &( talents.wolverine_bite         ), 4, 9 },
+			{ 16, 1, &( talents.roar_of_recovery       ), 4, 0 },
+			{ 17, 0, NULL                               , 4, 0 },
+			{ 18, 0, NULL                               , 4, 0 },
+			{ 19, 2, &( talents.wild_hunt              ), 5, 15 },
+			{ 20, 0, NULL                               , 5, 18 },
 			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
@@ -643,7 +643,7 @@ struct hunter_pet_t : public pet_t
 			if(translation_table[i].index > 0)
 			{
 				talent_list.push_back(translation_table[i]);
-				talent_list[count].tree = i;
+				talent_list[count].tree = 0;
 				talent_list[count].index = count++;
 			}
 		}

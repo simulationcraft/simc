@@ -521,7 +521,7 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
 
   // need to have empty talent in the front of vector
   std::vector<talent_translation_t> talent_list;
-  talent_translation_t empty_talent = {0,0,0,0,0,0};
+  talent_translation_t empty_talent = {0,0,0,0,0,0,0};
   talent_list.push_back(empty_talent);
   for(i=0;i<translations.size();i++)
 	talent_list.push_back(translations[i]);

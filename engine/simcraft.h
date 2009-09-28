@@ -527,8 +527,8 @@ struct talent_translation_t
   int  max;
   int* address;
   int  row;
-  int  tree;
   int  req;
+  int  tree;
   std::string name;
 };
 
