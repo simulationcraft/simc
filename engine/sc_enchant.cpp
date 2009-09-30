@@ -18,6 +18,7 @@ static enchant_data_t enchant_db[] =
 {
   { "3878",  "Mind Amplification Dish",                                   "45Sta"                          },
   { "3876",  "Inscription of the Pinnacle",                               "15Dodge_10Def"                  },
+  { "3875",  "+30 Attack Power and +10 Crit Rating",                      "30AP_10Crit"                    },
   { "3873",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
   { "3872",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
   { "3870",  "Blood Draining",                                            ""                               },
@@ -69,7 +70,7 @@ static enchant_data_t enchant_db[] =
   { "3810",  "+24 Spell Power and +15 Critical Strike Rating",            "24SP_15Crit"                    },
   { "3809",  "+24 Spell Power and +6 Mana/5 seconds",                     "24SP_6MP5"                      },
   { "3808",  "+40 Attack Power and +15 Crit Rating",                      "40AP_15Crit"                    },
-  { "3807",  "+18 Spell Power and +4 Mana/5 seconds",                     "18SP_4MP5"                      },
+  { "3807",  "+18 Spell Power and +5 Mana/5 seconds",                     "18SP_5MP5"                      },
   { "3806",  "+18 Spell Power and +10 Critical Strike Rating",            "18SP_10Crit"                    },
   { "3797",  "+29 Spell Power and +20 Resilience Rating",                 "29SP"                           },
   { "3795",  "+50 Attack Power and +20 Resilience Rating",                "50AP"                           },
