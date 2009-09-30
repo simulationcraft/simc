@@ -55,6 +55,19 @@ struct sim_signal_handler_t
 };
 #endif
 
+// need_to_save_profiles ====================================================
+
+static bool need_to_save_profiles( sim_t* sim )
+{
+  if ( sim -> save_profiles ) return true;
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+    if ( ! p -> save_str.empty() )
+      return true;
+
+  return false;
+}
+
 // parse_patch ==============================================================
 
 static bool parse_patch( sim_t*             sim,
@@ -168,7 +181,7 @@ static bool parse_player( sim_t*             sim,
     }
     else
     {
-      sim -> active_player = wowhead_t::download_player( sim, wowhead, cache );
+      sim -> active_player = wowhead_t::download_player( sim, wowhead, ( talents == "active" ) );
 
       if ( sim -> active_player )
         if ( player_name != sim -> active_player -> name() )
@@ -1648,7 +1661,7 @@ int sim_t::main( int argc, char** argv )
                    arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
 
-  if ( save_profiles )
+  if ( need_to_save_profiles( this ) )
   {
     init();
     util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
