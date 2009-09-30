@@ -316,6 +316,7 @@ void SimcraftWindow::createWelcomeTab()
 void SimcraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
+  globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow( "Patch", patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
   globalsLayout->addRow( "Latency", latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow( "Iterations", iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
