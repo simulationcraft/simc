@@ -87,3 +87,6 @@ Graphic User Interface
 simcraftqt.exe is an alpha-level graphic user-interface using Qt.  It is a very light-weight
 wrapper that aids profile downloads, script building, and simulation results management.
 
+In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was
+included in the zip download: Win32OpenSSL_Light-0_9_8k.exe
+
