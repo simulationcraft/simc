@@ -61,12 +61,13 @@ parm=value pairs into a script file, one parm=value pair per line.
 When using the armory= or wowhead= options to download a profile, the save= parm can be
 used to generate a script: 
 simcraft.exe armory=us,Llane,Segv save=Segv.simcraft
+simcraft.exe wowhead=14320165 save=Paladin_T9_05_11_55.simcraft
 
-Unix users will find that these generated script file can be marked as executable and
+Unix users will find that these generated script files can be marked as executable and
 then simply be invoked directly via #! magic.
 
 Windows users may take advantage of the SIMCRAFT.BAT and SCALE_FACTORS.BAT utiities by
-drag-n-dropping script files onto these icons.  They will generate output of the
+drag-n-dropping script files onto these icons.  They will generate output in the
 form "script.txt" and "script.html".
 
 For example:

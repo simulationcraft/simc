@@ -73,11 +73,16 @@ double scaling_t::progress()
 {
   if ( ! calculate_scale_factors ) return 1.0;
 
+  if( current_scaling_stat < 0 )
+  {
+    return sim -> current_iteration / (double) sim -> iterations;
+  }
+
   if ( num_scaling_stats < 0 )
   {
     num_scaling_stats = 0;
     for ( int i=0; i < STAT_MAX; i++ )
-      if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) > 0 ) )
+      if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
 	num_scaling_stats++;
   }
 
@@ -94,10 +99,8 @@ double scaling_t::progress()
 
     return stat_progress;
   }
-  else // Still working on baseline
-  {
-    return sim -> current_iteration / ( sim -> iterations * divisor );
-  }
+
+  return 1.0;
 }
 
 // scaling_t::init_deltas ===================================================
@@ -134,8 +137,11 @@ void scaling_t::analyze_stats()
   sim_t* baseline_sim = sim;
   if ( smooth_scale_factors )
   {
-    util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
-    fflush( stdout );
+    if( sim -> report_progress )
+    {
+      util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
+      fflush( stdout );
+    }
 
     baseline_sim = new sim_t( sim );
     baseline_sim -> scaling -> scale_stat = STAT_MAX-1;
@@ -153,20 +159,23 @@ void scaling_t::analyze_stats()
 
     current_scaling_stat++;
 
-    util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
-    fflush( stdout );
+    if( sim -> report_progress )
+    {
+      util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
+      fflush( stdout );
+    }
 
     bool center = center_scale_delta && ! stat_may_cap( i );
+
+    ref_sim = center ? new sim_t( sim ) : baseline_sim;
 
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     delta_sim -> execute();
 
-    ref_sim = baseline_sim;
     if ( center )
     {
-      ref_sim = new sim_t( sim );
       ref_sim -> scaling -> scale_stat = i;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       ref_sim -> execute();
@@ -209,8 +218,11 @@ void scaling_t::analyze_lag()
   int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
-  util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
-  fflush( stdout );
+  if( sim -> report_progress )
+  {
+    util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
+    fflush( stdout );
+  }
 
   ref_sim = new sim_t( sim );
   ref_sim -> scaling -> scale_stat = STAT_MAX;

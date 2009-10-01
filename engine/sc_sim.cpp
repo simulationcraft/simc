@@ -397,9 +397,13 @@ sim_t::sim_t( sim_t* p, int index ) :
     // Import the config file
     parse_options( parent -> argc, parent -> argv );
 
-    // FIXME! Inherit 'scaling' settings from parent because these may be set outside of the config file
+    // Inherit 'scaling' settings from parent because these may be set outside of the config file
     scaling -> scale_stat  = parent -> scaling -> scale_stat;
     scaling -> scale_value = parent -> scaling -> scale_value;
+
+    // Inherit reporting directives from parent
+    report_progress = parent -> report_progress;
+    output_file     = parent -> output_file;
   }
 }
 
@@ -1616,7 +1620,8 @@ double sim_t::progress()
 {
   if ( canceled ) return 1.0;
 
-  if ( scaling -> calculate_scale_factors )
+  if ( scaling -> calculate_scale_factors && 
+       scaling -> current_scaling_stat >= 0 )
   {
     return scaling -> progress();
   }

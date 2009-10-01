@@ -6,6 +6,10 @@
 #include "simcraftqt.h"
 #include <QtWebKit>
 
+// ==========================================================================
+// Utilities
+// ==========================================================================
+
 static QComboBox* createChoice( int count, ... )
 {
   QComboBox* choice = new QComboBox();
@@ -20,258 +24,145 @@ static QComboBox* createChoice( int count, ... )
   return choice;
 }
 
-void ImportThread::importArmoryUs()
+void SimcraftWindow::decodeGlobals( QString encoding )
 {
-  QString server, character;
-  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
+  QStringList tokens = encoding.split( ' ' );
+  if( tokens.count() == 8 )
   {
-    QString& t = tokens[ i ];
-    if( t == "r" )
-    {
-      server = tokens[ i+1 ];
-    }
-    else if( t == "n" || t == "cn" )
-    {
-      character = tokens[ i+1 ];
-    }
-  }
-  if( server.isEmpty() || character.isEmpty() )
-  {
-    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
-  }
-  else
-  {
-    player = armory_t::download_player( sim, "us", server.toStdString(), character.toStdString(), "active" );
+           patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
+         latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
+      iterationsChoice->setCurrentIndex( tokens[ 2 ].toInt() );
+     fightLengthChoice->setCurrentIndex( tokens[ 3 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
+    scaleFactorsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
   }
 }
 
-void ImportThread::importArmoryEu()
+QString SimcraftWindow::encodeGlobals()
 {
-  QString server, character;
-  QStringList tokens = url.split( QRegExp( "[?&=#]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
-  {
-    QString& t = tokens[ i ];
-    if( t == "r" )
-    {
-      server = tokens[ i+1 ];
-    }
-    else if( t == "n" || t == "cn" )
-    {
-      character = tokens[ i+1 ];
-    }
-  }
-  if( server.isEmpty() || character.isEmpty() )
-  {
-    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
-  }
-  else
-  {
-    player = armory_t::download_player( sim, "eu", server.toStdString(), character.toStdString(), "active" );
-  }
+  return QString( "%1 %2 %3 %4 %5 %6 %7 %8" )
+    .arg(        patchChoice->currentIndex() )
+    .arg(      latencyChoice->currentIndex() )
+    .arg(   iterationsChoice->currentIndex() )
+    .arg(  fightLengthChoice->currentIndex() )
+    .arg(   fightStyleChoice->currentIndex() )
+    .arg( scaleFactorsChoice->currentIndex() )
+    .arg(      threadsChoice->currentIndex() )
+    .arg(   armorySpecChoice->currentIndex() );
 }
 
-void ImportThread::importWowhead()
-{
-  QString id;
-  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
-  {
-    if( tokens[ i ] == "profile" )
-    {
-      id = tokens[ i+1 ];
-    }
-  }
-  if( id.isEmpty() )
-  {
-    fprintf( sim->output_file, "Import from Wowhead requires use of Profiler!\n" );
-  }
-  else
-  {
-    tokens = id.split( '.', QString::SkipEmptyParts );
-    count = tokens.count();
-    if( count == 1 )
-    {
-      player = wowhead_t::download_player( sim, id.toStdString() );
-    }
-    else if( count == 3 )
-    {
-      player = wowhead_t::download_player( sim, tokens[ 0 ].toStdString(), tokens[ 1 ].toStdString(), tokens[ 2 ].toStdString() ); 
-    }
-  }
-}
-
-void ImportThread::importChardev()
-{
-  fprintf( sim->output_file, "Support for Chardev profiles does not yet exist!\n" );
-}
-
-void ImportThread::importWarcrafter()
-{
-  fprintf( sim->output_file, "Support for Warcrafter profiles does not yet exist!\n" );
-}
-
-void ImportThread::importRawr()
-{
-  player = rawr_t::load_player( sim, url.toStdString() );
-}
-
-void ImportThread::run()
-{
-  if     ( url.count( "us.wowarmory" ) ) importArmoryUs();
-  else if( url.count( "eu.wowarmory" ) ) importArmoryEu();
-  else if( url.count( "wowhead"      ) ) importWowhead();
-  else if( url.count( "chardev"      ) ) importChardev();
-  else if( url.count( "warcrafter"   ) ) importWarcrafter();
-  else importRawr();
-
-  if( player )
-  {
-    sim->init();
-    std::string buffer="";
-    player->create_profile( buffer );
-    profile = buffer.c_str();
-  }
-}
-
-void SimulateThread::run()
-{
-  sim -> html_file_str = "simcraft_report.html";
-
-  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
-
-  int argc = stringList.count() + 1;
-  char** argv = new char*[ argc ];
-
-  QList<QByteArray> lines;
-  lines.append( "simcraft" );
-  for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
-  for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
-
-  sim -> parse_options( argc, argv );
-  sim -> execute();
-  sim -> scaling -> analyze();
-
-  report_t::print_suite( sim );
-}
-
-void SimcraftWindow::startImport( const QString& url )
+void SimcraftWindow::updateSimProgress()
 {
   if( sim )
   {
-    sim -> cancel();
-    return;
+    simProgress = (int) 100 * sim->progress();
   }
-  simProgress = 0;
-  mainButton->setText( "Cancel!" );
-  importThread->start( initSim(), url );
-  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
-  mainTab->setCurrentIndex( TAB_SIMULATE );
-  timer->start( 500 );
+  else
+  {
+    simProgress = 100;
+  }
+  if( mainTab->currentIndex() != TAB_IMPORT &&
+      mainTab->currentIndex() != TAB_RESULTS )
+  {
+    progressBar->setValue( simProgress );
+  }
 }
 
-void SimcraftWindow::startSim()
+void SimcraftWindow::loadHistory()
 {
-  if( sim )
+  http_t::cache_load();
+  QFile file( "simcraft_history.dat" );
+  if( file.open( QIODevice::ReadOnly ) )
   {
-    sim -> cancel();
-    return;
+    QStringList importHistory;
+    QDataStream in( &file );
+    in >> simulateCmdLineHistory;
+    in >> logCmdLineHistory;
+    in >> resultsCmdLineHistory;
+    in >> globalsHistory;
+    in >> simulateTextHistory;
+    in >> overridesTextHistory;
+    in >> importHistory;
+    file.close();
+
+    int count = importHistory.count();
+    for( int i=0; i < count; i++ )
+    {
+      QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
+      item->setFont( QFont( "fixed" ) );
+      historyList->addItem( item );
+    }
+
+    decodeGlobals( globalsHistory.backwards() );
   }
-  simProgress = 0;
-  mainButton->setText( "Cancel!" );
-  simulateThread->start( initSim(), mergeOptions() ); 
+}
+
+void SimcraftWindow::saveHistory()
+{
+  http_t::cache_save();
+  QFile file( "simcraft_history.dat" );
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    globalsHistory.add( encodeGlobals() );
+
+    QStringList importHistory;
+    int count = historyList->count();
+    for( int i=0; i < count; i++ ) 
+    {
+      importHistory.append( historyList->item( i )->text() );
+    }
+
+    QDataStream out( &file );
+    out << simulateCmdLineHistory;
+    out << logCmdLineHistory;
+    out << resultsCmdLineHistory;
+    out << globalsHistory;
+    out << simulateTextHistory;
+    out << overridesTextHistory;
+    out << importHistory;
+    file.close();
+  }
+}
+
+// ==========================================================================
+// Widget Creation
+// ==========================================================================
+
+SimcraftWindow::SimcraftWindow(QWidget *parent)
+  : QWidget(parent), sim(0), simProgress(100), simResults(0)
+{
   cmdLineText = "";
-  cmdLine->setText( cmdLineText );
-  timer->start( 500 );
-}
+  logFileText = "log.txt";
+  resultsFileText = "results.html";
 
-sim_t* SimcraftWindow::initSim()
-{
-  if( ! sim ) 
-  {
-    sim = new sim_t();
-    sim -> output_file = fopen( "simcraft_log.txt", "w" );
-    sim -> seed = (int) time( NULL );
-    sim -> report_progress = 0;
-  }
-  return sim;
-}
+  mainTab = new QTabWidget();
+  createWelcomeTab();
+  createGlobalsTab();
+  createImportTab();
+  createSimulateTab();
+  createOverridesTab();
+  createLogTab();
+  createResultsTab();
+  createCmdLine();
+  connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
+  
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  vLayout->addWidget( mainTab );
+  vLayout->addWidget( cmdLineGroupBox );
+  setLayout( vLayout );
+  
+  timer = new QTimer( this );
+  connect( timer, SIGNAL(timeout()), this, SLOT(updateSimProgress()) );
 
-void SimcraftWindow::deleteSim()
-{
-  if( sim ) 
-  {
-    fclose( sim -> output_file );
-    delete sim;
-    sim = 0;
-    QFile logFile( "simcraft_log.txt" );
-    logFile.open( QIODevice::ReadOnly );
-    logText->appendPlainText( logFile.readAll() );
-    logFile.close();
-  }
-}
+  importThread = new ImportThread( this );
+  simulateThread = new SimulateThread( this );
 
-QString SimcraftWindow::mergeOptions()
-{
-  QString options = "";
-  options += "patch=" + patchChoice->currentText() + "\n";
-  if( latencyChoice->currentText() == "Low" )
-  {
-    options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
-  }
-  else
-  {
-    options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
-  }
-  options += "iterations=" + iterationsChoice->currentText() + "\n";
-  options += "max_time=" + fightLengthChoice->currentText() + "\n";
-  if( fightStyleChoice->currentText() == "Helter Skelter" )
-  {
-    options += "raid_events=casting,cooldown=30,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
-  }
-  if( scaleFactorsChoice->currentText() == "Yes" )
-  {
-    options += "create_scale_factors=1\n";
-  }
-  options += "threads=" + threadsChoice->currentText() + "\n";
-  options += simulateText->document()->toPlainText();
-  options += "\n";
-  options += overridesText->document()->toPlainText();
-  options += "\n";
-  options += cmdLine->text();
-  options += "\n";
-  return options;
-}
+  connect(   importThread, SIGNAL(finished()), this, SLOT(  importFinished()) );
+  connect( simulateThread, SIGNAL(finished()), this, SLOT(simulateFinished()) );
 
-void SimcraftWindow::saveLog()
-{
-  QFile file( cmdLine->text() );
-
-  if( file.open( QIODevice::WriteOnly ) )
-  {
-    file.write( logText->document()->toPlainText().toAscii() );
-    file.close();
-  }
-}
-
-void SimcraftWindow::saveResults()
-{
-  int index = resultsTab->currentIndex();
-  if( index < 0 ) return;
-
-  if( visibleWebView->url().toString() != "about:blank" ) return;
-
-  QFile file( cmdLine->text() );
-
-  if( file.open( QIODevice::WriteOnly ) )
-  {
-    file.write( resultsHtml[ index ].toAscii() );
-    file.close();
-  }
+  loadHistory();
 }
 
 void SimcraftWindow::createCmdLine()
@@ -279,7 +170,7 @@ void SimcraftWindow::createCmdLine()
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
   cmdLineLayout->addWidget( backButton = new QPushButton( "<" ) );
   cmdLineLayout->addWidget( forwardButton = new QPushButton( ">" ) );
-  cmdLineLayout->addWidget( cmdLine = new QLineEdit() );
+  cmdLineLayout->addWidget( cmdLine = new SimcraftCommandLine( this ) );
   cmdLineLayout->addWidget( progressBar = new QProgressBar() );
   cmdLineLayout->addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton->setMaximumWidth( 30 );
@@ -324,6 +215,7 @@ void SimcraftWindow::createGlobalsTab()
   globalsLayout->addRow( "Fight Style", fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow( "Threads", threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow( "Armory Spec", armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   patchChoice->setCurrentIndex( 1 );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
@@ -416,28 +308,173 @@ void SimcraftWindow::createResultsTab()
   mainTab->addTab( resultsTab, "Results" );
 }
 
-void SimcraftWindow::addHistoryItem( const QString& name, const QString& origin )
+// ==========================================================================
+// Sim Initialization
+// ==========================================================================
+
+sim_t* SimcraftWindow::initSim()
 {
-  QString label = name;
-  while( label.size() < 20 ) label += " ";
-  label += origin;
-
-  for( int i=0; i < historyList->count(); i++ )
-    if( historyList->item( i )->text() == label )
-      return;
-
-  historyList->addItem( label );
-  historyList->sortItems();
+  if( ! sim ) 
+  {
+    sim = new sim_t();
+    sim -> output_file = fopen( "simcraft_log.txt", "w" );
+    sim -> seed = (int) time( NULL );
+    sim -> report_progress = 0;
+  }
+  return sim;
 }
 
-void SimcraftWindow::closeEvent( QCloseEvent* e ) 
-{ 
-  armoryUsView->stop();
-  armoryEuView->stop();
-  wowheadView->stop();
-  chardevView->stop();
-  warcrafterView->stop();
-  QCoreApplication::quit();
+void SimcraftWindow::deleteSim()
+{
+  if( sim ) 
+  {
+    fclose( sim -> output_file );
+    delete sim;
+    sim = 0;
+    QFile logFile( "simcraft_log.txt" );
+    logFile.open( QIODevice::ReadOnly );
+    logText->appendPlainText( logFile.readAll() );
+    logFile.close();
+  }
+}
+
+// ==========================================================================
+// Import 
+// ==========================================================================
+
+void ImportThread::importArmoryUs()
+{
+  QString server, character;
+  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
+  int count = tokens.count();
+  for( int i=0; i < count-1; i++ ) 
+  {
+    QString& t = tokens[ i ];
+    if( t == "r" )
+    {
+      server = tokens[ i+1 ];
+    }
+    else if( t == "n" || t == "cn" )
+    {
+      character = tokens[ i+1 ];
+    }
+  }
+  if( server.isEmpty() || character.isEmpty() )
+  {
+    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
+  }
+  else
+  {
+    std::string talents = mainWindow->armorySpecChoice->currentText().toStdString();
+    player = armory_t::download_player( sim, "us", server.toStdString(), character.toStdString(), talents );
+  }
+}
+
+void ImportThread::importArmoryEu()
+{
+  QString server, character;
+  QStringList tokens = url.split( QRegExp( "[?&=#]" ), QString::SkipEmptyParts );
+  int count = tokens.count();
+  for( int i=0; i < count-1; i++ ) 
+  {
+    QString& t = tokens[ i ];
+    if( t == "r" )
+    {
+      server = tokens[ i+1 ];
+    }
+    else if( t == "n" || t == "cn" )
+    {
+      character = tokens[ i+1 ];
+    }
+  }
+  if( server.isEmpty() || character.isEmpty() )
+  {
+    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
+  }
+  else
+  {
+    std::string talents = mainWindow->armorySpecChoice->currentText().toStdString();
+    player = armory_t::download_player( sim, "eu", server.toStdString(), character.toStdString(), talents );
+  }
+}
+
+void ImportThread::importWowhead()
+{
+  QString id;
+  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
+  int count = tokens.count();
+  for( int i=0; i < count-1; i++ ) 
+  {
+    if( tokens[ i ] == "profile" )
+    {
+      id = tokens[ i+1 ];
+    }
+  }
+  if( id.isEmpty() )
+  {
+    fprintf( sim->output_file, "Import from Wowhead requires use of Profiler!\n" );
+  }
+  else
+  {
+    tokens = id.split( '.', QString::SkipEmptyParts );
+    count = tokens.count();
+    if( count == 1 )
+    {
+      player = wowhead_t::download_player( sim, id.toStdString() );
+    }
+    else if( count == 3 )
+    {
+      player = wowhead_t::download_player( sim, tokens[ 0 ].toStdString(), tokens[ 1 ].toStdString(), tokens[ 2 ].toStdString() ); 
+    }
+  }
+}
+
+void ImportThread::importChardev()
+{
+  fprintf( sim->output_file, "Support for Chardev profiles does not yet exist!\n" );
+}
+
+void ImportThread::importWarcrafter()
+{
+  fprintf( sim->output_file, "Support for Warcrafter profiles does not yet exist!\n" );
+}
+
+void ImportThread::importRawr()
+{
+  player = rawr_t::load_player( sim, url.toStdString() );
+}
+
+void ImportThread::run()
+{
+  if     ( url.count( "us.wowarmory" ) ) importArmoryUs();
+  else if( url.count( "eu.wowarmory" ) ) importArmoryEu();
+  else if( url.count( "wowhead"      ) ) importWowhead();
+  else if( url.count( "chardev"      ) ) importChardev();
+  else if( url.count( "warcrafter"   ) ) importWarcrafter();
+  else importRawr();
+
+  if( player )
+  {
+    sim->init();
+    std::string buffer="";
+    player->create_profile( buffer );
+    profile = buffer.c_str();
+  }
+}
+
+void SimcraftWindow::startImport( const QString& url )
+{
+  if( sim )
+  {
+    sim -> cancel();
+    return;
+  }
+  simProgress = 0;
+  mainButton->setText( "Cancel!" );
+  importThread->start( initSim(), url );
+  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
+  mainTab->setCurrentIndex( TAB_SIMULATE );
+  timer->start( 500 );
 }
 
 void SimcraftWindow::importFinished()
@@ -448,8 +485,25 @@ void SimcraftWindow::importFinished()
   if ( importThread->player )
   {
     simulateText->setPlainText( importThread->profile );
-    addHistoryItem( QString( importThread->player->  name_str.c_str() ), 
-		    QString( importThread->player->origin_str.c_str() ) );
+    simulateTextHistory.add( importThread->profile );
+
+    QString label = importThread->player->name_str.c_str();
+    while( label.size() < 20 ) label += " ";
+    label += importThread->player->origin_str.c_str();
+
+    bool found = false;
+    for( int i=0; i < historyList->count() && ! found; i++ )
+      if( historyList->item( i )->text() == label )
+	found = true;
+
+    if( ! found )
+    {
+      QListWidgetItem* item = new QListWidgetItem( label );
+      item->setFont( QFont( "fixed" ) );
+
+      historyList->addItem( item );
+      historyList->sortItems();
+    }
   }
   else
   {
@@ -458,6 +512,83 @@ void SimcraftWindow::importFinished()
   deleteSim();
   mainButton->setText( "Simulate!" );
   mainTab->setCurrentIndex( TAB_SIMULATE );
+}
+
+// ==========================================================================
+// Simulate
+// ==========================================================================
+
+void SimulateThread::run()
+{
+  sim -> html_file_str = "simcraft_report.html";
+
+  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
+
+  int argc = stringList.count() + 1;
+  char** argv = new char*[ argc ];
+
+  QList<QByteArray> lines;
+  lines.append( "simcraft" );
+  for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
+  for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
+
+  sim -> parse_options( argc, argv );
+  sim -> execute();
+  sim -> scaling -> analyze();
+
+  report_t::print_suite( sim );
+}
+
+void SimcraftWindow::startSim()
+{
+  if( sim )
+  {
+    sim -> cancel();
+    return;
+  }
+  globalsHistory.add( encodeGlobals() );
+  globalsHistory.current_index = 0;
+  simulateTextHistory.add(  simulateText->document()->toPlainText() );
+  overridesTextHistory.add( overridesText->document()->toPlainText() );
+  simulateCmdLineHistory.add( cmdLine->text() );
+  simProgress = 0;
+  mainButton->setText( "Cancel!" );
+  simulateThread->start( initSim(), mergeOptions() ); 
+  cmdLineText = "";
+  cmdLine->setText( cmdLineText );
+  timer->start( 500 );
+}
+
+QString SimcraftWindow::mergeOptions()
+{
+  QString options = "";
+  options += "patch=" + patchChoice->currentText() + "\n";
+  if( latencyChoice->currentText() == "Low" )
+  {
+    options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
+  }
+  else
+  {
+    options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
+  }
+  options += "iterations=" + iterationsChoice->currentText() + "\n";
+  options += "max_time=" + fightLengthChoice->currentText() + "\n";
+  if( fightStyleChoice->currentText() == "Helter Skelter" )
+  {
+    options += "raid_events=casting,cooldown=30,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
+  }
+  if( scaleFactorsChoice->currentText() == "Yes" )
+  { 
+    options += "calculate_scale_factors=1\n";
+  }
+  options += "threads=" + threadsChoice->currentText() + "\n";
+  options += simulateText->document()->toPlainText();
+  options += "\n";
+  options += overridesText->document()->toPlainText();
+  options += "\n";
+  options += cmdLine->text();
+  options += "\n";
+  return options;
 }
 
 void SimcraftWindow::simulateFinished()
@@ -486,21 +617,54 @@ void SimcraftWindow::simulateFinished()
   }
 }
 
-void SimcraftWindow::updateSimProgress()
+// ==========================================================================
+// Save Results
+// ==========================================================================
+
+void SimcraftWindow::saveLog()
 {
-  if( sim )
+  logCmdLineHistory.add( cmdLine->text() );
+
+  QFile file( cmdLine->text() );
+
+  if( file.open( QIODevice::WriteOnly ) )
   {
-    simProgress = (int) 100 * sim->progress();
+    file.write( logText->document()->toPlainText().toAscii() );
+    file.close();
   }
-  else
+}
+
+void SimcraftWindow::saveResults()
+{
+  int index = resultsTab->currentIndex();
+  if( index < 0 ) return;
+
+  if( visibleWebView->url().toString() != "about:blank" ) return;
+
+  resultsCmdLineHistory.add( cmdLine->text() );
+
+  QFile file( cmdLine->text() );
+
+  if( file.open( QIODevice::WriteOnly ) )
   {
-    simProgress = 100;
+    file.write( resultsHtml[ index ].toAscii() );
+    file.close();
   }
-  if( mainTab->currentIndex() != TAB_IMPORT &&
-      mainTab->currentIndex() != TAB_RESULTS )
-  {
-    progressBar->setValue( simProgress );
-  }
+}
+
+// ==========================================================================
+// Window Events
+// ==========================================================================
+
+void SimcraftWindow::closeEvent( QCloseEvent* e ) 
+{ 
+  saveHistory();
+  armoryUsView->stop();
+  armoryEuView->stop();
+  wowheadView->stop();
+  chardevView->stop();
+  warcrafterView->stop();
+  QCoreApplication::quit();
 }
 
 void SimcraftWindow::cmdLineTextEdited( const QString& s )
@@ -553,7 +717,7 @@ void SimcraftWindow::cmdLineReturnPressed()
       importTab->setCurrentIndex( TAB_WARCRAFTER );
     }
     break;
-  case TAB_LOG: saveLog(); break;
+  case TAB_LOG:     saveLog();      break;
   case TAB_RESULTS: saveResults();  break;
   case TAB_HELP: break;
   }
@@ -598,6 +762,20 @@ void SimcraftWindow::backButtonClicked( bool checked )
       visibleWebView->back();
     }
   }
+  else
+  {
+    switch( mainTab->currentIndex() )
+    {
+    case TAB_WELCOME:   break;
+    case TAB_GLOBALS:   decodeGlobals( globalsHistory.backwards() ); break;
+    case TAB_IMPORT:    break;
+    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() ); break;
+    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); break;
+    case TAB_LOG:       break;
+    case TAB_RESULTS:   break;
+    case TAB_HELP:      break;
+    }
+  }
 }
 
 void SimcraftWindow::forwardButtonClicked( bool checked )
@@ -605,6 +783,20 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
   if( visibleWebView ) 
   {
     visibleWebView->forward();
+  }
+  else
+  {
+    switch( mainTab->currentIndex() )
+    {
+    case TAB_WELCOME:   break;
+    case TAB_GLOBALS:   decodeGlobals( globalsHistory.forwards() ); break;
+    case TAB_IMPORT:    break;
+    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.forwards() ); break;
+    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); break;
+    case TAB_LOG:       break;
+    case TAB_RESULTS:   break;
+    case TAB_HELP:      break;
+    }
   }
 }
 
@@ -702,35 +894,3 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
 }
 
-SimcraftWindow::SimcraftWindow(QWidget *parent)
-  : QWidget(parent), sim(0), simProgress(100), simResults(0)
-{
-  cmdLineText = "";
-  logFileText = "log.txt";
-  resultsFileText = "results.html";
-
-  mainTab = new QTabWidget();
-  createWelcomeTab();
-  createGlobalsTab();
-  createImportTab();
-  createSimulateTab();
-  createOverridesTab();
-  createLogTab();
-  createResultsTab();
-  createCmdLine();
-  connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
-  
-  QVBoxLayout* vLayout = new QVBoxLayout();
-  vLayout->addWidget( mainTab );
-  vLayout->addWidget( cmdLineGroupBox );
-  setLayout( vLayout );
-  
-  timer = new QTimer( this );
-  connect( timer, SIGNAL(timeout()), this, SLOT(updateSimProgress()) );
-
-  importThread = new ImportThread();
-  simulateThread = new SimulateThread();
-
-  connect(   importThread, SIGNAL(finished()), this, SLOT(  importFinished()) );
-  connect( simulateThread, SIGNAL(finished()), this, SLOT(simulateFinished()) );
-}
