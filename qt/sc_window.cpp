@@ -189,19 +189,17 @@ void SimcraftWindow::createCmdLine()
 void SimcraftWindow::createWelcomeTab()
 {
   const char* s =
-    "<br>"
     "<div align=center><h1>Welcome to SimulationCraft!</h1></div>"
     "<dl>"
     "<dt><h4>Overview</h4></dt>"
-    "<dd>Some discription.</dd>"
-    "<br>"
-    "<dt>Importing profiles</dt>"
-    "<dd>Some discription.</dd>"
+    "<dd>Some description.</dd>"
+    "<dt><h4>Importing profiles</h4></dt>"
+    "<dd>Some description.</dd>"
     "</dl>";
 
-  QLabel* welcomeLabel = new QLabel( s );
-  welcomeLabel->setAlignment( Qt::AlignLeft|Qt::AlignTop );
-  mainTab->addTab( welcomeLabel, "Welcome" );
+  QTextBrowser* welcomeBanner = new QTextBrowser();
+  welcomeBanner->document()->setHtml( s );
+  mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
 void SimcraftWindow::createGlobalsTab()
@@ -632,6 +630,8 @@ void SimcraftWindow::saveLog()
     file.write( logText->document()->toPlainText().toAscii() );
     file.close();
   }
+
+  logText->appendPlainText( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
 void SimcraftWindow::saveResults()
@@ -650,6 +650,8 @@ void SimcraftWindow::saveResults()
     file.write( resultsHtml[ index ].toAscii() );
     file.close();
   }
+
+  logText->appendPlainText( QString( "Results saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
 // ==========================================================================
