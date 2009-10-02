@@ -1,0 +1,62 @@
+#!./simcraft 
+
+rogue=Rogue_T9_15_51_05_FD
+origin=http://profiler.wowhead.com/?profile=14419498
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=00532000500000000000000000002520510500350102231005012515
+glyphs=sinister_strike/killing_spree/rupture
+actions=flask,type=endless_rage
+actions+=/food,type=blackened_dragonfin
+actions+=/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/kick
+actions+=/slice_and_dice,min_combo_points=1,time<=4
+actions+=/slice_and_dice,min_combo_points=3,snd<=2
+actions+=/tricks_of_the_trade
+actions+=/killing_spree,energy<=20,snd>=5
+actions+=/blade_flurry,snd>=5
+actions+=/rupture,min_combo_points=5,time_to_die>=10
+actions+=/eviscerate,min_combo_points=5,rup>=6,snd>=7
+actions+=/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40
+actions+=/eviscerate,min_combo_points=5,time_to_die<=10
+actions+=/sinister_strike,max_combo_points=4
+actions+=/adrenaline_rush,energy<=20
+head=garonas_helmet_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10str_10agi_10sta_10int_10spi_8agi,enchant=50ap_20crit
+neck=collar_of_ceaseless_torment,stats=106ap_52crit_40arpen_70agi_65sta,gems=20arpen
+shoulders=garonas_pauldrons_of_triumph,stats=489armor_135ap_68exp_76arpen_114agi_114sta,gems=20arpen,enchant=40ap_15crit
+chest=garonas_breastplate_of_triumph,stats=652armor_188ap_94hit_102crit_137agi_153sta,gems=20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_merciless_killer,stats=367armor_135ap_68hit_76haste_98agi_114sta,gems=10crit_10agi_20arpen_20arpen_6agi
+legs=garonas_legplates_of_triumph,stats=570armor_188ap_86hit_94arpen_137agi_153sta,gems=20arpen_20arpen,enchant=75ap_22crit
+feet=treads_of_the_icewalker,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=10crit_10agi_20arpen_6agi,enchant=12crit_12hit
+wrists=bracers_of_dark_determination,stats=285armor_98ap_49hit_57crit_69agi_85sta,gems=20arpen_20arpen,enchant=130ap
+hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57sta,gems=20arpen_20arpen_6agi,enchant=44ap
+finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen,enchant=40ap
+finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=10crit_10agi_4agi,enchant=40ap
+trinket1=deaths_verdict,stats=288ap
+trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
+back=cloak_of_serrated_blades,stats=173armor_98ap_57crit_49arpen_85agi_85sta,gems=20arpen_8ap,enchant=22agi
+main_hand=the_facebreaker,stats=73ap_39crit_31arpen_58agi_44sta,gems=20arpen_4agi,enchant=berserking,weapon=fist_2.60speed_196.7dps
+off_hand=steel_bladebreaker,stats=84ap_50crit_33arpen_58agi_66sta,gems=10crit_10agi_4agi,enchant=mongoose,weapon=dagger_1.40speed_216.4dps
+ranged=talonstrike,stats=49ap_32haste_32arpen_40agi_48sta,gems=20arpen,weapon=crossbow_2.80speed_240.7dps
+# Gear Summary
+# gear_strength=20
+# gear_agility=1486
+# gear_stamina=1433
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=2774
+# gear_expertise_rating=154
+# gear_armor_penetration_rating=868
+# gear_hit_rating=429
+# gear_crit_rating=690
+# gear_haste_rating=158
+# gear_armor=3902
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# trinket1=deaths_verdict
+# main_hand=the_facebreaker,weapon=fist_2.60speed_196.7dps,enchant=berserking
+# off_hand=steel_bladebreaker,weapon=dagger_1.40speed_216.4dps,enchant=mongoose
+# ranged=talonstrike,weapon=crossbow_2.80speed_240.7dps

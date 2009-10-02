@@ -19,6 +19,15 @@ Paladin_T9_05_11_55.simcraft
 Priest_T9_13_00_58_258.simcraft
 Priest_T9_13_00_58_258_SWD.simcraft
 
+Rogue_T9_08_20_43.simcraft        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
+Rogue_T9_15_51_05_AA.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
+Rogue_T9_15_51_05_AA_NoR.simcraft tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
+Rogue_T9_15_51_05_FD.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
+Rogue_T9_15_51_05_MD.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
+Rogue_T9_15_51_05_MD_NoR.simcraft tricks_of_the_trade_target=Rogue_T9_51_13_07
+Rogue_T9_51_13_07.simcraft        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
+Rogue_T9_51_13_07.simcraft        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+
 Shaman_T9_16_55_00_258.simcraft
 Shaman_T9_20_51_00_258.simcraft
 Shaman_T9_57_14_00_258.simcraft

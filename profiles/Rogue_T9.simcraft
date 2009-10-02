@@ -4,19 +4,24 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-Rogue_T8_07_51_13_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_08_20_43
-Rogue_T8_08_20_43.simcraft     tricks_of_the_trade_target=Rogue_T8_10_18_43
-Rogue_T8_10_18_43.simcraft     tricks_of_the_trade_target=Rogue_T8_15_51_05_FD
-Rogue_T8_15_51_05_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_15_51_05_M
-Rogue_T8_15_51_05_M.simcraft   tricks_of_the_trade_target=Rogue_T8_15_51_05_S
-Rogue_T8_15_51_05_S.simcraft   tricks_of_the_trade_target=Rogue_T8_18_51_02_BS
-Rogue_T8_18_51_02_BS.simcraft  tricks_of_the_trade_target=Rogue_T8_18_51_02_FD
-Rogue_T8_18_51_02_FD.simcraft  tricks_of_the_trade_target=Rogue_T8_23_05_43
-Rogue_T8_23_05_43.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13
-Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_07_13_NoM
-Rogue_T8_51_07_13.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07     name=Rogue_T8_51_07_13_NoM murder=0
-Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_51_13_07_NoM
-Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_07_51_13_FD  name=Rogue_T8_51_13_07_NoM murder=0
+Rogue_T9_08_20_43.simcraft        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
+Rogue_T9_15_51_05_AA.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
+Rogue_T9_15_51_05_AA_NoR.simcraft tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
+Rogue_T9_15_51_05_FD.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
+Rogue_T9_15_51_05_MD.simcraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
+Rogue_T9_15_51_05_MD_NoR.simcraft tricks_of_the_trade_target=Rogue_T9_51_13_07
+Rogue_T9_51_13_07.simcraft        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
+Rogue_T9_51_13_07.simcraft        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
 
 # scroguet9
 # Uncomment below and comment out above to download profiles.
+#wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simcraft
+#wowhead=14562190   name=Rogue_T9_15_51_05_AA      save=Rogue_T9_15_51_05_AA.simcraft  
+#wowhead=14419498   name=Rogue_T9_15_51_05_FD      save=Rogue_T9_15_51_05_FD.simcraft  
+#wowhead=14562031   name=Rogue_T9_15_51_05_MD      save=Rogue_T9_15_51_05_MD.simcraft  
+#wowhead=14562941   name=Rogue_T9_51_13_07         save=Rogue_T9_51_13_07.simcraft     
+
+# Alternate "Rupture-Less" Combat Spec 
+#wowhead=!14562190  name=Rogue_T9_15_51_05_AA_NoR  save=Rogue_T9_15_51_05_AA_NoR.simcraft  
+#wowhead=!14419498  name=Rogue_T9_15_51_05_FD_NoR  save=Rogue_T9_15_51_05_FD_NoR.simcraft  
+#wowhead=!14562031  name=Rogue_T9_15_51_05_MD_NoR  save=Rogue_T9_15_51_05_MD_NoR.simcraft  

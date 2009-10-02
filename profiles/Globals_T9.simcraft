@@ -60,16 +60,12 @@ optimal_raid=0
 # Faction specific
 override.heroic_presence=0
 
-# Support for Feral Bear does not yet exist
-override.faerie_fire=1
-override.mangle=1
-
-# Support for Warrior class does not yet exist
+# Support for dynamics Warrior buffs/debuffs does not yet exist
 override.battle_shout=1
 override.sunder_armor=1
 override.thunder_clap=1
 
-# Support for the Paladin class does not yet exist
+# Support for dynamic Paladin buffs/debuffs does not yet exist
 override.blessing_of_kings=1
 override.blessing_of_wisdom=1
 override.blessing_of_might=1

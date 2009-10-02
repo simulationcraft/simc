@@ -2865,12 +2865,16 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
+      bool rupture_less = ( ! talents.blood_spatter && 
+			    ! talents.serrated_blades &&
+			      talents.improved_eviscerate &&
+			      talents.aggression );
       action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
       action_list_str += "/slice_and_dice,min_combo_points=3,snd<=2";
       action_list_str += "/tricks_of_the_trade";
       if ( talents.killing_spree ) action_list_str += "/killing_spree,energy<=20,snd>=5";
       if ( talents.blade_flurry  ) action_list_str += "/blade_flurry,snd>=5";
-      action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
+      if ( ! rupture_less ) action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
       if (   talents.puncturing_wounds        &&
              talents.opportunity              &&
              talents.close_quarters_combat    &&
@@ -2882,8 +2886,16 @@ void rogue_t::init_actions()
       }
       else
       {
-        action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
-        action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
+	if ( rupture_less )
+	{
+	  action_list_str += "/eviscerate,min_combo_points=5,snd>=7";
+	  action_list_str += "/eviscerate,min_combo_points=4,snd>=4,energy>=40";
+	}
+	else
+	{
+	  action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
+	  action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
+	}
         action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
         action_list_str += "/sinister_strike,max_combo_points=4";
       }

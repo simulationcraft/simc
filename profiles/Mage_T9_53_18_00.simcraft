@@ -14,8 +14,7 @@ actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/mirror_image
 actions+=/arcane_power
-actions+=/icy_veins
-actions+=/presence_of_mind,arcane_blast
+actions+=/presence_of_mind,pyroblast
 actions+=/mana_gem
 actions+=/choose_rotation
 actions+=/arcane_missiles,barrage=1
