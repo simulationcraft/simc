@@ -1,5 +1,6 @@
 #!simcraft max_time=300
 
-Raid_T8.simcraft
+Raid_T9.simcraft
 
-patch=3.2.2
+patch=3.3.0
+
