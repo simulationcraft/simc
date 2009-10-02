@@ -25,7 +25,8 @@
 #define TAB_CHARDEV    3
 #define TAB_WARCRAFTER 4
 #define TAB_RAWR       5
-#define TAB_HISTORY    6
+#define TAB_BIS        6
+#define TAB_HISTORY    7
 
 class SimcraftWebView;
 class SimcraftCommandLine;
@@ -93,6 +94,7 @@ public:
     SimcraftWebView* visibleWebView;
     QLineEdit* rawrFile;
     QListWidget* historyList;
+    QTreeWidget* bisTree;
     QPlainTextEdit* simulateText;
     QPlainTextEdit* overridesText;
     QPlainTextEdit* logText;
@@ -142,6 +144,7 @@ public:
     void createWelcomeTab();
     void createGlobalsTab();
     void createImportTab();
+    void createBestInSlotTab();
     void createSimulateTab();
     void createOverridesTab();
     void createLogTab();
@@ -163,6 +166,7 @@ private slots:
     void importTabChanged( int index );
     void resultsTabChanged( int index );
     void historyDoubleClicked( QListWidgetItem* item );
+    void bisDoubleClicked( QTreeWidgetItem* item, int col );
 
 public:
     SimcraftWindow(QWidget *parent = 0);

@@ -206,14 +206,14 @@ void SimcraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow( "Patch", patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
-  globalsLayout->addRow( "Latency", latencyChoice = createChoice( 2, "Low", "High" ) );
-  globalsLayout->addRow( "Iterations", iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
-  globalsLayout->addRow( "Length (sec)", fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
-  globalsLayout->addRow( "Fight Style", fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(         "Patch",        patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
+  globalsLayout->addRow(       "Latency",      latencyChoice = createChoice( 2, "Low", "High" ) );
+  globalsLayout->addRow(    "Iterations",   iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+  globalsLayout->addRow(  "Length (sec)",  fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
+  globalsLayout->addRow(   "Fight Style",   fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
-  globalsLayout->addRow( "Threads", threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow( "Armory Spec", armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   patchChoice->setCurrentIndex( 1 );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
@@ -263,12 +263,69 @@ void SimcraftWindow::createImportTab()
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
 
+  createBestInSlotTab();
+
   historyList = new QListWidget();
   historyList->setSortingEnabled( true );
   importTab->addTab( historyList, "History" );
 
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
   connect( importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
+}
+
+void SimcraftWindow::createBestInSlotTab()
+{
+  QStringList headerLabels( "Player Class" ); headerLabels += QString( "URL" );
+
+  bisTree = new QTreeWidget();
+  bisTree->setColumnCount( 2 );
+  bisTree->setHeaderLabels( headerLabels );
+  importTab->addTab( bisTree, "BiS" );
+
+  int T8=0, T9=1, TMAX=2;
+  const char* TNAMES[] = { "T8", "T9" };
+  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
+  for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
+  {
+    QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
+    top->setFont( 0, QFont( "fixed" ) );
+    bisTree->addTopLevelItem( top );
+    for( int j=0; j < TMAX; j++ )
+    {
+      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( TNAMES[ j ] ) ) );
+      rootItems[ i ][ j ]->setFont( 0, QFont( "fixed" ) );
+    }
+  }
+
+  struct bis_entry_t { int type; int tier; const char* name; int site; const char* id; };
+
+  bis_entry_t bisList[] = 
+    {
+      { PRIEST, T8, "Priest_T8_13_00_58",   TAB_WOWHEAD, "13000014" },
+      { ROGUE,  T8, "Rogue_T8_15_51_05_FD", TAB_WOWHEAD, "13006241" },
+      { SHAMAN, T9, "Shaman_T9_57_14_00",   TAB_WOWHEAD, "14165873" },
+      { PLAYER_NONE, TMAX, NULL, -1, NULL }
+    };
+
+  for( int i=0; bisList[ i ].type != PLAYER_NONE; i++ )
+  {
+    bis_entry_t& b = bisList[ i ];
+    QString url = "";
+    switch( b.site )
+    {
+    case TAB_ARMORY_US: url += "http://us.wowarmory.com/character-sheet.xml?"; break;
+    case TAB_ARMORY_EU: url += "http://eu.wowarmory.com/character-sheet.xml?"; break;
+    case TAB_WOWHEAD:   url += "http://www.wowhead.com/?profile=";             break;
+    }
+    url += b.id;
+    QStringList labels = QStringList( b.name ); labels += url;
+    QTreeWidgetItem* item = new QTreeWidgetItem( labels );
+    item->setFont( 0, QFont( "fixed" ) );
+    item->setFont( 1, QFont( "fixed" ) );
+    rootItems[ b.type ][ b.tier ]->addChild( item );
+  }
+
+  connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
 }
 
 void SimcraftWindow::createSimulateTab()
@@ -829,6 +886,7 @@ void SimcraftWindow::mainTabChanged( int index )
 void SimcraftWindow::importTabChanged( int index )
 {
   if( index == TAB_RAWR ||
+      index == TAB_BIS  ||
       index == TAB_HISTORY )
   {
     visibleWebView = 0;
@@ -864,7 +922,7 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if( text.count( "us.wowarmory." ) )
+  if( url.count( "us.wowarmory." ) )
   {
     armoryUsView->setUrl( url );
     importTab->setCurrentIndex( TAB_ARMORY_US );
@@ -893,6 +951,39 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
   {
     rawrFile->setText( url );
     importTab->setCurrentIndex( TAB_RAWR );
+  }
+}
+
+void SimcraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
+{
+  if( item->columnCount() == 1 ) return;
+
+  QString url = item->text( 1 );
+
+  if( url.count( "us.wowarmory." ) )
+  {
+    armoryUsView->setUrl( url );
+    importTab->setCurrentIndex( TAB_ARMORY_US );
+  }
+  else if( url.count( "eu.wowarmory." ) )
+  {
+    armoryEuView->setUrl( url );
+    importTab->setCurrentIndex( TAB_ARMORY_EU );
+  }
+  else if( url.count( ".wowhead." ) )
+  {
+    wowheadView->setUrl( url );
+    importTab->setCurrentIndex( TAB_WOWHEAD );
+  }
+  else if( url.count( ".chardev." ) )
+  {
+    chardevView->setUrl( url );
+    importTab->setCurrentIndex( TAB_CHARDEV );
+  }
+  else if( url.count( ".warcrafter." ) )
+  {
+    warcrafterView->setUrl( url );
+    importTab->setCurrentIndex( TAB_WARCRAFTER );
   }
 }
 
