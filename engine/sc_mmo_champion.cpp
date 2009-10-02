@@ -9,7 +9,7 @@
 #define RANGE_HIGH_MASK (0x3f<<(RANGE_BITS-6))
 #define RANGE_LOW_MASK ((1<<(RANGE_BITS-6))-1)
 
-static char* base64 = "f-qR3eOHQ9dSIMwk8pabYt6yrJUFNXLTh4n2KWEoz0uC5j7xmAgDlZiPcs_BGV1v";  // sufficiently randomized 10+26+26+2 = 64
+static const char* base64 = "f-qR3eOHQ9dSIMwk8pabYt6yrJUFNXLTh4n2KWEoz0uC5j7xmAgDlZiPcs_BGV1v";  // sufficiently randomized 10+26+26+2 = 64
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
