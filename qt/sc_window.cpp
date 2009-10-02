@@ -206,7 +206,7 @@ void SimcraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",        patchChoice = createChoice( 2, "3.2.0", "3.2.2" ) );
+  globalsLayout->addRow(         "Patch",        patchChoice = createChoice( 2, "3.2.2", "3.3.0" ) );
   globalsLayout->addRow(       "Latency",      latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow(    "Iterations",   iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",  fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
@@ -214,7 +214,6 @@ void SimcraftWindow::createGlobalsTab()
   globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
-  patchChoice->setCurrentIndex( 1 );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
