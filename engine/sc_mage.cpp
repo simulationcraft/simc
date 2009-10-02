@@ -617,7 +617,7 @@ static void trigger_combustion( spell_t* s )
 
     if ( s -> result == RESULT_CRIT )
     {
-      if ( ! p -> sim -> P322 || ( s -> direct_dmg > 0.0 ) )          
+      if ( s -> direct_dmg > 0.0 )          
       {
         p -> buffs_combustion -> decrement();
       }
@@ -966,7 +966,7 @@ void mage_spell_t::player_buff()
 
     arcane_blast_multiplier = ab_stack * ( 0.15 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
 
-    for ( int i=0; i < ( sim -> P322 ? 5 : 4 ); i++ )
+    for ( int i=0; i < 5; i++ )
     {
       p -> uptimes_arcane_blast[ i ] -> update( i == ab_stack );
     }
@@ -978,12 +978,9 @@ void mage_spell_t::player_buff()
 
     fire_power_multiplier = p -> talents.fire_power * 0.02;
 
-    if ( sim -> P322 )
+    if ( p -> buffs_combustion -> check() )
     {
-      if ( p -> buffs_combustion -> check() )
-      {
-        player_crit_bonus_multiplier *= 1.0 + 0.5;
-      }
+      player_crit_bonus_multiplier *= 1.0 + 0.5;
     }
   }
   if ( p -> talents.shatter && may_crit )
@@ -1147,7 +1144,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if ( c != 0 )
     {
-      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P322 ? 1.75 : 2.00 );
+      c += base_cost * p -> buffs_arcane_blast -> stack() * 1.75;
     }
     return c;
   }
@@ -1158,7 +1155,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
-      p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * ( sim -> P322 ? 0.08 : 0.04 ) );
+      p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * 0.08 );
       p -> buffs_tier8_2pc -> trigger();
     }
     p -> buffs_arcane_blast -> trigger();
@@ -1305,9 +1302,8 @@ struct arcane_missiles_t : public mage_spell_t
   virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    if ( sim -> P322 ) 
-      if ( p -> buffs_missile_barrage -> check() )
-	return 0;
+    if ( p -> buffs_missile_barrage -> check() )
+      return 0;
     return mage_spell_t::cost();
   }
 
@@ -2938,7 +2934,7 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         ( sim -> P322 ? 4 : 3 ), ( sim -> P322 ? 6.0 : 10.0 ) );
+  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4, 6.0 );
   buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
   buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
@@ -3051,13 +3047,11 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       action_list_str += "/mana_gem";
-      action_list_str += "/choose_rotation,P322=0";
-      action_list_str += "/evocation,P322=0";
-      action_list_str += "/arcane_blast,P322=0,max=2";
-      action_list_str += "/arcane_missiles,P322=0,barrage=1,dpm=1";
-      action_list_str += "/arcane_blast,P322=0,max=3";
-      action_list_str += "/arcane_missiles,P322=1,barrage=1";
-      action_list_str += "/arcane_blast,P322=1";
+      action_list_str += "/choose_rotation";
+      action_list_str += "/arcane_missiles,barrage=1";
+      action_list_str += "/arcane_blast,arcane_power=1";
+      action_list_str += "/arcane_blast,dps=1";
+      action_list_str += "/arcane_blast,dpm=1,max=4";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
       action_list_str += "/evocation";

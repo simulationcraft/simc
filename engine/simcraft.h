@@ -878,7 +878,7 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  int         P322;
+  int         P330;
   event_t*    free_list;
   target_t*   target;
   player_t*   player_list;
@@ -1952,7 +1952,7 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int P322, moving, vulnerable, invulnerable, wait_on_ready;
+  int P330, moving, vulnerable, invulnerable, wait_on_ready;
   int has_if_exp, is_ifall;
   act_expression_t* if_exp;
   std::string if_expression;

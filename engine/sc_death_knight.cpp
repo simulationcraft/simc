@@ -1776,7 +1776,7 @@ struct scourge_strike_t : public death_knight_attack_t
     cost_frost = 1;
     cost_unholy = 1;
 
-    if ( sim -> P322 ) base_crit += p -> talents.subversion * 0.03;
+    base_crit += p -> talents.subversion * 0.03;
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;

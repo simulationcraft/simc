@@ -1,4 +1,4 @@
-#!simcraft
+#!./simcraft 
 
 mage=Mage_T8_00_53_18
 origin=http://profiler.wowhead.com/?profile=13000266
@@ -34,7 +34,7 @@ wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_
 hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=9sp_8spi_8crit_9sp_7sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8hit_9sp_5sp,enchant=lightweave_embroidery
 main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
@@ -52,8 +52,8 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # gear_haste_rating=381
 # gear_armor=1993
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
 # back=drape_of_mortal_downfall,enchant=lightweave_embroidery
 # main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
 armor_type=molten

@@ -1244,12 +1244,9 @@ struct envenom_t : public rogue_attack_t
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
 
-    dose_dmg = ( p -> level >= 80 ? 216 :
-                 p -> level >= 74 ? 176 :
-                 p -> level >= 69 ? 148 : 118 );
-
-    if ( sim -> P322 )
-      dose_dmg -= 1;
+    dose_dmg = ( p -> level >= 80 ? 215 :
+                 p -> level >= 74 ? 175 :
+                 p -> level >= 69 ? 147 : 117 );
   }
 
   virtual void execute()
@@ -1271,7 +1268,7 @@ struct envenom_t : public rogue_attack_t
 
     if ( result_is_hit() )
     {
-      if ( ! sim -> P322 || ! p -> rng_master_poisoner -> roll( p -> talents.master_poisoner / 3.0 ) )
+      if ( ! p -> rng_master_poisoner -> roll( p -> talents.master_poisoner / 3.0 ) )
       {
 	p -> buffs_poison_doses -> decrement( doses_consumed );
       }
@@ -1291,12 +1288,10 @@ struct envenom_t : public rogue_attack_t
     int doses_consumed = std::min( p -> buffs_poison_doses -> current_stack, 
 				   p -> buffs_combo_points -> current_stack );
 
-    if ( sim -> P322 )
-      direct_power_mod = p -> buffs_combo_points -> current_stack * 0.09;
-    else
-      direct_power_mod = p -> buffs_combo_points -> current_stack * 0.07;
-        
+    direct_power_mod = p -> buffs_combo_points -> current_stack * 0.09;
+ 
     base_dd_min = base_dd_max = doses_consumed * dose_dmg;
+
     rogue_attack_t::player_buff();
 
     trigger_dirty_deeds( this );
@@ -2437,7 +2432,7 @@ struct deadly_poison_t : public rogue_poison_t
       chance += p -> talents.improved_poisons * 0.02;
       if ( p -> buffs_envenom -> up() )
       {
-        chance += 0.15 + ( sim -> P322 ? 0.0 : ( p -> talents.master_poisoner * 0.15 ) );
+        chance += 0.15;
       }
       success = p -> rng_deadly_poison -> roll( chance );
     }
@@ -3184,16 +3179,8 @@ struct honor_among_thieves_callback_t : public action_callback_t
     if ( a )
       a -> player -> procs.hat_donor -> occur();
 
-    if ( sim -> P322 )
-    {
-      if ( sim -> current_time < rogue -> _cooldowns.honor_among_thieves )
-	return;
-    }
-    else
-    {
-      if ( sim -> current_time < cooldown_ready ) 
-	return;
-    }
+    if ( sim -> current_time < rogue -> _cooldowns.honor_among_thieves )
+      return;
 
     if ( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
 
@@ -3201,14 +3188,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     rogue -> procs_honor_among_thieves -> occur();
 
-    if ( sim -> P322 )
-    {
-      rogue -> _cooldowns.honor_among_thieves = sim -> current_time + 1.0;
-    }
-    else
-    {
-      cooldown_ready = sim -> current_time + 1.0;
-    }
+    rogue -> _cooldowns.honor_among_thieves = sim -> current_time + 1.0;
   }
 };
 

@@ -309,7 +309,7 @@ static rating_t& rating_60( sim_t* sim )
     r.attack_hit        = 1000;
     r.attack_crit       = 1400;
     r.expertise         =  250;
-    r.armor_penetration = sim -> P322 ? 426.8292514 : 375.6097412;
+    r.armor_penetration = 426.8292514;
     r.defense           =  1.5;
     r.dodge             = 1380;
     r.parry             = 1380;
@@ -334,7 +334,7 @@ static rating_t& rating_70( sim_t* sim )
     r.attack_hit        = 1576.923275;
     r.attack_crit       = 2207.692337;
     r.expertise         =  394.230819;
-    r.armor_penetration = sim -> P322 ? 673.0768897 : 592.307663;
+    r.armor_penetration = 673.0768897;
     r.defense           = 2.365385056;
     r.dodge             = 2176.153945;
     r.parry             = 2176.153945;
@@ -359,7 +359,7 @@ static rating_t& rating_80( sim_t* sim )
     r.attack_hit        = 100.0/0.030500;
     r.attack_crit       = 140.0/0.030500;
     r.expertise         =  25.0/0.030500;
-    r.armor_penetration = sim -> P322 ? 1399.572719 : 1231.623993;
+    r.armor_penetration = 1399.572719;
     r.defense           = 4.918498039;
     r.dodge             = 4525.018692;
     r.parry             = 4525.018692;

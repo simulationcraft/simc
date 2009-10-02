@@ -4,7 +4,7 @@ mage=Mage_T9_53_18_00
 origin=http://profiler.wowhead.com/?profile=14306474
 level=80
 race=undead
-talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300051331003301503231025053210300000000000000000000000000203203001
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050321003301503231005053212305030011003000000000000000000000000
 glyphs=arcane_blast/arcane_missiles/molten_armor/slow_fall/arcane_intellect/fire_ward
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -17,13 +17,10 @@ actions+=/arcane_power
 actions+=/icy_veins
 actions+=/presence_of_mind,arcane_blast
 actions+=/mana_gem
-actions+=/choose_rotation,P322=0
-actions+=/evocation,P322=0
-actions+=/arcane_blast,P322=0,max=2
-actions+=/arcane_missiles,P322=0,barrage=1,dpm=1
-actions+=/arcane_blast,P322=0,max=3
-actions+=/arcane_missiles,P322=1,barrage=1
-actions+=/arcane_blast,P322=1
+actions+=/choose_rotation
+actions+=/arcane_missiles,barrage=1
+actions+=/arcane_blast,dps=1
+actions+=/arcane_blast,dpm=1,max=4
 actions+=/arcane_missiles
 actions+=/mana_potion
 actions+=/evocation

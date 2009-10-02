@@ -17,13 +17,10 @@ actions+=/arcane_power
 actions+=/icy_veins
 actions+=/presence_of_mind,arcane_blast
 actions+=/mana_gem
-actions+=/choose_rotation,P322=0
-actions+=/evocation,P322=0
-actions+=/arcane_blast,P322=0,max=2
-actions+=/arcane_missiles,P322=0,barrage=1,dpm=1
-actions+=/arcane_blast,P322=0,max=3
-actions+=/arcane_missiles,P322=1,barrage=1
-actions+=/arcane_blast,P322=1
+actions+=/choose_rotation
+actions+=/arcane_missiles,barrage=1
+actions+=/arcane_blast,dps=1
+actions+=/arcane_blast,dpm=1,max=4
 actions+=/arcane_missiles
 actions+=/mana_potion
 actions+=/evocation

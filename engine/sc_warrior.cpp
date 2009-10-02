@@ -409,31 +409,19 @@ static void trigger_sword_specialization( attack_t* a )
 
   if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
     return;
-  double chance = ( a -> sim -> P322 ? 0.02 : 0.01 ) * p -> talents.sword_specialization;
-  if ( p -> rng_sword_specialization -> roll( chance ) )
+
+  if ( p -> rng_sword_specialization -> roll( 0.02 * p -> talents.sword_specialization ) )
   {
     if ( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
                      p -> name(), p -> procs_sword_specialization -> name() );
+
     p -> procs_sword_specialization -> occur();
     p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
-    /* http://elitistjerks.com/f81/t37807-depth_arms_dps_discussion/p27/#post1186561
-    // I'm suprised to see that offhand sword spec still procs a main hand attack
-    */
-    // if( w -> slot == SLOT_MAIN_HAND )
-    // {
+
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> execute();
     p -> main_hand_attack -> proc = false;
-    /*
-    }
-    else if( w -> slot == SLOT_OFF_HAND )
-    {
-      p -> off_hand_attack -> proc = true;
-      p -> off_hand_attack -> execute();
-      p -> off_hand_attack -> proc = false;
-    }
-    */
   }
 }
 

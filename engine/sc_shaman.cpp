@@ -539,7 +539,7 @@ static void trigger_lightning_overload( spell_t* s,
     s -> pseudo_pet           = true; // Prevent Honor Among Thieves
     s -> base_cost            = 0;
     s -> base_multiplier     /= 2.0;
-    s -> direct_power_mod    += p -> talents.shamanism * ( p -> sim -> P322 ? 0.03 : 0.02 ); // Reapplied here because Shamanism isn't affected by the *0.5.
+    s -> direct_power_mod    += p -> talents.shamanism * 0.03; // Reapplied here because Shamanism isn't affected by the *0.5.
     s -> stats                = lightning_overload_stats;
 
     s -> time_to_execute      = 0;
@@ -996,10 +996,7 @@ struct chain_lightning_t : public shaman_spell_t
     may_crit             = true;
     cooldown             = 6.0;
     direct_power_mod     = ( base_execute_time / 3.5 );
-	  if ( sim -> P322 )
-	  {
-		  direct_power_mod  += p -> talents.shamanism * 0.03;
-	  }
+    direct_power_mod    += p -> talents.shamanism * 0.03;
     cooldown            -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_cost_reduction += p -> talents.convection * 0.02;
@@ -1108,7 +1105,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_hit            += p -> talents.elemental_precision * 0.01;
     base_crit           += p -> talents.call_of_thunder * 0.05;
     base_crit           += p -> talents.tidal_mastery * 0.01;
-  	direct_power_mod    += p -> talents.shamanism * ( sim -> P322 ? 0.03 : 0.02 );
+    direct_power_mod    += p -> talents.shamanism * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
@@ -1229,13 +1226,6 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_maelstrom_weapon -> expire();
     p -> buffs_elemental_mastery -> current_value = 0;
-    if ( result_is_hit() )
-    {
-      if ( p -> active_flame_shock && ! p -> glyphs.flame_shock && ! sim -> P322 )
-      {
-        p -> active_flame_shock -> cancel();
-      }
-    }
     p -> _cooldowns.lava_burst = cooldown_ready;
   }
 
@@ -1507,7 +1497,7 @@ struct flame_shock_t : public shaman_spell_t
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
-	num_ticks         = 4;
+    num_ticks         = 6;
 
     direct_power_mod  = 0.5*1.5/3.5;
     tick_power_mod    = 0.100;
@@ -1534,20 +1524,11 @@ struct flame_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
-    if ( sim -> P322 )
-    {
-      num_ticks += 2;
-      if ( p -> glyphs.flame_shock ) tick_may_crit = true;
-    }
-    else
-    {
-      if ( p -> glyphs.flame_shock ) num_ticks += 2;
-    }
+    if ( p -> glyphs.flame_shock ) tick_may_crit = true;
     
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 3;
-
 
     if ( p -> glyphs.shocking )
     {
@@ -2772,7 +2753,7 @@ void shaman_t::init_buffs()
   buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
   buffs_electrifying_wind = new stat_buff_t( this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
   buffs_indomitability    = new stat_buff_t( this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
-  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, ( sim -> P322 ? 400 : 200 ), 1, 18.0, 9.01, totems.quaking_earth * 0.80 );
+  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, 400, 1, 18.0,  9.01, totems.quaking_earth * 0.80 );
   buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
   buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
 }
@@ -2847,10 +2828,10 @@ void shaman_t::init_actions()
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";
 
-      if ( talents.stormstrike      ) action_list_str += "/stormstrike";
-      if ( sim -> P322 ) action_list_str += "/flame_shock";
+      if ( talents.stormstrike ) action_list_str += "/stormstrike";
+      action_list_str += "/flame_shock";
       action_list_str += "/earth_shock/magma_totem/lightning_shield";
-      if ( talents.lava_lash    ) action_list_str += "/lava_lash";
+      if ( talents.lava_lash ) action_list_str += "/lava_lash";
       action_list_str += "/lightning_bolt,maelstrom=4";
     }
     else
@@ -2882,12 +2863,8 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
       if ( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
-      if ( sim -> P322 || ! set_bonus.tier8_4pc_caster() )
-      {
-		action_list_str += "/chain_lightning";
-		if ( level >= 75 && ! sim -> P322 )		action_list_str += ",lvb_cd<=1.5";
-		if ( ! set_bonus.tier9_4pc_caster() )	action_list_str += ",clearcasting=1";
-      }
+      action_list_str += "/chain_lightning";
+      if ( ! set_bonus.tier9_4pc_caster() ) action_list_str += ",clearcasting=1";
       action_list_str += "/lightning_bolt";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
