@@ -44,34 +44,21 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 #wowhead=13043847 name=Priest_T9_13_00_58_245_SWD  save=Priest_T9_13_00_58_245_SWD.simcraft	use_shadow_word_death=1
 
 #wowhead=13043848 name=Priest_T9_13_00_58_258      save=Priest_T9_13_00_58_258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 #wowhead=13043848 name=Priest_T9_13_00_58_258_SWD  save=Priest_T9_13_00_58_258_SWD.simcraft	use_shadow_word_death=1
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Different races
 
 ## Draenei (or other alliance priest with a Draenei in the group)
 #wowhead=13043848 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simcraft race=draenei
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Troll
 #wowhead=13043848 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simcraft race=troll
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#finger2=nebula_band,id=46046,gems=12sp_10crit_4crit,enchant=23sp
-#off_hand=symbol_of_transgression,id=47064,gems=0sp
 
 ## Extra intermediate profiles
 
 ## 0 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_0t9258      save=Priest_T9_13_00_58_258_0t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
@@ -84,7 +71,6 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 
 ## 1 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_1t9258      save=Priest_T9_13_00_58_258_1t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
@@ -97,7 +83,6 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 
 ## 2 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_2t9258      save=Priest_T9_13_00_58_258_2t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48081,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
@@ -110,7 +95,6 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 
 ## 3 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_3t9258      save=Priest_T9_13_00_58_258_3t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48080,gems=23sp_23sp,enchant=10all
@@ -123,7 +107,6 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 
 ## 4 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_4t9258      save=Priest_T9_13_00_58_258_4t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
@@ -137,7 +120,6 @@ Priest_T9_13_00_58_258_5t9258.simcraft
 
 ## 5 ilvl 258 T9 and no Tribute Cloak
 #wowhead=13043848 name=Priest_T9_13_00_58_258_5t9258      save=Priest_T9_13_00_58_258_5t9258.simcraft
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
 #shoulders=velens_mantle_of_triumph,id=48082,gems=12sp_10crit_5sp,enchant=24sp_15crit
 #back=shawl_of_the_refreshing_winds,id=46977,gems=12sp_10crit_5sp,enchant=lightweave_embroidery
 #chest=velens_raiments_of_triumph,id=48083,gems=23sp_23sp,enchant=10all
