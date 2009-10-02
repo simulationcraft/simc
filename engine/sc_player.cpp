@@ -3257,8 +3257,8 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 bool player_t::parse_talents_mmo( const std::string& talent_string )
 {
   std::string player_class, talent_string_extract;
-  unsigned int cut_pos1 = talent_string.find_first_of("#");
-  unsigned int cut_pos2 = talent_string.find_first_of(",");
+  size_t cut_pos1 = talent_string.find_first_of("#");
+  size_t cut_pos2 = talent_string.find_first_of(",");
 
   if((cut_pos1 < cut_pos2) && (cut_pos2 < talent_string.npos))
   {
