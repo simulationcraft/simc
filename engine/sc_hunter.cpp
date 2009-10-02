@@ -644,7 +644,8 @@ struct hunter_pet_t : public pet_t
 			{
 				talent_list.push_back(translation_table[i]);
 				talent_list[count].tree = 0;
-				talent_list[count].index = count++;
+				talent_list[count].index = count+1;
+				count++;
 			}
 		}
 	}

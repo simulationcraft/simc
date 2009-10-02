@@ -1377,7 +1377,8 @@ void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_l
 					for( size_t k = 0; k < j; k++ )
 						talent_list[ count ].req += trees[ k ];
 				}
-				talent_list[ count ].index = count++;
+				talent_list[ count ].index = count+1;
+				count++;
 				trees[ j ]++;
 			}
 		}
