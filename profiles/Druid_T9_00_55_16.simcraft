@@ -1,4 +1,4 @@
-#!simcraft 
+#!./simcraft 
 
 druid=Druid_T9_00_55_16
 origin=http://profiler.wowhead.com/?profile=14202460
@@ -17,16 +17,17 @@ actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1
 actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/shred,extend_rip=1,rip<=4
 actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
 actions+=/shred
 head=malfurions_headguard_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10str_10agi_10sta_10int_10spi_8agi,enchant=50ap_20crit
-neck=collar_of_ceaseless_torment,stats=106ap_52crit_40arpen_70agi_65sta,gems=20arpen
+neck=collar_of_ceaseless_torment,stats=70agi_65sta_106ap_52crit_40arpen,gems=20arpen
 shoulders=malfurions_shoulderpads_of_triumph,stats=489armor_151ap_76haste_68arpen_106agi_114sta,gems=20arpen,enchant=40ap_15crit
-chest=armor_of_shifting_shadows,stats=623armor_162ap_93crit_67arpen_126agi_107sta,gems=20arpen_20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_the_merciless_killer,stats=367armor_135ap_68hit_76haste_98agi_114sta,gems=10hit_10agi_20arpen_34arpen_6agi
-legs=leggings_of_the_broken_beast,stats=153sta_137agi_86hit_172ap_102haste_570armor,gems=20arpen_20arpen_20arpen,enchant=75ap_22crit
+chest=armor_of_shifting_shadows,stats=126agi_107sta_162ap_93crit_67arpen_623armor,gems=20arpen_20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_merciless_killer,stats=114sta_98agi_68hit_135ap_76haste_367armor,gems=10hit_10agi_20arpen_34arpen_6agi
+legs=leggings_of_the_broken_beast,stats=570armor_172ap_86hit_102haste_137agi_153sta,gems=20arpen_20arpen_20arpen,enchant=75ap_22crit
 feet=treads_of_the_icewalker,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=10hit_10agi_20arpen_6agi,enchant=12crit_12hit
 wrists=bracers_of_swift_death,stats=272armor_101ap_50haste_42arpen_68agi_76sta,gems=20arpen_34arpen,enchant=50ap
 hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57sta,gems=20arpen_20arpen_34arpen_6agi,enchant=20agi

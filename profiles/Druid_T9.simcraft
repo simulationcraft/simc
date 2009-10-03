@@ -15,18 +15,8 @@ Druid_T9_00_55_16_M.simcraft
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14187592 name=Druid_T9_58_00_13   save=Druid_T9_58_00_13.simcraft   eclipse_cycle=lunar
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10crit_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#off_hand=chalice_of_searing_light,stats=65sta_57spi_65int_100sp_57crit,gems=0sp
-#hands=gloves_of_the_lifeless_touch,id=47236,gems=23sp_23sp,enchant=28sp
-
 
 #wowhead=14187598 name=Druid_T9_58_00_13_2T8_2T9 save=Druid_T9_58_00_13_2T8_2T9.simcraft   eclipse_cycle=lunar
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave
-#finger1=band_of_deplorable_violence,id=47237,gems=12sp_10haste_5sp,enchant=23sp
-#main_hand=miserys_end,id=47206,gems=0sp,enchant=63sp
-#off_hand=chalice_of_searing_light,stats=65sta_57spi_65int_100sp_57crit,gems=0sp
 
 #wowhead=14202460 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simcraft   mangle=0
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
