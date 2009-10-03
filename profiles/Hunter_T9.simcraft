@@ -4,18 +4,29 @@ Globals_T9.simcraft
 
 optimal_raid=1
 
-#Hunter_T9_54_12_05.simcraft
+Hunter_T9_02_18_51.simcraft
 Hunter_T9_07_57_07.simcraft
-#Hunter_T9_01_15_55.simcraft
+Hunter_T9_07_57_07_HM.simcraft
+Hunter_T9_54_12_05.simcraft
+Hunter_T9_53_14_04.simcraft
 
 # schuntert9
 # Uncomment below and comment out above to download profiles.
 
 
 #wowhead=14189960 name=Hunter_T9_07_57_07 save=Hunter_T9_07_57_07.simcraft
-#main_hand=hellion_glaive,id=47491,gems=20arpen_20arpen,enchant=110ap
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
-#waist=belt_of_deathly_dominion,id=47153,gems=20arpen_20arpen_34arpen
+
+#wowhead=14651857 name=Hunter_T9_07_57_07_HM save=Hunter_T9_07_57_07_HM.simcraft
+#back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=14649679 name=Hunter_T9_02_18_51 save=Hunter_T9_02_18_51.simcraft
+#back=vereesas_dexterity,id=47545,gems=20agi_8ap,enchant=22agi
+
+#wowhead=14662679 name=Hunter_T9_54_12_05 save=Hunter_T9_54_12_05.simcraft
+#back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=14663160 name=Hunter_T9_53_14_04 save=Hunter_T9_53_14_04.simcraft
+#back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
 
 #save_profiles=1
-
