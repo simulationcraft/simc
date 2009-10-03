@@ -14,32 +14,13 @@ Mage_T9_57_03_11.simcraft   focus_magic_target=Mage_T9_18_00_53
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14306487 name=Mage_T9_00_53_18 save=Mage_T9_00_53_18.simcraft
-#back=aethas_intensity,id=47551,gems=23sp_5sp,enchant=lightweave_embroidery
-#finger2=lurid_manifestation,id=47489,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=reign_of_the_dead,id=47477
-#main_hand=mortalis,id=47518,gems=12sp_10crit_5sp,enchant=63sp
 
 #wowhead=14306485 name=Mage_T9_18_00_53 save=Mage_T9_18_00_53.simcraft
-#back=aethas_intensity,id=47551,gems=23sp_5sp,enchant=lightweave_embroidery
-#finger2=lurid_manifestation,id=47489,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=reign_of_the_dead,id=47477
-#main_hand=mortalis,id=47518,gems=12sp_10crit_5sp,enchant=63sp
 
 #wowhead=14306481 name=Mage_T9_20_51_00 save=Mage_T9_20_51_00.simcraft
-#back=aethas_intensity,id=47551,gems=23sp_5sp,enchant=lightweave_embroidery
-#finger2=lurid_manifestation,id=47489,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=reign_of_the_dead,id=47477
-#main_hand=mortalis,id=47518,gems=12sp_10crit_5sp,enchant=63sp
 
 #wowhead=14306474 name=Mage_T9_53_18_00 save=Mage_T9_53_18_00.simcraft
-#back=lady_liadrins_conviction,id=47554,gems=23sp_5sp,enchant=lightweave_embroidery
-#finger2=lurid_manifestation,id=47489,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=reign_of_the_dead,id=47477
 
 #wowhead=14306468 name=Mage_T9_57_03_11 save=Mage_T9_57_03_11.simcraft
-#back=aethas_intensity,id=47551,gems=23sp_5sp,enchant=lightweave_embroidery
-#finger2=lurid_manifestation,id=47489,gems=12sp_10crit_5sp,enchant=23sp
-#trinket1=reign_of_the_dead,id=47477
-#main_hand=mortalis,id=47518,gems=12sp_10crit_5sp,enchant=63sp
 
 #save_profiles=1
