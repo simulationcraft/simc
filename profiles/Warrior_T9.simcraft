@@ -11,10 +11,16 @@ Warrior_T9_19_52_00.simcraft
 
 # scwarriort9
 # Uncomment below and comment out above to download profiles.
-# wowhead=13111680 name=Warrior_T9_54_17_00_A save=Warrior_T9_54_17_00_A.simcraft
-# wowhead=13112036 name=Warrior_T9_54_17_00_S save=Warrior_T9_54_17_00_S.simcraft
-# wowhead=13112110 name=Warrior_T9_54_17_00_M save=Warrior_T9_54_17_00_M.simcraft
-# wowhead=13110966 name=Warrior_T9_19_52_00 save=Warrior_T9_19_52_00.simcraft
+#wowhead=13111680 name=Warrior_T9_54_17_00_A save=Warrior_T9_54_17_00_A.simcraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
+#wowhead=13112036 name=Warrior_T9_54_17_00_S save=Warrior_T9_54_17_00_S.simcraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=13112110 name=Warrior_T9_54_17_00_M save=Warrior_T9_54_17_00_M.simcraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=13110966 name=Warrior_T9_19_52_00 save=Warrior_T9_19_52_00.simcraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #save_profiles=1
