@@ -9,5 +9,6 @@ Paladin_T9_05_11_55.simcraft
 # dedmonwakeen
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=14320165 name=Paladin_T9_05_11_55 save=Paladin_T9_05_11_55.simcraft back=garroshs_rage,id=47548
+#wowhead=14637386 name=Paladin_T9_05_11_55 save=Paladin_T9_05_11_55.simcraft back=garroshs_rage,id=47548,gems=20str,enchant=23haste
+
 #save_profiles=1
