@@ -3623,9 +3623,10 @@ void warlock_t::init_actions()
     }
     else if ( talents.chaos_bolt ) // 00_13_58
     {
+      action_list_str += "/immolate";
       if ( talents.conflagrate ) action_list_str += "/conflagrate";
       action_list_str += "/chaos_bolt";
-      action_list_str += "/curse_of_doom,time_to_die>=80/immolate";
+      action_list_str += "/curse_of_doom,time_to_die>=80";
     }
     else if ( talents.metamorphosis ) // 00_56_15
     {
