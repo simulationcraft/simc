@@ -15,9 +15,9 @@
 #define TAB_IMPORT    2
 #define TAB_SIMULATE  3
 #define TAB_OVERRIDES 4
-#define TAB_LOG       5
-#define TAB_RESULTS   6
-#define TAB_HELP      7
+#define TAB_EXAMPLES  5
+#define TAB_LOG       6
+#define TAB_RESULTS   7
 
 #define TAB_ARMORY_US  0
 #define TAB_ARMORY_EU  1
@@ -147,6 +147,7 @@ public:
     void createBestInSlotTab();
     void createSimulateTab();
     void createOverridesTab();
+    void createExamplesTab();
     void createLogTab();
     void createResultsTab();
 
