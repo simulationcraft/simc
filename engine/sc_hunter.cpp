@@ -3297,7 +3297,9 @@ void hunter_t::init_buffs()
   buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
   buffs_improved_aspect_of_the_hawk = new buff_t( this, "improved_aspect_of_the_hawk", 1, 10.0,  0.0, ( talents.improved_aspect_of_the_hawk ? 0.10 : 0.0 ) );
   buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1, 10.0,  0.0, talents.improved_steady_shot * 0.05 );
-  buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * 0.02);
+//  buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * 0.02 );
+  buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * (0.20/3.0) ); // EJ thread suggests the proc is rate is around 20%
+
   buffs_master_tactician            = new buff_t( this, "master_tactician",            1, 10.0,  0.0, ( talents.master_tactician ? 0.10 : 0.0 ) );
   buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
   
@@ -3409,6 +3411,10 @@ void hunter_t::init_actions()
     if ( primary_tree() != TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
     if ( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
     if (   talents.silencing_shot ) action_list_str += "/silencing_shot";
+    if ( primary_tree() == TREE_MARKSMANSHIP )
+    {
+      if( talents.aimed_shot )      action_list_str += "/aimed_shot";
+    }
     if (   talents.chimera_shot   ) action_list_str += "/chimera_shot";
     if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
     if (   talents.explosive_shot ) action_list_str += "/explosive_shot";
@@ -3417,16 +3423,16 @@ void hunter_t::init_actions()
     if ( primary_tree() == TREE_MARKSMANSHIP )
     {
       if( talents.improved_arcane_shot ) action_list_str += "/arcane_shot";
-      if( talents.aimed_shot           ) action_list_str += "/aimed_shot";
       if( talents.readiness            ) action_list_str += "/readiness,wait_for_rapid_fire=1";
     }
     else
     {
+      if ( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
       if ( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
       if (   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
       if (   talents.aimed_shot     ) action_list_str += "/aimed_shot";
     }
-    if ( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
+
     action_list_str += "/steady_shot";
 
     action_list_default = 1;
