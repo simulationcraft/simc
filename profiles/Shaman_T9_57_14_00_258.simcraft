@@ -1,7 +1,7 @@
-#!simcraft
+#!./simcraft 
 
 shaman=Shaman_T9_57_14_00_258
-origin=http://profiler.wowhead.com/?profile=14165873
+origin=http://profiler.wowhead.com/?profile=14636542
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
@@ -26,8 +26,8 @@ head=thralls_helm_of_triumph,stats=1176armor_92crit_96haste_151sp_116sta_116int,
 neck=cry_of_the_valkyr,stats=57crit_43haste_91sp_65sta_65int,gems=10haste_12sp_5sp
 shoulders=thralls_shoulderpads_of_triumph,stats=1086armor_68crit_76haste_124sp_86sta_86int,gems=23sp,enchant=24sp_15crit
 chest=thralls_hauberk_of_triumph,stats=1448armor_94hit_94haste_160sp_116sta_116int,gems=23sp_12sp_15sta_7sp,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_biting_cold,stats=195armor_58hit_73crit_114sp_86sta_86int,gems=12sp_15sta_23sp_7sp
-legs=leggings_of_the_awakening,stats=570armor_116sta_116int_86crit_94haste_151sp,gems=23sp_12sp_15sta_12sp_10haste_9sp,enchant=50sp_30sta
+waist=belt_of_biting_cold,stats=195armor_58hit_73crit_114sp_86sta_86int,gems=12sp_15sta_23sp_23sp_7sp
+legs=leggings_of_the_awakening,stats=570armor_86crit_94haste_151sp_116sta_116int,gems=23sp_23sp_23sp,enchant=50sp_30sta
 feet=boots_of_tremoring_earth,stats=995armor_60crit_76haste_114sp_86sta_86int,gems=23sp_23sp,enchant=12crit_12hit
 wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=23sp,enchant=30sp
 hands=thralls_gloves_of_triumph,stats=905armor_76hit_68haste_124sp_86sta_86int,gems=10haste_12sp_5sp,enchant=20sp
@@ -35,23 +35,24 @@ finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=10haste_12sp_4cri
 finger2=circle_of_the_darkmender,stats=49haste_28mp5_91sp_65sta_65int,gems=10haste_12sp_5sp,enchant=23sp
 trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=aethas_intensity,stats=182armor_74sta_74int_65crit_57haste_105sp,gems=23sp_5sp
-main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=23sp,weapon=dagger_1.80speed_125.1dps
+back=aethas_intensity,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=23haste
+main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_125.1dps
 off_hand=bastion_of_resolve,stats=8695armor_243blockv_57crit_57haste_100sp_65sta_65int,gems=10haste_12sp_5sp,enchant=25int
 ranged=totem_of_electrifying_wind
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
-# gear_stamina=1200
+# gear_stamina=1185
 # gear_intellect=1155
 # gear_spirit=10
-# gear_spell_power=3073
+# gear_spell_power=3172
 # gear_mp5=28
 # gear_hit_rating=291
 # gear_crit_rating=718
-# gear_haste_rating=923
+# gear_haste_rating=936
 # gear_armor=15397
 # gear_block_value=243
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1
+# tier9_4pc_caster=1
 # main_hand=barb_of_tarasque,weapon=dagger_1.80speed_125.1dps

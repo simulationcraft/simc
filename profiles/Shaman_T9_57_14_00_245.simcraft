@@ -1,7 +1,7 @@
-#!simcraft
+#!./simcraft 
 
 shaman=Shaman_T9_57_14_00_245
-origin=http://profiler.wowhead.com/?profile=14125991
+origin=http://profiler.wowhead.com/?profile=14636463
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
@@ -27,7 +27,7 @@ neck=cry_of_the_valkyr,stats=58crit_38haste_89sp_58sta_58int,gems=8haste_9sp
 shoulders=thralls_shoulderpads_of_triumph,stats=1038armor_59crit_67haste_109sp_77sta_77int,gems=23sp,enchant=24sp_15crit
 chest=thralls_hauberk_of_triumph,stats=1384armor_82hit_82haste_140sp_103sta_103int,gems=23sp_12sp_15sta_7sp,enchant=10str_10agi_10sta_10int_10spi
 waist=icehowl_binding,stats=186armor_61hit_67haste_99sp_77sta_67int,gems=10haste_12sp_23sp_6haste
-legs=leggings_of_the_awakening,stats=545armor_74crit_90haste_140sp_103sta_103int,gems=23sp_12sp_15sta_32sp_7sp,enchant=50sp_30sta
+legs=leggings_of_the_awakening,stats=545armor_74crit_90haste_140sp_103sta_103int,gems=23sp_12sp_15sta_39sp_7sp,enchant=50sp_30sta
 feet=boots_of_tremoring_earth,stats=951armor_59crit_67haste_109sp_77sta_77int,gems=23sp_19sp,enchant=12crit_12hit
 wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=23sp,enchant=30sp
 hands=thralls_gloves_of_triumph,stats=865armor_67hit_59haste_109sp_77sta_77int,gems=10hit_12sp_5sp,enchant=20sp
@@ -45,7 +45,7 @@ ranged=totem_of_electrifying_wind
 # gear_stamina=1063
 # gear_intellect=1007
 # gear_spirit=50
-# gear_spell_power=2711
+# gear_spell_power=2718
 # gear_hit_rating=282
 # gear_crit_rating=701
 # gear_haste_rating=897
@@ -53,5 +53,6 @@ ranged=totem_of_electrifying_wind
 # gear_block_value=232
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1
+# tier9_4pc_caster=1
 # back=shroud_of_displacement,enchant=lightweave_embroidery
 # main_hand=sunreaver_disciples_blade,weapon=dagger_1.80speed_113.3dps
