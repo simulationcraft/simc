@@ -20,14 +20,14 @@ Rogue_T8_51_13_07.simcraft     tricks_of_the_trade_target=Rogue_T8_07_51_13_FD  
 # scroguet8
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13006118 name=Rogue_T8_07_51_13_FD save=Rogue_T8_07_51_13_FD.simcraft trinket2=comets_trail,id=45609
-#wowhead=13006155 name=Rogue_T8_08_20_43    save=Rogue_T8_08_20_43.simcraft    trinket2=comets_trail,id=45609
-#wowhead=13006220 name=Rogue_T8_10_18_43    save=Rogue_T8_10_18_43.simcraft    trinket2=comets_trail,id=45609
-#wowhead=13006241 name=Rogue_T8_15_51_05_FD save=Rogue_T8_15_51_05_FD.simcraft trinket2=comets_trail,id=45609
-#wowhead=13006278 name=Rogue_T8_15_51_05_M  save=Rogue_T8_15_51_05_M.simcraft  trinket2=comets_trail,id=45609
-#wowhead=13006306 name=Rogue_T8_15_51_05_S  save=Rogue_T8_15_51_05_S.simcraft  trinket2=comets_trail,id=45609
-#wowhead=13006354 name=Rogue_T8_18_51_02_BS save=Rogue_T8_18_51_02_BS.simcraft trinket2=comets_trail,id=45609
-#wowhead=13006482 name=Rogue_T8_23_05_43    save=Rogue_T8_23_05_43.simcraft    trinket2=comets_trail,id=45609
-#wowhead=13007512 name=Rogue_T8_51_07_13    save=Rogue_T8_51_07_13.simcraft    trinket2=comets_trail,id=45609
-#wowhead=13007548 name=Rogue_T8_51_13_07    save=Rogue_T8_51_13_07.simcraft    trinket2=comets_trail,id=45609
+#wowhead=13006118 name=Rogue_T8_07_51_13_FD save=Rogue_T8_07_51_13_FD.simcraft
+#wowhead=13006155 name=Rogue_T8_08_20_43    save=Rogue_T8_08_20_43.simcraft
+#wowhead=13006220 name=Rogue_T8_10_18_43    save=Rogue_T8_10_18_43.simcraft
+#wowhead=13006241 name=Rogue_T8_15_51_05_FD save=Rogue_T8_15_51_05_FD.simcraft
+#wowhead=13006278 name=Rogue_T8_15_51_05_M  save=Rogue_T8_15_51_05_M.simcraft 
+#wowhead=13006306 name=Rogue_T8_15_51_05_S  save=Rogue_T8_15_51_05_S.simcraft
+#wowhead=13006354 name=Rogue_T8_18_51_02_BS save=Rogue_T8_18_51_02_BS.simcraft
+#wowhead=13006482 name=Rogue_T8_23_05_43    save=Rogue_T8_23_05_43.simcraft 
+#wowhead=13007512 name=Rogue_T8_51_07_13    save=Rogue_T8_51_07_13.simcraft
+#wowhead=13007548 name=Rogue_T8_51_13_07    save=Rogue_T8_51_13_07.simcraft
 #save_profiles=1
