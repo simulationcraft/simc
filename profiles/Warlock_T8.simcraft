@@ -17,10 +17,10 @@ Warlock_T8_00_56_15.simcraft
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=13002350 name=Warlock_T8_00_13_58    save=Warlock_T8_00_13_58.simcraft
-#wowhead=13003527 name=Warlock_T8_03_13_55    save=Warlock_T8_03_13_55.simcraft    waist=starwatchers_binding,id=45619
-#wowhead=13003837 name=Warlock_T8_03_52_16    save=Warlock_T8_03_52_16.simcraft    waist=starwatchers_binding,id=45619
-#wowhead=13003573 name=Warlock_T8_53_00_18    save=Warlock_T8_53_00_18.simcraft    waist=starwatchers_binding,id=45619
-#wowhead=13003573 name=Warlock_T8_53_00_18_DG save=Warlock_T8_53_00_18_DG.simcraft waist=starwatchers_binding,id=45619 summon_pet=doomguard
+#wowhead=13003527 name=Warlock_T8_03_13_55    save=Warlock_T8_03_13_55.simcraft
+#wowhead=13003837 name=Warlock_T8_03_52_16    save=Warlock_T8_03_52_16.simcraft
+#wowhead=13003573 name=Warlock_T8_53_00_18    save=Warlock_T8_53_00_18.simcraft 
+#wowhead=13003573 name=Warlock_T8_53_00_18_DG save=Warlock_T8_53_00_18_DG.simcraft summon_pet=doomguard
 #wowhead=13003653 name=Warlock_T8_00_40_31    save=Warlock_T8_00_40_31.simcraft
 #wowhead=13003812 name=Warlock_T8_00_41_30    save=Warlock_T8_00_41_30.simcraft
 #wowhead=13003861 name=Warlock_T8_00_56_15    save=Warlock_T8_00_56_15.simcraft
