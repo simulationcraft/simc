@@ -4,7 +4,7 @@ shaman=Shaman_T9_57_14_00_258
 origin=http://profiler.wowhead.com/?profile=14636542
 level=80
 race=tauren
-talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
+talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322300351005050031
 glyphs=flame_shock/lava/lightning_bolt
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast

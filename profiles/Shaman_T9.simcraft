@@ -21,9 +21,9 @@ Shaman_T9_57_14_00_258_ToW.simcraft
 
 #wowhead=14636463 name=Shaman_T9_57_14_00_245     	save=Shaman_T9_57_14_00_245.simcraft     
 
-#wowhead=14636542 name=Shaman_T9_57_14_00_258     	save=Shaman_T9_57_14_00_258.simcraft     totem_of_wrath=0
+wowhead=14636542 name=Shaman_T9_57_14_00_258     	save=Shaman_T9_57_14_00_258.simcraft
 
-#wowhead=14636542 name=Shaman_T9_57_14_00_258_ToW 	save=Shaman_T9_57_14_00_258_ToW.simcraft
+wowhead=14731192 name=Shaman_T9_57_14_00_258_ToW 	save=Shaman_T9_57_14_00_258_ToW.simcraft
 
 #save_profiles=1
 
