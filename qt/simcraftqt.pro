@@ -56,4 +56,4 @@ LIBS += \
   ../engine/sc_weapon.o \
   ../engine/sc_wowhead.o \
   ../engine/sc_xml.o
-
+win32 { LIBS += -lwsock32 }

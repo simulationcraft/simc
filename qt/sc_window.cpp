@@ -57,7 +57,7 @@ void SimcraftWindow::updateSimProgress()
 {
   if( sim )
   {
-    simProgress = (int) 100 * sim->progress();
+    simProgress = (int) ( 100.0 * sim->progress() );
   }
   else
   {
