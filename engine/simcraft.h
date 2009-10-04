@@ -1786,6 +1786,7 @@ struct target_t
     debuff_t* blood_frenzy;
     debuff_t* casting;
     debuff_t* crypt_fever;
+    debuff_t* blood_plague;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* faerie_fire;
