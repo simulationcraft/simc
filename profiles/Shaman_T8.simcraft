@@ -12,6 +12,6 @@ Shaman_T8_57_14_00_ToW.simcraft
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=13000114 name=Shaman_T8_16_55_00     save=Shaman_T8_16_55_00.simcraft     
-#wowhead=13000116 name=Shaman_T8_57_14_00     save=Shaman_T8_57_14_00.simcraft     totem_of_wrath=0
-#wowhead=13000116 name=Shaman_T8_57_14_00_ToW save=Shaman_T8_57_14_00_ToW.simcraft
+#wowhead=13000116 name=Shaman_T8_57_14_00     save=Shaman_T8_57_14_00.simcraft     
+#wowhead=14730877 name=Shaman_T8_57_14_00_ToW save=Shaman_T8_57_14_00_ToW.simcraft
 #save_profiles=1
