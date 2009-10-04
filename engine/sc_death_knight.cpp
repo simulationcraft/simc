@@ -76,6 +76,7 @@ struct death_knight_t : public player_t
   gain_t* gains_butchery;
   gain_t* gains_power_refund;
   gain_t* gains_scent_of_blood;
+  gain_t* gains_glyph_icy_touch;
 
   // Procs
   proc_t* procs_abominations_might;
@@ -1022,6 +1023,8 @@ struct blood_plague_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
     p -> diseases++;
+    added_ticks = 0;
+    num_ticks = 5 + p -> talents.epidemic;
   }
 
   virtual void last_tick()
@@ -1344,6 +1347,8 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
     p -> diseases++;
+    added_ticks = 0;
+    num_ticks = 5 + p -> talents.epidemic;
   }
 
   virtual void last_tick()
@@ -1470,8 +1475,6 @@ struct horn_of_winter_t : public death_knight_spell_t
     };
     init_rank( ranks );
 
-    cost_frost = 1;
-
     base_execute_time = 0;
     direct_power_mod  = 0.1;
     cooldown          = 0.0;
@@ -1572,6 +1575,10 @@ struct icy_touch_t : public death_knight_spell_t
         p -> frost_fever = new frost_fever_t( p );
       }
       p -> frost_fever -> execute();
+      if ( p -> glyphs.icy_touch )
+      {
+        p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_glyph_icy_touch );
+      }
     }
   }
 };
@@ -1765,10 +1772,10 @@ struct scourge_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 79,  4, 357.188, 357.188, 0, -15 },
-      { 73,  3, 291.375, 291.375, 0, -15 },
-      { 67,  2, 186.75,  186.75,  0, -15 },
-      { 55,  1, 151.875, 151.875, 0, -15 },
+      { 79,  4, 317.5, 317.5, 0, -15 },
+      { 73,  3, 259, 259, 0, -15 },
+      { 67,  2, 166, 166,  0, -15 },
+      { 55,  1, 135, 135, 0, -15 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -1783,11 +1790,31 @@ struct scourge_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.45;
   }
 
+  void execute()
+  {
+    death_knight_attack_t::execute();
+    if ( result_is_hit() )
+    {
+      death_knight_t* p = player -> cast_death_knight();
+      if ( p -> glyphs.scourge_strike )
+      {
+        if ( p -> active_blood_plague && p -> active_blood_plague -> added_ticks < 3 )
+        {
+          p -> active_blood_plague -> extend_duration( 1 );
+        }
+        if ( p -> active_frost_fever && p -> active_frost_fever -> added_ticks < 3 )
+        {
+          p -> active_frost_fever -> extend_duration( 1 );
+        }
+      }
+    }
+  }
+
   void target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases * 0.11;
+    target_multiplier *= 1 + p -> diseases * 0.10;
     assert ( p -> diseases <= 2 );
   }
 };
@@ -1856,7 +1883,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "plague_strike"            ) return new plague_strike_t            ( this, options_str );
 //if ( name == "raise_ally"               ) return new raise_ally_t               ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
-//if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
+  if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
 //if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
 //if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
 //if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
@@ -2046,6 +2073,7 @@ void death_knight_t::init_gains()
   gains_butchery           = get_gain( "butchery" );
   gains_power_refund       = get_gain( "power_refund" );
   gains_scent_of_blood     = get_gain( "scent_of_blood" );
+  gains_glyph_icy_touch    = get_gain( "glyph_icy_touch" );
 }
 
 void death_knight_t::init_procs()
