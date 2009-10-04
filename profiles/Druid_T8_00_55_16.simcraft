@@ -1,13 +1,13 @@
-#!simcraft
+#!./simcraft 
 
 druid=Druid_T8_00_55_16
 origin=http://profiler.wowhead.com/?profile=13000407
 level=80
-race=night_elf
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202032322010053120030310511203503012
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202132322010053120030300511203503012
 glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
 actions=flask,type=endless_rage
-actions+=/food,type=blackened_dragonfin
+actions+=/food,type=hearty_rhino
 actions+=/cat_form
 actions+=/auto_attack
 actions+=/snapshot_stats
@@ -17,6 +17,7 @@ actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
 actions+=/berserk,tigers_fury=1
 actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/shred,extend_rip=1,rip<=4
 actions+=/rip,cp>=5,time_to_die>=10
 actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
 actions+=/rake
@@ -34,13 +35,13 @@ finger1=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20agi
 finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=34agi_4agi
 trinket1=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_20arpen,enchant=22agi
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20arpen_20arpen,enchant=22agi
 main_hand=dreambinder,stats=140ap_86haste_85arpen_112agi_105sta,gems=20agi_20agi,enchant=berserking,weapon=staff_2.40speed_244.6dps
 ranged=idol_of_the_ravenous_beast
 # Gear Summary
 # gear_strength=20
-# gear_agility=1435
-# gear_stamina=1044
+# gear_agility=1419
+# gear_stamina=1068
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=1987
@@ -51,6 +52,6 @@ ranged=idol_of_the_ravenous_beast
 # gear_haste_rating=160
 # gear_armor=3571
 # meta_gem=relentless_earthsiege
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
 # main_hand=dreambinder,weapon=staff_2.40speed_244.6dps,enchant=berserking
