@@ -4,7 +4,7 @@ druid=Druid_T9_00_55_16
 origin=http://profiler.wowhead.com/?profile=14717965
 level=80
 race=night_elf
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202032322010053120030310511203503012
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202132322010053120030300511203503012
 glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
 actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino

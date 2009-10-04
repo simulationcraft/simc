@@ -18,10 +18,10 @@ Druid_T9_00_55_16_M.simcraft
 
 #wowhead=14187598 name=Druid_T9_58_00_13_2T8_2T9 save=Druid_T9_58_00_13_2T8_2T9.simcraft   eclipse_cycle=lunar
 
-#wowhead=!14717965 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simcraft   mangle=0
+#wowhead=14717965 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simcraft
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
 
-#wowhead=14717965 name=Druid_T9_00_55_16_M   save=Druid_T9_00_55_16_M.simcraft
+#wowhead=14726081 name=Druid_T9_00_55_16_M   save=Druid_T9_00_55_16_M.simcraft
 #back=vereesas_dexterity,id=47545,gems=20arpen_8ap,enchant=22agi
 
 #save_profiles=1
