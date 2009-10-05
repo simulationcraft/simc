@@ -20,3 +20,6 @@ engine/*.o
 engine/*.a
 /build
 simcraft_history.dat
+results.html
+simcraft_log.txt
+simcraft_report.html
