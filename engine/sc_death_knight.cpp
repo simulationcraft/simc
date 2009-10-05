@@ -1413,6 +1413,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 5 + p -> talents.epidemic;
     base_attack_power_multiplier *= 0.055 * 1.15 * ( 1 + 0.04 * p -> talents.impurity );
+    base_multiplier  *= 1.0 + ( ( p -> sim -> P330 && p -> glyphs.icy_touch ) ? 0.2 : 0.0 );
     tick_power_mod    = 1;
 
     may_crit          = false;
@@ -1671,7 +1672,7 @@ struct icy_touch_t : public death_knight_spell_t
         p -> frost_fever = new frost_fever_t( p );
       }
       p -> frost_fever -> execute();
-      if ( p -> glyphs.icy_touch )
+      if ( ! p -> sim -> P330 && p -> glyphs.icy_touch )
       {
         p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_glyph_icy_touch );
       }
