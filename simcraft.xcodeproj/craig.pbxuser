@@ -137,15 +137,15 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276464719;
-			PBXWorkspaceStateSaveDate = 276464719;
+			PBXPerProjectTemplateStateSaveDate = 276469347;
+			PBXWorkspaceStateSaveDate = 276469347;
 		};
 		perUserProjectItems = {
 			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
 			44F6B21B107A867100763099 /* PBXTextBookmark */ = 44F6B21B107A867100763099 /* PBXTextBookmark */;
 			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
-			44F6B21D107A867100763099 /* PBXTextBookmark */ = 44F6B21D107A867100763099 /* PBXTextBookmark */;
-			44F6B236107A88A300763099 /* PBXTextBookmark */ = 44F6B236107A88A300763099 /* PBXTextBookmark */;
+			44F86C4F107A97A100F594DB /* PBXTextBookmark */ = 44F86C4F107A97A100F594DB /* PBXTextBookmark */;
+			44F86C50107A97A100F594DB /* PBXTextBookmark */ = 44F86C50107A97A100F594DB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
@@ -308,9 +308,9 @@
 	};
 	44E3D1CB10545A7500677DEB /* sc_main.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 234}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 221}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 465}";
+			sepNavVisRange = "{0, 463}";
 		};
 	};
 	44E3D1DB10545A7500677DEB /* sc_shaman.cpp */ = {
@@ -337,9 +337,9 @@
 	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 32201}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32214}}";
 			sepNavSelRange = "{77052, 0}";
-			sepNavVisRange = "{76760, 519}";
+			sepNavVisRange = "{76839, 440}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
@@ -369,25 +369,25 @@
 		vrLen = 489;
 		vrLoc = 0;
 	};
-	44F6B21D107A867100763099 /* PBXTextBookmark */ = {
+	44F86C4F107A97A100F594DB /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */;
 		name = "sc_main.cpp: 1";
 		rLen = 0;
 		rLoc = 0;
 		rType = 0;
-		vrLen = 465;
+		vrLen = 463;
 		vrLoc = 0;
 	};
-	44F6B236107A88A300763099 /* PBXTextBookmark */ = {
+	44F86C50107A97A100F594DB /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
-		fRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */;
-		name = "sc_main.cpp: 1";
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		name = "simcraft.h: 2200";
 		rLen = 0;
-		rLoc = 0;
+		rLoc = 77052;
 		rType = 0;
-		vrLen = 465;
-		vrLoc = 0;
+		vrLen = 440;
+		vrLoc = 76839;
 	};
 	8DD76F620486A84900D96B5E /* simcraft */ = {
 		activeExec = 0;
