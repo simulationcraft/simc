@@ -450,8 +450,21 @@ void SimcraftWindow::createLogTab()
 
 void SimcraftWindow::createResultsTab()
 {
+  QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
+
+  QFile file( "Legend.html" );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    s = file.readAll();
+    file.close();
+  }
+
+  QTextBrowser* legendBanner = new QTextBrowser();
+  legendBanner->setHtml( s );
+  legendBanner->moveCursor( QTextCursor::Start );
+
   resultsTab = new QTabWidget();
-  //resultsTab->setTabsClosable( true );
+  resultsTab->addTab( legendBanner, "Legend" );
   connect( resultsTab, SIGNAL(currentChanged(int)), this, SLOT(resultsTabChanged(int)) );
   mainTab->addTab( resultsTab, "Results" );
 }
@@ -820,7 +833,7 @@ void SimcraftWindow::saveLog()
 void SimcraftWindow::saveResults()
 {
   int index = resultsTab->currentIndex();
-  if( index < 0 ) return;
+  if( index <= 0 ) return;
 
   if( visibleWebView->url().toString() != "about:blank" ) return;
 
@@ -830,7 +843,7 @@ void SimcraftWindow::saveResults()
 
   if( file.open( QIODevice::WriteOnly ) )
   {
-    file.write( resultsHtml[ index ].toAscii() );
+    file.write( resultsHtml[ index-1 ].toAscii() );
     file.close();
   }
 
@@ -1055,7 +1068,7 @@ void SimcraftWindow::importTabChanged( int index )
 
 void SimcraftWindow::resultsTabChanged( int index )
 {
-  if( index < 0 )
+  if( index <= 0 )
   {
     cmdLine->setText( "" );
   }
