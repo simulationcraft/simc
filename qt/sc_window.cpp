@@ -151,6 +151,8 @@ SimcraftWindow::SimcraftWindow(QWidget *parent)
   createLogTab();
   createResultsTab();
   createCmdLine();
+  createToolTips();
+
   connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
   
   QVBoxLayout* vLayout = new QVBoxLayout();
@@ -448,6 +450,22 @@ void SimcraftWindow::createLogTab()
   mainTab->addTab( logText, "Log" );
 }
 
+void SimcraftWindow::createExamplesTab()
+{
+  QString s = "# If you are seeing this text, then Examples.simcraft was unable to load.";
+
+  QFile file( "Examples.simcraft" );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    s = file.readAll();
+    file.close();
+  }
+
+  QTextBrowser* examplesText = new QTextBrowser();
+  examplesText->document()->setPlainText( s );
+  mainTab->addTab( examplesText, "Examples" );
+}
+ 
 void SimcraftWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
@@ -469,22 +487,35 @@ void SimcraftWindow::createResultsTab()
   mainTab->addTab( resultsTab, "Results" );
 }
 
-void SimcraftWindow::createExamplesTab()
+void SimcraftWindow::createToolTips()
 {
-  QString s = "# If you are seeing this text, then Examples.simcraft was unable to load.";
+  patchChoice->setToolTip( "Live: 3.2.2\n"
+			   "PTR: 3.3.0" );
 
-  QFile file( "Examples.simcraft" );
-  if( file.open( QIODevice::ReadOnly ) )
-  {
-    s = file.readAll();
-    file.close();
-  }
+  latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
+			     "High: queue=0.150  gcd=0.300  channel=0.500" );
 
-  QTextBrowser* examplesText = new QTextBrowser();
-  examplesText->document()->setPlainText( s );
-  mainTab->addTab( examplesText, "Examples" );
+  iterationsChoice->setToolTip( "100:   Fast and Rough\n"
+				"1000:  Sufficient for DPS Analysis\n"
+				"10000: Recommended for Scale Factor Generation" );
+
+  fightLengthChoice->setToolTip( "For custom fight lengths use max_time=seconds." );
+
+  fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
+				"Helter Skelter: Movement, Stuns, Interrupts" );
+
+  scaleFactorsChoice->setToolTip( "Scale factors are necessary for gear ranking.\n"
+				  "They require an additional simulation for every relevant stat." );
+
+  threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
+			     "Most modern desktops have two at least two CPU cores." );
+
+  armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
+
+  backButton->setToolTip( "Backwards" );
+  forwardButton->setToolTip( "Forwards" );
 }
- 
+
 // ==========================================================================
 // Sim Initialization
 // ==========================================================================

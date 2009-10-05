@@ -158,6 +158,7 @@ public:
     void createExamplesTab();
     void createLogTab();
     void createResultsTab();
+    void createToolTips();
 
 protected:
     virtual void closeEvent( QCloseEvent* e );
