@@ -19,3 +19,4 @@ engine/*.o
 *.a
 engine/*.a
 /build
+simcraft_history.dat
