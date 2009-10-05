@@ -2,14 +2,15 @@
 {
 	08FB7793FE84155DC02AAC07 /* Project object */ = {
 		activeBuildConfigurationName = Release;
-		activeExecutable = 44E3D112105459F100677DEB /* simcraft */;
-		activeTarget = 44C7A517106D4B7600A2271C /* libsimcraft */;
+		activeExecutable = 442BD364107A7D0000AFCDF4 /* simcraftqt */;
+		activeTarget = 442BD353107A7C4100AFCDF4 /* Build Qt Project */;
 		addToTargets = (
-			8DD76F620486A84900D96B5E /* simcraft */,
+			442BD327107A79ED00AFCDF4 /* Generate Qt Project */,
 		);
 		codeSenseManager = 44E3D117105459FA00677DEB /* Code sense */;
 		executables = (
 			44E3D112105459F100677DEB /* simcraft */,
+			442BD364107A7D0000AFCDF4 /* simcraftqt */,
 		);
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXBookmarksDataSource = {
@@ -24,6 +25,20 @@
 					PBXBookmarksDataSource_LocationID,
 					PBXBookmarksDataSource_NameID,
 					PBXBookmarksDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					525,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
 				);
 			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -126,68 +141,103 @@
 			PBXWorkspaceStateSaveDate = 276460444;
 		};
 		perUserProjectItems = {
-			442BD317107A73C200AFCDF4 /* PBXTextBookmark */ = 442BD317107A73C200AFCDF4 /* PBXTextBookmark */;
-			442BD324107A758E00AFCDF4 /* PBXTextBookmark */ = 442BD324107A758E00AFCDF4 /* PBXTextBookmark */;
-			446D7A17107A735A008635C8 = 446D7A17107A735A008635C8 /* PBXTextBookmark */;
-			44C7A551106D4BBE00A2271C = 44C7A551106D4BBE00A2271C /* PBXTextBookmark */;
-			44C7A57E106D523200A2271C = 44C7A57E106D523200A2271C /* PBXTextBookmark */;
+			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
+			442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */ = 442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
 		};
 	};
-	442BD317107A73C200AFCDF4 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
-		name = "sc_armory.cpp: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 342;
-		vrLoc = 0;
+	442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
+		activeExec = 0;
 	};
-	442BD324107A758E00AFCDF4 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
-		name = "sc_armory.cpp: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 342;
-		vrLoc = 0;
+	442BD353107A7C4100AFCDF4 /* Build Qt Project */ = {
+		activeExec = 0;
 	};
-	446D7A17107A735A008635C8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
-		name = "sc_armory.cpp: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 345;
-		vrLoc = 0;
+	442BD364107A7D0000AFCDF4 /* simcraftqt */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 442BD365107A7D0000AFCDF4 /* simcraftqt.app */;
+		libgmallocEnabled = 0;
+		name = simcraftqt;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		startupPath = "<<ProjectDirectory>>";
+	};
+	442BD365107A7D0000AFCDF4 /* simcraftqt.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = simcraftqt.app;
+		path = qt/simcraftqt.app;
+		sourceTree = "<group>";
+	};
+	442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = {
+		isa = PBXTargetBookmark;
+		trg = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {597, 231}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {238, 481}}";
+			TOCViewSelectedItems = (
+				PBXBuildSettingsLegacyModule,
+			);
+		};
+	};
+	442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */ = {
+		isa = PBXTargetBookmark;
+		trg = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {0, 0}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {0, 0}}";
+			TOCViewSelectedItems = (
+				PBXBuildSettingsLegacyModule,
+			);
+		};
 	};
 	44C7A517106D4B7600A2271C /* libsimcraft */ = {
 		activeExec = 0;
-	};
-	44C7A551106D4BBE00A2271C /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
-		name = "simcraft.h: 2186";
-		rLen = 0;
-		rLoc = 77052;
-		rType = 0;
-		vrLen = 398;
-		vrLoc = 76780;
-	};
-	44C7A57E106D523200A2271C /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
-		name = "sc_armory.cpp: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 423;
-		vrLoc = 0;
 	};
 	44E3D112105459F100677DEB /* simcraft */ = {
 		isa = PBXExecutable;

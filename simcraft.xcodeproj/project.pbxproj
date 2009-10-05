@@ -106,6 +106,23 @@
 		44E3D21610545A7500677DEB /* sc_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E710545A7500677DEB /* sc_xml.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		442BD32B107A79F800AFCDF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44C7A517106D4B7600A2271C /* libsimcraft */;
+			remoteInfo = libsimcraft;
+		};
+		442BD356107A7C5400AFCDF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
+			remoteInfo = "Generate Qt Project";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		44C7A562106D4C3C00A2271C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -295,6 +312,39 @@
 		};
 /* End PBXHeadersBuildPhase section */
 
+/* Begin PBXLegacyTarget section */
+		442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "";
+			buildConfigurationList = 442BD32D107A7A1700AFCDF4 /* Build configuration list for PBXLegacyTarget "Generate Qt Project" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/qmake;
+			buildWorkingDirectory = "$(PROJECT_DIR)/qt";
+			dependencies = (
+				442BD32C107A79F800AFCDF4 /* PBXTargetDependency */,
+			);
+			name = "Generate Qt Project";
+			passBuildSettingsInEnvironment = 0;
+			productName = "Generate Qt Project";
+		};
+		442BD353107A7C4100AFCDF4 /* Build Qt Project */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "";
+			buildConfigurationList = 442BD361107A7C6500AFCDF4 /* Build configuration list for PBXLegacyTarget "Build Qt Project" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/xcodebuild;
+			buildWorkingDirectory = "$(PROJECT_DIR)/qt";
+			dependencies = (
+				442BD357107A7C5400AFCDF4 /* PBXTargetDependency */,
+			);
+			name = "Build Qt Project";
+			passBuildSettingsInEnvironment = 1;
+			productName = "Build Qt Project";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		44C7A517106D4B7600A2271C /* libsimcraft */ = {
 			isa = PBXNativeTarget;
@@ -350,6 +400,8 @@
 			targets = (
 				8DD76F620486A84900D96B5E /* simcraft */,
 				44C7A517106D4B7600A2271C /* libsimcraft */,
+				442BD327107A79ED00AFCDF4 /* Generate Qt Project */,
+				442BD353107A7C4100AFCDF4 /* Build Qt Project */,
 			);
 		};
 /* End PBXProject section */
@@ -466,6 +518,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		442BD32C107A79F800AFCDF4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44C7A517106D4B7600A2271C /* libsimcraft */;
+			targetProxy = 442BD32B107A79F800AFCDF4 /* PBXContainerItemProxy */;
+		};
+		442BD357107A7C5400AFCDF4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
+			targetProxy = 442BD356107A7C5400AFCDF4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1DEB923208733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -577,6 +642,38 @@
 			};
 			name = Release;
 		};
+		442BD328107A79ED00AFCDF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Generate Qt Project";
+			};
+			name = Debug;
+		};
+		442BD329107A79ED00AFCDF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		442BD354107A7C4100AFCDF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build Qt Project";
+			};
+			name = Debug;
+		};
+		442BD355107A7C4100AFCDF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
 		44C7A519106D4B7700A2271C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -637,6 +734,24 @@
 			buildConfigurations = (
 				1DEB923608733DC60010E9CD /* Debug */,
 				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		442BD32D107A7A1700AFCDF4 /* Build configuration list for PBXLegacyTarget "Generate Qt Project" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				442BD328107A79ED00AFCDF4 /* Debug */,
+				442BD329107A79ED00AFCDF4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		442BD361107A7C6500AFCDF4 /* Build configuration list for PBXLegacyTarget "Build Qt Project" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				442BD354107A7C4100AFCDF4 /* Debug */,
+				442BD355107A7C4100AFCDF4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
