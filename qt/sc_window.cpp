@@ -199,7 +199,8 @@ void SimcraftWindow::createWelcomeTab()
   }
 
   QTextBrowser* welcomeBanner = new QTextBrowser();
-  welcomeBanner->document()->setHtml( s );
+  welcomeBanner->setHtml( s );
+  welcomeBanner->moveCursor( QTextCursor::Start );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
@@ -254,11 +255,12 @@ void SimcraftWindow::createImportTab()
 				  " formulation vs simulation.  There are strengths and weaknesses to each"
 				  " approach.  Since they come from different directions, one can be confident"
 				  " in the result when they arrive at the same destination.\n\n"
-				  " SimulationCraft can import the character xml file written by Rawr:" );
+				  " To aid comparison, SimulationCraft can import the character xml file written by Rawr." );
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
-  rawrLayout->addWidget( rawrFile = new QLineEdit() );
-  rawrLayout->addWidget( new QLabel( "" ), 1 );
+  rawrLayout->addWidget( rawrButton = new QPushButton( "Change Directory" ) );
+  rawrLayout->addWidget( rawrDir = new QLabel( "" ) );
+  rawrLayout->addWidget( rawrList = new QListWidget(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
@@ -269,8 +271,10 @@ void SimcraftWindow::createImportTab()
   historyList->setSortingEnabled( true );
   importTab->addTab( historyList, "History" );
 
+  connect( rawrButton,  SIGNAL(clicked(bool)),                       this, SLOT(rawrButtonClicked()) );
+  connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
-  connect( importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)) );
+  connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
 }
 
 void SimcraftWindow::createBestInSlotTab()
@@ -602,12 +606,16 @@ void ImportThread::importRawr()
 
 void ImportThread::run()
 {
-  if     ( url.count( "us.wowarmory" ) ) importArmoryUs();
-  else if( url.count( "eu.wowarmory" ) ) importArmoryEu();
-  else if( url.count( "wowhead"      ) ) importWowhead();
-  else if( url.count( "chardev"      ) ) importChardev();
-  else if( url.count( "warcrafter"   ) ) importWarcrafter();
-  else importRawr();
+  switch( tab )
+  {
+  case TAB_ARMORY_US:  importArmoryUs();   break;
+  case TAB_ARMORY_EU:  importArmoryEu();   break;
+  case TAB_WOWHEAD:    importWowhead();    break;
+  case TAB_CHARDEV:    importChardev();    break;
+  case TAB_WARCRAFTER: importWarcrafter(); break;
+  case TAB_RAWR:       importRawr();       break;
+  default: assert(0);
+  }
 
   if( player )
   {
@@ -618,16 +626,22 @@ void ImportThread::run()
   }
 }
 
-void SimcraftWindow::startImport( const QString& url )
+void SimcraftWindow::startImport( int tab, const QString& url )
 {
   if( sim )
   {
     sim -> cancel();
     return;
   }
+  if( tab == TAB_RAWR ) 
+  {
+    rawrCmdLineHistory.add( url );
+    rawrFileText = "";
+    cmdLine->setText( rawrFileText );
+  }
   simProgress = 0;
   mainButton->setText( "Cancel!" );
-  importThread->start( initSim(), url );
+  importThread->start( initSim(), tab, url );
   simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
   mainTab->setCurrentIndex( TAB_SIMULATE );
   timer->start( 500 );
@@ -825,6 +839,7 @@ void SimcraftWindow::closeEvent( QCloseEvent* e )
   chardevView->stop();
   warcrafterView->stop();
   QCoreApplication::quit();
+  e->accept();
 }
 
 void SimcraftWindow::cmdLineTextEdited( const QString& s )
@@ -838,20 +853,14 @@ void SimcraftWindow::cmdLineTextEdited( const QString& s )
   case TAB_EXAMPLES:  cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
-  case TAB_IMPORT:    break;
+  case TAB_IMPORT:    if( importTab->currentIndex() == TAB_RAWR ) rawrFileText = s; break;
   }
 }
 
 void SimcraftWindow::cmdLineReturnPressed()
 {
-  switch( mainTab->currentIndex() )
+  if( mainTab->currentIndex() == TAB_IMPORT )
   {
-  case TAB_WELCOME:   startSim(); break;
-  case TAB_GLOBALS:   startSim(); break;
-  case TAB_SIMULATE:  startSim(); break;
-  case TAB_OVERRIDES: startSim(); break;
-  case TAB_EXAMPLES:  startSim(); break;
-  case TAB_IMPORT:
     if( cmdLine->text().count( "us.wowarmory" ) )
     {
       armoryUsView->setUrl( QUrl( cmdLine->text() ) ); 
@@ -877,9 +886,14 @@ void SimcraftWindow::cmdLineReturnPressed()
       warcrafterView->setUrl( QUrl( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_WARCRAFTER );
     }
-    break;
-  case TAB_LOG:     saveLog();      break;
-  case TAB_RESULTS: saveResults();  break;
+    else
+    {
+      if( ! sim ) mainButtonClicked( true );
+    }
+  }
+  else
+  {
+    if( ! sim ) mainButtonClicked( true );
   }
 }
 
@@ -895,12 +909,12 @@ void SimcraftWindow::mainButtonClicked( bool checked )
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
     {
-    case TAB_ARMORY_US:  startImport(   armoryUsView->url().toString() ); break;
-    case TAB_ARMORY_EU:  startImport(   armoryEuView->url().toString() ); break;
-    case TAB_WOWHEAD:    startImport(    wowheadView->url().toString() ); break;
-    case TAB_CHARDEV:    startImport(    chardevView->url().toString() ); break;
-    case TAB_WARCRAFTER: startImport( warcrafterView->url().toString() ); break;
-    case TAB_RAWR:       startImport( rawrFile->text() ); break;
+    case TAB_ARMORY_US:  startImport( TAB_ARMORY_US,  cmdLine->text() ); break;
+    case TAB_ARMORY_EU:  startImport( TAB_ARMORY_EU,  cmdLine->text() ); break;
+    case TAB_WOWHEAD:    startImport( TAB_WOWHEAD,    cmdLine->text() ); break;
+    case TAB_CHARDEV:    startImport( TAB_CHARDEV,    cmdLine->text() ); break;
+    case TAB_WARCRAFTER: startImport( TAB_WARCRAFTER, cmdLine->text() ); break;
+    case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
   case TAB_LOG: saveLog(); break;
@@ -960,6 +974,25 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
   }
 }
 
+void SimcraftWindow::rawrButtonClicked( bool checked )
+{
+  QFileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::Directory );
+  dialog.setNameFilter( "Rawr Profiles (*.xml)" );
+  dialog.restoreState( rawrDialogState );
+  if( dialog.exec() )
+  {
+    rawrDialogState = dialog.saveState();
+    QDir dir = dialog.directory();
+    dir.setSorting( QDir::Name );
+    dir.setFilter( QDir::Files );
+    dir.setNameFilters( QStringList( "*.xml" ) );
+    rawrDir->setText( dir.absolutePath() + DIRECTORY_DELIMITER );
+    rawrList->clear();
+    rawrList->addItems( dir.entryList() );
+  }
+}
+
 void SimcraftWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
@@ -992,7 +1025,14 @@ void SimcraftWindow::importTabChanged( int index )
   {
     visibleWebView = 0;
     progressBar->setValue( simProgress );
-    cmdLine->setText( "" );
+    if( index == TAB_RAWR )
+    {
+      cmdLine->setText( rawrFileText );
+    }
+    else
+    {
+      cmdLine->setText( "" );
+    }
   }
   else
   {
@@ -1016,6 +1056,13 @@ void SimcraftWindow::resultsTabChanged( int index )
     if( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
   }
+}
+
+void SimcraftWindow::rawrDoubleClicked( QListWidgetItem* item )
+{
+  rawrFileText = rawrDir->text();
+  rawrFileText += item->text();
+  cmdLine->setText( rawrFileText );
 }
 
 void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
@@ -1050,7 +1097,6 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
   else
   {
-    rawrFile->setText( url );
     importTab->setCurrentIndex( TAB_RAWR );
   }
 }

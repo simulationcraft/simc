@@ -92,7 +92,10 @@ public:
     SimcraftWebView* chardevView;
     SimcraftWebView* warcrafterView;
     SimcraftWebView* visibleWebView;
-    QLineEdit* rawrFile;
+    QPushButton* rawrButton;
+    QLabel* rawrDir;
+    QByteArray rawrDialogState;
+    QListWidget* rawrList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
     QPlainTextEdit* simulateText;
@@ -102,9 +105,6 @@ public:
     QPushButton* backButton;
     QPushButton* forwardButton;
     SimcraftCommandLine* cmdLine;
-    QString cmdLineText;
-    QString logFileText;
-    QString resultsFileText;
     QProgressBar* progressBar;
     QPushButton* mainButton;
     QGroupBox* cmdLineGroupBox;
@@ -118,14 +118,20 @@ public:
     int simResults;
     QStringList resultsHtml;
 
+    QString cmdLineText;
+    QString rawrFileText;
+    QString logFileText;
+    QString resultsFileText;
+
     StringHistory simulateCmdLineHistory;
     StringHistory logCmdLineHistory;
     StringHistory resultsCmdLineHistory;
+    StringHistory rawrCmdLineHistory;
     StringHistory globalsHistory;
     StringHistory simulateTextHistory;
     StringHistory overridesTextHistory;
 
-    void    startImport( const QString& url );
+    void    startImport( int tab, const QString& url );
     void    startSim();
     sim_t*  initSim();
     void    deleteSim();
@@ -166,6 +172,8 @@ private slots:
     void mainTabChanged( int index );
     void importTabChanged( int index );
     void resultsTabChanged( int index );
+    void rawrButtonClicked( bool checked=false );
+    void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
     void bisDoubleClicked( QTreeWidgetItem* item, int col );
 
@@ -194,6 +202,13 @@ protected:
     case TAB_OVERRIDES: 
       mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k ); 
       setText( mainWindow->cmdLineText ); 
+      break;
+    case TAB_IMPORT:
+      if( mainWindow->importTab->currentIndex() == TAB_RAWR )
+      {
+	mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
+	setText( mainWindow->rawrFileText ); 
+      }
       break;
     case TAB_LOG:
       mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
@@ -276,6 +291,7 @@ class ImportThread : public QThread
     sim_t* sim;
 
 public:
+    int tab;
     QString url;
     QString profile;
     player_t* player;
@@ -287,7 +303,7 @@ public:
     void importWarcrafter();
     void importRawr();
 
-    void start( sim_t* s, const QString& u ) { sim=s; url=u; profile=""; player=0; QThread::start(); }
+    void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }
     virtual void run();
     ImportThread( SimcraftWindow* mw ) : mainWindow(mw), sim(0), player(0) {}
 };
