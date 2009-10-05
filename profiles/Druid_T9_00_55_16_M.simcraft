@@ -24,7 +24,7 @@ actions+=/mangle_cat,mangle<=2
 actions+=/rake
 actions+=/shred
 head=malfurions_headguard_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10haste_10agi_8agi,enchant=50ap_20crit
-neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen_4agi
+neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi_4agi
 shoulders=malfurions_shoulderpads_of_triumph,stats=489armor_151ap_76haste_68arpen_106agi_114sta,gems=10haste_10agi_4agi,enchant=40ap_15crit
 chest=malfurions_raiments_of_triumph,stats=652armor_204ap_96crit_92haste_137agi_153sta,gems=20arpen_10haste_10agi_20arpen_6agi,enchant=10str_10agi_10sta_10int_10spi
 waist=belt_of_the_merciless_killer,stats=114sta_98agi_68hit_135ap_76haste_367armor,gems=10haste_10agi_20arpen_34arpen_6agi
@@ -36,18 +36,18 @@ finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20
 finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=20arpen
 trinket1=deaths_verdict,stats=288ap
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
-back=vereesas_dexterity,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20arpen_8ap,enchant=22agi
+back=vereesas_dexterity,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20agi_8ap,enchant=22agi
 main_hand=lupine_longstaff,stats=204ap_102haste_94arpen_137agi_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_281.5dps
 ranged=idol_of_mutilation
 # Gear Summary
 # gear_strength=20
-# gear_agility=1538
+# gear_agility=1578
 # gear_stamina=1447
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=2338
 # gear_expertise_rating=126
-# gear_armor_penetration_rating=780
+# gear_armor_penetration_rating=740
 # gear_hit_rating=279
 # gear_crit_rating=764
 # gear_haste_rating=546
