@@ -101,8 +101,8 @@
 				);
 			};
 			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
-				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
-				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnSortingDirectionKey = 1;
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_ObjectSize_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					597,
@@ -122,17 +122,49 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 275598175;
-			PBXWorkspaceStateSaveDate = 275598175;
+			PBXPerProjectTemplateStateSaveDate = 276460444;
+			PBXWorkspaceStateSaveDate = 276460444;
 		};
 		perUserProjectItems = {
-			44C7A551106D4BBE00A2271C /* PBXTextBookmark */ = 44C7A551106D4BBE00A2271C /* PBXTextBookmark */;
-			44C7A552106D4BBE00A2271C /* PBXTextBookmark */ = 44C7A552106D4BBE00A2271C /* PBXTextBookmark */;
-			44C7A57E106D523200A2271C /* PBXTextBookmark */ = 44C7A57E106D523200A2271C /* PBXTextBookmark */;
+			442BD317107A73C200AFCDF4 /* PBXTextBookmark */ = 442BD317107A73C200AFCDF4 /* PBXTextBookmark */;
+			442BD324107A758E00AFCDF4 /* PBXTextBookmark */ = 442BD324107A758E00AFCDF4 /* PBXTextBookmark */;
+			446D7A17107A735A008635C8 = 446D7A17107A735A008635C8 /* PBXTextBookmark */;
+			44C7A551106D4BBE00A2271C = 44C7A551106D4BBE00A2271C /* PBXTextBookmark */;
+			44C7A57E106D523200A2271C = 44C7A57E106D523200A2271C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	442BD317107A73C200AFCDF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
+		name = "sc_armory.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 342;
+		vrLoc = 0;
+	};
+	442BD324107A758E00AFCDF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
+		name = "sc_armory.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 342;
+		vrLoc = 0;
+	};
+	446D7A17107A735A008635C8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
+		name = "sc_armory.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 345;
+		vrLoc = 0;
 	};
 	44C7A517106D4B7600A2271C /* libsimcraft */ = {
 		activeExec = 0;
@@ -146,16 +178,6 @@
 		rType = 0;
 		vrLen = 398;
 		vrLoc = 76780;
-	};
-	44C7A552106D4BBE00A2271C /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */;
-		name = "sc_armory.cpp: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 423;
-		vrLoc = 0;
 	};
 	44C7A57E106D523200A2271C /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -233,13 +255,6 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	44E3D12510545A4F00677DEB /* Death_Knight_T8_51_00_20.simcraft */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 793}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 0}";
-		};
-	};
 	44E3D1B910545A7500677DEB /* sc_action.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1139, 15236}}";
@@ -250,9 +265,9 @@
 	};
 	44E3D1BA10545A7500677DEB /* sc_armory.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 13273}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 13078}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 423}";
+			sepNavVisRange = "{0, 342}";
 		};
 	};
 	44E3D1C310545A7500677DEB /* sc_expressions.cpp */ = {
@@ -284,7 +299,7 @@
 			sepNavVisRange = "{76780, 398}";
 		};
 	};
-	44E3D21C10545AD700677DEB /* README.txt */ = {
+	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {815, 533}}";
 			sepNavSelRange = "{0, 0}";
