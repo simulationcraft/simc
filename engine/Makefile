@@ -12,7 +12,6 @@
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
 MODULE     = simcraft
-MYLIB      = libsimcraft.a
 OS         = UNIX
 
 # Any UNIX platform
@@ -45,7 +44,6 @@ endif
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 MODULE     = simcraft.exe
-MYLIB      = simcraft.lib
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -malign-double
 LINK_FLAGS = 
@@ -113,19 +111,14 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)/%.$(OBJ_EXT))
 
 .PHONY:	all mostlyclean clean
 
-all: $(MODULE) $(MYLIB)
+all: $(MODULE)
 
 install: all
 	$(COPY) $(MODULE) ..
-	$(COPY) $(MYLIB) ..
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-
-$(MYLIB): $(SRC_OBJ)
-	-@echo [$(MYLIB)] Creating library archive $@
-	libtool -static -o $(MYLIB) $^
 
 $(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H) Makefile
 	-@echo [$(MODULE)] Compiling $(notdir $<)
