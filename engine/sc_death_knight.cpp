@@ -2031,14 +2031,14 @@ void death_knight_t::init_race()
 
 void death_knight_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_HEALTH );
-  base_attack_crit                 = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_HEALTH );
+  base_attack_crit                 = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + ( talents.veteran_of_the_third_war * 0.02 +
       talents.abominations_might * 0.01 +

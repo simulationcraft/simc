@@ -1131,7 +1131,7 @@ struct rating_t
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
   void init( sim_t*, int level );
   static double interpolate( int level, double val_60, double val_70, double val_80 );
-  static double get_attribute_base( int level, int class_type, int race, int stat_type );
+  static double get_attribute_base( sim_t*, int level, int class_type, int race, int stat_type );
 };
 
 // Weapon ====================================================================
