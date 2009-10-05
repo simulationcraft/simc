@@ -1002,7 +1002,8 @@ struct hunter_pet_attack_t : public attack_t
 
       if ( result == RESULT_CRIT )
       {
-        p -> sim -> auras.ferocious_inspiration -> trigger();
+        hunter_t* o = p -> owner -> cast_hunter();
+        p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
       }
@@ -3715,7 +3716,7 @@ void player_t::hunter_init( sim_t* sim )
 void player_t::hunter_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
-  if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
+  if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override( 1, 3 );
 
   target_t* t = sim -> target;
   if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, 500 * 1.5 );

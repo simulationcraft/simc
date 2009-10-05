@@ -1078,8 +1078,16 @@ struct arcane_barrage_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if ( result_is_hit() )     
+    if ( result_is_hit() )
+    {
       p -> buffs_missile_barrage -> trigger();
+
+      if ( result == RESULT_CRIT )
+      {
+        if ( p -> sim -> P330 )
+          p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
+      }
+    }
     p -> buffs_arcane_blast -> expire();
   }
 };
@@ -1157,6 +1165,11 @@ struct arcane_blast_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * 0.08 );
       p -> buffs_tier8_2pc -> trigger();
+      if ( result == RESULT_CRIT )
+      {
+        if ( p -> sim -> P330 )
+          p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
+      }
     }
     p -> buffs_arcane_blast -> trigger();
   }
@@ -1234,11 +1247,16 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
+
     mage_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
+      if ( p -> sim -> P330 )
+        p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
+
       trigger_master_of_elements( this, 0.20 );
     }
   }
@@ -3463,6 +3481,8 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, int race_t
 
 void player_t::mage_init( sim_t* sim )
 {
+  sim -> auras.arcane_empowerment = new aura_t( sim, "arcane_empowerment", 1, 10.0 );
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_INTELLECT, 60.0, 1 );
@@ -3493,5 +3513,7 @@ void player_t::mage_combat_begin( sim_t* sim )
   target_t* t = sim -> target;
   if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> override( 5 );
   if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> override( 5 );
+
+  if ( sim -> overrides.arcane_empowerment ) sim -> auras.arcane_empowerment -> override( 1, 3 );
 }
 

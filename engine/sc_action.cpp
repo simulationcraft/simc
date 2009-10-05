@@ -274,11 +274,34 @@ void action_t::player_buff()
     {
       player_multiplier *= 1.15;
     }
-    if ( sim -> auras.ferocious_inspiration -> up() || 
-         sim -> auras.sanctified_retribution -> check() )
+
+    double ferocious_inspiration_value = 0.0;
+    double sanctified_retribution_value = 0.0;
+    double arcane_empowerment_value = 0.0;
+    double max_value = 0.0;
+
+    if ( sim -> auras.ferocious_inspiration -> up() )
     {
-      player_multiplier *= 1.03;
+      ferocious_inspiration_value = sim -> auras.ferocious_inspiration -> value();
     }
+
+    if ( sim -> auras.sanctified_retribution -> up() )
+    {
+      sanctified_retribution_value = 3;
+    }
+
+    if ( sim -> P330 && sim -> auras.arcane_empowerment -> up() )
+    {
+      arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
+    }
+
+    max_value = sanctified_retribution_value;
+    if ( ferocious_inspiration_value > max_value )
+      max_value = ferocious_inspiration_value;
+    if ( arcane_empowerment_value > max_value )
+      max_value = arcane_empowerment_value;
+
+    player_multiplier *= 1.00 + 0.01 * max_value;
   }
 
   if ( base_attack_power_multiplier > 0 )
