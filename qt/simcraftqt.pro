@@ -12,3 +12,4 @@ ENGINEPATH = ../libsimcraft.a
 INCLUDEPATH += ../engine
 LIBS += $$ENGINEPATH
 win32 { LIBS += -lwsock32 }
+CONFIG += x86_64

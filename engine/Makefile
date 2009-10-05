@@ -125,7 +125,7 @@ $(MODULE): $(SRC_OBJ)
 
 $(MYLIB): $(SRC_OBJ)
 	-@echo [$(MYLIB)] Creating library archive $@
-	ar -r $(MYLIB) $^
+	libtool -static -o $(MYLIB) $^
 
 $(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H) Makefile
 	-@echo [$(MODULE)] Compiling $(notdir $<)
