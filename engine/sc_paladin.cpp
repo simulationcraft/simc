@@ -2068,7 +2068,7 @@ void paladin_t::init_glyphs()
     else if ( n == "seal_of_wisdom"          ) ;
     else if ( n == "spiritual_attunement"    ) ;
     else if ( n == "turn_evil"               ) ;
-    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

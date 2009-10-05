@@ -543,7 +543,7 @@ bool armory_t::download_guild( sim_t* sim,
 
   if ( player_filter == DEATH_KNIGHT )
   {
-    util_t::printf( "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
+    util_t::fprintf( sim -> output_file, "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
     return false;
   }
 
@@ -554,7 +554,7 @@ bool armory_t::download_guild( sim_t* sim,
   {
     sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
 
-    util_t::printf( "\nsimcraft: Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
     return false;
   }
   sim -> current_throttle = sim -> armory_throttle;
@@ -564,7 +564,7 @@ bool armory_t::download_guild( sim_t* sim,
   xml_node_t* members = xml_t::get_node( guild_info, "members" );
   if ( ! members )
   {
-    util_t::printf( "\nsimcraft: Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
     return false;
   }
 
@@ -618,7 +618,7 @@ bool armory_t::download_guild( sim_t* sim,
 
       if ( ! p )
       {
-        util_t::printf( "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
+        util_t::fprintf( sim -> output_file, "simcraft: Armory failed...  Attempting to download character from wowhead.\n" );
         p = wowhead_t::download_player( sim, region, server, character_name, 1 );
       }
       if ( ! p ) return false;
@@ -657,7 +657,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if ( ! sheet_xml || ! talents_xml )
   {
-    util_t::printf( "\nsimcraft: Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -671,7 +671,7 @@ player_t* armory_t::download_player( sim_t* sim,
        ! xml_t::get_value( race_str, sheet_xml, "character/race"    )
        )
   {
-    util_t::printf( "\nsimcraft: Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
                     region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
@@ -682,7 +682,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if ( type_str == "death_knight" )
   {
-    util_t::printf( "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
+    util_t::fprintf( sim -> output_file, "simcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
     return 0;
   }
 
@@ -691,7 +691,7 @@ player_t* armory_t::download_player( sim_t* sim,
   player_t* p = player_t::create( sim, type_str, name_str, race_type );
   if ( ! p )
   {
-    util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
                     type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
@@ -765,7 +765,7 @@ player_t* armory_t::download_player( sim_t* sim,
           int primary_tree = util_t::parse_talent_tree( talents_description );
           if ( primary_tree == TREE_NONE )
           {
-            util_t::printf( "\nsimcraft: Valid values for 'talents' are 'active', 'inactive', or the name of a tree such as 'fury' or 'shadow'.\n" );
+            util_t::fprintf( sim -> output_file, "\nsimcraft: Valid values for 'talents' are 'active', 'inactive', or the name of a tree such as 'fury' or 'shadow'.\n" );
             return 0;
           }
 
@@ -784,12 +784,12 @@ player_t* armory_t::download_player( sim_t* sim,
       std::string talents_encoding;
       if ( ! xml_t::get_value( talents_encoding, active_talents, "talentSpec/value" ) )
       {
-        util_t::printf( "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
+        util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to determine talents from armory xml.\n", p -> name() );
         return 0;
       }
       if ( ! p -> parse_talents_armory( talents_encoding ) )
       {
-        util_t::printf( "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
+        util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
         return 0;
       }
       p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
@@ -802,7 +802,7 @@ player_t* armory_t::download_player( sim_t* sim,
         std::string glyph_name;
         if ( ! xml_t::get_value( glyph_name, glyph_nodes[ i ], "name" ) )
         {
-          util_t::printf( "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
+          util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to determine glyph name from armory xml.\n", p -> name() );
           return 0;
         }
         if ( !glyph_name.compare( 0, 9, "Glyph of " ) )
@@ -871,37 +871,37 @@ bool armory_t::download_slot( item_t& item,
   if ( ! slot_xml )
   {
     if ( ! cache_only )
-      util_t::printf( "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
+      util_t::fprintf( item.sim -> output_file, "\nsimcraft: Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
     return false;
   }
 
   if ( ! parse_item_name( item, slot_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_stats( item, slot_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_gems( item, slot_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse gems for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse gems for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_enchant( item, slot_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse enchant for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse enchant for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_weapon( item, slot_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -920,25 +920,25 @@ bool armory_t::download_item( item_t& item,
   if ( ! item_xml )
   {
     if ( ! cache_only )
-      util_t::printf( "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+      util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_name( item, item_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_stats( item, item_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_weapon( item, item_xml ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    util_t::fprintf( item.sim -> output_file, "\nsimcraft: Player %s unable to parse weapon info for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 

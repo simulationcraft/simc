@@ -917,8 +917,9 @@ static void check_pet_type( action_t* a, int pet_type )
 
   if ( p -> pet_type != pet_type )
   {
-    util_t::printf( "\nsimcraft: Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
-                    o -> name(), p -> name(), a -> name() );
+    util_t::fprintf( a -> sim -> output_file, 
+		     "\nsimcraft: Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
+		     o -> name(), p -> name(), a -> name() );
     a -> background = true;
   }
 }
@@ -3223,7 +3224,7 @@ void hunter_t::init_glyphs()
     else if ( n == "disengage"          ) ;
     else if ( n == "arcane_shot"        ) ;
     else if ( n == "frost_trap"         ) ;
-    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

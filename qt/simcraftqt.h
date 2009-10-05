@@ -28,6 +28,8 @@
 #define TAB_BIS        6
 #define TAB_HISTORY    7
 
+#define HISTORY_VERSION "1.0"
+
 class SimcraftWebView;
 class SimcraftCommandLine;
 class SimulateThread;
@@ -276,10 +278,12 @@ class SimulateThread : public QThread
     Q_OBJECT
     SimcraftWindow* mainWindow;
     sim_t* sim;
-    QString options;
 
 public:
-    void start( sim_t* s, const QString& o ) { sim=s; options=o; QThread::start(); }
+    QString options;
+    bool success;
+
+    void start( sim_t* s, const QString& o ) { sim=s; options=o; success=false; QThread::start(); }
     virtual void run();
     SimulateThread( SimcraftWindow* mw ) : mainWindow(mw), sim(0) {}
 };

@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // simplify_html =============================================================
 
@@ -1476,7 +1475,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_gear_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::printf( "simcraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simcraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
       }
       else
       {
@@ -1492,7 +1491,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_talents_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::printf( "simcraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simcraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
       }
       else
       {
@@ -1508,7 +1507,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_actions_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::printf( "simcraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simcraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
       }
       else
       {
@@ -1533,7 +1532,7 @@ void report_t::print_profiles( sim_t* sim )
     file = fopen( file_name.c_str(), "w" );
     if ( ! file )
     {
-      util_t::printf( "simcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
+      util_t::fprintf( sim -> output_file, "simcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
       continue;
     }
 

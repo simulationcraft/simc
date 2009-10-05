@@ -36,7 +36,7 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
     {
-      util_t::printf( "sequence_t: Unknown action: %s\n", splits[ i ].c_str() );
+      util_t::fprintf( sim -> output_file, "sequence_t: Unknown action: %s\n", splits[ i ].c_str() );
       assert( false );
     }
 
@@ -45,7 +45,7 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
   }
   if ( sub_actions.size() == 0 )
   {
-    util_t::printf( "sequence_t: No sub-actions!\n" );
+    util_t::fprintf( sim -> output_file, "sequence_t: No sub-actions!\n" );
     assert( false );
   }
 }

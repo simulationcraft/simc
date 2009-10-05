@@ -213,7 +213,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   FILE* f = fopen( character_file.c_str(), "r" );
   if ( ! f )
   {
-    util_t::printf( "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
     return false;
   }
 
@@ -236,7 +236,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   xml_node_t* root_node = xml_t::create( character_xml );
   if ( ! root_node )
   {
-    util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save XML.\n" );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to parse Rawr Character Save XML.\n" );
     return 0;
   }
 
@@ -246,7 +246,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   if ( ! xml_t::get_value( class_str, root_node, "Class/." ) ||
        ! xml_t::get_value(  race_str, root_node, "Race/."  ) )
   {
-    util_t::printf( "\nsimcraft: Unable to determine character class and race in Rawr Character Save XML.\n" );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to determine character class and race in Rawr Character Save XML.\n" );
     return 0;
   }
 
@@ -264,9 +264,9 @@ player_t* rawr_t::load_player( sim_t* sim,
   armory_t::format(  name_str );
   armory_t::format( class_str );
 
-  if ( class_str == "paladin" || class_str == "death_knight" )
+  if ( class_str == "death_knight" )
   {
-    util_t::printf( "\nsimcraft: The Death Knight and Paladin modules are still in development, so Rawr import is disabled.\n" );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: The Death Knight module are still in development, so Rawr import is disabled.\n" );
     return 0;
   }
 
@@ -275,7 +275,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   player_t* p = player_t::create( sim, class_str, name_str, race_type );
   if ( ! p )
   {
-    util_t::printf( "\nsimcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
     return 0;
   }
 
@@ -287,20 +287,20 @@ player_t* rawr_t::load_player( sim_t* sim,
   std::string talents_str;
   if ( ! xml_t::get_value( talents_str, root_node, talents_parm ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
     return 0;
   }
 
   std::string talents_encoding, glyphs_encoding;
   if ( 2 != util_t::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
   {
-    util_t::printf( "\nsimcraft: Player %s expected 'talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s expected 'talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
     return 0;
   }
 
   if ( ! p -> parse_talents_armory( talents_encoding ) )
   {
-    util_t::printf( "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
+    util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
 
@@ -316,7 +316,7 @@ player_t* rawr_t::load_player( sim_t* sim,
       const char* glyph_name = translate_glyph_name( p, i );
       if ( ! glyph_name )
       {
-        util_t::printf( "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
+        util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to parse glyph encoding '%s'.\n", p -> name(), glyphs_encoding.c_str() );
         return 0;
       }
       if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
@@ -338,7 +338,7 @@ player_t* rawr_t::load_player( sim_t* sim,
 
       if ( 5 != util_t::string_split( slot_encoding, ".", "S S S S S", &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), &enchant_id ) )
       {
-        util_t::printf( "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
+        util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
         return 0;
       }
 

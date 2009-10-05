@@ -1068,9 +1068,9 @@ struct sim_t
   void      analyze();
   void      merge( sim_t& other_sim );
   void      merge();
-  void      iterate();
+  bool      iterate();
   void      partition();
-  void      execute();
+  bool      execute();
   void      print_options();
   std::vector<option_t>& get_options();
   bool      parse_option( const std::string& name, const std::string& value );

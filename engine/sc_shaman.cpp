@@ -2617,7 +2617,7 @@ void shaman_t::init_glyphs()
     else if ( n == "water_mastery"        ) ;
     else if ( n == "water_shield"         ) ;
     else if ( n == "water_walking"        ) ;
-    else if ( ! sim -> parent ) util_t::printf( "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

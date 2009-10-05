@@ -76,8 +76,11 @@ void SimcraftWindow::loadHistory()
   QFile file( "simcraft_history.dat" );
   if( file.open( QIODevice::ReadOnly ) )
   {
-    QStringList importHistory;
     QDataStream in( &file );
+    QString historyVersion;
+    in >> historyVersion;
+    if( historyVersion != HISTORY_VERSION ) return;
+    QStringList importHistory;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
     in >> resultsCmdLineHistory;
@@ -115,6 +118,7 @@ void SimcraftWindow::saveHistory()
     }
 
     QDataStream out( &file );
+    out << QString( HISTORY_VERSION );
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
@@ -702,11 +706,15 @@ void SimulateThread::run()
   for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
   for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
-  sim -> parse_options( argc, argv );
-  sim -> execute();
-  sim -> scaling -> analyze();
-
-  report_t::print_suite( sim );
+  if( sim -> parse_options( argc, argv ) )
+  {
+    if( sim -> execute() )
+    {
+      sim -> scaling -> analyze();
+      report_t::print_suite( sim );
+      success = true;
+    }
+  }
 }
 
 void SimcraftWindow::startSim()
@@ -768,7 +776,12 @@ void SimcraftWindow::simulateFinished()
   progressBar->setValue( 100 );
   QFile file( sim->html_file_str.c_str() );
   deleteSim();
-  if( file.open( QIODevice::ReadOnly ) )
+  if( ! simulateThread->success )
+  {
+    logText->appendPlainText( "Simulation failed!\n" );
+    mainTab->setCurrentIndex( TAB_LOG );
+  }
+  else if( file.open( QIODevice::ReadOnly ) )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SimcraftWebView* resultsView = new SimcraftWebView( this );
@@ -776,13 +789,11 @@ void SimcraftWindow::simulateFinished()
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
-    mainButton->setText( "Save!" );
     mainTab->setCurrentIndex( TAB_RESULTS );
   }
   else
   {
     logText->appendPlainText( "Unable to open html report!\n" );
-    mainButton->setText( "Save!" );
     mainTab->setCurrentIndex( TAB_LOG );
   }
 }

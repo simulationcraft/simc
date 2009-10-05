@@ -80,7 +80,7 @@ static bool parse_patch( sim_t*             sim,
 
   if ( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
   {
-    util_t::printf( "simcraft: Expected format: -patch=#.#.#\n" );
+    util_t::fprintf( sim -> output_file, "simcraft: Expected format: -patch=#.#.#\n" );
     return false;
   }
 
@@ -117,7 +117,7 @@ static bool parse_active( sim_t*             sim,
     }
     if ( ! sim -> active_player )
     {
-      util_t::printf( "simcraft: Unable to find player %s\n", value.c_str() );
+      util_t::fprintf( sim -> output_file, "simcraft: Unable to find player %s\n", value.c_str() );
       return false;
     }
   }
@@ -185,7 +185,8 @@ static bool parse_player( sim_t*             sim,
 
       if ( sim -> active_player )
         if ( player_name != sim -> active_player -> name() )
-          util_t::printf( "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
+          util_t::fprintf( sim -> output_file,
+			   "simcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
                           player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
 
     }
@@ -211,8 +212,8 @@ static bool parse_armory( sim_t*             sim,
 
     if ( num_splits < 3 )
     {
-      util_t::printf( "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
-      assert( false );
+      util_t::fprintf( sim -> output_file, "simcraft: Expected format is: armory=region,server,player1,player2,...\n" );
+      return false;
     }
 
     std::string region = splits[ 0 ];
@@ -321,8 +322,8 @@ static bool parse_wowhead( sim_t*             sim,
     }
     else
     {
-      util_t::printf( "simcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
-      assert( false );
+      util_t::fprintf( sim -> output_file, "simcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
+      return false;
     }
   }
 
@@ -340,7 +341,7 @@ static bool parse_rawr( sim_t*             sim,
     sim -> active_player = rawr_t::load_player( sim, value );
     if ( ! sim -> active_player )
     {
-      util_t::printf( "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
+      util_t::fprintf( sim -> output_file, "\nsimcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
   }
 
@@ -721,8 +722,8 @@ bool sim_t::init()
 
   if ( too_quiet && ! debug )
   {
-    util_t::printf( "simcraft: No active players in sim.\n" );
-    assert( false );
+    log_t::output( this, "No active players in sim!" );
+    return false;
   }
 
   player_t::init( this );
@@ -761,8 +762,11 @@ bool sim_t::init()
       for ( int j=0; j < num_players; j++ )
       {
         player_t* p = find_player( player_names[ j ] );
-        if ( ! p ) util_t::printf( "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
-        assert( p );
+        if ( ! p ) 
+	{
+	  util_t::fprintf( output_file, "simcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+	  return false;
+	}
         p -> party = party_index;
         p -> member = member_index++;
         for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
@@ -1018,9 +1022,9 @@ void sim_t::analyze()
 
 // sim_t::iterate ===========================================================
 
-void sim_t::iterate()
+bool sim_t::iterate()
 {
-  init();
+  if( ! init() ) return false;
 
   int message_interval = iterations/10;
   int message_index = 10;
@@ -1043,6 +1047,8 @@ void sim_t::iterate()
   if ( report_progress ) util_t::fprintf( stdout, "\n" );
   
   reset();
+
+  return true;
 }
 
 // sim_t::merge =============================================================
@@ -1163,16 +1169,18 @@ void sim_t::partition()
 
 // sim_t::execute ===========================================================
 
-void sim_t::execute()
+bool sim_t::execute()
 {
   int64_t start_time = util_t::milliseconds();
 
   partition();
-  iterate();
+  if( ! iterate() ) return false;
   merge();
   analyze();
 
   elapsed_cpu_seconds = ( util_t::milliseconds() - start_time ) / 1000.0;
+
+  return true;
 }
 
 // sim_t::find_player =======================================================
@@ -1562,7 +1570,7 @@ bool sim_t::parse_options( int    _argc,
     output_file = fopen( output_file_str.c_str(), "w" );
     if ( ! output_file )
     {
-      util_t::printf( "simcraft: Unable to open output file '%s'\n", output_file_str.c_str() );
+      util_t::fprintf( output_file, "simcraft: Unable to open output file '%s'\n", output_file_str.c_str() );
       exit( 0 );
     }
   }
@@ -1571,7 +1579,7 @@ bool sim_t::parse_options( int    _argc,
     log_file = fopen( log_file_str.c_str(), "w" );
     if ( ! log_file )
     {
-      util_t::printf( "simcraft: Unable to open combat log file '%s'\n", log_file_str.c_str() );
+      util_t::fprintf( output_file, "simcraft: Unable to open combat log file '%s'\n", log_file_str.c_str() );
       exit( 0 );
     }
     log = 1;
@@ -1651,7 +1659,7 @@ int sim_t::main( int argc, char** argv )
 
   if ( ! parse_options( argc, argv ) )
   {
-    util_t::printf( "simcraft: ERROR! Incorrect option format..\n" );
+    util_t::fprintf( output_file, "simcraft: ERROR! Incorrect option format..\n" );
     exit( 0 );
   }
 
@@ -1678,16 +1686,18 @@ int sim_t::main( int argc, char** argv )
   {
     if ( max_time <= 0 && target -> initial_health <= 0 )
     {
-      util_t::printf( "simcraft: One of -max_time or -target_health must be specified.\n" );
+      util_t::fprintf( output_file, "simcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
-    execute();
-    scaling -> analyze();
 
-    util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
-    report_t::print_suite( this );
+    if( execute() )
+    {
+      scaling -> analyze();
+      util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
+      report_t::print_suite( this );
+    }
   }
 
   if ( output_file != stdout ) fclose( output_file );
