@@ -1,0 +1,5 @@
+Info.plist
+build
+moc_simcraftqt.cpp
+simcraftqt.app
+simcraftqt.xcodeproj
