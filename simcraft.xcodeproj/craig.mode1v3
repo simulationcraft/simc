@@ -230,6 +230,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -263,22 +265,27 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>08FB7794FE84155DC02AAC07</string>
+								<string>08FB7795FE84155DC02AAC07</string>
 								<string>C6859E8C029090F304C91782</string>
 								<string>1AB674ADFE9D54B511CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>442BD35A107A7C6500AFCDF4</string>
-								<string>442BD35B107A7C6500AFCDF4</string>
+								<string>44F6B1F1107A844F00763099</string>
+								<string>44F6B218107A867100763099</string>
+								<string>44F6B219107A867100763099</string>
+								<string>44F6B21A107A867100763099</string>
+								<string>44F6B1F2107A844F00763099</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>14</integer>
+									<integer>56</integer>
+									<integer>55</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {186, 646}}</string>
+							<string>{{0, 680}, {186, 646}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -313,7 +320,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Target: Generate Qt Project</string>
+								<string>sc_main.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -321,14 +328,17 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Target: Generate Qt Project</string>
+										<string>sc_main.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>442BD370107A7D4000AFCDF4</string>
+										<string>44F6B236107A88A300763099</string>
 										<key>history</key>
 										<array>
 											<string>442BD36A107A7D3000AFCDF4</string>
+											<string>44F6B21B107A867100763099</string>
+											<string>44F6B21C107A867100763099</string>
+											<string>44F6B21D107A867100763099</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -340,14 +350,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {876, 0}}</string>
+								<string>{{0, 0}, {876, 198}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>0pt</string>
+							<string>198pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -360,14 +370,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 5}, {876, 659}}</string>
+								<string>{{0, 203}, {876, 461}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>659pt</string>
+							<string>461pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -386,9 +396,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>442BD318107A73C200AFCDF4</string>
+				<string>44F6B21F107A867100763099</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>442BD319107A73C200AFCDF4</string>
+				<string>44F6B220107A867100763099</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,9 +536,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>442BD36E107A7D3000AFCDF4</string>
-		<string>442BD36F107A7D3000AFCDF4</string>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>44E3D11B10545A0700677DEB</string>
 		<string>/Users/craig/code/simcraft/simcraft.xcodeproj</string>
@@ -613,7 +620,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>44E3D11B10545A0700677DEB</string>
-				<string>442BD31A107A73C200AFCDF4</string>
+				<string>44F6B208107A85CD00763099</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -735,13 +742,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>442BD332107A7A7100AFCDF4</string>
+				<string>44F6B221107A867100763099</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>442BD333107A7A7100AFCDF4</string>
-				<string>442BD334107A7A7100AFCDF4</string>
-				<string>442BD335107A7A7100AFCDF4</string>
-				<string>442BD336107A7A7100AFCDF4</string>
-				<string>442BD337107A7A7100AFCDF4</string>
+				<string>44F6B222107A867100763099</string>
+				<string>44F6B223107A867100763099</string>
+				<string>44F6B224107A867100763099</string>
+				<string>44F6B225107A867100763099</string>
+				<string>44F6B226107A867100763099</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>

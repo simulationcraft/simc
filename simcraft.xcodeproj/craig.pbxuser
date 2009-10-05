@@ -137,12 +137,15 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276460444;
-			PBXWorkspaceStateSaveDate = 276460444;
+			PBXPerProjectTemplateStateSaveDate = 276464719;
+			PBXWorkspaceStateSaveDate = 276464719;
 		};
 		perUserProjectItems = {
 			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
-			442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */ = 442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */;
+			44F6B21B107A867100763099 /* PBXTextBookmark */ = 44F6B21B107A867100763099 /* PBXTextBookmark */;
+			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
+			44F6B21D107A867100763099 /* PBXTextBookmark */ = 44F6B21D107A867100763099 /* PBXTextBookmark */;
+			44F6B236107A88A300763099 /* PBXTextBookmark */ = 44F6B236107A88A300763099 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
@@ -211,30 +214,6 @@
 	442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = {
 		isa = PBXTargetBookmark;
 		trg = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
-		uiCtxt = {
-			TOCViewDetailVisibleRect = "{{0, 0}, {597, 231}}";
-			TOCViewExpandedItems = (
-				"com.apple.target-editor-pane.settings",
-			);
-			TOCViewMasterVisibleRect = "{{0, 0}, {238, 481}}";
-			TOCViewSelectedItems = (
-				PBXBuildSettingsLegacyModule,
-			);
-		};
-	};
-	442BD370107A7D4000AFCDF4 /* PBXTargetBookmark */ = {
-		isa = PBXTargetBookmark;
-		trg = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
-		uiCtxt = {
-			TOCViewDetailVisibleRect = "{{0, 0}, {0, 0}}";
-			TOCViewExpandedItems = (
-				"com.apple.target-editor-pane.settings",
-			);
-			TOCViewMasterVisibleRect = "{{0, 0}, {0, 0}}";
-			TOCViewSelectedItems = (
-				PBXBuildSettingsLegacyModule,
-			);
-		};
 	};
 	44C7A517106D4B7600A2271C /* libsimcraft */ = {
 		activeExec = 0;
@@ -327,6 +306,13 @@
 			sepNavVisRange = "{0, 411}";
 		};
 	};
+	44E3D1CB10545A7500677DEB /* sc_main.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 234}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 465}";
+		};
+	};
 	44E3D1DB10545A7500677DEB /* sc_shaman.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {815, 41171}}";
@@ -342,11 +328,18 @@
 			sepNavWindowFrame = "{{38, 119}, {1076, 733}}";
 		};
 	};
+	44E3D1E310545A7500677DEB /* sc_warlock.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 51766}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 489}";
+		};
+	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 32227}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32201}}";
 			sepNavSelRange = "{77052, 0}";
-			sepNavVisRange = "{76780, 398}";
+			sepNavVisRange = "{76760, 519}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
@@ -355,6 +348,46 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{0, 0}";
 		};
+	};
+	44F6B21B107A867100763099 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		name = "simcraft.h: 2200";
+		rLen = 0;
+		rLoc = 77052;
+		rType = 0;
+		vrLen = 519;
+		vrLoc = 76760;
+	};
+	44F6B21C107A867100763099 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1E310545A7500677DEB /* sc_warlock.cpp */;
+		name = "sc_warlock.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 489;
+		vrLoc = 0;
+	};
+	44F6B21D107A867100763099 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */;
+		name = "sc_main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 465;
+		vrLoc = 0;
+	};
+	44F6B236107A88A300763099 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */;
+		name = "sc_main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 465;
+		vrLoc = 0;
 	};
 	8DD76F620486A84900D96B5E /* simcraft */ = {
 		activeExec = 0;
