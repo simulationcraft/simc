@@ -8,20 +8,20 @@
     <br />
       <h2>Table of Contents</h2>
       <ul>
-        <li> <a href="#overview"> Overview </a> 
-        <li> <a href="#how_this_interface_works"> How This Interface Works </a>
-        <li> <a href="#navigation"> Navigation </a>
-        <li> <a href="#tips_and_tricks"> Tips and Tricks </a>
-        <li> <a href="#global_parameters"> Global Parameters </a>
-        <li> <a href="#scale_factors"> Scale Factors </a>
-        <li> <a href="#importing_from_the_armory"> Importing from the Armory </a>
-        <li> <a href="#importing_from_wowhead"> Importing from Wowhead </a>
-        <li> <a href="#importing_from_chardev"> Importing from CharDev </a>
-        <li> <a href="#importing_from_warcrafter"> Importing from Warcrafter </a>
-        <li> <a href="#importing_from_rawr"> Importing from Rawr </a>
-        <li> <a href="#saving_results"> Saving Results </a>
-        <li> <a href="#priority_lists_not_rotations"> Priority Lists, Not Rotations </a>
-        <li> <a href="#modeling_raid_events"> Modeling Raid Events </a>
+        <li> <a href="#overview"> Overview </a> </li>
+        <li> <a href="#how_this_interface_works"> How This Interface Works </a> </li>
+        <li> <a href="#navigation"> Navigation </a> </li>
+        <li> <a href="#tips_and_tricks"> Tips and Tricks </a> </li>
+        <li> <a href="#global_parameters"> Global Parameters </a> </li>
+        <li> <a href="#scale_factors"> Scale Factors </a> </li>
+        <li> <a href="#importing_from_the_armory"> Importing from the Armory </a> </li>
+        <li> <a href="#importing_from_wowhead"> Importing from Wowhead </a> </li>
+        <li> <a href="#importing_from_chardev"> Importing from CharDev </a> </li>
+        <li> <a href="#importing_from_warcrafter"> Importing from Warcrafter </a> </li>
+        <li> <a href="#importing_from_rawr"> Importing from Rawr </a> </li>
+        <li> <a href="#saving_results"> Saving Results </a> </li>
+        <li> <a href="#priority_lists_not_rotations"> Priority Lists, Not Rotations </a> </li>
+        <li> <a href="#modeling_raid_events"> Modeling Raid Events </a> </li>
       </ul>
     <dl>
       <dt><a name="overview" /><h2>Overview</h2></dt> 
@@ -38,9 +38,9 @@
       sites to provide interactive manipulation of character talents, glyphs, gear, enchants, etc. 
       The three key steps are:
         <ol>
-	<li> Generate your profile. 
-	<li> Simlate your profile. 
-	<li> Evaluate your results. 
+	<li> Generate your profile. </li>
+	<li> Simulate your profile. </li>
+	<li> Evaluate your results. </li>
         </ol>
       </dd>
       <dt><a name="navigation" /><h2>Navigation</h2></dt>
@@ -56,10 +56,24 @@
     <dt><a name="tips_and_tricks" /><h2>Tips and Tricks</h2></dt>
     <dd>
       <ul>
-	<li> button name change
-	<li> progress bar
-	<li> back/forward buttons
-	<li> up/down buttons
+	<li>The label on the main button changes between <i>Simulate!</i>, <i>Import!</i> and <i>Save!</i> 
+	    depnding upon the active main tab.  While a character profile is being imported or a simulation
+	    is running, the label will be set to <i>Cancel!</i>.  Cancelling a simulation run early may
+            still result in valuable information: The results posted are a statistical analysis of many
+	    iterations.  Cancelling a simulation will simply reduce the number of iterations, increasing 
+            the reported statistical error.</li>
+	<li>The progress bar is context-sensitive.  When viewing a web page under <i>Import</i> or <i>Results</i>
+            it will display the percent-completion of rendering the web page.  Under all other tabs, the
+            progress bar will report the percent-completion of the character import or the simulation run.</li>
+	<li>The <i>Back</i> and <i>Forward</i> buttons to the left of the command-line allow you to cycle
+	    through the history of the main viewport.  When viewing a web page under <i>Import</i> or <i>Results</i>
+            they will cycle through the <i>URL</i> history.  When viewing <i>Globals</i>, <i>Simulate</i>, or
+            <i>Overrides</i>, these buttons will cycle through previous states.  This history is persistent
+	    between runs.</li>
+	<li><b>When the command-line has focus, the <i>Up</i> and <i>Down</i> keys cycle through the history
+            of command-line text.  This history is persistent between runs.</b></li>
+        <li>With the exception of the <i>Import</i> tab, pressing the <i>Enter</i> key while the command-line
+            has focus is equivalent to clicking the main button.</li>
       </ul>
     </dd>
     <dt><a name="global_parameters" /><h2>Global Parameters</h2></dt>
@@ -71,9 +85,9 @@
     <dt><a name="importing_from_wowhead" /><h2>Importing from Wowhead</h2></dt>
     <dd>text incoming</dd>
     <dt><a name="importing_from_chardev" /><h2>Importing from CharDev</h2></dt>
-    <dd>text incoming</dd>
+    <dd>Support for the <i>CharDev</i> site is not yet available.</dd>
     <dt><a name="importing_from_warcrafter" /><h2>Importing from Warcrafter</h2></dt>
-    <dd>text incoming</dd>
+    <dd>Support for the <i>Warcrafter</i> site is not yet available.</dd>
     <dt><a name="importing_from_rawr" /><h2>Importing from Rawr</h2></dt>
     <dd>text incoming</dd>
     <dt><a name="saving_results" /><h2>Saving Results</h2></dt>
