@@ -1224,7 +1224,6 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    p -> buffs_maelstrom_weapon -> expire();
     p -> buffs_elemental_mastery -> current_value = 0;
     p -> _cooldowns.lava_burst = cooldown_ready;
   }
@@ -1234,8 +1233,6 @@ struct lava_burst_t : public shaman_spell_t
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_elemental_mastery -> value() ) return 0;
-    if ( p -> buffs_maelstrom_weapon -> stack() == 5 ) return 0;
-    t *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
     return t;
   }
 
