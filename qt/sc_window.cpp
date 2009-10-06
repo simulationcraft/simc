@@ -431,7 +431,7 @@ void SimcraftWindow::createSimulateTab()
   simulateText = new QPlainTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->document()->setDefaultFont( QFont( "fixed" ) );
-  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
+  simulateText->setPlainText( "# Profile will be downloaded into here." );
   mainTab->addTab( simulateText, "Simulate" );
 }
 
@@ -440,7 +440,7 @@ void SimcraftWindow::createOverridesTab()
   overridesText = new QPlainTextEdit();
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
   overridesText->document()->setDefaultFont( QFont( "fixed" ) );
-  overridesText->appendPlainText( "# User-specified persistent global and player parms will set here.." );
+  overridesText->setPlainText( "# User-specified persistent global and player parms will set here.." );
   mainTab->addTab( overridesText, "Overrides" );
 }
 
@@ -465,7 +465,7 @@ void SimcraftWindow::createExamplesTab()
   }
 
   QTextBrowser* examplesText = new QTextBrowser();
-  examplesText->document()->setPlainText( s );
+  examplesText->setPlainText( s );
   mainTab->addTab( examplesText, "Examples" );
 }
  
@@ -693,7 +693,7 @@ void SimcraftWindow::startImport( int tab, const QString& url )
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   importThread->start( initSim(), tab, url );
-  simulateText->document()->setPlainText( "# Profile will be downloaded into here." );
+  simulateText->setPlainText( "# Profile will be downloaded into here." );
   mainTab->setCurrentIndex( TAB_SIMULATE );
   timer->start( 500 );
 }
@@ -773,12 +773,14 @@ void SimcraftWindow::startSim()
   }
   globalsHistory.add( encodeGlobals() );
   globalsHistory.current_index = 0;
-  simulateTextHistory.add(  simulateText->document()->toPlainText() );
-  overridesTextHistory.add( overridesText->document()->toPlainText() );
+  simulateTextHistory.add(  simulateText->toPlainText() );
+  overridesTextHistory.add( overridesText->toPlainText() );
   simulateCmdLineHistory.add( cmdLine->text() );
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   simulateThread->start( initSim(), mergeOptions() ); 
+  simulateText->setPlainText( "# Use the Back/Forward buttons to cycle through the script history.\n"
+			      "# Use the Up/Down arrow keys to cycle through the command-line history." );
   cmdLineText = "";
   cmdLine->setText( cmdLineText );
   timer->start( 500 );
@@ -807,9 +809,9 @@ QString SimcraftWindow::mergeOptions()
     options += "calculate_scale_factors=1\n";
   }
   options += "threads=" + threadsChoice->currentText() + "\n";
-  options += simulateText->document()->toPlainText();
+  options += simulateText->toPlainText();
   options += "\n";
-  options += overridesText->document()->toPlainText();
+  options += overridesText->toPlainText();
   options += "\n";
   options += cmdLine->text();
   options += "\n";
@@ -857,7 +859,7 @@ void SimcraftWindow::saveLog()
 
   if( file.open( QIODevice::WriteOnly ) )
   {
-    file.write( logText->document()->toPlainText().toAscii() );
+    file.write( logText->toPlainText().toAscii() );
     file.close();
   }
 
