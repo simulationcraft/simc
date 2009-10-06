@@ -1440,7 +1440,7 @@ struct fire_nova_t : public shaman_spell_t
     init_rank( ranks );
 
     base_execute_time = 0;
-    direct_power_mod  = 1.5 / 3.5;
+    direct_power_mod  = 0.8 / 3.5;
     may_crit          = true;
     cooldown          = 10.0;
     cooldown         -= ( p -> talents.improved_fire_nova * 2 );
@@ -1458,7 +1458,16 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual void execute()
   {
-    shaman_spell_t::execute();
+    // Does not proc Elemental Focus or Elemental Devastation but does proc Elemental Oath.
+    shaman_t* p = player -> cast_shaman();
+    spell_t::execute();
+    if ( result_is_hit() )
+    {
+      if ( result == RESULT_CRIT )
+      {
+     	  trigger_elemental_oath( this );
+      }
+    }
   }
 
   virtual bool ready()
