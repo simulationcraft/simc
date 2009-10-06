@@ -10,6 +10,61 @@
 // Utilities
 // ==========================================================================
 
+struct OptionEntry
+{
+  const char* label;
+  const char* option;
+  const char* tooltip;
+};
+
+static OptionEntry* getBuffOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
+      { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
+      { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
+      { "Bloodlust",             "override.bloodlust",              "Bloodlust\nHeroism"                                                         },
+      { "Damage (%)",            "override.sanctified_retribution", "Arcane Empowerment\nFerocious Inspiration\nSanctified Retribution"          },
+      { "Haste (%)",             "override.swift_retribution",      "Improved Moonkin Form\nSwift Retribution"                                   },
+      { "Intellect",             "override.arcane_brilliance",      "Arcane Intellect"                                                           },
+      { "Mana Regen",            "override.blessing_of_wisdom",     "Blessing of Wisdom\nMana Spring Totem"                                      },
+      { "Melee Critical Strike", "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
+      { "Melee Haste",           "override.windfury_totem",         "Improved Icy Talons\nWindfury Totem"                                        },
+      { "Replenishment",         "override.replenishment",          "Hunting Party\nImproved Soul Leech\nJudgements of the Wise\nVampiric Touch" },
+      { "Spell Critical Strike", "override.moonkin_aura",           "Elemental Oath\nMoonkin Aura"                                               },
+      { "Spell Haste",           "override.wrath_of_air_totem",     "Wrath of Air Totem"                                                         },
+      { "Spell Power",           "override.totem_of_wrath",         "Demonic Pact\nFlametongue Totem\nTotem of Wrath"                            },
+      { "Spirit",                "override.divine_spirit",          "Divine Spirit\nFel Intelligence"                                            },
+      { "Stamina",               "override.fortitude",              "Power Word: Fortitude"                                                      },
+      { "Stat Add",              "override.mark_of_the_wild",       "Mark of the Wild"                                                           },
+      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings"                                                          },
+      { NULL, NULL, NULL }
+    };
+  return options;
+}
+
+static OptionEntry* getDebuffOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Armor (Major)",          "override.sunder_armor",        "Acid Spit\nExpose Armor\nSunder Armor"                            },
+      { "Armor (Minor)",          "override.faerie_fire",         "Curse of Weakness\nFaerie Fire"                                   },
+      { "Boss Attack Speed Slow", "override.thunder_clap",        "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
+      { "Boss Hit Reduction",     "override.insect_swarm",        "Insect Swarm\nScorpid Sting"                                      },
+      { "Bleed Damage",           "override.mangle",              "Mangle\nTrauma"                                                   },
+      { "Critical Strike",        "override.totem_of_wrath",      "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
+      { "Disease Damage",         "override.crypt_fever",         "Crypt Fever"                                                      },
+      { "Mana Restore",           "override.judgement_of_wisdom", "Judgement of Wisdom"                                              },
+      { "Physical Damange",       "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
+      { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
+      { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
+      { "Spell Hit",              "override.misery",              "Improved Faerie Fire\nMisery"                                     },
+      { NULL, NULL, NULL }
+    };
+  return options;
+}
+
 static QComboBox* createChoice( int count, ... )
 {
   QComboBox* choice = new QComboBox();
@@ -24,10 +79,10 @@ static QComboBox* createChoice( int count, ... )
   return choice;
 }
 
-void SimcraftWindow::decodeGlobals( QString encoding )
+void SimcraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() == 8 )
+  if( tokens.count() == 9 )
   {
            patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
@@ -37,12 +92,13 @@ void SimcraftWindow::decodeGlobals( QString encoding )
     scaleFactorsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
          threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
       armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+     optimalRaidChoice->setCurrentIndex( tokens[ 7 ].toInt() );
   }
 }
 
-QString SimcraftWindow::encodeGlobals()
+QString SimcraftWindow::encodeOptions()
 {
-  return QString( "%1 %2 %3 %4 %5 %6 %7 %8" )
+  return QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
     .arg(        patchChoice->currentIndex() )
     .arg(      latencyChoice->currentIndex() )
     .arg(   iterationsChoice->currentIndex() )
@@ -50,7 +106,8 @@ QString SimcraftWindow::encodeGlobals()
     .arg(   fightStyleChoice->currentIndex() )
     .arg( scaleFactorsChoice->currentIndex() )
     .arg(      threadsChoice->currentIndex() )
-    .arg(   armorySpecChoice->currentIndex() );
+    .arg(   armorySpecChoice->currentIndex() )
+    .arg(  optimalRaidChoice->currentIndex() );
 }
 
 void SimcraftWindow::updateSimProgress()
@@ -84,7 +141,7 @@ void SimcraftWindow::loadHistory()
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
     in >> resultsCmdLineHistory;
-    in >> globalsHistory;
+    in >> optionsHistory;
     in >> simulateTextHistory;
     in >> overridesTextHistory;
     in >> importHistory;
@@ -98,7 +155,7 @@ void SimcraftWindow::loadHistory()
       historyList->addItem( item );
     }
 
-    decodeGlobals( globalsHistory.backwards() );
+    decodeOptions( optionsHistory.backwards() );
 
     QString s = overridesTextHistory.backwards();
     if( ! s.isEmpty() ) overridesText->setPlainText( s );
@@ -111,7 +168,7 @@ void SimcraftWindow::saveHistory()
   QFile file( "simcraft_history.dat" );
   if( file.open( QIODevice::WriteOnly ) )
   {
-    globalsHistory.add( encodeGlobals() );
+    optionsHistory.add( encodeOptions() );
 
     QStringList importHistory;
     int count = historyList->count();
@@ -125,7 +182,7 @@ void SimcraftWindow::saveHistory()
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
-    out << globalsHistory;
+    out << optionsHistory;
     out << simulateTextHistory;
     out << overridesTextHistory;
     out << importHistory;
@@ -146,7 +203,7 @@ SimcraftWindow::SimcraftWindow(QWidget *parent)
 
   mainTab = new QTabWidget();
   createWelcomeTab();
-  createGlobalsTab();
+  createOptionsTab();
   createImportTab();
   createSimulateTab();
   createOverridesTab();
@@ -213,7 +270,7 @@ void SimcraftWindow::createWelcomeTab()
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
-void SimcraftWindow::createGlobalsTab()
+void SimcraftWindow::createOptionsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
@@ -225,11 +282,51 @@ void SimcraftWindow::createGlobalsTab()
   globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(  "Optimal Raid",  optimalRaidChoice = createChoice( 2, "No", "Yes" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
-  QGroupBox* globalsGroupBox = new QGroupBox();
+  optimalRaidChoice->setCurrentIndex( 1 );
+  QGroupBox* globalsGroupBox = new QGroupBox( "Globals" );
   globalsGroupBox->setLayout( globalsLayout );
-  mainTab->addTab( globalsGroupBox, "Globals" );
+
+  QVBoxLayout* buffsLayout = new QVBoxLayout();
+  buffsButtonGroup = new QButtonGroup();
+  buffsButtonGroup->setExclusive( false );
+  OptionEntry* buffs = getBuffOptions();
+  for( int i=0; buffs[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
+    checkBox->setToolTip( buffs[ i ].tooltip );
+    buffsButtonGroup->addButton( checkBox );
+    buffsLayout->addWidget( checkBox );
+  }
+  buffsLayout->addStretch(1);
+  QGroupBox* buffsGroupBox = new QGroupBox( "Buffs" );
+  buffsGroupBox->setLayout( buffsLayout );
+
+  QVBoxLayout* debuffsLayout = new QVBoxLayout();
+  debuffsButtonGroup = new QButtonGroup();
+  debuffsButtonGroup->setExclusive( false );
+  OptionEntry* debuffs = getDebuffOptions();
+  for( int i=0; debuffs[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
+    checkBox->setToolTip( debuffs[ i ].tooltip );
+    debuffsButtonGroup->addButton( checkBox );
+    debuffsLayout->addWidget( checkBox );
+  }
+  debuffsLayout->addStretch(1);
+  QGroupBox* debuffsGroupBox = new QGroupBox( "Debuffs" );
+  debuffsGroupBox->setLayout( debuffsLayout );
+
+  QHBoxLayout* optionsLayout = new QHBoxLayout();
+  optionsLayout->addWidget( globalsGroupBox );
+  optionsLayout->addWidget(   buffsGroupBox );
+  optionsLayout->addWidget( debuffsGroupBox );
+  
+  QGroupBox* optionsGroupBox = new QGroupBox();
+  optionsGroupBox->setLayout( optionsLayout );
+  mainTab->addTab( optionsGroupBox, "Options" );
 }
 
 void SimcraftWindow::createImportTab()
@@ -771,8 +868,8 @@ void SimcraftWindow::startSim()
     sim -> cancel();
     return;
   }
-  globalsHistory.add( encodeGlobals() );
-  globalsHistory.current_index = 0;
+  optionsHistory.add( encodeOptions() );
+  optionsHistory.current_index = 0;
   simulateTextHistory.add(  simulateText->toPlainText() );
   overridesTextHistory.add( overridesText->toPlainText() );
   simulateCmdLineHistory.add( cmdLine->text() );
@@ -907,7 +1004,7 @@ void SimcraftWindow::cmdLineTextEdited( const QString& s )
   switch( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   cmdLineText = s; break;
-  case TAB_GLOBALS:   cmdLineText = s; break;
+  case TAB_OPTIONS:   cmdLineText = s; break;
   case TAB_SIMULATE:  cmdLineText = s; break;
   case TAB_OVERRIDES: cmdLineText = s; break;
   case TAB_EXAMPLES:  cmdLineText = s; break;
@@ -962,7 +1059,7 @@ void SimcraftWindow::mainButtonClicked( bool checked )
   switch( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   startSim(); break;
-  case TAB_GLOBALS:   startSim(); break;
+  case TAB_OPTIONS:   startSim(); break;
   case TAB_SIMULATE:  startSim(); break;
   case TAB_OVERRIDES: startSim(); break;
   case TAB_EXAMPLES:  startSim(); break;
@@ -1001,7 +1098,7 @@ void SimcraftWindow::backButtonClicked( bool checked )
     switch( mainTab->currentIndex() )
     {
     case TAB_WELCOME:   break;
-    case TAB_GLOBALS:   decodeGlobals( globalsHistory.backwards() ); break;
+    case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
     case TAB_IMPORT:    break;
     case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() ); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); break;
@@ -1023,7 +1120,7 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
     switch( mainTab->currentIndex() )
     {
     case TAB_WELCOME:   break;
-    case TAB_GLOBALS:   decodeGlobals( globalsHistory.forwards() ); break;
+    case TAB_OPTIONS:   decodeOptions( optionsHistory.forwards() ); break;
     case TAB_IMPORT:    break;
     case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.forwards() ); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); break;
@@ -1059,7 +1156,7 @@ void SimcraftWindow::mainTabChanged( int index )
   switch( index )
   {
   case TAB_WELCOME:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_GLOBALS:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_OPTIONS:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_SIMULATE:  cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_OVERRIDES: cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_EXAMPLES:  cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;

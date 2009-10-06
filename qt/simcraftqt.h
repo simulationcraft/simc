@@ -11,7 +11,7 @@
 #include <simcraft.h>
 
 #define TAB_WELCOME   0
-#define TAB_GLOBALS   1
+#define TAB_OPTIONS   1
 #define TAB_IMPORT    2
 #define TAB_SIMULATE  3
 #define TAB_OVERRIDES 4
@@ -79,6 +79,7 @@ class SimcraftWindow : public QWidget
 
 public:
     QTabWidget* mainTab;
+    QTabWidget* optionsTab;
     QComboBox* patchChoice;
     QComboBox* latencyChoice;
     QComboBox* iterationsChoice;
@@ -87,6 +88,9 @@ public:
     QComboBox* scaleFactorsChoice;
     QComboBox* threadsChoice;
     QComboBox* armorySpecChoice;
+    QComboBox* optimalRaidChoice;
+    QButtonGroup* buffsButtonGroup;
+    QButtonGroup* debuffsButtonGroup;
     QTabWidget* importTab;
     SimcraftWebView* armoryUsView;
     SimcraftWebView* armoryEuView;
@@ -129,7 +133,7 @@ public:
     StringHistory logCmdLineHistory;
     StringHistory resultsCmdLineHistory;
     StringHistory rawrCmdLineHistory;
-    StringHistory globalsHistory;
+    StringHistory optionsHistory;
     StringHistory simulateTextHistory;
     StringHistory overridesTextHistory;
 
@@ -142,15 +146,15 @@ public:
     void saveLog();
     void saveResults();
 
-    void    decodeGlobals( QString );
-    QString encodeGlobals();
+    void    decodeOptions( QString );
+    QString encodeOptions();
 
     void loadHistory();
     void saveHistory();
     
     void createCmdLine();
     void createWelcomeTab();
-    void createGlobalsTab();
+    void createOptionsTab();
     void createImportTab();
     void createBestInSlotTab();
     void createSimulateTab();
@@ -200,7 +204,7 @@ protected:
     switch( mainWindow->mainTab->currentIndex() )
     {
     case TAB_WELCOME:   
-    case TAB_GLOBALS:   
+    case TAB_OPTIONS:   
     case TAB_SIMULATE:  
     case TAB_OVERRIDES: 
       mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k ); 

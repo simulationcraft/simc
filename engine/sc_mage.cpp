@@ -1084,8 +1084,10 @@ struct arcane_barrage_t : public mage_spell_t
 
       if ( result == RESULT_CRIT )
       {
-        if ( p -> sim -> P330 )
-          p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
+        if ( sim -> P330 )
+	{
+          sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
+	}
       }
     }
     p -> buffs_arcane_blast -> expire();
@@ -1105,8 +1107,7 @@ struct arcane_blast_t : public mage_spell_t
 
     option_t options[] =
     {
-      { "ap_burn", OPT_DEPRECATED, ( void* ) "arcane_power" },
-      { "max",     OPT_INT,        &max_buff              },
+      { "max", OPT_INT, &max_buff },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1167,8 +1168,10 @@ struct arcane_blast_t : public mage_spell_t
       p -> buffs_tier8_2pc -> trigger();
       if ( result == RESULT_CRIT )
       {
-        if ( p -> sim -> P330 )
-          p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
+        if ( sim -> P330 )
+	{
+          sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
+	}
       }
     }
     p -> buffs_arcane_blast -> trigger();
@@ -1254,9 +1257,10 @@ struct arcane_missiles_tick_t : public mage_spell_t
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
-      if ( p -> sim -> P330 )
-        p -> sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment > 0 );
-
+      if ( sim -> P330 )
+      {
+        sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
+      }
       trigger_master_of_elements( this, 0.20 );
     }
   }
