@@ -21,6 +21,7 @@ struct shaman_t : public player_t
   action_t* active_flame_shock;
   action_t* active_lightning_charge;
   action_t* active_lightning_bolt_dot;
+  action_t* active_fire_totem;
 
   // Buffs
   buff_t* buffs_dueling;
@@ -102,6 +103,7 @@ struct shaman_t : public player_t
     int  feral_spirit;
     int  flurry;
     int  frozen_power;
+    int  improved_fire_nova;
     int  improved_shields;
     int  improved_stormstrike;
     int  improved_windfury_totem;
@@ -142,6 +144,7 @@ struct shaman_t : public player_t
     int chain_lightning;
     int elemental_mastery;
     int feral_spirit;
+    int fire_nova;
     int flame_shock;
     int flametongue_weapon;
     int lava;
@@ -1407,6 +1410,72 @@ struct earth_shock_t : public shaman_spell_t
   }
 };
 
+// Fire Nova Spell =======================================================
+
+struct fire_nova_t : public shaman_spell_t
+{
+  fire_nova_t( player_t* player, const std::string& options_str ) :
+               shaman_spell_t( "fire_nova", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    if ( ! sim -> P330 )
+      return;
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 9, 893, 997, 0, 0.22 },
+      { 75, 8, 755, 843, 0, 0.22 },
+      { 70, 7, 727, 813, 0, 0.22 },
+      { 61, 6, 518, 578, 0, 0.22 },
+      { 52, 5, 396, 442, 0, 0.22 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0;
+    direct_power_mod  = 1.5 / 3.5;
+    may_crit          = true;
+    cooldown          = 10.0;
+    cooldown         -= ( p -> talents.improved_fire_nova * 2 );
+
+    base_multiplier  *= 1.0 + ( p -> talents.improved_fire_nova * 0.1 )
+                            + ( p -> talents.call_of_flame * 0.05 );
+
+    base_hit         += p -> talents.elemental_precision * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
+
+    if ( p -> glyphs.fire_nova )
+      cooldown -= 3.0;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+  }
+
+  virtual bool ready()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    if ( ! p -> sim -> P330 )
+      return false;
+
+    if ( ! p -> active_fire_totem )
+      return false;
+
+    return shaman_spell_t::ready();
+  }
+};
+
+
 // Frost Shock Spell =======================================================
 
 struct frost_shock_t : public shaman_spell_t
@@ -1611,6 +1680,8 @@ struct searing_totem_t : public shaman_spell_t
 
     // Searing Totem is not a real DoT, but rather a pet that is spawned.
     pseudo_pet = true;
+
+    observer = &( p -> active_fire_totem );
   }
 
   // Odd things to handle:
@@ -1697,6 +1768,8 @@ struct magma_totem_t : public shaman_spell_t
 
     // Magma Totem is not a real DoT, but rather a pet that is spawned.
     pseudo_pet = true;
+
+    observer = &( p -> active_fire_totem );
   }
 
   // Odd things to handle:
@@ -1767,6 +1840,8 @@ struct totem_of_wrath_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
 
     bonus_spell_power = util_t::ability_rank( p -> level,  280.0,80,  140.0,70,  120.0,0 );
+
+    observer = &( p -> active_fire_totem );
   }
 
   virtual void execute()
@@ -1836,6 +1911,8 @@ struct flametongue_totem_t : public shaman_spell_t
 
     bonus = util_t::ability_rank( p -> level,  144,80,  122,76,  106,72,  73,67,  62,0 );
     bonus *= 1 + p -> talents.enhancing_totems * 0.05;
+
+    observer = &( p -> active_fire_totem );
   }
 
   virtual void execute()
@@ -2526,6 +2603,8 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
+  if ( sim -> P330 )
+    if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
   if ( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
   if ( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
@@ -2587,6 +2666,8 @@ void shaman_t::init_glyphs()
 
     if     ( n == "elemental_mastery"  ) glyphs.elemental_mastery = 1;
     else if ( n == "feral_spirit"       ) glyphs.feral_spirit = 1;
+    else if ( n == "fire_nova"          ) glyphs.fire_nova = 1;
+    else if ( n == "fire_nova_totem"    ) glyphs.fire_nova = 1;
     else if ( n == "flame_shock"        ) glyphs.flame_shock = 1;
     else if ( n == "flametongue_weapon" ) glyphs.flametongue_weapon = 1;
     else if ( n == "lava"               ) glyphs.lava = 1;
@@ -2973,7 +3054,7 @@ std::vector<talent_translation_t>& shaman_t::get_talent_list()
     { {  6, 5, &( talents.reverberation         ) }, {  6, 0, NULL                                   }, {  6, 0, NULL                                  } },
     { {  7, 1, &( talents.elemental_focus       ) }, {  7, 3, &( talents.improved_shields          ) }, {  7, 0, NULL                                  } },
     { {  8, 5, &( talents.elemental_fury        ) }, {  8, 3, &( talents.elemental_weapons         ) }, {  8, 0, NULL                                  } },
-    { {  9, 0, NULL                               }, {  9, 1, &( talents.shamanistic_focus         ) }, {  9, 0, NULL                                  } },
+    { {  9, 0, &( talents.improved_fire_nova    ) }, {  9, 1, &( talents.shamanistic_focus         ) }, {  9, 0, NULL                                  } },
     { { 10, 0, NULL                               }, { 10, 0, NULL                                   }, { 10, 3, &( talents.restorative_totems       ) } },
     { { 11, 0, NULL                               }, { 11, 5, &( talents.flurry                    ) }, { 11, 5, &( talents.tidal_mastery            ) } },
     { { 12, 1, &( talents.call_of_thunder       ) }, { 12, 0, NULL                                   }, { 12, 0, NULL                                  } },
@@ -3033,6 +3114,8 @@ std::vector<option_t>& shaman_t::get_options()
       { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
       { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
       { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
+      { "improved_fire_nova",        OPT_INT,  &( talents.improved_fire_nova        ) },
+      { "improved_fire_nova_totem",  OPT_INT,  &( talents.improved_fire_nova        ) },
       { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
       { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
       { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
