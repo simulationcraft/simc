@@ -352,7 +352,11 @@ player_t::player_t( sim_t*             s,
   }
 
   for ( int i=0; i < PROFESSION_MAX; i++ ) profession[ i ] = 0;
-  for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = over_cap[ i ] = 0;
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    scales_with[ i ] = 0;
+    over_cap[ i ] = 0;
+  }
 
   items.resize( SLOT_MAX );
   for ( int i=0; i < SLOT_MAX; i++ )
