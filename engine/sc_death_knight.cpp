@@ -1921,7 +1921,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.45;
+    weapon_multiplier     *= 0.40;
   }
 
   void execute()
