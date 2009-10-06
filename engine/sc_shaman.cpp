@@ -1419,9 +1419,6 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( ! sim -> P330 )
-      return;
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1459,7 +1456,6 @@ struct fire_nova_t : public shaman_spell_t
   virtual void execute()
   {
     // Does not proc Elemental Focus or Elemental Devastation but does proc Elemental Oath.
-    shaman_t* p = player -> cast_shaman();
     spell_t::execute();
     if ( result_is_hit() )
     {
@@ -2612,8 +2608,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
-  if ( sim -> P330 )
-    if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
+  if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
   if ( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
   if ( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
@@ -2917,7 +2912,7 @@ void shaman_t::init_actions()
 
       if ( talents.stormstrike ) action_list_str += "/stormstrike";
       action_list_str += "/flame_shock";
-      action_list_str += "/earth_shock/magma_totem/lightning_shield";
+      action_list_str += "/earth_shock/magma_totem/fire_nova/lightning_shield";
       if ( talents.lava_lash ) action_list_str += "/lava_lash";
       action_list_str += "/lightning_bolt,maelstrom=4";
     }

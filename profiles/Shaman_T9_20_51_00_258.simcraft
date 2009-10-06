@@ -24,6 +24,7 @@ actions+=/stormstrike
 actions+=/flame_shock
 actions+=/earth_shock
 actions+=/magma_totem
+actions+=/fire_nova
 actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/lightning_bolt,maelstrom=4
