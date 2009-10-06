@@ -12,7 +12,6 @@
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
 MODULE     = simcraft
-LIBRARY    = libsimcraft.a
 OS         = UNIX
 
 # Any UNIX platform
@@ -23,7 +22,6 @@ LINK_FLAGS =
 LINK_LIBS  = -lpthread
 OPTS       = -O3 -ffast-math
 BITS       = 32
-AR         = ar
 COPY       = cp
 ifeq (64,${BITS})
 CPP_FLAGS  += -m64
@@ -53,7 +51,6 @@ LINK_LIBS  = -lwsock32
 OPTS       = -O3
 BITS       = 32
 COPY       = copy
-AR         = ar
 endif
 
 SRC =\
@@ -114,20 +111,16 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)/%.$(OBJ_EXT))
 
 .PHONY:	all mostlyclean clean
 
-all: $(MODULE) $(LIBRARY)
+all: $(MODULE)
 
-install: all
-	$(COPY) $(MODULE) $(LIBRARY) ..
+install: $(MODULE)
+	$(COPY) $(MODULE) ..
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-$(LIBRARY): $(SRC_OBJ)
-	-@echo [$(MODULE)] Archiving $@
-	@$(AR) rv $@ $^
-
-$(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H)
+$(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H) Makefile
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
 
