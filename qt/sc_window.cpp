@@ -99,6 +99,9 @@ void SimcraftWindow::loadHistory()
     }
 
     decodeGlobals( globalsHistory.backwards() );
+
+    QString s = overridesTextHistory.backwards();
+    if( ! s.isEmpty() ) overridesText->setPlainText( s );
   }
 }
 
