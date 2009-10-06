@@ -350,6 +350,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  
   else if ( name == "darkglow_embroidery"   ) e = "OnSpellHit_400Mana_35%_60Cd";
   else if ( name == "swordguard_embroidery" ) e = "OnAttackHit_400AP_25%_60Cd";
+  else if ( name == "rune_of_the_fallen_crusader" ) e = "1sp";
 
   if ( e.empty() ) return false;
 
@@ -363,12 +364,12 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 // unique_gear_t::get_hidden_encoding
 // ==========================================================================
 
+#include <iostream>
 bool unique_gear_t::get_hidden_encoding( std::string&       encoding,
                                          const std::string& name,
                                          const std::string& id )
 {
   std::string e;
-
   if      ( name == "lightweave"                 ) e = "1spi";
   else if ( name == "lightweave_embroidery"      ) e = "1spi";  
   else if ( name == "darkglow_embroidery"        ) e = "1spi";
@@ -411,9 +412,9 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
 
   // Enchants
-  else if ( name == "pyrorocket"               ) e = "1837Fire_45Cd";  // temporary for backwards compatibility
-  else if ( name == "hand_mounted_pyro_rocket" ) e = "1837Fire_45Cd";
-  else if ( name == "hyperspeed_accelerators"  ) e = "340Haste_12Dur_60Cd";
+  else if ( name == "pyrorocket"                   ) e = "1837Fire_45Cd";  // temporary for backwards compatibility
+  else if ( name == "hand_mounted_pyro_rocket"     ) e = "1837Fire_45Cd";
+  else if ( name == "hyperspeed_accelerators"      ) e = "340Haste_12Dur_60Cd";
 
   if ( e.empty() ) return false;
 

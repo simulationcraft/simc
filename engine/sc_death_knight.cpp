@@ -71,6 +71,8 @@ struct death_knight_t : public player_t
   buff_t* buffs_bloody_vengeance;
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_desolation;
+  buff_t* buffs_tier9_2pc_melee;
+  buff_t* buffs_sigil_virulence;
 
   // Gains
   gain_t* gains_rune_abilities;
@@ -239,6 +241,14 @@ struct death_knight_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct sigils_t
+  {
+    int virulence;
+
+    sigils_t() { memset( ( void* ) this, 0x0, sizeof( sigils_t ) ); }
+  };
+  sigils_t sigils;
+
   struct runes_t
   {
     dk_rune_t slot[RUNE_SLOT_MAX];
@@ -276,7 +286,9 @@ struct death_knight_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_procs();
   virtual void      init_uptimes();
+  virtual void      init_items();
   virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
@@ -680,7 +692,9 @@ void death_knight_attack_t::player_buff()
 
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
-    player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
+    // Rivendare is spells and abilities... so everything *except* raw melee.
+    if ( this != p -> main_hand_attack && this != p -> off_hand_attack )
+      player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
 
   if ( school == SCHOOL_PHYSICAL )
@@ -1191,6 +1205,11 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
+      death_knight_t* p = player -> cast_death_knight();
+      if ( p -> set_bonus.tier9_2pc_melee() )
+      {
+        p -> buffs_tier9_2pc_melee -> trigger();
+      }
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
       trigger_desolation( this );
@@ -1357,6 +1376,7 @@ struct death_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
+      p -> buffs_sigil_virulence -> trigger();
       if ( p -> talents.dirge )
       {
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
@@ -1539,6 +1559,11 @@ struct heart_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
+      death_knight_t* p = player -> cast_death_knight();
+      if ( p -> set_bonus.tier9_2pc_melee() )
+      {
+        p -> buffs_tier9_2pc_melee -> trigger();
+      }
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
     }
@@ -1729,6 +1754,7 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
+      p -> buffs_sigil_virulence -> trigger();
       trigger_abominations_might( this, 0.5 );
 
       if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
@@ -1769,7 +1795,7 @@ struct plague_strike_t : public death_knight_attack_t
     cost_unholy = 1;
 
     base_crit += p -> talents.vicious_strikes * 0.03;
-    base_crit_bonus_multiplier *= 1.0 * ( p -> talents.vicious_strikes * 0.15 );
+    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
     base_multiplier *= 1.0 + ( p -> talents.outbreak * 0.10 );
 
     weapon = &( p -> main_hand_weapon );
@@ -1904,6 +1930,7 @@ struct scourge_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
+      p -> buffs_sigil_virulence -> trigger();
       if ( p -> talents.dirge )
       {
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
@@ -2167,6 +2194,10 @@ void death_knight_t::init_buffs()
   buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
   buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, 1.0 );
 
+  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH    , 200, 1, 20.0,  0, sigils.virulence * 0.80 );
+  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH    , 180, 1, 15.0,  0, 0.50 );
+
   struct bloodworms_buff_t : public buff_t
   {
     bloodworms_buff_t( death_knight_t* p ) :
@@ -2212,6 +2243,21 @@ void death_knight_t::init_uptimes()
 
   uptimes_blood_plague       = get_uptime( "blood_plague" );
   uptimes_frost_fever        = get_uptime( "frost_fever" );
+}
+
+void death_knight_t::init_items()
+{
+  player_t::init_items();
+
+  std::string& sigil = items[ SLOT_RANGED ].encoded_name_str;
+
+  if ( sigil.empty() ) return;
+
+  if      ( sigil == "sigil_of_virulence"          ) sigils.virulence = 1;
+  else
+  {
+    log_t::output( sim, "simcraft: %s has unknown sigil %s", name(), sigil.c_str() );
+  }
 }
 
 void death_knight_t::reset()
@@ -2271,6 +2317,22 @@ double death_knight_t::composite_attack_power() SC_CONST
     ap += talents.bladed_armor * composite_armor() / 180;
   }
   return ap;
+}
+
+double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    if ( ( buffs.rune_of_the_fallen_crusader_mh && buffs.rune_of_the_fallen_crusader_mh->up() ) ||
+         ( buffs.rune_of_the_fallen_crusader_oh && buffs.rune_of_the_fallen_crusader_oh->up() ) )
+    {
+      m *= 1.15;
+    }
+  }
+
+  return m;
 }
 
 double death_knight_t::composite_spell_hit() SC_CONST
