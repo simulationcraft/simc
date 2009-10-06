@@ -1478,6 +1478,24 @@ struct fire_nova_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+
+  // Fire Nova doesn't benefit from Elemental Focus
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  // Fire Nova doesn't consume Elemental Focus charges.
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 
