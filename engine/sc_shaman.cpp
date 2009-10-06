@@ -1482,7 +1482,6 @@ struct fire_nova_t : public shaman_spell_t
   // Fire Nova doesn't benefit from Elemental Focus
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
