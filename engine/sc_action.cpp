@@ -737,7 +737,9 @@ void action_t::tick()
 
   if ( tick_may_crit )
   {
-    if ( rng[ RESULT_CRIT ] -> roll( total_crit() ) )
+    int delta_level = sim -> target -> level - player -> level;
+    
+    if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
     {
       result = RESULT_CRIT;
       action_callback_t::trigger( player -> spell_result_callbacks[ RESULT_CRIT ], this );

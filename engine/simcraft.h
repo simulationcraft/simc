@@ -1426,6 +1426,7 @@ struct player_t
   int          normalized_to;
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
+  double       over_cap[ STAT_MAX ];
 
   struct buffs_t
   {
@@ -2010,6 +2011,13 @@ struct action_t
   virtual void   check_talent( int talent_rank );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
+  virtual double   miss_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double  dodge_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double  parry_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double glance_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double  block_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double   crit_chance( int delta_level ) SC_CONST { return 0; }
+
   virtual double total_multiplier() SC_CONST { return   base_multiplier * player_multiplier * target_multiplier; }
   virtual double total_hit() SC_CONST        { return   base_hit        + player_hit        + target_hit;        }
   virtual double total_crit() SC_CONST       { return   base_crit       + player_crit       + target_crit;       }
@@ -2045,13 +2053,13 @@ struct attack_t : public action_t
   virtual void   calculate_result();
   virtual void   execute();
 
-  // Attack Specific
   virtual double   miss_chance( int delta_level ) SC_CONST;
   virtual double  dodge_chance( int delta_level ) SC_CONST;
   virtual double  parry_chance( int delta_level ) SC_CONST;
   virtual double glance_chance( int delta_level ) SC_CONST;
   virtual double  block_chance( int delta_level ) SC_CONST;
   virtual double   crit_chance( int delta_level ) SC_CONST;
+
   virtual double total_expertise() SC_CONST { return base_expertise + player_expertise + target_expertise; }
 };
 
@@ -2069,10 +2077,11 @@ struct spell_t : public action_t
   virtual double tick_time() SC_CONST;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
-  virtual double level_based_miss_chance( int player, int target ) SC_CONST;
-  virtual double crit_chance( int player, int target ) SC_CONST;
   virtual void   calculate_result();
   virtual void   execute();
+
+  virtual double miss_chance( int delta_level ) SC_CONST;
+  virtual double crit_chance( int delta_level ) SC_CONST;
 };
 
 // Sequence ==================================================================

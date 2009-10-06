@@ -116,7 +116,7 @@ void scaling_t::init_deltas()
 
   if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  75 :  150;
   if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  75 :  150;
-  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ? -75 : -150;
+  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ? -50 : -100;
 
   if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -50 : -100;
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
@@ -180,7 +180,7 @@ void scaling_t::analyze_stats()
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       ref_sim -> execute();
     }
-
+    
     for ( int j=0; j < num_players; j++ )
     {
       player_t* p = sim -> players_by_name[ j ];
@@ -190,7 +190,10 @@ void scaling_t::analyze_stats()
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-      double f = ( delta_p -> dps - ref_p -> dps ) / scale_delta;
+      double divisor = scale_delta;
+      if ( divisor < 0 ) divisor += ref_p -> over_cap[ i ];
+
+      double f = ( delta_p -> dps - ref_p -> dps ) / divisor;
 
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }

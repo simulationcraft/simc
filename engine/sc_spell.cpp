@@ -103,12 +103,10 @@ void spell_t::target_debuff( int dmg_type )
                    name(), target_multiplier, target_hit, target_crit );
 }
 
-// spell_t::level_based_miss_chance ==========================================
+// spell_t::miss_chance ======================================================
 
-double spell_t::level_based_miss_chance( int player,
-                                         int target ) SC_CONST
+double spell_t::miss_chance( int delta_level ) SC_CONST
 {
-  int delta_level = target - player;
   double miss=0;
 
   if ( delta_level > 2 )
@@ -120,6 +118,8 @@ double spell_t::level_based_miss_chance( int player,
     miss = 0.04 + delta_level * 0.01;
   }
 
+  miss -= total_hit();
+
   if ( miss < 0.00 ) miss = 0.00;
   if ( miss > 0.99 ) miss = 0.99;
 
@@ -128,10 +128,8 @@ double spell_t::level_based_miss_chance( int player,
 
 // spell_t::crit_chance ====================================================
 
-double spell_t::crit_chance( int player_level,
-			     int target_level ) SC_CONST
+double spell_t::crit_chance( int delta_level ) SC_CONST
 {
-  int delta_level = target_level - player_level;
   double chance = total_crit();
 	
   if ( ! player -> is_pet() && delta_level > 2 && sim -> spell_crit_suppression )
@@ -146,20 +144,16 @@ double spell_t::crit_chance( int player_level,
 
 void spell_t::calculate_result()
 {
-  direct_dmg = 0;
-  double crit = 0;
+  int delta_level = sim -> target -> level - player -> level;
 
+  direct_dmg = 0;
   result = RESULT_NONE;
 
   if ( ! harmful ) return;
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
-    double miss_chance = level_based_miss_chance( player -> level, sim -> target -> level );
-
-    miss_chance -= total_hit();
-
-    if ( rng[ RESULT_MISS ] -> roll( miss_chance ) )
+    if ( rng[ RESULT_MISS ] -> roll( miss_chance( delta_level ) ) )
     {
       result = RESULT_MISS;
     }
@@ -179,9 +173,7 @@ void spell_t::calculate_result()
 
     if ( may_crit )
     {
-      // Experimental check for spell crit suppression
-      crit = crit_chance( player -> level, sim -> target -> level );
-      if ( rng[ RESULT_CRIT ] -> roll( crit ) )
+      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }

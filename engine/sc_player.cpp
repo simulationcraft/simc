@@ -352,7 +352,7 @@ player_t::player_t( sim_t*             s,
   }
 
   for ( int i=0; i < PROFESSION_MAX; i++ ) profession[ i ] = 0;
-  for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = 0;
+  for ( int i=0; i < STAT_MAX; i++ ) scales_with[ i ] = over_cap[ i ] = 0;
 
   items.resize( SLOT_MAX );
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -2905,8 +2905,11 @@ struct restore_mana_t : public action_t
 
 struct snapshot_stats_t : public action_t
 {
+  attack_t* attack;
+  spell_t* spell;
+
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_OTHER, "snapshot_stats", player )
+    action_t( ACTION_OTHER, "snapshot_stats", player ), attack(0), spell(0)
   {
     base_execute_time = 0.001; // Needs to be non-zero to ensure all the buffs have been setup.
     trigger_gcd = 0;
@@ -2949,6 +2952,35 @@ struct snapshot_stats_t : public action_t
     p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();
     p -> buffed_block       = p -> composite_tank_block();
     p -> buffed_crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
+
+    int role = p -> primary_role();
+    int delta_level = sim -> target -> level - p -> level;
+    double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
+
+    if ( role == ROLE_SPELL || role == ROLE_HYBRID )
+    {
+      if ( ! spell ) spell = new spell_t( "snapshot_spell", p );
+      spell -> background = true;
+      spell -> player_buff();
+      spell -> target_debuff( DMG_DIRECT );
+      double chance = spell -> miss_chance( delta_level );
+      if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
+    }
+
+    if ( role == ROLE_ATTACK || role == ROLE_HYBRID )
+    {
+      if ( ! attack ) attack = new attack_t( "snapshot_attack", p );
+      attack -> background = true;
+      attack -> player_buff();
+      attack -> target_debuff( DMG_DIRECT );
+      double chance = attack -> miss_chance( delta_level );
+      if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.attack_hit;
+      chance = attack -> dodge_chance( delta_level );
+      if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
+    }
+
+    p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
+    p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
 
     p -> attribute_buffed[ ATTRIBUTE_NONE ] = 1;
   }
