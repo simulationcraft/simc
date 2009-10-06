@@ -520,6 +520,8 @@ void SimcraftWindow::createBestInSlotTab()
     rootItems[ b.type ][ b.tier ]->addChild( item );
   }
 
+  bisTree->setColumnWidth( 0, 300 );
+
   connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
 }
 
