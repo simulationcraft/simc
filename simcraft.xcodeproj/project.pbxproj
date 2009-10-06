@@ -54,6 +54,7 @@
 		44C7A548106D4BA300A2271C /* sc_weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E510545A7500677DEB /* sc_weapon.cpp */; };
 		44C7A549106D4BA300A2271C /* sc_wowhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E610545A7500677DEB /* sc_wowhead.cpp */; };
 		44C7A54A106D4BA300A2271C /* sc_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1E710545A7500677DEB /* sc_xml.cpp */; };
+		44CA3911107BAD5E00130224 /* libsimcraft.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = 44C7A518106D4B7600A2271C /* libsimcraft.a */; };
 		44CB0981105EA1D500E98270 /* simcraft in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DD76F6C0486A84900D96B5E /* simcraft */; };
 		44F6B202107A84FF00763099 /* libsimcraft.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C7A518106D4B7600A2271C /* libsimcraft.a */; };
 		44F6B20F107A861700763099 /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */; };
@@ -90,6 +91,7 @@
 			dstPath = ../..;
 			dstSubfolderSpec = 16;
 			files = (
+				44CA3911107BAD5E00130224 /* libsimcraft.a in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,7 +277,7 @@
 /* Begin PBXLegacyTarget section */
 		442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-platform macx-llvm -spec macx-xcode";
+			buildArgumentsString = "-spec macx-xcode";
 			buildConfigurationList = 442BD32D107A7A1700AFCDF4 /* Build configuration list for PBXLegacyTarget "Generate Qt Project" */;
 			buildPhases = (
 			);
@@ -477,7 +479,7 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 4;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
@@ -517,7 +519,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 4;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;

@@ -137,12 +137,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276469347;
-			PBXWorkspaceStateSaveDate = 276469347;
+			PBXPerProjectTemplateStateSaveDate = 276540738;
+			PBXWorkspaceStateSaveDate = 276540738;
 		};
 		perUserProjectItems = {
 			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
-			44F6B21B107A867100763099 /* PBXTextBookmark */ = 44F6B21B107A867100763099 /* PBXTextBookmark */;
+			44CA3917107BAD7000130224 /* PBXTextBookmark */ = 44CA3917107BAD7000130224 /* PBXTextBookmark */;
 			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
 			44F86C4F107A97A100F594DB /* PBXTextBookmark */ = 44F86C4F107A97A100F594DB /* PBXTextBookmark */;
 			44F86C50107A97A100F594DB /* PBXTextBookmark */ = 44F86C50107A97A100F594DB /* PBXTextBookmark */;
@@ -217,6 +217,16 @@
 	};
 	44C7A517106D4B7600A2271C /* libsimcraft */ = {
 		activeExec = 0;
+	};
+	44CA3917107BAD7000130224 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
+		name = "simcraft.h: 2199";
+		rLen = 0;
+		rLoc = 77052;
+		rType = 0;
+		vrLen = 592;
+		vrLoc = 76768;
 	};
 	44E3D112105459F100677DEB /* simcraft */ = {
 		isa = PBXExecutable;
@@ -337,9 +347,9 @@
 	};
 	44E3D21810545A9800677DEB /* simcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 32214}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32383}}";
 			sepNavSelRange = "{77052, 0}";
-			sepNavVisRange = "{76839, 440}";
+			sepNavVisRange = "{76768, 592}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
@@ -348,16 +358,6 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{0, 0}";
 		};
-	};
-	44F6B21B107A867100763099 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
-		name = "simcraft.h: 2200";
-		rLen = 0;
-		rLoc = 77052;
-		rType = 0;
-		vrLen = 519;
-		vrLoc = 76760;
 	};
 	44F6B21C107A867100763099 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
