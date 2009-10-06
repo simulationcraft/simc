@@ -77,7 +77,7 @@ static enchant_data_t enchant_db[] =
   { "3794",  "+23 Spell Power and +15 Resilience Rating",                 "23SP"                           },
   { "3793",  "+40 Attack Power and +15 Resilience Rating",                "45AP"                           },
   { "3791",  "+30 Stamina",                                               "30Sta"                          },
-  { "3790",  "+63 Spell Power",                                           "63SP"                           },
+  { "3790",  "Black Magic",                                               "black_magic"                    },
   { "3789",  "Berserking",                                                "berserking"                     },
   { "3788",  "Accuracy",                                                  "25Hit_25Crit"                   },
   { "3760",  "+60 Frost Resistance",                                      ""                               },
