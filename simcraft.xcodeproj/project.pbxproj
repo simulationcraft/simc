@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4438981C107BB7CC00462773 /* simcraftqt.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4438981B107BB7C700462773 /* simcraftqt.app */; };
 		44C7A51C106D4BA300A2271C /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1B910545A7500677DEB /* sc_action.cpp */; };
 		44C7A51D106D4BA300A2271C /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */; };
 		44C7A51E106D4BA300A2271C /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BB10545A7500677DEB /* sc_attack.cpp */; };
@@ -68,12 +69,19 @@
 			remoteGlobalIDString = 44C7A517106D4B7600A2271C;
 			remoteInfo = libsimcraft;
 		};
-		442BD356107A7C5400AFCDF4 /* PBXContainerItemProxy */ = {
+		4438981D107BB7F900462773 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			containerPortal = 44C41689107BB68700242308 /* simcraftqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 442BD327107A79ED00AFCDF4;
-			remoteInfo = "Generate Qt Project";
+			remoteGlobalIDString = B4C8D0335C0C9B080E1EA908 /* simcraftqt */;
+			remoteInfo = simcraftqt;
+		};
+		44C41693107BB68700242308 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 44C41689107BB68700242308 /* simcraftqt.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 44C4168E107BB68700242308;
+			remoteInfo = simcraftqt;
 		};
 		44F6B1F8107A84A800763099 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -102,12 +110,15 @@
 			dstSubfolderSpec = 16;
 			files = (
 				44CB0981105EA1D500E98270 /* simcraft in CopyFiles */,
+				4438981C107BB7CC00462773 /* simcraftqt.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4438981B107BB7C700462773 /* simcraftqt.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = simcraftqt.app; path = qt/simcraftqt.app; sourceTree = "<group>"; };
+		44C41689107BB68700242308 /* simcraftqt.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = simcraftqt.xcodeproj; path = qt/simcraftqt.xcodeproj; sourceTree = "<group>"; };
 		44C7A518106D4B7600A2271C /* libsimcraft.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsimcraft.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		44E3D1B910545A7500677DEB /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_action.cpp; sourceTree = "<group>"; };
 		44E3D1BA10545A7500677DEB /* sc_armory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_armory.cpp; sourceTree = "<group>"; };
@@ -183,6 +194,8 @@
 		08FB7794FE84155DC02AAC07 /* simcraft */ = {
 			isa = PBXGroup;
 			children = (
+				4438981B107BB7C700462773 /* simcraftqt.app */,
+				44C41689107BB68700242308 /* simcraftqt.xcodeproj */,
 				08FB7795FE84155DC02AAC07 /* engine */,
 				C6859E8C029090F304C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -254,6 +267,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		44C4168A107BB68700242308 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				44C41694107BB68700242308 /* simcraftqt.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C6859E8C029090F304C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,21 +311,6 @@
 			passBuildSettingsInEnvironment = 0;
 			productName = "Generate Qt Project";
 		};
-		442BD353107A7C4100AFCDF4 /* Build Qt Project */ = {
-			isa = PBXLegacyTarget;
-			buildArgumentsString = "";
-			buildConfigurationList = 442BD361107A7C6500AFCDF4 /* Build configuration list for PBXLegacyTarget "Build Qt Project" */;
-			buildPhases = (
-			);
-			buildToolPath = /usr/bin/xcodebuild;
-			buildWorkingDirectory = "$(PROJECT_DIR)/qt";
-			dependencies = (
-				442BD357107A7C5400AFCDF4 /* PBXTargetDependency */,
-			);
-			name = "Build Qt Project";
-			passBuildSettingsInEnvironment = 1;
-			productName = "Build Qt Project";
-		};
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
@@ -338,6 +344,7 @@
 			);
 			dependencies = (
 				44F6B1F9107A84A800763099 /* PBXTargetDependency */,
+				4438981E107BB7F900462773 /* PBXTargetDependency */,
 			);
 			name = simcraft;
 			productInstallPath = "$(HOME)/bin";
@@ -359,15 +366,30 @@
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* simcraft */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 44C4168A107BB68700242308 /* Products */;
+					ProjectRef = 44C41689107BB68700242308 /* simcraftqt.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8DD76F620486A84900D96B5E /* simcraft */,
 				44C7A517106D4B7600A2271C /* libsimcraft */,
 				442BD327107A79ED00AFCDF4 /* Generate Qt Project */,
-				442BD353107A7C4100AFCDF4 /* Build Qt Project */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		44C41694107BB68700242308 /* simcraftqt.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = simcraftqt.app;
+			remoteRef = 44C41693107BB68700242308 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		44C7A515106D4B7600A2271C /* Sources */ = {
@@ -440,10 +462,10 @@
 			target = 44C7A517106D4B7600A2271C /* libsimcraft */;
 			targetProxy = 442BD32B107A79F800AFCDF4 /* PBXContainerItemProxy */;
 		};
-		442BD357107A7C5400AFCDF4 /* PBXTargetDependency */ = {
+		4438981E107BB7F900462773 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
-			targetProxy = 442BD356107A7C5400AFCDF4 /* PBXContainerItemProxy */;
+			name = simcraftqt;
+			targetProxy = 4438981D107BB7F900462773 /* PBXContainerItemProxy */;
 		};
 		44F6B1F9107A84A800763099 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -561,22 +583,6 @@
 			};
 			name = Release;
 		};
-		442BD354107A7C4100AFCDF4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Build Qt Project";
-			};
-			name = Debug;
-		};
-		442BD355107A7C4100AFCDF4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
 		44C7A519106D4B7700A2271C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -619,15 +625,6 @@
 			buildConfigurations = (
 				442BD328107A79ED00AFCDF4 /* Debug */,
 				442BD329107A79ED00AFCDF4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		442BD361107A7C6500AFCDF4 /* Build configuration list for PBXLegacyTarget "Build Qt Project" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				442BD354107A7C4100AFCDF4 /* Debug */,
-				442BD355107A7C4100AFCDF4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
