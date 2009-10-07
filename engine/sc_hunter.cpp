@@ -39,6 +39,7 @@ struct hunter_t : public player_t
   buff_t* buffs_beast_within;
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_cobra_strikes;
+  buff_t* buffs_culling_the_herd;
   buff_t* buffs_expose_weakness;
   buff_t* buffs_furious_howl;
   buff_t* buffs_improved_aspect_of_the_hawk;
@@ -295,6 +296,7 @@ struct hunter_pet_t : public pet_t
   // Buffs
   buff_t* buffs_bestial_wrath;
   buff_t* buffs_call_of_the_wild;
+  buff_t* buffs_culling_the_herd;
   buff_t* buffs_frenzy;
   buff_t* buffs_furious_howl;
   buff_t* buffs_kill_command;
@@ -316,6 +318,7 @@ struct hunter_pet_t : public pet_t
   {
     int call_of_the_wild;
     int cobra_reflexes;
+    int culling_the_herd;
     int feeding_frenzy;
     int rabid;
     int roar_of_recovery;
@@ -469,6 +472,7 @@ struct hunter_pet_t : public pet_t
     hunter_t*     o = p -> owner -> cast_hunter();
     buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, 10.0 );
     buffs_call_of_the_wild  = new buff_t( this, "call_of_the_wild",  1, 10.0 );
+    buffs_culling_the_herd  = new buff_t( this, "culling_the_herd",  1, 10.0, 0.0, talents.culling_the_herd );
     buffs_frenzy            = new buff_t( this, "frenzy",            1,  8.0, 0.0, o -> talents.frenzy * 0.2 );
     buffs_furious_howl      = new buff_t( this, "furious_howl",      1, 20.0 );
     buffs_kill_command      = new buff_t( this, "kill_command",      3, 30.0 );
@@ -552,6 +556,7 @@ struct hunter_pet_t : public pet_t
       {
         // Talents
         { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
+        { "culling_the_herd", OPT_INT, &( talents.culling_the_herd ) },
         { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
         { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
         { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
@@ -588,7 +593,7 @@ struct hunter_pet_t : public pet_t
 			{  6, 0, NULL                               , 1, 0 },
 			{  7, 3, &( talents.spiked_collar          ), 1, 0 },
 			{  8, 0, NULL                               , 1, 0 },
-			{  9, 0, NULL                               , 2, 0 },
+			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
 			{ 10, 0, NULL                               , 2, 0 },
 			{ 11, 0, NULL                               , 2, 0 },
 			{ 12, 0, NULL                               , 3, 6 },
@@ -615,7 +620,7 @@ struct hunter_pet_t : public pet_t
 			{  6, 0, NULL                               , 1, 2 },
 			{  7, 2, &( talents.owls_focus             ), 1, 0 },
 			{  8, 3, &( talents.spiked_collar          ), 1, 0 },
-			{  9, 0, NULL                               , 2, 0 },
+			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
 			{ 10, 0, NULL                               , 2, 0 },
 			{ 11, 0, NULL                               , 2, 0 },
 			{ 12, 0, NULL                               , 3, 0 },
@@ -1035,6 +1040,9 @@ struct hunter_pet_attack_t : public attack_t
 
     player_multiplier *= 1.0 + p -> buffs_monstrous_bite -> stack() * 0.03;
 
+    if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
+
     if ( p -> sim -> target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
 
@@ -1115,6 +1123,23 @@ struct focus_dump_t : public hunter_pet_attack_t
     base_dd_min = base_dd_max = 143;
     base_cost = 25;
     auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    hunter_pet_attack_t::execute();
+
+    if ( result == RESULT_CRIT )
+    {
+      if ( p -> sim -> P330 && p -> talents.culling_the_herd )
+      {
+        p -> buffs_culling_the_herd -> trigger( 1, p -> talents.culling_the_herd );
+        o -> buffs_culling_the_herd -> trigger( 1, p -> talents.culling_the_herd );
+      }
+    }
   }
 };
 
@@ -1335,6 +1360,9 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> buffs_bestial_wrath -> up() ) player_multiplier *= 1.50;
 
     if ( o -> buffs_cobra_strikes -> up() ) player_crit += 1.0;
+
+    if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
     if ( p -> buffs_kill_command -> up() )
     {
@@ -1647,7 +1675,9 @@ void hunter_attack_t::player_buff()
   }
   player_multiplier *= 1.0 + p -> active_black_arrow * 0.06;
   player_crit += p -> buffs_master_tactician -> value();
-
+    
+  if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+    player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 }
 
 // Ranged Attack ===========================================================
