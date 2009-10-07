@@ -183,6 +183,7 @@ private slots:
     void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
     void bisDoubleClicked( QTreeWidgetItem* item, int col );
+    void optimalRaidChanged( int index );
 
 public:
     SimcraftWindow(QWidget *parent = 0);

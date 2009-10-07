@@ -451,6 +451,8 @@ bool http_t::download( std::string& result,
 bool http_t::download( std::string& result,
                        const std::string& url )
 {
+  // hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
+
   result = "";
   HINTERNET hINet, hFile;
   hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );

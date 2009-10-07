@@ -92,7 +92,7 @@ void SimcraftWindow::decodeOptions( QString encoding )
     scaleFactorsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
          threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
       armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-     optimalRaidChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+     optimalRaidChoice->setCurrentIndex( tokens[ 8 ].toInt() );
   }
 }
 
@@ -327,6 +327,8 @@ void SimcraftWindow::createOptionsTab()
   QGroupBox* optionsGroupBox = new QGroupBox();
   optionsGroupBox->setLayout( optionsLayout );
   mainTab->addTab( optionsGroupBox, "Options" );
+
+  connect( optimalRaidChoice, SIGNAL(currentIndexChanged(int)), this, SLOT(optimalRaidChanged(int)) );  
 }
 
 void SimcraftWindow::createImportTab()
@@ -1290,6 +1292,23 @@ void SimcraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
   {
     warcrafterView->setUrl( url );
     importTab->setCurrentIndex( TAB_WARCRAFTER );
+  }
+}
+
+void SimcraftWindow::optimalRaidChanged( int index )
+{
+  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
+  int count = buttons.count();
+  for( int i=0; i < count; i++ )
+  {
+    buttons.at( i ) -> setChecked( index != 0 );
+  }
+
+  buttons = debuffsButtonGroup->buttons();
+  count = buttons.count();
+  for( int i=0; i < count; i++ )
+  {
+    buttons.at( i ) -> setChecked( index != 0 );
   }
 }
 
