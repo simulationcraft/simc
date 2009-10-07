@@ -25,40 +25,40 @@ actions+=/tricks_of_the_trade
 actions+=/mutilate,max_combo_points=3
 actions+=/vanish,time>=30,energy>=50,max_combo_points=1
 head=garonas_helmet_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10str_10agi_10sta_10int_10spi_8agi,enchant=50ap_20crit
-neck=collar_of_ceaseless_torment,stats=70agi_65sta_106ap_52crit_40arpen,gems=20agi
+neck=collar_of_unending_torment,stats=106ap_52crit_40arpen_70agi_65sta,gems=20agi
 shoulders=garonas_pauldrons_of_triumph,stats=489armor_135ap_68exp_76arpen_114agi_114sta,gems=20agi,enchant=40ap_15crit
 chest=garonas_breastplate_of_triumph,stats=652armor_188ap_94hit_102crit_137agi_153sta,gems=20agi_20agi,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_the_merciless_killer,stats=114sta_98agi_68hit_135ap_76haste_367armor,gems=10crit_10agi_20agi_20agi_6agi
+waist=belt_of_the_pitiless_killer,stats=98agi_114sta_135ap_68hit_76haste_367armor,gems=10crit_10agi_20agi_20agi_6agi
 legs=garonas_legplates_of_triumph,stats=570armor_188ap_86hit_94arpen_137agi_153sta,gems=20agi_20agi,enchant=75ap_22crit
-feet=treads_of_the_icewalker,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=10crit_10agi_20agi_6agi,enchant=12crit_12hit
-wrists=bracers_of_dark_determination,stats=69agi_85sta_98ap_57crit_49hit_285armor,gems=20agi_20agi,enchant=130ap
-hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57sta,gems=20agi_20agi_6agi,enchant=44ap
-finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi,enchant=40ap
-finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=10crit_10agi_4agi,enchant=40ap
-trinket1=deaths_verdict,stats=288ap
+feet=icewalker_treads,stats=98agi_114sta_135ap_76hit_68arpen_448armor,gems=10crit_10agi_20agi_6agi,enchant=12crit_12hit
+wrists=armbands_of_dark_determination,stats=85sta_69agi_49hit_98ap_57crit_285armor,gems=20agi_20agi,enchant=130ap
+hands=sunreaver_assassins_gloves,stats=97agi_57sta_145ap_61crit_61arpen_389armor,gems=20agi_20agi_6agi,enchant=44ap
+finger1=band_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi,enchant=40ap
+finger2=planestalker_band,stats=70agi_77sta_44arpen_44hit_115ap,gems=10crit_10agi_4agi,enchant=40ap
+trinket1=deaths_choice,stats=288ap
 trinket2=deaths_choice,stats=256ap
-back=sylvanas_cunning,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20agi_8ap,enchant=22agi
-main_hand=twin_spike,stats=84ap_44hit_44haste_58agi_66sta,gems=10crit_10agi_4agi,enchant=berserking,weapon=dagger_1.80speed_216.7dps
-off_hand=steel_bladebreaker,stats=84ap_50crit_33arpen_58agi_66sta,gems=10crit_10agi_4agi,enchant=mongoose,weapon=dagger_1.40speed_216.4dps
-ranged=talonstrike,stats=48sta_40agi_49ap_32arpen_32haste,gems=20agi,weapon=crossbow_2.80speed_240.7dps
+back=cloak_of_serrated_blades,stats=173armor_98ap_57crit_49arpen_85agi_85sta,gems=20agi_8ap,enchant=22agi
+main_hand=gouge_of_the_frigid_heart,stats=84ap_44hit_44haste_58agi_66sta,gems=10crit_10agi_4agi,enchant=berserking,weapon=dagger_1.80speed_216.7dps
+off_hand=stygian_bladebreaker,stats=84ap_50crit_33arpen_58agi_66sta,gems=10crit_10agi_4agi,enchant=mongoose,weapon=dagger_1.40speed_216.4dps
+ranged=deaths_head_crossbow,stats=49ap_32haste_32arpen_40agi_48sta,gems=20agi,weapon=crossbow_2.80speed_240.7dps
 # Gear Summary
 # gear_strength=20
-# gear_agility=1828
-# gear_stamina=1467
+# gear_agility=1816
+# gear_stamina=1455
 # gear_intellect=20
 # gear_spirit=20
-# gear_attack_power=2817
+# gear_attack_power=2801
 # gear_expertise_rating=154
-# gear_armor_penetration_rating=505
+# gear_armor_penetration_rating=497
 # gear_hit_rating=473
-# gear_crit_rating=669
+# gear_crit_rating=661
 # gear_haste_rating=202
-# gear_armor=3911
+# gear_armor=3902
 # meta_gem=relentless_earthsiege
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
-# trinket1=deaths_verdict
+# trinket1=deaths_choice
 # trinket2=deaths_choice
-# main_hand=twin_spike,weapon=dagger_1.80speed_216.7dps,enchant=berserking
-# off_hand=steel_bladebreaker,weapon=dagger_1.40speed_216.4dps,enchant=mongoose
-# ranged=talonstrike,weapon=crossbow_2.80speed_240.7dps
+# main_hand=gouge_of_the_frigid_heart,weapon=dagger_1.80speed_216.7dps,enchant=berserking
+# off_hand=stygian_bladebreaker,weapon=dagger_1.40speed_216.4dps,enchant=mongoose
+# ranged=deaths_head_crossbow,weapon=crossbow_2.80speed_240.7dps
