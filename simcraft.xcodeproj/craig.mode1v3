@@ -269,14 +269,16 @@
 								<string>C6859E8C029090F304C91782</string>
 								<string>1AB674ADFE9D54B511CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>4438980F107BB79300462773</string>
-								<string>44389816107BB7A800462773</string>
+								<string>442333FD107D3874000835F4</string>
+								<string>442333FE107D3874000835F4</string>
+								<string>442333FF107D3874000835F4</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
+									<integer>20</integer>
 									<integer>10</integer>
 								</array>
 							</array>
@@ -316,7 +318,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>simcraft.h</string>
+								<string>Target: Bundle Qt for Deployment</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -324,17 +326,18 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>simcraft.h</string>
+										<string>Target: Bundle Qt for Deployment</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>44389822107BB83500462773</string>
+										<string>44233413107D38D2000835F4</string>
 										<key>history</key>
 										<array>
 											<string>442BD36A107A7D3000AFCDF4</string>
 											<string>44F6B21C107A867100763099</string>
 											<string>44F86C4F107A97A100F594DB</string>
-											<string>44C4169E107BB73B00242308</string>
+											<string>44389822107BB83500462773</string>
+											<string>44233400107D3874000835F4</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -346,14 +349,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {876, 136}}</string>
+								<string>{{0, 0}, {876, 102}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>136pt</string>
+							<string>102pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -366,14 +369,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 141}, {876, 523}}</string>
+								<string>{{0, 107}, {876, 557}}</string>
 								<key>RubberWindowFrame</key>
 								<string>132 124 1084 705 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>523pt</string>
+							<string>557pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -392,9 +395,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>44389818107BB7A800462773</string>
+				<string>44233402107D3874000835F4</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>44389819107BB7A800462773</string>
+				<string>44233403107D3874000835F4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -532,6 +535,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>44E3D11B10545A0700677DEB</string>
 		<string>/Users/craig/code/simcraft/simcraft.xcodeproj</string>
 	</array>
@@ -613,7 +617,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>44E3D11B10545A0700677DEB</string>
-				<string>4438981A107BB7A800462773</string>
+				<string>44233408107D3874000835F4</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -735,13 +739,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>44F86C41107A96AB00F594DB</string>
+				<string>4423340D107D38D2000835F4</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>44F86C42107A96AB00F594DB</string>
-				<string>44F86C43107A96AB00F594DB</string>
-				<string>44F86C44107A96AB00F594DB</string>
-				<string>44F86C45107A96AB00F594DB</string>
-				<string>44F86C46107A96AB00F594DB</string>
+				<string>4423340E107D38D2000835F4</string>
+				<string>4423340F107D38D2000835F4</string>
+				<string>44233410107D38D2000835F4</string>
+				<string>44233411107D38D2000835F4</string>
+				<string>44233412107D38D2000835F4</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>

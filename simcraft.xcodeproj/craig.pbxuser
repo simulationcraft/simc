@@ -3,7 +3,7 @@
 	08FB7793FE84155DC02AAC07 /* Project object */ = {
 		activeBuildConfigurationName = Release;
 		activeExecutable = 442BD364107A7D0000AFCDF4 /* simcraftqt */;
-		activeTarget = 8DD76F620486A84900D96B5E /* simcraft */;
+		activeTarget = 442333F8107D3852000835F4 /* Bundle Qt for Deployment */;
 		addToTargets = (
 			8DD76F620486A84900D96B5E /* simcraft */,
 		);
@@ -137,18 +137,40 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276543379;
-			PBXWorkspaceStateSaveDate = 276543379;
+			PBXPerProjectTemplateStateSaveDate = 276641803;
+			PBXWorkspaceStateSaveDate = 276641803;
 		};
 		perUserProjectItems = {
+			44233400107D3874000835F4 /* PBXTargetBookmark */ = 44233400107D3874000835F4 /* PBXTargetBookmark */;
+			44233413107D38D2000835F4 /* PBXTargetBookmark */ = 44233413107D38D2000835F4 /* PBXTargetBookmark */;
 			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
 			44389822107BB83500462773 /* PBXTextBookmark */ = 44389822107BB83500462773 /* PBXTextBookmark */;
-			44C4169E107BB73B00242308 /* PBXTextBookmark */ = 44C4169E107BB73B00242308 /* PBXTextBookmark */;
 			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
 			44F86C4F107A97A100F594DB /* PBXTextBookmark */ = 44F86C4F107A97A100F594DB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
 		userBuildSettings = {
+		};
+	};
+	442333F8107D3852000835F4 /* Bundle Qt for Deployment */ = {
+		activeExec = 0;
+	};
+	44233400107D3874000835F4 /* PBXTargetBookmark */ = {
+		isa = PBXTargetBookmark;
+		trg = 442333F8107D3852000835F4 /* Bundle Qt for Deployment */;
+	};
+	44233413107D38D2000835F4 /* PBXTargetBookmark */ = {
+		isa = PBXTargetBookmark;
+		trg = 442333F8107D3852000835F4 /* Bundle Qt for Deployment */;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {597, 24}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {238, 24}}";
+			TOCViewSelectedItems = (
+				"com.apple.target-editor-pane.settings",
+			);
 		};
 	};
 	442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
@@ -221,16 +243,6 @@
 		rType = 0;
 		vrLen = 500;
 		vrLoc = 76860;
-	};
-	44C4169E107BB73B00242308 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 44E3D21810545A9800677DEB /* simcraft.h */;
-		name = "simcraft.h: 2199";
-		rLen = 0;
-		rLoc = 77052;
-		rType = 0;
-		vrLen = 591;
-		vrLoc = 76769;
 	};
 	44C7A517106D4B7600A2271C /* libsimcraft */ = {
 		activeExec = 0;
