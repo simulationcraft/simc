@@ -878,7 +878,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 
 static void print_html_player( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "<h1>%s</h1>\n", p -> name() );
+  util_t::fprintf( file, "<h1>%s&nbsp;:&nbsp;%7.1fdps</h1>\n", p -> name(), p -> dps );
   util_t::fprintf( file, "<ul><li><a href=\"%s\">Talents</a><li><a href=\"%s\">Origin</a></ul>\n", p -> talents_str.c_str(), p -> origin_str.c_str() );
 
   if ( ! p -> action_dpet_chart.empty() )
