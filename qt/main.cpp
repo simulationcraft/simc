@@ -6,6 +6,6 @@ int main(int argc, char *argv[])
   thread_t::init();
   QApplication a(argc, argv);
   SimcraftWindow w;
-  w.show();
+  w.showMaximized();
   return a.exec();
 }
