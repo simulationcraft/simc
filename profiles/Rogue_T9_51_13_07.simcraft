@@ -36,28 +36,29 @@ hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57
 finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi,enchant=40ap
 finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=10crit_10agi_4agi,enchant=40ap
 trinket1=deaths_verdict,stats=288ap
-trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
-back=cloak_of_serrated_blades,stats=173armor_98ap_57crit_49arpen_85agi_85sta,gems=20agi_8ap,enchant=22agi
+trinket2=deaths_choice,stats=256ap
+back=sylvanas_cunning,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20agi_8ap,enchant=22agi
 main_hand=twin_spike,stats=84ap_44hit_44haste_58agi_66sta,gems=10crit_10agi_4agi,enchant=berserking,weapon=dagger_1.80speed_216.7dps
 off_hand=steel_bladebreaker,stats=84ap_50crit_33arpen_58agi_66sta,gems=10crit_10agi_4agi,enchant=mongoose,weapon=dagger_1.40speed_216.4dps
 ranged=talonstrike,stats=48sta_40agi_49ap_32arpen_32haste,gems=20agi,weapon=crossbow_2.80speed_240.7dps
 # Gear Summary
 # gear_strength=20
-# gear_agility=1816
-# gear_stamina=1455
+# gear_agility=1828
+# gear_stamina=1467
 # gear_intellect=20
 # gear_spirit=20
-# gear_attack_power=2785
+# gear_attack_power=2817
 # gear_expertise_rating=154
-# gear_armor_penetration_rating=497
+# gear_armor_penetration_rating=505
 # gear_hit_rating=473
-# gear_crit_rating=661
+# gear_crit_rating=669
 # gear_haste_rating=202
-# gear_armor=3902
+# gear_armor=3911
 # meta_gem=relentless_earthsiege
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_verdict
+# trinket2=deaths_choice
 # main_hand=twin_spike,weapon=dagger_1.80speed_216.7dps,enchant=berserking
 # off_hand=steel_bladebreaker,weapon=dagger_1.40speed_216.4dps,enchant=mongoose
 # ranged=talonstrike,weapon=crossbow_2.80speed_240.7dps
