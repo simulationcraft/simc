@@ -11,5 +11,13 @@ HEADERS += simcraftqt.h
 ENGINEPATH = ../libsimcraft.a
 INCLUDEPATH += ../engine
 LIBS += $$ENGINEPATH
-win32 { LIBS += -lwsock32 }
-macx { CONFIG += x86 x86_64 }
+
+win32 {
+	LIBS += -lwsock32
+	RC_FILE = simcraftqt.rc
+}
+
+macx {
+	CONFIG += x86 x86_64
+	ICON = icon/simcraft.icns
+}
