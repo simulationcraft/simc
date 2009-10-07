@@ -122,6 +122,7 @@ struct priest_t : public player_t
     int dispersion;
     int hymn_of_hope;
     int inner_fire;
+    int mind_flay;
     int penance;
     int shadow;
     int shadow_word_death;
@@ -679,10 +680,20 @@ struct shadow_word_pain_t : public priest_spell_t
 
     if ( shadow_weaving_wait )
       if ( p -> talents.shadow_weaving )
-	if ( p -> buffs_shadow_weaving -> check() < 5 )
-	  return false;
+	  if ( p -> buffs_shadow_weaving -> check() < 5 )
+	    return false;
 
     return priest_spell_t::ready();
+  }
+
+  double tick_time() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double t = base_tick_time;
+    if ( p -> sim -> P330 && p -> glyphs.shadow_word_pain ) 
+      t *= haste();
+    return t;
   }
 };
 
@@ -1154,7 +1165,7 @@ struct mind_flay_tick_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
-	p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, p -> talents.improved_spirit_tap ? 0.5 : 0.0 );
+   	    p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, p -> talents.improved_spirit_tap ? 0.5 : 0.0 );
         p -> buffs_glyph_of_shadow -> trigger();
       }
     }
@@ -1168,7 +1179,11 @@ struct mind_flay_tick_t : public priest_spell_t
     {
       if ( p -> active_shadow_word_pain )
       {
-        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 );
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
+                                   ( p -> sim -> P330 ?
+                                     ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
+                                     ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 )
+                                   );
       }
     }
   }
@@ -1816,9 +1831,10 @@ void priest_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     if      ( n == "dispersion"        ) glyphs.dispersion = 1;
-    else if ( n == "penance"           ) glyphs.penance = 1;
     else if ( n == "hymn_of_hope"      ) glyphs.hymn_of_hope = 1;
     else if ( n == "inner_fire"        ) glyphs.inner_fire = 1;
+    else if ( n == "mind_flay"         ) glyphs.mind_flay = 1;
+    else if ( n == "penance"           ) glyphs.penance = 1;
     else if ( n == "shadow"            ) glyphs.shadow = 1;
     else if ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if ( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
@@ -1831,7 +1847,6 @@ void priest_t::init_glyphs()
     else if ( n == "fortitude"         ) ;
     else if ( n == "guardian_spirit"   ) ;
     else if ( n == "levitate"          ) ;
-    else if ( n == "mind_flay"         ) ;
     else if ( n == "pain_suppression"  ) ;
     else if ( n == "power_word_shield" ) ;
     else if ( n == "prayer_of_healing" ) ;
@@ -2205,6 +2220,7 @@ std::vector<option_t>& priest_t::get_options()
       { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
       { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
+      { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
       { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
       { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
       { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
