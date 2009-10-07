@@ -33,7 +33,7 @@ static OptionEntry* getBuffOptions()
       { "Melee Haste",           "override.windfury_totem",         "Improved Icy Talons\nWindfury Totem"                                        },
       { "Replenishment",         "override.replenishment",          "Hunting Party\nImproved Soul Leech\nJudgements of the Wise\nVampiric Touch" },
       { "Spell Critical Strike", "override.moonkin_aura",           "Elemental Oath\nMoonkin Aura"                                               },
-      { "Spell Haste",           "override.wrath_of_air_totem",     "Wrath of Air Totem"                                                         },
+      { "Spell Haste",           "override.wrath_of_air",           "Wrath of Air Totem"                                                         },
       { "Spell Power",           "override.totem_of_wrath",         "Demonic Pact\nFlametongue Totem\nTotem of Wrath"                            },
       { "Spirit",                "override.divine_spirit",          "Divine Spirit\nFel Intelligence"                                            },
       { "Stamina",               "override.fortitude",              "Power Word: Fortitude"                                                      },
@@ -57,6 +57,7 @@ static OptionEntry* getDebuffOptions()
       { "Disease Damage",         "override.crypt_fever",         "Crypt Fever"                                                      },
       { "Mana Restore",           "override.judgement_of_wisdom", "Judgement of Wisdom"                                              },
       { "Physical Damange",       "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
+      { "Ranged Attack Power",    "override.hunters_mark",        "Hunter's Mark"                                                    },
       { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
       { "Spell Hit",              "override.misery",              "Improved Faerie Fire\nMisery"                                     },
@@ -285,7 +286,6 @@ void SimcraftWindow::createOptionsTab()
   globalsLayout->addRow(  "Optimal Raid",  optimalRaidChoice = createChoice( 2, "No", "Yes" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
-  optimalRaidChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox( "Globals" );
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -329,6 +329,7 @@ void SimcraftWindow::createOptionsTab()
   mainTab->addTab( optionsGroupBox, "Options" );
 
   connect( optimalRaidChoice, SIGNAL(currentIndexChanged(int)), this, SLOT(optimalRaidChanged(int)) );  
+  optimalRaidChoice->setCurrentIndex( 1 );
 }
 
 void SimcraftWindow::createImportTab()
@@ -910,6 +911,25 @@ QString SimcraftWindow::mergeOptions()
     options += "calculate_scale_factors=1\n";
   }
   options += "threads=" + threadsChoice->currentText() + "\n";
+  options += "optimal_raid=0\n";
+  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
+  OptionEntry* buffs = getBuffOptions();
+  for( int i=0; buffs[ i ].label; i++ )
+  {
+    options += buffs[ i ].option;
+    options += "=";
+    options += buttons.at( i )->isChecked() ? "1" : "0";
+    options += "\n";
+  }
+  buttons = debuffsButtonGroup->buttons();
+  OptionEntry* debuffs = getDebuffOptions();
+  for( int i=0; debuffs[ i ].label; i++ )
+  {
+    options += debuffs[ i ].option;
+    options += "=";
+    options += buttons.at( i )->isChecked() ? "1" : "0";
+    options += "\n";
+  }
   options += simulateText->toPlainText();
   options += "\n";
   options += overridesText->toPlainText();
