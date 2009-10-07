@@ -83,7 +83,7 @@ static QComboBox* createChoice( int count, ... )
 void SimcraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() == 9 )
+  if( tokens.count() >= 9 )
   {
            patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
@@ -95,11 +95,45 @@ void SimcraftWindow::decodeOptions( QString encoding )
       armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
      optimalRaidChoice->setCurrentIndex( tokens[ 8 ].toInt() );
   }
+
+  QList<QAbstractButton*> buff_buttons = buffsButtonGroup->buttons();
+  OptionEntry* buffs = getBuffOptions();
+  QList<QAbstractButton*> debuff_buttons = debuffsButtonGroup->buttons();
+  OptionEntry* debuffs = getDebuffOptions();
+  for(int i = 9; i < tokens.count(); i++)
+  {
+     QStringList opt_tokens = tokens[ i ].split(':');
+
+     if(!opt_tokens[ 0 ].compare("buff"))
+     {
+        QStringList opt_value = opt_tokens[ 1 ].split('=');
+        for(int opt=0; buffs[ opt ].label; opt++)
+        {
+           if( !opt_value[ 0 ].compare( buffs[ opt ].option ) )
+           {
+              buff_buttons.at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+              break;
+           }
+        }
+     }
+     else if( !opt_tokens[ 0 ].compare("debuff") )
+     {
+        QStringList opt_value = opt_tokens[ 1 ].split('=');
+        for(int opt=0; debuffs[ opt ].label; opt++)
+        {
+           if( !opt_value[ 0 ].compare( debuffs[ opt ].option ) )
+           {
+              debuff_buttons.at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+              break;
+           }
+        }
+     }
+   }
 }
 
 QString SimcraftWindow::encodeOptions()
 {
-  return QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
     .arg(        patchChoice->currentIndex() )
     .arg(      latencyChoice->currentIndex() )
     .arg(   iterationsChoice->currentIndex() )
@@ -108,7 +142,30 @@ QString SimcraftWindow::encodeOptions()
     .arg( scaleFactorsChoice->currentIndex() )
     .arg(      threadsChoice->currentIndex() )
     .arg(   armorySpecChoice->currentIndex() )
-    .arg(  optimalRaidChoice->currentIndex() );
+    .arg(  optimalRaidChoice->currentIndex() )
+    ;
+
+  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
+  OptionEntry* buffs = getBuffOptions();
+  for( int i=0; buffs[ i ].label; i++ )
+  {
+  	 encoded += " buff:";
+    encoded += buffs[ i ].option;
+    encoded += "=";
+    encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+
+  buttons = debuffsButtonGroup->buttons();
+  OptionEntry* debuffs = getDebuffOptions();
+  for( int i=0; debuffs[ i ].label; i++ )
+  {
+  	 encoded += " debuff:";
+    encoded += debuffs[ i ].option;
+    encoded += "=";
+    encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+  
+  return encoded;
 }
 
 void SimcraftWindow::updateSimProgress()
