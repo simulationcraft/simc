@@ -3726,8 +3726,18 @@ void warlock_t::init_actions()
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
       action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
-      if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/metamorphosis/curse_of_doom,time_to_die>=90";
+      if ( sim -> P330 )
+      {
+        action_list_str += "/corruption,time_to_die>=20";
+        action_list_str += "/metamorphosis";
+        if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
+      }
+      else
+      {
+        if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
+        action_list_str += "/metamorphosis";
+      }
+      action_list_str += "/curse_of_doom,time_to_die>=90";
       action_list_str += "/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
