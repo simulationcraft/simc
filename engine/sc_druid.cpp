@@ -40,6 +40,7 @@ struct druid_t : public player_t
   buff_t* buffs_savage_roar;
   buff_t* buffs_stealthed;
   buff_t* buffs_t8_4pc_caster;
+  buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_terror;
   buff_t* buffs_tigers_fury;
   buff_t* buffs_unseen_moon;
@@ -466,7 +467,9 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if ( a -> aoe ) return;
 
-  p -> buffs_omen_of_clarity -> trigger();
+  if ( p -> buffs_omen_of_clarity -> trigger() )
+    p -> buffs_t10_2pc_caster -> trigger();
+    
 }
 
 // trigger_infected_wounds ==================================================
@@ -985,6 +988,7 @@ struct rake_t : public druid_cat_attack_t
     base_tick_time    = 3.0;
     num_ticks         = 3;
     if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
+    tick_may_crit = ( p -> set_bonus.tier10_4pc_melee() == 1 );
 
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
@@ -1022,6 +1026,8 @@ struct rip_t : public druid_cat_attack_t
     may_crit              = false;
     requires_combo_points = true;
     base_cost             = 30;
+    if ( p -> set_bonus.tier10_2pc_melee() )
+      base_cost -= 10;
     base_tick_time        = 2.0;
 
     num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> set_bonus.tier7_2pc_melee() ? 2 : 0 );
@@ -1949,6 +1955,9 @@ void druid_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
+  if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
+    if ( p -> buffs_t10_2pc_caster -> up() )
+      player_multiplier *= 1.1;
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
@@ -3406,14 +3415,16 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "eclipse_lunar"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
-  buffs_eclipse_solar      = new buff_t( this, "eclipse_solar"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "eclipse_lunar"     , 1,  15.0,  30.0 - 6.0 * set_bonus.tier10_4pc_caster(), talents.eclipse / 5.0 );
+  buffs_eclipse_solar      = new buff_t( this, "eclipse_solar"     , 1,  15.0,  30.0 - 6.0 * set_bonus.tier10_4pc_caster(), talents.eclipse / 3.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_balance"    , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
+  buffs_t10_2pc_caster     = new buff_t( this, "t10_4pc_balance"   , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
+  
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
