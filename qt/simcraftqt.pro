@@ -7,7 +7,7 @@ TEMPLATE = app
 SOURCES += \
   main.cpp \
   sc_window.cpp
-HEADERS += simcraftqt.h
+HEADERS += simcraftqt.h sc_autoupdate.h
 ENGINEPATH = ../libsimcraft.a
 INCLUDEPATH += ../engine
 LIBS += $$ENGINEPATH
@@ -18,6 +18,9 @@ win32 {
 }
 
 macx {
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.5
 	CONFIG += x86 x86_64
 	ICON = icon/simcraft.icns
+	OBJECTIVE_SOURCES += sc_mac_update.mm
+	LIBS += -framework Sparkle
 }
