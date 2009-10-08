@@ -693,7 +693,7 @@ struct shadow_word_pain_t : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-  double tick_time() SC_CONST
+  virtual double tick_time() SC_CONST
   {
     priest_t* p = player -> cast_priest();
 

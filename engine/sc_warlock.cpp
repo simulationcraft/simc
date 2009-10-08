@@ -184,6 +184,7 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
+  int hasted_corruption;
 
   warlock_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARLOCK, name, race_type )
   {
@@ -200,6 +201,8 @@ struct warlock_t : public player_t
     active_pandemic            = 0;
     active_shadowflame         = 0;
     active_unstable_affliction = 0;
+
+    hasted_corruption = -1;
   }
 
   // Character Definition
@@ -401,6 +404,7 @@ struct warlock_pet_t : public pet_t
     }
   }
 
+
   void adjust_player_modifiers( action_t* a )
   {
     warlock_t* o = owner -> cast_warlock();
@@ -408,6 +412,24 @@ struct warlock_pet_t : public pet_t
     {
       a -> player_crit += o -> composite_spell_crit() * o -> talents.improved_demonic_tactics * 0.10;
     }
+  }
+
+  virtual double composite_attack_hit() SC_CONST
+  {
+    warlock_t* o = owner -> cast_warlock();
+    return o -> composite_spell_hit() * 8.0 / 17.0;
+  }
+
+  virtual double composite_spell_hit() SC_CONST
+  {
+    warlock_t* o = owner -> cast_warlock();
+    return o -> composite_spell_hit();
+  }
+
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    warlock_t* o = owner -> cast_warlock();
+    return o -> composite_spell_hit() * 6.5 / 17.0;
   }
 
   virtual void register_callbacks();
@@ -707,18 +729,40 @@ struct felhunter_pet_t : public warlock_pet_t
       };
       init_rank( ranks, 54053 );
 
+      base_spell_power_multiplier = 1.0;
+      base_attack_power_multiplier = 0.0;
+
+      direct_power_mod  = ( 1.5 / 3.5 ); // Converting from Pet Attack Power into Pet Spell Power.
+      may_crit          = true;
+
       cooldown = 6.0;
 
       if ( sim -> P330 )
         cooldown -= 2.0 * o -> talents.improved_felhunter;
     }
+      
+    virtual void execute()
+    {
+      felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
+      warlock_t*       o = p -> owner -> cast_warlock();
+
+      warlock_pet_attack_t::execute();
+
+      if ( result_is_hit() && o -> talents.improved_felhunter )
+      {
+        double amount = p -> resource_max[ RESOURCE_MANA ] * o -> talents.improved_felhunter * 0.04;
+
+        p -> resource_gain( RESOURCE_MANA, amount );
+      }
+    }
+
     virtual void player_buff()
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
+      player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
       player_multiplier *= 1.0 + o -> active_dots() * ( o -> sim -> P330 ? 0.15 : 0.05 );
-      if ( o -> glyphs.felhunter ) player_crit += 0.06;
     }
   };
 
@@ -726,10 +770,10 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.5;
+    main_hand_weapon.damage     = 309.6;
     main_hand_weapon.swing_time = 2.0;
 
-    damage_modifier = 0.8;
+//    damage_modifier = 0.8;
 
     action_list_str = "shadow_bite/wait";
   }
@@ -739,11 +783,30 @@ struct felhunter_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
 
-    resource_base[ RESOURCE_HEALTH ] = 1468;
+    resource_base[ RESOURCE_HEALTH ] = 4788;
     resource_base[ RESOURCE_MANA   ] = 1559;
 
+    attribute_base[ ATTR_STRENGTH  ] = 314;
+    attribute_base[ ATTR_AGILITY   ] = 90;
+    attribute_base[ ATTR_STAMINA   ] = 328;
+    attribute_base[ ATTR_INTELLECT ] = 150;
+    attribute_base[ ATTR_SPIRIT    ] = 209;
+
+    base_attack_power = -20;
+    initial_attack_power_per_strength = 2.0;
+    initial_attack_crit_per_agility   = 0.01 / 52.0;
+
+    health_per_stamina = 9.5;
+    mana_per_intellect = 11.55;
+    mp5_per_intellect  = 8.0 / 324.0;
+
+    base_mp5 = 11.22;
+
+    base_attack_crit = 0.0327;
+ 
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -1896,6 +1959,18 @@ struct corruption_t : public warlock_spell_t
   {
     base_td = base_td_init;
     warlock_spell_t::execute();
+  }
+
+  virtual double tick_time() SC_CONST
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    double t = base_tick_time;
+    if ( p -> hasted_corruption == 0 )
+      return t;
+    if ( p -> hasted_corruption > 0 )
+      t *= haste();
+    return t;
   }
 
   virtual void tick()
@@ -3680,6 +3755,8 @@ void warlock_t::init_actions()
         summon_pet_str = "felguard";
       else if ( talents.empowered_imp || talents.improved_imp )
         summon_pet_str = "imp";
+      else if ( talents.improved_felhunter )
+        summon_pet_str = "felhunter";
       else
         summon_pet_str = "succubus";
     }
@@ -3726,13 +3803,17 @@ void warlock_t::init_actions()
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
       action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
-      action_list_str += "/corruption,time_to_die>=20,P330=1";
       action_list_str += "/metamorphosis,P330=1";
+      action_list_str += "/corruption,time_to_die>=20,P330=1";
+      action_list_str += "/curse_of_doom,health_percentage>=35,P330=1";
+      action_list_str += "/curse_of_agony,time_to_die>=24,P330=1";
+      action_list_str += "/immolation,P330=1";
       if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
+      action_list_str += "/immolate,health_percentage>=35,P330=1";
       action_list_str += "/metamorphosis,P330=0";
-      action_list_str += "/curse_of_doom,time_to_die>=90";
-      action_list_str += "/immolation,health_percentage>=35/immolate";
-      action_list_str += "/corruption,health_percentage>=35,P330=0";
+      action_list_str += "/curse_of_doom,time_to_die>=90,P330=0";
+      action_list_str += "/immolation,health_percentage>=35,P330=0/immolate,P330=0";
+      action_list_str += "/corruption,health_percentage>=35";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
     {
@@ -3991,6 +4072,7 @@ std::vector<option_t>& warlock_t::get_options()
       { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
       // @option_doc loc=player/warlock/misc title="Misc"
       { "summon_pet",               OPT_STRING, &( summon_pet_str                 ) },
+      { "hasted_corruption",        OPT_INT,  &( hasted_corruption                ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
