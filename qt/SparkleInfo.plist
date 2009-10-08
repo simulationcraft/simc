@@ -6,7 +6,7 @@
 	<string>simcraft.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-    <key>CFBundleGetInfoString</key>
+	<key>CFBundleGetInfoString</key>
 	<string>Simcraft Qt for OSX</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
@@ -14,6 +14,8 @@
 	<string>simcraftqt</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.googlecode.simulationcraft</string>
+	<key>CFBundleVersion</key>
+	<key>0.1.0 (GIT-REV-PARSE-HERE)</key>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 </dict>

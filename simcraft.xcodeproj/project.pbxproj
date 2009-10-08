@@ -437,8 +437,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "macdeployqt simcraftqt.app\ncp -a dsa_pub.pem Examples.simcraft Welcome.html Legend.html simcraftqt.app/Contents/Resources/";
+			shellPath = /bin/bash;
+			shellScript = "macdeployqt simcraftqt.app\ncp -a dsa_pub.pem Examples.simcraft Welcome.html Legend.html simcraftqt.app/Contents/Resources/\ngit --version && sed -ie s/GIT-REV-PARSE-HERE/`git rev-parse --short HEAD`/ simcraftqt.app/Contents/Info.plist";
 		};
 /* End PBXShellScriptBuildPhase section */
 
