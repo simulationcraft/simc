@@ -696,6 +696,9 @@ struct felhunter_pet_t : public warlock_pet_t
     shadow_bite_t( player_t* player ) :
         warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
+      felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
+      warlock_t*       o = p -> owner -> cast_warlock();
+
       static rank_t ranks[] =
       {
         { 74, 5, 118, 118, 0, 0.03 },
@@ -705,13 +708,16 @@ struct felhunter_pet_t : public warlock_pet_t
       init_rank( ranks, 54053 );
 
       cooldown = 6.0;
+
+      if ( sim -> P330 )
+        cooldown -= 2.0 * o -> talents.improved_felhunter;
     }
     virtual void player_buff()
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
-      player_multiplier *= 1.0 + o -> active_dots() * 0.05;
+      player_multiplier *= 1.0 + o -> active_dots() * ( o -> sim -> P330 ? 0.15 : 0.05 );
       if ( o -> glyphs.felhunter ) player_crit += 0.06;
     }
   };
@@ -1073,6 +1079,11 @@ void warlock_spell_t::player_buff()
   if ( p -> buffs_metamorphosis -> up() )
   {
     player_multiplier *= 1.20;
+  }
+
+  if ( p -> sim -> P330 )
+  {
+    player_multiplier *= 1.0 + ( p -> talents.demonic_pact * 0.01 );
   }
 
   if ( p -> talents.malediction ) player_multiplier *= 1.0 + p -> talents.malediction * 0.01;
@@ -2382,37 +2393,64 @@ struct conflagrate_t : public warlock_spell_t
                            + p -> set_bonus.tier8_2pc_caster() * 0.10
                            + p -> set_bonus.tier9_4pc_caster() * 0.10;
 
-    base_multiplier *= 0.8; // 12 seconds of immolate means 80% of immolate damage
-
     base_crit += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
+    if ( sim -> P330 )
+    {
+      base_tick_time    = 3.0;
+      num_ticks         = 1;
+    }
+
     cancel_dot = ( ! p -> glyphs.conflagrate );
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if ( ! p -> sim -> P330 )
+      return 0.0;
+    if ( ! dot_spell ) 
+      return 0.0;
+
+    base_td = ( ( *dot_spell ) -> base_td_init   );
+    tick_power_mod            = ( ( *dot_spell ) -> tick_power_mod );
+
+    player_spell_power = ( *dot_spell ) -> player_spell_power;
+
+    return warlock_spell_t::calculate_tick_damage();
   }
 
   virtual double calculate_direct_damage()
   {
     warlock_t* p = player -> cast_warlock();
+    double temp_num_ticks = 0;
+
     if ( p -> active_immolate && ! p -> active_shadowflame )
     {
       dot_spell = &( p -> active_immolate );
+      temp_num_ticks = p -> sim -> P330 ? 3 : 4;
     }
     else if ( ! p -> active_immolate && p -> active_shadowflame )
     {
       dot_spell = &( p -> active_shadowflame );
+      temp_num_ticks = 4;
     }
     else if ( sim -> rng -> roll( 0.50 ) )
     {
       dot_spell = &( p -> active_immolate );
+      temp_num_ticks = p -> sim -> P330 ? 3 : 4;
     }
     else
     {
       dot_spell = &( p -> active_shadowflame );
+      temp_num_ticks = 4;
     }
 
-    base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   ) * ( ( *dot_spell ) -> num_ticks );
-    direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod ) * ( ( *dot_spell ) -> num_ticks );
+    base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   ) * temp_num_ticks;
+    direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod ) * temp_num_ticks;
 
     player_spell_power = ( *dot_spell ) -> player_spell_power;
 
@@ -2461,7 +2499,7 @@ struct conflagrate_t : public warlock_spell_t
       }
 
       if ( ticks_remaining > ticks_lost )
-	return false;
+	      return false;
     }
 
 
@@ -2664,7 +2702,8 @@ struct soul_fire_t : public warlock_spell_t
     {
       trigger_soul_leech( this );
     }
-    p -> buffs_decimation -> expire();
+    if ( ! p -> sim -> P330 )
+      p -> buffs_decimation -> expire();
   }
 
   virtual double execute_time() SC_CONST
@@ -2693,6 +2732,25 @@ struct soul_fire_t : public warlock_spell_t
     }
 
     return warlock_spell_t::ready();
+  }
+
+  virtual void schedule_travel()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    warlock_spell_t::schedule_travel();
+    if ( p -> sim -> P330 )
+      queue_decimation( this );
+  }
+
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    warlock_spell_t::travel( travel_result, travel_dmg );
+    if ( p -> sim -> P330 )
+      trigger_decimation( this, travel_result );
   }
 };
 
@@ -3517,7 +3575,7 @@ void warlock_t::init_buffs()
   player_t::init_buffs();
 
   buffs_backdraft           = new buff_t( this, "backdraft",           3, 15.0, 0.0, talents.backdraft );
-  buffs_decimation          = new buff_t( this, "decimation",          1, 10.0, 0.0, talents.decimation );
+  buffs_decimation          = new buff_t( this, "decimation",          1, sim -> P330 ? 8.0 : 10.0, 0.0, talents.decimation );
   buffs_demonic_empowerment = new buff_t( this, "demonic_empowerment", 1 );
   buffs_demonic_frenzy      = new buff_t( this, "demonic_frenzy",     10, 10.0 );
   buffs_empowered_imp       = new buff_t( this, "empowered_imp",       1,  8.0, 0.0, talents.empowered_imp / 3.0 );
@@ -3787,7 +3845,7 @@ std::vector<talent_translation_t>& warlock_t::get_talent_list()
     { { 14, 5, &( talents.shadow_embrace          ), 4, 0}, { 14, 1, &( talents.mana_feed                ), 4,12}, { 14, 1, &( talents.devastation           ), 4, 8} },
     { { 15, 1, &( talents.siphon_life             ), 4, 0}, { 15, 2, &( talents.master_conjuror          ), 4, 0}, { 15, 3, NULL                              , 5, 0} },
     { { 16, 1, NULL                                , 4,10}, { 16, 5, &( talents.master_demonologist      ), 4,12}, { 16, 5, &( talents.emberstorm            ), 5, 0} },
-	{ { 17, 2, &( talents.improved_felhunter      ), 5, 0}, { 17, 3, &( talents.molten_core              ), 5, 0}, { 17, 1, &( talents.conflagrate           ), 6,13} },
+	  { { 17, 2, &( talents.improved_felhunter      ), 5, 0}, { 17, 3, &( talents.molten_core              ), 5, 0}, { 17, 1, &( talents.conflagrate           ), 6,13} },
     { { 18, 5, &( talents.shadow_mastery          ), 5,15}, { 18, 3, NULL                                 , 5, 0}, { 18, 3, &( talents.soul_leech            ), 6, 0} },
     { { 19, 3, &( talents.eradication             ), 6, 0}, { 19, 1, &( talents.demonic_empowerment      ), 6,16}, { 19, 3, &( talents.pyroclasm             ), 6, 0} },
     { { 20, 5, &( talents.contagion               ), 6, 0}, { 20, 3, &( talents.demonic_knowledge        ), 6, 0}, { 20, 5, &( talents.shadow_and_flame      ), 7, 0} },
