@@ -438,7 +438,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "macdeployqt simcraftqt.app\ncp -a Examples.simcraft Welcome.html Legend.html simcraftqt.app/Contents/Resources/";
+			shellScript = "macdeployqt simcraftqt.app\ncp -a dsa_pub.pem Examples.simcraft Welcome.html Legend.html simcraftqt.app/Contents/Resources/";
 		};
 /* End PBXShellScriptBuildPhase section */
 
