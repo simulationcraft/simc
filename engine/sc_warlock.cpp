@@ -2354,11 +2354,13 @@ struct conflagrate_t : public warlock_spell_t
 {
   int  ticks_lost;
   bool cancel_dot;
+  bool immolate_dot;
 
   action_t** dot_spell;
 
   conflagrate_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true ), dot_spell( 0 )
+      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true ), 
+                       immolate_dot( true), dot_spell( 0 )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.conflagrate );
@@ -2385,14 +2387,6 @@ struct conflagrate_t : public warlock_spell_t
     base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
-    base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
-                           + p -> talents.improved_immolate * 0.10
-                           + p -> glyphs.immolate           * 0.10;
-
-    base_multiplier *= 1.0 + p -> talents.emberstorm           * 0.03
-                           + p -> set_bonus.tier8_2pc_caster() * 0.10
-                           + p -> set_bonus.tier9_4pc_caster() * 0.10;
-
     base_crit += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
@@ -2409,37 +2403,79 @@ struct conflagrate_t : public warlock_spell_t
   virtual double calculate_tick_damage()
   {
     warlock_t* p = player -> cast_warlock();
+    double d;
+    double base_mult = base_multiplier;
 
     if ( ! p -> sim -> P330 )
       return 0.0;
 
-    return warlock_spell_t::calculate_tick_damage();
+    if ( immolate_dot )
+    {
+      base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
+                             + p -> talents.improved_immolate * 0.10
+                             + p -> glyphs.immolate           * 0.10;
+
+      base_multiplier *= 1.0 + p -> talents.emberstorm           * 0.03
+                             + p -> set_bonus.tier8_2pc_caster() * 0.10
+                             + p -> set_bonus.tier9_4pc_caster() * 0.10;
+    }
+    else
+    {
+      base_multiplier *=  1.0 + p -> talents.emberstorm          * 0.03;
+    }
+
+    d = warlock_spell_t::calculate_tick_damage();
+
+    base_multiplier = base_mult;
+
+    return d;
   }
 
   virtual double calculate_direct_damage()
   {
     warlock_t* p = player -> cast_warlock();
     double temp_num_ticks = 0;
+    double d;
+    double base_mult = base_multiplier;
 
     if ( p -> active_immolate && ! p -> active_shadowflame )
     {
       dot_spell = &( p -> active_immolate );
       temp_num_ticks = p -> sim -> P330 ? 3 : 4;
+      immolate_dot = true;
     }
     else if ( ! p -> active_immolate && p -> active_shadowflame )
     {
       dot_spell = &( p -> active_shadowflame );
       temp_num_ticks = 4;
+      immolate_dot = false;
     }
     else if ( sim -> rng -> roll( 0.50 ) )
     {
       dot_spell = &( p -> active_immolate );
       temp_num_ticks = p -> sim -> P330 ? 3 : 4;
+      immolate_dot = true;
     }
     else
     {
       dot_spell = &( p -> active_shadowflame );
       temp_num_ticks = 4;
+      immolate_dot = false;
+    }
+
+    if ( immolate_dot )
+    {
+      base_multiplier *= 1.0 + p -> talents.aftermath         * 0.03
+                             + p -> talents.improved_immolate * 0.10
+                             + p -> glyphs.immolate           * 0.10;
+
+      base_multiplier *= 1.0 + p -> talents.emberstorm           * 0.03
+                             + p -> set_bonus.tier8_2pc_caster() * 0.10
+                             + p -> set_bonus.tier9_4pc_caster() * 0.10;
+    }
+    else
+    {
+      base_multiplier *=  1.0 + p -> talents.emberstorm          * 0.03;
     }
 
     base_dd_min = base_dd_max = ( ( *dot_spell ) -> base_td_init   ) * temp_num_ticks;
@@ -2453,7 +2489,11 @@ struct conflagrate_t : public warlock_spell_t
       tick_power_mod            = ( ( *dot_spell ) -> tick_power_mod );
     }
 
-    return warlock_spell_t::calculate_direct_damage();
+    d = warlock_spell_t::calculate_direct_damage();
+
+    base_multiplier = base_mult;
+
+    return d;
   }
 
   virtual void execute()
