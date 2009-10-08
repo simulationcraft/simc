@@ -14,6 +14,8 @@ int main(int argc, char *argv[])
 
   CocoaInitializer cocoaInitializer;
   updater = new SparkleAutoUpdater("http://simcraft.rungie.com/simcraftqt/update.xml");
+  QDir::home().mkpath("Library/Application Support/simcraftqt");
+  QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcraftqt"));
 
 #endif
   
