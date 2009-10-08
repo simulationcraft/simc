@@ -152,6 +152,9 @@ struct priest_t : public player_t
   constants_t constants;
 
   bool   use_shadow_word_death;
+  int    hasted_devouring_plague;
+  int    hasted_shadow_word_pain;
+  int    hasted_vampiric_touch;
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
   {
@@ -163,6 +166,9 @@ struct priest_t : public player_t
     active_vampiric_embrace  = 0;
 
     use_shadow_word_death = false;
+    hasted_devouring_plague  = -1;
+    hasted_shadow_word_pain  = -1;
+    hasted_vampiric_touch    = -1;
 
     max_mana_cost = 0.0;
 
@@ -691,7 +697,10 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     double t = base_tick_time;
-    if ( p -> sim -> P330 && p -> glyphs.shadow_word_pain ) 
+    if ( p -> hasted_shadow_word_pain == 0 )
+      return t;
+
+    if ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> glyphs.shadow_word_pain ) )
       t *= haste();
     return t;
   }
@@ -750,6 +759,19 @@ struct vampiric_touch_t : public priest_spell_t
     {
       trigger_misery( this );
     }
+  }
+
+  double tick_time() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double t = base_tick_time;
+    if ( p -> hasted_vampiric_touch == 0 )
+      return t;
+
+    if ( p -> hasted_vampiric_touch > 0 )
+      t *= haste();
+    return t;
   }
 };
 
@@ -896,6 +918,19 @@ struct devouring_plague_t : public priest_spell_t
   {
     if ( devouring_plague_burst && type == DMG_DIRECT ) return;
     priest_spell_t::update_stats( type );
+  }
+
+  double tick_time() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double t = base_tick_time;
+    if ( p -> hasted_devouring_plague == 0 )
+      return t;
+
+    if ( p -> hasted_devouring_plague > 0 )
+      t *= haste();
+    return t;
   }
 };
 
@@ -2242,6 +2277,9 @@ std::vector<option_t>& priest_t::get_options()
       { "const.vampiric_touch_power_mod",           OPT_FLT,    &( constants.vampiric_touch_power_mod         ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
+      { "hasted_devouring_plague",                  OPT_INT,    &( hasted_devouring_plague                    ) },
+      { "hasted_shadow_word_pain",                  OPT_INT,    &( hasted_shadow_word_pain                    ) },
+      { "hasted_vampiric_touch",                    OPT_INT,    &( hasted_vampiric_touch                      ) },
       { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
