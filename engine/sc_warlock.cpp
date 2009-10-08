@@ -2358,7 +2358,7 @@ struct conflagrate_t : public warlock_spell_t
   action_t** dot_spell;
 
   conflagrate_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true )
+      warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), ticks_lost( 0 ), cancel_dot( true ), dot_spell( 0 )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.conflagrate );
@@ -2412,13 +2412,6 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( ! p -> sim -> P330 )
       return 0.0;
-    if ( ! dot_spell ) 
-      return 0.0;
-
-    base_td = ( ( *dot_spell ) -> base_td_init   );
-    tick_power_mod            = ( ( *dot_spell ) -> tick_power_mod );
-
-    player_spell_power = ( *dot_spell ) -> player_spell_power;
 
     return warlock_spell_t::calculate_tick_damage();
   }
@@ -2453,6 +2446,12 @@ struct conflagrate_t : public warlock_spell_t
     direct_power_mod          = ( ( *dot_spell ) -> tick_power_mod ) * temp_num_ticks;
 
     player_spell_power = ( *dot_spell ) -> player_spell_power;
+
+    if ( p -> sim -> P330 )
+    {
+      base_td = ( ( *dot_spell ) -> base_td_init   );
+      tick_power_mod            = ( ( *dot_spell ) -> tick_power_mod );
+    }
 
     return warlock_spell_t::calculate_direct_damage();
   }
