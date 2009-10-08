@@ -316,6 +316,10 @@ void SimcraftWindow::createWelcomeTab()
   QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html was unable to load.</div>";
 
   QFile file( "Welcome.html" );
+  if( !file.exists() )
+  {
+    file.setFileName( "simcraftqt.app/Contents/Resources/Welcome.html" );
+  }
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -618,6 +622,10 @@ void SimcraftWindow::createExamplesTab()
   QString s = "# If you are seeing this text, then Examples.simcraft was unable to load.";
 
   QFile file( "Examples.simcraft" );
+  if( !file.exists() )
+  {
+    file.setFileName( "simcraftqt.app/Contents/Resources/Examples.simcraft" );
+  }
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -634,6 +642,10 @@ void SimcraftWindow::createResultsTab()
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
 
   QFile file( "Legend.html" );
+  if( !file.exists() )
+  {
+    file.setFileName( "simcraftqt.app/Contents/Resources/Legend.html" );
+  }
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
