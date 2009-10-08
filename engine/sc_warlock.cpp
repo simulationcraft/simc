@@ -3738,7 +3738,11 @@ void warlock_t::init_actions()
         action_list_str += "/metamorphosis";
       }
       action_list_str += "/curse_of_doom,time_to_die>=90";
-      action_list_str += "/immolation,health_percentage>=35/immolate/corruption,health_percentage>=35";
+      action_list_str += "/immolation,health_percentage>=35/immolate";
+      if ( ! sim -> P330 )
+      {
+        action_list_str += "/corruption,health_percentage>=35";
+      }
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
     {
