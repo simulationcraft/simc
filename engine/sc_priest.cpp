@@ -662,6 +662,7 @@ struct shadow_word_pain_t : public priest_spell_t
                                p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
     base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> talents.mind_melt * 0.03;
+    base_crit += p -> set_bonus.tier10_2pc_caster() ? 0.05 : 0.00;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
 
@@ -743,6 +744,7 @@ struct vampiric_touch_t : public priest_spell_t
     base_multiplier *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit       += p -> talents.mind_melt * 0.03;
+    base_crit       += p -> set_bonus.tier10_2pc_caster() ? 0.05 : 0.00;
 
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
 
@@ -884,6 +886,7 @@ struct devouring_plague_t : public priest_spell_t
                                 p -> set_bonus.tier8_2pc_caster()      * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.03;
+    base_crit        += p -> set_bonus.tier10_2pc_caster() ? 0.05 : 0.00;
 
     if ( p -> talents.improved_devouring_plague )
     {
@@ -1253,6 +1256,11 @@ struct mind_flay_t : public priest_spell_t
     channeled      = true;
     num_ticks      = 3;
     base_tick_time = 1.0;
+
+    if ( p -> set_bonus.tier10_4pc_caster() )
+    {
+      base_tick_time *= 0.49;   // FIX-ME: Obviously a place-holder value based on the PTR build at the time.
+    }
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - ( p -> talents.focused_mind * 0.05 +
