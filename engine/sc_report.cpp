@@ -878,41 +878,110 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 
 static void print_html_player( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "<h1>%s&nbsp;:&nbsp;%7.1fdps</h1>\n", p -> name(), p -> dps );
-  util_t::fprintf( file, "<ul><li><a href=\"%s\">Talents</a><li><a href=\"%s\">Origin</a></ul>\n", p -> talents_str.c_str(), p -> origin_str.c_str() );
+  char buffer[ 4096 ];
+
+  util_t::fprintf( file, "<h1>%s&nbsp;:&nbsp;%.0fdps</h1>\n", p -> name(), p -> dps );
+
+  util_t::fprintf( file, "<style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n" );
+
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   "  <tr> <th>Name</th> <th>Race</th> <th>Class</th> <th>Tree</th> <th>Level</th> </tr>\n"
+		   "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
+		   "</table><br />\n",
+		   p -> name(), p -> race_str.c_str(), 
+		   util_t::player_type_string( p -> type ),
+		   util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> </tr>\n"
+		   "  <tr> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td>\n"
+		   "</table><br />\n",
+		   p -> dps, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ) );
+
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   "  <tr> <th>Origin</th> <td><a href=\"%s\">%s</a></td>\n"
+		   "</table><br />\n",
+		   p -> origin_str.c_str(), p -> origin_str.c_str() );
+
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   "  <tr> <th>Talents</th> <td><a href=\"%s\">%s</a></td>\n"
+		   "</table><br />\n",
+		   p -> talents_str.c_str(), p -> talents_str.c_str() );
+
+  util_t::fprintf( file, "<table class=\"player\"> <tr> <th>Glyphs</th>" );
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
+  for ( int i=0; i < num_glyphs; i++ )
+  {
+    util_t::fprintf( file, " <td>%s</td>", glyph_names[ i ].c_str() );
+  }
+  util_t::fprintf( file, " </tr> </table> <br />\n" );
+
+  std::string action_dpet_str       = "empty";
+  std::string action_dmg_str        = "empty";
+  std::string gains_str             = "empty";
+  std::string timeline_resource_str = "empty";
+  std::string timeline_dps_str      = "empty";
+  std::string distribution_dps_str  = "empty";
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    util_t::fprintf( file, "\n<!-- %s Damage Per Execute Time: -->\n", p -> name() );
-    util_t::fprintf( file, "<img name=\"chart_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+    snprintf( buffer, 4095, "<img name=\"chart_action_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+    action_dpet_str = buffer;
   }
-
   if ( ! p -> action_dmg_chart.empty() )
   {
-    util_t::fprintf( file, "\n<!-- %s Damage Sources: -->\n", p -> name() );
-    util_t::fprintf( file, "<img name=\"chart_sources\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+    snprintf( buffer, 4095, "<img name=\"chart_action_dmg\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+    action_dmg_str = buffer;
   }
-
-  util_t::fprintf( file, "<br />\n" );
-
   if ( ! p -> gains_chart.empty() )
   {
-    util_t::fprintf( file, "\n<!-- %s Resource Gains: -->\n", p -> name() );
-    util_t::fprintf( file, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+    snprintf( buffer, 4095, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+    gains_str = buffer;
+  }
+  if ( ! p -> timeline_resource_chart.empty() )
+  {
+    snprintf( buffer, 4095, "<img name=\"chart_timeline_resource\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+    timeline_resource_str = buffer;
+  }
+  if ( ! p -> timeline_dps_chart.empty() )
+  {
+    snprintf( buffer, 4095, "<img name=\"chart_timeline_dps\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+    timeline_dps_str = buffer;
+  }
+  if ( ! p -> distribution_dps_chart.empty() )
+  {
+    snprintf( buffer, 4095, "<img name=\"chart_distribution_dps\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+    distribution_dps_str = buffer;
   }
 
-  util_t::fprintf( file, "\n<!-- %s Resource Timeline: -->\n", p -> name() );
-  util_t::fprintf( file, "<img name=\"chart_resource_timeline\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+		   "</table>\n"
+		   "<hr />\n",
+		   action_dpet_str.c_str(), action_dmg_str.c_str(),
+		   gains_str.c_str(), timeline_resource_str.c_str(),
+		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
-  util_t::fprintf( file, "<br />\n" );
+  // action details here.....
 
-  util_t::fprintf( file, "\n<!-- %s DPS Timeline: -->\n", p -> name() );
-  util_t::fprintf( file, "<img name=\"chart_dps_timeline\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th></th> <th>Action Priority List</th> </tr>\n" );
+  std::vector<std::string> action_names;
+  int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
+  for ( int i=0; i < num_actions; i++ )
+  {
+    util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, action_names[ i ].c_str() );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
 
-  util_t::fprintf( file, "\n<!-- %s DPS Distribution: -->\n", p -> name() );
-  util_t::fprintf( file, "<img name=\"chart_dps_distribution\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
-
-  util_t::fprintf( file, "<hr />\n" );
 }
 
 // print_html_text ===========================================================

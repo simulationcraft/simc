@@ -7,5 +7,6 @@ int main(int argc, char *argv[])
   QApplication a(argc, argv);
   SimcraftWindow w;
   w.showMaximized();
+  w.cmdLine->setFocus();
   return a.exec();
 }

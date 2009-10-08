@@ -25,8 +25,8 @@ static OptionEntry* getBuffOptions()
       { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
       { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
       { "Bloodlust",             "override.bloodlust",              "Bloodlust\nHeroism"                                                         },
-      { "Damage (%)",            "override.sanctified_retribution", "Arcane Empowerment\nFerocious Inspiration\nSanctified Retribution"          },
-      { "Haste (%)",             "override.swift_retribution",      "Improved Moonkin Form\nSwift Retribution"                                   },
+      { "All Damage",            "override.sanctified_retribution", "Arcane Empowerment\nFerocious Inspiration\nSanctified Retribution"          },
+      { "All Haste",             "override.swift_retribution",      "Improved Moonkin Form\nSwift Retribution"                                   },
       { "Intellect",             "override.arcane_brilliance",      "Arcane Intellect"                                                           },
       { "Mana Regen",            "override.blessing_of_wisdom",     "Blessing of Wisdom\nMana Spring Totem"                                      },
       { "Melee Critical Strike", "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
@@ -609,6 +609,7 @@ void SimcraftWindow::createLogTab()
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
   logText->document()->setDefaultFont( QFont( "fixed" ) );
   logText->setReadOnly(true);
+  logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );
   mainTab->addTab( logText, "Log" );
 }
 
@@ -1166,7 +1167,7 @@ void SimcraftWindow::backButtonClicked( bool checked )
   {
     if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
-      visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) ] );
+      visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) - 1 ] );
       visibleWebView->history()->clear();
     }
     else
