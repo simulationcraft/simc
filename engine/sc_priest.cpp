@@ -700,8 +700,12 @@ struct shadow_word_pain_t : public priest_spell_t
     double t = base_tick_time;
     if ( p -> hasted_shadow_word_pain == 0 )
       return t;
-
+// FIX-ME. Disabled the 3.3.0 checking for now until the discussed option for implementing it in game shows up on the PTR.
+#if 0
     if ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> glyphs.shadow_word_pain ) )
+#else
+    if ( p -> hasted_shadow_word_pain > 0 )
+#endif
       t *= haste();
     return t;
   }
@@ -1217,11 +1221,16 @@ struct mind_flay_tick_t : public priest_spell_t
     {
       if ( p -> active_shadow_word_pain )
       {
+// FIX-ME: At present the hasted DoT thing is only talk. Once it shows up on the PTR can switch to coding it like this. In the meantime there's still hasted_shadow_word_pain=1
+#if 0
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
                                    ( p -> sim -> P330 ?
                                      ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
                                      ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 )
                                    );
+#else
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 );
+#endif
       }
     }
   }
