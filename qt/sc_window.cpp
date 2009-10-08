@@ -675,6 +675,8 @@ void SimcraftWindow::createToolTips()
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
+  optimalRaidChoice->setToolTip( "Toggles all of the Buffs/Debuffs buttons." );
+
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }

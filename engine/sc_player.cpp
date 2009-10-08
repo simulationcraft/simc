@@ -2978,7 +2978,8 @@ struct snapshot_stats_t : public action_t
       attack -> player_buff();
       attack -> target_debuff( DMG_DIRECT );
       double chance = attack -> miss_chance( delta_level );
-      if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.attack_hit;
+      if( p -> dual_wield() ) chance += 0.19;
+      if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
       chance = attack -> dodge_chance( delta_level );
       if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
     }
