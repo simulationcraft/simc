@@ -56,7 +56,7 @@ static OptionEntry* getDebuffOptions()
       { "Critical Strike",        "override.totem_of_wrath",      "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
       { "Disease Damage",         "override.crypt_fever",         "Crypt Fever"                                                      },
       { "Mana Restore",           "override.judgement_of_wisdom", "Judgement of Wisdom"                                              },
-      { "Physical Damange",       "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
+      { "Physical Damage",        "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
       { "Ranged Attack Power",    "override.hunters_mark",        "Hunter's Mark"                                                    },
       { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
