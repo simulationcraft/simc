@@ -704,65 +704,6 @@ static void print_hat_donors( FILE* file, sim_t* sim )
   }
 }
 
-// print_html_menu_definition ================================================
-
-static void print_html_menu_definition( FILE*  file, sim_t* sim )
-{
-  util_t::fprintf( file, "<script type=\"text/javascript\">\n"
-                   "function hideElement(el) {if (el) el.style.display='none';}\n"
-                   "function showElement(el) {if (el) el.style.display='';}\n"
-                   "function hideElements(els) {if (els) {"
-                   "for (var i = 0; i < els.length; i++) hideElement(els[i]);"
-                   "}}\n"
-                   "function showElements(els) {if (els) {"
-                   "for (var i = 0; i < els.length; i++) showElement(els[i]);"
-                   "}}\n"
-                   "</script>\n" );
-}
-
-// print_html_menu_triggers ==================================================
-
-static void print_html_menu_triggers( FILE*  file, sim_t* sim )
-{
-  util_t::fprintf( file, "<a href=\"javascript:hideElement(document.getElementById('trigger_menu'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElement(document.getElementById('trigger_menu'));\">+</a> " );
-  util_t::fprintf( file, "Menu\n" );
-
-  util_t::fprintf( file, "<div id=\"trigger_menu\" style=\"display:none;\">\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementById('players').getElementsByTagName('img'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementById('players').getElementsByTagName('img'));\">+</a> " );
-  util_t::fprintf( file, "All Charts<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dpet'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dpet'));\">+</a> " );
-  util_t::fprintf( file, "DamagePerExecutionTime<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_sources'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_sources'));\">+</a> " );
-  util_t::fprintf( file, "Damage Sources<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_gains'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_gains'));\">+</a> " );
-  util_t::fprintf( file, "Resource Gains<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_resource_timeline'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_resource_timeline'));\">+</a> " );
-  util_t::fprintf( file, "Resource Timeline<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_timeline'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_timeline'));\">+</a> " );
-  util_t::fprintf( file, "DPS Timeline<br />\n" );
-
-  util_t::fprintf( file, "  <a href=\"javascript:hideElements(document.getElementsByName('chart_dps_distribution'));\">-</a> " );
-  util_t::fprintf( file, "<a href=\"javascript:showElements(document.getElementsByName('chart_dps_distribution'));\">+</a> " );
-  util_t::fprintf( file, "DPS Distribution<br />\n" );
-
-  util_t::fprintf( file, "</div>\n" );//trigger_menu
-
-  util_t::fprintf( file, "<hr />\n" );
-}
-
 // print_html_raid ===========================================================
 
 static void print_html_raid( FILE*  file, sim_t* sim )
@@ -811,25 +752,31 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
 
   util_t::fprintf( file, "<table class=\"scale_factors\">\n" );
-  util_t::fprintf( file, "  <tr>\n    <th>profile</th>\n" );
-  for ( int i=0; i < STAT_MAX; i++ )
-  {
-    if ( sim -> scaling -> stats.get_stat( i ) != 0 )
-    {
-      util_t::fprintf( file, "    <th>%s</th>\n", util_t::stat_type_abbrev( i ) );
-    }
-  }
-  util_t::fprintf( file, "    <th>Lag</th>\n      </tr>\n" );
 
   std::string buffer;
   int num_players = ( int ) sim -> players_by_name.size();
+  int prev_type = PLAYER_NONE;
 
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    util_t::fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
+    if( p -> type != prev_type )
+    {
+      prev_type = p -> type;
 
+      util_t::fprintf( file, "  <tr>\n    <th>profile</th>\n" );
+      for ( int i=0; i < STAT_MAX; i++ )
+      {
+	if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+        {
+	  util_t::fprintf( file, "    <th>%s</th>\n", util_t::stat_type_abbrev( i ) );
+	}
+      }
+      util_t::fprintf( file, "      </tr>\n" );
+    }
+
+    util_t::fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
@@ -837,8 +784,6 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
         util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling.get_stat( j ) );
       }
     }
-
-    util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling_lag );
     util_t::fprintf( file, "  </tr>\n" );
   }
   util_t::fprintf( file, "</table>\n" );
@@ -872,6 +817,43 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   }
   util_t::fprintf( file, "</table>\n" );
   util_t::fprintf( file, "<hr />\n" );
+}
+
+// print_html_action =========================================================
+
+static void print_html_action( FILE* file, stats_t* s )
+{
+  double executes_divisor = s -> num_executes;
+  double    ticks_divisor = s -> num_ticks;
+
+  if ( executes_divisor <= 0 ) executes_divisor = 1;
+  if (    ticks_divisor <= 0 )    ticks_divisor = 1;
+
+  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count +
+		      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
+
+  util_t::fprintf( file,
+		   " <tr>"
+		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1fsec</td>"
+		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
+		   " <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " </tr>\n",
+		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
+		   s -> num_executes, s -> frequency,
+		   s -> dpe, s -> dpet, s -> dpr,
+		   s -> execute_results[ RESULT_HIT  ].avg_dmg,
+		   s -> execute_results[ RESULT_CRIT ].avg_dmg,
+		   s -> execute_results[ RESULT_CRIT ].max_dmg,
+		   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
+		   miss_pct * 100, 
+		   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
+		   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
+		   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+		   s -> num_ticks,
+		   s -> tick_results[ RESULT_HIT  ].avg_dmg,
+		   s -> tick_results[ RESULT_CRIT ].avg_dmg,
+		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor );
 }
 
 // print_html_player =========================================================
@@ -971,7 +953,44 @@ static void print_html_player( FILE* file, player_t* p )
 		   gains_str.c_str(), timeline_resource_str.c_str(),
 		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
-  // action details here.....
+  util_t::fprintf( file, 
+		   "<table class=\"player\">\n"
+		   " <tr>"
+		   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
+		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
+		   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
+		   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th>"
+		   " </tr>\n" );
+
+  util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
+
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  {
+    if ( s -> total_dmg > 0 )
+    {
+      print_html_action( file, s );
+    }
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    bool first=true;
+
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      if ( s -> total_dmg > 0 )
+      {
+        if ( first )
+        {
+          first = false;
+	  util_t::fprintf( file, " <tr> <th>pet - %s</th> <th>%.0f</th> </tr>\n", pet -> name_str.c_str(), pet -> dps );
+        }
+        print_html_action( file, s );
+      }
+    }
+  }
+
+  util_t::fprintf( file, "</table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th></th> <th>Action Priority List</th> </tr>\n" );
   std::vector<std::string> action_names;
@@ -1166,25 +1185,30 @@ static void print_wiki_scale_factors( FILE*  file,
   util_t::fprintf( file, "----\n" );
   util_t::fprintf( file, "== DPS Scale Factors (dps increase per unit stat) ==\n" );
 
-  util_t::fprintf( file, "|| profiles ||" );
-  for ( int i=0; i < STAT_MAX; i++ )
-  {
-    if ( sim -> scaling -> stats.get_stat( i ) != 0 )
-    {
-      util_t::fprintf( file, " %s ||", util_t::stat_type_abbrev( i ) );
-    }
-  }
-  util_t::fprintf( file, "lag ||\n" );
-
   std::string buffer;
   int num_players = ( int ) sim -> players_by_name.size();
+  int prev_type = PLAYER_NONE;
 
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    util_t::fprintf( file, "|| %-25s ||", p -> name() );
+    if( p -> type != prev_type )
+    {
+      prev_type = p -> type;
 
+      util_t::fprintf( file, "|| *profiles* ||" );
+      for ( int i=0; i < STAT_MAX; i++ )
+      {
+	if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+	{
+	  util_t::fprintf( file, " *%s* ||", util_t::stat_type_abbrev( i ) );
+	}
+      }
+      util_t::fprintf( file, "\n" );
+    }
+
+    util_t::fprintf( file, "|| %-25s ||", p -> name() );
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
@@ -1192,7 +1216,6 @@ static void print_wiki_scale_factors( FILE*  file,
         util_t::fprintf( file, " %.*f ||", sim -> report_precision, p -> scaling.get_stat( j ) );
       }
     }
-    util_t::fprintf( file, " %.*f ||", sim -> report_precision, p -> scaling_lag );
     util_t::fprintf( file, "\n" );
   }
 
@@ -1410,16 +1433,12 @@ void report_t::print_html( sim_t* sim )
   util_t::fprintf( file, "<head>\n" );
   util_t::fprintf( file, "<title>Simulationcraft Results</title>\n" );
 
-  if ( num_players > 1 ) print_html_menu_definition( file, sim );
-
   util_t::fprintf( file, "</head>\n" );
   util_t::fprintf( file, "<body>\n" );
 
   if ( num_players > 1 ) print_html_raid( file, sim );
 
   print_html_scale_factors( file, sim );
-
-  if ( num_players > 1 ) print_html_menu_triggers( file, sim );
 
   util_t::fprintf( file, "<div id=\"players\">\n" );
 
