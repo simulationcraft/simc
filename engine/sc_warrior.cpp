@@ -195,6 +195,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_block_value() SC_CONST;
   virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
@@ -2478,9 +2479,18 @@ double warrior_t::composite_attack_power() SC_CONST
   {
     ap += talents.armored_to_the_teeth * composite_armor() / 108.0;
   }
-  if ( buffs_tier10_2pc_melee -> up() )
-    ap *= 1.20;
   return ap;
+}
+
+// warrior_t::composite_attack_power_multiplier =========================================
+
+double warrior_t::composite_attack_power_multiplier() SC_CONST
+{
+  double mult = player_t::composite_attack_power_multiplier();
+
+  if ( buffs_tier10_2pc_melee -> up() )
+    mult *= 1.20;
+  return mult;
 }
 
 // warrior_t::composite_tank_block ===========================================
