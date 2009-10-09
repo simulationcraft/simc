@@ -45,8 +45,9 @@ struct shaman_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-    double windfury_weapon;
+	double elemental_mastery;
     double lava_burst;
+	double windfury_weapon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -570,9 +571,6 @@ static void trigger_elemental_oath( spell_t* s )
   s -> sim -> auras.elemental_oath -> trigger();
 }
 
-// =========================================================================
-// Shaman Totems
-// =========================================================================
 
 // =========================================================================
 // Shaman Attack
@@ -635,10 +633,6 @@ void shaman_attack_t::assess_damage( double amount,
     }
   }
 }
-
-// =========================================================================
-// Shaman Attacks
-// =========================================================================
 
 // Melee Attack ============================================================
 
@@ -1129,6 +1123,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_maelstrom_weapon -> expire();
     p -> buffs_elemental_mastery -> current_value = 0;
+	if ( p -> set_bonus.tier10_2pc_caster() ) p -> _cooldowns.elemental_mastery -= 1.0;
     if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
@@ -1204,6 +1199,7 @@ struct lava_burst_t : public shaman_spell_t
     direct_power_mod    += p -> glyphs.lava ? 0.10 : 0.00;
     may_crit             = true;
     cooldown             = 8.0;
+	if ( p -> set_bonus.tier10_4pc_caster() ) cooldown -= 1.5;
     base_cost_reduction += p -> talents.convection * 0.02;
     base_execute_time   -= p -> talents.lightning_mastery * 0.1;
     base_multiplier     *= 1.0 + p -> talents.concussion * 0.01 + p -> talents.call_of_flame * 0.02;
@@ -1227,7 +1223,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-    p -> buffs_elemental_mastery -> current_value = 0;
+	p -> buffs_elemental_mastery -> current_value = 0;
     p -> _cooldowns.lava_burst = cooldown_ready;
   }
 
@@ -1293,10 +1289,6 @@ struct elemental_mastery_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talents.elemental_mastery );
-
-    cooldown  = 180.0;
-    cooldown -= p -> glyphs.elemental_mastery ? 30.0 : 0.0;
-
     trigger_gcd = 0;
   }
 
@@ -1305,7 +1297,21 @@ struct elemental_mastery_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
+	p -> _cooldowns.elemental_mastery = sim -> current_time + ( p -> glyphs.elemental_mastery ? 150.0 : 180.0 ); 
     p -> buffs_elemental_mastery -> trigger();
+  }
+
+  virtual bool ready()
+  {
+	shaman_t* p = player -> cast_shaman();
+
+	if ( ! shaman_spell_t::ready() )
+	  return false;
+
+    if ( sim -> current_time < p -> _cooldowns.elemental_mastery )
+	  return false;
+
+    return true;
   }
 };
 
@@ -1658,6 +1664,10 @@ struct wind_shear_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 };
+
+// =========================================================================
+// Shaman Totems
+// =========================================================================
 
 // Searing Totem Spell =======================================================
 
