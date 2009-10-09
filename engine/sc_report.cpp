@@ -877,11 +877,12 @@ static void print_html_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
-		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> </tr>\n"
+		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> </tr>\n"
 		   "  <tr> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td>\n"
 		   "</table><br />\n",
 		   p -> dps, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
-		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ) );
+		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
+		   100.0 * p -> total_waiting / p -> total_seconds );
 
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
@@ -947,8 +948,7 @@ static void print_html_player( FILE* file, player_t* p )
 		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
 		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
 		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
-		   "</table>\n"
-		   "<hr />\n",
+		   "</table> <br />\n",
 		   action_dpet_str.c_str(), action_dmg_str.c_str(),
 		   gains_str.c_str(), timeline_resource_str.c_str(),
 		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
@@ -992,6 +992,79 @@ static void print_html_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, "</table> <br />\n" );
 
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Constant Buffs</th> </tr>\n" );
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Dynamic Buffs</th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr>\n" );
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n", 
+		     b -> name(), b -> avg_start, b -> avg_refresh, 
+		     b -> avg_start_interval, b -> avg_trigger_interval, 
+		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Up-Times</th> <th>%%</th> </tr>\n" );
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  {
+    if ( u -> percentage() > 0 ) 
+    {
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f%%</td> </tr>\n", u -> name(), u -> percentage() );
+    }
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Procs</th> <th>Count</th> <th>Interval</th> </tr>\n" );
+  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+  {
+    if ( proc -> count > 0 )
+    {
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1fsec</td> </tr>\n", proc -> name(), proc -> count, proc -> frequency );
+    }
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Gains</th> <th>%s</th> <th>Overflow</th> </tr>\n", util_t::resource_type_string( p -> primary_resource() ) );
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  {
+    if ( g -> actual > 0 )
+    {
+      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+    }
+  }
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    if ( pet -> total_dmg <= 0 ) continue;
+    bool first = true;
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 )
+      {
+	if ( first )
+	{
+	  first = false;
+	  util_t::fprintf( file, "  <tr> <th>pet - %s</th> <td>%s</td> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
+	}
+	double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+	util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+      }
+    }
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
   util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th></th> <th>Action Priority List</th> </tr>\n" );
   std::vector<std::string> action_names;
   int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
@@ -1001,6 +1074,7 @@ static void print_html_player( FILE* file, player_t* p )
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
+  util_t::fprintf( file, "<hr />\n" );
 }
 
 // print_html_text ===========================================================
