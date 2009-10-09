@@ -3423,7 +3423,7 @@ void druid_t::init_buffs()
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_balance"    , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
-  buffs_t10_2pc_caster     = new buff_t( this, "t10_4pc_balance"   , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
+  buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_balance"   , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
