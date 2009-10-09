@@ -2012,12 +2012,12 @@ struct action_t
   virtual void   check_talent( int talent_rank );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
-  virtual double   miss_chance( int delta_level ) SC_CONST { return 0; }
-  virtual double  dodge_chance( int delta_level ) SC_CONST { return 0; }
-  virtual double  parry_chance( int delta_level ) SC_CONST { return 0; }
-  virtual double glance_chance( int delta_level ) SC_CONST { return 0; }
-  virtual double  block_chance( int delta_level ) SC_CONST { return 0; }
-  virtual double   crit_chance( int delta_level ) SC_CONST { return 0; }
+  virtual double   miss_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double  dodge_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double  parry_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double glance_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double  block_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double   crit_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
 
   virtual double total_multiplier() SC_CONST { return   base_multiplier * player_multiplier * target_multiplier; }
   virtual double total_hit() SC_CONST        { return   base_hit        + player_hit        + target_hit;        }

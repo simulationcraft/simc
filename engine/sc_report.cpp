@@ -1072,7 +1072,7 @@ static void print_html_player( FILE* file, player_t* p )
 	if ( first )
 	{
 	  first = false;
-	  util_t::fprintf( file, "  <tr> <th>pet - %s</th> <td>%s</td> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
+	  util_t::fprintf( file, "  <tr> <th>pet - %s</th> <th>%s</th> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
 	}
 	double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
 	util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );

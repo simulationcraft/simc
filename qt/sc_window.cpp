@@ -66,6 +66,13 @@ static OptionEntry* getDebuffOptions()
   return options;
 }
 
+static QString defaultSimulateText()
+{
+  return QString( "# Profile will be downloaded into here.\n"
+		  "# Use the Back/Forward buttons to cycle through the script history.\n"
+		  "# Use the Up/Down arrow keys to cycle through the command-line history." );
+}
+
 static QComboBox* createChoice( int count, ... )
 {
   QComboBox* choice = new QComboBox();
@@ -594,7 +601,7 @@ void SimcraftWindow::createSimulateTab()
   simulateText = new QPlainTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->document()->setDefaultFont( QFont( "fixed" ) );
-  simulateText->setPlainText( "# Profile will be downloaded into here." );
+  simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
 }
 
@@ -867,7 +874,7 @@ void SimcraftWindow::startImport( int tab, const QString& url )
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   importThread->start( initSim(), tab, url );
-  simulateText->setPlainText( "# Profile will be downloaded into here." );
+  simulateText->setPlainText( defaultSimulateText() );
   mainTab->setCurrentIndex( TAB_SIMULATE );
   timer->start( 500 );
 }
@@ -947,14 +954,16 @@ void SimcraftWindow::startSim()
   }
   optionsHistory.add( encodeOptions() );
   optionsHistory.current_index = 0;
-  simulateTextHistory.add(  simulateText->toPlainText() );
+  if( simulateText->toPlainText() != defaultSimulateText() )
+  {
+    simulateTextHistory.add(  simulateText->toPlainText() );
+  }
   overridesTextHistory.add( overridesText->toPlainText() );
   simulateCmdLineHistory.add( cmdLine->text() );
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   simulateThread->start( initSim(), mergeOptions() ); 
-  simulateText->setPlainText( "# Use the Back/Forward buttons to cycle through the script history.\n"
-			      "# Use the Up/Down arrow keys to cycle through the command-line history." );
+  simulateText->setPlainText( defaultSimulateText() );
   cmdLineText = "";
   cmdLine->setText( cmdLineText );
   timer->start( 500 );
@@ -1153,6 +1162,7 @@ void SimcraftWindow::cmdLineReturnPressed()
 
 void SimcraftWindow::mainButtonClicked( bool checked )
 {
+  checked=true;
   switch( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   startSim(); break;
@@ -1178,6 +1188,7 @@ void SimcraftWindow::mainButtonClicked( bool checked )
 
 void SimcraftWindow::backButtonClicked( bool checked )
 {
+  checked=true;
   if( visibleWebView ) 
   {
     if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
@@ -1213,6 +1224,7 @@ void SimcraftWindow::backButtonClicked( bool checked )
 
 void SimcraftWindow::forwardButtonClicked( bool checked )
 {
+  checked=true;
   if( visibleWebView ) 
   {
     visibleWebView->forward();
@@ -1236,6 +1248,7 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
 
 void SimcraftWindow::rawrButtonClicked( bool checked )
 {
+  checked=true;
   QFileDialog dialog( this );
   dialog.setFileMode( QFileDialog::Directory );
   dialog.setNameFilter( "Rawr Profiles (*.xml)" );
@@ -1363,6 +1376,8 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
 
 void SimcraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
 {
+  col=0;
+
   if( item->columnCount() == 1 ) return;
 
   QString url = item->text( 1 );

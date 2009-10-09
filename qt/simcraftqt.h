@@ -252,6 +252,7 @@ private slots:
   }
   void loadFinishedSlot( bool ok )
   {
+    ok=true;
     progress = 100;
     if( mainWindow->visibleWebView == this )
     {
