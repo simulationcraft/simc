@@ -35,23 +35,23 @@ finger1=band_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20
 finger2=planestalker_band,stats=70agi_77sta_44arpen_44hit_115ap,gems=10crit_10agi_4agi,enchant=40ap
 trinket1=deaths_choice,stats=288ap
 trinket2=deaths_choice,stats=256ap
-back=cloak_of_serrated_blades,stats=173armor_98ap_57crit_49arpen_85agi_85sta,gems=20arpen_8ap,enchant=22agi
+back=sylvanas_cunning,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20arpen_8ap,enchant=22agi
 main_hand=the_facebreaker,stats=73ap_39crit_31arpen_58agi_44sta,gems=20arpen_4agi,enchant=berserking,weapon=fist_2.60speed_196.7dps
 off_hand=stygian_bladebreaker,stats=84ap_50crit_33arpen_58agi_66sta,gems=10crit_10agi_4agi,enchant=mongoose,weapon=dagger_1.40speed_216.4dps
 ranged=deaths_head_crossbow,stats=49ap_32haste_32arpen_40agi_48sta,gems=20arpen,weapon=crossbow_2.80speed_240.7dps
 # Gear Summary
 # gear_strength=20
-# gear_agility=1486
-# gear_stamina=1433
+# gear_agility=1498
+# gear_stamina=1445
 # gear_intellect=20
 # gear_spirit=20
-# gear_attack_power=2790
+# gear_attack_power=2806
 # gear_expertise_rating=154
-# gear_armor_penetration_rating=868
+# gear_armor_penetration_rating=876
 # gear_hit_rating=429
-# gear_crit_rating=690
+# gear_crit_rating=698
 # gear_haste_rating=158
-# gear_armor=3902
+# gear_armor=3911
 # meta_gem=relentless_earthsiege
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
