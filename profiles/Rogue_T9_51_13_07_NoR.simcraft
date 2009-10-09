@@ -16,7 +16,6 @@ actions+=/kick
 actions+=/pool_energy,for_next=1
 actions+=/hunger_for_blood,refresh_at=2
 actions+=/slice_and_dice,min_combo_points=1,snd<=1
-actions+=/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11
 actions+=/cold_blood,sync=envenom
 actions+=/envenom,min_combo_points=4,no_buff=1
 actions+=/envenom,min_combo_points=4,energy>=90
