@@ -211,6 +211,8 @@ struct druid_t : public player_t
     active_moonfire       = 0;
     active_rake           = 0;
     active_rip            = 0;
+    active_starfire_dot   = 0;
+    active_wrath_dot      = 0;
 
     melee_attack = 0;
     cat_melee_attack = 0;
