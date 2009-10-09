@@ -69,6 +69,7 @@ struct rogue_t : public player_t
   gain_t* gains_relentless_strikes;
   gain_t* gains_tier8_2pc;
   gain_t* gains_tier9_2pc;
+  gain_t* gains_tier10_2pc;
 
   // Procs
   proc_t* procs_combo_points_wasted;
@@ -77,6 +78,7 @@ struct rogue_t : public player_t
   proc_t* procs_ruthlessness;
   proc_t* procs_seal_fate;
   proc_t* procs_sword_specialization;
+  proc_t* procs_tier10_4pc;
 
   // Up-Times
   uptime_t* uptimes_energy_cap;
@@ -100,6 +102,7 @@ struct rogue_t : public player_t
   rng_t* rng_seal_fate;
   rng_t* rng_sinister_strike_glyph;
   rng_t* rng_sword_specialization;
+  rng_t* rng_tier10_4pc;
   rng_t* rng_wound_poison;
 
   // Auto-Attack
@@ -608,6 +611,27 @@ static void trigger_seal_fate( rogue_attack_t* a )
   }
 }
 
+// trigger_tier10_4pc =======================================================
+
+static void trigger_tier10_4pc( rogue_attack_t* a )
+{
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if ( ! p -> set_bonus.tier10_4pc_melee() )
+    return;
+
+  if ( ! a -> requires_combo_points )
+    return;
+
+  if ( p -> rng_tier10_4pc -> roll( 0.13 ) )
+  {
+    p -> procs_tier10_4pc -> occur();
+    add_combo_point( p );
+    add_combo_point( p );
+    add_combo_point( p );
+  }
+}
+
 // trigger_sword_specialization ============================================
 
 static void trigger_sword_specialization( rogue_attack_t* a )
@@ -767,6 +791,8 @@ void rogue_attack_t::execute()
     trigger_energy_refund( this );
     trigger_quick_recovery( this );
   }
+  
+  trigger_tier10_4pc( this ); // FIX-ME: Does it require the finishing move to hit before it can proc?
 
   break_stealth( p );
 
@@ -2256,7 +2282,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
     trigger_gcd = 0;
 
-    base_cost = 15;
+    base_cost = ( p -> set_bonus.tier10_2pc_melee() ? 0 : 15 );
     cooldown  = 30.0 - p -> talents.filthy_tricks * 5.0;
 
     if ( target_str.empty() || target_str == "none" )
@@ -2284,6 +2310,10 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     if ( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
 
     consume_resource();
+
+    if ( p -> set_bonus.tier10_2pc_melee() )
+      p -> resource_gain( RESOURCE_ENERGY, 15, p -> gains_tier10_2pc );
+
     update_ready();
 
     p -> tricks_of_the_trade_target = tricks_target;
@@ -3087,6 +3117,7 @@ void rogue_t::init_gains()
   gains_relentless_strikes = get_gain( "relentless_strikes" );
   gains_tier8_2pc          = get_gain( "tier8_2pc" );
   gains_tier9_2pc          = get_gain( "tier9_2pc" );
+  gains_tier10_2pc         = get_gain( "tier10_2pc" );
 }
 
 // rogue_t::init_procs =======================================================
@@ -3101,6 +3132,7 @@ void rogue_t::init_procs()
   procs_ruthlessness         = get_proc( "ruthlessness",         sim );
   procs_seal_fate            = get_proc( "seal_fate",            sim );
   procs_sword_specialization = get_proc( "sword_specialization", sim );
+  procs_tier10_4pc           = get_proc( "tier10_4pc"          , sim );
 }
 
 // rogue_t::init_uptimes =====================================================
@@ -3135,6 +3167,7 @@ void rogue_t::init_rng()
   rng_seal_fate             = get_rng( "seal_fate"             );
   rng_sinister_strike_glyph = get_rng( "sinister_strike_glyph" );
   rng_sword_specialization  = get_rng( "sword_specialization"  );
+  rng_tier10_4pc            = get_rng( "tier10_4pc"            );
   rng_wound_poison          = get_rng( "wound_poison"          );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
