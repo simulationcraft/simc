@@ -878,7 +878,7 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
 		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> </tr>\n"
-		   "  <tr> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td>\n"
+		   "  <tr> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td>\n"
 		   "</table><br />\n",
 		   p -> dps, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
 		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
@@ -904,6 +904,36 @@ static void print_html_player( FILE* file, player_t* p )
     util_t::fprintf( file, " <td>%s</td>", glyph_names[ i ].c_str() );
   }
   util_t::fprintf( file, " </tr> </table> <br />\n" );
+
+  if ( p -> sim -> scaling -> calculate_scale_factors )
+  {
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+
+    util_t::fprintf( file, " <tr> <th></th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+	util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, " <tr> <th>Scale Factors</th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, " <tr> <th>Normalized</th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, "</table> <br />\n" );
+
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>Gear Ranking</th> <td><a href=\"%s\">wowhead</a></td> <td><a href=\"%s\">lootrank</a></td> </tr>\n",
+		     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
 
   std::string action_dpet_str       = "empty";
   std::string action_dmg_str        = "empty";
@@ -1073,6 +1103,8 @@ static void print_html_player( FILE* file, player_t* p )
     util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, action_names[ i ].c_str() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
+
+  // Gear
 
   util_t::fprintf( file, "<hr />\n" );
 }
@@ -1510,9 +1542,11 @@ void report_t::print_html( sim_t* sim )
   util_t::fprintf( file, "</head>\n" );
   util_t::fprintf( file, "<body>\n" );
 
-  if ( num_players > 1 ) print_html_raid( file, sim );
-
-  print_html_scale_factors( file, sim );
+  if ( num_players > 1 ) 
+  {
+    print_html_raid( file, sim );
+    print_html_scale_factors( file, sim );
+  }
 
   util_t::fprintf( file, "<div id=\"players\">\n" );
 
