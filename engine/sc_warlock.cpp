@@ -47,6 +47,7 @@ struct warlock_t : public player_t
   buff_t* buffs_shadow_trance;
   buff_t* buffs_tier7_2pc_caster;
   buff_t* buffs_tier7_4pc_caster;
+  buff_t* buffs_tier10_4pc_caster;
 
   // warlock specific expression functions
   struct warlock_expression_t: public act_expression_t
@@ -465,6 +466,10 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
+    }
     if ( p -> pet_type != PET_INFERNAL )
     {
       player_attack_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
@@ -496,8 +501,13 @@ struct warlock_pet_attack_t : public attack_t
   virtual void player_buff()
   {
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    player_attack_power += 0.57 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
+    player_attack_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
+    }
     p -> adjust_player_modifiers( this );
   }
 
@@ -520,8 +530,13 @@ struct warlock_pet_spell_t : public spell_t
   virtual void player_buff()
   {
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
     spell_t::player_buff();
-    player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
+    }
+    player_spell_power += 0.15 * o -> composite_spell_power( SCHOOL_MAX );
     p -> adjust_player_modifiers( this );
   }
 };
@@ -1149,6 +1164,11 @@ void warlock_spell_t::player_buff()
     player_multiplier *= 1.0 + ( p -> talents.demonic_pact * 0.01 );
   }
 
+  if ( p -> buffs_tier10_4pc_caster -> up() )
+  {
+    player_multiplier *= 1.10;
+  }
+
   if ( p -> talents.malediction ) player_multiplier *= 1.0 + p -> talents.malediction * 0.01;
 
   int sacrifice = ( int ) p -> buffs_pet_sacrifice -> value();
@@ -1601,8 +1621,9 @@ struct shadow_bolt_t : public warlock_spell_t
 			       p -> set_bonus.tier6_4pc_caster() * 0.06 +
 			       p -> talents.improved_shadow_bolt * 0.01 );
 
-    base_crit += ( p -> talents.devastation          * 0.05 +
-		   p -> set_bonus.tier8_4pc_caster() * 0.05 );
+    base_crit += ( p -> talents.devastation           * 0.05 +
+		               p -> set_bonus.tier8_4pc_caster()  * 0.05 +
+                   p -> set_bonus.tier10_2pc_caster() * 0.05 );
 
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -1949,7 +1970,8 @@ struct corruption_t : public warlock_spell_t
     {
       base_crit_bonus_multiplier = 2;
       tick_may_crit = true;
-      base_crit += p -> talents.malediction * 0.03;
+      base_crit += p -> talents.malediction           * 0.03 +
+                   p -> set_bonus.tier10_2pc_caster() * 0.05;
     }
 
     observer = &( p -> active_corruption );
@@ -2222,6 +2244,15 @@ struct unstable_affliction_t : public warlock_spell_t
 
     observer = &( p -> active_unstable_affliction );
   }
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::tick();
+    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier10_4pc_caster -> trigger();
+    }
+  }
 };
 
 // Haunt Spell ==============================================================
@@ -2361,6 +2392,10 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
+    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier10_4pc_caster -> trigger();
+    }
     p -> buffs_tier7_2pc_caster -> trigger(); 
     if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
   }
@@ -2663,8 +2698,9 @@ struct incinerate_t : public warlock_spell_t
                                p -> set_bonus.tier6_4pc_caster() * 0.06 +
                                p -> glyphs.incinerate            * 0.05 );
 
-    base_crit += ( p -> talents.devastation          * 0.05 +
-		   p -> set_bonus.tier8_4pc_caster() * 0.05 );
+    base_crit += ( p -> talents.devastation           * 0.05 +
+		               p -> set_bonus.tier8_4pc_caster()  * 0.05 +
+                   p -> set_bonus.tier10_2pc_caster() * 0.05 );
 
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
@@ -2803,7 +2839,8 @@ struct soul_fire_t : public warlock_spell_t
 
     base_execute_time -= p -> talents.bane * 0.4;
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
-    base_crit         += p -> talents.devastation * 0.05;
+    base_crit         += p -> talents.devastation           * 0.05 +
+                         p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
@@ -3700,6 +3737,7 @@ void warlock_t::init_buffs()
   buffs_pyroclasm           = new buff_t( this, "pyroclasm",           1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance       = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talents.nightfall );
+  buffs_tier10_4pc_caster   = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
 
   buffs_tier7_2pc_caster = new      buff_t( this, "tier7_2pc_caster",                   1, 10.0, 0.0, set_bonus.tier7_2pc_caster() * 0.15 );
   buffs_tier7_4pc_caster = new stat_buff_t( this, "tier7_4pc_caster", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc_caster() );
