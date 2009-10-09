@@ -1012,9 +1012,11 @@ struct hunter_pet_attack_t : public attack_t
         p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
+        if ( p -> sim -> P330 )
+          p -> buffs_wolverine_bite -> trigger();
       }
     }
-    else if ( result == RESULT_DODGE )
+    else if ( ! p -> sim -> P330 && ( result == RESULT_DODGE ) )
     {
       p -> buffs_wolverine_bite -> trigger();
     }
