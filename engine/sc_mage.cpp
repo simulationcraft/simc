@@ -35,6 +35,8 @@ struct mage_t : public player_t
   buff_t* buffs_molten_armor;
   buff_t* buffs_tier7_2pc;
   buff_t* buffs_tier8_2pc;
+  buff_t* buffs_tier10_2pc;
+  buff_t* buffs_tier10_4pc;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -720,7 +722,11 @@ static void consume_brain_freeze( spell_t* s )
 
   if ( p -> buffs_brain_freeze -> check() )
     if ( ! trigger_tier8_4pc( s ) )
+    {
       p -> buffs_brain_freeze -> expire();
+      if ( p -> set_bonus.tier10_2pc_caster() )
+        p -> buffs_tier10_2pc -> trigger();
+    }
 }
 
 // trigger_hot_streak ==============================================================
@@ -885,6 +891,7 @@ double mage_spell_t::haste() SC_CONST
   {
     h *= 1.0 / ( 1.0 + p -> talents.netherwind_presence * 0.02 );
   }
+  if ( p -> buffs_tier10_2pc -> up() ) h *= 1.0 / 1.12;
   return h;
 }
 
@@ -950,6 +957,11 @@ void mage_spell_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> talents.molten_fury * 0.06;
     }
+  }
+
+  if ( p -> buffs_tier10_4pc -> up() )
+  {
+    player_multiplier *= 1.18;
   }
 
   if ( may_torment && sim -> target -> debuffs.snared() )
@@ -1085,9 +1097,9 @@ struct arcane_barrage_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         if ( sim -> P330 )
-	{
+	      {
           sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-	}
+	      }
       }
     }
     p -> buffs_arcane_blast -> expire();
@@ -1309,6 +1321,8 @@ struct arcane_missiles_t : public mage_spell_t
       if ( ! trigger_tier8_4pc( this ) )
       {
         p -> buffs_missile_barrage -> expire();
+        if ( p -> set_bonus.tier10_2pc_caster() )
+          p -> buffs_tier10_2pc -> trigger();
       }
     }
     else
@@ -1911,8 +1925,14 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t::execute();
 
     if ( p -> buffs_hot_streak -> check() )
+    {
       if ( ! trigger_tier8_4pc( this ) )
+      {
         p -> buffs_hot_streak -> expire();
+        if ( p -> set_bonus.tier10_2pc_caster() )
+          p -> buffs_tier10_2pc -> trigger();
+      }
+    }
 
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
     if ( hot_streak ) duration_ready=0;
@@ -2589,9 +2609,16 @@ struct mirror_image_spell_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
+
     consume_resource();
     update_ready();
     player -> summon_pet( "mirror_image" );
+
+    if ( p -> set_bonus.tier10_4pc_caster() )
+    {
+      p -> buffs_tier10_4pc -> trigger();
+    }
   }
 };
 
@@ -2968,6 +2995,8 @@ void mage_t::init_buffs()
   buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
   buffs_incanters_absorption = new buff_t( this, "incanters_absorption", 1, 10.0 );
   buffs_missile_barrage      = new buff_t( this, "missile_barrage",      1, 15.0, 0, talents.missile_barrage * 0.04 );
+  buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1, 5.0 );
+  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0 );    
 
   buffs_ghost_charge = new buff_t( this, "ghost_charge" );
   buffs_mage_armor   = new buff_t( this, "mage_armor" );
