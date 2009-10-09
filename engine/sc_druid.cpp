@@ -17,6 +17,7 @@ struct druid_t : public player_t
   action_t* active_rake;
   action_t* active_rip;
   action_t* active_starfire_dot;
+  action_t* active_wrath_dot;
 
   std::vector<action_t*> active_mauls;
   int num_active_mauls;
@@ -546,23 +547,48 @@ static void trigger_t10_4pc_caster( spell_t* s )
     void player_buff() {}
     void target_debuff( int dmg_type ) {}
   };
-
-  double dmg = s -> direct_dmg * 0.05;
+  struct wrath_dot_t : public druid_spell_t
+  {
+    wrath_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
+    {
+      may_miss        = false;
+      background      = true;
+      proc            = true;
+      trigger_gcd     = 0;
+      base_cost       = 0;
+      base_multiplier = 1.0;
+      tick_power_mod  = 0;
+      base_tick_time  = 2.0;
+      num_ticks       = 2;
+    }
+    void player_buff() {}
+    void target_debuff( int dmg_type ) {}
+  };
 
   if ( ! p -> active_starfire_dot ) p -> active_starfire_dot = new starfire_dot_t( p );
+  if ( ! p -> active_wrath_dot ) p -> active_wrath_dot = new wrath_dot_t( p );
 
-  if ( p -> active_starfire_dot -> ticking )
+  action_t* active_dot = 0;
+  if ( s -> school == SCHOOL_ARCANE )
+    active_dot = p -> active_starfire_dot;
+  else if ( s -> school == SCHOOL_NATURE )
+    active_dot = p -> active_wrath_dot;
+  else
+    return;
+
+
+  double dmg = s -> direct_dmg * 0.05;
+  if ( active_dot -> ticking )
   {
-    int num_ticks = p -> active_starfire_dot -> num_ticks;
-    int remaining_ticks = num_ticks - p -> active_starfire_dot -> current_tick;
+    int num_ticks = active_dot -> num_ticks;
+    int remaining_ticks = num_ticks - active_dot -> current_tick;
 
-    dmg += p -> active_starfire_dot -> base_td * remaining_ticks;
+    dmg += active_dot -> base_td * remaining_ticks;
 
-    p -> active_starfire_dot -> cancel();
+    active_dot -> cancel();
   }
-
-  p -> active_starfire_dot -> base_td = dmg / p -> active_starfire_dot -> num_ticks;
-  p -> active_starfire_dot -> schedule_tick();
+  active_dot -> base_td = dmg / active_dot -> num_ticks;
+  active_dot -> schedule_tick();
 }
 
 // trigger_primal_fury =====================================================
@@ -2947,10 +2973,11 @@ struct wrath_t : public druid_spell_t
     {
       if ( result == RESULT_CRIT )
       {
-	if( ! p -> buffs_eclipse_solar -> check() )
-	{
-	  p -> buffs_eclipse_lunar -> trigger();
-	}
+        trigger_t10_4pc_caster( this );
+        if( ! p -> buffs_eclipse_solar -> check() )
+        {
+          p -> buffs_eclipse_lunar -> trigger();
+        }
       }
       trigger_earth_and_moon( this );
     }
