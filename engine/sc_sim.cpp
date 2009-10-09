@@ -378,10 +378,15 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    path_str( ".|profiles" ), output_file( stdout ), log_file( 0 ), 
+    path_str( "." ), output_file( stdout ), log_file( 0 ), 
     armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
     report_precision( 2 ), threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
+  path_str += "|profiles";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     infinite_resource[ i ] = false;

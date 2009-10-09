@@ -318,13 +318,13 @@ static void print_core_stats( FILE* file, player_t* p )
 static void print_spell_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  penetration=%.0f|%.0f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f\n",
+                   "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  penetration=%.0f|%.0f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
                    p -> buffed_spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
                    100 * p -> buffed_spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
                    100 * p -> buffed_spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
                    100 * p -> buffed_spell_penetration,  100 * p -> composite_spell_penetration(),  p -> stats.spell_penetration,
                    100 * ( 1 / p -> buffed_spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
-                   p -> buffed_mp5, p -> composite_mp5() );
+                   p -> buffed_mp5, p -> composite_mp5(), p -> stats.mp5 );
 }
 
 // print_attack_stats =========================================================
@@ -576,11 +576,13 @@ static void print_scale_factors( FILE* file, player_t* p )
 
   std::string lootrank = p -> gear_weights_lootrank_link;
   std::string wowhead  = p -> gear_weights_wowhead_link;
-  std::string pawn     = p -> gear_weights_pawn_string;
+  std::string pawn_std = p -> gear_weights_pawn_std_string;
+  std::string pawn_alt = p -> gear_weights_pawn_alt_string;
 
   simplify_html( lootrank );
   simplify_html( wowhead  );
-  simplify_html( pawn     );
+  simplify_html( pawn_std );
+  simplify_html( pawn_alt );
 
   util_t::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
 }
@@ -704,38 +706,50 @@ static void print_hat_donors( FILE* file, sim_t* sim )
   }
 }
 
+// print_html_contents =======================================================
+
+static void print_html_contents( FILE*  file, sim_t* sim )
+{
+  util_t::fprintf( file, "<h1>Table of Contents</h1>\n" );
+  util_t::fprintf( file, "<ul>\n" );
+  util_t::fprintf( file, " <li> <a href=\"#raid_summary\"> Raid Summary </a> </li>\n" );
+  int num_players = ( int ) sim -> players_by_name.size();
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+    util_t::fprintf( file, " <li> <a href=\"#%s\"> %s </a> </li>\n", p -> name(), p -> name() );
+  }
+  util_t::fprintf( file, "</ul>\n" );
+  util_t::fprintf( file, "<br /><hr />\n" );
+}
+
 // print_html_raid ===========================================================
 
 static void print_html_raid( FILE*  file, sim_t* sim )
 {
-  util_t::fprintf( file, "<h1>Raid</h1>\n" );
+  util_t::fprintf( file, "<a name=\"raid_summary\" /><h1>Raid Summary</h1>\n" );
+
+  util_t::fprintf( file, "<style type=\"text/css\">\n  table.charts td, table.charts th { padding: 4px; border: 1px inset; }\n  table.charts { border: 1px outset; }</style>\n" );
 
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
 
+  util_t::fprintf( file, "<table class=\"charts\">\n" );
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    util_t::fprintf( file, "\n<!-- DPS Ranking: -->\n" );
-    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> dps_charts[ i ].c_str() );
-
-    util_t::fprintf( file, "\n<!-- Gear Overview: -->\n" );
-    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> gear_charts[ i ].c_str() );
+    util_t::fprintf( file, " <tr> <td><img src=\"%s\" /></td> <td><img src=\"%s\" /></td> </tr>\n", 
+		     sim -> dps_charts[ i ].c_str(), sim -> gear_charts[ i ].c_str() );
   }
+  util_t::fprintf( file, "</table> <br />\n" );
 
-  if ( ! sim -> downtime_chart.empty() )
-  {
-    util_t::fprintf( file, "\n<!-- Raid Downtime: -->\n" );
-    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> downtime_chart.c_str() );
-  }
-
+  util_t::fprintf( file, "<table class=\"charts\">\n" );
   count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    util_t::fprintf( file, "\n<!-- Raid Damage Per Execute Time: -->\n" );
-    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> dpet_charts[ i ].c_str() );
+    util_t::fprintf( file, " <tr> <td><img src=\"%s\" /></td> </tr>\n", sim -> dpet_charts[ i ].c_str() );
   }
-  util_t::fprintf( file, "<hr />\n" );
+  util_t::fprintf( file, "</table> <br />\n" );
 }
 
 // print_html_scale_factors ===================================================
@@ -747,7 +761,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   if ( sim -> report_precision < 0 )
     sim -> report_precision = 2;
 
-  util_t::fprintf( file, "<h1>DPS Scale Factors (dps increase per unit stat)</h1>\n" );
+  util_t::fprintf( file, "<h3>DPS Scale Factors (dps increase per unit stat)</h3>\n" );
 
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
 
@@ -765,15 +779,15 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     {
       prev_type = p -> type;
 
-      util_t::fprintf( file, "  <tr>\n    <th>profile</th>\n" );
+      util_t::fprintf( file, "  <tr> <th>profile</th>" );
       for ( int i=0; i < STAT_MAX; i++ )
       {
 	if ( sim -> scaling -> stats.get_stat( i ) != 0 )
         {
-	  util_t::fprintf( file, "    <th>%s</th>\n", util_t::stat_type_abbrev( i ) );
+	  util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
 	}
       }
-      util_t::fprintf( file, "      </tr>\n" );
+      util_t::fprintf( file, " <th>wowhead</th> <th>lootrank</th> </tr>\n" );
     }
 
     util_t::fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
@@ -784,39 +798,10 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
         util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling.get_stat( j ) );
       }
     }
-    util_t::fprintf( file, "  </tr>\n" );
+    util_t::fprintf( file, " <td><a href=\"%s\"> wowhead </a></td> <td><a href=\"%s\"> lootrank</a></td> </tr>\n",
+		     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
   }
-  util_t::fprintf( file, "</table>\n" );
-  util_t::fprintf( file, "<hr />\n" );
-
-  util_t::fprintf( file, "<table class=\"scale_factors\">\n" );
-  util_t::fprintf( file, "  <tr>\n    <th>profile</th>\n    <th>lootrank</th>\n    <th>wowhead</th>\n    <th>pawn</th>\n  </tr>\n" );
-
-  for ( int i=0; i < num_players; i++ )
-  {
-    player_t* p = sim -> players_by_name[ i ];
-
-    util_t::fprintf( file, "  <tr>\n    <td>%s</td>\n", p -> name() );
-    util_t::fprintf( file, "    <td><a href=\"%s\"> lootrank</a></td>\n", p -> gear_weights_lootrank_link.c_str() );
-    util_t::fprintf( file, "    <td><a href=\"%s\"> wowhead </a></td>\n", p -> gear_weights_wowhead_link.c_str() );
-    util_t::fprintf( file,
-                     "    <td>\n      <div style=\"margin:1px; margin-top:1px\">\n"
-                     "        <pre class=\"alt2\" dir=\"ltr\" style=\""
-                     "margin: 0px;"
-                     "padding: 3px;"
-                     "border: 1px inset;"
-                     "width: 512px;"
-                     "height: 30px;"
-                     "text-align: left;"
-                     "overflow: auto\">%s"
-                     "</pre>\n"
-                     "      </div>\n    </td>\n",
-                     p -> gear_weights_pawn_string.c_str() );
-
-    util_t::fprintf( file, "  </tr>\n" );
-  }
-  util_t::fprintf( file, "</table>\n" );
-  util_t::fprintf( file, "<hr />\n" );
+  util_t::fprintf( file, "</table> <br />\n" );
 }
 
 // print_html_action =========================================================
@@ -862,7 +847,7 @@ static void print_html_player( FILE* file, player_t* p )
 {
   char buffer[ 4096 ];
 
-  util_t::fprintf( file, "<h1>%s&nbsp;:&nbsp;%.0fdps</h1>\n", p -> name(), p -> dps );
+  util_t::fprintf( file, "<a name=\"%s\" /><h1>%s&nbsp;:&nbsp;%.0fdps</h1>\n", p -> name(), p -> name(), p -> dps );
 
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n" );
 
@@ -927,7 +912,8 @@ static void print_html_player( FILE* file, player_t* p )
 	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
     util_t::fprintf( file, " </tr>\n" );
 
-    util_t::fprintf( file, "</table> <br />\n" );
+    util_t::fprintf( file, "</table>\n" );
+    util_t::fprintf( file, "<i>DPS gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>DPS loss</b> per unit stat <b>decrease</b></i><p>\n" );
 
     util_t::fprintf( file, "<table class=\"player\">\n" );
     util_t::fprintf( file, " <tr> <th>Gear Ranking</th> <td><a href=\"%s\">wowhead</a></td> <td><a href=\"%s\">lootrank</a></td> </tr>\n",
@@ -944,32 +930,32 @@ static void print_html_player( FILE* file, player_t* p )
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_action_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
     action_dpet_str = buffer;
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_action_dmg\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dmg\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
     action_dmg_str = buffer;
   }
   if ( ! p -> gains_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
     gains_str = buffer;
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_timeline_resource\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_resource\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
     timeline_resource_str = buffer;
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_timeline_dps\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_dps\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
     timeline_dps_str = buffer;
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
-    snprintf( buffer, 4095, "<img name=\"chart_distribution_dps\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_distribution_dps\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
     distribution_dps_str = buffer;
   }
 
@@ -1104,7 +1090,48 @@ static void print_html_player( FILE* file, player_t* p )
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
-  // Gear
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Stat</th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr>\n" );
+
+  util_t::fprintf( file, " <tr> <th>Strength</th>  <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ] );
+  util_t::fprintf( file, " <tr> <th>Agility</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ] );
+  util_t::fprintf( file, " <tr> <th>Stamina</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ] );
+  util_t::fprintf( file, " <tr> <th>Intellect</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ] );
+  util_t::fprintf( file, " <tr> <th>Spirit</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ] );
+  util_t::fprintf( file, " <tr> <th>Health</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> resource_buffed[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_HEALTH ], 0.0 );
+  util_t::fprintf( file, " <tr> <th>Mana</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> resource_buffed[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ], 0.0 );
+
+  util_t::fprintf( file, " <tr> <th>Spell Power</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power );
+  util_t::fprintf( file, " <tr> <th>Spell Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating  );
+  util_t::fprintf( file, " <tr> <th>Spell Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating );
+  util_t::fprintf( file, " <tr> <th>Spell Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / p -> buffed_spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating );
+  util_t::fprintf( file, " <tr> <th>Spell Penetration</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     100 * p -> buffed_spell_penetration,  100 * p -> composite_spell_penetration(),  p -> stats.spell_penetration );
+  util_t::fprintf( file, " <tr> <th>Mana Per 5</th>        <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_mp5, p -> composite_mp5(), p -> stats.mp5 );
+
+  util_t::fprintf( file, " <tr> <th>Attack Power</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power );
+  util_t::fprintf( file, " <tr> <th>Melee Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating );
+  util_t::fprintf( file, " <tr> <th>Melee Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating );
+  util_t::fprintf( file, " <tr> <th>Melee Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ), p -> stats.haste_rating );
+  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating );
+  util_t::fprintf( file, " <tr> <th>Armor Penetration</th> <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_penetration, 100 * p -> composite_attack_penetration(), p -> stats.armor_penetration_rating );
+
+  util_t::fprintf( file, " <tr> <th>Armor</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ) );
+  util_t::fprintf( file, " <tr> <th>Block Value</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value );
+  util_t::fprintf( file, " <tr> <th>Defense</th>     <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_defense,     p -> composite_defense(), p -> stats.defense_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Miss</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL ) ), 0.0  );
+  util_t::fprintf( file, " <tr> <th>Tank-Dodge</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Parry</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
+
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  if ( p -> sim -> scaling -> calculate_scale_factors )
+  {
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>Pawn Standard</th> <td>%s</td> </tr>\n", p -> gear_weights_pawn_std_string.c_str() );
+    util_t::fprintf( file, " <tr> <th>Zero Hit/Expertise</th> <td>%s</td> </tr>\n", p -> gear_weights_pawn_alt_string.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
 
   util_t::fprintf( file, "<hr />\n" );
 }
@@ -1209,7 +1236,8 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
   util_t::fprintf( file, "        <scale_factor name=\"Lag\" value=\"%.*f\" />\n", sim -> report_precision, p -> scaling_lag );
   util_t::fprintf( file, "        <scale_factor_link type=\"lootrank\" url=\"%s\" />\n", p -> gear_weights_lootrank_link.c_str() );
   util_t::fprintf( file, "        <scale_factor_link type=\"wowhead\" url=\"%s\" />\n", p -> gear_weights_wowhead_link.c_str() );
-  util_t::fprintf( file, "        <pawn_string>%s</pawn_string>\n", p -> gear_weights_pawn_string.c_str() );
+  util_t::fprintf( file, "        <pawn_std_string>%s</pawn_string>\n", p -> gear_weights_pawn_std_string.c_str() );
+  util_t::fprintf( file, "        <pawn_alt_string>%s</pawn_string>\n", p -> gear_weights_pawn_std_string.c_str() );
 
   util_t::fprintf( file, "      </scale_factors>\n" );
 }
@@ -1247,33 +1275,16 @@ static void print_wiki_raid( FILE*  file,
 
     util_t::fprintf( file, "|| %s&dummy=dummy.png || %s&dummy=dummy.png ||\n", dps_chart.c_str(), gear_chart.c_str() );
   }
-
-  std::string raid_downtime = "No chart for Raid Down-Time";
-
-  if ( ! sim -> downtime_chart.empty() )
-  {
-    raid_downtime = sim -> downtime_chart + "&dummy=dummy.png";
-    simplify_html( raid_downtime );
-  }
-
-  util_t::fprintf( file, "|| %s || ||\n", raid_downtime.c_str() );
+  util_t::fprintf( file, "\n\n" );
 
   count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
     std::string raid_dpet = sim -> dpet_charts[ i ] + "&dummy=dummy.png";
     simplify_html( raid_dpet );
-    util_t::fprintf( file, "|| %s ", raid_dpet.c_str() );
-    if ( ++i < count )
-    {
-      raid_dpet = sim -> dpet_charts[ i ] + "&dummy=dummy.png";
-      simplify_html( raid_dpet );
-      util_t::fprintf( file, "|| %s ", raid_dpet.c_str() );
-    }
-    util_t::fprintf( file, "||\n" );
+    util_t::fprintf( file, "|| %s ||\n", raid_dpet.c_str() );
   }
-
-  util_t::fprintf( file, "\n" );
+  util_t::fprintf( file, "\n\n" );
 }
 
 // print_wiki_scale_factors ===================================================
@@ -1337,15 +1348,15 @@ static void print_wiki_scale_factors( FILE*  file,
 
     std::string lootrank = p -> gear_weights_lootrank_link;
     std::string wowhead  = p -> gear_weights_wowhead_link;
-    std::string pawn     = p -> gear_weights_pawn_string;
+    std::string pawn_std = p -> gear_weights_pawn_std_string;
 
     simplify_html( lootrank );
     simplify_html( wowhead  );
-    simplify_html( pawn     );
+    simplify_html( pawn_std );
 
     util_t::fprintf( file, " [%s lootrank] ||", lootrank.c_str() );
     util_t::fprintf( file, " [%s wowhead] ||",  wowhead.c_str() );
-    util_t::fprintf( file, " {{{ %s }}} ||",            pawn.c_str() );
+    util_t::fprintf( file, " {{{ %s }}} ||",    pawn_std.c_str() );
     util_t::fprintf( file, "\n" );
   }
 }
@@ -1544,20 +1555,18 @@ void report_t::print_html( sim_t* sim )
 
   if ( num_players > 1 ) 
   {
+    print_html_contents( file, sim );
     print_html_raid( file, sim );
     print_html_scale_factors( file, sim );
+    util_t::fprintf( file, "<hr />\n" );
   }
-
-  util_t::fprintf( file, "<div id=\"players\">\n" );
 
   for ( int i=0; i < num_players; i++ )
   {
     print_html_player( file, sim -> players_by_name[ i ] );
   }
 
-  util_t::fprintf( file, "</div>\n" );
-
-  print_html_text( file, sim );
+//print_html_text( file, sim );
 
   util_t::fprintf( file, "</body>\n" );
   util_t::fprintf( file, "</html>" );
@@ -1582,9 +1591,11 @@ void report_t::print_wiki( sim_t* sim )
     exit( 0 );
   }
 
-  if ( num_players > 1 ) print_wiki_raid( file, sim );
-
-  print_wiki_scale_factors( file, sim );
+  if ( num_players > 1 ) 
+  {
+    print_wiki_raid( file, sim );
+    print_wiki_scale_factors( file, sim );
+  }
 
   for ( int i=0; i < num_players; i++ )
   {

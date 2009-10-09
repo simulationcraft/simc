@@ -5,8 +5,7 @@
 
 #include "simcraft.h"
 
-namespace
-{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static const char* class_color( int type )
 {
@@ -411,7 +410,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
   double max_dpet = stats_list[ 0 ] -> dpet;
 
-  int max_actions_per_chart = 25;
+  int max_actions_per_chart = 20;
   int max_charts = 4;
 
   std::string s;
@@ -1031,7 +1030,8 @@ struct compare_stat_scale_factors
 };
 
 const char* chart_t::gear_weights_pawn( std::string& s,
-                                        player_t*    p )
+                                        player_t*    p,
+					bool hit_expertise )
 {
   std::vector<int> stats;
   for ( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
@@ -1058,6 +1058,10 @@ const char* chart_t::gear_weights_pawn( std::string& s,
 
     double value = p -> scaling.get_stat( stat );
     if ( value == 0 ) continue;
+
+    if ( ! hit_expertise )
+      if ( stat == STAT_HIT_RATING || stat == STAT_EXPERTISE_RATING )
+	value = 0;
 
     const char* name=0;
     switch ( stat )

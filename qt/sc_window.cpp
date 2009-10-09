@@ -1032,6 +1032,7 @@ void SimcraftWindow::simulateFinished()
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
     mainTab->setCurrentIndex( TAB_RESULTS );
+    resultsView->setFocus();
   }
   else
   {
@@ -1182,12 +1183,17 @@ void SimcraftWindow::backButtonClicked( bool checked )
     if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
       visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) - 1 ] );
-      visibleWebView->history()->clear();
+
+      QWebHistory* h = visibleWebView->history();
+      visibleWebView->history()->clear(); // This is not appearing to work.
+      h->setMaximumItemCount(0);
+      h->setMaximumItemCount(100);
     }
     else
     {
       visibleWebView->back();
     }
+    visibleWebView->setFocus();
   }
   else
   {
@@ -1196,8 +1202,8 @@ void SimcraftWindow::backButtonClicked( bool checked )
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
     case TAB_IMPORT:    break;
-    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() ); break;
-    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); break;
+    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() );  simulateText->setFocus(); break;
+    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
     case TAB_RESULTS:   break;
     case TAB_EXAMPLES:  break;
@@ -1210,6 +1216,7 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
   if( visibleWebView ) 
   {
     visibleWebView->forward();
+    visibleWebView->setFocus();
   }
   else
   {
@@ -1218,8 +1225,8 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.forwards() ); break;
     case TAB_IMPORT:    break;
-    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.forwards() ); break;
-    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); break;
+    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.forwards() );  simulateText->setFocus(); break;
+    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
     case TAB_RESULTS:   break;
     case TAB_EXAMPLES:  break;
