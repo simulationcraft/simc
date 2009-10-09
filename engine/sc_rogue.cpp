@@ -2851,10 +2851,14 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
+      bool rupture_less = ( ! talents.blood_spatter && 
+			    ! talents.serrated_blades &&
+			      talents.improved_eviscerate );
       if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
       action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
       if ( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
-      action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
+      if ( ! rupture_less )
+        action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
       if ( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,min_combo_points=4,no_buff=1";
       action_list_str += "/envenom,min_combo_points=4,energy>=90";
