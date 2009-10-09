@@ -62,10 +62,12 @@ struct paladin_t : public player_t
 
   // Procs
   proc_t* procs_parry_haste;
+  proc_t* procs_tier10_2pc;
 
   // Random Number Generation
   rng_t* rng_guarded_by_the_light;
   rng_t* rng_judgements_of_the_wise;
+  rng_t* rng_tier10_2pc;
 
   // Auto-Attack
   attack_t* auto_attack;
@@ -225,6 +227,30 @@ struct paladin_t : public player_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// trigger_tier10_2pc ======================================================
+
+static void trigger_tier10_2pc( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( ! p -> set_bonus.tier10_2pc_melee() )
+    return;
+
+  if ( ! p -> rng_tier10_2pc -> roll( 0.40 ) )
+    return;
+
+  p -> procs_tier10_2pc -> occur();
+
+  for ( action_t* ac = a -> player -> action_list; ac; ac = ac -> next )
+  {
+    if ( ac -> name_str == "divine_storm" )
+    {
+      ac -> cooldown_ready = 0;
+    }
+  }
+  a -> update_ready();
+}
 
 // trigger_guarded_by_the_light ============================================
 
@@ -422,6 +448,8 @@ struct melee_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
+      trigger_tier10_2pc( this ); // Fix-Me: Does it need to hit to proc? Does it only proc off these attacks?
+
       if ( result == RESULT_CRIT )
       {
         p -> buffs_the_art_of_war -> trigger();
@@ -835,7 +863,8 @@ struct seal_of_command_proc_t : public paladin_attack_t
     trigger_gcd       = 0;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.36;
-    base_multiplier  *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
+    base_multiplier  *= 1.0 + ( p -> talents.judgements_of_the_pure      * 0.05 +
+                                p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
   }
 };
 
@@ -858,8 +887,9 @@ struct seal_of_command_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    base_multiplier *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 +
+                               p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.13;
@@ -923,8 +953,9 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    base_multiplier *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 + 
+                               p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );   
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.32;
@@ -948,7 +979,8 @@ struct seal_of_light_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-    base_multiplier *= 1.0 + p -> talents.judgements_of_the_pure * 0.05;
+    base_multiplier *= 1.0 + ( p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
@@ -977,8 +1009,9 @@ struct seal_of_light_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.the_art_of_war         +
-                               0.05 * p -> talents.judgements_of_the_pure );
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 +
+                               p -> talents.judgements_of_the_pure      * 0.05 + 
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.25;
@@ -1003,8 +1036,9 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     trigger_gcd = 0;
 
     base_multiplier *= p -> main_hand_weapon.swing_time;
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
-                               0.03 * p -> talents.seals_of_the_pure      );
+    base_multiplier *= 1.0 + ( p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> talents.seals_of_the_pure           * 0.03 + 
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.044;
@@ -1034,9 +1068,10 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     base_cost *= 1.0 - 0.02 * p -> talents.benediction;
     cooldown   = 10 - p -> talents.improved_judgements;
 
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.the_art_of_war         +
-                               0.05 * p -> talents.judgements_of_the_pure +
-                               0.03 * p -> talents.seals_of_the_pure      ) ;
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 +
+                               p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> talents.seals_of_the_pure           * 0.03 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.32;
@@ -1072,8 +1107,9 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
     base_spell_power_multiplier = 0.013;
     base_attack_power_multiplier = 0.025;
 
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
-                               0.03 * p -> talents.seals_of_the_pure      );
+    base_multiplier *= 1.0 + ( p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> talents.seals_of_the_pure           * 0.03 + 
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
   }
@@ -1139,8 +1175,9 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.33;
 
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.judgements_of_the_pure +
-                               0.03 * p -> talents.seals_of_the_pure      );
+    base_multiplier *= 1.0 + ( p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> talents.seals_of_the_pure           * 0.03 + 
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
   }
@@ -1162,9 +1199,10 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_multiplier *= 1.0 + ( 0.05 * p -> talents.the_art_of_war         +
-                               0.05 * p -> talents.judgements_of_the_pure +
-                               0.03 * p -> talents.seals_of_the_pure      );
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 +
+                               p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> talents.seals_of_the_pure           * 0.03 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.22;
@@ -1220,8 +1258,9 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
     cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
-    base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
-    base_multiplier *= 1.0 + 0.05 * p -> talents.judgements_of_the_pure;
+    base_multiplier *= 1.0 + ( p -> talents.the_art_of_war              * 0.05 +
+                               p -> talents.judgements_of_the_pure      * 0.05 +
+                               p -> set_bonus.tier10_4pc_melee() ? 0.10 : 0.00 );
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.25;
@@ -2009,6 +2048,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs_parry_haste = get_proc( "parry_haste", sim );
+  procs_tier10_2pc  = get_proc( "tier10_2pc",  sim );
 }
 
 // paladin_t::init_rng ======================================================
@@ -2019,6 +2059,7 @@ void paladin_t::init_rng()
 
   rng_guarded_by_the_light   = get_rng( "guarded_by_the_light"   );
   rng_judgements_of_the_wise = get_rng( "judgements_of_the_wise" );
+  rng_tier10_2pc             = get_rng( "tier10_2pc"             );
 }
 
 // paladin_t::init_glyphs ===================================================
