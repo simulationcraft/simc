@@ -16,6 +16,7 @@ struct druid_t : public player_t
   action_t* active_moonfire;
   action_t* active_rake;
   action_t* active_rip;
+  action_t* active_starfire_dot;
 
   std::vector<action_t*> active_mauls;
   int num_active_mauls;
@@ -518,6 +519,50 @@ static void trigger_t8_2pc_melee( action_t* a )
 
   if ( p -> buffs_omen_of_clarity -> trigger( 1, 1, 0.02 ) )
     p -> procs_tier8_2pc -> occur();
+}
+
+// trigger_t10_4pc_caster ==================================================
+
+static void trigger_t10_4pc_caster( spell_t* s )
+{
+  druid_t* p = s -> player -> cast_druid();
+
+  if ( ! p -> set_bonus.tier10_4pc_caster() ) return;
+  
+  struct starfire_dot_t : public druid_spell_t
+  {
+    starfire_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_ARCANE, TREE_BALANCE )
+    {
+      may_miss        = false;
+      background      = true;
+      proc            = true;
+      trigger_gcd     = 0;
+      base_cost       = 0;
+      base_multiplier = 1.0;
+      tick_power_mod  = 0;
+      base_tick_time  = 2.0;
+      num_ticks       = 2;
+    }
+    void player_buff() {}
+    void target_debuff( int dmg_type ) {}
+  };
+
+  double dmg = s -> direct_dmg * 0.05;
+
+  if ( ! p -> active_starfire_dot ) p -> active_starfire_dot = new starfire_dot_t( p );
+
+  if ( p -> active_starfire_dot -> ticking )
+  {
+    int num_ticks = p -> active_starfire_dot -> num_ticks;
+    int remaining_ticks = num_ticks - p -> active_starfire_dot -> current_tick;
+
+    dmg += p -> active_starfire_dot -> base_td * remaining_ticks;
+
+    p -> active_starfire_dot -> cancel();
+  }
+
+  p -> active_starfire_dot -> base_td = dmg / p -> active_starfire_dot -> num_ticks;
+  p -> active_starfire_dot -> schedule_tick();
 }
 
 // trigger_primal_fury =====================================================
@@ -1957,7 +2002,7 @@ void druid_spell_t::player_buff()
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
     if ( p -> buffs_t10_2pc_caster -> up() )
-      player_multiplier *= 1.1;
+      player_multiplier *= 1.15;
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
@@ -2753,12 +2798,12 @@ struct starfire_t : public druid_spell_t
       trigger_earth_and_moon( this );
       if ( result == RESULT_CRIT )
       {
-	if( ! p -> buffs_eclipse_lunar -> check() )
-	{
-	  p -> buffs_eclipse_solar -> trigger();
-	}
+        trigger_t10_4pc_caster( this );
+        if( ! p -> buffs_eclipse_lunar -> check() )
+        {
+          p -> buffs_eclipse_solar -> trigger();
+        }
       }
-
       if ( p -> glyphs.starfire && p -> active_moonfire )
       {
         if ( p -> active_moonfire -> added_ticks < 3 )
@@ -3415,8 +3460,8 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "eclipse_lunar"     , 1,  15.0,  30.0 - 6.0 * set_bonus.tier10_4pc_caster(), talents.eclipse / 5.0 );
-  buffs_eclipse_solar      = new buff_t( this, "eclipse_solar"     , 1,  15.0,  30.0 - 6.0 * set_bonus.tier10_4pc_caster(), talents.eclipse / 3.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "eclipse_lunar"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
+  buffs_eclipse_solar      = new buff_t( this, "eclipse_solar"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
