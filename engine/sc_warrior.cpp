@@ -38,6 +38,7 @@ struct warrior_t : public player_t
   buff_t* buffs_wrecking_crew;
   buff_t* buffs_tier7_4pc_melee;
   buff_t* buffs_tier8_2pc_melee;
+  buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_glyph_of_blocking;
   buff_t* buffs_glyph_of_revenge;
 
@@ -348,6 +349,7 @@ static void trigger_deep_wounds( action_t* a )
       warrior_attack_t::tick();
       warrior_t* p = player -> cast_warrior();
       p -> buffs_tier7_4pc_melee -> trigger();
+      p -> buffs_tier10_2pc_melee -> trigger();
     }
   };
 
@@ -1555,6 +1557,7 @@ struct rend_t : public warrior_attack_t
     warrior_attack_t::tick();
     warrior_t* p = player -> cast_warrior();
     p -> buffs_tier7_4pc_melee -> trigger();
+    p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
   virtual void execute()
@@ -2279,6 +2282,7 @@ void warrior_t::init_buffs()
   buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0, talents.wrecking_crew );
   buffs_tier7_4pc_melee           = new buff_t( this, "tier7_4pc_melee",           1, 30.0,   0, set_bonus.tier7_4pc_melee() * 0.10 );
+  buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
   buffs_glyph_of_blocking         = new buff_t( this, "glyph_of_blocking",         1, 10.0,   0, glyphs.blocking );
   buffs_glyph_of_revenge          = new buff_t( this, "glyph_of_revenge",          1,    0,   0, glyphs.revenge );
   
@@ -2474,6 +2478,8 @@ double warrior_t::composite_attack_power() SC_CONST
   {
     ap += talents.armored_to_the_teeth * composite_armor() / 108.0;
   }
+  if ( buffs_tier10_2pc_melee -> up() )
+    ap *= 1.20;
   return ap;
 }
 
