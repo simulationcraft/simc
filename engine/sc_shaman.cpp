@@ -33,13 +33,15 @@ struct shaman_t : public player_t
   buff_t* buffs_indomitability;
   buff_t* buffs_lightning_shield;
   buff_t* buffs_maelstrom_weapon;
-  buff_t* buffs_stonebreaker;
-  buff_t* buffs_tundra;
   buff_t* buffs_nature_vulnerability;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_quaking_earth;
   buff_t* buffs_shamanistic_rage;
+  buff_t* buffs_stonebreaker;  
   buff_t* buffs_totem_of_wrath_glyph;
+  buff_t* buffs_tier10_2pc_melee;
+  buff_t* buffs_tier10_4pc_melee;
+  buff_t* buffs_tundra;
   buff_t* buffs_water_shield;
 
   // Cooldowns
@@ -240,7 +242,9 @@ struct shaman_attack_t : public attack_t
     base_dd_min = base_dd_max = 1;
     shaman_t* p = player -> cast_shaman();
     base_multiplier *= 1.0 + p -> talents.weapon_mastery * 0.1/3;
+	if ( p -> buffs_tier10_2pc_melee -> up() ) base_multiplier += 1.12; //will need testing to see if this additive or multiplicative
     if ( p -> dual_wield() ) base_hit += p -> talents.dual_wield_specialization * 0.02;
+	if ( p -> buffs_tier10_4pc_melee -> up() ) p -> attack_power *= 1.20; 
   }
 
   virtual void execute();
@@ -442,6 +446,9 @@ static void stack_maelstrom_weapon( attack_t* a )
   if ( p -> set_bonus.tier8_4pc_melee() ) chance *= 1.20;
 
   p -> buffs_maelstrom_weapon -> trigger( 1, 1, chance );
+
+  if ( p -> set_bonus.tier10_4pc_melee() )
+	if (  p -> buffs_maelstrom_weapon -> stack() == 5 ) p -> buffs_tier10_4pc_melee -> trigger();
 }
 
 // trigger_unleashed_rage =================================================
@@ -2427,6 +2434,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_shamanistic_rage -> trigger();
+	p -> buffs_tier10_2pc_melee -> trigger();
   }
 
   virtual bool ready()
@@ -2854,6 +2862,8 @@ void shaman_t::init_buffs()
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0 );
+  buffs_tier10_2pc_melee	  = new buff_t( this, "tier10_2pc_melee",	   1,  15.0 ); 
+  buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",	   1,  10.0, 0.0, 20.0 ); //FIX ME - assuming no icd on this
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
 
