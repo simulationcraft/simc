@@ -2534,7 +2534,7 @@ void death_knight_t::init_buffs()
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH    , 200, 1, 20.0,  0, sigils.sigil_of_virulence * 0.80 );
-  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH    , 180, 1, 15.0,  0, 0.50 );
+  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH    , 180, 1, 15.0,  45, 0.50 );
 
   struct bloodworms_buff_t : public buff_t
   {
