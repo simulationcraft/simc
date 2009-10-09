@@ -2812,6 +2812,8 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
+    travel_speed = 21.0;
+
     option_t options[] =
     {
       { "decimation", OPT_BOOL, &decimation },
