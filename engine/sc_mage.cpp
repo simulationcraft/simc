@@ -367,7 +367,7 @@ struct mirror_image_pet_t : public pet_t
       spell_t::execute();
       if ( o -> glyphs.mirror_image && result_is_hit() )
       {
-	sim -> target -> debuffs.winters_chill -> trigger();
+        sim -> target -> debuffs.winters_chill -> trigger();
       }
       if ( next_in_sequence )
       {
@@ -721,12 +721,13 @@ static void consume_brain_freeze( spell_t* s )
   mage_t* p = s -> player -> cast_mage();
 
   if ( p -> buffs_brain_freeze -> check() )
+  {
     if ( ! trigger_tier8_4pc( s ) )
     {
       p -> buffs_brain_freeze -> expire();
-      if ( p -> set_bonus.tier10_2pc_caster() )
-        p -> buffs_tier10_2pc -> trigger();
+      p -> buffs_tier10_2pc -> trigger();
     }
+  }
 }
 
 // trigger_hot_streak ==============================================================
@@ -817,7 +818,7 @@ static int target_is_frozen( mage_t* p )
 
   if ( t -> debuffs.frozen() )
     if ( t -> debuffs.frostbite     -> may_react() ||
-	 t -> debuffs.winters_grasp -> may_react() )
+         t -> debuffs.winters_grasp -> may_react() )
     return 1;
 
   return 0;
@@ -1097,9 +1098,9 @@ struct arcane_barrage_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         if ( sim -> P330 )
-	      {
+              {
           sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-	      }
+              }
       }
     }
     p -> buffs_arcane_blast -> expire();
@@ -1181,9 +1182,9 @@ struct arcane_blast_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         if ( sim -> P330 )
-	{
+        {
           sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-	}
+        }
       }
     }
     p -> buffs_arcane_blast -> trigger();
@@ -1321,8 +1322,7 @@ struct arcane_missiles_t : public mage_spell_t
       if ( ! trigger_tier8_4pc( this ) )
       {
         p -> buffs_missile_barrage -> expire();
-        if ( p -> set_bonus.tier10_2pc_caster() )
-          p -> buffs_tier10_2pc -> trigger();
+        p -> buffs_tier10_2pc -> trigger();
       }
     }
     else
@@ -1472,7 +1472,7 @@ struct focus_magic_t : public mage_spell_t
 
       virtual void trigger( action_t* a )
       {
-	listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
+        listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
       }
     };
 
@@ -1929,8 +1929,7 @@ struct pyroblast_t : public mage_spell_t
       if ( ! trigger_tier8_4pc( this ) )
       {
         p -> buffs_hot_streak -> expire();
-        if ( p -> set_bonus.tier10_2pc_caster() )
-          p -> buffs_tier10_2pc -> trigger();
+        p -> buffs_tier10_2pc -> trigger();
       }
     }
 
@@ -2039,7 +2038,7 @@ struct scorch_t : public mage_spell_t
         return false;
 
       if ( t -> debuffs.improved_scorch -> remains_gt( 6.0 ) )
-	return false;
+        return false;
     }
 
     return true;
@@ -2505,8 +2504,8 @@ struct arcane_brilliance_t : public mage_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-	p -> buffs.arcane_brilliance -> trigger( 1, bonus );
-	p -> init_resources( true );
+        p -> buffs.arcane_brilliance -> trigger( 1, bonus );
+        p -> init_resources( true );
       }
     }
   }
@@ -2610,15 +2609,10 @@ struct mirror_image_spell_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-
     consume_resource();
     update_ready();
-    player -> summon_pet( "mirror_image" );
-
-    if ( p -> set_bonus.tier10_4pc_caster() )
-    {
-      p -> buffs_tier10_4pc -> trigger();
-    }
+    p -> summon_pet( "mirror_image" );
+    p -> buffs_tier10_4pc -> trigger();
   }
 };
 
@@ -2995,8 +2989,8 @@ void mage_t::init_buffs()
   buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
   buffs_incanters_absorption = new buff_t( this, "incanters_absorption", 1, 10.0 );
   buffs_missile_barrage      = new buff_t( this, "missile_barrage",      1, 15.0, 0, talents.missile_barrage * 0.04 );
-  buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1, 5.0 );
-  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0 );    
+  buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
+  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );
 
   buffs_ghost_charge = new buff_t( this, "ghost_charge" );
   buffs_mage_armor   = new buff_t( this, "mage_armor" );
@@ -3325,8 +3319,8 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
 {
   if(talent_list.empty())
   {
-	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
-	  {
+          talent_translation_t translation_table[][MAX_TALENT_TREES] =
+          {
     { {  1, 2, &( talents.arcane_subtlety      ) }, {  1, 2, &( talents.improved_fire_blast ) }, {  1, 3, &( talents.frostbite                ) } },
     { {  2, 3, &( talents.arcane_focus         ) }, {  2, 3, &( talents.incineration        ) }, {  2, 5, &( talents.improved_frost_bolt      ) } },
     { {  3, 0, NULL                              }, {  3, 5, &( talents.improved_fire_ball  ) }, {  3, 3, &( talents.ice_floes                ) } },
