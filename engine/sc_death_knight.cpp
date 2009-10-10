@@ -63,6 +63,8 @@ struct death_knight_t : public player_t
   action_t* active_blood_plague;
   action_t* active_frost_fever;
   action_t* active_unholy_blight;
+  action_t* active_necrosis;
+  action_t* active_blood_caked_blade;
   int       diseases;
 
   // Pets and Guardians
@@ -89,6 +91,9 @@ struct death_knight_t : public player_t
   // Procs
   proc_t* procs_abominations_might;
   proc_t* procs_sudden_doom;
+
+  // RNGs
+  rng_t* rng_blood_caked_blade;
 
   // Up-Times
   uptime_t* uptimes_blood_plague;
@@ -281,10 +286,12 @@ struct death_knight_t : public player_t
       player_t( sim, DEATH_KNIGHT, name, race_type )
   {
     // Active
-    active_presence     = 0;
-    active_blood_plague = NULL;
-    active_frost_fever  = NULL;
+    active_presence            = 0;
+    active_blood_plague        = NULL;
+    active_frost_fever         = NULL;
     active_unholy_blight       = NULL;
+    active_necrosis            = NULL;
+    active_blood_caked_blade   = NULL;
     diseases            = 0;
 
     // Pets and Guardians
@@ -301,6 +308,7 @@ struct death_knight_t : public player_t
   // Character Definition
   virtual void      init_actions();
   virtual void      init_race();
+  virtual void      init_rng();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_gains();
@@ -811,6 +819,85 @@ static void trigger_desolation( action_t* a )
   }
 }
 
+static void trigger_necrosis( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if ( ! p -> talents.necrosis )
+    return;
+
+  struct necrosis_t : public death_knight_spell_t
+  {
+    necrosis_t( player_t* player ) :
+        death_knight_spell_t( "necrosis", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    {
+      may_crit       = false;
+      may_miss       = false;
+      background     = true;
+      proc           = true;
+      trigger_gcd    = false;
+      may_resist     = false;
+      reset();
+    }
+    void target_debuff( int dmg_type )
+    {
+      // no debuff effect
+    }
+    void player_buff()
+    {
+      // no buffs
+    }
+  };
+
+  if ( ! p -> active_necrosis ) p -> active_necrosis = new necrosis_t( p );
+
+  p -> active_necrosis -> base_dd_max = p -> active_necrosis -> base_dd_min = a -> direct_dmg * 0.04 * p -> talents.necrosis;
+  p -> active_necrosis -> execute();
+}
+
+static void trigger_blood_caked_blade( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if ( ! p -> talents.blood_caked_blade )
+    return;
+
+  double chance = 0;
+  chance = p -> talents.blood_caked_blade * 0.10;
+  if ( p -> rng_blood_caked_blade->roll( chance ) )
+  {
+    struct bcb_t : public death_knight_attack_t
+    {
+      bcb_t( player_t* player ) :
+          death_knight_attack_t( "blood_caked_blade", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+      {
+        death_knight_t* p = player -> cast_death_knight();
+        may_crit = false;
+        background     = true;
+        proc           = true;
+        trigger_gcd    = false;
+        base_dd_min = base_dd_max = 0.01;
+        weapon = &( p -> main_hand_weapon );
+        normalize_weapon_speed = true;
+        weapon_multiplier *= 0.25;
+        reset();
+      }
+      void target_debuff( int dmg_type )
+      {
+        {
+          death_knight_attack_t::target_debuff( dmg_type );
+          death_knight_t* p = player -> cast_death_knight();
+          target_multiplier *= 1 + p -> diseases * 0.125;
+          assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+        }
+      }
+    };
+
+    if ( ! p -> active_blood_caked_blade ) p -> active_blood_caked_blade = new bcb_t( p );
+    p -> active_blood_caked_blade -> execute();
+  }
+}
+
 static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
@@ -821,15 +908,26 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   struct unholy_blight_t : public death_knight_spell_t
   {
     unholy_blight_t( player_t* player ) :
-      death_knight_spell_t( "unholy_blight", player, SCHOOL_SHADOW, TREE_UNHOLY )
+        death_knight_spell_t( "unholy_blight", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       base_tick_time = 2.0;
       num_ticks = 5;
       trigger_gcd = 0;
       background     = true;
       proc           = true;
+      may_crit       = false;
       may_resist     = false;
       reset();
+    }
+
+    void target_debuff( int dmg_type )
+    {
+      // no debuff effect
+    }
+
+    void player_buff()
+    {
+      // no buffs
     }
   };
 
@@ -1253,6 +1351,8 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
+      trigger_necrosis( this );
+      trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
       {
         p -> resource_gain( resource, 5, p -> gains_scent_of_blood );
@@ -1909,7 +2009,8 @@ struct horn_of_winter_t : public death_knight_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     update_ready();
-    if (sim -> auras.strength_of_earth -> current_value < bonus) {
+    if ( sim -> auras.strength_of_earth -> current_value < bonus )
+    {
       sim -> auras.strength_of_earth -> trigger( 1, bonus );
     }
 
@@ -1922,7 +2023,8 @@ struct horn_of_winter_t : public death_knight_spell_t
       return false;
 
     // In case they're using it for the runic power
-    if ( rebuff_early ) {
+    if ( rebuff_early )
+    {
       return true;
     }
 
@@ -2182,8 +2284,8 @@ struct rune_tap_t : public death_knight_spell_t
 
     death_knight_t* p = player -> cast_death_knight();
     double pctOfMaxGained = 0.1;
-    pctOfMaxGained += (p -> talents.improved_rune_tap / 3) * 0.1;
-    pctOfMaxGained *= 1.0 + (p -> glyphs.rune_tap * 0.1);
+    pctOfMaxGained += ( p -> talents.improved_rune_tap / 3 ) * 0.1;
+    pctOfMaxGained *= 1.0 + ( p -> glyphs.rune_tap * 0.1 );
     p -> resource_gain( RESOURCE_HEALTH, pctOfMaxGained * p -> resource_max[ RESOURCE_HEALTH ] );
   }
 };
@@ -2395,6 +2497,12 @@ void death_knight_t::init_race()
   player_t::init_race();
 }
 
+void death_knight_t::init_rng()
+{
+  player_t::init_rng();
+  rng_blood_caked_blade = get_rng( "blood_caked_blade" );
+}
+
 void death_knight_t::init_base()
 {
   attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_STRENGTH );
@@ -2578,7 +2686,7 @@ void death_knight_t::init_procs()
 
 void death_knight_t::init_resources( bool force )
 {
-  player_t::init_resources(force);
+  player_t::init_resources( force );
 
   resource_current[ RESOURCE_RUNIC ] = 0;
 }
