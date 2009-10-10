@@ -294,6 +294,7 @@ struct death_knight_t : public player_t
     active_unholy_blight       = NULL;
     active_necrosis            = NULL;
     active_blood_caked_blade   = NULL;
+    active_wandering_plague    = NULL;
     diseases            = 0;
 
     // Pets and Guardians
@@ -305,6 +306,8 @@ struct death_knight_t : public player_t
     off_hand_attack     = NULL;
 
     sudden_doom         = NULL;
+    blood_plague        = NULL;
+    frost_fever         = NULL;
   }
 
   // Character Definition
