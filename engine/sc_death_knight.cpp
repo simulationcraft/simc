@@ -1585,7 +1585,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
       return false;
 
     death_knight_t* p = player -> cast_death_knight();
-    return p -> talents.dancing_rune_weapon;
+    return p -> talents.dancing_rune_weapon != 0;
   }
 };
 
@@ -2283,7 +2283,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
       return false;
 
     death_knight_t* p = player -> cast_death_knight();
-    return p -> talents.summon_gargoyle;
+    return p -> talents.summon_gargoyle != 0;
   }
 };
 

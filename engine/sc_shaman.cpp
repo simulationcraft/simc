@@ -2457,7 +2457,7 @@ struct shamanistic_rage_t : public shaman_spell_t
       return false;
 
     if ( tier10_2pc )
-      return p -> set_bonus.tier10_2pc_melee();
+      return p -> set_bonus.tier10_2pc_melee() != 0;
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.10 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
