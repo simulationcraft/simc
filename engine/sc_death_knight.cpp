@@ -65,6 +65,7 @@ struct death_knight_t : public player_t
   action_t* active_unholy_blight;
   action_t* active_necrosis;
   action_t* active_blood_caked_blade;
+  action_t* active_wandering_plague;
   int       diseases;
 
   // Pets and Guardians
@@ -94,6 +95,7 @@ struct death_knight_t : public player_t
 
   // RNGs
   rng_t* rng_blood_caked_blade;
+  rng_t* rng_wandering_plague;
 
   // Up-Times
   uptime_t* uptimes_blood_plague;
@@ -819,6 +821,51 @@ static void trigger_desolation( action_t* a )
   }
 }
 
+static void trigger_wandering_plague( action_t* a, double disease_damage )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if ( ! p -> talents.wandering_plague )
+    return;
+
+  struct wandering_plague_t : public death_knight_spell_t
+  {
+    wandering_plague_t( player_t* player ) :
+        death_knight_spell_t( "wandering_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    {
+      may_crit       = false;
+      may_miss       = false;
+      background     = true;
+      proc           = true;
+      trigger_gcd    = false;
+      may_resist     = false;
+      cooldown_group = "wandering_plague";
+      cooldown       = 1.0;
+      reset();
+    }
+    void target_debuff( int dmg_type )
+    {
+      // no debuff effect
+    }
+    void player_buff()
+    {
+      // no buffs
+    }
+  };
+  if ( ! p -> active_wandering_plague ) p -> active_wandering_plague = new wandering_plague_t( p );
+
+  double chance = p -> composite_attack_crit();
+
+  if ( p -> rng_wandering_plague -> roll( chance ) && p -> active_wandering_plague -> ready() )
+  {
+    double dmg = disease_damage * p -> talents.wandering_plague / 3.0;
+
+    p -> active_wandering_plague -> base_dd_min = dmg;
+    p -> active_wandering_plague -> base_dd_max = dmg;
+    p -> active_wandering_plague -> execute();
+  }
+}
+
 static void trigger_necrosis( action_t* a )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
@@ -1463,11 +1510,12 @@ struct blood_plague_t : public death_knight_spell_t
     base_attack_power_multiplier *= 0.055 * 1.15 * ( 1 + 0.04 * p -> talents.impurity );
     tick_power_mod    = 1;
 
-    may_crit          = false;
+    tick_may_crit     = p -> set_bonus.tier9_4pc_melee();
     may_miss          = false;
     cooldown          = 0.0;
 
     observer = &( p -> active_blood_plague );
+    reset();
   }
 
   virtual void execute()
@@ -1485,6 +1533,12 @@ struct blood_plague_t : public death_knight_spell_t
     }
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
+  }
+
+  virtual void tick()
+  {
+    death_knight_spell_t::tick();
+    trigger_wandering_plague( this, tick_dmg );
   }
 
   virtual void last_tick()
@@ -1849,11 +1903,12 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier  *= 1.0 + ( ( p -> sim -> P330 && p -> glyphs.icy_touch ) ? 0.2 : 0.0 );
     tick_power_mod    = 1;
 
-    may_crit          = false;
+    tick_may_crit     = p -> set_bonus.tier9_4pc_melee();
     may_miss          = false;
     cooldown          = 0.0;
 
     observer = &( p -> active_frost_fever );
+    reset();
   }
 
   virtual void execute()
@@ -1864,6 +1919,12 @@ struct frost_fever_t : public death_knight_spell_t
     sim->target->debuffs.crypt_fever->trigger();
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
+  }
+
+  virtual void tick()
+  {
+    death_knight_spell_t::tick();
+    trigger_wandering_plague( this, tick_dmg );
   }
 
   virtual void last_tick()
@@ -2501,6 +2562,7 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
   rng_blood_caked_blade = get_rng( "blood_caked_blade" );
+  rng_wandering_plague = get_rng( "wandering_plague" );
 }
 
 void death_knight_t::init_base()
