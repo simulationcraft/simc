@@ -1112,7 +1112,7 @@ bool action_t::ready()
       return false;
 
   //check action expression if any
-  if ( has_if_exp )
+  if ( has_if_exp > 0 )
     if ( ! if_exp->ok() )
       return false;
 
