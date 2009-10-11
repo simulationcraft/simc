@@ -2563,10 +2563,10 @@ void player_t::paladin_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  // FIXME! How long do the judgements last?
-  t -> debuffs.heart_of_the_crusader  = new debuff_t( sim, "heart_of_the_crusader",  1, 120.0 );
-  t -> debuffs.judgement_of_wisdom    = new debuff_t( sim, "judgement_of_wisdom",    1, 120.0 );
-  t -> debuffs.judgements_of_the_just = new debuff_t( sim, "judgements_of_the_just", 1, 120.0 );
+
+  t -> debuffs.heart_of_the_crusader  = new debuff_t( sim, "heart_of_the_crusader",  1, 20.0 );
+  t -> debuffs.judgement_of_wisdom    = new debuff_t( sim, "judgement_of_wisdom",    1, 30.0 );
+  t -> debuffs.judgements_of_the_just = new debuff_t( sim, "judgements_of_the_just", 1, 30.0 );
 }
 
 // player_t::paladin_combat_begin ============================================
