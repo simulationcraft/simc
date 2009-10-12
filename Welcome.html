@@ -45,7 +45,7 @@
       </dd>
       <dt><a name="navigation" /><h2>Navigation</h2></dt>
       <dd>In general the flow is from left to right across the main tabs at the top of the window.  
-      At <i>Globals</i> you set common high-level directives.  At <i>Import</i> you load your character 
+      At <i>Options</i> you set common high-level directives.  At <i>Import</i> you load your character 
       profile from a variety of sources.  At <i>Simulate</i> you make character-specific tweaks. 
       At <i>Overrides</i> a super-user can specify custom parameters that will persist from run to run. 
       At <i>Examples</i> you can see examples of all supported parameters including common usage. 
@@ -74,12 +74,74 @@
             has focus is equivalent to clicking the main button.</li>
 	<li><b>When the command-line has focus, the <i>Up</i> and <i>Down</i> keys cycle through the history
             of command-line text.</b>  This history is persistent between runs.</li>
+        <li>The configuration script passed to the simulator is constructed by first adding the options implied
+            by the button-settings under <i>Options</i>, followed by the text under <i>Simulate</i>, followed
+	    by the text under <i>Overrides</i> and finally including anything on the command line.  It is important
+            to understand that the last setting <i>wins</i>.  Users already comfortable with earlier releases
+            of the command-line-only application can use the the GUI command-line in the same manner.  For example,
+            one could type <i>armory=us,llane,segv</i> to download and simulate the Hunter Segv from server US-Llane.</li>
+        <li>Any option that does not fit the <i>parm=value</i> paradigm is assumed to be the name of a script file
+            which is subsequently loaded.  While the history mechanism of the <i>Back</i> and <i>Forward</i> buttons
+            should be sufficient for most needs, it can be convenient to save complicated parameter settings in
+            an external file.
       </ul>
     </dd>
     <dt><a name="global_parameters" /><h2>Global Parameters</h2></dt>
-    <dd>text incoming</dd>
+    <dd>SimulationCraft has many, many options that can be loosely categorized into two groups, those that are 
+        applied to the <i>active</i> player and those that are applied globally.  The <i>Globals</i> section
+        of the <i>Options</i> tab is dedicated to the more commonly changed global parameters.
+      <ul>
+	  <li><b>Patch:</b> The mechanics of <i>World of Warcraft</i> are constantly changing.  SimulationCraft
+	      endeavors to model the two most recent patch levels.  Usually, this corresponds to <i>Live</i> and <i>PTR</i>.</li>
+	  <li><b>Latency:</b> During simulation we do not attempt to model the actual latency in all internet
+	      traffic, but rather how that latency manifests itself in terms of the inevitable gaps between player
+	      actions.  Rigorous testing has shown that these gaps differ greatly depending upon whether the
+	      preceding action has a cast-time (enabling queueing), is instant-cast (triggering the <i>GCD</i>),
+              or is channeled (requiring extra care not to clip the last tick).  SimulationCraft uses random
+	      values for these <i>gaps</i>, whose range is centered on user-supplied values.</li>
+	  <li><b>Iterations:</b> The largest drawback of simulation is that in order to get meaningful answers,
+              one must run the siulation many, many times to acquire a trustworthy statistical average.  More 
+              iterations means better accuracy, at the cost of longer runtimes.  When calculating <i>scale factors</i>
+              one must iterate enough such that the simulation error margin is sufficiently smaller than the change
+	      in stat value being analyzed.</li>
+	  <li><b>Length(sec):</b> It is important to understand that the length of the fight is a goal and not
+              a hard limit.  Half-way through the first iteration the health of the target (<i>boss</i>) is estimated
+              based upon damage done up to that point.  The simulation ends when the target dies and <i>not</i> when
+              the desired fight length is reached.  At the end of every proceeding iteration, the target health is 
+              re-evaluated based upon whether the fight ended early or late.  The end result is that after many
+              iterations, the average fight length matches the desired value.</li>
+	  <li><b>Fight Style:</b> One of the most common criticisms of theorycrafting tools is that they only model
+              <i>tank-n-spank</i> fights in which the player gets to stand perfectly still just hitting keys/buttons.
+              SimulationCraft supports a wide array of <i>raid events</i> including movement, stuns, splash damage,
+              target (in)vulnerability, etc.  The <i>Helter Skelter</i> option throws in an interesting mix of
+              these random events so that the user may see how badly DPS suffers under adverse conditions.</li>
+	  <li><b>Scale Factors:</b> Given the intense computatin required to determine trustworthy scale factors, 
+              they are not calculated by default.  Scale factors are required to generate custom <i>wowhead</i> and
+              <i>lootrank</i> gear URLs.  It is highly recommended to use an iteration count of at least 10000.</li> 
+	  <li><b>Threads:</b> The iterative nature of SimulationCraft means that parallel processing is a very
+              effective means to increase performance.  Most modern desktops have at least two CPU cores.  Match
+              the number of threads to the number of CPU cores for optimal performance.</li>
+	  <li><b>Armory Spec:</b> Players may have two talent/glyph combinations, but only one may be active at
+              a time.  When a player is downloaded from the Armory, by default the <i>active</i> talent/glyph
+              setup is used.  This parameter allows one to access the <i>inactive</i> setup during import.</li>
+	  <li><b>Optimal Raid:</b> This option is not tied to the <i>optimal_raid</i> parameter.  It is merely
+              a convenience toggle for quickly changing all of the buff/debuff settings.  When setting up the
+              simulation, <i>optimal_raid</i> is set to zero and only the selected buffs and debuffs are applied.</li>
+      </ul>
+    </dd>
     <dt><a name="scale_factors" /><h2>Scale Factors</h2></dt>
-    <dd>text incoming</dd>
+    <dd>Scale factors represent the change in DPS per change in stat value.  They are helpful in evaluating incremental
+        gear changes.  They are calculated by first making a baseline simulation and then comparing it against 
+        subsequent runs in which one stat is increased or decreased.  To calculate trustworthy scale factors, the 
+        simulation margin of error must be sufficiently smaller than the change in stat value.  To reduce the margin
+        of error a large number of iterations is required.  Since multiple simulations must be run with a higher-than-normal
+        number of iterations, calculating scale factors can take 50x to 100x more cputime than a standard DPS run.
+        <p><b>ScaleFactor(Stat) = ( DPS(Baseline+StatDelta) - DPS(Baseline) ) / StatDelta<b>
+        <p>By default, SimulationCraft uses stat deltas between 50 and 150 depending upon the stat.  Most stat deltas
+        are positive, measuring the <i>increase</i> in DPS.  However, due to the cap nature of <i>Hit</i> and 
+        <i>Expertise</i>, these stats use negative deltas, measuring the <i>decrease</i> in DPS.  To override the
+        default stat deltas, see the <i>Examples</i> tab for the appropriate parameters.
+    </dd>
     <dt><a name="importing_from_the_armory" /><h2>Importing from the Armory</h2></dt>
     <dd>text incoming</dd>
     <dt><a name="importing_from_wowhead" /><h2>Importing from Wowhead</h2></dt>
