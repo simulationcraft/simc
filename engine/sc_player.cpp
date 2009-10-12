@@ -2278,8 +2278,6 @@ void player_t::register_callbacks()
   {
     action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
 
-    register_attack_result_callback       ( RESULT_HIT_MASK, cb );
-    register_spell_result_callback        ( RESULT_HIT_MASK, cb );
     register_attack_direct_result_callback( RESULT_HIT_MASK, cb );
     register_spell_direct_result_callback ( RESULT_HIT_MASK, cb );
   }

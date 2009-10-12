@@ -3095,8 +3095,7 @@ void mage_t::init_actions()
       action_list_str += "/choose_rotation";
       action_list_str += "/arcane_missiles,barrage=1";
       action_list_str += "/arcane_blast,arcane_power=1";
-      action_list_str += "/arcane_blast,dps=1";
-      action_list_str += "/arcane_blast,dpm=1,max=4";
+      action_list_str += "/arcane_blast,max=4";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
       action_list_str += "/evocation";
