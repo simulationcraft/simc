@@ -46,6 +46,8 @@ struct druid_t : public player_t
   buff_t* buffs_terror;
   buff_t* buffs_tigers_fury;
   buff_t* buffs_unseen_moon;
+  buff_t* buffs_t10_feral_relic;
+  buff_t* buffs_t10_balance_relic;
 
   // Cooldowns
   struct _cooldowns_t
@@ -201,6 +203,8 @@ struct druid_t : public player_t
     int terror;
     int unseen_moon;
     int worship;
+    int t10_feral_relic;
+    int t10_balance_relic;
     idols_t() { memset( ( void* ) this, 0x0, sizeof( idols_t ) ); }
   };
   idols_t idols;
@@ -1072,8 +1076,10 @@ struct rake_t : public druid_cat_attack_t
   }
   virtual void tick()
   {
+    druid_t* p = player -> cast_druid();
     druid_cat_attack_t::tick();
     trigger_t8_2pc_melee( this );
+    p -> buffs_t10_feral_relic -> trigger();
   }
 };
 
@@ -2392,6 +2398,7 @@ struct insect_swarm_t : public druid_spell_t
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
     p -> buffs_t8_4pc_caster -> trigger();
+    p -> buffs_t10_balance_relic -> trigger();
   }
   
   virtual bool ready()
@@ -2526,6 +2533,7 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::tick();
     p -> buffs_lunar_fury -> trigger();
+    p -> buffs_t10_balance_relic -> trigger();
   }
 };
 
@@ -3508,6 +3516,9 @@ void druid_t::init_buffs()
   buffs_corruptor   = new stat_buff_t( this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
   buffs_terror      = new stat_buff_t( this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
   buffs_unseen_moon = new stat_buff_t( this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
+  
+  buffs_t10_feral_relic   = new stat_buff_t( this, "t10_feral_relic",   STAT_AGILITY,     44, 5, 15.0, 0, idols.t10_feral_relic * 0.50 );
+  buffs_t10_balance_relic = new stat_buff_t( this, "t10_balance_relic", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.t10_balance_relic * 0.50 );
 
   // simple
   buffs_bear_form    = new buff_t( this, "bear_form" );
@@ -3539,6 +3550,8 @@ void druid_t::init_items()
   else if ( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
   else if ( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if ( idol == "idol_of_worship"            ) idols.worship = 1;
+  else if ( idol == "idol_of_t10_feral_relic"    ) idols.t10_feral_relic = 1;
+  else if ( idol == "idol_of_t10_balance_relic"  ) idols.t10_balance_relic = 1;
   // To prevent warnings....
   else if ( idol == "idol_of_awakening"            ) ;
   else if ( idol == "idol_of_lush_moss"            ) ;
