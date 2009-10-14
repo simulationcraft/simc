@@ -1513,7 +1513,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_attack_power_multiplier *= 0.055 * 1.15 * ( 1 + 0.04 * p -> talents.impurity );
     tick_power_mod    = 1;
 
-    tick_may_crit     = p -> set_bonus.tier9_4pc_melee();
+    tick_may_crit     = p -> set_bonus.tier9_4pc_melee() != 0;
     may_miss          = false;
     cooldown          = 0.0;
 
@@ -1906,7 +1906,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier  *= 1.0 + ( ( p -> sim -> P330 && p -> glyphs.icy_touch ) ? 0.2 : 0.0 );
     tick_power_mod    = 1;
 
-    tick_may_crit     = p -> set_bonus.tier9_4pc_melee();
+    tick_may_crit     = p -> set_bonus.tier9_4pc_melee() != 0;
     may_miss          = false;
     cooldown          = 0.0;
 
