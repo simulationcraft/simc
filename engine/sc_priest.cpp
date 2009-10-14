@@ -43,7 +43,7 @@ struct priest_t : public player_t
   // Gains
   gain_t* gains_devious_mind;
   gain_t* gains_dispersion;
-  gain_t* gains_glyph_of_shadow;
+  gain_t* gains_glyph_of_shadow_word_pain;
   gain_t* gains_improved_spirit_tap;
   gain_t* gains_shadow_fiend;
   gain_t* gains_surge_of_light;
@@ -700,7 +700,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_spell_t::tick();
     if ( p -> sim -> P330 && p -> glyphs.shadow_word_pain )
-      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01 );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
   }
 
   virtual double tick_time() SC_CONST
@@ -991,7 +991,8 @@ struct vampiric_embrace_t : public priest_spell_t
     if ( p -> sim -> P330 )
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-      p -> buffs_vampiric_embrace -> trigger();
+      if ( p -> talents.vampiric_embrace )
+        p -> buffs_vampiric_embrace -> trigger();
     }
     else
     {
@@ -2014,12 +2015,12 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_devious_mind        = get_gain( "devious_mind" );
-  gains_dispersion          = get_gain( "dispersion" );
-  gains_glyph_of_shadow     = get_gain( "glyph_of_shadow" );
-  gains_improved_spirit_tap = get_gain( "improved_spirit_tap" );
-  gains_shadow_fiend        = get_gain( "shadow_fiend" );
-  gains_surge_of_light      = get_gain( "surge_of_light" );
+  gains_devious_mind              = get_gain( "devious_mind" );
+  gains_dispersion                = get_gain( "dispersion" );
+  gains_glyph_of_shadow_word_pain = get_gain( "glyph_of_shadow_word_pain" );
+  gains_improved_spirit_tap       = get_gain( "improved_spirit_tap" );
+  gains_shadow_fiend              = get_gain( "shadow_fiend" );
+  gains_surge_of_light            = get_gain( "surge_of_light" );
 }
 
 // priest_t::init_uptimes ====================================================
