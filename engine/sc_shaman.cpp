@@ -41,6 +41,8 @@ struct shaman_t : public player_t
   buff_t* buffs_totem_of_wrath_glyph;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
+  buff_t* buffs_tier10_relic_melee;
+  buff_t* buffs_tier10_relic_caster;
   buff_t* buffs_tundra;
   buff_t* buffs_water_shield;
 
@@ -175,6 +177,8 @@ struct shaman_t : public player_t
     int splintering;
     int stonebreaker;
     int thunderfall;
+    int tier10_relic_melee;
+    int tier10_relic_caster;
     int tundra;
 
     totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
@@ -825,6 +829,8 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( result_is_hit() )
     {
+      // FIXIT: When does it proc? Hit/Miss? What about the OH? FIXIT
+      p -> buffs_tier10_relic_melee -> trigger();
       p -> buffs_nature_vulnerability -> trigger( 4 );
 
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -1415,6 +1421,7 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
+    p -> buffs_tier10_relic_caster -> trigger();
   }
 
   virtual bool ready()
@@ -1576,6 +1583,7 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
+    p -> buffs_tier10_relic_caster -> trigger();
   }
 };
 
@@ -1654,6 +1662,7 @@ struct flame_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
+    p -> buffs_tier10_relic_caster -> trigger();
   }
 };
 
@@ -2838,6 +2847,8 @@ void shaman_t::init_items()
   else if ( totem == "totem_of_the_dancing_flame" ) totems.dancing_flame = 1;
   else if ( totem == "totem_of_the_tundra"        ) totems.tundra = 1;
   else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
+  else if ( totem == "totem_of_tier10_melee"      ) totems.tier10_relic_melee = 1;
+  else if ( totem == "totem_of_tier10_caster"     ) totems.tier10_relic_caster = 1;
   else if ( totem.find( "totem_of_indomitability" ) != std::string::npos )
   {
     totems.indomitability = 1;
@@ -2879,7 +2890,7 @@ void shaman_t::init_buffs()
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0 );
-  buffs_tier10_2pc_melee            = new buff_t( this, "tier10_2pc_melee",          1,  15.0 ); 
+  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",          1,  15.0 ); 
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",        1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
@@ -2892,6 +2903,9 @@ void shaman_t::init_buffs()
   buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, 400, 1, 18.0,  9.01, totems.quaking_earth * 0.80 );
   buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
   buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
+  // PTR relics
+  buffs_tier10_relic_melee  = new stat_buff_t( this, "tier10_relic_melee",  STAT_ATTACK_POWER, 146, 3, 15.0, 0, totems.tier10_relic_melee );
+  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_CRIT_RATING,   73, 3, 15.0, 0, totems.tier10_relic_caster );
 }
 
 // shaman_t::init_gains ======================================================
