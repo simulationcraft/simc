@@ -27,6 +27,7 @@ struct priest_t : public player_t
   buff_t* buffs_shadow_form;
   buff_t* buffs_shadow_weaving;
   buff_t* buffs_surge_of_light;
+  buff_t* buffs_vampiric_embrace;
 
   // Cooldowns
   struct _cooldowns_t
@@ -307,7 +308,7 @@ struct shadow_fiend_pet_t : public pet_t
 
     double sp = p -> composite_spell_power( school );
     sp -= owner -> spirit() *   p -> spell_power_per_spirit;
-    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.1 : 0.0 );
+    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
     return sp;
   }
   virtual void schedule_ready( double delta_time=0,
@@ -409,7 +410,7 @@ void priest_spell_t::assess_damage( double amount,
 
   spell_t::assess_damage( amount, dmg_type );
   
-  if ( p -> active_vampiric_embrace )
+  if ( ( ! sim -> P330 && p -> active_vampiric_embrace ) || ( sim -> P330 && p -> buffs_vampiric_embrace -> up() ) )
   {
     p -> resource_gain( RESOURCE_HEALTH, amount * 0.15 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), p -> gains.vampiric_embrace );
 
@@ -693,6 +694,15 @@ struct shadow_word_pain_t : public priest_spell_t
     return priest_spell_t::ready();
   }
 
+  virtual void tick()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::tick();
+    if ( p -> sim -> P330 && p -> glyphs.shadow_word_pain )
+      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01 );
+  }
+
   virtual double tick_time() SC_CONST
   {
     priest_t* p = player -> cast_priest();
@@ -700,12 +710,7 @@ struct shadow_word_pain_t : public priest_spell_t
     double t = base_tick_time;
     if ( p -> hasted_shadow_word_pain == 0 )
       return t;
-// FIX-ME. Disabled the 3.3.0 checking for now until the discussed option for implementing it in game shows up on the PTR.
-#if 0
-    if ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> glyphs.shadow_word_pain ) )
-#else
-    if ( p -> hasted_shadow_word_pain > 0 )
-#endif
+    if ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
       t *= haste();
     return t;
   }
@@ -775,7 +780,7 @@ struct vampiric_touch_t : public priest_spell_t
     if ( p -> hasted_vampiric_touch == 0 )
       return t;
 
-    if ( p -> hasted_vampiric_touch > 0 )
+    if ( ( p -> hasted_vampiric_touch > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
       t *= haste();
     return t;
   }
@@ -807,7 +812,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     background = true;
     may_crit   = true;
 
-    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.05;
+    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * ( sim -> P330 ? 0.10 : 0.05 );
 
     direct_power_mod  = p -> constants.devouring_plague_power_mod;
 
@@ -841,7 +846,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     priest_spell_t::player_buff();
     player_spell_power -= p -> spirit() *   p -> spell_power_per_spirit;
-    player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.1 : 0.0 );
+    player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
   }
 
   virtual void target_debuff( int dmg_type )
@@ -935,7 +940,7 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> hasted_devouring_plague == 0 )
       return t;
 
-    if ( p -> hasted_devouring_plague > 0 )
+    if ( ( p -> hasted_devouring_plague > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
       t *= haste();
     return t;
   }
@@ -959,17 +964,56 @@ struct vampiric_embrace_t : public priest_spell_t
     };
     init_rank( ranks );
 
-    base_execute_time = 0;
-    base_tick_time    = 300.0;
-    num_ticks         = 1;
-    cooldown          = 0;
-    base_cost         = 0.0;
-    base_cost         = floor( base_cost );
-    base_multiplier   = 0;
-    base_hit          = p -> talents.shadow_focus * 0.01;
+    if ( sim -> P330 )
+    {
+      trigger_gcd = 0;
+      base_cost   = 0.0;
+    }
+    else
+    {
+      base_execute_time = 0;
+      base_tick_time    = 300.0;
+      num_ticks         = 1;
+      cooldown          = 0;
+      base_cost         = 0.0;
+      base_cost         = floor( base_cost );
+      base_multiplier   = 0;
+      base_hit          = p -> talents.shadow_focus * 0.01;
 
-    observer = &( p -> active_vampiric_embrace );
+      observer = &( p -> active_vampiric_embrace );
+    }
   }
+
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+      
+    if ( p -> sim -> P330 )
+    {
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+      p -> buffs_vampiric_embrace -> trigger();
+    }
+    else
+    {
+      priest_spell_t::execute();
+    }
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! priest_spell_t::ready() )
+      return false;
+
+    if ( p -> sim -> P330 )
+    {
+      return p -> talents.vampiric_embrace && ! p -> buffs_vampiric_embrace -> check();
+    }
+
+    return true;
+  }
+
 };
 
 // Mind Blast Spell ============================================================
@@ -1222,15 +1266,11 @@ struct mind_flay_tick_t : public priest_spell_t
       if ( p -> active_shadow_word_pain )
       {
 // FIX-ME: At present the hasted DoT thing is only talk. Once it shows up on the PTR can switch to coding it like this. In the meantime there's still hasted_shadow_word_pain=1
-#if 0
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
                                    ( p -> sim -> P330 ?
                                      ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
                                      ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 )
                                    );
-#else
-        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 );
-#endif
       }
     }
   }
@@ -1823,7 +1863,7 @@ double priest_t::composite_spell_power( int school ) SC_CONST
 
   if ( buffs_glyph_of_shadow -> up() )
   {
-    sp += spirit() * 0.10;
+    sp += spirit() * ( sim -> P330 ? 0.30 : 0.10 );
   }
 
   return floor( sp );
@@ -2012,6 +2052,7 @@ void priest_t::init_buffs()
   buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0                );
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
+  buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_devious_mind = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc_caster() );
@@ -2026,6 +2067,8 @@ void priest_t::init_actions()
     action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/divine_spirit/inner_fire";
 
     if ( talents.shadow_form ) action_list_str += "/shadow_form";
+
+    if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=1";
 
     action_list_str += "/snapshot_stats";
 
@@ -2046,7 +2089,7 @@ void priest_t::init_actions()
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
-      if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
+      if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=0";
       if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";

@@ -12,6 +12,7 @@ actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
+actions+=/vampiric_embrace,P330=1
 actions+=/snapshot_stats
 actions+=/wild_magic_potion
 actions+=/shadow_fiend
@@ -19,7 +20,7 @@ actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
-actions+=/vampiric_embrace
+actions+=/vampiric_embrace,P330=0
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
@@ -32,7 +33,7 @@ legs=velens_pants_of_triumph,stats=303armor_102hit_86haste_160sp_116sta_116int,g
 feet=boots_of_the_mourning_widow,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=23sp_23sp,enchant=15sta
 wrists=bindings_of_dark_essence,stats=65sta_65int_43hit_91sp_57crit_152armor,gems=12sp_10crit_5sp,enchant=30sp
 hands=velens_handwraps_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=12sp_10crit_5sp,enchant=28sp
-finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=12sp_10crit_5sp,enchant=23sp
+finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=10crit_12sp_5sp,enchant=23sp
 finger2=firestorm_ring,stats=56hit_33crit_80sp_54sta_59int,gems=23sp_5sp,enchant=23sp
 trinket1=reign_of_the_unliving,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
