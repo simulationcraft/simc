@@ -8,7 +8,7 @@ talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000000
 glyphs=felguard/incinerate/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
-actions+=/fire_stone
+actions+=/spell_stone
 actions+=/fel_armor
 actions+=/summon_pet,felguard
 actions+=/snapshot_stats
