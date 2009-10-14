@@ -181,6 +181,7 @@ struct warlock_t : public player_t
     int shadow_burn;
     int siphon_life;
     int unstable_affliction;
+    int quick_decay;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -765,7 +766,7 @@ struct felhunter_pet_t : public warlock_pet_t
 
       if ( result_is_hit() && o -> talents.improved_felhunter )
       {
-        double amount = p -> resource_max[ RESOURCE_MANA ] * o -> talents.improved_felhunter * 0.04;
+        double amount = p -> resource_max[ RESOURCE_MANA ] * o -> talents.improved_felhunter * ( ( sim -> P330 ) ? 0.08 : 0.04 );
 
         p -> resource_gain( RESOURCE_MANA, amount );
       }
@@ -1187,7 +1188,7 @@ void warlock_spell_t::player_buff()
     if ( sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if ( sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
-    if ( p -> buffs_molten_core -> up() ) player_multiplier *= 1.10;
+    if ( p -> buffs_molten_core -> up() && ! p -> sim -> P330 ) player_multiplier *= 1.10;
     if ( p -> buffs_pyroclasm   -> up() ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
   }
 
@@ -1988,9 +1989,7 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     double t = base_tick_time;
-    if ( p -> hasted_corruption == 0 )
-      return t;
-    if ( p -> hasted_corruption > 0 )
+    if ( p -> hasted_corruption > 0 || p -> glyphs.quick_decay )
       t *= haste();
     return t;
   }
@@ -2513,7 +2512,7 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( sim -> P330 )
     {
-      base_tick_time = 3.0;
+      base_tick_time = 6.0;
       num_ticks       = 1;
     }
   }
@@ -2710,6 +2709,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> buffs_tier7_2pc_caster -> up() ) player_crit += 0.10;
+    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) player_multiplier *= 1 + p -> talents.molten_core * 0.05;
     if ( p -> active_immolate )
     {
       player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
@@ -2836,7 +2836,10 @@ struct soul_fire_t : public warlock_spell_t
     double t = warlock_spell_t::execute_time();
     if ( p -> buffs_decimation -> up() )
     {
-      t *= 1.0 - p -> talents.decimation * 0.30;
+		  if ( p -> sim -> P330 )
+        t *= 1.0 - p -> talents.decimation * 0.20;
+      else
+        t *= 1.0 - p -> talents.decimation * 0.30;
       assert( t > 0 );
     }
     return t;
@@ -2874,6 +2877,13 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p -> sim -> P330 )
       trigger_decimation( this, travel_result );
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) player_multiplier *= 1.01 + p -> talents.molten_core * 0.03;
   }
 };
 
@@ -3008,6 +3018,7 @@ struct dark_pact_t : public warlock_spell_t
     player_buff();
     double mana = ( base_dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_dark_pact );
+    p -> buffs_life_tap_glyph -> trigger();
   }
 
   virtual bool ready()
@@ -3610,6 +3621,7 @@ void warlock_t::init_glyphs()
     else if ( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
     else if ( n == "siphon_life"         ) glyphs.siphon_life = 1;
     else if ( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
+    else if ( n == "quick_decay"         ) glyphs.quick_decay = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "curse_of_exhaustion" ) ;
     else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
