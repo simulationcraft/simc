@@ -3327,6 +3327,7 @@ void hunter_t::init_buffs()
   buffs_beast_within                = new buff_t( this, "beast_within",                1, 10.0,  0.0, talents.beast_within );
   buffs_call_of_the_wild            = new buff_t( this, "call_of_the_wild",            1, 10.0 );
   buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               3, 10.0,  0.0, talents.cobra_strikes * 0.20 );
+  buffs_culling_the_herd            = new buff_t( this, "culling_the_herd",            1, 10.0 );
   buffs_expose_weakness             = new buff_t( this, "expose_weakness",             1,  7.0,  0.0, talents.expose_weakness / 3.0 );
   buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
   buffs_improved_aspect_of_the_hawk = new buff_t( this, "improved_aspect_of_the_hawk", 1, 10.0,  0.0, ( talents.improved_aspect_of_the_hawk ? 0.10 : 0.0 ) );
