@@ -2366,15 +2366,17 @@ struct immolate_t : public warlock_spell_t
     base_crit         += p -> talents.devastation * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
-                                  p -> talents.improved_immolate    * 0.10 +
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
+    base_dd_multiplier *= 1.0 + ( p -> talents.improved_immolate    * 0.10 );
+
+    base_td_multiplier *= 1.0 + ( p -> talents.improved_immolate    * 0.10 +
+                                  p -> glyphs.immolate              * 0.10 +
+                                  p -> talents.aftermath            * 0.03 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
-                                  p -> talents.improved_immolate    * 0.10 +
-                                  p -> glyphs.immolate              * 0.10 +
-                                  p -> talents.aftermath            * 0.03 +
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
@@ -2530,7 +2532,9 @@ struct conflagrate_t : public warlock_spell_t
     {
       tick_dmg *= shadowflame_multiplier;
     }
-    return tick_dmg / 3;
+    tick_dmg *= dot_spell -> num_ticks * 0.2 / 3;
+
+    return tick_dmg;
   }
 
   virtual double calculate_direct_damage()
