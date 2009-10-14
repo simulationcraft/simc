@@ -2512,8 +2512,8 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( sim -> P330 )
     {
-      base_tick_time = 6.0;
-      num_ticks       = 1;
+      base_tick_time = 2.0;
+      num_ticks       = 3;
     }
   }
 
@@ -2530,7 +2530,7 @@ struct conflagrate_t : public warlock_spell_t
     {
       tick_dmg *= shadowflame_multiplier;
     }
-    return tick_dmg;
+    return tick_dmg / 3;
   }
 
   virtual double calculate_direct_damage()
