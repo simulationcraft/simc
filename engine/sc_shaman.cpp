@@ -2905,7 +2905,7 @@ void shaman_t::init_buffs()
   buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
   // PTR relics
   buffs_tier10_relic_melee  = new stat_buff_t( this, "tier10_relic_melee",  STAT_ATTACK_POWER, 146, 3, 15.0, 0, totems.tier10_relic_melee );
-  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_CRIT_RATING,   73, 3, 15.0, 0, totems.tier10_relic_caster );
+  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_HASTE_RATING,   73, 3, 30.0, 0, totems.tier10_relic_caster );
 }
 
 // shaman_t::init_gains ======================================================
