@@ -356,6 +356,8 @@ struct hunter_pet_t : public pet_t
     {
       talents.call_of_the_wild = 1;
       talents.cobra_reflexes   = 2;
+	  if ( sim -> P330 )
+	    talents.culling_the_herd = 3;
       talents.rabid            = 1;
       talents.spiders_bite     = 3;
       talents.spiked_collar    = 3;
@@ -384,6 +386,8 @@ struct hunter_pet_t : public pet_t
     else if ( group() == PET_CUNNING )
     {
       talents.cobra_reflexes   = 2;
+	  if ( sim -> P330 )
+	    talents.culling_the_herd = 3;
       talents.feeding_frenzy   = 2;
       talents.owls_focus       = 2;
       talents.roar_of_recovery = 1;
