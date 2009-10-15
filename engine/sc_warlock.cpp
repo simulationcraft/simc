@@ -3723,7 +3723,7 @@ void warlock_t::init_buffs()
   buffs_haunted             = new buff_t( this, "haunted",             1, 12.0, 0.0, talents.haunt );
   buffs_life_tap_glyph      = new buff_t( this, "life_tap_glyph",      1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis       = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
-  buffs_molten_core         = new buff_t( this, "molten_core",         1, 12.0, 0.0, talents.molten_core * 0.05 );
+  buffs_molten_core         = new buff_t( this, "molten_core",         1, 12.0, 0.0, ((sim -> P330) ? 0.12 : (talents.molten_core * 0.05)) );
   buffs_pet_sacrifice       = new buff_t( this, "pet_sacrifice" );
   buffs_pyroclasm           = new buff_t( this, "pyroclasm",           1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
