@@ -2369,14 +2369,13 @@ struct immolate_t : public warlock_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
-                                  p -> set_bonus.tier9_4pc_caster() * 0.10 );
-    base_dd_multiplier *= 1.0 + ( p -> talents.improved_immolate    * 0.10 );
+                                  p -> set_bonus.tier9_4pc_caster() * 0.10 +
+                                  p -> talents.improved_immolate    * 0.10 );
 
     base_td_multiplier *= 1.0 + ( p -> talents.improved_immolate    * 0.10 +
                                   p -> glyphs.immolate              * 0.10 +
-                                  p -> talents.aftermath            * 0.03 );
-
-    base_td_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
+                                  p -> talents.aftermath            * 0.03 +
+                                  p -> talents.emberstorm           * 0.03 +
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
