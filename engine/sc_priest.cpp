@@ -910,6 +910,10 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
+    if ( p -> sim -> P330 )
+    {
+      num_ticks = ( int ) floor( 0.5 + ( 8.0 * base_tick_time / tick_time() ) );      
+    }
     priest_spell_t::execute();
     if ( devouring_plague_burst ) devouring_plague_burst -> execute();
   }
