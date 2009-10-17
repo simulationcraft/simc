@@ -198,7 +198,7 @@ void target_t::combat_begin()
       virtual void execute()
       {
         target_t* t = sim -> target;
-        if ( ( sim -> overrides.bloodlust_early && ( sim -> current_time > sim -> overrides.bloodlust_early ) ) ||
+        if ( ( sim -> overrides.bloodlust_early && ( sim -> current_time > ( double ) sim -> overrides.bloodlust_early ) ) ||
              ( t -> health_percentage() < 25 ) ||
              ( t -> time_to_die()       < 60 ) )
         {

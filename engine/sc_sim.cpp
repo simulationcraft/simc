@@ -1398,7 +1398,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.blessing_of_wisdom",      OPT_BOOL,   &( overrides.blessing_of_wisdom             ) },
       { "override.blood_frenzy",            OPT_BOOL,   &( overrides.blood_frenzy                   ) },
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
-      { "override.bloodlust_early",         OPT_BOOL,   &( overrides.bloodlust_early                ) },
+      { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
       { "override.crypt_fever",             OPT_BOOL,   &( overrides.crypt_fever                    ) },
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
