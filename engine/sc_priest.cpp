@@ -227,11 +227,9 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 struct priest_spell_t : public spell_t
 {
-  double         casted_haste;
   priest_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
-    casted_haste = 2.0;
   }
 
   virtual double haste() SC_CONST;
@@ -361,8 +359,6 @@ double priest_spell_t::haste() SC_CONST
 void priest_spell_t::execute()
 {
   priest_t* p = player -> cast_priest();
-
-  casted_haste = haste();
 
   spell_t::execute();
 
@@ -630,18 +626,15 @@ struct penance_t : public priest_spell_t
 struct shadow_word_pain_t : public priest_spell_t
 {
   int shadow_weaving_wait;
-  double haste_boost;
 
   shadow_word_pain_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW ), shadow_weaving_wait( 0 ),
-                      haste_boost( -1.0 )
+      priest_spell_t( "shadow_word_pain", player, SCHOOL_SHADOW, TREE_SHADOW ), shadow_weaving_wait( 0 )
   {
     priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
       { "shadow_weaving_wait", OPT_BOOL, &shadow_weaving_wait },
-      { "haste_boost",         OPT_FLT,  &haste_boost },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -691,30 +684,13 @@ struct shadow_word_pain_t : public priest_spell_t
   virtual bool ready()
   {
     priest_t* p = player -> cast_priest();
-    int save_is_ifall = is_ifall;
-    bool result;
 
     if ( shadow_weaving_wait )
       if ( p -> talents.shadow_weaving )
-	  if ( p -> buffs_shadow_weaving -> check() < 5 )
-	    return false;
-    if ( ( p -> sim -> P330 ) && ( haste_boost > 0.0 ) && ( ticking ) )
-    {
-      double h = ( casted_haste / haste() - 1.0 ) * 100.0;
-      if ( h < haste_boost )
-      {
-        return false;
-      }
-      else
-      {
-        is_ifall = 1;
-      }
-    }
+  	    if ( p -> buffs_shadow_weaving -> check() < 5 )
+	        return false;
 
-    result = priest_spell_t::ready();
-
-    is_ifall = save_is_ifall;
-    return result;
+    return priest_spell_t::ready();
   }
 
   virtual void tick()
@@ -726,19 +702,14 @@ struct shadow_word_pain_t : public priest_spell_t
       p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
   }
 
-  virtual double tick_time() SC_CONST
+  virtual int scale_ticks_with_haste() SC_CONST
   {
     priest_t* p = player -> cast_priest();
-    double t = base_tick_time;
 
     if ( p -> hasted_shadow_word_pain == 0 )
-      return t;
-
-    if ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
-    {
-      t *= casted_haste;
-    }
-    return t;
+      return 0;
+  
+    return ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
   }
 };
 
@@ -798,17 +769,14 @@ struct vampiric_touch_t : public priest_spell_t
     }
   }
 
-  double tick_time() SC_CONST
+  virtual int scale_ticks_with_haste() SC_CONST
   {
     priest_t* p = player -> cast_priest();
 
-    double t = base_tick_time;
     if ( p -> hasted_vampiric_touch == 0 )
-      return t;
-
-    if ( ( p -> hasted_vampiric_touch > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
-      t *= haste();
-    return t;
+      return 0;
+  
+    return ( ( p -> hasted_vampiric_touch > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
   }
 };
 
@@ -936,9 +904,13 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
-    if ( p -> sim -> P330 )
+    if ( p -> sim -> P330 && scale_ticks_with_haste() )
     {
-      num_ticks = ( int ) floor( 0.5 + ( 8.0 * base_tick_time / tick_time() ) );      
+      num_ticks = ( int ) floor( 0.5 + ( 8.0 / haste() ) );      
+    }
+    else
+    {
+      num_ticks = 8;
     }
     priest_spell_t::execute();
     if ( devouring_plague_burst ) devouring_plague_burst -> execute();
@@ -962,17 +934,14 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::update_stats( type );
   }
 
-  double tick_time() SC_CONST
+  virtual int scale_ticks_with_haste() SC_CONST
   {
     priest_t* p = player -> cast_priest();
 
-    double t = base_tick_time;
     if ( p -> hasted_devouring_plague == 0 )
-      return t;
-
-    if ( ( p -> hasted_devouring_plague > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) )
-      t *= haste();
-    return t;
+      return 0;
+  
+    return ( ( p -> hasted_devouring_plague > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
   }
 };
 
@@ -2116,7 +2085,7 @@ void priest_t::init_actions()
       action_list_str += "/wild_magic_potion,P330=0";
       action_list_str += "/speed_potion,P330=1";
       action_list_str += "/shadow_fiend";
-      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,haste_boost=15.0";
+      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,haste_gain_percentage>=15.0";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
       if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=0";

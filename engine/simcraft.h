@@ -1956,11 +1956,13 @@ struct action_t
   double time_to_execute, time_to_tick, time_to_travel, travel_speed;
   int rank_index, bloodlust_active;
   double max_haste;
+  double haste_gain_percentage;
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int P330, moving, vulnerable, invulnerable, wait_on_ready;
   int has_if_exp, is_ifall;
+  double snapshot_haste;
   act_expression_t* if_exp;
   std::string if_expression;
   std::string sync_str;
@@ -1980,6 +1982,7 @@ struct action_t
   virtual double gcd() SC_CONST          { return trigger_gcd;       }
   virtual double execute_time() SC_CONST { return base_execute_time; }
   virtual double tick_time() SC_CONST    { return base_tick_time;    }
+  virtual int    scale_ticks_with_haste() SC_CONST { return 0; }
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );

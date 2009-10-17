@@ -56,7 +56,8 @@ double spell_t::execute_time() SC_CONST
 double spell_t::tick_time() SC_CONST
 {
   double t = base_tick_time;
-  if ( channeled ) t *= haste();
+  assert( snapshot_haste > 0.0 );
+  if ( channeled || ( scale_ticks_with_haste() > 0 ) ) t *= snapshot_haste;
   return t;
 }
 

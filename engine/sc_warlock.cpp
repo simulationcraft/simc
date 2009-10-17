@@ -1989,14 +1989,14 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual double tick_time() SC_CONST
+  virtual int scale_ticks_with_haste() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
 
-    double t = base_tick_time;
-    if ( p -> hasted_corruption > 0 || p -> glyphs.quick_decay )
-      t *= haste();
-    return t;
+    if ( p -> hasted_corruption == 0 )
+      return 0;
+  
+    return ( ( p -> hasted_corruption > 0 ) || p -> glyphs.quick_decay );
   }
 
   virtual void tick()

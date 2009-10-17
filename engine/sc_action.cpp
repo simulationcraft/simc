@@ -49,12 +49,14 @@ action_t::action_t( int         ty,
     weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
     rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
     time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
-    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ),
+    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
     P330( -1 ), moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
-    has_if_exp( -1 ), is_ifall( 0 ), if_exp( NULL ),
+    has_if_exp( -1 ), is_ifall( 0 ), 
+    snapshot_haste( -1.0 ),
+    if_exp( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -103,27 +105,28 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "P330",               OPT_BOOL,   &P330                  },
-    { "allow_early_cast",   OPT_INT,    &is_ifall              },
-    { "allow_early_recast", OPT_INT,    &is_ifall              },
-    { "bloodlust",          OPT_BOOL,   &bloodlust_active      },
-    { "haste<",             OPT_FLT,    &max_haste             },
-    { "health_percentage<", OPT_FLT,    &max_health_percentage },
-    { "health_percentage>", OPT_FLT,    &min_health_percentage },
-    { "if",                 OPT_STRING, &if_expression         },
-    { "if_buff",            OPT_STRING, &if_expression         },
-    { "invulnerable",       OPT_BOOL,   &invulnerable          },
-    { "moving",             OPT_BOOL,   &moving                },
-    { "rank",               OPT_INT,    &rank_index            },
-    { "sync",               OPT_STRING, &sync_str              },
-    { "time<",              OPT_FLT,    &max_current_time      },
-    { "time>",              OPT_FLT,    &min_current_time      },
-    { "time_to_die<",       OPT_FLT,    &max_time_to_die       },
-    { "time_to_die>",       OPT_FLT,    &min_time_to_die       },
-    { "travel_speed",       OPT_FLT,    &travel_speed          },
-    { "vulnerable",         OPT_BOOL,   &vulnerable            },
-    { "wait_on_ready",      OPT_BOOL,   &wait_on_ready         },
-    { NULL,                 0,          NULL                   }
+    { "P330",                   OPT_BOOL,   &P330                  },
+    { "allow_early_cast",       OPT_INT,    &is_ifall              },
+    { "allow_early_recast",     OPT_INT,    &is_ifall              },
+    { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
+    { "haste<",                 OPT_FLT,    &max_haste             },
+    { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
+    { "health_percentage<",     OPT_FLT,    &max_health_percentage },
+    { "health_percentage>",     OPT_FLT,    &min_health_percentage },
+    { "if",                     OPT_STRING, &if_expression         },
+    { "if_buff",                OPT_STRING, &if_expression         },
+    { "invulnerable",           OPT_BOOL,   &invulnerable          },
+    { "moving",                 OPT_BOOL,   &moving                },
+    { "rank",                   OPT_INT,    &rank_index            },
+    { "sync",                   OPT_STRING, &sync_str              },
+    { "time<",                  OPT_FLT,    &max_current_time      },
+    { "time>",                  OPT_FLT,    &min_current_time      },
+    { "time_to_die<",           OPT_FLT,    &max_time_to_die       },
+    { "time_to_die>",           OPT_FLT,    &min_time_to_die       },
+    { "travel_speed",           OPT_FLT,    &travel_speed          },
+    { "vulnerable",             OPT_BOOL,   &vulnerable            },
+    { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
+    { NULL,                     0,          NULL                   }
   };
 
   std::vector<option_t> merged_options;
@@ -701,6 +704,7 @@ void action_t::execute()
       else
       {
         if ( ticking ) cancel();
+        snapshot_haste = haste();
         schedule_tick();
       }
     }
@@ -1026,12 +1030,26 @@ void action_t::update_time( int type )
 bool action_t::ready()
 {
   target_t* t = sim -> target;
+  int temp_is_ifall = is_ifall;
 
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
       return false;
 
-  if ( ( duration_ready > 0 ) && ( !is_ifall ) )
+  if ( ( scale_ticks_with_haste() > 0 ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
+  {
+    double h = ( snapshot_haste / haste() - 1.0 ) * 100.0;
+    if ( h < haste_gain_percentage )
+    {
+      return false;
+    }
+    else
+    {
+      temp_is_ifall = 1;
+    }
+  }  
+
+  if ( ( duration_ready > 0 ) && ( !temp_is_ifall ) )
   {
     double duration_delta = duration_ready - ( sim -> current_time + execute_time() );
 
@@ -1178,6 +1196,7 @@ void action_t::cancel()
   duration_ready = 0;
   execute_event = 0;
   tick_event = 0;
+  snapshot_haste = -1.0;
   if ( observer ) *observer = 0;
 }
 
