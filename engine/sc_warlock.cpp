@@ -578,6 +578,9 @@ struct imp_pet_t : public warlock_pet_t
 
       base_multiplier *= 1.0 + ( o -> talents.empowered_imp * 0.05 + // o -> talents.improved_imp moved up
                                  o -> glyphs.imp            * 0.20 );
+
+      if ( sim -> P330 )
+        base_crit_bonus_multiplier *= 1.0 + o -> talents.ruin * 0.20;
     }
     virtual void execute();
     virtual void player_buff()
@@ -755,6 +758,8 @@ struct felhunter_pet_t : public warlock_pet_t
 
       if ( sim -> P330 )
         cooldown -= 2.0 * o -> talents.improved_felhunter;
+
+      if ( sim -> P330 && o -> talents.pandemic ) base_crit_bonus_multiplier *= 2;
     }
       
     virtual void execute()
