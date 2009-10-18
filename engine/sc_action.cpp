@@ -864,6 +864,11 @@ void action_t::schedule_tick()
 
   ticking = 1;
 
+  if ( snapshot_haste <= 0.0 )
+  {
+    snapshot_haste = haste();
+  }
+
   time_to_tick = tick_time();
 
   tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
