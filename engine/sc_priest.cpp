@@ -814,6 +814,9 @@ struct devouring_plague_burst_t : public priest_spell_t
                                 p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
                                 p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value );
 
+    if ( sim -> P330 )
+    base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
+
     base_hit += p -> talents.shadow_focus * 0.01;
 
     // This helps log file and decouples the sooth RNG from the ticks.
@@ -839,15 +842,13 @@ struct devouring_plague_burst_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     priest_spell_t::player_buff();
-    player_spell_power -= p -> spirit() *   p -> spell_power_per_spirit;
-    player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
+    if ( ! p -> sim -> P330 )
+    {
+      player_spell_power -= p -> spirit() *   p -> spell_power_per_spirit;
+      player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
+    }
   }
 
-  virtual void target_debuff( int dmg_type )
-  {
-    priest_spell_t::target_debuff( dmg_type );
-    if ( sim -> target -> debuffs.crypt_fever -> up() ) target_multiplier *= 1.30;
-  }
 };
 
 struct devouring_plague_t : public priest_spell_t
@@ -879,7 +880,6 @@ struct devouring_plague_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 8;
     cooldown          = 0.0;
-    binary            = true;
     tick_power_mod    = p -> constants.devouring_plague_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) + p -> talents.shadow_focus * 0.02 );
     base_cost         = floor( base_cost );
