@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Mage
@@ -1575,7 +1575,7 @@ struct presence_of_mind_t : public mage_spell_t
 
     if ( options_str.empty() )
     {
-      log_t::output( sim, "simcraft: The presence_of_mind action must be coupled with a second action." );
+      log_t::output( sim, "simucraft: The presence_of_mind action must be coupled with a second action." );
       exit( 0 );
     }
 
@@ -2800,7 +2800,7 @@ struct choose_rotation_t : public action_t
 
     if ( cooldown < 1.0 )
     {
-      util_t::fprintf( sim -> output_file, "simcraft: choose_rotation cannot have cooldown less than 1.0sec\n" );
+      util_t::fprintf( sim -> output_file, "simucraft: choose_rotation cannot have cooldown less than 1.0sec\n" );
       exit( 0 );
     }
 
@@ -2989,7 +2989,7 @@ void mage_t::init_glyphs()
     else if ( n == "polymorph"        ) ;
     else if ( n == "slow_fall"        ) ;
     else if ( n == "the_penguin"      ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3306,7 +3306,7 @@ void mage_t::combat_begin()
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simcraft: Unknown armor type '%s' for player %s\n", armor_type_str.c_str(), name() );
+      util_t::fprintf( sim -> output_file, "simucraft: Unknown armor type '%s' for player %s\n", armor_type_str.c_str(), name() );
       exit( 0 );
     }
   }

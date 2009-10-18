@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Action
@@ -63,7 +63,7 @@ action_t::action_t( int         ty,
 
   if ( ! player -> initialized )
   {
-    util_t::fprintf( sim -> output_file, "simcraft: Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
+    util_t::fprintf( sim -> output_file, "simucraft: Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
     assert( 0 );
   }
 
@@ -1164,7 +1164,7 @@ void action_t::reset()
 
     if ( ! sync_action )
     {
-      util_t::fprintf( sim -> output_file, "simcraft: Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
+      util_t::fprintf( sim -> output_file, "simucraft: Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
       exit( 0 );
     }
   }
@@ -1214,12 +1214,12 @@ void action_t::check_talent( int talent_rank )
   if ( player -> is_pet() )
   {
     pet_t* p = player -> cast_pet();
-    util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s has pet %s attempting to execute action %s without the required talent.\n",
+    util_t::fprintf( sim -> output_file, "\nsimucraft: Player %s has pet %s attempting to execute action %s without the required talent.\n",
                     p -> owner -> name(), p -> name(), name() );
   }
   else
   {
-    util_t::fprintf( sim -> output_file, "\nsimcraft: Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
+    util_t::fprintf( sim -> output_file, "\nsimucraft: Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
   }
 
   background = true; // prevent action from being executed

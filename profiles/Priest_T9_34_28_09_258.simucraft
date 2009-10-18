@@ -1,0 +1,57 @@
+#!simucraft
+
+# *** Not yet updated ***
+priest=Priest_T9_34_28_09_258
+origin=http://profiler.wowhead.com/?profile=13043857
+level=80
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0533203100300502331000000000005551002020152000000000000324
+glyphs=smite/shadow_word_death/hymn_of_hope/fading/shadowfiend/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/divine_spirit
+actions+=/inner_fire
+actions+=/snapshot_stats
+actions+=/mana_potion
+actions+=/shadow_fiend,trigger=10000
+actions+=/inner_focus,shadow_word_pain
+actions+=/shadow_word_pain
+actions+=/power_infusion
+actions+=/holy_fire
+actions+=/mind_blast
+actions+=/smite
+actions+=/shadow_word_death
+head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
+neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=8crit_9sp_5sp
+shoulders=conquerors_mantle_of_sanctification,stats=236armor_62crit_90sp_53sta_65int_49spi,gems=19sp_5sp,enchant=24sp_15crit
+chest=conquerors_raiments_of_sanctification,stats=314armor_74hit_58haste_132sp_90sta_76int,gems=19sp_19sp,enchant=10str_10agi_10sta_10int_10spi
+waist=cord_of_the_white_dawn,stats=177armor_48crit_81sp_73sta_62int_48spi,gems=19sp_19sp_19sp
+legs=leggings_of_the_enslaved_idol,stats=284armor_70hit_77crit_122sp_96sta_98int,gems=19sp_19sp_19sp,enchant=50sp_20spi
+feet=treads_of_the_false_oracle,stats=223armor_61crit_47haste_92sp_82sta_69int,gems=19sp_9sp_8spi_7sp,enchant=12crit_12hit
+wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
+hands=conquerors_handwraps_of_sanctification,stats=197armor_64crit_99sp_62sta_44int_54spi,gems=8hit_9sp_4hit,enchant=28sp
+finger1=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=9sp_8spi_5sp,enchant=19sp
+finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=19sp
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
+ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=953
+# gear_intellect=875
+# gear_spirit=353
+# gear_spell_power=2439
+# gear_hit_rating=374
+# gear_crit_rating=716
+# gear_haste_rating=342
+# gear_armor=1991
+# meta_gem=chaotic_skyflare
+# tier8_2pc=1
+# tier8_4pc=1
+# back=drape_of_mortal_downfall,enchant=lightweave
+# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# items=flare_of_the_heavens/illustration_of_the_dragon_soul

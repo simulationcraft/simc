@@ -1,0 +1,49 @@
+#!simucraft
+
+Globals_T9.simucraft
+
+optimal_raid=1
+
+Rogue_T9_08_20_43.simucraft        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
+Rogue_T9_15_51_05_AA.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
+Rogue_T9_15_51_05_AA_NoR.simucraft tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
+Rogue_T9_15_51_05_FD.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
+Rogue_T9_15_51_05_MD.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
+Rogue_T9_15_51_05_MD_NoR.simucraft tricks_of_the_trade_target=Rogue_T9_51_13_07
+Rogue_T9_51_13_07.simucraft        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoR
+Rogue_T9_51_13_07_NoR.simucraft    tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
+Rogue_T9_51_13_07.simucraft        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+
+
+# scroguet9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simucraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=14562190   name=Rogue_T9_15_51_05_AA      save=Rogue_T9_15_51_05_AA.simucraft  
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=14419498   name=Rogue_T9_15_51_05_FD      save=Rogue_T9_15_51_05_FD.simucraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=14562031   name=Rogue_T9_15_51_05_MD      save=Rogue_T9_15_51_05_MD.simucraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=15269388   name=Rogue_T9_51_13_07         save=Rogue_T9_51_13_07.simucraft
+#back=sylvanas_cunning,id=47546,gems=20agi_8ap,enchant=22agi
+
+### Alternate "Rupture-Less" Combat Spec 
+
+#wowhead=!14562190  name=Rogue_T9_15_51_05_AA_NoR  save=Rogue_T9_15_51_05_AA_NoR.simucraft
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=!14419498  name=Rogue_T9_15_51_05_FD_NoR  save=Rogue_T9_15_51_05_FD_NoR.simucraft  
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=!14562031  name=Rogue_T9_15_51_05_MD_NoR  save=Rogue_T9_15_51_05_MD_NoR.simucraft  
+#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
+
+#wowhead=!15269388 name=Rogue_T9_51_13_07_NoR save=Rogue_T9_51_13_07_NoR.simucraft 
+#back=sylvanas_cunning,id=47546,gems=20agi_8ap,enchant=22agi
+	

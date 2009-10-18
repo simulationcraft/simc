@@ -1,0 +1,58 @@
+#!simucraft
+
+rogue=Rogue_T8_18_51_02_BS
+origin=http://profiler.wowhead.com/?profile=13006354
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=0050230053000000000000000000052052050135010223100501251002
+glyphs=backstab/rupture/slice_and_dice
+actions=flask,type=endless_rage
+actions+=/food,type=blackened_dragonfin
+actions+=/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/kick
+actions+=/slice_and_dice,min_combo_points=1,time<=4
+actions+=/slice_and_dice,min_combo_points=3,snd<=2
+actions+=/tricks_of_the_trade
+actions+=/killing_spree,energy<=20,snd>=5
+actions+=/blade_flurry,snd>=5
+actions+=/rupture,min_combo_points=5,time_to_die>=10
+actions+=/backstab
+actions+=/adrenaline_rush,energy<=20
+head=conquerors_terrorblade_helmet,stats=480armor_130ap_77crit_59haste_107agi_75sta,gems=relentless_earthsiege_16arpen_16ap,enchant=50ap_20crit
+neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=16arpen
+shoulders=conquerors_terrorblade_pauldrons,stats=443armor_124ap_56hit_40crit_85agi_74sta,gems=16arpen_8ap,enchant=40ap_15crit
+chest=conquerors_terrorblade_breastplate,stats=591armor_162ap_66crit_76exp_97agi_90sta,gems=16arpen_8crit_8agi_6hit,enchant=10str_10agi_10sta_10int_10spi
+waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=16arpen_16arpen_16arpen_12ap
+legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=8crit_8agi_16arpen_8arpen_12sta_8agi,enchant=75ap_22crit
+feet=footpads_of_silence,stats=406armor_114ap_48hit_56crit_69agi_64sta,gems=8arpen_12sta_16arpen_6agi,enchant=12crit_12hit
+wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=8crit_8agi_4agi,enchant=130ap
+hands=conquerors_terrorblade_gauntlets,stats=369armor_130ap_54hit_43crit_85agi_59sta,gems=16arpen_4agi,enchant=44ap
+finger1=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16arpen,enchant=40ap
+finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=16arpen_4agi,enchant=40ap
+trinket1=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
+trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16arpen_8crit_8agi_6agi,enchant=22agi
+main_hand=fang_of_oblivion,stats=80ap_29crit_24haste_47agi_54sta,gems=8crit_8agi_4agi,enchant=berserking,weapon=dagger_1.80speed_188.3dps
+off_hand=bladetwister,stats=64ap_28crit_37haste_55agi_48sta,gems=16arpen,enchant=berserking,weapon=dagger_1.40speed_188.2dps
+ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16arpen_4agi,weapon=thrown_2.10speed_232.4dps
+# Gear Summary
+# gear_strength=10
+# gear_agility=1215
+# gear_stamina=973
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=2271
+# gear_expertise_rating=132
+# gear_armor_penetration_rating=474
+# gear_hit_rating=290
+# gear_crit_rating=812
+# gear_haste_rating=161
+# gear_armor=3571
+# meta_gem=relentless_earthsiege
+# tier8_2pc=1
+# tier8_4pc=1
+# main_hand=fang_of_oblivion,weapon=dagger_1.80speed_188.3dps,enchant=berserking
+# off_hand=bladetwister,weapon=dagger_1.40speed_188.2dps,enchant=berserking
+# ranged=twirling_blades,weapon=thrown_2.10speed_232.4dps

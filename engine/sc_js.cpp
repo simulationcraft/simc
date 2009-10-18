@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 struct js_node_t
 {

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Raid Events
@@ -435,7 +435,7 @@ void raid_event_t::init( sim_t* sim )
 
     if ( ! e )
     {
-      util_t::fprintf( sim -> output_file, "simcraft: Unknown raid event: %s\n", splits[ i ].c_str() );
+      util_t::fprintf( sim -> output_file, "simucraft: Unknown raid event: %s\n", splits[ i ].c_str() );
       assert( false );
     }
 

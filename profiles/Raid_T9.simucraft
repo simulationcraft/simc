@@ -1,0 +1,52 @@
+#!simucraft max_time=300
+
+Globals_T9.simucraft
+
+Druid_T9_00_55_16.simucraft
+Druid_T9_00_55_16_M.simucraft
+Druid_T9_58_00_13.simucraft
+
+Hunter_T9_02_18_51.simucraft
+Hunter_T9_07_57_07.simucraft
+Hunter_T9_07_57_07_HM.simucraft
+Hunter_T9_53_14_04.simucraft
+
+Mage_T9_00_53_18.simucraft
+Mage_T9_18_00_53.simucraft   focus_magic_target=Mage_T9_20_51_00
+Mage_T9_20_51_00.simucraft   focus_magic_target=Mage_T9_53_18_00
+Mage_T9_53_18_00.simucraft   focus_magic_target=Mage_T9_57_03_11
+Mage_T9_57_03_11.simucraft   focus_magic_target=Mage_T9_18_00_53
+
+Paladin_T9_05_11_55.simucraft
+
+Priest_T9_13_00_58_258.simucraft
+Priest_T9_13_00_58_258_SWD.simucraft
+
+Rogue_T9_08_20_43.simucraft        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
+Rogue_T9_15_51_05_AA.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
+Rogue_T9_15_51_05_AA_NoR.simucraft tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
+Rogue_T9_15_51_05_FD.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
+Rogue_T9_15_51_05_MD.simucraft     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
+Rogue_T9_15_51_05_MD_NoR.simucraft tricks_of_the_trade_target=Rogue_T9_51_13_07
+Rogue_T9_51_13_07.simucraft        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
+Rogue_T9_51_13_07.simucraft        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+
+Shaman_T9_16_55_00_258.simucraft
+Shaman_T9_20_51_00_258.simucraft
+Shaman_T9_57_14_00_258.simucraft
+Shaman_T9_57_14_00_258_ToW.simucraft
+
+Warlock_T9_00_13_58.simucraft
+Warlock_T9_00_40_31.simucraft
+Warlock_T9_00_41_30.simucraft
+Warlock_T9_00_56_15.simucraft
+Warlock_T9_03_13_55.simucraft
+Warlock_T9_03_52_16.simucraft
+Warlock_T9_53_00_18.simucraft
+Warlock_T9_53_00_18_DG.simucraft
+
+Warrior_T9_19_52_00.simucraft
+Warrior_T9_54_17_00_A.simucraft
+Warrior_T9_54_17_00_M.simucraft
+Warrior_T9_54_17_00_S.simucraft
+

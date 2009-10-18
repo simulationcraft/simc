@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Rogue
@@ -2653,7 +2653,7 @@ struct apply_poison_t : public rogue_poison_t
     if ( main_hand_str.empty() &&
          off_hand_str.empty() )
     {
-      util_t::fprintf( sim -> output_file, "simcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'anesthetic/deadly/instant/wound'.\n" );
+      util_t::fprintf( sim -> output_file, "simucraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'anesthetic/deadly/instant/wound'.\n" );
       exit( 0 );
     }
 
@@ -3039,7 +3039,7 @@ void rogue_t::init_glyphs()
     else if ( n == "safe_fall"           ) ;
     else if ( n == "sprint"              ) ;
     else if ( n == "vanish"              ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

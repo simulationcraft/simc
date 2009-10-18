@@ -1,0 +1,59 @@
+#!./simucraft 
+
+mage=Mage_T8_00_53_18
+origin=http://profiler.wowhead.com/?profile=13000266
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0000000000000000000000000000002305030012303331053120301351203303031003
+glyphs=molten_armor/frostfire/living_bomb/slow_fall/arcane_intellect/fire_ward
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/arcane_brilliance
+actions+=/snapshot_stats
+actions+=/counterspell
+actions+=/scorch,debuff=1
+actions+=/mirror_image
+actions+=/combustion
+actions+=/icy_veins
+actions+=/mana_gem
+actions+=/speed_potion
+actions+=/living_bomb
+actions+=/pyroblast,hot_streak=1
+actions+=/frostfire_bolt
+actions+=/evocation
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+head=conquerors_kirin_tor_hood,stats=256armor_69hit_113sp_62sta_87int_66spi,gems=chaotic_skyflare_19sp_9sp,enchant=30sp_20crit
+neck=pendant_of_the_shallow_grave,stats=41crit_31haste_74sp_45sta_43int,gems=8hit_9sp_4crit
+shoulders=conquerors_kirin_tor_shoulderpads,stats=236armor_62haste_98sp_65sta_65int_33spi,gems=19sp,enchant=24sp_15crit
+chest=conquerors_kirin_tor_tunic,stats=314armor_82crit_132sp_75sta_81int_50spi,gems=19sp_19sp,enchant=10str_10agi_10sta_10int_10spi
+waist=starwatchers_binding,stats=182armor_47crit_92sp_82sta_69int_64spi,gems=8crit_9sp_8crit_9sp_19sp_7sp
+legs=conquerors_kirin_tor_leggings,stats=275armor_66hit_74crit_123sp_76sta_82int,gems=19sp_9sp_8spi_6crit,enchant=50sp_20spi
+feet=treads_of_the_false_oracle,stats=223armor_61crit_47haste_92sp_82sta_69int,gems=19sp_9sp_8spi_7sp,enchant=12crit_12hit
+wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
+hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=9sp_8spi_8crit_9sp_7sp,enchant=28sp
+finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit,enchant=23sp
+finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=23sp
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
+trinket2=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8hit_9sp_5sp,enchant=lightweave_embroidery
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
+ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=922
+# gear_intellect=901
+# gear_spirit=402
+# gear_spell_power=2407
+# gear_hit_rating=294
+# gear_crit_rating=830
+# gear_haste_rating=381
+# gear_armor=1993
+# meta_gem=chaotic_skyflare
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
+# back=drape_of_mortal_downfall,enchant=lightweave_embroidery
+# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+armor_type=molten

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Priest
@@ -1945,7 +1945,7 @@ void priest_t::init_glyphs()
     else if ( n == "shackle_undead"    ) ;
     else if ( n == "shadow_protection" ) ;
     else if ( n == "shadowfiend"       ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Paladin
@@ -2109,7 +2109,7 @@ void paladin_t::init_glyphs()
     else if ( n == "seal_of_wisdom"          ) ;
     else if ( n == "spiritual_attunement"    ) ;
     else if ( n == "turn_evil"               ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -2179,7 +2179,7 @@ void paladin_t::init_items()
   else if ( libram == "venture_co_libram_of_mostly_holy_deeds" ) ;
   else if ( ! libram.empty() )
   {
-    log_t::output( sim, "simcraft: %s has unknown libram %s", name(), libram.c_str() );
+    log_t::output( sim, "simucraft: %s has unknown libram %s", name(), libram.c_str() );
   }
 }
 

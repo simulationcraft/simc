@@ -1,0 +1,14 @@
+#!./simucraft
+
+Globals_T9.simucraft
+
+optimal_raid=1
+
+Paladin_T9_05_11_55.simucraft
+
+# scpaladint9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=14637386 name=Paladin_T9_05_11_55 save=Paladin_T9_05_11_55.simucraft back=garroshs_rage,id=47548,gems=20str,enchant=23haste
+
+#save_profiles=1

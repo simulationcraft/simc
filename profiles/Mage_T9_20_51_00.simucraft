@@ -1,0 +1,56 @@
+#!./simucraft 
+
+mage=Mage_T9_20_51_00
+origin=http://profiler.wowhead.com/?profile=14306481
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050331000300000000000000000055031012303330053020300351
+glyphs=fireball/living_bomb/molten_armor/slow_fall/arcane_intellect/fire_ward
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/arcane_brilliance
+actions+=/focus_magic
+actions+=/snapshot_stats
+actions+=/counterspell
+actions+=/scorch,debuff=1
+actions+=/mirror_image
+actions+=/mana_gem
+actions+=/speed_potion
+actions+=/living_bomb
+actions+=/pyroblast,hot_streak=1
+actions+=/fire_ball
+actions+=/evocation
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+head=sunstriders_hood_of_triumph,stats=282armor_86hit_94haste_151sp_116sta_116int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+neck=cry_of_the_valkyr,stats=57crit_43haste_91sp_65sta_65int,gems=10haste_12sp_5sp
+shoulders=sunstriders_shoulderpads_of_triumph,stats=260armor_68crit_76haste_124sp_86sta_86int,gems=12sp_10spi_5sp,enchant=24sp_15crit
+chest=skyweaver_vestments,stats=347armor_86hit_94haste_151sp_116sta_116int,gems=12sp_10spi_10haste_12sp_23sp_9sp,enchant=15spi
+waist=cord_of_the_tenebrous_mist,stats=195armor_60haste_114sp_86sta_86int_76spi,gems=12sp_10spi_23sp_23sp_7sp
+legs=sunstriders_leggings_of_triumph,stats=303armor_102crit_160sp_116sta_116int_86spi,gems=10haste_12sp_10haste_12sp_7sp,enchant=50sp_20spi
+feet=sandals_of_the_mourning_widow,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=12sp_10spi_23sp_7sp,enchant=12crit_12hit
+wrists=dark_essence_bindings,stats=152armor_43hit_57crit_91sp_65sta_65int,gems=10haste_12sp_5sp,enchant=30sp
+hands=sunstriders_gauntlets_of_triumph,stats=217armor_76crit_68haste_124sp_86sta_86int,gems=23sp_4crit,enchant=28sp
+finger1=firestorm_band,stats=56hit_33crit_80sp_54sta_59int,gems=23sp_5sp,enchant=23sp
+finger2=lurid_manifestation,stats=53crit_91sp_65sta_65int_50spi,gems=10crit_12sp_5sp,enchant=23sp
+trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
+trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
+back=aethas_intensity,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=lightweave_embroidery
+main_hand=mortalis,stats=58crit_39haste_701sp_58sta_66int,gems=10crit_12sp_5sp,enchant=63sp,weapon=sword_1.80speed_125.1dps
+off_hand=talisman_of_heedless_sins,stats=57hit_57crit_100sp_65sta_65int,gems=10haste_12sp
+ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_4spi
+# Gear Summary
+# gear_stamina=1164
+# gear_intellect=1170
+# gear_spirit=400
+# gear_spell_power=3244
+# gear_hit_rating=369
+# gear_crit_rating=718
+# gear_haste_rating=669
+# gear_armor=2176
+# meta_gem=chaotic_skyflare
+# tier9_2pc_caster=1
+# tier9_4pc_caster=1
+# back=aethas_intensity,enchant=lightweave_embroidery
+# main_hand=mortalis,weapon=sword_1.80speed_125.1dps
+armor_type=molten

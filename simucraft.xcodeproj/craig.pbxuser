@@ -1,0 +1,406 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Release;
+		activeExecutable = 442BD364107A7D0000AFCDF4 /* simucraftqt */;
+		activeTarget = 444CCF8C107DCCCD00229DD2 /* Bundle Qt for Deployment */;
+		addToTargets = (
+			444CCF8C107DCCCD00229DD2 /* Bundle Qt for Deployment */,
+		);
+		codeSenseManager = 44E3D117105459FA00677DEB /* Code sense */;
+		executables = (
+			44E3D112105459F100677DEB /* simucraft */,
+			442BD364107A7D0000AFCDF4 /* simucraftqt */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXBookmarksDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXBookmarksDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					200,
+					447,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXBookmarksDataSource_LocationID,
+					PBXBookmarksDataSource_NameID,
+					PBXBookmarksDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					524.58349609375,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					637,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFindDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFindDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					651,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFindDataSource_MessageID,
+					PBXFindDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXSymbolsDataSource_SymbolNameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					16,
+					200,
+					50,
+					577,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXSymbolsDataSource_SymbolTypeIconID,
+					PBXSymbolsDataSource_SymbolNameID,
+					PBXSymbolsDataSource_SymbolTypeID,
+					PBXSymbolsDataSource_ReferenceNameID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					613,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_SCM_ColumnID,
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = 1;
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_ObjectSize_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					597,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 276731963;
+			PBXWorkspaceStateSaveDate = 276731963;
+		};
+		perUserProjectItems = {
+			4429D199107E9AEF00D0F71B /* PBXTextBookmark */ = 4429D199107E9AEF00D0F71B /* PBXTextBookmark */;
+			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
+			446C948B107E979B00E94449 /* PBXTextBookmark */ = 446C948B107E979B00E94449 /* PBXTextBookmark */;
+			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
+			44F86C4F107A97A100F594DB /* PBXTextBookmark */ = 44F86C4F107A97A100F594DB /* PBXTextBookmark */;
+		};
+		sourceControlManager = 44E3D116105459FA00677DEB /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	4429D199107E9AEF00D0F71B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simucraft.h */;
+		name = "simucraft.h: 2199";
+		rLen = 0;
+		rLoc = 77052;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
+		activeExec = 0;
+	};
+	442BD364107A7D0000AFCDF4 /* simucraftqt */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 442BD365107A7D0000AFCDF4 /* simucraftqt.app */;
+		libgmallocEnabled = 0;
+		name = simucraftqt;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		startupPath = "<<ProjectDirectory>>";
+	};
+	442BD365107A7D0000AFCDF4 /* simucraftqt.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = simucraftqt.app;
+		path = qt/simucraftqt.app;
+		sourceTree = "<group>";
+	};
+	442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = {
+		isa = PBXTargetBookmark;
+		trg = 442BD327107A79ED00AFCDF4 /* Generate Qt Project */;
+	};
+	444CCF8C107DCCCD00229DD2 /* Bundle Qt for Deployment */ = {
+		activeExec = 0;
+	};
+	444CCF94107DCD4300229DD2 /* osx-package-qt.sh */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 65}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 0}";
+			sepNavWindowFrame = "{{38, 22}, {1200, 830}}";
+		};
+	};
+	446C948B107E979B00E94449 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D21810545A9800677DEB /* simucraft.h */;
+		name = "simucraft.h: 2199";
+		rLen = 0;
+		rLoc = 77052;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	44C7A517106D4B7600A2271C /* libsimucraft */ = {
+		activeExec = 0;
+	};
+	44E3D112105459F100677DEB /* simucraft */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+			YES,
+			YES,
+			YES,
+		);
+		argumentStrings = (
+			Raid_T8.simucraft,
+			"threads=4",
+			"iterations=40",
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = simucraft;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		startupPath = "<<ProjectDirectory>>";
+	};
+	44E3D116105459FA00677DEB /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	44E3D117105459FA00677DEB /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	44E3D1B910545A7500677DEB /* sc_action.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1139, 15236}}";
+			sepNavSelRange = "{25863, 28}";
+			sepNavVisRange = "{25626, 421}";
+			sepNavWindowFrame = "{{15, 140}, {1076, 733}}";
+		};
+	};
+	44E3D1BA10545A7500677DEB /* sc_armory.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 13078}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 342}";
+		};
+	};
+	44E3D1C310545A7500677DEB /* sc_expressions.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {745, 10673}}";
+			sepNavSelRange = "{328, 0}";
+			sepNavVisRange = "{0, 411}";
+		};
+	};
+	44E3D1CB10545A7500677DEB /* sc_main.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 221}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 463}";
+		};
+	};
+	44E3D1DB10545A7500677DEB /* sc_shaman.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 41171}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 0}";
+		};
+	};
+	44E3D1E210545A7500677DEB /* sc_util.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1017, 19500}}";
+			sepNavSelRange = "{290, 0}";
+			sepNavVisRange = "{0, 1191}";
+			sepNavWindowFrame = "{{38, 119}, {1076, 733}}";
+		};
+	};
+	44E3D1E310545A7500677DEB /* sc_warlock.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 51766}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 489}";
+		};
+	};
+	44E3D21810545A9800677DEB /* simucraft.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 32552}}";
+			sepNavSelRange = "{77052, 0}";
+			sepNavVisRange = "{0, 0}";
+		};
+	};
+	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {815, 533}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 0}";
+		};
+	};
+	44F6B21C107A867100763099 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1E310545A7500677DEB /* sc_warlock.cpp */;
+		name = "sc_warlock.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 489;
+		vrLoc = 0;
+	};
+	44F86C4F107A97A100F594DB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */;
+		name = "sc_main.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 463;
+		vrLoc = 0;
+	};
+	8DD76F620486A84900D96B5E /* simucraft */ = {
+		activeExec = 0;
+		executables = (
+			44E3D112105459F100677DEB /* simucraft */,
+		);
+	};
+}

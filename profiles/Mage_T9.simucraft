@@ -1,0 +1,26 @@
+#!simucraft
+
+Globals_T9.simucraft
+
+optimal_raid=1
+
+Mage_T9_00_53_18.simucraft
+Mage_T9_18_00_53.simucraft   focus_magic_target=Mage_T9_20_51_00
+Mage_T9_20_51_00.simucraft   focus_magic_target=Mage_T9_53_18_00
+Mage_T9_53_18_00.simucraft   focus_magic_target=Mage_T9_57_03_11
+Mage_T9_57_03_11.simucraft   focus_magic_target=Mage_T9_18_00_53
+
+# scmaget9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=14306487 name=Mage_T9_00_53_18 save=Mage_T9_00_53_18.simucraft
+
+#wowhead=14306485 name=Mage_T9_18_00_53 save=Mage_T9_18_00_53.simucraft
+
+#wowhead=14306481 name=Mage_T9_20_51_00 save=Mage_T9_20_51_00.simucraft
+
+#wowhead=14306474 name=Mage_T9_53_18_00 save=Mage_T9_53_18_00.simucraft
+
+#wowhead=14306468 name=Mage_T9_57_03_11 save=Mage_T9_57_03_11.simucraft
+
+#save_profiles=1

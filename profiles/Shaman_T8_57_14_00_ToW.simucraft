@@ -1,0 +1,58 @@
+#!./simucraft 
+
+shaman=Shaman_T8_57_14_00_ToW
+origin=http://profiler.wowhead.com/?profile=14730877
+level=80
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
+glyphs=flame_shock/lava/lightning_bolt
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/flametongue_weapon,weapon=main
+actions+=/water_shield
+actions+=/mana_spring_totem
+actions+=/wrath_of_air_totem
+actions+=/totem_of_wrath
+actions+=/snapshot_stats
+actions+=/bloodlust,time_to_die<=59
+actions+=/speed_potion
+actions+=/elemental_mastery
+actions+=/flame_shock
+actions+=/lava_burst,flame_shock=1
+actions+=/chain_lightning,clearcasting=1
+actions+=/lightning_bolt
+actions+=/thunderstorm
+head=conquerors_worldbreaker_helm,stats=1067armor_60hit_60crit_115sp_85sta_86int,gems=chaotic_skyflare_8haste_9sp_9sp,enchant=30sp_20crit
+neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=8haste_9sp_5sp
+shoulders=conquerors_worldbreaker_shoulderpads,stats=985armor_57crit_48haste_90sp_63sta_64int,gems=19sp_6sta,enchant=24sp_15crit
+chest=conquerors_worldbreaker_hauberk,stats=1314armor_60hit_75haste_115sp_85sta_86int,gems=39sp_8haste_9sp,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_fallen_wyrm,stats=739armor_49crit_62haste_99sp_73sta_60int,gems=19sp
+legs=leggings_of_the_enslaved_idol,stats=284armor_70hit_77crit_122sp_96sta_98int,gems=19sp_8haste_9sp_39sp,enchant=50sp_30sta
+feet=treads_of_the_false_oracle,stats=223armor_61crit_47haste_92sp_82sta_69int,gems=19sp_19sp,enchant=12crit_12hit
+wrists=bindings_of_winter_gale,stats=592armor_48crit_39haste_75sp_61sta_51int,gems=19sp,enchant=30sp
+hands=conquerors_worldbreaker_gloves,stats=821armor_48crit_57haste_90sp_63sta_64int,gems=19sp_4hit,enchant=20sp
+finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit
+finger2=signet_of_manifested_pain,stats=46crit_36haste_74sp_46sta_49int
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
+trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=39sp,enchant=lightweave_embroidery
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+off_hand=wisdoms_hold,stats=8130armor_227blockv_40crit_47haste_75sp_70sta_48int,gems=19sp,enchant=25int
+ranged=totem_of_hex
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=973
+# gear_intellect=898
+# gear_spirit=54
+# gear_spell_power=2311
+# gear_hit_rating=291
+# gear_crit_rating=758
+# gear_haste_rating=570
+# gear_armor=14312
+# gear_block_value=227
+# meta_gem=chaotic_skyflare
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
+# back=pennant_cloak,enchant=lightweave_embroidery
+# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps

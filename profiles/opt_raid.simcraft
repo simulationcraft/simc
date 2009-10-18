@@ -1,8 +1,0 @@
-Globals_T8.simcraft
-optimal_raid=1
-smooth_rng=1
-smooth_scale_factors=1
-#calculate_scale_factors=1
-
-max_time=300
-iterations=1000

@@ -1,0 +1,58 @@
+#!simucraft
+
+priest=Priest_T8_13_00_58
+origin=http://profiler.wowhead.com/?profile=13000014
+level=80
+race=night_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
+glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/divine_spirit
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/snapshot_stats
+actions+=/wild_magic_potion
+actions+=/shadow_fiend
+actions+=/shadow_word_pain,shadow_weaving_wait=1
+actions+=/vampiric_touch
+actions+=/devouring_plague
+actions+=/mind_blast
+actions+=/vampiric_embrace
+actions+=/dispersion
+actions+=/mind_flay
+actions+=/shadow_word_death
+head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
+neck=pendant_of_the_shallow_grave,stats=41crit_31haste_74sp_45sta_43int,gems=19sp
+shoulders=conquerors_mantle_of_sanctification,stats=236armor_62crit_90sp_53sta_65int_49spi,gems=19sp_5sp,enchant=24sp_15crit
+chest=conquerors_raiments_of_sanctification,stats=314armor_74hit_58haste_132sp_90sta_76int,gems=19sp_19sp,enchant=10str_10agi_10sta_10int_10spi
+waist=starwatchers_binding,stats=182armor_47crit_92sp_82sta_69int_64spi,gems=19sp_19sp_19sp
+legs=leggings_of_the_enslaved_idol,stats=284armor_70hit_77crit_122sp_96sta_98int,gems=19sp_19sp_19sp,enchant=50sp_20spi
+feet=treads_of_the_false_oracle,stats=223armor_61crit_47haste_92sp_82sta_69int,gems=19sp_9sp_8spi_7sp,enchant=12crit_12hit
+wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_4spi,enchant=30sp
+hands=conquerors_handwraps_of_sanctification,stats=197armor_64crit_99sp_62sta_44int_54spi,gems=8crit_9sp_4hit,enchant=28sp
+finger1=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=9sp_8spi_5sp,enchant=23sp
+finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=23sp
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave_embroidery
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
+ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=957
+# gear_intellect=881
+# gear_spirit=348
+# gear_spell_power=2442
+# gear_hit_rating=291
+# gear_crit_rating=774
+# gear_haste_rating=361
+# gear_armor=1996
+# meta_gem=chaotic_skyflare
+# tier8_2pc=1
+# tier8_4pc=1
+# back=drape_of_mortal_downfall,enchant=lightweave_embroidery
+# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraftqt.h"
+#include "simucraftqt.h"
 #include <QtWebKit>
 
 // ==========================================================================
@@ -87,7 +87,7 @@ static QComboBox* createChoice( int count, ... )
   return choice;
 }
 
-void SimcraftWindow::decodeOptions( QString encoding )
+void SimucraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
   if( tokens.count() >= 9 )
@@ -138,7 +138,7 @@ void SimcraftWindow::decodeOptions( QString encoding )
    }
 }
 
-QString SimcraftWindow::encodeOptions()
+QString SimucraftWindow::encodeOptions()
 {
   QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
     .arg(        patchChoice->currentIndex() )
@@ -175,7 +175,7 @@ QString SimcraftWindow::encodeOptions()
   return encoded;
 }
 
-void SimcraftWindow::updateSimProgress()
+void SimucraftWindow::updateSimProgress()
 {
   if( sim )
   {
@@ -192,10 +192,10 @@ void SimcraftWindow::updateSimProgress()
   }
 }
 
-void SimcraftWindow::loadHistory()
+void SimucraftWindow::loadHistory()
 {
   http_t::cache_load();
-  QFile file( "simcraft_history.dat" );
+  QFile file( "simucraft_history.dat" );
   if( file.open( QIODevice::ReadOnly ) )
   {
     QDataStream in( &file );
@@ -227,10 +227,10 @@ void SimcraftWindow::loadHistory()
   }
 }
 
-void SimcraftWindow::saveHistory()
+void SimucraftWindow::saveHistory()
 {
   http_t::cache_save();
-  QFile file( "simcraft_history.dat" );
+  QFile file( "simucraft_history.dat" );
   if( file.open( QIODevice::WriteOnly ) )
   {
     optionsHistory.add( encodeOptions() );
@@ -259,7 +259,7 @@ void SimcraftWindow::saveHistory()
 // Widget Creation
 // ==========================================================================
 
-SimcraftWindow::SimcraftWindow(QWidget *parent)
+SimucraftWindow::SimucraftWindow(QWidget *parent)
   : QWidget(parent), visibleWebView(0), sim(0), simProgress(100), simResults(0)
 {
   cmdLineText = "";
@@ -297,12 +297,12 @@ SimcraftWindow::SimcraftWindow(QWidget *parent)
   loadHistory();
 }
 
-void SimcraftWindow::createCmdLine()
+void SimucraftWindow::createCmdLine()
 {
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
   cmdLineLayout->addWidget( backButton = new QPushButton( "<" ) );
   cmdLineLayout->addWidget( forwardButton = new QPushButton( ">" ) );
-  cmdLineLayout->addWidget( cmdLine = new SimcraftCommandLine( this ) );
+  cmdLineLayout->addWidget( cmdLine = new SimucraftCommandLine( this ) );
   cmdLineLayout->addWidget( progressBar = new QProgressBar() );
   cmdLineLayout->addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton->setMaximumWidth( 30 );
@@ -318,14 +318,14 @@ void SimcraftWindow::createCmdLine()
   cmdLineGroupBox->setLayout( cmdLineLayout );
 }
 
-void SimcraftWindow::createWelcomeTab()
+void SimucraftWindow::createWelcomeTab()
 {
   QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html was unable to load.</div>";
 
   QFile file( "Welcome.html" );
   if( !file.exists() )
   {
-    file.setFileName( "simcraftqt.app/Contents/Resources/Welcome.html" );
+    file.setFileName( "simucraftqt.app/Contents/Resources/Welcome.html" );
   }
   if( file.open( QIODevice::ReadOnly ) )
   {
@@ -339,7 +339,7 @@ void SimcraftWindow::createWelcomeTab()
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
-void SimcraftWindow::createOptionsTab()
+void SimucraftWindow::createOptionsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
@@ -400,28 +400,28 @@ void SimcraftWindow::createOptionsTab()
   optimalRaidChoice->setCurrentIndex( 1 );
 }
 
-void SimcraftWindow::createImportTab()
+void SimucraftWindow::createImportTab()
 {
   importTab = new QTabWidget();
   mainTab->addTab( importTab, "Import" );
 
-  armoryUsView = new SimcraftWebView( this );
+  armoryUsView = new SimucraftWebView( this );
   armoryUsView->setUrl( QUrl( "http://us.wowarmory.com" ) );
   importTab->addTab( armoryUsView, "Armory-US" );
   
-  armoryEuView = new SimcraftWebView( this );
+  armoryEuView = new SimucraftWebView( this );
   armoryEuView->setUrl( QUrl( "http://eu.wowarmory.com" ) );
   importTab->addTab( armoryEuView, "Armory-EU" );
   
-  wowheadView = new SimcraftWebView( this );
+  wowheadView = new SimucraftWebView( this );
   wowheadView->setUrl( QUrl( "http://www.wowhead.com/?profiles" ) );
   importTab->addTab( wowheadView, "Wowhead" );
   
-  chardevView = new SimcraftWebView( this );
+  chardevView = new SimucraftWebView( this );
   chardevView->setUrl( QUrl( "http://www.chardev.org" ) );
   importTab->addTab( chardevView, "CharDev" );
   
-  warcrafterView = new SimcraftWebView( this );
+  warcrafterView = new SimucraftWebView( this );
   warcrafterView->setUrl( QUrl( "http://www.warcrafter.net" ) );
   importTab->addTab( warcrafterView, "Warcrafter" );
 
@@ -454,7 +454,7 @@ void SimcraftWindow::createImportTab()
   connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
 }
 
-void SimcraftWindow::createBestInSlotTab()
+void SimucraftWindow::createBestInSlotTab()
 {
   QStringList headerLabels( "Player Class" ); headerLabels += QString( "URL" );
 
@@ -596,7 +596,7 @@ void SimcraftWindow::createBestInSlotTab()
   connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
 }
 
-void SimcraftWindow::createSimulateTab()
+void SimucraftWindow::createSimulateTab()
 {
   simulateText = new QPlainTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
@@ -605,7 +605,7 @@ void SimcraftWindow::createSimulateTab()
   mainTab->addTab( simulateText, "Simulate" );
 }
 
-void SimcraftWindow::createOverridesTab()
+void SimucraftWindow::createOverridesTab()
 {
   overridesText = new QPlainTextEdit();
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
@@ -614,7 +614,7 @@ void SimcraftWindow::createOverridesTab()
   mainTab->addTab( overridesText, "Overrides" );
 }
 
-void SimcraftWindow::createLogTab()
+void SimucraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
@@ -624,14 +624,14 @@ void SimcraftWindow::createLogTab()
   mainTab->addTab( logText, "Log" );
 }
 
-void SimcraftWindow::createExamplesTab()
+void SimucraftWindow::createExamplesTab()
 {
-  QString s = "# If you are seeing this text, then Examples.simcraft was unable to load.";
+  QString s = "# If you are seeing this text, then Examples.simucraft was unable to load.";
 
-  QFile file( "Examples.simcraft" );
+  QFile file( "Examples.simucraft" );
   if( !file.exists() )
   {
-    file.setFileName( "simcraftqt.app/Contents/Resources/Examples.simcraft" );
+    file.setFileName( "simucraftqt.app/Contents/Resources/Examples.simucraft" );
   }
   if( file.open( QIODevice::ReadOnly ) )
   {
@@ -644,14 +644,14 @@ void SimcraftWindow::createExamplesTab()
   mainTab->addTab( examplesText, "Examples" );
 }
  
-void SimcraftWindow::createResultsTab()
+void SimucraftWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
 
   QFile file( "Legend.html" );
   if( !file.exists() )
   {
-    file.setFileName( "simcraftqt.app/Contents/Resources/Legend.html" );
+    file.setFileName( "simucraftqt.app/Contents/Resources/Legend.html" );
   }
   if( file.open( QIODevice::ReadOnly ) )
   {
@@ -669,7 +669,7 @@ void SimcraftWindow::createResultsTab()
   mainTab->addTab( resultsTab, "Results" );
 }
 
-void SimcraftWindow::createToolTips()
+void SimucraftWindow::createToolTips()
 {
   patchChoice->setToolTip( "Live: 3.2.2\n"
 			   "PTR: 3.3.0" );
@@ -704,26 +704,26 @@ void SimcraftWindow::createToolTips()
 // Sim Initialization
 // ==========================================================================
 
-sim_t* SimcraftWindow::initSim()
+sim_t* SimucraftWindow::initSim()
 {
   if( ! sim ) 
   {
     sim = new sim_t();
-    sim -> output_file = fopen( "simcraft_log.txt", "w" );
+    sim -> output_file = fopen( "simucraft_log.txt", "w" );
     sim -> seed = (int) time( NULL );
     sim -> report_progress = 0;
   }
   return sim;
 }
 
-void SimcraftWindow::deleteSim()
+void SimucraftWindow::deleteSim()
 {
   if( sim ) 
   {
     fclose( sim -> output_file );
     delete sim;
     sim = 0;
-    QFile logFile( "simcraft_log.txt" );
+    QFile logFile( "simucraft_log.txt" );
     logFile.open( QIODevice::ReadOnly );
     logText->appendPlainText( logFile.readAll() );
     logFile.close();
@@ -858,7 +858,7 @@ void ImportThread::run()
   }
 }
 
-void SimcraftWindow::startImport( int tab, const QString& url )
+void SimucraftWindow::startImport( int tab, const QString& url )
 {
   if( sim )
   {
@@ -879,7 +879,7 @@ void SimcraftWindow::startImport( int tab, const QString& url )
   timer->start( 500 );
 }
 
-void SimcraftWindow::importFinished()
+void SimucraftWindow::importFinished()
 {
   timer->stop();
   simProgress = 100;
@@ -922,7 +922,7 @@ void SimcraftWindow::importFinished()
 
 void SimulateThread::run()
 {
-  sim -> html_file_str = "simcraft_report.html";
+  sim -> html_file_str = "simucraft_report.html";
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
@@ -930,7 +930,7 @@ void SimulateThread::run()
   char** argv = new char*[ argc ];
 
   QList<QByteArray> lines;
-  lines.append( "simcraft" );
+  lines.append( "simucraft" );
   for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
   for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
@@ -945,7 +945,7 @@ void SimulateThread::run()
   }
 }
 
-void SimcraftWindow::startSim()
+void SimucraftWindow::startSim()
 {
   if( sim )
   {
@@ -969,7 +969,7 @@ void SimcraftWindow::startSim()
   timer->start( 500 );
 }
 
-QString SimcraftWindow::mergeOptions()
+QString SimucraftWindow::mergeOptions()
 {
   QString options = "";
   options += "patch=" + patchChoice->currentText() + "\n";
@@ -1020,7 +1020,7 @@ QString SimcraftWindow::mergeOptions()
   return options;
 }
 
-void SimcraftWindow::simulateFinished()
+void SimucraftWindow::simulateFinished()
 {
   timer->stop();
   simProgress = 100;
@@ -1035,7 +1035,7 @@ void SimcraftWindow::simulateFinished()
   else if( file.open( QIODevice::ReadOnly ) )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SimcraftWebView* resultsView = new SimcraftWebView( this );
+    SimucraftWebView* resultsView = new SimucraftWebView( this );
     resultsHtml.append( file.readAll() );
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
@@ -1054,7 +1054,7 @@ void SimcraftWindow::simulateFinished()
 // Save Results
 // ==========================================================================
 
-void SimcraftWindow::saveLog()
+void SimucraftWindow::saveLog()
 {
   logCmdLineHistory.add( cmdLine->text() );
 
@@ -1069,7 +1069,7 @@ void SimcraftWindow::saveLog()
   logText->appendPlainText( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
-void SimcraftWindow::saveResults()
+void SimucraftWindow::saveResults()
 {
   int index = resultsTab->currentIndex();
   if( index <= 0 ) return;
@@ -1093,7 +1093,7 @@ void SimcraftWindow::saveResults()
 // Window Events
 // ==========================================================================
 
-void SimcraftWindow::closeEvent( QCloseEvent* e ) 
+void SimucraftWindow::closeEvent( QCloseEvent* e ) 
 { 
   saveHistory();
   armoryUsView->stop();
@@ -1105,7 +1105,7 @@ void SimcraftWindow::closeEvent( QCloseEvent* e )
   e->accept();
 }
 
-void SimcraftWindow::cmdLineTextEdited( const QString& s )
+void SimucraftWindow::cmdLineTextEdited( const QString& s )
 {
   switch( mainTab->currentIndex() )
   {
@@ -1120,7 +1120,7 @@ void SimcraftWindow::cmdLineTextEdited( const QString& s )
   }
 }
 
-void SimcraftWindow::cmdLineReturnPressed()
+void SimucraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
@@ -1160,7 +1160,7 @@ void SimcraftWindow::cmdLineReturnPressed()
   }
 }
 
-void SimcraftWindow::mainButtonClicked( bool checked )
+void SimucraftWindow::mainButtonClicked( bool checked )
 {
   checked=true;
   switch( mainTab->currentIndex() )
@@ -1186,7 +1186,7 @@ void SimcraftWindow::mainButtonClicked( bool checked )
   }
 }
 
-void SimcraftWindow::backButtonClicked( bool checked )
+void SimucraftWindow::backButtonClicked( bool checked )
 {
   checked=true;
   if( visibleWebView ) 
@@ -1222,7 +1222,7 @@ void SimcraftWindow::backButtonClicked( bool checked )
   }
 }
 
-void SimcraftWindow::forwardButtonClicked( bool checked )
+void SimucraftWindow::forwardButtonClicked( bool checked )
 {
   checked=true;
   if( visibleWebView ) 
@@ -1246,7 +1246,7 @@ void SimcraftWindow::forwardButtonClicked( bool checked )
   }
 }
 
-void SimcraftWindow::rawrButtonClicked( bool checked )
+void SimucraftWindow::rawrButtonClicked( bool checked )
 {
   checked=true;
   QFileDialog dialog( this );
@@ -1266,7 +1266,7 @@ void SimcraftWindow::rawrButtonClicked( bool checked )
   }
 }
 
-void SimcraftWindow::mainTabChanged( int index )
+void SimucraftWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
   switch( index )
@@ -1290,7 +1290,7 @@ void SimcraftWindow::mainTabChanged( int index )
   if( ! visibleWebView ) progressBar->setValue( simProgress );
 }
 
-void SimcraftWindow::importTabChanged( int index )
+void SimucraftWindow::importTabChanged( int index )
 {
   if( index == TAB_RAWR ||
       index == TAB_BIS  ||
@@ -1309,13 +1309,13 @@ void SimcraftWindow::importTabChanged( int index )
   }
   else
   {
-    visibleWebView = (SimcraftWebView*) importTab->widget( index );
+    visibleWebView = (SimucraftWebView*) importTab->widget( index );
     progressBar->setValue( visibleWebView->progress );
     cmdLine->setText( visibleWebView->url().toString() );
   }
 }
 
-void SimcraftWindow::resultsTabChanged( int index )
+void SimucraftWindow::resultsTabChanged( int index )
 {
   if( index <= 0 )
   {
@@ -1323,7 +1323,7 @@ void SimcraftWindow::resultsTabChanged( int index )
   }
   else
   {
-    visibleWebView = (SimcraftWebView*) resultsTab->widget( index );
+    visibleWebView = (SimucraftWebView*) resultsTab->widget( index );
     progressBar->setValue( visibleWebView->progress );
     QString s = visibleWebView->url().toString();
     if( s == "about:blank" ) s = resultsFileText;
@@ -1331,14 +1331,14 @@ void SimcraftWindow::resultsTabChanged( int index )
   }
 }
 
-void SimcraftWindow::rawrDoubleClicked( QListWidgetItem* item )
+void SimucraftWindow::rawrDoubleClicked( QListWidgetItem* item )
 {
   rawrFileText = rawrDir->text();
   rawrFileText += item->text();
   cmdLine->setText( rawrFileText );
 }
 
-void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
+void SimucraftWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
@@ -1374,7 +1374,7 @@ void SimcraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
 }
 
-void SimcraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
+void SimucraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
 {
   col=0;
 
@@ -1409,7 +1409,7 @@ void SimcraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
   }
 }
 
-void SimcraftWindow::optimalRaidChanged( int index )
+void SimucraftWindow::optimalRaidChanged( int index )
 {
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   int count = buttons.count();

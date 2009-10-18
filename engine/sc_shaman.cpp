@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simcraft.h"
+#include "simucraft.h"
 
 // ==========================================================================
 // Shaman
@@ -2760,7 +2760,7 @@ void shaman_t::init_glyphs()
     else if ( n == "water_mastery"        ) ;
     else if ( n == "water_shield"         ) ;
     else if ( n == "water_walking"        ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -2860,7 +2860,7 @@ void shaman_t::init_items()
   else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
   else
   {
-    log_t::output( sim, "simcraft: %s has unknown totem %s", name(), totem.c_str() );
+    log_t::output( sim, "simucraft: %s has unknown totem %s", name(), totem.c_str() );
   }
 }
 

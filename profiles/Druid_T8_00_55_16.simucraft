@@ -1,0 +1,57 @@
+#!./simucraft 
+
+druid=Druid_T8_00_55_16
+origin=http://profiler.wowhead.com/?profile=13000407
+level=80
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000553202132322010053120030300511203503012
+glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
+actions=flask,type=endless_rage
+actions+=/food,type=hearty_rhino
+actions+=/cat_form
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/maim
+actions+=/faerie_fire_feral,debuff_only=1
+actions+=/shred,omen_of_clarity=1
+actions+=/tigers_fury,energy<=40
+actions+=/berserk,tigers_fury=1
+actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/shred,extend_rip=1,rip<=4
+actions+=/rip,cp>=5,time_to_die>=10
+actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
+actions+=/rake
+actions+=/shred
+head=conquerors_nightsong_headguard,stats=480armor_152ap_75crit_50arpen_82agi_122sta,gems=relentless_earthsiege_20arpen_8agi,enchant=50ap_20crit
+neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=20arpen
+shoulders=conquerors_nightsong_shoulderpads,stats=443armor_112ap_62crit_48exp_77agi_74sta,gems=20arpen_4crit,enchant=40ap_15crit
+chest=conquerors_nightsong_raiments,stats=591armor_162ap_49hit_66crit_97agi_119sta,gems=20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
+waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=20agi_20agi_20agi_12ap
+legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=20agi_34agi_20agi,enchant=75ap_22crit
+feet=footpads_of_silence,stats=406armor_114ap_48hit_56crit_69agi_64sta,gems=10str_10agi_10sta_10int_10spi_34agi_6agi,enchant=16agi
+wrists=fluxing_energy_coils,stats=259armor_72ap_46hit_30arpen_63agi_54sta,gems=20arpen_20arpen,enchant=50ap
+hands=conquerors_nightsong_handgrips,stats=369armor_130ap_33haste_43arpen_85agi_93sta,gems=20arpen_20agi,enchant=20agi
+finger1=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20agi
+finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=34agi_4agi
+trinket1=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
+trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20arpen_20arpen,enchant=22agi
+main_hand=dreambinder,stats=140ap_86haste_85arpen_112agi_105sta,gems=20agi_20agi,enchant=berserking,weapon=staff_2.40speed_244.6dps
+ranged=idol_of_the_ravenous_beast
+# Gear Summary
+# gear_strength=20
+# gear_agility=1419
+# gear_stamina=1068
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=1987
+# gear_expertise_rating=104
+# gear_armor_penetration_rating=568
+# gear_hit_rating=189
+# gear_crit_rating=684
+# gear_haste_rating=160
+# gear_armor=3571
+# meta_gem=relentless_earthsiege
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
+# main_hand=dreambinder,weapon=staff_2.40speed_244.6dps,enchant=berserking
