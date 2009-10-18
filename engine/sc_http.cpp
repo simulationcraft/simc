@@ -490,6 +490,7 @@ bool http_t::download( std::string& result,
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unistd.h>
 
 // http_t::download =========================================================
 
