@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 static bool thread_initialized = false;
 

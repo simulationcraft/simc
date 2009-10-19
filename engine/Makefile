@@ -8,11 +8,11 @@
 
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
 # By default, 32-bit binary is built.  To build a 64-bit binary, add BITS=64 to the cmd-line invocation
-# Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simucraft64'
+# Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
-MODULE     = simucraft
-LIBRARY    = libsimucraft.a
+MODULE     = simc
+LIBRARY    = libsimc.a
 OS         = UNIX
 
 # Any UNIX platform
@@ -45,7 +45,7 @@ endif
 
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
-MODULE     = simucraft.exe
+MODULE     = simc.exe
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -malign-double
 LINK_FLAGS = 
@@ -57,7 +57,7 @@ AR         = ar
 endif
 
 SRC =\
-	simucraft.h		\
+	simulationcraft.h		\
 	sc_action.cpp		\
 	sc_armory.cpp		\
 	sc_attack.cpp		\
@@ -136,8 +136,8 @@ $(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H)
 
 REV=0
 tarball:
-	tar -cvf simucraft-r$(REV).tar $(SRC) Makefile *.simucraft
-	gzip simucraft-r$(REV).tar
+	tar -cvf simc-r$(REV).tar $(SRC) Makefile *.simc
+	gzip simc-r$(REV).tar
 
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files

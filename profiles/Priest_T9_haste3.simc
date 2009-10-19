@@ -1,0 +1,255 @@
+#!simc
+
+
+Globals_T9.simc
+
+optimal_raid=1
+
+patch=3.3.0
+
+# Shadow DPS
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_0
+enchant_haste_rating=-600
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_50
+enchant_haste_rating=-550
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_100
+enchant_haste_rating=-500
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_150
+enchant_haste_rating=-450
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_200
+enchant_haste_rating=-400
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_250
+enchant_haste_rating=-350
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_300
+enchant_haste_rating=-300
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_350
+enchant_haste_rating=-250
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_400
+enchant_haste_rating=-200
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_450
+enchant_haste_rating=-150
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_500
+enchant_haste_rating=-100
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_550
+enchant_haste_rating=-50
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_600
+enchant_haste_rating=0
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_650
+enchant_haste_rating=50
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_700
+enchant_haste_rating=100
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_750
+enchant_haste_rating=150
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_800
+enchant_haste_rating=200
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_850
+enchant_haste_rating=250
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_900
+enchant_haste_rating=300
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_950
+enchant_haste_rating=350
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1000
+enchant_haste_rating=400
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1050
+enchant_haste_rating=450
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1100
+enchant_haste_rating=500
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1150
+enchant_haste_rating=550
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1200
+enchant_haste_rating=600
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1250
+enchant_haste_rating=650
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1300
+enchant_haste_rating=700
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1350
+enchant_haste_rating=750
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1400
+enchant_haste_rating=800
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1450
+enchant_haste_rating=850
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1500
+enchant_haste_rating=900
+enchant_spell_power=-1000
+
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_25
+enchant_haste_rating=-575
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_75
+enchant_haste_rating=-525
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_125
+enchant_haste_rating=-475
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_175
+enchant_haste_rating=-425
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_225
+enchant_haste_rating=-375
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_275
+enchant_haste_rating=-325
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_325
+enchant_haste_rating=-275
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_375
+enchant_haste_rating=-225
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_425
+enchant_haste_rating=-175
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_475
+enchant_haste_rating=-125
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_525
+enchant_haste_rating=-75
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_575
+enchant_haste_rating=-25
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_625
+enchant_haste_rating=25
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_675
+enchant_haste_rating=75
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_725
+enchant_haste_rating=125
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_775
+enchant_haste_rating=175
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_825
+enchant_haste_rating=225
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_875
+enchant_haste_rating=275
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_925
+enchant_haste_rating=325
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_975
+enchant_haste_rating=375
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1025
+enchant_haste_rating=425
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1075
+enchant_haste_rating=475
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1125
+enchant_haste_rating=525
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1175
+enchant_haste_rating=575
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1225
+enchant_haste_rating=625
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1275
+enchant_haste_rating=675
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1325
+enchant_haste_rating=725
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1375
+enchant_haste_rating=775
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1425
+enchant_haste_rating=825
+enchant_spell_power=-1000
+
+Priest_T9_13_00_58_258.simc name=Priest_T9_13_00_58_258_1475
+enchant_haste_rating=875
+enchant_spell_power=-1000

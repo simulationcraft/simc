@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 // ==========================================================================
 // Druid
@@ -3403,7 +3403,7 @@ void druid_t::init_glyphs()
     else if ( n == "unburdened_rebirth"    ) ;
     else if ( n == "wild_growth"           ) ;
     else if ( n == "wrath"                 ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -3559,7 +3559,7 @@ void druid_t::init_items()
   else if ( idol == "harolds_rejuvenating_broach"  ) ;
   else
   {
-    log_t::output( sim, "simucraft: %s has unknown idol %s", name(), idol.c_str() );
+    log_t::output( sim, "simulationcraft: %s has unknown idol %s", name(), idol.c_str() );
   }
 
   if ( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );

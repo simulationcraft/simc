@@ -11,7 +11,7 @@
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 			<meta name="description" content="A tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm)" />
-			<meta name="keywords" content="simulationcraft,simcraft,world of warcraft,wow,simulation" />
+			<meta name="keywords" content="simulationcraft,simulationcraft,simc,world of warcraft,wow,simulation" />
 			
 			<title>SimulationCraft</title>
 
@@ -170,7 +170,7 @@
 			
 			<!-- The config file import functions -->
 			<div class="bottombar_section">
-				<h3>Import SimCraft Files</h3>
+				<h3>Import SimulationCraft Files</h3>
 				
 				<ul class="subscript_labels stacked_fields">
 					<li>
@@ -189,16 +189,16 @@
 					</li>
 								
 					<li>
-						<input name="import_file" type="submit" value="Import from File" title="Import the specified .simcraft file into the current simulation" />
+						<input name="import_file" type="submit" value="Import from File" title="Import the specified .simc file into the current simulation" />
 					</li>
 				</ul>
 			</div>
 
 			<!-- The config file export functions -->
 			<div class="bottombar_section">
-				<h3>Export SimCraft Files</h3>
+				<h3>Export SimulationCraft Files</h3>
 				
-				<input name="export_file" type="submit" value="Export to File" title="Download an export of the current simulation build to a .simcraft file" />
+				<input name="export_file" type="submit" value="Export to File" title="Download an export of the current simulation build to a .simc file" />
 			</div>
 
 		</div>
@@ -286,7 +286,7 @@
 				<xsl:value-of select="/xml/options/player/*[name()=$class]/@title" /> - 
 
 				<!-- option defining the name for the raider -->
-				<xsl:call-template name="simcraft_option">
+				<xsl:call-template name="simulationcraft_option">
 					<xsl:with-param name="type">text</xsl:with-param>
 					<xsl:with-param name="variable_name">raider</xsl:with-param>
 					<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
@@ -298,7 +298,7 @@
 			
 			
 			<!-- Hidden option variable defining the class for the raider -->
-			<xsl:call-template name="simcraft_option">
+			<xsl:call-template name="simulationcraft_option">
 				<xsl:with-param name="type">hidden</xsl:with-param>
 				<xsl:with-param name="variable_name">raider</xsl:with-param>
 				<xsl:with-param name="array_index"><xsl:value-of select="$index" /></xsl:with-param>
@@ -485,7 +485,7 @@
 
 	<!-- === OPTION FIELDS === -->
 	<!-- Any of the option fields in the page, this template gets called in multiple places above -->
-	<xsl:template match="option" name="simcraft_option">
+	<xsl:template match="option" name="simulationcraft_option">
 	
 		<!-- Optional type override, defaults to the option's type attribute -->
 		<xsl:param name="type" select="@type" />

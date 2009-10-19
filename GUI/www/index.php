@@ -13,11 +13,11 @@ set_exception_handler('custom_exception_handler');
 // If the 'simulate' button was pressed, run the simulation
 if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 
-	// Develop the simcraft command from the form input
-	$simcraft_command = generate_simcraft_command( $_POST );
+	// Develop the simulationcraft command from the form input
+	$simulationcraft_command = generate_simulationcraft_command( $_POST );
 	
 	// Execute the command
-	list($file_contents, $simcraft_output) = execute_simcraft_command($simcraft_command);
+	list($file_contents, $simulationcraft_output) = execute_simulationcraft_command($simulationcraft_command);
 	$file_contents = str_replace('&amp;amp;', '&amp;', str_replace('&','&amp;', $file_contents));
 	
 	// Fetch the result as an XML object, and release it to the browser as output
@@ -26,7 +26,7 @@ if( isset($_POST['simulate']) && ALLOW_SIMULATION===true ) {
 		$xml->release_to_browser('xsl/results.xsl');
 	}
 	catch( Exception $e) {
-		throw new Exception("Simcraft did not return valid XML, caused problems ({$e->getMessage()}).\n\nsimcraft command:\n$simcraft_command\n\nsimcraft STDOUT:\n$simcraft_output\n\nsimcraft file content:\n$file_contents");
+		throw new Exception("Simulationcraft did not return valid XML, caused problems ({$e->getMessage()}).\n\nsimulationcraft command:\n$simulationcraft_command\n\nsimulationcraft STDOUT:\n$simulationcraft_output\n\nsimulationcraft file content:\n$file_contents");
 	}	
 }
 
@@ -40,7 +40,7 @@ else if( isset($_POST['export_file']) ) {
 	header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
 	header('Cache-Control: post-check=0, pre-check=0', false); // HTTP/1.1
 	header('Pragma: no-cache'); // HTTP/1.0
-	header('Content-Disposition: attachment; filename="'.date('YmdHis').'.simcraft"');
+	header('Content-Disposition: attachment; filename="'.date('YmdHis').'.simc"');
 	header("Content-length: " . strlen($output) );
 	header('Content-type: text/text');
 	
@@ -53,7 +53,7 @@ else if( isset($_POST['export_file']) ) {
 else {
 
 	// Create the output XML object
-	$xml = XML_SimcraftConfigForm::factory();
+	$xml = XML_SimulationcraftConfigForm::factory();
 		
 	
 	// If a request was passed to add a raid member from the armory

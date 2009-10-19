@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 // ==========================================================================
 // Target
@@ -156,7 +156,7 @@ void target_t::init()
 
     if ( race == RACE_MAX )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: '%s' is not a valid value for 'target_race'\n", race_str.c_str() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: '%s' is not a valid value for 'target_race'\n", race_str.c_str() );
       exit( 0 );
     }
   }

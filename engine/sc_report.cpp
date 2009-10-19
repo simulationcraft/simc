@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -1540,7 +1540,7 @@ void report_t::print_html( sim_t* sim )
   FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
   if ( ! file )
   {
-    util_t::fprintf( stderr, "simucraft: Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+    util_t::fprintf( stderr, "simulationcraft: Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
     exit( 0 );
   }
 
@@ -1587,7 +1587,7 @@ void report_t::print_wiki( sim_t* sim )
   FILE* file = fopen( sim -> wiki_file_str.c_str(), "w" );
   if ( ! file )
   {
-    util_t::fprintf( stderr, "simucraft: Unable to open wiki file '%s'\n", sim -> wiki_file_str.c_str() );
+    util_t::fprintf( stderr, "simulationcraft: Unable to open wiki file '%s'\n", sim -> wiki_file_str.c_str() );
     exit( 0 );
   }
 
@@ -1620,7 +1620,7 @@ void report_t::print_xml( sim_t* sim )
   FILE* file = fopen( sim -> xml_file_str.c_str(), "w" );
   if ( ! file )
   {
-    util_t::fprintf( stderr, "simucraft: Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
+    util_t::fprintf( stderr, "simulationcraft: Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
     exit( 0 );
   }
 
@@ -1682,7 +1682,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_gear_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simucraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
       }
       else
       {
@@ -1698,7 +1698,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_talents_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simucraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
       }
       else
       {
@@ -1714,7 +1714,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_actions_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simucraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
+        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
       }
       else
       {
@@ -1731,7 +1731,7 @@ void report_t::print_profiles( sim_t* sim )
     {
       file_name  = "save_";
       file_name += p -> name_str;
-      file_name += ".simucraft";
+      file_name += ".simc";
     }
 
     if ( file_name.empty() ) continue;
@@ -1739,7 +1739,7 @@ void report_t::print_profiles( sim_t* sim )
     file = fopen( file_name.c_str(), "w" );
     if ( ! file )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
       continue;
     }
 

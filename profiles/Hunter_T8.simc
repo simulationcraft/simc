@@ -1,0 +1,19 @@
+#!simc
+
+Globals_T8.simc
+
+optimal_raid=1
+
+Hunter_T8_54_12_05.simc
+Hunter_T8_07_57_07.simc
+Hunter_T8_07_57_07_HM.simc
+Hunter_T8_01_15_55.simc
+
+# schuntert8
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=13000974 name=Hunter_T8_54_12_05     save=Hunter_T8_54_12_05.simc
+#wowhead=13001144 name=Hunter_T8_07_57_07     save=Hunter_T8_07_57_07.simc
+#wowhead=13630091 name=Hunter_T8_07_57_07_HM  save=Hunter_T8_07_57_07_HM.simc
+#wowhead=13001196 name=Hunter_T8_01_15_55     save=Hunter_T8_01_15_55.simc
+#save_profiles=1

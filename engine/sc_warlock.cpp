@@ -2,7 +2,7 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 
 // ==========================================================================
@@ -3643,7 +3643,7 @@ void warlock_t::init_glyphs()
     else if ( n == "soulstone" )           ;
     else if ( n == "unending_breath" )     ;
     else if ( n == "voidwalker" )          ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 

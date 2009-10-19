@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 struct bloodworms_pet_t;
 struct dancing_rune_weapon_pet_t;
@@ -2691,7 +2691,7 @@ void death_knight_t::init_glyphs()
     else if ( n == "pestilence"          ) glyphs.pestilence = 1;
     else if ( n == "raise_dead"          ) glyphs.raise_dead = 1;
 
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simucraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
 
@@ -2790,7 +2790,7 @@ void death_knight_t::init_items()
   else if ( sigil == "sigil_of_virulence"                    ) sigils.sigil_of_virulence = 1;
   else
   {
-    log_t::output( sim, "simucraft: %s has unknown sigil %s", name(), sigil.c_str() );
+    log_t::output( sim, "simulationcraft: %s has unknown sigil %s", name(), sigil.c_str() );
   }
 }
 

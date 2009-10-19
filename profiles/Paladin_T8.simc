@@ -1,0 +1,13 @@
+#!./simc
+
+Globals_T8.simc
+
+optimal_raid=1
+
+Paladin_T8_05_11_55.simc
+
+# dedmonwakeen
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=14319567 name=Paladin_T8_05_11_55 save=Paladin_T8_05_11_55.simc
+#save_profiles=1

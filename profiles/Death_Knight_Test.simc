@@ -1,0 +1,31 @@
+#!simc max_time=300 optimal_raid=1
+
+patch=3.2.2
+death_knight=Death_Knight_Test
+level=80
+talents=http://www.wowhead.com/?talent#jfVRVh0Icfof0stZfMhhxM
+
+# Action queue
+actions=auto_attack
+actions+=/plague_strike/icy_touch/hysteria/heart_strike/heart_strike/death_strike/death_coil
+actions+=/death_strike/heart_strike/heart_strike/heart_strike/heart_strike/death_coil,unholy=0,once=0
+
+# Gear
+gear_stamina=1169
+gear_strength=999
+gear_agility=227
+gear_intellect=10
+gear_spirit=10
+gear_attack_power=1351
+gear_expertise_rating=129
+gear_armor_penetration_rating=0
+gear_hit_rating=333
+gear_crit_rating=812
+gear_haste_rating=140
+gear_armor=15409
+
+# Weapons
+main_hand=aesirs_edge,weapon=sword2h_233dps_3.6speed,enchant=berserking
+
+# Death Knight specific settings
+scent_of_blood_interval=10

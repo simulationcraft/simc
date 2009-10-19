@@ -23,32 +23,32 @@ which the player profiles are specified via parameter files.
 What is in the Install?
 
 Windows Platforms:
-(1) simucraft.exe => Command-line simulation executable
-(2) SIMUCRAFT.BAT => Wrapper around simucraft.exe that will execute script files when they are 
+(1) simc.exe => Command-line simulation executable
+(2) SIMC.BAT => Wrapper around simc.exe that will execute script files when they are 
 "dropped" on top of its icon.  After completion, the output will be passed to notepad and a 
 browser.
-(3) SCALE_FACTORS.BAT => Similar to SIMUCRAFT.BAT but will also generate scale factors, also
+(3) SCALE_FACTORS.BAT => Similar to SIMC.BAT but will also generate scale factors, also
 known as "stat weights", also known as "EP values".  In addition, these scale factors will be
 used to generate http links to wowhead and lootrank for gear ranking.
-(4) simucraftqt.exe => Alpha-level graphic user-interface.  See #5.
+(4) simcqt.exe => Alpha-level graphic user-interface.  See #5.
 (5) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which is required by the Qt GUI 
-(6) Examples.simucraft => Reference documentation for the many parameters
+(6) Examples.simc => Reference documentation for the many parameters
 
 Posix Platforms: (Linux, OSX, etc)
-(1) simucraft => Command-line simulation executable
-(2) simucraftqt.exe => Alpha-level graphic user-interface.
-(3) Examples.simucraft => Reference documentation for the many parameters
+(1) simc => Command-line simulation executable
+(2) simcqt.exe => Alpha-level graphic user-interface.
+(3) Examples.simc => Reference documentation for the many parameters
 
 =============================================================================================
 
 How To Run?
 
 SimulationCraft is a parameter-driven command-line tool.  What this means is that you cannot
-simply double-click the simucraft executable.  Parameters are specified in a generic parm=value
+simply double-click the simc executable.  Parameters are specified in a generic parm=value
 format.
 
 Consider typing the following at a command-line prompt:
-simucraft.exe armoy=us,Llane,Segv iterations=10000 calculate_scale_factors=1 html=Segv.html
+simc.exe armoy=us,Llane,Segv iterations=10000 calculate_scale_factors=1 html=Segv.html
 Here we invoke the executable and pass four parm=value pairs.
 armory => us,Llane,Segv
 iterations => 10000
@@ -60,32 +60,32 @@ parm=value pairs into a script file, one parm=value pair per line.
 
 When using the armory= or wowhead= options to download a profile, the save= parm can be
 used to generate a script: 
-simucraft.exe armory=us,Llane,Segv save=Segv.simucraft
-simucraft.exe wowhead=14320165 save=Paladin_T9_05_11_55.simucraft
+simc.exe armory=us,Llane,Segv save=Segv.simc
+simc.exe wowhead=14320165 save=Paladin_T9_05_11_55.simc
 
 Unix users will find that these generated script files can be marked as executable and
 then simply be invoked directly via #! magic.
 
-Windows users may take advantage of the SIMUCRAFT.BAT and SCALE_FACTORS.BAT utiities by
+Windows users may take advantage of the SIMC.BAT and SCALE_FACTORS.BAT utiities by
 drag-n-dropping script files onto these icons.  They will generate output in the
 form "script.txt" and "script.html".
 
 For example:
-Step 1: simucraft.exe armory=us,Llane,Segv save=Segv.simucraft
-Step 2: Drag-n-Drop the Segv.simucraft file onto SIMUCRAFT.BAT to generate DPS info.
-Step 3: Drag-n-Drop the Segv.simucraft file onto SCALE_FACTORS.BAT to get DPS and stat weights
+Step 1: simc.exe armory=us,Llane,Segv save=Segv.simc
+Step 2: Drag-n-Drop the Segv.simc file onto SIMC.BAT to generate DPS info.
+Step 3: Drag-n-Drop the Segv.simc file onto SCALE_FACTORS.BAT to get DPS and stat weights
 
 =============================================================================================
 
 Parameter Reference
 
-Detailed information on the many parameters can be found in Examples.simucraft
+Detailed information on the many parameters can be found in Examples.simc
 
 =============================================================================================
 
 Graphic User Interface
 
-simucraftqt.exe is an alpha-level graphic user-interface using Qt.  It is a very light-weight
+simcqt.exe is an alpha-level graphic user-interface using Qt.  It is a very light-weight
 wrapper that aids profile downloads, script building, and simulation results management.
 
 In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was

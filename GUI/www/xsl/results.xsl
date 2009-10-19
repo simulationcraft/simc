@@ -10,7 +10,7 @@
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 			<meta name="description" content="A tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm)" />
-			<meta name="keywords" content="simulationcraft,simcraft,world of warcraft,wow,simulation" />
+			<meta name="keywords" content="simulationcraft,simcraft,simc,world of warcraft,wow,simulation" />
 			
 			<title>SimulationCraft Results</title>
 

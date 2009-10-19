@@ -1,0 +1,59 @@
+#!./simc 
+
+hunter=Hunter_T9_54_12_05
+origin=http://profiler.wowhead.com/?profile=14662679
+level=80
+race=night_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=512002015051122431015313510053031000000000000000000005
+glyphs=bestial_wrath/steady_shot/the_hawk/mend_pet/feign_death
+actions=flask,type=endless_rage
+actions+=/food,type=blackened_dragonfin
+actions+=/hunters_mark
+actions+=/summon_pet
+actions+=/auto_shot
+actions+=/snapshot_stats
+actions+=/kill_command,sync=bestial_wrath
+actions+=/bestial_wrath
+actions+=/aspect
+actions+=/rapid_fire
+actions+=/kill_shot
+actions+=/serpent_sting
+actions+=/multi_shot
+actions+=/arcane_shot
+actions+=/steady_shot
+head=windrunners_headpiece_of_triumph,stats=1176armor_172ap_102crit_64arpen_137agi_121sta_80int,gems=relentless_earthsiege_20arpen,enchant=50ap_20crit
+neck=collar_of_unending_torment,stats=106ap_52crit_40arpen_70agi_65sta,gems=20arpen
+shoulders=windrunners_spaulders_of_triumph,stats=106agi_90sta_60int_135ap_76crit_60hit_1086armor,gems=20arpen,enchant=40ap_15crit
+chest=windrunners_tunic_of_triumph,stats=1448armor_306ap_72hit_94crit_86agi_121sta_80int,gems=20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_deathly_dominion,stats=90sta_98agi_60int_60hit_135ap_68arpen_814armor,gems=20arpen_20arpen_34arpen
+legs=windrunners_legguards_of_triumph,stats=1267armor_172ap_102crit_80arpen_137agi_80sta_121int,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=75ap_22crit
+feet=sabatons_of_ruthless_judgment,stats=995armor_135ap_60hit_68arpen_98agi_90sta_60int,gems=20arpen_20arpen,enchant=32ap
+wrists=bracers_of_the_silent_massacre,stats=633armor_114ap_49crit_45arpen_77agi_45sta_45int,gems=20arpen_34arpen,enchant=50ap
+hands=windrunners_handguards_of_triumph,stats=106agi_90sta_60int_151ap_68crit_60haste_905armor,gems=20arpen_34arpen_34arpen,enchant=44ap
+finger1=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=20arpen
+finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=20arpen
+trinket1=deaths_verdict,stats=288ap
+trinket2=deaths_verdict,stats=256ap
+back=vereesas_dexterity,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20arpen_8ap,enchant=22agi
+main_hand=hellion_glaive,stats=153sta_137agi_188ap_102crit_94arpen,gems=20arpen_20arpen,enchant=110ap,weapon=polearm_3.50speed_281.6dps
+ranged=talonstrike,stats=48sta_40agi_49ap_32arpen_32haste,gems=20arpen,enchant=40crit,weapon=crossbow_2.80speed_240.7dps
+# Gear Summary
+# gear_strength=20
+# gear_agility=1404
+# gear_stamina=1263
+# gear_intellect=586
+# gear_spirit=20
+# gear_attack_power=2946
+# gear_armor_penetration_rating=1138
+# gear_hit_rating=296
+# gear_crit_rating=807
+# gear_haste_rating=142
+# gear_armor=8506
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# trinket1=deaths_verdict
+# trinket2=deaths_verdict
+# main_hand=hellion_glaive,weapon=polearm_3.50speed_281.6dps
+# ranged=talonstrike,weapon=crossbow_2.80speed_240.7dps
+ammo_dps=67.50

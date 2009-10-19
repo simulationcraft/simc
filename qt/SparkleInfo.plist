@@ -3,15 +3,15 @@
 <plist version="0.9">
 <dict>
 	<key>CFBundleIconFile</key>
-	<string>simucraft.icns</string>
+	<string>simc.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Simucraft Qt for OSX</string>
+	<string>SimulationCraft Qt for OSX</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
-	<string>simucraftqt</string>
+	<string>simcqt</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.googlecode.simulationcraft</string>
 	<key>CFBundleVersion</key>

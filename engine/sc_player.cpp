@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -233,7 +233,7 @@ static bool parse_talent_url( sim_t* sim,
     }
   }
 
-  util_t::fprintf( sim -> output_file, "simucraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
+  util_t::fprintf( sim -> output_file, "simulationcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
 
   return false;
 }
@@ -494,7 +494,7 @@ void player_t::init_items()
   {
     if ( find_item( splits[ i ] ) )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
     }
     items.push_back( item_t( this, splits[ i ] ) );
   }
@@ -508,7 +508,7 @@ void player_t::init_items()
 
     if ( ! item.init() )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
       return;
     }
 
@@ -2252,7 +2252,7 @@ void player_t::summon_pet( const char* pet_name,
       return;
     }
   }
-  util_t::fprintf( sim -> output_file, "\nsimucraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
+  util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
 }
 
 // player_t::dismiss_pet ====================================================
@@ -2812,7 +2812,7 @@ struct cycle_t : public action_t
       current_action = next;
       if ( ! current_action )
       {
-        util_t::fprintf( sim -> output_file, "simucraft: player %s has no actions after 'cycle'\n", player -> name() );
+        util_t::fprintf( sim -> output_file, "simulationcraft: player %s has no actions after 'cycle'\n", player -> name() );
         exit( 0 );
       }
       for ( action_t* a = next; a; a = a -> next ) a -> background = true;
@@ -3061,19 +3061,19 @@ struct use_item_t : public action_t
 
     if ( item_name.empty() )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
       return;
     }
 
     item = player -> find_item( item_name );
     if ( ! item )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
       return;
     }
     if ( ! item -> use.active() )
     {
-      util_t::fprintf( sim -> output_file, "simucraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
       item = 0;
       return;
     }
@@ -3288,7 +3288,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 	char c = buffer[ i ];
     if ( c < '0' || c > '5' )
     {
-      util_t::fprintf( sim -> output_file, "\nsimucraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
     }
     talents[i] = c - '0';
@@ -3418,7 +3418,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
 {
   if ( save_type == SAVE_ALL )
   {
-    profile_str += "#!./simucraft \n\n";
+    profile_str += "#!./simc \n\n";
   }
 
   if ( ! comment_str.empty() )

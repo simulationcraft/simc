@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -219,7 +219,7 @@ bool item_t::init()
 
     if ( encoded_name_str != armory_name_str )
     {
-      util_t::fprintf( sim -> output_file, "\nsimucraft: Warning! Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
+      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Warning! Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
                       player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
 
       encoded_name_str = armory_name_str;
@@ -291,7 +291,7 @@ bool item_t::decode_stats()
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simucraft: %s has unknown 'stats=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: %s has unknown 'stats=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -327,7 +327,7 @@ bool item_t::decode_gems()
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "\nsimucraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::fprintf( sim -> output_file, "\nsimulationcraft: %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       //return false;
     }
   }
@@ -372,7 +372,7 @@ bool item_t::decode_enchant()
       }
       else
       {
-        util_t::fprintf( sim -> output_file, "simucraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+        util_t::fprintf( sim -> output_file, "simulationcraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
         return false;
       }
     }
@@ -410,7 +410,7 @@ bool item_t::decode_enchant()
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simucraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -553,7 +553,7 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simucraft: %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -602,7 +602,7 @@ bool item_t::decode_weapon()
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simucraft: %s has unknown 'weapon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      util_t::fprintf( sim -> output_file, "simulationcraft: %s has unknown 'weapon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -633,7 +633,7 @@ bool item_t::download_slot( item_t& item, const std::string& item_id, const std:
   if ( ! success )
   {
     util_t::fprintf( item.sim -> output_file,
-		     "\nsimucraft: Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
+		     "\nsimulationcraft: Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
 		     p -> name(), item.slot_name() );
 
     success = mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 0 );
@@ -642,7 +642,7 @@ bool item_t::download_slot( item_t& item, const std::string& item_id, const std:
   if ( ! success )
   {
     util_t::fprintf( item.sim -> output_file, 
-		     "\nsimucraft: Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", 
+		     "\nsimulationcraft: Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", 
 		     p -> name(), item.slot_name() );
 
     success = armory_t::download_slot( item, item_id, 0 );
@@ -670,7 +670,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   if ( ! success )
   {
     util_t::fprintf( item.sim -> output_file,
-		     "\nsimucraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", 
+		     "\nsimulationcraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", 
 		     p -> name(), item.name() );
 
     success = wowhead_t::download_item( item, item_id, 0 );
@@ -678,7 +678,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   if ( ! success )
   {
     util_t::fprintf( item.sim -> output_file, 
-		     "\nsimucraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", 
+		     "\nsimulationcraft: Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", 
 		     p -> name(), item.name() );
 
     success = armory_t::download_item( item, item_id, 0 );
@@ -704,7 +704,7 @@ bool item_t::download_glyph( sim_t* sim, std::string& glyph_name, const std::str
   if ( ! success )
   {
     util_t::fprintf( sim -> output_file,
-		     "\nsimucraft: Unable to download glyph id '%s' info from wowhead.  Trying mmo-champion....\n", 
+		     "\nsimulationcraft: Unable to download glyph id '%s' info from wowhead.  Trying mmo-champion....\n", 
 		     glyph_id.c_str() );
 
     success = mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 0 );
@@ -738,7 +738,7 @@ int item_t::parse_gem( item_t&            item,
     return gem_type;
 
   util_t::fprintf( item.sim -> output_file,
-		   "\nsimucraft: Unable to download gem id '%s' info from wowhead.  Trying mmo-champion....\n", 
+		   "\nsimulationcraft: Unable to download gem id '%s' info from wowhead.  Trying mmo-champion....\n", 
 		   gem_id.c_str() );
 
   gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );

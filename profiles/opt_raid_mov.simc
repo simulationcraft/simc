@@ -1,0 +1,4 @@
+opt_raid.simc
+raid_events=moving,cooldown=30,duration=3
+raid_events+=/stun,cooldown=63,duration=4
+raid_events+=/invulnerable,cooldown=113,duration=5

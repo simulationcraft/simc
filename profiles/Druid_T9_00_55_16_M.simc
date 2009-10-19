@@ -1,0 +1,59 @@
+#!./simc 
+
+druid=Druid_T9_00_55_16_M
+origin=http://profiler.wowhead.com/?profile=14726081
+level=80
+race=night_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000550202032322010053120030313511203503012
+glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
+actions=flask,type=endless_rage
+actions+=/food,type=hearty_rhino
+actions+=/cat_form
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/maim
+actions+=/faerie_fire_feral,debuff_only=1
+actions+=/shred,omen_of_clarity=1
+actions+=/tigers_fury,energy<=40
+actions+=/berserk,tigers_fury=1
+actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/shred,extend_rip=1,rip<=4
+actions+=/rip,cp>=5,time_to_die>=10
+actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
+actions+=/mangle_cat,mangle<=2
+actions+=/rake
+actions+=/shred
+head=malfurions_headguard_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10haste_10agi_8agi,enchant=50ap_20crit
+neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi_4agi
+shoulders=malfurions_shoulderpads_of_triumph,stats=489armor_151ap_76haste_68arpen_106agi_114sta,gems=10haste_10agi_4agi,enchant=40ap_15crit
+chest=malfurions_raiments_of_triumph,stats=652armor_204ap_96crit_92haste_137agi_153sta,gems=20arpen_10haste_10agi_20arpen_6agi,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_merciless_killer,stats=114sta_98agi_68hit_135ap_76haste_367armor,gems=10haste_10agi_20arpen_34arpen_6agi
+legs=malfurions_legguards_of_triumph,stats=570armor_172ap_86hit_102crit_137agi_153sta,gems=20arpen_20arpen_20arpen,enchant=75ap_22crit
+feet=treads_of_the_icewalker,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=10haste_10agi_20arpen_6agi,enchant=16agi
+wrists=bracers_of_dark_determination,stats=69agi_85sta_98ap_57crit_49hit_285armor,gems=20arpen_20arpen_34arpen,enchant=50ap
+hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57sta,gems=20exp_20exp_34arpen_6agi,enchant=20agi
+finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen
+finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=20arpen
+trinket1=deaths_verdict,stats=288ap
+trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
+back=vereesas_dexterity,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20agi_8ap,enchant=22agi
+main_hand=lupine_longstaff,stats=204ap_102haste_94arpen_137agi_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_281.5dps
+ranged=idol_of_mutilation
+# Gear Summary
+# gear_strength=20
+# gear_agility=1578
+# gear_stamina=1447
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=2338
+# gear_expertise_rating=126
+# gear_armor_penetration_rating=740
+# gear_hit_rating=279
+# gear_crit_rating=764
+# gear_haste_rating=546
+# gear_armor=3911
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# trinket1=deaths_verdict
+# main_hand=lupine_longstaff,weapon=staff_2.40speed_281.5dps,enchant=berserking

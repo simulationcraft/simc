@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simucraft.h"
+#include "simulationcraft.h"
 
 // Cross-Platform Support for HTTP-Download =================================
 
@@ -24,7 +24,7 @@ bool http_t::clear_cache( sim_t* sim,
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char*  url_cache_file = "simucraft_cache.dat";
+static const char*  url_cache_file = "simc_cache.dat";
 static const double url_cache_version = 2.0;
 
 static void* cache_mutex = 0;
@@ -291,7 +291,7 @@ bool http_t::get( std::string& result,
     {
       if ( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
       {
-        //util_t::printf( "\nsimucraft: HTTP failed on '%s'\n", url.c_str() );
+        //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
         //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
         fflush( stdout );
         success = false;

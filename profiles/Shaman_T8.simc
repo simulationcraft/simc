@@ -1,0 +1,17 @@
+#!simc
+
+Globals_T8.simc
+
+optimal_raid=1
+
+Shaman_T8_16_55_00.simc
+Shaman_T8_57_14_00.simc
+Shaman_T8_57_14_00_ToW.simc
+
+# simcraftshamant8
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=13000114 name=Shaman_T8_16_55_00     save=Shaman_T8_16_55_00.simc     
+#wowhead=13000116 name=Shaman_T8_57_14_00     save=Shaman_T8_57_14_00.simc     
+#wowhead=14730877 name=Shaman_T8_57_14_00_ToW save=Shaman_T8_57_14_00_ToW.simc
+#save_profiles=1

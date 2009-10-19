@@ -1,8 +1,8 @@
 <?php 
-// === EXPORTING CONFIG FILE, BUILDING SIMCRAFT COMMAND ===
+// === EXPORTING CONFIG FILE, BUILDING SIMULATIONCRAFT COMMAND ===
 
 /**
- * Generate a flat array of key/value pairs, suitable for a config file or generating the simcraft command
+ * Generate a flat array of key/value pairs, suitable for a config file or generating the simulationcraft command
  * 
  * Note that options in the passed form array will not be present in the output, if the are not
  * 'official' options present in the C++ code. 
@@ -89,7 +89,7 @@ function generate_config_array( array $arr_options )
 }
 
 /**
- * Build a .simcraft config file from an array of options
+ * Build a .simc config file from an array of options
  *  
  * @param array $arr_options
  * @return string
@@ -97,7 +97,7 @@ function generate_config_array( array $arr_options )
 function build_file_from_config_array( array $arr_options )
 {
 	// Prime the output string
-	$return_string = "#!simcraft\n\n";
+	$return_string = "#!simc\n\n";
 	
 	// Fetch the configuration array, given the array of options
 	$arr_settings = generate_config_array($arr_options);
@@ -123,14 +123,14 @@ function build_file_from_config_array( array $arr_options )
 }
 
 /**
- * Generate the simcraft system command, from the given array of options
+ * Generate the simulationcraft system command, from the given array of options
  * @param array $arr_options
  * @return string
  */
-function generate_simcraft_command( array $arr_options )
+function generate_simulationcraft_command( array $arr_options )
 {
 	// Prime the output string
-	$return_string = './simcraft';
+	$return_string = './simc';
 
 	// Fetch the configuration array, given the array of options
 	$arr_settings = generate_config_array($arr_options);
@@ -159,14 +159,14 @@ function generate_simcraft_command( array $arr_options )
 }
 
 /**
- * Execite a simcraft command, and return the results
+ * Execite a simulationcraft command, and return the results
  * 
- * The simcraft command that is passed should have a %s in place of an output file,
+ * The simulationcraft command that is passed should have a %s in place of an output file,
  * suitable for handing off to an sprintf replacement action.
- * @param string $simcraft_command
+ * @param string $simulationcraft_command
  * @return array
  */
-function execute_simcraft_command( $simcraft_command )
+function execute_simulationcraft_command( $simulationcraft_command )
 {
 	// Remember the current working directory
 	$current_dir = get_valid_path( getcwd() );
@@ -174,14 +174,14 @@ function execute_simcraft_command( $simcraft_command )
 	// Change to the simulationcraft directory
 	chdir( get_valid_path(SIMULATIONCRAFT_PATH) );
 	
-	// Develop the simcraft command from the form input, with a random file name for the output catcher
-	$output_file = tempnam('/tmp', 'simcraft_output');
+	// Develop the simulationcraft command from the form input, with a random file name for the output catcher
+	$output_file = tempnam('/tmp', 'simc_output');
 	
-	// Replace the file name in the simcraft command template
-	$simcraft_command =  str_replace('{OUTPUT_FILENAME}', escapeshellarg($output_file), $simcraft_command );
+	// Replace the file name in the simulationcraft command template
+	$simulationcraft_command =  str_replace('{OUTPUT_FILENAME}', escapeshellarg($output_file), $simulationcraft_command );
 	
-	// Call the simcraft execution
-	$simcraft_output = shell_exec( $simcraft_command );
+	// Call the simulationcraft execution
+	$simulationcraft_output = shell_exec( $simulationcraft_command );
 
 	// Return to the previous working directory
 	chdir($current_dir);	
@@ -189,11 +189,11 @@ function execute_simcraft_command( $simcraft_command )
 	// Fetch the output file contents
 	$file_contents = file_get_contents($output_file);
 	if( $file_contents === false ) {
-		throw new Exception("Error reading the simcraft output file.\n\nsimcraft command:\n$simcraft_command\n\n simcraft STDOUT:\n$simcraft_output");
+		throw new Exception("Error reading the simulationcraft output file.\n\nsimulationcraft command:\n$simulationcraft_command\n\n simulationcraft STDOUT:\n$simulationcraft_output");
 	}
 	
 	// Return the output
-	return array($file_contents, $simcraft_output);
+	return array($file_contents, $simulationcraft_output);
 } 
 
 // === GENERATING CONFIG OPTIONS FROM C++ SOURCE ===
@@ -479,7 +479,7 @@ function custom_exception_handler( $exception )
 	try {
 
 		// Create the output XML object
-		$xml = XML_SimcraftConfigForm::factory();
+		$xml = XML_SimulationcraftConfigForm::factory();
 
 		// Add the exception description to the XML
 		$exceptions = $xml->exceptions ? $xml->exceptions : $xml->addChild('exceptions');

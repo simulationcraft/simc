@@ -1,0 +1,12 @@
+#!simc
+
+optimal_raid=1
+
+Globals_T8.simc
+
+Hunter_T8_54_12_05.simc name=Hunter_T8_54_12_05_Cat          summon_pet=cat
+Hunter_T8_54_12_05.simc name=Hunter_T8_54_12_05_Devilsaur    summon_pet=devilsaur
+Hunter_T8_54_12_05.simc name=Hunter_T8_54_12_05_Raptor       summon_pet=raptor
+Hunter_T8_54_12_05.simc name=Hunter_T8_54_12_05_WindSerpent  summon_pet=wind_serpent
+Hunter_T8_54_12_05.simc name=Hunter_T8_54_12_05_Wolf         summon_pet=wolf
+
