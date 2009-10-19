@@ -143,21 +143,64 @@
         default stat deltas, see the <i>Examples</i> tab for the appropriate parameters.
     </dd>
     <dt><a name="importing_from_the_armory" /><h2>Importing from the Armory</h2></dt>
-    <dd>text incoming</dd>
+    <dd>To download a character from the Armory, merely navigate the web view to a character profile page.  The easiest
+        way to do this is via the <i>Search</i> mechanism.  The <i>Armory Spec</i> toggle under <i>Options</i> controls
+        whether to use the <i>active</i> or the <i>inactive</i> talent/glyph setup.  There is no need to wait for the
+        web page to be fully rendered.  The import process uses the URL at the command-line.  Note that the URL at the
+        command-line can be modified directly in the same manner as a normal web browswer.
+    </dd>
     <dt><a name="importing_from_wowhead" /><h2>Importing from Wowhead</h2></dt>
-    <dd>text incoming</dd>
+    <dd>Characters can be downloaded from the Wowhead Profiler in two ways.  The first type of download is simply accessing
+        the Armory <i>mirror</i> that Wowhead maintains.  Select the <i>region</i> and <i>server</i> and then type in the
+        character name of interest.  Note that this mirror may not be up to date.  Press the <i>Resync</i> button to request
+        an update.
+        <p>The Wowhead Profiler also allows the creation of virtual characters.  These characters can be created from
+        scratch or they can be created from an existing profile using the <i>Save As</i> button.  This function does not
+        become available until you have logged into the Wowhead site.  Membership is free and easy to acquire.
+        <p>At present, Wowhead virtual characters are the only way to perform <i>what-if?</i> character analysis using a 
+        graphic user interface.  Talents, glyphs, gear, and gems can all be tweaked.  Just remember to press <i>Save</i> 
+        before importing the character into the <i>Simulate!</i> tab.</dd>
     <dt><a name="importing_from_chardev" /><h2>Importing from CharDev</h2></dt>
     <dd>Support for the <i>CharDev</i> site is not yet available.</dd>
     <dt><a name="importing_from_warcrafter" /><h2>Importing from Warcrafter</h2></dt>
     <dd>Support for the <i>Warcrafter</i> site is not yet available.</dd>
     <dt><a name="importing_from_rawr" /><h2>Importing from Rawr</h2></dt>
-    <dd>text incoming</dd>
+    <dd>Rawr character XML files can be used to generate a SimulationCraft character profile.  While name, race, class,
+        talents, glyphs, gear, and gems are all imported, <i>buff/debuff</i> settings and other module-specific settings
+        that may be in the XML file are all ignored. </dd>
     <dt><a name="saving_results" /><h2>Saving Results</h2></dt>
-    <dd>text incoming</dd>
+    <dd>To save text that may be conveniently cut-and-pasted into an email or forum, go to the <i>Log</i> tab and select
+        the portion of interest.  To save the entire log, specify the file name at the command line and press <i>Save!</i>.
+        To save HTML, go to the <i>Results</i> tab, specify the file name at the command line, and press <i>Save!</i>.  
+        These HTML files are all-inclusive.  The images are generate using GoogleCharts which means that the HTML cannot
+        be viewed offline.</dd>
     <dt><a name="priority_lists_not_rotations" /><h2>Priority Lists, Not Rotations</h2></dt>
-    <dd>text incoming</dd>
+    <dd>A key part of the simulation is the player artificial intelligence.  It is important to understand that there
+        is no <i>rotation</i> to specify.  Instead, the player is given a <i>priority list</i> of actions.  Whenever
+        the player is looking for something to do (just finished an action and not waiting on the GCD), it will simply
+        walk the list of actions and perform the first one that is <i>ready</i>.  For example, <i>damage-over-time</i>
+        actions are not ready until they are finished ticking (minus the cast-time, ofc).  Temporary buffs and <i>cooldowns</i>
+        can also prevent certain actions from being considered <i>ready</i>.  There are a large variety of conditionals
+        that can be applied to each action in the priority list that can limit their execution even further.  The default
+        action list (<i>actions+=</i>) generated during character import will demonstrate this.  For more details, see
+        the <i>Examples</i> tab.</dd>
     <dt><a name="modeling_raid_events" /><h2>Modeling Raid Events</h2></dt>
-    <dd>text incoming</dd>
+    <dd>One of the common criticisms of theorycrafting tools is that they model <i>Patchwerk</i> style fights in which
+        the DPS players are able to focus exclusively on generating damage without worrying about standing in molten
+        lava or other such trivial distractions.  While truly modeling individual boss fights is a near-impossible task,
+        SimulationCraft does support a wide array of raid events.  <p>Experimenting with these events allows one to determine 
+        how succeptible talent/gear combinations are to adverse conditions.  Supported events include movement, stuns, AoE damage,
+        boss (in)vulnerability, boss casting requiring use interrupts.  The intervals and durations are user-specified,
+        as are the degree of randomness applied to each.  <p>When a player is <i>moving</i> auto-attacks are halted and only ranged 
+        instant-casts are allowed.  To further control the actions taken while moving, there is a <i>moving=1</i> conditional
+        that can be specified with actions to prevent them from being used in normal circumstances.   While <i>stunned</i>, even
+        the instant-casts are forbidden.  Boss <i>vulnerability</i> is a 2x damage multiplier.  Boss <i>invulnerability</i> will remove
+        any existing player DoTs on the target, but it does not yet remove player debuffs.  The <i>casting</i> event is
+        used to model players changing their rotations to perform interrupts.  Player interrupt actions are not considered
+        <i>ready</i> unless the boss is in mid-cast.  This means that it is safe to give these actions a high-priority
+        because they will not be used unless necessary. The <i>damage</i> event is used to model splash damage from AoE,
+        which is helpful for talents such as <i>Incanters Absorbtion</i>.  For more details, see the <i>Examples</i> tab.
+       </dd>
     </dl>
   </body>
 </html>
