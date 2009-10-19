@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 #ifdef Q_WS_MAC
 
   CocoaInitializer cocoaInitializer;
-  updater = new SparkleAutoUpdater("http://simcraft.rungie.com/simcraftqt/update.xml");
+  updater = new SparkleAutoUpdater("http://simc.rungie.com/simcqt/update.xml");
   QDir::home().mkpath("Library/Application Support/simcqt");
   QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 
