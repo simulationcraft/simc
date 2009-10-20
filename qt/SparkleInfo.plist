@@ -15,7 +15,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.googlecode.simulationcraft</string>
 	<key>CFBundleVersion</key>
-	<key>0.1.0 (GIT-REV-PARSE-HERE)</key>
+	<key>322.0 (GIT-REV-PARSE-HERE)</key>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 </dict>
