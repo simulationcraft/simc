@@ -33,6 +33,8 @@ used to generate http links to wowhead and lootrank for gear ranking.
 (4) simcqt.exe => Alpha-level graphic user-interface.  See #5.
 (5) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which is required by the Qt GUI 
 (6) Examples.simc => Reference documentation for the many parameters
+(7) Legend.html => Glossary for simulation output
+(8) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
