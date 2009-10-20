@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		444CCF8C107DCCCD00229DD2 /* Bundle Qt for Deployment */ = {
+		444CCF8C107DCCCD00229DD2 /* Bundle for Deployment */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 444CCF93107DCD1D00229DD2 /* Build configuration list for PBXAggregateTarget "Bundle Qt for Deployment" */;
+			buildConfigurationList = 444CCF93107DCD1D00229DD2 /* Build configuration list for PBXAggregateTarget "Bundle for Deployment" */;
 			buildPhases = (
 				444CCF8B107DCCCD00229DD2 /* ShellScript */,
 			);
 			dependencies = (
 				444CCF90107DCCD300229DD2 /* PBXTargetDependency */,
 			);
-			name = "Bundle Qt for Deployment";
+			name = "Bundle for Deployment";
 			productName = "Bundle Qt for Deployment";
 		};
 /* End PBXAggregateTarget section */
@@ -88,7 +88,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = B4C8D0335C0C9B080E1EA908;
+			remoteGlobalIDString = CA18FDDE48574B5FC7B1FF6C;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
@@ -141,7 +141,6 @@
 /* Begin PBXFileReference section */
 		4438981B107BB7C700462773 /* simcqt.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = simcqt.app; path = qt/simcqt.app; sourceTree = "<group>"; };
 		444CCF81107DCC3700229DD2 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = /Library/Frameworks/Sparkle.framework; sourceTree = "<absolute>"; };
-		444CCF94107DCD4300229DD2 /* osx-package-qt.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "osx-package-qt.sh"; sourceTree = "<group>"; };
 		44C41689107BB68700242308 /* simcqt.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = simcqt.xcodeproj; path = qt/simcqt.xcodeproj; sourceTree = "<group>"; };
 		44C7A518106D4B7600A2271C /* libsimc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsimc.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		44E3D1B910545A7500677DEB /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_action.cpp; sourceTree = "<group>"; };
@@ -224,7 +223,6 @@
 				C6859E8C029090F304C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				444CCF80107DCC1700229DD2 /* Frameworks */,
-				444CCF94107DCD4300229DD2 /* osx-package-qt.sh */,
 			);
 			name = simc;
 			sourceTree = "<group>";
@@ -411,7 +409,7 @@
 				8DD76F620486A84900D96B5E /* simc */,
 				44C7A517106D4B7600A2271C /* libsimc */,
 				442BD327107A79ED00AFCDF4 /* Generate Qt Project */,
-				444CCF8C107DCCCD00229DD2 /* Bundle Qt for Deployment */,
+				444CCF8C107DCCCD00229DD2 /* Bundle for Deployment */,
 			);
 		};
 /* End PBXProject section */
@@ -438,7 +436,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "macdeployqt simcqt.app\ncp -a dsa_pub.pem Examples.simc Welcome.html Legend.html simcqt.app/Contents/Resources/\ngit --version && sed -ie s/GIT-REV-PARSE-HERE/`git rev-parse --short HEAD`/ simcqt.app/Contents/Info.plist";
+			shellScript = "macdeployqt simcqt.app\n$CP -a dsa_pub.pem Examples.simc Welcome.html Legend.html simcqt.app/Contents/Resources/\n$CP -a /Library/Frameworks/Sparkle.framework $PROJECT_DIR/simcqt.app/Contents/Frameworks\ngit --version && sed -i -e \"s/GIT-REV-PARSE-HERE/`git rev-parse --short HEAD`/\" simcqt.app/Contents/Info.plist\nhdiutil create -srcfolder simcqt.app -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder simc -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $PROJECT_DIR/simcqt.app/Contents/Info CFBundleVersion`\" -ov -puppetstrings simcqt.dmg";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -697,7 +695,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		444CCF93107DCD1D00229DD2 /* Build configuration list for PBXAggregateTarget "Bundle Qt for Deployment" */ = {
+		444CCF93107DCD1D00229DD2 /* Build configuration list for PBXAggregateTarget "Bundle for Deployment" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				444CCF8D107DCCCD00229DD2 /* Debug */,
