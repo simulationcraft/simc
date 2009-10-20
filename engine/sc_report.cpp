@@ -1136,32 +1136,6 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, "<hr />\n" );
 }
 
-// print_html_text ===========================================================
-
-static void print_html_text( FILE*  file, sim_t* sim )
-{
-  util_t::fprintf( file, "<h1>Raw Text Output</h1>\n" );
-
-  util_t::fprintf( file, "%s",
-                   "<ul>\n"
-                   " <li><b>DPS=Num:</b> <i>Num</i> is the <i>damage per second</i></li>\n"
-                   " <li><b>DPR=Num:</b> <i>Num</i> is the <i>damage per resource</i></li>\n"
-                   " <li><b>RPS=Num1/Num2:</b> <i>Num1</i> is the <i>resource consumed per second</i> and <i>Num2</i> is the <i>resource regenerated per second</i></li>\n"
-                   " <li><b>Count=Num|Time:</b> <i>Num</i> is number of casts per fight and <i>Time</i> is average time between casts</li>\n"
-                   " <li><b>DPE=Num:</b> <i>Num</i> is the <i>damage per execute</i></li>\n"
-                   " <li><b>DPET=Num:</b> <i>Num</i> is the <i>damage per execute</i> divided by the <i>time to execute</i> (this value includes GCD costs and Lag in the calculation of <i>time to execute</i>)</li>\n"
-                   " <li><b>Hit=Num1|Num2|Num3:</b> <i>Num1</i> is the average damage per non-crit hit, <i>Num2</i> is the min non-crit damage, and <i>Num3</i> is the max non-crit damage</li>\n"
-                   " <li><b>Crit=Num1|Num2|Num3|Pct:</b> <i>Num1</i> is average crit damage, <i>Num2</i> is the min crit damage, <i>Num3</i> is the max crit damage, and <i>Pct</i> is the percentage of crits <i>per execute</i> (not <i>per hit</i>)</li>\n"
-                   " <li><b>Tick=Num1|Num2|Num3:</b> <i>Num1</i> is the average tick of damage for the <i>damage over time</i> portion of actions, <i>Num2</i> is the minimum non-crit tick, and <i>Num3</i> is the maximum non-crit tick</li>\n"
-                   " <li><b>Up-Time:</b> This is <i>not</i> the percentage of time the buff/debuff is present, but rather the ratio of <i>actions it affects</i> over <i>total number of actions it could affect</i>.  If spell S is cast 10 times and buff B is present for 3 of those casts, then buff B has an up-time of 30%.</li>\n"
-                   " <li><b>Waiting</b>: This is percentage of total time not doing anything (except auto-attack in the case of physical dps classes).  This can occur because the player is resource constrained (Mana, Energy, Rage) or cooldown constrained (as in the case of Enhancement Shaman).</li>\n"
-                   "</ul>\n" );
-
-  util_t::fprintf( file, "<pre style=\"font-size: small; font-family:'fixed'\" >\n" );
-  report_t::print_text( file, sim );
-  util_t::fprintf( file, "</pre>\n" );
-}
-
 // print_xml_raid ===========================================================
 
 static void print_xml_raid( FILE*  file, sim_t* sim )

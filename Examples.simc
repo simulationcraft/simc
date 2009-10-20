@@ -1,9 +1,141 @@
 
 # Comments are lines beginning with '#'
 
-# Placeholder.....
+# Downloading single character from the Armory
+armory=us,llane,segv
 
-armory=
+# Downloading several characters from the Armory
+armory=us,llane,segv,pagezero,docsuess
 
-wowhead=
+# Downloading several characters from the Armory and specifying talent/glyph spec by name
+armory=us,llane,segv,pagezero|fury,docsuess
+
+# Downloading several characters from the Armory and specifying talent/glyph spec by active/inactive
+armory=us,llane,segv,pagezero|inactive,docsuess
+
+# Verbose method of character download from Armory
+player=segv,region=us,server=llane,talents=marksmanship
+
+# Downloading guild characters of a certain rank
+guild=Wicked+Legion,region=us,server=llane,max_rank=3
+
+# Downloading guild characters of a certain class
+guild=Wicked+Legion,region=us,server=llane,class=warlock
+
+# Downloading character from Wowhead
+wowhead=us,llane,segv
+
+# Downloading virtual character from Wowhead given specific profile ID
+wowhead=13043846
+
+# Saving a chararcter profile to a file
+armory=us,llane,segv|marksmanship
+save=segv_mm.simc
+
+# Saving multiple character profiles (file name is "save_PLAYERNAME.simc")
+guild=Wicked+Legion,region=us,server=llane,max_rank=3
+save_profiles=1
+
+# Loading character profiles  (assumed when token does not match parm=value format)
+segv_mm.simc
+segv_surv.simc
+segv_bm.simc
+
+# Saving simulation output to a text file
+armory=us,llane,segv
+output=segv_output.txt
+
+# Saving simulation output in both text and html format
+armory=us,llane,segv
+output=segv_output.txt
+html=segv_output.html
+
+# Calculate scale factors (default is off)
+calculate_scale_factors=1
+
+# Calculate scale factors for just Haste Rating and Expertise Rating
+calculate_scale_factors=1
+scale_only=haste_rating,expertise_rating
+
+# Specifying enough iterations for scale factor generation (defaults to 1000)
+iterations=10000
+
+# Generate a human-readable combat log (forces iterations=1)
+log=1
+
+# Changing the length of the fight in seconds (defaults to 300)
+max_time=180
+
+# Turning off all the raid buffs and debuffs (defaults is all on)
+optimal_raid=0
+
+# Turning on specific raid buffs after they have all be turned off
+optimal_raid=0
+abominations_might=1
+arcane_brilliance=1
+arcane_empowerment=1
+battle_shout=1
+bleeding=1
+blessing_of_kings=1
+blessing_of_might=1
+blessing_of_wisdom=1
+blood_frenzy=1
+bloodlust=1
+bloodlust_early=1
+celerity=1
+crypt_fever=1
+curse_of_elements=1
+divine_spirit=1
+earth_and_moon=1
+elemental_oath=1
+expose_armor=1
+faerie_fire=1
+ferocious_inspiration=1
+flametongue_totem=1
+focus_magic=1
+fortitude=1
+heart_of_the_crusader=1
+heroic_presence=1
+hunters_mark=1
+improved_faerie_fire=1
+improved_moonkin_aura=1
+improved_scorch=1
+improved_shadow_bolt=1
+infected_wounds=1
+insect_swarm=1
+judgement_of_wisdom=1
+judgements_of_the_just=1
+leader_of_the_pack=1
+mana_spring_totem=1
+mangle=1
+mark_of_the_wild=1
+master_poisoner=1
+misery=1
+moonkin_aura=1
+poisoned=1
+rampage=1
+replenishment=1
+sanctified_retribution=1
+savage_combat=1
+scorpid_sting=1
+strength_of_earth=1
+sunder_armor=1
+swift_retribution=1
+thunder_clap=1
+totem_of_wrath=1
+trauma=1
+trueshot_aura=1
+unleashed_rage=1
+windfury_totem=1
+winters_chill=1
+wrath_of_air=1
+
+# Specify the patch level to match PTR (defaults to 3.2.2)
+patch=3.3.0
+
+# Adjust lag values (in seconds)
+# They represent the different delays depending upon the preceding action.
+channel_lag=0.250
+gcd_lag=0.150
+queue_lag=0.075
 

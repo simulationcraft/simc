@@ -86,6 +86,9 @@ struct patch_t
   patch_t() { mask = encode( 3, 2, 2 ); }
 };
 
+#define SC_MAJOR_VERSION "322"
+#define SC_MINOR_VERSION "0"
+
 // Forward Declarations ======================================================
 
 struct action_t;
