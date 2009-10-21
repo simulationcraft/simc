@@ -852,14 +852,13 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 {
   char buffer[ 1024 ];
 
-  s = "http://www.lootrank.com/";
+  s = "http://www.guildox.com/wr.asp?";
 
   // If this was an armory import, then pass the armory info to lootrank
   if( p -> origin_str.find( "wowarmory.com" ) != std::string::npos )
   {
-    s += "gorankw.asp?";
     // If you go to gorankw you HAVE to set all checkboxes explicitly to 1 :-(
-    s += "&amp;x0=1&amp;j1=1&amp;s7=1&amp;s8=4&amp;Art=0&amp;x1=1&amp;j2=1&amp;s1=1&amp;s2=4&amp;Slot=0&amp;k8=1&amp;j4=1&amp;s3=1&amp;s4=4&amp;Max=7&amp;k7=1&amp;k1=1&amp;s5=1&amp;s6=4&amp;Gem=4&amp;i7=1&amp;k2=1&amp;j5=1&amp;i8=1&amp;k6=1&amp;j6=1&amp;i1=1&amp;k3=1&amp;i4=1&amp;maxlv=80&amp;i2=1&amp;k4=1&amp;x2=1&amp;j7=1&amp;k5=1&amp;k9=1&amp;i5=1&amp;i6=1&amp;j3=1";
+    //s += "&amp;x0=1&amp;j1=1&amp;s7=1&amp;s8=4&amp;Art=0&amp;x1=1&amp;j2=1&amp;s1=1&amp;s2=4&amp;Slot=0&amp;k8=1&amp;j4=1&amp;s3=1&amp;s4=4&amp;Max=7&amp;k7=1&amp;k1=1&amp;s5=1&amp;s6=4&amp;Gem=4&amp;i7=1&amp;k2=1&amp;j5=1&amp;i8=1&amp;k6=1&amp;j6=1&amp;i1=1&amp;k3=1&amp;i4=1&amp;maxlv=80&amp;i2=1&amp;k4=1&amp;x2=1&amp;j7=1&amp;k5=1&amp;k9=1&amp;i5=1&amp;i6=1&amp;j3=1";
     s += "&amp;grp=";
     if( p -> region_str.compare("eu") )
     {
@@ -874,7 +873,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     s += "&amp;ser=" + p -> server_str + "&amp;usr=" + formatted_name;
 
   } else {
-    s += "wr.asp?usr=&amp;ser=&amp;grp=www";
+    s += "usr=&amp;ser=&amp;grp=www";
   }
   // Restrict lootrank to rare gems until epic gems become available
   // Gem: Not Set = Epic, 2=Common, 3=Rare
