@@ -1076,7 +1076,10 @@ static void trigger_molten_core( spell_t* s )
 {
   if ( s -> school != SCHOOL_SHADOW ) return;
   warlock_t* p = s -> player -> cast_warlock();
-  p -> buffs_molten_core -> trigger();
+  if ( p -> sim -> P330 )
+    p -> buffs_molten_core -> trigger(3);
+  else
+    p -> buffs_molten_core -> trigger();
 }
 
 // queue_decimation =======================================================
@@ -1308,7 +1311,7 @@ void warlock_spell_t::execute()
 
   spell_t::execute();
 
-  if ( result_is_hit() )
+  if ( result_is_hit() && ! p -> sim -> P330 )
   {
     trigger_molten_core( this );
   }
@@ -1991,8 +1994,15 @@ struct corruption_t : public warlock_spell_t
 
   virtual void execute()
   {
+    warlock_t* p = player -> cast_warlock();
+
     base_td = base_td_init;
     warlock_spell_t::execute();
+    
+    if ( result_is_hit() && p -> sim -> P330 )
+    {
+      trigger_molten_core( this );
+    }
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
@@ -2390,6 +2400,8 @@ struct immolate_t : public warlock_spell_t
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
+    if ( p -> sim -> P330 ) num_ticks += p -> talents.molten_core;
+
     observer = &( p -> active_immolate );
   }
 
@@ -2724,11 +2736,25 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> buffs_tier7_2pc_caster -> up() ) player_crit += 0.10;
-    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) player_multiplier *= 1 + p -> talents.molten_core * 0.05;
+    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) {
+      player_multiplier *= 1 + p -> talents.molten_core * 0.06;
+      p -> buffs_molten_core -> decrement();
+    }
     if ( p -> active_immolate )
     {
       player_multiplier *= 1 + 0.02 * p -> talents.fire_and_brimstone;
     }
+  }
+
+  double haste() SC_CONST
+  {
+    warlock_t* p = player -> cast_warlock();
+    double h = warlock_spell_t::haste();
+    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 )
+    {
+      h *= 1.0 - p -> talents.molten_core * 0.10;
+    }
+    return h;
   }
 
 };
@@ -2898,7 +2924,12 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) player_multiplier *= 1.01 + p -> talents.molten_core * 0.03;
+    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 )
+    {
+      player_crit += p -> talents.molten_core * 0.05;
+      player_multiplier *= 1 + p -> talents.molten_core * 0.06;
+      p -> buffs_molten_core -> decrement();
+    }
   }
 };
 
@@ -3734,7 +3765,7 @@ void warlock_t::init_buffs()
   buffs_haunted             = new buff_t( this, "haunted",             1, 12.0, 0.0, talents.haunt );
   buffs_life_tap_glyph      = new buff_t( this, "life_tap_glyph",      1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis       = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
-  buffs_molten_core         = new buff_t( this, "molten_core",         1, 12.0, 0.0, ((sim -> P330) ? 0.12 : (talents.molten_core * 0.05)) );
+  buffs_molten_core         = new buff_t( this, "molten_core",         ((sim -> P330) ? 3 : 1), ((sim -> P330) ? 15.0 : 12.0), 0.0, ((sim -> P330) ? (talents.molten_core * 0.04) : (talents.molten_core * 0.05)) );
   buffs_pet_sacrifice       = new buff_t( this, "pet_sacrifice" );
   buffs_pyroclasm           = new buff_t( this, "pyroclasm",           1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
