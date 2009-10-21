@@ -2547,15 +2547,19 @@ struct conflagrate_t : public warlock_spell_t
     if ( ! sim -> P330 ) return 0.0;
     warlock_spell_t::calculate_tick_damage();
     warlock_t* p = player -> cast_warlock();
+    int nt = dot_spell -> num_ticks;
+
     if ( dot_spell == p -> active_immolate )
     {
       tick_dmg *= immolate_multiplier;
+      if ( p -> sim -> P330 ) nt -= p -> talents.molten_core;
     }
     else
     {
       tick_dmg *= shadowflame_multiplier;
     }
-    tick_dmg *= dot_spell -> num_ticks * 0.2 / 3;
+
+    tick_dmg *= nt * 0.2 / 3;
 
     return tick_dmg;
   }
