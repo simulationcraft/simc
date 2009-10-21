@@ -757,7 +757,10 @@ struct felhunter_pet_t : public warlock_pet_t
       cooldown = 6.0;
 
       if ( sim -> P330 )
+      {
         cooldown -= 2.0 * o -> talents.improved_felhunter;
+        base_multiplier *= 1.0 + ( o -> talents.shadow_mastery * 0.03 );
+      }
 
       base_crit_bonus = 0.5;
       base_crit_bonus_multiplier = 2.0;
@@ -2522,7 +2525,8 @@ struct conflagrate_t : public warlock_spell_t
     if ( sim -> P330 )
     {
       base_tick_time = 2.0;
-      num_ticks       = 3;
+      num_ticks      = 3;
+      tick_may_crit  = true;
     }
   }
 
