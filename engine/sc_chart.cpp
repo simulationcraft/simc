@@ -1083,29 +1083,6 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     }
   }
 
-  double maxG = 0;
-  double value = 0;
-
-  if ( maxR > maxG )  maxG=maxR;
-  if ( maxY > maxG )  maxG=maxY;
-  if ( maxB > maxG )  maxG=maxB;
-
-  s += ",";
-  if ( maxR == maxG ) { value = maxR; }
-  else { value = maxR/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " RedSocket=%.*f", p -> sim -> report_precision, value );
-  s += buffer;
-  s += ",";
-  if ( maxY == maxG ) { value = maxY; }
-  else { value = maxY/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " YellowSocket=%.*f", p -> sim -> report_precision, value );
-  s += buffer;
-  s += ",";
-  if ( maxB == maxG ) { value = maxB; }
-  else { value = maxB/2 + maxG/2; }
-  snprintf( buffer, sizeof( buffer ), " BlueSocket=%.*f", p -> sim -> report_precision, value );
-  s += buffer;
-
   s += " )";
 
   return s.c_str();
