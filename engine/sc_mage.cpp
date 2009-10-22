@@ -2678,7 +2678,7 @@ struct mirror_image_spell_t : public mage_spell_t
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.10;
     base_cost  *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
     cooldown    = 180;
-    trigger_gcd = 0;
+    trigger_gcd = 1;
     harmful     = false;
   }
 
@@ -3142,7 +3142,6 @@ void mage_t::init_actions()
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
     if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
-    action_list_str += "/mirror_image";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -3174,6 +3173,7 @@ void mage_t::init_actions()
       action_list_str += "/choose_rotation";
       action_list_str += "/arcane_missiles,barrage=1";
       action_list_str += "/arcane_blast,arcane_power=1";
+      action_list_str += "/mirror_image";
       action_list_str += "/arcane_blast,max=4";
       action_list_str += "/arcane_missiles";
       action_list_str += "/mana_potion";
@@ -3188,6 +3188,7 @@ void mage_t::init_actions()
       if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if ( talents.cold_snap              ) action_list_str += "/cold_snap";
       if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
+      action_list_str += "/mirror_image";
       action_list_str += "/frost_bolt";
       action_list_str += "/evocation";
       action_list_str += "/ice_lance,moving=1,frozen=1"; // when moving
@@ -3199,6 +3200,7 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem/speed_potion";
       if ( talents.living_bomb ) action_list_str += "/living_bomb";
       if ( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
+      action_list_str += "/mirror_image";
       if ( talents.piercing_ice && talents.ice_shards )
       {
         action_list_str += "/frostfire_bolt";
