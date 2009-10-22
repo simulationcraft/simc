@@ -3554,6 +3554,7 @@ void druid_t::init_items()
   else if ( idol == "idol_of_t10_balance_relic"  ) idols.t10_balance_relic = 1;
   // To prevent warnings....
   else if ( idol == "idol_of_awakening"            ) ;
+  else if ( idol == "idol_of_flaring_growth"       ) ;
   else if ( idol == "idol_of_lush_moss"            ) ;
   else if ( idol == "idol_of_the_flourishing_life" ) ;
   else if ( idol == "harolds_rejuvenating_broach"  ) ;
