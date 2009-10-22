@@ -1814,7 +1814,7 @@ struct living_bomb_t : public mage_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 4;
     direct_power_mod  = 0.40;
-    tick_power_mod    = base_tick_time / 15;
+    tick_power_mod    = 0.10;
     may_crit          = true;
     tick_may_crit     = p -> glyphs.living_bomb != 0;
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;

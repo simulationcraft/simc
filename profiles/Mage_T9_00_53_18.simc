@@ -12,13 +12,13 @@ actions+=/arcane_brilliance
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/scorch,debuff=1
-actions+=/mirror_image
 actions+=/combustion
 actions+=/icy_veins
 actions+=/mana_gem
 actions+=/speed_potion
 actions+=/living_bomb
 actions+=/pyroblast,hot_streak=1
+actions+=/mirror_image
 actions+=/frostfire_bolt
 actions+=/evocation
 actions+=/fire_blast,moving=1

@@ -12,7 +12,6 @@ actions+=/arcane_brilliance
 actions+=/focus_magic
 actions+=/snapshot_stats
 actions+=/counterspell
-actions+=/mirror_image
 actions+=/icy_veins
 actions+=/mana_gem
 actions+=/speed_potion
@@ -20,6 +19,7 @@ actions+=/frost_bolt,frozen=1
 actions+=/water_elemental
 actions+=/cold_snap
 actions+=/fire_ball,brain_freeze=1
+actions+=/mirror_image
 actions+=/frost_bolt
 actions+=/evocation
 actions+=/ice_lance,moving=1,frozen=1

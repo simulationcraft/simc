@@ -13,11 +13,11 @@ actions+=/focus_magic
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/scorch,debuff=1
-actions+=/mirror_image
 actions+=/mana_gem
 actions+=/speed_potion
 actions+=/living_bomb
 actions+=/pyroblast,hot_streak=1
+actions+=/mirror_image
 actions+=/fire_ball
 actions+=/evocation
 actions+=/fire_blast,moving=1

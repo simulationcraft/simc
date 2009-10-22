@@ -12,7 +12,6 @@ actions+=/arcane_brilliance
 actions+=/focus_magic
 actions+=/snapshot_stats
 actions+=/counterspell
-actions+=/mirror_image
 actions+=/arcane_power
 actions+=/icy_veins
 actions+=/presence_of_mind,arcane_blast
@@ -20,6 +19,7 @@ actions+=/mana_gem
 actions+=/choose_rotation
 actions+=/arcane_missiles,barrage=1
 actions+=/arcane_blast,arcane_power=1
+actions+=/mirror_image
 actions+=/arcane_blast,max=4
 actions+=/arcane_missiles
 actions+=/mana_potion
