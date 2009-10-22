@@ -19,31 +19,22 @@ Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simc
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=14562190   name=Rogue_T9_15_51_05_AA      save=Rogue_T9_15_51_05_AA.simc  
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=14419498   name=Rogue_T9_15_51_05_FD      save=Rogue_T9_15_51_05_FD.simc
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=14562031   name=Rogue_T9_15_51_05_MD      save=Rogue_T9_15_51_05_MD.simc
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=15269388   name=Rogue_T9_51_13_07         save=Rogue_T9_51_13_07.simc
-#back=sylvanas_cunning,id=47546,gems=20agi_8ap,enchant=22agi
 
 ### Alternate "Rupture-Less" Combat Spec 
 
 #wowhead=!14562190  name=Rogue_T9_15_51_05_AA_NoR  save=Rogue_T9_15_51_05_AA_NoR.simc
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=!14419498  name=Rogue_T9_15_51_05_FD_NoR  save=Rogue_T9_15_51_05_FD_NoR.simc  
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=!14562031  name=Rogue_T9_15_51_05_MD_NoR  save=Rogue_T9_15_51_05_MD_NoR.simc  
-#back=sylvanas_cunning,id=47546,gems=20arpen_8ap,enchant=22agi
 
 #wowhead=!15269388 name=Rogue_T9_51_13_07_NoR save=Rogue_T9_51_13_07_NoR.simc 
-#back=sylvanas_cunning,id=47546,gems=20agi_8ap,enchant=22agi
 	
