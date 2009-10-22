@@ -1682,7 +1682,7 @@ struct exorcism_t : public paladin_spell_t
     cooldown *= 1.0 - p -> talents.purifying_power * 0.33 / 2;
 
     direct_power_mod = 1.0;
-    base_attack_power_multiplier = 0.15;
+    base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
