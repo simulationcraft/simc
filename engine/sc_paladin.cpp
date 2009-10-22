@@ -2299,14 +2299,15 @@ void paladin_t::init_actions()
     action_list_str += "/avenging_wrath";
     if ( talents.avengers_shield && 
           glyphs.avengers_shield ) action_list_str += "/avengers_shield";
-    action_list_str += "/hammer_of_wrath";
+
     if ( talents.hammer_of_the_righteous ) action_list_str += "/hammer_of_the_righteous";
     action_list_str += "/judgement";
-    if ( talents.divine_storm    ) action_list_str += "/divine_storm";
     if ( talents.crusader_strike ) action_list_str += "/crusader_strike";
+    if ( talents.divine_storm    ) action_list_str += "/divine_storm";
+    action_list_str += "/consecration";
+    action_list_str += "/hammer_of_wrath";
     action_list_str += "/exorcism";
     if ( talents.holy_shock ) action_list_str += "/holy_shock";
-    action_list_str += "/consecration";
     if ( main_hand_weapon.group() == WEAPON_1H ) action_list_str += "/shield_of_righteousness";
     action_list_str += "/speed_potion";
 

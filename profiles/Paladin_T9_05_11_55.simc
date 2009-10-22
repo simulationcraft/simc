@@ -15,31 +15,31 @@ actions+=/hammer_of_justice
 actions+=/divine_plea
 actions+=/arcane_torrent
 actions+=/avenging_wrath
-actions+=/hammer_of_wrath
 actions+=/judgement
-actions+=/divine_storm
 actions+=/crusader_strike
-actions+=/exorcism
+actions+=/divine_storm
 actions+=/consecration
+actions+=/hammer_of_wrath
+actions+=/exorcism
 actions+=/speed_potion
 head=liadrins_helm_of_triumph,stats=2102armor_94crit_86haste_150str_174sta,gems=chaotic_skyflare_10crit_10str_8str,enchant=50ap_20crit
-neck=the_executioners_vice,stats=89str_97sta_57crit_49hit,gems=20str
+neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=20str
 shoulders=liadrins_shoulderplates_of_triumph,stats=1941armor_68hit_76crit_122str_130sta,gems=20str_4str,enchant=40ap_15crit
 chest=liadrins_battleplate_of_triumph,stats=2588armor_94crit_94arpen_158str_174sta,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
 waist=bloodbath_belt,stats=1455armor_68crit_68exp_114str_129sta,gems=20str_20str_34str
 legs=legguards_of_ascension,stats=2264armor_94crit_86haste_150str_174sta,gems=20str_20str_20str,enchant=75ap_22crit
-feet=greaves_of_the_saronite_citadel,stats=114str_130sta_76crit_60exp_1779armor,gems=20str_20str,enchant=32ap
-wrists=armbands_of_dark_determination,stats=85sta_69agi_49hit_98ap_57crit_285armor,gems=20str_20str_34str,enchant=50ap
+feet=greaves_of_the_saronite_citadel,stats=1779armor_76crit_60exp_114str_130sta,gems=20str_20str,enchant=32ap
+wrists=armbands_of_dark_determination,stats=285armor_98ap_49hit_57crit_69agi_85sta,gems=20str_20str_34str,enchant=50ap
 hands=liadrins_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=20str_34str,enchant=35ap
 finger1=band_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20str
-finger2=ring_of_the_violent_temperament,stats=89str_97sta_57crit_49haste,gems=20str_20str
+finger2=ring_of_the_violent_temperament,stats=57crit_49haste_89str_97sta,gems=20str_20str
 trinket1=deaths_choice,stats=256ap
 trinket2=deaths_choice,stats=288ap
-back=garroshs_rage,stats=111sta_103str_57hit_65crit_182armor,gems=20str,enchant=23haste
+back=garroshs_rage,stats=103str_111sta_65crit_57hit_182armor,gems=20str_4str,enchant=23haste
 main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_20str,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
 ranged=libram_of_valiance
 # Gear Summary
-# gear_strength=1903
+# gear_strength=1907
 # gear_agility=156
 # gear_stamina=1700
 # gear_intellect=10
