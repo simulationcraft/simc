@@ -569,6 +569,7 @@ const char* util_t::flask_type_string( int flask )
   case FLASK_FROST_WYRM:         return "frost_wyrm";
   case FLASK_MIGHTY_RESTORATION: return "mighty_restoration";
   case FLASK_PURE_DEATH:         return "pure_death";
+  case FLASK_PURE_MOJO:          return "pure_mojo";
   case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
   case FLASK_SUPREME_POWER:      return "supreme_power";
   }

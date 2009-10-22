@@ -49,32 +49,35 @@ struct flask_t : public action_t
     switch ( type )
     {
     case FLASK_BLINDING_LIGHT:
-      player -> spell_power[ SCHOOL_ARCANE ] += 80;
-      player -> spell_power[ SCHOOL_HOLY   ] += 80;
-      player -> spell_power[ SCHOOL_NATURE ] += 80;
+      player -> spell_power[ SCHOOL_ARCANE ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      player -> spell_power[ SCHOOL_HOLY   ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      player -> spell_power[ SCHOOL_NATURE ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
       break;
     case FLASK_DISTILLED_WISDOM:
-      player -> stat_gain( STAT_INTELLECT, 65 );
+      player -> stat_gain( STAT_INTELLECT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 85 : 65 );
       break;
     case FLASK_ENDLESS_RAGE:
-      player -> stat_gain( STAT_ATTACK_POWER, 180 );
+      player -> stat_gain( STAT_ATTACK_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
       break;
     case FLASK_FROST_WYRM:
-      player -> stat_gain( STAT_SPELL_POWER, 125 );
+      player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
       break;
     case FLASK_MIGHTY_RESTORATION:
-      player -> stat_gain( STAT_MP5, 25 );
+      player -> stat_gain( STAT_MP5, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 44 : 31 );
       break;
     case FLASK_PURE_DEATH:
-      player -> spell_power[ SCHOOL_FIRE   ] += 80;
-      player -> spell_power[ SCHOOL_FROST  ] += 80;
-      player -> spell_power[ SCHOOL_SHADOW ] += 80;
+      player -> spell_power[ SCHOOL_FIRE   ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      player -> spell_power[ SCHOOL_FROST  ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      player -> spell_power[ SCHOOL_SHADOW ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      break;
+    case FLASK_PURE_MOJO:
+      player -> stat_gain( STAT_MP5, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 65 : 45 );
       break;
     case FLASK_RELENTLESS_ASSAULT:
-      player -> stat_gain( STAT_ATTACK_POWER, 120 );
+      player -> stat_gain( STAT_ATTACK_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 160 : 120 );
       break;
     case FLASK_SUPREME_POWER:
-      player -> stat_gain( STAT_SPELL_POWER, 70 );
+      player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
       break;
     default: assert( 0 );
     }
