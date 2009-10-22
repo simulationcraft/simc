@@ -315,6 +315,7 @@ struct death_knight_t : public player_t
   virtual void      init_race();
   virtual void      init_rng();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_glyphs();
@@ -2693,6 +2694,13 @@ void death_knight_t::init_glyphs()
 
     else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
+}
+
+void death_knight_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  scales_with[ STAT_ARMOR ] = 1;
 }
 
 void death_knight_t::init_buffs()

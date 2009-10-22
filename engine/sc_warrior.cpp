@@ -186,6 +186,7 @@ struct warrior_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -2262,7 +2263,19 @@ void warrior_t::init_base()
   if ( tank == -1 && primary_tree() == TREE_PROTECTION ) tank = 1;
 }
 
-// warrior_t::init_buffs =======================================================
+// warrior_t::init_scaling ====================================================
+
+void warrior_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  if ( talents.armored_to_the_teeth ) 
+  {
+    scales_with[ STAT_ARMOR ] = 1;
+  }
+}
+
+// warrior_t::init_buffs ======================================================
 
 void warrior_t::init_buffs()
 {

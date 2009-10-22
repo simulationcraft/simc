@@ -914,15 +914,13 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
+    case STAT_ARMOR:                    name = "Arm";   break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
     }
 
     if ( name )
     {
-      if ( p -> sim -> report_precision < 0 )
-        p -> sim -> report_precision = 2;
-
       snprintf( buffer, sizeof( buffer ), "&amp;%s=%.*f", name, p -> sim -> report_precision, value );
       s += buffer;
     }
@@ -985,6 +983,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_HIT_RATING:               id = 119; break;
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
+    case STAT_ARMOR:                    id = 41;  break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
     }
@@ -1000,9 +999,6 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
 
       snprintf( buffer, sizeof( buffer ), "%d", id );
       id_string += buffer;
-
-      if ( p -> sim -> report_precision < 0 )
-        p -> sim -> report_precision = 2;
 
       snprintf( buffer, sizeof( buffer ), "%.*f", p -> sim -> report_precision, value );
       value_string += buffer;
@@ -1039,10 +1035,6 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   char buffer[ 1024 ];
   bool first = true;
 
-  if ( p -> sim -> report_precision < 0 )
-     p -> sim -> report_precision = 2;
-
-
   s = "";
   snprintf( buffer, sizeof( buffer ), "( Pawn: v1: \"%s\": ", p -> name() );
   s += buffer;
@@ -1065,18 +1057,19 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     const char* name=0;
     switch ( stat )
     {
-    case STAT_STRENGTH:                 name = "Strength";         if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_AGILITY:                  name = "Agility";          if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_STAMINA:                  name = "Stamina";          if ( value*16 > maxB ) maxB = value*16; break;
-    case STAT_INTELLECT:                name = "Intellect";        if ( value*16 > maxY ) maxY = value*16; break;
-    case STAT_SPIRIT:                   name = "Spirit";           if ( value*16 > maxB ) maxB = value*16; break;
-    case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_ATTACK_POWER:             name = "Ap";               if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; if ( value*16 > maxR ) maxR = value*16; break;
-    case STAT_HIT_RATING:               name = "HitRating";        if ( value*16 > maxY ) maxY = value*16; break;
-    case STAT_CRIT_RATING:              name = "CritRating";       if ( value*16 > maxY ) maxY = value*16; break;
-    case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*16 > maxY ) maxY = value*16; break;
+    case STAT_STRENGTH:                 name = "Strength";         if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_AGILITY:                  name = "Agility";          if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_STAMINA:                  name = "Stamina";          if ( value*20 > maxB ) maxB = value*20; break;
+    case STAT_INTELLECT:                name = "Intellect";        if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_SPIRIT:                   name = "Spirit";           if ( value*20 > maxB ) maxB = value*20; break;
+    case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; if ( value*20 > maxR ) maxR = value*20; break;
+    case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_ARMOR:                    name = "Armor";            break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
     }

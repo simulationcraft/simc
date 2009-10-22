@@ -510,9 +510,6 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   int num_players = ( int ) sim -> players_by_name.size();
   int max_length=0;
 
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
-
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
@@ -553,9 +550,6 @@ static void print_scale_factors( FILE* file, player_t* p )
 {
   if ( ! p -> sim -> scaling -> calculate_scale_factors ) return;
 
-  if ( p -> sim -> report_precision < 0 )
-    p -> sim -> report_precision = 2;
-
   util_t::fprintf( file, "  Scale Factors:\n" );
 
   gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
@@ -592,9 +586,6 @@ static void print_scale_factors( FILE* file, player_t* p )
 static void print_reference_dps( FILE* file, sim_t* sim )
 {
   if ( sim -> reference_player_str.empty() ) return;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   util_t::fprintf( file, "\nReference DPS:\n" );
 
@@ -757,9 +748,6 @@ static void print_html_raid( FILE*  file, sim_t* sim )
 static void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   util_t::fprintf( file, "<h3>DPS Scale Factors (dps increase per unit stat)</h3>\n" );
 
@@ -1194,9 +1182,6 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
-
   util_t::fprintf( file, "      <scale_factors>\n" );
 
   for ( int j=0; j < STAT_MAX; j++ )
@@ -1267,9 +1252,6 @@ static void print_wiki_scale_factors( FILE*  file,
                                       sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   util_t::fprintf( file, "----\n" );
   util_t::fprintf( file, "----\n" );

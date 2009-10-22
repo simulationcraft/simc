@@ -59,7 +59,7 @@ scaling_t::scaling_t( sim_t* s ) :
   calculate_scale_factors( 0 ),
   center_scale_delta( 0 ),
   scale_lag( 0 ),
-  scale_factor_noise( 0.05 ),
+  scale_factor_noise( 0.0 ),
   normalize_scale_factors( 0 ),
   smooth_scale_factors( 0 ),
   debug_scale_factors( 0 ),
@@ -121,6 +121,8 @@ void scaling_t::init_deltas()
   if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -50 : -100;
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
   if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
+
+  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 3000 : 6000;
 
   if ( stats.weapon_dps == 0 ) stats.weapon_dps = smooth_scale_factors ? 25 : 50;
 }
@@ -185,7 +187,7 @@ void scaling_t::analyze_stats()
     {
       player_t* p = sim -> players_by_name[ j ];
 
-      if ( ! p -> scales_with[ i ] ) continue;
+      if ( p -> scales_with[ i ] <= 0 ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
