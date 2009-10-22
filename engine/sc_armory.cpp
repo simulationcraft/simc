@@ -531,6 +531,7 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::string& region,
                                const std::string& server,
                                const std::string& name,
+                               const std::vector<int>& ranks,
                                int player_filter,
                                int max_rank,
                                int cache )
@@ -587,6 +588,9 @@ bool armory_t::download_guild( sim_t* sim,
         continue;
 
       if ( ( max_rank > 0 ) && ( character_rank > max_rank ) )
+        continue;
+
+      if ( ( ranks.size() > 0 ) && ( std::find( ranks.begin(), ranks.end(), character_rank ) == ranks.end() ) )
         continue;
 
       int player_type = util_t::translate_class_id( character_cid );

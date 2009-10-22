@@ -243,6 +243,8 @@ static bool parse_armory( sim_t*             sim,
   {
     std::string guild_name = value;
     std::string guild_options = "";
+    std::vector<int> ranks_list;
+    std::vector<std::string> ranks;
 
     std::string::size_type cut_pt = value.find_first_of( "," );
 
@@ -255,6 +257,7 @@ static bool parse_armory( sim_t*             sim,
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
     std::string type_str;
+    std::string ranks_str;
     int max_rank = 0;
     int cache = 0;
 
@@ -264,6 +267,7 @@ static bool parse_armory( sim_t*             sim,
       { "server",   OPT_STRING, &server   },
       { "class",    OPT_STRING, &type_str },
       { "max_rank", OPT_INT,    &max_rank },
+      { "ranks",    OPT_STRING, &ranks_str},
       { "cache",    OPT_BOOL,   &cache    },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -271,10 +275,20 @@ static bool parse_armory( sim_t*             sim,
     if ( ! option_t::parse( sim, "guild", options, guild_options ) )
       return false;
 
+    if ( ! ranks_str.empty() )
+    {
+      int n_ranks = util_t::string_split( ranks, ranks_str, "/" );
+      if (n_ranks > 0)
+      {
+        for (int i = 0; i < n_ranks; i++)
+          ranks_list.push_back(atoi(ranks[i].c_str()));
+      }
+    }
+
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
-    return armory_t::download_guild( sim, region, server, guild_name, player_type, max_rank, cache );
+    return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
   }
 
   return false;

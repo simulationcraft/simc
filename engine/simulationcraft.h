@@ -2411,6 +2411,7 @@ struct armory_t
                               const std::string& region,
                               const std::string& server,
                               const std::string& name,
+                              const std::vector<int>& ranks,
                               int player_type = PLAYER_NONE,
                               int max_rank=0,
                               int cache=0 );
