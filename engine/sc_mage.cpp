@@ -2291,6 +2291,78 @@ struct ice_lance_t : public mage_spell_t
   }
 };
 
+// Deep Freeze Spell =========================================================
+
+struct deep_freeze_t : public mage_spell_t
+{
+  int frozen;
+  int ghost_charge;
+
+  deep_freeze_t( player_t* player, const std::string& options_str ) :
+      mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST ),
+      frozen( -1 ), ghost_charge( -1 )
+  {
+    mage_t* p = player -> cast_mage();
+    check_talent( p -> talents.deep_freeze );
+
+    option_t options[] =
+    {
+      { "frozen",       OPT_BOOL, &frozen       },
+      { "ghost_charge", OPT_BOOL, &ghost_charge },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 1, 2368, 2635, 0, 0.09 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0.0;
+    may_crit          = true;
+    cooldown          = 30.0;
+    direct_power_mod  = ( 7.5/3.5 );
+    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
+    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
+    base_crit        += p -> talents.arcane_instability * 0.01;
+
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
+                                          ( p -> talents.spell_power * 0.25  ) +
+                                          ( p -> talents.burnout     * 0.10  ) +
+                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    spell_impact = false;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+
+    if ( ! mage_spell_t::ready() )
+      return false;
+
+    if ( ghost_charge != -1 )
+      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
+        return false;
+
+    if ( frozen != -1 )
+      if ( frozen != target_is_frozen( p ) )
+        return false;
+
+    return true;
+  }
+};
+
 // Frostfire Bolt Spell ======================================================
 
 struct frostfire_bolt_t : public mage_spell_t
@@ -2906,6 +2978,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
+  if ( name == "deep_freeze"       ) return new             deep_freeze_t( this, options_str );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
   if ( name == "fire_ball"         ) return new               fire_ball_t( this, options_str );
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );

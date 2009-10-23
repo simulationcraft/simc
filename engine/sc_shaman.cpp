@@ -50,7 +50,7 @@ struct shaman_t : public player_t
   struct _cooldowns_t
   {
         double elemental_mastery;
-    double lava_burst;
+        double lava_burst;
         double windfury_weapon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
@@ -988,7 +988,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     option_t options[] =
     {
-          { "clearcasting", OPT_INT, &clearcasting },
+      { "clearcasting", OPT_INT, &clearcasting },
       { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
       { "maelstrom", OPT_INT, &maelstrom  },  
       { NULL, OPT_UNKNOWN, NULL }
