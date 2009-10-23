@@ -49,6 +49,8 @@ struct hunter_t : public player_t
   buff_t* buffs_rapid_fire;
   buff_t* buffs_trueshot_aura;
   buff_t* buffs_tier8_4pc;
+  buff_t* buffs_tier10_2pc;
+  buff_t* buffs_tier10_4pc;
 
   // Gains
   gain_t* gains_chimera_viper;
@@ -206,6 +208,7 @@ struct hunter_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
+  virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -519,15 +522,28 @@ struct hunter_pet_t : public pet_t
     ap += o -> composite_attack_power() * 0.22 * ( 1 + talents.wild_hunt * 0.15 );
     ap += buffs_furious_howl -> value();
 
+    return ap;
+  }
+
+  virtual double composite_attack_power_multiplier() SC_CONST
+  {
+    hunter_t* o = owner -> cast_hunter();
+
+    double mult = player_t::composite_attack_power_multiplier();
+
     if ( o -> active_aspect == ASPECT_BEAST )
-      ap *= 1.1;
+      mult *= 1.1;
+
     if ( buffs_rabid -> up() )
-      ap *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
+      mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
 
     if ( buffs_call_of_the_wild -> up() )
-      ap *= 1.1;
+      mult *= 1.1;
 
-    return ap;
+    if ( o -> buffs_tier10_4pc -> up() )
+      mult *= 1.2;
+
+    return mult;
   }
 
   virtual double composite_spell_hit() SC_CONST
@@ -1062,6 +1078,9 @@ struct hunter_pet_attack_t : public attack_t
         player_crit       += o -> talents.focused_fire * 0.10;
       }
     }
+
+    if ( o -> buffs_tier10_2pc -> up() )
+      player_multiplier *= 1.15;
   }
 };
 
@@ -1379,6 +1398,8 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> sim -> target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
 
+    if ( o -> buffs_tier10_2pc -> up() )
+      player_multiplier *= 1.15;
   }
 };
 
@@ -1684,6 +1705,9 @@ void hunter_attack_t::player_buff()
     
   if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
+
+  if ( p -> buffs_tier10_2pc -> up() )
+    player_multiplier *= 1.15;
 }
 
 // Ranged Attack ===========================================================
@@ -1725,11 +1749,13 @@ struct ranged_t : public hunter_attack_t
 
     if ( result_is_hit() )
     {
-      trigger_wild_quiver( this );
       hunter_t* p = player -> cast_hunter();
+      trigger_wild_quiver( this );     
       if ( p -> active_aspect == ASPECT_HAWK )
         p -> buffs_improved_aspect_of_the_hawk -> trigger( 1, iaoth_bonus );
-    }
+
+      p -> buffs_tier10_2pc -> trigger();
+    }   
   }
 };
 
@@ -2536,6 +2562,18 @@ struct serpent_sting_t : public hunter_attack_t
 
     return hunter_attack_t::ready();
   }
+
+  virtual void tick()
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    hunter_attack_t::tick();
+
+    if ( tick_dmg > 0 )
+    {
+      p -> buffs_tier10_4pc-> trigger();
+    }
+  }
 };
 
 // Silencing Shot Attack =========================================================
@@ -3341,8 +3379,12 @@ void hunter_t::init_buffs()
 
   buffs_master_tactician            = new buff_t( this, "master_tactician",            1, 10.0,  0.0, ( talents.master_tactician ? 0.10 : 0.0 ) );
   buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
-  
+
+  buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
+  buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );  
+
   buffs_tier8_4pc = new stat_buff_t( this, "tier8_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier8_4pc_melee() ? 0.1  : 0 ) );
+
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, "trueshot_aura");
@@ -3530,10 +3572,26 @@ double hunter_t::composite_attack_power() SC_CONST
 
   if ( buffs_expose_weakness -> up() ) ap += agility() * 0.25;
 
-  if ( buffs_call_of_the_wild -> up() )
-    ap *= 1.1;
-
   return ap;
+}
+
+// hunter_t::composite_attack_power_multiplier =================================
+
+double hunter_t::composite_attack_power_multiplier() SC_CONST
+{
+  double mult = player_t::composite_attack_power_multiplier();
+
+  if ( buffs_tier10_4pc -> up() )
+  {
+    mult *= 1.20;
+  }
+
+  if ( buffs_call_of_the_wild -> up() )
+  {
+    mult *= 1.1;
+  }
+  
+  return mult;
 }
 
 // hunter_t::regen  =======================================================
