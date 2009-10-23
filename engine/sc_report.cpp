@@ -86,7 +86,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 || s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file, "  MissTick=%.1f%%", 100.0 * tick_miss_pct );
   }
