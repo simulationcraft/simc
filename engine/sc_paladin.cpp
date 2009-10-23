@@ -1669,6 +1669,7 @@ struct exorcism_t : public paladin_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 9, 1033, 1151, 0, 0.08 }, // Dummy level 80 rank.
       { 79, 9, 1028, 1146, 0, 0.08 },
       { 73, 8,  787,  877, 0, 0.08 },
       { 68, 7,  687,  765, 0, 0.08 },
@@ -1866,6 +1867,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     static rank_t ranks[] =
     {
+      { 80, 5, 1058, 1242, 0, 0.20 }, // Dummy rank.
       { 78, 5, 1050, 1234, 0, 0.20 },
       { 72, 4,  857, 1007, 0, 0.20 },
       { 69, 3,  777,  913, 0, 0.20 },
