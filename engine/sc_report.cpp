@@ -45,9 +45,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> dpr,
                    s -> portion_dps );
 
-  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count +
-                      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
-
+  double miss_pct = s -> execute_results[ RESULT_MISS ].count / s -> num_executes;
 
   util_t::fprintf( file, "  Miss=%.1f%%", 100.0 * miss_pct );
 
@@ -85,6 +83,13 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
   }
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
+
+  double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
+
+  if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
+  {
+    util_t::fprintf( file, "  MissTick=%.1f%%", 100.0 * tick_miss_pct );
+  }
 
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
@@ -510,6 +515,9 @@ static void print_scale_factors( FILE* file, sim_t* sim )
   int num_players = ( int ) sim -> players_by_name.size();
   int max_length=0;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
@@ -550,6 +558,9 @@ static void print_scale_factors( FILE* file, player_t* p )
 {
   if ( ! p -> sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( p -> sim -> report_precision < 0 )
+    p -> sim -> report_precision = 2;
+
   util_t::fprintf( file, "  Scale Factors:\n" );
 
   gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
@@ -586,6 +597,9 @@ static void print_scale_factors( FILE* file, player_t* p )
 static void print_reference_dps( FILE* file, sim_t* sim )
 {
   if ( sim -> reference_player_str.empty() ) return;
+
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
 
   util_t::fprintf( file, "\nReference DPS:\n" );
 
@@ -749,6 +763,9 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   util_t::fprintf( file, "<h3>DPS Scale Factors (dps increase per unit stat)</h3>\n" );
 
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.scale_factors td, table.scale_factors th { padding: 4px; border: 1px inset; }\n  table.scale_factors { border: 1px outset; }</style>\n" );
@@ -802,15 +819,15 @@ static void print_html_action( FILE* file, stats_t* s )
   if ( executes_divisor <= 0 ) executes_divisor = 1;
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
-  double miss_pct = ( s -> execute_results[ RESULT_MISS ].count +
-		      s ->    tick_results[ RESULT_MISS ].count ) / ( s -> num_executes + s -> num_ticks );
+  double miss_pct      = s -> execute_results[ RESULT_MISS ].count / s -> num_executes;
+  double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
 
   util_t::fprintf( file,
 		   " <tr>"
 		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1fsec</td>"
 		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " <td>%.1f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
@@ -824,6 +841,7 @@ static void print_html_action( FILE* file, stats_t* s )
 		   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
 		   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
 		   s -> num_ticks,
+       tick_miss_pct * 100,
 		   s -> tick_results[ RESULT_HIT  ].avg_dmg,
 		   s -> tick_results[ RESULT_CRIT ].avg_dmg,
 		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor );
@@ -1182,6 +1200,9 @@ static void print_xml_player_scale_factors( FILE*  file, sim_t* sim, player_t* p
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
 
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
   util_t::fprintf( file, "      <scale_factors>\n" );
 
   for ( int j=0; j < STAT_MAX; j++ )
@@ -1252,6 +1273,9 @@ static void print_wiki_scale_factors( FILE*  file,
                                       sim_t* sim )
 {
   if ( ! sim -> scaling -> calculate_scale_factors ) return;
+
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
 
   util_t::fprintf( file, "----\n" );
   util_t::fprintf( file, "----\n" );
