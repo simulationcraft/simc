@@ -144,7 +144,17 @@ void target_t::aura_loss( const char* aura_name , int aura_id )
 
 void target_t::init()
 {
-  if ( initial_armor < 0 ) initial_armor = 10643;
+  if ( initial_armor < 0 ) 
+  {
+    switch ( level )
+    {
+    case 80: initial_armor = 9729;  break;
+    case 81: initial_armor = 10034; break;
+    case 82: initial_armor = 10338; break;
+    case 83: initial_armor = 10643; break;
+    default: initial_armor = 10643;
+    }
+  }
 
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 
