@@ -621,7 +621,33 @@ double action_t::calculate_direct_damage()
 
   if ( result == RESULT_GLANCE )
   {
-    direct_dmg *= 0.75;
+    double delta_skill = ( sim -> target -> level - player -> level ) * 5.0;
+
+    if ( delta_skill < 0.0 )
+      delta_skill = 0.0;
+
+    double max_glance = 1.3 - 0.03 * delta_skill;
+
+    if ( max_glance > 0.99 ) 
+      max_glance = 0.99;
+    else if ( max_glance < 0.2 )
+      max_glance = 0.20;
+
+    double min_glance = 1.4 - 0.05 * delta_skill;
+
+    if ( min_glance > 0.91 )
+      min_glance = 0.91;
+    else if ( min_glance < 0.01 )
+      min_glance = 0.01;
+
+    if ( min_glance > max_glance )
+    {
+      double temp = min_glance;
+      min_glance = max_glance;
+      max_glance = temp;
+    }
+
+    direct_dmg *= sim -> range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
   else if ( result == RESULT_CRIT )
   {
