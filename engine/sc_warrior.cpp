@@ -77,6 +77,7 @@ struct warrior_t : public player_t
   rng_t* rng_improved_defensive_stance;
   rng_t* rng_shield_specialization;
   rng_t* rng_sword_specialization;
+  rng_t* rng_tier10_4pc_melee;
   rng_t* rng_unbridled_wrath;
 
   // Auto-Attack
@@ -304,6 +305,32 @@ static void trigger_blood_frenzy( action_t* a )
   }
 }
 
+// trigger_bloodsurge =======================================================
+
+static void trigger_bloodsurge( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if ( ! p -> talents.bloodsurge )
+    return;
+
+  if ( p -> set_bonus.tier10_4pc_melee() )
+  {
+    if ( p -> rng_tier10_4pc_melee -> roll( 0.20 ) )
+    {
+      p -> buffs_bloodsurge -> max_stack = 2;
+      p -> buffs_bloodsurge -> duration  = 10;
+    }
+    else
+    {
+      p -> buffs_bloodsurge -> max_stack = 1;
+      p -> buffs_bloodsurge -> duration  = 5;
+    }
+  }
+
+  p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack );
+}
+
 // trigger_deep_wounds ======================================================
 
 static void trigger_deep_wounds( action_t* a )
@@ -441,6 +468,32 @@ static void trigger_rampage( attack_t* a )
   p -> sim -> auras.rampage -> trigger();
 }
 
+// trigger_sudden_death =====================================================
+
+static void trigger_sudden_death( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if ( ! p -> talents.sudden_death )
+    return;
+
+  if ( p -> set_bonus.tier10_4pc_melee() )
+  {
+    if ( p -> rng_tier10_4pc_melee -> roll( 0.20 ) )
+    {
+      p -> buffs_sudden_death -> max_stack = 2;
+      p -> buffs_sudden_death -> duration  = 20;
+    }
+    else
+    {
+      p -> buffs_sudden_death -> max_stack = 1;
+      p -> buffs_sudden_death -> duration  = 10;
+    }
+  }
+
+  p -> buffs_sudden_death -> trigger( p -> buffs_sudden_death -> max_stack );
+}
+
 // trigger_sword_and_board ==================================================
 
 static void trigger_sword_and_board( attack_t* a )
@@ -450,24 +503,6 @@ static void trigger_sword_and_board( attack_t* a )
   if ( p -> buffs_sword_and_board -> trigger() )
   {
     p -> _cooldowns.shield_slam = 0;
-  }
-}
-
-// trigger_unbridled_wrath ==================================================
-
-static void trigger_unbridled_wrath( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> talents.unbridled_wrath )
-    return;
-
-  double PPM = p -> talents.unbridled_wrath * 3; // 15 ppm @ 5/5
-  double chance = a -> weapon -> proc_chance_on_swing( PPM );
-
-  if ( p -> rng_unbridled_wrath -> roll( chance ) )
-  {
-    p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> gains_unbridled_wrath );
   }
 }
 
@@ -489,6 +524,24 @@ static void trigger_trauma( action_t* a )
   if( value >= t -> debuffs.trauma -> current_value )
   {
     t -> debuffs.trauma -> trigger( 1, value );
+  }
+}
+
+// trigger_unbridled_wrath ==================================================
+
+static void trigger_unbridled_wrath( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if ( ! p -> talents.unbridled_wrath )
+    return;
+
+  double PPM = p -> talents.unbridled_wrath * 3; // 15 ppm @ 5/5
+  double chance = a -> weapon -> proc_chance_on_swing( PPM );
+
+  if ( p -> rng_unbridled_wrath -> roll( chance ) )
+  {
+    p -> resource_gain( RESOURCE_RAGE, 1.0 , p -> gains_unbridled_wrath );
   }
 }
 
@@ -556,10 +609,9 @@ void warrior_attack_t::execute()
   warrior_t* p = player -> cast_warrior();
   p -> buffs_tier7_4pc_melee -> expire();
 
-
   if ( result_is_hit() )
   {
-    p -> buffs_sudden_death -> trigger();
+    trigger_sudden_death( this );
 
     // Critproccgalore
     if( result == RESULT_CRIT )
@@ -958,7 +1010,7 @@ struct heroic_strike_t : public warrior_attack_t
     if( result_is_hit() )
     {
       trigger_unbridled_wrath( this );
-      p -> buffs_bloodsurge -> trigger();
+      trigger_bloodsurge( this );
       if ( result == RESULT_CRIT )
       {
         p -> buffs_tier8_2pc_melee -> trigger();
@@ -1002,8 +1054,7 @@ struct bloodthirst_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    warrior_t* p = player -> cast_warrior();
-    if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
+    if( result_is_hit() ) trigger_bloodsurge( this );
   }
 };
 
@@ -1347,6 +1398,12 @@ struct execute_t : public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
   }
 
+  virtual double gcd() SC_CONST
+  {
+    if ( player -> set_bonus.tier10_4pc_melee() ) return trigger_gcd - 0.5;
+    return trigger_gcd;
+  }
+
   virtual void consume_resource()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1387,7 +1444,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_sudden_death -> expire();
+    p -> buffs_sudden_death -> decrement();
   }
   
   virtual bool ready()
@@ -1608,6 +1665,13 @@ struct slam_t : public warrior_attack_t
 
     if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
+
+  virtual double gcd() SC_CONST
+  {
+    if ( player -> set_bonus.tier10_4pc_melee() ) return trigger_gcd - 0.5;
+    return trigger_gcd;
+  }
+
   virtual double haste() SC_CONST
   {
     // No haste for slam cast?
@@ -1627,7 +1691,7 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_bloodsurge -> expire();
+    p -> buffs_bloodsurge -> decrement();
     if ( result == RESULT_CRIT )
     {
       p -> buffs_tier8_2pc_melee -> trigger();
@@ -1728,13 +1792,13 @@ struct whirlwind_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
 
-    if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
+    if( result_is_hit() ) trigger_bloodsurge( this );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( player -> off_hand_weapon );
       warrior_attack_t::execute();
-      if( result_is_hit() ) p -> buffs_bloodsurge -> trigger();
+      if( result_is_hit() ) trigger_bloodsurge( this );
     }
 
     warrior_attack_t::consume_resource();
@@ -2350,9 +2414,10 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rng_improved_defensive_stance = get_rng( "improved_defensive_stance" );
-  rng_shield_specialization     = get_rng( "shield_specialization" );
-  rng_sword_specialization      = get_rng( "sword_specialization"  );
-  rng_unbridled_wrath           = get_rng( "unbridled_wrath"       );
+  rng_shield_specialization     = get_rng( "shield_specialization"     );
+  rng_sword_specialization      = get_rng( "sword_specialization"      );
+  rng_tier10_4pc_melee          = get_rng( "tier10_4pc_melee"          );
+  rng_unbridled_wrath           = get_rng( "unbridled_wrath"           );
 }
 
 // warrior_t::init_actions =====================================================
