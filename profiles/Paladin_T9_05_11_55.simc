@@ -5,7 +5,7 @@ origin=http://profiler.wowhead.com/?profile=16323058
 level=80
 race=blood_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050000000000000000000000005500010000000000000000000005232250203331302133221331
-glyphs=judgement/seal_of_vengeance/consecration
+glyphs=judgement/seal_of_vengeance/consecration/sense_undead
 actions=flask,type=endless_rage
 actions+=/food,type=fish_feast
 actions+=/auto_attack
