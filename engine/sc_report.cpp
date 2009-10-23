@@ -45,7 +45,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> dpr,
                    s -> portion_dps );
 
-  double miss_pct = s -> execute_results[ RESULT_MISS ].count / s -> num_executes;
+  double miss_pct = s -> num_executes > 0 ? s -> execute_results[ RESULT_MISS ].count / s -> num_executes : 0.0;
 
   util_t::fprintf( file, "  Miss=%.1f%%", 100.0 * miss_pct );
 
@@ -819,7 +819,7 @@ static void print_html_action( FILE* file, stats_t* s )
   if ( executes_divisor <= 0 ) executes_divisor = 1;
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
-  double miss_pct      = s -> execute_results[ RESULT_MISS ].count / s -> num_executes;
+  double miss_pct      = s -> num_executes > 0 ? s -> execute_results[ RESULT_MISS ].count / s -> num_executes : 0.0;
   double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
 
   util_t::fprintf( file,
