@@ -1130,6 +1130,7 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_seal_of_vengeance -> trigger();
+      player_buff(); // Re-calculate with the new stacks of the Seal of Vengeance.
       if ( ticking )
       {
         refresh_duration();
@@ -1510,9 +1511,9 @@ struct consecration_tick_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( result_is_hit() )
     {
-      tick_dmg = direct_dmg;
-      update_stats( DMG_OVER_TIME );
+      tick_dmg = direct_dmg;     
     }
+    update_stats( DMG_OVER_TIME );
   }
 };
 
