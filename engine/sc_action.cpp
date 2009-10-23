@@ -552,7 +552,9 @@ double action_t::calculate_weapon_damage()
 {
   if ( ! weapon || weapon_multiplier <= 0 ) return 0;
 
-  double weapon_damage = normalize_weapon_damage ? weapon -> damage * 2.8 / weapon -> swing_time : weapon -> damage;
+  double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg );
+
+  double weapon_damage = normalize_weapon_damage ? dmg * 2.8 / weapon -> swing_time : dmg;
   double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
   double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;

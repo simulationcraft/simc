@@ -413,9 +413,11 @@ static bool parse_item_weapon( item_t& item,
 {
   item.armory_weapon_str.clear();
 
-  std::string speed, dps;
-  if (  xml_t::get_value( speed, xml, "speed/." ) &&
-        xml_t::get_value( dps,   xml, "dps/."   ) )
+  std::string speed, dps, dmg_min, dmg_max;
+  if (  xml_t::get_value( speed,   xml, "speed/." ) &&
+        xml_t::get_value( dps,     xml, "dps/."   ) &&
+        xml_t::get_value( dmg_min, xml, "min/."   ) &&
+        xml_t::get_value( dmg_max, xml, "max/."   ) )
   {
     std::string sub_class;
     int inventory_type = -1;
@@ -423,7 +425,7 @@ static bool parse_item_weapon( item_t& item,
     xml_t::get_value( inventory_type, xml, "inventoryType/." );
 
     int weapon_type = WEAPON_NONE;
-    if     ( sub_class == "Axe" && inventory_type == 17   ) weapon_type = WEAPON_AXE;
+    if      ( sub_class == "Axe" && inventory_type == 17   ) weapon_type = WEAPON_AXE;
     else if ( sub_class == "Axe"                           ) weapon_type = WEAPON_AXE_2H;
     else if ( sub_class == "Dagger"                        ) weapon_type = WEAPON_DAGGER;
     else if ( sub_class == "Fist Weapon"                   ) weapon_type = WEAPON_FIST;
@@ -445,7 +447,7 @@ static bool parse_item_weapon( item_t& item,
     if ( weapon_type == WEAPON_WAND ) return true;
 
     item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
-    item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps";
+    item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps" + "_" + dmg_min + "min" + "_" + dmg_max + "max";
   }
 
   return true;

@@ -571,7 +571,7 @@ bool item_t::decode_weapon()
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoded_weapon_str );
 
-  bool dps_set=false, dmg_set=false;
+  bool dps_set=false, dmg_set=false, min_set=false, max_set=false;
 
   for ( int i=0; i < num_tokens; i++ )
   {
@@ -588,17 +588,54 @@ bool item_t::decode_weapon()
     }
     else if ( t.name == "dps" )
     {
-      w -> dps = t.value;
-      dps_set = true;
+      if ( ! dmg_set )
+      {
+        w -> dps = t.value;
+        dps_set = true;
+      }
     }
     else if ( t.name == "damage" || t.name == "dmg" )
     {
-      w -> damage = t.value;
+      w -> damage  = t.value;
+      w -> min_dmg = t.value;
+      w -> max_dmg = t.value;
       dmg_set = true;
     }
     else if ( t.name == "speed" || t.name == "spd" )
     {
       w -> swing_time = t.value;
+    }
+    else if ( t.name == "min" )
+    {
+      w -> min_dmg = t.value;
+      min_set = true;
+      
+      if ( max_set )
+      {
+        dmg_set = true;
+        dps_set = false;
+        w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+      }
+      else
+      {
+        w -> max_dmg = w -> min_dmg;
+      }
+    }
+    else if ( t.name == "max" )
+    {
+      w -> max_dmg = t.value;
+      max_set = true;
+      
+      if ( min_set )
+      {
+        dmg_set = true;
+        dps_set = false;
+        w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+      }
+      else
+      {
+        w -> min_dmg = w -> max_dmg;
+      }
     }
     else
     {
@@ -609,6 +646,12 @@ bool item_t::decode_weapon()
 
   if ( dps_set ) w -> damage = w -> dps    * w -> swing_time;
   if ( dmg_set ) w -> dps    = w -> damage / w -> swing_time;
+
+  if ( ! max_set || ! min_set )
+  {    
+    w -> max_dmg = w -> damage;
+    w -> min_dmg = w -> damage;
+  }
 
   return true;
 }

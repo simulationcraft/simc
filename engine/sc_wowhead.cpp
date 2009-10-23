@@ -202,7 +202,7 @@ static bool parse_weapon( item_t&     item,
   if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
-  std::string speed, dps;
+  std::string speed, dps, dmgmin, dmgmax;
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, stats_str, "," );
 
@@ -212,8 +212,10 @@ static bool parse_weapon( item_t&     item,
 
     if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
-      if ( type_str == "speed" ) speed = value_str;
-      if ( type_str == "dps"   ) dps   = value_str;
+      if ( type_str == "speed"   ) speed  = value_str;
+      if ( type_str == "dps"     ) dps    = value_str;
+      if ( type_str == "dmgmin1" ) dmgmin = value_str;
+      if ( type_str == "dmgmax1" ) dmgmax = value_str;
     }
   }
 
@@ -224,7 +226,7 @@ static bool parse_weapon( item_t&     item,
     return true;
 
   int weapon_type = WEAPON_NONE;
-  if     ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
+  if      ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
   else if ( subclass_str == "Two-Handed Axes"         ) weapon_type = WEAPON_AXE_2H;
   else if ( subclass_str == "Daggers"                 ) weapon_type = WEAPON_DAGGER;
   else if ( subclass_str == "Fist Weapons"            ) weapon_type = WEAPON_FIST;
@@ -247,6 +249,12 @@ static bool parse_weapon( item_t&     item,
 
   item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
   item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps";
+
+  if ( ! dmgmin.empty() )
+    item.armory_weapon_str += "_" + dmgmin + "min";
+
+  if ( ! dmgmax.empty() )
+    item.armory_weapon_str += "_" + dmgmax + "max";
 
   return true;
 }

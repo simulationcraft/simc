@@ -23,18 +23,18 @@ head=hellscreams_helmet_of_triumph,stats=2102armor_94hit_86crit_150str_174sta,ge
 neck=collar_of_unending_torment,stats=106ap_52crit_40arpen_70agi_65sta,gems=20arpen
 shoulders=hellscreams_shoulderplates_of_triumph,stats=1941armor_76crit_68arpen_122str_130sta,gems=20arpen_4str,enchant=40ap_15crit
 chest=hellscreams_battleplate_of_triumph,stats=2588armor_94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=10str_10agi_10sta_10int_10spi
-waist=bloodbath_girdle,stats=114str_129sta_68crit_68exp_1455armor,gems=20arpen_20arpen_20arpen
+waist=bloodbath_girdle,stats=1455armor_68crit_68exp_114str_129sta,gems=20arpen_20arpen_20arpen
 legs=hellscreams_legplates_of_triumph,stats=2264armor_94crit_94exp_158str_174sta,gems=10hit_10str_20arpen_16str_6str,enchant=75ap_22crit
-feet=icewalker_treads,stats=98agi_114sta_135ap_76hit_68arpen_448armor,gems=20arpen_20arpen,enchant=12crit_12hit
+feet=icewalker_treads,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=20arpen_20arpen,enchant=12crit_12hit
 wrists=titanium_spikeguards,stats=1082armor_42crit_50arpen_78str_86sta,gems=20arpen_34arpen,enchant=50ap
 hands=hellscreams_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=20arpen_34arpen,enchant=44ap
 finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen
-finger2=gormoks_band,stats=70str_86sta_41arpen_42haste,gems=20arpen_20arpen
+finger2=gormoks_band,stats=42haste_41arpen_70str_86sta,gems=20arpen_20arpen
 trinket1=deaths_choice,stats=288ap
 trinket2=deaths_choice,stats=256ap
-back=sylvanas_cunning,stats=97sta_97agi_114ap_65crit_57arpen_182armor,gems=20arpen_8ap,enchant=22agi
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=34arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
-ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps
+back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20arpen_20arpen_8ap,enchant=22agi
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=34arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps_811min_1217max
+ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps_368min_552max
 # Gear Summary
 # gear_strength=1210
 # gear_agility=448
@@ -43,7 +43,7 @@ ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=throw
 # gear_spirit=20
 # gear_attack_power=1321
 # gear_expertise_rating=190
-# gear_armor_penetration_rating=982
+# gear_armor_penetration_rating=1002
 # gear_hit_rating=260
 # gear_crit_rating=877
 # gear_haste_rating=92
@@ -53,5 +53,5 @@ ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=throw
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
 # trinket2=deaths_choice
-# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps,enchant=berserking
-# ranged=crimson_star,weapon=thrown_1.80speed_255.6dps
+# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps_811min_1217max,enchant=berserking
+# ranged=crimson_star,weapon=thrown_1.80speed_255.6dps_368min_552max

@@ -193,17 +193,26 @@ static bool parse_gems( item_t&           item,
 static bool parse_weapon( item_t&     item,
                           xml_node_t* node )
 {
-  std::string tti_speed, tti_dps;
+  std::string tti_speed, tti_dps, tti_dmg;
 
   if ( ! get_tti_value( tti_speed, node, "tti-speed" ) ||
-       ! get_tti_value( tti_dps,   node, "tti-dps"   ) )
+       ! get_tti_value( tti_dps,   node, "tti-dps"   ) ||
+       ! get_tti_value( tti_dmg,   node, "tti-dmg"   ) )
     return true;
 
-  std::string speed_str, dps_str;
+  std::string speed_str, dps_str, dmg_min_str, dmg_max_str;
 
   std::vector<std::string> tokens;
   int num_tokens = util_t::string_split( tokens, tti_speed, " " );
   if ( num_tokens == 2 ) speed_str = tokens[ 1 ];
+
+  tokens.clear();
+  num_tokens = util_t::string_split( tokens, tti_dmg, " " );
+  if ( num_tokens == 4 )
+  {
+    dmg_min_str = tokens[ 0 ];
+    dmg_max_str = tokens[ 2 ];
+  }
 
   tokens.clear();
   num_tokens = util_t::string_split( tokens, tti_dps, " ()" );
@@ -243,6 +252,16 @@ static bool parse_weapon( item_t&     item,
 
   item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
   item.armory_weapon_str += "_" + speed_str + "speed" + "_" + dps_str + "dps";
+
+  if ( ! dmg_min_str.empty() )
+  {
+    item.armory_weapon_str += "_" + dmg_min_str + "min";
+  }
+
+  if ( ! dmg_max_str.empty() )
+  {
+    item.armory_weapon_str += "_" + dmg_max_str + "max";
+  }
 
   return true;
 }

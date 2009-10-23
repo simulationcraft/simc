@@ -35,8 +35,8 @@ finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=10haste_12sp_4cri
 finger2=circle_of_the_darkmender,stats=49haste_28mp5_91sp_65sta_65int,gems=10haste_12sp_5sp,enchant=23sp
 trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=aethas_intensity,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=23haste
-main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_125.1dps
+back=aethas_intensity,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=23haste
+main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_125.1dps_108.12min_342.12max
 off_hand=bastion_of_resolve,stats=8695armor_243blockv_57crit_57haste_100sp_65sta_65int,gems=10haste_12sp_5sp,enchant=25int
 ranged=totem_of_electrifying_wind
 # Gear Summary
@@ -55,4 +55,4 @@ ranged=totem_of_electrifying_wind
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
-# main_hand=barb_of_tarasque,weapon=dagger_1.80speed_125.1dps
+# main_hand=barb_of_tarasque,weapon=dagger_1.80speed_125.1dps_108.12min_342.12max

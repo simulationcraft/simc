@@ -1146,6 +1146,7 @@ struct weapon_t
 {
   int    type, school;
   double damage, dps;
+  double min_dmg, max_dmg;
   double swing_time;
   int    slot;
   int    buff_type;
@@ -1156,7 +1157,7 @@ struct weapon_t
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) SC_CONST;
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
-      type(t), school(s), damage(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0) {}
+      type(t), school(s), damage(d), min_dmg(d), max_dmg(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0) { }
 };
 
 // Item ======================================================================

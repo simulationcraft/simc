@@ -36,7 +36,7 @@ finger2=ring_of_the_violent_temperament,stats=57crit_49haste_89str_97sta,gems=10
 trinket1=deaths_choice,stats=256ap
 trinket2=deaths_choice,stats=288ap
 back=garroshs_rage,stats=103str_111sta_65crit_57hit_182armor,gems=20str_4str,enchant=23haste
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_20str,enchant=berserking,weapon=axe2h_3.60speed_281.7dps
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_20str,enchant=berserking,weapon=axe2h_3.60speed_281.7dps_811min_1217max
 ranged=libram_of_valiance
 # Gear Summary
 # gear_strength=1802
@@ -56,4 +56,4 @@ ranged=libram_of_valiance
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
 # trinket2=deaths_choice
-# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps,enchant=berserking
+# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps_811min_1217max,enchant=berserking
