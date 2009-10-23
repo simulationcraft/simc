@@ -314,11 +314,23 @@ static void trigger_righteous_vengeance( action_t* a )
 
     dmg += p -> active_righteous_vengeance -> base_td * remaining_ticks;
 
+#if 0 // DoT is refreshed like Shadow Word: Pain
+
+    p -> active_righteous_vengeance -> refresh_duration();
+  }
+  else 
+  {
+    p -> active_righteous_vengeance -> player_buff();
+    p -> active_righteous_vengeance -> schedule_tick();
+  } 
+#else // DoT is rescheduled like Ignite
     p -> active_righteous_vengeance -> cancel();
   }
 
-  p -> active_righteous_vengeance -> base_td = dmg / 4;
+  p -> active_righteous_vengeance -> player_buff(); 
   p -> active_righteous_vengeance -> schedule_tick();
+#endif
+  p -> active_righteous_vengeance -> base_td = dmg / 4;
 }
 
 // =========================================================================
