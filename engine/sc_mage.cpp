@@ -2277,10 +2277,13 @@ struct deep_freeze_t : public mage_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 1, 2369, 2641, 0, 0.09 },
+      { 60, 1, 1469, 1741, 0, 0.09 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
+
+    base_dd_min      += ( player -> level - 60 ) * 45;
+    base_dd_max      += ( player -> level - 60 ) * 45;
 
     base_execute_time = 0.0;
     may_crit          = true;
@@ -2318,6 +2321,9 @@ struct deep_freeze_t : public mage_spell_t
         return false;
 
     if ( ! target_is_frozen( p ) )
+      return false;
+
+    if ( ! p -> sim -> P330 )
       return false;
 
     return true;
@@ -3437,9 +3443,9 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
     { { 26, 1, &( talents.slow                 ) }, { 26, 3, &( talents.hot_streak          ) }, { 26, 3, &( talents.enduring_winter          ) } },
     { { 27, 5, &( talents.missile_barrage      ) }, { 27, 5, &( talents.burnout             ) }, { 27, 5, &( talents.chilled_to_the_bone      ) } },
     { { 28, 3, &( talents.netherwind_presence  ) }, { 28, 1, &( talents.living_bomb         ) }, { 28, 0, NULL                                  } },
-    { { 29, 2, &( talents.spell_power          ) }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } },
-    { { 30, 1, &( talents.arcane_barrage       ) }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } },
-    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, {  0, 0, NULL                                  } }
+    { { 29, 2, &( talents.spell_power          ) }, {  0, 0, NULL                             }, { 29, 0, NULL                                  } },
+    { { 30, 1, &( talents.arcane_barrage       ) }, {  0, 0, NULL                             }, { 30, 0, NULL                                  } },
+    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, { 31, 1, &( talents.deep_freeze              ) } }
   };
 
     util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
