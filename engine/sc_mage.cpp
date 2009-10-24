@@ -25,7 +25,6 @@ struct mage_t : public player_t
   buff_t* buffs_combustion;
   buff_t* buffs_fingers_of_frost;
   buff_t* buffs_focus_magic_feedback;
-  buff_t* buffs_frozen_core;
   buff_t* buffs_ghost_charge;
   buff_t* buffs_hot_streak;
   buff_t* buffs_hot_streak_crits;
@@ -2075,10 +2074,9 @@ struct combustion_t : public mage_spell_t
 struct frost_bolt_t : public mage_spell_t
 {
   int frozen;
-  int frozen_core;
 
   frost_bolt_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen( -1 ), frozen_core( -1 )
+      mage_spell_t( "frost_bolt", player, SCHOOL_FROST, TREE_FROST ), frozen( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2087,7 +2085,6 @@ struct frost_bolt_t : public mage_spell_t
     option_t options[] =
     {
       { "frozen", OPT_BOOL, &frozen },
-      { "frozen_core", OPT_INT, &frozen_core },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2138,25 +2135,6 @@ struct frost_bolt_t : public mage_spell_t
     may_torment = true;
   }
 
-  virtual void schedule_execute()
-  {
-    mage_spell_t::schedule_execute();
-    mage_t* p = player -> cast_mage();
-
-    p -> buffs_frozen_core -> expire();
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    double exe_time = mage_spell_t::execute_time();
-    mage_t* p = player -> cast_mage();
-
-    if ( p -> sim -> P330 && p -> buffs_frozen_core -> up() )
-      exe_time -= util_t::talent_rank( p -> talents.frozen_core, 3, 0.40, 0.70, 1.00 );
-
-    return exe_time;
-  }
-
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
@@ -2182,10 +2160,6 @@ struct frost_bolt_t : public mage_spell_t
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-        return false;
-
-    if ( frozen_core != -1 )
-      if ( frozen_core != p -> buffs_frozen_core -> check() )
         return false;
 
     return mage_spell_t::ready();
@@ -2240,16 +2214,6 @@ struct ice_lance_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     spell_impact = true;
-  }
-
-  virtual void execute()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::execute();
-    if ( p -> sim -> P330 && result == RESULT_CRIT )
-    {
-      p -> buffs_frozen_core -> trigger();
-    }
   }
 
   virtual void player_buff()
@@ -2369,12 +2333,11 @@ struct frostfire_bolt_t : public mage_spell_t
 {
   int dot_wait;
   int frozen;
-  int frozen_core;
   int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ),
-      dot_wait( 0 ), frozen( -1 ), frozen_core( -1 ), ghost_charge( -1 )
+      dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2384,7 +2347,6 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       { "dot_wait",     OPT_BOOL, &dot_wait     },
       { "frozen",       OPT_BOOL, &frozen       },
-      { "frozen_core",  OPT_INT,  &frozen_core  },
       { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2433,25 +2395,6 @@ struct frostfire_bolt_t : public mage_spell_t
     may_torment = true;
   }
 
-  virtual void schedule_execute()
-  {
-    mage_spell_t::schedule_execute();
-    mage_t* p = player -> cast_mage();
-
-    p -> buffs_frozen_core -> expire();
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    double exe_time = mage_spell_t::execute_time();
-    mage_t* p = player -> cast_mage();
-
-    if ( p -> sim -> P330 && p -> buffs_frozen_core -> up() )
-      exe_time -= util_t::talent_rank( p -> talents.frozen_core, 3, 0.40, 0.70, 1.00 );
-
-    return exe_time;
-  }
-
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
@@ -2482,10 +2425,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
-        return false;
-
-    if ( frozen_core != -1 )
-      if ( frozen_core != p -> buffs_frozen_core -> check() )
         return false;
 
     return mage_spell_t::ready();
@@ -3135,7 +3074,6 @@ void mage_t::init_buffs()
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
-  buffs_frozen_core          = new buff_t( this, "frozen_core",          1,    0, 0, talents.frozen_core );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.hot_streak / 3.0 );
   buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
