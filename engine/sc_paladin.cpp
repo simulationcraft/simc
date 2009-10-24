@@ -210,6 +210,7 @@ struct paladin_t : public player_t
   virtual void      init_items();
   virtual void      init_buffs();
   virtual void      init_actions();
+  virtual void      init_rating();
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_spell_power( int school ) SC_CONST;
@@ -2330,6 +2331,15 @@ void paladin_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+// paladin_t::init_rating ==================================================
+
+void paladin_t::init_rating()
+{
+  player_t::init_rating();
+
+  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // paladin_t::composite_spell_power ==========================================
