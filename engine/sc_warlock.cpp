@@ -1132,6 +1132,10 @@ static void trigger_everlasting_affliction( spell_t* s )
 
   if ( p -> rng_everlasting_affliction -> roll( p -> talents.everlasting_affliction * 0.20 ) )
   {
+    if ( p -> sim -> P330 && p -> glyphs.quick_decay )
+    {
+	    p -> active_corruption -> num_ticks = ( int ) floor( 6.0 / s -> haste() );
+    }
     p -> active_corruption -> refresh_duration();
   }
 }
