@@ -2259,19 +2259,17 @@ struct ice_lance_t : public mage_spell_t
 
 struct deep_freeze_t : public mage_spell_t
 {
-  int frozen;
   int ghost_charge;
 
   deep_freeze_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST ),
-      frozen( -1 ), ghost_charge( -1 )
+      ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.deep_freeze );
 
     option_t options[] =
     {
-      { "frozen",       OPT_BOOL, &frozen       },
       { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2279,7 +2277,7 @@ struct deep_freeze_t : public mage_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 1, 2368, 2635, 0, 0.09 },
+      { 80, 1, 2369, 2641, 0, 0.09 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -2319,9 +2317,8 @@ struct deep_freeze_t : public mage_spell_t
       if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
         return false;
 
-    if ( frozen != -1 )
-      if ( frozen != target_is_frozen( p ) )
-        return false;
+    if ( ! target_is_frozen( p ) )
+      return false;
 
     return true;
   }
