@@ -39,6 +39,7 @@ struct warrior_t : public player_t
   buff_t* buffs_tier7_4pc_melee;
   buff_t* buffs_tier8_2pc_melee;
   buff_t* buffs_tier10_2pc_melee;
+  buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_glyph_of_blocking;
   buff_t* buffs_glyph_of_revenge;
 
@@ -318,6 +319,8 @@ static void trigger_bloodsurge( action_t* a )
   {
     p -> buffs_bloodsurge -> max_stack = 2;
     p -> buffs_bloodsurge -> duration  = 10;
+
+    p -> buffs_tier10_4pc_melee -> duration = 20;
   }
   else
   {
@@ -325,7 +328,10 @@ static void trigger_bloodsurge( action_t* a )
     p -> buffs_bloodsurge -> duration  = 5;
   }
 
-  p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack );
+  if ( p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack ) )
+  {
+    p -> buffs_tier10_4pc_melee -> trigger();
+  }
 }
 
 // trigger_deep_wounds ======================================================
@@ -478,6 +484,8 @@ static void trigger_sudden_death( action_t* a )
   {
     p -> buffs_sudden_death -> max_stack = 2;
     p -> buffs_sudden_death -> duration  = 20;
+
+    p -> buffs_tier10_4pc_melee -> duration = 20;
   }
   else
   {
@@ -485,7 +493,10 @@ static void trigger_sudden_death( action_t* a )
     p -> buffs_sudden_death -> duration  = 10;
   }
 
-  p -> buffs_sudden_death -> trigger( p -> buffs_sudden_death -> max_stack );
+  if ( p -> buffs_sudden_death -> trigger( p -> buffs_sudden_death -> max_stack ) )
+  {
+    p -> buffs_tier10_4pc_melee -> trigger();
+  }
 }
 
 // trigger_sword_and_board ==================================================
@@ -821,6 +832,10 @@ struct melee_t : public warrior_attack_t
     if ( active_heroic_strike )
     {
       active_heroic_strike -> execute();
+      if ( result_is_hit() )
+      {
+	trigger_unbridled_wrath( this );
+      }
       schedule_execute();
     }
     else
@@ -1394,7 +1409,8 @@ struct execute_t : public warrior_attack_t
 
   virtual double gcd() SC_CONST
   {
-    if ( player -> set_bonus.tier10_4pc_melee() ) return trigger_gcd - 0.5;
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> buffs_tier10_4pc_melee -> up() ) return trigger_gcd - 0.5;
     return trigger_gcd;
   }
 
@@ -1439,6 +1455,7 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
     p -> buffs_sudden_death -> decrement();
+    p -> buffs_tier10_4pc_melee -> decrement();
   }
   
   virtual bool ready()
@@ -1662,7 +1679,8 @@ struct slam_t : public warrior_attack_t
 
   virtual double gcd() SC_CONST
   {
-    if ( player -> set_bonus.tier10_4pc_melee() ) return trigger_gcd - 0.5;
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> buffs_tier10_4pc_melee -> up() ) return trigger_gcd - 0.5;
     return trigger_gcd;
   }
 
@@ -1686,6 +1704,7 @@ struct slam_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
     p -> buffs_bloodsurge -> decrement();
+    p -> buffs_tier10_4pc_melee -> decrement();
     if ( result == RESULT_CRIT )
     {
       p -> buffs_tier8_2pc_melee -> trigger();
@@ -2341,7 +2360,7 @@ void warrior_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_bloodrage                 = new buff_t( this, "bloodrage",                 1, 10.0 );
-  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                set_bonus.tier10_4pc_melee() ? 2 : 1,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
+  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0,   0, talents.death_wish );
   buffs_enrage                    = new buff_t( this, "enrage",                    1, 12.0,   0, talents.enrage ? 0.30 : 0.00 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry );
@@ -2350,12 +2369,13 @@ void warrior_t::init_buffs()
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
   buffs_revenge                   = new buff_t( this, "revenge",                   1 );
   buffs_shield_block              = new buff_t( this, "shield_block",              1, 10.0 );
-  buffs_sudden_death              = new buff_t( this, "sudden_death",              set_bonus.tier10_4pc_melee() ? 2 : 1, 10.0,   0, talents.sudden_death * 0.03 );
+  buffs_sudden_death              = new buff_t( this, "sudden_death",              2, 10.0,   0, talents.sudden_death * 0.03 );
   buffs_sword_and_board           = new buff_t( this, "sword_and_board",           1,  5.0,   0, talents.sword_and_board * 0.10 );
   buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 6.0, talents.taste_for_blood / 3.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0, talents.wrecking_crew );
   buffs_tier7_4pc_melee           = new buff_t( this, "tier7_4pc_melee",           1, 30.0,   0, set_bonus.tier7_4pc_melee() * 0.10 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
+  buffs_tier10_4pc_melee          = new buff_t( this, "tier10_4pc_melee",          2, 20.0,   0, set_bonus.tier10_4pc_melee() );
   buffs_glyph_of_blocking         = new buff_t( this, "glyph_of_blocking",         1, 10.0,   0, glyphs.blocking );
   buffs_glyph_of_revenge          = new buff_t( this, "glyph_of_revenge",          1,    0,   0, glyphs.revenge );
   
