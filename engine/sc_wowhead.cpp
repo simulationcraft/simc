@@ -219,7 +219,7 @@ static bool parse_weapon( item_t&     item,
     }
   }
 
-  if ( speed.empty() || dps.empty() ) return true;
+  if ( speed.empty() || dps.empty() || dmgmin.empty() || dmgmax.empty() ) return true;
 
   std::string subclass_str;
   if ( ! xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
@@ -248,13 +248,7 @@ static bool parse_weapon( item_t&     item,
   if ( weapon_type == WEAPON_WAND ) return true;
 
   item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
-  item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps";
-
-  if ( ! dmgmin.empty() )
-    item.armory_weapon_str += "_" + dmgmin + "min";
-
-  if ( ! dmgmax.empty() )
-    item.armory_weapon_str += "_" + dmgmax + "max";
+  item.armory_weapon_str += "_" + speed + "speed" + "_" + dmgmin + "min" + "_" + dmgmax + "max";
 
   return true;
 }

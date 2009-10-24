@@ -447,7 +447,7 @@ static bool parse_item_weapon( item_t& item,
     if ( weapon_type == WEAPON_WAND ) return true;
 
     item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
-    item.armory_weapon_str += "_" + speed + "speed" + "_" + dps + "dps" + "_" + dmg_min + "min" + "_" + dmg_max + "max";
+    item.armory_weapon_str += "_" + speed + "speed" + "_" + dmg_min + "min" + "_" + dmg_max + "max";
   }
 
   return true;

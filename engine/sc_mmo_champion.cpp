@@ -218,7 +218,7 @@ static bool parse_weapon( item_t&     item,
   num_tokens = util_t::string_split( tokens, tti_dps, " ()" );
   if ( num_tokens == 4 ) dps_str = tokens[ 0 ];
 
-  if ( speed_str.empty() || dps_str.empty() ) return false;
+  if ( speed_str.empty() || dps_str.empty() || dmg_min_str.empty() || dmg_max_str.empty() ) return false;
 
   std::string subclass_str, slot_str;
 
@@ -251,17 +251,7 @@ static bool parse_weapon( item_t&     item,
   if ( weapon_type == WEAPON_WAND ) return true;
 
   item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
-  item.armory_weapon_str += "_" + speed_str + "speed" + "_" + dps_str + "dps";
-
-  if ( ! dmg_min_str.empty() )
-  {
-    item.armory_weapon_str += "_" + dmg_min_str + "min";
-  }
-
-  if ( ! dmg_max_str.empty() )
-  {
-    item.armory_weapon_str += "_" + dmg_max_str + "max";
-  }
+  item.armory_weapon_str += "_" + speed_str + "speed" + "_" + dmg_min_str + "min" + "_" + dmg_max_str + "max";
 
   return true;
 }
