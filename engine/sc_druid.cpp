@@ -2624,7 +2624,9 @@ struct cat_form_t : public druid_spell_t
     {
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
-      w -> damage = 54.8;
+      w -> min_dmg = 54.8; // FIX-ME: find the correct min and max values.
+      w -> max_dmg = 54.8;
+      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
       w -> swing_time = 1.0;
     }
 
