@@ -696,6 +696,9 @@ const char* util_t::stat_type_string( int stat )
   case STAT_WEAPON_DPS:   return "weapon_dps";
   case STAT_WEAPON_SPEED: return "weapon_speed";
 
+  case STAT_WEAPON_OFFHAND_DPS:    return "weapon_offhand_dps";
+  case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
+
   case STAT_ARMOR:          return "armor";
   case STAT_BONUS_ARMOR:    return "bonus_armor";
   case STAT_DEFENSE_RATING: return "defense_rating";
@@ -743,6 +746,9 @@ const char* util_t::stat_type_abbrev( int stat )
 
   case STAT_WEAPON_DPS:   return "Wdps";
   case STAT_WEAPON_SPEED: return "Wspeed";
+
+  case STAT_WEAPON_OFFHAND_DPS:    return "WOHdps";
+  case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
   case STAT_ARMOR:          return "Armor";
   case STAT_BONUS_ARMOR:    return "BArmor";

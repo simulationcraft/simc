@@ -46,6 +46,9 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   += value; break;
   case STAT_WEAPON_SPEED: weapon_speed += value; break;
 
+  case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    += value; break;
+  case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
+
   case STAT_ARMOR:          armor          += value; break;
   case STAT_BONUS_ARMOR:    bonus_armor    += value; break;
   case STAT_DEFENSE_RATING: defense_rating += value; break;
@@ -99,6 +102,9 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_WEAPON_DPS:   weapon_dps   = value; break;
   case STAT_WEAPON_SPEED: weapon_speed = value; break;
 
+  case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    = value; break;
+  case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
+
   case STAT_ARMOR:          armor          = value; break;
   case STAT_BONUS_ARMOR:    bonus_armor    = value; break;
   case STAT_DEFENSE_RATING: defense_rating = value; break;
@@ -150,6 +156,9 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
 
   case STAT_WEAPON_DPS:   return weapon_dps;
   case STAT_WEAPON_SPEED: return weapon_speed;
+
+  case STAT_WEAPON_OFFHAND_DPS:    return weapon_offhand_dps;
+  case STAT_WEAPON_OFFHAND_SPEED:  return weapon_offhand_speed;
 
   case STAT_ARMOR:          return armor;
   case STAT_BONUS_ARMOR:    return bonus_armor;

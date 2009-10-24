@@ -337,6 +337,7 @@ enum stat_type
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
+  STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED, 
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING, 
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
   STAT_MAX
@@ -711,6 +712,8 @@ struct gear_stats_t
   double haste_rating;
   double weapon_dps;
   double weapon_speed;
+  double weapon_offhand_dps;
+  double weapon_offhand_speed;
   double armor;
   double bonus_armor;
   double defense_rating;

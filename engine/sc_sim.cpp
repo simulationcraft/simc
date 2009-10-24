@@ -394,7 +394,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     merge_ignite( 0 ), report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ), 
     armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
-    report_precision( 3 ), threads( 0 ), thread_handle( 0 ), thread_index( index )
+    report_precision( 4 ), threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
   path_str += "|profiles";
   path_str += "|..";

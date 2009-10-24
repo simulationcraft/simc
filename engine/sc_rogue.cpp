@@ -240,6 +240,7 @@ struct rogue_t : public player_t
   virtual void      init_procs();
   virtual void      init_uptimes();
   virtual void      init_rng();
+  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_actions();
   virtual void      register_callbacks();
@@ -3175,6 +3176,16 @@ void rogue_t::init_rng()
 
   rng_critical_strike_interval = get_rng( "critical_strike_interval", RNG_DISTRIBUTED );
   rng_critical_strike_interval -> average_range = false;
+}
+
+// rogue_t::init_scaling ====================================================
+
+void rogue_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
+  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
 }
 
 // rogue_t::init_buffs ======================================================

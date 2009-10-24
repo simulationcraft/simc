@@ -323,6 +323,7 @@ struct death_knight_t : public player_t
   virtual void      init_resources( bool force );
   virtual void      init_uptimes();
   virtual void      init_items();
+  virtual void      init_rating();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
@@ -2701,6 +2702,9 @@ void death_knight_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_ARMOR ] = 1;
+
+  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
+  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
 }
 
 void death_knight_t::init_buffs()
@@ -2800,6 +2804,15 @@ void death_knight_t::init_items()
   {
     log_t::output( sim, "simulationcraft: %s has unknown sigil %s", name(), sigil.c_str() );
   }
+}
+
+// death_knight_t::init_rating =======================================================
+
+void death_knight_t::init_rating()
+{
+  player_t::init_rating();
+
+  rating.attack_haste *= 1.0 / 1.30;
 }
 
 void death_knight_t::reset()

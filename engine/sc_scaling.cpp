@@ -124,7 +124,11 @@ void scaling_t::init_deltas()
 
   if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 3000 : 6000;
 
-  if ( stats.weapon_dps == 0 ) stats.weapon_dps = smooth_scale_factors ? 25 : 50;
+  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = smooth_scale_factors ? 25 : 50;
+  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = smooth_scale_factors ? 25 : 50;
+
+  if ( stats.weapon_speed          == 0 ) stats.weapon_speed = 0.2;
+  if ( stats.weapon_offhand_speed  == 0 ) stats.weapon_offhand_speed  = 0.2;
 }
 
 // scaling_t::analyze_stats =================================================
@@ -156,8 +160,8 @@ void scaling_t::analyze_stats()
 
     if ( ! is_scaling_stat( sim, i ) ) continue;
 
-    int scale_delta = ( int ) stats.get_stat( i );
-    if ( scale_delta == 0 ) continue;
+    double scale_delta = stats.get_stat( i );
+    if ( scale_delta == 0.0 ) continue;
 
     current_scaling_stat++;
 
@@ -193,9 +197,13 @@ void scaling_t::analyze_stats()
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
       double divisor = scale_delta;
-      if ( divisor < 0 ) divisor += ref_p -> over_cap[ i ];
+
+      if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
       double f = ( delta_p -> dps - ref_p -> dps ) / divisor;
+
+      if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
+        f /= 10.0;
 
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }
@@ -338,6 +346,9 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
     { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
+    { "scale_weapon_speed",             OPT_FLT,    &( stats.weapon_speed                   ) },
+    { "scale_offhand_weapon_dps",       OPT_FLT,    &( stats.weapon_offhand_dps             ) },
+    { "scale_offhand_weapon_speed",     OPT_FLT,    &( stats.weapon_offhand_speed           ) },
     { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
     { NULL, OPT_UNKNOWN, NULL }
   };

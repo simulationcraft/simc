@@ -34,7 +34,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
   if( max_name_length == 0 ) max_name_length = 20;
 
   util_t::fprintf( file,
-                   "    %-*s  Count=%5.1f|%4.1fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                   "    %-*s  Count=%5.1f|%4.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
 		   max_name_length,
                    s -> name_str.c_str(),
                    s -> num_executes,
@@ -47,7 +47,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   double miss_pct = s -> num_executes > 0 ? s -> execute_results[ RESULT_MISS ].count / s -> num_executes : 0.0;
 
-  util_t::fprintf( file, "  Miss=%.1f%%", 100.0 * miss_pct );
+  util_t::fprintf( file, "  Miss=%.2f%%", 100.0 * miss_pct );
 
   if ( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {
@@ -824,10 +824,10 @@ static void print_html_action( FILE* file, stats_t* s )
 
   util_t::fprintf( file,
 		   " <tr>"
-		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1fsec</td>"
+		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.2fsec</td>"
 		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
-		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.1f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " <td>%.2f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
+		   " <td>%.2f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
