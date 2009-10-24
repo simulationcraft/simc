@@ -764,8 +764,6 @@ struct felhunter_pet_t : public warlock_pet_t
 
       base_crit_bonus = 0.5;
       base_crit_bonus_multiplier = 2.0;
-
-      if ( sim -> P330 && o -> talents.pandemic ) base_crit_bonus_multiplier += 1.0;
     }
       
     virtual void execute()
