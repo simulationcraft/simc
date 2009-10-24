@@ -3818,7 +3818,7 @@ void warlock_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
-    action_list_str += talents.master_conjuror ? "/spell_stone" : "/fire_stone";
+    action_list_str += ( talents.master_conjuror || talents.haunt ) ? "/spell_stone" : "/fire_stone";
     action_list_str += "/fel_armor/summon_pet";
     if ( summon_pet_str.empty() )
     {
