@@ -243,6 +243,7 @@ struct mage_spell_t : public spell_t
   int arcane_power;
   int icy_veins;
   bool spell_impact;
+  int fingers_of_frost_cost;
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
@@ -251,7 +252,8 @@ struct mage_spell_t : public spell_t
       dpm_rotation( 0 ),
       arcane_power( 0 ),
       icy_veins( 0 ),
-      spell_impact( false )
+      spell_impact( false ),
+      fingers_of_frost_cost( 1 )
   {
 
   }
@@ -681,7 +683,7 @@ static void clear_fingers_of_frost( spell_t* s )
 
   if ( s -> may_crit && p -> buffs_fingers_of_frost -> check() )
   {
-    p -> buffs_fingers_of_frost -> decrement();
+    p -> buffs_fingers_of_frost -> decrement( ( ( mage_spell_t* ) s ) -> fingers_of_frost_cost );
 
     if ( ! p -> buffs_fingers_of_frost -> check() )
     {
@@ -2302,6 +2304,8 @@ struct deep_freeze_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     spell_impact = false;
+
+    fingers_of_frost_cost = 2;
   }
 
   virtual void execute()
