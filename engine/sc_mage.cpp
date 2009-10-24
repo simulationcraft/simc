@@ -3446,10 +3446,10 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
     { { 25, 5, &( talents.mind_mastery         ) }, { 25, 0, NULL                             }, { 25, 1, &( talents.summon_water_elemental   ) } },
     { { 26, 1, &( talents.slow                 ) }, { 26, 3, &( talents.hot_streak          ) }, { 26, 3, &( talents.enduring_winter          ) } },
     { { 27, 5, &( talents.missile_barrage      ) }, { 27, 5, &( talents.burnout             ) }, { 27, 5, &( talents.chilled_to_the_bone      ) } },
-	{ { 28, 3, &( talents.netherwind_presence  ) }, { 28, 1, &( talents.living_bomb         ) }, { 28, 1, &( talents.deep_freeze			  ) } },
+    { { 28, 3, &( talents.netherwind_presence  ) }, { 28, 1, &( talents.living_bomb         ) }, { 28, 1, &( talents.deep_freeze              ) } },
     { { 29, 2, &( talents.spell_power          ) }, {  0, 0, NULL                             }, { 29, 0, NULL                                  } },
     { { 30, 1, &( talents.arcane_barrage       ) }, {  0, 0, NULL                             }, { 30, 0, NULL                                  } },
-    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, { 31, 0, NULL					                } }
+    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, { 31, 0, NULL                                  } }
   };
 
     util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
