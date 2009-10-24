@@ -316,7 +316,7 @@ static void trigger_bloodsurge( action_t* a )
 
   if ( p -> set_bonus.tier10_4pc_melee() )
   {
-    if ( p -> rng_tier10_4pc_melee -> roll( 0.20 ) )
+    if ( p -> rng_tier10_4pc_melee -> roll( 0.30 ) )
     {
       p -> buffs_bloodsurge -> max_stack = 2;
       p -> buffs_bloodsurge -> duration  = 10;
@@ -479,7 +479,7 @@ static void trigger_sudden_death( action_t* a )
 
   if ( p -> set_bonus.tier10_4pc_melee() )
   {
-    if ( p -> rng_tier10_4pc_melee -> roll( 0.20 ) )
+    if ( p -> rng_tier10_4pc_melee -> roll( 0.30 ) )
     {
       p -> buffs_sudden_death -> max_stack = 2;
       p -> buffs_sudden_death -> duration  = 20;
