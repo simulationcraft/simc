@@ -43,7 +43,7 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_pure;
   buff_t* buffs_reckoning;
   buff_t* buffs_redoubt;
-  buff_t* buffs_seal_of_vengeance;
+  buff_t* buffs_holy_vengeance;
   buff_t* buffs_the_art_of_war;
   buff_t* buffs_vengeance;
   buff_t* buffs_libram_of_avengement;
@@ -405,7 +405,7 @@ struct paladin_attack_t : public attack_t
         case SEAL_OF_LIGHT:         p -> active_seal_of_light_proc         -> execute(); break;
         case SEAL_OF_RIGHTEOUSNESS: p -> active_seal_of_righteousness_proc -> execute(); break;
         case SEAL_OF_WISDOM:        p -> active_seal_of_wisdom_proc        -> execute(); break;
-        case SEAL_OF_VENGEANCE:     if ( p -> buffs_seal_of_vengeance -> stack() == 5 ) p -> active_seal_of_vengeance_proc -> execute(); break;
+        case SEAL_OF_VENGEANCE:     if ( p -> buffs_holy_vengeance         -> stack() == 5 ) p -> active_seal_of_vengeance_proc -> execute(); break;
         default:;
         }
       }
@@ -1130,7 +1130,7 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= p -> buffs_seal_of_vengeance -> stack();
+    player_multiplier *= p -> buffs_holy_vengeance -> stack();
   }
 
   virtual void execute()
@@ -1141,7 +1141,7 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
     calculate_result();
     if ( result_is_hit() )
     {
-      p -> buffs_seal_of_vengeance -> trigger();
+      p -> buffs_holy_vengeance -> trigger();
       player_buff(); // Re-calculate with the new stacks of the Seal of Vengeance.
       if ( ticking )
       {
@@ -1169,7 +1169,7 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::last_tick();
-    p -> buffs_seal_of_vengeance -> expire();
+    p -> buffs_holy_vengeance -> expire();
   }
 };
 
@@ -1232,7 +1232,7 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> buffs_seal_of_vengeance -> stack() * 0.10;
+    player_multiplier *= 1.0 + p -> buffs_holy_vengeance -> stack() * 0.10;
   }
 };
 
@@ -2262,7 +2262,7 @@ void paladin_t::init_buffs()
   buffs_judgements_of_the_pure = new buff_t( this, "judgements_of_the_pure", 1, 60.0 );
   buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning * 0.02 );
   buffs_redoubt                = new buff_t( this, "redoubt",                5, 10.0, 0, talents.redoubt ? 0.10 : 0.0 );
-  buffs_seal_of_vengeance      = new buff_t( this, "seal_of_vengeance",      5       );
+  buffs_holy_vengeance         = new buff_t( this, "holy_vengeance",         5       );
   buffs_the_art_of_war         = new buff_t( this, "the_art_of_war",         1, 15.0, 0, talents.the_art_of_war );
   buffs_vengeance              = new buff_t( this, "vengeance",              3, 30.0 );
 
