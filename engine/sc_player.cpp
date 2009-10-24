@@ -1022,24 +1022,12 @@ void player_t::init_scaling()
           main_hand_weapon.damage  += main_hand_weapon.swing_time * v;
           main_hand_weapon.min_dmg += main_hand_weapon.swing_time * v;
           main_hand_weapon.max_dmg += main_hand_weapon.swing_time * v;
-          if ( main_hand_weapon.damage < 0.1 )
-            main_hand_weapon.damage = 0.1;
-          if ( main_hand_weapon.min_dmg < 0.1 )
-            main_hand_weapon.min_dmg = 0.1;
-          if ( off_hand_weapon.max_dmg < 0.1 )
-            main_hand_weapon.max_dmg = 0.1;
         }
         if ( ranged_weapon.damage > 0 )
         {
           ranged_weapon.damage     += ranged_weapon.swing_time * v;
           ranged_weapon.min_dmg    += ranged_weapon.swing_time * v;
           ranged_weapon.max_dmg    += ranged_weapon.swing_time * v;
-          if ( off_hand_weapon.damage < 0.1 )
-            ranged_weapon.damage = 0.1;
-          if ( ranged_weapon.min_dmg < 0.1 )
-            ranged_weapon.min_dmg = 0.1;
-          if ( ranged_weapon.max_dmg < 0.1 )
-            ranged_weapon.max_dmg = 0.1;
         }
         break;
 
@@ -1047,10 +1035,6 @@ void player_t::init_scaling()
         if ( main_hand_weapon.swing_time > 0 )
         {
           double new_speed = ( main_hand_weapon.swing_time + v );
-
-          if ( new_speed < 0.1 )
-            new_speed = 0.1;
-
           double mult = new_speed / main_hand_weapon.swing_time;
 
           main_hand_weapon.min_dmg *= mult;
@@ -1062,9 +1046,6 @@ void player_t::init_scaling()
         if ( ranged_weapon.swing_time > 0 )
         {
           double new_speed = ( ranged_weapon.swing_time + v );
-
-          if ( new_speed < 0.1 )
-            new_speed = 0.1;
 
           double mult = new_speed / ranged_weapon.swing_time;
 
@@ -1082,12 +1063,6 @@ void player_t::init_scaling()
 	        off_hand_weapon.damage   += off_hand_weapon.swing_time * v;
           off_hand_weapon.min_dmg  += off_hand_weapon.swing_time * v;
           off_hand_weapon.max_dmg  += off_hand_weapon.swing_time * v;
-          if ( off_hand_weapon.damage < 0.1 )
-            off_hand_weapon.damage = 0.1;
-          if ( off_hand_weapon.min_dmg < 0.1 )
-            off_hand_weapon.min_dmg = 0.1;
-          if ( off_hand_weapon.max_dmg < 0.1 )
-            off_hand_weapon.max_dmg = 0.1;
         }
 	      break;
 
@@ -1095,10 +1070,6 @@ void player_t::init_scaling()
         if ( off_hand_weapon.swing_time > 0 )
         {
           double new_speed = ( off_hand_weapon.swing_time + v );
-
-          if ( new_speed < 0.1 )
-            new_speed = 0.1;
-
           double mult = new_speed / off_hand_weapon.swing_time;
 
           off_hand_weapon.min_dmg *= mult;
