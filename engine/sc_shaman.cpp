@@ -1231,7 +1231,15 @@ struct lava_burst_t : public shaman_spell_t
                                           util_t::talent_rank( p -> talents.elemental_fury, 5, 0.20 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.10 : 0.00 ) );
 
-    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.2;
+    if ( ! sim -> P330 && p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.2;
+
+    if ( sim -> P330 && p -> set_bonus.tier9_4pc_caster() )
+    {
+      num_ticks      = 3;
+      base_tick_time = 2.0;
+      tick_may_crit  = false;
+      tick_power_mod = 0.0;
+    }
 
     if ( p -> totems.thunderfall )
     {
@@ -1240,12 +1248,23 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
+  virtual double total_td_multiplier() SC_CONST
+  {
+    return 1.0; // Don't double-dip.
+  }
+
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
         p -> buffs_elemental_mastery -> current_value = 0;
     p -> _cooldowns.lava_burst = cooldown_ready;
+
+    if ( result_is_hit() )
+    {
+      if ( sim -> P330 && p -> set_bonus.tier9_4pc_caster() )
+        base_td = direct_dmg * 0.2 / num_ticks;
+    }
   }
 
   virtual double execute_time() SC_CONST
