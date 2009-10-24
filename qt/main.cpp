@@ -26,5 +26,21 @@ int main(int argc, char *argv[])
   
   w.showMaximized();
   w.cmdLine->setFocus();
+
+  if( argc > 1 )
+  {
+    for( int i=1; i < argc; i++ )
+    {
+      QFile file( argv[ i ] );
+
+      if( file.open( QIODevice::ReadOnly ) )
+      {
+	w.simulateText->appendPlainText( file.readAll() );
+	file.close();
+      }
+    }
+    w.mainTab->setCurrentIndex( TAB_SIMULATE );    
+  }
+
   return a.exec();
 }

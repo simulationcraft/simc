@@ -294,6 +294,8 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   connect(   importThread, SIGNAL(finished()), this, SLOT(  importFinished()) );
   connect( simulateThread, SIGNAL(finished()), this, SLOT(simulateFinished()) );
 
+  setAcceptDrops( true );
+
   loadHistory();
 }
 
@@ -1092,6 +1094,28 @@ void SimulationCraftWindow::saveResults()
 // ==========================================================================
 // Window Events
 // ==========================================================================
+
+void SimulationCraftWindow::dragEnterEvent( QDragEnterEvent* e )
+{
+  e->acceptProposedAction();
+}
+
+void SimulationCraftWindow::dropEvent( QDropEvent* e )
+{
+  switch( mainTab->currentIndex() )
+  {
+  case TAB_WELCOME:   break;
+  case TAB_OPTIONS:   break;
+  case TAB_IMPORT:    break;
+  case TAB_SIMULATE:   simulateText->setPlainText( e->mimeData()->text() ); break;
+  case TAB_OVERRIDES: overridesText->setPlainText( e->mimeData()->text() ); break;
+  case TAB_EXAMPLES:  break;
+  case TAB_LOG:       break;
+  case TAB_RESULTS:   break;
+  }
+
+  e->acceptProposedAction();
+}
 
 void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
 { 

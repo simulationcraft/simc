@@ -24,22 +24,17 @@ What is in the Install?
 
 Windows Platforms:
 (1) simc.exe => Command-line simulation executable
-(2) SIMC.BAT => Wrapper around simc.exe that will execute script files when they are 
-"dropped" on top of its icon.  After completion, the output will be passed to notepad and a 
-browser.
-(3) SCALE_FACTORS.BAT => Similar to SIMC.BAT but will also generate scale factors, also
-known as "stat weights", also known as "EP values".  In addition, these scale factors will be
-used to generate http links to wowhead and lootrank for gear ranking.
-(4) simcqt.exe => Alpha-level graphic user-interface.  See #5.
-(5) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which is required by the Qt GUI 
-(6) Examples.simc => Reference documentation for the many parameters
-(7) Legend.html => Glossary for simulation output
-(8) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(2) simcqt.exe => Alpha-level graphic user-interface.  Accepts drag-n-drop of .simc profiles.
+(3) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which may be required by the Qt GUI 
+(4) Examples.simc => Reference documentation for the many parameters
+(5) Legend.html => Glossary for simulation output
+(6) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.
 (3) Examples.simc => Reference documentation for the many parameters
+(4) Legend.html => Glossary for simulation output
 
 =============================================================================================
 

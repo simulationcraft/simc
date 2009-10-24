@@ -165,7 +165,9 @@ public:
     void createToolTips();
 
 protected:
-    virtual void closeEvent( QCloseEvent* e );
+    virtual void closeEvent( QCloseEvent* );
+    virtual void dragEnterEvent( QDragEnterEvent* );
+    virtual void dropEvent(QDropEvent* );
 
 private slots:
     void importFinished();
