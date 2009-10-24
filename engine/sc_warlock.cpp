@@ -1999,6 +1999,7 @@ struct corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     base_td = base_td_init;
+    num_ticks = 6;
     warlock_spell_t::execute();
     
     if ( result_is_hit() && p -> sim -> P330 )
