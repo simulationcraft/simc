@@ -827,7 +827,7 @@ static void print_html_action( FILE* file, stats_t* s )
 		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.2fsec</td>"
 		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " <td>%.2f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.2f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " <td>%.0f%%</td> <td>%.2f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
@@ -981,7 +981,7 @@ static void print_html_player( FILE* file, player_t* p )
 		   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
 		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
 		   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
-		   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th>"
+       " <th>Ticks</th> <th>T-Miss%%</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th>"
 		   " </tr>\n" );
 
   util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
