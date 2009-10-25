@@ -183,6 +183,8 @@ struct paladin_t : public player_t
   };
   librams_t librams;
 
+  bool  tier10_2pc_procs_from_strikes;
+
   paladin_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PALADIN, name, race_type )
   {
     active_seal = SEAL_NONE;
@@ -196,6 +198,8 @@ struct paladin_t : public player_t
     active_seal_of_wisdom_proc        = 0;
 
     active_righteous_vengeance = 0;
+
+    tier10_2pc_procs_from_strikes     = false;
 
     auto_attack = 0;
   }
@@ -461,7 +465,7 @@ struct melee_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
-      trigger_tier10_2pc( this ); // Fix-Me: Does it need to hit to proc? Does it only proc off these attacks?
+      trigger_tier10_2pc( this ); 
 
       if ( result == RESULT_CRIT )
       {
@@ -590,9 +594,16 @@ struct crusader_strike_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( result == RESULT_CRIT )
+    if ( result_is_hit() )
     {
-      trigger_righteous_vengeance( this );
+      if ( p -> tier10_2pc_procs_from_strikes )
+      {
+        trigger_tier10_2pc( this );
+      }
+      if ( result == RESULT_CRIT )
+      {
+        trigger_righteous_vengeance( this );
+      }
     }
     if ( p -> librams.    deadly_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 120 );
     if ( p -> librams.   furious_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 144 );
@@ -636,10 +647,18 @@ struct divine_storm_t : public paladin_attack_t
 
   virtual void execute()
   {
+    paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( result == RESULT_CRIT )
+    if ( result_is_hit() )
     {
-      trigger_righteous_vengeance( this );
+      if ( p -> tier10_2pc_procs_from_strikes )
+      {
+        trigger_tier10_2pc( this );
+      }
+      if ( result == RESULT_CRIT )
+      {
+        trigger_righteous_vengeance( this );
+      }
     }
   }
 };
@@ -2064,7 +2083,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs_parry_haste = get_proc( "parry_haste", sim );
-  procs_tier10_2pc  = get_proc( "tier10_2pc",  sim );
+  procs_tier10_2pc  = get_proc( "tier10_2pc",  sim ); 
 }
 
 // paladin_t::init_rng ======================================================
@@ -2557,6 +2576,8 @@ std::vector<option_t>& paladin_t::get_options()
       { "two_handed_weapon_spec",      OPT_INT, &( talents.two_handed_weapon_spec      ) },
       { "vengeance",                   OPT_INT, &( talents.vengeance                   ) },
       { "vindication",                 OPT_INT, &( talents.vindication                 ) },
+      // @option_doc loc=player/paladin/misc title="Misc"
+      { "tier10_2pc_procs_from_strikes", OPT_BOOL, &( tier10_2pc_procs_from_strikes    ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
