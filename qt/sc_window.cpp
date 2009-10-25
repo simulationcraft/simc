@@ -490,17 +490,17 @@ void SimulationCraftWindow::createBestInSlotTab()
       { DRUID,      T9, "Druid_T9_00_55_16",                TAB_WOWHEAD, "14717965" },
       { DRUID,      T9, "Druid_T9_00_55_16_M",              TAB_WOWHEAD, "14726081" },
       { DRUID,      T9, "Druid_T9_58_00_13",                TAB_WOWHEAD, "14187592" },
-      { DRUID,      T9, "Druid_T9_58_00_13_2T8_2T9",        TAB_WOWHEAD, "14187598" },
+      { DRUID,      T9, "Druid_T9_58_00_13_2T8_2T9",        TAB_WOWHEAD, "16237439" },
 
       { HUNTER,     T8, "Hunter_T8_01_15_55",               TAB_WOWHEAD, "13001196" },
       { HUNTER,     T8, "Hunter_T8_07_57_07",               TAB_WOWHEAD, "13001144" },
       { HUNTER,     T8, "Hunter_T8_07_57_07_HM",            TAB_WOWHEAD, "13630091" },
       { HUNTER,     T8, "Hunter_T8_54_12_05",               TAB_WOWHEAD, "13000974" },
-      { HUNTER,     T9, "Hunter_T8_02_18_51",               TAB_WOWHEAD, "14649679" },
-      { HUNTER,     T9, "Hunter_T8_07_57_07",               TAB_WOWHEAD, "14189960" },
-      { HUNTER,     T9, "Hunter_T8_07_57_07_HM",            TAB_WOWHEAD, "14651857" },
-      { HUNTER,     T9, "Hunter_T8_53_14_04",               TAB_WOWHEAD, "14663160" },
-      { HUNTER,     T9, "Hunter_T8_54_12_05",               TAB_WOWHEAD, "14662679" },
+      { HUNTER,     T9, "Hunter_T9_02_18_51",               TAB_WOWHEAD, "14649679" },
+      { HUNTER,     T9, "Hunter_T9_07_57_07",               TAB_WOWHEAD, "14189960" },
+      { HUNTER,     T9, "Hunter_T9_07_57_07_HM",            TAB_WOWHEAD, "14651857" },
+      { HUNTER,     T9, "Hunter_T9_53_14_04",               TAB_WOWHEAD, "14663160" },
+      { HUNTER,     T9, "Hunter_T9_54_12_05",               TAB_WOWHEAD, "14662679" },
 
       { MAGE,       T8, "Mage_T8_00_53_18",                 TAB_WOWHEAD, "13000266" },
       { MAGE,       T8, "Mage_T8_18_00_53",                 TAB_WOWHEAD, "13000343" },
@@ -514,7 +514,7 @@ void SimulationCraftWindow::createBestInSlotTab()
       { MAGE,       T9, "Mage_T9_57_03_11",                 TAB_WOWHEAD, "14306468" },
 
       { PALADIN,    T8, "Paladin_T8_05_11_55",              TAB_WOWHEAD, "14319567" },
-      { PALADIN,    T9, "Paladin_T9_05_11_55",              TAB_WOWHEAD, "14637386" },
+      { PALADIN,    T9, "Paladin_T9_05_11_55",              TAB_WOWHEAD, "16421920" },
 
       { PRIEST,     T8, "Priest_T8_13_00_58",               TAB_WOWHEAD, "13000014" },
       { PRIEST,     T8, "Priest_T8_34_28_09",               TAB_WOWHEAD, "13000020" },
@@ -537,7 +537,7 @@ void SimulationCraftWindow::createBestInSlotTab()
       { ROGUE,      T9, "Rogue_T9_15_51_05_AA",             TAB_WOWHEAD, "14562190" },
       { ROGUE,      T9, "Rogue_T9_15_51_05_FD",             TAB_WOWHEAD, "14419498" },
       { ROGUE,      T9, "Rogue_T9_15_51_05_MD",             TAB_WOWHEAD, "14562031" },
-      { ROGUE,      T9, "Rogue_T9_51_13_07",                TAB_WOWHEAD, "14562941" },
+      { ROGUE,      T9, "Rogue_T9_51_13_07",                TAB_WOWHEAD, "15269388" },
 
       { SHAMAN,     T8, "Shaman_T8_16_55_00",               TAB_WOWHEAD, "13000114" },
       { SHAMAN,     T8, "Shaman_T8_57_14_00",               TAB_WOWHEAD, "13000116" },
