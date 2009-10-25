@@ -2294,7 +2294,7 @@ void paladin_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=fish_feast/auto_attack";
+    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet/auto_attack";
     if      ( glyphs.seal_of_command       ) action_list_str += "/seal_of_command";
     else if ( glyphs.seal_of_righteousness ) action_list_str += "/seal_of_righteousness";
     else                                     action_list_str += "/seal_of_vengeance";
