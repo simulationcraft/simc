@@ -416,7 +416,9 @@ struct treants_pet_t : public pet_t
       pet_t( sim, owner, pet_name ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 340;
+    main_hand_weapon.min_dmg    = 340;
+    main_hand_weapon.max_dmg    = 340;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.8;
   }
   virtual void init_base()

@@ -280,7 +280,9 @@ struct shadow_fiend_pet_t : public pet_t
       pet_t( sim, owner, "shadow_fiend" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 100;
+    main_hand_weapon.min_dmg    = 100;
+    main_hand_weapon.max_dmg    = 100;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
     main_hand_weapon.school     = SCHOOL_SHADOW;
 

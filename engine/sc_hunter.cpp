@@ -348,7 +348,9 @@ struct hunter_pet_t : public pet_t
     hunter_t* o = owner -> cast_hunter();
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = ( 51.0+78.0 )/2; // FIXME only level 80 value
+    main_hand_weapon.min_dmg    = 51.0; // FIXME only level 80 value
+    main_hand_weapon.max_dmg    = 78.0; // FIXME only level 80 value
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2; // FIXME only level 80 value
     main_hand_weapon.swing_time = 2.0;
 
     stamina_per_owner = 0.45;

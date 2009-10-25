@@ -382,7 +382,9 @@ struct bloodworms_pet_t : public pet_t
       pet_t( sim, owner, "bloodworms", true /*guardian*/ ), spawn_count( 3 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 20;
+    main_hand_weapon.min_dmg    = 20;
+    main_hand_weapon.max_dmg    = 20;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
   }
   virtual void init_base()
@@ -443,7 +445,9 @@ struct dancing_rune_weapon_pet_t : public pet_t
       pet_t( sim, owner, "dancing_rune_weapon" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 310;
+    main_hand_weapon.min_dmg    = 310;
+    main_hand_weapon.max_dmg    = 310;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
   }
 
@@ -505,7 +509,9 @@ struct gargoyle_pet_t : public pet_t
       pet_t( sim, owner, "gargoyle" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 310;
+    main_hand_weapon.min_dmg    = 310;
+    main_hand_weapon.max_dmg    = 310;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
   }
 
@@ -565,7 +571,9 @@ struct ghoul_pet_t : public pet_t
       pet_t( sim, owner, "ghoul" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 310;
+    main_hand_weapon.min_dmg    = 310;
+    main_hand_weapon.max_dmg    = 310;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
   }
 

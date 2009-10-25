@@ -696,7 +696,9 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.5;
+    main_hand_weapon.min_dmg    = 412.5;
+    main_hand_weapon.max_dmg    = 412.5;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 1.05;
@@ -795,7 +797,9 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 309.6;
+    main_hand_weapon.min_dmg    = 309.6;
+    main_hand_weapon.max_dmg    = 309.6;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
 //    damage_modifier = 0.8;
@@ -877,7 +881,9 @@ struct succubus_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.5;
+    main_hand_weapon.min_dmg    = 412.5;
+    main_hand_weapon.max_dmg    = 412.5;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 1.05;
@@ -943,7 +949,9 @@ struct infernal_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.5;
+    main_hand_weapon.min_dmg    = 412.5;
+    main_hand_weapon.max_dmg    = 412.5;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 3.20;
@@ -986,7 +994,9 @@ struct doomguard_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = 412.5;
+    main_hand_weapon.min_dmg    = 412.5;
+    main_hand_weapon.max_dmg    = 412.5;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     damage_modifier = 1.98;
