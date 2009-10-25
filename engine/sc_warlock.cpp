@@ -2540,13 +2540,13 @@ struct conflagrate_t : public warlock_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
-    immolate_multiplier *= 1.0 + ( p -> talents.aftermath         * 0.03 +
-                                   p -> talents.improved_immolate * 0.10 +
-                                   p -> glyphs.immolate           * 0.10 );
+    immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
+                                   p -> talents.improved_immolate    * 0.10 +
+                                   p -> glyphs.immolate              * 0.10 +
+                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
     immolate_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
-                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
-                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
+                                   p -> set_bonus.tier8_2pc_caster() * 0.10 );
 
     shadowflame_multiplier *=  1.0 + p -> talents.emberstorm * 0.03;
 
