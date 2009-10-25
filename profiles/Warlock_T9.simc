@@ -13,26 +13,20 @@ Warlock_T9_00_40_31.simc
 Warlock_T9_00_41_30.simc
 Warlock_T9_03_52_16.simc
 Warlock_T9_00_56_15.simc
+Warlock_T9_00_56_15_MC.simc
 
 # scwarlockt9
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=13808359 name=Warlock_T9_00_13_58    save=Warlock_T9_00_13_58.simc
-
 #wowhead=14604165 name=Warlock_T9_03_13_55    save=Warlock_T9_03_13_55.simc
-
 #wowhead=14604604 name=Warlock_T9_03_52_16    save=Warlock_T9_03_52_16.simc
-
 #wowhead=14604901 name=Warlock_T9_53_00_18    save=Warlock_T9_53_00_18.simc
-
 #wowhead=15214160 name=Warlock_T9_55_00_16    save=Warlock_T9_55_00_16.simc
-
 #wowhead=14604901 name=Warlock_T9_53_00_18_DG save=Warlock_T9_53_00_18_DG.simc  summon_pet=doomguard
-
 #wowhead=14603726 name=Warlock_T9_00_40_31    save=Warlock_T9_00_40_31.simc
-
 #wowhead=14603857 name=Warlock_T9_00_41_30    save=Warlock_T9_00_41_30.simc
-
 #wowhead=14603959 name=Warlock_T9_00_56_15    save=Warlock_T9_00_56_15.simc
+#wowhead=16488112 name=Warlock_T9_00_56_15_MC save=Warlock_T9_00_56_15_MC.simc
 
 #save_profiles=1

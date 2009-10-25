@@ -688,7 +688,15 @@ player_t* wowhead_t::download_player( sim_t* sim,
         return 0;
       }
       if ( i ) p -> glyphs_str += "/";
-      p -> glyphs_str += glyph_name;
+      // HACK ALERT - quick decay glyph is not in wowhead yet
+      if ( id.compare("14604901") == 0 || id.compare("15214160") == 0 || id.compare("13003573") == 0 )
+      {
+        p -> glyphs_str += ( glyph_name.compare("curse_of_agony") == 0 ) ? "quick_decay" : glyph_name; 
+      }
+      else
+      {
+        p -> glyphs_str += glyph_name;
+      }
     }
   }
 

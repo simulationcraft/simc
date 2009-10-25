@@ -1386,7 +1386,10 @@ bool warlock_spell_t::ready()
     if ( ! p -> buffs_molten_core -> may_react() )
       return false;
 
-    if ( p -> buffs_molten_core -> remains_gt( execute_time() ) )
+    if ( ! p -> buffs_molten_core -> up() )
+      return false;
+
+    if ( p -> buffs_molten_core -> remains_lt( execute_time() ) )
       return false;
   }
 
@@ -3682,7 +3685,12 @@ void warlock_t::init_glyphs()
     else if ( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
     else if ( n == "siphon_life"         ) glyphs.siphon_life = 1;
     else if ( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
-    else if ( n == "quick_decay"         ) glyphs.quick_decay = 1;
+    else if ( n == "quick_decay"         )
+    {
+      //HACK ALERT: Make sure 3.2.2 sims don't use a glyph that's not available yet
+      if ( sim -> P330 ) glyphs.quick_decay = 1;
+      else glyphs.curse_of_agony = 1;
+    }
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "curse_of_exhaustion" ) ;
     else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
@@ -3889,28 +3897,32 @@ void warlock_t::init_actions()
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
       action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
-      action_list_str += "/metamorphosis,P330=1";
-      action_list_str += "/corruption,time_to_die>=20,P330=1";
-      action_list_str += "/curse_of_doom,health_percentage>=35,P330=1";
-      action_list_str += "/curse_of_agony,time_to_die>=24,P330=1";
+      action_list_str += "/metamorphosis";
       action_list_str += "/immolation,P330=1";
+      action_list_str += "/corruption,P330=1";
+      action_list_str += "/curse_of_doom,time_to_die>=90,P330=1";
+      action_list_str += "/curse_of_agony,time_to_die>=28,P330=1";
+      action_list_str += "/immolate,P330=1";
       if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/immolate,health_percentage>=35,P330=1";
-      action_list_str += "/metamorphosis,P330=0";
+      action_list_str += "/incinerate,molten_core=1,P330=1";
+      action_list_str += "/immolation,health_percentage>=35,P330=0";
       action_list_str += "/curse_of_doom,time_to_die>=90,P330=0";
-      action_list_str += "/immolation,health_percentage>=35,P330=0/immolate,P330=0";
-      action_list_str += "/corruption,health_percentage>=35";
+      action_list_str += "/immolate,P330=0";
+      action_list_str += "/corruption,health_percentage>=35,P330=0";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/soul_fire,decimation=1/immolate/curse_of_agony/corruption,health_percentage>=35";
+      action_list_str += "/corruption,time_to_die>=20,P330=1/immolate,time_to_die>=15,P330=1";
+      action_list_str += "/soul_fire,decimation=1";
+      action_list_str += "/immolate,P330=0/curse_of_agony,time_to_die>=28/corruption,health_percentage>=35,P330=0";
     }
     else if ( talents.decimation && talents.conflagrate ) // 00_40_31
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/soul_fire,decimation=1/immolate/conflagrate";
-      action_list_str += "/curse_of_agony/corruption,health_percentage>=35";
+      action_list_str += "/corruption,time_to_die>=20,P330=1/immolate,time_to_die>=15,P330=1/conflagrate";
+      action_list_str += "/soul_fire,decimation=1";
+      action_list_str += "/immolate,P330=0/curse_of_agony,time_to_die>=28/corruption,health_percentage>=35,P330=0";
     }
     else // generic
     {

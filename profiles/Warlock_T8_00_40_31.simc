@@ -1,4 +1,4 @@
-#!simc
+#!./simc 
 
 warlock=Warlock_T8_00_40_31
 origin=http://profiler.wowhead.com/?profile=13003653
@@ -13,11 +13,14 @@ actions+=/fel_armor
 actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
-actions+=/soul_fire,decimation=1
-actions+=/immolate
+actions+=/wild_magic_potion,bloodlust=1
+actions+=/corruption,time_to_die>=20,P330=1
+actions+=/immolate,time_to_die>=15,P330=1
 actions+=/conflagrate
-actions+=/curse_of_agony
-actions+=/corruption,health_percentage>=35
+actions+=/soul_fire,decimation=1
+actions+=/immolate,P330=0
+actions+=/curse_of_agony,time_to_die>=28
+actions+=/corruption,health_percentage>=35,P330=0
 actions+=/incinerate
 actions+=/life_tap,mana_percentage<=20,buff_refresh=1,moving=1
 actions+=/corruption,time_to_die>=20,moving=1
@@ -35,9 +38,9 @@ hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=9sp_8spi
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8hit_9sp_4crit,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=23sp
 trinket1=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
-trinket2=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket2=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8haste_9sp_5sp,enchant=lightweave_embroidery
-main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_93.9min_297.9max
 off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=8hit_9sp_4spi
 # Gear Summary
@@ -52,7 +55,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=8hit_9sp_4spi
 # gear_haste_rating=510
 # gear_armor=1988
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
 # back=drape_of_mortal_downfall,enchant=lightweave_embroidery
-# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# main_hand=starshard_edge,weapon=dagger_1.80speed_93.9min_297.9max

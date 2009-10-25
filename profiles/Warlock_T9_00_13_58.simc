@@ -32,12 +32,12 @@ legs=guldans_leggings_of_triumph,stats=303armor_102crit_86haste_160sp_116sta_116
 feet=sandals_of_the_mourning_widow,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=12sp_10spi_23sp_7sp,enchant=12crit_12hit
 wrists=bindings_of_the_ashen_saint,stats=152armor_49haste_91sp_65sta_65int_57spi,gems=12sp_10spi_5sp,enchant=30sp
 hands=guldans_gloves_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=23sp_4crit,enchant=28sp
-finger1=lurid_manifestation,stats=65sta_50spi_65int_91sp_53crit,gems=10haste_12sp_5sp,enchant=23sp
+finger1=lurid_manifestation,stats=53crit_91sp_65sta_65int_50spi,gems=10haste_12sp_5sp,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=12sp_10spi_5sp,enchant=23sp
 trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=lady_liadrins_conviction,stats=74sta_65spi_74int_105sp_57haste_182armor,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
-main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=12sp_10spi_5sp,enchant=63sp,weapon=dagger_1.80speed_125.1dps
+back=lady_liadrins_conviction,stats=182armor_57haste_105sp_74sta_74int_65spi,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
+main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=12sp_10spi_5sp,enchant=63sp,weapon=dagger_1.80speed_108.12min_342.12max
 off_hand=lightbane_focus,stats=43hit_51haste_80sp_58sta_55int,gems=10hit_12sp_5sp
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_4spi
 # Gear Summary
@@ -55,4 +55,4 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=lady_liadrins_conviction,enchant=lightweave_embroidery
-# main_hand=barb_of_tarasque,weapon=dagger_1.80speed_125.1dps
+# main_hand=barb_of_tarasque,weapon=dagger_1.80speed_108.12min_342.12max
