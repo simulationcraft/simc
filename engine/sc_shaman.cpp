@@ -1189,11 +1189,10 @@ struct lava_burst_t : public shaman_spell_t
 {
   int maelstrom;
   int flame_shock;
-  int max_ticks_consumed;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ),
-      maelstrom( 0 ), flame_shock( 0 ), max_ticks_consumed( 0 )
+      maelstrom( 0 ), flame_shock( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1201,7 +1200,6 @@ struct lava_burst_t : public shaman_spell_t
     {
       { "maelstrom",          OPT_INT,  &maelstrom          },
       { "flame_shock",        OPT_BOOL, &flame_shock        },
-      { "max_ticks_consumed", OPT_INT,  &max_ticks_consumed },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1257,7 +1255,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-        p -> buffs_elemental_mastery -> current_value = 0;
+    p -> buffs_elemental_mastery -> current_value = 0;
     p -> _cooldowns.lava_burst = cooldown_ready;
 
     if ( result_is_hit() )
@@ -1299,21 +1297,6 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( lvb_finish > fs_finish )
         return false;
-
-      if ( ! p -> glyphs.flame_shock )
-      {
-        if ( max_ticks_consumed > 0 )
-        {
-          double earliest_finish = fs_finish - max_ticks_consumed * 3.0;
-
-          if ( lvb_finish < earliest_finish )
-            return false;
-        }
-      }
-      else
-      {
-        return true;
-      }
     }
 
     return true;
