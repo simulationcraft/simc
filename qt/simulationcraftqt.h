@@ -30,6 +30,7 @@
 
 #define HISTORY_VERSION "1.0"
 
+class SimulationCraftTextEdit;
 class SimulationCraftWebView;
 class SimulationCraftCommandLine;
 class SimulateThread;
@@ -104,8 +105,8 @@ public:
     QListWidget* rawrList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
-    QPlainTextEdit* simulateText;
-    QPlainTextEdit* overridesText;
+    SimulationCraftTextEdit* simulateText;
+    SimulationCraftTextEdit* overridesText;
     QPlainTextEdit* logText;
     QTabWidget* resultsTab;
     QPushButton* backButton;
@@ -166,8 +167,6 @@ public:
 
 protected:
     virtual void closeEvent( QCloseEvent* );
-    virtual void dragEnterEvent( QDragEnterEvent* );
-    virtual void dropEvent(QDropEvent* );
 
 private slots:
     void importFinished();
@@ -189,6 +188,20 @@ private slots:
 
 public:
     SimulationCraftWindow(QWidget *parent = 0);
+};
+
+class SimulationCraftTextEdit : public QPlainTextEdit
+{
+protected:
+  virtual void dragEnterEvent( QDragEnterEvent* e )
+  {
+    e->acceptProposedAction();
+  }
+  virtual void dropEvent( QDropEvent* e )
+  {
+    setPlainText( e->mimeData()->text() );
+    e->acceptProposedAction();
+  }
 };
 
 class SimulationCraftCommandLine : public QLineEdit

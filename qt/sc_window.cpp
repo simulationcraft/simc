@@ -70,7 +70,7 @@ static QString defaultSimulateText()
 {
   return QString( "# Profile will be downloaded into here.\n"
 		  "# Use the Back/Forward buttons to cycle through the script history.\n"
-		  "# Use the Up/Down arrow keys to cycle through the command-line history." );
+		  "# Use the Up/Down arrow keys to cycle through the command-line history.\n" );
 }
 
 static QComboBox* createChoice( int count, ... )
@@ -600,7 +600,7 @@ void SimulationCraftWindow::createBestInSlotTab()
 
 void SimulationCraftWindow::createSimulateTab()
 {
-  simulateText = new QPlainTextEdit();
+  simulateText = new SimulationCraftTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->document()->setDefaultFont( QFont( "fixed" ) );
   simulateText->setPlainText( defaultSimulateText() );
@@ -609,10 +609,10 @@ void SimulationCraftWindow::createSimulateTab()
 
 void SimulationCraftWindow::createOverridesTab()
 {
-  overridesText = new QPlainTextEdit();
+  overridesText = new SimulationCraftTextEdit();
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
   overridesText->document()->setDefaultFont( QFont( "fixed" ) );
-  overridesText->setPlainText( "# User-specified persistent global and player parms will set here.." );
+  overridesText->setPlainText( "# User-specified persistent global and player parms will set here.\n" );
   mainTab->addTab( overridesText, "Overrides" );
 }
 
@@ -1094,28 +1094,6 @@ void SimulationCraftWindow::saveResults()
 // ==========================================================================
 // Window Events
 // ==========================================================================
-
-void SimulationCraftWindow::dragEnterEvent( QDragEnterEvent* e )
-{
-  e->acceptProposedAction();
-}
-
-void SimulationCraftWindow::dropEvent( QDropEvent* e )
-{
-  switch( mainTab->currentIndex() )
-  {
-  case TAB_WELCOME:   break;
-  case TAB_OPTIONS:   break;
-  case TAB_IMPORT:    break;
-  case TAB_SIMULATE:   simulateText->setPlainText( e->mimeData()->text() ); break;
-  case TAB_OVERRIDES: overridesText->setPlainText( e->mimeData()->text() ); break;
-  case TAB_EXAMPLES:  break;
-  case TAB_LOG:       break;
-  case TAB_RESULTS:   break;
-  }
-
-  e->acceptProposedAction();
-}
 
 void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
 { 
