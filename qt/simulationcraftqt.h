@@ -199,7 +199,7 @@ protected:
   }
   virtual void dropEvent( QDropEvent* e )
   {
-    setPlainText( e->mimeData()->text() );
+    appendPlainText( e->mimeData()->text() );
     e->acceptProposedAction();
   }
 };
