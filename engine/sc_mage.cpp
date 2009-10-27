@@ -3199,20 +3199,6 @@ void mage_t::init_actions()
       if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
-    else if ( primary_tree() == TREE_FROST )
-    {
-      action_list_str += "/mana_gem/speed_potion";
-      action_list_str += "/frost_bolt,frozen=1";
-      if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
-      if ( talents.cold_snap              ) action_list_str += "/cold_snap";
-      if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
-      action_list_str += "/mirror_image";
-      action_list_str += "/frost_bolt";
-      action_list_str += "/evocation";
-      action_list_str += "/ice_lance,moving=1,frozen=1"; // when moving
-      action_list_str += "/fire_blast,moving=1";         // when moving
-      action_list_str += "/ice_lance,moving=1";          // when moving
-    }
     else if ( primary_tree() == TREE_FIRE )
     {
       action_list_str += "/mana_gem/speed_potion";
@@ -3230,6 +3216,21 @@ void mage_t::init_actions()
       action_list_str += "/evocation";
       action_list_str += "/fire_blast,moving=1"; // when moving
       action_list_str += "/ice_lance,moving=1";  // when moving
+    }
+    else if ( primary_tree() == TREE_FROST )
+    {
+      action_list_str += "/mana_gem/speed_potion";
+      action_list_str += "/deep_freeze,P330=1";
+      action_list_str += "/frost_bolt,frozen=1";
+      if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
+      if ( talents.cold_snap              ) action_list_str += "/cold_snap";
+      if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
+      action_list_str += "/mirror_image";
+      action_list_str += "/frost_bolt";
+      action_list_str += "/evocation";
+      action_list_str += "/ice_lance,moving=1,frozen=1"; // when moving
+      action_list_str += "/fire_blast,moving=1";         // when moving
+      action_list_str += "/ice_lance,moving=1";          // when moving
     }
     else action_list_str = "/arcane_missiles/evocation";
 
