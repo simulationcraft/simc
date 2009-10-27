@@ -7,7 +7,7 @@ Globals_T9.simc
 Druid_T9_00_55_16.simc          tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
 Druid_T9_00_55_16_M.simc        tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
 Druid_T9_58_00_13.simc          tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
-Druid_T9_58_00_13_2T8_2T9.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Druid_T9_58_00_13_2T8_2T9.simc  tier9_2pc_caster=0 tier10_2pc_caster=1
 
 Hunter_T9_02_18_51.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Hunter_T9_07_57_07.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
