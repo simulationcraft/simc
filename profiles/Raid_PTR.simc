@@ -1,6 +1,54 @@
 #!simc max_time=300
 
-Raid_T9.simc
-
 patch=3.3.0
 
+Globals_T9.simc
+
+Druid_T9_00_55_16.simc          tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
+Druid_T9_00_55_16_M.simc        tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
+Druid_T9_58_00_13.simc          tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Druid_T9_58_00_13_2T8_2T9.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+
+Hunter_T9_02_18_51.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Hunter_T9_07_57_07.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Hunter_T9_07_57_07_HM.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Hunter_T9_53_14_04.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+
+Mage_T9_00_53_18.simc                                        tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Mage_T9_18_00_53.simc   focus_magic_target=Mage_T9_20_51_00  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Mage_T9_20_51_00.simc   focus_magic_target=Mage_T9_53_18_00  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Mage_T9_53_18_00.simc   focus_magic_target=Mage_T9_57_03_11  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Mage_T9_57_03_11.simc   focus_magic_target=Mage_T9_18_00_53  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+
+Paladin_T9_05_11_55.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+
+Priest_T9_13_00_58_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Priest_T9_13_00_58_258_SWD.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+
+Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+
+Shaman_T9_16_55_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
+Shaman_T9_20_51_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
+Shaman_T9_57_14_00_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Shaman_T9_57_14_00_258_ToW.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+
+Warlock_T9_00_13_58.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_00_40_31.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_00_41_30.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_00_56_15.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_03_13_55.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_03_52_16.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_53_00_18.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_53_00_18_DG.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+
+Warrior_T9_19_52_00.simc    tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Warrior_T9_54_17_00_A.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Warrior_T9_54_17_00_M.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Warrior_T9_54_17_00_S.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
