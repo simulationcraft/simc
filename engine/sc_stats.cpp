@@ -81,6 +81,11 @@ void stats_t::add_result( double amount,
 			  int    dmg_type,
 			  int    result )
 {
+  // Check for DoT application
+  if( amount == 0 )
+    if( result == RESULT_HIT || result == RESULT_CRIT )
+      return;
+
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
