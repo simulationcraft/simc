@@ -60,9 +60,47 @@ void stats_t::reset( action_t* a )
   last_execute = -1;
 }
 
-// stats_t::track_execute ===================================================
+// stats_t::add_time ========================================================
 
-// stats_t::track_damage ====================================================
+void stats_t::add_time( double amount,
+			int    dmg_type )
+{
+  if ( dmg_type == DMG_DIRECT )
+  {
+    total_execute_time += amount;
+  }
+  else
+  {
+    total_tick_time += amount;
+  }
+}
+
+// stats_t::add_result ======================================================
+
+void stats_t::add_result( double amount,
+			  int    dmg_type,
+			  int    result )
+{
+  player -> iteration_dmg += amount;
+  total_dmg += amount;
+
+  stats_results_t& r = ( dmg_type == DMG_DIRECT ) ? execute_results[ result ] : tick_results[ result ];
+
+  r.count += 1;
+  r.total_dmg += amount;
+
+  if ( amount < r.min_dmg ) r.min_dmg = amount;
+  if ( amount > r.max_dmg ) r.max_dmg = amount;
+
+  int index = ( int ) ( sim -> current_time );
+  if ( index >= num_buckets )
+  {
+    timeline_dmg.insert( timeline_dmg.begin() + num_buckets, index, 0 );
+    num_buckets += index;
+  }
+
+  timeline_dmg[ index ] += amount;
+}
 
 // stats_t::add =============================================================
 
@@ -71,18 +109,12 @@ void stats_t::add( double amount,
                    int    result,
                    double time )
 {
-  player -> iteration_dmg += amount;
-  total_dmg += amount;
+  add_result( amount, dmg_type, result );
 
   if ( dmg_type == DMG_DIRECT )
   {
     num_executes++;
     total_execute_time += time;
-    stats_results_t& r = execute_results[ result ];
-    r.count += 1;
-    r.total_dmg += amount;
-    if ( amount < r.min_dmg ) r.min_dmg = amount;
-    if ( amount > r.max_dmg ) r.max_dmg = amount;
 
     if ( last_execute > 0 &&
          last_execute != sim -> current_time )
@@ -96,21 +128,7 @@ void stats_t::add( double amount,
   {
     num_ticks++;
     total_tick_time += time;
-    stats_results_t& r = tick_results[ result ];
-    r.count += 1;
-    r.total_dmg += amount;
-    if ( amount < r.min_dmg ) r.min_dmg = amount;
-    if ( amount > r.max_dmg ) r.max_dmg = amount;
   }
-
-  int index = ( int ) ( sim -> current_time );
-  if ( index >= num_buckets )
-  {
-    timeline_dmg.insert( timeline_dmg.begin() + num_buckets, index, 0 );
-    num_buckets += index;
-  }
-
-  timeline_dmg[ index ] += amount;
 }
 
 // stats_t::analyze =========================================================

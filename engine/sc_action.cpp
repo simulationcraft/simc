@@ -1043,17 +1043,32 @@ void action_t::update_stats( int type )
   else assert( 0 );
 }
 
+// action_t::update_result ==================================================
+
+void action_t::update_result( int type )
+{
+  if ( type == DMG_DIRECT )
+  {
+    stats -> add_result( direct_dmg, type, result );
+  }
+  else if ( type == DMG_OVER_TIME )
+  {
+    stats -> add_result( tick_dmg, type, result );
+  }
+  else assert( 0 );
+}
+
 // action_t::update_time ===================================================
 
 void action_t::update_time( int type )
 {
   if ( type == DMG_DIRECT )
   {
-    stats -> total_execute_time += time_to_execute;
+    stats -> add_time( time_to_execute, type );
   }
   else if ( type == DMG_OVER_TIME )
   {
-    stats -> total_tick_time += time_to_tick;
+    stats -> add_time( time_to_tick, type );
   }
   else assert( 0 );
 }

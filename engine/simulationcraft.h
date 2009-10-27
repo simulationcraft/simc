@@ -1890,6 +1890,8 @@ struct stats_t
 
   void consume_resource( double r ) { resource_consumed += r; }
   void add( double amount, int dmg_type, int result, double time );
+  void add_result( double amount, int dmg_type, int result );
+  void add_time  ( double amount, int dmg_type );
   void init();
   void reset( action_t* );
   void analyze();
@@ -2016,6 +2018,7 @@ struct action_t
   virtual void   extend_duration( int extra_ticks );
   virtual void   update_ready();
   virtual void   update_stats( int type );
+  virtual void   update_result( int type );
   virtual void   update_time( int type );
   virtual bool   ready();
   virtual void   reset();

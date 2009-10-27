@@ -1861,7 +1861,7 @@ struct living_bomb_t : public mage_spell_t
         trigger_hot_streak( this );
       }
     }
-    update_stats( DMG_DIRECT );
+    update_result( DMG_DIRECT );
     mage_spell_t::last_tick();
   }
 
