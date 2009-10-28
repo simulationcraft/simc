@@ -227,6 +227,7 @@ struct warlock_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_hit() SC_CONST;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -418,20 +419,12 @@ struct warlock_pet_t : public pet_t
 
   virtual double composite_attack_hit() SC_CONST
   {
-    warlock_t* o = owner -> cast_warlock();
-    return o -> composite_spell_hit() * 8.0 / 17.0;
-  }
-
-  virtual double composite_spell_hit() SC_CONST
-  {
-    warlock_t* o = owner -> cast_warlock();
-    return o -> composite_spell_hit();
+    return owner -> composite_spell_hit();
   }
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    warlock_t* o = owner -> cast_warlock();
-    return o -> composite_spell_hit() * 6.5 / 17.0;
+    return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
   virtual void register_callbacks();
@@ -1429,7 +1422,6 @@ struct curse_of_elements_t : public warlock_spell_t
     init_rank( ranks );
 
     base_cost *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit  +=       p -> talents.suppression * 0.01;
 
     if ( p -> talents.amplify_curse ) trigger_gcd = 1.0;
   }
@@ -1498,7 +1490,6 @@ struct curse_of_agony_t : public warlock_spell_t
     tick_power_mod    = 1.20 / num_ticks;  // Nerf Bat!
 
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery          * 0.03 +
                                p -> talents.contagion               * 0.01 +
                                p -> talents.improved_curse_of_agony * 0.05 );
@@ -1567,7 +1558,6 @@ struct curse_of_doom_t : public warlock_spell_t
     num_ticks         = 1;
     tick_power_mod    = 2.0;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit         +=       p -> talents.suppression * 0.01;
 
     if ( p -> talents.amplify_curse ) trigger_gcd = 1.0;
 
@@ -1642,7 +1632,6 @@ struct shadow_bolt_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
 
-    base_hit   += p -> talents.suppression * 0.01;
     base_cost  *= 1.0 - ( util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 ) + p -> glyphs.shadow_bolt * 0.10 );
 
     base_execute_time -=  p -> talents.bane * 0.1;
@@ -1764,7 +1753,6 @@ struct chaos_bolt_t : public warlock_spell_t
     may_crit          = true;
     may_resist        = false;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -=  p -> talents.bane * 0.1;
@@ -1828,7 +1816,6 @@ struct death_coil_t : public warlock_spell_t
 
     base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
-    base_hit        += p -> talents.suppression * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
   }
@@ -1875,7 +1862,6 @@ struct shadow_burn_t : public warlock_spell_t
     cooldown         = 15;
     direct_power_mod = ( 1.5 / 3.5 );
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
@@ -1945,7 +1931,6 @@ struct shadowfury_t : public warlock_spell_t
     trigger_gcd = 0.5; // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
     if ( cast_gcd>=0 ) trigger_gcd=cast_gcd;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier   *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -1987,7 +1972,6 @@ struct corruption_t : public warlock_spell_t
     tick_power_mod    = base_tick_time / 15.0;
 
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit        +=  p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
                                p -> talents.contagion            * 0.01 +
                                p -> talents.improved_corruption  * 0.02 +
@@ -2076,7 +2060,6 @@ struct drain_life_t : public warlock_spell_t
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0;
 
     base_cost       *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit        +=       p -> talents.suppression * 0.01;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     observer = &( p -> active_drain_life );
@@ -2158,7 +2141,6 @@ struct drain_soul_t : public warlock_spell_t
     tick_power_mod    = ( base_tick_time / 3.5 ) / 2.0;
 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit         += p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     health_multiplier = ( rank -> level >= 6 ) ? 1 : 0;
@@ -2255,7 +2237,6 @@ struct unstable_affliction_t : public warlock_spell_t
     tick_power_mod    = base_tick_time / 15.0;
 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery * 0.03 +
                                 p -> set_bonus.tier8_2pc_caster() * 0.20 + // FIXME! assuming additive
                                 p -> set_bonus.tier9_4pc_caster() * 0.10 +
@@ -2330,7 +2311,6 @@ struct haunt_t : public warlock_spell_t
     if ( p -> talents.pandemic ) base_crit_bonus_multiplier = 2;
 
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
-    base_hit         +=       p -> talents.suppression * 0.01;
     base_multiplier  *= 1.0 + p -> talents.shadow_mastery * 0.03;
   }
 
@@ -2396,7 +2376,6 @@ struct immolate_t : public warlock_spell_t
     direct_power_mod  = 0.20;
     tick_power_mod    = 0.20;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.bane * 0.1;
@@ -2471,7 +2450,6 @@ struct shadowflame_t : public warlock_spell_t
     tick_power_mod    = 0.28;
     cooldown          = 15.0;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
     base_crit += p -> talents.devastation * 0.05;
 
@@ -2533,7 +2511,6 @@ struct conflagrate_t : public warlock_spell_t
     direct_power_mod  = ( 1.5/3.5 );
     cooldown          = 10;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_crit += p -> talents.devastation * 0.05 + p -> talents.fire_and_brimstone * 0.05 ;
@@ -2704,7 +2681,6 @@ struct incinerate_t : public warlock_spell_t
     may_crit           = true;
     direct_power_mod   = ( 2.5/3.5 );
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.emberstorm * 0.05;
@@ -2807,7 +2783,6 @@ struct searing_pain_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_multiplier *= 1.0 + p -> talents.emberstorm  * 0.03;
@@ -2866,7 +2841,6 @@ struct soul_fire_t : public warlock_spell_t
     may_crit          = true;
     direct_power_mod  = 1.15;
 
-    base_hit  += p -> talents.suppression * 0.01;
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
     base_execute_time -= p -> talents.bane * 0.4;
@@ -3257,7 +3231,6 @@ struct immolation_t : public warlock_spell_t
 
     warlock_t* p   = player -> cast_warlock();
     base_cost      = 0.64 * p -> resource_base[ RESOURCE_MANA ];
-    base_hit      += p -> talents.suppression * 0.01;
     base_td_init   = 481;
     base_tick_time = 1.0;
     num_ticks      = 15;
@@ -3595,6 +3568,15 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
   }
 
   return sp;
+}
+
+// warlock_t::composite_spell_hit ===========================================
+
+double warlock_t::composite_spell_hit() SC_CONST
+{
+  double sh = player_t::composite_spell_hit();
+  if ( talents.suppression ) sh += talents.suppression * 0.01;
+  return sh;
 }
 
 // warlock_t::create_action =================================================

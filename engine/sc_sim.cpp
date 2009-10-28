@@ -382,7 +382,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
-    armor_update_interval( 20 ),
+    armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
     optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
@@ -1490,6 +1490,7 @@ std::vector<option_t>& sim_t::get_options()
       { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
       { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
       { "report_precision",                 OPT_INT,    &( report_precision                         ) },
+      { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
       // @option_doc loc=skip
       { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
       { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },

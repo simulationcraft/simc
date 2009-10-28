@@ -140,6 +140,18 @@ void attack_t::target_debuff( int dmg_type )
   target_expertise = 0;
 }
 
+// attack_t::total_expertise ================================================
+
+double attack_t::total_expertise() SC_CONST
+{
+  double e = base_expertise + player_expertise + target_expertise;
+
+  // Round down to dicrete units of Expertise?
+  if ( false ) e = floor( 100.0 * e ) / 100.0;
+
+  return e;
+}
+
 // attack_t::miss_chance ====================================================
 
 double attack_t::miss_chance( int delta_level ) SC_CONST

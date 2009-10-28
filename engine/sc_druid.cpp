@@ -442,6 +442,14 @@ struct treants_pet_t : public pet_t
     ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX );
     return ap;
   }
+  virtual double composite_attack_hit() SC_CONST
+  {
+    return owner -> composite_spell_hit();
+  }
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    return owner -> composite_spell_hit() * 26.0 / 17.0;
+  }
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
   {

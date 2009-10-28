@@ -902,7 +902,7 @@ struct sim_t
   int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
   int         infinite_resource[ RESOURCE_MAX ];
-  int         armor_update_interval;
+  int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, spell_crit_suppression, log, debug;
   int         save_profiles;
   std::string default_region_str, default_server_str;
@@ -1760,7 +1760,7 @@ struct pet_t : public player_t
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 
-  virtual double composite_attack_expertise() SC_CONST { return owner -> composite_attack_hit() * 6.5 / 8.0; }
+  virtual double composite_attack_expertise() SC_CONST { return owner -> composite_attack_hit() * 26.0 / 8.0; }
   virtual double composite_attack_hit()       SC_CONST { return owner -> composite_attack_hit(); }
   virtual double composite_spell_hit()        SC_CONST { return owner -> composite_spell_hit();  }
 
@@ -2068,14 +2068,14 @@ struct attack_t : public action_t
   virtual void   calculate_result();
   virtual void   execute();
 
+  virtual double total_expertise() SC_CONST;
+
   virtual double   miss_chance( int delta_level ) SC_CONST;
   virtual double  dodge_chance( int delta_level ) SC_CONST;
   virtual double  parry_chance( int delta_level ) SC_CONST;
   virtual double glance_chance( int delta_level ) SC_CONST;
   virtual double  block_chance( int delta_level ) SC_CONST;
   virtual double   crit_chance( int delta_level ) SC_CONST;
-
-  virtual double total_expertise() SC_CONST { return base_expertise + player_expertise + target_expertise; }
 };
 
 // Spell =====================================================================

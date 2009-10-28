@@ -831,7 +831,7 @@ void player_t::init_actions()
       if ( ! create_action( action_name, action_options ) )
       {
         util_t::fprintf( sim -> output_file, "player_t: Unknown action: %s\n", splits[ i ].c_str() );
-	return;
+        return;
       }
     }
   }
@@ -970,7 +970,7 @@ void player_t::init_scaling()
     scales_with[ STAT_HASTE_RATING ] = 1;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
-    scales_with[ STAT_WEAPON_SPEED ] = attack;
+    scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
 
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = 0;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = 0;
@@ -1041,7 +1041,7 @@ void player_t::init_scaling()
           main_hand_weapon.max_dmg *= mult;
           main_hand_weapon.damage  *= mult;
 
-	        main_hand_weapon.swing_time = new_speed;
+          main_hand_weapon.swing_time = new_speed;
         }
         if ( ranged_weapon.swing_time > 0 )
         {
@@ -1053,18 +1053,18 @@ void player_t::init_scaling()
           ranged_weapon.max_dmg *= mult;
           ranged_weapon.damage  *= mult;
 
-	        ranged_weapon.swing_time = new_speed;
+          ranged_weapon.swing_time = new_speed;
         }
-	      break;
+        break;
 
       case STAT_WEAPON_OFFHAND_DPS:
         if ( off_hand_weapon.damage > 0 )
         {
-	        off_hand_weapon.damage   += off_hand_weapon.swing_time * v;
+          off_hand_weapon.damage   += off_hand_weapon.swing_time * v;
           off_hand_weapon.min_dmg  += off_hand_weapon.swing_time * v;
           off_hand_weapon.max_dmg  += off_hand_weapon.swing_time * v;
         }
-	      break;
+        break;
 
       case STAT_WEAPON_OFFHAND_SPEED:
         if ( off_hand_weapon.swing_time > 0 )
@@ -1076,9 +1076,9 @@ void player_t::init_scaling()
           off_hand_weapon.max_dmg *= mult;
           off_hand_weapon.damage  *= mult;
 
-	        off_hand_weapon.swing_time = new_speed;
+          off_hand_weapon.swing_time = new_speed;
         }
-	      break;
+        break;
 
       case STAT_ARMOR:          initial_armor       += v; break;
       case STAT_BONUS_ARMOR:    initial_bonus_armor += v; break;
@@ -1279,12 +1279,12 @@ double player_t::composite_tank_miss( int school ) SC_CONST
     }
 
     if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
-	 ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
-	 ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
-	 ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
-	 ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
-	 ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
-	 ( race == RACE_BLOOD_ELF ) )
+         ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
+         ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
+         ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
+         ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
+         ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
+         ( race == RACE_BLOOD_ELF ) )
     {
       m += 0.02;
     }
@@ -1706,11 +1706,11 @@ void player_t::combat_begin()
     {
       for( player_t* p = sim -> player_list; p; p = p -> next )
       {
-	if( p -> party == party &&
-	    p -> type != PLAYER_GUARDIAN )
-	{
-	  p -> buffs.heroic_presence -> trigger();
-	}
+        if( p -> party == party &&
+            p -> type != PLAYER_GUARDIAN )
+        {
+          p -> buffs.heroic_presence -> trigger();
+        }
       }
     }
   }
@@ -1914,19 +1914,19 @@ void player_t::schedule_ready( double delta_time,
       }
       else if ( last_foreground_action -> channeled )
       {
-	double delta = sim -> channel_lag_stddev * 2.0;
-	lag = rngs.lag_channel -> range( sim -> channel_lag - delta, sim -> channel_lag + delta );
+        double delta = sim -> channel_lag_stddev * 2.0;
+        lag = rngs.lag_channel -> range( sim -> channel_lag - delta, sim -> channel_lag + delta );
       }
       else if ( gcd_adjust > 0 && last_foreground_action -> time_to_execute == 0 )
       {
-	double delta = sim -> gcd_lag_stddev * 2.0;
+        double delta = sim -> gcd_lag_stddev * 2.0;
         lag = rngs.lag_gcd -> range( sim -> gcd_lag - delta, sim -> gcd_lag + delta );
       }
       else // queued cast
       {
-	double delta = sim -> queue_lag_stddev * 2.0;
+        double delta = sim -> queue_lag_stddev * 2.0;
         lag = rngs.lag_queue -> range( sim -> queue_lag - delta, sim -> queue_lag + delta );
-	action_queued = true;
+        action_queued = true;
       }
     }
 
@@ -2037,7 +2037,7 @@ void player_t::regen( double periodicity )
     {
       if( buffs.innervate -> up() )
       {
-	resource_gain( RESOURCE_MANA, buffs.innervate -> current_value * periodicity, gains.innervate );
+        resource_gain( RESOURCE_MANA, buffs.innervate -> current_value * periodicity, gains.innervate );
       }
 
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
@@ -2048,7 +2048,7 @@ void player_t::regen( double periodicity )
       }
       if( spirit_regen > 0 )
       {
-	resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
+        resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
       }
 
       double mp5_regen = periodicity * composite_mp5() / 5.0;
@@ -2304,7 +2304,7 @@ void player_t::stat_loss( int    stat,
 // player_t::summon_pet =====================================================
 
 void player_t::summon_pet( const char* pet_name, 
-			   double      duration )
+                           double      duration )
 {
   for ( pet_t* p = pet_list; p; p = p -> next_pet )
   {
@@ -3200,10 +3200,10 @@ struct use_item_t : public action_t
     {
       if( a -> name_str == "use_item" )
       {
-	if( ready > a -> cooldown_ready )
-	{
-	  a -> cooldown_ready = ready;
-	}
+        if( ready > a -> cooldown_ready )
+        {
+          a -> cooldown_ready = ready;
+        }
       }
     }
   }
@@ -3240,7 +3240,7 @@ struct use_item_t : public action_t
 
         new ( sim ) trigger_expiration_t( sim, player, item, trigger );
 
-	lockout( item -> use.duration );
+        lockout( item -> use.duration );
       }
     }
     else if( buff )
@@ -3318,7 +3318,7 @@ void player_t::trigger_replenishment()
 
 std::vector<talent_translation_t>& player_t::get_talent_list()
 {
-	return talent_list;
+        return talent_list;
 }
 
 // player_t::parse_talent_trees ===================================================
@@ -3329,9 +3329,9 @@ bool player_t::parse_talent_trees( int talents[] )
 
   for(unsigned int i = 0; i < translations.size(); i++)
   {
-	  int *address = translations[i].address;
-	  if ( ! address ) continue;
-	  *address = talents[i];
+          int *address = translations[i].address;
+          if ( ! address ) continue;
+          *address = talents[i];
   }
 
   return true;
@@ -3341,13 +3341,13 @@ bool player_t::parse_talent_trees( int talents[] )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-	int talents[MAX_TALENT_SLOTS] = {0};
+        int talents[MAX_TALENT_SLOTS] = {0};
 
   const char *buffer = talent_string.c_str();
 
   for(unsigned int i = 0; i < talent_string.size(); i++)
   {
-	char c = buffer[ i ];
+        char c = buffer[ i ];
     if ( c < '0' || c > '5' )
     {
       util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
@@ -3369,13 +3369,13 @@ bool player_t::parse_talents_mmo( const std::string& talent_string )
 
   if((cut_pos1 < cut_pos2) && (cut_pos2 < talent_string.npos))
   {
-	player_class = talent_string.substr(0, cut_pos1);
-	talent_string_extract = talent_string.substr(cut_pos1+1, cut_pos2-cut_pos1);
-	return mmo_champion_t::parse_talents( this, talent_string_extract );
+        player_class = talent_string.substr(0, cut_pos1);
+        talent_string_extract = talent_string.substr(cut_pos1+1, cut_pos2-cut_pos1);
+        return mmo_champion_t::parse_talents( this, talent_string_extract );
   }
   else if((cut_pos1 = talent_string.find_first_of("=")) != talent_string.npos)
   {
-	  return parse_talents_armory( talent_string.substr( cut_pos1 + 1 ) );
+          return parse_talents_armory( talent_string.substr( cut_pos1 + 1 ) );
   }
 
   return false;
@@ -3431,10 +3431,10 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     if ( c == 'Z' )
     {
-		count = 0;
-		for(unsigned int j=0; j <= tree; j++)
-			count += tree_size[j];
-		tree++;
+                count = 0;
+                for(unsigned int j=0; j <= tree; j++)
+                        count += tree_size[j];
+                tree++;
       continue;
     }
 
@@ -3521,9 +3521,9 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       int num_splits = util_t::string_split( splits, action_list_str, "/" );
       for ( int i=0; i < num_splits; i++ )
       {
-	profile_str += "actions";
-	profile_str += i ? "+=/" : "=";
-	profile_str += splits[ i ] + "\n";
+        profile_str += "actions";
+        profile_str += i ? "+=/" : "=";
+        profile_str += splits[ i ] + "\n";
       }
     }
   }
@@ -3536,8 +3536,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
 
       if ( item.active() )
       {
-	profile_str += item.slot_name();
-	profile_str += "=" + item.options_str + "\n";
+        profile_str += item.slot_name();
+        profile_str += "=" + item.options_str + "\n";
       }
     }
     if ( ! items_str.empty() )
@@ -3551,9 +3551,9 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       double value = initial_stats.get_stat( i );
       if ( value != 0 ) 
       {
-	profile_str += "# gear_";
-	profile_str += util_t::stat_type_string( i );
-	profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
+        profile_str += "# gear_";
+        profile_str += util_t::stat_type_string( i );
+        profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
       }
     }
     if ( meta_gem != META_GEM_NONE ) 
@@ -3597,13 +3597,13 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       if ( ! item.active() ) continue;
       if ( item.unique || item.unique_enchant || ! item.encoded_weapon_str.empty() )
       {
-	profile_str += "# ";
-	profile_str += item.slot_name();
-	profile_str += "=";
-	profile_str += item.name();
+        profile_str += "# ";
+        profile_str += item.slot_name();
+        profile_str += "=";
+        profile_str += item.name();
         if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
         if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
-	profile_str += "\n";
+        profile_str += "\n";
       }
     }
   }

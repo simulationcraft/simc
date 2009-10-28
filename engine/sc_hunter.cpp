@@ -209,6 +209,8 @@ struct hunter_t : public player_t
   virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
+  virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_attack_crit() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -693,10 +695,6 @@ struct hunter_attack_t : public attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    base_hit  += p -> talents.focused_aim * 0.01;
-    base_crit += p -> talents.master_marksman * 0.01;
-    base_crit += p -> talents.killer_instinct * 0.01;
-
     if ( p -> position == POSITION_RANGED )
     {
       base_crit += p -> talents.lethal_shots * 0.01;
@@ -970,7 +968,6 @@ struct hunter_pet_attack_t : public attack_t
     direct_power_mod = 1.0/14;
 
     base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
-    base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
 
     // Orc Command Racial
     if ( o -> race == RACE_ORC )
@@ -1324,8 +1321,6 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 // Hunter Pet Spells
 // =========================================================================
 
-// FIXME: 3.1 is supposed to give pets more spell hit, need to figure out
-// the exact mechanics
 struct hunter_pet_spell_t : public spell_t
 {
   hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int s=SCHOOL_PHYSICAL ) :
@@ -1334,7 +1329,6 @@ struct hunter_pet_spell_t : public spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     base_multiplier *= 1.05; // 3.1.0 change: # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses.
-    base_hit  += p -> owner -> cast_hunter() -> talents.focused_aim * 0.01;
 
     base_multiplier *= 1.0 + p -> talents.spiked_collar * 0.03;
   }
@@ -3594,6 +3588,29 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
   }
   
   return mult;
+}
+
+// hunter_t::composite_attack_hit ============================================
+
+double hunter_t::composite_attack_hit() SC_CONST
+{
+  double ah = player_t::composite_attack_hit();
+
+  if ( talents.focused_aim ) ah += talents.focused_aim * 0.01;
+
+  return ah;
+}
+
+// hunter_t::composite_attack_crit ===========================================
+
+double hunter_t::composite_attack_crit() SC_CONST
+{
+  double ac = player_t::composite_attack_crit();
+
+  if ( talents.master_marksman ) ac += talents.master_marksman * 0.01;
+  if ( talents.killer_instinct ) ac += talents.killer_instinct * 0.01;
+
+  return ac;
 }
 
 // hunter_t::regen  =======================================================

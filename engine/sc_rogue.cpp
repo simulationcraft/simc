@@ -232,7 +232,6 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -249,6 +248,8 @@ struct rogue_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
+  virtual double    composite_attack_crit() SC_CONST;
+  virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -307,7 +308,6 @@ struct rogue_attack_t : public attack_t
       min_env_expire( 0 ), max_env_expire( 0 )
   {
     rogue_t* p = player -> cast_rogue();
-    base_crit += p -> talents.malice * 0.01;
     base_hit  += p -> talents.precision * 0.01;
   }
 
@@ -2818,6 +2818,15 @@ struct stealth_t : public spell_t
 // Rogue Character Definition
 // =========================================================================
 
+// rogue_t::composite_attack_crit ==========================================
+
+double rogue_t::composite_attack_crit() SC_CONST
+{
+  double ac = player_t::composite_attack_crit();
+  if( talents.malice ) ac += talents.malice * 0.01;
+  return ac;
+}
+
 // rogue_t::composite_tank_miss ============================================
 
 double rogue_t::composite_tank_miss( int school ) SC_CONST
@@ -3185,7 +3194,7 @@ void rogue_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
+  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors ? 1 : 0;
 }
 
 // rogue_t::init_buffs ======================================================

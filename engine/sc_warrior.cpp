@@ -199,6 +199,8 @@ struct warrior_t : public player_t
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
+  virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_block_value() SC_CONST;
   virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
@@ -250,12 +252,8 @@ struct warrior_attack_t : public attack_t
   {
     warrior_t* p = player -> cast_warrior();
     may_glance   = false;
-    base_hit    += p -> talents.precision * 0.01;
-    base_crit   += p -> talents.cruelty   * 0.01;
     normalize_weapon_speed = true;
-    if ( special )
-      base_crit_bonus_multiplier *= 1.0 + p -> talents.impale * 0.10;
-
+    if ( special ) base_crit_bonus_multiplier *= 1.0 + p -> talents.impale * 0.10;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -2353,7 +2351,7 @@ void warrior_t::init_scaling()
   if ( talents.titans_grip )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors ? 1 : 0;
   }
 }
 
@@ -2589,6 +2587,30 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
   if ( buffs_tier10_2pc_melee -> up() )
     mult *= 1.20;
   return mult;
+}
+
+// warrior_t::composite_attack_hit ===========================================
+
+double warrior_t::composite_attack_hit() SC_CONST
+{
+  double ah = player_t::composite_attack_hit();
+  if ( talents.precision ) 
+  {
+    ah += talents.precision * 0.01;
+  }
+  return ah;
+}
+
+// warrior_t::composite_attack_crit ==========================================
+
+double warrior_t::composite_attack_crit() SC_CONST
+{
+  double ac = player_t::composite_attack_crit();
+  if ( talents.cruelty ) 
+  {
+    ac += talents.cruelty * 0.01;
+  }
+  return ac;
 }
 
 // warrior_t::composite_tank_block ===========================================
