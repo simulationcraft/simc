@@ -1396,7 +1396,7 @@ struct player_t
   int       quiet;
   action_t* last_foreground_action;
   double    current_time, total_seconds;
-  double    total_waiting;
+  double    total_waiting, total_foreground_actions;
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];

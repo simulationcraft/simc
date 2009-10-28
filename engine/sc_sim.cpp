@@ -856,6 +856,7 @@ void sim_t::analyze()
     p -> total_dmg = 0;
     p -> total_seconds /= iterations;
     p -> total_waiting /= iterations;
+    p -> total_foreground_actions /= iterations;
   }
 
   for ( player_t* p = player_list; p; p = p -> next )
@@ -1094,6 +1095,7 @@ void sim_t::merge( sim_t& other_sim )
 
     p -> total_seconds += other_p -> total_seconds;
     p -> total_waiting += other_p -> total_waiting;
+    p -> total_foreground_actions += other_p -> total_foreground_actions;
 
     for ( int i=0; i < other_sim.iterations; i++ )
     {
