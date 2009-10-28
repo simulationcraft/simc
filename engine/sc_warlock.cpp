@@ -227,7 +227,6 @@ struct warlock_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
-  virtual double    composite_spell_hit() SC_CONST;
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -1030,7 +1029,10 @@ struct warlock_spell_t : public spell_t
   warlock_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
       metamorphosis( -1 ), backdraft( -1 ), molten_core( -1 ), pyroclasm( -1 )
-  {}
+  {
+    warlock_t* p = player -> cast_warlock();
+    base_hit += p -> talents.suppression * 0.01;
+  }
 
   // Overridden Methods
   virtual double haste() SC_CONST;
@@ -3568,15 +3570,6 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
   }
 
   return sp;
-}
-
-// warlock_t::composite_spell_hit ===========================================
-
-double warlock_t::composite_spell_hit() SC_CONST
-{
-  double sh = player_t::composite_spell_hit();
-  if ( talents.suppression ) sh += talents.suppression * 0.01;
-  return sh;
 }
 
 // warlock_t::create_action =================================================
