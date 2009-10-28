@@ -3294,6 +3294,7 @@ void hunter_t::init_glyphs()
     else if ( n == "disengage"          ) ;
     else if ( n == "arcane_shot"        ) ;
     else if ( n == "frost_trap"         ) ;
+    else if ( n == "volley"             ) ;
     else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }

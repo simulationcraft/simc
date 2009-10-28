@@ -3679,6 +3679,7 @@ void warlock_t::init_glyphs()
     else if ( n == "drain_soul" )          ;
     else if ( n == "enslave_demon" )       ;
     else if ( n == "healthstone" )         ;
+    else if ( n == "howl_of_terror")       ;
     else if ( n == "kilrogg" )             ;
     else if ( n == "shadowflame" )         ;
     else if ( n == "soul_link" )           ;
