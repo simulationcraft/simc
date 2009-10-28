@@ -259,6 +259,9 @@ player_t* rawr_t::load_player( sim_t* sim,
     name_str = tokens[ num_tokens-1 ];
   }
 
+  sim -> current_slot = 0;
+  sim -> current_name = name_str;
+
   std::string talents_parm = class_str + "Talents/.";
 
   armory_t::format(  name_str );
@@ -273,6 +276,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   int race_type = translate_rawr_race_str( race_str );
 
   player_t* p = player_t::create( sim, class_str, name_str, race_type );
+  sim -> active_player = p;
   if ( ! p )
   {
     util_t::fprintf( sim -> output_file, "\nsimulationcraft: Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );
@@ -326,6 +330,9 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {
+    sim -> current_slot = i;
+    if( sim -> canceled ) return 0;
+
     const char* slot_name = translate_inventory_id( i );
     if ( ! slot_name ) continue;
 

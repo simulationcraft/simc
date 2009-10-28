@@ -905,7 +905,7 @@ struct sim_t
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, spell_crit_suppression, log, debug;
   int         save_profiles;
-  std::string default_region_str, default_server_str;
+  std::string current_name, default_region_str, default_server_str;
   alias_t     alias;
 
   // Default stat enchants
@@ -1061,7 +1061,7 @@ struct sim_t
 
   int       main( int argc, char** argv );
   void      cancel();
-  double    progress();
+  double    progress( std::string& phase );
   void      combat( int iteration );
   void      combat_begin();
   void      combat_end();
@@ -1099,6 +1099,7 @@ struct sim_t
 struct scaling_t
 {
   sim_t* sim;
+  sim_t* baseline_sim;
   sim_t* ref_sim;
   sim_t* delta_sim;
   int    scale_stat;
@@ -1111,7 +1112,7 @@ struct scaling_t
   int    smooth_scale_factors;
   int    debug_scale_factors;
   std::string scale_only_str;
-  int    current_scaling_stat, num_scaling_stats;
+  int    current_scaling_stat, num_scaling_stats, remaining_scaling_stats;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -1125,7 +1126,7 @@ struct scaling_t
   void analyze_gear_weights();
   void normalize();
   void derive();
-  double progress();
+  double progress( std::string& phase );
   int get_options( std::vector<option_t>& );
 };
 

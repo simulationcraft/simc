@@ -44,7 +44,7 @@ static bool stat_may_cap( int stat )
   return false;
 }
 
-} // ANONYMOUS NAMESPACE =====================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Scaling
@@ -53,7 +53,7 @@ static bool stat_may_cap( int stat )
 // scaling_t::scaling_t =====================================================
 
 scaling_t::scaling_t( sim_t* s ) :
-  sim( s ), ref_sim( 0 ), delta_sim( 0 ),
+  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ),
   scale_stat( STAT_NONE ),
   scale_value( 0 ),
   calculate_scale_factors( 0 ),
@@ -63,34 +63,31 @@ scaling_t::scaling_t( sim_t* s ) :
   normalize_scale_factors( 0 ),
   smooth_scale_factors( 0 ),
   debug_scale_factors( 0 ),
-  current_scaling_stat( -1 ),
-  num_scaling_stats( -1 )
+  current_scaling_stat( 0 ),
+  num_scaling_stats( 0 ),
+  remaining_scaling_stats( 0 )
 {}
 
 // scaling_t::progress ======================================================
 
-double scaling_t::progress()
+double scaling_t::progress( std::string& phase )
 {
   if ( ! calculate_scale_factors ) return 1.0;
 
-  if( current_scaling_stat < 0 )
+  if ( current_scaling_stat <= 0 )
   {
-    return sim -> current_iteration / (double) sim -> iterations;
+    phase = "Baseline";
+    if ( ! baseline_sim ) return 0;
+    return baseline_sim -> current_iteration / (double) sim -> iterations;
   }
 
-  if ( num_scaling_stats < 0 )
-  {
-    num_scaling_stats = 0;
-    for ( int i=0; i < STAT_MAX; i++ )
-      if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
-	num_scaling_stats++;
-  }
+  phase = util_t::stat_type_abbrev( current_scaling_stat );
 
   double divisor = num_scaling_stats + 1;
 
   if ( ref_sim && delta_sim )
   {
-    double stat_progress = ( current_scaling_stat + 1 ) / divisor;
+    double stat_progress = ( ( num_scaling_stats - remaining_scaling_stats ) + 1 ) / divisor;
 
     double   ref_progress =   ref_sim -> current_iteration / (double)   ref_sim -> iterations;
     double delta_progress = delta_sim -> current_iteration / (double) delta_sim -> iterations;
@@ -140,7 +137,13 @@ void scaling_t::analyze_stats()
   int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
-  sim_t* baseline_sim = sim;
+  remaining_scaling_stats = 0;
+  for ( int i=0; i < STAT_MAX; i++ )
+    if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
+      remaining_scaling_stats++;
+  num_scaling_stats = remaining_scaling_stats;
+
+  baseline_sim = sim;
   if ( smooth_scale_factors )
   {
     if( sim -> report_progress )
@@ -163,7 +166,7 @@ void scaling_t::analyze_stats()
     double scale_delta = stats.get_stat( i );
     if ( scale_delta == 0.0 ) continue;
 
-    current_scaling_stat++;
+    current_scaling_stat = i;
 
     if( sim -> report_progress )
     {
@@ -217,9 +220,12 @@ void scaling_t::analyze_stats()
     if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
     delete delta_sim;
     delta_sim = ref_sim = 0;
+
+    remaining_scaling_stats--;
   }
 
   if ( baseline_sim != sim ) delete baseline_sim;
+  baseline_sim = 0;
 }
 
 // scaling_t::analyze_lag ===================================================

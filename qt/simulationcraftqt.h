@@ -121,6 +121,7 @@ public:
     SimulateThread* simulateThread;
 
     sim_t* sim;
+    std::string simPhase;
     int simProgress;
     int simResults;
     QStringList resultsHtml;

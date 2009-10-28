@@ -377,7 +377,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
     channel_lag( 0.250 ), channel_lag_stddev( 0 ),
     queue_gcd_reduction( 0.075 ),
-    travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.3 ), regen_periodicity( 1.0 ),
+    travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 1.0 ),
     current_time( 0 ), max_time( 300 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
@@ -1650,21 +1650,27 @@ void sim_t::cancel()
 
 // sim_t::progress ==========================================================
 
-double sim_t::progress()
+double sim_t::progress( std::string& phase )
 {
-  if ( canceled ) return 1.0;
+  if ( canceled ) 
+  {
+    phase = "Canceled";
+    return 1.0;
+  }
 
   if ( scaling -> calculate_scale_factors && 
-       scaling -> current_scaling_stat >= 0 )
+       scaling -> num_scaling_stats > 0 )
   {
-    return scaling -> progress();
+    return scaling -> progress( phase );
   }
   else if ( current_iteration >= 0 )
   {
+    phase = "Simulating";
     return current_iteration / (double) iterations;
   }
   else if ( current_slot >= 0 )
   {
+    phase = current_name;
     return current_slot / (double) SLOT_MAX;
   }
 

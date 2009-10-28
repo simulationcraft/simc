@@ -179,15 +179,17 @@ void SimulationCraftWindow::updateSimProgress()
 {
   if( sim )
   {
-    simProgress = (int) ( 100.0 * sim->progress() );
+    simProgress = (int) ( 100.0 * sim->progress( simPhase ) );
   }
   else
   {
+    simPhase = "%p%";
     simProgress = 100;
   }
   if( mainTab->currentIndex() != TAB_IMPORT &&
       mainTab->currentIndex() != TAB_RESULTS )
   {
+    progressBar->setFormat( simPhase.c_str() );
     progressBar->setValue( simProgress );
   }
 }
@@ -260,7 +262,7 @@ void SimulationCraftWindow::saveHistory()
 // ==========================================================================
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent), visibleWebView(0), sim(0), simProgress(100), simResults(0)
+  : QWidget(parent), visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";
   logFileText = "log.txt";
@@ -884,8 +886,10 @@ void SimulationCraftWindow::startImport( int tab, const QString& url )
 void SimulationCraftWindow::importFinished()
 {
   timer->stop();
+  simPhase = "%p%";
   simProgress = 100;
-  progressBar->setValue( 100 );
+  progressBar->setFormat( simPhase.c_str() );
+  progressBar->setValue( simProgress );
   if ( importThread->player )
   {
     simulateText->setPlainText( importThread->profile );
@@ -1025,8 +1029,10 @@ QString SimulationCraftWindow::mergeOptions()
 void SimulationCraftWindow::simulateFinished()
 {
   timer->stop();
+  simPhase = "%p%";
   simProgress = 100;
-  progressBar->setValue( 100 );
+  progressBar->setFormat( simPhase.c_str() );
+  progressBar->setValue( simProgress );
   QFile file( sim->html_file_str.c_str() );
   deleteSim();
   if( ! simulateThread->success )
@@ -1289,7 +1295,15 @@ void SimulationCraftWindow::mainTabChanged( int index )
     break;
   default: assert(0);
   }
-  if( ! visibleWebView ) progressBar->setValue( simProgress );
+  if( visibleWebView ) 
+  {
+    progressBar->setFormat( "%p%" );
+  }
+  else
+  {
+    progressBar->setFormat( simPhase.c_str() );
+    progressBar->setValue( simProgress );
+  }
 }
 
 void SimulationCraftWindow::importTabChanged( int index )
@@ -1299,6 +1313,7 @@ void SimulationCraftWindow::importTabChanged( int index )
       index == TAB_HISTORY )
   {
     visibleWebView = 0;
+    progressBar->setFormat( simPhase.c_str() );
     progressBar->setValue( simProgress );
     if( index == TAB_RAWR )
     {
@@ -1312,6 +1327,7 @@ void SimulationCraftWindow::importTabChanged( int index )
   else
   {
     visibleWebView = (SimulationCraftWebView*) importTab->widget( index );
+    progressBar->setFormat( "%p%" );
     progressBar->setValue( visibleWebView->progress );
     cmdLine->setText( visibleWebView->url().toString() );
   }

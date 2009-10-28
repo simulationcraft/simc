@@ -549,6 +549,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& id,
                                       int use_active_talents )
 {
+  sim -> current_slot = 0;
+  sim -> current_name = id;
+
   js_node_t* profile_js = download_profile( sim, id );
 
   if ( ! profile_js )
@@ -565,6 +568,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
     util_t::fprintf( sim -> output_file, "\nsimulationcraft: Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
     name_str = "wowhead" + id;
   }
+
+  sim -> current_name = name_str;
 
   armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
   util_t::format_name ( name_str );
@@ -609,6 +614,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int race_type = util_t::translate_race_id( atoi( rid_str.c_str() ) );
 
   player_t* p = player_t::create( sim, type_str, name_str, race_type );
+  sim -> active_player = p;
   if ( ! p )
   {
     util_t::fprintf( sim -> output_file, "\nsimulationcraft: Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n",

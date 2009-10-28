@@ -655,6 +655,9 @@ player_t* armory_t::download_player( sim_t* sim,
                                      const std::string& talents_description,
                                      int cache )
 {
+  sim -> current_slot = 0;
+  sim -> current_name = name;
+
   std::string temp_name = name;
   armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
 
@@ -695,6 +698,7 @@ player_t* armory_t::download_player( sim_t* sim,
   int race_type = util_t::parse_race_type( race_str );
 
   player_t* p = player_t::create( sim, type_str, name_str, race_type );
+  sim -> active_player = p;
   if ( ! p )
   {
     util_t::fprintf( sim -> output_file, "\nsimulationcraft: Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
