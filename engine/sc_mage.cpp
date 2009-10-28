@@ -58,6 +58,7 @@ struct mage_t : public player_t
 
   // Random Number Generation
   rng_t* rng_empowered_fire;
+  rng_t* rng_frostbite_fof;
   rng_t* rng_enduring_winter;
   rng_t* rng_ghost_charge;
   rng_t* rng_tier8_4pc;
@@ -243,7 +244,6 @@ struct mage_spell_t : public spell_t
   int arcane_power;
   int icy_veins;
   bool spell_impact;
-  int fingers_of_frost_cost;
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
@@ -252,8 +252,7 @@ struct mage_spell_t : public spell_t
       dpm_rotation( 0 ),
       arcane_power( 0 ),
       icy_veins( 0 ),
-      spell_impact( false ),
-      fingers_of_frost_cost( 1 )
+      spell_impact( false )
   {
 
   }
@@ -683,7 +682,7 @@ static void clear_fingers_of_frost( spell_t* s )
 
   if ( s -> may_crit && p -> buffs_fingers_of_frost -> check() )
   {
-    p -> buffs_fingers_of_frost -> decrement( ( ( mage_spell_t* ) s ) -> fingers_of_frost_cost );
+    p -> buffs_fingers_of_frost -> decrement();
 
     if ( ! p -> buffs_fingers_of_frost -> check() )
     {
@@ -704,6 +703,38 @@ static void trigger_fingers_of_frost( spell_t* s )
   mage_t* p = s -> player -> cast_mage();
 
   p -> buffs_fingers_of_frost -> trigger( 2 );
+}
+
+// trigger_fingers_of_frost_on_execute ============================================
+
+static void trigger_fingers_of_frost_on_execute( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if ( p -> talents.frostbite == 0 )
+    return;
+
+  if ( p -> talents.frostbite < 3 )
+    if ( p -> rng_frostbite_fof -> roll( ( 3 - p -> talents.frostbite ) / 3.0 ) )
+      return;
+
+  trigger_fingers_of_frost( s );
+}
+
+// trigger_fingers_of_frost_on_travel =============================================
+
+static void trigger_fingers_of_frost_on_travel( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if ( p -> talents.frostbite == 3 )
+    return;
+
+  if ( p -> talents.frostbite > 0 )
+    if ( p -> rng_frostbite_fof -> roll( p -> talents.frostbite / 3.0 ) )
+      return;
+
+  trigger_fingers_of_frost( s );
 }
 
 // trigger_brain_freeze ===========================================================
@@ -2146,14 +2177,16 @@ struct frost_bolt_t : public mage_spell_t
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
       trigger_replenishment( this );
+      trigger_fingers_of_frost_on_execute( this );
     }
   }
 
   virtual void travel( int    travel_result,
                        double travel_dmg )
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::travel( travel_result, travel_dmg );
-    trigger_fingers_of_frost( this );
+    trigger_fingers_of_frost_on_travel( this );
   }
 
   virtual bool ready()
@@ -2304,8 +2337,6 @@ struct deep_freeze_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     spell_impact = false;
-
-    fingers_of_frost_cost = 2;
   }
 
   virtual void execute()
@@ -2411,6 +2442,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
+      trigger_fingers_of_frost_on_execute( this );
     }
     trigger_hot_streak( this );
   }
@@ -2419,7 +2451,7 @@ struct frostfire_bolt_t : public mage_spell_t
                        double travel_dmg )
   {
     mage_spell_t::travel( travel_result, travel_dmg );
-    trigger_fingers_of_frost( this );
+    trigger_fingers_of_frost_on_travel( this );
   }
 
   virtual bool ready()
@@ -3144,6 +3176,7 @@ void mage_t::init_rng()
   player_t::init_rng();
 
   rng_empowered_fire  = get_rng( "empowered_fire"  );
+  rng_frostbite_fof   = get_rng( "frostbite_fof"   );
   rng_ghost_charge    = get_rng( "ghost_charge"    );
   rng_enduring_winter = get_rng( "enduring_winter" );
   rng_tier8_4pc       = get_rng( "tier8_4pc"       );
