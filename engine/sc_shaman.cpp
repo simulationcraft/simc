@@ -49,9 +49,9 @@ struct shaman_t : public player_t
   // Cooldowns
   struct _cooldowns_t
   {
-        double elemental_mastery;
-        double lava_burst;
-        double windfury_weapon;
+    double elemental_mastery;
+    double lava_burst;
+    double windfury_weapon;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
     _cooldowns_t() { reset(); }
@@ -1037,6 +1037,14 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_maelstrom_weapon -> expire();
     p -> buffs_elemental_mastery -> current_value = 0;
+    if ( p -> set_bonus.tier10_2pc_caster() )
+    {
+      p -> _cooldowns.elemental_mastery -= 2.0;
+      if ( p -> _cooldowns.elemental_mastery < 0.0 )
+      {
+        p -> _cooldowns.elemental_mastery = 0.0;
+      }
+    }
     if ( result_is_hit() )
     {
       trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
@@ -1142,9 +1150,13 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_maelstrom_weapon -> expire();
     p -> buffs_elemental_mastery -> current_value = 0;
-          if ( p -> set_bonus.tier10_2pc_caster() )
+    if ( p -> set_bonus.tier10_2pc_caster() )
     {
-      p -> _cooldowns.elemental_mastery -= 1.0;
+      p -> _cooldowns.elemental_mastery -= 2.0;
+      if ( p -> _cooldowns.elemental_mastery < 0.0 )
+      {
+        p -> _cooldowns.elemental_mastery = 0.0;
+      }
     }
     if ( result_is_hit() )
     {
@@ -1328,13 +1340,13 @@ struct elemental_mastery_t : public shaman_spell_t
 
   virtual bool ready()
   {
-          shaman_t* p = player -> cast_shaman();
+    shaman_t* p = player -> cast_shaman();
 
-          if ( ! shaman_spell_t::ready() )
-            return false;
+    if ( ! shaman_spell_t::ready() )
+      return false;
 
     if ( sim -> current_time < p -> _cooldowns.elemental_mastery )
-            return false;
+      return false;
 
     return true;
   }
@@ -1425,7 +1437,6 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
-    p -> buffs_tier10_relic_caster -> trigger();
   }
 
   virtual bool ready()
@@ -1587,7 +1598,6 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
-    p -> buffs_tier10_relic_caster -> trigger();
   }
 };
 
@@ -1666,6 +1676,12 @@ struct flame_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
+  }
+
+  virtual void tick()
+  {
+    shaman_t* p = player -> cast_shaman();
+    shaman_spell_t::tick();
     p -> buffs_tier10_relic_caster -> trigger();
   }
 };
@@ -2916,7 +2932,7 @@ void shaman_t::init_buffs()
   buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
   // PTR relics
   buffs_tier10_relic_melee  = new stat_buff_t( this, "tier10_relic_melee",  STAT_ATTACK_POWER, 146, 3, 15.0, 0, totems.tier10_relic_melee );
-  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_HASTE_RATING,   73, 3, 30.0, 0, totems.tier10_relic_caster );
+  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_HASTE_RATING,  44, 5, 30.0, 0, totems.tier10_relic_caster );
 }
 
 // shaman_t::init_gains ======================================================
