@@ -225,7 +225,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     int height = num_players * 20 + 30;
 
-    if ( num_players < 10 ) height += 70;
+    if ( num_players <= 12 ) height += 70;
 
     s = "http://chart.apis.google.com/chart?";
     snprintf( buffer, sizeof( buffer ), "chs=450x%d", height ); s += buffer;
@@ -283,7 +283,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       s += util_t::stat_type_abbrev( i );
     }
     s += "&amp;";
-    if ( num_players < 10 )
+    if ( num_players <= 12 )
     {
       s += "chdlp=t&amp;";
     }

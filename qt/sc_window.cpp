@@ -311,8 +311,9 @@ void SimulationCraftWindow::createCmdLine()
   cmdLineLayout->addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton->setMaximumWidth( 30 );
   forwardButton->setMaximumWidth( 30 );
+  progressBar->setStyle( new QPlastiqueStyle() );
   progressBar->setMaximum( 100 );
-  progressBar->setMaximumWidth( 100 );
+  progressBar->setMaximumWidth( 150 );
   connect( backButton,    SIGNAL(clicked(bool)),   this, SLOT(    backButtonClicked()) );
   connect( forwardButton, SIGNAL(clicked(bool)),   this, SLOT( forwardButtonClicked()) );
   connect( mainButton,    SIGNAL(clicked(bool)),   this, SLOT(    mainButtonClicked()) );
