@@ -1533,6 +1533,22 @@ void report_t::print_html( sim_t* sim )
   util_t::fprintf( file, "</head>\n" );
   util_t::fprintf( file, "<body>\n" );
 
+  int arch = 0, version = 0, revision = 0;
+  sim -> patch.decode( &arch, &version, &revision );
+  util_t::fprintf( file, "<h1>SimulationCraft %s.%s for World of Warcraft release %d.%d.%d</h1>\n", SC_MAJOR_VERSION, SC_MINOR_VERSION, arch, version, revision );
+
+  time_t rawtime;
+  time ( &rawtime );
+
+  util_t::fprintf( file, "<ul>\n" );
+  util_t::fprintf( file, "  <li>Timestamp: %s</li>\n", ctime( &rawtime ) );
+  util_t::fprintf( file, "  <li>Iterations: %d</li>\n", sim -> iterations );
+  util_t::fprintf( file, "  <li>Fight Length: %.0f</li>\n", sim -> max_time );
+  util_t::fprintf( file, "  <li>Smooth RNG: %s</li>\n", ( sim -> smooth_rng ? "true" : "false" ) );
+  util_t::fprintf( file, "</ul>\n" );
+
+  util_t::fprintf( file, "<hr />\n" );
+
   if ( num_players > 1 ) 
   {
     print_html_contents( file, sim );

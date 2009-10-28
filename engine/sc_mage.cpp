@@ -2184,7 +2184,6 @@ struct frost_bolt_t : public mage_spell_t
   virtual void travel( int    travel_result,
                        double travel_dmg )
   {
-    mage_t* p = player -> cast_mage();
     mage_spell_t::travel( travel_result, travel_dmg );
     trigger_fingers_of_frost_on_travel( this );
   }
