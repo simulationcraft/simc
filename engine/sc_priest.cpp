@@ -721,6 +721,19 @@ struct shadow_word_pain_t : public priest_spell_t
   
     return ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
   }
+
+  virtual void refresh_duration()
+  {
+    priest_t* p = player -> cast_priest();
+    
+    if ( p -> sim -> P330 )
+      num_ticks++;
+
+    priest_spell_t::refresh_duration();
+
+    if ( p -> sim -> P330 )
+      num_ticks--;
+  }
 };
 
 // Vampiric Touch Spell ======================================================
@@ -914,14 +927,6 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     tick_may_crit = p -> buffs_shadow_form -> check() != 0;
     base_crit_bonus_multiplier = 1.0 + p -> buffs_shadow_form -> check();
-    if ( p -> sim -> P330 && scale_ticks_with_haste() )
-    {
-      num_ticks = ( int ) floor( 0.5 + ( 8.0 / haste() ) );      
-    }
-    else
-    {
-      num_ticks = 8;
-    }
     priest_spell_t::execute();
     if ( devouring_plague_burst ) devouring_plague_burst -> execute();
   }
