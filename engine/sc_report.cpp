@@ -755,6 +755,8 @@ static void print_html_raid( FILE*  file, sim_t* sim )
     util_t::fprintf( file, " <tr> <td><img src=\"%s\" /></td> </tr>\n", sim -> dpet_charts[ i ].c_str() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
 }
 
 // print_html_scale_factors ===================================================
@@ -1563,7 +1565,10 @@ void report_t::print_html( sim_t* sim )
     print_html_player( file, sim -> players_by_name[ i ] );
   }
 
-//print_html_text( file, sim );
+  if ( num_players == 1 ) 
+  {
+    util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
+  }
 
   util_t::fprintf( file, "</body>\n" );
   util_t::fprintf( file, "</html>" );

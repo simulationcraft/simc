@@ -1040,6 +1040,9 @@ struct sim_t
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart;
+  std::vector<double> iteration_timeline;
+  std::vector<int> distribution_timeline;
+  std::string timeline_chart;
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
@@ -2335,6 +2338,7 @@ struct chart_t
   static int raid_gear( std::vector<std::string>& images, sim_t* );
 
   static const char* raid_downtime    ( std::string& s, sim_t* );
+  static const char* raid_timeline    ( std::string& s, sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t* );

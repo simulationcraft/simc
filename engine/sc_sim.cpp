@@ -666,6 +666,8 @@ void sim_t::combat_end()
 {
   if ( debug ) log_t::output( this, "Combat End" );
 
+  iteration_timeline.push_back( current_time );
+
   total_seconds += current_time;
   total_events_processed += events_processed;
 
@@ -1019,6 +1021,25 @@ void sim_t::analyze()
     }
   }
 
+  int num_timelines = iteration_timeline.size();
+  if ( num_timelines > 0 )
+  {
+    std::sort( iteration_timeline.begin(), iteration_timeline.end() );
+
+    int num_buckets = 50;
+    double min = iteration_timeline[ 0 ] - 1;
+    double max = iteration_timeline[ num_timelines-1 ] + 1;
+    double range = max - min;
+
+    distribution_timeline.insert( distribution_timeline.begin(), num_buckets, 0 );
+
+    for ( int i=0; i < num_timelines; i++ )
+    {
+      int index = ( int ) ( num_buckets * ( iteration_timeline[ i ] - min ) / range );
+      distribution_timeline[ index ]++;
+    }
+  }
+
   std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
 
@@ -1028,6 +1049,7 @@ void sim_t::analyze()
   chart_t::raid_dpet    ( dpet_charts,    this );
   chart_t::raid_gear    ( gear_charts,    this );
   chart_t::raid_downtime( downtime_chart, this );
+  chart_t::raid_timeline( timeline_chart, this );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
@@ -1082,6 +1104,11 @@ void sim_t::merge( sim_t& other_sim )
   total_events_processed += other_sim.total_events_processed;
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
+
+  for ( int i=0; i < other_sim.iterations; i++ )
+  {
+    iteration_timeline.push_back( other_sim.iteration_timeline[ i ] );
+  }
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {

@@ -371,6 +371,56 @@ const char* chart_t::raid_downtime( std::string& s,
   return s.c_str();
 }
 
+// chart_t::raid_timeline =====================================================
+
+const char* chart_t::raid_timeline( std::string& s,
+                                    sim_t* sim )
+{
+  int max_buckets = ( int ) sim -> distribution_timeline.size();
+  if ( max_buckets == 0 ) return 0;
+
+  int count_max=0;
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    if ( sim -> distribution_timeline[ i ] > count_max )
+    {
+      count_max = sim -> distribution_timeline[ i ];
+    }
+  }
+
+  double min = sim -> iteration_timeline.front();
+  double max = sim -> iteration_timeline.back();
+
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=525x130";
+  s += "&amp;";
+  s += "cht=bvs";
+  s += "&amp;";
+  s += "chd=t:";
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), sim -> distribution_timeline[ i ] ); s += buffer;
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
+  s += "&amp;";
+  s += "chbh=5";
+  s += "&amp;";
+  s += "chxt=x";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", min, sim -> max_time, max ); s += buffer;
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( sim -> max_time - min ) / ( max - min ) ); s += buffer;
+  s += "&amp;";
+  s += "chtt=Timeline+Distribution";
+  s += "&amp;";
+  s += "chts=000000,20";
+
+  return s.c_str();
+}
+
 // chart_t::raid_dpet ========================================================
 
 struct compare_dpet
