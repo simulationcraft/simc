@@ -63,14 +63,16 @@ simc.exe wowhead=14320165 save=Paladin_T9_05_11_55.simc
 Unix users will find that these generated script files can be marked as executable and
 then simply be invoked directly via #! magic.
 
-Windows users may take advantage of the SIMC.BAT and SCALE_FACTORS.BAT utiities by
-drag-n-dropping script files onto these icons.  They will generate output in the
-form "script.txt" and "script.html".
+=============================================================================================
 
-For example:
-Step 1: simc.exe armory=us,Llane,Segv save=Segv.simc
-Step 2: Drag-n-Drop the Segv.simc file onto SIMC.BAT to generate DPS info.
-Step 3: Drag-n-Drop the Segv.simc file onto SCALE_FACTORS.BAT to get DPS and stat weights
+What about a Graphic User Interface?  (AKA "Where did the .BAT files go?)
+
+There is a beta-level GUI built using Qt that is now being bundled with the CLI version.
+This executable (simcqt.exe) also replaces the older .BAT files.  If you associate the 
+.simc extension with the simcqt.exe executable you will be able to simply double-click
+your config files.  Alternatively, you can simply drag-and-drop a config file on top
+of simcqt.exe.  It will load the config and allow you to set up different options,
+such as calculating scale factors, after which you press "Simulate!" to start it running.
 
 =============================================================================================
 
