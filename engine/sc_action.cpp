@@ -765,7 +765,13 @@ void action_t::tick()
 
   result = RESULT_HIT;
 
+  // Older tests indicated that crit debuffs are calculated at the time of the cast, not the ticks.
+  // It's possible that this has now changed, but would require testing to be certain.
+  double save_target_crit = target_crit;
+
   target_debuff( DMG_OVER_TIME );
+
+  target_crit = save_target_crit;
 
   if ( tick_may_crit )
   {
@@ -956,7 +962,15 @@ void action_t::refresh_duration()
   assert( tick_event );
 
   // Recalculate state of current player buffs.
+
+  // Some values will not change during a refresh.
+  double saved_player_multiplier = player_multiplier;
+  double saved_player_crit       = player_crit;
+
   player_buff();
+
+  player_crit       = saved_player_crit;
+  player_multiplier = saved_player_multiplier;
 
   if ( dot_behavior == DOT_WAIT )
   {
