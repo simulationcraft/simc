@@ -27,8 +27,10 @@ std::string bracket_mask( std::string& src, std::string& dst );
 
 
 // types of functions and variables in BUFF and FUNC operators
-enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL,
-                     EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_DISTANCE, EFG_MANA_PERC, EFG_MAX
+enum exp_func_glob { EFG_NONE=0, EFG_GCD, EFG_TIME, EFG_TTD, EFG_HP, EFG_VULN, EFG_INVUL, EFG_COMBAT,
+                     EFG_TICKING, EFG_CTICK,EFG_NTICKS, EFG_EXPIRE, EFG_REMAINS, EFG_TCAST, EFG_MOVING, EFG_DISTANCE, 
+                     EFG_MANA, EFG_RAGE, EFG_ENERGY, EFG_FOCUS, EFG_RUNIC, EFG_RESOURCE,
+                     EFG_MANA_PERC, EFG_RAGE_PERC, EFG_ENERGY_PERC, EFG_FOCUS_PERC, EFG_RUNIC_PERC, EFG_RESOURCE_PERC, EFG_MAX
                    };
 
 // types of known prefixes in expressions
@@ -147,6 +149,7 @@ struct global_expression_t: public act_expression_t
     case EFG_HP:         return action->sim->target -> health_percentage();
     case EFG_VULN:       return action->sim->target -> debuffs.vulnerable -> check();
     case EFG_INVUL:      return action->sim->target -> debuffs.invulnerable -> check();
+    case EFG_COMBAT:     return action->player->in_combat;
     case EFG_TICKING:    return action->ticking;
     case EFG_CTICK:      return action->current_tick;
     case EFG_NTICKS:     return action->num_ticks;
@@ -159,11 +162,47 @@ struct global_expression_t: public act_expression_t
     case EFG_TCAST:      return action->execute_time();
     case EFG_MOVING:     return action->player->buffs.moving->check();
     case EFG_DISTANCE:   return action->player->distance;
+    case EFG_MANA:       return action->player->resource_current[ RESOURCE_MANA                      ];
+    case EFG_RAGE:       return action->player->resource_current[ RESOURCE_RAGE                      ];
+    case EFG_ENERGY:     return action->player->resource_current[ RESOURCE_ENERGY                    ];
+    case EFG_FOCUS:      return action->player->resource_current[ RESOURCE_FOCUS                     ];
+    case EFG_RUNIC:      return action->player->resource_current[ RESOURCE_RUNIC                     ];
+    case EFG_RESOURCE:   return action->player->resource_current[ action->player->primary_resource() ];
     case EFG_MANA_PERC:
     {
       double max_mana=action->player->resource_max[ RESOURCE_MANA ];
       if ( max_mana<=0 ) return 0;
       return action->player->resource_current[ RESOURCE_MANA ]/max_mana*100;
+    }
+    case EFG_RAGE_PERC:
+    {
+      double max_rage=action->player->resource_max[ RESOURCE_RAGE ];
+      if ( max_rage<=0 ) return 0;
+      return action->player->resource_current[ RESOURCE_RAGE ]/max_rage*100;
+    }
+    case EFG_ENERGY_PERC:
+    {
+      double max_energy=action->player->resource_max[ RESOURCE_ENERGY ];
+      if ( max_energy<=0 ) return 0;
+      return action->player->resource_current[ RESOURCE_ENERGY ]/max_energy*100;
+    }
+    case EFG_FOCUS_PERC:
+    {
+      double max_focus=action->player->resource_max[ RESOURCE_FOCUS ];
+      if ( max_focus<=0 ) return 0;
+      return action->player->resource_current[ RESOURCE_FOCUS ]/max_focus*100;
+    }
+    case EFG_RUNIC_PERC:
+    {
+      double max_runic=action->player->resource_max[ RESOURCE_RUNIC ];
+      if ( max_runic<=0 ) return 0;
+      return action->player->resource_current[ RESOURCE_RUNIC ]/max_runic*100;
+    }
+    case EFG_RESOURCE_PERC:
+    {
+      double max_resource=action->player->resource_max[ action->player->primary_resource() ];
+      if ( max_resource<=0 ) return 0;
+      return action->player->resource_current[ action->player->primary_resource() ]/max_resource*100;
     }
     }
     return 0;
@@ -589,11 +628,28 @@ act_expression_t* act_expression_t::create( action_t* action, std::string& expre
         if ( name=="health_perc" ) glob_type=EFG_HP;
         if ( name=="vulnerable" ) glob_type=EFG_VULN;
         if ( name=="invulnerable" ) glob_type=EFG_INVUL;
+        if ( name=="in_combat" ) glob_type=EFG_COMBAT;
         if ( name=="moving" ) glob_type=EFG_MOVING;
         if ( name=="move" ) glob_type=EFG_MOVING;
         if ( name=="distance" ) glob_type=EFG_DISTANCE;
+        if ( name=="mana" ) glob_type=EFG_MANA;
+        if ( name=="rage" ) glob_type=EFG_RAGE;
+        if ( name=="energy" ) glob_type=EFG_ENERGY;
+        if ( name=="focus" ) glob_type=EFG_FOCUS;
+        if ( name=="runic" ) glob_type=EFG_RUNIC;
+        if ( name=="resource" ) glob_type=EFG_RESOURCE;
         if ( name=="mana_perc" ) glob_type=EFG_MANA_PERC;
         if ( name=="mana_percentage" ) glob_type=EFG_MANA_PERC;
+        if ( name=="rage_perc" ) glob_type=EFG_RAGE_PERC;
+        if ( name=="rage_percentage" ) glob_type=EFG_RAGE_PERC;
+        if ( name=="energy_perc" ) glob_type=EFG_ENERGY_PERC;
+        if ( name=="energy_percentage" ) glob_type=EFG_ENERGY_PERC;
+        if ( name=="focus_perc" ) glob_type=EFG_FOCUS_PERC;
+        if ( name=="focus_percentage" ) glob_type=EFG_FOCUS_PERC;
+        if ( name=="runic_perc" ) glob_type=EFG_RUNIC_PERC;
+        if ( name=="runic_percentage" ) glob_type=EFG_RUNIC_PERC;
+        if ( name=="resource_perc" ) glob_type=EFG_RESOURCE_PERC;
+        if ( name=="resource_percentage" ) glob_type=EFG_RESOURCE_PERC;
         // now create node if known global value
         if ( glob_type>0 )
         {
