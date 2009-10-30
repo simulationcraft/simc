@@ -2477,9 +2477,9 @@ void warrior_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=hearty_rhino";
-    if      ( primary_tree() == TREE_ARMS       ) action_list_str += "/stance,choose=battle";
-    else if ( primary_tree() == TREE_FURY       ) action_list_str += "/stance,choose=berserker";
-    else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive";
+    if      ( primary_tree() == TREE_ARMS       ) action_list_str += "/stance,choose=battle,if=in_combat=0";
+    else if ( primary_tree() == TREE_FURY       ) action_list_str += "/stance,choose=berserker,if=in_combat=0";
+    else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive,if=in_combat=0";
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
