@@ -2577,7 +2577,8 @@ void warrior_t::combat_begin()
   player_t::combat_begin();
   // We start with zero rage into combat.
   resource_current[ RESOURCE_RAGE ] = 0;
-
+  if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
+    buffs_battle_stance -> trigger();
 }
 
 // warrior_t::reset ===========================================================

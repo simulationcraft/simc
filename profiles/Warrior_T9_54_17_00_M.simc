@@ -8,7 +8,7 @@ talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=302203202333015010201
 glyphs=mortal_strike/rending/execution
 actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino
-actions+=/stance,choose=battle
+actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/bloodrage,rage<=85
