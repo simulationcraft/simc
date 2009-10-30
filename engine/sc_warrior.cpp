@@ -22,9 +22,12 @@ struct warrior_t : public player_t
   int num_active_heroic_strikes;
 
   // Buffs
+  buff_t* buffs_battle_stance;
+  buff_t* buffs_berserker_stance;
   buff_t* buffs_bloodrage;
   buff_t* buffs_bloodsurge;
   buff_t* buffs_death_wish;
+  buff_t* buffs_defensive_stance;
   buff_t* buffs_enrage;
   buff_t* buffs_flurry;
   buff_t* buffs_improved_defensive_stance;
@@ -141,6 +144,7 @@ struct warrior_t : public player_t
     int sudden_death;
     int sword_and_board;
     int sword_specialization;
+    int tactical_mastery;
     int taste_for_blood;
     int titans_grip;
     int toughness;
@@ -688,18 +692,18 @@ void warrior_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.onhanded_weapon_specialization * 0.02;
     }
   }
-  if ( p -> active_stance == STANCE_BATTLE )
+  if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
     player_penetration += 0.10;
     if ( player -> set_bonus.tier9_2pc_melee() ) player_penetration += 0.06;
   }
-  else if ( p -> active_stance == STANCE_BERSERKER )
+  else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
     player_crit += 0.03;
     if ( player -> set_bonus.tier9_2pc_melee() ) player_crit += 0.02;
 
   }
-  else if ( p -> active_stance == STANCE_DEFENSE )
+  else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
   {
     player_multiplier *= 1.0 - 0.05;
   }
@@ -2149,15 +2153,41 @@ struct stance_t : public warrior_spell_t
       };
     warrior_t* p = player -> cast_warrior();
     p -> aura_loss( stance_name[ p -> active_stance  ] );
+    switch ( p -> active_stance )
+    {
+      case STANCE_BATTLE:     p -> buffs_battle_stance    -> expire(); break;
+      case STANCE_BERSERKER:  p -> buffs_berserker_stance -> expire(); break;
+      case STANCE_DEFENSE:    p -> buffs_defensive_stance -> expire(); break;
+    }
     p -> active_stance = switch_to_stance;
     p -> aura_gain( stance_name[ p -> active_stance  ] );
+    switch ( p -> active_stance )
+    {
+      case STANCE_BATTLE:     p -> buffs_battle_stance    -> trigger(); break;
+      case STANCE_BERSERKER:  p -> buffs_berserker_stance -> trigger(); break;
+      case STANCE_DEFENSE:    p -> buffs_defensive_stance -> trigger(); break;
+    }
+    consume_resource();
 
     update_ready();
+  }
+
+  virtual double cost() SC_CONST
+  {
+    warrior_t* p = player -> cast_warrior();
+    double c = p -> resource_current [ RESOURCE_RAGE ];
+    c -= 10.0; // Stance Mastery
+    c -= 5.0 * p -> talents.tactical_mastery;
+    if ( c < 0 ) c = 0;
+    return c;
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
+  
+    if ( ! warrior_spell_t::ready() )
+      return false;
 
     return p -> active_stance != switch_to_stance;
   }
@@ -2362,9 +2392,12 @@ void warrior_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_battle_stance             = new buff_t( this, "battle_stance"    );
+  buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
   buffs_bloodrage                 = new buff_t( this, "bloodrage",                 1, 10.0 );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, util_t::talent_rank( talents.bloodsurge, 3, 0.07, 0.13, 0.20 ) );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0,   0, talents.death_wish );
+  buffs_defensive_stance          = new buff_t( this, "defensive_stance" );
   buffs_enrage                    = new buff_t( this, "enrage",                    1, 12.0,   0, talents.enrage ? 0.30 : 0.00 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry );
   buffs_improved_defensive_stance = new buff_t( this, "improved_defensive_stance", 1, 12.0,   0, talents.improved_defensive_stance / 2.0 );
@@ -2766,7 +2799,7 @@ std::vector<talent_translation_t>& warrior_t::get_talent_list()
     { {  3, 2, &( talents.improved_rend                   ) }, {  3, 5, &( talents.cruelty                   ) }, {  3, 3, &( talents.improved_thunderclap           ) } },
     { {  4, 0, NULL                                         }, {  4, 0, NULL                                   }, {  4, 3, &( talents.incite                         ) } },
     { {  5, 0, NULL                                         }, {  5, 5, &( talents.unbridled_wrath           ) }, {  5, 5, &( talents.anticipation                   ) } },
-    { {  6, 0, NULL                                         }, {  6, 0, NULL                                   }, {  6, 0, NULL                                        } },
+    { {  6, 3, &( talents.tactical_mastery                ) }, {  6, 0, NULL                                   }, {  6, 0, NULL                                        } },
     { {  7, 2, &( talents.improved_overpower              ) }, {  7, 0, NULL                                   }, {  7, 2, &( talents.improved_revenge               ) } },
     { {  8, 1, &( talents.anger_management                ) }, {  8, 0, NULL                                   }, {  8, 2, &( talents.shield_mastery                 ) } },
     { {  9, 2, &( talents.impale                          ) }, {  9, 5, &( talents.commanding_presence       ) }, {  9, 5, &( talents.toughness                      ) } },
@@ -2865,6 +2898,7 @@ std::vector<option_t>& warrior_t::get_options()
       { "sudden_death",                    OPT_INT, &( talents.sudden_death                    ) },
       { "sword_and_board",                 OPT_INT, &( talents.sword_and_board                 ) },
       { "sword_specialization",            OPT_INT, &( talents.sword_specialization            ) },
+      { "tactical_mastery",                OPT_INT, &( talents.tactical_mastery                ) },
       { "taste_for_blood",                 OPT_INT, &( talents.taste_for_blood                 ) },
       { "titans_grip",                     OPT_INT, &( talents.titans_grip                     ) },
       { "toughness",                       OPT_INT, &( talents.toughness                       ) },
