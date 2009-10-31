@@ -285,59 +285,6 @@ static void trigger_judgements_of_the_wise( action_t* a )
   p -> trigger_replenishment();
 }
 
-// trigger_righteous_vengeance =============================================
-
-static void trigger_righteous_vengeance( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( ! p -> talents.righteous_vengeance ) return;
-
-  struct righteous_vengeance_t : public attack_t
-  {
-    righteous_vengeance_t( paladin_t* p ) : attack_t( "righteous_vengeance", p, RESOURCE_NONE, SCHOOL_HOLY )
-    {
-      background     = true;
-      proc           = true;
-      trigger_gcd    = 0;
-      base_tick_time = 2;
-      num_ticks      = 4;
-      tick_may_crit  = p -> set_bonus.tier9_2pc_melee() != 0;
-      reset(); // required since construction occurs after player_t::init()
-    }
-    virtual double total_multiplier() SC_CONST { return 1.0; } // No double-dip!
-  };
-
-  if ( ! p -> active_righteous_vengeance ) p -> active_righteous_vengeance = new righteous_vengeance_t( p );
-
-  double dmg = p -> talents.righteous_vengeance * 0.1 * a -> direct_dmg;
-
-  if ( p -> active_righteous_vengeance -> ticking )
-  {
-    int remaining_ticks = ( p -> active_righteous_vengeance -> num_ticks - 
-                            p -> active_righteous_vengeance -> current_tick );
-
-    dmg += p -> active_righteous_vengeance -> base_td * remaining_ticks;
-
-#if 0 // DoT is refreshed like Shadow Word: Pain
-
-    p -> active_righteous_vengeance -> refresh_duration();
-  }
-  else 
-  {
-    p -> active_righteous_vengeance -> player_buff();
-    p -> active_righteous_vengeance -> schedule_tick();
-  } 
-#else // DoT is rescheduled like Ignite
-    p -> active_righteous_vengeance -> cancel();
-  }
-
-  p -> active_righteous_vengeance -> player_buff(); 
-  p -> active_righteous_vengeance -> schedule_tick();
-#endif
-  p -> active_righteous_vengeance -> base_td = dmg / 4;
-}
-
 // =========================================================================
 // Paladin Attacks
 // =========================================================================
@@ -442,6 +389,60 @@ struct paladin_attack_t : public attack_t
     }
   }
 };
+
+// trigger_righteous_vengeance =============================================
+
+static void trigger_righteous_vengeance( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( ! p -> talents.righteous_vengeance ) return;
+
+  struct righteous_vengeance_t : public paladin_attack_t
+  {
+    righteous_vengeance_t( paladin_t* p ) : paladin_attack_t( "righteous_vengeance", p, SCHOOL_HOLY )
+    {
+      background     = true;
+      proc           = true;
+      trigger_gcd    = 0;
+      base_tick_time = 2;
+      num_ticks      = 4;
+      tick_may_crit  = p -> set_bonus.tier9_2pc_melee() != 0;
+      reset(); // required since construction occurs after player_t::init()
+    }
+    virtual double total_multiplier() SC_CONST { return 1.0; } // No double-dip!
+  };
+
+  if ( ! p -> active_righteous_vengeance ) p -> active_righteous_vengeance = new righteous_vengeance_t( p );
+
+  double dmg = p -> talents.righteous_vengeance * 0.1 * a -> direct_dmg;
+
+  if ( p -> active_righteous_vengeance -> ticking )
+  {
+    int remaining_ticks = ( p -> active_righteous_vengeance -> num_ticks - 
+                            p -> active_righteous_vengeance -> current_tick );
+
+    dmg += p -> active_righteous_vengeance -> base_td * remaining_ticks;
+
+#if 0 // DoT is refreshed like Shadow Word: Pain
+
+    p -> active_righteous_vengeance -> refresh_duration();
+  }
+  else 
+  {
+    p -> active_righteous_vengeance -> player_buff();
+    p -> active_righteous_vengeance -> schedule_tick();
+  } 
+#else // DoT is rescheduled like Ignite
+    p -> active_righteous_vengeance -> cancel();
+  }
+
+  p -> active_righteous_vengeance -> player_buff(); 
+  p -> active_righteous_vengeance -> schedule_tick();
+#endif
+  p -> active_righteous_vengeance -> base_td = dmg / 4;
+}
+
 
 // Melee Attack ============================================================
 
