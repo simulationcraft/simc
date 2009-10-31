@@ -23,6 +23,7 @@
 
 /* Begin PBXBuildFile section */
 		4438981C107BB7CC00462773 /* simcqt.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4438981B107BB7C700462773 /* simcqt.app */; };
+		44987E3D109CABA00052D6BE /* sc_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44987E3C109CABA00052D6BE /* sc_plot.cpp */; };
 		44C7A51C106D4BA300A2271C /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1B910545A7500677DEB /* sc_action.cpp */; };
 		44C7A51D106D4BA300A2271C /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BA10545A7500677DEB /* sc_armory.cpp */; };
 		44C7A51E106D4BA300A2271C /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1BB10545A7500677DEB /* sc_attack.cpp */; };
@@ -141,6 +142,7 @@
 /* Begin PBXFileReference section */
 		4438981B107BB7C700462773 /* simcqt.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = simcqt.app; path = qt/simcqt.app; sourceTree = "<group>"; };
 		444CCF81107DCC3700229DD2 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = /Library/Frameworks/Sparkle.framework; sourceTree = "<absolute>"; };
+		44987E3C109CABA00052D6BE /* sc_plot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_plot.cpp; sourceTree = "<group>"; };
 		44C41689107BB68700242308 /* simcqt.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = simcqt.xcodeproj; path = qt/simcqt.xcodeproj; sourceTree = "<group>"; };
 		44C7A518106D4B7600A2271C /* libsimc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsimc.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		44E3D1B910545A7500677DEB /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_action.cpp; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 		08FB7795FE84155DC02AAC07 /* engine */ = {
 			isa = PBXGroup;
 			children = (
+				44987E3C109CABA00052D6BE /* sc_plot.cpp */,
 				44E3D21810545A9800677DEB /* simulationcraft.h */,
 				44E3D1B910545A7500677DEB /* sc_action.cpp */,
 				44E3D1BA10545A7500677DEB /* sc_armory.cpp */,
@@ -492,6 +495,7 @@
 				44C7A548106D4BA300A2271C /* sc_weapon.cpp in Sources */,
 				44C7A549106D4BA300A2271C /* sc_wowhead.cpp in Sources */,
 				44C7A54A106D4BA300A2271C /* sc_xml.cpp in Sources */,
+				44987E3D109CABA00052D6BE /* sc_plot.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

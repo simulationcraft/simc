@@ -5,7 +5,7 @@
 		activeExecutable = 442BD364107A7D0000AFCDF4 /* simcqt */;
 		activeTarget = 444CCF8C107DCCCD00229DD2 /* Bundle for Deployment */;
 		addToTargets = (
-			444CCF8C107DCCCD00229DD2 /* Bundle for Deployment */,
+			44C7A517106D4B7600A2271C /* libsimc */,
 		);
 		codeSenseManager = 44E3D117105459FA00677DEB /* Code sense */;
 		executables = (
@@ -137,13 +137,13 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 277759627;
-			PBXWorkspaceStateSaveDate = 277759627;
+			PBXPerProjectTemplateStateSaveDate = 278702980;
+			PBXWorkspaceStateSaveDate = 278702980;
 		};
 		perUserProjectItems = {
 			442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */ = 442BD36A107A7D3000AFCDF4 /* PBXTargetBookmark */;
 			44335821108E46B60031E686 /* PBXTextBookmark */ = 44335821108E46B60031E686 /* PBXTextBookmark */;
-			44DD276F108E43D30063FC10 /* PBXTextBookmark */ = 44DD276F108E43D30063FC10 /* PBXTextBookmark */;
+			44987E3E109CABA30052D6BE /* PBXTextBookmark */ = 44987E3E109CABA30052D6BE /* PBXTextBookmark */;
 			44F6B21C107A867100763099 /* PBXTextBookmark */ = 44F6B21C107A867100763099 /* PBXTextBookmark */;
 			44F86C4F107A97A100F594DB /* PBXTextBookmark */ = 44F86C4F107A97A100F594DB /* PBXTextBookmark */;
 		};
@@ -225,18 +225,18 @@
 	444CCF8C107DCCCD00229DD2 /* Bundle for Deployment */ = {
 		activeExec = 0;
 	};
-	44C7A517106D4B7600A2271C /* libsimc */ = {
-		activeExec = 0;
-	};
-	44DD276F108E43D30063FC10 /* PBXTextBookmark */ = {
+	44987E3E109CABA30052D6BE /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 44E3D21810545A9800677DEB /* simulationcraft.h */;
-		name = "simulationcraft.h: 2200";
+		name = "simulationcraft.h: 2208";
 		rLen = 0;
 		rLoc = 77052;
 		rType = 0;
-		vrLen = 476;
-		vrLoc = 78;
+		vrLen = 392;
+		vrLoc = 162;
+	};
+	44C7A517106D4B7600A2271C /* libsimc */ = {
+		activeExec = 0;
 	};
 	44E3D112105459F100677DEB /* simc */ = {
 		isa = PBXExecutable;
@@ -357,9 +357,9 @@
 	};
 	44E3D21810545A9800677DEB /* simulationcraft.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {815, 32578}}";
+			sepNavIntBoundsRect = "{{0, 0}, {815, 33319}}";
 			sepNavSelRange = "{77052, 0}";
-			sepNavVisRange = "{120, 434}";
+			sepNavVisRange = "{162, 392}";
 		};
 	};
 	44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {
