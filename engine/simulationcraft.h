@@ -1144,6 +1144,7 @@ struct plot_t
   std::string dps_plot_stat_str;
   double dps_plot_step;
   int    dps_plot_points;
+  int    dps_plot_iterations;
   int    current_plot_stat, num_plot_stats, remaining_plot_stats;
   int    remaining_plot_points;
 

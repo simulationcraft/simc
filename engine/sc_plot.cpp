@@ -47,6 +47,7 @@ plot_t::plot_t( sim_t* s ) :
   sim( s ), 
   dps_plot_step( 20.0 ),
   dps_plot_points( 20 ),
+  dps_plot_iterations ( -1 ),
   current_plot_stat( 0 ),
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
@@ -119,34 +120,36 @@ void plot_t::analyze_stats()
 
       if ( j != 0 )
       {
-	delta_sim = new sim_t( sim );
-	delta_sim -> enchant.add_stat( i, j * dps_plot_step );
-	delta_sim -> execute();
+	      delta_sim = new sim_t( sim );
+        if ( dps_plot_iterations > 0 )
+          delta_sim -> iterations = dps_plot_iterations;
+	      delta_sim -> enchant.add_stat( i, j * dps_plot_step );
+	      delta_sim -> execute();
       }
 
       for ( int k=0; k < num_players; k++ )
       {
-	player_t* p = sim -> players_by_name[ k ];
+	      player_t* p = sim -> players_by_name[ k ];
 
-	if ( p -> scales_with[ i ] <= 0 ) continue;
+	      if ( p -> scales_with[ i ] <= 0 ) continue;
 
-	if ( delta_sim )
-	{
-	  player_t* delta_p = delta_sim -> find_player( p -> name() );
+  	    if ( delta_sim )
+	      {
+	        player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-	  p -> dps_plot_data[ i ].push_back( delta_p -> dps );
-	}
-	else
-	{
-	  p -> dps_plot_data[ i ].push_back( p -> dps );
-	}
+	        p -> dps_plot_data[ i ].push_back( delta_p -> dps );
+	      }
+	      else
+	      {
+	        p -> dps_plot_data[ i ].push_back( p -> dps );
+	      }
       }
 
       if ( delta_sim ) 
       {
-	delete delta_sim;
-	delta_sim = 0;
-	remaining_plot_points--;
+	      delete delta_sim;
+	      delta_sim = 0;
+	      remaining_plot_points--;
       }
     }
 
@@ -177,9 +180,10 @@ int plot_t::get_options( std::vector<option_t>& options )
   option_t plot_options[] =
   {
     // @option_doc loc=global/scale_factors title="Plots"
-    { "dps_plot_stat",   OPT_STRING, &( dps_plot_stat_str ) },
-    { "dps_plot_step",   OPT_FLT,    &( dps_plot_step     ) },
-    { "dps_plot_points", OPT_INT,    &( dps_plot_points   ) },
+    { "dps_plot_iterations", OPT_INT,    &( dps_plot_iterations ) },
+    { "dps_plot_points",     OPT_INT,    &( dps_plot_points     ) },
+    { "dps_plot_stat",       OPT_STRING, &( dps_plot_stat_str   ) },
+    { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
