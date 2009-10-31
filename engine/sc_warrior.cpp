@@ -248,10 +248,12 @@ struct warrior_attack_t : public attack_t
 {
   double min_rage, max_rage;
   int stancemask;
+  bool can_proc_trauma;
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, special ),
       min_rage( 0 ), max_rage( 0 ),
-      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE ),
+      can_proc_trauma( true )
 
   {
     warrior_t* p = player -> cast_warrior();
@@ -358,11 +360,31 @@ static void trigger_deep_wounds( action_t* a )
       base_tick_time = 1.0;
       num_ticks = 6;
       weapon_multiplier = p -> talents.deep_wounds * 0.16;
+      reset(); // required since construction occurs after player_t::init()
     }
-    virtual double total_multiplier() SC_CONST
+    virtual void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
-      return ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() ) ? 1.30 : 1.0;
+      warrior_attack_t::target_debuff( dmg_type );
+
+      // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
+      if ( t -> debuffs.blood_frenzy  -> up() ||
+           t -> debuffs.savage_combat -> up() )
+      {
+        target_multiplier /= 1.04;
+      }
+    }
+    virtual double calculate_weapon_damage()
+    {
+      if ( ! weapon || weapon_multiplier <= 0 ) return 0;
+
+      double dmg = ( weapon -> min_dmg + weapon -> max_dmg ) * 0.5;
+
+      double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
+
+      double power_damage = weapon -> swing_time * weapon_power_mod * total_attack_power();
+
+      return ( dmg + power_damage ) * weapon_multiplier * hand_multiplier;
     }
     virtual void execute()
     {
@@ -370,8 +392,8 @@ static void trigger_deep_wounds( action_t* a )
       double damage = calculate_weapon_damage();
       if( ticking ) 
       {
-	damage += base_td * ( num_ticks - current_tick );
-	cancel();
+	      damage += base_td * ( num_ticks - current_tick );
+	      cancel();
       }
       base_td = damage / 6.0;
       trigger_blood_frenzy( this );
@@ -379,7 +401,6 @@ static void trigger_deep_wounds( action_t* a )
     }
     virtual void tick()
     {
-
       warrior_attack_t::tick();
       warrior_t* p = player -> cast_warrior();
       p -> buffs_tier7_4pc_melee -> trigger();
@@ -517,11 +538,15 @@ static void trigger_sword_and_board( attack_t* a )
 
 static void trigger_trauma( action_t* a )
 {
-  warrior_t* p = a -> player -> cast_warrior();
+  warrior_t*         p = a -> player -> cast_warrior();
+  warrior_attack_t* wa = ( warrior_attack_t* ) a;
   if ( p -> talents.trauma == 0 )
     return;
 
   if ( a -> result != RESULT_CRIT )
+    return;
+
+  if ( ! wa -> can_proc_trauma )
     return;
   
   target_t* t = a -> sim -> target;
@@ -1812,7 +1837,10 @@ struct whirlwind_t : public warrior_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( player -> off_hand_weapon );
+      bool save_proc_trauma = can_proc_trauma;
+      can_proc_trauma = false;
       warrior_attack_t::execute();
+      can_proc_trauma = save_proc_trauma;
       if( result_is_hit() ) trigger_bloodsurge( this );
     }
 
