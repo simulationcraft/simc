@@ -159,7 +159,15 @@ void plot_t::analyze_stats()
 void plot_t::analyze()
 {
   if ( sim -> canceled ) return;
+
   analyze_stats();
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> quiet ) continue;
+
+    chart_t::scaling_dps( p -> scaling_dps_chart, p );
+  }
 }
 
 // plot_t::get_options ======================================================

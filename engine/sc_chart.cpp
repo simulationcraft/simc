@@ -727,6 +727,111 @@ const char* chart_t::gains( std::string& s,
   return s.c_str();
 }
 
+// chart_t::scaling_dps ======================================================
+
+const char* chart_t::scaling_dps( std::string& s,
+				  player_t* p )
+{
+  double max_dps=0, min_dps=FLT_MAX;
+
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    int size = pd.size();
+    for ( int j=0; j < size; j++ )
+    {
+      if ( pd[ j ] > max_dps ) max_dps = pd[ j ];
+      if ( pd[ j ] < min_dps ) min_dps = pd[ j ];
+    }
+  }
+  if ( max_dps == 0 ) return 0;
+
+  const char* colors[ STAT_MAX ];
+
+  for ( int i=0; i < STAT_MAX; i++ ) colors[ i ] = 0;
+
+  colors[ STAT_STRENGTH                 ] = class_color( WARRIOR );
+  colors[ STAT_AGILITY                  ] = class_color( HUNTER );
+  colors[ STAT_INTELLECT                ] = class_color( MAGE );
+  colors[ STAT_SPIRIT                   ] = class_color( DRUID );
+  colors[ STAT_MP5                      ] = class_color( DRUID );
+  colors[ STAT_ATTACK_POWER             ] = class_color( ROGUE );
+  colors[ STAT_SPELL_POWER              ] = class_color( WARLOCK );
+  colors[ STAT_HIT_RATING               ] = class_color( PRIEST );
+  colors[ STAT_CRIT_RATING              ] = class_color( PALADIN );
+  colors[ STAT_HASTE_RATING             ] = class_color( SHAMAN );
+  colors[ STAT_EXPERTISE_RATING         ] = class_color( DEATH_KNIGHT );
+  colors[ STAT_ARMOR_PENETRATION_RATING ] = "00FF00";
+  colors[ STAT_SPELL_PENETRATION        ] = "00FF00";
+
+  double step = p -> sim -> plot -> dps_plot_step;
+  int range = p -> sim -> plot -> dps_plot_points / 2;
+  int num_points = 1 + 2 * range;
+  
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=600x300";
+  s += "&amp;";
+  s += "cht=lc";
+  s += "&amp;";
+  s += "chd=t:";
+  bool first=true;
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( ! colors[ i ] ) continue;
+    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    int size = pd.size();
+    if ( size != num_points ) continue;
+    if ( ! first ) s += "|";
+    for ( int j=0; j < size; j++ )
+    {
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", (j?",":""), pd[ j ] ); s += buffer;
+    }
+    first = false;
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=%.0f,%.0f", min_dps, max_dps ); s += buffer;
+  s += "&amp;";
+  s += "chxt=x,y";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|0|%.0f|1:|%.0f|%.0f|%.0f", (-range*step), (+range*step), min_dps, p -> dps, max_dps ); s += buffer;
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * ( p -> dps - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+  s += "&amp;";
+  s += "chdl=";
+  first = true;
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( ! colors[ i ] ) continue;
+    int size = p -> dps_plot_data[ i ].size();
+    if ( size != num_points ) continue;
+    if ( ! first ) s += "|";
+    s += util_t::stat_type_abbrev( i );
+    first = false;
+  }
+  s += "&amp;";
+  s += "chco=";
+  first = true;
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( ! colors[ i ] ) continue;
+    int size = p -> dps_plot_data[ i ].size();
+    if ( size != num_points ) continue;
+    if ( ! first ) s += ",";
+    first = false;
+    s += colors[ i ];
+  }
+  s += "&amp;";
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
+  s += "&amp;";
+  s += "chts=000000,20";
+
+  return s.c_str();
+}
+
 // chart_t::timeline_dps =====================================================
 
 const char* chart_t::timeline_dps( std::string& s,

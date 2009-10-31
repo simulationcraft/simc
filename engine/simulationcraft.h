@@ -1440,7 +1440,7 @@ struct player_t
   std::vector<double> iteration_dps;
   std::vector<int> distribution_dps;
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
-  std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart;
+  std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart, scaling_dps_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link;
   std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
   std::string save_str;
@@ -2367,6 +2367,7 @@ struct chart_t
   static const char* gains            ( std::string& s, player_t* );
   static const char* timeline_resource( std::string& s, player_t* );
   static const char* timeline_dps     ( std::string& s, player_t* );
+  static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* distribution_dps ( std::string& s, player_t* );
 
   static const char* gear_weights_lootrank( std::string& s, player_t* );

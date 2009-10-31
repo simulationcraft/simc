@@ -1009,6 +1009,15 @@ static void print_html_player( FILE* file, player_t* p )
 		   gains_str.c_str(), timeline_resource_str.c_str(),
 		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
+  if ( ! p -> scaling_dps_chart.empty() )
+  {
+    util_t::fprintf( file, 
+		     "<table class=\"player\">\n"
+		     "  <tr> <td><img name=\"chart_scaling_dps\" src=\"%s\" /></td> </tr>\n"
+		     "</table> <br />\n",
+		     p -> scaling_dps_chart.c_str() );
+  }
+
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
 		   " <tr>"
@@ -1226,6 +1235,11 @@ static void print_xml_player( FILE* file, player_t* p )
   util_t::fprintf( file, "      <chart name=\"DPS Timeline\" type=\"chart_dps_timeline\" url=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
 
   util_t::fprintf( file, "      <chart name=\"DPS Distribution\" type=\"chart_dps_distribution\" url=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+
+  if ( ! p -> scaling_dps_chart.empty() )
+  {
+    util_t::fprintf( file, "      <chart name=\"DPS Scaling\" type=\"chart_dps_scaling\" url=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+  }
 }
 
 // print_xml_scale_factors ===================================================
@@ -1435,6 +1449,15 @@ static void print_wiki_player( FILE*     file,
   util_t::fprintf( file, "|| %s || %s ||\n",        gains.c_str(), timeline_resource.c_str() );
   util_t::fprintf( file, "|| %s || %s ||\n", timeline_dps.c_str(),  distribution_dps.c_str() );
   util_t::fprintf( file, "\n" );
+
+  if ( ! p -> scaling_dps_chart.empty() )
+  {
+    std::string scaling_dps = p -> scaling_dps_chart;
+    scaling_dps += "&dummy=dummy.png";
+    simplify_html( scaling_dps );
+    util_t::fprintf( file, "|| %s ||\n", scaling_dps.c_str() );
+    util_t::fprintf( file, "\n" );
+  }
 }
 
 // print_wiki_text ===========================================================
