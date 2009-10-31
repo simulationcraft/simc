@@ -272,6 +272,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_plot.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_priest.cpp"
 			>
 		</File>
