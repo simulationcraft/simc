@@ -592,6 +592,40 @@ static void print_scale_factors( FILE* file, player_t* p )
   util_t::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
 }
 
+// print_dps_plots ============================================================
+
+static void print_dps_plots( FILE* file, player_t* p )
+{
+  sim_t* sim = p -> sim;
+
+  if ( sim -> plot -> dps_plot_stat_str.empty() ) return;
+
+  int range = sim -> plot -> dps_plot_points / 2;
+
+  double min = -range * sim -> plot -> dps_plot_step;
+  double max = +range * sim -> plot -> dps_plot_step;
+
+  int points = 1 + range * 2;
+
+  util_t::fprintf( file, "  DPS Plot Data ( min=%.1f max=%.1f points=%d )\n", min, max, points );
+
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    std::vector<double>& pd = p -> dps_plot_data[ i ];
+
+    if ( ! pd.empty() )
+    {
+      util_t::fprintf( file, "    DPS(%s)=", util_t::stat_type_abbrev( i ) );
+      int num_points = pd.size();
+      for( int j=0; j < num_points; j++ )
+      {
+	util_t::fprintf( file, "%s%.0f", (j?"|":""), pd[ j ] );
+      }
+      util_t::fprintf( file, "\n" );
+    }
+  }
+}
+
 // print_reference_dps ========================================================
 
 static void print_reference_dps( FILE* file, sim_t* sim )
@@ -821,15 +855,12 @@ static void print_html_action( FILE* file, stats_t* s )
   if ( executes_divisor <= 0 ) executes_divisor = 1;
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
-  double miss_pct      = s -> num_executes > 0 ? s -> execute_results[ RESULT_MISS ].count / s -> num_executes : 0.0;
-  double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
-
   util_t::fprintf( file,
 		   " <tr>"
 		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.2fsec</td>"
 		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
-		   " <td>%.2f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.0f</td> <td>%.2f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
+		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
+		   " <td>%.0f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
@@ -838,15 +869,15 @@ static void print_html_action( FILE* file, stats_t* s )
 		   s -> execute_results[ RESULT_CRIT ].avg_dmg,
 		   s -> execute_results[ RESULT_CRIT ].max_dmg,
 		   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-		   miss_pct * 100, 
+		   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
 		   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
 		   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
 		   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
 		   s -> num_ticks,
-       tick_miss_pct * 100,
 		   s -> tick_results[ RESULT_HIT  ].avg_dmg,
 		   s -> tick_results[ RESULT_CRIT ].avg_dmg,
-		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor );
+		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
+		   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
 }
 
 // print_html_player =========================================================
@@ -984,7 +1015,7 @@ static void print_html_player( FILE* file, player_t* p )
 		   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
 		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
 		   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
-       " <th>Ticks</th> <th>T-Miss%%</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th>"
+		   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
 		   " </tr>\n" );
 
   util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
@@ -1494,6 +1525,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
       print_gains        ( file, p );
       print_pet_gains    ( file, p );
       print_scale_factors( file, p );
+      print_dps_plots    ( file, p );
     }
   }
 

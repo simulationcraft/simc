@@ -388,7 +388,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-    buff_list( 0 ), replenishment_targets( 0 ),
+    buff_list( 0 ), aura_delay( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
@@ -409,6 +409,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   target  = new  target_t( this );
   scaling = new scaling_t( this );
+  plot    = new    plot_t( this );
 
   use_optimal_buffs_and_debuffs( 1 );
 
@@ -454,6 +455,7 @@ sim_t::~sim_t()
   if ( rng     ) delete rng;
   if ( target  ) delete target;
   if ( scaling ) delete scaling;
+  if ( plot    ) delete plot;
 
   int num_events = ( int ) raid_events.size();
   for ( int i=0; i < num_events; i++ )
@@ -1022,18 +1024,19 @@ void sim_t::analyze()
   }
 
   int num_timelines = iteration_timeline.size();
-  if ( num_timelines > 0 )
+  if ( num_timelines > 2 )
   {
     std::sort( iteration_timeline.begin(), iteration_timeline.end() );
 
+    // Throw out the first and last sample.
     int num_buckets = 50;
-    double min = iteration_timeline[ 0 ] - 1;
-    double max = iteration_timeline[ num_timelines-1 ] + 1;
+    double min = iteration_timeline[ 1 ] - 1;
+    double max = iteration_timeline[ num_timelines-2 ] + 1;
     double range = max - min;
 
     distribution_timeline.insert( distribution_timeline.begin(), num_buckets, 0 );
 
-    for ( int i=0; i < num_timelines; i++ )
+    for ( int i=1; i < num_timelines-1; i++ )
     {
       int index = ( int ) ( num_buckets * ( iteration_timeline[ i ] - min ) / range );
       distribution_timeline[ index ]++;
@@ -1508,6 +1511,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=skip
       { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
       { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
+      { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
       { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
       { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
       { "seed",                             OPT_INT,    &( seed                                     ) },
@@ -1576,6 +1580,7 @@ std::vector<option_t>& sim_t::get_options()
 
     target  -> get_options( options );
     scaling -> get_options( options );
+    plot    -> get_options( options );
   }
 
   return options;
@@ -1690,6 +1695,10 @@ double sim_t::progress( std::string& phase )
   {
     return scaling -> progress( phase );
   }
+  else if ( plot -> num_plot_stats > 0 )
+  {
+    return plot -> progress( phase );
+  }
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
@@ -1752,6 +1761,7 @@ int sim_t::main( int argc, char** argv )
     if( execute() )
     {
       scaling -> analyze();
+      plot    -> analyze();
       util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report_t::print_suite( this );
     }

@@ -17,6 +17,9 @@ struct mage_t : public player_t
   spell_t* active_ignite;
   pet_t*   active_water_elemental;
 
+  // Events
+  event_t* ignite_delay_event;
+
   // Buffs
   buff_t* buffs_arcane_blast;
   buff_t* buffs_arcane_power;
@@ -47,6 +50,8 @@ struct mage_t : public player_t
 
   // Procs
   proc_t* procs_deferred_ignite;
+  proc_t* procs_munched_ignite;
+  proc_t* procs_rolled_ignite;
   proc_t* procs_mana_gem;
   proc_t* procs_tier8_4pc;
 
@@ -262,6 +267,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   execute();
+  virtual void   travel( int travel_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
 };
@@ -512,6 +518,7 @@ static void trigger_ignite( spell_t* s,
        s -> school != SCHOOL_FROSTFIRE ) return;
 
   mage_t* p = s -> player -> cast_mage();
+  sim_t* sim = s -> sim;
 
   if ( p -> talents.ignite == 0 ) return;
 
@@ -546,12 +553,13 @@ static void trigger_ignite( spell_t* s,
 
   double ignite_dmg = dmg * p -> talents.ignite * 0.08;
 
-  if ( s -> sim -> merge_ignite )
+  if ( sim -> merge_ignite )
   {
+    int result = s -> result;
     s -> result = RESULT_HIT;
-    s -> assess_damage( ( ignite_dmg ), DMG_OVER_TIME );
+    s -> assess_damage( ignite_dmg, DMG_OVER_TIME );
     s -> update_stats( DMG_OVER_TIME );
-    s -> result = RESULT_CRIT;
+    s -> result = result;
     return;
   }
 
@@ -559,20 +567,77 @@ static void trigger_ignite( spell_t* s,
 
   if ( p -> active_ignite -> ticking )
   {
-    p -> procs_deferred_ignite -> occur();
-
-    if ( s -> sim -> debug ) log_t::output( s -> sim, "Player %s defers Ignite.", p -> name() );
-
     int num_ticks = p -> active_ignite -> num_ticks;
     int remaining_ticks = num_ticks - p -> active_ignite -> current_tick;
 
     ignite_dmg += p -> active_ignite -> base_td * remaining_ticks;
-
-    p -> active_ignite -> cancel();
   }
 
-  p -> active_ignite -> base_td = ignite_dmg / 2.0;
-  p -> active_ignite -> schedule_tick();
+  // The Ignite SPELL_AURA_APPLIED does not actually occur immediately.
+  // There is a short delay which can result in "munched" or "rolled" ticks.
+
+  if ( sim -> aura_delay == 0 )
+  {
+    // Do not model the delay, so no munch/roll, just defer.
+
+    if ( p -> active_ignite -> ticking )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
+      p -> procs_deferred_ignite -> occur();
+      p -> active_ignite -> cancel();
+    }
+    p -> active_ignite -> base_td = ignite_dmg / 2.0;
+    p -> active_ignite -> schedule_tick();
+    return;
+  }
+
+  struct ignite_delay_t : public event_t
+  {
+    double ignite_dmg;
+
+    ignite_delay_t( sim_t* sim, player_t* p, double dmg ) : event_t( sim, p ), ignite_dmg( dmg )
+    {
+      name = "Ignite Delay";
+      sim -> add_event( this, sim -> gauss( sim -> aura_delay, sim -> aura_delay * 0.25 ) );
+    }
+    virtual void execute()
+    {
+      mage_t* p = player -> cast_mage();
+
+      if ( p -> active_ignite -> ticking )
+      {
+	if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
+	p -> procs_deferred_ignite -> occur();
+	p -> active_ignite -> cancel();
+      }
+
+      p -> active_ignite -> base_td = ignite_dmg / 2.0;
+      p -> active_ignite -> schedule_tick();
+
+      if ( p -> ignite_delay_event == this ) p -> ignite_delay_event = 0;
+    }
+  };
+
+  if ( p -> ignite_delay_event ) 
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite.", p -> name() );
+    p -> procs_munched_ignite -> occur();
+  }
+
+  p -> ignite_delay_event = new ( sim ) ignite_delay_t( sim, p, ignite_dmg );
+
+  if ( p -> active_ignite -> ticking )
+  {
+    if ( p -> active_ignite -> tick_event -> occurs() < 
+	 p -> ignite_delay_event -> occurs() )
+    {
+      // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
+      // both tick -and- get rolled into the next Ignite.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
+      p -> procs_rolled_ignite -> occur();
+    }
+  }
 }
 
 // trigger_burnout ==========================================================
@@ -953,12 +1018,29 @@ void mage_spell_t::execute()
     if ( result == RESULT_CRIT )
     {
       trigger_burnout( this );
-      trigger_ignite( this, direct_dmg );
       trigger_master_of_elements( this, 1.0 );
+
+      if ( time_to_travel == 0 )
+      {
+	trigger_ignite( this, direct_dmg );
+      }
     }
   }
   trigger_combustion( this );
   trigger_brain_freeze( this );
+}
+
+// mage_spell_t::travel ====================================================
+
+void mage_spell_t::travel( int    travel_result,
+			   double travel_dmg )
+{
+  spell_t::travel( travel_result, travel_dmg );
+
+  if ( travel_result == RESULT_CRIT )
+  {
+    trigger_ignite( this, travel_dmg );
+  }
 }
 
 // mage_spell_t::consume_resource ==========================================
@@ -1660,6 +1742,8 @@ struct fire_ball_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
+    travel_speed = 21.0; // set before options to allow override
+
     option_t options[] =
     {
       { "brain_freeze", OPT_BOOL, &brain_freeze },
@@ -1916,6 +2000,8 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.pyroblast );
+
+    travel_speed = 21.0; // set before options to allow override
 
     option_t options[] =
     {
@@ -3148,6 +3234,8 @@ void mage_t::init_procs()
   player_t::init_procs();
 
   procs_deferred_ignite = get_proc( "deferred_ignite",      sim );
+  procs_munched_ignite  = get_proc( "munched_ignite",       sim );
+  procs_rolled_ignite   = get_proc( "rolled_ignite",        sim );
   procs_mana_gem        = get_proc( "mana_gem",             sim );
   procs_tier8_4pc       = get_proc( "tier8_4pc",            sim );
 }
@@ -3359,10 +3447,8 @@ void mage_t::combat_begin()
 void mage_t::reset()
 {
   player_t::reset();
-
-  // Active
   active_water_elemental = 0;
-
+  ignite_delay_event = 0;
   rotation.reset();
   _cooldowns.reset();
 }

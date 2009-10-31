@@ -430,6 +430,21 @@ void SimulationCraftWindow::createImportTab()
   warcrafterView->setUrl( QUrl( "http://www.warcrafter.net" ) );
   importTab->addTab( warcrafterView, "Warcrafter" );
 
+  createRawrTab();
+  createBestInSlotTab();
+
+  historyList = new QListWidget();
+  historyList->setSortingEnabled( true );
+  importTab->addTab( historyList, "History" );
+
+  connect( rawrButton,  SIGNAL(clicked(bool)),                       this, SLOT(rawrButtonClicked()) );
+  connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
+  connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
+  connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
+}
+
+void SimulationCraftWindow::createRawrTab()
+{
   QVBoxLayout* rawrLayout = new QVBoxLayout();
   QLabel* rawrLabel = new QLabel( " http://rawr.codeplex.com\n\n"
 				  "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
@@ -446,17 +461,6 @@ void SimulationCraftWindow::createImportTab()
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
-
-  createBestInSlotTab();
-
-  historyList = new QListWidget();
-  historyList->setSortingEnabled( true );
-  importTab->addTab( historyList, "History" );
-
-  connect( rawrButton,  SIGNAL(clicked(bool)),                       this, SLOT(rawrButtonClicked()) );
-  connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
-  connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
-  connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
 }
 
 void SimulationCraftWindow::createBestInSlotTab()
@@ -946,6 +950,7 @@ void SimulateThread::run()
     if( sim -> execute() )
     {
       sim -> scaling -> analyze();
+      sim -> plot -> analyze();
       report_t::print_suite( sim );
       success = true;
     }
@@ -1039,6 +1044,7 @@ void SimulationCraftWindow::simulateFinished()
   if( ! simulateThread->success )
   {
     logText->appendPlainText( "Simulation failed!\n" );
+    logText->moveCursor( QTextCursor::End );
     mainTab->setCurrentIndex( TAB_LOG );
   }
   else if( file.open( QIODevice::ReadOnly ) )

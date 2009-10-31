@@ -158,6 +158,7 @@ public:
     void createWelcomeTab();
     void createOptionsTab();
     void createImportTab();
+    void createRawrTab();
     void createBestInSlotTab();
     void createSimulateTab();
     void createOverridesTab();

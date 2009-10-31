@@ -57,7 +57,7 @@ AR         = ar
 endif
 
 SRC =\
-	simulationcraft.h		\
+	simulationcraft.h	\
 	sc_action.cpp		\
 	sc_armory.cpp		\
 	sc_attack.cpp		\
@@ -82,6 +82,7 @@ SRC =\
 	sc_paladin.cpp          \
 	sc_pet.cpp		\
 	sc_player.cpp		\
+	sc_plot.cpp		\
 	sc_priest.cpp		\
 	sc_raid_event.cpp	\
 	sc_rating.cpp		\

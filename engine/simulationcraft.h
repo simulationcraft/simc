@@ -112,6 +112,7 @@ struct option_t;
 struct paladin_t;
 struct pet_t;
 struct player_t;
+struct plot_t;
 struct priest_t;
 struct proc_t;
 struct raid_event_t;
@@ -1023,6 +1024,7 @@ struct sim_t
 
   // Auras and De-Buffs
   buff_t* buff_list;
+  double aura_delay;
 
   // Replenishment
   int replenishment_targets;
@@ -1031,6 +1033,7 @@ struct sim_t
   // Reporting
   report_t*  report;
   scaling_t* scaling;
+  plot_t*    plot;
   double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
   int        merge_ignite;
   int        report_progress;
@@ -1129,6 +1132,25 @@ struct scaling_t
   void analyze_gear_weights();
   void normalize();
   void derive();
+  double progress( std::string& phase );
+  int get_options( std::vector<option_t>& );
+};
+
+// Plot ======================================================================
+
+struct plot_t
+{
+  sim_t* sim;
+  std::string dps_plot_stat_str;
+  double dps_plot_step;
+  int    dps_plot_points;
+  int    current_plot_stat, num_plot_stats, remaining_plot_stats;
+  int    remaining_plot_points;
+
+  plot_t( sim_t* s );
+
+  void analyze();
+  void analyze_stats();
   double progress( std::string& phase );
   int get_options( std::vector<option_t>& );
 };
@@ -1411,6 +1433,7 @@ struct player_t
   gain_t*   gain_list;
   stats_t*  stats_list;
   uptime_t* uptime_list;
+  std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<double> timeline_resource;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
