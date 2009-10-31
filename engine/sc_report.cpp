@@ -860,7 +860,7 @@ static void print_html_action( FILE* file, stats_t* s )
 		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.2fsec</td>"
 		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
 		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.0f%%</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td>"
+		   " <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
