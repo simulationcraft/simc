@@ -1426,10 +1426,19 @@ struct melee_t : public death_knight_attack_t
 
 struct auto_attack_t : public death_knight_attack_t
 {
+  bool sync_weapons;
+
   auto_attack_t( player_t* player, const std::string& options_str ) :
-      death_knight_attack_t( "auto_attack", player )
+      death_knight_attack_t( "auto_attack", player ),
+      sync_weapons( false )
   {
     death_knight_t* p = player -> cast_death_knight();
+
+    option_t options[] =
+    {
+      { "sync_weapons", OPT_BOOL, &sync_weapons }
+    };
+    parse_options( options, options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( "melee_main_hand", player );
@@ -1450,7 +1459,11 @@ struct auto_attack_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     p -> main_hand_attack -> schedule_execute();
-    if ( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
+    if ( p -> off_hand_attack ) 
+    {
+      p -> off_hand_attack -> delay_initial_execute = ( sync_weapons == true ) ? 2 : 1;
+      p -> off_hand_attack -> schedule_execute();
+    }
   }
 
   virtual bool ready()

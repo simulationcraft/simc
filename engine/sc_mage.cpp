@@ -606,9 +606,9 @@ static void trigger_ignite( spell_t* s,
 
       if ( p -> active_ignite -> ticking )
       {
-	if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
-	p -> procs_deferred_ignite -> occur();
-	p -> active_ignite -> cancel();
+	      if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
+	      p -> procs_deferred_ignite -> occur();
+	      p -> active_ignite -> cancel();
       }
 
       p -> active_ignite -> base_td = ignite_dmg / 2.0;
@@ -630,7 +630,7 @@ static void trigger_ignite( spell_t* s,
   if ( p -> active_ignite -> ticking )
   {
     if ( p -> active_ignite -> tick_event -> occurs() < 
-	 p -> ignite_delay_event -> occurs() )
+	       p -> ignite_delay_event -> occurs() )
     {
       // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
       // both tick -and- get rolled into the next Ignite.
@@ -1022,7 +1022,7 @@ void mage_spell_t::execute()
 
       if ( time_to_travel == 0 )
       {
-	trigger_ignite( this, direct_dmg );
+	      trigger_ignite( this, direct_dmg );
       }
     }
   }

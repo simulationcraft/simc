@@ -13,7 +13,8 @@
 
 attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
     action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 ),
+    delay_initial_execute( 0 )
 {
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
@@ -53,7 +54,21 @@ double attack_t::haste() SC_CONST
 double attack_t::execute_time() SC_CONST
 {
   if ( base_execute_time == 0 ) return 0;
-  return base_execute_time * haste();
+  double t = base_execute_time * haste();
+
+  switch ( delay_initial_execute )
+  {
+  case 0 :
+    t = 0.0;
+    break;
+  case 1 : 
+    t = t * 0.5;
+    break;
+  case 2 :
+    t = ( t * 0.5 > 0.2 ) ? 0.2 : t * 0.5;
+    break;
+  }
+  return t;
 }
 
 // attack_t::player_buff ====================================================
@@ -379,6 +394,8 @@ void attack_t::calculate_result()
 
 void attack_t::execute()
 {
+  delay_initial_execute = -1;
+
   action_t::execute();
 
   action_callback_t::trigger( player -> attack_result_callbacks[ result ], this );

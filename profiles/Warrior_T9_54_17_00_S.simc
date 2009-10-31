@@ -11,6 +11,7 @@ actions+=/food,type=hearty_rhino
 actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/indestructible_potion
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=95
 actions+=/mortal_strike

@@ -21,6 +21,9 @@ struct warrior_t : public player_t
   std::vector<action_t*> active_heroic_strikes;
   int num_active_heroic_strikes;
 
+  // Events
+  event_t* deep_wounds_delay_event;
+
   // Buffs
   buff_t* buffs_battle_stance;
   buff_t* buffs_berserker_stance;
@@ -70,6 +73,9 @@ struct warrior_t : public player_t
   gain_t* gains_unbridled_wrath;
 
   // Procs
+  proc_t* procs_deferred_deep_wounds;
+  proc_t* procs_munched_deep_wounds;
+  proc_t* procs_rolled_deep_wounds;
   proc_t* procs_glyph_overpower;
   proc_t* procs_parry_haste;
   proc_t* procs_sword_specialization;
@@ -249,12 +255,12 @@ struct warrior_attack_t : public attack_t
   double min_rage, max_rage;
   int stancemask;
   bool can_proc_trauma;
+
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, special ),
       min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE ),
       can_proc_trauma( true )
-
   {
     warrior_t* p = player -> cast_warrior();
     may_glance   = false;
@@ -343,12 +349,16 @@ static void trigger_bloodsurge( action_t* a )
 static void trigger_deep_wounds( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
+  sim_t*   sim = a -> sim;
 
   if ( ! p -> talents.deep_wounds )
     return;
 
   if ( a -> result != RESULT_CRIT )
     return;
+
+  // Every action HAS to have an weapon associated.
+  assert( a -> weapon != 0 );
 
   struct deep_wounds_t : public warrior_attack_t
   {
@@ -359,9 +369,9 @@ static void trigger_deep_wounds( action_t* a )
       trigger_gcd = 0;
       base_tick_time = 1.0;
       num_ticks = 6;
-      weapon_multiplier = p -> talents.deep_wounds * 0.16;
       reset(); // required since construction occurs after player_t::init()
     }
+    virtual void player_buff() {}
     virtual void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
@@ -374,31 +384,6 @@ static void trigger_deep_wounds( action_t* a )
         target_multiplier /= 1.04;
       }
     }
-    virtual double calculate_weapon_damage()
-    {
-      if ( ! weapon || weapon_multiplier <= 0 ) return 0;
-
-      double dmg = ( weapon -> min_dmg + weapon -> max_dmg ) * 0.5;
-
-      double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
-
-      double power_damage = weapon -> swing_time * weapon_power_mod * total_attack_power();
-
-      return ( dmg + power_damage ) * weapon_multiplier * hand_multiplier;
-    }
-    virtual void execute()
-    {
-      player_buff();
-      double damage = calculate_weapon_damage();
-      if( ticking ) 
-      {
-	      damage += base_td * ( num_ticks - current_tick );
-	      cancel();
-      }
-      base_td = damage / 6.0;
-      trigger_blood_frenzy( this );
-      schedule_tick();
-    }
     virtual void tick()
     {
       warrior_attack_t::tick();
@@ -408,13 +393,93 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
+  double weapon_multiplier = p -> talents.deep_wounds * 0.16;
+  a -> player_buff();
+  double deep_wounds_dmg = ( a -> weapon -> min_dmg + a -> weapon -> max_dmg ) * 0.5;
+  double hand_multiplier = ( a -> weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
+  double power_damage = a -> weapon -> swing_time * a -> weapon_power_mod * a -> total_attack_power();
+
+  deep_wounds_dmg = ( deep_wounds_dmg + power_damage ) * weapon_multiplier * hand_multiplier * a -> player_multiplier * a -> base_multiplier * a -> base_td_multiplier;
+
   if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
-  // Every action HAS to have an weapon associated.
-  assert( a -> weapon != 0 );
+  if ( p -> active_deep_wounds -> ticking )
+  {
+    int num_ticks = p -> active_deep_wounds -> num_ticks;
+    int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
 
-  p -> active_deep_wounds -> weapon = a -> weapon;
-  p -> active_deep_wounds -> execute();
+    deep_wounds_dmg += p -> active_deep_wounds -> base_td * remaining_ticks;
+  }
+
+  // The Deep Wounds SPELL_AURA_APPLIED does not actually occur immediately.
+  // There is a short delay which can result in "munched" or "rolled" ticks.
+
+  if ( sim -> aura_delay == 0 )
+  {
+    // Do not model the delay, so no munch/roll, just defer.
+
+    if ( p -> active_deep_wounds -> ticking )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
+      p -> procs_deferred_deep_wounds -> occur();
+      p -> active_deep_wounds -> cancel();
+    }
+    p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
+    p -> active_deep_wounds -> schedule_tick();
+    return;
+  }
+
+  struct deep_wounds_delay_t : public event_t
+  {
+    double deep_wounds_dmg;
+    weapon_t* weapon;
+
+    deep_wounds_delay_t( sim_t* sim, player_t* p, double dmg, weapon_t* wpn ) : event_t( sim, p ), deep_wounds_dmg( dmg ), weapon( wpn )
+    {
+      name = "Deep Wounds Delay";
+      sim -> add_event( this, sim -> gauss( sim -> aura_delay, sim -> aura_delay * 0.25 ) );
+    }
+    virtual void execute()
+    {
+      warrior_t* p = player -> cast_warrior();
+
+      if ( p -> active_deep_wounds -> ticking )
+      {
+	      if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
+	      p -> procs_deferred_deep_wounds -> occur();
+	      p -> active_deep_wounds -> cancel();
+      }
+
+      p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
+      p -> active_deep_wounds -> schedule_tick();
+      p -> active_deep_wounds -> weapon = weapon;
+
+      trigger_blood_frenzy( p -> active_deep_wounds );
+
+      if ( p -> deep_wounds_delay_event == this ) p -> deep_wounds_delay_event = 0;
+    }
+  };
+
+  if ( p -> deep_wounds_delay_event ) 
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep Wounds.", p -> name() );
+    p -> procs_munched_deep_wounds -> occur();
+  }
+
+  p -> deep_wounds_delay_event = new ( sim ) deep_wounds_delay_t( sim, p, deep_wounds_dmg, a -> weapon );
+
+  if ( p -> active_deep_wounds -> ticking )
+  {
+    if ( p -> active_deep_wounds -> tick_event -> occurs() < 
+	       p -> deep_wounds_delay_event -> occurs() )
+    {
+      // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
+      // both tick -and- get rolled into the next Deep Wounds.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Deep Wounds.", p -> name() );
+      p -> procs_rolled_deep_wounds -> occur();
+    }
+  }
 }
 
 // trigger_rage_gain ========================================================
@@ -881,10 +946,18 @@ struct melee_t : public warrior_attack_t
 
 struct auto_attack_t : public warrior_attack_t
 {
+  bool sync_weapons;
+
   auto_attack_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "auto_attack", player )
+      warrior_attack_t( "auto_attack", player ), sync_weapons( false )
   {
     warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { "sync_weapons", OPT_BOOL, &sync_weapons }
+    };
+    parse_options( options, options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -901,12 +974,15 @@ struct auto_attack_t : public warrior_attack_t
 
     trigger_gcd = 0;
   }
-
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
     p -> main_hand_attack -> schedule_execute();
-    if ( p -> off_hand_attack ) p -> off_hand_attack -> schedule_execute();
+    if ( p -> off_hand_attack ) 
+    {
+      p -> off_hand_attack -> delay_initial_execute = ( sync_weapons == true ) ? 2 : 1;
+      p -> off_hand_attack -> schedule_execute();
+    }
   }
 
   virtual bool ready()
@@ -2471,6 +2547,9 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
+  procs_deferred_deep_wounds = get_proc( "deferred_deep_wounds", sim );
+  procs_munched_deep_wounds  = get_proc( "munched_deep_wounds",  sim );
+  procs_rolled_deep_wounds   = get_proc( "rolled_deep_wounds",   sim );
   procs_glyph_overpower      = get_proc( "glyph_of_overpower",   sim );
   procs_parry_haste          = get_proc( "parry_haste",          sim );
   procs_sword_specialization = get_proc( "sword_specialization", sim );
@@ -2534,6 +2613,8 @@ void warrior_t::init_actions()
     }
     if ( primary_tree() == TREE_ARMS )
     {
+      if ( talents.armored_to_the_teeth )
+        action_list_str += "/indestructible_potion";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=95";
       action_list_str += "/mortal_strike";
@@ -2546,6 +2627,8 @@ void warrior_t::init_actions()
     }
     else if ( primary_tree() == TREE_FURY )
     {
+      if ( talents.armored_to_the_teeth )
+        action_list_str += "/indestructible_potion";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=75,health_percentage<=20";
       action_list_str += "/whirlwind,rage<=95,health_percentage<=20";
@@ -2615,6 +2698,7 @@ void warrior_t::reset()
 {
   player_t::reset();
   active_stance = STANCE_BATTLE;
+  deep_wounds_delay_event = 0;
   _cooldowns.reset();
 }
 

@@ -947,6 +947,7 @@ struct sim_t
     int celerity;
     int crypt_fever;
     int curse_of_elements;
+    int devotion_aura;
     int divine_spirit;
     int earth_and_moon;
     int elemental_oath;
@@ -1002,6 +1003,7 @@ struct sim_t
     aura_t* arcane_empowerment;
     aura_t* battle_shout;
     aura_t* celerity;
+    aura_t* devotion_aura;
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
@@ -2083,6 +2085,7 @@ struct action_t
 struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
+  int delay_initial_execute;
 
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   virtual ~attack_t() {}

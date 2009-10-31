@@ -1245,6 +1245,9 @@ double player_t::composite_armor() SC_CONST
 
   a += floor( armor_per_agility * agility() );
 
+  if ( sim -> auras.devotion_aura -> check() )
+    a += sim -> auras.devotion_aura -> value();
+
   if ( buffs.stoneform -> check() ) a *= 1.10;
 
   return a;

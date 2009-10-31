@@ -275,14 +275,14 @@ struct speed_potion_t : public action_t
       {
         name = "Speed Potion Expiration";
         p -> aura_gain( "Speed Potion Buff" );
-	p -> stat_gain( STAT_HASTE_RATING, 500 );
+	      p -> stat_gain( STAT_HASTE_RATING, 500 );
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
       {
         player_t* p = player;
         p -> aura_loss( "Speed Potion Buff" );
-	p -> stat_loss( STAT_HASTE_RATING, 500 );
+	      p -> stat_loss( STAT_HASTE_RATING, 500 );
       }
     };
 
@@ -337,6 +337,58 @@ struct wild_magic_potion_t : public action_t
         p -> aura_loss( "Wild Magic Potion Buff" );
         p -> stat_loss( STAT_CRIT_RATING, 200 );
         p -> stat_loss( STAT_SPELL_POWER, 200 );
+      }
+    };
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    new ( sim ) expiration_t( sim, player );
+    player -> potion_used = 1;
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
+// Indestructible Potion
+// ==========================================================================
+
+struct indestructible_potion_t : public action_t
+{
+  indestructible_potion_t( player_t* p, const std::string& options_str ) :
+      action_t( ACTION_USE, "indestructible_potion", p )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
+      {
+        name = "Indestructible Potion Expiration";
+        p -> aura_gain( "Indestructible Potion Buff" );
+	      p -> stat_gain( STAT_ARMOR, 3500 );
+        sim -> add_event( this, 120.0 );
+      }
+      virtual void execute()
+      {
+        player_t* p = player;
+        p -> aura_loss( "Indestructible Potion Buff" );
+	      p -> stat_loss( STAT_ARMOR, 3500 );
       }
     };
 
@@ -545,14 +597,15 @@ action_t* consumable_t::create_action( player_t*          p,
                                        const std::string& name,
                                        const std::string& options_str )
 {
-  if ( name == "dark_rune"          ) return new          dark_rune_t( p, options_str );
-  if ( name == "destruction_potion" ) return new destruction_potion_t( p, options_str );
-  if ( name == "flask"              ) return new              flask_t( p, options_str );
-  if ( name == "food"               ) return new               food_t( p, options_str );
-  if ( name == "health_stone"       ) return new       health_stone_t( p, options_str );
-  if ( name == "mana_potion"        ) return new        mana_potion_t( p, options_str );
-  if ( name == "speed_potion"       ) return new       speed_potion_t( p, options_str );
-  if ( name == "wild_magic_potion"  ) return new  wild_magic_potion_t( p, options_str );
+  if ( name == "dark_rune"             ) return new          dark_rune_t( p, options_str );
+  if ( name == "destruction_potion"    ) return new destruction_potion_t( p, options_str );
+  if ( name == "flask"                 ) return new              flask_t( p, options_str );
+  if ( name == "food"                  ) return new               food_t( p, options_str );
+  if ( name == "health_stone"          ) return new       health_stone_t( p, options_str );
+  if ( name == "indestructible_potion" ) return new       speed_potion_t( p, options_str );
+  if ( name == "mana_potion"           ) return new        mana_potion_t( p, options_str );
+  if ( name == "speed_potion"          ) return new       speed_potion_t( p, options_str );
+  if ( name == "wild_magic_potion"     ) return new  wild_magic_potion_t( p, options_str );
 
   return 0;
 }

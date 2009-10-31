@@ -2600,6 +2600,7 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name, int rac
 
 void player_t::paladin_init( sim_t* sim )
 {
+  sim -> auras.devotion_aura          = new aura_t( sim, "devotion_aura",          1 );
   sim -> auras.sanctified_retribution = new buff_t( sim, "sanctified_retribution", 1 );
   sim -> auras.swift_retribution      = new buff_t( sim, "swift_retribution",      1 );
 
@@ -2621,6 +2622,7 @@ void player_t::paladin_init( sim_t* sim )
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
+  if( sim -> overrides.devotion_aura          ) sim -> auras.devotion_aura          -> override( 1, 1205 * 1.5 );
   if( sim -> overrides.sanctified_retribution ) sim -> auras.sanctified_retribution -> override();
   if( sim -> overrides.swift_retribution      ) sim -> auras.swift_retribution      -> override();
 
