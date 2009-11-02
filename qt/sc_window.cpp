@@ -1119,6 +1119,10 @@ QString SimulationCraftWindow::mergeOptions()
     options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
   }
   options += "iterations=" + iterationsChoice->currentText() + "\n";
+  if( iterationsChoice->currentText() == "10000" )
+  {
+    options += "dps_plot_iterations=1000\n";
+  }
   options += "max_time=" + fightLengthChoice->currentText() + "\n";
   if( fightStyleChoice->currentText() == "Helter Skelter" )
   {
