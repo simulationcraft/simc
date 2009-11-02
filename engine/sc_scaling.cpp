@@ -74,6 +74,8 @@ double scaling_t::progress( std::string& phase )
 {
   if ( ! calculate_scale_factors ) return 1.0;
 
+  if ( num_scaling_stats <= 0 ) return 0.0;
+
   if ( current_scaling_stat <= 0 )
   {
     phase = "Baseline";
@@ -81,18 +83,17 @@ double scaling_t::progress( std::string& phase )
     return baseline_sim -> current_iteration / (double) sim -> iterations;
   }
 
-  phase = util_t::stat_type_abbrev( current_scaling_stat );
-
-  double divisor = num_scaling_stats + 1;
+  phase  = "Scaling - ";
+  phase += util_t::stat_type_abbrev( current_scaling_stat );
 
   if ( ref_sim && delta_sim )
   {
-    double stat_progress = ( ( num_scaling_stats - remaining_scaling_stats ) + 1 ) / divisor;
+    double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
 
     double   ref_progress =   ref_sim -> current_iteration / (double)   ref_sim -> iterations;
     double delta_progress = delta_sim -> current_iteration / (double) delta_sim -> iterations;
 
-    stat_progress += ( ref_progress + delta_progress ) / ( 2 * divisor );
+    stat_progress += ( ref_progress + delta_progress ) / ( 2.0 * num_scaling_stats );
 
     return stat_progress;
   }
@@ -142,6 +143,8 @@ void scaling_t::analyze_stats()
     if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
       remaining_scaling_stats++;
   num_scaling_stats = remaining_scaling_stats;
+
+  if ( num_scaling_stats == 0 ) return;
 
   baseline_sim = sim;
   if ( smooth_scale_factors )
@@ -275,6 +278,8 @@ void scaling_t::analyze_lag()
 
 void scaling_t::analyze_gear_weights()
 {
+  if ( num_scaling_stats <= 0 ) return;
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> quiet ) continue;
@@ -290,6 +295,8 @@ void scaling_t::analyze_gear_weights()
 
 void scaling_t::normalize()
 {
+  if ( num_scaling_stats <= 0 ) return;
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> quiet ) continue;

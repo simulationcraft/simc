@@ -60,13 +60,10 @@ double plot_t::progress( std::string& phase )
 {
   if ( dps_plot_stat_str.empty() ) return 1.0;
 
-  if ( current_plot_stat <= 0 )
-  {
-    phase = "Plots";
-    return 0;
-  }
+  if ( current_plot_stat <= 0 ) return 0;
 
-  phase = util_t::stat_type_abbrev( current_plot_stat );
+  phase  = "Plot - ";
+  phase += util_t::stat_type_abbrev( current_plot_stat );
 
   double divisor = num_plot_stats + 1;
 

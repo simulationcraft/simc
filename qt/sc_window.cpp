@@ -21,6 +21,7 @@ static OptionEntry* getBuffOptions()
 {
   static OptionEntry options[] =
     {
+      { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
       { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
       { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
@@ -48,6 +49,7 @@ static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
     {
+      { "Toggle All Debuffs",     "",                             "Toggle all debuffs on/off"                                        },
       { "Armor (Major)",          "override.sunder_armor",        "Acid Spit\nExpose Armor\nSunder Armor"                            },
       { "Armor (Minor)",          "override.faerie_fire",         "Curse of Weakness\nFaerie Fire"                                   },
       { "Boss Attack Speed Slow", "override.thunder_clap",        "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
@@ -61,6 +63,51 @@ static OptionEntry* getDebuffOptions()
       { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
       { "Spell Hit",              "override.misery",              "Improved Faerie Fire\nMisery"                                     },
+      { NULL, NULL, NULL }
+    };
+  return options;
+}
+
+static OptionEntry* getScalingOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Analyze All Stats",                "",      "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
+      { "Analyze Strength",                 "str",   "Calculate scale factors for Strength"                 },
+      { "Analyze Agility",                  "agi",   "Calculate scale factors for Agility"                  },
+      { "Analyze Stamina",                  "sta",   "Calculate scale factors for Stamina"                  },
+      { "Analyze Intellect",                "int",   "Calculate scale factors for Intellect"                },
+      { "Analyze Spirit",                   "spi",   "Calculate scale factors for Spirit"                   },
+      { "Analyze Spell Power",              "sp",    "Calculate scale factors for Spell Power"              },
+      { "Analyze Attack Power",             "ap",    "Calculate scale factors for Attack Power"             },
+      { "Analyze Expertise Rating",         "exp",   "Calculate scale factors for Expertise Rating"         },
+      { "Analyze Armor Penetration Rating", "arpen", "Calculate scale factors for Armor Penetration Rating" },
+      { "Analyze Hit Rating",               "hit",   "Calculate scale factors for Hit Rating"               },
+      { "Analyze Crit Rating",              "crit",  "Calculate scale factors for Crit Rating"              },
+      { "Analyze Haste Rating",             "haste", "Calculate scale factors for Haste Rating"             },
+      { "Analyze Weapon DPS",               "wdps",  "Calculate scale factors for Weapon DSP"               },
+      { NULL, NULL, NULL }
+    };
+  return options;
+}
+
+static OptionEntry* getPlotOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Plot DPS per Strength",                 "str",   "Generate DPS curve for Strength"                 },
+      { "Plot DPS per Agility",                  "agi",   "Generate DPS curve for Agility"                  },
+      { "Plot DPS per Stamina",                  "sta",   "Generate DPS curve for Stamina"                  },
+      { "Plot DPS per Intellect",                "int",   "Generate DPS curve for Intellect"                },
+      { "Plot DPS per Spirit",                   "spi",   "Generate DPS curve for Spirit"                   },
+      { "Plot DPS per Spell Power",              "sp",    "Generate DPS curve for Spell Power"              },
+      { "Plot DPS per Attack Power",             "ap",    "Generate DPS curve for Attack Power"             },
+      { "Plot DPS per Expertise Rating",         "exp",   "Generate DPS curve for Expertise Rating"         },
+      { "Plot DPS per Armor Penetration Rating", "arpen", "Generate DPS curve for Armor Penetration Rating" },
+      { "Plot DPS per Hit Rating",               "hit",   "Generate DPS curve for Hit Rating"               },
+      { "Plot DPS per Crit Rating",              "crit",  "Generate DPS curve for Crit Rating"              },
+      { "Plot DPS per Haste Rating",             "haste", "Generate DPS curve for Haste Rating"             },
+      { "Plot DPS per Weapon DPS",               "wdps",  "Generate DPS curve for Weapon DSP"               },
       { NULL, NULL, NULL }
     };
   return options;
@@ -90,73 +137,72 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 9 )
+  if( tokens.count() >= 8 )
   {
            patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[ 2 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[ 3 ].toInt() );
       fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
-    scaleFactorsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[ 6 ].toInt() );
       armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-     optimalRaidChoice->setCurrentIndex( tokens[ 8 ].toInt() );
   }
 
-  QList<QAbstractButton*> buff_buttons = buffsButtonGroup->buttons();
-  OptionEntry* buffs = getBuffOptions();
-  QList<QAbstractButton*> debuff_buttons = debuffsButtonGroup->buttons();
+  QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
+  QList<QAbstractButton*>  debuff_buttons = debuffsButtonGroup->buttons();
+  QList<QAbstractButton*> scaling_buttons = scalingButtonGroup->buttons();
+  QList<QAbstractButton*>    plot_buttons = scalingButtonGroup->buttons();
+
+  OptionEntry*   buffs = getBuffOptions();
   OptionEntry* debuffs = getDebuffOptions();
-  for(int i = 9; i < tokens.count(); i++)
+  OptionEntry* scaling = getScalingOptions();
+  OptionEntry*   plots = getPlotOptions();
+
+  for(int i = 8; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
-     if(!opt_tokens[ 0 ].compare("buff"))
+     OptionEntry* options=0;
+     QList<QAbstractButton*>* buttons=0;
+
+     if(      ! opt_tokens[ 0 ].compare( "buff"    ) ) { options = buffs;   buttons = &buff_buttons;    }
+     else if( ! opt_tokens[ 0 ].compare( "debuff"  ) ) { options = debuffs; buttons = &debuff_buttons;  }
+     else if( ! opt_tokens[ 0 ].compare( "scaling" ) ) { options = scaling; buttons = &scaling_buttons; }
+     else if( ! opt_tokens[ 0 ].compare( "plot"    ) ) { options = plots;   buttons = &plot_buttons;    }
+
+     if ( ! options ) continue;
+
+     QStringList opt_value = opt_tokens[ 1 ].split('=');
+     for( int opt=0; options[ opt ].label; opt++ )
      {
-        QStringList opt_value = opt_tokens[ 1 ].split('=');
-        for(int opt=0; buffs[ opt ].label; opt++)
-        {
-           if( !opt_value[ 0 ].compare( buffs[ opt ].option ) )
-           {
-              buff_buttons.at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-              break;
-           }
-        }
-     }
-     else if( !opt_tokens[ 0 ].compare("debuff") )
-     {
-        QStringList opt_value = opt_tokens[ 1 ].split('=');
-        for(int opt=0; debuffs[ opt ].label; opt++)
-        {
-           if( !opt_value[ 0 ].compare( debuffs[ opt ].option ) )
-           {
-              debuff_buttons.at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-              break;
-           }
-        }
+       if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
+       {
+	 buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+	 break;
+       }
      }
    }
 }
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8" )
     .arg(        patchChoice->currentIndex() )
     .arg(      latencyChoice->currentIndex() )
     .arg(   iterationsChoice->currentIndex() )
     .arg(  fightLengthChoice->currentIndex() )
     .arg(   fightStyleChoice->currentIndex() )
-    .arg( scaleFactorsChoice->currentIndex() )
     .arg(      threadsChoice->currentIndex() )
+    .arg(    smoothRNGChoice->currentIndex() )
     .arg(   armorySpecChoice->currentIndex() )
-    .arg(  optimalRaidChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
-  for( int i=0; buffs[ i ].label; i++ )
+  for( int i=1; buffs[ i ].label; i++ )
   {
-  	 encoded += " buff:";
+    encoded += " buff:";
     encoded += buffs[ i ].option;
     encoded += "=";
     encoded += buttons.at( i )->isChecked() ? "1" : "0";
@@ -164,10 +210,30 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = debuffsButtonGroup->buttons();
   OptionEntry* debuffs = getDebuffOptions();
-  for( int i=0; debuffs[ i ].label; i++ )
+  for( int i=1; debuffs[ i ].label; i++ )
   {
-  	 encoded += " debuff:";
+    encoded += " debuff:";
     encoded += debuffs[ i ].option;
+    encoded += "=";
+    encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+
+  buttons = scalingButtonGroup->buttons();
+  OptionEntry* scaling = getScalingOptions();
+  for( int i=1; scaling[ i ].label; i++ )
+  {
+    encoded += " scaling:";
+    encoded += scaling[ i ].option;
+    encoded += "=";
+    encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+  
+  buttons = plotsButtonGroup->buttons();
+  OptionEntry* plots = getPlotOptions();
+  for( int i=1; plots[ i ].label; i++ )
+  {
+    encoded += " plots:";
+    encoded += plots[ i ].option;
     encoded += "=";
     encoded += buttons.at( i )->isChecked() ? "1" : "0";
   }
@@ -346,6 +412,26 @@ void SimulationCraftWindow::createWelcomeTab()
  
 void SimulationCraftWindow::createOptionsTab()
 {
+  optionsTab = new QTabWidget();
+  mainTab->addTab( optionsTab, "Options" );
+
+  createGlobalsTab();
+  createBuffsTab();
+  createDebuffsTab();
+  createScalingTab();
+  createPlotsTab();
+
+  QAbstractButton* allBuffs   =   buffsButtonGroup->buttons().at( 0 );
+  QAbstractButton* allDebuffs = debuffsButtonGroup->buttons().at( 0 );
+  QAbstractButton* allScaling = scalingButtonGroup->buttons().at( 0 );
+
+  connect( allBuffs,   SIGNAL(toggled(bool)), this, SLOT(allBuffsChanged(bool))   );  
+  connect( allDebuffs, SIGNAL(toggled(bool)), this, SLOT(allDebuffsChanged(bool)) );  
+  connect( allScaling, SIGNAL(toggled(bool)), this, SLOT(allScalingChanged(bool)) );  
+}
+
+void SimulationCraftWindow::createGlobalsTab()
+{
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow(         "Patch",        patchChoice = createChoice( 2, "3.2.2", "3.3.0" ) );
@@ -353,15 +439,19 @@ void SimulationCraftWindow::createOptionsTab()
   globalsLayout->addRow(    "Iterations",   iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",  fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Fight Style",   fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
-  globalsLayout->addRow( "Scale Factors", scaleFactorsChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow(    "Smooth RNG",    smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
-  globalsLayout->addRow(  "Optimal Raid",  optimalRaidChoice = createChoice( 2, "No", "Yes" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
-  QGroupBox* globalsGroupBox = new QGroupBox( "Globals" );
+  QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
+  optionsTab->addTab( globalsGroupBox, "Globals" );
+}
+
+void SimulationCraftWindow::createBuffsTab()
+{
   QVBoxLayout* buffsLayout = new QVBoxLayout();
   buffsButtonGroup = new QButtonGroup();
   buffsButtonGroup->setExclusive( false );
@@ -369,14 +459,20 @@ void SimulationCraftWindow::createOptionsTab()
   for( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
+    if ( i!=0 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );
   }
   buffsLayout->addStretch(1);
-  QGroupBox* buffsGroupBox = new QGroupBox( "Buffs" );
+  QGroupBox* buffsGroupBox = new QGroupBox();
   buffsGroupBox->setLayout( buffsLayout );
 
+  optionsTab->addTab( buffsGroupBox, "Buffs" );
+}
+
+void SimulationCraftWindow::createDebuffsTab()
+{
   QVBoxLayout* debuffsLayout = new QVBoxLayout();
   debuffsButtonGroup = new QButtonGroup();
   debuffsButtonGroup->setExclusive( false );
@@ -384,25 +480,56 @@ void SimulationCraftWindow::createOptionsTab()
   for( int i=0; debuffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
+    if ( i!=0 ) checkBox->setChecked( true );
     checkBox->setToolTip( debuffs[ i ].tooltip );
     debuffsButtonGroup->addButton( checkBox );
     debuffsLayout->addWidget( checkBox );
   }
   debuffsLayout->addStretch(1);
-  QGroupBox* debuffsGroupBox = new QGroupBox( "Debuffs" );
+  QGroupBox* debuffsGroupBox = new QGroupBox();
   debuffsGroupBox->setLayout( debuffsLayout );
 
-  QHBoxLayout* optionsLayout = new QHBoxLayout();
-  optionsLayout->addWidget( globalsGroupBox );
-  optionsLayout->addWidget(   buffsGroupBox );
-  optionsLayout->addWidget( debuffsGroupBox );
-  
-  QGroupBox* optionsGroupBox = new QGroupBox();
-  optionsGroupBox->setLayout( optionsLayout );
-  mainTab->addTab( optionsGroupBox, "Options" );
+  optionsTab->addTab( debuffsGroupBox, "Debuffs" );
+}
 
-  connect( optimalRaidChoice, SIGNAL(currentIndexChanged(int)), this, SLOT(optimalRaidChanged(int)) );  
-  optimalRaidChoice->setCurrentIndex( 1 );
+void SimulationCraftWindow::createScalingTab()
+{
+  QVBoxLayout* scalingLayout = new QVBoxLayout();
+  scalingButtonGroup = new QButtonGroup();
+  scalingButtonGroup->setExclusive( false );
+  OptionEntry* scaling = getScalingOptions();
+  for( int i=0; scaling[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( scaling[ i ].label );
+    checkBox->setToolTip( scaling[ i ].tooltip );
+    scalingButtonGroup->addButton( checkBox );
+    scalingLayout->addWidget( checkBox );
+  }
+  scalingLayout->addStretch(1);
+  QGroupBox* scalingGroupBox = new QGroupBox();
+  scalingGroupBox->setLayout( scalingLayout );
+
+  optionsTab->addTab( scalingGroupBox, "Scaling" );
+}
+
+void SimulationCraftWindow::createPlotsTab()
+{
+  QVBoxLayout* plotsLayout = new QVBoxLayout();
+  plotsButtonGroup = new QButtonGroup();
+  plotsButtonGroup->setExclusive( false );
+  OptionEntry* plots = getPlotOptions();
+  for( int i=0; plots[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( plots[ i ].label );
+    checkBox->setToolTip( plots[ i ].tooltip );
+    plotsButtonGroup->addButton( checkBox );
+    plotsLayout->addWidget( checkBox );
+  }
+  plotsLayout->addStretch(1);
+  QGroupBox* plotsGroupBox = new QGroupBox();
+  plotsGroupBox->setLayout( plotsLayout );
+
+  optionsTab->addTab( plotsGroupBox, "Plots" );
 }
 
 void SimulationCraftWindow::createImportTab()
@@ -695,15 +822,13 @@ void SimulationCraftWindow::createToolTips()
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
 				"Helter Skelter: Movement, Stuns, Interrupts" );
 
-  scaleFactorsChoice->setToolTip( "Scale factors are necessary for gear ranking.\n"
-				  "They require an additional simulation for every relevant stat." );
-
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
 			     "Most modern desktops have two at least two CPU cores." );
 
-  armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
+  smoothRNGChoice->setToolTip( "Introduce some determinism into the RNG packages, improving convergence by 10x.\n"
+			       "This enables the use of fewer iterations, but the scale factors of non-linear stats may suffer." );
 
-  optimalRaidChoice->setToolTip( "Toggles all of the Buffs/Debuffs buttons." );
+  armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
@@ -999,15 +1124,12 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "raid_events=casting,cooldown=30,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
   }
-  if( scaleFactorsChoice->currentText() == "Yes" )
-  { 
-    options += "calculate_scale_factors=1\n";
-  }
   options += "threads=" + threadsChoice->currentText() + "\n";
+  options += smoothRNGChoice->currentIndex() ? "smooth_rng=1\n" : "smooth_rng=0\n";
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
-  for( int i=0; buffs[ i ].label; i++ )
+  for( int i=1; buffs[ i ].label; i++ )
   {
     options += buffs[ i ].option;
     options += "=";
@@ -1016,13 +1138,38 @@ QString SimulationCraftWindow::mergeOptions()
   }
   buttons = debuffsButtonGroup->buttons();
   OptionEntry* debuffs = getDebuffOptions();
-  for( int i=0; debuffs[ i ].label; i++ )
+  for( int i=1; debuffs[ i ].label; i++ )
   {
     options += debuffs[ i ].option;
     options += "=";
     options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
   }
+  options += "calculate_scale_factors=1\n";
+  options += "scale_only=none";
+  buttons = scalingButtonGroup->buttons();
+  OptionEntry* scaling = getScalingOptions();
+  for( int i=1; scaling[ i ].label; i++ )
+  {
+    if( buttons.at( i )->isChecked() )
+    {
+      options += ",";
+      options += scaling[ i ].option;
+    }
+  }
+  options += "\n";
+  options += "dps_plot_stat=none";
+  buttons = plotsButtonGroup->buttons();
+  OptionEntry* plots = getPlotOptions();
+  for( int i=1; plots[ i ].label; i++ )
+  {
+    if( buttons.at( i )->isChecked() )
+    {
+      options += ",";
+      options += plots[ i ].option;
+    }
+  }
+  options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
   options += overridesText->toPlainText();
@@ -1434,20 +1581,33 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
   }
 }
 
-void SimulationCraftWindow::optimalRaidChanged( int index )
+void SimulationCraftWindow::allBuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   int count = buttons.count();
-  for( int i=0; i < count; i++ )
+  for( int i=1; i < count; i++ )
   {
-    buttons.at( i ) -> setChecked( index != 0 );
+    buttons.at( i ) -> setChecked( checked );
   }
+}
 
-  buttons = debuffsButtonGroup->buttons();
-  count = buttons.count();
-  for( int i=0; i < count; i++ )
+void SimulationCraftWindow::allDebuffsChanged( bool checked )
+{
+  QList<QAbstractButton*> buttons = debuffsButtonGroup->buttons();
+  int count = buttons.count();
+  for( int i=1; i < count; i++ )
   {
-    buttons.at( i ) -> setChecked( index != 0 );
+    buttons.at( i ) -> setChecked( checked );
+  }
+}
+
+void SimulationCraftWindow::allScalingChanged( bool checked )
+{
+  QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
+  int count = buttons.count();
+  for( int i=1; i < count; i++ )
+  {
+    buttons.at( i ) -> setChecked( checked );
   }
 }
 

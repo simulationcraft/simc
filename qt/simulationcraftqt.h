@@ -28,7 +28,7 @@
 #define TAB_BIS        6
 #define TAB_HISTORY    7
 
-#define HISTORY_VERSION "1.0"
+#define HISTORY_VERSION "1.3"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -86,12 +86,13 @@ public:
     QComboBox* iterationsChoice;
     QComboBox* fightLengthChoice;
     QComboBox* fightStyleChoice;
-    QComboBox* scaleFactorsChoice;
     QComboBox* threadsChoice;
+    QComboBox* smoothRNGChoice;
     QComboBox* armorySpecChoice;
-    QComboBox* optimalRaidChoice;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
+    QButtonGroup* scalingButtonGroup;
+    QButtonGroup* plotsButtonGroup;
     QTabWidget* importTab;
     SimulationCraftWebView* armoryUsView;
     SimulationCraftWebView* armoryEuView;
@@ -157,6 +158,11 @@ public:
     void createCmdLine();
     void createWelcomeTab();
     void createOptionsTab();
+    void createGlobalsTab();
+    void createBuffsTab();
+    void createDebuffsTab();
+    void createScalingTab();
+    void createPlotsTab();
     void createImportTab();
     void createRawrTab();
     void createBestInSlotTab();
@@ -186,7 +192,9 @@ private slots:
     void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
     void bisDoubleClicked( QTreeWidgetItem* item, int col );
-    void optimalRaidChanged( int index );
+    void allBuffsChanged( bool checked );
+    void allDebuffsChanged( bool checked );
+    void allScalingChanged( bool checked );
 
 public:
     SimulationCraftWindow(QWidget *parent = 0);
