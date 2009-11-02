@@ -608,7 +608,7 @@ static void trigger_trauma( action_t* a )
   if ( a -> weapon == 0 ) 
     return;
 
-  if ( a -> weapon -> slot != SLOT_MAIN_HAND ) 
+  if ( a -> aoe && a -> weapon -> slot != SLOT_MAIN_HAND ) 
     return;
 
   target_t* t = a -> sim -> target;
@@ -998,6 +998,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     dual        = true;
     background  = true;
     may_crit    = true;
+    aoe         = true;
   }
   virtual void execute()
   {
@@ -1025,6 +1026,7 @@ struct bladestorm_t : public warrior_attack_t
     harmful   = false;
     base_cost = 25;
     cooldown  = 90;
+    aoe       = true;
 
     num_ticks      = 6;
     base_tick_time = 1.0;
