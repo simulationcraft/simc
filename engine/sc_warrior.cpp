@@ -254,13 +254,11 @@ struct warrior_attack_t : public attack_t
 {
   double min_rage, max_rage;
   int stancemask;
-  bool can_proc_trauma;
 
   warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, special ),
       min_rage( 0 ), max_rage( 0 ),
-      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE ),
-      can_proc_trauma( true )
+      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     warrior_t* p = player -> cast_warrior();
     may_glance   = false;
@@ -354,24 +352,21 @@ static void trigger_deep_wounds( action_t* a )
   if ( ! p -> talents.deep_wounds )
     return;
 
-  if ( a -> result != RESULT_CRIT )
-    return;
-
   // Every action HAS to have an weapon associated.
   assert( a -> weapon != 0 );
 
   struct deep_wounds_t : public warrior_attack_t
   {
     deep_wounds_t( warrior_t* p ) :
-        warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+      warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
     {
       background = true;
       trigger_gcd = 0;
+      weapon_multiplier = p -> talents.deep_wounds * 0.16;
       base_tick_time = 1.0;
       num_ticks = 6;
       reset(); // required since construction occurs after player_t::init()
     }
-    virtual void player_buff() {}
     virtual void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
@@ -384,6 +379,10 @@ static void trigger_deep_wounds( action_t* a )
         target_multiplier /= 1.04;
       }
     }
+    virtual double total_td_multiplier() SC_CONST
+    {
+      return target_multiplier;
+    }
     virtual void tick()
     {
       warrior_attack_t::tick();
@@ -393,15 +392,13 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  double weapon_multiplier = p -> talents.deep_wounds * 0.16;
-  a -> player_buff();
-  double deep_wounds_dmg = ( a -> weapon -> min_dmg + a -> weapon -> max_dmg ) * 0.5;
-  double hand_multiplier = ( a -> weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
-  double power_damage = a -> weapon -> swing_time * a -> weapon_power_mod * a -> total_attack_power();
-
-  deep_wounds_dmg = ( deep_wounds_dmg + power_damage ) * weapon_multiplier * hand_multiplier * a -> player_multiplier * a -> base_multiplier * a -> base_td_multiplier;
-
   if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
+
+  p -> active_deep_wounds -> weapon = a -> weapon;
+  p -> active_deep_wounds -> player_buff();
+
+  double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
+			     p -> active_deep_wounds -> player_multiplier );
 
   if ( p -> active_deep_wounds -> ticking )
   {
@@ -424,17 +421,19 @@ static void trigger_deep_wounds( action_t* a )
       p -> procs_deferred_deep_wounds -> occur();
       p -> active_deep_wounds -> cancel();
     }
+    
     p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
     p -> active_deep_wounds -> schedule_tick();
+    trigger_blood_frenzy( p -> active_deep_wounds );
+
     return;
   }
 
   struct deep_wounds_delay_t : public event_t
   {
     double deep_wounds_dmg;
-    weapon_t* weapon;
 
-    deep_wounds_delay_t( sim_t* sim, player_t* p, double dmg, weapon_t* wpn ) : event_t( sim, p ), deep_wounds_dmg( dmg ), weapon( wpn )
+    deep_wounds_delay_t( sim_t* sim, player_t* p, double dmg ) : event_t( sim, p ), deep_wounds_dmg( dmg )
     {
       name = "Deep Wounds Delay";
       sim -> add_event( this, sim -> gauss( sim -> aura_delay, sim -> aura_delay * 0.25 ) );
@@ -445,15 +444,13 @@ static void trigger_deep_wounds( action_t* a )
 
       if ( p -> active_deep_wounds -> ticking )
       {
-	      if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
-	      p -> procs_deferred_deep_wounds -> occur();
-	      p -> active_deep_wounds -> cancel();
+	if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
+	p -> procs_deferred_deep_wounds -> occur();
+	p -> active_deep_wounds -> cancel();
       }
 
       p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
       p -> active_deep_wounds -> schedule_tick();
-      p -> active_deep_wounds -> weapon = weapon;
-
       trigger_blood_frenzy( p -> active_deep_wounds );
 
       if ( p -> deep_wounds_delay_event == this ) p -> deep_wounds_delay_event = 0;
@@ -467,12 +464,12 @@ static void trigger_deep_wounds( action_t* a )
     p -> procs_munched_deep_wounds -> occur();
   }
 
-  p -> deep_wounds_delay_event = new ( sim ) deep_wounds_delay_t( sim, p, deep_wounds_dmg, a -> weapon );
+  p -> deep_wounds_delay_event = new ( sim ) deep_wounds_delay_t( sim, p, deep_wounds_dmg );
 
   if ( p -> active_deep_wounds -> ticking )
   {
     if ( p -> active_deep_wounds -> tick_event -> occurs() < 
-	       p -> deep_wounds_delay_event -> occurs() )
+	 p -> deep_wounds_delay_event -> occurs() )
     {
       // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
       // both tick -and- get rolled into the next Deep Wounds.
@@ -603,17 +600,17 @@ static void trigger_sword_and_board( attack_t* a )
 
 static void trigger_trauma( action_t* a )
 {
-  warrior_t*         p = a -> player -> cast_warrior();
-  warrior_attack_t* wa = ( warrior_attack_t* ) a;
+  warrior_t* p = a -> player -> cast_warrior();
+
   if ( p -> talents.trauma == 0 )
     return;
 
-  if ( a -> result != RESULT_CRIT )
+  if ( a -> weapon == 0 ) 
     return;
 
-  if ( ! wa -> can_proc_trauma )
+  if ( a -> weapon -> slot != SLOT_MAIN_HAND ) 
     return;
-  
+
   target_t* t = a -> sim -> target;
 
   double value = p -> talents.trauma * 15;
@@ -678,25 +675,24 @@ double warrior_attack_t::cost() SC_CONST
 
 void warrior_attack_t::consume_resource()
 {
+  warrior_t* p = player -> cast_warrior();
+
   attack_t::consume_resource();
 
-  // Warrior attacks which are are avoided by the target consume only 20%
-  // Only Exception are AoE attacks like Whirlwind/Bladestorm
-  // result != RESULT_NONE is needed so the cost is not reduced when the sim
-  // checks all actions if they are ready base on resource cost.
-  if ( aoe )
-    return;
-
-  if ( result_is_hit() )
-    return;
-
-  if ( resource_consumed > 0 )
+  if ( special && p -> buffs_recklessness -> check() )
   {
-    warrior_t* p = player -> cast_warrior();
+    p -> buffs_recklessness -> decrement();
+  }
+
+  // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
+
+  if ( resource_consumed > 0 && ! aoe && result_is_hit() )
+  {
     double rage_restored = resource_consumed * 0.80;
     p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
   }
 }
+
 // warrior_attack_t::execute =================================================
 
 void warrior_attack_t::execute()
@@ -716,7 +712,7 @@ void warrior_attack_t::execute()
       trigger_rampage( this );
       trigger_deep_wounds( this );
       trigger_trauma( this );
-      p -> buffs_wrecking_crew -> trigger(1, p -> talents.wrecking_crew * 0.02 );
+      p -> buffs_wrecking_crew -> trigger( 1, p -> talents.wrecking_crew * 0.02 );
       p -> buffs_flurry -> trigger( 3 );
     }
   }
@@ -732,8 +728,6 @@ void warrior_attack_t::execute()
       p -> procs_glyph_overpower -> occur();
     }
   }
-  if ( special && p -> buffs_recklessness -> check() )
-    p -> buffs_recklessness -> decrement();
 
   trigger_sword_specialization( this );
 }
@@ -1893,17 +1887,6 @@ struct whirlwind_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    /* Special case for Recklessness + Whirlwind + Dualwield
-    *  Every hand uses one charge, _BUT_ if only one charge
-    *  is left on recklessness, both hands will crit.
-    *  So we deal with offhand first and increase charges by
-    *  if only one is left, so offhand also gets one.
-    */
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( p -> buffs_recklessness -> stack() == 1 )
-        p -> buffs_recklessness -> current_stack++;
-    }
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
@@ -1913,10 +1896,7 @@ struct whirlwind_t : public warrior_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( player -> off_hand_weapon );
-      bool save_proc_trauma = can_proc_trauma;
-      can_proc_trauma = false;
       warrior_attack_t::execute();
-      can_proc_trauma = save_proc_trauma;
       if( result_is_hit() ) trigger_bloodsurge( this );
     }
 

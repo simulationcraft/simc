@@ -606,9 +606,9 @@ static void trigger_ignite( spell_t* s,
 
       if ( p -> active_ignite -> ticking )
       {
-	      if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
-	      p -> procs_deferred_ignite -> occur();
-	      p -> active_ignite -> cancel();
+	if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
+	p -> procs_deferred_ignite -> occur();
+	p -> active_ignite -> cancel();
       }
 
       p -> active_ignite -> base_td = ignite_dmg / 2.0;
