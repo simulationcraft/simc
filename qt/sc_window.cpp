@@ -152,7 +152,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
   QList<QAbstractButton*>  debuff_buttons = debuffsButtonGroup->buttons();
   QList<QAbstractButton*> scaling_buttons = scalingButtonGroup->buttons();
-  QList<QAbstractButton*>    plot_buttons = scalingButtonGroup->buttons();
+  QList<QAbstractButton*>    plot_buttons =   plotsButtonGroup->buttons();
 
   OptionEntry*   buffs = getBuffOptions();
   OptionEntry* debuffs = getDebuffOptions();
@@ -169,7 +169,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      if(      ! opt_tokens[ 0 ].compare( "buff"    ) ) { options = buffs;   buttons = &buff_buttons;    }
      else if( ! opt_tokens[ 0 ].compare( "debuff"  ) ) { options = debuffs; buttons = &debuff_buttons;  }
      else if( ! opt_tokens[ 0 ].compare( "scaling" ) ) { options = scaling; buttons = &scaling_buttons; }
-     else if( ! opt_tokens[ 0 ].compare( "plot"    ) ) { options = plots;   buttons = &plot_buttons;    }
+     else if( ! opt_tokens[ 0 ].compare( "plots"   ) ) { options = plots;   buttons = &plot_buttons;    }
 
      if ( ! options ) continue;
 

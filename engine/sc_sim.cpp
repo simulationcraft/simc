@@ -1692,14 +1692,14 @@ double sim_t::progress( std::string& phase )
     return 1.0;
   }
 
-  if ( scaling -> calculate_scale_factors && 
-       scaling -> num_scaling_stats > 0 )
-  {
-    return scaling -> progress( phase );
-  }
-  else if ( plot -> num_plot_stats > 0 )
+  if ( plot -> num_plot_stats > 0 )
   {
     return plot -> progress( phase );
+  }
+  else if ( scaling -> calculate_scale_factors && 
+	    scaling -> num_scaling_stats > 0 )
+  {
+    return scaling -> progress( phase );
   }
   else if ( current_iteration >= 0 )
   {

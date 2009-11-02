@@ -60,18 +60,18 @@ double plot_t::progress( std::string& phase )
 {
   if ( dps_plot_stat_str.empty() ) return 1.0;
 
+  if ( num_plot_stats <= 0 ) return 1;
+
   if ( current_plot_stat <= 0 ) return 0;
 
   phase  = "Plot - ";
   phase += util_t::stat_type_abbrev( current_plot_stat );
 
-  double divisor = num_plot_stats + 1;
-
-  double stat_progress = ( ( num_plot_stats - remaining_plot_stats ) + 1 ) / divisor;
+  double stat_progress = ( num_plot_stats - remaining_plot_stats ) / (double) num_plot_stats;
 
   double point_progress = ( dps_plot_points - remaining_plot_points ) / (double) dps_plot_points;
 
-  stat_progress += point_progress / divisor;
+  stat_progress += point_progress / num_plot_stats;
 
   return stat_progress;
 }
@@ -117,36 +117,35 @@ void plot_t::analyze_stats()
 
       if ( j != 0 )
       {
-	      delta_sim = new sim_t( sim );
-        if ( dps_plot_iterations > 0 )
-          delta_sim -> iterations = dps_plot_iterations;
-	      delta_sim -> enchant.add_stat( i, j * dps_plot_step );
-	      delta_sim -> execute();
+	delta_sim = new sim_t( sim );
+        if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
+	delta_sim -> enchant.add_stat( i, j * dps_plot_step );
+	delta_sim -> execute();
       }
 
       for ( int k=0; k < num_players; k++ )
       {
-	      player_t* p = sim -> players_by_name[ k ];
+	player_t* p = sim -> players_by_name[ k ];
 
-	      if ( p -> scales_with[ i ] <= 0 ) continue;
+	if ( p -> scales_with[ i ] <= 0 ) continue;
 
-  	    if ( delta_sim )
-	      {
-	        player_t* delta_p = delta_sim -> find_player( p -> name() );
+	if ( delta_sim )
+	{
+	  player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-	        p -> dps_plot_data[ i ].push_back( delta_p -> dps );
-	      }
-	      else
-	      {
-	        p -> dps_plot_data[ i ].push_back( p -> dps );
-	      }
+	  p -> dps_plot_data[ i ].push_back( delta_p -> dps );
+	}
+	else
+	{
+	  p -> dps_plot_data[ i ].push_back( p -> dps );
+	}
       }
 
       if ( delta_sim ) 
       {
-	      delete delta_sim;
-	      delta_sim = 0;
-	      remaining_plot_points--;
+	delete delta_sim;
+	delta_sim = 0;
+	remaining_plot_points--;
       }
     }
 

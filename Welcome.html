@@ -14,6 +14,7 @@
         <li> <a href="#tips_and_tricks"> Tips and Tricks </a> </li>
         <li> <a href="#global_parameters"> Global Parameters </a> </li>
         <li> <a href="#scale_factors"> Scale Factors </a> </li>
+        <li> <a href="#plots"> Plots </a> </li>
         <li> <a href="#importing_from_the_armory"> Importing from the Armory </a> </li>
         <li> <a href="#importing_from_wowhead"> Importing from Wowhead </a> </li>
         <li> <a href="#importing_from_chardev"> Importing from CharDev </a> </li>
@@ -115,18 +116,18 @@
               SimulationCraft supports a wide array of <i>raid events</i> including movement, stuns, splash damage,
               target (in)vulnerability, etc.  The <i>Helter Skelter</i> option throws in an interesting mix of
               these random events so that the user may see how badly DPS suffers under adverse conditions.</li>
-	  <li><b>Scale Factors:</b> Given the intense computatin required to determine trustworthy scale factors, 
-              they are not calculated by default.  Scale factors are required to generate custom <i>wowhead</i> and
-              <i>lootrank</i> gear URLs.  It is highly recommended to use an iteration count of at least 10000.</li> 
 	  <li><b>Threads:</b> The iterative nature of SimulationCraft means that parallel processing is a very
               effective means to increase performance.  Most modern desktops have at least two CPU cores.  Match
               the number of threads to the number of CPU cores for optimal performance.</li>
+	  <li><b>Smooth RNG:</b> One of the most difficult problems associated with simulation is variance.  
+              Decreasing variance will reduce the number of iterations required to reach a confidence level in the results.
+              Turning on <i>smooth</i> RNG will introduce determinism in both the cycle and the distribution of
+              individual RNG calculations.  This will increase convergence by an order of magnitude, allowing
+              the use of far fewer iterations.  However, as with formulation, introducing this kind of determinism
+              into the RNG can intefere with the scale factor generation of non-linear stats.  Use with caution.</li> 
 	  <li><b>Armory Spec:</b> Players may have two talent/glyph combinations, but only one may be active at
               a time.  When a player is downloaded from the Armory, by default the <i>active</i> talent/glyph
               setup is used.  This parameter allows one to access the <i>inactive</i> setup during import.</li>
-	  <li><b>Optimal Raid:</b> This option is not tied to the <i>optimal_raid</i> parameter.  It is merely
-              a convenience toggle for quickly changing all of the buff/debuff settings.  When setting up the
-              simulation, <i>optimal_raid</i> is set to zero and only the selected buffs and debuffs are applied.</li>
       </ul>
     </dd>
     <dt><a name="scale_factors" /><h2>Scale Factors</h2></dt>
@@ -141,6 +142,12 @@
         are positive, measuring the <i>increase</i> in DPS.  However, due to the cap nature of <i>Hit</i> and 
         <i>Expertise</i>, these stats use negative deltas, measuring the <i>decrease</i> in DPS.  To override the
         default stat deltas, see the <i>Examples</i> tab for the appropriate parameters.
+    </dd>
+    <dt><a name="plots" /><h2>Plots</h2></dt>
+    <dd>SimulationCraft will optionally generate DPS-per-stat graphs using a +/- 200 stat point range given the initial
+        gear point.  It should be noted that simulation is not well suited for plot generation.  Precision is not as 
+        important so fewer iterations are required.  However, the sheer number of sample points needed to generate a 
+        plot make it even more cpu-intensive than scale factor generation.
     </dd>
     <dt><a name="importing_from_the_armory" /><h2>Importing from the Armory</h2></dt>
     <dd>To download a character from the Armory, merely navigate the web view to a character profile page.  The easiest
