@@ -460,6 +460,12 @@ struct melee_t : public paladin_attack_t
     base_execute_time = p -> main_hand_weapon.swing_time;
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    if ( ! player -> in_combat ) return 0.01;
+    return paladin_attack_t::execute_time();
+  }
+
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();

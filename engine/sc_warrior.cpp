@@ -846,9 +846,11 @@ bool warrior_attack_t::ready()
 
 struct melee_t : public warrior_attack_t
 {
+  int sync_weapons;
   double rage_conversion_value;
-  melee_t( const char* name, player_t* player ) :
-      warrior_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), rage_conversion_value( 0 )
+
+  melee_t( const char* name, player_t* player, int sw ) :
+    warrior_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw ), rage_conversion_value( 0 )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -871,24 +873,25 @@ struct melee_t : public warrior_attack_t
     else
       rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133* p -> level + 4.2652911;
   }
+
   virtual double haste() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-
     double h = warrior_attack_t::haste();
-
     h *= 1.0 / ( 1.0 + p -> talents.blood_frenzy * 0.05 );
-
+    if ( p -> buffs_flurry -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry );
+    }
     return h;
   }
 
   virtual double execute_time() SC_CONST
   {
     double t = warrior_attack_t::execute_time();
-    warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_flurry -> up() )
+    if ( ! player -> in_combat ) 
     {
-      t *= 1.0 / ( 1.0 + 0.05 * p -> talents.flurry );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
     }
     return t;
   }
@@ -940,10 +943,10 @@ struct melee_t : public warrior_attack_t
 
 struct auto_attack_t : public warrior_attack_t
 {
-  bool sync_weapons;
+  int sync_weapons;
 
   auto_attack_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "auto_attack", player ), sync_weapons( false )
+      warrior_attack_t( "auto_attack", player ), sync_weapons( 0 )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -955,13 +958,13 @@ struct auto_attack_t : public warrior_attack_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", player );
+      p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
@@ -974,7 +977,6 @@ struct auto_attack_t : public warrior_attack_t
     p -> main_hand_attack -> schedule_execute();
     if ( p -> off_hand_attack ) 
     {
-      p -> off_hand_attack -> delay_initial_execute = ( sync_weapons == true ) ? 2 : 1;
       p -> off_hand_attack -> schedule_execute();
     }
   }

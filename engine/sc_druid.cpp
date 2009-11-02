@@ -897,6 +897,12 @@ struct cat_melee_t : public druid_cat_attack_t
     may_crit    = true;
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    if ( ! player -> in_combat ) return 0.01;
+    return druid_cat_attack_t::execute_time();
+  }
+
   virtual void execute()
   {
     druid_cat_attack_t::execute();
@@ -1610,6 +1616,12 @@ struct bear_melee_t : public druid_bear_attack_t
     trigger_gcd = 0;
     base_cost   = 0;
     may_crit    = true;
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    if ( ! player -> in_combat ) return 0.01;
+    return druid_bear_attack_t::execute_time();
   }
 
   virtual void execute()

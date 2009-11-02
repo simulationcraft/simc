@@ -981,8 +981,10 @@ bool rogue_attack_t::ready()
 
 struct melee_t : public rogue_attack_t
 {
-  melee_t( const char* name, player_t* player ) :
-      rogue_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false )
+  int sync_weapons;
+
+  melee_t( const char* name, player_t* player, int sw ) :
+    rogue_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -1013,6 +1015,16 @@ struct melee_t : public rogue_attack_t
     return h;
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    double t = rogue_attack_t::execute_time();
+    if ( ! player -> in_combat ) 
+    {
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+    }
+    return t;
+  }
+
   virtual void execute()
   {
     rogue_attack_t::execute();
@@ -1027,11 +1039,11 @@ struct melee_t : public rogue_attack_t
 
 struct auto_attack_t : public rogue_attack_t
 {
-  bool sync_weapons;
+  int sync_weapons;
 
   auto_attack_t( player_t* player, const std::string& options_str ) :
       rogue_attack_t( "auto_attack", player ),
-      sync_weapons( false )
+      sync_weapons( 0 )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -1042,13 +1054,13 @@ struct auto_attack_t : public rogue_attack_t
     parse_options( options, options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
-    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", player );
+      p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
@@ -1062,7 +1074,6 @@ struct auto_attack_t : public rogue_attack_t
     p -> main_hand_attack -> schedule_execute();
     if ( p -> off_hand_attack ) 
     {
-      p -> off_hand_attack -> delay_initial_execute = ( sync_weapons == true ) ? 2 : 1;
       p -> off_hand_attack -> schedule_execute();
     }
   }

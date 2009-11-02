@@ -1739,6 +1739,12 @@ struct ranged_t : public hunter_attack_t
       iaoth_bonus += 0.06;
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    if ( ! player -> in_combat ) return 0.01;
+    return hunter_attack_t::execute_time();
+  }
+
   virtual void execute()
   {
     hunter_attack_t::execute();

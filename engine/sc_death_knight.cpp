@@ -1388,8 +1388,10 @@ bool death_knight_spell_t::ready()
 
 struct melee_t : public death_knight_attack_t
 {
-  melee_t( const char* name, player_t* player ) :
-      death_knight_attack_t( name, player )
+  int sync_weapons;
+
+  melee_t( const char* name, player_t* player, int sw ) :
+    death_knight_attack_t( name, player, sync_weapons ), sync_weapons( sw )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1401,6 +1403,16 @@ struct melee_t : public death_knight_attack_t
     base_cost       = 0;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    double t = death_knight_attack_t::execute_time();
+    if ( ! player -> in_combat ) 
+    {
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+    }
+    return t;
   }
 
   void execute()
@@ -1426,11 +1438,11 @@ struct melee_t : public death_knight_attack_t
 
 struct auto_attack_t : public death_knight_attack_t
 {
-  bool sync_weapons;
+  int sync_weapons;
 
   auto_attack_t( player_t* player, const std::string& options_str ) :
       death_knight_attack_t( "auto_attack", player ),
-      sync_weapons( false )
+      sync_weapons( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1441,13 +1453,13 @@ struct auto_attack_t : public death_knight_attack_t
     parse_options( options, options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
-    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", player );
+      p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
@@ -1461,7 +1473,6 @@ struct auto_attack_t : public death_knight_attack_t
     p -> main_hand_attack -> schedule_execute();
     if ( p -> off_hand_attack ) 
     {
-      p -> off_hand_attack -> delay_initial_execute = ( sync_weapons == true ) ? 2 : 1;
       p -> off_hand_attack -> schedule_execute();
     }
   }

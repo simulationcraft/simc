@@ -2085,7 +2085,6 @@ struct action_t
 struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
-  int delay_initial_execute;
 
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   virtual ~attack_t() {}
