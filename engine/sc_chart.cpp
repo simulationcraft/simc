@@ -823,6 +823,8 @@ const char* chart_t::scaling_dps( std::string& s,
     s += colors[ i ];
   }
   s += "&amp;";
+  s += "chg=10,10,1,5";
+  s += "&amp;";
   std::string formatted_name = p -> name_str;
   armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
