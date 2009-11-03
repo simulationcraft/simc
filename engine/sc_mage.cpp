@@ -63,7 +63,6 @@ struct mage_t : public player_t
 
   // Random Number Generation
   rng_t* rng_empowered_fire;
-  rng_t* rng_frostbite_fof;
   rng_t* rng_enduring_winter;
   rng_t* rng_ghost_charge;
   rng_t* rng_tier8_4pc;
@@ -768,38 +767,6 @@ static void trigger_fingers_of_frost( spell_t* s )
   mage_t* p = s -> player -> cast_mage();
 
   p -> buffs_fingers_of_frost -> trigger( 2 );
-}
-
-// trigger_fingers_of_frost_on_execute ============================================
-
-static void trigger_fingers_of_frost_on_execute( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> talents.frostbite == 0 )
-    return;
-
-  if ( p -> talents.frostbite < 3 )
-    if ( p -> rng_frostbite_fof -> roll( ( 3 - p -> talents.frostbite ) / 3.0 ) )
-      return;
-
-  trigger_fingers_of_frost( s );
-}
-
-// trigger_fingers_of_frost_on_travel =============================================
-
-static void trigger_fingers_of_frost_on_travel( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> talents.frostbite == 3 )
-    return;
-
-  if ( p -> talents.frostbite > 0 )
-    if ( p -> rng_frostbite_fof -> roll( p -> talents.frostbite / 3.0 ) )
-      return;
-
-  trigger_fingers_of_frost( s );
 }
 
 // trigger_brain_freeze ===========================================================
@@ -2263,15 +2230,8 @@ struct frost_bolt_t : public mage_spell_t
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
       trigger_replenishment( this );
-      trigger_fingers_of_frost_on_execute( this );
+      trigger_fingers_of_frost( this );
     }
-  }
-
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
-  {
-    mage_spell_t::travel( travel_result, travel_dmg );
-    trigger_fingers_of_frost_on_travel( this );
   }
 
   virtual bool ready()
@@ -2527,16 +2487,9 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
-      trigger_fingers_of_frost_on_execute( this );
+      trigger_fingers_of_frost( this );
     }
     trigger_hot_streak( this );
-  }
-
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
-  {
-    mage_spell_t::travel( travel_result, travel_dmg );
-    trigger_fingers_of_frost_on_travel( this );
   }
 
   virtual bool ready()
@@ -3263,7 +3216,6 @@ void mage_t::init_rng()
   player_t::init_rng();
 
   rng_empowered_fire  = get_rng( "empowered_fire"  );
-  rng_frostbite_fof   = get_rng( "frostbite_fof"   );
   rng_ghost_charge    = get_rng( "ghost_charge"    );
   rng_enduring_winter = get_rng( "enduring_winter" );
   rng_tier8_4pc       = get_rng( "tier8_4pc"       );
