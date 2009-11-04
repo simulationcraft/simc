@@ -1331,7 +1331,8 @@ void warlock_spell_t::execute()
 void warlock_spell_t::tick()
 {
   spell_t::tick();
-  trigger_molten_core( this );
+  if ( ! player -> sim -> P330 )
+	trigger_molten_core( this );
 }
 
 // warlock_spell_t::parse_options =============================================
@@ -1999,12 +2000,7 @@ struct corruption_t : public warlock_spell_t
 
     base_td = base_td_init;
     num_ticks = 6;
-    warlock_spell_t::execute();
-    
-    if ( result_is_hit() && p -> sim -> P330 )
-    {
-      trigger_molten_core( this );
-    }
+    warlock_spell_t::execute();   
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
@@ -2026,6 +2022,7 @@ struct corruption_t : public warlock_spell_t
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> glyphs.corruption * 0.04 );
     p -> buffs_tier7_2pc_caster -> trigger();
     if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
+    if ( p -> sim -> P330 ) trigger_molten_core( this );
   }
 };
 
