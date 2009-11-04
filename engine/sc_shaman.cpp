@@ -2920,7 +2920,7 @@ void shaman_t::init_scaling()
   if ( talents.dual_wield )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors ? 1 : 0;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
   }
 }
 

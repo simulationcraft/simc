@@ -2736,7 +2736,7 @@ void death_knight_t::init_scaling()
   scales_with[ STAT_ARMOR ] = 1;
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors ? 1 : 0;
+  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
 }
 
 void death_knight_t::init_buffs()

@@ -125,8 +125,16 @@ void scaling_t::init_deltas()
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = smooth_scale_factors ? 25 : 50;
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = smooth_scale_factors ? 25 : 50;
 
-  if ( stats.weapon_speed          == 0 ) stats.weapon_speed = 0.2;
-  if ( stats.weapon_offhand_speed  == 0 ) stats.weapon_offhand_speed  = 0.2;
+  if( sim -> weapon_speed_scale_factors )
+  {
+    if ( stats.weapon_speed          == 0 ) stats.weapon_speed = 0.2;
+    if ( stats.weapon_offhand_speed  == 0 ) stats.weapon_offhand_speed  = 0.2;
+  }
+  else
+  {
+    stats.weapon_speed         = 0;
+    stats.weapon_offhand_speed = 0;
+  }
 }
 
 // scaling_t::analyze_stats =================================================
