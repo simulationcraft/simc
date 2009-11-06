@@ -3617,6 +3617,7 @@ int rogue_t::decode_set( item_t& item )
   if ( strstr( s, "terrorblade" ) ) return SET_T8_MELEE;
   if ( strstr( s, "vancleefs"   ) ) return SET_T9_MELEE;
   if ( strstr( s, "garonas"     ) ) return SET_T9_MELEE;
+  if ( strstr( s, "shadowblade" ) ) return SET_T10_MELEE;
 
   return SET_NONE;
 }

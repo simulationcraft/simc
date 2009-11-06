@@ -4101,6 +4101,11 @@ int druid_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T9_CASTER;
     if ( is_melee  ) return SET_T9_MELEE;
   }
+  if ( strstr( s, "lasherweave" ) ) 
+  {
+    if ( is_caster ) return SET_T10_CASTER;
+    if ( is_melee  ) return SET_T10_MELEE;
+  }
 
   return SET_NONE;
 }

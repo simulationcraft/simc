@@ -4170,6 +4170,7 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "deathbringer" ) ) return SET_T8_CASTER;
   if ( strstr( s, "kelthuzads"   ) ) return SET_T9_CASTER;
   if ( strstr( s, "guldans"      ) ) return SET_T9_CASTER;
+  if ( strstr( s, "dark_coven"   ) ) return SET_T10_CASTER;
 
   return SET_NONE;
 }

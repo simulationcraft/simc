@@ -2412,6 +2412,10 @@ int priest_t::decode_set( item_t& item )
   {
     if ( is_caster ) return SET_T9_CASTER;
   }
+  if ( strstr( s, "crimson_acolyte" ) )
+  {
+    if ( is_caster ) return SET_T10_CASTER;
+  }
 
   return SET_NONE;
 }

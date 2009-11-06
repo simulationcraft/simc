@@ -3060,6 +3060,11 @@ int warrior_t::decode_set( item_t& item )
     if ( is_melee ) return SET_T9_MELEE;
     if ( is_tank  ) return SET_T9_TANK;
   }
+  if ( strstr( s, "ymirjar" ) )
+  {
+    if ( is_melee ) return SET_T10_MELEE;
+    if ( is_tank  ) return SET_T10_TANK;
+  }
 
   return SET_NONE;
 }
