@@ -913,6 +913,51 @@ struct cat_melee_t : public druid_cat_attack_t
   }
 };
 
+// Berserk =================================================================
+
+struct berserk_cat_t : public druid_cat_attack_t
+{
+  int tigers_fury;
+
+  berserk_cat_t( player_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "berserk_cat", player ),
+    tigers_fury( 0 )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.berserk );
+
+    option_t options[] =
+    {
+      { "tigers_fury", OPT_BOOL, &tigers_fury },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    parse_options( options, options_str );
+
+    cooldown_group = "berserk";
+    cooldown = 180;
+    id = 50334;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_berserk -> trigger();
+    // Berserk cancels TF
+    p -> buffs_tigers_fury -> expire();
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+    if ( tigers_fury && ! p -> buffs_tigers_fury -> check() )
+      return false;
+    return druid_cat_attack_t::ready();
+  }
+};
+
 // Claw ====================================================================
 
 struct claw_t : public druid_cat_attack_t
@@ -1125,7 +1170,7 @@ struct rip_t : public druid_cat_attack_t
       base_cost -= 10;
     base_tick_time        = 2.0;
 
-    num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> set_bonus.tier7_2pc_melee() ? 2 : 0 );
+    num_ticks = 6 + ( p -> glyphs.rip * 2 ) + ( p -> set_bonus.tier7_2pc_melee() * 2 );
 
     static double dmg_80[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
     static double dmg_71[] = { 30+67*1, 30+67*2, 30+67*3, 30+67*4, 30+67*5 };
@@ -1150,7 +1195,7 @@ struct rip_t : public druid_cat_attack_t
     if ( result_is_hit() )
     {
       added_ticks = 0;
-      num_ticks = 6 + ( p -> glyphs.rip ? 2 : 0 ) + ( p -> set_bonus.tier7_2pc_melee() ? 2 : 0 );
+      num_ticks = 6 + ( p -> glyphs.rip * 2 ) + ( p -> set_bonus.tier7_2pc_melee() * 2 );
       update_ready();
     }
   }
@@ -1471,7 +1516,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 // druid_bear_attack_t::parse_options ======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
-					const std::string& options_str )
+					 const std::string& options_str )
 {
   option_t base_options[] =
   {
@@ -1684,6 +1729,38 @@ struct bash_t : public druid_bear_attack_t
   {
     if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return druid_bear_attack_t::ready();
+  }
+};
+
+// Berserk =================================================================
+
+struct berserk_bear_t : public druid_bear_attack_t
+{
+  berserk_bear_t( player_t* player, const std::string& options_str ) :
+    druid_bear_attack_t( "berserk_bear", player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.berserk );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    parse_options( options, options_str );
+
+    cooldown_group = "berserk";
+    cooldown = 180;
+    id = 50334;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_berserk -> trigger();
+    p -> _cooldowns.mangle_bear = 0;
+    update_ready();
   }
 };
 
@@ -2099,51 +2176,6 @@ struct auto_attack_t : public action_t
     druid_t* p = player -> cast_druid();
     if ( p -> buffs.moving -> check() ) return false;
     return( p -> melee_attack -> execute_event == 0 ); // not swinging
-  }
-};
-
-// Berserk =================================================================
-
-struct berserk_t : public druid_spell_t
-{
-  bool tigers_fury;
-
-  berserk_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "berserk", player, RESOURCE_NONE, TREE_FERAL ),
-    tigers_fury( false )
-  {
-    druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.berserk );
-
-    option_t options[] =
-    {
-      { "tigers_fury", OPT_BOOL, &tigers_fury },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    parse_options( options, options_str );
-
-    cooldown = 180;
-    id = 50334;
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_berserk -> trigger();
-    // Berserk cancels TF
-    p -> buffs_tigers_fury -> expire();
-    p -> _cooldowns.mangle_bear = 0;
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( tigers_fury && ! p -> buffs_tigers_fury -> check() )
-      return false;
-    return druid_spell_t::ready();
   }
 };
 
@@ -3315,7 +3347,8 @@ action_t* druid_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
   if ( name == "bash"              ) return new              bash_t( this, options_str );
-  if ( name == "berserk"           ) return new           berserk_t( this, options_str );
+  if ( name == "berserk_bear"      ) return new      berserk_bear_t( this, options_str );
+  if ( name == "berserk_cat"       ) return new       berserk_cat_t( this, options_str );
   if ( name == "bear_form"         ) return new         bear_form_t( this, options_str );
   if ( name == "cat_form"          ) return new          cat_form_t( this, options_str );
   if ( name == "claw"              ) return new              claw_t( this, options_str );
@@ -3679,7 +3712,7 @@ void druid_t::init_actions()
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
         if ( talents.mangle )  action_list_str += "/mangle_bear,mangle<=0.5";
         action_list_str += "/lacerate,lacerate<=6.9";           // This seems to be the sweet spot to prevent Lacerate falling off.
-        if ( talents.berserk ) action_list_str+="/berserk";
+        if ( talents.berserk ) action_list_str+="/berserk_bear";
         action_list_str += use_str;
         if ( talents.mangle )  action_list_str += "/mangle_bear";
         action_list_str += "/faerie_fire_feral";
@@ -3696,7 +3729,7 @@ void druid_t::init_actions()
         action_list_str += use_str;
         action_list_str += "/shred,omen_of_clarity=1";
         action_list_str += "/tigers_fury,energy<=40";
-        if ( talents.berserk ) action_list_str+="/berserk,tigers_fury=1";
+        if ( talents.berserk ) action_list_str+="/berserk_cat,tigers_fury=1";
         action_list_str += "/savage_roar,cp>=1,savage_roar<=4";
         if ( glyphs.shred ) action_list_str += "/shred,extend_rip=1,rip<=4";
         action_list_str += "/rip,cp>=5,time_to_die>=10";
