@@ -63,9 +63,9 @@ public:
   }
   void add( QString s )
   {
+    current_index = -1;
     if( size() > 0 ) if( at( 0 ) == s ) return;
     prepend( s );
-    current_index = -1;
   }
   QString start()
   {
