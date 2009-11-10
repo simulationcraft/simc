@@ -118,11 +118,13 @@ bool buff_t::may_react( int stack )
   if ( current_stack == 0    ) return false;
   if ( stack > current_stack ) return false;
 
-  if( stack == 0 ) return sim -> time_to_think( last_start );
-
   if( stack > max_stack ) return false;
 
-  return sim -> time_to_think( stack_occurrence[ stack ] );
+  double occur = stack_occurrence[ stack ];
+
+  if ( occur == 0 ) return true;
+
+  return sim -> time_to_think( occur );
 }
 
 // buff_t::remains ==========================================================
@@ -256,7 +258,7 @@ void buff_t::start( int    stacks,
   {
     current_stack = std::min( stacks, max_stack );
 
-    for( int i=1; i <= current_stack; i++ ) 
+    for( int i=0; i <= current_stack; i++ ) 
     {
       stack_occurrence[ i ] = sim -> current_time;
     }
@@ -364,6 +366,18 @@ void buff_t::expire()
        sim -> target -> current_health > 0 ) 
   {
     constant = false;
+  }
+}
+
+// buff_t::predict ==========================================================
+
+void buff_t::predict()
+{
+  // Guarantee that may_react() will return true if the buff is present.
+
+  for( int i=0; i <= current_stack; i++ ) 
+  {
+    stack_occurrence[ i ] = 0;
   }
 }
 

@@ -784,6 +784,7 @@ struct buff_t
   virtual void   refresh  ( int stacks=0, double value=-1.0 );
   virtual void   override ( int stacks=1, double value=-1.0 );
   virtual void   expire();
+  virtual void   predict();
   virtual void   reset();
   virtual void   aura_gain();
   virtual void   aura_loss();
