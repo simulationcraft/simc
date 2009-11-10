@@ -85,7 +85,7 @@ static OptionEntry* getScalingOptions()
       { "Analyze Hit Rating",               "hit",   "Calculate scale factors for Hit Rating"               },
       { "Analyze Crit Rating",              "crit",  "Calculate scale factors for Crit Rating"              },
       { "Analyze Haste Rating",             "haste", "Calculate scale factors for Haste Rating"             },
-      { "Analyze Weapon DPS",               "wdps",  "Calculate scale factors for Weapon DSP"               },
+      { "Analyze Weapon DPS",               "wdps",  "Calculate scale factors for Weapon DPS"               },
       { NULL, NULL, NULL }
     };
   return options;
@@ -107,7 +107,7 @@ static OptionEntry* getPlotOptions()
       { "Plot DPS per Hit Rating",               "hit",   "Generate DPS curve for Hit Rating"               },
       { "Plot DPS per Crit Rating",              "crit",  "Generate DPS curve for Crit Rating"              },
       { "Plot DPS per Haste Rating",             "haste", "Generate DPS curve for Haste Rating"             },
-      { "Plot DPS per Weapon DPS",               "wdps",  "Generate DPS curve for Weapon DSP"               },
+      { "Plot DPS per Weapon DPS",               "wdps",  "Generate DPS curve for Weapon DPS"               },
       { NULL, NULL, NULL }
     };
   return options;
