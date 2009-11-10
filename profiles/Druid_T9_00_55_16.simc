@@ -15,7 +15,7 @@ actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
 actions+=/shred,omen_of_clarity=1
 actions+=/tigers_fury,energy<=40
-actions+=/berserk,tigers_fury=1
+actions+=/berserk_cat,tigers_fury=1
 actions+=/savage_roar,cp>=1,savage_roar<=4
 actions+=/shred,extend_rip=1,rip<=4
 actions+=/rip,cp>=5,time_to_die>=10
