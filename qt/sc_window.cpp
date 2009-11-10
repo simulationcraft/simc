@@ -1126,7 +1126,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += "max_time=" + fightLengthChoice->currentText() + "\n";
   if( fightStyleChoice->currentText() == "Helter Skelter" )
   {
-    options += "raid_events=casting,cooldown=30,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
+    options += "raid_events=casting,cooldown=30,duratin=3,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
   }
   options += "threads=" + threadsChoice->currentText() + "\n";
   options += smoothRNGChoice->currentIndex() ? "smooth_rng=1\n" : "smooth_rng=0\n";
