@@ -54,9 +54,8 @@ action_t::action_t( int         ty,
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
     P330( -1 ), moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
-    has_if_exp( -1 ), is_ifall( 0 ), 
     snapshot_haste( -1.0 ),
-    if_exp( NULL ),
+    if_expr( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
@@ -106,15 +105,12 @@ void action_t::parse_options( option_t*          options,
   option_t base_options[] =
   {
     { "P330",                   OPT_BOOL,   &P330                  },
-    { "allow_early_cast",       OPT_INT,    &is_ifall              },
-    { "allow_early_recast",     OPT_INT,    &is_ifall              },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
     { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
     { "health_percentage<",     OPT_FLT,    &max_health_percentage },
     { "health_percentage>",     OPT_FLT,    &min_health_percentage },
-    { "if",                     OPT_STRING, &if_expression         },
-    { "if_buff",                OPT_STRING, &if_expression         },
+    { "if",                     OPT_STRING, &if_expr_str           },
     { "invulnerable",           OPT_BOOL,   &invulnerable          },
     { "moving",                 OPT_BOOL,   &moving                },
     { "rank",                   OPT_INT,    &rank_index            },
@@ -1092,26 +1088,19 @@ void action_t::update_time( int type )
 bool action_t::ready()
 {
   target_t* t = sim -> target;
-  int temp_is_ifall = is_ifall;
 
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
       return false;
 
+  bool check_duration = true;
+
   if ( ( scale_ticks_with_haste() > 0 ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
   {
-    double h = ( snapshot_haste / haste() - 1.0 ) * 100.0;
-    if ( h < haste_gain_percentage )
-    {
-      return false;
-    }
-    else
-    {
-      temp_is_ifall = 1;
-    }
+    check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
   }  
 
-  if ( ( duration_ready > 0 ) && ( !temp_is_ifall ) )
+  if ( check_duration && ( duration_ready > 0 ) )
   {
     double duration_delta = duration_ready - ( sim -> current_time + execute_time() );
 
@@ -1191,10 +1180,13 @@ bool action_t::ready()
     if ( ! t -> debuffs.invulnerable -> check() )
       return false;
 
-  //check action expression if any
-  if ( has_if_exp > 0 )
-    if ( ! if_exp->ok() )
-      return false;
+  if ( if_expr )
+  {
+    int result_type = if_expr -> evaluate();
+    if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
+    if ( result_type == TOK_STR     ) return true;
+    if ( result_type == TOK_UNKNOWN ) return false;
+  }
 
   return true;
 }
@@ -1283,15 +1275,12 @@ void action_t::check_talent( int talent_rank )
 }
 
 // action_t::create_expression ==============================================
-act_expression_t* action_t::create_expression( std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type )
-{
-  act_expression_t* node=0;
-  // check action specific functions
-  //...
 
-  // if none found, check player functions
-  if ( node==0 )   node=player->create_expression( name,prefix,suffix,expected_type );
-  //return resutl
-  return node;
+action_expr_t* action_t::create_expression( const std::string& name_str )
+{
+  
+  
+
+  return player -> create_expression( this, name_str );
 }
 

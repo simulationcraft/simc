@@ -481,7 +481,6 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
-  init_expressions();
 }
 
 // player_t::init_items =====================================================
@@ -850,11 +849,14 @@ void player_t::init_actions()
         action_name    = action_name.substr( 0, cut_pt );
       }
 
-      if ( ! create_action( action_name, action_options ) )
+      action_t* a = create_action( action_name, action_options );
+      if ( ! a )
       {
         util_t::fprintf( sim -> output_file, "player_t: Unknown action: %s\n", splits[ i ].c_str() );
         return;
       }
+
+      action_expr_t::parse( a, a -> if_expr_str );
     }
   }
 
@@ -1118,23 +1120,6 @@ void player_t::init_scaling()
     }
   }
 }
-
-// player_t::init_stats ====================================================
-// must be LAST init_
-void player_t::init_expressions()
-{
-  // parse all action expressions
-  for ( action_t* a = action_list; a; a = a -> next  )
-    if ( a->has_if_exp<0 )
-    {
-      if ( a->if_expression!="" )
-        a->if_exp=act_expression_t::create( a, a->if_expression,"", ETP_BOOL );
-      a->has_if_exp= ( a->if_exp!=0 );
-      if ( a->has_if_exp && sim->debug_exp ) //debug
-        util_t::fprintf( sim -> output_file, "%s", a->if_exp->to_string().c_str() );
-    }
-}
-
 
 // player_t::find_item ======================================================
 
@@ -3500,6 +3485,35 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
+// player_t::create_expression ==============================================
+
+action_expr_t* player_t::create_expression( action_t* a,
+					    const std::string& name_str )
+{
+  int resource_type = util_t::parse_resource_type( name_str );
+  if ( resource_type != RESOURCE_NONE )
+  {
+    struct resource_expr_t : public action_expr_t
+    {
+      int resource_type;
+      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n ), resource_type(r) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ]; return TOK_NUM; }
+    };
+    return new resource_expr_t( a, name_str, resource_type );
+  }
+  if ( name_str == "mana_pct" )
+  {
+    struct mana_pct_expr_t : public action_expr_t
+    {
+      mana_pct_expr_t( action_t* a ) : action_expr_t( a, "mana_pct" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { player_t* p = action -> player; result_num = ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ); return TOK_NUM; }
+    };
+    return new mana_pct_expr_t( a );
+  }
+
+  return sim -> create_expression( a, name_str );
+}
+
 // player_t::create_profile =================================================
 
 bool player_t::create_profile( std::string& profile_str, int save_type )
@@ -3636,34 +3650,6 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
 
   return true;
 }
-
-// player_t::create_expression ====================================================
-// -this is optional support for player specific expression functions or variables
-// -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
-// -if name not recognized, returns 0
-act_expression_t* player_t::create_expression( std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type )
-{
-  act_expression_t* node=0;
-  std::string e_name=name;
-  if ( prefix!="" ) e_name=prefix+"."+e_name;
-  if ( suffix!="" ) e_name=e_name+"."+suffix;
-  if ( ( prefix=="buff" )&&( node==0 ) )
-  {
-    bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
-    if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
-  }
-  if ( ( prefix=="player" )&&( node==0 ) )
-  {
-    if ( name=="distance" )
-    {
-      node= new act_expression_t( AEXP_DOUBLE_PTR,e_name );
-      node->p_value= &distance;
-    }
-  }
-  return node;
-}
-
-
 
 // player_t::get_options ====================================================
 

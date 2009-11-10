@@ -486,18 +486,6 @@ enum option_type_t
   OPT_UNKNOWN
 };
 
-// Expression Operation types ==================================================
-enum exp_res_t    { ETP_NONE, ETP_BOOL, ETP_NUM };
-
-enum exp_type { AEXP_NONE=0,
-                AEXP_AND, AEXP_OR, AEXP_NOT, AEXP_EQ, AEXP_NEQ, AEXP_GREATER, AEXP_LESS, AEXP_GE, AEXP_LE, // these operations result in boolean
-                AEXP_PLUS, AEXP_MINUS, AEXP_MUL, AEXP_DIV, // these operations result in double
-                AEXP_VALUE, AEXP_INT_PTR, AEXP_DOUBLE_PTR, // these are "direct" value return (no operations)
-                AEXP_BUFF, AEXP_FUNC, // these presume overriden class
-                AEXP_MAX
-              };
-
-
 typedef bool ( *option_function_t )( sim_t* sim, const std::string& name, const std::string& value );
 
 struct option_t
@@ -825,58 +813,45 @@ typedef struct buff_t aura_t;
 
 // Expressions =================================================================
 
-// definition of operators
-struct operator_def_t
-{
-  std::string name;
-  int type;
-  bool binary;
-  exp_res_t result_type;
-  exp_res_t operand_type;
+enum token_type_t {
+  TOK_UNKNOWN=0,
+  TOK_PLUS,
+  TOK_MINUS,
+  TOK_MULT,
+  TOK_DIV,
+  TOK_ADD,
+  TOK_SUB,
+  TOK_AND,
+  TOK_OR,
+  TOK_NOT,
+  TOK_EQ,
+  TOK_NOTEQ,
+  TOK_LT,
+  TOK_LTEQ,
+  TOK_GT,
+  TOK_GTEQ,
+  TOK_LPAR,
+  TOK_RPAR,
+  TOK_NUM,
+  TOK_STR
 };
 
-struct act_expression_t
+struct action_expr_t
 {
-  int    type;
-  double value;
-  void   *p_value;
-  std::string exp_str;
-  act_expression_t* operand_1;
-  act_expression_t* operand_2;
-  act_expression_t( int e_type, std::string expression_str="", double e_value=0 );
-  std::string to_string( int level=0 );
-  virtual ~act_expression_t() {}
-  virtual double evaluate();
-  virtual bool   ok();
-  static act_expression_t* create( action_t* action, std::string& expression, std::string alias_protect, exp_res_t expected_type );
-  static void warn( int severity, action_t* action, const char* format, ... );
-  static act_expression_t* find_operator( action_t* action, std::string& unmasked, std::string& expression, std::string& alias_protect,
-                                          operator_def_t& op );
-  static std::string op_name( int op_type );
+  action_t* action;
+  std::string name_str;
 
-};
+  int result_type;
+  double result_num;
+  std::string result_str;
+  
+  action_expr_t( action_t* a, const std::string& n ) : action(a), name_str(n), result_type(TOK_UNKNOWN), result_num(0) {}
+  action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action(a), name_str(n) { result_type = TOK_NUM; result_num = constant_value; }
+  action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action(a), name_str(n) { result_type = TOK_STR; result_str = constant_value; }
+  virtual int evaluate() { return result_type; }
+  virtual const char* name() { return name_str.c_str(); }
 
-struct oldbuff_expression_t: public act_expression_t
-{
-  event_t** expiration_ptr;
-  int* int_ptr;
-  double* double_ptr;
-  oldbuff_expression_t( std::string expression_str, void* value_ptr, event_t** e_expiration=0, int ptr_type=1 );
-  virtual ~oldbuff_expression_t() {};
-  virtual double evaluate();
-};
-
-// Alias support =============================================================
-struct alias_t
-{
-  std::string alias_str;
-  std::vector<std::string> alias_name;
-  std::vector<std::string> alias_value;
-  alias_t() {}
-  virtual ~alias_t() {}
-  virtual void add( std::string& name, std::string& value );
-  virtual void init_parse();
-  virtual std::string find( std::string& name );
+  static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
 
 // Simulation Engine =========================================================
@@ -908,7 +883,6 @@ struct sim_t
   int         optimal_raid, spell_crit_suppression, log, debug;
   int         save_profiles;
   std::string current_name, default_region_str, default_server_str;
-  alias_t     alias;
 
   // Default stat enchants
   gear_stats_t enchant;
@@ -1101,6 +1075,7 @@ struct sim_t
   void      use_optimal_buffs_and_debuffs( int value );
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
+  action_expr_t* create_expression( action_t*, const std::string& name );
 };
 
 // Scaling ===================================================================
@@ -1579,7 +1554,6 @@ struct player_t
   virtual void init_uptimes();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void init_expressions();
 
   virtual void reset();
   virtual void combat_begin();
@@ -1662,6 +1636,8 @@ struct player_t
   virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
+  virtual action_expr_t* create_expression( action_t*, const std::string& name );
+
   virtual std::vector<option_t>& get_options();
   virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
@@ -1670,7 +1646,6 @@ struct player_t
   virtual pet_t*    find_pet     ( const std::string& name );
 
   virtual void trigger_replenishment();
-  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 
   virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) { assert( sheet_xml ); assert( talents_xml ); }
   virtual int  decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
@@ -2002,12 +1977,11 @@ struct action_t
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int P330, moving, vulnerable, invulnerable, wait_on_ready;
-  int has_if_exp, is_ifall;
   double snapshot_haste;
-  act_expression_t* if_exp;
-  std::string if_expression;
+  std::string if_expr_str;
+  action_expr_t* if_expr;
   std::string sync_str;
-  action_t*   sync_action;
+  action_t* sync_action;
   action_t** observer;
   action_t* next;
 
@@ -2077,8 +2051,8 @@ struct action_t
 
   virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier; }
   virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier; }
-  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
 
+  virtual action_expr_t* create_expression( const std::string& name );
 };
 
 // Attack ====================================================================

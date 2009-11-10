@@ -808,9 +808,6 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 3;
 
-  // initialize aliases
-  alias.init_parse();
-
   return true;
 }
 
@@ -1375,6 +1372,24 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
+// sim_t::create_expression =================================================
+
+action_expr_t* sim_t::create_expression( action_t* a,
+					 const std::string& name_str )
+{
+  if ( name_str == "target.health_pct" )
+  {
+    struct target_health_pct_expr_t : public action_expr_t
+    {
+      target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> sim -> target -> health_percentage();  return TOK_NUM; }
+    };
+    return new target_health_pct_expr_t( a );
+  }
+
+  return 0;
+}
+
 // sim_t::print_options =====================================================
 
 void sim_t::print_options()
@@ -1546,8 +1561,6 @@ std::vector<option_t>& sim_t::get_options()
       { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
-      { "alias",                            OPT_STRING, &( alias.alias_str                          ) },
-      { "alias+",                           OPT_APPEND, &( alias.alias_str                          ) },
       { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
       // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
       { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },

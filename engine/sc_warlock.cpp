@@ -49,17 +49,6 @@ struct warlock_t : public player_t
   buff_t* buffs_tier7_4pc_caster;
   buff_t* buffs_tier10_4pc_caster;
 
-  // warlock specific expression functions
-  struct warlock_expression_t: public act_expression_t
-  {
-    warlock_t* player;
-    int method;
-    warlock_expression_t( warlock_t* e_player, std::string expression_str, int e_method )
-        :act_expression_t( AEXP_FUNC,expression_str,0 ),player( e_player ),method( e_method ) {};
-    virtual ~warlock_expression_t() {};
-    virtual double evaluate();
-  };
-
   // Gains
   gain_t* gains_dark_pact;
   gain_t* gains_fel_armor;
@@ -230,7 +219,7 @@ struct warlock_t : public player_t
 
   // Event Tracking
   virtual void regen( double periodicity );
-  virtual act_expression_t* create_expression( std::string& name, std::string& prefix, std::string& suffix, exp_res_t expected_type );
+  virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
   // Utilities
   int affliction_effects()
@@ -3954,51 +3943,22 @@ void warlock_t::regen( double periodicity )
   }
 }
 
-
-// warlock_t::warlock_t::warlock_expression_t::evaluate =================================================
-// - expression class that can "evaluate" functions that access warlock_t specific methods
-// - "type: is recognized during warlock_t::create_expression
-double warlock_t::warlock_expression_t::evaluate()
-{
-  switch ( method )
-  {
-  case 1:   return player->decimation_queue.size();
-  case 2:   return player->decimation_queue.empty();
-  }
-  return 0;
-}
-
 // warlock_t::create_expression =================================================
-// -this is optional support for class specific expression functions or variables
-// -if prefix.name.sufix is recognized, it needs to create "new" act_expression type
-// -if name not recognized, returns 0
-act_expression_t* warlock_t::create_expression( std::string& name,std::string& prefix,std::string& suffix, exp_res_t expected_type )
+
+action_expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 {
-  act_expression_t* node= player_t::create_expression( name,prefix,suffix,expected_type );
-  if ( node!=0 ) return node;
-  std::string e_name=name;
-  if ( prefix!="" ) e_name=prefix+"."+e_name;
-  if ( suffix!="" ) e_name=e_name+"."+suffix;
-  // old buffs
-  if ( ( prefix=="buff" )&&( node==0 ) )
+  if ( name_str == "decimation_queue" )
   {
-    bool ex=( suffix!="value" )&&( suffix!="buff" )&&( suffix!="stacks" ); // if one of these, ignore expiration time
-    if ( ( suffix=="" )&&( expected_type==ETP_BOOL ) ) ex=false; //also ignore expiration value if boolean result is needed
-  }
-  // general functions
-  if ( ( node==0 ) )
-  {
-    if ( name=="decimation_queue" )
+    struct decimation_queue_expr_t : public action_expr_t
     {
-      int method=( suffix=="empty" )? 2 : 1;
-      node= new warlock_expression_t( this,e_name, method );
-    }
+      decimation_queue_expr_t( action_t* a ) : action_expr_t( a, "decimation_queue" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> decimation_queue.size(); return TOK_NUM; }
+    };
+    return new decimation_queue_expr_t( a );
   }
-  // return expression node, if any
-  return node;
+
+  return player_t::create_expression( a, name_str );
 }
-
-
 
 // warlock_t::primary_tree =================================================
 
