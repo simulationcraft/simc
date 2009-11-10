@@ -2678,7 +2678,7 @@ struct steady_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( (p -> glyphs.steady_shot || p -> talents.marked_for_death > 0) && p -> active_sting() )
+    if ( (p -> glyphs.steady_shot || p -> talents.marked_for_death > 0 ) && p -> active_sting() )
     {
       player_multiplier *= 1.10;
     }
