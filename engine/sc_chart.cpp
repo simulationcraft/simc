@@ -7,6 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// Colors returned by this function are defined as http://www.wowwiki.com/Class_colors
 static const char* class_color( int type )
 {
   switch ( type )
@@ -14,34 +15,62 @@ static const char* class_color( int type )
   case PLAYER_NONE:  return "FFFFFF";
   case DEATH_KNIGHT: return "C41F3B";
   case DRUID:        return "FF7D0A";
-  case HUNTER:       return "9BB453";
+  case HUNTER:       return "ABD473";
   case MAGE:         return "69CCF0";
   case PALADIN:      return "F58CBA";
-  case PRIEST:       return "333333";
-  case ROGUE:        return "E09000";
+  case PRIEST:       return "C0C0C0";
+  case ROGUE:        return "FFF569";
   case SHAMAN:       return "2459FF";
-  case WARLOCK:      return "9482CA";
+  case WARLOCK:      return "9482C9";
   case WARRIOR:      return "C79C6E";
   default: assert( 0 );
   }
   return 0;
 }
 
+// The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
+static const char* class_text_color( int type )
+{
+  switch( type )
+  {
+  case MAGE:         return "59ADCC"; // darker blue
+  case PRIEST:       return "8A8A8A"; // darker silver
+  case ROGUE:        return "C0B84F"; // darker yellow
+  default:           return class_color( type );
+  }
+}
+
+// These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
 static const char* school_color( int type )
 {
   switch ( type )
   {
-  case SCHOOL_ARCANE:    return class_color( DRUID );
-  case SCHOOL_BLEED:     return "FF6E6E";
+  case SCHOOL_ARCANE:    return class_color( MAGE );
+  case SCHOOL_BLEED:     return "C55D54"; // Half way between DK "red" and Warrior "brown"
   case SCHOOL_CHAOS:     return class_color( DEATH_KNIGHT );
   case SCHOOL_FIRE:      return class_color( DEATH_KNIGHT );
-  case SCHOOL_FROST:     return class_color( MAGE );
-  case SCHOOL_FROSTFIRE: return class_color( PALADIN );
-  case SCHOOL_HOLY:      return "C0C0C0";
-  case SCHOOL_NATURE:    return "245924";
+  case SCHOOL_FROST:     return class_color( SHAMAN );
+  case SCHOOL_FROSTFIRE: return class_color( SHAMAN );
+  case SCHOOL_HOLY:      return class_color( PRIEST );
+  case SCHOOL_NATURE:    return class_color( HUNTER );
   case SCHOOL_PHYSICAL:  return class_color( WARRIOR );
   case SCHOOL_SHADOW:    return class_color( WARLOCK );
   default: assert( 0 );
+  }
+  return 0;
+}
+
+static const char* resource_color( int type )
+{
+  switch ( type )
+  {
+    case RESOURCE_HEALTH:   return class_color( HUNTER );
+    case RESOURCE_MANA:     return class_color( SHAMAN );
+    case RESOURCE_RAGE:     return class_color( DEATH_KNIGHT );
+    case RESOURCE_ENERGY:   return class_text_color( ROGUE );
+    case RESOURCE_FOCUS:    return class_text_color( ROGUE );
+    case RESOURCE_RUNIC:    return class_color( DEATH_KNIGHT );
+    default: assert( 0 );
   }
   return 0;
 }
@@ -53,6 +82,15 @@ static const char* get_color( player_t* p )
     return class_color( p -> cast_pet() -> owner -> type );
   }
   return class_color( p -> type );
+}
+
+static const char* get_text_color( player_t* p)
+{
+  if ( p -> is_pet() )
+  {
+    return class_text_color( p -> cast_pet() -> owner -> type );
+  }
+  return class_text_color ( p -> type );
 }
 
 static unsigned char simple_encoding( int number )
@@ -142,7 +180,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
       armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_color( p ), i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
     }
     s += "&amp;";
     s += "chtt=DPS+Ranking";
@@ -189,16 +227,16 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   colors[ STAT_STRENGTH                 ] = class_color( WARRIOR );
   colors[ STAT_AGILITY                  ] = class_color( HUNTER );
   colors[ STAT_INTELLECT                ] = class_color( MAGE );
-  colors[ STAT_SPIRIT                   ] = class_color( DRUID );
-  colors[ STAT_MP5                      ] = class_color( DRUID );
+  colors[ STAT_SPIRIT                   ] = class_color( PRIEST );
+  colors[ STAT_MP5                      ] = class_text_color( MAGE );
   colors[ STAT_ATTACK_POWER             ] = class_color( ROGUE );
   colors[ STAT_SPELL_POWER              ] = class_color( WARLOCK );
-  colors[ STAT_HIT_RATING               ] = class_color( PRIEST );
+  colors[ STAT_HIT_RATING               ] = class_color( DEATH_KNIGHT );
   colors[ STAT_CRIT_RATING              ] = class_color( PALADIN );
   colors[ STAT_HASTE_RATING             ] = class_color( SHAMAN );
-  colors[ STAT_EXPERTISE_RATING         ] = class_color( DEATH_KNIGHT );
-  colors[ STAT_ARMOR_PENETRATION_RATING ] = "00FF00";
-  colors[ STAT_SPELL_PENETRATION        ] = "00FF00";
+  colors[ STAT_EXPERTISE_RATING         ] = school_color( SCHOOL_BLEED );
+  colors[ STAT_ARMOR_PENETRATION_RATING ] = class_text_color( ROGUE );
+  colors[ STAT_SPELL_PENETRATION        ] = class_text_color( PRIEST );
 
   double max_total=0;
   for ( int i=0; i < num_players; i++ )
@@ -361,7 +399,7 @@ const char* chart_t::raid_downtime( std::string& s,
     player_t* p = waiting_list[ i ];
     std::string formatted_name = p -> name_str;
     armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_color( p ), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
   }
   s += "&amp;";
   s += "chtt=Raid+Down-Time";
@@ -490,7 +528,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for ( int i=0; i < num_stats; i++ )
     {
       if ( i ) s += ",";
-      s += get_color( stats_list[ i ] -> player );
+      s += school_color ( stats_list[ i ] -> school );
     }
     s += "&amp;";
     s += "chm=";
@@ -501,7 +539,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
       armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
-                st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ), i ); s += buffer;
+                st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ), i ); s += buffer;
     }
     s += "&amp;";
     s += "chtt=Raid+Damage+Per+Execute+Time";
@@ -709,7 +747,7 @@ const char* chart_t::gains( std::string& s,
   s += "chds=0,100";
   s += "&amp;";
   s += "chco=";
-  s += get_color( p );
+  s += resource_color( p -> primary_resource() );
   s += "&amp;";
   s += "chl=";
   for ( int i=0; i < num_gains; i++ )
