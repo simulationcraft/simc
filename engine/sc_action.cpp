@@ -1280,8 +1280,33 @@ void action_t::check_talent( int talent_rank )
 
 action_expr_t* action_t::create_expression( const std::string& name_str )
 {
-  
-  
+  if ( name_str == "ticking" )
+  {
+    struct ticking_expr_t : public action_expr_t
+    {
+      ticking_expr_t( action_t* a ) : action_expr_t( a, "ticking", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> ticking ? 1 : 0 ); return TOK_NUM; }
+    };
+    return new ticking_expr_t( this );
+  }
+  if ( name_str == "remains" )
+  {
+    struct remains_expr_t : public action_expr_t
+    {
+      remains_expr_t( action_t* a ) : action_expr_t( a, "remains", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> duration_ready - action -> sim -> current_time; return TOK_NUM; }
+    };
+    return new remains_expr_t( this );
+  }
+  if ( name_str == "cast_time" )
+  {
+    struct cast_time_expr_t : public action_expr_t
+    {
+      cast_time_expr_t( action_t* a ) : action_expr_t( a, "cast_time", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> execute_time(); return TOK_NUM; }
+    };
+    return new cast_time_expr_t( this );
+  }
 
   return player -> create_expression( this, name_str );
 }

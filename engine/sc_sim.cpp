@@ -1377,11 +1377,20 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 action_expr_t* sim_t::create_expression( action_t* a,
 					 const std::string& name_str )
 {
+  if ( name_str == "time" )
+  {
+    struct time_expr_t : public action_expr_t
+    {
+      time_expr_t( action_t* a ) : action_expr_t( a, "time", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> sim -> current_time;  return TOK_NUM; }
+    };
+    return new time_expr_t( a );
+  }
   if ( name_str == "target.health_pct" )
   {
     struct target_health_pct_expr_t : public action_expr_t
     {
-      target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct" ) { result_type = TOK_NUM; }
+      target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct", TOK_NUM ) {}
       virtual int evaluate() { result_num = action -> sim -> target -> health_percentage();  return TOK_NUM; }
     };
     return new target_health_pct_expr_t( a );

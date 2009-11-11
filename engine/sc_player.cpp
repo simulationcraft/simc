@@ -3496,7 +3496,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct resource_expr_t : public action_expr_t
     {
       int resource_type;
-      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n ), resource_type(r) { result_type = TOK_NUM; }
+      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type(r) {}
       virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ]; return TOK_NUM; }
     };
     return new resource_expr_t( a, name_str, resource_type );
@@ -3505,7 +3505,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   {
     struct mana_pct_expr_t : public action_expr_t
     {
-      mana_pct_expr_t( action_t* a ) : action_expr_t( a, "mana_pct" ) { result_type = TOK_NUM; }
+      mana_pct_expr_t( action_t* a ) : action_expr_t( a, "mana_pct", TOK_NUM ) {}
       virtual int evaluate() { player_t* p = action -> player; result_num = ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ); return TOK_NUM; }
     };
     return new mana_pct_expr_t( a );
@@ -3514,7 +3514,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   {
     struct in_combat_expr_t : public action_expr_t
     {
-      in_combat_expr_t( action_t* a ) : action_expr_t( a, "in_combat" ) { result_type = TOK_NUM; }
+      in_combat_expr_t( action_t* a ) : action_expr_t( a, "in_combat", TOK_NUM ) {}
       virtual int evaluate() { result_num = ( action -> player -> in_combat  ? 1 : 0 ); return TOK_NUM; }
     };
     return new in_combat_expr_t( a );
