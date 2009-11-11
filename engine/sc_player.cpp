@@ -856,7 +856,7 @@ void player_t::init_actions()
         return;
       }
 
-      action_expr_t::parse( a, a -> if_expr_str );
+      a -> if_expr = action_expr_t::parse( a, a -> if_expr_str );
     }
   }
 
@@ -3509,6 +3509,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { player_t* p = action -> player; result_num = ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ); return TOK_NUM; }
     };
     return new mana_pct_expr_t( a );
+  }
+  if ( name_str == "in_combat" )
+  {
+    struct in_combat_expr_t : public action_expr_t
+    {
+      in_combat_expr_t( action_t* a ) : action_expr_t( a, "in_combat" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> player -> in_combat  ? 1 : 0 ); return TOK_NUM; }
+    };
+    return new in_combat_expr_t( a );
   }
 
   return sim -> create_expression( a, name_str );

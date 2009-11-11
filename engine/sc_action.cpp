@@ -184,7 +184,9 @@ rank_t* action_t::init_rank( rank_t* rank_list,
   }
 
   util_t::fprintf( sim -> output_file, "%s unable to find valid rank for %s\n", player -> name(), name() );
-  assert( 0 );
+
+  background = true; // Prevent this action from ever being "ready"
+
   return 0;
 }
 

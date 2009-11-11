@@ -2232,15 +2232,8 @@ struct stance_t : public warrior_spell_t
 
   virtual void execute()
   {
-    const char* stance_name[] =
-      { "Unknown Stance",
-        "Battle Stance",
-        "Berserker Stance",
-        "Unpossible Stance",
-        "Defensive Stance"
-      };
     warrior_t* p = player -> cast_warrior();
-    p -> aura_loss( stance_name[ p -> active_stance  ] );
+
     switch ( p -> active_stance )
     {
       case STANCE_BATTLE:     p -> buffs_battle_stance    -> expire(); break;
@@ -2248,7 +2241,7 @@ struct stance_t : public warrior_spell_t
       case STANCE_DEFENSE:    p -> buffs_defensive_stance -> expire(); break;
     }
     p -> active_stance = switch_to_stance;
-    p -> aura_gain( stance_name[ p -> active_stance  ] );
+
     switch ( p -> active_stance )
     {
       case STANCE_BATTLE:     p -> buffs_battle_stance    -> trigger(); break;

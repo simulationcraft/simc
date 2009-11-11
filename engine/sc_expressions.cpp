@@ -344,14 +344,6 @@ static bool convert_to_rpn( std::vector<token_t>& tokens )
 
   tokens.swap( rpn );
 
-  printf( "rpn:\n" );
-  num_tokens = tokens.size();
-  for ( int i=0; i < num_tokens; i++ )
-  {
-    token_t& t = tokens[ i ];
-    printf( "%2d  '%s'\n", t.type, t.label.c_str() );
-  }
-
   return true;
 }
 
@@ -431,6 +423,14 @@ int main( int argc, char** argv )
 
     if( convert_to_rpn( tokens ) )
     {
+      printf( "rpn:\n" );
+      num_tokens = tokens.size();
+      for ( int i=0; i < num_tokens; i++ )
+      {
+	token_t& t = tokens[ i ];
+	printf( "%2d  '%s'\n", t.type, t.label.c_str() );
+      }
+
       action_expr_t* expr = build_expression_tree( 0, tokens );
 
       if( expr ) 

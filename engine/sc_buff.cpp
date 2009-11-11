@@ -362,7 +362,7 @@ void buff_t::expire()
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
     uptime_sum += current_time - last_start;
   }
-  if ( sim -> current_time >= 0.01 &&
+  if ( sim -> target -> initial_health == 0 ||
        sim -> target -> current_health > 0 ) 
   {
     constant = false;
