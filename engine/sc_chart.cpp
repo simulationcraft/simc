@@ -75,6 +75,27 @@ static const char* resource_color( int type )
   return 0;
 }
 
+static const char* stat_color( int type )
+{
+  switch( type )
+  {
+    case STAT_STRENGTH:                 return class_color( WARRIOR );
+    case STAT_AGILITY:                  return class_color( HUNTER );
+    case STAT_INTELLECT:                return class_color( MAGE );
+    case STAT_SPIRIT:                   return class_color( PRIEST );
+    case STAT_MP5:                      return class_text_color( MAGE );
+    case STAT_ATTACK_POWER:             return class_color( ROGUE );
+    case STAT_SPELL_POWER:              return class_color( WARLOCK );
+    case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
+    case STAT_CRIT_RATING:              return class_color( PALADIN );
+    case STAT_HASTE_RATING:             return class_color( SHAMAN );
+    case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
+    case STAT_ARMOR_PENETRATION_RATING: return class_text_color( ROGUE );
+    case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );
+    default:                            return ( 0 );
+  }
+}
+
 static const char* get_color( player_t* p )
 {
   if ( p -> is_pet() )
@@ -220,31 +241,13 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     }
   }
 
-  const char* colors[ STAT_MAX ];
-
-  for ( int i=0; i < STAT_MAX; i++ ) colors[ i ] = 0;
-
-  colors[ STAT_STRENGTH                 ] = class_color( WARRIOR );
-  colors[ STAT_AGILITY                  ] = class_color( HUNTER );
-  colors[ STAT_INTELLECT                ] = class_color( MAGE );
-  colors[ STAT_SPIRIT                   ] = class_color( PRIEST );
-  colors[ STAT_MP5                      ] = class_text_color( MAGE );
-  colors[ STAT_ATTACK_POWER             ] = class_color( ROGUE );
-  colors[ STAT_SPELL_POWER              ] = class_color( WARLOCK );
-  colors[ STAT_HIT_RATING               ] = class_color( DEATH_KNIGHT );
-  colors[ STAT_CRIT_RATING              ] = class_color( PALADIN );
-  colors[ STAT_HASTE_RATING             ] = class_color( SHAMAN );
-  colors[ STAT_EXPERTISE_RATING         ] = school_color( SCHOOL_BLEED );
-  colors[ STAT_ARMOR_PENETRATION_RATING ] = class_text_color( ROGUE );
-  colors[ STAT_SPELL_PENETRATION        ] = class_text_color( PRIEST );
-
   double max_total=0;
   for ( int i=0; i < num_players; i++ )
   {
     double total=0;
     for ( int j=0; j < STAT_MAX; j++ )
     {
-      if ( ! colors[ j ] ) continue;
+      if ( ! stat_color( j ) ) continue;
       total += data_points[ j ][ i ];
     }
     if ( total > max_total ) max_total = total;
@@ -276,7 +279,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
     {
-      if ( ! colors[ i ] ) continue;
+      if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += "|";
       first = false;
       for ( int j=0; j < num_players; j++ )
@@ -291,10 +294,10 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
     {
-      if ( ! colors[ i ] ) continue;
+      if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += ",";
       first = false;
-      s += colors[ i ];
+      s += stat_color( i );
     }
     s += "&amp;";
     s += "chxt=y";
@@ -315,7 +318,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     first = true;
     for ( int i=0; i < STAT_MAX; i++ )
     {
-      if ( ! colors[ i ] ) continue;
+      if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += "|";
       first = false;
       s += util_t::stat_type_abbrev( i );
@@ -784,24 +787,6 @@ const char* chart_t::scaling_dps( std::string& s,
   }
   if ( max_dps == 0 ) return 0;
 
-  const char* colors[ STAT_MAX ];
-
-  for ( int i=0; i < STAT_MAX; i++ ) colors[ i ] = 0;
-
-  colors[ STAT_STRENGTH                 ] = class_color( WARRIOR );
-  colors[ STAT_AGILITY                  ] = class_color( HUNTER );
-  colors[ STAT_INTELLECT                ] = class_color( MAGE );
-  colors[ STAT_SPIRIT                   ] = class_color( DRUID );
-  colors[ STAT_MP5                      ] = class_color( DRUID );
-  colors[ STAT_ATTACK_POWER             ] = class_color( ROGUE );
-  colors[ STAT_SPELL_POWER              ] = class_color( WARLOCK );
-  colors[ STAT_HIT_RATING               ] = class_color( PRIEST );
-  colors[ STAT_CRIT_RATING              ] = class_color( PALADIN );
-  colors[ STAT_HASTE_RATING             ] = class_color( SHAMAN );
-  colors[ STAT_EXPERTISE_RATING         ] = class_color( DEATH_KNIGHT );
-  colors[ STAT_ARMOR_PENETRATION_RATING ] = "00FF00";
-  colors[ STAT_SPELL_PENETRATION        ] = "00FF00";
-
   double step = p -> sim -> plot -> dps_plot_step;
   int range = p -> sim -> plot -> dps_plot_points / 2;
   int num_points = 1 + 2 * range;
@@ -817,7 +802,7 @@ const char* chart_t::scaling_dps( std::string& s,
   bool first=true;
   for ( int i=0; i < STAT_MAX; i++ )
   {
-    if ( ! colors[ i ] ) continue;
+    if ( ! stat_color( i ) ) continue;
     std::vector<double>& pd = p -> dps_plot_data[ i ];
     int size = pd.size();
     if ( size != num_points ) continue;
@@ -841,7 +826,7 @@ const char* chart_t::scaling_dps( std::string& s,
   first = true;
   for ( int i=0; i < STAT_MAX; i++ )
   {
-    if ( ! colors[ i ] ) continue;
+    if ( ! stat_color( i ) ) continue;
     int size = p -> dps_plot_data[ i ].size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
@@ -853,12 +838,12 @@ const char* chart_t::scaling_dps( std::string& s,
   first = true;
   for ( int i=0; i < STAT_MAX; i++ )
   {
-    if ( ! colors[ i ] ) continue;
+    if ( ! stat_color( i ) ) continue;
     int size = p -> dps_plot_data[ i ].size();
     if ( size != num_points ) continue;
     if ( ! first ) s += ",";
     first = false;
-    s += colors[ i ];
+    s += stat_color( i );
   }
   s += "&amp;";
   s += "chg=10,10,1,5";
