@@ -1653,7 +1653,7 @@ void report_t::print_html( sim_t* sim )
     print_html_player( file, sim -> players_by_name[ i ] );
   }
 
-  if ( num_players > 1 ) 
+  if ( num_players == 1 ) 
   {
     util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
   }
