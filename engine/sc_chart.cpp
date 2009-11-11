@@ -908,6 +908,10 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  s += "&amp;";
+  s += "chg=100,20";
+  s += "&amp;";
   s += "chd=s:";
   for ( int i=0; i < max_buckets; i += increment )
   {
@@ -971,6 +975,10 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  s += "&amp;";
+  s += "chg=100,20";
+  s += "&amp;";
   s += "chd=s:";
   for ( int i=0; i < max_buckets; i += increment )
   {
@@ -985,9 +993,11 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Resource+(%s)+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+(%s)+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( p -> primary_resource() ) ); s += buffer;
 
   return s.c_str();
 }
@@ -1014,6 +1024,10 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "chs=525x130";
   s += "&amp;";
   s += "cht=bvs";
+  s += "&amp;";
+  s += "chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125";
+  s += "&amp;";
+  s += "chg=100,100";
   s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
