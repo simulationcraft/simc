@@ -752,6 +752,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<h1>Table of Contents</h1>\n" );
   util_t::fprintf( file, "<ul>\n" );
   util_t::fprintf( file, " <li> <a href=\"#raid_summary\"> Raid Summary </a> </li>\n" );
+  util_t::fprintf( file, " <li> <a href=\"#auras_debuffs\"> Auras and Debuffs </a> </li>\n" );
   int num_players = ( int ) sim -> players_by_name.size();
   for ( int i=0; i < num_players; i++ )
   {
@@ -843,6 +844,39 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 		     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
+}
+
+// print_html_auras_debuffs ==================================================
+
+static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
+{
+  util_t::fprintf( file, "<a name=\"auras_debuffs\" /><h1>Auras and Debuffs</h1>\n" );
+
+  util_t::fprintf( file, "<style type=\"text/css\">\n  table.auras td, table.auras th { padding: 4px; border: 1px inset; }\n  table.charts { border: 1px outset; }</style>\n" );
+
+  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Dynamic</th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr>\n" );
+  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n", 
+		     b -> name(), b -> avg_start, b -> avg_refresh, 
+		     b -> avg_start_interval, b -> avg_trigger_interval, 
+		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Constant</th> </tr>\n" );
+  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
 }
 
 // print_html_action =========================================================
@@ -1057,17 +1091,6 @@ static void print_html_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, "</table> <br />\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Constant Buffs</th> </tr>\n" );
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
-  {
-    if ( b -> quiet || ! b -> start_count || ! b -> constant )
-      continue;
-
-    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
-  }
-  util_t::fprintf( file, "</table> <br />\n" );
-
-
   util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Dynamic Buffs</th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr>\n" );
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
@@ -1078,6 +1101,16 @@ static void print_html_player( FILE* file, player_t* p )
 		     b -> name(), b -> avg_start, b -> avg_refresh, 
 		     b -> avg_start_interval, b -> avg_trigger_interval, 
 		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Constant Buffs</th> </tr>\n" );
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
@@ -1620,10 +1653,12 @@ void report_t::print_html( sim_t* sim )
     print_html_player( file, sim -> players_by_name[ i ] );
   }
 
-  if ( num_players == 1 ) 
+  if ( num_players > 1 ) 
   {
     util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
   }
+
+  print_html_auras_debuffs( file, sim );
 
   util_t::fprintf( file, "</body>\n" );
   util_t::fprintf( file, "</html>" );
