@@ -338,6 +338,14 @@ void scaling_t::analyze()
   analyze_lag();
   analyze_gear_weights();
   normalize();
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> quiet ) continue;
+
+    chart_t::scale_factors( p -> scale_factors_chart, p );
+  }
+
 }
 
 // scaling_t::get_options ===================================================

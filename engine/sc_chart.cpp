@@ -768,6 +768,74 @@ const char* chart_t::gains( std::string& s,
   return s.c_str();
 }
 
+// chart_t::scale_factors ====================================================
+
+const char* chart_t::scale_factors( std::string& s,
+                                    player_t* p )
+{
+  double max_factor=0;
+
+  char buffer[ 1024 ];
+
+  if ( ! p -> sim -> scaling -> calculate_scale_factors ) return 0;
+
+  int been_there = 0;
+  // TODO: this code shouldn't be needed, but Qt sets calculate_scale_factors even if it's not calculating for any particular stat
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
+    {
+      been_there = 1;
+    }
+  }
+  if ( ! been_there ) return 0;
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=500x250";
+  s += "&amp;";
+  s += "cht=gom";
+
+  s += "&amp;";
+  s += "chd=t:";
+  been_there = 0;
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
+    {
+      if( max_factor < p -> scaling.get_stat( i ) ) { max_factor = p -> scaling.get_stat( i ); }
+      snprintf( buffer, sizeof( buffer ), "%s%.*f", (been_there++?",":""), p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+      s += buffer;
+    }
+  }
+
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_factor );
+  s += buffer;
+
+  s += "&amp;";
+  s += "chl=";
+  been_there = 0;
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
+    {
+      snprintf( buffer, sizeof( buffer ), "%s%s", (been_there++?"|":""), util_t::stat_type_abbrev( i ) );
+      s += buffer;
+    }
+  }
+
+  s += "&amp;";
+  std::string formatted_name = p -> name_str;
+  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale Factors", formatted_name.c_str() ); s += buffer;
+  s += "&amp;";
+  s += "chts=000000,20";
+  s += "&amp;";
+  s += "chls=6";
+  
+  return s.c_str();
+}
+
 // chart_t::scaling_dps ======================================================
 
 const char* chart_t::scaling_dps( std::string& s,
@@ -818,9 +886,9 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "&amp;";
   s += "chxt=x,y";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|0|%.0f|1:|%.0f|%.0f|%.0f", (-range*step), (+range*step), min_dps, p -> dps, max_dps ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", (-range*step), (-range*step)/2, (+range*step)/2, (+range*step), min_dps, p -> dps, max_dps ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * ( p -> dps - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   s += "&amp;";
   s += "chdl=";
   first = true;
@@ -846,7 +914,7 @@ const char* chart_t::scaling_dps( std::string& s,
     s += stat_color( i );
   }
   s += "&amp;";
-  s += "chg=10,10,1,5";
+  s += "chg=5,10,1,3";
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );

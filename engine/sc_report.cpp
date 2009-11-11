@@ -1037,20 +1037,26 @@ static void print_html_player( FILE* file, player_t* p )
 		   "<table class=\"player\">\n"
 		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
 		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
-		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
-		   "</table> <br />\n",
+		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
 		   action_dpet_str.c_str(), action_dmg_str.c_str(),
 		   gains_str.c_str(), timeline_resource_str.c_str(),
 		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
-  if ( ! p -> scaling_dps_chart.empty() )
+  if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
   {
-    util_t::fprintf( file, 
-		     "<table class=\"player\">\n"
-		     "  <tr> <td><img name=\"chart_scaling_dps\" src=\"%s\" /></td> </tr>\n"
-		     "</table> <br />\n",
-		     p -> scaling_dps_chart.c_str() );
+    util_t::fprintf( file, "<tr>\n" );
+    if( ! p -> scaling_dps_chart.empty() )
+    {
+       util_t::fprintf( file, "  <td><img name=\"chart_scaling_dps\" src=\"%s\" /></td>\n",
+                        p -> scaling_dps_chart.c_str() );
+    }
+    if( ! p -> scale_factors_chart.empty() )
+    {
+       util_t::fprintf( file, "  <td><img name=\"scale_factors\" src=\"%s\" /></td>\n",
+                        p -> scale_factors_chart.c_str() );
+    }
   }
+  util_t::fprintf( file, "</tr></table> <br />\n" );
 
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
