@@ -848,6 +848,7 @@ struct action_expr_t
   action_expr_t( action_t* a, const std::string& n, int t=TOK_UNKNOWN ) : action(a), name_str(n), result_type(t), result_num(0) {}
   action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action(a), name_str(n) { result_type = TOK_NUM; result_num = constant_value; }
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action(a), name_str(n) { result_type = TOK_STR; result_str = constant_value; }
+  virtual ~action_expr_t() { };
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
 
