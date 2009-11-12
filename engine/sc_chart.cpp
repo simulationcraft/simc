@@ -800,6 +800,12 @@ const char* chart_t::scale_factors( std::string& s,
   been_there = 0;
   for( int i=0; i < STAT_MAX; i++ )
   {
+    if ( i == STAT_WEAPON_DPS ||
+	 i == STAT_WEAPON_SPEED ||
+	 i == STAT_WEAPON_OFFHAND_DPS ||
+	 i == STAT_WEAPON_OFFHAND_SPEED )
+      continue;
+
     if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
     {
       if( max_factor < p -> scaling.get_stat( i ) ) { max_factor = p -> scaling.get_stat( i ); }
