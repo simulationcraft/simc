@@ -323,11 +323,13 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16AP_20Stack_10Dur";
   else if ( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
+  else if ( name == "herkuml_war_token"               ) e = "OnAttackHit_17AP_20Stack_15%_10Dur_45Cd";
   else if ( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
   else if ( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "mithril_pocketwatch"             ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "mjolnir_runestone"               ) e = "OnAttackHit_665ArPen_15%_10Dur_45Cd";
+  else if ( name == "needle_encrusted_scorpion"       ) e = "OnAttackHit_452ArPen_15%_10Dur_45Cd";
   else if ( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
   else if ( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if ( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
@@ -419,7 +421,9 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   // Simple
   if      ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
+  else if ( name == "ephemeral_snowflake"         ) e = "464Haste_20Dur_120Cd";
   else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
+  else if ( name == "maghias_misguided_quill"     ) e = "716SP_20Dur_120Cd";
   else if ( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
   else if ( name == "mark_of_supremacy"           ) e = "1024AP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
