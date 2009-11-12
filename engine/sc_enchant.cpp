@@ -509,14 +509,11 @@ struct berserking_callback_t : public action_callback_t
     if ( a -> weapon -> slot != slot ) 
       return;
 
-    // Berserking has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
-    // We cannot use the base swing time because that would over-value haste.  Instead, we use
-    // the hasted swing time which is represented in the "time_to_execute" field.  When this field
-    // is zero, we are dealing with a "special" attack in which case the base swing time is used.
+    // Apparently, Berserking has a 1.0 PPM (proc per minute) that scales with haste, so
+    // we no longer use time_to_execute to determine proc chance.
 
-    double PPM        = 1.2;
-    double swing_time = a -> time_to_execute;
-    double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
+    double PPM    = 1.0;
+    double chance = a -> weapon -> proc_chance_on_swing( PPM );
    
     buff -> trigger( 1, 0, chance );
     buff -> up();  // track uptime info
@@ -536,20 +533,17 @@ struct mongoose_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    player_t* p = a -> player;
-    weapon_t* w = a -> weapon;
-    if ( ! w ) return;
-    if ( w -> slot != slot ) return;
+    if ( ! a -> weapon ) 
+      return;
 
-    // Mongoose has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
-    // We cannot use the base swing time because that would over-value haste.  Instead, we use
-    // the hasted swing time which is represented in the "time_to_execute" field.  When this field
-    // is zero, we are dealing with a "special" attack in which case the base swing time is used.
+    if ( a -> weapon -> slot != slot ) 
+      return;
 
+    // Apparently, Mongoose has a 1.0 PPM (proc per minute) that scales with haste, so
+    // we no longer use time_to_execute to determine proc chance.
 
-    double PPM        = 1.2 - ( ( std::max( p -> level, 70 ) - 70 ) * 0.02 );
-    double swing_time = a -> time_to_execute;
-    double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+    double PPM    = 1.0;
+    double chance = a -> weapon -> proc_chance_on_swing( PPM );
 
     buff -> trigger( 1, 0, chance );
   }
@@ -594,17 +588,17 @@ struct executioner_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> weapon ) return;
-    if ( a -> weapon -> slot != slot ) return;
+    if ( ! a -> weapon ) 
+      return;
 
-    // Executioner has a 1.2 PPM (proc per minute) which translates into 1 proc every 50sec on average
-    // We cannot use the base swing time because that would over-value haste.  Instead, we use
-    // the hasted swing time which is represented in the "time_to_execute" field.  When this field
-    // is zero, we are dealing with a "special" attack in which case the base swing time is used.
+    if ( a -> weapon -> slot != slot ) 
+      return;
 
-    double PPM        = 1.2;
-    double swing_time = a -> time_to_execute;
-    double chance     = a -> weapon -> proc_chance_on_swing( PPM, swing_time );
+    // Apparently, Executioner has a 1.0 PPM (proc per minute) that scales with haste, so
+    // we no longer use time_to_execute to determine proc chance.
+
+    double PPM    = 1.0;
+    double chance = a -> weapon -> proc_chance_on_swing( PPM );
 
     buff -> trigger( 1, 0, chance );
     buff -> up();  // track uptime info
