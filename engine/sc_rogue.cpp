@@ -859,7 +859,8 @@ void rogue_attack_t::player_buff()
   {
     int target_race = sim -> target -> race;
 
-    if ( target_race == RACE_BEAST || target_race == RACE_DRAGONKIN ||
+    if ( sim -> P330 ||
+		 target_race == RACE_BEAST || target_race == RACE_DRAGONKIN ||
          target_race == RACE_GIANT || target_race == RACE_HUMANOID  )
     {
       player_multiplier *= 1.0 + p -> talents.murder * 0.02;

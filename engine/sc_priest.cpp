@@ -719,7 +719,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( p -> hasted_shadow_word_pain == 0 )
       return 0;
   
-    return ( ( p -> hasted_shadow_word_pain > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
+    return ( ( p -> hasted_shadow_word_pain > 0 ) );
   }
 
   virtual void refresh_duration()
@@ -2100,7 +2100,7 @@ void priest_t::init_actions()
       action_list_str += "/wild_magic_potion,P330=0";
       action_list_str += "/speed_potion,P330=1";
       action_list_str += "/shadow_fiend";
-      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,haste_gain_percentage>=15.0";
+      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
       if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=0";

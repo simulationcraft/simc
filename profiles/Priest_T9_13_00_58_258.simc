@@ -17,7 +17,7 @@ actions+=/snapshot_stats
 actions+=/wild_magic_potion,P330=0
 actions+=/speed_potion,P330=1
 actions+=/shadow_fiend
-actions+=/shadow_word_pain,shadow_weaving_wait=1,haste_gain_percentage>=15.0
+actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
