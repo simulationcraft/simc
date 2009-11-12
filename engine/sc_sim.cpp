@@ -418,13 +418,16 @@ sim_t::sim_t( sim_t* p, int index ) :
     // Import the config file
     parse_options( parent -> argc, parent -> argv );
 
-    // Inherit 'scaling' settings from parent because these may be set outside of the config file
+    // Inherit 'scaling' settings from parent because these are set outside of the config file
     scaling -> scale_stat  = parent -> scaling -> scale_stat;
     scaling -> scale_value = parent -> scaling -> scale_value;
 
     // Inherit reporting directives from parent
     report_progress = parent -> report_progress;
     output_file     = parent -> output_file;
+
+    // Inherit 'plot' settings from parent because are set outside of the config file
+    enchant = parent -> enchant;
   }
 }
 

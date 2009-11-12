@@ -34,7 +34,8 @@ struct expr_unary_t : public action_expr_t
     }
     else
     {
-      printf( "Unexpected input type for unary operator '%s'\n", name() );
+      log_t::output( action -> sim, "%s-%s: Unexpected input type (%s) for unary operator '%s'\n", 
+		     action -> player -> name(), action -> name(), input -> name(), name() );
     }
     return result_type;
   }
@@ -55,7 +56,8 @@ struct expr_binary_t : public action_expr_t
     int right_result = right -> evaluate();
     if ( left_result != right_result )
     {
-      printf( "Inconsistent input types for binary operator '%s'\n", name() );
+      log_t::output( action -> sim, "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n", 
+		     action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
     }
     else if ( left_result == TOK_NUM )
     {
@@ -76,6 +78,8 @@ struct expr_binary_t : public action_expr_t
 
       case TOK_AND: result_num = ( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) ) ? 1 : 0; break;
       case TOK_OR:  result_num = ( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) ) ? 1 : 0; break;
+
+      default: assert(0);
       }
     }
     else if ( left_result == TOK_STR )
@@ -89,6 +93,8 @@ struct expr_binary_t : public action_expr_t
       case TOK_LTEQ:  result_num = ( left -> result_str <= right -> result_str ) ? 1 : 0; break;
       case TOK_GT:    result_num = ( left -> result_str >  right -> result_str ) ? 1 : 0; break;
       case TOK_GTEQ:  result_num = ( left -> result_str >= right -> result_str ) ? 1 : 0; break;
+
+      default: assert(0);
       }
     }
     return result_type;
@@ -131,7 +137,7 @@ static int precedence( int token_type )
   return 0;
 }
 
-// is_uary ==================================================================
+// is_unary ==================================================================
 
 static int is_unary( int token_type )
 {
@@ -170,9 +176,11 @@ static int is_binary( int token_type )
 
 // next_token ================================================================
 
-static int next_token( const std::string& expr_str, int& current_index, std::string& token_str )
+static int next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str )
 {
   char c = expr_str[ current_index++ ];
+
+  if ( c == '\0' ) return TOK_UNKNOWN;
 
   token_str = c;
 
@@ -235,18 +243,21 @@ static int next_token( const std::string& expr_str, int& current_index, std::str
     return TOK_NUM;
   }
 
+  log_t::output( action -> sim, "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
+
   return TOK_UNKNOWN;
 }
 
 // parse_tokens ==============================================================
 
-static void parse_tokens( std::vector<token_t>& tokens, 
+static void parse_tokens( action_t* action,
+			  std::vector<token_t>& tokens, 
 			  const std::string& expr_str )
 {
   token_t token;
   int current_index=0;
   
-  while( ( token.type = next_token( expr_str, current_index, token.label ) ) != TOK_UNKNOWN )
+  while( ( token.type = next_token( action, expr_str, current_index, token.label ) ) != TOK_UNKNOWN )
   {
     tokens.push_back( token );
   }
@@ -267,7 +278,7 @@ static void print_tokens( std::vector<token_t>& tokens )
 
 // convert_to_unary ==========================================================
 
-static void convert_to_unary( std::vector<token_t>& tokens )
+static void convert_to_unary( action_t* action, std::vector<token_t>& tokens )
 {
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
@@ -291,7 +302,7 @@ static void convert_to_unary( std::vector<token_t>& tokens )
 
 // convert_to_rpn ============================================================
 
-static bool convert_to_rpn( std::vector<token_t>& tokens )
+static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
 {
   std::vector<token_t> rpn, stack;
 
@@ -398,15 +409,23 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   std::vector<token_t> tokens;
 
-  parse_tokens( tokens, expr_str );
+  parse_tokens( action, tokens, expr_str );
 
-  convert_to_unary( tokens );
+  convert_to_unary( action, tokens );
 
   if ( action -> sim -> debug ) print_tokens( tokens );
 
-  if( ! convert_to_rpn( tokens ) ) return 0;
+  if( ! convert_to_rpn( action, tokens ) ) 
+  {
+    log_t::output( action -> sim, "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+    return 0;
+  }
 
-  return build_expression_tree( action, tokens );
+  action_expr_t* e = build_expression_tree( action, tokens );
+
+  if ( ! e ) log_t::output( action -> sim, "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+
+  return e;
 }
 
 #ifdef UNIT_TEST
