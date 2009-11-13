@@ -39,7 +39,7 @@ trinket1=reign_of_the_dead,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2
 trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 back=lady_liadrins_conviction,stats=182armor_57haste_105sp_74sta_74int_65spi,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
 main_hand=barb_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=12sp_10spi_5sp,enchant=63sp,weapon=dagger_1.80speed_108.12min_342.12max
-off_hand=lightbane_focus,stats=43hit_51haste_80sp_58sta_55int,gems=10hit_12sp_5sp
+off_hand=lightbane_focus,stats=43hit_51haste_80sp_58sta_55int,gems=10crit_12sp_5sp
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_4spi
 # Gear Summary
 # gear_strength=10
