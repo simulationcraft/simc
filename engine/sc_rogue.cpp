@@ -2519,11 +2519,12 @@ struct deadly_poison_t : public rogue_poison_t
     }
   }
 
-  virtual void player_buff()
+  virtual double calculate_tick_damage()
   {
     rogue_t* p = player -> cast_rogue();
-    rogue_poison_t::player_buff();
-    player_multiplier *= p -> buffs_poison_doses -> stack();
+    tick_dmg = rogue_poison_t::calculate_tick_damage();
+    tick_dmg *= p -> buffs_poison_doses -> stack();
+    return tick_dmg;
   }
 
   virtual void tick()

@@ -319,9 +319,8 @@ void action_t::player_buff()
 
   if ( ( p -> race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
   {
-    player_multiplier             *= 1.05;
+    player_multiplier *= 1.05;
   }
- 
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
@@ -959,16 +958,17 @@ void action_t::refresh_duration()
   // Make sure this DoT is still ticking......
   assert( tick_event );
 
-  // Recalculate state of current player buffs.
-
-  // Some values will not change during a refresh.
-  double saved_player_multiplier = player_multiplier;
-  double saved_player_crit       = player_crit;
-
-  player_buff();
-
-  player_crit       = saved_player_crit;
-  player_multiplier = saved_player_multiplier;
+  // Recalculate player power
+  if ( base_attack_power_multiplier > 0 )
+  {
+    player_attack_power            = player -> composite_attack_power();
+    player_attack_power_multiplier = player -> composite_attack_power_multiplier();
+  }
+  if ( base_spell_power_multiplier > 0 )
+  {
+    player_spell_power            = player -> composite_spell_power( school );
+    player_spell_power_multiplier = player -> composite_spell_power_multiplier();
+  }
 
   if ( dot_behavior == DOT_WAIT )
   {
