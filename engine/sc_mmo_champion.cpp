@@ -264,7 +264,13 @@ static bool parse_item_stats( item_t&     item,
   item.armory_stats_str.clear();
 
   std::vector<std::string> descriptions;
-  int num_descriptions = get_tti_value( descriptions, node, "tti-stats" );
+  int num_descriptions = get_tti_value( descriptions, node, "tti-stat" );
+  for ( int i=0; i < num_descriptions; i++ )
+  {
+    armory_t::fuzzy_stats( item.armory_stats_str, descriptions[ i ] );
+  }
+
+  num_descriptions = get_tti_value( descriptions, node, "tti-stats" );
   for ( int i=0; i < num_descriptions; i++ )
   {
     armory_t::fuzzy_stats( item.armory_stats_str, descriptions[ i ] );
