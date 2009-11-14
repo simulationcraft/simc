@@ -323,7 +323,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "forge_ember"                     ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"        ) e = "OnAttackHit_16AP_20Stack_10Dur";
   else if ( name == "grim_toll"                       ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
-  else if ( name == "herkuml_war_token"               ) e = "OnAttackHit_17AP_20Stack_15%_10Dur_45Cd";
+  else if ( name == "herkuml_war_token"               ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul" ) e = "OnSpellHit_20SP_10Stack_10Dur";
   else if ( name == "mark_of_defiance"                ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                 ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
