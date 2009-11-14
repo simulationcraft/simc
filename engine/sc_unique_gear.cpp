@@ -155,6 +155,17 @@ void unique_gear_t::init( player_t* p )
     p -> register_direct_damage_callback( cb );
   }
 
+  // FIX ME!! Cooldown(?), etc.
+  // http://ptr.wowhead.com/?item=50035
+  p -> buffs.black_bruise = new buff_t( p, "black_bruise", 1, 10 );
+
+  if ( p -> find_item( "black_bruise" ) )
+  {
+    // http://ptr.wowhead.com/?spell=71876
+    // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+    p -> buffs.black_bruise -> default_chance = 0.01;
+  }
+
   for ( int i=0; i < num_items; i++ )
   {
     std::string str = p -> items[ i ].name();

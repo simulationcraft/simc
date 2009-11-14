@@ -1448,6 +1448,7 @@ struct player_t
   {
     buff_t* arcane_brilliance;
     buff_t* berserking; 
+    buff_t* black_bruise;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
     buff_t* blessing_of_wisdom;
