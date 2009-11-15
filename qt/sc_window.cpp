@@ -1072,12 +1072,13 @@ void SimulateThread::run()
 
   if( sim -> parse_options( argc, argv ) )
   {
-    if( sim -> execute() )
+    success = sim -> execute();
+
+    if ( success )
     {
       sim -> scaling -> analyze();
       sim -> plot -> analyze();
       report_t::print_suite( sim );
-      success = true;
     }
   }
 }

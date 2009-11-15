@@ -143,7 +143,7 @@ void action_t::parse_options( option_t*          options,
   if ( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
   {
     util_t::fprintf( sim -> output_file, "action_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
-    assert( false );
+    sim -> canceled = true;
   }
 }
 
@@ -185,7 +185,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
 
   util_t::fprintf( sim -> output_file, "%s unable to find valid rank for %s\n", player -> name(), name() );
 
-  background = true; // Prevent this action from ever being "ready"
+  sim -> canceled = true;
 
   return 0;
 }

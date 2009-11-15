@@ -811,7 +811,7 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 3;
 
-  return true;
+  return canceled ? false : true;
 }
 
 // sim_t::analyze ============================================================

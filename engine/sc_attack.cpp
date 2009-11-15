@@ -201,7 +201,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( true /*!special*/ )
+  if ( special )
   {
     if ( delta_level > 2 )
     {
@@ -241,49 +241,56 @@ int attack_t::build_table( double* chances,
   }
 
   if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
-                                       name(), miss, dodge, parry, glance, block, crit );
+				     name(), miss, dodge, parry, glance, block, crit );
 
+  double limit = special ? 1.0 : 0.95;
   double total = 0;
   int num_results = 0;
 
-  if ( miss > 0 )
+  if ( miss > 0 && total < limit )
   {
     total += miss;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_MISS;
     num_results++;
   }
-  if ( dodge > 0 )
+  if ( dodge > 0 && total < limit )
   {
     total += dodge;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_DODGE;
     num_results++;
   }
-  if ( parry > 0 )
+  if ( parry > 0 && total < limit )
   {
     total += parry;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_PARRY;
     num_results++;
   }
-  if ( glance > 0 )
+  if ( glance > 0 && total < limit )
   {
     total += glance;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_GLANCE;
     num_results++;
   }
-  if ( block > 0 )
+  if ( block > 0 && total < limit )
   {
     total += block;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_BLOCK;
     num_results++;
   }
-  if ( crit > 0 )
+  if ( crit > 0 && total < limit )
   {
     total += crit;
+    if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_CRIT;
     num_results++;

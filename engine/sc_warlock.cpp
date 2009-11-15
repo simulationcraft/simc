@@ -3007,14 +3007,23 @@ struct life_tap_t : public warlock_spell_t
 
 struct dark_pact_t : public warlock_spell_t
 {
+  int    buff_refresh;
+  double trigger;
+  double max_mana_pct;
+  double base_tap;
+
   dark_pact_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+    warlock_spell_t( "dark_pact", player, SCHOOL_SHADOW, TREE_AFFLICTION ),
+    buff_refresh(0), trigger(0), max_mana_pct(0)
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.dark_pact );
 
     option_t options[] =
     {
+      { "buff_refresh",     OPT_BOOL, &buff_refresh     },
+      { "mana_percentage<", OPT_FLT,  &max_mana_pct     },
+      { "trigger",          OPT_FLT,  &trigger          },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3047,8 +3056,24 @@ struct dark_pact_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( player -> resource_current[ RESOURCE_MANA ] > 1000 )
-      return false;
+    warlock_t* p = player -> cast_warlock();
+
+    if (  max_mana_pct > 0 ) 
+      if( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
+        return false;
+
+    if ( buff_refresh )
+    {
+      if( ! p -> glyphs.life_tap )
+        return false;
+
+      if ( p -> buffs_life_tap_glyph -> check() )
+        return false;
+    }
+
+    if ( trigger > 0 )
+      if ( p -> resource_current[ RESOURCE_MANA ] > trigger )
+        return false;
 
     return warlock_spell_t::ready();
   }
