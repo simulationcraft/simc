@@ -398,5 +398,12 @@ void attack_t::execute()
   if ( weapon )
     if ( weapon -> slot == SLOT_MAIN_HAND && result_is_hit() )
       player -> buffs.black_bruise -> trigger();
-  
+      
+      
+  if ( direct_dmg > 0 )
+    if ( player -> buffs.black_bruise -> up() )
+    {
+      player -> black_bruise_effect -> base_dd_min = player -> black_bruise_effect -> base_dd_max = direct_dmg;
+      player -> black_bruise_effect -> execute();
+    }
 }

@@ -1278,6 +1278,9 @@ struct player_t
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;
+  
+  // Unique Gear procs
+  spell_t* black_bruise_effect;
 
   // Option Parsing
   std::vector<option_t> options;

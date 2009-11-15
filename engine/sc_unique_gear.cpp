@@ -155,15 +155,31 @@ void unique_gear_t::init( player_t* p )
     p -> register_direct_damage_callback( cb );
   }
 
-  // FIX ME!! Cooldown(?), etc.
+  // FIX ME!! Cooldown(?), heroic vs normal version
   // http://ptr.wowhead.com/?item=50035
   p -> buffs.black_bruise = new buff_t( p, "black_bruise", 1, 10 );
 
-  if ( p -> find_item( "black_bruise" ) )
+  if ( item_t* item =  p -> find_item( "black_bruise" ) )
   {
-    // http://ptr.wowhead.com/?spell=71876
-    // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+    /* http://ptr.wowhead.com/?spell=71876
+    *  http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+    */ 
     p -> buffs.black_bruise -> default_chance = 0.01;
+    struct black_bruise_t : public spell_t
+    {
+      black_bruise_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      {
+        background  = true;
+        proc        = true;
+        trigger_gcd = 0;
+        base_cost   = 0;
+        base_dd_min = base_dd_max = 0;
+        reset();
+      }
+      virtual void player_buff() { }
+    };
+    p -> black_bruise_effect = new black_bruise_t( p );
+    p -> black_bruise_effect -> base_dd_multiplier *= ( item -> encoded_stats_str == "HEROICVERSION" ? 0.10 : 0.09 );
   }
 
   for ( int i=0; i < num_items; i++ )
