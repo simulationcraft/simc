@@ -499,8 +499,6 @@ struct berserking_callback_t : public action_callback_t
 
   berserking_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-  virtual void reset() { buff -> reset(); }
-
   virtual void trigger( action_t* a )
   {
     if ( ! a -> weapon ) 
@@ -529,8 +527,6 @@ struct mongoose_callback_t : public action_callback_t
 
   mongoose_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-  virtual void reset() { buff -> reset(); }
-
   virtual void trigger( action_t* a )
   {
     if ( ! a -> weapon ) 
@@ -558,8 +554,6 @@ struct fallen_crusader_callback_t : public action_callback_t
 
   fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
 
-  virtual void reset() { buff -> reset(); }
-
   virtual void trigger( action_t* a )
   {
     weapon_t* w = a -> weapon;
@@ -583,8 +577,6 @@ struct executioner_callback_t : public action_callback_t
   buff_t* buff;
 
   executioner_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void reset() { buff -> reset(); }
 
   virtual void trigger( action_t* a )
   {

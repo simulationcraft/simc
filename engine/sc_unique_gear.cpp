@@ -194,6 +194,7 @@ void unique_gear_t::init( player_t* p )
       black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
       {
         may_miss    = false;
+	may_crit    = false; // FIXME!!  Can the damage crit?
         background  = true;
         proc        = true;
         trigger_gcd = 0;
@@ -211,6 +212,7 @@ void unique_gear_t::init( player_t* p )
       black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff(b) {}
       virtual void trigger( action_t* a )
       {
+	// FIXME! Can specials trigger the proc?
 	if ( ! a -> weapon ) return;
 	if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
 	buff -> trigger();
@@ -224,6 +226,10 @@ void unique_gear_t::init( player_t* p )
       black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff(b), spell(s) {}
       virtual void trigger( action_t* a )
       {
+	// FIXME! Can specials trigger the damage?
+	// FIXME! What about melee attacks that do no weapon damage?
+	// FIXME! Is the 10% after normal damage reduction?
+	// FIXME! Does the 10% benefit from debuffs?
 	if ( ! a -> weapon ) return;
 	if ( buff -> up() )
 	{
