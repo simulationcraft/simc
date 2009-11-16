@@ -664,13 +664,13 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
-    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crudsader", 1, 15.0);
+    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crusader", 1, 15.0);
     p -> buffs.rune_of_the_fallen_crusader_mh = buff;
     p -> register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( p, SLOT_MAIN_HAND, p -> buffs.rune_of_the_fallen_crusader_mh ) );
   }
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
-    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crudsader", 1, 15.0);
+    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crusader", 1, 15.0);
     p -> buffs.rune_of_the_fallen_crusader_oh = buff;
     p -> register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( p, SLOT_OFF_HAND, p -> buffs.rune_of_the_fallen_crusader_oh ) );
   }
