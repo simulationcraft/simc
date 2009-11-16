@@ -631,7 +631,7 @@ struct death_knight_attack_t : public attack_t
   int    min_frost_fever, max_frost_fever, exact_frost_fever;
   int    min_desolation, max_desolation;
 
-  death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
+  death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_RUNIC, s, t ),
       requires_weapon( true ),
       cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
@@ -648,9 +648,6 @@ struct death_knight_attack_t : public attack_t
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
     may_glance = false;
-
-    if ( p -> talents.two_handed_weapon_specialization )
-      weapon_multiplier *= 1 + ( p -> talents.two_handed_weapon_specialization * 0.02 );
 
     if ( p -> talents.dark_conviction )
       base_crit += p -> talents.dark_conviction * 0.01;
@@ -1106,6 +1103,11 @@ void death_knight_attack_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
+  if ( weapon -> group() == WEAPON_2H )
+  {
+    player_multiplier *= 1.0 + p -> talents.two_handed_weapon_specialization * 0.02;
+  }
+
   if ( p->talents.blood_gorged )
   {
     player_penetration += p -> talents.blood_gorged * 0.02;
@@ -1391,7 +1393,7 @@ struct melee_t : public death_knight_attack_t
   int sync_weapons;
 
   melee_t( const char* name, player_t* player, int sw ) :
-    death_knight_attack_t( name, player, sync_weapons ), sync_weapons( sw )
+    death_knight_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1415,7 +1417,7 @@ struct melee_t : public death_knight_attack_t
     return t;
   }
 
-  void execute()
+  virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1441,8 +1443,7 @@ struct auto_attack_t : public death_knight_attack_t
   int sync_weapons;
 
   auto_attack_t( player_t* player, const std::string& options_str ) :
-      death_knight_attack_t( "auto_attack", player ),
-      sync_weapons( 0 )
+      death_knight_attack_t( "auto_attack", player ), sync_weapons( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -1453,6 +1454,7 @@ struct auto_attack_t : public death_knight_attack_t
     parse_options( options, options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
+
     p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
@@ -1466,7 +1468,6 @@ struct auto_attack_t : public death_knight_attack_t
 
     trigger_gcd = 0;
   }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -1480,7 +1481,8 @@ struct auto_attack_t : public death_knight_attack_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
-    return p -> main_hand_attack -> execute_event == 0;
+    if ( p -> buffs.moving -> check() ) return false;
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2867,25 +2869,6 @@ void death_knight_t::reset()
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
-
-  if ( talents.butchery )
-  {
-    struct butchery_regen_t : public event_t
-    {
-      butchery_regen_t( sim_t* sim, player_t* player ) : event_t( sim, player )
-      {
-        name = "Butchery Regen";
-        sim -> add_event( this, 5.0 );
-      }
-      virtual void execute()
-      {
-        death_knight_t* p = player -> cast_death_knight();
-        p -> resource_gain( RESOURCE_RUNIC, p -> talents.butchery, p -> gains_butchery );
-        new ( sim ) butchery_regen_t( sim, p );
-      }
-    };
-    new ( sim ) butchery_regen_t( sim, this );
-  }
 }
 
 int death_knight_t::target_swing()
@@ -2933,6 +2916,8 @@ double death_knight_t::composite_spell_hit() SC_CONST
 void death_knight_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
+
+  resource_gain( RESOURCE_RUNIC, ( periodicity / talents.butchery ), gains_butchery );
 
   uptimes_blood_plague -> update( active_blood_plague != 0 );
   uptimes_frost_fever -> update( active_frost_fever != 0 );
