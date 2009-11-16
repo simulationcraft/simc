@@ -182,33 +182,59 @@ void unique_gear_t::init( player_t* p )
     p -> register_direct_damage_callback( cb );
   }
 
-  // FIX ME!! Cooldown(?), heroic vs normal version
-  // http://ptr.wowhead.com/?item=50035
-  p -> buffs.black_bruise = new buff_t( p, "black_bruise", 1, 10, 0, 0.0 );
-
-  if ( item_t* item =  p -> find_item( "black_bruise" ) )
+  if ( p -> find_item( "black_bruise" ) )
   {
-    /* http://ptr.wowhead.com/?spell=71876
-    *  http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
-    */ 
-    struct black_bruise_t : public spell_t
+    // http://ptr.wowhead.com/?item=50035
+    buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.01 ); // FIXME!! Cooldown?
+
+    // http://ptr.wowhead.com/?spell=71876
+    // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+    struct black_bruise_spell_t : public spell_t
     {
-      black_bruise_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
       {
         may_miss    = false;
         background  = true;
         proc        = true;
         trigger_gcd = 0;
         base_cost   = 0;
-        base_dd_min = base_dd_max = 0;
+        base_dd_min = base_dd_max = 1;
+	base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
         reset();
       }
       virtual void player_buff() { }
     };
 
-    p -> buffs.black_bruise -> default_chance = 0.01;
-    p -> black_bruise_effect = new black_bruise_t( p );
-    p -> black_bruise_effect -> base_dd_multiplier *= ( item -> encoded_stats_str == "HEROICVERSION" ? 0.10 : 0.09 );
+    struct black_bruise_trigger_t : public action_callback_t
+    {
+      buff_t* buff;
+      black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff(b) {}
+      virtual void trigger( action_t* a )
+      {
+	if ( ! a -> weapon ) return;
+	if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
+	buff -> trigger();
+      }
+    };
+
+    struct black_bruise_damage_t : public action_callback_t
+    {
+      buff_t* buff;
+      spell_t* spell;
+      black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff(b), spell(s) {}
+      virtual void trigger( action_t* a )
+      {
+	if ( ! a -> weapon ) return;
+	if ( buff -> up() )
+	{
+	  spell -> base_dd_adder = a -> direct_dmg;
+	  spell -> execute();
+	}
+      }
+    };
+
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
+    p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p ) ) );
   }
 
   for ( int i=0; i < num_items; i++ )

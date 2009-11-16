@@ -1280,9 +1280,6 @@ struct player_t
   pet_t*      pet_list;
   int64_t     last_modified;
   
-  // Unique Gear procs
-  spell_t* black_bruise_effect;
-
   // Option Parsing
   std::vector<option_t> options;
 
@@ -1452,7 +1449,6 @@ struct player_t
   {
     buff_t* arcane_brilliance;
     buff_t* berserking; 
-    buff_t* black_bruise;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
     buff_t* blessing_of_wisdom;

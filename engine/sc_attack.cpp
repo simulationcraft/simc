@@ -390,22 +390,4 @@ void attack_t::execute()
 
   action_callback_t::trigger( player -> attack_result_callbacks[ result ], this );
   action_callback_t::trigger( player -> attack_direct_result_callbacks[ result ], this );
-    
-  // FIX ME!! http://ptr.wowhead.com/?item=50035
-  // Does it proc from autoattacks only ( && ! special ) or also special attack?
-  if ( ! player -> is_pet() )
-  {
-    if ( weapon )
-      if ( weapon -> slot == SLOT_MAIN_HAND && result_is_hit() )
-        player -> buffs.black_bruise -> trigger();
-
-    if ( direct_dmg > 0 )
-    {
-      if ( player -> buffs.black_bruise -> up() )
-      {
-        player -> black_bruise_effect -> base_dd_min = player -> black_bruise_effect -> base_dd_max = direct_dmg;
-        player -> black_bruise_effect -> execute();
-      }
-    }
-  }
 }
