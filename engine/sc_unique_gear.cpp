@@ -12,12 +12,13 @@ struct stat_proc_callback_t : public action_callback_t
   std::string name_str;
   int stat;
   double amount;
+  double tick;
   stat_buff_t* buff;
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
-			double proc_chance, double duration, double cooldown, int rng_type=RNG_DEFAULT ) :
+			double proc_chance, double duration, double cooldown, double t, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
-      name_str( n ), stat( s ), amount( a )
+      name_str( n ), stat( s ), amount( a ), tick( t )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
@@ -34,7 +35,33 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    buff -> trigger();
+    if ( buff -> trigger() )
+    {
+      if ( tick > 0 ) // The buff stacks over time.
+      {
+	struct tick_stack_t : public event_t
+	{
+	  stat_proc_callback_t* callback;
+	  tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p ), callback( cb )
+	  {
+	    name = callback -> buff -> name();
+	    sim -> add_event( this, callback -> tick );
+	  }
+	  virtual void execute()
+	  {
+	    stat_buff_t* b = callback -> buff;
+	    if ( b -> current_stack > 0 &&
+		 b -> current_stack < b -> max_stack )
+	    {
+	      b -> bump();
+	      new ( sim ) tick_stack_t( sim, player, callback );
+	    }
+	  }
+	};
+	
+	new ( sim ) tick_stack_t( sim, a -> player, this );
+      }
+    }
   }
 };
 
@@ -149,7 +176,7 @@ void unique_gear_t::init( player_t* p )
         max_stat = stat[ i ];
       }
     }
-    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
+    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0, 0 );
 
     p -> register_tick_damage_callback( cb );
     p -> register_direct_damage_callback( cb );
@@ -198,7 +225,7 @@ void unique_gear_t::init( player_t* p )
 
       int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
 
-      action_callback_t* cb = new stat_proc_callback_t( str, p, stat, 1, value, 0.35, 15.0, 45.0 );
+      action_callback_t* cb = new stat_proc_callback_t( str, p, stat, 1, value, 0.35, 15.0, 45.0, 0 );
 
       p -> register_tick_damage_callback( cb );
       p -> register_direct_damage_callback( cb );
@@ -207,7 +234,7 @@ void unique_gear_t::init( player_t* p )
 
   if ( p -> set_bonus.spellstrike() )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0, 0 );
   }
 }
 
@@ -225,9 +252,10 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       double             proc_chance,
                                                       double             duration,
                                                       double             cooldown,
+						      double             tick,
                                                       int                rng_type )
 {
-  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, rng_type );
+  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, rng_type );
 
   if ( type == PROC_DAMAGE )
   {
@@ -309,7 +337,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
-  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown );
+  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown, e.tick );
 }
 
 // ==========================================================================
@@ -368,6 +396,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "sundial_of_the_exiled"           ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
+  // Stat Procs with Tick Increases
+  else if ( name == "dislodged_foreign_object" ) e = "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick";
+
   // Discharge Procs
   else if ( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
   else if ( name == "extract_of_necromantic_power" ) e = "OnTick_1050Shadow_10%_15Cd";
@@ -401,8 +432,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
     There are _6_ buffs associated to this proc:
     +600 Agi/Str/ArPen/Crit/Haste and +1200 AP (heroic: +700/+1400)
     Have to see if it is random or not at which buffs it procs.
-  
   */
+
   // Enchants
   else if ( name == "lightweave"            ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
   else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  

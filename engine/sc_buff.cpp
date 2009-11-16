@@ -117,6 +117,7 @@ bool buff_t::may_react( int stack )
 {
   if ( current_stack == 0    ) return false;
   if ( stack > current_stack ) return false;
+  if ( stack < 1             ) return false;
 
   if( stack > max_stack ) return false;
 
@@ -250,23 +251,7 @@ void buff_t::start( int    stacks,
 
   start_count++;
 
-  if ( max_stack < 0 )
-  {
-    current_stack = stacks;
-  }
-  else
-  {
-    current_stack = std::min( stacks, max_stack );
-
-    for( int i=0; i <= current_stack; i++ ) 
-    {
-      stack_occurrence[ i ] = sim -> current_time;
-    }
-  }
-
-  if ( value >= 0 ) current_value = value;
-
-  aura_gain();
+  bump( stacks, value );
 
   if ( last_start >= 0 )
   {
@@ -305,6 +290,25 @@ void buff_t::refresh( int    stacks,
 
   refresh_count++;
 
+  bump( stacks, value );
+
+  if ( duration > 0 )
+  {
+    assert( expiration );
+    if( expiration -> occurs() < sim -> current_time + duration )
+    {
+      expiration -> reschedule( duration );
+    }
+  }
+}
+
+// buff_t::bump =============================================================
+
+void buff_t::bump( int    stacks,
+		   double value )
+{
+  if ( max_stack == 0 ) return;
+
   if ( max_stack < 0 )
   {
     current_stack += stacks;
@@ -326,15 +330,6 @@ void buff_t::refresh( int    stacks,
   }
 
   if ( value >= 0 ) current_value = value;
-
-  if ( duration > 0 )
-  {
-    assert( expiration );
-    if( expiration -> occurs() < sim -> current_time + duration )
-    {
-      expiration -> reschedule( duration );
-    }
-  }
 }
 
 // buff_t::override =========================================================
@@ -515,22 +510,10 @@ stat_buff_t::stat_buff_t( player_t*          p,
 {
 }
 
-// stat_buff_t::start =======================================================
+// stat_buff_t::bump ========================================================
 
-void stat_buff_t::start( int    stacks,
-			 double value )
-{
-  if ( max_stack == 0 ) return;
-  if ( value > 0 ) amount = value;
-  buff_t::start( stacks );
-  current_value = amount * current_stack;
-  player -> stat_gain( stat, current_value );
-}
-
-// stat_buff_t::refresh =====================================================
-
-void stat_buff_t::refresh( int    stacks,
-			   double value )
+void stat_buff_t::bump( int    stacks,
+			double value )
 {
   if ( max_stack == 0 ) return;
   if ( value > 0 ) 
@@ -538,7 +521,7 @@ void stat_buff_t::refresh( int    stacks,
     if ( value < amount ) return;
     amount = value;
   }
-  buff_t::refresh( stacks );
+  buff_t::bump( stacks );
   double delta = amount * current_stack - current_value;
   if( delta > 0 )
   {

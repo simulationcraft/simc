@@ -764,12 +764,13 @@ struct buff_t
   virtual double remains();
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
-  virtual bool   may_react( int stacks=0 );
+  virtual bool   may_react( int stacks=1 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   virtual void   decrement( int stacks=1, double value=-1.0 );
   virtual void   start    ( int stacks=1, double value=-1.0 );
   virtual void   refresh  ( int stacks=0, double value=-1.0 );
+  virtual void   bump     ( int stacks=1, double value=-1.0 );
   virtual void   override ( int stacks=1, double value=-1.0 );
   virtual void   expire();
   virtual void   predict();
@@ -794,8 +795,7 @@ struct stat_buff_t : public buff_t
 	       int max_stack=1, double duration=0, double cooldown=0,
 	       double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~stat_buff_t() { };
-  virtual void start    ( int stacks=1, double value=-1.0 );
-  virtual void refresh  ( int stacks=0, double value=-1.0 );
+  virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
 };
@@ -1215,7 +1215,7 @@ struct item_t
     std::string name_str, trigger_str;
     int trigger_type, trigger_mask;
     int stat, school, max_stacks;
-    double amount, proc_chance, duration, cooldown;
+    double amount, proc_chance, duration, cooldown, tick;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ) {}
@@ -2212,7 +2212,7 @@ struct unique_gear_t
   static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*,
                                                 int stat, int max_stacks, double amount,
                                                 double proc_chance, double duration, double cooldown,
-                                                int rng_type=RNG_DEFAULT );
+						double tick=0, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*,
                                                      int max_stacks, int school, double min_dmg, double max_dmg,

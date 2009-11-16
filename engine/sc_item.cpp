@@ -457,6 +457,10 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.cooldown = t.value;
     }
+    else if ( t.name == "tick" )
+    {
+      effect.tick = t.value;
+    }
     else if ( t.full == "ondamage" )
     {
       effect.trigger_str  = t.full;
