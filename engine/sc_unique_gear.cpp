@@ -198,7 +198,6 @@ void unique_gear_t::init( player_t* p )
         background  = true;
         proc        = true;
         trigger_gcd = 0;
-        base_cost   = 0;
         base_dd_min = base_dd_max = 1;
 	base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
         reset();

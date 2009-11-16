@@ -58,6 +58,17 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
   }
 };
 
+// has_foreground_actions ================================================
+
+static bool has_foreground_actions( player_t* p )
+{
+  for ( action_t* a = p -> action_list; a; a = a -> next )
+  {
+    if ( ! a -> background ) return true;
+  }
+  return false;
+}
+
 // init_replenish_targets ================================================
 
 static void init_replenish_targets( sim_t* sim )
@@ -1699,7 +1710,7 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  if ( action_list && ! is_pet() && ! sleeping )
+  if ( ! is_pet() && ! sleeping )
   {
     schedule_ready();
   }
@@ -1904,6 +1915,8 @@ void player_t::schedule_ready( double delta_time,
   executing = 0;
   channeling = 0;
   action_queued = false;
+
+  if ( ! has_foreground_actions( this ) ) return;
 
   double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > 0 ) delta_time += gcd_adjust;

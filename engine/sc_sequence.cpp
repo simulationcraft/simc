@@ -43,11 +43,6 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
     a -> background = true;
     sub_actions.push_back( a );
   }
-  if ( sub_actions.size() == 0 )
-  {
-    util_t::fprintf( sim -> output_file, "sequence_t: No sub-actions!\n" );
-    assert( false );
-  }
 }
 
 // sequence_t::~sequence_t ===================================================

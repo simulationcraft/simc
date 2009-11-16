@@ -340,13 +340,124 @@ struct spirit_wolf_pet_t : public pet_t
   {
     shaman_t* o = owner -> cast_shaman();
     double ap = pet_t::composite_attack_power();
-    ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power();
+    ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
     return ap;
   }
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
+  }
+};
+
+// ==========================================================================
+// Pet Fire Elemental
+// ==========================================================================
+
+struct fire_elemental_pet_t : public pet_t
+{
+  struct fire_shield_t : public spell_t
+  {
+    fire_shield_t( player_t* player ) : 
+      spell_t( "fire_shield", player, RESOURCE_MANA, SCHOOL_FIRE )
+    {
+      background = true;
+      repeating = true;
+      may_crit = true;
+      base_dd_min = base_dd_max = 96;
+      direct_power_mod = 0.015;
+    };
+  };
+
+  struct fire_nova_t : public spell_t
+  {
+    fire_nova_t( player_t* player ) : 
+      spell_t( "fire_nova", player, RESOURCE_MANA, SCHOOL_FIRE )
+    {
+      may_crit = true;
+      base_cost = 207;
+      base_execute_time = 2.5; // Really 2.0sec, but there appears to be a 0.5sec lag following.
+      base_dd_min = 960;
+      base_dd_max = 1000;
+      direct_power_mod = 0.50;
+    };
+  };
+
+  struct fire_blast_t : public spell_t
+  {
+    fire_blast_t( player_t* player ) : 
+      spell_t( "fire_blast", player, RESOURCE_MANA, SCHOOL_FIRE )
+    {
+      may_crit = true;
+      base_cost = 276;
+      base_execute_time = 1.5; // Really instant with GCD, but all sorts of lag in actual execution.
+      base_dd_min = 750;
+      base_dd_max = 800;
+      direct_power_mod = 0.20;
+    };
+  };
+
+  struct fire_melee_t : public attack_t
+  {
+    fire_melee_t( player_t* player ) : 
+      attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE )
+    {
+      may_crit = true;
+      base_dd_min = base_dd_max = 180;
+      base_execute_time = 2.0;
+      direct_power_mod = 1.0;
+      base_spell_power_multiplier = 0.60;
+      base_attack_power_multiplier = base_execute_time / 14;
+    }
+  };
+
+  spell_t* fire_shield;
+
+  fire_elemental_pet_t( sim_t* sim, player_t* owner ) : 
+    pet_t( sim, owner, "fire_elemental" ) 
+  {
+    fire_shield = new fire_shield_t( this );
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    resource_base[ RESOURCE_HEALTH ] = 0; // FIXME!!
+    resource_base[ RESOURCE_MANA   ] = 4000;
+
+    health_per_stamina = 10;
+    mana_per_intellect = 15;
+
+    // Modeling melee as a foreground action since a loose model is Nova-Blast-Melee-repeat.
+    // The actual actions are not really so deterministic, but if you look at the entire spawn time,
+    // you will see that there is a 1-to-1-to-1 distribution (provided there is sufficient mana).
+
+    action_list_str = "attack_sequence:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack_sequence";
+  }
+  virtual double composite_attack_power() SC_CONST
+  {
+    return owner -> composite_attack_power_multiplier() * owner -> composite_attack_power();
+  }
+  virtual double composite_spell_power( int school ) SC_CONST
+  {
+    return owner -> composite_spell_power_multiplier() * owner -> composite_spell_power( school );
+  }
+  virtual void summon( double duration=0 )
+  {
+    pet_t::summon();
+    fire_shield -> execute();
+  }
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "attack_sequence" ) return new sequence_t( "attack_sequence", this, options_str );
+
+    if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
+    if ( name == "fire_blast"  ) return new fire_blast_t ( this );
+    if ( name == "fire_melee"  ) return new fire_melee_t ( this );
+
+    return 0;
   }
 };
 
@@ -3357,7 +3468,8 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race
 {
   shaman_t* p = new shaman_t( sim, name, race_type );
 
-  new spirit_wolf_pet_t( sim, p );
+  new    spirit_wolf_pet_t( sim, p );
+  new fire_elemental_pet_t( sim, p );
 
   return p;
 }
