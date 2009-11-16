@@ -75,10 +75,11 @@ struct death_knight_t : public player_t
   // Buffs
   buff_t* buffs_bloodworms;
   buff_t* buffs_bloody_vengeance;
-  buff_t* buffs_scent_of_blood;
+  buff_t* buffs_bone_shield;
   buff_t* buffs_desolation;
-  buff_t* buffs_tier9_2pc_melee;
+  buff_t* buffs_scent_of_blood;
   buff_t* buffs_sigil_virulence;
+  buff_t* buffs_tier9_2pc_melee;
 
   // Gains
   gain_t* gains_rune_abilities;
@@ -1089,8 +1090,7 @@ void death_knight_attack_t::player_buff()
 
   player_multiplier *= 1.0 + p -> buffs_desolation -> value();
 
-  // TODO: make this actually have to be cast every 60s, etc.
-  player_multiplier *= 1.0 + p -> talents.bone_shield * 0.02;
+  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
 
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
@@ -1294,7 +1294,7 @@ void death_knight_spell_t::player_buff()
   }
 
   // TODO: make this actually have to be cast every 60s, etc.
-  player_multiplier *= 1.0 + p -> talents.bone_shield * 0.02;
+  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
 
   if ( school == SCHOOL_PHYSICAL )
   {
@@ -1750,6 +1750,30 @@ struct blood_tap_t : public death_knight_spell_t
         return;
       }
     }
+  }
+};
+
+struct bone_shield_t : public death_knight_spell_t
+{
+  bone_shield_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "bone_shield", player, SCHOOL_SHADOW, TREE_UNHOLY )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    cost_unholy = 1;
+    cooldown    = 60.0;
+  }
+
+  void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    p -> buffs_bone_shield -> trigger();
+
+    death_knight_spell_t::execute();
   }
 };
 
@@ -2588,7 +2612,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "anti_magic_zone"          ) return new anti_magic_zone_t          ( this, options_str );
 //if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
 //if ( name == "blood_plague"             ) return new blood_plague_t             ( this, options_str );  Passive
-//if ( name == "bone_shield"              ) return new bone_shield_t              ( this, options_str );
+  if ( name == "bone_shield"              ) return new bone_shield_t              ( this, options_str );
 //if ( name == "corpse_explosion"         ) return new corpse_explosion_t         ( this, options_str );
 //if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
@@ -2797,6 +2821,7 @@ void death_knight_t::init_buffs()
   buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
   buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
   buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, 1.0 );
+  buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH    , 200, 1, 20.0,  0, sigils.sigil_of_virulence * 0.80 );
