@@ -435,19 +435,33 @@ struct fire_elemental_pet_t : public pet_t
 
     action_list_str = "attack_sequence:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack_sequence";
   }
-  virtual double composite_attack_power() SC_CONST
+
+  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+
+  virtual void regen( double periodicity )
   {
-    return owner -> composite_attack_power_multiplier() * owner -> composite_attack_power();
+    if ( ! recent_cast() )
+    {
+      resource_gain( RESOURCE_MANA, 10.66 * periodicity ); // FIXME! Does regen scale with gear???
+    }
   }
-  virtual double composite_spell_power( int school ) SC_CONST
-  {
-    return owner -> composite_spell_power_multiplier() * owner -> composite_spell_power( school );
-  }
+
   virtual void summon( double duration=0 )
   {
     pet_t::summon();
     fire_shield -> execute();
   }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    return owner -> composite_attack_power_multiplier() * owner -> composite_attack_power();
+  }
+
+  virtual double composite_spell_power( int school ) SC_CONST
+  {
+    return owner -> composite_spell_power_multiplier() * owner -> composite_spell_power( school );
+  }
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
