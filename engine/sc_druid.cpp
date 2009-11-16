@@ -1087,7 +1087,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       target_t* t = sim -> target;
       if( ! sim -> overrides.mangle )
       {
-	t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
+        t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
       }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );

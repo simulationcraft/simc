@@ -926,6 +926,7 @@ struct sim_t
     int devotion_aura;
     int divine_spirit;
     int earth_and_moon;
+    int ebon_plaguebringer;
     int elemental_oath;
     int expose_armor;
     int faerie_fire;
@@ -1814,6 +1815,7 @@ struct target_t
     debuff_t* blood_plague;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
+    debuff_t* ebon_plaguebringer;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
     debuff_t* heart_of_the_crusader;

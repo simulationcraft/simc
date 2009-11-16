@@ -66,7 +66,6 @@ struct death_knight_t : public player_t
   action_t* active_necrosis;
   action_t* active_blood_caked_blade;
   action_t* active_wandering_plague;
-  int       diseases;
 
   // Pets and Guardians
   bloodworms_pet_t*           active_bloodworms;
@@ -296,7 +295,6 @@ struct death_knight_t : public player_t
     active_necrosis            = NULL;
     active_blood_caked_blade   = NULL;
     active_wandering_plague    = NULL;
-    diseases            = 0;
 
     // Pets and Guardians
     active_bloodworms   = NULL;
@@ -339,6 +337,9 @@ struct death_knight_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
   virtual int       primary_tree() SC_CONST;
+  
+  // Death Knight Specific helperfunctions
+  virtual int       diseases();
 };
 
 // ==========================================================================
@@ -812,6 +813,27 @@ static void trigger_abominations_might( action_t* a, double base_chance )
   a -> sim -> auras.abominations_might -> trigger( 1, 1.0, base_chance * dk -> talents.abominations_might );
 }
 
+static void trigger_crypt_fever( action_t* a, double disease_duration )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+  if ( ! p -> talents.crypt_fever ) return;
+
+  double value = util_t::talent_rank( p -> talents.crypt_fever, 3, 10 );
+  a -> sim -> target -> debuffs.crypt_fever -> duration = disease_duration;
+  a -> sim -> target -> debuffs.crypt_fever -> trigger( 1, value );
+  
+}  
+
+static void trigger_ebon_plaguebringer( action_t* a, double disease_duration )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+  if ( ! p -> talents.ebon_plaguebringer ) return;
+
+  double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
+  a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
+  a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
+}
+
 static void trigger_sudden_doom( action_t* a )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
@@ -945,8 +967,7 @@ static void trigger_blood_caked_blade( action_t* a )
         {
           death_knight_attack_t::target_debuff( dmg_type );
           death_knight_t* p = player -> cast_death_knight();
-          target_multiplier *= 1 + p -> diseases * 0.125;
-          assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+          target_multiplier *= 1 + p -> diseases() * 0.125;
         }
       }
     };
@@ -1293,7 +1314,6 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
 
-  // TODO: make this actually have to be cast every 60s, etc.
   player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
 
   if ( school == SCHOOL_PHYSICAL )
@@ -1562,17 +1582,16 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-    p -> diseases++;
-    // TODO: make crypt fever or ebon_plague a real debuff; for now,
-    // just pretend blood plague is two diseases.
-    if ( p->talents.crypt_fever )
-    {
-      p -> diseases++;
-      sim->target->debuffs.crypt_fever->trigger();
-      sim->target->debuffs.blood_plague->trigger();
-    }
+
+    target_t* t = sim -> target;
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
+    double disease_duration = 3.0 * num_ticks;
+
+    t -> debuffs.blood_plague -> duration = disease_duration;
+    t -> debuffs.blood_plague -> trigger();
+    trigger_crypt_fever( this, disease_duration );
+    trigger_ebon_plaguebringer( this, disease_duration );
   }
 
   virtual void tick()
@@ -1581,28 +1600,12 @@ struct blood_plague_t : public death_knight_spell_t
     trigger_wandering_plague( this, tick_dmg );
   }
 
-  virtual void last_tick()
-  {
-    death_knight_spell_t::last_tick();
-    death_knight_t* p = player -> cast_death_knight();
-    p -> diseases--;
-    if ( p->talents.crypt_fever )
-    {
-      p -> diseases--;
-    }
-    if ( p -> diseases == 0 )
-    {
-      sim->target->debuffs.crypt_fever->expire();
-    }
-    sim->target->debuffs.blood_plague->expire();
-  }
-
   virtual bool ready() { return false; }
 
   virtual void target_debuff( int dmg_type )
   {
     death_knight_spell_t::target_debuff( dmg_type );
-    if ( sim -> target -> debuffs.crypt_fever -> up() ) target_multiplier *= 1.30;
+    target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
   }
 };
 
@@ -1691,8 +1694,7 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases * 0.125;
-    assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+    target_multiplier *= 1 + p -> diseases() * 0.125;
   }
 
   void execute()
@@ -1979,10 +1981,15 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-    p -> diseases++;
-    sim->target->debuffs.crypt_fever->trigger();
+
+    target_t* t = sim -> target;
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
+    double disease_duration = 3.0 * num_ticks;
+    t -> debuffs.blood_plague -> duration = disease_duration;
+    t -> debuffs.blood_plague -> trigger();
+    trigger_crypt_fever( this, disease_duration );
+    trigger_ebon_plaguebringer( this, disease_duration );
   }
 
   virtual void tick()
@@ -1991,22 +1998,10 @@ struct frost_fever_t : public death_knight_spell_t
     trigger_wandering_plague( this, tick_dmg );
   }
 
-  virtual void last_tick()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    death_knight_spell_t::last_tick();
-    p -> diseases--;
-    if ( p -> diseases == 0 )
-    {
-      sim->target->debuffs.crypt_fever->expire();
-    }
-  }
-
   virtual void target_debuff( int dmg_type )
   {
     death_knight_spell_t::target_debuff( dmg_type );
-
-    if ( sim -> target -> debuffs.crypt_fever -> up() ) target_multiplier *= 1.30;
+    target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
   }
 
   virtual bool ready()     { return false; }
@@ -2088,8 +2083,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases * 0.1;
-    assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+    target_multiplier *= 1 + p -> diseases() * 0.1;
   }
 
   void execute()
@@ -2291,8 +2285,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases * 0.125;
-    assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+    target_multiplier *= 1 + p -> diseases() * 0.125;
   }
 
   void execute()
@@ -2311,7 +2304,7 @@ struct obliterate_t : public death_knight_attack_t
       if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
         p -> active_frost_fever -> cancel();
 
-      assert( p -> diseases == 0 );
+      assert( p -> diseases() == 0 );
     }
   }
 };
@@ -2478,7 +2471,7 @@ struct scourge_strike_t : public death_knight_attack_t
           // additional 25% of the Physical damage done as Shadow damage.
           death_knight_t* p = player -> cast_death_knight();
           death_knight_spell_t::target_debuff( dmg_type );
-          target_multiplier *= p -> diseases * 0.25;
+          target_multiplier *= p -> diseases() * 0.25;
         }
       };
       scourge_strike_shadow = new scourge_strike_shadow_t( player );
@@ -2527,8 +2520,7 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
     if ( ! p -> sim -> P330 )
-      target_multiplier *= 1 + p -> diseases * 0.10;
-    assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
+      target_multiplier *= 1 + p -> diseases() * 0.10;
   }
 };
 
@@ -2640,6 +2632,23 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name )
   if ( pet_name == "ghoul"               ) return new ghoul_pet_t               ( sim, this );
 
   return 0;
+}
+
+// death_knight_t::diseases =======================================================
+int death_knight_t::diseases()
+{
+  int disease_count = 0;
+  
+  if ( active_blood_plague )
+    disease_count++;
+  
+  if ( active_frost_fever )
+    disease_count++;
+
+  if ( disease_count && talents.crypt_fever )
+    disease_count++;
+  
+  return disease_count;
 }
 
 // death_knight_t::init_race ======================================================
@@ -2929,7 +2938,6 @@ void death_knight_t::reset()
   active_presence     = 0;
   active_blood_plague = NULL;
   active_frost_fever  = NULL;
-  diseases            = 0;
 
   // Pets and Guardians
   active_bloodworms = NULL;
@@ -3243,8 +3251,9 @@ void player_t::death_knight_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.crypt_fever  = new debuff_t( sim, "crypt_fever", -1 );
-  t -> debuffs.blood_plague  = new debuff_t( sim, "blood_plague", -1 );
+  t -> debuffs.blood_plague       = new debuff_t( sim, "blood_plague",       1, 15.0 );
+  t -> debuffs.crypt_fever        = new debuff_t( sim, "crypt_fever",        1, 15.0 );
+  t -> debuffs.ebon_plaguebringer = new debuff_t( sim, "ebon_plaguebringer", 1, 15.0 );
 }
 
 // player_t::death_knight_combat_begin ======================================
@@ -3254,5 +3263,6 @@ void player_t::death_knight_combat_begin( sim_t* sim )
   if ( sim -> overrides.abominations_might ) sim -> auras.abominations_might -> override();
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.crypt_fever ) t -> debuffs.crypt_fever -> override();
+  if ( sim -> overrides.crypt_fever        ) t -> debuffs.crypt_fever        -> override( 1, 30 );
+  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1, 13 );
 }
