@@ -1734,7 +1734,8 @@ struct ranged_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
-    double iaoth_bonus = 0.03 * p -> talents.improved_aspect_of_the_hawk;
+
+    iaoth_bonus = 0.03 * p -> talents.improved_aspect_of_the_hawk;
     if ( p -> glyphs.improved_aspect_of_the_hawk )
       iaoth_bonus += 0.06;
   }
