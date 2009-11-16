@@ -974,6 +974,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
       proc           = true;
       may_crit       = false;
       may_resist     = false;
+      may_miss       = false;
       reset();
     }
 
@@ -990,7 +991,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
   if ( ! p -> active_unholy_blight ) p -> active_unholy_blight = new unholy_blight_t( p );
 
-  double unholy_blight_dmg = death_coil_dmg * 0.2;
+  double unholy_blight_dmg = death_coil_dmg * ( p -> sim -> P330 ? 0.1 : 0.2 );
   if ( p -> active_unholy_blight -> ticking )
   {
     int remaining_ticks = p -> active_unholy_blight -> num_ticks - p -> active_unholy_blight -> current_tick;
