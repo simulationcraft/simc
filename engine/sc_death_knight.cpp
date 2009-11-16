@@ -1549,7 +1549,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_attack_power_multiplier *= 0.055 * 1.15 * ( 1 + 0.04 * p -> talents.impurity );
     tick_power_mod    = 1;
 
-    tick_may_crit     = p -> set_bonus.tier9_4pc_melee() != 0;
+    tick_may_crit     = ( p -> set_bonus.tier9_4pc_melee() != 0 && ! p -> sim -> P330 );
     may_miss          = false;
     cooldown          = 0.0;
 
@@ -2206,7 +2206,7 @@ struct icy_touch_t : public death_knight_spell_t
     cooldown          = 0.0;
   }
 
-  void execute()
+  virtual void execute()
   {
     // Desolation is only direct attacks.
     death_knight_t* p = player -> cast_death_knight();
@@ -2392,6 +2392,7 @@ struct rune_tap_t : public death_knight_spell_t
 
 struct scourge_strike_t : public death_knight_attack_t
 {
+  spell_t* scourge_strike_shadow;
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
       death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
@@ -2406,9 +2407,9 @@ struct scourge_strike_t : public death_knight_attack_t
     static rank_t ranks[] =
     {
       { 79,  4, 317.5, 317.5, 0, -15 },
-      { 73,  3, 259, 259, 0, -15 },
-      { 67,  2, 166, 166,  0, -15 },
-      { 55,  1, 135, 135, 0, -15 },
+      { 73,  3, 259,   259,   0, -15 },
+      { 67,  2, 166,   166,   0, -15 },
+      { 55,  1, 135,   135,   0, -15 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -2423,7 +2424,44 @@ struct scourge_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.40;
+    if ( ! p -> sim -> P330 )
+      weapon_multiplier *= 0.40;
+    else
+    {
+      struct scourge_strike_shadow_t : public death_knight_spell_t
+      {
+        scourge_strike_shadow_t( player_t* player ) : death_knight_spell_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
+        {
+          death_knight_t* p = player -> cast_death_knight();
+
+          may_miss    = false;
+          proc        = true;
+          background  = true;
+          trigger_gcd = 0;
+          
+          base_attack_power_multiplier = 0;
+          base_dd_min = base_dd_max    = 1;
+
+          base_crit += p -> talents.subversion * 0.03;
+          base_crit += p -> talents.vicious_strikes * 0.03;
+          base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
+        }
+
+        virtual void target_debuff( int dmg_type )
+        {
+          // for each of your diseases on your target, you deal an 
+          // additional 25% of the Physical damage done as Shadow damage.
+          death_knight_t* p = player -> cast_death_knight();
+          death_knight_spell_t::target_debuff( dmg_type );
+          target_multiplier *= p -> diseases * 0.25;
+        }
+      };
+      scourge_strike_shadow = new scourge_strike_shadow_t( player );
+
+      school                    = SCHOOL_PHYSICAL;
+      weapon_multiplier        *= 0.50;
+      base_dd_min = base_dd_max = 400;
+    }
   }
 
   void execute()
@@ -2432,6 +2470,13 @@ struct scourge_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
+      if ( p -> sim -> P330 )
+      {
+        scourge_strike_shadow -> base_dd_min = direct_dmg;
+        scourge_strike_shadow -> base_dd_max = direct_dmg;
+        scourge_strike_shadow -> execute();
+      }
+      
       p -> buffs_sigil_virulence -> trigger();
       if ( p -> talents.dirge )
       {
@@ -2456,7 +2501,8 @@ struct scourge_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases * 0.10;
+    if ( ! p -> sim -> P330 )
+      target_multiplier *= 1 + p -> diseases * 0.10;
     assert( p -> diseases <= 2 + int( p -> talents.crypt_fever > 0 ) );
   }
 };
@@ -2917,7 +2963,8 @@ void death_knight_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  resource_gain( RESOURCE_RUNIC, ( periodicity / talents.butchery ), gains_butchery );
+  if ( talents.butchery ) 
+    resource_gain( RESOURCE_RUNIC, ( periodicity / talents.butchery ), gains_butchery );
 
   uptimes_blood_plague -> update( active_blood_plague != 0 );
   uptimes_frost_fever -> update( active_frost_fever != 0 );
