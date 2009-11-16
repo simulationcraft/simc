@@ -421,6 +421,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "muradins_spyglass"               ) e = ( id == "50340" ? "OnSpellHit_18SP_10Stack_10Dur" : "OnSpellHit_20SP_10Stack_10Dur" );
   else if ( name == "needle_encrusted_scorpion"       ) e = "OnAttackHit_452ArPen_15%_10Dur_45Cd";
   else if ( name == "pandoras_plea"                   ) e = "OnSpellHit_751SP_10%_10Dur_45Cd";
+  else if ( name == "purified_lunar_dust"             ) e = "OnSpellCast_304MP5_10%_15Dur_45Cd";
   else if ( name == "pyrite_infuser"                  ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if ( name == "quagmirrans_eye"                 ) e = "OnSpellHit_320Haste_10%_6Dur_45Cd";
   else if ( name == "sextant_of_unstable_currents"    ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
@@ -524,6 +525,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
   else if ( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
   else if ( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
+  else if ( name == "sliver_of_pure_ice"          ) e = "1625Mana_120Cd";
   else if ( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
   else if ( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
   else if ( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
