@@ -916,22 +916,16 @@ static void trigger_necrosis( action_t* a )
       background     = true;
       proc           = true;
       trigger_gcd    = false;
-      may_resist     = false;
+      base_dd_max = base_dd_max = 0.01;
+
       reset();
     }
-    void target_debuff( int dmg_type )
-    {
-      // no debuff effect
-    }
-    void player_buff()
-    {
-      // no buffs
-    }
+    virtual double total_multiplier() SC_CONST { return 1.0; }
   };
 
   if ( ! p -> active_necrosis ) p -> active_necrosis = new necrosis_t( p );
 
-  p -> active_necrosis -> base_dd_max = p -> active_necrosis -> base_dd_min = a -> direct_dmg * 0.04 * p -> talents.necrosis;
+  p -> active_necrosis -> base_dd_adder = a -> direct_dmg * 0.04 * p -> talents.necrosis;
   p -> active_necrosis -> execute();
 }
 
@@ -964,11 +958,9 @@ static void trigger_blood_caked_blade( action_t* a )
       }
       void target_debuff( int dmg_type )
       {
-        {
-          death_knight_attack_t::target_debuff( dmg_type );
-          death_knight_t* p = player -> cast_death_knight();
-          target_multiplier *= 1 + p -> diseases() * 0.125;
-        }
+        death_knight_attack_t::target_debuff( dmg_type );
+        death_knight_t* p = player -> cast_death_knight();
+        target_multiplier *= 1 + p -> diseases() * 0.125;
       }
     };
 
