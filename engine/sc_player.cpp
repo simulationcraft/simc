@@ -2015,7 +2015,8 @@ action_t* player_t::execute_action()
 
   for ( action = action_list; action; action = action -> next )
   {
-    if ( action -> background )
+    if ( action -> background ||
+	 action -> sequence )
       continue;
 
     if ( action -> ready() )
@@ -2362,7 +2363,7 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
-  if ( primary_resource() == RESOURCE_MANA )
+  if ( primary_resource() == RESOURCE_MANA && type != PLAYER_GUARDIAN )
   {
     action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
 

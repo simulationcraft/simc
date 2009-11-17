@@ -1940,7 +1940,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int id, school, resource, tree, result;
-  bool dual, special, binary, channeled, background, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
+  bool dual, special, binary, channeled, background, sequence, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero;
   int dot_behavior;
@@ -2121,7 +2121,6 @@ struct sequence_t : public action_t
 
   sequence_t( player_t*, const std::string& sub_action_str );
   virtual ~sequence_t();
-  virtual void parse_options( option_t*, const std::string& options_str );
   virtual void schedule_execute();
   virtual void reset();
   virtual bool ready();

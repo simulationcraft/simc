@@ -149,6 +149,7 @@ struct shaman_t : public player_t
     int chain_lightning;
     int elemental_mastery;
     int feral_spirit;
+    int fire_elemental_totem;
     int fire_nova;
     int flame_shock;
     int flametongue_weapon;
@@ -361,9 +362,11 @@ struct fire_elemental_pet_t : public pet_t
     fire_shield_t( player_t* player ) : 
       spell_t( "fire_shield", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
+      aoe = true;
       background = true;
       repeating = true;
       may_crit = true;
+      base_execute_time = 3.0;
       base_dd_min = base_dd_max = 96;
       direct_power_mod = 0.015;
     };
@@ -374,6 +377,7 @@ struct fire_elemental_pet_t : public pet_t
     fire_nova_t( player_t* player ) : 
       spell_t( "fire_nova", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
+      aoe = true;
       may_crit = true;
       base_cost = 207;
       base_execute_time = 2.5; // Really 2.0sec, but there appears to be a 0.5sec lag following.
@@ -413,11 +417,7 @@ struct fire_elemental_pet_t : public pet_t
 
   spell_t* fire_shield;
 
-  fire_elemental_pet_t( sim_t* sim, player_t* owner ) : 
-    pet_t( sim, owner, "fire_elemental" ) 
-  {
-    fire_shield = new fire_shield_t( this );
-  }
+  fire_elemental_pet_t( sim_t* sim, player_t* owner ) : pet_t( sim, owner, "fire_elemental", true /*GUARDIAN*/ ) {}
 
   virtual void init_base()
   {
@@ -433,7 +433,9 @@ struct fire_elemental_pet_t : public pet_t
     // The actual actions are not really so deterministic, but if you look at the entire spawn time,
     // you will see that there is a 1-to-1-to-1 distribution (provided there is sufficient mana).
 
-    action_list_str = "attack_sequence:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack_sequence";
+    action_list_str = "sequence,name=attack:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack";
+
+    fire_shield = new fire_shield_t( this );
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -465,13 +467,11 @@ struct fire_elemental_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-//    if ( name == "attack_sequence" ) return new sequence_t( "attack_sequence", this, options_str );
-
     if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
     if ( name == "fire_blast"  ) return new fire_blast_t ( this );
     if ( name == "fire_melee"  ) return new fire_melee_t ( this );
 
-    return 0;
+    return pet_t::create_action( name, options_str );
   }
 };
 
@@ -1893,7 +1893,6 @@ struct searing_totem_t : public shaman_spell_t
     direct_power_mod  = base_tick_time / 15.0;
     num_ticks         = 24;
     may_crit          = true;
-    duration_group    = "fire_totem";
     trigger_gcd       = 1.0;
     base_multiplier  *= 1.0 + p -> talents.call_of_flame * 0.05;
     base_hit         += p -> talents.elemental_precision * 0.01;
@@ -1923,6 +1922,7 @@ struct searing_totem_t : public shaman_spell_t
     update_ready();
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
+    *observer = this;
   }
 
   virtual void tick()
@@ -1948,7 +1948,13 @@ struct searing_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-  virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+  virtual bool ready()
+  {
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> active_fire_totem )
+      return false;
+    return shaman_spell_t::ready();
+  }
 };
 
 // Magma Totem Spell =======================================================
@@ -1981,7 +1987,6 @@ struct magma_totem_t : public shaman_spell_t
     direct_power_mod  = 0.75 * base_tick_time / 15.0;
     num_ticks         = 10;
     may_crit          = true;
-    duration_group    = "fire_totem";
     trigger_gcd       = 1.0;
     base_multiplier  *= 1.0 + p -> talents.call_of_flame * 0.05;
     base_hit         += p -> talents.elemental_precision * 0.01;
@@ -2011,6 +2016,7 @@ struct magma_totem_t : public shaman_spell_t
     update_ready();
     direct_dmg = 0;
     update_stats( DMG_DIRECT );
+    *observer = this;
   }
 
   virtual void tick()
@@ -2036,7 +2042,13 @@ struct magma_totem_t : public shaman_spell_t
     update_stats( DMG_OVER_TIME );
   }
 
-  virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+  virtual bool ready()
+  {
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> active_fire_totem )
+      return false;
+    return shaman_spell_t::ready();
+  }
 };
 
 // Totem of Wrath Spell =====================================================
@@ -2057,9 +2069,8 @@ struct totem_of_wrath_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost      = 400;
-    duration_group = "fire_totem";
-    trigger_gcd    = 1.0;
+    base_cost   = 400;
+    trigger_gcd = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
                              p -> talents.mental_quickness * 0.02 );
@@ -2078,6 +2089,7 @@ struct totem_of_wrath_t : public shaman_spell_t
     sim -> auras.totem_of_wrath -> trigger( 1, bonus_spell_power );
     sim -> target -> debuffs.totem_of_wrath -> trigger();
     p -> buffs_totem_of_wrath_glyph -> trigger( 1, 0.30 * bonus_spell_power );
+    *observer = this;
   }
 
   virtual bool ready()
@@ -2087,13 +2099,10 @@ struct totem_of_wrath_t : public shaman_spell_t
     if ( ! shaman_spell_t::ready() )
       return false;
 
-    if ( ! sim -> auras.totem_of_wrath -> check() )
-      return true;
-
     if ( p -> glyphs.totem_of_wrath && ! p -> buffs_totem_of_wrath_glyph -> check() )
       return true;
 
-    return false;
+    return ! sim -> auras.totem_of_wrath -> check();
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
@@ -2127,9 +2136,8 @@ struct flametongue_totem_t : public shaman_spell_t
     };
     init_rank( ranks );
 
-    base_cost      = p -> resource_base[ RESOURCE_MANA ] * 0.11;
-    duration_group = "fire_totem";
-    trigger_gcd    = 1.0;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.11;
+    trigger_gcd = 1.0;
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
                              p -> talents.mental_quickness * 0.02 );
@@ -2146,10 +2154,16 @@ struct flametongue_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     sim -> auras.flametongue_totem -> trigger( 1, bonus );
+    *observer = this;
   }
 
   virtual bool ready()
   {
+    shaman_t* p = player -> cast_shaman();
+
+    if ( p -> active_fire_totem )
+      return false;
+
     if( sim -> auras.flametongue_totem -> check() )
       return false;
 
@@ -2157,6 +2171,61 @@ struct flametongue_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+};
+
+// Fire Elemental Totem Spell =================================================
+
+struct fire_elemental_totem_t : public shaman_spell_t
+{
+  fire_elemental_totem_t( player_t* player, const std::string& options_str ) :
+      shaman_spell_t( "fire_elemental_totem", player, SCHOOL_FIRE, TREE_ELEMENTAL )
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.23;
+    trigger_gcd = 1.0;
+
+    base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
+                             p -> talents.mental_quickness * 0.02 );
+
+    num_ticks = 1;
+    base_tick_time = 119.9;
+
+    if ( sim -> P330 )
+    {
+      cooldown = p -> glyphs.fire_elemental_totem ? 120 : 600;
+    }
+    else
+    {
+      cooldown = p -> glyphs.fire_elemental_totem ? 600 : 1200;
+    }
+
+    observer = &( p -> active_fire_totem );
+  }
+
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> active_fire_totem ) p -> active_fire_totem -> cancel();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    schedule_tick();
+    update_ready();
+    p -> summon_pet( "fire_elemental" );
+    *observer = this;
+  }
+
+  virtual void last_tick()
+  {
+    shaman_spell_t::last_tick();
+    player -> dismiss_pet( "fire_elemental" );
+  }
 };
 
 // Windfury Totem Spell =====================================================
@@ -2838,6 +2907,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
+  if ( name == "fire_elemental_totem"    ) return new     fire_elemental_totem_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
   if ( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
@@ -2898,22 +2968,23 @@ void shaman_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if     ( n == "elemental_mastery"  ) glyphs.elemental_mastery = 1;
-    else if ( n == "feral_spirit"       ) glyphs.feral_spirit = 1;
-    else if ( n == "fire_nova"          ) glyphs.fire_nova = 1;
-    else if ( n == "fire_nova_totem"    ) glyphs.fire_nova = 1;
-    else if ( n == "flame_shock"        ) glyphs.flame_shock = 1;
-    else if ( n == "flametongue_weapon" ) glyphs.flametongue_weapon = 1;
-    else if ( n == "lava"               ) glyphs.lava = 1;
-    else if ( n == "lava_lash"          ) glyphs.lava_lash = 1;
-    else if ( n == "lightning_bolt"     ) glyphs.lightning_bolt = 1;
-    else if ( n == "lightning_shield"   ) glyphs.lightning_shield = 1;
-    else if ( n == "mana_tide"          ) glyphs.mana_tide = 1;
-    else if ( n == "shocking"           ) glyphs.shocking = 1;
-    else if ( n == "stormstrike"        ) glyphs.stormstrike = 1;
-    else if ( n == "thunderstorm"       ) glyphs.thunderstorm = 1;
-    else if ( n == "totem_of_wrath"     ) glyphs.totem_of_wrath = 1;
-    else if ( n == "windfury_weapon"    ) glyphs.windfury_weapon = 1;
+    if      ( n == "elemental_mastery"    ) glyphs.elemental_mastery = 1;
+    else if ( n == "feral_spirit"         ) glyphs.feral_spirit = 1;
+    else if ( n == "fire_elemental_totem" ) glyphs.fire_elemental_totem = 1;
+    else if ( n == "fire_nova"            ) glyphs.fire_nova = 1;
+    else if ( n == "fire_nova_totem"      ) glyphs.fire_nova = 1;
+    else if ( n == "flame_shock"          ) glyphs.flame_shock = 1;
+    else if ( n == "flametongue_weapon"   ) glyphs.flametongue_weapon = 1;
+    else if ( n == "lava"                 ) glyphs.lava = 1;
+    else if ( n == "lava_lash"            ) glyphs.lava_lash = 1;
+    else if ( n == "lightning_bolt"       ) glyphs.lightning_bolt = 1;
+    else if ( n == "lightning_shield"     ) glyphs.lightning_shield = 1;
+    else if ( n == "mana_tide"            ) glyphs.mana_tide = 1;
+    else if ( n == "shocking"             ) glyphs.shocking = 1;
+    else if ( n == "stormstrike"          ) glyphs.stormstrike = 1;
+    else if ( n == "thunderstorm"         ) glyphs.thunderstorm = 1;
+    else if ( n == "totem_of_wrath"       ) glyphs.totem_of_wrath = 1;
+    else if ( n == "windfury_weapon"      ) glyphs.windfury_weapon = 1;
     // To prevent warnings....
     else if ( n == "astral_recall"        ) ;
     else if ( n == "chain_heal"           ) ;
@@ -3149,6 +3220,7 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
       action_list_str += "/wind_shear";
+      action_list_str += "/fire_elemental_totem";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
@@ -3166,6 +3238,7 @@ void shaman_t::init_actions()
       action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast/flametongue_weapon,weapon=main/water_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
+      else                          action_list_str += "/fire_elemental_totem";
       action_list_str += "/snapshot_stats";
       action_list_str += "/bloodlust,time_to_die<=59";
       int num_items = ( int ) items.size();

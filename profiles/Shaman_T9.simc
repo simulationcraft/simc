@@ -14,16 +14,7 @@ Shaman_T9_57_14_00_258_ToW.simc
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14635698 name=Shaman_T9_20_51_00_258     save=Shaman_T9_20_51_00_258.simc
-
 #wowhead=14635667 name=Shaman_T9_16_55_00_258     save=Shaman_T9_16_55_00_258.simc
-
-#wowhead=14636463 name=Shaman_T9_57_14_00_245     	save=Shaman_T9_57_14_00_245.simc     
-
-#wowhead=14636542 name=Shaman_T9_57_14_00_258     	save=Shaman_T9_57_14_00_258.simc
-
-#wowhead=14731192 name=Shaman_T9_57_14_00_258_ToW 	save=Shaman_T9_57_14_00_258_ToW.simc
-
-#save_profiles=1
-
-
-
+#wowhead=14636463 name=Shaman_T9_57_14_00_245     save=Shaman_T9_57_14_00_245.simc     
+#wowhead=14636542 name=Shaman_T9_57_14_00_258     save=Shaman_T9_57_14_00_258.simc
+#wowhead=14731192 name=Shaman_T9_57_14_00_258_ToW save=Shaman_T9_57_14_00_258_ToW.simc

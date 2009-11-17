@@ -16,6 +16,7 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/bloodlust,time_to_die<=60
 actions+=/wind_shear
+actions+=/fire_elemental_totem
 actions+=/shamanistic_rage
 actions+=/spirit_wolf
 actions+=/speed_potion
@@ -43,8 +44,8 @@ finger2=planestalker_band,stats=115ap_44hit_44arpen_70agi_77sta,gems=20haste_4ag
 trinket1=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
 trinket2=deaths_choice,stats=288ap
 back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20exp_8ap,enchant=23haste
-main_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20haste_8ap,enchant=berserking,weapon=mace_2.60speed_216.5dps_394min_732max
-off_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20haste_8ap,enchant=berserking,weapon=mace_2.60speed_216.5dps_394min_732max
+main_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20haste_8ap,enchant=berserking,weapon=mace_2.60speed_394min_732max
+off_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20haste_8ap,enchant=berserking,weapon=mace_2.60speed_394min_732max
 ranged=totem_of_electrifying_wind
 # Gear Summary
 # gear_strength=26
@@ -63,5 +64,5 @@ ranged=totem_of_electrifying_wind
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket2=deaths_choice
-# main_hand=cudgel_of_the_damned,weapon=mace_2.60speed_216.5dps_394min_732max,enchant=berserking
-# off_hand=cudgel_of_the_damned,weapon=mace_2.60speed_216.5dps_394min_732max,enchant=berserking
+# main_hand=cudgel_of_the_damned,weapon=mace_2.60speed_394min_732max,enchant=berserking
+# off_hand=cudgel_of_the_damned,weapon=mace_2.60speed_394min_732max,enchant=berserking

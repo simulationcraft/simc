@@ -2126,11 +2126,9 @@ struct chimera_shot_t : public hunter_attack_t
       sting -> refresh_duration();
       sting -> result = RESULT_HIT;
 
-      // ugly ugly hack to get rid of double penalty from partial resists
-      bool binary = sting -> binary;
-      sting -> binary = true;
+      sting -> may_resist = false;
       double sting_dmg = sting -> num_ticks * sting -> calculate_tick_damage();
-      sting -> binary = binary;
+      sting -> may_resist = true;
 
       if ( p -> active_serpent_sting )
       {
