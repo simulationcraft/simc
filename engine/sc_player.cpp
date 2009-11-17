@@ -2966,6 +2966,11 @@ struct restart_sequence_t : public action_t
       ( ( sequence_t* ) a ) -> restart();
     }
   }
+
+  virtual bool ready()
+  {
+    return ! player -> buffs.moving -> check();
+  }
 };
 
 // Restore Mana Action =====================================================

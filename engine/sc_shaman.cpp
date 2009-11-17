@@ -403,10 +403,11 @@ struct fire_elemental_pet_t : public pet_t
     {
       may_crit = true;
       base_cost = 276;
-      base_execute_time = 1.5; // Really instant with GCD, but all sorts of lag in actual execution.
+      base_execute_time = 0;
       base_dd_min = 750;
       base_dd_max = 800;
       direct_power_mod = 0.20;
+      cooldown = 4.0;
     };
   };
 
@@ -442,7 +443,7 @@ struct fire_elemental_pet_t : public pet_t
     // The actual actions are not really so deterministic, but if you look at the entire spawn time,
     // you will see that there is a 1-to-1-to-1 distribution (provided there is sufficient mana).
 
-    action_list_str = "travel/sequence,name=attack:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack";
+    action_list_str = "travel/sequence,name=attack:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack,moving=0";
 
     fire_shield = new fire_shield_t( this );
   }

@@ -53,7 +53,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P330( -1 ), moving( 0 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    P330( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
     snapshot_haste( -1.0 ),
     if_expr( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
@@ -1168,8 +1168,8 @@ bool action_t::ready()
     if ( P330 != sim -> P330 )
       return false;
 
-  if ( moving )
-    if ( ! player -> buffs.moving -> check() )
+  if ( moving != -1 )
+    if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
       return false;
 
   if ( vulnerable )
