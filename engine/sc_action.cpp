@@ -476,6 +476,7 @@ double action_t::resistance() SC_CONST
   }
   else
   {
+    double player_skill = player -> level * 5.0;
     double resist_rating = t -> spell_resistance[ school ];
 
     if ( school == SCHOOL_FROSTFIRE )
@@ -486,20 +487,20 @@ double action_t::resistance() SC_CONST
 
     resist_rating -= penetration;
     if ( resist_rating < 0 ) resist_rating = 0;
-
-    resist = resist_rating / ( player -> level * 5.0 );
-
-    if ( resist > 1.0 ) resist = 1.0;
+    if ( resist_rating > 0 ) resist = resist_rating / player_skill;
 
     if ( ! binary )
     {
       int delta_level = t -> level - player -> level;
       if ( delta_level > 0 )
       {
-        double level_resist = delta_level * 0.02;
+	double passive_resist_rating = 5;  // It was 8 before.
+        double level_resist = ( delta_level * passive_resist_rating ) / player_skill;
         if ( level_resist > resist ) resist = level_resist;
       }
     }
+
+    if ( resist > 1.0 ) resist = 1.0;
   }
 
   if ( sim -> debug ) log_t::output( sim, "%s queries resistance for %s: %.2f", player -> name(), name(), resist );
