@@ -109,6 +109,7 @@ void pet_t::summon( double duration )
     log_t::summon_event( this );
   }
 
+  distance = owner -> distance;
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;

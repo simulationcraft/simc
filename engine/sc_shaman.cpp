@@ -357,6 +357,14 @@ struct spirit_wolf_pet_t : public pet_t
 
 struct fire_elemental_pet_t : public pet_t
 {
+  struct travel_t : public action_t
+  {
+    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
+    virtual void execute() { player -> distance = 1; }
+    virtual double execute_time() SC_CONST { return ( player -> distance / 10.0 ); }
+    virtual bool ready() { return ( player -> distance > 1 ); }
+  };
+
   struct fire_shield_t : public spell_t
   {
     fire_shield_t( player_t* player ) : 
@@ -370,6 +378,7 @@ struct fire_elemental_pet_t : public pet_t
       base_dd_min = base_dd_max = 96;
       direct_power_mod = 0.015;
     };
+    virtual double total_multiplier() SC_CONST { return ( player -> distance > 1 ) ? 0.0 : spell_t::total_multiplier(); }
   };
 
   struct fire_nova_t : public spell_t
@@ -433,7 +442,7 @@ struct fire_elemental_pet_t : public pet_t
     // The actual actions are not really so deterministic, but if you look at the entire spawn time,
     // you will see that there is a 1-to-1-to-1 distribution (provided there is sufficient mana).
 
-    action_list_str = "sequence,name=attack:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack";
+    action_list_str = "travel/sequence,name=attack:fire_nova:fire_blast:fire_melee/restart_sequence,name=attack";
 
     fire_shield = new fire_shield_t( this );
   }
@@ -467,6 +476,7 @@ struct fire_elemental_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
+    if ( name == "travel"      ) return new travel_t     ( this );
     if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
     if ( name == "fire_blast"  ) return new fire_blast_t ( this );
     if ( name == "fire_melee"  ) return new fire_melee_t ( this );
@@ -2195,7 +2205,7 @@ struct fire_elemental_totem_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
 
     num_ticks = 1;
-    base_tick_time = 119.9;
+    base_tick_time = 120.1;
 
     if ( sim -> P330 )
     {
@@ -2693,7 +2703,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_shamanistic_rage -> trigger();
-          p -> buffs_tier10_2pc_melee -> trigger();
+    p -> buffs_tier10_2pc_melee -> trigger();
   }
 
   virtual bool ready()
@@ -3065,6 +3075,8 @@ void shaman_t::init_base()
     enchant.crit_rating += 35;
     enchant.mp5         += 15;
   }
+
+  distance = ( primary_tree() == TREE_ENHANCEMENT ) ? 3 : 30;
 }
 
 // shaman_t::init_items =====================================================
@@ -3220,8 +3232,8 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
       action_list_str += "/wind_shear";
-      action_list_str += "/fire_elemental_totem";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
+      action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
       action_list_str += "/lightning_bolt,maelstrom=5";
