@@ -56,10 +56,6 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 
 sequence_t::~sequence_t()
 {
-  for ( unsigned i=0; i < sub_actions.size(); i++ )
-  {
-    delete sub_actions[ i ];
-  }
 }
 
 // sequence_t::schedule_execute ==============================================
