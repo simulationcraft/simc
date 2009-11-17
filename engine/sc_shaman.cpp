@@ -2209,7 +2209,7 @@ struct fire_elemental_totem_t : public shaman_spell_t
 
     if ( sim -> P330 )
     {
-      cooldown = p -> glyphs.fire_elemental_totem ? 120 : 600;
+      cooldown = p -> glyphs.fire_elemental_totem ? 300 : 600;
     }
     else
     {
