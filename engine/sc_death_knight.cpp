@@ -2128,12 +2128,11 @@ struct horn_of_winter_t : public death_knight_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     update_ready();
-    if ( sim -> auras.strength_of_earth -> current_value < bonus )
-    {
-      sim -> auras.strength_of_earth -> trigger( 1, bonus );
-    }
+    death_knight_t* p = player -> cast_death_knight();
+    sim -> auras.horn_of_winter -> duration = 120 + p -> glyphs.horn_of_winter * 60;
+    sim -> auras.horn_of_winter -> trigger( 1, bonus );
 
-    player -> resource_gain( RESOURCE_RUNIC, 10, player -> cast_death_knight() -> gains_horn_of_winter );
+    player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
   }
 
   virtual bool ready()
@@ -3243,7 +3242,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, in
 void player_t::death_knight_init( sim_t* sim )
 {
   sim -> auras.abominations_might = new aura_t( sim, "abominations_might", 1,  10.0 );
-  sim -> auras.horn_of_the_winter = new aura_t( sim, "horn_of_the_winter", 1, 120.0 );
+  sim -> auras.horn_of_winter = new aura_t( sim, "horn_of_winter", 1, 120.0 );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -3262,7 +3261,7 @@ void player_t::death_knight_init( sim_t* sim )
 void player_t::death_knight_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.abominations_might ) sim -> auras.abominations_might -> override();
-  if ( sim -> overrides.horn_of_the_winter ) sim -> auras.horn_of_the_winter -> override( 1, 155 );
+  if ( sim -> overrides.horn_of_winter ) sim -> auras.horn_of_winter -> override( 1, 155 );
 
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_plague       ) t -> debuffs.blood_plague       -> override();

@@ -1278,7 +1278,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.fortitude              = optimal_raid;
   overrides.frost_fever            = optimal_raid;
   overrides.heart_of_the_crusader  = optimal_raid;
-  overrides.horn_of_the_winter     = optimal_raid;
+  overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
   overrides.improved_moonkin_aura  = optimal_raid;
@@ -1495,7 +1495,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
       { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
-      { "override.horn_of_the_winter",      OPT_BOOL,   &( overrides.horn_of_the_winter             ) },
+      { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_faerie_fire",    OPT_BOOL,   &( overrides.improved_faerie_fire           ) },
