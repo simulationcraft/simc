@@ -1223,7 +1223,7 @@ struct item_t
     double amount, proc_chance, duration, cooldown, tick;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
-        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ) {}
+        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ), tick( 0 ) {}
     bool active() { return stat || school; }
   } use, equip, enchant;
 
