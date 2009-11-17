@@ -465,7 +465,7 @@ struct fire_elemental_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "attack_sequence" ) return new sequence_t( "attack_sequence", this, options_str );
+//    if ( name == "attack_sequence" ) return new sequence_t( "attack_sequence", this, options_str );
 
     if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
     if ( name == "fire_blast"  ) return new fire_blast_t ( this );
