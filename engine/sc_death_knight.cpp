@@ -1765,6 +1765,10 @@ struct bone_shield_t : public death_knight_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    
+    death_knight_t* p = player -> cast_death_knight();
+    
+    check_talent( p -> talents.bone_shield );
 
     cost_unholy = 1;
     cooldown    = 60.0;
@@ -2035,6 +2039,7 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.6;
+    check_talent( p -> talents.frost_strike );
   }
   bool ready()
   {
@@ -2077,6 +2082,7 @@ struct heart_strike_t : public death_knight_attack_t
     base_crit += p -> talents.subversion * 0.03;
     base_crit_bonus_multiplier *= 1.0 * p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
+    check_talent( p -> talents.heart_strike );
   }
 
   void target_debuff( int dmg_type )
@@ -2169,7 +2175,8 @@ struct hysteria_t : public action_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
+    
+    check_talent( p -> talents.hysteria );
     if ( target_str.empty() )
     {
       hysteria_target = p;
@@ -2430,6 +2437,7 @@ struct scourge_strike_t : public death_knight_attack_t
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
+    check_talent( p -> talents.scourge_strike );
 
     cost_frost = 1;
     cost_unholy = 1;
@@ -2531,6 +2539,9 @@ struct summon_gargoyle_t : public death_knight_spell_t
     base_cost   = 60;
     cooldown    = 180.0;
     trigger_gcd = 0;
+    
+    death_knight_t* p = player -> cast_death_knight();
+    check_talent( p -> talents.summon_gargoyle );
   }
 
   virtual void execute()
@@ -2538,15 +2549,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
     consume_resource();
     update_ready();
     player -> summon_pet( "gargoyle", 30.0 );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! death_knight_spell_t::ready() )
-      return false;
-
-    death_knight_t* p = player -> cast_death_knight();
-    return p -> talents.summon_gargoyle != 0;
   }
 };
 
