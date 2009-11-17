@@ -60,6 +60,29 @@ scale_only=haste_rating,expertise_rating
 # Specifying enough iterations for scale factor generation (defaults to 1000)
 iterations=10000
 
+# Setting specific scale deltas for scale factor generation
+# When smooth_scale_factors=1 the default values are cut in half due to improved convergence.
+scale_strength=150
+scale_agility=150
+scale_stamina=150
+scale_intellect=150
+scale_spirit=150
+scale_spell_power=150
+scale_attack_power=150
+scale_expertise_rating=-100
+scale_armor_penetration_rating=150
+scale_hit_rating=-100
+scale_crit_rating=150
+scale_haste_rating=150
+scale_armor=6000
+scale_weapon_dps=50
+scale_weapon_offhand_dps=50
+
+# Normally, scale factors are calculated by examining current vs current+delta
+# An alternative is to compare current-delta/2 vs current+delta/2
+# This is more accurate but the runtime doubles.
+center_scale_delta=1
+
 # Generate a human-readable combat log (forces iterations=1)
 log=1
 
