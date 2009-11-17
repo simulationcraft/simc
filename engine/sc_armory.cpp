@@ -547,7 +547,7 @@ bool armory_t::download_guild( sim_t* sim,
   if ( player_filter == DEATH_KNIGHT )
   {
     util_t::fprintf( sim -> output_file, "simulationcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
-    return false;
+    //return false;
   }
 
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
@@ -692,7 +692,7 @@ player_t* armory_t::download_player( sim_t* sim,
   if ( type_str == "death_knight" )
   {
     util_t::fprintf( sim -> output_file, "simulationcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
-    return 0;
+    //return 0;
   }
 
   int race_type = util_t::parse_race_type( race_str );

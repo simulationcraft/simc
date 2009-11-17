@@ -11,14 +11,21 @@
 
 // sequence_t::sequence_t ===================================================
 
-sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_action_str ) :
-    action_t( ACTION_SEQUENCE, n, p ), current_action( -1 )
+sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
+    action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 )
 {
   trigger_gcd = 0;
 
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, sub_action_str, ":" );
-
+  
+  option_t options[] =
+  {
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+  
+  parse_options( options, splits[ 0 ] );
+  stats = p -> get_stats( name_str );
   // First token is sequence options, so skip
   for ( int i=1; i < size; i++ )
   {
@@ -33,6 +40,7 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
       action_name    = action_name.substr( 0, cut_pt );
     }
 
+    util_t::fprintf( sim -> output_file, "sequence_t: %s += %s\n", name_str.c_str(), splits[ i ].c_str() );
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
     {
@@ -43,6 +51,20 @@ sequence_t::sequence_t( const char* n, player_t* p, const std::string& sub_actio
     a -> background = true;
     sub_actions.push_back( a );
   }
+}
+
+// sequence_t::parse_options ===============================================
+
+void sequence_t::parse_options( option_t*          options,
+					const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { "name", OPT_INT,  &name_str },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+  std::vector<option_t> merged_options;
+  action_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
 // sequence_t::~sequence_t ===================================================

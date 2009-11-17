@@ -1986,8 +1986,8 @@ struct frost_fever_t : public death_knight_spell_t
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
     double disease_duration = 3.0 * num_ticks;
-    t -> debuffs.blood_plague -> duration = disease_duration;
-    t -> debuffs.blood_plague -> trigger();
+    t -> debuffs.frost_fever -> duration = disease_duration;
+    t -> debuffs.frost_fever -> trigger();
     trigger_crypt_fever( this, disease_duration );
     trigger_ebon_plaguebringer( this, disease_duration );
   }
@@ -2490,8 +2490,7 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_t* p = player -> cast_death_knight();
       if ( p -> sim -> P330 )
       {
-        scourge_strike_shadow -> base_dd_min = direct_dmg;
-        scourge_strike_shadow -> base_dd_max = direct_dmg;
+        scourge_strike_shadow -> base_dd_adder = direct_dmg;
         scourge_strike_shadow -> execute();
       }
       
@@ -3252,6 +3251,7 @@ void player_t::death_knight_init( sim_t* sim )
 
   target_t* t = sim -> target;
   t -> debuffs.blood_plague       = new debuff_t( sim, "blood_plague",       1, 15.0 );
+  t -> debuffs.frost_fever        = new debuff_t( sim, "frost_fever",        1, 15.0 );
   t -> debuffs.crypt_fever        = new debuff_t( sim, "crypt_fever",        1, 15.0 );
   t -> debuffs.ebon_plaguebringer = new debuff_t( sim, "ebon_plaguebringer", 1, 15.0 );
 }

@@ -3302,6 +3302,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if ( name == "sequence"         ) return new         sequence_t( this, options_str );
   if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
   if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );

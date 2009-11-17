@@ -918,6 +918,7 @@ struct sim_t
     int blessing_of_might;
     int blessing_of_wisdom;
     int blood_frenzy;
+    int blood_plague;
     int bloodlust;
     int bloodlust_early;
     int celerity;
@@ -934,6 +935,7 @@ struct sim_t
     int flametongue_totem;
     int focus_magic;
     int fortitude;
+    int frost_fever;
     int heart_of_the_crusader;
     int heroic_presence;
     int hunters_mark;
@@ -1814,6 +1816,7 @@ struct target_t
     debuff_t* ebon_plaguebringer;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
+    debuff_t* frost_fever;
     debuff_t* heart_of_the_crusader;
     debuff_t* hunters_mark;
     debuff_t* improved_faerie_fire;
@@ -2114,8 +2117,9 @@ struct sequence_t : public action_t
   std::vector<action_t*> sub_actions;
   int current_action;
 
-  sequence_t( const char* name, player_t*, const std::string& sub_action_str );
+  sequence_t( player_t*, const std::string& sub_action_str );
   virtual ~sequence_t();
+  virtual void parse_options( option_t*, const std::string& options_str );
   virtual void schedule_execute();
   virtual void reset();
   virtual bool ready();
