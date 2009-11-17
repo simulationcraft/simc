@@ -874,6 +874,7 @@ struct sim_t
   double      gcd_lag, gcd_lag_stddev;
   double      channel_lag, channel_lag_stddev;
   double      queue_gcd_reduction;
+  int         strict_gcd_queue;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time;
   int64_t     events_remaining, max_events_remaining;
