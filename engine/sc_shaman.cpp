@@ -1642,12 +1642,11 @@ struct fire_nova_t : public shaman_spell_t
     direct_power_mod  = 0.8 / 3.5;
     may_crit          = true;
     cooldown          = 10.0;
-    cooldown         -= ( p -> talents.improved_fire_nova * 2 );
 
     base_multiplier  *= 1.0 + ( p -> talents.improved_fire_nova * 0.1 )
                             + ( p -> talents.call_of_flame * 0.05 );
 
-    base_hit         += p -> talents.elemental_precision * 0.01;
+    base_hit += p -> talents.elemental_precision * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
