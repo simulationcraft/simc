@@ -651,8 +651,8 @@ struct death_knight_attack_t : public attack_t
     may_crit   = true;
     may_glance = false;
 
-    if ( p -> talents.dark_conviction )
-      base_crit += p -> talents.dark_conviction * 0.01;
+    base_crit += p -> talents.dark_conviction * 0.01;
+    base_crit += p -> talents.ebon_plaguebringer * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -712,8 +712,8 @@ struct death_knight_spell_t : public spell_t
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
 
-    if ( p -> talents.dark_conviction )
-      base_crit += p -> talents.dark_conviction * 0.01;
+    base_crit += p -> talents.dark_conviction * 0.01;
+    base_crit += p -> talents.ebon_plaguebringer * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
