@@ -938,6 +938,7 @@ struct sim_t
     int frost_fever;
     int heart_of_the_crusader;
     int heroic_presence;
+    int horn_of_the_winter;
     int hunters_mark;
     int improved_faerie_fire;
     int improved_moonkin_aura;
@@ -986,6 +987,7 @@ struct sim_t
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
+    aura_t* horn_of_the_winter;
     aura_t* improved_moonkin;
     aura_t* leader_of_the_pack;
     aura_t* mana_spring_totem;

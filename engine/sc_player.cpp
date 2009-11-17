@@ -1638,7 +1638,8 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  a += sim -> auras.strength_of_earth -> value();
+  a += std::max( sim -> auras.strength_of_earth -> value(),
+                 sim -> auras.horn_of_the_winter -> value() );
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
   return floor( a );
 }
@@ -1648,7 +1649,8 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  a += sim -> auras.strength_of_earth -> value();
+  a += std::max( sim -> auras.strength_of_earth -> value(),
+                 sim -> auras.horn_of_the_winter -> value() );
   a *= composite_attribute_multiplier( ATTR_AGILITY );
   return floor( a );
 }

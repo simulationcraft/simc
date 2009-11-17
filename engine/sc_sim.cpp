@@ -1262,19 +1262,23 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blessing_of_might      = optimal_raid;
   overrides.blessing_of_wisdom     = optimal_raid;
   overrides.blood_frenzy           = optimal_raid;
+  overrides.blood_plague           = optimal_raid;
   overrides.bloodlust              = optimal_raid;
   overrides.crypt_fever            = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.divine_spirit          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
+  overrides.ebon_plaguebringer     = optimal_raid;
   overrides.elemental_oath         = optimal_raid;
   overrides.expose_armor           = optimal_raid;
   overrides.faerie_fire            = optimal_raid;
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
+  overrides.frost_fever            = optimal_raid;
   overrides.heart_of_the_crusader  = optimal_raid;
+  overrides.horn_of_the_winter     = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
   overrides.improved_moonkin_aura  = optimal_raid;
@@ -1473,6 +1477,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
       { "override.blessing_of_wisdom",      OPT_BOOL,   &( overrides.blessing_of_wisdom             ) },
       { "override.blood_frenzy",            OPT_BOOL,   &( overrides.blood_frenzy                   ) },
+      { "override.blood_plague",            OPT_BOOL,   &( overrides.blood_plague                   ) },
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
@@ -1481,13 +1486,16 @@ std::vector<option_t>& sim_t::get_options()
       { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
       { "override.divine_spirit",           OPT_BOOL,   &( overrides.divine_spirit                  ) },
       { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
+      { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
       { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
       { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
       { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
       { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
       { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
+      { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
       { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
+      { "override.horn_of_the_winter",      OPT_BOOL,   &( overrides.horn_of_the_winter             ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_faerie_fire",    OPT_BOOL,   &( overrides.improved_faerie_fire           ) },
