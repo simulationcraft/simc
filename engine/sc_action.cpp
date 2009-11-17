@@ -494,9 +494,7 @@ double action_t::resistance() SC_CONST
       int delta_level = t -> level - player -> level;
       if ( delta_level > 0 )
       {
-	double passive_resist_rating = 8; 
-        double level_resist = ( delta_level * passive_resist_rating ) / player_skill;
-        if ( level_resist > resist ) resist = level_resist;
+        resist += delta_level * 0.02;
       }
     }
 
