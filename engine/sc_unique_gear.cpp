@@ -429,8 +429,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
   // Stat Procs with Tick Increases
-  else if ( name == "dislodged_foreign_object" ) e = ( id == "50353" ? "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
-  // FIX-ME: give the correct values for the Heroic version when known.
+  else if ( name == "dislodged_foreign_object" ) e = ( id == "50353" ? "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" );
 
   // Discharge Procs
   else if ( name == "bandits_insignia"             ) e = "OnAttackHit_1880Arcane_15%_45Cd";
