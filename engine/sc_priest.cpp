@@ -2414,6 +2414,11 @@ int priest_t::decode_set( item_t& item )
   }
   if ( strstr( s, "crimson_acolyte" ) )
   {
+    is_caster = ( strstr( s, "circlet"   ) ||
+		          strstr( s, "mantle"    ) ||
+		          strstr( s, "raiments"  ) ||
+		          strstr( s, "handwraps" ) ||
+		          strstr( s, "pants"     ) );
     if ( is_caster ) return SET_T10_CASTER;
   }
 
