@@ -1711,10 +1711,7 @@ struct blood_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
-      if ( p -> set_bonus.tier9_2pc_melee() )
-      {
-        p -> buffs_tier9_2pc_melee -> trigger();
-      }
+      p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
       trigger_desolation( this );
@@ -2106,10 +2103,7 @@ struct heart_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
-      if ( p -> set_bonus.tier9_2pc_melee() )
-      {
-        p -> buffs_tier9_2pc_melee -> trigger();
-      }
+      p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
     }
@@ -2841,8 +2835,8 @@ void death_knight_t::init_buffs()
   buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH    , 200, 1, 20.0,  0, sigils.sigil_of_virulence * 0.80 );
-  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH    , 180, 1, 15.0,  45, 0.50 );
+  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
+  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
 
   struct bloodworms_buff_t : public buff_t
   {
