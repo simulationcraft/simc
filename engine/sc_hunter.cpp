@@ -188,7 +188,7 @@ struct hunter_t : public player_t
     active_viper_sting     = 0;
 
     ranged_attack = 0;
-	s_dps = sim -> P330 ? 91.5 : 67.5;
+	ammo_dps = sim -> P330 ? 91.5 : 67.5;
     quiver_haste = 1.15;
     summon_pet_str = "wolf";
   }
