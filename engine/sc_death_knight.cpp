@@ -2068,12 +2068,12 @@ struct frost_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  6, 150,   150,   0, 40 },
-      { 75,  5, 120.6, 120.6, 0, 40 },
-      { 70,  4, 85.2,  85.2,  0, 40 },
-      { 65,  3, 69,    69,    0, 40 },
-      { 60,  2, 61.8,  61.8,  0, 40 },
-      { 55,  1, 52.2,  52.2,  0, 40 },
+      { 80,  6, 137.5, 137.5, 0, 40 },
+      { 75,  5, 110.6, 110.6, 0, 40 },
+      { 70,  4,  78.1,  78.1, 0, 40 },
+      { 65,  3,  63.5,  73.5, 0, 40 },
+      { 60,  2,  56.7,  56.7, 0, 40 },
+      { 55,  1,  47.9,  47.9, 0, 40 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -2081,8 +2081,9 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.55;
-    base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
 
+    base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
+    base_cost -= p -> glyphs.frost_strike * 8;
   }
 
   virtual void execute()
