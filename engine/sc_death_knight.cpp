@@ -594,12 +594,20 @@ struct ghoul_pet_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double strength() SC_CONST
   {
-//    death_knight_t* o = owner -> cast_death_knight();
-    double ap = pet_t::composite_attack_power();
-//    ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power();
-    return ap;
+    death_knight_t* o = owner -> cast_death_knight();
+    double a = attribute[ ATTR_STRENGTH ];
+    a += std::max( sim -> auras.strength_of_earth -> value(),
+                   sim -> auras.horn_of_winter -> value() );
+    
+    double strength_scaling = 0.7; // % of str ghould gets from the DK
+    strength_scaling *= 1.0 + o -> talents.ravenous_dead * .2; // The talent affects the 70% => 70% * 1.6 => 112%
+    strength_scaling += o -> glyphs.the_ghoul * .4; // But the glyph is additive!
+    a += o -> strength() *  strength_scaling;
+    
+    a *= composite_attribute_multiplier( ATTR_STRENGTH );
+    return floor( a );
   }
 
   virtual void summon( double duration=0 )
@@ -2688,8 +2696,8 @@ void death_knight_t::init_base()
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + ( talents.veteran_of_the_third_war * 0.02 +
-      talents.abominations_might * 0.01 +
-      talents.ravenous_dead * 0.01 );
+                                                           talents.abominations_might * 0.01 +
+                                                           talents.ravenous_dead * 0.01 );
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
 
   // For some reason, my buffless, naked Death Knight Human with
