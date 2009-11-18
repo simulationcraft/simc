@@ -834,6 +834,7 @@ static void trigger_abominations_might( action_t* a, double base_chance )
 
 static void trigger_crypt_fever( action_t* a, double disease_duration )
 {
+  if ( a -> sim -> overrides.crypt_fever ) return;
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.crypt_fever ) return;
 
@@ -845,6 +846,7 @@ static void trigger_crypt_fever( action_t* a, double disease_duration )
 
 static void trigger_ebon_plaguebringer( action_t* a, double disease_duration )
 {
+  if ( a -> sim -> overrides.ebon_plaguebringer ) return;
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.ebon_plaguebringer ) return;
 
@@ -1607,8 +1609,8 @@ struct blood_plague_t : public death_knight_spell_t
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
     double disease_duration = 3.0 * num_ticks;
-
-    t -> debuffs.blood_plague -> duration = disease_duration;
+    if ( ! sim -> overrides.blood_plague ) 
+      t -> debuffs.blood_plague -> duration = disease_duration;
     t -> debuffs.blood_plague -> trigger();
     trigger_crypt_fever( this, disease_duration );
     trigger_ebon_plaguebringer( this, disease_duration );
@@ -2031,7 +2033,8 @@ struct frost_fever_t : public death_knight_spell_t
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
     double disease_duration = 3.0 * num_ticks;
-    t -> debuffs.frost_fever -> duration = disease_duration;
+    if ( ! sim -> overrides.frost_fever ) 
+      t -> debuffs.frost_fever -> duration = disease_duration;
     t -> debuffs.frost_fever -> trigger();
     trigger_crypt_fever( this, disease_duration );
     trigger_ebon_plaguebringer( this, disease_duration );
@@ -2854,7 +2857,7 @@ void death_knight_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     // Major Glyphs
-    if     ( n == "anti_magic_shell"    ) glyphs.anti_magic_shell = 1;
+    if      ( n == "anti_magic_shell"    ) glyphs.anti_magic_shell = 1;
     else if ( n == "blood_strike"        ) glyphs.blood_strike = 1;
     else if ( n == "bone_shield"         ) glyphs.bone_shield = 1;
     else if ( n == "chains_of_ice"       ) glyphs.chains_of_ice = 1;
