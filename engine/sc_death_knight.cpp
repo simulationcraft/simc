@@ -79,6 +79,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier9_2pc_melee;
+  buff_t* buffs_tier10_4pc_melee;
 
   // Gains
   gain_t* gains_rune_abilities;
@@ -861,15 +862,6 @@ static void trigger_sudden_doom( action_t* a )
   //p -> sudden_doom -> execute();
 }
 
-static void trigger_desolation( action_t* a )
-{
-  death_knight_t* p = a -> player -> cast_death_knight();
-  if ( p -> talents.desolation )
-  {
-    p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
-  }
-}
-
 static void trigger_wandering_plague( action_t* a, double disease_damage )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
@@ -1104,6 +1096,8 @@ void death_knight_attack_t::execute()
     refund_power( this );
     refund_runes( p, use );
   }
+  if ( count_runes( p ) == 0 )
+    p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
 }
 
 void death_knight_attack_t::player_buff()
@@ -1117,9 +1111,6 @@ void death_knight_attack_t::player_buff()
     player_multiplier *= 1.0 + 0.15;
   }
 
-  player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-
-  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
 
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
@@ -1148,6 +1139,12 @@ void death_knight_attack_t::player_buff()
       player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
     }
   }
+
+  player_multiplier *= 1.0 + p -> buffs_desolation -> value();
+
+  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
+
+  player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 }
 
 bool death_knight_attack_t::ready()
@@ -1322,13 +1319,15 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
 
-  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
 
   if ( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
-
+  
+  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
+  player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
+  
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
                    name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
@@ -1714,7 +1713,7 @@ struct blood_strike_t : public death_knight_attack_t
       p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
-      trigger_desolation( this );
+      p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
     }
   }
 };
@@ -2091,6 +2090,7 @@ struct heart_strike_t : public death_knight_attack_t
     base_crit += p -> talents.subversion * 0.03;
     base_crit_bonus_multiplier *= 1.0 * p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
+    base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07;
     check_talent( p -> talents.heart_strike );
   }
 
@@ -2288,7 +2288,8 @@ struct obliterate_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.8;
-
+    
+    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_crit += p -> talents.subversion * 0.03;
     convert_runes = p->talents.death_rune_mastery / 3;
   }
@@ -2452,6 +2453,7 @@ struct scourge_strike_t : public death_knight_attack_t
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
     base_multiplier *= 1.0 + ( 0.2 * p -> talents.outbreak / 3.0 );
+    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
@@ -2837,8 +2839,9 @@ void death_knight_t::init_buffs()
 
   buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
   buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
-  buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, 1.0 );
+  buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
   buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
+  buffs_tier10_4pc_melee   = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
