@@ -2942,6 +2942,7 @@ struct restart_sequence_t : public action_t
   restart_sequence_t( player_t* player, const std::string& options_str ) :
       action_t( ACTION_OTHER, "restart_sequence", player )
   {
+    seq_name_str = "default"; // matches default name for sequences
     option_t options[] =
     {
       { "name", OPT_STRING, &seq_name_str },
