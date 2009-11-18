@@ -188,7 +188,7 @@ struct hunter_t : public player_t
     active_viper_sting     = 0;
 
     ranged_attack = 0;
-    ammo_dps = 67.5;
+	s_dps = sim -> P330 ? 91.5 : 67.5;
     quiver_haste = 1.15;
     summon_pet_str = "wolf";
   }
@@ -3174,6 +3174,7 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
   // Ammo support
   static ammo_data ammo[] =
   {
+	{ 52020, 91.5 }, { 52021, 91.5 },
     { 41164, 67.5 }, { 41165, 67.5 },
     { 30319, 63.5 },
     { 32760, 53.0 }, { 32761, 53.0 }, { 31737, 53.0 }, { 31735, 53.0 },
