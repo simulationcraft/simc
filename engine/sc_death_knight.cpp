@@ -2195,7 +2195,8 @@ struct horn_of_winter_t : public death_knight_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     update_ready();
     death_knight_t* p = player -> cast_death_knight();
-    sim -> auras.horn_of_winter -> duration = 120 + p -> glyphs.horn_of_winter * 60;
+    if ( ! sim -> overrides.horn_of_winter )
+      sim -> auras.horn_of_winter -> duration = 120 + p -> glyphs.horn_of_winter * 60;
     sim -> auras.horn_of_winter -> trigger( 1, bonus );
 
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );

@@ -400,6 +400,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "blood_of_the_old_god"            ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"     ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if ( name == "comets_trail"                    ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
+  else if ( name == "corens_chromium_coaster"         ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "dark_matter"                     ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "darkmoon_card_crusade"           ) e = "OnSpellHit_8SP_10Stack_10Dur";
   else if ( name == "dying_curse"                     ) e = "OnSpellHit_765SP_15%_10Dur_45Cd";
