@@ -1118,6 +1118,17 @@ void death_knight_attack_t::player_buff()
     if ( this != p -> main_hand_attack && this != p -> off_hand_attack )
       player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
+  if ( weapon )
+  {
+    // http://www.wowhead.com/?spell=50138
+    // +1/2/3% melee hit, ONLY one-handers
+    // Does not apply to spells!
+    if ( weapon -> slot == SLOT_OFF_HAND )
+      player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
+    // 
+    if ( weapon -> group() == WEAPON_1H )
+      player_hit += p -> talents.nerves_of_cold_steel  * 0.01;
+  }
 
   if ( school == SCHOOL_PHYSICAL )
   {
