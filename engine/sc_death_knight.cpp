@@ -615,6 +615,14 @@ struct ghoul_pet_t : public pet_t
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
   }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    // Ghouls receive 100% of their master's haste.
+    // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
+    death_knight_t* o = owner -> cast_death_knight();
+    return o -> composite_attack_haste();
+  }
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
