@@ -96,6 +96,7 @@ struct death_knight_t : public player_t
 
   // RNGs
   rng_t* rng_blood_caked_blade;
+  rng_t* rng_threat_of_thassarian;
   rng_t* rng_wandering_plague;
 
   // Up-Times
@@ -1708,23 +1709,36 @@ struct blood_strike_t : public death_knight_attack_t
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
   }
 
-  void target_debuff( int dmg_type )
+  virtual void target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
-  void execute()
+  virtual void execute()
   {
+
+    death_knight_t* p = player -> cast_death_knight();
+    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+
     if ( result_is_hit() )
     {
-      death_knight_t* p = player -> cast_death_knight();
       p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
       p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
+      
+      // 30/60/100% to also hit with OH
+      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+        {
+          weapon = &( p -> off_hand_weapon );
+          death_knight_attack_t::execute();
+        }
+
     }
   }
 };
@@ -1921,19 +1935,28 @@ struct death_strike_t : public death_knight_attack_t
     convert_runes = p->talents.death_rune_mastery / 3;
   }
 
-  void execute()
+  virtual void execute()
   {
+    death_knight_t* p = player -> cast_death_knight();
+    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+
     if ( result_is_hit() )
     {
-      death_knight_t* p = player -> cast_death_knight();
       p -> buffs_sigil_virulence -> trigger();
+
       if ( p -> talents.dirge )
-      {
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
-      }
 
       trigger_abominations_might( this, 0.5 );
+      // 30/60/100% to also hit with OH
+      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+        {
+          weapon = &( p -> off_hand_weapon );
+          death_knight_attack_t::execute();
+        }
     }
   }
 };
@@ -2056,13 +2079,28 @@ struct frost_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.6;
+    weapon_multiplier     *= 0.55;
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
 
   }
-  bool ready()
+
+  virtual void execute()
   {
-    return death_knight_attack_t::ready();
+    death_knight_t* p = player -> cast_death_knight();
+    weapon = &( p -> main_hand_weapon );
+    death_knight_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      // 30/60/100% to also hit with OH
+      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+        {
+          weapon = &( p -> off_hand_weapon );
+          death_knight_attack_t::execute();
+        }
+    }
   }
 };
 
@@ -2305,30 +2343,40 @@ struct obliterate_t : public death_knight_attack_t
     convert_runes = p->talents.death_rune_mastery / 3;
   }
 
-  void target_debuff( int dmg_type )
+  virtual void target_debuff( int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
-  void execute()
+  virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
 
+    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
       p -> buffs_sigil_virulence -> trigger();
       trigger_abominations_might( this, 0.5 );
 
+      // 30/60/100% to also hit with OH
+      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+        {
+          weapon = &( p -> off_hand_weapon );
+          death_knight_attack_t::execute();
+        }
+      
+      // FIX ME!! Annihilation
+
       if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
         p -> active_blood_plague -> cancel();
 
       if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
         p -> active_frost_fever -> cancel();
-
-      assert( p -> diseases() == 0 );
     }
   }
 };
@@ -2368,21 +2416,29 @@ struct plague_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.50;
   }
 
-  void execute()
+  virtual void execute()
   {
+    death_knight_t* p = player -> cast_death_knight();
+    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
-      death_knight_t* p = player -> cast_death_knight();
+      // 30/60/100% to also hit with OH
+      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+        {
+          weapon = &( p -> off_hand_weapon );
+          death_knight_attack_t::execute();
+        }
+
       if ( p -> talents.dirge )
       {
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
       }
 
       if ( ! p -> blood_plague )
-      {
         p -> blood_plague = new blood_plague_t( p );
-      }
       p -> blood_plague -> execute();
     }
   }
@@ -2701,8 +2757,9 @@ void death_knight_t::init_race()
 void death_knight_t::init_rng()
 {
   player_t::init_rng();
-  rng_blood_caked_blade = get_rng( "blood_caked_blade" );
-  rng_wandering_plague = get_rng( "wandering_plague" );
+  rng_blood_caked_blade    = get_rng( "blood_caked_blade" );
+  rng_threat_of_thassarian = get_rng( "threat_of_thassarian");
+  rng_wandering_plague     = get_rng( "wandering_plague" );
 }
 
 void death_knight_t::init_base()
