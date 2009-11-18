@@ -1702,7 +1702,7 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * 0.125;
+    target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
   void execute()
@@ -1846,6 +1846,8 @@ struct death_coil_t : public death_knight_spell_t
     direct_power_mod  = 0.15 * ( 1 + 0.04 * p -> talents.impurity );
     base_dd_multiplier *= 1 + ( 0.05 * p -> talents.morbidity +
                                 0.15 * p -> glyphs.dark_death );
+    base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
+                               
     if ( sudden_doom )
     {
       proc = true;
@@ -2028,6 +2030,7 @@ struct frost_strike_t : public death_knight_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    check_talent( p -> talents.frost_strike );
 
     static rank_t ranks[] =
     {
@@ -2044,7 +2047,8 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.6;
-    check_talent( p -> talents.frost_strike );
+    base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
+
   }
   bool ready()
   {
@@ -2094,7 +2098,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * 0.1;
+    target_multiplier *= 1 + p -> diseases() * 0.1 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
   void execute()
@@ -2293,7 +2297,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * 0.125;
+    target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
   void execute()
@@ -2480,7 +2484,9 @@ struct scourge_strike_t : public death_knight_attack_t
           // additional 25% of the Physical damage done as Shadow damage.
           death_knight_t* p = player -> cast_death_knight();
           death_knight_spell_t::target_debuff( dmg_type );
-          target_multiplier *= p -> diseases() * 0.25;
+
+          // FIX ME!! How does 4T8 play with SS in 3.3
+          target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
         }
       };
       scourge_strike_shadow = new scourge_strike_shadow_t( player );
@@ -2528,7 +2534,7 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
     if ( ! p -> sim -> P330 )
-      target_multiplier *= 1 + p -> diseases() * 0.10;
+      target_multiplier *= 1 + p -> diseases() * 0.10 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 };
 
