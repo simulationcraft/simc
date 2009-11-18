@@ -1435,7 +1435,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       if ( sim -> P330 && p -> set_bonus.tier9_4pc_caster() )
-        base_td = direct_dmg * 0.2 / num_ticks;
+          base_td = direct_dmg * 0.1 / num_ticks;
     }
   }
 
