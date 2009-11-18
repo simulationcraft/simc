@@ -24,6 +24,8 @@ Paladin_T9_05_11_55.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1
 
 Priest_T9_13_00_58_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Priest_T9_13_00_58_258_SWD.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Priest_T10_13_00_58_264.simc
+Priest_T10_13_00_58_264_SWD.simc
 
 Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
