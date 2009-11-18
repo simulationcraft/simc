@@ -278,6 +278,7 @@ struct shaman_spell_t : public spell_t
   virtual void   player_buff();
   virtual void   schedule_execute();
   virtual void   assess_damage( double amount, int dmg_type );
+  virtual double haste() SC_CONST;
 };
 
 // ==========================================================================
@@ -1013,6 +1014,20 @@ struct stormstrike_t : public shaman_attack_t
 // Shaman Spell
 // =========================================================================
 
+// shaman_spell_t::haste ====================================================
+
+double shaman_spell_t::haste() SC_CONST
+{
+  shaman_t* p = player -> cast_shaman();
+  double h = spell_t::haste();
+  if ( p -> sim -> P330 && p -> buffs_elemental_mastery -> up() )
+  {
+    h *= 1.0 / 1.15;
+  }
+  return h;
+}
+
+
 // shaman_spell_t::cost ====================================================
 
 double shaman_spell_t::cost() SC_CONST
@@ -1054,7 +1069,7 @@ void shaman_spell_t::player_buff()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
-  if ( p -> buffs_elemental_mastery -> up() )
+  if ( ! p -> sim -> P330 && p -> buffs_elemental_mastery -> up() )
   {
     player_crit += 0.15;
   }
