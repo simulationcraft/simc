@@ -1,0 +1,61 @@
+#!./simc 
+
+priest=Priest_T10_13_00_58_264_SWD
+origin=http://profiler.wowhead.com/?profile=18052647
+level=80
+race=night_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
+glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/divine_spirit
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/vampiric_embrace,P330=1
+actions+=/snapshot_stats
+actions+=/wild_magic_potion,P330=0
+actions+=/speed_potion,P330=1
+actions+=/shadow_fiend
+actions+=/shadow_word_pain,shadow_weaving_wait=1
+actions+=/vampiric_touch
+actions+=/devouring_plague
+actions+=/mind_blast
+actions+=/vampiric_embrace,P330=0
+actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2
+actions+=/mind_flay
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
+head=sanctified_crimson_acolyte_cowl,stats=123int_123sta_84haste_161sp_108crit_287armor,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+neck=amulet_of_the_silent_eulogy,stats=69int_69sta_60hit_60haste_106sp,gems=0sp
+shoulders=sanctified_crimson_acolyte_mantle,stats=92int_92sta_72haste_132sp_80crit_265armor,gems=12sp_10haste_5sp,enchant=24sp_15crit
+chest=sanctified_crimson_acolyte_raiments,stats=123int_123sta_100haste_171sp_100crit_354armor,gems=23sp_12sp_10haste_7sp,enchant=10all
+waist=crushing_coldwraith_belt,stats=92int_92sta_80haste_132sp_72crit_199armor,gems=23sp_23sp
+legs=leggings_of_woven_death,stats=123int_123sta_108haste_162sp_84crit_309armor,gems=23sp_12sp_10haste_12sp_10spi_9sp,enchant=50sp_20spi
+feet=plague_scientists_boots,stats=92int_92sta_80haste_132sp_72crit_243armor,gems=23sp,enchant=15sta
+wrists=bindings_of_dark_essence,stats=152armor_43hit_57crit_91sp_65sta_65int,gems=12sp_10hit_5sp,enchant=30sp
+hands=sanctified_crimson_acolyte_handwraps,stats=92int_92sta_72hit_132sp_80crit_221armor,gems=23sp,enchant=28sp
+finger1=ring_of_rapid_ascent,stats=69int_69sta_60haste_106sp_60crit,gems=0sp,enchant=23sp
+finger2=band_of_deplorable_violence,stats=53crit_91sp_65sta_65int_50spi,gems=12sp_10hit_5sp,enchant=23sp
+trinket1=dislodged_foreign_object,stats=155haste,gems=0sp,equip=onspellcast_105sp_10stack_10%_20dur_45cd_2tick
+trinket2=reign_of_the_unliving,stats=168sp,gems=0sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
+back=jainas_radiance,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=lightweave_embroidery
+main_hand=blade_of_tarasque,stats=51hit_57haste_692sp_48sta_65int,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_108.12min_342.12max
+off_hand=chalice_of_benedictus,stats=43hit_51haste_80sp_58sta_55int,gems=12sp_10haste_5sp
+ranged=corpseimpaling_spike,stats=39int_39sta_34haste_60sp_34crit,gems=0sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=1249
+# gear_intellect=1248
+# gear_spirit=101
+# gear_spell_power=3122
+# gear_hit_rating=289
+# gear_crit_rating=921
+# gear_haste_rating=1038
+# gear_armor=2212
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=jainas_radiance,enchant=lightweave_embroidery
+# main_hand=blade_of_tarasque,weapon=dagger_1.80speed_108.12min_342.12max
