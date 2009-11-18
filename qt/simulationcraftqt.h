@@ -19,16 +19,15 @@
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 
-#define TAB_ARMORY_US  0
-#define TAB_ARMORY_EU  1
-#define TAB_WOWHEAD    2
-#define TAB_CHARDEV    3
-#define TAB_WARCRAFTER 4
-#define TAB_RAWR       5
-#define TAB_BIS        6
-#define TAB_HISTORY    7
+#define TAB_ARMORY     0
+#define TAB_WOWHEAD    1
+#define TAB_CHARDEV    2
+#define TAB_WARCRAFTER 3
+#define TAB_RAWR       4
+#define TAB_BIS        5
+#define TAB_HISTORY    6
 
-#define HISTORY_VERSION "1.3"
+#define HISTORY_VERSION "1.4"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -88,14 +87,14 @@ public:
     QComboBox* fightStyleChoice;
     QComboBox* threadsChoice;
     QComboBox* smoothRNGChoice;
+    QComboBox* armoryRegionChoice;
     QComboBox* armorySpecChoice;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
     QTabWidget* importTab;
-    SimulationCraftWebView* armoryUsView;
-    SimulationCraftWebView* armoryEuView;
+    SimulationCraftWebView* armoryView;
     SimulationCraftWebView* wowheadView;
     SimulationCraftWebView* chardevView;
     SimulationCraftWebView* warcrafterView;
@@ -195,6 +194,7 @@ private slots:
     void allBuffsChanged( bool checked );
     void allDebuffsChanged( bool checked );
     void allScalingChanged( bool checked );
+    void armoryRegionChanged( const QString& region );
 
 public:
     SimulationCraftWindow(QWidget *parent = 0);
@@ -332,8 +332,7 @@ public:
     QString profile;
     player_t* player;
 
-    void importArmoryUs();
-    void importArmoryEu();
+    void importArmory();
     void importWowhead();
     void importChardev();
     void importWarcrafter();

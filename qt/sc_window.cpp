@@ -146,7 +146,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
       fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
          threadsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
        smoothRNGChoice->setCurrentIndex( tokens[ 6 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 8 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -159,7 +160,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 8; i < tokens.count(); i++)
+  for(int i = 9; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -187,7 +188,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
     .arg(        patchChoice->currentIndex() )
     .arg(      latencyChoice->currentIndex() )
     .arg(   iterationsChoice->currentIndex() )
@@ -195,6 +196,7 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(   fightStyleChoice->currentIndex() )
     .arg(      threadsChoice->currentIndex() )
     .arg(    smoothRNGChoice->currentIndex() )
+    .arg( armoryRegionChoice->currentIndex() )
     .arg(   armorySpecChoice->currentIndex() )
     ;
 
@@ -425,6 +427,8 @@ void SimulationCraftWindow::createOptionsTab()
   QAbstractButton* allDebuffs = debuffsButtonGroup->buttons().at( 0 );
   QAbstractButton* allScaling = scalingButtonGroup->buttons().at( 0 );
 
+  connect( armoryRegionChoice, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(armoryRegionChanged(const QString&)) );
+  
   connect( allBuffs,   SIGNAL(toggled(bool)), this, SLOT(allBuffsChanged(bool))   );  
   connect( allDebuffs, SIGNAL(toggled(bool)), this, SLOT(allDebuffsChanged(bool)) );  
   connect( allScaling, SIGNAL(toggled(bool)), this, SLOT(allScalingChanged(bool)) );  
@@ -441,6 +445,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Fight Style",   fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(    "Smooth RNG",    smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
+  globalsLayout->addRow( "Armory Region", armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
   globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
@@ -537,16 +542,12 @@ void SimulationCraftWindow::createImportTab()
   importTab = new QTabWidget();
   mainTab->addTab( importTab, "Import" );
 
-  armoryUsView = new SimulationCraftWebView( this );
-  armoryUsView->setUrl( QUrl( "http://us.wowarmory.com" ) );
-  importTab->addTab( armoryUsView, "Armory-US" );
-  
-  armoryEuView = new SimulationCraftWebView( this );
-  armoryEuView->setUrl( QUrl( "http://eu.wowarmory.com" ) );
-  importTab->addTab( armoryEuView, "Armory-EU" );
-  
+  armoryView = new SimulationCraftWebView( this );
+  armoryView->setUrl( QUrl( "http://us.wowarmory.com" ) );
+  importTab->addTab( armoryView, "Armory" );
+
   wowheadView = new SimulationCraftWebView( this );
-  wowheadView->setUrl( QUrl( "http://www.wowhead.com/?profiles" ) );
+  wowheadView->setUrl( QUrl( "http://ptr.wowhead.com/?profiles" ) );
   importTab->addTab( wowheadView, "Wowhead" );
   
   chardevView = new SimulationCraftWebView( this );
@@ -715,9 +716,8 @@ void SimulationCraftWindow::createBestInSlotTab()
     QString url = "";
     switch( b.site )
     {
-    case TAB_ARMORY_US: url += "http://us.wowarmory.com/character-sheet.xml?"; break;
-    case TAB_ARMORY_EU: url += "http://eu.wowarmory.com/character-sheet.xml?"; break;
-    case TAB_WOWHEAD:   url += "http://www.wowhead.com/?profile=";             break;
+    case TAB_WOWHEAD: url += "http://www.wowhead.com/?profile="; break;
+    default: assert(0);
     }
     url += b.id;
     QStringList labels = QStringList( b.name ); labels += url;
@@ -828,6 +828,8 @@ void SimulationCraftWindow::createToolTips()
   smoothRNGChoice->setToolTip( "Introduce some determinism into the RNG packages, improving convergence by 10x.\n"
 			       "This enables the use of fewer iterations, but the scale factors of non-linear stats may suffer." );
 
+  armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China" );
+
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
   backButton->setToolTip( "Backwards" );
@@ -868,15 +870,19 @@ void SimulationCraftWindow::deleteSim()
 // Import 
 // ==========================================================================
 
-void ImportThread::importArmoryUs()
+void ImportThread::importArmory()
 {
-  QString server, character;
-  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
+  QString region, server, character;
+  QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
   for( int i=0; i < count-1; i++ ) 
   {
     QString& t = tokens[ i ];
-    if( t == "r" )
+    if( t == "http" )
+    {
+      region = tokens[ i+1 ];
+    }
+    else if( t == "r" )
     {
       server = tokens[ i+1 ];
     }
@@ -885,42 +891,14 @@ void ImportThread::importArmoryUs()
       character = tokens[ i+1 ];
     }
   }
-  if( server.isEmpty() || character.isEmpty() )
+  if( region.isEmpty() || server.isEmpty() || character.isEmpty() )
   {
     fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
   }
   else
   {
-    std::string talents = mainWindow->armorySpecChoice->currentText().toStdString();
-    player = armory_t::download_player( sim, "us", server.toStdString(), character.toStdString(), talents );
-  }
-}
-
-void ImportThread::importArmoryEu()
-{
-  QString server, character;
-  QStringList tokens = url.split( QRegExp( "[?&=#]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
-  {
-    QString& t = tokens[ i ];
-    if( t == "r" )
-    {
-      server = tokens[ i+1 ];
-    }
-    else if( t == "n" || t == "cn" )
-    {
-      character = tokens[ i+1 ];
-    }
-  }
-  if( server.isEmpty() || character.isEmpty() )
-  {
-    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
-  }
-  else
-  {
-    std::string talents = mainWindow->armorySpecChoice->currentText().toStdString();
-    player = armory_t::download_player( sim, "eu", server.toStdString(), character.toStdString(), talents );
+    std::string talents = mainWindow->armorySpecChoice  ->currentText().toStdString();
+    player = armory_t::download_player( sim, region.toStdString(), server.toStdString(), character.toStdString(), talents );
   }
 }
 
@@ -974,8 +952,7 @@ void ImportThread::run()
 {
   switch( tab )
   {
-  case TAB_ARMORY_US:  importArmoryUs();   break;
-  case TAB_ARMORY_EU:  importArmoryEu();   break;
+  case TAB_ARMORY:     importArmory();     break;
   case TAB_WOWHEAD:    importWowhead();    break;
   case TAB_CHARDEV:    importChardev();    break;
   case TAB_WARCRAFTER: importWarcrafter(); break;
@@ -1263,8 +1240,7 @@ void SimulationCraftWindow::saveResults()
 void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
 { 
   saveHistory();
-  armoryUsView->stop();
-  armoryEuView->stop();
+  armoryView->stop();
   wowheadView->stop();
   chardevView->stop();
   warcrafterView->stop();
@@ -1291,15 +1267,10 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "us.wowarmory" ) )
+    if( cmdLine->text().count( "wowarmory" ) )
     {
-      armoryUsView->setUrl( QUrl( cmdLine->text() ) ); 
-      importTab->setCurrentIndex( TAB_ARMORY_US );
-    }
-    else if( cmdLine->text().count( "eu.wowarmory" ) )
-    {
-      armoryEuView->setUrl( QUrl( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_ARMORY_EU );
+      armoryView->setUrl( QUrl( cmdLine->text() ) ); 
+      importTab->setCurrentIndex( TAB_ARMORY );
     }
     else if( cmdLine->text().count( "wowhead" ) )
     {
@@ -1340,8 +1311,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
     {
-    case TAB_ARMORY_US:  startImport( TAB_ARMORY_US,  cmdLine->text() ); break;
-    case TAB_ARMORY_EU:  startImport( TAB_ARMORY_EU,  cmdLine->text() ); break;
+    case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
     case TAB_WOWHEAD:    startImport( TAB_WOWHEAD,    cmdLine->text() ); break;
     case TAB_CHARDEV:    startImport( TAB_CHARDEV,    cmdLine->text() ); break;
     case TAB_WARCRAFTER: startImport( TAB_WARCRAFTER, cmdLine->text() ); break;
@@ -1520,15 +1490,10 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if( url.count( "us.wowarmory." ) )
+  if( url.count( ".wowarmory." ) )
   {
-    armoryUsView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY_US );
-  }
-  else if( url.count( "eu.wowarmory." ) )
-  {
-    armoryEuView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY_EU );
+    armoryView->setUrl( url );
+    importTab->setCurrentIndex( TAB_ARMORY );
   }
   else if( url.count( ".wowhead." ) )
   {
@@ -1559,15 +1524,10 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
 
   QString url = item->text( 1 );
 
-  if( url.count( "us.wowarmory." ) )
+  if( url.count( ".wowarmory." ) )
   {
-    armoryUsView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY_US );
-  }
-  else if( url.count( "eu.wowarmory." ) )
-  {
-    armoryEuView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY_EU );
+    armoryView->setUrl( url );
+    importTab->setCurrentIndex( TAB_ARMORY );
   }
   else if( url.count( ".wowhead." ) )
   {
@@ -1616,3 +1576,9 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
   }
 }
 
+void SimulationCraftWindow::armoryRegionChanged( const QString& region )
+{
+
+  QString s = "http://" + region + ".wowarmory.com";
+  armoryView->setUrl( QUrl( s ) );
+}
