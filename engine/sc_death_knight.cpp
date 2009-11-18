@@ -96,6 +96,7 @@ struct death_knight_t : public player_t
 
   // RNGs
   rng_t* rng_blood_caked_blade;
+  rng_t* rng_annihilation;
   rng_t* rng_threat_of_thassarian;
   rng_t* rng_wandering_plague;
 
@@ -2370,13 +2371,15 @@ struct obliterate_t : public death_knight_attack_t
           death_knight_attack_t::execute();
         }
       
-      // FIX ME!! Annihilation
-
-      if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
-        p -> active_blood_plague -> cancel();
-
-      if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
-        p -> active_frost_fever -> cancel();
+      chance = p -> talents.annihilation / 3.0;
+      // 33/66/100% chance to NOT consume the diseases
+      if ( ! p -> rng_annihilation -> roll( chance ) )
+      {
+        if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
+          p -> active_blood_plague -> cancel();
+        if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
+          p -> active_frost_fever -> cancel();
+      }
     }
   }
 };
@@ -2757,6 +2760,7 @@ void death_knight_t::init_race()
 void death_knight_t::init_rng()
 {
   player_t::init_rng();
+  rng_annihilation         = get_rng( "annihilation" );
   rng_blood_caked_blade    = get_rng( "blood_caked_blade" );
   rng_threat_of_thassarian = get_rng( "threat_of_thassarian");
   rng_wandering_plague     = get_rng( "wandering_plague" );
