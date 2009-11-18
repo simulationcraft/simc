@@ -34,6 +34,7 @@ struct rogue_t : public player_t
   buff_t* buffs_shadow_dance;
   buff_t* buffs_shadowstep;
   buff_t* buffs_shiv;
+  buff_t* buffs_deadly_proc;
   buff_t* buffs_stealthed;
   buff_t* buffs_slice_and_dice;
   buff_t* buffs_tier9_2pc;
@@ -386,6 +387,36 @@ static void add_combo_point( rogue_t* p )
 // trigger_apply_poisons ===================================================
 
 static void trigger_apply_poisons( rogue_attack_t* a )
+{
+  weapon_t* w = a -> weapon;
+
+  if ( ! w ) return;
+
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if ( w -> buff_type == ANESTHETIC_POISON )
+  {
+    p -> active_anesthetic_poison -> weapon = w;
+    p -> active_anesthetic_poison -> execute();
+  }
+  else if ( w -> buff_type == DEADLY_POISON )
+  {
+    p -> active_deadly_poison -> weapon = w;
+    p -> active_deadly_poison -> execute();
+  }
+  else if ( w -> buff_type == INSTANT_POISON )
+  {
+    p -> active_instant_poison -> weapon = w;
+    p -> active_instant_poison -> execute();
+  }
+  else if ( w -> buff_type == WOUND_POISON )
+  {
+    p -> active_wound_poison -> weapon = w;
+    p -> active_wound_poison -> execute();
+  }
+}
+
+static void trigger_apply_poisons( rogue_poison_t* a )
 {
   weapon_t* w = a -> weapon;
 
@@ -2451,7 +2482,7 @@ struct anesthetic_poison_t : public rogue_poison_t
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-    double chance = p -> buffs_shiv -> check() ? 1.0 : .5;
+    double chance = ( p -> buffs_shiv -> check() || p -> buffs_deadly_proc -> check() ) ? 1.0 : .5;
     may_crit = ( p -> buffs_shiv -> check() ) ? false : true;
     if ( p -> rng_anesthetic_poison -> roll( chance ) )
     {
@@ -2480,12 +2511,12 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    int success = p -> buffs_shiv -> check();
+    int success = p -> buffs_shiv -> check() || p -> buffs_deadly_proc -> check();
 
     if ( ! success )
     {
       double chance = 0.30;
-      chance += p -> talents.improved_poisons * 0.02;
+	  chance += p -> talents.improved_poisons * ( p -> sim -> P330 ? 0.04 : 0.02 );
       if ( p -> buffs_envenom -> up() )
       {
         chance += 0.15;
@@ -2501,6 +2532,29 @@ struct deadly_poison_t : public rogue_poison_t
 
       if ( result_is_hit() )
       {
+		if ( p -> sim -> P330 && ( p -> buffs_poison_doses -> check() == 5 ) && ( ! p -> buffs_deadly_proc -> check() ) )
+		{
+		  p -> buffs_deadly_proc -> trigger();
+
+		  weapon_t* saved_weapon = weapon;
+		
+		  if ( weapon == &( p -> main_hand_weapon ) )
+		  {
+			weapon = &( p -> off_hand_weapon );
+		  }
+		  else
+		  {
+			weapon = &( p -> main_hand_weapon );
+		  }
+		  if ( weapon )
+		  {
+		    trigger_apply_poisons( this );
+		  }
+		  weapon = saved_weapon;
+		 
+		  p -> buffs_deadly_proc -> expire();
+		}
+
         p -> buffs_poison_doses -> trigger();
 
         if ( sim -> log ) log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses -> current_stack );
@@ -2567,11 +2621,15 @@ struct instant_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     double chance;
 
-    if ( p -> buffs_shiv -> check() )
+    if ( p -> buffs_deadly_proc -> check() )
     {
       chance = 1.0;
-      may_crit = false;
     }
+	else if ( p -> buffs_shiv -> check() )
+	{
+      chance = 1.0;
+      may_crit = false;
+	}
     else
     {
       double PPM = 8.57;
@@ -2621,7 +2679,11 @@ struct wound_poison_t : public rogue_poison_t
     rogue_t* p = player -> cast_rogue();
     double chance;
 
-    if ( p -> buffs_shiv -> check() )
+	if ( p -> buffs_deadly_proc -> check() )
+	{
+	  chance = 1.0;		
+	}
+    else if ( p -> buffs_shiv -> check() )
     {
       chance = 1.0;
       may_crit = false;
@@ -3235,6 +3297,7 @@ void rogue_t::init_buffs()
   buffs_blade_flurry       = new buff_t( this, "blade_flurry",       1, 15.0  );
   buffs_cold_blood         = new buff_t( this, "cold_blood",         1        );
   buffs_combo_points       = new buff_t( this, "combo_points",       5        );
+  buffs_deadly_proc		   = new buff_t( this, "deadly_proc",		 1		  );
   buffs_envenom            = new buff_t( this, "envenom",            1,  6.0  );
   buffs_hunger_for_blood   = new buff_t( this, "hunger_for_blood",   1, 60.0  );
   buffs_killing_spree      = new buff_t( this, "killing_spree",      1        );
