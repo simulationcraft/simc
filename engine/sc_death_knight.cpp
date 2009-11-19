@@ -1353,12 +1353,11 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
 
-
   if ( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
-  
+
   // Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
   if ( p -> active_presence == PRESENCE_BLOOD )
@@ -2646,7 +2645,7 @@ struct rune_tap_t : public death_knight_spell_t
 
 struct scourge_strike_t : public death_knight_attack_t
 {
-  spell_t* scourge_strike_shadow;
+  attack_t* scourge_strike_shadow;
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
       death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
@@ -2684,9 +2683,9 @@ struct scourge_strike_t : public death_knight_attack_t
       weapon_multiplier *= 0.40;
     else
     {
-      struct scourge_strike_shadow_t : public death_knight_spell_t
+      struct scourge_strike_shadow_t : public death_knight_attack_t
       {
-        scourge_strike_shadow_t( player_t* player ) : death_knight_spell_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
+        scourge_strike_shadow_t( player_t* player ) : death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
         {
           death_knight_t* p = player -> cast_death_knight();
 
@@ -2708,7 +2707,7 @@ struct scourge_strike_t : public death_knight_attack_t
           // for each of your diseases on your target, you deal an 
           // additional 25% of the Physical damage done as Shadow damage.
           death_knight_t* p = player -> cast_death_knight();
-          death_knight_spell_t::target_debuff( dmg_type );
+          death_knight_attack_t::target_debuff( dmg_type );
 
           // FIX ME!! How does 4T8 play with SS in 3.3
           target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
