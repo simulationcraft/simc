@@ -77,19 +77,21 @@ struct death_knight_t : public player_t
   buff_t* buffs_bone_shield;
   buff_t* buffs_desolation;
   buff_t* buffs_killing_machine;
+  buff_t* buffs_rime;
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_sigil_virulence;
-  buff_t* buffs_tier9_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
+  buff_t* buffs_tier9_2pc_melee;
 
   // Gains
-  gain_t* gains_rune_abilities;
   gain_t* gains_butchery;
+  gain_t* gains_chill_of_the_grave;
+  gain_t* gains_dirge;
+  gain_t* gains_glyph_icy_touch;
   gain_t* gains_horn_of_winter;
   gain_t* gains_power_refund;
+  gain_t* gains_rune_abilities;
   gain_t* gains_scent_of_blood;
-  gain_t* gains_glyph_icy_touch;
-  gain_t* gains_dirge;
 
   // Procs
   proc_t* procs_abominations_might;
@@ -771,6 +773,9 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     if ( use[i] ) p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+
+  if ( count_runes( p ) == 0 )
+    p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
 }
 
 static bool group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
@@ -1074,7 +1079,16 @@ void death_knight_attack_t::reset()
 
 void death_knight_attack_t::consume_resource()
 {
-  if ( cost() > 0 ) attack_t::consume_resource();
+  death_knight_t* p = player -> cast_death_knight();
+  double gain = -cost();
+  if ( gain > 0 )
+  {
+    // calculate_result() gets called before consume_resourcs()
+    if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+  }
+  else 
+    attack_t::consume_resource();
+
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -1086,9 +1100,6 @@ void death_knight_attack_t::execute()
 
   if ( result_is_hit() )
   {
-    double gain = -cost();
-    if ( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
-
     p -> buffs_bloodworms -> trigger();
 
     if ( result == RESULT_CRIT && p -> talents.bloody_vengeance )
@@ -1101,8 +1112,6 @@ void death_knight_attack_t::execute()
     refund_power( this );
     refund_runes( p, use );
   }
-  if ( count_runes( p ) == 0 )
-    p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
 }
 
 void death_knight_attack_t::player_buff()
@@ -1289,7 +1298,16 @@ void death_knight_spell_t::reset()
 
 void death_knight_spell_t::consume_resource()
 {
-  if ( cost() > 0 ) spell_t::consume_resource();
+  death_knight_t* p = player -> cast_death_knight();
+  double gain = -cost();
+  if ( gain > 0 )
+  {
+    // calculate_result() gets called before consume_resourcs()
+    if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+  }
+  else 
+    spell_t::consume_resource();
+  
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
@@ -1301,9 +1319,6 @@ void death_knight_spell_t::execute()
 
   if ( result_is_hit() )
   {
-    double gain = -cost();
-    if ( gain > 0 ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
-
     if ( result == RESULT_CRIT )
     {
       p -> buffs_bloody_vengeance -> trigger();
@@ -2041,20 +2056,12 @@ struct frost_fever_t : public death_knight_spell_t
     t -> debuffs.frost_fever -> trigger();
     trigger_crypt_fever( this, disease_duration );
     trigger_ebon_plaguebringer( this, disease_duration );
-    p -> buffs_killing_machine -> expire();
   }
 
   virtual void tick()
   {
     death_knight_spell_t::tick();
     trigger_wandering_plague( this, tick_dmg );
-  }
-
-  virtual void player_buff()
-  {
-    death_knight_spell_t::player_buff();
-    death_knight_t* p = player -> cast_death_knight();
-    player_crit += p -> buffs_killing_machine -> value();
   }
 
   virtual void target_debuff( int dmg_type )
@@ -2238,6 +2245,93 @@ struct horn_of_winter_t : public death_knight_spell_t
   virtual double gcd() SC_CONST { return player -> in_combat ? death_knight_spell_t::gcd() : 0; }
 };
 
+struct howling_blast_t : public death_knight_spell_t
+{
+  howling_blast_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "howling_blast", player, SCHOOL_SHADOW, TREE_FROST )
+  {
+    
+    death_knight_t* p = player -> cast_death_knight();
+    check_talent( p -> talents.howling_blast );
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 4, 527, 562, 0, -15 },
+      { 75, 3, 441, 479, 0, -15 },
+      { 70, 2, 324, 352, 0, -15 },
+      { 60, 1, 198, 214, 0, -15 },
+      {  0, 0,   0,   0, 0,   0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0;
+    cooldown          = 8.0;
+    direct_power_mod  = 0.15 * ( 1 + 0.04 * p -> talents.impurity );
+    
+    cost_unholy = 1;
+    cost_frost  = 1;
+  }
+  
+  virtual double cost() SC_CONST
+  {
+    // Rime also prevents getting RP because there are no runes used!
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> buffs_rime -> up () ) return 0;
+    return death_knight_spell_t::cost();
+  } 
+  
+  virtual void execute()
+  {
+
+    death_knight_spell_t::execute();
+    death_knight_t* p = player -> cast_death_knight();
+    if ( result_is_hit() )
+    {
+      if ( p -> glyphs.howling_blast )
+      {
+        if ( ! p -> frost_fever )
+          p -> frost_fever = new frost_fever_t( p );
+
+        p -> frost_fever -> execute();
+      }
+      p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
+    }
+    p -> buffs_killing_machine -> expire();
+    p -> buffs_rime -> expire();
+  }
+
+  virtual void player_buff()
+  {
+    death_knight_spell_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    player_crit += p -> buffs_killing_machine -> value();
+  }
+  
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    bool ready = death_knight_spell_t::ready();
+    if ( p -> buffs_rime -> check() )
+    {
+      // If Rime is up, runes are no restriction.
+      cost_unholy = 0;
+      cost_frost  = 0;
+      ready = death_knight_spell_t::ready();
+      cost_unholy = 1;
+      cost_frost  = 1;
+      return ready;
+    }
+    return death_knight_spell_t::ready();
+  }
+};
+
+
+
 struct hysteria_t : public action_t
 {
   player_t* hysteria_target;
@@ -2309,6 +2403,8 @@ struct icy_touch_t : public death_knight_spell_t
     base_execute_time = 0;
     direct_power_mod  = 0.1 * ( 1 + 0.04 * p -> talents.impurity );
     cooldown          = 0.0;
+    
+    base_crit += p -> talents.rime * 0.05;
   }
 
   virtual void execute()
@@ -2326,10 +2422,18 @@ struct icy_touch_t : public death_knight_spell_t
       }
       p -> frost_fever -> execute();
       if ( ! p -> sim -> P330 && p -> glyphs.icy_touch )
-      {
         p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_glyph_icy_touch );
-      }
+
+      p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
     }
+    p -> buffs_killing_machine -> expire();
+  }
+  
+  virtual void player_buff()
+  {
+    death_knight_spell_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    player_crit += p -> buffs_killing_machine -> value();
   }
 };
 
@@ -2365,7 +2469,8 @@ struct obliterate_t : public death_knight_attack_t
     
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_crit += p -> talents.subversion * 0.03;
-    convert_runes = p->talents.death_rune_mastery / 3;
+    base_crit += p -> talents.rime * 0.05;
+    convert_runes = p -> talents.death_rune_mastery / 3;
   }
 
   virtual void target_debuff( int dmg_type )
@@ -2383,7 +2488,6 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
-      p -> buffs_sigil_virulence -> trigger();
       trigger_abominations_might( this, 0.5 );
 
       // 30/60/100% to also hit with OH
@@ -2403,6 +2507,20 @@ struct obliterate_t : public death_knight_attack_t
           p -> active_blood_plague -> cancel();
         if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
           p -> active_frost_fever -> cancel();
+      }
+      p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
+      p -> buffs_sigil_virulence -> trigger();
+
+      if ( p -> buffs_rime -> trigger() ) 
+      {
+        for ( action_t* a = player -> action_list; a; a = a -> next )
+        {
+          if ( a -> name_str == "howling_blast" )
+          {
+            a -> cooldown_ready = 0;
+          }
+        }
+        update_ready();
       }
     }
   }
@@ -2934,10 +3052,11 @@ void death_knight_t::init_buffs()
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
   buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
-  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
+  buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
   buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
   buffs_killing_machine    = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
-  buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
+  buffs_rime               = new buff_t( this, "rime",               1,                      30.0,  0.0, talents.rime * 0.05 );
+  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
   buffs_tier10_4pc_melee   = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
@@ -2967,13 +3086,14 @@ void death_knight_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_rune_abilities     = get_gain( "rune_abilities" );
   gains_butchery           = get_gain( "butchery" );
+  gains_chill_of_the_grave = get_gain( "chill_of_the_grave" );
+  gains_dirge              = get_gain( "dirge" );
+  gains_glyph_icy_touch    = get_gain( "glyph_icy_touch" );
   gains_horn_of_winter     = get_gain( "horn_of_winter" );
   gains_power_refund       = get_gain( "power_refund" );
+  gains_rune_abilities     = get_gain( "rune_abilities" );
   gains_scent_of_blood     = get_gain( "scent_of_blood" );
-  gains_glyph_icy_touch    = get_gain( "glyph_icy_touch" );
-  gains_dirge              = get_gain( "dirge" );
 }
 
 void death_knight_t::init_procs()
@@ -3159,7 +3279,7 @@ std::vector<talent_translation_t>& death_knight_t::get_talent_list()
       { { 26, 3, &( talents.might_of_mograine                ) }, { 26, 1, &( talents.frost_strike            ) }, { 26, 1, &( talents.bone_shield              ) } },
       { { 27, 5, &( talents.blood_gorged                     ) }, { 27, 3, &( talents.guile_of_gorefiend      ) }, { 27, 3, &( talents.wandering_plague         ) } },
       { { 28, 1, &( talents.dancing_rune_weapon              ) }, { 28, 5, &( talents.tundra_stalker          ) }, { 28, 3, &( talents.ebon_plaguebringer       ) } },
-      { {  0, 0, NULL                                          }, { 29, 1,&( talents.howling_blast            ) }, { 29, 1, &( talents.scourge_strike           ) } },
+      { {  0, 0, NULL                                          }, { 29, 1, &( talents.howling_blast           ) }, { 29, 1, &( talents.scourge_strike           ) } },
       { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, { 30, 5, &( talents.rage_of_rivendare        ) } },
       { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, { 31, 1, &( talents.summon_gargoyle          ) } },
       { {  0, 0, NULL                                          }, {  0, 0, NULL                                 }, {  0, 0, NULL                                  } }
