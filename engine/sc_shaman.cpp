@@ -1242,26 +1242,27 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( ! shaman_spell_t::ready() )
-        return false;
-    
     if ( clearcasting > 0 )
-        if ( ! p -> buffs_elemental_focus -> check() )
-            return false;
+      if ( ! p -> buffs_elemental_focus -> check() )
+	return false;
 
     if ( conserve > 0 )
-        if ( ( player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ] ) < sim -> target -> health_percentage() * 0.01 )
-            return false;
+    {
+      double mana_pct = 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max [ RESOURCE_MANA ];
+
+      if ( ! p -> buffs_elemental_focus -> check() && ( mana_pct < sim -> target -> health_percentage() ) )
+	return false;
+    }
 
     if ( maelstrom > 0 )
-        if ( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
-            return false;
+      if ( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
+	return false;
 
     if ( max_lvb_cd > 0  )
-        if ( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
-            return false;
+      if ( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
+	return false;
 
-    return true;
+    return shaman_spell_t::ready();
   }
 };
 

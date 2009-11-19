@@ -24,8 +24,6 @@ Paladin_T9_05_11_55.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1
 
 Priest_T9_13_00_58_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Priest_T9_13_00_58_258_SWD.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
-Priest_T10_13_00_58_264.simc
-Priest_T10_13_00_58_264_SWD.simc
 
 Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
@@ -33,12 +31,11 @@ Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD   
 Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 
-Shaman_T9_16_55_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1   glyphs=flame_shock/stormstrike/fire_elemental_totem
-Shaman_T9_20_51_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1   glyphs=flame_shock/stormstrike/fire_elemental_totem talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053032052000000000000000030205013105021333031131031051
-Shaman_T9_57_14_00_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1  glyphs=flame_shock/lightning_bolt/fire_elemental_totem
+Shaman_T9_16_55_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
+Shaman_T9_20_51_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1  talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053032052000000000000000030205013105021333031131031051
+Shaman_T9_57_14_00_258.simc      tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Shaman_T9_57_14_00_258_ToW.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 
 Warlock_T9_00_13_58.simc     tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
