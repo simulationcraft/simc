@@ -1138,10 +1138,6 @@ void death_knight_attack_t::player_buff()
       player_hit += p -> talents.nerves_of_cold_steel  * 0.01;
   }
 
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
-  }
 
   if ( weapon -> group() == WEAPON_2H )
   {
@@ -1166,9 +1162,19 @@ void death_knight_attack_t::player_buff()
 
   additive_factors += p -> buffs_bone_shield -> up();
   additive_factors += p -> buffs_desolation -> value();
-  player_multiplier *= 1.0 + additive_factors;
+
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
+  }
+  else if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+  {
+    additive_factors += p -> talents.black_ice * 0.02;
+  }
+  
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
+  player_multiplier *= 1.0 + additive_factors;
 
   if ( special ) 
     player_crit += p -> talents.annihilation * 0.01;
@@ -1360,6 +1366,9 @@ void death_knight_spell_t::player_buff()
 
   additive_factors += p -> buffs_bone_shield -> up();
   additive_factors += p -> buffs_desolation -> value();
+  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    additive_factors += p -> talents.black_ice * 0.02;
+
   player_multiplier *= 1.0 + additive_factors;
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
