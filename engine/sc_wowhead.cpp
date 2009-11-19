@@ -603,8 +603,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   if ( type_str == "death_knight" )
   {
-    util_t::fprintf( sim -> output_file, "\nsimulationcraft: The Death Knight module are still in development, so wowhead downloads are disabled.\n" );
-    return 0;
+    util_t::fprintf( sim -> output_file, "\nsimulationcraft: Warning: The Death Knight module is still in development.\n" );
   }
 
   std::string rid_str;

@@ -5,8 +5,7 @@
 
 #include "simulationcraft.h"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace {  // ANONYMOUS NAMESPACE ==========================================
 
 // is_number ================================================================
 
@@ -544,12 +543,6 @@ bool armory_t::download_guild( sim_t* sim,
   std::string formatted_guild_name = guild_name;
   armory_t::format( formatted_guild_name, FORMAT_GUILD_NAME_MASK | FORMAT_ASCII_MASK );
 
-  if ( player_filter == DEATH_KNIGHT )
-  {
-    util_t::fprintf( sim -> output_file, "simulationcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
-    //return false;
-  }
-
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
 
   xml_node_t* guild_info = xml_t::download( url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
@@ -596,8 +589,6 @@ bool armory_t::download_guild( sim_t* sim,
         continue;
 
       int player_type = util_t::translate_class_id( character_cid );
-      if ( player_type == DEATH_KNIGHT )
-        continue;
 
       if ( player_filter != PLAYER_NONE )
         if ( player_filter != player_type )
@@ -691,8 +682,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if ( type_str == "death_knight" )
   {
-    util_t::fprintf( sim -> output_file, "simulationcraft: The Death Knight module is still in development, so Armory downloads are disabled.\n" );
-    //return 0;
+    util_t::fprintf( sim -> output_file, "simulationcraft: Warning: The Death Knight module is still in development.\n" );
   }
 
   int race_type = util_t::parse_race_type( race_str );
