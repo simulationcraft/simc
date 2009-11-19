@@ -24,6 +24,7 @@ struct shaman_t : public player_t
   action_t* active_fire_totem;
 
   // Buffs
+  buff_t* buffs_avalanche;
   buff_t* buffs_dueling;
   buff_t* buffs_electrifying_wind;
   buff_t* buffs_elemental_devastation;
@@ -37,12 +38,11 @@ struct shaman_t : public player_t
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_quaking_earth;
   buff_t* buffs_shamanistic_rage;
+  buff_t* buffs_shattered_ice;
   buff_t* buffs_stonebreaker;  
-  buff_t* buffs_totem_of_wrath_glyph;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
-  buff_t* buffs_tier10_relic_melee;
-  buff_t* buffs_tier10_relic_caster;
+  buff_t* buffs_totem_of_wrath_glyph;
   buff_t* buffs_tundra;
   buff_t* buffs_water_shield;
 
@@ -178,8 +178,8 @@ struct shaman_t : public player_t
     int splintering;
     int stonebreaker;
     int thunderfall;
-    int tier10_relic_melee;
-    int tier10_relic_caster;
+    int avalanche;
+    int shattered_ice;
     int tundra;
 
     totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
@@ -992,8 +992,6 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( result_is_hit() )
     {
-      // FIXIT: When does it proc? Hit/Miss? What about the OH? FIXIT
-      p -> buffs_tier10_relic_melee -> trigger();
       p -> buffs_nature_vulnerability -> trigger( 4 );
 
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -1005,6 +1003,7 @@ struct stormstrike_t : public shaman_attack_t
 
     trigger_improved_stormstrike( this );
     p -> buffs_dueling -> trigger();
+    p -> buffs_avalanche -> trigger();
   }
 
   virtual void consume_resource() {}
@@ -1863,7 +1862,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::tick();
-    p -> buffs_tier10_relic_caster -> trigger();
+    p -> buffs_shattered_ice -> trigger();
   }
 };
 
@@ -3111,18 +3110,18 @@ void shaman_t::init_items()
 
   if ( totem.empty() ) return;
 
-  if      ( totem == "stonebreakers_totem"        ) totems.stonebreaker = 1;
-  else if ( totem == "totem_of_dueling"           ) totems.dueling = 1;
-  else if ( totem == "totem_of_electrifying_wind" ) totems.electrifying_wind = 1;
-  else if ( totem == "totem_of_hex"               ) totems.hex = 1;
-  else if ( totem == "totem_of_indomitability"    ) totems.indomitability = 1;
-  else if ( totem == "totem_of_splintering"       ) totems.splintering = 1;
-  else if ( totem == "totem_of_quaking_earth"     ) totems.quaking_earth = 1;
-  else if ( totem == "totem_of_the_dancing_flame" ) totems.dancing_flame = 1;
-  else if ( totem == "totem_of_the_tundra"        ) totems.tundra = 1;
-  else if ( totem == "thunderfall_totem"          ) totems.thunderfall = 1;
-  else if ( totem == "totem_of_tier10_melee"      ) totems.tier10_relic_melee = 1;
-  else if ( totem == "totem_of_tier10_caster"     ) totems.tier10_relic_caster = 1;
+  if      ( totem == "stonebreakers_totem"            ) totems.stonebreaker = 1;
+  else if ( totem == "totem_of_dueling"               ) totems.dueling = 1;
+  else if ( totem == "totem_of_electrifying_wind"     ) totems.electrifying_wind = 1;
+  else if ( totem == "totem_of_hex"                   ) totems.hex = 1;
+  else if ( totem == "totem_of_indomitability"        ) totems.indomitability = 1;
+  else if ( totem == "totem_of_splintering"           ) totems.splintering = 1;
+  else if ( totem == "totem_of_quaking_earth"         ) totems.quaking_earth = 1;
+  else if ( totem == "totem_of_the_dancing_flame"     ) totems.dancing_flame = 1;
+  else if ( totem == "totem_of_the_tundra"            ) totems.tundra = 1;
+  else if ( totem == "thunderfall_totem"              ) totems.thunderfall = 1;
+  else if ( totem == "totem_of_the_avalanche"         ) totems.avalanche = 1;
+  else if ( totem == "bizuris_totem_of_shattered_ice" ) totems.shattered_ice = 1;
   else if ( totem.find( "totem_of_indomitability" ) != std::string::npos )
   {
     totems.indomitability = 1;
@@ -3178,15 +3177,14 @@ void shaman_t::init_buffs()
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling        );
+  buffs_avalanche         = new stat_buff_t( this, "avalanche",         STAT_ATTACK_POWER, 146, 3, 15.0,     0, totems.avalanche );
+  buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling );
   buffs_electrifying_wind = new stat_buff_t( this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
   buffs_indomitability    = new stat_buff_t( this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
   buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, 400, 1, 18.0,  9.01, totems.quaking_earth * 0.80 );
-  buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker   );
-  buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra         );
-  // PTR relics
-  buffs_tier10_relic_melee  = new stat_buff_t( this, "tier10_relic_melee",  STAT_ATTACK_POWER, 146, 3, 15.0, 0, totems.tier10_relic_melee );
-  buffs_tier10_relic_caster = new stat_buff_t( this, "tier10_relic_caster", STAT_HASTE_RATING,  44, 5, 30.0, 0, totems.tier10_relic_caster );
+  buffs_shattered_ice     = new stat_buff_t( this, "shattered_ice",     STAT_HASTE_RATING,  44, 5, 30.0,     0, totems.shattered_ice );
+  buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker );
+  buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra );
 }
 
 // shaman_t::init_gains ======================================================
