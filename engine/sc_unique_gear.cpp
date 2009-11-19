@@ -93,21 +93,12 @@ struct discharge_proc_callback_t : public action_callback_t
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_BLEED ) ? SCHOOL_PHYSICAL : s )
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = min;
         base_dd_max = max;
-        if ( s == SCHOOL_BLEED ) // Drain Life effect
-        {
-          may_crit = false;
-          may_resist = false;
-        }
-        else
-        {
-          may_crit = true;
-          may_resist = true;
-        }
+        may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
         base_spell_power_multiplier = 0;
         reset();
@@ -575,7 +566,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightning_capacitor"          ) e = "OnSpellDirectCrit_750Nature_3Stack_2.5Cd";
   else if ( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"            ) e = "OnSpellDirectCrit_1276Nature_4Stack_2.5Cd";
-  else if ( name == "bryntroll_the_bone_arbiter"   ) e = "OnAttackHit_2200Bleed_10%";
+  else if ( name == "bryntroll_the_bone_arbiter"   ) e = "OnAttackHit_2200Drain_10%";
 
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving" ) e = ( id == "47182" ? "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" );

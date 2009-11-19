@@ -456,6 +456,7 @@ const char* util_t::school_type_string( int school )
   case SCHOOL_NATURE:    return "nature";
   case SCHOOL_PHYSICAL:  return "physical";
   case SCHOOL_SHADOW:    return "shadow";
+  case SCHOOL_DRAIN:     return "drain";
   }
   return "unknown";
 }
