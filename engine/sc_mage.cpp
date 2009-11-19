@@ -80,6 +80,7 @@ struct mage_t : public player_t
   std::string focus_magic_target_str;
   std::string armor_type_str;
   double      ghost_charge_pct;
+  int         fof_on_cast;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -200,6 +201,7 @@ struct mage_t : public player_t
     armor_type_str = "molten"; // Valid values: molten|mage
     ghost_charge_pct = 1.0;
     distance = 30;
+    fof_on_cast = 0;
   }
 
   // Character Definition
@@ -2230,8 +2232,16 @@ struct frost_bolt_t : public mage_spell_t
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
       trigger_replenishment( this );
-      trigger_fingers_of_frost( this );
+      if ( p -> fof_on_cast ) trigger_fingers_of_frost( this );
     }
+  }
+
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::travel( travel_result, travel_dmg );
+    if ( ! p -> fof_on_cast ) trigger_fingers_of_frost( this );
   }
 
   virtual bool ready()
@@ -2487,11 +2497,18 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
-      trigger_fingers_of_frost( this );
+      if ( p -> fof_on_cast ) trigger_fingers_of_frost( this );
     }
     trigger_hot_streak( this );
   }
 
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::travel( travel_result, travel_dmg );
+    if ( ! p -> fof_on_cast ) trigger_fingers_of_frost( this );
+  }
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
@@ -3596,6 +3613,7 @@ std::vector<option_t>& mage_t::get_options()
       { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
       { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
       { "ghost_charge_pct",          OPT_FLT,    &( ghost_charge_pct                 ) },
+      { "fof_on_cast",               OPT_BOOL,   &( fof_on_cast                      ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
