@@ -1120,12 +1120,6 @@ void death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if ( p -> active_presence == PRESENCE_BLOOD )
-  {
-    player_multiplier *= 1.0 + 0.15;
-  }
-
-
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
     // Rivendare is spells and abilities... so everything *except* raw melee.
@@ -1167,9 +1161,18 @@ void death_knight_attack_t::player_buff()
 
   player_multiplier *= 1.0 + p -> buffs_desolation -> value();
 
-  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
+  // Blood Presnce and Bone Shield are ADDITIVE!
+  double additive_factors = 0.0;
+  if ( p -> active_presence == PRESENCE_BLOOD )
+    additive_factors += 0.15;
+
+  additive_factors += p -> buffs_bone_shield -> up() * 0.02;
+  player_multiplier *= 1.0 + additive_factors;
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
+
+  if ( special ) 
+    player_crit += p -> talents.annihilation * 0.01;
 }
 
 bool death_knight_attack_t::ready()
@@ -1340,11 +1343,6 @@ void death_knight_spell_t::player_buff()
   // TODO: merge this with death_knight_attack_t::player_buff to avoid
   // redundancy and errors when adding abilities.
 
-  if ( p -> active_presence == PRESENCE_BLOOD )
-  {
-    player_multiplier *= 1.0 + 0.15;
-  }
-
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
     player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
@@ -1356,7 +1354,14 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
   
-  player_multiplier *= 1.0 + p -> buffs_bone_shield -> up() * 0.02;
+  // Blood Presnce and Bone Shield are ADDITIVE!
+  double additive_factors = 0.0;
+  if ( p -> active_presence == PRESENCE_BLOOD )
+    additive_factors += 0.15;
+
+  additive_factors += p -> buffs_bone_shield -> up() * 0.02;
+  player_multiplier *= 1.0 + additive_factors;
+
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   
   if ( sim -> debug )
