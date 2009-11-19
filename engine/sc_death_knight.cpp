@@ -1556,6 +1556,7 @@ struct blood_boil_t : public death_knight_spell_t
   blood_boil_t( player_t* player, const std::string& options_str, bool sudden_doom = false ) :
       death_knight_spell_t( "blood_boil", player, SCHOOL_SHADOW, TREE_BLOOD )
   {
+    death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1576,6 +1577,8 @@ struct blood_boil_t : public death_knight_spell_t
 
     base_execute_time = 0;
     cooldown          = 0.0;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
   }
 
   void execute()
@@ -1726,7 +1729,9 @@ struct blood_strike_t : public death_knight_attack_t
     weapon_multiplier *= 0.4;
 
     base_crit += p -> talents.subversion * 0.03;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
+                                      + p -> talents.guile_of_gorefiend * 0.15;
+
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
   }
 
@@ -2103,6 +2108,7 @@ struct frost_strike_t : public death_knight_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier     *= 0.55;
 
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
   }
@@ -2273,6 +2279,8 @@ struct howling_blast_t : public death_knight_spell_t
     cooldown          = 8.0;
     direct_power_mod  = 0.15 * ( 1 + 0.04 * p -> talents.impurity );
     
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
+   
     cost_unholy = 1;
     cost_frost  = 1;
   }
@@ -2470,6 +2478,7 @@ struct obliterate_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.rime * 0.05;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
     convert_runes = p -> talents.death_rune_mastery / 3;
   }
 
