@@ -2080,13 +2080,15 @@ struct frost_fever_t : public death_knight_spell_t
 
 struct frost_strike_t : public death_knight_attack_t
 {
+  int killing_machine;
   frost_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
+      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
     {
+      { "killing_machine", OPT_INT, &killing_machine },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2111,6 +2113,15 @@ struct frost_strike_t : public death_knight_attack_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
+  }
+  
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
+      return false;
+      
+    return death_knight_attack_t::ready();
   }
 
   virtual void execute()
@@ -2254,14 +2265,17 @@ struct horn_of_winter_t : public death_knight_spell_t
 
 struct howling_blast_t : public death_knight_spell_t
 {
+  int killing_machine, rime;
   howling_blast_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "howling_blast", player, SCHOOL_SHADOW, TREE_FROST )
+      death_knight_spell_t( "howling_blast", player, SCHOOL_SHADOW, TREE_FROST ), killing_machine( 0 ), rime( 0 )
   {
     
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.howling_blast );
     option_t options[] =
     {
+      { "killing_machine", OPT_INT, &killing_machine },
+      { "rime",            OPT_INT, &rime            },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2290,15 +2304,20 @@ struct howling_blast_t : public death_knight_spell_t
   {
     // Rime also prevents getting RP because there are no runes used!
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_rime -> up () ) return 0;
+    if ( p -> buffs_rime -> check() ) return 0;
     return death_knight_spell_t::cost();
   } 
   
   virtual void execute()
   {
-
-    death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
+    if ( p -> buffs_rime -> up() )
+    {
+      // Don't use any runes if Rime is up
+      group_runes( p, 0, 0, 0, use );
+    }
+    death_knight_spell_t::execute();
+
     if ( result_is_hit() )
     {
       if ( p -> glyphs.howling_blast )
@@ -2325,16 +2344,23 @@ struct howling_blast_t : public death_knight_spell_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
-    bool ready = death_knight_spell_t::ready();
+
+    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
+      return false;
+
     if ( p -> buffs_rime -> check() )
     {
       // If Rime is up, runes are no restriction.
       cost_unholy = 0;
       cost_frost  = 0;
-      ready = death_knight_spell_t::ready();
+      bool rime_ready = death_knight_spell_t::ready();
       cost_unholy = 1;
       cost_frost  = 1;
-      return ready;
+      return rime_ready;
+    }
+    else if ( rime )
+    {
+      return false;
     }
     return death_knight_spell_t::ready();
   }
@@ -2387,12 +2413,14 @@ struct hysteria_t : public action_t
 
 struct icy_touch_t : public death_knight_spell_t
 {
+  int killing_machine;
   icy_touch_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST )
+      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
     {
+      { "killing_machine", OPT_INT, &killing_machine },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2415,6 +2443,15 @@ struct icy_touch_t : public death_knight_spell_t
     cooldown          = 0.0;
     
     base_crit += p -> talents.rime * 0.05;
+  }
+
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
+      return false;
+      
+    return death_knight_spell_t::ready();
   }
 
   virtual void execute()
@@ -2477,6 +2514,7 @@ struct obliterate_t : public death_knight_attack_t
     weapon_multiplier     *= 0.8;
     
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
+    base_multiplier *= 1.0 + p -> glyphs.obliterate * 0.2;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.rime * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
@@ -2833,11 +2871,12 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
 //if ( name == "frost_strike"             ) return new frost_strike_t             ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
 //if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
   if ( name == "icy_touch"                ) return new icy_touch_t                ( this, options_str );
 //if ( name == "improved_frost_presence"  ) return new improved_frost_presence_t  ( this, options_str );  Passive
 //if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
-//if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
+  if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
 //if ( name == "path_of_frost"            ) return new path_of_frost_t            ( this, options_str );  Non-Combat
 //if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
 //if ( name == "runic_focus"              ) return new runic_focus_t              ( this, options_str );  Passive
