@@ -2138,6 +2138,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
 };
 
@@ -2318,6 +2319,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
   
   virtual bool ready()
@@ -2442,6 +2444,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
 };
 
