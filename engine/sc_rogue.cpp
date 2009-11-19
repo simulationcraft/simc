@@ -2519,6 +2519,8 @@ struct deadly_poison_t : public rogue_poison_t
     {
       p -> procs_deadly_poison -> occur();
 
+      player_buff();
+      target_debuff( DMG_DIRECT );
       calculate_result();
 
       if ( result_is_hit() )
@@ -2541,7 +2543,6 @@ struct deadly_poison_t : public rogue_poison_t
         }
         else
         {
-          player_buff();
           schedule_tick();
           apply_poison_debuff( p );
         }
