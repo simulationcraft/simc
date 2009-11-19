@@ -2701,6 +2701,17 @@ struct scourge_strike_t : public death_knight_attack_t
           base_crit += p -> talents.vicious_strikes * 0.03;
           base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
         }
+        
+        virtual void player_buff()
+        {
+          death_knight_attack_t::player_buff();
+          death_knight_t* p = player -> cast_death_knight();
+          // FIX ME!
+          // Ugly hack is ugly
+          if ( sim -> target -> debuffs.blood_plague -> up() )
+            player_multiplier /= 1.0 + p -> talents.rage_of_rivendare * 0.02;
+          
+        }
 
         virtual void target_debuff( int dmg_type )
         {
