@@ -190,6 +190,9 @@ void spell_t::execute()
 {
   action_t::execute();
 
-  action_callback_t::trigger( player -> spell_result_callbacks[ result ], this );
-  action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
+  if ( ! aoe )
+  {
+    action_callback_t::trigger( player -> spell_result_callbacks       [ result ], this );
+    action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
+  }
 }

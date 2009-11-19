@@ -735,7 +735,7 @@ struct buff_t
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double uptime_pct, benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
-  bool constant, quiet;
+  bool reverse, constant, quiet;
   int aura_id;
   event_t* expiration;
   rng_t* rng;
@@ -747,12 +747,12 @@ struct buff_t
   // Raid Aura
   buff_t( sim_t*, const std::string& name,
           int max_stack=1, double duration=0, double cooldown=0,
-          double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Player Buff
   buff_t( player_t*, const std::string& name,
           int max_stack=1, double duration=0, double cooldown=0,
-          double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -793,7 +793,7 @@ struct stat_buff_t : public buff_t
   stat_buff_t( player_t*, const std::string& name,
 	       int stat, double amount,
 	       int max_stack=1, double duration=0, double cooldown=0,
-	       double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+	       double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~stat_buff_t() { };
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -804,7 +804,7 @@ struct debuff_t : public buff_t
 {
   debuff_t( sim_t*, const std::string& name,
 	    int max_stack=1, double duration=0, double cooldown=0,
-	    double chance=1.0, bool quiet=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+	    double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual void aura_gain();
   virtual void aura_loss();
 };
@@ -1221,9 +1221,11 @@ struct item_t
     int trigger_type, trigger_mask;
     int stat, school, max_stacks;
     double amount, proc_chance, duration, cooldown, tick;
+    bool reverse;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
-        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ), tick( 0 ) {}
+        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ), 
+	tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant;
 
@@ -2214,7 +2216,7 @@ struct unique_gear_t
   static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*,
                                                 int stat, int max_stacks, double amount,
                                                 double proc_chance, double duration, double cooldown,
-						double tick=0, int rng_type=RNG_DEFAULT );
+						double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*,
                                                      int max_stacks, int school, double min_dmg, double max_dmg,

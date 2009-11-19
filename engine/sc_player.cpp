@@ -3191,12 +3191,12 @@ struct use_item_t : public action_t
       if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                     e.stat, e.max_stacks, e.amount, e.proc_chance, 0, 0 );
+                                                     e.stat, e.max_stacks, e.amount, e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                          e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0 );
+                                                          e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0.0/*cd*/ );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -3225,7 +3225,7 @@ struct use_item_t : public action_t
       if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
       if( e.proc_chance <= 0 ) e.proc_chance = 1;
       
-      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance );
+      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, e.tick, e.reverse );
     }
     else assert( false );
 

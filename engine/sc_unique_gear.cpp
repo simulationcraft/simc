@@ -16,7 +16,8 @@ struct stat_proc_callback_t : public action_callback_t
   stat_buff_t* buff;
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
-      double proc_chance, double duration, double cooldown, double t, int rng_type=RNG_DEFAULT ) :
+			double proc_chance, double duration, double cooldown, 
+			double t=0, bool reverse=true, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stat( s ), amount( a ), tick( t )
   {
@@ -24,7 +25,13 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, rng_type );
+    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, reverse, rng_type );
+  }
+
+  virtual void activate()
+  {
+    action_callback_t::activate();
+    if ( buff -> reverse ) buff -> start( buff -> max_stack );
   }
 
   virtual void deactivate()
@@ -51,7 +58,7 @@ struct stat_proc_callback_t : public action_callback_t
           {
             stat_buff_t* b = callback -> buff;
             if ( b -> current_stack > 0 &&
-           b -> current_stack < b -> max_stack )
+		 b -> current_stack < b -> max_stack )
             {
               b -> bump();
               new ( sim ) tick_stack_t( sim, player, callback );
@@ -231,7 +238,7 @@ static void register_darkmoon_card_greatness( item_t* item )
       max_stat = stat[ i ];
     }
   }
-  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0, 0 );
+  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0 );
 
   p -> register_tick_damage_callback( cb );
   p -> register_direct_damage_callback( cb );
@@ -249,7 +256,7 @@ static void register_deaths_choice( item_t* item )
 
   int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
 
-  action_callback_t* cb = new stat_proc_callback_t( item -> name(), p, stat, 1, value, 0.35, 15.0, 45.0, 0 );
+  action_callback_t* cb = new stat_proc_callback_t( item -> name(), p, stat, 1, value, 0.35, 15.0, 45.0 );
   
   p -> register_tick_damage_callback( cb );
   p -> register_direct_damage_callback( cb );
@@ -413,9 +420,10 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       double             duration,
                                                       double             cooldown,
                                                       double             tick,
+						      bool               reverse,
                                                       int                rng_type )
 {
-  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, rng_type );
+  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type );
 
   if ( type == PROC_DAMAGE )
   {
@@ -493,11 +501,11 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( item_t& i, 
-                  item_t::special_effect_t& e )
+						      item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
-  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown, e.tick );
+  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, e.stat, e.max_stacks, e.amount, e.proc_chance, e.duration, e.cooldown, e.tick, e.reverse );
 }
 
 // ==========================================================================
@@ -505,7 +513,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( item_t& i, 
-                 item_t::special_effect_t& e )
+							   item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
@@ -665,6 +673,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "talisman_of_volatile_power" ) e = ( id == "47726" ? "OnSpellHit_57Haste_8Stack_20Dur_120Cd" : "OnSpellHit_64Haste_8Stack_20Dur_120Cd" );
   else if ( name == "vengeance_of_the_forsaken"  ) e = ( id == "47881" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
   else if ( name == "victors_call"               ) e = ( id == "47725" ? "OnAttackHit_215AP_5Stack_20Dur_120Cd"  : "OnAttackHit_250AP_5Stack_20Dur_120Cd"  );
+  else if ( name == "nevermelting_ice_crystal"   ) e = "OnSpellDirectCrit_184Crit_5Stack_20Dur_180Cd_reverse";
 
   // Enchants
   else if ( name == "pyrorocket"                   ) e = "1837Fire_45Cd";  // temporary for backwards compatibility

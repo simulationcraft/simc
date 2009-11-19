@@ -608,21 +608,21 @@ void enchant_t::init( player_t* p )
   if ( p -> is_pet() ) return;
 
   // Need to expose the Mongoose buffs for attack_t::haste()
-  p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
-  p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+  p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+  p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
 
   std::string& mh_enchant = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
   std::string& oh_enchant = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
 
   if ( mh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+    buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
 
     p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_MAIN_HAND, buff ) );
   }
   if ( oh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+    buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
 
     p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_OFF_HAND, buff ) );
   }
@@ -630,7 +630,7 @@ void enchant_t::init( player_t* p )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
-    buff_t* buff = new stat_buff_t( p, "executioner", STAT_ARMOR_PENETRATION_RATING, 120, 1, 15, 0, 0, false, RNG_DISTRIBUTED );
+    buff_t* buff = new stat_buff_t( p, "executioner", STAT_ARMOR_PENETRATION_RATING, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
 
     if ( mh_enchant == "executioner" )
     {

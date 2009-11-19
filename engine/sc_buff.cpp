@@ -18,11 +18,12 @@ buff_t::buff_t( sim_t*             s,
                 double             cd,
                 double             ch,
                 bool               q,
+		bool               r,
                 int                rng_type,
                 int                id ) :
   sim( s ), player( 0 ), name_str( n ), 
   max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
-  quiet( q ), aura_id( id )
+  reverse( r ), constant( false ), quiet( q ), aura_id( id )
 {
   init();
 
@@ -46,11 +47,12 @@ buff_t::buff_t( player_t*          p,
                 double             cd,
                 double             ch,
                 bool               q,
+		bool               r,
                 int                rng_type,
                 int                id ) :
   sim( p -> sim ), player( p ), name_str( n ), 
   max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
-  quiet( q ), aura_id( id )
+  reverse( r ), constant( false), quiet( q ), aura_id( id )
 {
   init();
 
@@ -193,7 +195,14 @@ bool buff_t::trigger( int    stacks,
   }
   last_trigger = sim -> current_time;
 
-  increment( stacks, value );
+  if ( reverse )
+  {
+    decrement( stacks, value );
+  }
+  else
+  {
+    increment( stacks, value );
+  }
 
   if ( cooldown > 0 )
     cooldown_ready = sim -> current_time + cooldown;
@@ -504,9 +513,10 @@ stat_buff_t::stat_buff_t( player_t*          p,
 			  double             cd,
 			  double             ch,
 			  bool               q,
+			  bool               r,
 			  int                rng_type,
 			  int                id ) :
-  buff_t( p, n, ms, d, cd, ch, q, rng_type, id ), stat(st), amount(a)
+  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id ), stat(st), amount(a)
 {
 }
 
@@ -574,9 +584,10 @@ debuff_t::debuff_t( sim_t*             s,
 		    double             cd,
 		    double             ch,
 		    bool               q,
+		    bool               r,
 		    int                rng_type,
 		    int                id ) :
-  buff_t( s, n, ms, d, cd, ch, q, rng_type, id )
+  buff_t( s, n, ms, d, cd, ch, q, r, rng_type, id )
 {
 }
 
