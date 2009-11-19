@@ -16,7 +16,7 @@ struct stat_proc_callback_t : public action_callback_t
   stat_buff_t* buff;
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
-			double proc_chance, double duration, double cooldown, double t, int rng_type=RNG_DEFAULT ) :
+      double proc_chance, double duration, double cooldown, double t, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stat( s ), amount( a ), tick( t )
   {
@@ -39,27 +39,27 @@ struct stat_proc_callback_t : public action_callback_t
     {
       if ( tick > 0 ) // The buff stacks over time.
       {
-	struct tick_stack_t : public event_t
-	{
-	  stat_proc_callback_t* callback;
-	  tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p ), callback( cb )
-	  {
-	    name = callback -> buff -> name();
-	    sim -> add_event( this, callback -> tick );
-	  }
-	  virtual void execute()
-	  {
-	    stat_buff_t* b = callback -> buff;
-	    if ( b -> current_stack > 0 &&
-		 b -> current_stack < b -> max_stack )
-	    {
-	      b -> bump();
-	      new ( sim ) tick_stack_t( sim, player, callback );
-	    }
-	  }
-	};
-	
-	new ( sim ) tick_stack_t( sim, a -> player, this );
+        struct tick_stack_t : public event_t
+        {
+          stat_proc_callback_t* callback;
+          tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p ), callback( cb )
+          {
+            name = callback -> buff -> name();
+            sim -> add_event( this, callback -> tick );
+          }
+          virtual void execute()
+          {
+            stat_buff_t* b = callback -> buff;
+            if ( b -> current_stack > 0 &&
+           b -> current_stack < b -> max_stack )
+            {
+              b -> bump();
+              new ( sim ) tick_stack_t( sim, player, callback );
+            }
+          }
+        };
+        
+        new ( sim ) tick_stack_t( sim, a -> player, this );
       }
     }
   }
@@ -194,12 +194,12 @@ void unique_gear_t::init( player_t* p )
       black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
       {
         may_miss    = false;
-	may_crit    = false; // FIXME!!  Can the damage crit?
+        may_crit    = false; // FIXME!!  Can the damage crit?
         background  = true;
         proc        = true;
         trigger_gcd = 0;
         base_dd_min = base_dd_max = 1;
-	base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
+        base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
         reset();
       }
       virtual void player_buff() { }
@@ -211,10 +211,10 @@ void unique_gear_t::init( player_t* p )
       black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff(b) {}
       virtual void trigger( action_t* a )
       {
-	// FIXME! Can specials trigger the proc?
-	if ( ! a -> weapon ) return;
-	if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
-	buff -> trigger();
+        // FIXME! Can specials trigger the proc?
+        if ( ! a -> weapon ) return;
+        if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
+        buff -> trigger();
       }
     };
 
@@ -225,21 +225,67 @@ void unique_gear_t::init( player_t* p )
       black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff(b), spell(s) {}
       virtual void trigger( action_t* a )
       {
-	// FIXME! Can specials trigger the damage?
-	// FIXME! What about melee attacks that do no weapon damage?
-	// FIXME! Is the 10% after normal damage reduction?
-	// FIXME! Does the 10% benefit from debuffs?
-	if ( ! a -> weapon ) return;
-	if ( buff -> up() )
-	{
-	  spell -> base_dd_adder = a -> direct_dmg;
-	  spell -> execute();
-	}
+        // FIXME! Can specials trigger the damage?
+        // FIXME! What about melee attacks that do no weapon damage?
+        // FIXME! Is the 10% after normal damage reduction?
+        // FIXME! Does the 10% benefit from debuffs?
+        if ( ! a -> weapon ) return;
+        if ( buff -> up() )
+        {
+          spell -> base_dd_adder = a -> direct_dmg;
+          spell -> execute();
+        }
       }
     };
 
     p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
     p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p ) ) );
+  }
+
+  if ( item_t* shadowmourne = p -> find_item( "shadowmourne" ) )
+  {
+    // http://ptr.wowhead.com/?spell=71903
+    // FIX ME! Duration? Colldown? Chance?
+    buff_t* buff = new stat_buff_t( p, "shadowmourne", STAT_STRENGTH, 40, 10, 60.0, 0.20 );
+
+    struct shadowmourne_spell_t : public spell_t
+    {
+      shadowmourne_spell_t( player_t* player ) : spell_t( "shadowmourne", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      {
+        may_miss    = false;
+        may_crit    = false; // FIXME!!  Can the damage crit?
+        background  = true;
+        proc        = true;
+        trigger_gcd = 0;
+        base_dd_min = 1900;
+        base_dd_max = 2100;
+        reset();
+      }
+      virtual void player_buff() { }
+    };
+
+    struct shadowmourne_trigger_t : public action_callback_t
+    {
+      buff_t* buff;
+      spell_t* spell;
+      int slot;
+      
+      shadowmourne_trigger_t( player_t* p, buff_t* b, spell_t* sp, int s ) : action_callback_t( p -> sim, p ), buff(b), spell(sp), slot(s) {}
+      virtual void trigger( action_t* a )
+      {
+        // FIXME! Can specials trigger the proc?
+        if ( ! a -> weapon ) return;
+        if ( a -> weapon -> slot != slot ) return;
+        buff -> trigger();
+        if ( buff -> stack() == buff -> max_stack )
+        {
+          buff -> expire();
+          spell -> execute();
+        }
+      }
+    };
+
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff, new shadowmourne_spell_t( p ), shadowmourne -> slot ) );
   }
 
   for ( int i=0; i < num_items; i++ )
@@ -283,7 +329,7 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       double             proc_chance,
                                                       double             duration,
                                                       double             cooldown,
-						      double             tick,
+                  double             tick,
                                                       int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, rng_type );
@@ -364,7 +410,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( item_t& i, 
-						      item_t::special_effect_t& e )
+                  item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
@@ -376,7 +422,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( item_t& i, 
-							   item_t::special_effect_t& e )
+                 item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
