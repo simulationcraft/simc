@@ -3225,7 +3225,7 @@ struct use_item_t : public action_t
       if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
       if( e.proc_chance <= 0 ) e.proc_chance = 1;
       
-      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, e.tick, e.reverse );
+      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
     }
     else assert( false );
 
