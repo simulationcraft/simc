@@ -2278,7 +2278,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     base_execute_time = 0;
     cooldown          = 8.0;
-    direct_power_mod  = 0.1;
+    direct_power_mod  = 0.2;
     
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
    
