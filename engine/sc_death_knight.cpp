@@ -1859,7 +1859,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
     consume_resource();
     update_ready();
-    player -> summon_pet( "dancing_rune_weapon", 12.0 + p -> glyphs.dancing_rune_weapon ? 0.0 : 5.0 );
+    player -> summon_pet( "dancing_rune_weapon", 12.0 + ( p -> glyphs.dancing_rune_weapon ? 0.0 : 5.0 ));
   }
 
   virtual bool ready()
@@ -2968,8 +2968,8 @@ void death_knight_t::init_actions()
     action_list_str  = "flask,type=endless_rage";
     action_list_str += "/food,type=dragonfin_filet";
     action_list_str += "/blood_presence";
-    action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
+    action_list_str += "/auto_attack";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -2979,6 +2979,46 @@ void death_knight_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+    if ( primary_tree() == TREE_UNHOLY )
+    {
+      action_list_str += "/raise_dead";
+      action_list_str += "/sequence,name=unholy,wait_on_ready=1";
+      action_list_str += ":icy_touch";
+      action_list_str += ":plague_strike";
+      action_list_str += ":blood_strike";
+      action_list_str += ":scourge_strike";
+      action_list_str += ":blood_strike";
+      action_list_str += "/summon_gargoyle,bloodlust=1";
+      action_list_str += "/horn_of_winter";
+      action_list_str += "/death_coil";
+      action_list_str += "/restart_sequence,name=unholy";
+    }
+    else if ( primary_tree() == TREE_BLOOD )
+    {
+      
+      action_list_str += "/hysteria,bloodlust=1";
+      action_list_str += "/dancing_rune_weapon,bloodlust=1";
+      action_list_str += "/sequence,name=blood,wait_on_ready=1";
+      action_list_str += ":icy_touch";
+      action_list_str += ":plague_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += ":death_strike";
+      action_list_str += ":blood_strike";
+      action_list_str += ":raise_dead,wait_on_ready=0";
+      action_list_str += ":death_coil";
+      action_list_str += ":death_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += ":heart_strike";
+      action_list_str += "/restart_sequence,name=blood";
+    }
+    else if ( primary_tree() == TREE_FROST )
+    {
+      // Lacking options to react to KM and Rime procs sry4u
+    }
+    
 
     if ( race == RACE_DWARF )
     {
