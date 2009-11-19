@@ -86,12 +86,21 @@ struct discharge_proc_callback_t : public action_callback_t
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) :
-          spell_t( n, p, RESOURCE_NONE, s )
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_BLEED ) ? SCHOOL_PHYSICAL : s )
       {
         trigger_gcd = 0;
         base_dd_min = min;
         base_dd_max = max;
-        may_crit    = true;
+        if ( s == SCHOOL_BLEED ) // Drain Life effect
+        {
+          may_crit = false;
+          may_resist = false;
+        }
+        else
+        {
+          may_crit = true;
+          may_resist = true;
+        }
         background  = true;
         base_spell_power_multiplier = 0;
         reset();
@@ -134,6 +143,222 @@ struct discharge_proc_callback_t : public action_callback_t
   }
 };
 
+// register_black_bruise ====================================================
+
+static void register_black_bruise( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // http://ptr.wowhead.com/?item=50035
+  buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.01 ); // FIXME!! Cooldown?
+
+  // http://ptr.wowhead.com/?spell=71876
+  // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+  struct black_bruise_spell_t : public spell_t
+  {
+    black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
+    {
+      may_miss    = false;
+      may_crit    = false; // FIXME!!  Can the damage crit?
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_dd_min = base_dd_max = 1;
+      base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
+      reset();
+    }
+    virtual void player_buff() { }
+  };
+
+  struct black_bruise_trigger_t : public action_callback_t
+  {
+    buff_t* buff;
+    black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff(b) {}
+    virtual void trigger( action_t* a )
+    {
+      // FIXME! Can specials trigger the proc?
+      if ( ! a -> weapon ) return;
+      if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
+      buff -> trigger();
+    }
+  };
+
+  struct black_bruise_damage_t : public action_callback_t
+  {
+    buff_t* buff;
+    spell_t* spell;
+    black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff(b), spell(s) {}
+    virtual void trigger( action_t* a )
+    {
+      // FIXME! Can specials trigger the damage?
+      // FIXME! What about melee attacks that do no weapon damage?
+      // FIXME! Is the 10% after normal damage reduction?
+      // FIXME! Does the 10% benefit from debuffs?
+      if ( ! a -> weapon ) return;
+      if ( buff -> up() )
+      {
+        spell -> base_dd_adder = a -> direct_dmg;
+        spell -> execute();
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
+  p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p ) ) );
+}
+
+// register_darkmoon_card_greatness =========================================
+
+static void register_darkmoon_card_greatness( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
+  int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_SPIRIT };
+
+  int max_stat=-1;
+  double max_value=0;
+
+  for ( int i=0; i < 4; i++ )
+  {
+    if ( p -> attribute[ attr[ i ] ] > max_value )
+    {
+      max_value = p -> attribute[ attr[ i ] ];
+      max_stat = stat[ i ];
+    }
+  }
+  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0, 0 );
+
+  p -> register_tick_damage_callback( cb );
+  p -> register_direct_damage_callback( cb );
+}
+
+// register_deaths_choice ===================================================
+
+static void register_deaths_choice( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  double value = ( item -> encoded_stats_str == "288ap" ) ? 510.0 : 450.0;
+
+  int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
+
+  action_callback_t* cb = new stat_proc_callback_t( item -> name(), p, stat, 1, value, 0.35, 15.0, 45.0, 0 );
+  
+  p -> register_tick_damage_callback( cb );
+  p -> register_direct_damage_callback( cb );
+}
+
+// register_empowered_deathbringer ==========================================
+
+static void register_empowered_deathbringer( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct deathbringer_spell_t : public spell_t
+  {
+    deathbringer_spell_t( player_t* p ) :
+      spell_t( "empowered_deathbringer", p, RESOURCE_NONE, SCHOOL_SHADOW )
+    {
+      trigger_gcd = 0;
+      background  = true;
+      may_miss = false;
+      may_crit = true;
+      base_dd_min = 1313;
+      base_dd_max = 1687;
+      base_spell_power_multiplier = 0;
+      reset();
+    }
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_crit = player -> composite_attack_crit(); // FIXME! Works like a spell in most ways accept source of crit.
+    }
+  };
+
+  struct deathbringer_callback_t : public action_callback_t
+  {
+    spell_t* spell;
+    rng_t* rng;
+
+    deathbringer_callback_t( player_t* p, spell_t* s ) :
+      action_callback_t( p -> sim, p ), spell( s )
+    {
+      rng  = p -> get_rng ( "empowered_deathbringer", RNG_DEFAULT );
+    }
+
+    virtual void trigger( action_t* a )
+    {
+      if ( rng -> roll( 0.08 ) ) // FIXME!! Using 8% of -hits-
+      {
+        spell -> execute();
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringer_callback_t( p, new deathbringer_spell_t( p ) ) );
+}
+
+// register_shadowmourne ====================================================
+
+static void register_shadowmourne( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // http://ptr.wowhead.com/?spell=71903
+  // FIX ME! Duration? Colldown? Chance?
+  buff_t* buff = new stat_buff_t( p, "shadowmourne", STAT_STRENGTH, 40, 10, 60.0, 0.20 );
+
+  struct shadowmourne_spell_t : public spell_t
+  {
+    shadowmourne_spell_t( player_t* player ) : spell_t( "shadowmourne", player, RESOURCE_NONE, SCHOOL_SHADOW )
+    {
+      may_miss    = false;
+      may_crit    = false; // FIXME!!  Can the damage crit?
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_dd_min = 1900;
+      base_dd_max = 2100;
+      reset();
+    }
+    virtual void player_buff() { }
+  };
+
+  struct shadowmourne_trigger_t : public action_callback_t
+  {
+    buff_t* buff;
+    spell_t* spell;
+    int slot;
+    
+    shadowmourne_trigger_t( player_t* p, buff_t* b, spell_t* sp, int s ) : action_callback_t( p -> sim, p ), buff(b), spell(sp), slot(s) {}
+    virtual void trigger( action_t* a )
+    {
+      // FIXME! Can specials trigger the proc?
+      if ( ! a -> weapon ) return;
+      if ( a -> weapon -> slot != slot ) return;
+      buff -> trigger();
+      if ( buff -> stack() == buff -> max_stack )
+      {
+        buff -> expire();
+        spell -> execute();
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff, new shadowmourne_spell_t( p ), item -> slot ) );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -158,156 +383,14 @@ void unique_gear_t::init( player_t* p )
     }
   }
 
-  if ( item_t* item = p -> find_item( "darkmoon_card_greatness" ) )
-  {
-    item -> unique = true;
+  item_t* item;
 
-    int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
-    int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_SPIRIT };
-
-    int max_stat=-1;
-    double max_value=0;
-
-    for ( int i=0; i < 4; i++ )
-    {
-      if ( p -> attribute[ attr[ i ] ] > max_value )
-      {
-        max_value = p -> attribute[ attr[ i ] ];
-        max_stat = stat[ i ];
-      }
-    }
-    action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, 15.0, 45.0, 0 );
-
-    p -> register_tick_damage_callback( cb );
-    p -> register_direct_damage_callback( cb );
-  }
-
-  if ( p -> find_item( "black_bruise" ) )
-  {
-    // http://ptr.wowhead.com/?item=50035
-    buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.01 ); // FIXME!! Cooldown?
-
-    // http://ptr.wowhead.com/?spell=71876
-    // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
-    struct black_bruise_spell_t : public spell_t
-    {
-      black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
-      {
-        may_miss    = false;
-        may_crit    = false; // FIXME!!  Can the damage crit?
-        background  = true;
-        proc        = true;
-        trigger_gcd = 0;
-        base_dd_min = base_dd_max = 1;
-        base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
-        reset();
-      }
-      virtual void player_buff() { }
-    };
-
-    struct black_bruise_trigger_t : public action_callback_t
-    {
-      buff_t* buff;
-      black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff(b) {}
-      virtual void trigger( action_t* a )
-      {
-        // FIXME! Can specials trigger the proc?
-        if ( ! a -> weapon ) return;
-        if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
-        buff -> trigger();
-      }
-    };
-
-    struct black_bruise_damage_t : public action_callback_t
-    {
-      buff_t* buff;
-      spell_t* spell;
-      black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff(b), spell(s) {}
-      virtual void trigger( action_t* a )
-      {
-        // FIXME! Can specials trigger the damage?
-        // FIXME! What about melee attacks that do no weapon damage?
-        // FIXME! Is the 10% after normal damage reduction?
-        // FIXME! Does the 10% benefit from debuffs?
-        if ( ! a -> weapon ) return;
-        if ( buff -> up() )
-        {
-          spell -> base_dd_adder = a -> direct_dmg;
-          spell -> execute();
-        }
-      }
-    };
-
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
-    p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p ) ) );
-  }
-
-  if ( item_t* shadowmourne = p -> find_item( "shadowmourne" ) )
-  {
-    // http://ptr.wowhead.com/?spell=71903
-    // FIX ME! Duration? Colldown? Chance?
-    buff_t* buff = new stat_buff_t( p, "shadowmourne", STAT_STRENGTH, 40, 10, 60.0, 0.20 );
-
-    struct shadowmourne_spell_t : public spell_t
-    {
-      shadowmourne_spell_t( player_t* player ) : spell_t( "shadowmourne", player, RESOURCE_NONE, SCHOOL_SHADOW )
-      {
-        may_miss    = false;
-        may_crit    = false; // FIXME!!  Can the damage crit?
-        background  = true;
-        proc        = true;
-        trigger_gcd = 0;
-        base_dd_min = 1900;
-        base_dd_max = 2100;
-        reset();
-      }
-      virtual void player_buff() { }
-    };
-
-    struct shadowmourne_trigger_t : public action_callback_t
-    {
-      buff_t* buff;
-      spell_t* spell;
-      int slot;
-      
-      shadowmourne_trigger_t( player_t* p, buff_t* b, spell_t* sp, int s ) : action_callback_t( p -> sim, p ), buff(b), spell(sp), slot(s) {}
-      virtual void trigger( action_t* a )
-      {
-        // FIXME! Can specials trigger the proc?
-        if ( ! a -> weapon ) return;
-        if ( a -> weapon -> slot != slot ) return;
-        buff -> trigger();
-        if ( buff -> stack() == buff -> max_stack )
-        {
-          buff -> expire();
-          spell -> execute();
-        }
-      }
-    };
-
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff, new shadowmourne_spell_t( p ), shadowmourne -> slot ) );
-  }
-
-  for ( int i=0; i < num_items; i++ )
-  {
-    std::string str = p -> items[ i ].name();
-
-    if ( str == "deaths_choice" || str == "deaths_verdict" )
-    {
-      item_t* item = &( p -> items[ i ] );
-
-      item -> unique = true;
-
-      double value = ( item -> encoded_stats_str == "288ap" ) ? 510.0 : 450.0;
-
-      int stat = ( p -> attribute[ ATTR_STRENGTH ] > p -> attribute[ ATTR_AGILITY ] ) ? STAT_STRENGTH : STAT_AGILITY;
-
-      action_callback_t* cb = new stat_proc_callback_t( str, p, stat, 1, value, 0.35, 15.0, 45.0, 0 );
-
-      p -> register_tick_damage_callback( cb );
-      p -> register_direct_damage_callback( cb );
-    }
-  }
+  if ( ( item = p -> find_item( "black_bruise"            ) ) ) register_black_bruise           ( item );
+  if ( ( item = p -> find_item( "darkmoon_card_greatness" ) ) ) register_darkmoon_card_greatness( item );
+  if ( ( item = p -> find_item( "empowered_deathbringer"  ) ) ) register_empowered_deathbringer ( item );
+  if ( ( item = p -> find_item( "deaths_choice"           ) ) ) register_deaths_choice          ( item );
+  if ( ( item = p -> find_item( "deaths_verdict"          ) ) ) register_deaths_choice          ( item );
+  if ( ( item = p -> find_item( "shadowmourne"            ) ) ) register_shadowmourne           ( item );
 
   if ( p -> set_bonus.spellstrike() )
   {
@@ -329,7 +412,7 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       double             proc_chance,
                                                       double             duration,
                                                       double             cooldown,
-                  double             tick,
+                                                      double             tick,
                                                       int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, rng_type );
@@ -484,6 +567,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightning_capacitor"          ) e = "OnSpellDirectCrit_750Nature_3Stack_2.5Cd";
   else if ( name == "timbals_crystal"              ) e = "OnTick_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"            ) e = "OnSpellDirectCrit_1276Nature_4Stack_2.5Cd";
+  else if ( name == "bryntroll_the_bone_arbiter"   ) e = "OnAttackHit_2200Bleed_10%";
 
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving" ) e = ( id == "47182" ? "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" );
