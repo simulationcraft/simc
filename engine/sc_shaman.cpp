@@ -1152,6 +1152,7 @@ void shaman_spell_t::assess_damage( double amount,
 struct chain_lightning_t : public shaman_spell_t
 {
   int      clearcasting;
+  int      conserve;
   double   max_lvb_cd;
   int      maelstrom;  
   stats_t* lightning_overload_stats;
@@ -1159,13 +1160,14 @@ struct chain_lightning_t : public shaman_spell_t
 
   chain_lightning_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
-      clearcasting( 0 ), max_lvb_cd( 0 ), maelstrom( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 )
+      clearcasting( 0 ), conserve( 0 ), max_lvb_cd( 0 ), maelstrom( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
       { "clearcasting", OPT_INT, &clearcasting },
+      { "conserve", OPT_INT, &conserve    },
       { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
       { "maelstrom", OPT_INT, &maelstrom  },  
       { NULL, OPT_UNKNOWN, NULL }
@@ -1241,19 +1243,23 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     if ( ! shaman_spell_t::ready() )
-      return false;
+        return false;
+    
+    if ( clearcasting > 0 )
+        if ( ! p -> buffs_elemental_focus -> check() )
+            return false;
 
-        if ( clearcasting > 0 )
-          if ( ! p -> buffs_elemental_focus -> check() )
-                  return false;
+    if ( conserve > 0 )
+        if ( ( player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ] ) < sim -> target -> health_percentage() * 0.01 )
+            return false;
 
     if ( maelstrom > 0 )
-      if ( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
-        return false;
+        if ( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
+            return false;
 
     if ( max_lvb_cd > 0  )
-      if ( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
-        return false;
+        if ( ( p -> _cooldowns.lava_burst - sim -> current_time ) > ( max_lvb_cd * haste() ) )
+            return false;
 
     return true;
   }
@@ -3290,7 +3296,7 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
       if ( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
-      action_list_str += "/chain_lightning";
+      action_list_str += "/chain_lightning,conserve=1";
       if ( ! set_bonus.tier9_4pc_caster() ) action_list_str += ",clearcasting=1";
       action_list_str += "/lightning_bolt";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
