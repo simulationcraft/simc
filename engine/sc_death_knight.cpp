@@ -1159,14 +1159,13 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-  player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-
-  // Blood Presnce and Bone Shield are ADDITIVE!
+  // Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
   if ( p -> active_presence == PRESENCE_BLOOD )
     additive_factors += 0.15;
 
-  additive_factors += p -> buffs_bone_shield -> up() * 0.02;
+  additive_factors += p -> buffs_bone_shield -> up();
+  additive_factors += p -> buffs_desolation -> value();
   player_multiplier *= 1.0 + additive_factors;
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
@@ -1354,12 +1353,13 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
   
-  // Blood Presnce and Bone Shield are ADDITIVE!
+  // Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
   if ( p -> active_presence == PRESENCE_BLOOD )
     additive_factors += 0.15;
 
-  additive_factors += p -> buffs_bone_shield -> up() * 0.02;
+  additive_factors += p -> buffs_bone_shield -> up();
+  additive_factors += p -> buffs_desolation -> value();
   player_multiplier *= 1.0 + additive_factors;
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
@@ -1584,15 +1584,6 @@ struct blood_boil_t : public death_knight_spell_t
     cooldown          = 0.0;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
-  }
-
-  void execute()
-  {
-    // Desolation is only direct attacks.
-    death_knight_t* p = player -> cast_death_knight();
-    player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-
-    death_knight_spell_t::execute();
   }
 };
 
@@ -1834,10 +1825,10 @@ struct bone_shield_t : public death_knight_spell_t
     cooldown    = 60.0;
   }
 
-  void execute()
+  virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_bone_shield -> trigger();
+    p -> buffs_bone_shield -> trigger( 1, 0.02 );
 
     death_knight_spell_t::execute();
   }
@@ -1913,10 +1904,6 @@ struct death_coil_t : public death_knight_spell_t
 
   void execute()
   {
-    // Desolation is only direct attacks.
-    death_knight_t* p = player -> cast_death_knight();
-    player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-
     death_knight_spell_t::execute();
     if ( result_is_hit() ) trigger_unholy_blight( this, direct_dmg );
   }
@@ -2424,9 +2411,7 @@ struct icy_touch_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    // Desolation is only direct attacks.
     death_knight_t* p = player -> cast_death_knight();
-    player_multiplier *= 1.0 + p -> buffs_desolation -> value();
 
     death_knight_spell_t::execute();
     if ( result_is_hit() )
