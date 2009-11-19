@@ -76,6 +76,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_bloody_vengeance;
   buff_t* buffs_bone_shield;
   buff_t* buffs_desolation;
+  buff_t* buffs_killing_machine;
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier9_2pc_melee;
@@ -95,8 +96,8 @@ struct death_knight_t : public player_t
   proc_t* procs_sudden_doom;
 
   // RNGs
-  rng_t* rng_blood_caked_blade;
   rng_t* rng_annihilation;
+  rng_t* rng_blood_caked_blade;
   rng_t* rng_threat_of_thassarian;
   rng_t* rng_wandering_plague;
 
@@ -1434,7 +1435,6 @@ bool death_knight_spell_t::ready()
 struct melee_t : public death_knight_attack_t
 {
   int sync_weapons;
-
   melee_t( const char* name, player_t* player, int sw ) :
     death_knight_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
@@ -1475,6 +1475,9 @@ struct melee_t : public death_knight_attack_t
         p -> resource_gain( resource, 5, p -> gains_scent_of_blood );
         p -> buffs_scent_of_blood -> decrement();
       }
+      // KM: 1/2/3/4/5 PPM proc, only auto-attacks
+      double chance = weapon -> proc_chance_on_swing( p -> talents.killing_machine );
+      p -> buffs_killing_machine -> trigger( 1, 1, chance );
     }
   }
 };
@@ -2038,12 +2041,20 @@ struct frost_fever_t : public death_knight_spell_t
     t -> debuffs.frost_fever -> trigger();
     trigger_crypt_fever( this, disease_duration );
     trigger_ebon_plaguebringer( this, disease_duration );
+    p -> buffs_killing_machine -> expire();
   }
 
   virtual void tick()
   {
     death_knight_spell_t::tick();
     trigger_wandering_plague( this, tick_dmg );
+  }
+
+  virtual void player_buff()
+  {
+    death_knight_spell_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    player_crit += p -> buffs_killing_machine -> value();
   }
 
   virtual void target_debuff( int dmg_type )
@@ -2106,6 +2117,14 @@ struct frost_strike_t : public death_knight_attack_t
           death_knight_attack_t::execute();
         }
     }
+    p -> buffs_killing_machine -> expire();
+  }
+  
+  virtual void player_buff()
+  {
+    death_knight_attack_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    player_crit += p -> buffs_killing_machine -> value();
   }
 };
 
@@ -2917,6 +2936,7 @@ void death_knight_t::init_buffs()
   buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
   buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
   buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
+  buffs_killing_machine    = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
   buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
   buffs_tier10_4pc_melee   = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
 
