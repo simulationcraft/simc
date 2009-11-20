@@ -595,7 +595,6 @@ bool armory_t::download_guild( sim_t* sim,
           continue;
 
       armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-      util_t::format_name( character_name );
 
       character_names.push_back( character_name );
     }
@@ -609,8 +608,11 @@ bool armory_t::download_guild( sim_t* sim,
     for ( int i=0; i < num_characters; i++ )
     {
       std::string& character_name = character_names[ i ];
+      std::string  formatted_name = character_name;
 
-      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Downloading character: %s\n", character_name.c_str() );
+      util_t::format_name( formatted_name );
+
+      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Downloading character: %s\n", formatted_name.c_str() );
       player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
 
       if ( ! p )
@@ -623,12 +625,12 @@ bool armory_t::download_guild( sim_t* sim,
       int tree = p -> primary_tree();
       if ( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
       {
-        util_t::fprintf( sim -> output_file, "\nsimulationcraft: Setting quiet=1 on healer %s\n", character_name.c_str() );
+        util_t::fprintf( sim -> output_file, "\nsimulationcraft: Setting quiet=1 on healer %s\n", formatted_name.c_str() );
         p -> quiet = true;
       }
       if ( tree == TREE_PROTECTION )
       {
-        util_t::fprintf( sim -> output_file, "\nsimulationcraft: Setting quiet=1 on tank %s\n", character_name.c_str() );
+        util_t::fprintf( sim -> output_file, "\nsimulationcraft: Setting quiet=1 on tank %s\n", formatted_name.c_str() );
         p -> quiet = true;
       }
     }

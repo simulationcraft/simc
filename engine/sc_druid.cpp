@@ -3481,6 +3481,7 @@ void druid_t::init_glyphs()
     else if ( n == "maul"                  ) ;
     else if ( n == "monsoon"               ) ;
     else if ( n == "nourish"               ) ;
+    else if ( n == "rebirth"               ) ;
     else if ( n == "rejuvenation"          ) ;
     else if ( n == "regrowth"              ) ;
     else if ( n == "survival_instincts"    ) ;
