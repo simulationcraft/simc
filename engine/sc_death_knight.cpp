@@ -1212,7 +1212,8 @@ void death_knight_attack_t::player_buff()
   if ( sim -> target -> debuffs.blood_plague -> up() )
   {
     // Rivendare is spells and abilities... so everything *except* raw melee.
-    if ( this != p -> main_hand_attack && this != p -> off_hand_attack )
+    // Things not affected: SS shadow damage in 3.3, wandering plague
+    if ( this != p -> main_hand_attack && this != p -> off_hand_attack && ! proc )
       player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
   }
   if ( weapon )
@@ -2833,17 +2834,6 @@ struct scourge_strike_t : public death_knight_attack_t
           base_crit += p -> talents.subversion * 0.03;
           base_crit += p -> talents.vicious_strikes * 0.03;
           base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
-        }
-        
-        virtual void player_buff()
-        {
-          death_knight_attack_t::player_buff();
-          death_knight_t* p = player -> cast_death_knight();
-          // FIX ME!
-          // Ugly hack is ugly
-          if ( sim -> target -> debuffs.blood_plague -> up() )
-            player_multiplier /= 1.0 + p -> talents.rage_of_rivendare * 0.02;
-          
         }
 
         virtual void target_debuff( int dmg_type )
