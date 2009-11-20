@@ -512,7 +512,7 @@ struct gargoyle_pet_t : public pet_t
       may_crit    = true;
       
 
-      base_dd_min = 150;
+      base_dd_min = 130;
       base_dd_max = 150;
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
@@ -526,7 +526,8 @@ struct gargoyle_pet_t : public pet_t
   double haste_snapshot, power_snapshot;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "gargoyle" ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ), power_snapshot( 0.0 )
+      pet_t( sim, owner, "gargoyle" ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
+      power_snapshot( 0.0 )
   {
   }
 
