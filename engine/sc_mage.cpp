@@ -2226,13 +2226,14 @@ struct frost_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+    int fof_on_cast = ( p -> fof_on_cast && ( p -> buffs_fingers_of_frost -> check() != 1 ) ); // Proc-Munching!
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
       trigger_replenishment( this );
-      if ( p -> fof_on_cast ) trigger_fingers_of_frost( this );
+      if ( fof_on_cast ) trigger_fingers_of_frost( this );
     }
   }
 
@@ -2491,13 +2492,14 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+    int fof_on_cast = ( p -> fof_on_cast && ( p -> buffs_fingers_of_frost -> check() != 1 ) ); // Proc-Munching!
     mage_spell_t::execute();
     if ( ! dot_wait ) duration_ready = 0;
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
       p -> buffs_tier8_2pc -> trigger();
-      if ( p -> fof_on_cast ) trigger_fingers_of_frost( this );
+      if ( fof_on_cast ) trigger_fingers_of_frost( this );
     }
     trigger_hot_streak( this );
   }

@@ -2131,6 +2131,22 @@ struct sequence_t : public action_t
   virtual void restart() { current_action=0; }
 };
 
+// Cooldown ==================================================================
+
+struct cooldown_t 
+{
+  sim_t* sim;
+  player_t* player;
+  std::string name_str;
+  double duration;
+  double ready;
+  cooldown_t* next;
+  cooldown_t() : sim(0) {}
+  cooldown_t( const std::string& name, player_t* player, double duration=0 );
+  virtual double remains() { return ( sim -> current_time - ready ) > 0; }
+  virtual const char* name() { return name_str.c_str(); }
+};
+
 // Action Callback ===========================================================
 
 struct action_callback_t
