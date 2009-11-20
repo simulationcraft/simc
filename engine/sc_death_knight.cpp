@@ -319,6 +319,7 @@ struct death_knight_t : public player_t
   }
 
   // Character Definition
+  virtual void      init();
   virtual void      init_actions();
   virtual void      init_race();
   virtual void      init_rng();
@@ -3025,6 +3026,18 @@ int death_knight_t::diseases()
     disease_count++;
   
   return disease_count;
+}
+
+// death_knight_t::init =======================================================
+
+void death_knight_t::init()
+{
+  player_t::init();
+
+  if ( pet_t* ghoul = find_pet( "ghoul" ) )
+  {
+    ghoul -> type = PLAYER_GUARDIAN;
+  }
 }
 
 // death_knight_t::init_race ======================================================
