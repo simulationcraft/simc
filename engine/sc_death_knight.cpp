@@ -500,59 +500,65 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
 struct gargoyle_pet_t : public pet_t
 {
-  struct melee_t : public attack_t
+  struct gargoyle_strike_t : public spell_t
   {
-    melee_t( player_t* player ) :
-        attack_t( "gargoyle_melee", player )
+    gargoyle_strike_t( player_t* player ) :
+        spell_t( "gargoyle_strike", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      background = true;
-      repeating = true;
-      may_crit = true;
+      // FIX ME!
+      // Crit? Resist? Scaling?
+      background  = true;
+      repeating   = true;
+      may_crit    = true;
+      
+
+      base_dd_min = 150;
+      base_dd_max = 150;
+      base_spell_power_multiplier  = 0;
+      base_attack_power_multiplier = 1;
+      direct_power_mod             = 0.40;
+
+      base_execute_time = 2.0;
     }
   };
 
-  melee_t* melee;
+  gargoyle_strike_t* gargoyle_strike;
+  double haste_snapshot, power_snapshot;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "gargoyle" ), melee( 0 )
+      pet_t( sim, owner, "gargoyle" ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ), power_snapshot( 0.0 )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 310;
-    main_hand_weapon.max_dmg    = 310;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.5;
   }
 
   virtual void init_base()
   {
-    attribute_base[ ATTR_STRENGTH  ] = 331;
-    attribute_base[ ATTR_AGILITY   ] = 113;
-    attribute_base[ ATTR_STAMINA   ] = 361;
-    attribute_base[ ATTR_INTELLECT ] = 65;
-    attribute_base[ ATTR_SPIRIT    ] = 109;
+    // FIX ME!
+    attribute_base[ ATTR_STRENGTH  ] = 0;
+    attribute_base[ ATTR_AGILITY   ] = 0;
+    attribute_base[ ATTR_STAMINA   ] = 0;
+    attribute_base[ ATTR_INTELLECT ] = 0;
+    attribute_base[ ATTR_SPIRIT    ] = 0;
 
-    base_attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
-
-    melee = new melee_t( this );
+    gargoyle_strike = new gargoyle_strike_t( this );
+  }
+  virtual double haste() 
+  {
+    return haste_snapshot;
   }
 
   virtual double composite_attack_power() SC_CONST
   {
-//    death_knight_t* o = owner -> cast_death_knight();
-    double ap = pet_t::composite_attack_power();
-//    ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power();
-    return ap;
+    return power_snapshot;
   }
 
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
-    melee -> execute(); // Kick-off repeating attack
+    // Haste etc. are taken at the time of summoning
+    death_knight_t* o = owner -> cast_death_knight();
+    haste_snapshot = o -> composite_attack_haste();
+    power_snapshot = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    gargoyle_strike -> schedule_execute(); // Kick-off repeating attack
   }
 };
 
@@ -1223,7 +1229,7 @@ void death_knight_attack_t::player_buff()
     // Does not apply to spells!
     if ( weapon -> slot == SLOT_OFF_HAND )
       player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
-    // 
+
     if ( weapon -> group() == WEAPON_1H )
       player_hit += p -> talents.nerves_of_cold_steel  * 0.01;
   }
