@@ -7,6 +7,7 @@
 
 struct bloodworms_pet_t;
 struct dancing_rune_weapon_pet_t;
+struct ghoul_pet_t;
 
 // ==========================================================================
 // Death Knight Runes
@@ -59,17 +60,18 @@ enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4
 struct death_knight_t : public player_t
 {
   // Active
-  int       active_presence;
+  action_t* active_blood_caked_blade;
   action_t* active_blood_plague;
   action_t* active_frost_fever;
-  action_t* active_unholy_blight;
   action_t* active_necrosis;
-  action_t* active_blood_caked_blade;
+  action_t* active_unholy_blight;
   action_t* active_wandering_plague;
+  int       active_presence;
 
   // Pets and Guardians
-  bloodworms_pet_t*           active_bloodworms;
+  bloodworms_pet_t*          active_bloodworms;
   dancing_rune_weapon_pet_t* active_dancing_rune_weapon;
+  ghoul_pet_t*               active_ghoul;
 
   // Buffs
   buff_t* buffs_bloodworms;
@@ -294,17 +296,18 @@ struct death_knight_t : public player_t
       player_t( sim, DEATH_KNIGHT, name, race_type )
   {
     // Active
-    active_presence            = 0;
+    active_blood_caked_blade   = NULL;
     active_blood_plague        = NULL;
     active_frost_fever         = NULL;
-    active_unholy_blight       = NULL;
     active_necrosis            = NULL;
-    active_blood_caked_blade   = NULL;
+    active_presence            = 0;
+    active_unholy_blight       = NULL;
     active_wandering_plague    = NULL;
 
     // Pets and Guardians
-    active_bloodworms   = NULL;
+    active_bloodworms          = NULL;
     active_dancing_rune_weapon = NULL;
+    active_ghoul               = NULL;
 
     // Auto-Attack
     main_hand_attack    = NULL;
@@ -488,7 +491,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     pet_t::summon( duration );
     o -> active_dancing_rune_weapon = this;
   }
-
 };
 
 // ==========================================================================
@@ -559,30 +561,17 @@ struct gargoyle_pet_t : public pet_t
 
 struct ghoul_pet_t : public pet_t
 {
-  struct melee_t : public attack_t
-  {
-    melee_t( player_t* player ) :
-        attack_t( "ghoul_melee", player )
-    {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      background = true;
-      repeating = true;
-      may_crit = true;
-    }
-  };
-
-  melee_t* melee;
-
+  attack_t* main_hand_attack;
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "ghoul" ), melee( 0 )
+      pet_t( sim, owner, "ghoul" ), main_hand_attack( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 310;
-    main_hand_weapon.max_dmg    = 310;
+    main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
+    main_hand_weapon.max_dmg    = 100; // FIXME only level 80 value
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.5;
+    main_hand_weapon.swing_time = 2.0;
+    
+    action_list_str = "auto_attack/claw";
   }
 
   virtual void init_base()
@@ -597,7 +586,16 @@ struct ghoul_pet_t : public pet_t
     initial_attack_power_per_strength = 2.0;
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
-    melee = new melee_t( this );
+    resource_base[ RESOURCE_ENERGY ] = 100;
+    energy_regen_per_second  = 10;
+  }
+
+  virtual bool ooc_buffs() {
+    death_knight_t* o = owner -> cast_death_knight();
+    if ( o -> talents.master_of_ghouls )
+      return true;
+
+    return false;
   }
 
   virtual double strength() SC_CONST
@@ -618,8 +616,16 @@ struct ghoul_pet_t : public pet_t
 
   virtual void summon( double duration=0 )
   {
+    death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    melee -> execute(); // Kick-off repeating attack
+    o -> active_ghoul = this;
+  }
+
+  virtual void dismiss()
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::dismiss();
+    o -> active_ghoul = 0;
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -629,7 +635,89 @@ struct ghoul_pet_t : public pet_t
     death_knight_t* o = owner -> cast_death_knight();
     return o -> composite_attack_haste();
   }
+
+  virtual int primary_resource() SC_CONST { return RESOURCE_ENERGY; }
+  
+  virtual action_t* create_action( const std::string& name, const std::string& options_str );  
 };
+
+struct ghoul_pet_attack_t : public attack_t
+{
+  ghoul_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_ENERGY, int sc=SCHOOL_PHYSICAL, bool special=true ) :
+      attack_t( n, player, r, sc, TREE_UNHOLY, special )
+  {
+    weapon = &( player -> main_hand_weapon );
+    may_crit = true;
+    weapon_power_mod *= 0.84;
+  }  
+};
+
+// Ghoul Pet Melee ===========================================================
+
+struct ghoul_pet_melee_t : public ghoul_pet_attack_t
+{
+  ghoul_pet_melee_t( player_t* player ) :
+      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
+  {
+    base_execute_time = weapon -> swing_time;
+    base_dd_min       = base_dd_max = 1;
+    background        = true;
+    repeating         = true;
+    direct_power_mod  = 0;
+  }
+};
+
+// Ghoul Auto Attack =========================================================
+
+struct ghoul_pet_auto_attack_t : public ghoul_pet_attack_t
+{
+  ghoul_pet_auto_attack_t( player_t* player ) :
+      ghoul_pet_attack_t( "auto_attack", player )
+  {
+    ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+
+    weapon = &( p -> main_hand_weapon );
+    p -> main_hand_attack = new ghoul_pet_melee_t( player );
+    trigger_gcd = 0;
+  }
+  virtual void execute()
+  {
+    ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+    p -> main_hand_attack -> schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+struct ghoul_pet_claw_t : public ghoul_pet_attack_t
+{
+  ghoul_pet_claw_t( player_t* player ) :
+      ghoul_pet_attack_t( "claw", player )
+  {
+    ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+
+    weapon            = &( p -> main_hand_weapon );
+    base_dd_min       = base_dd_max = 0.1;
+    base_cost         = 40;
+    weapon_multiplier = 1.5;
+    direct_power_mod  = 0;
+  }
+};
+
+// ghoul_pet_t::create_action ==============================================
+
+action_t* ghoul_pet_t::create_action( const std::string& name,
+                                       const std::string& options_str )
+{
+  if ( name == "auto_attack" ) return new ghoul_pet_auto_attack_t( this );
+  if ( name == "claw"        ) return new        ghoul_pet_claw_t( this );
+
+  return pet_t::create_action( name, options_str );
+}
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -2655,7 +2743,13 @@ struct raise_dead_t : public death_knight_spell_t
     update_ready();
     player -> summon_pet( "ghoul", p -> talents.master_of_ghouls ? 0.0 : 60.0 );
   }
-
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> active_ghoul ) return false;
+    
+    return death_knight_spell_t::ready();
+  }
 };
 
 struct rune_tap_t : public death_knight_spell_t
@@ -2844,7 +2938,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 action_t* death_knight_t::create_action( const std::string& name, const std::string& options_str )
 {
   // General Actions
-  if ( name == "auto_attack"             ) return new auto_attack_t             ( this, options_str );
+  if ( name == "auto_attack"              ) return new auto_attack_t             ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -3268,8 +3362,9 @@ void death_knight_t::reset()
   active_frost_fever  = NULL;
 
   // Pets and Guardians
-  active_bloodworms = NULL;
+  active_bloodworms          = NULL;
   active_dancing_rune_weapon = NULL;
+  active_ghoul               = NULL;
 
   _runes.reset();
 }
