@@ -84,6 +84,11 @@ struct death_knight_t : public player_t
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
+  
+  // Presences
+  buff_t* buffs_blood_presence;
+  buff_t* buffs_frost_presence;
+  buff_t* buffs_unholy_presence;
 
   // Gains
   gain_t* gains_butchery;
@@ -1548,7 +1553,10 @@ bool death_knight_spell_t::ready()
          ( min_death != -1 && c < min_death ) ||
          ( max_death != -1 && c > max_death ) ) return false;
   */
-  return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
+  if ( player -> in_combat )
+    return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
+  else
+    return group_runes( player, 0, 0, 0, use );
 }
 
 // =========================================================================
@@ -1753,16 +1761,46 @@ struct blood_plague_t : public death_knight_spell_t
   }
 };
 
-struct blood_presence_t : public action_t
+struct presence_t : public death_knight_spell_t
 {
-  blood_presence_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_OTHER, "blood_presence", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+  int switch_to_presence;
+  presence_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "presence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
+    std::string presence_str;
     option_t options[] =
     {
-      { NULL, OPT_UNKNOWN, NULL }
+      { "choose",  OPT_STRING, &presence_str },
+      { NULL,     OPT_UNKNOWN, NULL          }
     };
     parse_options( options, options_str );
+
+    cost_unholy = 0;
+    cost_blood  = 0;
+    cost_frost  = 0;
+    if ( ! presence_str.empty() )
+    {
+      if ( presence_str == "blood" || presence_str == "bp" )
+      {
+        switch_to_presence = PRESENCE_BLOOD;
+        cost_blood  = 1;
+      }
+      else if ( presence_str == "frost" || presence_str == "fp" )
+      {
+        switch_to_presence = PRESENCE_FROST;
+        cost_frost  = 1;
+      }
+      else if ( presence_str == "unholy" || presence_str == "up" )
+      {
+        switch_to_presence = PRESENCE_UNHOLY;
+        cost_unholy = 1;
+      }
+    }
+    else
+    {
+      // Default to Blood Presence
+      switch_to_presence = PRESENCE_BLOOD;
+    }
 
     base_cost   = 0;
     trigger_gcd = 0;
@@ -1770,31 +1808,37 @@ struct blood_presence_t : public action_t
     harmful     = false;
   }
 
-  void execute()
+  virtual void execute()
   {
-    const char* stance_name[] =
-      { "Unknown Presence",
-        "Blood Presence",
-        "Frost Presence",
-        "Unpossible Presence",
-        "Unholy Presence"
-      };
+    death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> active_presence )
+    // If not in combat, just do it without consuming runes.
+    if ( ! p -> in_combat )
+      group_runes( p, 0, 0, 0, use );
+    switch ( p -> active_presence )
     {
-      p -> aura_loss( stance_name[ p -> active_presence  ] );
+      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> expire(); break;
+      case PRESENCE_FROST:  p -> buffs_frost_presence  -> expire(); break;
+      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> expire(); break;
     }
-    p -> active_presence = PRESENCE_BLOOD;
-    p -> aura_gain( stance_name[ p -> active_presence  ] );
+    p -> active_presence = switch_to_presence;
 
-    update_ready();
+    switch ( p -> active_presence )
+    {
+      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger(); break;
+      case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger(); break;
+      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger(); break;
+    }
   }
 
-  bool ready()
+  virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
+    if ( p -> active_presence == switch_to_presence )
+      return false;
 
-    return p -> active_presence != PRESENCE_BLOOD;
+    return death_knight_spell_t::ready();
+
   }
 };
 
@@ -2936,11 +2980,12 @@ struct summon_gargoyle_t : public death_knight_spell_t
 action_t* death_knight_t::create_action( const std::string& name, const std::string& options_str )
 {
   // General Actions
-  if ( name == "auto_attack"              ) return new auto_attack_t             ( this, options_str );
+  if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
+  if ( name == "presence"                 ) return new presence_t                 ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
-  if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
+//if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
   if ( name == "blood_strike"             ) return new blood_strike_t             ( this, options_str );
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
@@ -3110,7 +3155,7 @@ void death_knight_t::init_actions()
   {
     action_list_str  = "flask,type=endless_rage";
     action_list_str += "/food,type=dragonfin_filet";
-    action_list_str += "/blood_presence";
+    action_list_str += "/presence,choose=blood";
     action_list_str += "/snapshot_stats";
     action_list_str += "/auto_attack";
     int num_items = ( int ) items.size();
@@ -3254,14 +3299,16 @@ void death_knight_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-
-  buffs_bloody_vengeance   = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
-  buffs_bone_shield        = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
-  buffs_desolation         = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
-  buffs_killing_machine    = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
-  buffs_rime               = new buff_t( this, "rime",               1,                      30.0,  0.0, talents.rime * 0.05 );
-  buffs_scent_of_blood     = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
-  buffs_tier10_4pc_melee   = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
+  buffs_blood_presence   = new buff_t( this, "blood_presence" );
+  buffs_frost_presence   = new buff_t( this, "frost_presence" );
+  buffs_unholy_presence  = new buff_t( this, "unholy_presence" );
+  buffs_bloody_vengeance = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
+  buffs_bone_shield      = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
+  buffs_desolation       = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
+  buffs_killing_machine  = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
+  buffs_rime             = new buff_t( this, "rime",               1,                      30.0,  0.0, talents.rime * 0.05 );
+  buffs_scent_of_blood   = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
+  buffs_tier10_4pc_melee = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
