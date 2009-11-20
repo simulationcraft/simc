@@ -322,7 +322,7 @@ player_t::player_t( sim_t*             s,
     // Events
     executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ), action_queued( false ),
     // Actions
-    action_list( 0 ), action_list_default( 0 ),
+    action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
     // Reporting
     quiet( 0 ), last_foreground_action( 0 ),
     current_time( 0 ), total_seconds( 0 ), 
@@ -1897,10 +1897,11 @@ void player_t::reset()
 
   init_resources( true );
 
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    a -> reset();
-  }
+  for ( action_t* a = action_list; a; a = a -> next ) a -> reset();
+
+  for ( cooldown_t* c = cooldown_list; c; c = c -> next ) c -> reset();
+
+  for ( dot_t* d = dot_list; d; d = d -> next ) d -> reset();
 
   potion_used = 0;
 
@@ -2557,6 +2558,60 @@ void player_t::aura_loss( const char* aura_name , int aura_id )
     log_t::output( sim, "%s loses %s", name(), aura_name );
     log_t::aura_loss_event( this, aura_name, aura_id );
   }
+}
+
+// player_t::get_cooldown ===================================================
+
+cooldown_t* player_t::get_cooldown( const std::string& name )
+{
+  cooldown_t* c=0;
+
+  for ( c = cooldown_list; c; c = c -> next )
+  {
+    if ( c -> name_str == name )
+      return c;
+  }
+
+  c = new cooldown_t( name, this );
+
+  cooldown_t** tail = &cooldown_list;
+
+  while ( *tail && name > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+
+  c -> next = *tail;
+  *tail = c;
+
+  return c;
+}
+
+// player_t::get_dot ========================================================
+
+dot_t* player_t::get_dot( const std::string& name )
+{
+  dot_t* d=0;
+
+  for ( d = dot_list; d; d = d -> next )
+  {
+    if ( d -> name_str == name )
+      return d;
+  }
+
+  d = new dot_t( name, this );
+
+  dot_t** tail = &dot_list;
+
+  while ( *tail && name > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+
+  d -> next = *tail;
+  *tail = d;
+
+  return d;
 }
 
 // player_t::get_gain =======================================================

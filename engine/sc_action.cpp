@@ -72,6 +72,10 @@ action_t::action_t( int         ty,
 
   for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
 
+  // FIXME!! Rename cooldownp to cooldown after migration.
+  cooldownp = p -> get_cooldown( n );
+  dot = p -> get_dot( n );
+
   stats = p -> get_stats( n );
   stats -> school = school;
 }

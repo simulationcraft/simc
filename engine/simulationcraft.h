@@ -95,12 +95,13 @@ struct action_t;
 struct action_callback_t;
 struct alias_t;
 struct attack_t;
-struct spell_tick_t;
 struct base_stats_t;
 struct buff_t;
 struct callback_t;
+struct cooldown_t;
 struct death_knight_t;
 struct druid_t;
+struct dot_t;
 struct enchant_t;
 struct event_t;
 struct gain_t;
@@ -1406,6 +1407,8 @@ struct player_t
   std::string action_list_str;
   std::string action_list_skip;
   int         action_list_default;
+  cooldown_t* cooldown_list;
+  dot_t*      dot_list;
 
   // Reporting
   int       quiet;
@@ -1756,11 +1759,14 @@ struct player_t
   bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
-  gain_t*   get_gain  ( const std::string& name );
-  proc_t*   get_proc  ( const std::string& name, sim_t* );
-  stats_t*  get_stats ( const std::string& name );
-  uptime_t* get_uptime( const std::string& name );
-  rng_t*    get_rng   ( const std::string& name, int type=RNG_DEFAULT );
+
+  cooldown_t* get_cooldown( const std::string& name );
+  dot_t*      get_dot     ( const std::string& name );
+  gain_t*     get_gain    ( const std::string& name );
+  proc_t*     get_proc    ( const std::string& name, sim_t* );
+  stats_t*    get_stats   ( const std::string& name );
+  uptime_t*   get_uptime  ( const std::string& name );
+  rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
 };
 
 // Pet =======================================================================
@@ -1978,6 +1984,8 @@ struct action_t
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
+  cooldown_t* cooldownp; // FIXME!! rename to just "cooldown" after migration complete
+  dot_t* dot;
   stats_t* stats;
   event_t* execute_event;
   event_t* tick_event;
@@ -2142,8 +2150,33 @@ struct cooldown_t
   double ready;
   cooldown_t* next;
   cooldown_t() : sim(0) {}
-  cooldown_t( const std::string& name, player_t* player, double duration=0 );
+  cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
+  virtual ~cooldown_t() {}
+  virtual void reset() { ready=-1; }
   virtual double remains() { return ( sim -> current_time - ready ) > 0; }
+  virtual const char* name() { return name_str.c_str(); }
+};
+
+// DoT =======================================================================
+
+struct dot_t 
+{
+  player_t* player;
+  action_t* action;
+  std::string name_str;
+  double ready;
+  dot_t* next;
+  dot_t() : action(0) {}
+  dot_t( const std::string& n, player_t* p ) : player(p), action(0), name_str(n), ready(-1), next(0) {}
+  virtual ~dot_t() {}
+  virtual void reset() { action=0; ready=-1; }
+  virtual double remains() { return ( player -> sim -> current_time - ready ) > 0; }
+  virtual int ticks() 
+  { 
+    if ( ! action ) return 0;
+    if ( ! action -> ticking ) return 0;
+    return ( action -> num_ticks - action -> current_tick );
+  }
   virtual const char* name() { return name_str.c_str(); }
 };
 
