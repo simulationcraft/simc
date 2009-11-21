@@ -1108,6 +1108,9 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
       may_crit       = false;
       may_resist     = false;
       may_miss       = false;
+      
+      death_knight_t* p = player -> cast_death_knight();
+      base_multiplier *= 1.0 + p -> glyphs.unholy_blight * 0.4;
       reset();
     }
 
