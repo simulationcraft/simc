@@ -246,7 +246,6 @@ struct druid_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
-  virtual void      recalculate_haste();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
@@ -2046,7 +2045,7 @@ double druid_spell_t::haste() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
-//  if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
+  if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
   if ( p -> buffs_natures_grace -> up() )
   {
     h *= 1.0 / ( 1.0 + 0.20 );
@@ -3870,15 +3869,6 @@ double druid_t::available() SC_CONST
   if ( energy > 25 ) return 0.1;
 
   return std::max( ( 25 - energy ) / energy_regen_per_second, 0.1 );
-}
-
-// druid_t::recalculate_haste ==============================================
-
-void druid_t::recalculate_haste()
-{
-  player_t::recalculate_haste();
-
-  spell_haste = ( 1.0 - talents.celestial_focus * 0.01 ) / ( 1.0 + haste_rating / rating. spell_haste );
 }
 
 // druid_t::composite_attack_power ==========================================

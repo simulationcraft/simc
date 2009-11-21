@@ -338,8 +338,10 @@ struct death_knight_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_items();
   virtual void      init_rating();
+  virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
@@ -1142,6 +1144,8 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 // Death Knight Attack Methods
 // ==========================================================================
 
+// death_knight_attack_t::parse_options =====================================
+
 void death_knight_attack_t::parse_options( option_t* options, const std::string& options_str )
 {
   option_t base_options[] =
@@ -1175,11 +1179,15 @@ void death_knight_attack_t::parse_options( option_t* options, const std::string&
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
+// death_knight_attack_t::reset() ===========================================
+
 void death_knight_attack_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
   action_t::reset();
 }
+
+// death_knight_attack_t::consume_resource() ================================
 
 void death_knight_attack_t::consume_resource()
 {
@@ -1195,6 +1203,8 @@ void death_knight_attack_t::consume_resource()
 
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
+
+// death_knight_attack_t::execute() =========================================
 
 void death_knight_attack_t::execute()
 {
@@ -1217,6 +1227,8 @@ void death_knight_attack_t::execute()
     refund_runes( p, use );
   }
 }
+
+// death_knight_attack_t::player_buff() =====================================
 
 void death_knight_attack_t::player_buff()
 {
@@ -1260,11 +1272,10 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-  // Blood Presnce, Bone Shield and Desolation are ADDITIVE!
+  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
-  if ( p -> active_presence == PRESENCE_BLOOD )
-    additive_factors += 0.15;
 
+  additive_factors += p -> buffs_blood_presence -> value();
   additive_factors += p -> buffs_bone_shield -> up();
   additive_factors += p -> buffs_desolation -> value();
 
@@ -1284,6 +1295,8 @@ void death_knight_attack_t::player_buff()
   if ( special ) 
     player_crit += p -> talents.annihilation * 0.01;
 }
+
+// death_knight_attack_t::ready() ===========================================
 
 bool death_knight_attack_t::ready()
 {
@@ -1370,6 +1383,8 @@ bool death_knight_attack_t::ready()
 // Death Knight Spell Methods
 // ==========================================================================
 
+// death_knight_spell_t::parse_options() ====================================
+
 void death_knight_spell_t::parse_options( option_t* options, const std::string& options_str )
 {
   option_t base_options[] =
@@ -1403,11 +1418,15 @@ void death_knight_spell_t::parse_options( option_t* options, const std::string& 
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
+// death_knight_spell_t::reset() ============================================
+
 void death_knight_spell_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
   action_t::reset();
 }
+
+// death_knight_spell_t::consume_resource() =================================
 
 void death_knight_spell_t::consume_resource()
 {
@@ -1423,6 +1442,8 @@ void death_knight_spell_t::consume_resource()
   
   consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
+
+// death_knight_spell_t::xecute() ==========================================
 
 void death_knight_spell_t::execute()
 {
@@ -1444,6 +1465,8 @@ void death_knight_spell_t::execute()
   }
 }
 
+// death_knight_spell_t::player_buff() ======================================
+
 void death_knight_spell_t::player_buff()
 {
   death_knight_t* p = player -> cast_death_knight();
@@ -1463,11 +1486,10 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
-  // Blood Presnce, Bone Shield and Desolation are ADDITIVE!
+  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
-  if ( p -> active_presence == PRESENCE_BLOOD )
-    additive_factors += 0.15;
-
+  
+  additive_factors += p -> buffs_blood_presence -> value();
   additive_factors += p -> buffs_bone_shield -> up();
   additive_factors += p -> buffs_desolation -> value();
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
@@ -1481,6 +1503,8 @@ void death_knight_spell_t::player_buff()
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
                    name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
 }
+
+// death_knight_spell_t::ready() ============================================
 
 bool death_knight_spell_t::ready()
 {
@@ -1828,9 +1852,9 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p -> active_presence )
     {
-      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger(); break;
-      case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger(); break;
-      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger(); break;
+      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger( 1, 0.15 ); break;
+      case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger( 1, 0.60 ); break;
+      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger( 1, 0.15 ); break;
     }
   }
 
@@ -3056,7 +3080,26 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
-// death_knight_t::diseases =======================================================
+// death_knight_t::composite_attack_haste() ================================
+
+double death_knight_t::composite_attack_haste() SC_CONST
+{
+  double haste = player_t::composite_attack_haste();
+  haste *= 1.0/ ( 1.0 + buffs_unholy_presence -> value());
+  return haste;
+}
+
+// death_knight_t::composite_spell_haste() ==================================
+
+double death_knight_t::composite_spell_haste() SC_CONST
+{
+  double haste = player_t::composite_spell_haste();
+  haste *= 1.0/ ( 1.0 + buffs_unholy_presence -> value());
+  return haste;
+}
+
+// death_knight_t::diseases =================================================
+
 int death_knight_t::diseases()
 {
   int disease_count = 0;
@@ -3073,7 +3116,7 @@ int death_knight_t::diseases()
   return disease_count;
 }
 
-// death_knight_t::init =======================================================
+// death_knight_t::init ======================================================
 
 void death_knight_t::init()
 {
@@ -3085,7 +3128,7 @@ void death_knight_t::init()
   }
 }
 
-// death_knight_t::init_race ======================================================
+// death_knight_t::init_race =================================================
 
 void death_knight_t::init_race()
 {
