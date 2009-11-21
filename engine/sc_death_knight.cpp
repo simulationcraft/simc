@@ -1073,19 +1073,19 @@ static void trigger_blood_caked_blade( action_t* a )
         trigger_gcd    = false;
         base_dd_min = base_dd_max = 0.01;
         weapon = &( p -> main_hand_weapon );
-        normalize_weapon_speed = true;
-        weapon_multiplier *= 0.25;
+        normalize_weapon_speed = false;
         reset();
       }
       void target_debuff( int dmg_type )
       {
         death_knight_attack_t::target_debuff( dmg_type );
         death_knight_t* p = player -> cast_death_knight();
-        target_multiplier *= 1 + p -> diseases() * 0.125;
+        target_multiplier *= 0.25 + p -> diseases() * 0.125;
       }
     };
 
     if ( ! p -> active_blood_caked_blade ) p -> active_blood_caked_blade = new bcb_t( p );
+    p -> active_blood_caked_blade -> weapon = ( a -> weapon -> slot == SLOT_MAIN_HAND ) ? &( p -> off_hand_weapon ) : &( p -> main_hand_weapon );
     p -> active_blood_caked_blade -> execute();
   }
 }

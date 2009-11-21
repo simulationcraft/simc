@@ -487,7 +487,7 @@ static void trigger_omen_of_clarity( action_t* a )
   if ( a -> aoe ) return;
 
   if ( p -> buffs_omen_of_clarity -> trigger() )
-    p -> buffs_t10_2pc_caster -> trigger();
+    p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
     
 }
 
@@ -2135,8 +2135,7 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
-    if ( p -> buffs_t10_2pc_caster -> up() )
-      player_multiplier *= 1.15;
+    player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.01;
 }
