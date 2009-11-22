@@ -513,10 +513,10 @@ struct gargoyle_pet_t : public pet_t
         spell_t( "gargoyle_strike", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
       // FIX ME!
-      // Crit? Resist? Scaling?
+      // Resist (can be partial)? Scaling?
       background  = true;
       repeating   = true;
-      may_crit    = true;
+      may_crit    = false;
       
 
       base_dd_min = 130;
