@@ -1121,6 +1121,7 @@ struct scaling_t
   void derive();
   double progress( std::string& phase );
   int get_options( std::vector<option_t>& );
+  bool has_scale_factors();
 };
 
 // Plot ======================================================================

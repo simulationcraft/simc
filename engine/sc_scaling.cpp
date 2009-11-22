@@ -386,3 +386,20 @@ int scaling_t::get_options( std::vector<option_t>& options )
 
   return ( int ) options.size();
 }
+
+// scaling_t::has_scale_factors =============================================
+
+bool scaling_t::has_scale_factors()
+{
+  if ( ! calculate_scale_factors ) return false;
+  
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    if ( stats.get_stat( i ) != 0 )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}

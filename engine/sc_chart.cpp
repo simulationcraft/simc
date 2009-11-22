@@ -1052,7 +1052,7 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+(%s)+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
   s += "&amp;";
