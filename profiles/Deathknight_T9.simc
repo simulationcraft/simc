@@ -4,8 +4,12 @@ Globals_T9.simc
 
 optimal_raid=1
 
+#Death_Knight_T9_51_00_20.simc
+#Death_Knight_T9_16_00_55.simc
+
 # simcraftdkt9
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=13000000 name=Priest_T7_13_00_58      save=Priest_T7_13_00_58.simc
-#save_profiles=1
+wowhead=18101892 name=Death_Knight_T9_51_00_20      save=Death_Knight_T9_51_00_20.simc
+wowhead=18127877 name=Death_Knight_T9_16_00_55      save=Death_Knight_T9_16_00_55.simc
+save_profiles=1
