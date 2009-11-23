@@ -3458,7 +3458,19 @@ void death_knight_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      // Lacking ability to add priority rotation
+      //if (talents.unbreakable_armor) action_list_str += "/unbreakable_armor";
+      action_list_str += "/raise_dead";
+      action_list_str += "/icy_touch,frost_fever<=2";
+      action_list_str += "/plague_strike,blood_plague<=2";
+      action_list_str += "/howling_blast,rime=1,killing_machine=1";
+      action_list_str += "/frost_strike,runic>=105";
+      action_list_str += "/obliterate";
+      action_list_str += "/frost_strike,runic>=110";
+      action_list_str += "/blood_strike";
+      action_list_str += "/frost_strike";
+      action_list_str += "/empower_rune_weapon";
+      action_list_str += "/howling_blast,rime=1";
+      action_list_str += "/horn_of_winter";
     }
     
 
