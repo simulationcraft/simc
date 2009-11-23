@@ -944,6 +944,7 @@ struct sim_t
     int horn_of_winter;
     int hunters_mark;
     int improved_faerie_fire;
+    int improved_icy_talons;
     int improved_moonkin_aura;
     int improved_scorch;
     int improved_shadow_bolt;
@@ -992,6 +993,7 @@ struct sim_t
     aura_t* flametongue_totem;
     aura_t* horn_of_winter;
     aura_t* improved_moonkin;
+    aura_t* improved_icy_talons;
     aura_t* leader_of_the_pack;
     aura_t* mana_spring_totem;
     aura_t* moonkin;

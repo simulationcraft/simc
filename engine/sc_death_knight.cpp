@@ -341,7 +341,6 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
@@ -356,7 +355,28 @@ struct death_knight_t : public player_t
   virtual int       primary_tree() SC_CONST;
   
   // Death Knight Specific helperfunctions
-  virtual int       diseases();
+  int  diseases()
+  {
+    int disease_count = 0;
+    
+    if ( active_blood_plague )
+      disease_count++;
+    
+    if ( active_frost_fever )
+      disease_count++;
+  
+    if ( disease_count && talents.crypt_fever )
+      disease_count++;
+    
+    return disease_count;
+  }  
+  void reset_gcd()
+  {
+    for ( action_t* a=action_list; a; a = a -> next )
+    {
+      if ( a -> trigger_gcd != 0 ) a -> trigger_gcd = base_gcd;
+    }
+  }
 };
 
 // ==========================================================================
@@ -2605,15 +2625,15 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     if ( result_is_hit() )
     {
-      if ( ! p -> frost_fever )
-      {
-        p -> frost_fever = new frost_fever_t( p );
-      }
-      p -> frost_fever -> execute();
       if ( ! p -> sim -> P330 && p -> glyphs.icy_touch )
         p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_glyph_icy_touch );
 
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
+
+      if ( ! p -> frost_fever )
+        p -> frost_fever = new frost_fever_t( p );
+      p -> frost_fever -> execute();
+      
     }
     p -> buffs_killing_machine -> expire();
   }
@@ -2870,6 +2890,9 @@ struct presence_t : public death_knight_spell_t
     // If not in combat, just do it without consuming runes.
     if ( ! p -> in_combat )
       group_runes( p, 0, 0, 0, use );
+    
+    p -> base_gcd = 1.50;
+    
     switch ( p -> active_presence )
     {
       case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> expire(); break;
@@ -2882,8 +2905,13 @@ struct presence_t : public death_knight_spell_t
     {
       case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger( 1, 0.15 ); break;
       case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger( 1, 0.60 ); break;
-      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger( 1, 0.15 ); break;
+      case PRESENCE_UNHOLY:
+        p -> buffs_unholy_presence -> trigger( 1, 0.15 );
+        p -> base_gcd = 1.0;
+        break;
+
     }
+    p -> reset_gcd();
   }
 
   virtual bool ready()
@@ -3176,34 +3204,11 @@ double death_knight_t::composite_attack_haste() SC_CONST
 {
   double haste = player_t::composite_attack_haste();
   haste *= 1.0/ ( 1.0 + buffs_unholy_presence -> value());
+  
+  if ( talents.improved_icy_talons )
+    haste *= 1.0/ ( 1.0 + 0.05 );
+    
   return haste;
-}
-
-// death_knight_t::composite_spell_haste() ==================================
-
-double death_knight_t::composite_spell_haste() SC_CONST
-{
-  double haste = player_t::composite_spell_haste();
-  haste *= 1.0/ ( 1.0 + buffs_unholy_presence -> value());
-  return haste;
-}
-
-// death_knight_t::diseases =================================================
-
-int death_knight_t::diseases()
-{
-  int disease_count = 0;
-  
-  if ( active_blood_plague )
-    disease_count++;
-  
-  if ( active_frost_fever )
-    disease_count++;
-
-  if ( disease_count && talents.crypt_fever )
-    disease_count++;
-  
-  return disease_count;
 }
 
 // death_knight_t::init ======================================================
@@ -3859,9 +3864,9 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, in
 
 void player_t::death_knight_init( sim_t* sim )
 {
-  sim -> auras.abominations_might = new aura_t( sim, "abominations_might", 1,  10.0 );
-  sim -> auras.horn_of_winter = new aura_t( sim, "horn_of_winter", 1, 120.0 );
-
+  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,  10.0 );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
+  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,  20.0 );
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.hysteria = new buff_t( p, "hysteria", 1, 30.0 );
@@ -3878,8 +3883,9 @@ void player_t::death_knight_init( sim_t* sim )
 
 void player_t::death_knight_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.abominations_might ) sim -> auras.abominations_might -> override();
-  if ( sim -> overrides.horn_of_winter ) sim -> auras.horn_of_winter -> override( 1, 155 );
+  if ( sim -> overrides.abominations_might  ) sim -> auras.abominations_might  -> override();
+  if ( sim -> overrides.horn_of_winter      ) sim -> auras.horn_of_winter      -> override( 1, 155 );
+  if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.20 );
 
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_plague       ) t -> debuffs.blood_plague       -> override();

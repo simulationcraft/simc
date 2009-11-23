@@ -44,7 +44,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
   if( max_name_length == 0 ) max_name_length = 20;
 
   util_t::fprintf( file,
-                   "    %-*s  Count=%5.1f|%4.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                   "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
 		   max_name_length,
                    s -> name_str.c_str(),
                    s -> num_executes,
