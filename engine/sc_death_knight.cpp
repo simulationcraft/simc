@@ -343,6 +343,7 @@ struct death_knight_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_items();
   virtual void      init_rating();
+  virtual double    composite_armor() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
@@ -3216,6 +3217,30 @@ struct summon_gargoyle_t : public death_knight_spell_t
   }
 };
 
+
+// Unbreakable Armor ========================================================
+struct unbreakable_armor_t : public death_knight_spell_t
+{
+  unbreakable_armor_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "unbreakable_armor", player, SCHOOL_NONE, TREE_FROST )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    check_talent( p -> talents.unbreakable_armor );
+
+    cost_frost = 1;
+    cooldown    = 60.0;
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+
+    death_knight_t* p = player -> cast_death_knight();
+    p -> buffs_unbreakable_armor -> trigger();
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -3299,6 +3324,15 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name )
   if ( pet_name == "ghoul"               ) return new ghoul_pet_t               ( sim, this );
 
   return 0;
+}
+
+// death_knight_t::composite_armor ===========================================
+
+double death_knight_t::composite_armor() SC_CONST
+{
+  double armor = player_t::composite_armor();
+  armor *= 1.0 + buffs_unbreakable_armor -> value();
+  return armor;
 }
 
 // death_knight_t::composite_attack_haste() ================================
