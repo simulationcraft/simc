@@ -13,16 +13,21 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
-actions+=/shred,omen_of_clarity=1
-actions+=/tigers_fury,energy<=40
-actions+=/berserk_cat,tigers_fury=1
-actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/tigers_fury,energy<=40,berserk=0
+actions+=/berserk_cat,energy>=70,energy<=90
+actions+=/savage_roar,cp>=1,savage_roar<=1
+actions+=/savage_roar,cp>=5,savage_roar<=6,rip>=6
 actions+=/shred,extend_rip=1,rip<=4
-actions+=/rip,cp>=5,time_to_die>=10
-actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
-actions+=/mangle_cat,mangle<=2
-actions+=/rake
-actions+=/shred
+actions+=/rip,cp>=5,time_to_die>=6
+actions+=/ferocious_bite,cp>=5,time_to_die<=6
+actions+=/ferocious_bite,cp>=5,rip>=10
+actions+=/mangle_cat,mangle<=1
+actions+=/rake,time_to_die>=9
+actions+=/shred,energy>=70
+actions+=/shred,omen_of_clarity=1
+actions+=/shred,cp<=4,rip<=3
+actions+=/shred,time_to_die<=9
+actions+=/shred,berserk=1
 head=malfurions_headguard_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10haste_10agi_8agi,enchant=50ap_20crit
 neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi_4agi
 shoulders=malfurions_shoulderpads_of_triumph,stats=489armor_151ap_76haste_68arpen_106agi_114sta,gems=10haste_10agi_4agi,enchant=40ap_15crit
@@ -37,7 +42,7 @@ finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=
 trinket1=deaths_verdict,stats=288ap
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 back=vereesas_dexterity,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20agi_8ap,enchant=22agi
-main_hand=lupine_longstaff,stats=204ap_102haste_94arpen_137agi_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_281.5dps_540min_811max
+main_hand=lupine_longstaff,stats=204ap_102haste_94arpen_137agi_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_540min_811max
 ranged=idol_of_mutilation
 # Gear Summary
 # gear_strength=20
@@ -56,4 +61,4 @@ ranged=idol_of_mutilation
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_verdict
-# main_hand=lupine_longstaff,weapon=staff_2.40speed_281.5dps_540min_811max,enchant=berserking
+# main_hand=lupine_longstaff,weapon=staff_2.40speed_540min_811max,enchant=berserking
