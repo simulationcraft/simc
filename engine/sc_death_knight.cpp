@@ -78,6 +78,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_bloody_vengeance;
   buff_t* buffs_bone_shield;
   buff_t* buffs_desolation;
+  buff_t* buffs_icy_talons;
   buff_t* buffs_killing_machine;
   buff_t* buffs_rime;
   buff_t* buffs_scent_of_blood;
@@ -989,6 +990,17 @@ static void trigger_ebon_plaguebringer( action_t* a )
     a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
     a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
   }
+}
+
+static void trigger_icy_talons( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+  if ( ! p -> talents.icy_talons ) return;
+
+  p -> buffs_icy_talons -> trigger( 1, p -> talents.icy_talons * 0.04 );
+
+  if ( ! a -> sim -> overrides.improved_icy_talons ) 
+    a -> sim -> auras.improved_icy_talons -> trigger();
 }
 
 static void trigger_sudden_doom( action_t* a )
@@ -2634,6 +2646,7 @@ struct icy_touch_t : public death_knight_spell_t
         p -> frost_fever = new frost_fever_t( p );
       p -> frost_fever -> execute();
       
+      trigger_icy_talons( this );
     }
     p -> buffs_killing_machine -> expire();
   }
@@ -3207,6 +3220,17 @@ double death_knight_t::composite_attack_haste() SC_CONST
   
   if ( talents.improved_icy_talons )
     haste *= 1.0/ ( 1.0 + 0.05 );
+  
+  // Icy Talons give the DK 20%/20s, Imp.IT makes that buff raidwide, which
+  // are two different buff that don't stack (does not stack with WF totem)
+  // If you got 16% WF totem, 20% IT but not ITT you will gain 20% haste.
+  // I can't make up a case where you would go 5/5 IT but not take IIT.
+  double it_haste = buffs_icy_talons -> value();
+  if ( it_haste > sim -> auras.windfury_totem -> current_value && ! sim -> auras.improved_icy_talons -> check() )
+  {
+    haste *= ( 1.0 + sim -> auras.windfury_totem -> current_value );
+    haste *= 1.0/ ( 1.0 + it_haste );
+  }
     
   return haste;
 }
@@ -3446,6 +3470,7 @@ void death_knight_t::init_buffs()
   buffs_bloody_vengeance = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
   buffs_bone_shield      = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
   buffs_desolation       = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
+  buffs_icy_talons       = new buff_t( this, "icy_talons",         1,                      20.0,  0.0, talents.icy_talons );
   buffs_killing_machine  = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
   buffs_rime             = new buff_t( this, "rime",               1,                      30.0,  0.0, talents.rime * 0.05 );
   buffs_scent_of_blood   = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
