@@ -895,6 +895,23 @@ static int count_runes( player_t* player )
   return ( ( count & ( count << 1 ) ) | ( count >> 1 ) ) & 0xDB;
 }
 
+// Count Death Runes ========================================================
+static int count_death_runes( death_knight_t* p )
+{
+  // Getting death rune count is a bit more complicated as it depends 
+  // on talents which runetype can be converted to death runes
+  double t = p -> sim -> current_time;
+  int count = 0;
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    dk_rune_t& r = p -> _runes.slot[i];
+    if ( r.is_ready( t ) && r.is_death() )
+      ++count;
+  }
+  return count;
+}
+
+
 // Consume Runes ============================================================
 static void consume_runes( player_t* player, const bool* use, bool convert_runes = false )
 {
@@ -1257,7 +1274,7 @@ void death_knight_attack_t::consume_resource()
   if ( gain > 0 )
   {
     // calculate_result() gets called before consume_resourcs()
-    if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+    if ( result_is_hit() && weapon -> slot != SLOT_OFF_HAND ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
   }
   else 
     attack_t::consume_resource();
@@ -1431,12 +1448,12 @@ bool death_knight_attack_t::ready()
   if ( ( exact_unholy != -1 && c != exact_unholy ) ||
        ( min_unholy != -1 && c < min_unholy ) ||
        ( max_unholy != -1 && c > max_unholy ) ) return false;
-  /*
-    c = GET_DEATH_RUNE_COUNT( count );
-    if ( ( exact_death != -1 && c != exact_death ) ||
-         ( min_death != -1 && c < min_death ) ||
-         ( max_death != -1 && c > max_death ) ) return false;
-  */
+
+  c = count_death_runes( p );
+  if ( ( exact_death != -1 && c != exact_death ) ||
+       ( min_death != -1 && c < min_death ) ||
+       ( max_death != -1 && c > max_death ) ) return false;
+
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
 }
 
@@ -1912,9 +1929,13 @@ struct blood_strike_t : public death_knight_attack_t
 
     base_crit += p -> talents.subversion * 0.03;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
-                                      + p -> talents.guile_of_gorefiend * 0.15;
+                                      + p -> talents.guile_of_gorefiend * 0.15
+                                      + p -> talents.blood_of_the_north / 3.0;
 
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
+    
+    convert_runes = p -> talents.blood_of_the_north / 3.0
+                  + p -> talents.reaping / 3.0;
   }
 
   virtual void target_debuff( int dmg_type )
@@ -1943,10 +1964,10 @@ struct blood_strike_t : public death_knight_attack_t
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
+          group_runes( p, 0, 0, 0, use );
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
-
     }
   }
 };
@@ -2141,7 +2162,7 @@ struct death_strike_t : public death_knight_attack_t
     base_crit += p -> talents.improved_death_strike * 0.03;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.improved_death_strike * 0.15;
-    convert_runes = p->talents.death_rune_mastery / 3;
+    convert_runes = p -> talents.death_rune_mastery / 3.0;
   }
 
   virtual void execute()
@@ -2163,6 +2184,7 @@ struct death_strike_t : public death_knight_attack_t
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
+          group_runes( p, 0, 0, 0, use );
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
@@ -2323,6 +2345,7 @@ struct frost_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.55;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
+    base_multiplier *= 1.0 + p -> talents.blood_of_the_north / 3.0;
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
   }
@@ -2482,7 +2505,7 @@ struct howling_blast_t : public death_knight_spell_t
 {
   int killing_machine, rime;
   howling_blast_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "howling_blast", player, SCHOOL_SHADOW, TREE_FROST ), killing_machine( 0 ), rime( 0 )
+      death_knight_spell_t( "howling_blast", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 ), rime( 0 )
   {
     
     death_knight_t* p = player -> cast_death_knight();
@@ -2760,6 +2783,7 @@ struct obliterate_t : public death_knight_attack_t
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
+          group_runes( p, 0, 0, 0, use );
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
@@ -2797,6 +2821,7 @@ struct pestilence_t : public death_knight_spell_t
   pestilence_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
+    death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2804,6 +2829,8 @@ struct pestilence_t : public death_knight_spell_t
     parse_options( options, options_str );
 
     cost_blood = 1;
+    convert_runes = p -> talents.blood_of_the_north / 3.0
+                  + p -> talents.reaping / 3.0;
   }
   
   virtual void execute()
@@ -2875,6 +2902,7 @@ struct plague_strike_t : public death_knight_attack_t
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
+          group_runes( p, 0, 0, 0, use );
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
