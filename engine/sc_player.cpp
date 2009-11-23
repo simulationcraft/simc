@@ -1167,9 +1167,9 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.03 );
     }
 
-    if ( position != POSITION_RANGED && sim -> auras.windfury_totem -> check() )
+    if ( position != POSITION_RANGED )
     {
-      h *= 1.0 / ( 1.0 + sim -> auras.windfury_totem -> value() );
+      h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
     }
 
     if ( sim -> auras.celerity -> check() )

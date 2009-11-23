@@ -1274,7 +1274,7 @@ void death_knight_attack_t::consume_resource()
   if ( gain > 0 )
   {
     // calculate_result() gets called before consume_resourcs()
-    if ( result_is_hit() && weapon -> slot != SLOT_OFF_HAND ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
+    if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
   }
   else 
     attack_t::consume_resource();
@@ -1945,12 +1945,13 @@ struct blood_strike_t : public death_knight_attack_t
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
+  virtual void consume_resource() { }
   virtual void execute()
   {
-
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -2165,11 +2166,13 @@ struct death_strike_t : public death_knight_attack_t
     convert_runes = p -> talents.death_rune_mastery / 3.0;
   }
 
+  virtual void consume_resource() { }
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -2359,11 +2362,13 @@ struct frost_strike_t : public death_knight_attack_t
     return death_knight_attack_t::ready();
   }
 
+  virtual void consume_resource() { }
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -2768,12 +2773,14 @@ struct obliterate_t : public death_knight_attack_t
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
+  virtual void consume_resource() { }
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
+
     if ( result_is_hit() )
     {
       trigger_abominations_might( this, 0.5 );
@@ -2890,11 +2897,14 @@ struct plague_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.50;
   }
 
+  virtual void consume_resource() { }
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
+
     if ( result_is_hit() )
     {
       // 30/60/100% to also hit with OH
