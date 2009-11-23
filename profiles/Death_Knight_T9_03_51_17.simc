@@ -1,0 +1,60 @@
+#!./simc 
+
+death_knight=Death_Knight_T9_03_51_17
+origin=http://profiler.wowhead.com/?profile=18133075
+level=80
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=030000000000000000000000000032005300352003102301233001351230200305002
+glyphs=frost_strike/obliterate/disease/horn_of_winter/pestilence/raise_dead
+actions=flask,type=endless_rage
+actions+=/food,type=dragonfin_filet
+actions+=/presence,choose=blood
+actions+=/snapshot_stats
+actions+=/auto_attack
+actions+=/raise_dead,time>=15,time<=40
+actions+=/raise_dead,bloodlust=1
+actions+=/icy_touch,frost_fever<=2
+actions+=/plague_strike,blood_plague<=2
+actions+=/howling_blast,rime=1,killing_machine=1
+actions+=/obliterate
+actions+=/blood_strike,death<=2
+actions+=/frost_strike
+actions+=/empower_rune_weapon
+actions+=/howling_blast,rime=1
+actions+=/horn_of_winter
+head=faceplate_of_thunderous_rampage,stats=2009armor_74crit_82arpen_131str_155sta,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
+neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=10crit_10str_4str
+shoulders=koltiras_shoulderplates_of_triumph,stats=1941armor_68hit_76crit_122str_130sta,gems=20str_4str,enchant=40ap_15crit
+chest=koltiras_battleplate_of_triumph,stats=2588armor_94crit_94haste_158str_174sta,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=bloodbath_belt,stats=1455armor_68crit_68exp_114str_129sta,gems=20str_20str_20str
+legs=koltiras_legplates_of_triumph,stats=2264armor_94crit_94arpen_158str_174sta,gems=10crit_10str_20str_20str_6str,enchant=75ap_22crit
+feet=greaves_of_the_saronite_citadel,stats=1779armor_76crit_60exp_114str_130sta,gems=10crit_10str_20str_6str,enchant=12crit_12hit
+wrists=boneshatter_vambraces,stats=1132armor_49crit_57exp_89str_97sta,gems=10hit_10str_4str,enchant=50ap
+hands=koltiras_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=10crit_10str_4str,enchant=44ap
+finger1=gormoks_band,stats=42haste_41arpen_70str_86sta,gems=20str_20str
+finger2=band_of_the_violent_temperment,stats=57crit_49haste_89str_97sta,gems=10crit_10str_4str
+trinket1=deaths_choice,stats=288ap
+trinket2=deaths_choice,stats=256ap
+back=garroshs_rage,stats=182armor_57hit_65crit_103str_111sta,gems=20str_4str,enchant=23haste
+main_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20str_10str_10agi_10sta_10int_10spi,enchant=rune_of_the_fallen_crusader,weapon=mace_2.60speed_394min_732max
+off_hand=hellscream_slicer,stats=72ap_44hit_44haste_58agi_66sta,gems=20str,enchant=rune_of_razorice,weapon=axe_2.60speed_394min_732max
+ranged=sigil_of_virulence
+# Gear Summary
+# gear_strength=1773
+# gear_agility=157
+# gear_stamina=1662
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=963
+# gear_expertise_rating=185
+# gear_armor_penetration_rating=217
+# gear_hit_rating=308
+# gear_crit_rating=959
+# gear_haste_rating=288
+# gear_armor=14967
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# trinket1=deaths_choice
+# main_hand=cudgel_of_the_damned,weapon=mace_2.60speed_394min_732max,enchant=rune_of_the_fallen_crusader
+# off_hand=hellscream_slicer,weapon=axe_2.60speed_394min_732max,enchant=rune_of_razorice
