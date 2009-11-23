@@ -3531,7 +3531,7 @@ void death_knight_t::init_actions()
       // TODO: Add Empower Rune Weapon
       action_list_str += "/hysteria,bloodlust=1";
       action_list_str += "/dancing_rune_weapon,bloodlust=1";
-      action_list_str += "/sequence,name=blood,wait_on_ready=1";
+      action_list_str += "/sequence,name=blood1,wait_on_ready=1";
       action_list_str += ":icy_touch";
       action_list_str += ":plague_strike";
       action_list_str += ":heart_strike";
@@ -3539,13 +3539,15 @@ void death_knight_t::init_actions()
       action_list_str += ":death_strike";
       action_list_str += ":blood_strike";
       action_list_str += ":raise_dead,wait_on_ready=0";
-      action_list_str += ":death_coil";
+      action_list_str += "/death_coil";
+      action_list_str += "/sequence,name=blood2,wait_on_ready=1";
       action_list_str += ":death_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
-      action_list_str += "/restart_sequence,name=blood";
+      action_list_str += "/restart_sequence,name=blood1";
+      action_list_str += "/restart_sequence,name=blood2";
     }
     else if ( primary_tree() == TREE_FROST )
     {
