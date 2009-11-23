@@ -355,6 +355,7 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
+  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
   
   // Death Knight Specific helperfunctions
@@ -3548,10 +3549,6 @@ void death_knight_t::init_scaling()
       scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
       scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
   }
-
-  scales_with[ STAT_INTELLECT ] = 0;
-  scales_with[ STAT_SPELL_POWER ] = 0;
-  scales_with[ STAT_SPIRIT ] = 0;
 }
 
 void death_knight_t::init_buffs()
