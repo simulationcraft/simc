@@ -1759,28 +1759,23 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss          = false;
     cooldown          = 0.0;
     
-    dot_behavior      = DOT_WAIT;
-
     observer = &( p -> active_blood_plague );
     reset();
   }
 
   virtual void execute()
   {
-    // On execute the behaviour is DOT_WAIT
-    // But on things like glyphs.SS, Glyphs.disease it is DOT_REFRESH!
-    dot_behavior      = DOT_WAIT;
-
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
     target_t* t = sim -> target;
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
-    double disease_duration = 3.0 * num_ticks;
     if ( ! sim -> overrides.blood_plague ) 
-      t -> debuffs.blood_plague -> duration = disease_duration;
-    t -> debuffs.blood_plague -> trigger();
+    {
+      t -> debuffs.blood_plague -> duration = 3.0 * num_ticks;
+      t -> debuffs.blood_plague -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );
   }
@@ -1788,12 +1783,25 @@ struct blood_plague_t : public death_knight_spell_t
   virtual void extend_duration( int extra_ticks )
   {
     death_knight_spell_t::extend_duration( extra_ticks );
+    target_t* t = sim -> target;
+    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( duration_ready ) )
+    {
+      t -> debuffs.blood_plague -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.blood_plague -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );    
   }
 
   virtual void refresh_duration()
   {
+    death_knight_spell_t::refresh_duration();
+    target_t* t = sim -> target;
+    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( duration_ready ) )
+    {
+      t -> debuffs.blood_plague -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.blood_plague -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );    
   }
@@ -2155,28 +2163,23 @@ struct frost_fever_t : public death_knight_spell_t
     may_miss          = false;
     cooldown          = 0.0;
 
-    dot_behavior      = DOT_WAIT;
-
     observer = &( p -> active_frost_fever );
     reset();
   }
 
   virtual void execute()
   {
-    // On execute the behaviour is DOT_WAIT
-    // But on things like glyphs.SS, Glyphs.disease it is DOT_REFRESH!
-    dot_behavior      = DOT_WAIT;
-
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
     target_t* t = sim -> target;
     added_ticks = 0;
     num_ticks = 5 + p -> talents.epidemic;
-    double disease_duration = 3.0 * num_ticks;
     if ( ! sim -> overrides.frost_fever ) 
-      t -> debuffs.frost_fever -> duration = disease_duration;
-    t -> debuffs.frost_fever -> trigger();
+    {
+      t -> debuffs.frost_fever -> duration = 3.0 * num_ticks;
+      t -> debuffs.frost_fever -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );
   }
@@ -2184,12 +2187,25 @@ struct frost_fever_t : public death_knight_spell_t
   virtual void extend_duration( int extra_ticks )
   {
     death_knight_spell_t::extend_duration( extra_ticks );
+    target_t* t = sim -> target;
+    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( duration_ready ) )
+    {
+      t -> debuffs.frost_fever -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.frost_fever -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );    
   }
 
   virtual void refresh_duration()
   {
+    death_knight_spell_t::refresh_duration();
+    target_t* t = sim -> target;
+    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( duration_ready ) )
+    {
+      t -> debuffs.frost_fever -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.frost_fever -> trigger();
+    }
     trigger_crypt_fever( this );
     trigger_ebon_plaguebringer( this );    
   }
@@ -2723,14 +2739,12 @@ struct pestilence_t : public death_knight_spell_t
     {
       if ( p -> active_blood_plague -> ticking )
       {
-         p -> active_blood_plague -> dot_behavior = DOT_WAIT;
          if ( ! sim -> P330 ) 
            p -> active_blood_plague -> player_buff();
          p -> active_blood_plague -> refresh_duration();
       }
       if ( p -> active_frost_fever -> ticking )
       {
-         p -> active_frost_fever -> dot_behavior = DOT_WAIT;
          if ( ! sim -> P330 ) 
            p -> active_frost_fever -> player_buff();
          p -> active_frost_fever -> refresh_duration();
@@ -3031,12 +3045,10 @@ struct scourge_strike_t : public death_knight_attack_t
       {
         if ( p -> active_blood_plague && p -> active_blood_plague -> added_ticks < 3 )
         {
-          p -> active_blood_plague -> dot_behavior = DOT_WAIT;
           p -> active_blood_plague -> extend_duration( 1 );
         }
         if ( p -> active_frost_fever && p -> active_frost_fever -> added_ticks < 3 )
         {
-          p -> active_frost_fever -> dot_behavior = DOT_WAIT;
           p -> active_frost_fever -> extend_duration( 1 );
         }
       }
