@@ -2008,6 +2008,11 @@ struct blood_tap_t : public death_knight_spell_t
   blood_tap_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "blood_tap", player, SCHOOL_NONE, TREE_BLOOD )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     cooldown    = 60.0;
     trigger_gcd = 0;
     base_cost   = 0;
@@ -2080,6 +2085,11 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   dancing_rune_weapon_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NONE, TREE_BLOOD )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     base_cost   = 60.0;
     cooldown    = 90.0;
     trigger_gcd = 0;
@@ -3053,6 +3063,12 @@ struct raise_dead_t : public death_knight_spell_t
   raise_dead_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown   = 180.0;
     trigger_gcd = 0;
   }
@@ -3080,6 +3096,11 @@ struct rune_tap_t : public death_knight_spell_t
   rune_tap_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "rune_tap", player, SCHOOL_NONE, TREE_BLOOD )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     cost_blood = 1;
 
     cooldown    = 60.0;
@@ -3225,6 +3246,11 @@ struct summon_gargoyle_t : public death_knight_spell_t
   summon_gargoyle_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "summon_gargoyle", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     base_cost   = 60;
     cooldown    = 180.0;
     trigger_gcd = 0;
@@ -3249,6 +3275,11 @@ struct unbreakable_armor_t : public death_knight_spell_t
       death_knight_spell_t( "unbreakable_armor", player, SCHOOL_NONE, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     check_talent( p -> talents.unbreakable_armor );
 
     cost_frost = 1;
