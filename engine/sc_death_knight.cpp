@@ -3237,7 +3237,7 @@ struct unbreakable_armor_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_unbreakable_armor -> trigger();
+    p -> buffs_unbreakable_armor -> trigger( 1, 0.25 );
   }
 };
 
@@ -3289,7 +3289,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "path_of_frost"            ) return new path_of_frost_t            ( this, options_str );  Non-Combat
 //if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
 //if ( name == "runic_focus"              ) return new runic_focus_t              ( this, options_str );  Passive
-//if ( name == "unbreakable_armor"        ) return new unbreakable_armor_t        ( this, options_str );
+  if ( name == "unbreakable_armor"        ) return new unbreakable_armor_t        ( this, options_str );
 
   // Unholy Actions
 //if ( name == "anti_magic_shell"         ) return new anti_magic_shell_t         ( this, options_str );
@@ -3494,19 +3494,41 @@ void death_knight_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      //if (talents.unbreakable_armor) action_list_str += "/unbreakable_armor";
-      action_list_str += "/raise_dead";
+      /*Rotation:
+      IT PS OB BS BS Dump
+      OB OB OB Dump
+      
+      Priority Rotation (most important at the top):
+      - Frost Fever
+      - Blood Plague
+      - Killing Machine + Rime
+      - Obliterate
+      - Blood Strike
+      - Frost Strike
+      */
+      // UA 'lags' in updating armor, so first ghoul should be a few
+      // seconds after it, second ghoud then with bloodlust
+      
+      //if ( glyphs.disease )
+      //{ } GoD just moves everything a bit around
+      //else
+      //{
+      if ( talents.unbreakable_armor ) 
+        action_list_str += "/unbreakable_armor,time>=10";
+      action_list_str += "/raise_dead,time>=15,time<=40"; 
+      action_list_str += "/raise_dead,bloodlust=1"; 
       action_list_str += "/icy_touch,frost_fever<=2";
       action_list_str += "/plague_strike,blood_plague<=2";
-      action_list_str += "/howling_blast,rime=1,killing_machine=1";
-      action_list_str += "/frost_strike,runic>=105";
+      if ( talents.howling_blast ) 
+        action_list_str += "/howling_blast,rime=1,killing_machine=1";
       action_list_str += "/obliterate";
-      action_list_str += "/frost_strike,runic>=110";
       action_list_str += "/blood_strike,death<=2";
-      action_list_str += "/frost_strike";
+      if ( talents.frost_strike ) 
+        action_list_str += "/frost_strike";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/howling_blast,rime=1";
       action_list_str += "/horn_of_winter";
+      //}
     }
     
 
@@ -3560,7 +3582,7 @@ void death_knight_t::init_enchant()
       double swing_time = a -> time_to_execute;
       double chance     = w -> proc_chance_on_swing( PPM, swing_time );
   
-      buff -> trigger( 1, 0, chance );
+      buff -> trigger( 1, 0.15, chance );
     }
   };
   
@@ -3828,10 +3850,9 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( buffs_rune_of_the_fallen_crusader -> up() )
-    {
-      m *= 1.15;
-    }
+    m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
+    if ( buffs_unbreakable_armor -> check() )
+      m *= 1.10;
   }
 
   return m;
