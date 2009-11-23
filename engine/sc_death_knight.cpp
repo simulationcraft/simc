@@ -85,6 +85,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
+  //buff_t* buffs_unbreakable_armor;
   
   // Presences
   buff_t* buffs_blood_presence;
@@ -3260,6 +3261,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "path_of_frost"            ) return new path_of_frost_t            ( this, options_str );  Non-Combat
 //if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
 //if ( name == "runic_focus"              ) return new runic_focus_t              ( this, options_str );  Passive
+//if ( name == "unbreakable_armor"        ) return new unbreakable_armor_t        ( this, options_str );
 
   // Unholy Actions
 //if ( name == "anti_magic_shell"         ) return new anti_magic_shell_t         ( this, options_str );
@@ -3539,10 +3541,17 @@ void death_knight_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_ARMOR ] = 1;
+  if ( talents.bladed_armor > 0 )
+      scales_with[ STAT_ARMOR ] = 1;
+  
+  if ( off_hand_weapon.type != WEAPON_NONE ) {
+      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
+      scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
+  }
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
+  scales_with[ STAT_INTELLECT ] = 0;
+  scales_with[ STAT_SPELL_POWER ] = 0;
+  scales_with[ STAT_SPIRIT ] = 0;
 }
 
 void death_knight_t::init_buffs()
@@ -3550,17 +3559,18 @@ void death_knight_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_blood_presence   = new buff_t( this, "blood_presence" );
-  buffs_frost_presence   = new buff_t( this, "frost_presence" );
-  buffs_unholy_presence  = new buff_t( this, "unholy_presence" );
-  buffs_bloody_vengeance = new buff_t( this, "bloody_vengeance",   3,                      0.0,   0.0, talents.bloody_vengeance );
-  buffs_bone_shield      = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield, 60.0, 60.0, talents.bone_shield );
-  buffs_desolation       = new buff_t( this, "desolation",         1,                      20.0,  0.0, talents.desolation );
-  buffs_icy_talons       = new buff_t( this, "icy_talons",         1,                      20.0,  0.0, talents.icy_talons );
-  buffs_killing_machine  = new buff_t( this, "killing_machine",    1,                      30.0,  0.0, 0 ); // PPM based!
-  buffs_rime             = new buff_t( this, "rime",               1,                      30.0,  0.0, talents.rime * 0.05 );
-  buffs_scent_of_blood   = new buff_t( this, "scent_of_blood",     talents.scent_of_blood, 0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
-  buffs_tier10_4pc_melee = new buff_t( this, "tier10_4pc_melee",   1,                      15.0,  0.0, set_bonus.tier10_4pc_melee() );
+  buffs_blood_presence    = new buff_t( this, "blood_presence" );
+  buffs_frost_presence    = new buff_t( this, "frost_presence" );
+  buffs_unholy_presence   = new buff_t( this, "unholy_presence" );
+  buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         0.0,   0.0, talents.bloody_vengeance );
+  buffs_bone_shield       = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield,    60.0, 60.0, talents.bone_shield );
+  buffs_desolation        = new buff_t( this, "desolation",         1,                         20.0,  0.0, talents.desolation );
+  buffs_icy_talons        = new buff_t( this, "icy_talons",         1,                         20.0,  0.0, talents.icy_talons );
+  buffs_killing_machine   = new buff_t( this, "killing_machine",    1,                         30.0,  0.0, 0 ); // PPM based!
+  buffs_rime              = new buff_t( this, "rime",               1,                         30.0,  0.0, talents.rime * 0.05 );
+  buffs_scent_of_blood    = new buff_t( this, "scent_of_blood",     talents.scent_of_blood,    0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
+  buffs_tier10_4pc_melee  = new buff_t( this, "tier10_4pc_melee",   1,                         15.0,  0.0, set_bonus.tier10_4pc_melee() );
+  //buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  talents.unbreakable_armor, 20.0, 60.0 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
