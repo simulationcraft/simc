@@ -86,6 +86,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
   buff_t* buffs_rune_of_the_fallen_crusader;
+  buff_t* buffs_rune_of_razorice;
   buff_t* buffs_unbreakable_armor;
   
   // Presences
@@ -815,6 +816,7 @@ struct death_knight_attack_t : public attack_t
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
+  virtual void   target_debuff( int school );
   virtual bool   ready();
 };
 
@@ -876,6 +878,7 @@ struct death_knight_spell_t : public spell_t
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
+  virtual void   target_debuff( int school );
   virtual bool   ready();
 };
 
@@ -1462,6 +1465,16 @@ bool death_knight_attack_t::ready()
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
 }
 
+void death_knight_attack_t::target_debuff( int dmg_type )
+{
+  attack_t::target_debuff( school );
+  death_knight_t* p = player -> cast_death_knight();
+  if ( dmg_type == SCHOOL_FROST  )
+  {
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
+  }
+}
+
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
@@ -1657,17 +1670,28 @@ bool death_knight_spell_t::ready()
   if ( ( exact_unholy != -1 && c != exact_unholy ) ||
        ( min_unholy != -1 && c < min_unholy ) ||
        ( max_unholy != -1 && c > max_unholy ) ) return false;
-  /*
-    c = GET_DEATH_RUNE_COUNT( count );
-    if ( ( exact_death != -1 && c != exact_death ) ||
-         ( min_death != -1 && c < min_death ) ||
-         ( max_death != -1 && c > max_death ) ) return false;
-  */
+
+  c = count_death_runes( p );
+  if ( ( exact_death != -1 && c != exact_death ) ||
+       ( min_death != -1 && c < min_death ) ||
+       ( max_death != -1 && c > max_death ) ) return false;
+
   if ( player -> in_combat )
     return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
   else
     return group_runes( player, 0, 0, 0, use );
 }
+
+void death_knight_spell_t::target_debuff( int dmg_type )
+{
+  spell_t::target_debuff( school );
+  death_knight_t* p = player -> cast_death_knight();
+  if ( dmg_type == SCHOOL_FROST  )
+  {
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
+  }
+}
+
 
 // =========================================================================
 // Death Knight Attacks
@@ -3601,22 +3625,30 @@ void death_knight_t::init_enchant()
       if ( w -> slot != slot ) return;
   
       // RoRI is ?? PPM.
-      //double PPM        = 2.0;
-      //double swing_time = a -> time_to_execute;
-      //double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-  
-      //buff -> trigger( 1, 0, chance );
+      double PPM        = 2.0;
+      double swing_time = a -> time_to_execute;
+      double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+      
+      buff -> trigger( 1, 0.01, chance );
     }
   };
-  
+  buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0);
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0);
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
     register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
   }
+  else if( mh_enchant == "rune_of_razorice" )
+  {
+    register_attack_result_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_razorice ) );
+  }
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
     register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
+  }
+  else if( oh_enchant == "rune_of_razorice" )
+  {
+    register_attack_result_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
   }
 
 }
