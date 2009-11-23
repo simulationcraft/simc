@@ -601,7 +601,10 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightweave_embroidery" ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  
   else if ( name == "darkglow_embroidery"   ) e = "OnSpellHit_400Mana_35%_60Cd";
   else if ( name == "swordguard_embroidery" ) e = "OnAttackHit_400AP_25%_60Cd";
-  else if ( name == "rune_of_the_fallen_crusader" ) e = "1sp";  // FIX-ME: Placeholder I assume.
+
+  // DK Runeforges
+  else if ( name == "rune_of_the_fallen_crusader" ) e = "1sp";
+  else if ( name == "rune_of_razorice" ) e = "1sp";
 
   if ( e.empty() ) return false;
 
