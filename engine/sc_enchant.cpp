@@ -104,7 +104,7 @@ static enchant_data_t enchant_db[] =
   { "3599",  "Electromagnetic Pulse Generator",                           ""                               },
   { "3595",  "Rune of Spellbreaking",                                     ""                               },
   { "3594",  "Rune of Swordbreaking",                                     ""                               },
-  { "3370",  "Rune of Razorice",                                          ""                               },
+  { "3370",  "Rune of Razorice",                                          "rune_of_razorice"               },
   { "3369",  "Rune of Cinderglacier",                                     ""                               },
   { "3368",  "Rune of the Fallen Crusader",                               "rune_of_the_fallen_crusader"    },
   { "3367",  "Rune of Spellshattering",                                   ""                               },
@@ -545,30 +545,6 @@ struct mongoose_callback_t : public action_callback_t
   }
 };
 
-// Rune of the Fallen Crusader =======================================
-
-struct fallen_crusader_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
-  {
-    weapon_t* w = a -> weapon;
-    if ( ! w ) return;
-    if ( w -> slot != slot ) return;
-
-    // RotFC is 2 PPM.
-    double PPM        = 2.0;
-    double swing_time = a -> time_to_execute;
-    double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-
-    buff -> trigger( 1, 0, chance );
-  }
-};
-
 // Executioner Enchant =========================================================
 
 struct executioner_callback_t : public action_callback_t
@@ -654,18 +630,7 @@ void enchant_t::init( player_t* p )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
   }
-  if ( mh_enchant == "rune_of_the_fallen_crusader" )
-  {
-    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crusader", 1, 15.0);
-    p -> buffs.rune_of_the_fallen_crusader_mh = buff;
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( p, SLOT_MAIN_HAND, p -> buffs.rune_of_the_fallen_crusader_mh ) );
-  }
-  if ( oh_enchant == "rune_of_the_fallen_crusader" )
-  {
-    buff_t *buff = new buff_t(p, "rune_of_the_fallen_crusader", 1, 15.0);
-    p -> buffs.rune_of_the_fallen_crusader_oh = buff;
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( p, SLOT_OFF_HAND, p -> buffs.rune_of_the_fallen_crusader_oh ) );
-  }
+
   int num_items = ( int ) p -> items.size();
   for ( int i=0; i < num_items; i++ )
   {

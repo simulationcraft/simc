@@ -1485,8 +1485,6 @@ struct player_t
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
-    buff_t* rune_of_the_fallen_crusader_mh; 
-    buff_t* rune_of_the_fallen_crusader_oh; 
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;

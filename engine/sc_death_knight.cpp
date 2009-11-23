@@ -85,7 +85,8 @@ struct death_knight_t : public player_t
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
-  //buff_t* buffs_unbreakable_armor;
+  buff_t* buffs_rune_of_the_fallen_crusader;
+  buff_t* buffs_unbreakable_armor;
   
   // Presences
   buff_t* buffs_blood_presence;
@@ -329,6 +330,7 @@ struct death_knight_t : public player_t
   // Character Definition
   virtual void      init();
   virtual void      init_actions();
+  virtual void      init_enchant();
   virtual void      init_race();
   virtual void      init_rng();
   virtual void      init_base();
@@ -3466,7 +3468,7 @@ void death_knight_t::init_actions()
       action_list_str += "/frost_strike,runic>=105";
       action_list_str += "/obliterate";
       action_list_str += "/frost_strike,runic>=110";
-      action_list_str += "/blood_strike";
+      action_list_str += "/blood_strike,death<=2";
       action_list_str += "/frost_strike";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/howling_blast,rime=1";
@@ -3496,6 +3498,71 @@ void death_knight_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+void death_knight_t::init_enchant()
+{
+  player_t::init_enchant();
+  
+  std::string& mh_enchant = items[ SLOT_MAIN_HAND ].encoded_enchant_str;
+  std::string& oh_enchant = items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+
+  // Rune of the Fallen Crusader =======================================
+  struct fallen_crusader_callback_t : public action_callback_t
+  {
+    int slot;
+    buff_t* buff;
+  
+    fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+  
+    virtual void trigger( action_t* a )
+    {
+      weapon_t* w = a -> weapon;
+      if ( ! w ) return;
+      if ( w -> slot != slot ) return;
+  
+      // RotFC is 2 PPM.
+      double PPM        = 2.0;
+      double swing_time = a -> time_to_execute;
+      double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+  
+      buff -> trigger( 1, 0, chance );
+    }
+  };
+  
+  // Rune of the Razorice =======================================
+  struct razorice_callback_t : public action_callback_t
+  {
+    int slot;
+    buff_t* buff;
+  
+    razorice_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+  
+    virtual void trigger( action_t* a )
+    {
+      weapon_t* w = a -> weapon;
+      if ( ! w ) return;
+      if ( w -> slot != slot ) return;
+  
+      // RoRI is ?? PPM.
+      //double PPM        = 2.0;
+      //double swing_time = a -> time_to_execute;
+      //double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+  
+      //buff -> trigger( 1, 0, chance );
+    }
+  };
+  
+  buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0);
+  if ( mh_enchant == "rune_of_the_fallen_crusader" )
+  {
+    register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
+  }
+  if ( oh_enchant == "rune_of_the_fallen_crusader" )
+  {
+    register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
+  }
+
 }
 
 void death_knight_t::init_glyphs()
@@ -3579,7 +3646,7 @@ void death_knight_t::init_buffs()
   buffs_rime              = new buff_t( this, "rime",               1,                         30.0,  0.0, talents.rime * 0.05 );
   buffs_scent_of_blood    = new buff_t( this, "scent_of_blood",     talents.scent_of_blood,    0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
   buffs_tier10_4pc_melee  = new buff_t( this, "tier10_4pc_melee",   1,                         15.0,  0.0, set_bonus.tier10_4pc_melee() );
-  //buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  talents.unbreakable_armor, 20.0, 60.0 );
+  buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  1,                         20.0, 60.0, talents.unbreakable_armor );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
@@ -3727,8 +3794,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( ( buffs.rune_of_the_fallen_crusader_mh && buffs.rune_of_the_fallen_crusader_mh->up() ) ||
-         ( buffs.rune_of_the_fallen_crusader_oh && buffs.rune_of_the_fallen_crusader_oh->up() ) )
+    if ( buffs_rune_of_the_fallen_crusader -> up() )
     {
       m *= 1.15;
     }
