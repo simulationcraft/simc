@@ -941,27 +941,34 @@ static void trigger_abominations_might( action_t* a, double base_chance )
   a -> sim -> auras.abominations_might -> trigger( 1, 1.0, base_chance * dk -> talents.abominations_might );
 }
 
-static void trigger_crypt_fever( action_t* a, double disease_duration )
+static void trigger_crypt_fever( action_t* a )
 {
   if ( a -> sim -> overrides.crypt_fever ) return;
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.crypt_fever ) return;
 
-  double value = util_t::talent_rank( p -> talents.crypt_fever, 3, 10 );
-  a -> sim -> target -> debuffs.crypt_fever -> duration = disease_duration;
-  a -> sim -> target -> debuffs.crypt_fever -> trigger( 1, value );
-  
+  double disease_duration = a -> duration_ready - a -> sim -> current_time;
+  if ( a -> sim -> target -> debuffs.crypt_fever -> remains_lt( disease_duration ) )
+  {
+    double value = util_t::talent_rank( p -> talents.crypt_fever, 3, 10 );
+    a -> sim -> target -> debuffs.crypt_fever -> duration = disease_duration;
+    a -> sim -> target -> debuffs.crypt_fever -> trigger( 1, value );
+  }
 }  
 
-static void trigger_ebon_plaguebringer( action_t* a, double disease_duration )
+static void trigger_ebon_plaguebringer( action_t* a )
 {
   if ( a -> sim -> overrides.ebon_plaguebringer ) return;
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.ebon_plaguebringer ) return;
 
-  double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
-  a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
-  a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
+  double disease_duration = a -> duration_ready - a -> sim -> current_time;
+  if ( a -> sim -> target -> debuffs.crypt_fever -> remains_lt( disease_duration ) )
+  {
+    double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
+    a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
+    a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
+  }
 }
 
 static void trigger_sudden_doom( action_t* a )
@@ -1075,7 +1082,7 @@ static void trigger_blood_caked_blade( action_t* a )
         normalize_weapon_speed = false;
         reset();
       }
-      void target_debuff( int dmg_type )
+      virtual void target_debuff( int dmg_type )
       {
         death_knight_attack_t::target_debuff( dmg_type );
         death_knight_t* p = player -> cast_death_knight();
@@ -1084,7 +1091,7 @@ static void trigger_blood_caked_blade( action_t* a )
     };
 
     if ( ! p -> active_blood_caked_blade ) p -> active_blood_caked_blade = new bcb_t( p );
-    p -> active_blood_caked_blade -> weapon = ( a -> weapon -> slot == SLOT_OFF_HAND ) ? &( p -> off_hand_weapon ) : &( p -> main_hand_weapon );
+    p -> active_blood_caked_blade -> weapon =  a -> weapon;
     p -> active_blood_caked_blade -> execute();
   }
 }
@@ -1751,6 +1758,8 @@ struct blood_plague_t : public death_knight_spell_t
     tick_may_crit     = ( p -> set_bonus.tier9_4pc_melee() != 0 && ! p -> sim -> P330 );
     may_miss          = false;
     cooldown          = 0.0;
+    
+    dot_behavior      = DOT_WAIT;
 
     observer = &( p -> active_blood_plague );
     reset();
@@ -1758,6 +1767,10 @@ struct blood_plague_t : public death_knight_spell_t
 
   virtual void execute()
   {
+    // On execute the behaviour is DOT_WAIT
+    // But on things like glyphs.SS, Glyphs.disease it is DOT_REFRESH!
+    dot_behavior      = DOT_WAIT;
+
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
@@ -1768,10 +1781,23 @@ struct blood_plague_t : public death_knight_spell_t
     if ( ! sim -> overrides.blood_plague ) 
       t -> debuffs.blood_plague -> duration = disease_duration;
     t -> debuffs.blood_plague -> trigger();
-    trigger_crypt_fever( this, disease_duration );
-    trigger_ebon_plaguebringer( this, disease_duration );
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );
   }
 
+  virtual void extend_duration( int extra_ticks )
+  {
+    death_knight_spell_t::extend_duration( extra_ticks );
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );    
+  }
+
+  virtual void refresh_duration()
+  {
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );    
+  }
+  
   virtual void tick()
   {
     death_knight_spell_t::tick();
@@ -1784,87 +1810,6 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( dmg_type );
     target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
-  }
-};
-
-struct presence_t : public death_knight_spell_t
-{
-  int switch_to_presence;
-  presence_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "presence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
-  {
-    std::string presence_str;
-    option_t options[] =
-    {
-      { "choose",  OPT_STRING, &presence_str },
-      { NULL,     OPT_UNKNOWN, NULL          }
-    };
-    parse_options( options, options_str );
-
-    cost_unholy = 0;
-    cost_blood  = 0;
-    cost_frost  = 0;
-    if ( ! presence_str.empty() )
-    {
-      if ( presence_str == "blood" || presence_str == "bp" )
-      {
-        switch_to_presence = PRESENCE_BLOOD;
-        cost_blood  = 1;
-      }
-      else if ( presence_str == "frost" || presence_str == "fp" )
-      {
-        switch_to_presence = PRESENCE_FROST;
-        cost_frost  = 1;
-      }
-      else if ( presence_str == "unholy" || presence_str == "up" )
-      {
-        switch_to_presence = PRESENCE_UNHOLY;
-        cost_unholy = 1;
-      }
-    }
-    else
-    {
-      // Default to Blood Presence
-      switch_to_presence = PRESENCE_BLOOD;
-    }
-
-    base_cost   = 0;
-    trigger_gcd = 0;
-    cooldown    = 1.0;
-    harmful     = false;
-  }
-
-  virtual void execute()
-  {
-    death_knight_spell_t::execute();
-    death_knight_t* p = player -> cast_death_knight();
-    // If not in combat, just do it without consuming runes.
-    if ( ! p -> in_combat )
-      group_runes( p, 0, 0, 0, use );
-    switch ( p -> active_presence )
-    {
-      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> expire(); break;
-      case PRESENCE_FROST:  p -> buffs_frost_presence  -> expire(); break;
-      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> expire(); break;
-    }
-    p -> active_presence = switch_to_presence;
-
-    switch ( p -> active_presence )
-    {
-      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger( 1, 0.15 ); break;
-      case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger( 1, 0.60 ); break;
-      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger( 1, 0.15 ); break;
-    }
-  }
-
-  virtual bool ready()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    if ( p -> active_presence == switch_to_presence )
-      return false;
-
-    return death_knight_spell_t::ready();
-
   }
 };
 
@@ -2210,12 +2155,18 @@ struct frost_fever_t : public death_knight_spell_t
     may_miss          = false;
     cooldown          = 0.0;
 
+    dot_behavior      = DOT_WAIT;
+
     observer = &( p -> active_frost_fever );
     reset();
   }
 
   virtual void execute()
   {
+    // On execute the behaviour is DOT_WAIT
+    // But on things like glyphs.SS, Glyphs.disease it is DOT_REFRESH!
+    dot_behavior      = DOT_WAIT;
+
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
@@ -2226,10 +2177,22 @@ struct frost_fever_t : public death_knight_spell_t
     if ( ! sim -> overrides.frost_fever ) 
       t -> debuffs.frost_fever -> duration = disease_duration;
     t -> debuffs.frost_fever -> trigger();
-    trigger_crypt_fever( this, disease_duration );
-    trigger_ebon_plaguebringer( this, disease_duration );
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );
   }
 
+  virtual void extend_duration( int extra_ticks )
+  {
+    death_knight_spell_t::extend_duration( extra_ticks );
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );    
+  }
+
+  virtual void refresh_duration()
+  {
+    trigger_crypt_fever( this );
+    trigger_ebon_plaguebringer( this );    
+  }
   virtual void tick()
   {
     death_knight_spell_t::tick();
@@ -2533,8 +2496,6 @@ struct howling_blast_t : public death_knight_spell_t
   }
 };
 
-
-
 struct hysteria_t : public action_t
 {
   player_t* hysteria_target;
@@ -2741,6 +2702,43 @@ struct obliterate_t : public death_knight_attack_t
   }
 };
 
+struct pestilence_t : public death_knight_spell_t
+{
+  pestilence_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    cost_blood = 1;
+  }
+  
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( result_is_hit() && p -> glyphs.disease )
+    {
+      if ( p -> active_blood_plague -> ticking )
+      {
+         p -> active_blood_plague -> dot_behavior = DOT_WAIT;
+         if ( ! sim -> P330 ) 
+           p -> active_blood_plague -> player_buff();
+         p -> active_blood_plague -> refresh_duration();
+      }
+      if ( p -> active_frost_fever -> ticking )
+      {
+         p -> active_frost_fever -> dot_behavior = DOT_WAIT;
+         if ( ! sim -> P330 ) 
+           p -> active_frost_fever -> player_buff();
+         p -> active_frost_fever -> refresh_duration();
+      }
+    }
+  }
+};
+
 struct plague_strike_t : public death_knight_attack_t
 {
   plague_strike_t( player_t* player, const std::string& options_str  ) :
@@ -2804,9 +2802,88 @@ struct plague_strike_t : public death_knight_attack_t
   }
 };
 
+struct presence_t : public death_knight_spell_t
+{
+  int switch_to_presence;
+  presence_t( player_t* player, const std::string& options_str ) :
+      death_knight_spell_t( "presence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+  {
+    std::string presence_str;
+    option_t options[] =
+    {
+      { "choose",  OPT_STRING, &presence_str },
+      { NULL,     OPT_UNKNOWN, NULL          }
+    };
+    parse_options( options, options_str );
+
+    cost_unholy = 0;
+    cost_blood  = 0;
+    cost_frost  = 0;
+    if ( ! presence_str.empty() )
+    {
+      if ( presence_str == "blood" || presence_str == "bp" )
+      {
+        switch_to_presence = PRESENCE_BLOOD;
+        cost_blood  = 1;
+      }
+      else if ( presence_str == "frost" || presence_str == "fp" )
+      {
+        switch_to_presence = PRESENCE_FROST;
+        cost_frost  = 1;
+      }
+      else if ( presence_str == "unholy" || presence_str == "up" )
+      {
+        switch_to_presence = PRESENCE_UNHOLY;
+        cost_unholy = 1;
+      }
+    }
+    else
+    {
+      // Default to Blood Presence
+      switch_to_presence = PRESENCE_BLOOD;
+    }
+
+    base_cost   = 0;
+    trigger_gcd = 0;
+    cooldown    = 1.0;
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+    death_knight_t* p = player -> cast_death_knight();
+    // If not in combat, just do it without consuming runes.
+    if ( ! p -> in_combat )
+      group_runes( p, 0, 0, 0, use );
+    switch ( p -> active_presence )
+    {
+      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> expire(); break;
+      case PRESENCE_FROST:  p -> buffs_frost_presence  -> expire(); break;
+      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> expire(); break;
+    }
+    p -> active_presence = switch_to_presence;
+
+    switch ( p -> active_presence )
+    {
+      case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger( 1, 0.15 ); break;
+      case PRESENCE_FROST:  p -> buffs_frost_presence  -> trigger( 1, 0.60 ); break;
+      case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> trigger( 1, 0.15 ); break;
+    }
+  }
+
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> active_presence == switch_to_presence )
+      return false;
+
+    return death_knight_spell_t::ready();
+  }
+};
+
 struct raise_dead_t : public death_knight_spell_t
 {
-
   raise_dead_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY )
   {
@@ -2954,10 +3031,12 @@ struct scourge_strike_t : public death_knight_attack_t
       {
         if ( p -> active_blood_plague && p -> active_blood_plague -> added_ticks < 3 )
         {
+          p -> active_blood_plague -> dot_behavior = DOT_WAIT;
           p -> active_blood_plague -> extend_duration( 1 );
         }
         if ( p -> active_frost_fever && p -> active_frost_fever -> added_ticks < 3 )
         {
+          p -> active_frost_fever -> dot_behavior = DOT_WAIT;
           p -> active_frost_fever -> extend_duration( 1 );
         }
       }
@@ -3022,7 +3101,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "hysteria"                 ) return new hysteria_t                 ( this, options_str );
 //if ( name == "improved_blood_presence"  ) return new improved_blood_presence_t  ( this, options_str );  Passive
 //if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
-//if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
+  if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
 //if ( name == "strangulate"              ) return new strangulate_t              ( this, options_str );
 //if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
