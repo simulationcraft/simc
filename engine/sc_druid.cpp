@@ -226,7 +226,7 @@ struct druid_t : public player_t
     equipped_weapon_dps = 0;
 
     eclipse_cycle = "solar";
-    wise_eclipse = 1;
+    wise_eclipse = ( sim -> P330 ? 0 : 1 );
   }
 
   // Character Definition
@@ -593,7 +593,7 @@ static void trigger_t10_4pc_caster( spell_t* s )
     return;
 
 
-  double dmg = s -> direct_dmg * 0.05;
+  double dmg = s -> direct_dmg * 0.07;
   if ( active_dot -> ticking )
   {
     int num_ticks = active_dot -> num_ticks;
@@ -2856,7 +2856,7 @@ struct starfire_t : public druid_spell_t
 
     if( p -> buffs_eclipse_lunar -> up() )
     {
-      player_crit += 0.30 + ( p -> set_bonus.tier8_2pc_caster() ? 0.15 : 0.0 );
+      player_crit += 0.30 + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
     }
 
     if ( p -> active_moonfire )
@@ -2879,7 +2879,7 @@ struct starfire_t : public druid_spell_t
 
     // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
     // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
-    if( p -> wise_eclipse && 
+    if( ! sim -> P330 && p -> wise_eclipse && 
 	p -> buffs_eclipse_lunar -> check() &&
 	p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
     {
@@ -2900,7 +2900,7 @@ struct starfire_t : public druid_spell_t
 	  {
 	    // When using the Wise-Eclipse AddOn you have an almost guaranteed chance to 
 	    // proc Solar Eclipse which means that you do not suffer from reaction time.
-	    if ( p -> wise_eclipse && ( total_crit() > 0.80 ) ) 
+	    if ( ! sim -> P330 && p -> wise_eclipse && ( total_crit() > 0.80 ) ) 
 	    {
 	      p -> buffs_eclipse_solar -> predict();
 	    }
@@ -3049,7 +3049,7 @@ struct wrath_t : public druid_spell_t
 
     // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
     // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
-    if( p -> wise_eclipse && 
+    if( ! sim -> P330 && p -> wise_eclipse && 
 	p -> buffs_eclipse_solar -> check() &&
 	p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
     {
@@ -3080,7 +3080,7 @@ struct wrath_t : public druid_spell_t
 
     if( p -> buffs_eclipse_solar -> up() ) 
     {
-      bonus += 0.30 + ( p -> set_bonus.tier8_2pc_caster() ? 0.15 : 0.0 );
+      bonus += 0.30 + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
     }
 
     player_multiplier *= 1.0 + bonus;
