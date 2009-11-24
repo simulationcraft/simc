@@ -328,7 +328,6 @@ struct druid_cat_attack_t : public attack_t
   virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   consume_resource();
-  virtual double calculate_direct_damage();
   virtual void   player_buff();
   virtual bool   ready();
 };
@@ -775,15 +774,6 @@ void druid_cat_attack_t::execute()
   if( harmful ) p -> buffs_stealthed -> expire();
 }
 
-// druid_cat_attack_t::calculate_direct_damage =============================
-
-double druid_cat_attack_t::calculate_direct_damage()
-{
-  druid_t* p = player -> cast_druid();
-  base_dd_adder = p -> buffs_tigers_fury -> value();
-  return attack_t::calculate_direct_damage();
-}
-
 // druid_cat_attack_t::player_buff =========================================
 
 void druid_cat_attack_t::player_buff()
@@ -791,6 +781,8 @@ void druid_cat_attack_t::player_buff()
   druid_t* p = player -> cast_druid();
 
   attack_t::player_buff();
+
+  player_dd_adder += p -> buffs_tigers_fury -> value();
 
   player_multiplier *= 1 + p -> buffs_savage_roar -> value();
 

@@ -82,6 +82,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_killing_machine;
   buff_t* buffs_rime;
   buff_t* buffs_scent_of_blood;
+  buff_t* buffs_sigil_hanged_man;
   buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
@@ -272,22 +273,26 @@ struct death_knight_t : public player_t
   // Sigils
   struct sigils_t
   {
-    int deadly_gladiators_sigil_of_strife;
-    int furious_gladiators_sigil_of_strife;
-    int hateful_gladiators_sigil_of_strife;
-    int relentless_gladiators_sigil_of_strife;
-    int savage_gladiators_sigil_of_strife;
-    int sigil_of_arthritic_binding;
-    int sigil_of_awareness;
-    int sigil_of_deflection;
-    int sigil_of_haunted_dreams;
-    int sigil_of_insolence;
-    int sigil_of_the_dark_rider;
-    int sigil_of_the_frozen_conscience;
-    int sigil_of_the_unfaltering_knight;
-    int sigil_of_the_vengeful_heart;
-    int sigil_of_the_wild_buck;
-    int sigil_of_virulence;
+    // PVP
+    int deadly_strife;
+    int furious_strife;
+    int hateful_strife;
+    int relentless_strife;
+    int savage_strife;
+
+    // PVE
+    int arthritic_binding;
+    int awareness;
+    int dark_rider;
+    int deflection;
+    int frozen_conscience;
+    int hanged_man;
+    int haunted_dreams;
+    int insolence;
+    int unfaltering_knight;
+    int vengeful_heart;
+    int virulence;
+    int wild_buck;
 
     sigils_t() { memset( ( void* ) this, 0x0, sizeof( sigils_t ) ); }
   };
@@ -2144,6 +2149,8 @@ struct death_coil_t : public death_knight_spell_t
     base_dd_multiplier *= 1 + ( 0.05 * p -> talents.morbidity +
                                 0.15 * p -> glyphs.dark_death );
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
+    base_dd_adder = 380 * p -> sigils.vengeful_heart;
+
                                
     if ( sudden_doom )
     {
@@ -2199,6 +2206,7 @@ struct death_strike_t : public death_knight_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier *= 0.75;
 
+    base_dd_adder = p -> sigils.awareness * 315;
     base_crit += p -> talents.improved_death_strike * 0.03;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.improved_death_strike * 0.15;
@@ -2390,6 +2398,7 @@ struct frost_strike_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> talents.blood_of_the_north / 3.0;
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
+    base_dd_adder = 113 * p -> sigils.vengeful_heart;
   }
   
   virtual bool ready()
@@ -2799,6 +2808,7 @@ struct obliterate_t : public death_knight_attack_t
     
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_multiplier *= 1.0 + p -> glyphs.obliterate * 0.2;
+    base_dd_adder = p -> sigils.awareness * 336;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.rime * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
@@ -3148,6 +3158,7 @@ struct scourge_strike_t : public death_knight_attack_t
     cost_frost = 1;
     cost_unholy = 1;
 
+    base_dd_adder = p -> sigils.awareness * 187;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
@@ -3770,8 +3781,9 @@ void death_knight_t::init_buffs()
   buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  1,                         20.0, 60.0, talents.unbreakable_armor );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence", STAT_STRENGTH , 200, 1, 20.0,   0, sigils.sigil_of_virulence   * 0.80 );
-  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",    STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
+  buffs_sigil_hanged_man   = new stat_buff_t( this, "sigil_the_hanged_man", STAT_STRENGTH ,  73, 3, 15.0,   0, sigils.hanged_man );
+  buffs_sigil_virulence    = new stat_buff_t( this, "virulence",   STAT_STRENGTH , 200, 1, 20.0,   0, sigils.virulence   * 0.80 );
+  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",      STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
 
   struct bloodworms_buff_t : public buff_t
   {
@@ -3837,22 +3849,23 @@ void death_knight_t::init_items()
 
   if ( sigil.empty() ) return;
 
-  if      ( sigil == "deadly_gladiators_sigil_of_strife"     ) sigils.deadly_gladiators_sigil_of_strife = 1;
-  else if ( sigil == "furious_gladiators_sigil_of_strife"    ) sigils.furious_gladiators_sigil_of_strife = 1;
-  else if ( sigil == "hateful_gladiators_sigil_of_strife"    ) sigils.hateful_gladiators_sigil_of_strife = 1;
-  else if ( sigil == "relentless_gladiators_sigil_of_strife" ) sigils.relentless_gladiators_sigil_of_strife = 1;
-  else if ( sigil == "savage_gladiators_sigil_of_strife"     ) sigils.savage_gladiators_sigil_of_strife = 1;
-  else if ( sigil == "sigil_of_arthritic_binding"            ) sigils.sigil_of_arthritic_binding = 1;
-  else if ( sigil == "sigil_of_awareness"                    ) sigils.sigil_of_awareness = 1;
-  else if ( sigil == "sigil_of_deflection"                   ) sigils.sigil_of_deflection = 1;
-  else if ( sigil == "sigil_of_haunted_dreams"               ) sigils.sigil_of_haunted_dreams = 1;
-  else if ( sigil == "sigil_of_insolence"                    ) sigils.sigil_of_insolence = 1;
-  else if ( sigil == "sigil_of_the_dark_rider"               ) sigils.sigil_of_the_dark_rider = 1;
-  else if ( sigil == "sigil_of_the_frozen_conscience"        ) sigils.sigil_of_the_frozen_conscience = 1;
-  else if ( sigil == "sigil_of_the_unfaltering_knight"       ) sigils.sigil_of_the_unfaltering_knight = 1;
-  else if ( sigil == "sigil_of_the_vengeful_heart"           ) sigils.sigil_of_the_vengeful_heart = 1;
-  else if ( sigil == "sigil_of_the_wild_buck"                ) sigils.sigil_of_the_wild_buck = 1;
-  else if ( sigil == "sigil_of_virulence"                    ) sigils.sigil_of_virulence = 1;
+  if      ( sigil == "deadly_gladiators_sigil_of_strife"     ) sigils.deadly_strife = 1;
+  else if ( sigil == "furious_gladiators_sigil_of_strife"    ) sigils.furious_strife = 1;
+  else if ( sigil == "hateful_gladiators_sigil_of_strife"    ) sigils.hateful_strife = 1;
+  else if ( sigil == "relentless_gladiators_sigil_of_strife" ) sigils.relentless_strife = 1;
+  else if ( sigil == "savage_gladiators_sigil_of_strife"     ) sigils.savage_strife = 1;
+  else if ( sigil == "sigil_of_arthritic_binding"            ) sigils.arthritic_binding = 1;
+  else if ( sigil == "sigil_of_awareness"                    ) sigils.awareness = 1;
+  else if ( sigil == "sigil_of_deflection"                   ) sigils.deflection = 1;
+  else if ( sigil == "sigil_of_haunted_dreams"               ) sigils.haunted_dreams = 1;
+  else if ( sigil == "sigil_of_insolence"                    ) sigils.insolence = 1;
+  else if ( sigil == "sigil_of_the_dark_rider"               ) sigils.dark_rider = 1;
+  else if ( sigil == "sigil_of_the_frozen_conscience"        ) sigils.frozen_conscience = 1;
+  else if ( sigil == "sigil_of_the_hanged_man"               ) sigils.hanged_man = 1;
+  else if ( sigil == "sigil_of_the_unfaltering_knight"       ) sigils.unfaltering_knight = 1;
+  else if ( sigil == "sigil_of_the_vengeful_heart"           ) sigils.vengeful_heart = 1;
+  else if ( sigil == "sigil_of_the_wild_buck"                ) sigils.wild_buck = 1;
+  else if ( sigil == "sigil_of_virulence"                    ) sigils.virulence = 1;
   else
   {
     log_t::output( sim, "simulationcraft: %s has unknown sigil %s", name(), sigil.c_str() );
