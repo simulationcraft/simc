@@ -2171,7 +2171,12 @@ struct dot_t
   dot_t( const std::string& n, player_t* p ) : player(p), action(0), name_str(n), ready(-1), next(0) {}
   virtual ~dot_t() {}
   virtual void reset() { action=0; ready=-1; }
-  virtual double remains() { return ( player -> sim -> current_time - ready ) > 0; }
+  virtual double remains() 
+  { 
+    if ( ! action ) return 0;
+    if ( ! action -> ticking ) return 0;
+    return ready - player -> sim -> current_time - ready; 
+  }
   virtual int ticks() 
   { 
     if ( ! action ) return 0;

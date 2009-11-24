@@ -3233,6 +3233,7 @@ void shaman_t::init_actions()
       action_list_str += "/strength_of_earth_totem/windfury_totem";
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
+      action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,time_to_die<=60";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
@@ -3251,7 +3252,6 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-      action_list_str += "/wind_shear";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
       action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
@@ -3270,8 +3270,8 @@ void shaman_t::init_actions()
       action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast/flametongue_weapon,weapon=main/water_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       if ( talents.totem_of_wrath ) action_list_str += "/totem_of_wrath";
-      else                          action_list_str += "/fire_elemental_totem";
       action_list_str += "/snapshot_stats";
+      action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,time_to_die<=59";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
@@ -3294,7 +3294,11 @@ void shaman_t::init_actions()
       if ( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
-      if ( ! talents.totem_of_wrath ) action_list_str += "/searing_totem";
+      if ( ! talents.totem_of_wrath ) 
+      {
+	action_list_str += "/fire_elemental_totem";
+	action_list_str += "/searing_totem";
+      }
       action_list_str += "/chain_lightning,conserve=1";
       if ( ! set_bonus.tier9_4pc_caster() ) action_list_str += ",clearcasting=1";
       action_list_str += "/lightning_bolt";

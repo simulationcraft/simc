@@ -7,6 +7,27 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// player_type_string ========================================================
+
+static const char* player_type_string( player_t* p )
+{
+  switch( p -> type )
+  {
+  case DEATH_KNIGHT:    return "DeathKnight";
+  case DRUID:           return "Druid";
+  case HUNTER:          return "Hunter";
+  case MAGE:            return "Mage";
+  case PALADIN:         return "Paladin";
+  case PRIEST:          return "Priest";
+  case ROGUE:           return "Rogue";
+  case SHAMAN:          return "Shaman";
+  case WARLOCK:         return "Warlock";
+  case WARRIOR:         return "Warrior";
+  }
+  assert(0);
+  return 0;
+}
+
 // simplify_html =============================================================
 
 static void simplify_html( std::string& buffer )
@@ -1280,13 +1301,10 @@ static void print_wiki_contents( FILE* file, sim_t* sim, const std::string& wiki
 	 player_type != p -> type ) 
       continue;
 
-    std::string type_name = util_t::player_type_string( p -> type );
-    type_name[ 0 ] = toupper( type_name[ 0 ] );
-
     std::string anchor_name = p -> name();
     strip_underscores( anchor_name );
 
-    util_t::fprintf( file, " * [%s%s#%s %s]\n", wiki_name.c_str(), type_name.c_str(), anchor_name.c_str(), p -> name() );
+    util_t::fprintf( file, " * [%s%s#%s %s]\n", wiki_name.c_str(), player_type_string( p ), anchor_name.c_str(), p -> name() );
   }
   util_t::fprintf( file, "\n----\n\n<br>\n\n" );
 }
@@ -2030,8 +2048,7 @@ void report_t::print_wiki( sim_t* sim )
 
     if ( ! file )
     {
-      std::string type_name = util_t::player_type_string( p -> type );
-      type_name[ 0 ] = toupper( type_name[ 0 ] );
+      std::string type_name = player_type_string( p );
       std::string file_name = wiki_name + type_name + ".wiki";
 
       file = fopen( file_name.c_str(), "w" );

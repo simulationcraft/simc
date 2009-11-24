@@ -423,6 +423,8 @@ bool item_t::decode_enchant()
 bool item_t::decode_special( special_effect_t& effect,
                              const std::string& encoding )
 {
+  if ( encoding == "custom" ) return true;
+
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoding );
 

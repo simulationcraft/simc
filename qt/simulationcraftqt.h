@@ -21,11 +21,9 @@
 
 #define TAB_ARMORY     0
 #define TAB_WOWHEAD    1
-#define TAB_CHARDEV    2
-#define TAB_WARCRAFTER 3
-#define TAB_RAWR       4
-#define TAB_BIS        5
-#define TAB_HISTORY    6
+#define TAB_RAWR       2
+#define TAB_BIS        3
+#define TAB_HISTORY    4
 
 #define HISTORY_VERSION "1.4"
 
@@ -96,8 +94,6 @@ public:
     QTabWidget* importTab;
     SimulationCraftWebView* armoryView;
     SimulationCraftWebView* wowheadView;
-    SimulationCraftWebView* chardevView;
-    SimulationCraftWebView* warcrafterView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
     QLabel* rawrDir;
@@ -334,8 +330,6 @@ public:
 
     void importArmory();
     void importWowhead();
-    void importChardev();
-    void importWarcrafter();
     void importRawr();
 
     void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }

@@ -550,14 +550,6 @@ void SimulationCraftWindow::createImportTab()
   wowheadView->setUrl( QUrl( "http://ptr.wowhead.com/?profiles" ) );
   importTab->addTab( wowheadView, "Wowhead" );
   
-  chardevView = new SimulationCraftWebView( this );
-  chardevView->setUrl( QUrl( "http://www.chardev.org" ) );
-  importTab->addTab( chardevView, "CharDev" );
-  
-  warcrafterView = new SimulationCraftWebView( this );
-  warcrafterView->setUrl( QUrl( "http://www.warcrafter.net" ) );
-  importTab->addTab( warcrafterView, "Warcrafter" );
-
   createRawrTab();
   createBestInSlotTab();
 
@@ -933,16 +925,6 @@ void ImportThread::importWowhead()
   }
 }
 
-void ImportThread::importChardev()
-{
-  fprintf( sim->output_file, "Support for Chardev profiles does not yet exist!\n" );
-}
-
-void ImportThread::importWarcrafter()
-{
-  fprintf( sim->output_file, "Support for Warcrafter profiles does not yet exist!\n" );
-}
-
 void ImportThread::importRawr()
 {
   player = rawr_t::load_player( sim, url.toStdString() );
@@ -954,8 +936,6 @@ void ImportThread::run()
   {
   case TAB_ARMORY:     importArmory();     break;
   case TAB_WOWHEAD:    importWowhead();    break;
-  case TAB_CHARDEV:    importChardev();    break;
-  case TAB_WARCRAFTER: importWarcrafter(); break;
   case TAB_RAWR:       importRawr();       break;
   default: assert(0);
   }
@@ -1242,8 +1222,6 @@ void SimulationCraftWindow::closeEvent( QCloseEvent* e )
   saveHistory();
   armoryView->stop();
   wowheadView->stop();
-  chardevView->stop();
-  warcrafterView->stop();
   QCoreApplication::quit();
   e->accept();
 }
@@ -1277,16 +1255,6 @@ void SimulationCraftWindow::cmdLineReturnPressed()
       wowheadView->setUrl( QUrl( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_WOWHEAD );
     }
-    else if( cmdLine->text().count( "chardev" ) )
-    {
-      chardevView->setUrl( QUrl( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_CHARDEV );
-    }
-    else if( cmdLine->text().count( "warcrafter" ) ) 
-    {
-      warcrafterView->setUrl( QUrl( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_WARCRAFTER );
-    }
     else
     {
       if( ! sim ) mainButtonClicked( true );
@@ -1313,8 +1281,6 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
     {
     case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
     case TAB_WOWHEAD:    startImport( TAB_WOWHEAD,    cmdLine->text() ); break;
-    case TAB_CHARDEV:    startImport( TAB_CHARDEV,    cmdLine->text() ); break;
-    case TAB_WARCRAFTER: startImport( TAB_WARCRAFTER, cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
@@ -1500,16 +1466,6 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
     wowheadView->setUrl( url );
     importTab->setCurrentIndex( TAB_WOWHEAD );
   }
-  else if( url.count( ".chardev." ) )
-  {
-    chardevView->setUrl( url );
-    importTab->setCurrentIndex( TAB_CHARDEV );
-  }
-  else if( url.count( ".warcrafter." ) )
-  {
-    warcrafterView->setUrl( url );
-    importTab->setCurrentIndex( TAB_WARCRAFTER );
-  }
   else
   {
     importTab->setCurrentIndex( TAB_RAWR );
@@ -1533,16 +1489,6 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
   {
     wowheadView->setUrl( url );
     importTab->setCurrentIndex( TAB_WOWHEAD );
-  }
-  else if( url.count( ".chardev." ) )
-  {
-    chardevView->setUrl( url );
-    importTab->setCurrentIndex( TAB_CHARDEV );
-  }
-  else if( url.count( ".warcrafter." ) )
-  {
-    warcrafterView->setUrl( url );
-    importTab->setCurrentIndex( TAB_WARCRAFTER );
   }
 }
 
