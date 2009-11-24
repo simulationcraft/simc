@@ -19,22 +19,15 @@ Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simc
-
 #wowhead=14562190   name=Rogue_T9_15_51_05_AA      save=Rogue_T9_15_51_05_AA.simc  
-
 #wowhead=14419498   name=Rogue_T9_15_51_05_FD      save=Rogue_T9_15_51_05_FD.simc
-
 #wowhead=14562031   name=Rogue_T9_15_51_05_MD      save=Rogue_T9_15_51_05_MD.simc
-
 #wowhead=15269388   name=Rogue_T9_51_13_07         save=Rogue_T9_51_13_07.simc
 
 ### Alternate "Rupture-Less" Combat Spec 
 
 #wowhead=!14562190  name=Rogue_T9_15_51_05_AA_NoR  save=Rogue_T9_15_51_05_AA_NoR.simc
-
 #wowhead=!14419498  name=Rogue_T9_15_51_05_FD_NoR  save=Rogue_T9_15_51_05_FD_NoR.simc  
-
 #wowhead=!14562031  name=Rogue_T9_15_51_05_MD_NoR  save=Rogue_T9_15_51_05_MD_NoR.simc  
-
-#wowhead=!15269388 name=Rogue_T9_51_13_07_NoR save=Rogue_T9_51_13_07_NoR.simc 
+#wowhead=!15269388  name=Rogue_T9_51_13_07_NoR     save=Rogue_T9_51_13_07_NoR.simc 
 	

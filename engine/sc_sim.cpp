@@ -1370,14 +1370,11 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
       return r;
   }
 
-  if ( ! r )
-  {
-    r = rng_t::create( this, n, type );
-    r -> next = rng_list;
-    rng_list = r;
-  }
+  r = rng_t::create( this, n, type );
+  r -> next = rng_list;
+  rng_list = r;
 
-  return rng;
+  return r;
 }
 
 // sim_t::create_expression =================================================

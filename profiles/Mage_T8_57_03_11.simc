@@ -12,7 +12,6 @@ actions+=/arcane_brilliance
 actions+=/focus_magic
 actions+=/snapshot_stats
 actions+=/counterspell
-actions+=/mirror_image
 actions+=/use_item,name=scale_of_fates
 actions+=/arcane_power
 actions+=/icy_veins
@@ -20,9 +19,8 @@ actions+=/presence_of_mind,arcane_blast
 actions+=/mana_gem
 actions+=/choose_rotation
 actions+=/arcane_missiles,barrage=1
-actions+=/arcane_blast,dps=1
-actions+=/arcane_blast,dpm=1,max=4
-actions+=/arcane_missiles
+actions+=/mirror_image
+actions+=/arcane_blast
 actions+=/mana_potion
 actions+=/evocation
 actions+=/arcane_barrage,moving=1
@@ -41,7 +39,7 @@ finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=2
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
 back=sunglimmer_cloak,stats=162armor_39haste_75sp_70sta_48int_48spi,gems=9sp_8spi_5sp,enchant=lightweave_embroidery
-main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_93.9min_297.9max
 off_hand=ironmender,stats=36haste_74sp_54sta_47int_45spi
 ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int,gems=8hit_9sp
 # Gear Summary
@@ -59,5 +57,5 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int,gems=8hit_9sp
 # tier8_2pc_caster=1
 # tier8_4pc_caster=1
 # back=sunglimmer_cloak,enchant=lightweave_embroidery
-# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# main_hand=starshard_edge,weapon=dagger_1.80speed_93.9min_297.9max
 armor_type=molten

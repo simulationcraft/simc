@@ -248,6 +248,8 @@ struct mage_spell_t : public spell_t
   int dpm_rotation;
   int arcane_power;
   int icy_veins;
+  int min_ab_stack;
+  int max_ab_stack;
   bool spell_impact;
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
@@ -257,6 +259,8 @@ struct mage_spell_t : public spell_t
       dpm_rotation( 0 ),
       arcane_power( 0 ),
       icy_veins( 0 ),
+      min_ab_stack( 0 ),
+      max_ab_stack( 0 ),
       spell_impact( false )
   {
     mage_t* p = player -> cast_mage();
@@ -908,6 +912,8 @@ void mage_spell_t::parse_options( option_t*          options,
     { "dpm",          OPT_BOOL, &dpm_rotation },
     { "arcane_power", OPT_BOOL, &arcane_power },
     { "icy_veins",    OPT_BOOL, &icy_veins    },
+    { "ab_stack<",    OPT_INT,  &max_ab_stack },
+    { "ab_stack>",    OPT_INT,  &min_ab_stack },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -934,6 +940,14 @@ bool mage_spell_t::ready()
 
   if ( icy_veins )
     if ( ! p -> buffs_icy_veins -> check() )
+      return false;
+
+  if ( min_ab_stack > 0 )
+    if ( p -> buffs_arcane_blast -> check() < min_ab_stack )
+      return false;
+
+  if ( max_ab_stack > 0 )
+    if ( p -> buffs_arcane_blast -> check() > max_ab_stack )
       return false;
 
   return spell_t::ready();
@@ -1397,27 +1411,25 @@ struct arcane_missiles_t : public mage_spell_t
     arcane_missiles_tick = new arcane_missiles_tick_t( p );
   }
 
-  virtual void execute()
+  virtual void consume_resource()
   {
     mage_t* p = player -> cast_mage();
-
-    if ( p -> buffs_missile_barrage -> up() )
+    mage_spell_t::consume_resource();
+    if ( p -> buffs_missile_barrage -> check() )
     {
-      base_tick_time = 0.5;
-
       if ( ! trigger_tier8_4pc( this ) )
       {
         p -> buffs_missile_barrage -> expire();
-        p -> buffs_tier10_2pc -> trigger();
+        p -> buffs_tier10_2pc -> trigger();  // FIXME!! Assume the haste proc affects the AM-channel
       }
     }
-    else
-    {
-      base_tick_time = 1.0;
-    }
+  }
 
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    base_tick_time = p -> buffs_missile_barrage -> up() ? 0.5 : 1.0;
     arcane_missiles_tick -> clearcast = p -> buffs_clearcasting -> up();
-
     mage_spell_t::execute();
   }
 
@@ -3281,10 +3293,8 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem";
       action_list_str += "/choose_rotation";
       action_list_str += "/arcane_missiles,barrage=1";
-      action_list_str += "/arcane_blast,arcane_power=1";
       action_list_str += "/mirror_image";
-      action_list_str += "/arcane_blast,max=4";
-      action_list_str += "/arcane_missiles";
+      action_list_str += "/arcane_blast";
       action_list_str += "/mana_potion";
       action_list_str += "/evocation";
       if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving

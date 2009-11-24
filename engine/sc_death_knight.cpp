@@ -1344,13 +1344,13 @@ void death_knight_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
 
     if ( weapon -> group() == WEAPON_1H )
+    {
       player_hit += p -> talents.nerves_of_cold_steel  * 0.01;
-  }
-
-
-  if ( weapon -> group() == WEAPON_2H )
-  {
-    player_multiplier *= 1.0 + p -> talents.two_handed_weapon_specialization * 0.02;
+    }
+    else if ( weapon -> group() == WEAPON_2H )
+    {
+      player_multiplier *= 1.0 + p -> talents.two_handed_weapon_specialization * 0.02;
+    }
   }
 
   if ( p->talents.blood_gorged )
