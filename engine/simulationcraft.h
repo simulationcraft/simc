@@ -2175,7 +2175,7 @@ struct dot_t
   { 
     if ( ! action ) return 0;
     if ( ! action -> ticking ) return 0;
-    return ready - player -> sim -> current_time - ready; 
+    return ready - player -> sim -> current_time; 
   }
   virtual int ticks() 
   { 
