@@ -3756,11 +3756,11 @@ void death_knight_t::init_enchant()
       if ( ! w ) return;
       if ( w -> slot != slot ) return;
   
-      // RoRI is ?? PPM.
-      double PPM        = 2.0;
-      double swing_time = a -> time_to_execute;
-      double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      
+      // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820
+      // double PPM        = 2.0;
+      // double swing_time = a -> time_to_execute;
+      // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+      double chance     = 0.30;
       buff -> trigger( 1, 0.01, chance );
     }
   };
@@ -3870,9 +3870,9 @@ void death_knight_t::init_buffs()
   buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  1,                         20.0, 60.0, talents.unbreakable_armor );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_sigil_hanged_man   = new stat_buff_t( this, "sigil_the_hanged_man", STAT_STRENGTH ,  73, 3, 15.0,   0, sigils.hanged_man );
-  buffs_sigil_virulence    = new stat_buff_t( this, "virulence",   STAT_STRENGTH , 200, 1, 20.0,   0, sigils.virulence   * 0.80 );
-  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",      STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
+  buffs_sigil_hanged_man   = new stat_buff_t( this, "sigil_of_the_hanged_man", STAT_STRENGTH ,  73, 3, 15.0,   0, sigils.hanged_man );
+  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence",      STAT_STRENGTH , 200, 1, 20.0,   0, sigils.virulence   * 0.80 );
+  buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",         STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
 
   struct bloodworms_buff_t : public buff_t
   {
