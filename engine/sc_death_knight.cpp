@@ -1473,7 +1473,7 @@ bool death_knight_attack_t::ready()
 
 void death_knight_attack_t::target_debuff( int dmg_type )
 {
-  attack_t::target_debuff( school );
+  attack_t::target_debuff( dmg_type );
   death_knight_t* p = player -> cast_death_knight();
   if ( dmg_type == SCHOOL_FROST  )
   {
@@ -1690,7 +1690,7 @@ bool death_knight_spell_t::ready()
 
 void death_knight_spell_t::target_debuff( int dmg_type )
 {
-  spell_t::target_debuff( school );
+  spell_t::target_debuff( dmg_type );
   death_knight_t* p = player -> cast_death_knight();
   if ( dmg_type == SCHOOL_FROST  )
   {
