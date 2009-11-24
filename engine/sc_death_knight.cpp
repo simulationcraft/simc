@@ -3743,25 +3743,50 @@ void death_knight_t::init_enchant()
   };
   
   // Rune of the Razorice =======================================
+  
+  // Damage Procc
+  struct razorice_spell_t : public death_knight_spell_t
+  {
+    razorice_spell_t( player_t* player ) : death_knight_spell_t( "razorice", player, SCHOOL_FROST, TREE_FROST )
+    {
+      may_miss    = false;
+      may_crit    = false; // FIXME!!  Can the damage crit?
+      may_resist  = true;
+      background  = true;
+      proc        = true;
+      trigger_gcd = 0;
+      base_dd_min = base_dd_max = 0.01;
+      base_dd_multiplier *= 0.02; // FIXME!!  Need better way to distinguish "heroic" items.
+      reset();
+    }
+  };
+
   struct razorice_callback_t : public action_callback_t
   {
     int slot;
     buff_t* buff;
+    spell_t* razorice_damage_proc;
   
-    razorice_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+    razorice_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b), razorice_damage_proc( 0 )
+    {
+      razorice_damage_proc = new razorice_spell_t( p );
+    }
   
     virtual void trigger( action_t* a )
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;
       if ( w -> slot != slot ) return;
-  
+
       // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      double chance     = 0.30;
-      buff -> trigger( 1, 0.01, chance );
+      buff -> trigger( 1, 0.01, 0.30 );
+      
+      razorice_damage_proc -> base_dd_min = w -> min_dmg;
+      razorice_damage_proc -> base_dd_max = w -> max_dmg;
+      razorice_damage_proc -> execute();
     }
   };
   buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0);
