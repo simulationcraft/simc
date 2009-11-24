@@ -78,6 +78,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_bloody_vengeance;
   buff_t* buffs_bone_shield;
   buff_t* buffs_desolation;
+  buff_t* buffs_deathchill;
   buff_t* buffs_icy_talons;
   buff_t* buffs_killing_machine;
   buff_t* buffs_rime;
@@ -2242,6 +2243,35 @@ struct death_strike_t : public death_knight_attack_t
   }
 };
 
+// Deathchill ======================================================
+struct deathchill_t : public death_knight_spell_t
+{
+  deathchill_t( player_t* player, const std::string& options_str ) :
+  death_knight_spell_t( "deathchill", player, SCHOOL_NONE, TREE_FROST )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    
+    option_t options[] =
+    {
+    	{ NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    
+    check_talent( p -> talents.deathchill );
+    
+    trigger_gcd = 0;
+    cooldown = 120;
+  }
+  
+  void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_deathchill -> trigger( 1, 1 );
+    update_ready();
+  }
+};
+
 // Empower Rune Weapon ======================================================
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
@@ -2430,6 +2460,7 @@ struct frost_strike_t : public death_knight_attack_t
         }
     }
     p -> buffs_killing_machine -> expire();
+    p -> buffs_deathchill -> expire();
   }
   
   virtual void player_buff()
@@ -2437,6 +2468,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs_deathchill -> value();
     if ( p -> diseases() ) player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
 };
@@ -2621,6 +2653,7 @@ struct howling_blast_t : public death_knight_spell_t
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
     }
     p -> buffs_killing_machine -> expire();
+    p -> buffs_deathchill -> expire();
     p -> buffs_rime -> expire();
   }
 
@@ -2629,6 +2662,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs_deathchill -> value();
     if ( p -> diseases() ) player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
   
@@ -2764,6 +2798,7 @@ struct icy_touch_t : public death_knight_spell_t
       trigger_icy_talons( this );
     }
     p -> buffs_killing_machine -> expire();
+    p -> buffs_deathchill -> expire();
   }
   
   virtual void player_buff()
@@ -2771,6 +2806,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs_deathchill -> value();
     if ( p -> diseases() ) player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
   }
 };
@@ -2822,6 +2858,14 @@ struct obliterate_t : public death_knight_attack_t
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
+  virtual void player_buff()
+  {
+    death_knight_attack_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    
+    player_crit += p -> buffs_deathchill -> value();
+  }
+
   virtual void consume_resource() { }
   virtual void execute()
   {
@@ -2868,6 +2912,7 @@ struct obliterate_t : public death_knight_attack_t
         update_ready();
       }
     }
+    p -> buffs_deathchill -> expire();
   }
 };
 
@@ -3342,6 +3387,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // Frost Actions
 //if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
+  if ( name == "deathchill"				  ) return new deathchill_t			      ( this, options_str );
 //if ( name == "frost_fever"              ) return new frost_fever_t              ( this, options_str );  Passive
 //if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "frost_strike"             ) return new frost_strike_t             ( this, options_str );
@@ -3773,6 +3819,7 @@ void death_knight_t::init_buffs()
   buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         0.0,   0.0, talents.bloody_vengeance );
   buffs_bone_shield       = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield,    60.0, 60.0, talents.bone_shield );
   buffs_desolation        = new buff_t( this, "desolation",         1,                         20.0,  0.0, talents.desolation );
+  buffs_deathchill        = new buff_t( this, "deathchill",         1,						   30.0 );
   buffs_icy_talons        = new buff_t( this, "icy_talons",         1,                         20.0,  0.0, talents.icy_talons );
   buffs_killing_machine   = new buff_t( this, "killing_machine",    1,                         30.0,  0.0, 0 ); // PPM based!
   buffs_rime              = new buff_t( this, "rime",               1,                         30.0,  0.0, talents.rime * 0.05 );
