@@ -1013,7 +1013,7 @@ void action_t::extend_duration( int extra_ticks )
 
 void action_t::update_ready()
 {
-  if ( cooldown -> duration > 0 )
+  if ( cooldown -> duration > 0 && ! dual )
   {
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 

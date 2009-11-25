@@ -2234,8 +2234,6 @@ struct explosive_tick_t : public hunter_attack_t
     {
       base_crit += 0.04;
     }
-
-    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()

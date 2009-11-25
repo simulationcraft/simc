@@ -578,8 +578,6 @@ struct penance_tick_t : public priest_spell_t
 
     base_multiplier *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
     base_crit       += p -> talents.holy_specialization * 0.01;
-
-    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()

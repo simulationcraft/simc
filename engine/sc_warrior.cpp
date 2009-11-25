@@ -999,7 +999,6 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     may_crit    = true;
     aoe         = true;
-    cooldown = player -> get_cooldown( "noop" );
   }
   virtual void execute()
   {

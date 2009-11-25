@@ -1788,7 +1788,6 @@ struct killing_spree_tick_t : public rogue_attack_t
     may_crit   = true;
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
-    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()

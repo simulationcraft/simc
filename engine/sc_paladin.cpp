@@ -1553,8 +1553,6 @@ struct consecration_tick_t : public paladin_spell_t
     base_attack_power_multiplier = 0.04;
 
     if ( p -> librams.resurgence ) base_spell_power += 141;
-
-    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()
