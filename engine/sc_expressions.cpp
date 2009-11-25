@@ -377,7 +377,14 @@ static action_expr_t* build_expression_tree( action_t* action,
     else if ( t.type == TOK_STR ) 
     {
       action_expr_t* e = action -> create_expression( t.label );
-      if ( ! e ) e = new action_expr_t( action, t.label, t.label );
+      if ( ! e ) 
+      {
+	log_t::output( action -> sim, 
+		       "Player %s action %s : Unable to decode expression function '%s'\n", 
+		       action -> player -> name(), action -> name(), t.label.c_str() );
+	action -> sim -> canceled = 1;
+	e = new action_expr_t( action, t.label, t.label );
+      }
       stack.push_back( e );
     }
     else if ( is_unary( t.type ) ) 

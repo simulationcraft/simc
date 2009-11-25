@@ -2524,6 +2524,32 @@ void player_t::aura_loss( const char* aura_name , int aura_id )
   }
 }
 
+// player_t::find_cooldown ==================================================
+
+cooldown_t* player_t::find_cooldown( const std::string& name )
+{
+  for ( cooldown_t* c = cooldown_list; c; c = c -> next )
+  {
+    if ( c -> name_str == name )
+      return c;
+  }
+
+  return 0;
+}
+
+// player_t::find_dot =======================================================
+
+dot_t* player_t::find_dot( const std::string& name )
+{
+  for ( dot_t* d = dot_list; d; d = d -> next )
+  {
+    if ( d -> name_str == name )
+      return d;
+  }
+
+  return 0;
+}
+
 // player_t::get_cooldown ===================================================
 
 cooldown_t* player_t::get_cooldown( const std::string& name )
@@ -3575,6 +3601,48 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { result_num = ( action -> player -> in_combat  ? 1 : 0 ); return TOK_NUM; }
     };
     return new in_combat_expr_t( a );
+  }
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
+  if ( num_splits == 3 )
+  {
+    if ( splits[ 0 ] == "buff" )
+    {
+      buff_t* buff = buff_t::find( this, splits[ 1 ] );
+      if ( ! buff ) return 0;
+      return buff -> create_expression( a, splits[ 2 ] );
+    }
+    else if ( splits[ 0 ] == "cooldown" )
+    {
+      cooldown_t* cooldown = find_cooldown( splits[ 1 ] );
+      if ( ! cooldown ) return 0;
+      if ( splits[ 2 ] == "remains" )
+      {
+	struct cooldown_remains_expr_t : public action_expr_t
+	{
+	  cooldown_t* cooldown;
+	  cooldown_remains_expr_t( action_t* a, cooldown_t* c ) : action_expr_t( a, "cooldown_remains", TOK_NUM ), cooldown(c) {}
+	  virtual int evaluate() { result_num = cooldown -> remains(); return TOK_NUM; }
+	};
+	return new cooldown_remains_expr_t( a, cooldown );
+      }
+    }
+    else if ( splits[ 0 ] == "dot" )
+    {
+      dot_t* dot = find_dot( splits[ 1 ] );
+      if ( ! dot ) return 0;
+      if ( splits[ 2 ] == "remains" )
+      {
+	struct dot_remains_expr_t : public action_expr_t
+	{
+	  dot_t* dot;
+	  dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot(d) {}
+	  virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
+	};
+	return new dot_remains_expr_t( a, dot );
+      }
+    }
   }
 
   return sim -> create_expression( a, name_str );

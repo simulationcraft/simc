@@ -498,6 +498,65 @@ buff_t* buff_t::find( player_t* p,
   return 0;
 }
 
+// buff_t::create_expression ================================================
+
+action_expr_t* buff_t::create_expression( action_t* action,
+					  const std::string& type )
+{
+  if ( type == "remains" )
+  {
+    struct buff_remains_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_remains", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = buff -> remains(); return TOK_NUM; }
+    };
+    return new buff_remains_expr_t( action, this );
+  }
+  else if ( type == "cooldown_remains" )
+  {
+    struct buff_cooldown_remains_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_cooldown_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_remains", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = buff -> cooldown_ready - buff -> sim -> current_time; return TOK_NUM; }
+    };
+    return new buff_cooldown_remains_expr_t( action, this );
+  }
+  else if ( type == "up" )
+  {
+    struct buff_up_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_up_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_up", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = ( buff -> check() > 0 ) ? 1.0 : 0.0; return TOK_NUM; }
+    };
+    return new buff_up_expr_t( action, this );
+  }
+  else if ( type == "down" )
+  {
+    struct buff_down_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_down_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_down", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = ( buff -> check() <= 0 ) ? 1.0 : 0.0; return TOK_NUM; }
+    };
+    return new buff_down_expr_t( action, this );
+  }
+  else if ( type == "stack" )
+  {
+    struct buff_stack_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_stack_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_stack", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = buff -> check(); return TOK_NUM; }
+    };
+    return new buff_stack_expr_t( action, this );
+  }
+
+  return 0;
+}
+
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================

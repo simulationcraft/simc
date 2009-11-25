@@ -93,6 +93,7 @@ struct patch_t
 
 struct action_t;
 struct action_callback_t;
+struct action_expr_t;
 struct alias_t;
 struct attack_t;
 struct base_stats_t;
@@ -783,6 +784,8 @@ struct buff_t
   virtual void   analyze();
   virtual void   init();
   virtual const char* name() { return name_str.c_str(); }
+
+  action_expr_t* create_expression( action_t*, const std::string& type );
 
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
@@ -1757,6 +1760,9 @@ struct player_t
   bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
+
+  cooldown_t* find_cooldown( const std::string& name );
+  dot_t*      find_dot     ( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name );
