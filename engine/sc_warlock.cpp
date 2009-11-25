@@ -2471,17 +2471,20 @@ struct conflagrate_t : public warlock_spell_t
   action_t* dot_spell;
   double immolate_multiplier;
   double shadowflame_multiplier;
+  double conflagrate_lag;
 
   conflagrate_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "conflagrate", player, SCHOOL_FIRE, TREE_DESTRUCTION ), 
-    ticks_lost( 0 ), dot_spell( 0 ), immolate_multiplier( 1.0 ), shadowflame_multiplier( 1.0 )
+    ticks_lost( 0 ), dot_spell( 0 ), immolate_multiplier( 1.0 ), shadowflame_multiplier( 1.0 ),
+    conflagrate_lag ( 0.5 )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talents.conflagrate );
 
     option_t options[] =
     {
-      { "ticks_lost",   OPT_INT,  &ticks_lost   },
+      { "ticks_lost",       OPT_INT,  &ticks_lost   },
+      { "conflagrate_lag",  OPT_FLT, &conflagrate_lag },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2607,9 +2610,28 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( ! p -> active_immolate &&
-         ! p -> active_shadowflame )
+    // If there is neither an active immolate nor shadowflame, then conflag is not ready
+    if ( ! ( p -> active_immolate || p -> active_shadowflame ) )
       return false;
+
+    if ( conflagrate_lag > 0.0 )
+    {
+		 // If there is an active immolate/shadowflame but neither have been on for 0.5 seconds,
+		 // then conflag is not ready.  We only know when the spell was cast based on upcoming ticks
+		 if ( ! ( ( p -> active_immolate &&
+						0 == p -> active_immolate -> current_tick &&
+						player -> sim -> current_time -
+									  ( p -> active_immolate -> tick_event -> time -
+										 p -> active_immolate -> time_to_tick ) > conflagrate_lag ) ||
+					 ( p -> active_shadowflame &&
+						0 == p -> active_shadowflame -> current_tick &&
+						player -> sim -> current_time -
+									  ( p -> active_shadowflame -> tick_event -> time -
+										 p -> active_shadowflame -> time_to_tick ) > conflagrate_lag )
+				  )
+			 )
+			return false;
+	 }
 
     if ( ticks_lost > 0 )
     {
