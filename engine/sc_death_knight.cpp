@@ -1994,17 +1994,16 @@ struct blood_strike_t : public death_knight_attack_t
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
       p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
-      
-      // 30/60/100% to also hit with OH
-      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
-        {
-          group_runes( p, 0, 0, 0, use );
-          weapon = &( p -> off_hand_weapon );
-          death_knight_attack_t::execute();
-        }
     }
+    // 30/60/100% to also hit with OH
+    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+      {
+        group_runes( p, 0, 0, 0, use );
+        weapon = &( p -> off_hand_weapon );
+        death_knight_attack_t::execute();
+      }
   }
 };
 
@@ -2230,16 +2229,16 @@ struct death_strike_t : public death_knight_attack_t
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
 
       trigger_abominations_might( this, 0.5 );
-      // 30/60/100% to also hit with OH
-      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
-        {
-          group_runes( p, 0, 0, 0, use );
-          weapon = &( p -> off_hand_weapon );
-          death_knight_attack_t::execute();
-        }
     }
+    // 30/60/100% to also hit with OH
+    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+      {
+        group_runes( p, 0, 0, 0, use );
+        weapon = &( p -> off_hand_weapon );
+        death_knight_attack_t::execute();
+      }
   }
 };
 
@@ -2448,17 +2447,13 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
-    if ( result_is_hit() )
-    {
-      // 30/60/100% to also hit with OH
-      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
-        {
-          weapon = &( p -> off_hand_weapon );
-          death_knight_attack_t::execute();
-        }
-    }
+    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+      {
+        weapon = &( p -> off_hand_weapon );
+        death_knight_attack_t::execute();
+      }
     p -> buffs_killing_machine -> expire();
     p -> buffs_deathchill -> expire();
   }
@@ -2900,17 +2895,7 @@ struct obliterate_t : public death_knight_attack_t
     {
       trigger_abominations_might( this, 0.5 );
 
-      // 30/60/100% to also hit with OH
-      double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-        if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
-        {
-          group_runes( p, 0, 0, 0, use );
-          weapon = &( p -> off_hand_weapon );
-          death_knight_attack_t::execute();
-        }
-      
-      chance = p -> talents.annihilation / 3.0;
+      double chance = p -> talents.annihilation / 3.0;
       // 33/66/100% chance to NOT consume the diseases
       if ( ! p -> rng_annihilation -> roll( chance ) )
       {
@@ -2934,6 +2919,17 @@ struct obliterate_t : public death_knight_attack_t
         update_ready();
       }
     }
+    
+    // 30/60/100% to also hit with OH
+    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+      {
+        group_runes( p, 0, 0, 0, use );
+        weapon = &( p -> off_hand_weapon );
+        death_knight_attack_t::execute();
+      }
+
     p -> buffs_deathchill -> expire();
   }
 };
