@@ -120,6 +120,9 @@ struct death_knight_t : public player_t
   uptime_t* uptimes_blood_plague;
   uptime_t* uptimes_frost_fever;
 
+  // Cooldowns
+  cooldown_t* cooldowns_howling_blast;
+
   // Auto-Attack
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
@@ -332,6 +335,8 @@ struct death_knight_t : public player_t
     sudden_doom         = NULL;
     blood_plague        = NULL;
     frost_fever         = NULL;
+
+    cooldowns_howling_blast = get_cooldown( "howling_blast" );
   }
 
   // Character Definition
@@ -1051,10 +1056,11 @@ static void trigger_blood_caked_blade( action_t* a )
 static void trigger_crypt_fever( action_t* a )
 {
   if ( a -> sim -> overrides.crypt_fever ) return;
+
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.crypt_fever ) return;
 
-  double disease_duration = a -> duration_ready - a -> sim -> current_time;
+  double disease_duration = a -> dot -> ready - a -> sim -> current_time;
   if ( a -> sim -> target -> debuffs.crypt_fever -> remains_lt( disease_duration ) )
   {
     double value = util_t::talent_rank( p -> talents.crypt_fever, 3, 10 );
@@ -1070,7 +1076,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.ebon_plaguebringer ) return;
 
-  double disease_duration = a -> duration_ready - a -> sim -> current_time;
+  double disease_duration = a -> dot -> ready - a -> sim -> current_time;
   if ( a -> sim -> target -> debuffs.crypt_fever -> remains_lt( disease_duration ) )
   {
     double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
@@ -1153,8 +1159,8 @@ static void trigger_wandering_plague( action_t* a, double disease_damage )
       proc           = true;
       trigger_gcd    = false;
       may_resist     = false;
-      cooldown_group = "wandering_plague";
-      cooldown       = 1.0;
+      cooldown = player -> get_cooldown( "wandering_plague" );
+      cooldown -> duration       = 1.0;
       reset();
     }
     void target_debuff( int dmg_type )
@@ -1416,27 +1422,27 @@ bool death_knight_attack_t::ready()
   double ct = sim -> current_time;
 
   if ( exact_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> duration_ready - ct ) != exact_blood_plague ) )
+    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) != exact_blood_plague ) )
       return false;
 
   if ( min_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> duration_ready - ct ) < min_blood_plague ) )
+    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) < min_blood_plague ) )
       return false;
 
   if ( max_blood_plague > 0 )
-    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> duration_ready - ct ) > max_blood_plague ) )
+    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> dot -> ready - ct ) > max_blood_plague ) )
       return false;
 
   if ( exact_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> duration_ready - ct ) != exact_frost_fever ) )
+    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) != exact_frost_fever ) )
       return false;
 
   if ( min_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> duration_ready - ct ) < min_frost_fever ) )
+    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) < min_frost_fever ) )
       return false;
 
   if ( max_frost_fever > 0 )
-    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> duration_ready - ct ) > max_frost_fever ) )
+    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> dot -> ready - ct ) > max_frost_fever ) )
       return false;
 
   if ( min_desolation > 0 )
@@ -1630,27 +1636,27 @@ bool death_knight_spell_t::ready()
   double ct = sim -> current_time;
 
   if ( exact_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> duration_ready - ct ) != exact_blood_plague ) )
+    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) != exact_blood_plague ) )
       return false;
 
   if ( min_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> duration_ready - ct ) < min_blood_plague ) )
+    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) < min_blood_plague ) )
       return false;
 
   if ( max_blood_plague > 0 )
-    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> duration_ready - ct ) > max_blood_plague ) )
+    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> dot -> ready - ct ) > max_blood_plague ) )
       return false;
 
   if ( exact_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> duration_ready - ct ) != exact_frost_fever ) )
+    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) != exact_frost_fever ) )
       return false;
 
   if ( min_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> duration_ready - ct ) < min_frost_fever ) )
+    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) < min_frost_fever ) )
       return false;
 
   if ( max_frost_fever > 0 )
-    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> duration_ready - ct ) > max_frost_fever ) )
+    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> dot -> ready - ct ) > max_frost_fever ) )
       return false;
 
   if ( min_desolation > 0 )
@@ -1835,7 +1841,7 @@ struct blood_boil_t : public death_knight_spell_t
     cost_blood = 1;
 
     base_execute_time = 0;
-    cooldown          = 0.0;
+    cooldown -> duration          = 0.0;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
   }
@@ -1866,7 +1872,7 @@ struct blood_plague_t : public death_knight_spell_t
 
     tick_may_crit     = ( p -> set_bonus.tier9_4pc_melee() != 0 && ! p -> sim -> P330 );
     may_miss          = false;
-    cooldown          = 0.0;
+    cooldown -> duration          = 0.0;
     
     observer = &( p -> active_blood_plague );
     reset();
@@ -1893,9 +1899,9 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::extend_duration( extra_ticks );
     target_t* t = sim -> target;
-    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( duration_ready ) )
+    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.blood_plague -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.blood_plague -> duration = dot -> ready - sim -> current_time;
       t -> debuffs.blood_plague -> trigger();
     }
     trigger_crypt_fever( this );
@@ -1906,9 +1912,9 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::refresh_duration();
     target_t* t = sim -> target;
-    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( duration_ready ) )
+    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.blood_plague -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.blood_plague -> duration = dot -> ready - sim -> current_time;
       t -> debuffs.blood_plague -> trigger();
     }
     trigger_crypt_fever( this );
@@ -2018,7 +2024,7 @@ struct blood_tap_t : public death_knight_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    cooldown    = 60.0;
+    cooldown -> duration    = 60.0;
     trigger_gcd = 0;
     base_cost   = 0;
   }
@@ -2071,7 +2077,7 @@ struct bone_shield_t : public death_knight_spell_t
     check_talent( p -> talents.bone_shield );
 
     cost_unholy = 1;
-    cooldown    = 60.0;
+    cooldown -> duration    = 60.0;
   }
 
   virtual void execute()
@@ -2096,7 +2102,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     };
     parse_options( options, options_str );
     base_cost   = 60.0;
-    cooldown    = 90.0;
+    cooldown -> duration    = 90.0;
     trigger_gcd = 0;
   }
 
@@ -2144,7 +2150,7 @@ struct death_coil_t : public death_knight_spell_t
     init_rank( ranks );
 
     base_execute_time = 0;
-    cooldown          = 0.0;
+    cooldown -> duration          = 0.0;
     direct_power_mod  = 0.15 * ( 1 + 0.04 * p -> talents.impurity );
     base_dd_multiplier *= 1 + ( 0.05 * p -> talents.morbidity +
                                 0.15 * p -> glyphs.dark_death );
@@ -2259,7 +2265,7 @@ struct deathchill_t : public death_knight_spell_t
     check_talent( p -> talents.deathchill );
     
     trigger_gcd = 0;
-    cooldown = 120;
+    cooldown -> duration = 120;
   }
   
   void execute()
@@ -2284,7 +2290,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 300;
+    cooldown -> duration = 300;
   }
 
   void execute()
@@ -2327,7 +2333,7 @@ struct frost_fever_t : public death_knight_spell_t
 
     tick_may_crit     = p -> set_bonus.tier9_4pc_melee() != 0;
     may_miss          = false;
-    cooldown          = 0.0;
+    cooldown -> duration          = 0.0;
 
     observer = &( p -> active_frost_fever );
     reset();
@@ -2354,9 +2360,9 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::extend_duration( extra_ticks );
     target_t* t = sim -> target;
-    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( duration_ready ) )
+    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.frost_fever -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.frost_fever -> duration = dot -> ready - sim -> current_time;
       t -> debuffs.frost_fever -> trigger();
     }
     trigger_crypt_fever( this );
@@ -2367,9 +2373,9 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::refresh_duration();
     target_t* t = sim -> target;
-    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( duration_ready ) )
+    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.frost_fever -> duration = duration_ready - sim -> current_time;
+      t -> debuffs.frost_fever -> duration = dot -> ready - sim -> current_time;
       t -> debuffs.frost_fever -> trigger();
     }
     trigger_crypt_fever( this );
@@ -2552,7 +2558,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown       = 20;
+    cooldown -> duration       = 20;
     trigger_gcd    = 1.0;
     bonus = util_t::ability_rank( p -> level, 155,75, 86,65 );
   }
@@ -2615,7 +2621,7 @@ struct howling_blast_t : public death_knight_spell_t
     init_rank( ranks );
 
     base_execute_time = 0;
-    cooldown          = 8.0;
+    cooldown -> duration          = 8.0;
     direct_power_mod  = 0.2;
     
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
@@ -2729,7 +2735,7 @@ struct hysteria_t : public action_t
     }
 
     trigger_gcd = 0;
-    cooldown = 180;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -2772,7 +2778,7 @@ struct icy_touch_t : public death_knight_spell_t
 
     base_execute_time = 0;
     direct_power_mod  = 0.1 * ( 1 + 0.04 * p -> talents.impurity );
-    cooldown          = 0.0;
+    cooldown -> duration          = 0.0;
     
     base_crit += p -> talents.rime * 0.05;
   }
@@ -2909,13 +2915,7 @@ struct obliterate_t : public death_knight_attack_t
 
       if ( p -> buffs_rime -> trigger() ) 
       {
-        for ( action_t* a = player -> action_list; a; a = a -> next )
-        {
-          if ( a -> name_str == "howling_blast" )
-          {
-            a -> cooldown_ready = 0;
-          }
-        }
+	p -> cooldowns_howling_blast -> reset();
         update_ready();
       }
     }
@@ -3087,7 +3087,7 @@ struct presence_t : public death_knight_spell_t
 
     base_cost   = 0;
     trigger_gcd = 0;
-    cooldown    = 1.0;
+    cooldown -> duration    = 1.0;
     harmful     = false;
   }
 
@@ -3144,7 +3144,7 @@ struct raise_dead_t : public death_knight_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown   = 180.0;
+    cooldown -> duration   = 180.0;
     trigger_gcd = 0;
   }
 
@@ -3178,7 +3178,7 @@ struct rune_tap_t : public death_knight_spell_t
     parse_options( options, options_str );
     cost_blood = 1;
 
-    cooldown    = 60.0;
+    cooldown -> duration    = 60.0;
     trigger_gcd = 0;
   }
 
@@ -3328,7 +3328,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     };
     parse_options( options, options_str );
     base_cost   = 60;
-    cooldown    = 180.0;
+    cooldown -> duration    = 180.0;
     trigger_gcd = 0;
     
     death_knight_t* p = player -> cast_death_knight();
@@ -3359,7 +3359,7 @@ struct unbreakable_armor_t : public death_knight_spell_t
     check_talent( p -> talents.unbreakable_armor );
 
     cost_frost = 1;
-    cooldown    = 60.0;
+    cooldown -> duration = 60.0;
     trigger_gcd = 0;
   }
 

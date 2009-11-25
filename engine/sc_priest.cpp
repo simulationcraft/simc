@@ -18,7 +18,6 @@ struct priest_t : public player_t
   action_t* active_vampiric_embrace;
 
   // Buffs
-
   buff_t* buffs_devious_mind;
   buff_t* buffs_glyph_of_shadow;
   buff_t* buffs_improved_spirit_tap;
@@ -30,15 +29,8 @@ struct priest_t : public player_t
   buff_t* buffs_vampiric_embrace;
 
   // Cooldowns
-  struct _cooldowns_t
-  {
-    double mind_blast;
-    double shadow_fiend;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
+  cooldown_t* cooldowns_mind_blast;
+  cooldown_t* cooldowns_shadow_fiend;
 
   // Gains
   gain_t* gains_devious_mind;
@@ -186,6 +178,9 @@ struct priest_t : public player_t
     constants.shadow_word_pain_power_mod      = 3.0 / 15.0 * 0.915;
     constants.twin_disciplines_value          = 0.01;
     constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
+
+    cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
+    cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
   }
 
   // Character Definition
@@ -477,14 +472,14 @@ struct holy_fire_t : public priest_spell_t
     };
     init_rank( ranks );
 
+    may_crit = true;
     base_execute_time = 2.0;
     base_tick_time    = 1.0;
     num_ticks         = 7;
-    cooldown          = 10;
     direct_power_mod  = 0.5715;
     tick_power_mod    = 0.1678 / 7;
+    cooldown -> duration = 10;
 
-    may_crit           = true;
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
@@ -583,6 +578,8 @@ struct penance_tick_t : public priest_spell_t
 
     base_multiplier *= 1.0 + p -> talents.searing_light * 0.05 + p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
     base_crit       += p -> talents.holy_specialization * 0.01;
+
+    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()
@@ -618,8 +615,8 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    cooldown  = 12 - ( p -> glyphs.penance * 2 );
-    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
+    cooldown -> duration  = 12 - ( p -> glyphs.penance * 2 );
+    cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
 
     penance_tick = new penance_tick_t( p );
   }
@@ -902,7 +899,6 @@ struct devouring_plague_t : public priest_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 8;
-    cooldown          = 0.0;
     tick_power_mod    = p -> constants.devouring_plague_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) + p -> talents.shadow_focus * 0.02 );
     base_cost         = floor( base_cost );
@@ -988,7 +984,6 @@ struct vampiric_embrace_t : public priest_spell_t
       base_execute_time = 0;
       base_tick_time    = 300.0;
       num_ticks         = 1;
-      cooldown          = 0;
       base_cost         = 0.0;
       base_cost         = floor( base_cost );
       base_multiplier   = 0;
@@ -1060,7 +1055,6 @@ struct mind_blast_t : public priest_spell_t
     init_rank( ranks );
 
     base_execute_time = 1.5;
-    cooldown          = 8.0;
     may_crit          = true;
     direct_power_mod  = p -> constants.mind_blast_power_mod;
 
@@ -1071,10 +1065,12 @@ struct mind_blast_t : public priest_spell_t
     base_multiplier  *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> talents.mind_melt * 0.02;
-    cooldown         -= p -> talents.improved_mind_blast * 0.5;
     direct_power_mod *= 1.0 + p -> talents.misery * p -> constants.misery_power_mod;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
+
+    cooldown -> duration  = 8.0;
+    cooldown -> duration -= p -> talents.improved_mind_blast * 0.5;
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.10;
   }
@@ -1093,10 +1089,9 @@ struct mind_blast_t : public priest_spell_t
       }
       if ( p -> active_vampiric_touch )
       {
-	      p -> trigger_replenishment();
+	p -> trigger_replenishment();
       }
     }
-    p -> _cooldowns.mind_blast = cooldown_ready;
   }
 
   virtual void player_buff()
@@ -1142,9 +1137,10 @@ struct shadow_word_death_t : public priest_spell_t
     };
     init_rank( ranks );
 
+    may_crit = true;
     base_execute_time = 0;
-    may_crit          = true;
-    cooldown          = 12.0;
+    cooldown -> duration = 12.0;
+
     direct_power_mod  = p -> constants.shadow_word_death_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                                 p -> talents.shadow_focus * 0.02 );
@@ -1194,16 +1190,12 @@ struct shadow_word_death_t : public priest_spell_t
       return false;
 
     if ( mb_min_wait )
-    {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_min_wait )
+      if ( p -> cooldowns_mind_blast -> remains() < mb_min_wait )
         return false;
-    }
 
     if ( mb_max_wait )
-    {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) > mb_max_wait )
+      if ( p -> cooldowns_mind_blast -> remains() > mb_max_wait )
         return false;
-    }
 
     if ( devious_mind_filler )
     {
@@ -1339,7 +1331,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( cut_for_mb )
     {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
       {
         num_ticks = 2;
       }
@@ -1384,7 +1376,7 @@ struct mind_flay_t : public priest_spell_t
     // is about to come off it's cooldown.
     if ( mb_wait )
     {
-      if ( ( p -> _cooldowns.mind_blast - sim -> current_time ) < mb_wait )
+      if ( p -> cooldowns_mind_blast -> remains() < mb_wait )
         return false;
     }
 
@@ -1416,12 +1408,10 @@ struct dispersion_t : public priest_spell_t
     channeled         = true;
     harmful           = false;
     base_cost         = 0;
-    cooldown          = 120;
 
-    if ( p -> glyphs.dispersion )
-    {
-      cooldown        -= 45;
-    }
+    cooldown -> duration = 120;
+
+    if ( p -> glyphs.dispersion ) cooldown -> duration -= 45;
   }
 
   virtual void tick()
@@ -1449,28 +1439,28 @@ struct dispersion_t : public priest_spell_t
 
     if ( oom_time >= time_to_die ) return false;
 
-    if ( p -> _cooldowns.shadow_fiend <= sim -> current_time ) return false;
+    if ( p -> cooldowns_shadow_fiend -> remains() <= 0 ) return false;
 
     // Don't cast if Shadowfiend is still up
-    if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time ) > 
+    if ( ( p -> cooldowns_shadow_fiend -> remains() ) > 
          ( ( 300.0 - p -> talents.veiled_shadows * 60.0 ) - 15.0 ) ) return false;
 
-    if ( oom_time >= ( p -> _cooldowns.shadow_fiend - sim -> current_time) )
+    if ( oom_time >= p -> cooldowns_shadow_fiend -> remains() )
     {
-      double new_mana = p -> resource_current[ RESOURCE_MANA ] - consumption_rate * ( p -> _cooldowns.shadow_fiend - sim -> current_time ) + shadow_fiend_regen;
+      double new_mana = p -> resource_current[ RESOURCE_MANA ] - consumption_rate * p -> cooldowns_shadow_fiend -> remains() + shadow_fiend_regen;
 
       if ( new_mana > p -> resource_max[ RESOURCE_MANA ] )
         new_mana = p -> resource_max[ RESOURCE_MANA ];
   
       double oom_time2 = new_mana / consumption_rate;
-      if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time + oom_time2 ) >= time_to_die ) return false;
+      if ( ( p -> cooldowns_shadow_fiend -> remains() + oom_time2 ) >= time_to_die ) return false;
 
       if ( consumption_rate < ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) ) ) return false;
 
       double consumption_rate2 = consumption_rate - ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) );
       double oom_time3 = new_mana / consumption_rate2;
 
-      if ( ( p -> _cooldowns.shadow_fiend - sim -> current_time + oom_time3 ) >= time_to_die ) return false;
+      if ( ( p -> cooldowns_shadow_fiend -> remains() + oom_time3 ) >= time_to_die ) return false;
     } 
 
     double trigger = p -> resource_max[ RESOURCE_MANA ] - p -> max_mana_cost;
@@ -1514,8 +1504,8 @@ struct power_infusion_t : public priest_spell_t
     }
 
     trigger_gcd = 0;
-    cooldown = 120.0;
-    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
+    cooldown -> duration = 120.0;
+    cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
   }
 
   virtual void execute()
@@ -1561,8 +1551,8 @@ struct inner_focus_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.inner_focus );
 
-    cooldown = 180.0;
-    cooldown *= 1.0 - p -> talents.aspiration * 0.10;
+    cooldown -> duration = 180.0;
+    cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
 
     std::string spell_name    = options_str;
     std::string spell_options = "";
@@ -1764,9 +1754,9 @@ struct shadow_fiend_spell_t : public priest_spell_t
     };
     init_rank( ranks );
 
-    harmful    = false;
-    cooldown   = 300.0;
-    cooldown  -= 60.0 * p -> talents.veiled_shadows;
+    harmful = false;
+    cooldown -> duration  = 300.0;
+    cooldown -> duration -= 60.0 * p -> talents.veiled_shadows;
     base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
                          p -> talents.shadow_focus * 0.02 );
     base_cost  = floor( base_cost );
@@ -1777,9 +1767,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     consume_resource();
     update_ready();
-    double duration = 15.1;
-    p -> summon_pet( "shadow_fiend", duration );
-    p -> _cooldowns.shadow_fiend = cooldown_ready;
+    p -> summon_pet( "shadow_fiend", 15.1 );
   }
 
   virtual bool ready()
@@ -1799,7 +1787,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     if ( trigger > 0 ) return false;
 
     // If it's not the first Shadowfiend just activate it anyway
-    if ( cooldown_ready > 0.0 ) return true;
+    if ( cooldown -> ready > 0.0 ) return true;
 
     if ( sim -> current_time < 15.0 ) return false;
 
@@ -1813,9 +1801,9 @@ struct shadow_fiend_spell_t : public priest_spell_t
                               regen_rate;
 
 
-    if ( consumption_rate <= ( shadow_fiend_regen / cooldown ) ) return true;
+    if ( consumption_rate <= ( shadow_fiend_regen / cooldown -> duration ) ) return true;
 
-    int max_fiends_available = (int)( ( sim -> max_time - sim -> current_time ) / cooldown ) + 1;
+    int max_fiends_available = (int)( ( sim -> max_time - sim -> current_time ) / cooldown -> duration ) + 1;
     double mana_required = ( sim -> max_time - sim -> current_time ) * consumption_rate;
     double min_fiends_needed = ( mana_required - p -> resource_current[ RESOURCE_MANA ] ) / shadow_fiend_regen;
 
@@ -2176,7 +2164,6 @@ void priest_t::reset()
   active_vampiric_touch   = 0;
   active_vampiric_embrace = 0;
 
-  _cooldowns.reset();
   _mana_resource.reset();
 
   init_party();

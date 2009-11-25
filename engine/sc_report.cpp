@@ -46,14 +46,25 @@ static void simplify_html( std::string& buffer )
   }
 }
 
-// strip_underscores =========================================================
+// wiki_anchor ===============================================================
 
-static void strip_underscores( std::string& buffer )
+static std::string wiki_anchor( player_t* p )
 {
+  std::string buffer = p -> name();
+
   for ( std::string::size_type pos = buffer.find( "_", 0 ); pos != std::string::npos; pos = buffer.find( "_", pos ) )
   {
     buffer.replace( pos, 1, "" );
   }
+
+  // GoogleCode Wiki is giving me headaches......
+  int size = buffer.size();
+  if ( isdigit( buffer[ size-1 ] ) )
+  {
+    buffer.insert( 0, "!" );
+  }
+
+  return buffer;
 }
 
 // print_action ==============================================================
@@ -1301,8 +1312,7 @@ static void print_wiki_contents( FILE* file, sim_t* sim, const std::string& wiki
 	 player_type != p -> type ) 
       continue;
 
-    std::string anchor_name = p -> name();
-    strip_underscores( anchor_name );
+    std::string anchor_name = wiki_anchor( p );
 
     util_t::fprintf( file, " * [%s%s#%s %s]\n", wiki_name.c_str(), player_type_string( p ), anchor_name.c_str(), p -> name() );
   }
@@ -1455,9 +1465,9 @@ static void print_wiki_action( FILE* file, stats_t* s )
 
 static void print_wiki_player( FILE* file, player_t* p )
 {
-  std::string anchor_name = p -> name();
-  strip_underscores( anchor_name );
-  util_t::fprintf( file, "= !%s =\n", anchor_name.c_str() );
+  std::string anchor_name = wiki_anchor( p );
+
+  util_t::fprintf( file, "= %s =\n", anchor_name.c_str() );
 
   util_t::fprintf( file, 
 		   "|| *Name* || *Race* || *Class* || *Tree* || *Level* ||\n"

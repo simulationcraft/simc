@@ -857,19 +857,19 @@ bool druid_cat_attack_t::ready()
       return false;
 
   if ( min_rip_expire > 0 )
-    if ( ! p -> active_rip || ( ( p -> active_rip -> duration_ready - ct ) < min_rip_expire ) )
+    if ( ! p -> active_rip || ( ( p -> active_rip -> dot -> ready - ct ) < min_rip_expire ) )
       return false;
 
   if ( max_rip_expire > 0 )
-    if ( p -> active_rip && ( ( p -> active_rip -> duration_ready - ct ) > max_rip_expire ) )
+    if ( p -> active_rip && ( ( p -> active_rip -> dot -> ready - ct ) > max_rip_expire ) )
       return false;
 
   if ( min_rake_expire > 0 )
-    if ( ! p -> active_rake || ( ( p -> active_rake -> duration_ready - ct ) < min_rake_expire ) )
+    if ( ! p -> active_rake || ( ( p -> active_rake -> dot -> ready - ct ) < min_rake_expire ) )
       return false;
 
   if ( max_rake_expire > 0 )
-    if ( p -> active_rake && ( ( p -> active_rake -> duration_ready - ct ) > max_rake_expire ) )
+    if ( p -> active_rake && ( ( p -> active_rake -> dot -> ready - ct ) > max_rake_expire ) )
       return false;
 
   return true;
@@ -927,8 +927,8 @@ struct berserk_cat_t : public druid_cat_attack_t
 
     parse_options( options, options_str );
 
-    cooldown_group = "berserk";
-    cooldown = 180;
+    cooldown = p -> get_cooldown( "berserk" );
+    cooldown -> duration = 180;
     id = 50334;
   }
 
@@ -1006,7 +1006,7 @@ struct maim_t : public druid_cat_attack_t
     may_crit = true;
     requires_combo_points = true;
     base_cost = 35;
-    cooldown = 10;
+    cooldown -> duration = 10;
 
     static double dmg_74[] = { 224, 382, 540, 698, 856 };
     static double dmg_62[] = { 129, 213, 297, 381, 465 };
@@ -1359,7 +1359,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown    = 30.0 - 3.0 * p -> set_bonus.tier7_4pc_melee();
+    cooldown -> duration    = 30.0 - 3.0 * p -> set_bonus.tier7_4pc_melee();
     trigger_gcd = 0;
     tiger_value = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
     id = 50213;
@@ -1715,7 +1715,7 @@ struct bash_t : public druid_bear_attack_t
     parse_options( options, options_str );
 
     base_cost = 10;
-    cooldown  = 60 - p -> talents.brutal_impact * 15;
+    cooldown -> duration  = 60 - p -> talents.brutal_impact * 15;
   }
 
   virtual bool ready()
@@ -1742,8 +1742,8 @@ struct berserk_bear_t : public druid_bear_attack_t
 
     parse_options( options, options_str );
 
-    cooldown_group = "berserk";
-    cooldown = 180;
+    cooldown = p -> get_cooldown( "berserk" );
+    cooldown -> duration = 180;
     id = 50334;
   }
 
@@ -2188,7 +2188,7 @@ struct enrage_t : public druid_spell_t
     max_rage = 0;
     parse_options( options, options_str );
     trigger_gcd = 0;
-    cooldown = 60;
+    cooldown -> duration = 60;
   }
 
   virtual void execute()
@@ -2229,7 +2229,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     parse_options( options, options_str );
 
     may_crit = true;
-    cooldown = 6.0;
+    cooldown -> duration = 6.0;
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0;
@@ -2338,7 +2338,7 @@ struct innervate_t : public druid_spell_t
 
     base_cost = 0.0;
     base_execute_time = 0;
-    cooldown  = 240;
+    cooldown -> duration  = 240;
 
     harmful   = false;
 
@@ -2756,18 +2756,22 @@ struct moonkin_form_t : public druid_spell_t
 
 struct druids_swiftness_t : public druid_spell_t
 {
+  cooldown_t* sub_cooldown;
+  dot_t*      sub_dot;
+
   druids_swiftness_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION )
+    druid_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION ),
+    sub_cooldown(0), sub_dot(0)
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.natures_swiftness );
     trigger_gcd = 0;
-    cooldown = 180.0;
+    cooldown -> duration = 180.0;
     if ( ! options_str.empty() )
     {
-      // This will prevent Natures Swiftness from being called before the desired "free spell" is ready to be cast.
-      cooldown_group = options_str;
-      duration_group = options_str;
+      // This will prevent Natures Swiftness from being called before the desired "fast spell" is ready to be cast.
+      sub_cooldown = p -> get_cooldown( options_str );
+      sub_dot      = p -> get_dot     ( options_str );
     }
     id = 17116;
   }
@@ -2777,7 +2781,20 @@ struct druids_swiftness_t : public druid_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     druid_t* p = player -> cast_druid();
     p -> buffs_natures_swiftness -> trigger();
-    cooldown_ready = sim -> current_time + cooldown;
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( sub_cooldown ) 
+      if ( sub_cooldown -> remains() > 0 )
+	return false;
+
+    if ( sub_dot ) 
+      if ( sub_dot -> remains() > 0 )
+	return false;
+
+    return druid_spell_t::ready();
   }
 };
 
@@ -3234,7 +3251,7 @@ struct starfall_t : public druid_spell_t
     num_ticks      = 10;
     base_tick_time = 1.0;
 
-    cooldown          = 90;
+    cooldown -> duration          = 90;
     base_execute_time = 0;
     aoe               = true;
 
@@ -3255,7 +3272,7 @@ struct starfall_t : public druid_spell_t
     base_dd_min = base_dd_max = 0;
 
     if ( p -> glyphs.starfall )
-      cooldown  -= 30;
+      cooldown -> duration  -= 30;
   }
   virtual void tick()
   {
@@ -3318,7 +3335,7 @@ struct treants_spell_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown = 180.0;
+    cooldown -> duration = 180.0;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
     id = 33831;
   }

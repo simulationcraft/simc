@@ -209,6 +209,7 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
+  virtual dot_t*    get_dot( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual int       decode_set( item_t& item );
@@ -629,7 +630,7 @@ struct felguard_pet_t : public warlock_pet_t
       init_rank( ranks, 47994 );
 
       weapon   = &( p -> main_hand_weapon );
-      cooldown = 6.0;
+      cooldown -> duration = 6.0;
     }
     virtual void player_buff()
     {
@@ -737,11 +738,11 @@ struct felhunter_pet_t : public warlock_pet_t
       direct_power_mod  = ( 1.5 / 3.5 ); // Converting from Pet Attack Power into Pet Spell Power.
       may_crit          = true;
 
-      cooldown = 6.0;
+      cooldown -> duration = 6.0;
 
       if ( sim -> P330 )
       {
-        cooldown -= 2.0 * o -> talents.improved_felhunter;
+        cooldown -> duration -= 2.0 * o -> talents.improved_felhunter;
         base_multiplier *= 1.0 + ( o -> talents.shadow_mastery * 0.03 );
       }
 
@@ -853,8 +854,8 @@ struct succubus_pet_t : public warlock_pet_t
       succubus_pet_t* p = ( succubus_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
 
-      cooldown   = 12.0;
-      cooldown  -= 3.0 * ( o -> talents.improved_lash_of_pain + o -> talents.demonic_power );
+      cooldown -> duration  = 12.0;
+      cooldown -> duration -= 3.0 * ( o -> talents.improved_lash_of_pain + o -> talents.demonic_power );
     }
   };
 
@@ -1741,7 +1742,6 @@ struct chaos_bolt_t : public warlock_spell_t
 
     base_execute_time = 2.5;
     direct_power_mod  = base_execute_time / 3.5;
-    cooldown          = 12.0 - ( p -> glyphs.chaos_bolt * 2.0 );
     may_crit          = true;
     may_resist        = false;
 
@@ -1753,6 +1753,8 @@ struct chaos_bolt_t : public warlock_spell_t
     direct_power_mod  *= 1.0 + p -> talents.shadow_and_flame * 0.04;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
+    cooldown -> duration = 12.0 - ( p -> glyphs.chaos_bolt * 2.0 );
   }
 
   virtual void execute()
@@ -1803,13 +1805,14 @@ struct death_coil_t : public warlock_spell_t
     base_execute_time = 0;
     may_crit          = true;
     binary            = true;
-    cooldown          = 120;
     direct_power_mod  = ( 1.5 / 3.5 ) / 2.0;
 
     base_cost       *= 1.0 -  p -> talents.suppression * 0.02;
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+
+    cooldown -> duration = 120;
   }
 
   virtual void execute()
@@ -1850,15 +1853,12 @@ struct shadow_burn_t : public warlock_spell_t
     };
     init_rank( ranks );
 
-    may_crit         = true;
-    cooldown         = 15;
+    may_crit = true;
     direct_power_mod = ( 1.5 / 3.5 );
-
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
-
     base_multiplier *= 1.0 + p -> talents.shadow_mastery * 0.03;
-
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
+    cooldown -> duration = 15;
   }
 
   virtual void execute()
@@ -1911,17 +1911,15 @@ struct shadowfury_t : public warlock_spell_t
       { 60, 1, 459,  547, 0, 0.37 },
       { 0, 0, 0, 0, 0, 0 }
     };
-
-
     init_rank( ranks );
 
-
+    may_crit = true;
     base_execute_time = 0;
-    may_crit          = true;
     direct_power_mod  = ( 1.5/3.5 );
-    cooldown          = 20;
-    trigger_gcd = 0.5; // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    if ( cast_gcd>=0 ) trigger_gcd=cast_gcd;
+    cooldown -> duration = 20;
+
+    // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
+    trigger_gcd = ( cast_gcd >= 0 ) ? cast_gcd : 0.5;
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
@@ -2230,7 +2228,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     tick_power_mod   += p -> talents.everlasting_affliction * 0.01;
 
-    duration_group = "immolate";
+    dot = p -> get_dot( "immo_ua" );
 
     if ( p -> talents.pandemic )
     {
@@ -2289,10 +2287,10 @@ struct haunt_t : public warlock_spell_t
     };
     init_rank( ranks, 59164 );
 
+    may_crit = true;
     base_execute_time = 1.5;
-    direct_power_mod  = base_execute_time / 3.5;
-    cooldown          = 8.0;
-    may_crit          = true;
+    direct_power_mod = base_execute_time / 3.5;
+    cooldown -> duration = 8.0;
 
     if ( p -> talents.pandemic ) base_crit_bonus_multiplier = 2;
 
@@ -2383,6 +2381,8 @@ struct immolate_t : public warlock_spell_t
 
     if ( p -> sim -> P330 ) num_ticks += p -> talents.molten_core;
 
+    dot = p -> get_dot( "immo_ua" );
+
     observer = &( p -> active_immolate );
   }
 
@@ -2434,7 +2434,8 @@ struct shadowflame_t : public warlock_spell_t
     num_ticks         = 4;
     direct_power_mod  = 0.1429;
     tick_power_mod    = 0.28;
-    cooldown          = 15.0;
+
+    cooldown -> duration = 15.0;
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
     base_crit += p -> talents.devastation * 0.05;
@@ -2492,10 +2493,11 @@ struct conflagrate_t : public warlock_spell_t
     };
     init_rank( ranks );
 
+    may_crit = true;
     base_execute_time = 0;
-    may_crit          = true;
     direct_power_mod  = ( 1.5/3.5 );
-    cooldown          = 10;
+
+    cooldown -> duration = 10;
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
@@ -3212,10 +3214,10 @@ struct inferno_t : public warlock_spell_t
     };
     init_rank( ranks );
 
-    cooldown          = 20 * 60;
+    may_crit = true;
     base_execute_time = 1.5;
-    may_crit          = true;
-    direct_power_mod  = 1;
+    direct_power_mod = 1;
+    cooldown -> duration = 20 * 60;
   }
 
   virtual void execute()
@@ -3246,8 +3248,7 @@ struct immolation_t : public warlock_spell_t
     base_tick_time = 1.0;
     num_ticks      = 15;
     tick_power_mod = 0.143;
-    cooldown       = 30;
-
+    cooldown -> duration = 30;
     metamorphosis = 1;
   }
 
@@ -3285,7 +3286,8 @@ struct metamorphosis_t : public warlock_spell_t
     harmful = false;
     base_cost   = 0;
     trigger_gcd = 0;
-    cooldown    = 180 * ( 1.0 - p -> talents.nemesis * 0.1 );
+
+    cooldown -> duration = 180 * ( 1.0 - p -> talents.nemesis * 0.1 );
   }
 
   virtual void execute()
@@ -3318,7 +3320,7 @@ struct demonic_empowerment_t : public warlock_spell_t
 
     harmful = false;
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.06;
-    cooldown  = 60 * ( 1.0 - p -> talents.nemesis * 0.1 );
+    cooldown -> duration  = 60 * ( 1.0 - p -> talents.nemesis * 0.1 );
     trigger_gcd = 0;
   }
 
@@ -3994,6 +3996,16 @@ int warlock_t::primary_tree() SC_CONST
   if ( talents.shadow_and_flame    ) return TREE_DESTRUCTION;
 
   return TALENT_TREE_MAX;
+}
+
+// warlock_t::get_dot ======================================================
+
+dot_t* warlock_t::get_dot( const std::string& name )
+{
+  if ( name == "immolate"            ) return player_t::get_dot( "immo_ua" );
+  if ( name == "unstable_affliction" ) return player_t::get_dot( "immo_ua" );
+
+  return player_t::get_dot( name );
 }
 
 // warlock_t::get_talent_trees =============================================

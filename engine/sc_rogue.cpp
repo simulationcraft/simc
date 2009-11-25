@@ -40,15 +40,8 @@ struct rogue_t : public player_t
   buff_t* buffs_tier9_2pc;
 
   // Cooldowns
-  struct _cooldowns_t
-  {
-    double honor_among_thieves;
-    double seal_fate;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
+  cooldown_t* cooldowns_honor_among_thieves;
+  cooldown_t* cooldowns_seal_fate;
 
   // Expirations
   struct _expirations_t
@@ -222,6 +215,10 @@ struct rogue_t : public player_t
     active_instant_poison    = 0;
     active_wound_poison      = 0;
     active_rupture           = 0;
+
+    // Cooldowns
+    cooldowns_honor_among_thieves = get_cooldown( "honor_among_thieves" );
+    cooldowns_seal_fate           = get_cooldown( "seal_fate"           );
 
     // Auto-Attack
     main_hand_attack = 0;
@@ -620,14 +617,14 @@ static void trigger_seal_fate( rogue_attack_t* a )
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
 
-  if ( a -> sim -> current_time <= p -> _cooldowns.seal_fate )
+  if ( p -> cooldowns_seal_fate -> remains() > 0 )
     return;
 
   if ( p -> talents.seal_fate )
   {
     if ( p -> rng_seal_fate -> roll( p -> talents.seal_fate * 0.20 ) )
     {
-      p -> _cooldowns.seal_fate = a -> sim -> current_time;
+      p -> cooldowns_seal_fate -> start( 0.0001 );
       p -> procs_seal_fate -> occur();
       add_combo_point( p );
     }
@@ -990,11 +987,11 @@ bool rogue_attack_t::ready()
       return false;
 
   if ( min_rup_expire > 0 )
-    if ( ! p -> active_rupture || ( ( p -> active_rupture -> duration_ready - ct ) < min_rup_expire ) )
+    if ( ! p -> active_rupture || ( ( p -> active_rupture -> dot -> ready - ct ) < min_rup_expire ) )
       return false;
 
   if ( max_rup_expire > 0 )
-    if ( p -> active_rupture && ( ( p -> active_rupture -> duration_ready - ct ) > max_rup_expire ) )
+    if ( p -> active_rupture && ( ( p -> active_rupture -> dot -> ready - ct ) > max_rup_expire ) )
       return false;
 
   return true;
@@ -1125,8 +1122,8 @@ struct adrenaline_rush_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown = 180;
     trigger_gcd = 0;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -1272,8 +1269,8 @@ struct blade_flurry_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown  = 120;
     base_cost = p -> glyphs.blade_flurry ? 0 : 25;
+    cooldown -> duration  = 120;
   }
 
   virtual void execute()
@@ -1535,7 +1532,7 @@ struct feint_t : public rogue_attack_t
     parse_options( options, options_str );
 
     base_cost = p -> glyphs.feint ? 10 : 20;
-    cooldown = 10;
+    cooldown -> duration = 10;
   }
 
   virtual void execute()
@@ -1629,7 +1626,7 @@ struct ghostly_strike_t : public rogue_attack_t
     may_crit                    = true;
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
-    cooldown                    = p -> glyphs.ghostly_strike ? 30 : 20;
+    cooldown -> duration        = p -> glyphs.ghostly_strike ? 30 : 20;
     base_cost                   = 40;
     weapon_multiplier          *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
@@ -1767,7 +1764,7 @@ struct kick_t : public rogue_attack_t
     base_dd_min = base_dd_max = 1;
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0;
-    cooldown = 10;
+    cooldown -> duration = 10;
   }
 
   virtual bool ready()
@@ -1789,10 +1786,9 @@ struct killing_spree_tick_t : public rogue_attack_t
     dual       = true;
     background = true;
     may_crit   = true;
-
     base_dd_min = base_dd_max = 1;
-
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
+    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()
@@ -1820,12 +1816,12 @@ struct killing_spree_t : public rogue_attack_t
     parse_options( options, options_str );
 
     base_dd_min = base_dd_max = 1;
-    channeled       = true;
-    cooldown        = 120;
-    num_ticks       = 5;
-    base_tick_time  = 0.5;
+    channeled = true;
+    num_ticks = 5;
+    base_tick_time = 0.5;
+    cooldown -> duration = 120;
 
-    if ( p -> glyphs.killing_spree ) cooldown -= 45;
+    if ( p -> glyphs.killing_spree ) cooldown -> duration -= 45;
 
     killing_spree_tick = new killing_spree_tick_t( p );
   }
@@ -1969,8 +1965,7 @@ struct premeditation_t : public rogue_attack_t
     parse_options( options, options_str );
 
     requires_stealth = true;
-    cooldown = 20;
-    base_cost = 0;
+    cooldown -> duration = 20;
   }
 
   virtual void execute()
@@ -2076,8 +2071,8 @@ struct shadowstep_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 30;
     base_cost = 10;
+    cooldown -> duration = 30;
   }
 
   virtual void execute()
@@ -2295,7 +2290,7 @@ struct shadow_dance_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 60;
+    cooldown -> duration = 60;
   }
 
   virtual void execute()
@@ -2331,7 +2326,8 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     trigger_gcd = 0;
 
     base_cost = ( p -> set_bonus.tier10_2pc_melee() ? 0 : 15 );
-    cooldown  = 30.0 - p -> talents.filthy_tricks * 5.0;
+
+    cooldown -> duration  = 30.0 - p -> talents.filthy_tricks * 5.0;
 
     if ( target_str.empty() || target_str == "none" )
     {
@@ -2393,7 +2389,7 @@ struct vanish_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 180 - 30 * p -> talents.elusiveness;
+    cooldown -> duration = 180 - 30 * p -> talents.elusiveness;
   }
 
   virtual void execute()
@@ -2796,7 +2792,7 @@ struct cold_blood_t : public spell_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    cooldown = 180;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -2812,6 +2808,8 @@ struct cold_blood_t : public spell_t
 
 struct preparation_t : public spell_t
 {
+  std::vector<cooldown_t*> cooldown_list;
+
   preparation_t( player_t* player, const std::string& options_str ) :
       spell_t( "preparation", player )
   {
@@ -2826,22 +2824,26 @@ struct preparation_t : public spell_t
 
     trigger_gcd = 0;
 
-    cooldown = 600;
-    cooldown -= p -> talents.filthy_tricks * 150;
+    cooldown -> duration = 600;
+    cooldown -> duration -= p -> talents.filthy_tricks * 150;
+
+    cooldown_list.push_back( p -> get_cooldown( "cold_blood" ) );
+    cooldown_list.push_back( p -> get_cooldown( "vanish"     ) );
+
+    if ( p -> glyphs.preparation )
+    {
+      cooldown_list.push_back( p -> get_cooldown( "blade_flurry" ) );
+    }
   }
 
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    int num_cooldowns = (int) cooldown_list.size();
+    for ( int i=0; i < num_cooldowns; i++ )
     {
-      if ( a -> name_str == "vanish"     ||
-           a -> name_str == "cold_blood" ||
-           ( a -> name_str == "blade_flurry" && p -> glyphs.preparation ) )
-      {
-        a -> cooldown_ready = 0;
-      }
+      cooldown_list[ i ] -> reset();
     }
     update_ready();
   }
@@ -3295,28 +3297,21 @@ void rogue_t::init_buffs()
 
 struct honor_among_thieves_callback_t : public action_callback_t
 {
-  double cooldown_ready;
-
-  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ), cooldown_ready(0) {}
-
-  virtual void reset()
-  {
-    action_callback_t::reset();
-    cooldown_ready = 0;
-  }
+  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
 
   virtual void trigger( action_t* a )
   {
     rogue_t* rogue = listener -> cast_rogue();
 
     if ( a )
+    {
       if ( ! a -> special || a -> aoe || a -> pseudo_pet ) 
         return;
 
-    if ( a )
       a -> player -> procs.hat_donor -> occur();
+    }
 
-    if ( sim -> current_time < rogue -> _cooldowns.honor_among_thieves )
+    if ( rogue -> cooldowns_honor_among_thieves -> remains() > 0 )
       return;
 
     if ( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves / 3.0 ) ) return;
@@ -3325,7 +3320,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     rogue -> procs_honor_among_thieves -> occur();
 
-    rogue -> _cooldowns.honor_among_thieves = sim -> current_time + 1.0;
+    rogue -> cooldowns_honor_among_thieves -> start( 1.0 );
   }
 };
 
@@ -3427,7 +3422,6 @@ void rogue_t::reset()
   // Active
   active_rupture = 0;
 
-  _cooldowns.reset();
   _expirations.reset();
 
   // Reset the callbacks for the Virtual Party

@@ -50,14 +50,8 @@ struct warrior_t : public player_t
   buff_t* buffs_glyph_of_revenge;
 
   // Cooldowns
-  struct _cooldowns_t
-  {
-    double sword_specialization;
-    double shield_slam;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
+  cooldown_t* cooldowns_sword_specialization;
+  cooldown_t* cooldowns_shield_slam;
 
   // Gains
   gain_t* gains_anger_management;
@@ -188,6 +182,10 @@ struct warrior_t : public player_t
     active_damage_shield = 0;
     active_deep_wounds   = 0;
     active_stance        = STANCE_BATTLE;
+
+    // Cooldowns
+    cooldowns_sword_specialization = get_cooldown( "sword_specializaton" );
+    cooldowns_shield_slam          = get_cooldown( "shield_slam"         );
 
     // Auto-Attack
     main_hand_attack = 0;
@@ -526,7 +524,7 @@ static void trigger_sword_specialization( attack_t* a )
   if ( ! p -> talents.sword_specialization )
     return;
 
-  if ( ! a -> sim -> cooldown_ready( p -> _cooldowns.sword_specialization ) )
+  if ( p -> cooldowns_sword_specialization -> remains() > 0 )
     return;
 
   if ( p -> rng_sword_specialization -> roll( 0.02 * p -> talents.sword_specialization ) )
@@ -536,7 +534,7 @@ static void trigger_sword_specialization( attack_t* a )
                      p -> name(), p -> procs_sword_specialization -> name() );
 
     p -> procs_sword_specialization -> occur();
-    p -> _cooldowns.sword_specialization = a -> sim -> current_time + 6.0;
+    p -> cooldowns_sword_specialization -> start( 6.0 );
 
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> execute();
@@ -592,7 +590,7 @@ static void trigger_sword_and_board( attack_t* a )
 
   if ( p -> buffs_sword_and_board -> trigger() )
   {
-    p -> _cooldowns.shield_slam = 0;
+    p -> cooldowns_shield_slam -> reset();
   }
 }
 
@@ -1001,6 +999,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     may_crit    = true;
     aoe         = true;
+    cooldown = player -> get_cooldown( "noop" );
   }
   virtual void execute()
   {
@@ -1025,18 +1024,17 @@ struct bladestorm_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    aoe       = true;
     harmful   = false;
     base_cost = 25;
-    cooldown  = 90;
-    aoe       = true;
 
     num_ticks      = 6;
     base_tick_time = 1.0;
     channeled      = true;
     tick_zero      = true;
 
-    if ( p -> glyphs.bladestorm )
-      cooldown -= 15;
+    cooldown -> duration = 90;
+    if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );
   }
@@ -1154,10 +1152,10 @@ struct bloodthirst_t : public warrior_attack_t
     base_dd_min = base_dd_max = 1;
 
     may_crit = true;
-    cooldown          = 4.0;
-    base_cost         = 20;
+    base_cost = 20;
     base_multiplier *= 1 + p -> talents.unending_fury * 0.02;
     direct_power_mod = 0.50;
+    cooldown -> duration = 4.0;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
@@ -1188,10 +1186,10 @@ struct concussion_blow_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
-    may_crit          = true;
-    cooldown          = 30.0;
-    base_cost         = 15;
+    may_crit = true;
+    base_cost = 15;
     direct_power_mod  = 0.75;
+    cooldown -> duration = 30.0;
   }
 };
 
@@ -1215,13 +1213,13 @@ struct shockwave_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
-    may_crit          = true;
-    cooldown          = 20.0;
-    base_cost         = 15;
-    direct_power_mod  = 0.75;
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
+    may_crit  = true;
+    may_dodge = false;
+    may_parry = false;
+    may_block = false;
+    base_cost = 15;
+    direct_power_mod = 0.75;
+    cooldown -> duration = 20.0;
   }
 };
 
@@ -1294,14 +1292,14 @@ struct revenge_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    may_crit          = true;
-    cooldown          = 5.0;
+    may_crit = true;
     direct_power_mod  = 0.207;
+    cooldown -> duration = 5.0;
     base_multiplier  *= 1 + p -> talents.improved_revenge * 0.1;
     if ( p -> talents.unrelenting_assault )
     {
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
-      cooldown -= ( p -> talents.unrelenting_assault * 2 );
+      cooldown -> duration -= ( p -> talents.unrelenting_assault * 2 );
     }
     stancemask = STANCE_DEFENSE;
   }
@@ -1334,7 +1332,7 @@ struct shield_bash_t : public warrior_attack_t
     parse_options( options, options_str );
 
     base_cost = 10;
-    cooldown  = 12;
+    cooldown -> duration = 12;
 
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
@@ -1377,19 +1375,21 @@ struct shield_slam_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    may_crit         = true;
+    may_crit = true;
+
     direct_power_mod = 0.0;
     base_multiplier *= 1 + ( 0.05 * p -> talents.gag_order +
 			     0.10 * p -> set_bonus.tier7_2pc_tank() );
 
     base_crit += 0.05 * p -> talents.critical_block;
+
+    cooldown -> duration = 6.0;
   }
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
     base_dd_adder = p -> composite_block_value();
     warrior_attack_t::execute();
-    p -> _cooldowns.shield_slam = sim -> current_time + 6.0;
     p -> buffs_sword_and_board -> expire();
     p -> buffs_glyph_of_blocking -> trigger();
   }
@@ -1409,9 +1409,6 @@ struct shield_slam_t : public warrior_attack_t
     if ( sword_and_board )
       if ( ! p -> buffs_sword_and_board -> check() )
         return false;
-
-    if ( sim -> current_time < p -> _cooldowns.shield_slam )
-      return false;
 
     return warrior_attack_t::ready();
   }
@@ -1446,13 +1443,15 @@ struct thunderclap_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    aoe               = true;
-    may_crit          = true;
-    cooldown          = 6.0;
+    aoe       = true;
+    may_crit  = true;
+    may_dodge = false;
+    may_parry = false;
+    may_block = false;
+
+    cooldown -> duration = 6.0;
+
     direct_power_mod  = 0.12;
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
     base_multiplier  *= 1 + p -> talents.improved_thunderclap * 0.1;
     base_crit        += p -> talents.incite * 0.05;
   }
@@ -1605,8 +1604,10 @@ struct mortal_strike_t : public warrior_attack_t
     };
     init_rank( ranks );
 
-    may_crit         = true;
-    cooldown         = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
+    may_crit = true;
+
+    cooldown -> duration = 6.0 - ( p -> talents.improved_mortal_strike / 3.0 );
+
     base_multiplier *= 1.0 + ( ( util_t::talent_rank( p -> talents.improved_mortal_strike, 3, 0.03, 0.06, 0.10 ) ) +
 			       ( p -> glyphs.mortal_strike ? 0.10 : 0 ) );
 
@@ -1643,7 +1644,8 @@ struct overpower_t : public warrior_attack_t
     base_cost        = 5.0;
     base_crit       += p -> talents.improved_overpower * 0.25;
     base_multiplier *= 1.0 + p -> talents.unrelenting_assault * 0.1;
-    cooldown         = 5.0 - p -> talents.unrelenting_assault * 2.0;
+
+    cooldown -> duration = 5.0 - p -> talents.unrelenting_assault * 2.0;
 
     if ( p -> talents.unrelenting_assault == 2 )
       trigger_gcd = 1.0;
@@ -1876,12 +1878,13 @@ struct whirlwind_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 1;
 
-    may_crit         = true;
-    cooldown         = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
-    base_cost        = 25;
+    aoe = true;
+    may_crit = true;
+    base_cost = 25;
     base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
     
-    aoe  = true;
+    cooldown -> duration = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
+
     stancemask = STANCE_BERSERKER;
   }
 
@@ -1927,7 +1930,7 @@ struct pummel_t : public warrior_attack_t
     base_dd_min = base_dd_max = 1;
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0;
-    cooldown = 10;
+    cooldown -> duration = 10;
   }
 
   virtual bool ready()
@@ -2064,9 +2067,9 @@ struct berserker_rage_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost   = 0;
-    cooldown    = 30 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
-    harmful     = false;
+    harmful = false;
+    base_cost = 0;
+    cooldown -> duration = 30 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
   }
 
   virtual void execute()
@@ -2093,10 +2096,10 @@ struct bloodrage_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
+    harmful     = false;
     base_cost   = 0;
     trigger_gcd = 0;
-    cooldown    = 60 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
-    harmful     = false;
+    cooldown -> duration = 60 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
   }
 
   virtual void execute()
@@ -2123,10 +2126,10 @@ struct death_wish_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
+    harmful     = false;
     base_cost   = 10;
     trigger_gcd = 0;
-    cooldown    = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
-    harmful     = false;
+    cooldown -> duration = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
   }
 
   virtual void execute()
@@ -2151,8 +2154,8 @@ struct recklessness_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown    = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
-    harmful     = false;
+    harmful = false;
+    cooldown -> duration = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
 
     stancemask  = STANCE_BERSERKER;
   }
@@ -2179,8 +2182,8 @@ struct shield_block_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown = 60.0 - 10.0 * p -> talents.shield_mastery;
-    harmful  = false;
+    harmful = false;
+    cooldown -> duration = 60.0 - 10.0 * p -> talents.shield_mastery;
   }
 
   virtual void execute()
@@ -2224,10 +2227,10 @@ struct stance_t : public warrior_spell_t
       switch_to_stance = STANCE_BATTLE;
     }
 
+    harmful = false;
     base_cost   = 0;
     trigger_gcd = 0;
-    cooldown    = 1.0;
-    harmful     = false;
+    cooldown -> duration = 1.0;
   }
 
   virtual void execute()
@@ -2676,7 +2679,6 @@ void warrior_t::reset()
   player_t::reset();
   active_stance = STANCE_BATTLE;
   deep_wounds_delay_event = 0;
-  _cooldowns.reset();
 }
 
 // warrior_t::interrupt ======================================================

@@ -213,6 +213,7 @@ struct hunter_t : public player_t
   virtual double    composite_attack_crit() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
+  virtual cooldown_t* get_cooldown( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
@@ -1187,7 +1188,7 @@ struct rake_t : public hunter_pet_attack_t
     num_ticks       = 3;
     base_tick_time  = 3;
     tick_power_mod  = 0.0175;
-    cooldown        = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast       = true;
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
@@ -1220,7 +1221,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 
     base_dd_min = base_dd_max = 107;
     base_cost = 20;
-    cooldown  = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast = true;
   }
 
@@ -1254,7 +1255,7 @@ struct savage_rend_t : public hunter_pet_attack_t
     num_ticks      = 3;
     base_tick_time = 5;
     tick_power_mod = 0.0175; // FIXME Check
-    cooldown       = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 60 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast      = true;
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
@@ -1292,7 +1293,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 
     base_dd_min = base_dd_max  = 5 * p -> level;
     base_cost   = 0;
-    cooldown    = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast   = true;
 
     may_dodge = may_block = may_parry = false;
@@ -1414,10 +1415,10 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     parse_options( 0, options_str );
 
     base_dd_min = base_dd_max = 150;
-    base_cost        = 20;
+    base_cost = 20;
     direct_power_mod = 1.5 / 3.5;
-    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
-    auto_cast        = true;
+    cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast = true;
   }
 };
 
@@ -1436,10 +1437,10 @@ struct lightning_breath_t : public hunter_pet_spell_t
     parse_options( 0, options_str );
 
     base_dd_min = base_dd_max = 100;
-    base_cost        = 20;
+    base_cost = 20;
     direct_power_mod = 1.5 / 3.5;
-    cooldown         = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
-    auto_cast        = true;
+    cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast = true;
   }
 };
 
@@ -1458,7 +1459,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     parse_options( 0, options_str );
 
     base_cost = 0;
-    cooldown  = 5 * 60 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 5 * 60 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
   }
@@ -1489,7 +1490,7 @@ struct furious_howl_t : public hunter_pet_spell_t
     parse_options( 0, options_str );
 
     base_cost = 20;
-    cooldown  = 40 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 40 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
   }
@@ -1522,7 +1523,7 @@ struct rabid_t : public hunter_pet_spell_t
     parse_options( 0, options_str );
 
     base_cost = 0;
-    cooldown  = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
+    cooldown -> duration = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
   }
@@ -1557,8 +1558,8 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     base_cost      = 0;
     num_ticks      = 3;
     base_tick_time = 3;
-    cooldown       = 360 * ( 1.0 - o -> talents.longevity * 0.10 );
-    auto_cast      = true;
+    cooldown -> duration = 360 * ( 1.0 - o -> talents.longevity * 0.10 );
+    auto_cast = true;
   }
 
   virtual void tick()
@@ -1825,8 +1826,8 @@ struct aimed_shot_t : public hunter_attack_t
     may_crit = true;
     normalize_weapon_speed = true;
 
-    cooldown = 10;
-    cooldown_group = "aimed_multi";
+    cooldown = p -> get_cooldown( "aimed_multi" );
+    cooldown -> duration = 10;
 
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
@@ -1844,7 +1845,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     if ( p -> glyphs.aimed_shot )
     {
-      cooldown -= 2;
+      cooldown -> duration -= 2;
     }
   }
 
@@ -1924,8 +1925,9 @@ struct arcane_shot_t : public hunter_attack_t
     weapon_multiplier = 0;
 
     may_crit = true;
-    cooldown = 6;
-    cooldown_group = "arcane_explosive";
+
+    cooldown = p -> get_cooldown( "arcane_explosive" );
+    cooldown -> duration = 6;
 
     direct_power_mod = 0.15;
 
@@ -1971,7 +1973,7 @@ struct arcane_shot_t : public hunter_attack_t
   virtual void update_ready()
   {
     hunter_t* p = player -> cast_hunter();
-    cooldown = ( p -> buffs_lock_and_load -> check() ? 0.0 : 6.0 );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : 6.0 );
     hunter_attack_t::update_ready();
   }
 
@@ -2017,8 +2019,9 @@ struct black_arrow_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = 5;
     tick_power_mod   = 0.1 / 5.0;
-    cooldown         = 30 - p -> talents.resourcefulness * 2;
-    cooldown_group   = "traps";
+
+    cooldown = p -> get_cooldown( "traps" );
+    cooldown -> duration = 30 - p -> talents.resourcefulness * 2;
 
     base_multiplier *= 1.0 + p -> talents.sniper_training * 0.02;
     base_multiplier *= 1.0 + p -> talents.tnt * 0.02;
@@ -2082,7 +2085,8 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
     weapon_multiplier      = 1.25;
-    cooldown               = 10;
+
+    cooldown -> duration = 10;
 
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
@@ -2094,7 +2098,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     if ( p -> glyphs.chimera_shot )
     {
-      cooldown -= 1;
+      cooldown -> duration -= 1;
     }
   }
 
@@ -2230,6 +2234,8 @@ struct explosive_tick_t : public hunter_attack_t
     {
       base_crit += 0.04;
     }
+
+    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()
@@ -2266,8 +2272,8 @@ struct explosive_shot_t : public hunter_attack_t
 
     base_cost = 0.07 * p -> resource_base[ RESOURCE_MANA ];
 
-    cooldown = 6;
-    cooldown_group = "arcane_explosive";
+    cooldown = p -> get_cooldown( "arcane_explosive" );
+    cooldown -> duration = 6;
 
     tick_zero      = true;
     num_ticks      = 2;
@@ -2293,7 +2299,7 @@ struct explosive_shot_t : public hunter_attack_t
   virtual void update_ready()
   {
     hunter_t* p = player -> cast_hunter();
-    cooldown = ( p -> buffs_lock_and_load -> check() ? 0.0 : 6.0 );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : 6.0 );
     hunter_attack_t::update_ready();
   }
 
@@ -2343,7 +2349,7 @@ struct kill_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier      = 2.0;
     direct_power_mod       = 0.40;
-    cooldown               = 15;
+    cooldown -> duration   = 15;
 
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
@@ -2357,7 +2363,7 @@ struct kill_shot_t : public hunter_attack_t
 
     if ( p -> glyphs.kill_shot )
     {
-      cooldown -= 6;
+      cooldown -> duration -= 6;
     }
   }
 
@@ -2407,10 +2413,11 @@ struct multi_shot_t : public hunter_attack_t
 
     may_crit               = true;
     normalize_weapon_speed = true;
-    cooldown               = 10;
-    cooldown_group         = "aimed_multi";
 
-    base_multiplier *= 1.0 + p -> talents.barrage                      * 0.04;
+    cooldown = p -> get_cooldown( "aimed_multi" );
+    cooldown -> duration = 10;
+
+    base_multiplier *= 1.0 + p -> talents.barrage * 0.04;
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
     base_crit += p -> talents.improved_barrage * 0.04;
@@ -2442,7 +2449,7 @@ struct scatter_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     normalize_weapon_speed = true;
-    cooldown               = 30;
+    cooldown -> duration   = 30;
 
     weapon_multiplier *= 0.5;
 
@@ -2601,7 +2608,8 @@ struct silencing_shot_t : public hunter_attack_t
 
     may_crit               = true;
     normalize_weapon_speed = true;
-    cooldown               = 20;
+
+    cooldown -> duration   = 20;
 
     trigger_gcd = 0;
 
@@ -2728,7 +2736,8 @@ struct aspect_t : public hunter_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown         = 1.0;
+    cooldown -> duration = 1.0;
+
     trigger_gcd      = 0.0;
     harmful          = false;
     hawk_bonus       = util_t::ability_rank( p -> level, 300,80, 230,74, 155,68,  120,0 );
@@ -2823,7 +2832,7 @@ struct bestial_wrath_t : public hunter_spell_t
     check_talent( p -> talents.bestial_wrath );
 
     base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
-    cooldown = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
+    cooldown -> duration = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
   }
 
   virtual void execute()
@@ -2899,7 +2908,7 @@ struct kill_command_t : public hunter_spell_t
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
-    cooldown  = 60 - 10 * p -> talents.catlike_reflexes;
+    cooldown -> duration  = 60 - 10 * p -> talents.catlike_reflexes;
     trigger_gcd = 0;
   }
 
@@ -2942,8 +2951,8 @@ struct rapid_fire_t : public hunter_spell_t
     parse_options( options, options_str );
 
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
-    cooldown  = 300;
-    cooldown -= p -> talents.rapid_killing * 60;
+    cooldown -> duration  = 300;
+    cooldown -> duration -= p -> talents.rapid_killing * 60;
     trigger_gcd = 0.0;
     harmful = false;
   }
@@ -2980,6 +2989,8 @@ struct readiness_t : public hunter_spell_t
 {
   bool wait_for_rf;
 
+  std::vector<cooldown_t*> cooldown_list;
+
   readiness_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "readiness", player, SCHOOL_PHYSICAL, TREE_MARKSMANSHIP ),
       wait_for_rf( false )
@@ -2997,18 +3008,29 @@ struct readiness_t : public hunter_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown = 180;
+    cooldown -> duration = 180;
     trigger_gcd = 1.0;
     harmful = false;
+
+    cooldown_list.push_back( p -> get_cooldown( "aimed_multi"      ) );
+    cooldown_list.push_back( p -> get_cooldown( "arcane_explosive" ) );
+    cooldown_list.push_back( p -> get_cooldown( "traps"            ) );
+    cooldown_list.push_back( p -> get_cooldown( "chimera_shot"     ) );
+    cooldown_list.push_back( p -> get_cooldown( "kill_shot"        ) );
+    cooldown_list.push_back( p -> get_cooldown( "scatter_shot"     ) );
+    cooldown_list.push_back( p -> get_cooldown( "silencing_shot"   ) );
+    cooldown_list.push_back( p -> get_cooldown( "kill_command"     ) );
+    cooldown_list.push_back( p -> get_cooldown( "rapid_fire"       ) );
   }
 
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    int num_cooldowns = (int) cooldown_list.size();
+    for ( int i=0; i < num_cooldowns; i++ )
     {
-      a -> cooldown_ready = 0;
+      cooldown_list[ i ] -> reset();
     }
 
     update_ready();
@@ -3642,6 +3664,19 @@ void hunter_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, rr_regen, gains_rapid_recuperation );
   }
+}
+
+// hunter_t::get_cooldown ==================================================
+
+cooldown_t* hunter_t::get_cooldown( const std::string& name )
+{
+  if ( name == "arcane_shot"    ) return player_t::get_cooldown( "arcane_explosive" );
+  if ( name == "explosive_shot" ) return player_t::get_cooldown( "arcane_explosive" );
+
+  if ( name == "aimed_shot" ) return player_t::get_cooldown( "aimed_multi" );
+  if ( name == "multi_shot" ) return player_t::get_cooldown( "aimed_multi" );
+
+  return player_t::get_cooldown( name );
 }
 
 // hunter_t::get_talent_trees ==============================================

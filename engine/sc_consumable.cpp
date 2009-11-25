@@ -487,9 +487,10 @@ struct health_stone_t : public action_t
     if ( health  == 0 ) health = trigger;
     if ( trigger == 0 ) trigger = health;
     assert( health > 0 && trigger > 0 );
+    
+    cooldown = p -> get_cooldown( "rune" );
+    cooldown -> duration = 15 * 60;
 
-    cooldown = 15 * 60;
-    cooldown_group = "rune";
     trigger_gcd = 0;
     harmful = false;
   }
@@ -536,8 +537,9 @@ struct dark_rune_t : public action_t
     if ( trigger == 0 ) trigger = mana;
     assert( mana > 0 && trigger > 0 );
 
-    cooldown = 15 * 60;
-    cooldown_group = "rune";
+    cooldown = p -> get_cooldown( "rune" );
+    cooldown -> duration = 15 * 60;
+
     trigger_gcd = 0;
     harmful = false;
   }

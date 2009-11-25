@@ -1077,7 +1077,6 @@ struct sim_t
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time ) { if ( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
-  bool      cooldown_ready( double cooldown_time ) { return cooldown_time <= current_time; }
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -1754,8 +1753,6 @@ struct player_t
   bool      recent_cast();
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
-  void      share_cooldown( const std::string& name, double ready );
-  void      share_duration( const std::string& name, double ready );
   double    mana_regen_per_second();
   bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, int aura_id=0 );
@@ -1977,15 +1974,13 @@ struct action_t
   double resisted_dmg, blocked_dmg;
   int num_ticks, current_tick, added_ticks;
   int ticking;
-  std::string cooldown_group, duration_group;
-  double cooldown, cooldown_ready, duration_ready;
   weapon_t* weapon;
   double weapon_multiplier;
   bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
-  cooldown_t* cooldownp; // FIXME!! rename to just "cooldown" after migration complete
+  cooldown_t* cooldown; // FIXME!! rename to just "cooldown" after migration complete
   dot_t* dot;
   stats_t* stats;
   event_t* execute_event;
@@ -2154,7 +2149,12 @@ struct cooldown_t
   cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
   virtual ~cooldown_t() {}
   virtual void reset() { ready=-1; }
-  virtual double remains() { return ( sim -> current_time - ready ) > 0; }
+  virtual void start( double override=-1 ) 
+  { 
+    if ( override >= 0 ) duration = override;
+    if ( duration > 0 ) ready = sim -> current_time + duration;
+  }
+  virtual double remains() { return ready - sim -> current_time; }
   virtual const char* name() { return name_str.c_str(); }
 };
 
@@ -2171,6 +2171,11 @@ struct dot_t
   dot_t( const std::string& n, player_t* p ) : player(p), action(0), name_str(n), ready(-1), next(0) {}
   virtual ~dot_t() {}
   virtual void reset() { action=0; ready=-1; }
+  virtual void start( action_t* a, double duration )
+  {
+    action = a;
+    ready = player -> sim -> current_time + duration;
+  }
   virtual double remains() 
   { 
     if ( ! action ) return 0;

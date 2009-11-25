@@ -441,7 +441,7 @@ struct spellsurge_callback_t : public action_callback_t
         base_tick_time = 1.0;
         num_ticks      = 10;
         trigger_gcd    = 0;
-        cooldown       = 60;
+        cooldown -> duration = 60;
       }
       virtual void execute()
       {

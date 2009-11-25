@@ -1171,7 +1171,6 @@ struct arcane_barrage_t : public mage_spell_t
     base_execute_time = 0;
     may_crit          = true;
     direct_power_mod  = ( 2.5/3.5 );
-    cooldown          = 3.0;
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
     base_cost        *= 1.0 - p -> glyphs.arcane_barrage * 0.20;
@@ -1183,6 +1182,8 @@ struct arcane_barrage_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    cooldown -> duration = 3.0;
 
     may_torment = true;
   }
@@ -1484,8 +1485,8 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.arcane_power );
     trigger_gcd = 0;
-    cooldown = 120.0;
-    cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
+    cooldown -> duration = 120.0;
+    cooldown -> duration *= 1.0 - p -> talents.arcane_flows * 0.15;
   }
 
   virtual void execute()
@@ -1629,9 +1630,10 @@ struct evocation_t : public mage_spell_t
     base_tick_time = 2.0;
     num_ticks      = 4;
     channeled      = true;
-    cooldown       = 240;
-    cooldown      -= p -> talents.arcane_flows * 60.0;
     harmful        = false;
+
+    cooldown -> duration  = 240;
+    cooldown -> duration -= p -> talents.arcane_flows * 60.0;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
   }
@@ -1665,8 +1667,8 @@ struct presence_of_mind_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.presence_of_mind );
 
-    cooldown = 120.0;
-    cooldown *= 1.0 - p -> talents.arcane_flows * 0.15;
+    cooldown -> duration  = 120.0;
+    cooldown -> duration *= 1.0 - p -> talents.arcane_flows * 0.15;
 
     if ( options_str.empty() )
     {
@@ -1797,7 +1799,7 @@ struct fire_ball_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    duration_ready = 0; // Never wait for DoT component to finish.
+    dot -> ready = 0; // Never wait for DoT component to finish.
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
@@ -1858,11 +1860,10 @@ struct fire_blast_t : public mage_spell_t
 
     base_execute_time = 0;
     may_crit          = true;
-    cooldown          = 8.0;
     direct_power_mod  = ( 1.5/3.5 );
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    cooldown         -= p -> talents.improved_fire_blast * 0.5;
+    cooldown -> duration         -= p -> talents.improved_fire_blast * 0.5;
     base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
     base_crit        += p -> talents.incineration * 0.02;
     base_crit        += p -> talents.critical_mass * 0.02;
@@ -1870,6 +1871,8 @@ struct fire_blast_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    cooldown -> duration = 8.0;
 
     spell_impact = true;
   }
@@ -2036,7 +2039,7 @@ struct pyroblast_t : public mage_spell_t
     }
 
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
-    if ( hot_streak ) duration_ready=0;
+    if ( hot_streak ) dot -> ready=0;
   }
 
   virtual double execute_time() SC_CONST
@@ -2157,7 +2160,7 @@ struct combustion_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.combustion );
-    cooldown = 180;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -2390,7 +2393,6 @@ struct deep_freeze_t : public mage_spell_t
 
     base_execute_time = 0.0;
     may_crit          = true;
-    cooldown          = 30.0;
     direct_power_mod  = ( 7.5/3.5 );
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
@@ -2403,6 +2405,8 @@ struct deep_freeze_t : public mage_spell_t
                                           ( p -> talents.spell_power * 0.25  ) +
                                           ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    cooldown -> duration = 30.0;
 
     spell_impact = false;
   }
@@ -2506,7 +2510,7 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     int fof_on_cast = ( p -> fof_on_cast && ( p -> buffs_fingers_of_frost -> check() != 1 ) ); // Proc-Munching!
     mage_spell_t::execute();
-    if ( ! dot_wait ) duration_ready = 0;
+    if ( ! dot_wait ) dot -> ready = 0;
     if ( result_is_hit() )
     {
       p -> buffs_missile_barrage -> trigger();
@@ -2557,8 +2561,8 @@ struct icy_veins_t : public mage_spell_t
 
     base_cost = 200;
     trigger_gcd = 0;
-    cooldown = 180.0;
-    cooldown *= 1.0 - p -> talents.ice_floes * ( 0.20 / 3.0 );
+    cooldown -> duration  = 180.0;
+    cooldown -> duration *= 1.0 - p -> talents.ice_floes * ( 0.20 / 3.0 );
   }
 
   virtual void execute()
@@ -2583,6 +2587,8 @@ struct icy_veins_t : public mage_spell_t
 
 struct cold_snap_t : public mage_spell_t
 {
+  std::vector<cooldown_t*> cooldown_list;
+
   cold_snap_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "cold_snap", player, SCHOOL_FROST, TREE_FROST )
   {
@@ -2595,20 +2601,22 @@ struct cold_snap_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    cooldown = 600;
-    cooldown *= 1.0 - p -> talents.cold_as_ice * 0.10;
+    cooldown -> duration  = 600;
+    cooldown -> duration *= 1.0 - p -> talents.cold_as_ice * 0.10;
+
+    cooldown_list.push_back( p -> get_cooldown( "deep_freeze"     ) );
+    cooldown_list.push_back( p -> get_cooldown( "icy_veins"       ) );
+    cooldown_list.push_back( p -> get_cooldown( "water_elemental" ) );
   }
 
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    int num_cooldowns = (int) cooldown_list.size();
+    for ( int i=0; i < num_cooldowns; i++ )
     {
-      if ( a -> school == SCHOOL_FROST )
-      {
-        a -> cooldown_ready = 0;
-      }
+      cooldown_list[ i ] -> reset();
     }
 
     update_ready();
@@ -2717,7 +2725,7 @@ struct counterspell_t : public mage_spell_t
     may_miss = may_resist = false;
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
     base_spell_power_multiplier = 0;
-    cooldown = 24;
+    cooldown -> duration = 24;
   }
 
   virtual bool ready()
@@ -2745,18 +2753,19 @@ struct water_elemental_spell_t : public mage_spell_t
 
     if ( p -> glyphs.eternal_water ) // If you have the glyph, assume that the Elemental is going to be summoned before the fight.
     {
-      cooldown    = 0;
+      cooldown -> duration = 0;
       trigger_gcd = 0;
-      base_cost   = 0.0;
+      base_cost = 0.0;
     }
     else
     {
-      cooldown   = p -> glyphs.water_elemental ? 150 : 180;
-      cooldown  *= 1.0 - p -> talents.cold_as_ice * 0.10;
+      cooldown -> duration  = p -> glyphs.water_elemental ? 150 : 180;
+      cooldown -> duration *= 1.0 - p -> talents.cold_as_ice * 0.10;
       base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.16;
       base_cost *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
     }
-    harmful    = false;
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -2794,11 +2803,11 @@ struct mirror_image_spell_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.10;
-    base_cost  *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
-    cooldown    = 180;
+    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.10;
+    base_cost *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
+    cooldown -> duration = 180;
     trigger_gcd = 1;
-    harmful     = false;
+    harmful = false;
   }
 
   virtual void execute()
@@ -2858,8 +2867,8 @@ struct mana_gem_t : public action_t
       trigger *= 1.40;
     }
 
-    cooldown = 120.0;
-    cooldown_group = "rune";
+    cooldown = p -> get_cooldown( "rune" );
+    cooldown -> duration = 120.0;
     trigger_gcd = 0;
     harmful = false;
   }
@@ -2877,12 +2886,13 @@ struct mana_gem_t : public action_t
 
     p -> buffs_tier7_2pc -> trigger();
     p -> resource_gain( RESOURCE_MANA, gain, p -> gains_mana_gem );
-    p -> share_cooldown( cooldown_group, cooldown );
+
+    update_ready();
   }
 
   virtual bool ready()
   {
-    if ( cooldown_ready > sim -> current_time )
+    if ( cooldown -> remains() > 0 )
       return false;
 
     if ( used >= charges )
@@ -2908,18 +2918,18 @@ struct choose_rotation_t : public action_t
   choose_rotation_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "choose_rotation", p ), last_time( 0 )
   {
-    cooldown = 10;
+    cooldown -> duration = 10;
 
     option_t options[] =
     {
-      { "cooldown", OPT_FLT, &cooldown },
+      { "cooldown", OPT_FLT, &( cooldown -> duration ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    if ( cooldown < 1.0 )
+    if ( cooldown -> duration < 1.0 )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: choose_rotation cannot have cooldown less than 1.0sec\n" );
+      util_t::fprintf( sim -> output_file, "simulationcraft: choose_rotation cannot have cooldown -> duration less than 1.0sec\n" );
       exit( 0 );
     }
 
@@ -2994,8 +3004,13 @@ struct choose_rotation_t : public action_t
 
   virtual bool ready()
   {
-    return( sim -> current_time >= cooldown_ready &&
-            sim -> current_time >= cooldown );
+    if ( cooldown -> remains() > 0 )
+      return false;
+
+    if ( sim -> current_time < cooldown -> duration )
+      return false;
+
+    return true;
   }
 
   virtual void reset()

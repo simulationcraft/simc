@@ -2475,42 +2475,6 @@ void player_t::register_direct_damage_callback( action_callback_t* cb )
   direct_damage_callbacks.push_back( cb );
 }
 
-// player_t::share_cooldown =================================================
-
-void player_t::share_cooldown( const std::string& group,
-                               double             duration )
-{
-  double ready = sim -> current_time + duration;
-
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    if ( group == a -> cooldown_group )
-    {
-      if ( ready > a -> cooldown_ready )
-      {
-        a -> cooldown_ready = ready;
-      }
-    }
-  }
-}
-
-// player_t::share_duration =================================================
-
-void player_t::share_duration( const std::string& group,
-                               double             ready )
-{
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    if ( a -> duration_group == group )
-    {
-      if ( a -> duration_ready < ready )
-      {
-        a -> duration_ready = ready;
-      }
-    }
-  }
-}
-
 // player_t::recalculate_haste ==============================================
 
 void player_t::recalculate_haste()
@@ -2787,7 +2751,7 @@ struct arcane_torrent_t : public action_t
     action_t( ACTION_OTHER, "arcane_torrent", player )
   {
     trigger_gcd = 0;
-    cooldown    = 120;
+    cooldown -> duration = 120;
   }
 
   virtual void execute()
@@ -2849,7 +2813,7 @@ struct berserking_t : public action_t
     action_t( ACTION_OTHER, "berserking", player )
   {
     trigger_gcd = 0;
-    cooldown    = 180;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -2881,7 +2845,7 @@ struct blood_fury_t : public action_t
     action_t( ACTION_OTHER, "blood_fury", player )
   {
     trigger_gcd = 0;
-    cooldown    = 120;
+    cooldown -> duration = 120;
   }
 
   virtual void execute()
@@ -2922,7 +2886,7 @@ struct stoneform_t : public action_t
     action_t( ACTION_OTHER, "stoneform", player )
   {
     trigger_gcd = 0;
-    cooldown    = 120;
+    cooldown -> duration = 120;
   }
 
   virtual void execute()
@@ -3169,30 +3133,32 @@ struct wait_until_ready_t : public action_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    trigger_gcd = 0;
   }
 
-  virtual void execute()
+  virtual double execute_time() SC_CONST
   {
-    trigger_gcd = sec;
+    double wait = sec;
+    double remains = 0;
 
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> background ) continue;
 
-      if ( a -> cooldown_ready > sim -> current_time )
-      {
-        double delta_time = a -> cooldown_ready - sim -> current_time;
-        if ( delta_time < trigger_gcd ) trigger_gcd = delta_time;
-      }
+      remains = a -> cooldown -> remains();
+      if ( remains > 0 && remains < wait ) wait = remains;
 
-      if ( a -> duration_ready > sim -> current_time )
-      {
-        double delta_time = a -> duration_ready - ( sim -> current_time + a -> execute_time() );
-        if ( delta_time < trigger_gcd ) trigger_gcd = delta_time;
-      }
+      remains = a -> dot -> remains();
+      if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    player -> total_waiting += trigger_gcd;
+    return wait;
+  }
+
+  virtual void execute()
+  {
+    player -> total_waiting += time_to_execute;
   }
 };
 
@@ -3284,8 +3250,12 @@ struct use_item_t : public action_t
     }
     else assert( false );
 
-    cooldown = item -> use.cooldown;
-    cooldown_group = use_name;
+    std::string cooldown_name = use_name;
+    cooldown_name += "_";
+    cooldown_name += item -> slot_name();
+
+    cooldown = player -> get_cooldown( cooldown_name );
+    cooldown -> duration = item -> use.cooldown;
     trigger_gcd = 0;
   }
 
@@ -3297,9 +3267,9 @@ struct use_item_t : public action_t
     {
       if( a -> name_str == "use_item" )
       {
-        if( ready > a -> cooldown_ready )
+        if( ready > a -> cooldown -> ready )
         {
-          a -> cooldown_ready = ready;
+          a -> cooldown -> ready = ready;
         }
       }
     }

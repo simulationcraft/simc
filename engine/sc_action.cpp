@@ -45,7 +45,6 @@ action_t::action_t( int         ty,
     direct_dmg( 0 ), tick_dmg( 0 ),
     resisted_dmg( 0 ), blocked_dmg( 0 ),
     num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    cooldown_group( n ), duration_group( n ), cooldown( 0 ), cooldown_ready( 0 ), duration_ready( 0 ),
     weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
     rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
     time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
@@ -72,9 +71,8 @@ action_t::action_t( int         ty,
 
   for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
 
-  // FIXME!! Rename cooldownp to cooldown after migration.
-  cooldownp = p -> get_cooldown( n );
-  dot = p -> get_dot( n );
+  cooldown = p -> get_cooldown( n );
+  dot      = p -> get_dot     ( n );
 
   stats = p -> get_stats( n );
   stats -> school = school;
@@ -828,25 +826,35 @@ void action_t::travel( int    travel_result,
 void action_t::assess_damage( double amount,
                               int    dmg_type )
 {
-  if ( sim -> log )
-  {
-    log_t::output( sim, "%s %s %ss %s for %.0f %s damage (%s)",
-                   player -> name(), name(),
-                   util_t::dmg_type_string( dmg_type ),
-                   sim -> target -> name(), amount,
-                   util_t::school_type_string( school ),
-                   util_t::result_type_string( result ) );
-    log_t::damage_event( this, amount, dmg_type );
-  }
-
   sim -> target -> assess_damage( amount, school, dmg_type );
 
   if ( dmg_type == DMG_DIRECT )
   {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
+		     player -> name(), name(),
+		     sim -> target -> name(), amount,
+		     util_t::school_type_string( school ),
+		     util_t::result_type_string( result ) );
+      log_t::damage_event( this, amount, dmg_type );
+    }
+
     action_callback_t::trigger( player -> direct_damage_callbacks, this );
   }
   else // DMG_OVER_TIME
   {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+		     player -> name(), name(),
+		     current_tick, num_ticks,
+		     sim -> target -> name(), amount,
+		     util_t::school_type_string( school ),
+		     util_t::result_type_string( result ) );
+      log_t::damage_event( this, amount, dmg_type );
+    }
+
     action_callback_t::trigger( player -> tick_damage_callbacks, this );
   }
 }
@@ -978,8 +986,9 @@ void action_t::refresh_duration()
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
     // from the time of the next tick and add the time for the remaining ticks to that event.
 
-    duration_ready = tick_event -> time + base_tick_time * ( num_ticks - 1 );
-    player -> share_duration( duration_group, duration_ready );
+    double duration = tick_event -> time + base_tick_time * ( num_ticks - 1 );
+
+    dot -> start( this, duration );
   }
 
   current_tick = 0;
@@ -994,8 +1003,7 @@ void action_t::extend_duration( int extra_ticks )
 
   if ( dot_behavior == DOT_WAIT )
   {
-    duration_ready += tick_time() * extra_ticks;
-    player -> share_duration( duration_group, duration_ready );
+    dot -> ready += tick_time() * extra_ticks;
   }
 
   if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, num_ticks );
@@ -1005,11 +1013,11 @@ void action_t::extend_duration( int extra_ticks )
 
 void action_t::update_ready()
 {
-  if ( cooldown > 0 )
+  if ( cooldown -> duration > 0 )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s shares cooldown for %s (%s)", player -> name(), name(), cooldown_group.c_str() );
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
-    player -> share_cooldown( cooldown_group, cooldown );
+    cooldown -> start();
   }
   if ( num_ticks && ( dot_behavior == DOT_WAIT ) )
   {
@@ -1019,25 +1027,23 @@ void action_t::update_ready()
 
       int remaining_ticks = num_ticks - current_tick;
 
-      double next_tick = tick_event -> occurs();
+      double next_tick = tick_event -> occurs() - sim -> current_time;
 
-      duration_ready = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
+      double duration = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
 
       if ( sim -> debug )
         log_t::output( sim, "%s shares duration (%.2f) for %s (%s)", 
-                       player -> name(), duration_ready, name(), duration_group.c_str() );
+                       player -> name(), duration, name(), dot -> name() );
 
-      player -> share_duration( duration_group, duration_ready );
+      dot -> start( this, duration );
     }
     else if( result_is_miss() )
     {
-      duration_ready = sim -> current_time + sim -> reaction_time + time_to_execute - 0.01;
-
       if ( sim -> debug ) 
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
-                       player -> name(), duration_ready, name(), duration_group.c_str() );
+                       player -> name(), sim -> reaction_time, name(), dot -> name() );
 
-      player -> share_duration( duration_group, duration_ready );
+      dot -> start( this, sim -> reaction_time );
     }
   }
 }
@@ -1104,18 +1110,23 @@ bool action_t::ready()
     check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
   }  
 
-  if ( check_duration && ( duration_ready > 0 ) )
+  if ( check_duration )
   {
-    double duration_delta = duration_ready - ( sim -> current_time + execute_time() );
+    double remains = dot -> remains();
 
-    if ( duration_delta > 3.0 )
-      return false;
+    if ( remains > 0 )
+    {
+      double delta = remains - execute_time();
 
-    if ( duration_delta > 0 && sim -> roll( player -> skill ) )
-      return false;
+      if ( delta > 3.0 )
+	return false;
+
+      if ( delta > 0 && sim -> roll( player -> skill ) )
+	return false;
+    }
   }
 
-  if ( cooldown_ready > sim -> current_time )
+  if ( cooldown -> remains() > 0 )
     return false;
 
   if ( ! player -> resource_available( resource, cost() ) )
@@ -1225,8 +1236,8 @@ void action_t::reset()
   ticking = 0;
   current_tick = 0;
   added_ticks = 0;
-  cooldown_ready = 0;
-  duration_ready = 0;
+  cooldown -> reset();
+  dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
   tick_event = 0;
@@ -1250,8 +1261,8 @@ void action_t::cancel()
   ticking = 0;
   current_tick = 0;
   added_ticks = 0;
-  cooldown_ready = 0;
-  duration_ready = 0;
+  cooldown -> reset();
+  dot -> reset();
   execute_event = 0;
   tick_event = 0;
   snapshot_haste = -1.0;
@@ -1287,7 +1298,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticking_expr_t : public action_expr_t
     {
       ticking_expr_t( action_t* a ) : action_expr_t( a, "ticking", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> ticking ? 1 : 0 ); return TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> dot -> action -> ticking ? 1 : 0 ); return TOK_NUM; }
     };
     return new ticking_expr_t( this );
   }
@@ -1296,7 +1307,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct remains_expr_t : public action_expr_t
     {
       remains_expr_t( action_t* a ) : action_expr_t( a, "remains", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> duration_ready - action -> sim -> current_time; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot -> remains(); return TOK_NUM; }
     };
     return new remains_expr_t( this );
   }

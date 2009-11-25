@@ -69,6 +69,9 @@ struct paladin_t : public player_t
   rng_t* rng_judgements_of_the_wise;
   rng_t* rng_tier10_2pc;
 
+  // Cooldowns
+  cooldown_t* cooldowns_divine_storm;
+
   // Auto-Attack
   attack_t* auto_attack;
 
@@ -201,6 +204,8 @@ struct paladin_t : public player_t
 
     tier10_2pc_procs_from_strikes     = false;
 
+    cooldowns_divine_storm = get_cooldown( "divine_storm" );
+
     auto_attack = 0;
   }
 
@@ -247,14 +252,7 @@ static void trigger_tier10_2pc( action_t* a )
 
   p -> procs_tier10_2pc -> occur();
 
-  for ( action_t* ac = a -> player -> action_list; ac; ac = ac -> next )
-  {
-    if ( ac -> name_str == "divine_storm" )
-    {
-      ac -> cooldown_ready = 0;
-    }
-  }
-  a -> update_ready();
+  p -> cooldowns_divine_storm -> reset();
 }
 
 // trigger_guarded_by_the_light ============================================
@@ -552,7 +550,7 @@ struct avengers_shield_t : public paladin_attack_t
     may_block = false;
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 30;
+    cooldown -> duration = 30;
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier  = 0.15;
@@ -585,7 +583,8 @@ struct crusader_strike_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 4;
+
+    cooldown -> duration = 4;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.sanctity_of_battle;
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
@@ -641,7 +640,8 @@ struct divine_storm_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.12;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 10;
+
+    cooldown -> duration = 10;
 
     base_multiplier *= 1.0 + 0.05 * p -> talents.the_art_of_war;
 
@@ -685,7 +685,8 @@ struct hammer_of_justice_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.03;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 60 - p -> talents.improved_hammer_of_justice * 10;
+
+    cooldown -> duration = 60 - p -> talents.improved_hammer_of_justice * 10;
   }
 
   virtual bool ready()
@@ -715,7 +716,8 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     base_cost        = p -> resource_base[ RESOURCE_MANA ] * 0.06;
     base_cost       *= 1.0 - p -> talents.benediction * 0.02;
     base_multiplier *= 4.0 / weapon -> swing_time; // This effectively gets us 4x Base Weapon-DPS 
-    cooldown         = 6;
+
+    cooldown -> duration = 6;
 
     if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
@@ -763,7 +765,8 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     base_crit += 0.25 * p -> talents.sanctified_wrath;
-    cooldown   = 6;
+
+    cooldown -> duration = 6;
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier  = 0.15;
@@ -779,7 +782,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     paladin_t* p = player -> cast_paladin();
     if ( p -> glyphs.avenging_wrath )
     {
-      cooldown = p -> buffs_avenging_wrath -> check() ? 3 : 6;
+      cooldown -> duration = p -> buffs_avenging_wrath -> check() ? 3 : 6;
     }
     paladin_attack_t::update_ready();
   }
@@ -818,7 +821,8 @@ struct shield_of_righteousness_t : public paladin_attack_t
     may_block = false;
 
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 6;
+
+    cooldown -> duration = 6;
 
     if ( p -> glyphs.shield_of_righteousness ) base_cost *= 0.20;
 
@@ -923,7 +927,6 @@ struct seal_of_command_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 +
@@ -934,9 +937,11 @@ struct seal_of_command_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.13;
     base_attack_power_multiplier = 0.08;
 
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
@@ -989,7 +994,6 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 + 
@@ -1000,9 +1004,11 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.32;
     base_attack_power_multiplier = 0.20;
 
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
@@ -1045,7 +1051,6 @@ struct seal_of_light_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - 0.02 * p -> talents.benediction;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 +
@@ -1056,9 +1061,11 @@ struct seal_of_light_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.25;
     base_attack_power_multiplier = 0.16;
 
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
@@ -1105,7 +1112,6 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
     base_cost *= 1.0 - 0.02 * p -> talents.benediction;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 +
                                p -> talents.judgements_of_the_pure * 0.05 +
@@ -1116,7 +1122,9 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.32;
     base_attack_power_multiplier = 0.20;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier8_2pc_tank()  ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
 
@@ -1236,7 +1244,6 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 +
@@ -1248,9 +1255,11 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.22;
     base_attack_power_multiplier = 0.14;
 
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier8_2pc_tank()  ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
@@ -1295,7 +1304,6 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
-    cooldown   = 10 - p -> talents.improved_judgements;
 
     base_crit       += 0.06 * p -> talents.fanaticism;
     base_multiplier *= 1.0 + ( p -> talents.the_art_of_war         * 0.05 +
@@ -1306,9 +1314,11 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.25;
     base_attack_power_multiplier = 0.16;
 
+    cooldown -> duration = 10 - p -> talents.improved_judgements;
+
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
 
-    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown--;
+    if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 };
@@ -1499,11 +1509,11 @@ struct avenging_wrath_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    harmful     = false;
-    cooldown    = 180 - 30 * p -> talents.sanctified_wrath;
-    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    base_cost  *= 1.0 - p -> talents.benediction * 0.02;
     trigger_gcd = 0;
+    harmful = false;
+    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.08;
+    base_cost *= 1.0 - p -> talents.benediction * 0.02;
+    cooldown -> duration = 180 - 30 * p -> talents.sanctified_wrath;
   }
 
   virtual void execute()
@@ -1543,6 +1553,8 @@ struct consecration_tick_t : public paladin_spell_t
     base_attack_power_multiplier = 0.04;
 
     if ( p -> librams.resurgence ) base_spell_power += 141;
+
+    cooldown = p -> get_cooldown( "noop" );
   }
 
   virtual void execute()
@@ -1575,12 +1587,12 @@ struct consecration_t : public paladin_spell_t
                              p -> talents.purifying_power * 0.05 );
     num_ticks      = 8;
     base_tick_time = 1;
-    cooldown       = 8;
+    cooldown -> duration = 8;
 
     if ( p -> glyphs.consecration )
     {
       num_ticks += 2;
-      cooldown  += 2;
+      cooldown -> duration += 2;
     }
 
     consecration_tick = new consecration_tick_t( p );
@@ -1611,9 +1623,9 @@ struct divine_favor_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    harmful     = false;
-    cooldown    = 120;
+    harmful = false;
     trigger_gcd = 0;
+    cooldown -> duration = 120;
   }
 
   virtual void execute()
@@ -1640,9 +1652,9 @@ struct divine_illumination_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    harmful     = false;
-    cooldown    = 180;
+    harmful = false;
     trigger_gcd = 0;
+    cooldown -> duration = 180;
   }
 
   virtual void execute()
@@ -1667,9 +1679,9 @@ struct divine_plea_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    harmful     = false;
-    cooldown    = 60;
+    harmful = false;
     trigger_gcd = 0;
+    cooldown -> duration = 60;
   }
 
   virtual void execute()
@@ -1719,8 +1731,9 @@ struct exorcism_t : public paladin_spell_t
 
     may_crit = true;
     base_execute_time = 1.5;
-    cooldown  = 15;
-    cooldown *= 1.0 - p -> talents.purifying_power * 0.33 / 2;
+
+    cooldown -> duration  = 15;
+    cooldown -> duration *= 1.0 - p -> talents.purifying_power * 0.33 / 2;
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.15;
@@ -1819,7 +1832,7 @@ struct holy_shield_t : public paladin_spell_t
     parse_options( options, options_str );
 
     harmful  = false;
-    cooldown = 8;
+    cooldown -> duration = 8;
   }
 
   virtual void execute()
@@ -1864,13 +1877,14 @@ struct holy_shock_t : public paladin_spell_t
     init_rank( ranks );
 
     may_crit         = true;
-    cooldown         = 6;
     direct_power_mod = 1.5/3.5;
     base_cost       *= 1.0 - p -> talents.benediction * 0.02;
     base_multiplier *= 1.0 + p -> talents.healing_light * 0.04;
     base_crit       += 1.0 + p -> talents.sanctified_light * 0.02;
 
-    if ( p -> glyphs.holy_shock ) cooldown -= 1.0;
+    cooldown -> duration = 6;
+
+    if ( p -> glyphs.holy_shock ) cooldown -> duration -= 1.0;
   }
 
   virtual void execute()
@@ -1915,11 +1929,13 @@ struct holy_wrath_t : public paladin_spell_t
     };
     init_rank( ranks );
 
-    aoe        = true;
-    may_crit   = true;
-    cooldown   = 30 - p -> glyphs.holy_wrath * 15;
-    cooldown  *= 1.0 - p -> talents.purifying_power * 0.33 / 2;
+    aoe = true;
+    may_crit = true;
+
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
+
+    cooldown -> duration  = 30 - p -> glyphs.holy_wrath * 15;
+    cooldown -> duration *= 1.0 - p -> talents.purifying_power * 0.33 / 2;
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.07;
