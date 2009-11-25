@@ -20,7 +20,7 @@ Hunter_T9_07_57_07_HM.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee
 Hunter_T9_53_14_04.simc     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 
 Mage_T9_00_53_18.simc                                        tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
-Mage_T9_18_00_53.simc   focus_magic_target=Mage_T9_20_51_00  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Mage_T9_18_00_53.simc   focus_magic_target=Mage_T9_20_51_00  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1  glyphs=frostbolt/eternal_water/molten_armor
 Mage_T9_20_51_00.simc   focus_magic_target=Mage_T9_53_18_00  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Mage_T9_53_18_00.simc   focus_magic_target=Mage_T9_57_03_11  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Mage_T9_57_03_11.simc   focus_magic_target=Mage_T9_18_00_53  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
