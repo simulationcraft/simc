@@ -1093,7 +1093,7 @@ static void trigger_icy_talons( action_t* a )
 
   p -> buffs_icy_talons -> trigger( 1, p -> talents.icy_talons * 0.04 );
 
-  if ( ! a -> sim -> overrides.improved_icy_talons ) 
+  if ( p -> talents.improved_icy_talons ) 
     a -> sim -> auras.improved_icy_talons -> trigger();
 }
 
