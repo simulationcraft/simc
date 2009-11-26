@@ -24,9 +24,9 @@ enum rune_type
 #define RUNE_GRACE_PERIOD   2.0
 #define RUNIC_POWER_REFUND  0.9
 
-#define GET_BLOOD_RUNE_COUNT(x)  ((x) & 0x03)
-#define GET_FROST_RUNE_COUNT(x)  (((x) >> 3) & 0x03)
-#define GET_UNHOLY_RUNE_COUNT(x) (((x) >> 6) & 0x03)
+#define GET_BLOOD_RUNE_COUNT(x)  ((x&0x01) + ((x&0x02)>>1))
+#define GET_FROST_RUNE_COUNT(x)  ((x&0x08) + ((x&0x10)>>1) >>3)
+#define GET_UNHOLY_RUNE_COUNT(x) ((x&0x40) + ((x&0x80)>>1) >>6)
 
 struct dk_rune_t
 {
@@ -1093,7 +1093,7 @@ static void trigger_icy_talons( action_t* a )
 
   p -> buffs_icy_talons -> trigger( 1, p -> talents.icy_talons * 0.04 );
 
-  if ( p -> talents.improved_icy_talons ) 
+  if ( p -> talents.improved_icy_talons )
     a -> sim -> auras.improved_icy_talons -> trigger();
 }
 
