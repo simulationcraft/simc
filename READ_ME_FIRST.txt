@@ -25,10 +25,11 @@ What is in the Install?
 Windows Platforms:
 (1) simc.exe => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.  Accepts drag-n-drop of .simc profiles.
-(3) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which may be required by the Qt GUI 
-(4) Examples.simc => Reference documentation for the many parameters
-(5) Legend.html => Glossary for simulation output
-(6) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(3) vcredist_x86.exe => Installs C++ runtime libraries (some Windows platforms already have this).
+(4) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which may be required by the Qt GUI 
+(5) Examples.simc => Reference documentation for the many parameters
+(6) Legend.html => Glossary for simulation output
+(7) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
