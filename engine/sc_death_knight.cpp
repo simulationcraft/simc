@@ -3569,8 +3569,29 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
+        action_list_str += ",time>=10";
       }
     }
+    if ( race == RACE_DWARF )
+    {
+      if ( talents.bladed_armor > 0 )
+        action_list_str += "/stoneform";
+    }
+    else if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+    // Use slightly into the fight, when debuffs are up
+    action_list_str += ",time>=10";
+
     if ( primary_tree() == TREE_UNHOLY )
     {
       // TODO: Add Empower Rune Weapon
@@ -3629,7 +3650,7 @@ void death_knight_t::init_actions()
       if ( talents.unbreakable_armor ) 
         action_list_str += "/unbreakable_armor,time>=10";
 
-      action_list_str += "/raise_dead,time>=5,time<=40"; 
+      action_list_str += "/raise_dead,time>=15,time<=40"; 
       action_list_str += "/raise_dead,bloodlust=1"; 
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,rime=1,killing_machine=1";
@@ -3648,6 +3669,8 @@ void death_knight_t::init_actions()
         action_list_str += "/icy_touch,frost_fever<=2";
         action_list_str += "/plague_strike,blood_plague<=2";
       }
+      if ( talents.deathchill )
+        action_list_str += "/deathchill";
       action_list_str += "/obliterate";
       action_list_str += "/blood_strike,blood=2,death<=2";
       action_list_str += "/blood_strike,blood=1,death<=1";
@@ -3658,26 +3681,6 @@ void death_knight_t::init_actions()
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
     }
-    
-
-    if ( race == RACE_DWARF )
-    {
-      if ( talents.bladed_armor > 0 )
-        action_list_str += "/stoneform";
-    }
-    else if ( race == RACE_ORC )
-    {
-      action_list_str += "/blood_fury";
-    }
-    else if ( race == RACE_TROLL )
-    {
-      action_list_str += "/berserking";
-    }
-    else if ( race == RACE_BLOOD_ELF )
-    {
-      action_list_str += "/arcane_torrent";
-    }
-
     action_list_default = 1;
   }
 
