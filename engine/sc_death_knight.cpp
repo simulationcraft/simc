@@ -486,24 +486,10 @@ struct bloodworms_pet_t : public pet_t
 
 struct dancing_rune_weapon_pet_t : public pet_t
 {
-  struct melee_t : public attack_t
-  {
-    melee_t( player_t* player ) :
-        attack_t( "dancing_rune_weapon_melee", player )
-    {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      background = true;
-      repeating = true;
-      may_crit = true;
-    }
-  };
-
-  melee_t* melee;
-
+  double snapshot_spell_crit, snapshot_attack_crit;
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "dancing_rune_weapon" ), melee( 0 )
+      pet_t( sim, owner, "dancing_rune_weapon", true ),
+      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 310;
@@ -514,32 +500,28 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   virtual void init_base()
   {
-    attribute_base[ ATTR_STRENGTH  ] = 331;
-    attribute_base[ ATTR_AGILITY   ] = 113;
-    attribute_base[ ATTR_STAMINA   ] = 361;
-    attribute_base[ ATTR_INTELLECT ] = 65;
-    attribute_base[ ATTR_SPIRIT    ] = 109;
-
-    base_attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
-
-    melee = new melee_t( this );
+    // Everything stays at zero.
+    // DRW uses a snapshot of the DKs stats when summoned.
   }
 
-  virtual double composite_attack_power() SC_CONST
-  {
-//    death_knight_t* o = owner -> cast_death_knight();
-    double ap = pet_t::composite_attack_power();
-//    ap += ( o -> glyphs.feral_spirit ? 0.61 : 0.31 ) * o -> composite_attack_power();
-    return ap;
-  }
+  virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
+  virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
+  virtual double composite_attack_power() SC_CONST       { return attack_power; }
+  virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
   virtual void summon( double duration=0 )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
     o -> active_dancing_rune_weapon = this;
+    snapshot_spell_crit  = o -> composite_spell_crit();
+    snapshot_attack_crit = o -> composite_attack_crit();
+    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();  
+    // Getting armor penetration, 
+    // attack_t* attack = new death_knight_attack_t( "drw_snapshot_attack", o );
+    // attack -> background = true;
+    // attack -> player_buff();
+    // attack_penetration = attack -> player_penetration + attack -> base_penetration;
   }
 };
 
@@ -1359,7 +1341,7 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-  if ( p->talents.blood_gorged )
+  if ( p -> talents.blood_gorged )
   {
     player_penetration += p -> talents.blood_gorged * 0.02;
 
