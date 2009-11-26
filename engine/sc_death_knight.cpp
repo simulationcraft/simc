@@ -1317,6 +1317,9 @@ void death_knight_attack_t::player_buff()
     // Fix Me! Does the same apply as for RoR?
     if ( ! proc && sim -> target -> debuffs.frost_fever -> up() )
       player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
+
+    // Annihilation only applies to abilities
+    player_crit += p -> talents.annihilation * 0.01;
   }
 
   if ( p -> talents.blood_gorged )
@@ -1367,9 +1370,6 @@ void death_knight_attack_t::player_buff()
   
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   player_multiplier *= 1.0 + additive_factors;
-
-  if ( special ) 
-    player_crit += p -> talents.annihilation * 0.01;
 }
 
 // death_knight_attack_t::ready() ===========================================
@@ -2241,7 +2241,7 @@ struct deathchill_t : public death_knight_spell_t
     
     option_t options[] =
     {
-    	{ NULL, OPT_UNKNOWN, NULL }
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
     
@@ -2898,7 +2898,7 @@ struct obliterate_t : public death_knight_attack_t
 
       if ( p -> buffs_rime -> trigger() ) 
       {
-	p -> cooldowns_howling_blast -> reset();
+        p -> cooldowns_howling_blast -> reset();
         update_ready();
       }
     }
@@ -3390,7 +3390,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // Frost Actions
 //if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
-  if ( name == "deathchill"				  ) return new deathchill_t			      ( this, options_str );
+  if ( name == "deathchill"               ) return new deathchill_t               ( this, options_str );
 //if ( name == "frost_fever"              ) return new frost_fever_t              ( this, options_str );  Passive
 //if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "frost_strike"             ) return new frost_strike_t             ( this, options_str );
@@ -3603,7 +3603,7 @@ void death_knight_t::init_actions()
       action_list_str += ":blood_strike";
       action_list_str += ":scourge_strike";
       action_list_str += ":blood_strike";
-      action_list_str += "/summon_gargoyle,tim2<=20";
+      action_list_str += "/summon_gargoyle,time<=20";
       action_list_str += "/summon_gargoyle,bloodlust=1";
       action_list_str += "/horn_of_winter";
       action_list_str += "/death_coil";
@@ -3654,10 +3654,6 @@ void death_knight_t::init_actions()
 
       action_list_str += "/raise_dead,time>=15,time<=40"; 
       action_list_str += "/raise_dead,bloodlust=1"; 
-      if ( talents.howling_blast )
-        action_list_str += "/howling_blast,rime=1,killing_machine=1";
-      if ( talents.frost_strike ) 
-        action_list_str += "/frost_strike,killing_machine=1";
 
       if ( glyphs.disease )
       {
@@ -3671,6 +3667,10 @@ void death_knight_t::init_actions()
         action_list_str += "/icy_touch,frost_fever<=2";
         action_list_str += "/plague_strike,blood_plague<=2";
       }
+      if ( talents.howling_blast )
+        action_list_str += "/howling_blast,rime=1,killing_machine=1";
+      if ( talents.frost_strike ) 
+        action_list_str += "/frost_strike,killing_machine=1";
       if ( talents.deathchill )
         action_list_str += "/deathchill";
       action_list_str += "/obliterate";
@@ -3863,7 +3863,7 @@ void death_knight_t::init_buffs()
   buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         30.0,  0.0, talents.bloody_vengeance );
   buffs_bone_shield       = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield,    60.0, 60.0, talents.bone_shield );
   buffs_desolation        = new buff_t( this, "desolation",         1,                         20.0,  0.0, talents.desolation );
-  buffs_deathchill        = new buff_t( this, "deathchill",         1,						   30.0 );
+  buffs_deathchill        = new buff_t( this, "deathchill",         1,                         30.0 );
   buffs_icy_talons        = new buff_t( this, "icy_talons",         1,                         20.0,  0.0, talents.icy_talons );
   buffs_killing_machine   = new buff_t( this, "killing_machine",    1,                         30.0,  0.0, 0 ); // PPM based!
   buffs_rime              = new buff_t( this, "rime",               1,                         30.0,  0.0, talents.rime * 0.05 );
