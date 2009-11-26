@@ -1289,10 +1289,8 @@ void death_knight_attack_t::execute()
   {
     p -> buffs_bloodworms -> trigger();
 
-    if ( result == RESULT_CRIT && p -> talents.bloody_vengeance )
-    {
-      p -> buffs_bloody_vengeance -> increment();
-    }
+    if ( result == RESULT_CRIT )
+      p -> buffs_bloody_vengeance -> trigger( 1, p -> talents.bloody_vengeance * 0.01);
   }
   else
   {
@@ -1309,13 +1307,29 @@ void death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if ( sim -> target -> debuffs.blood_plague -> up() )
+  if ( special )
   {
-    // Rivendare is spells and abilities... so everything *except* raw melee.
+    // Rivendare is spells and abilities... so everything *except* raw melee ( = special)
     // Things not affected: SS shadow damage in 3.3, wandering plague
-    if ( this != p -> main_hand_attack && this != p -> off_hand_attack && ! proc )
+    if ( ! proc && sim -> target -> debuffs.blood_plague -> up() )
       player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
+      
+    // Fix Me! Does the same apply as for RoR?
+    if ( ! proc && sim -> target -> debuffs.frost_fever -> up() )
+      player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   }
+
+  if ( p -> talents.blood_gorged )
+  {
+    player_penetration += p -> talents.blood_gorged * 0.02;
+
+    if ( p -> resource_current[ RESOURCE_HEALTH ] >=
+         p -> resource_max    [ RESOURCE_HEALTH ] * 0.75 )
+    {
+      player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
+    }
+  }
+
   if ( weapon )
   {
     // http://www.wowhead.com/?spell=50138
@@ -1334,16 +1348,6 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-  if ( p -> talents.blood_gorged )
-  {
-    player_penetration += p -> talents.blood_gorged * 0.02;
-
-    if ( p -> resource_current[ RESOURCE_HEALTH ] >=
-         p -> resource_max    [ RESOURCE_HEALTH ] * 0.75 )
-    {
-      player_multiplier *= 1 + p -> talents.blood_gorged * 0.02;
-    }
-  }
 
   // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE!
   double additive_factors = 0.0;
@@ -1354,14 +1358,13 @@ void death_knight_attack_t::player_buff()
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
+    player_multiplier *= 1.0 + p -> buffs_bloody_vengeance -> value();
   }
   else if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
   {
     additive_factors += p -> talents.black_ice * 0.02;
   }
   
-  player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   player_multiplier *= 1.0 + additive_factors;
 
@@ -1559,10 +1562,14 @@ void death_knight_spell_t::player_buff()
   // TODO: merge this with death_knight_attack_t::player_buff to avoid
   // redundancy and errors when adding abilities.
 
-  if ( sim -> target -> debuffs.blood_plague -> up() )
-  {
+  // Rivendare is spells and abilities... so everything *except* raw melee ( = special)
+  // Things not affected: SS shadow damage in 3.3, wandering plague
+  if ( ! proc && sim -> target -> debuffs.blood_plague -> up() )
     player_multiplier *= 1.0 + p -> talents.rage_of_rivendare * 0.02;
-  }
+    
+  // Fix Me! Does the same apply as for RoR?
+  if ( ! proc && sim -> target -> debuffs.frost_fever -> up() )
+    player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
 
   if ( school == SCHOOL_PHYSICAL )
   {
@@ -3853,7 +3860,7 @@ void death_knight_t::init_buffs()
   buffs_blood_presence    = new buff_t( this, "blood_presence" );
   buffs_frost_presence    = new buff_t( this, "frost_presence" );
   buffs_unholy_presence   = new buff_t( this, "unholy_presence" );
-  buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         0.0,   0.0, talents.bloody_vengeance );
+  buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         30.0,  0.0, talents.bloody_vengeance );
   buffs_bone_shield       = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield,    60.0, 60.0, talents.bone_shield );
   buffs_desolation        = new buff_t( this, "desolation",         1,                         20.0,  0.0, talents.desolation );
   buffs_deathchill        = new buff_t( this, "deathchill",         1,						   30.0 );
