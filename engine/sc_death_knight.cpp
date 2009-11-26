@@ -1361,7 +1361,7 @@ void death_knight_attack_t::player_buff()
     additive_factors += p -> talents.black_ice * 0.02;
   }
   
-
+  player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   player_multiplier *= 1.0 + additive_factors;
 
@@ -1579,7 +1579,7 @@ void death_knight_spell_t::player_buff()
     additive_factors += p -> talents.black_ice * 0.02;
 
   player_multiplier *= 1.0 + additive_factors;
-
+  player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   
   if ( sim -> debug )
@@ -3536,6 +3536,7 @@ void death_knight_t::init_base()
   // checked.  TODO: investigate this further.
   base_attack_power = 220;
   base_attack_expertise = 0.01 * ( talents.veteran_of_the_third_war * 2 +
+                                   talents.tundra_stalker +
                                    talents.rage_of_rivendare );
 
   initial_attack_power_per_strength = 2.0;
