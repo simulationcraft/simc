@@ -17,7 +17,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a, 
 			double proc_chance, double duration, double cooldown, 
-			double t=0, bool reverse=true, int rng_type=RNG_DEFAULT ) :
+			double t=0, bool reverse=false, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stat( s ), amount( a ), tick( t )
   {
