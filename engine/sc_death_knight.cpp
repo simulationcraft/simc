@@ -572,15 +572,8 @@ struct gargoyle_pet_t : public pet_t
 
     gargoyle_strike = new gargoyle_strike_t( this );
   }
-  virtual double haste() 
-  {
-    return haste_snapshot;
-  }
-
-  virtual double composite_attack_power() SC_CONST
-  {
-    return power_snapshot;
-  }
+  virtual double haste() { return haste_snapshot; }
+  virtual double composite_attack_power() SC_CONST { return power_snapshot; }
 
   virtual void summon( double duration=0 )
   {
@@ -3602,6 +3595,7 @@ void death_knight_t::init_actions()
       action_list_str += ":blood_strike";
       action_list_str += ":scourge_strike";
       action_list_str += ":blood_strike";
+      action_list_str += "/summon_gargoyle,tim2<=20";
       action_list_str += "/summon_gargoyle,bloodlust=1";
       action_list_str += "/horn_of_winter";
       action_list_str += "/death_coil";
