@@ -3610,6 +3610,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     if ( splits[ 0 ] == "buff" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
+      if ( ! buff ) buff = buff_t::find( sim, splits[ 1 ] );
       if ( ! buff ) return 0;
       return buff -> create_expression( a, splits[ 2 ] );
     }

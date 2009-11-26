@@ -1391,14 +1391,33 @@ action_expr_t* sim_t::create_expression( action_t* a,
     };
     return new time_expr_t( a );
   }
-  if ( name_str == "target.health_pct" )
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
+
+  if ( num_splits == 3 )
   {
-    struct target_health_pct_expr_t : public action_expr_t
+    if ( splits[ 0 ] == "aura" || splits[ 0 ] == "debuff" )
     {
-      target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> sim -> target -> health_percentage();  return TOK_NUM; }
-    };
-    return new target_health_pct_expr_t( a );
+      buff_t* buff = buff_t::find( this, splits[ 1 ] );
+      if ( ! buff ) return 0;
+      return buff -> create_expression( a, splits[ 2 ] );
+    }
+  }
+  else if ( num_splits == 2 )
+  {
+    if ( splits[ 0 ] == "target" )
+    {
+      if ( splits[ 1 ] == "health_pct" )
+      {
+	struct target_health_pct_expr_t : public action_expr_t
+        {
+	  target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct", TOK_NUM ) {}
+	  virtual int evaluate() { result_num = action -> sim -> target -> health_percentage();  return TOK_NUM; }
+	};
+	return new target_health_pct_expr_t( a );
+      }
+    }
   }
 
   return 0;
