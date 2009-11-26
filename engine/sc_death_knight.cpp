@@ -2059,6 +2059,7 @@ struct bone_shield_t : public death_knight_spell_t
     check_talent( p -> talents.bone_shield );
 
     cost_unholy = 1;
+    base_cost = -10;
     cooldown -> duration    = 60.0;
   }
 
@@ -3625,44 +3626,37 @@ void death_knight_t::init_actions()
       // UA 'lags' in updating armor, so first ghoul should be a few
       // seconds after it, second ghoud then with bloodlust
       
+      if ( talents.unbreakable_armor ) 
+        action_list_str += "/unbreakable_armor,time>=10";
+
+      action_list_str += "/raise_dead,time>=5,time<=40"; 
+      action_list_str += "/raise_dead,bloodlust=1"; 
+      if ( talents.howling_blast )
+        action_list_str += "/howling_blast,rime=1,killing_machine=1";
+      if ( talents.frost_strike ) 
+        action_list_str += "/frost_strike,killing_machine=1";
+
       if ( glyphs.disease )
       {
-        if ( talents.unbreakable_armor ) 
-          action_list_str += "/unbreakable_armor";
-        action_list_str += "/raise_dead,time>=5,time<=40"; 
-        action_list_str += "/raise_dead,bloodlust=1"; 
         action_list_str += "/icy_touch,frost_fever<=0.1";
         action_list_str += "/plague_strike,blood_plague<=0.1";
         action_list_str += "/pestilence,blood_plague<=2";
         action_list_str += "/pestilence,frost_fever<=2";
-        if ( talents.howling_blast ) 
-          action_list_str += "/howling_blast,rime=1,killing_machine=1";
-        action_list_str += "/obliterate";
-        action_list_str += "/blood_strike,death<=2";
-        if ( talents.frost_strike ) 
-          action_list_str += "/frost_strike";
-        action_list_str += "/empower_rune_weapon";
-        action_list_str += "/howling_blast,rime=1";
-        action_list_str += "/horn_of_winter";
       }
       else
       {
-        if ( talents.unbreakable_armor ) 
-          action_list_str += "/unbreakable_armor,time>=10";
-        action_list_str += "/raise_dead,time>=15,time<=40"; 
-        action_list_str += "/raise_dead,bloodlust=1"; 
         action_list_str += "/icy_touch,frost_fever<=2";
         action_list_str += "/plague_strike,blood_plague<=2";
-        if ( talents.howling_blast ) 
-          action_list_str += "/howling_blast,rime=1,killing_machine=1";
-        action_list_str += "/obliterate";
-        action_list_str += "/blood_strike,death<=2";
-        if ( talents.frost_strike ) 
-          action_list_str += "/frost_strike";
-        action_list_str += "/empower_rune_weapon";
-        action_list_str += "/howling_blast,rime=1";
-        action_list_str += "/horn_of_winter";
       }
+      action_list_str += "/obliterate";
+      action_list_str += "/blood_strike,blood=2,death<=2";
+      action_list_str += "/blood_strike,blood=1,death<=1";
+      if ( talents.frost_strike ) 
+        action_list_str += "/frost_strike";
+      if ( talents.howling_blast )
+        action_list_str += "/howling_blast,rime=1";
+      action_list_str += "/empower_rune_weapon";
+      action_list_str += "/horn_of_winter";
     }
     
 
