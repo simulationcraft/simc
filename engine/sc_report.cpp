@@ -46,9 +46,9 @@ static void simplify_html( std::string& buffer )
   }
 }
 
-// wiki_anchor ===============================================================
+// wiki_player_reference =====================================================
 
-static std::string wiki_anchor( player_t* p )
+static std::string wiki_player_reference( player_t* p )
 {
   std::string buffer = p -> name();
 
@@ -56,6 +56,15 @@ static std::string wiki_anchor( player_t* p )
   {
     buffer.replace( pos, 1, "" );
   }
+
+  return buffer;
+}
+
+// wiki_player_anchor ========================================================
+
+static std::string wiki_player_anchor( player_t* p )
+{
+  std::string buffer = wiki_player_reference( p );
 
   // GoogleCode Wiki is giving me headaches......
   int size = buffer.size();
@@ -1312,7 +1321,7 @@ static void print_wiki_contents( FILE* file, sim_t* sim, const std::string& wiki
 	 player_type != p -> type ) 
       continue;
 
-    std::string anchor_name = wiki_anchor( p );
+    std::string anchor_name = wiki_player_reference( p );
 
     util_t::fprintf( file, " * [%s%s#%s %s]\n", wiki_name.c_str(), player_type_string( p ), anchor_name.c_str(), p -> name() );
   }
@@ -1465,7 +1474,7 @@ static void print_wiki_action( FILE* file, stats_t* s )
 
 static void print_wiki_player( FILE* file, player_t* p )
 {
-  std::string anchor_name = wiki_anchor( p );
+  std::string anchor_name = wiki_player_anchor( p );
 
   util_t::fprintf( file, "= %s =\n", anchor_name.c_str() );
 
