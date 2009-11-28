@@ -492,7 +492,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_heart_strike_t( pet_t* player ) : 
     attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
-      background = true;
+      background  = true;
+      trigger_gcd = 0;
 
       weapon = &( player -> owner -> main_hand_weapon );
       normalize_weapon_speed = true;
@@ -508,8 +509,29 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
     virtual bool ready() { return false; }
   };
+  struct drw_death_strike_t : public attack_t
+  {
+    drw_death_strike_t( pet_t* player ) : 
+    attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    {
+      background  = true;
+      trigger_gcd = 0;
+
+      weapon = &( player -> owner -> main_hand_weapon );
+      normalize_weapon_speed = true;
+      weapon_multiplier     *= 0.75;
+  
+      death_knight_t* o = player -> owner -> cast_death_knight();
+      base_crit += o -> talents.improved_death_strike * 0.03;
+      base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
+      base_multiplier *= 1 + o -> talents.improved_death_strike * 0.15;
+      base_dd_min = base_dd_max = 0.01;
+    }
+    virtual bool ready() { return false; }
+  };
   double snapshot_spell_crit, snapshot_attack_crit;
   attack_t* drw_heart_strike;
+  attack_t* drw_death_strike;
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "dancing_rune_weapon", true ),
       snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), drw_heart_strike( 0 )
@@ -537,6 +559,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     if ( ! drw_heart_strike )
       drw_heart_strike = new drw_heart_strike_t( this );
+    if ( ! drw_death_strike )
+      drw_death_strike = new drw_death_strike_t( this );
   }
 };
 
@@ -2222,6 +2246,9 @@ struct death_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
+    if ( p -> buffs_dancing_rune_weapon -> check() )
+       p -> active_dancing_rune_weapon -> drw_death_strike -> execute();
+
     if ( result_is_hit() )
     {
       p -> buffs_sigil_virulence -> trigger();
@@ -2526,6 +2553,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> buffs_dancing_rune_weapon -> check() )
        p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
 
