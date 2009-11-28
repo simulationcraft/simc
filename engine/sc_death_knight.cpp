@@ -525,6 +525,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_crit += o -> talents.improved_death_strike * 0.03;
       base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
       base_multiplier *= 1 + o -> talents.improved_death_strike * 0.15;
+      base_multiplier *= 0.50; // DRW malus
       base_dd_min = base_dd_max = 0.01;
     }
     virtual bool ready() { return false; }
