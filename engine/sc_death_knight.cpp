@@ -1865,10 +1865,19 @@ struct blood_boil_t : public death_knight_spell_t
     cost_blood = 1;
 
     base_execute_time = 0;
-    cooldown -> duration          = 0.0;
-
+    cooldown -> duration          = 0.0;    
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
+
+    direct_power_mod  = 0.06;
   }
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    base_dd_adder = ( p -> diseases() ? 95 : 0 );
+    direct_power_mod  = 0.06 + ( p -> diseases() ? 0.035 : 0 );
+    death_knight_spell_t::execute();
+  }
+
 };
 
 // Blood Plague =============================================================
