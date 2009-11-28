@@ -77,6 +77,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_bloodworms;
   buff_t* buffs_bloody_vengeance;
   buff_t* buffs_bone_shield;
+  buff_t* buffs_dancing_rune_weapon;
   buff_t* buffs_desolation;
   buff_t* buffs_deathchill;
   buff_t* buffs_icy_talons;
@@ -486,16 +487,33 @@ struct bloodworms_pet_t : public pet_t
 
 struct dancing_rune_weapon_pet_t : public pet_t
 {
+  struct drw_heart_strike_t : public attack_t
+  {
+    drw_heart_strike_t( pet_t* player ) : 
+    attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    {
+      background = true;
+
+      weapon = &( player -> owner -> main_hand_weapon );
+      normalize_weapon_speed = true;
+      weapon_multiplier     *= 0.5;
+  
+      death_knight_t* o = player -> owner -> cast_death_knight();
+      base_crit += o -> talents.subversion * 0.03;
+      base_crit_bonus_multiplier *= 1.0 * o -> talents.might_of_mograine * 0.15;
+      base_multiplier *= 1 + o -> talents.bloody_strikes * 0.15;
+      base_multiplier *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07;
+      base_multiplier *= 0.50; // DRW malus
+      base_dd_min = base_dd_max = 0.01;
+    }
+    virtual bool ready() { return false; }
+  };
   double snapshot_spell_crit, snapshot_attack_crit;
+  attack_t* drw_heart_strike;
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "dancing_rune_weapon", true ),
-      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 )
+      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), drw_heart_strike( 0 )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 310;
-    main_hand_weapon.max_dmg    = 310;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.5;
   }
 
   virtual void init_base()
@@ -516,12 +534,9 @@ struct dancing_rune_weapon_pet_t : public pet_t
     o -> active_dancing_rune_weapon = this;
     snapshot_spell_crit  = o -> composite_spell_crit();
     snapshot_attack_crit = o -> composite_attack_crit();
-    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();  
-    // Getting armor penetration, 
-    // attack_t* attack = new death_knight_attack_t( "drw_snapshot_attack", o );
-    // attack -> background = true;
-    // attack -> player_buff();
-    // attack_penetration = attack -> player_penetration + attack -> base_penetration;
+    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    if ( ! drw_heart_strike )
+      drw_heart_strike = new drw_heart_strike_t( this );
   }
 };
 
@@ -2075,7 +2090,6 @@ struct bone_shield_t : public death_knight_spell_t
 // Dancing Rune Weapon ======================================================
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
-
   dancing_rune_weapon_t( player_t* player, const std::string& options_str ) :
       death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NONE, TREE_BLOOD )
   {
@@ -2086,16 +2100,14 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     parse_options( options, options_str );
     base_cost   = 60.0;
     cooldown -> duration    = 90.0;
-    trigger_gcd = 0;
   }
 
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-
-    consume_resource();
-    update_ready();
-    player -> summon_pet( "dancing_rune_weapon", 12.0 + ( p -> glyphs.dancing_rune_weapon ? 0.0 : 5.0 ));
+    death_knight_spell_t::execute();
+    p -> buffs_dancing_rune_weapon -> trigger();
+    p -> summon_pet( "dancing_rune_weapon", 12.0 + 5.0 * p -> glyphs.dancing_rune_weapon );
   }
 
   virtual bool ready()
@@ -2513,9 +2525,12 @@ struct heart_strike_t : public death_knight_attack_t
   void execute()
   {
     death_knight_attack_t::execute();
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> buffs_dancing_rune_weapon -> check() )
+       p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
+
     if ( result_is_hit() )
     {
-      death_knight_t* p = player -> cast_death_knight();
       p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
       trigger_sudden_doom( this );
@@ -3857,19 +3872,20 @@ void death_knight_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_blood_presence    = new buff_t( this, "blood_presence" );
-  buffs_frost_presence    = new buff_t( this, "frost_presence" );
-  buffs_unholy_presence   = new buff_t( this, "unholy_presence" );
-  buffs_bloody_vengeance  = new buff_t( this, "bloody_vengeance",   3,                         30.0,  0.0, talents.bloody_vengeance );
-  buffs_bone_shield       = new buff_t( this, "bone_shield",        4 + glyphs.bone_shield,    60.0, 60.0, talents.bone_shield );
-  buffs_desolation        = new buff_t( this, "desolation",         1,                         20.0,  0.0, talents.desolation );
-  buffs_deathchill        = new buff_t( this, "deathchill",         1,                         30.0 );
-  buffs_icy_talons        = new buff_t( this, "icy_talons",         1,                         20.0,  0.0, talents.icy_talons );
-  buffs_killing_machine   = new buff_t( this, "killing_machine",    1,                         30.0,  0.0, 0 ); // PPM based!
-  buffs_rime              = new buff_t( this, "rime",               1,                         30.0,  0.0, talents.rime * 0.05 );
-  buffs_scent_of_blood    = new buff_t( this, "scent_of_blood",     talents.scent_of_blood,    0.0,  10.0, talents.scent_of_blood ? 0.15 : 0.00 );
-  buffs_tier10_4pc_melee  = new buff_t( this, "tier10_4pc_melee",   1,                         15.0,  0.0, set_bonus.tier10_4pc_melee() );
-  buffs_unbreakable_armor = new buff_t( this, "unbreakable_armor",  1,                         20.0, 60.0, talents.unbreakable_armor );
+  buffs_blood_presence      = new buff_t( this, "blood_presence" );
+  buffs_frost_presence      = new buff_t( this, "frost_presence" );
+  buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
+  buffs_bloody_vengeance    = new buff_t( this, "bloody_vengeance",    3,                                30.0,  0.0, talents.bloody_vengeance );
+  buffs_bone_shield         = new buff_t( this, "bone_shield",         4 + glyphs.bone_shield,           60.0, 60.0, talents.bone_shield );
+  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", 1, 12 + 5 * glyphs.dancing_rune_weapon,  0.0, 1, true ); 
+  buffs_desolation          = new buff_t( this, "desolation",          1,                                20.0,  0.0, talents.desolation );
+  buffs_deathchill          = new buff_t( this, "deathchill",          1,                                30.0 );
+  buffs_icy_talons          = new buff_t( this, "icy_talons",          1,                                20.0,  0.0, talents.icy_talons );
+  buffs_killing_machine     = new buff_t( this, "killing_machine",     1,                                30.0,  0.0, 0 ); // PPM based!
+  buffs_rime                = new buff_t( this, "rime",                1,                                30.0,  0.0, talents.rime * 0.05 );
+  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood,            0.0, 10.0, talents.scent_of_blood ? 0.15 : 0.00 );
+  buffs_tier10_4pc_melee    = new buff_t( this, "tier10_4pc_melee",    1,                                15.0,  0.0, set_bonus.tier10_4pc_melee() );
+  buffs_unbreakable_armor   = new buff_t( this, "unbreakable_armor",   1,                                20.0, 60.0, talents.unbreakable_armor );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_sigil_hanged_man   = new stat_buff_t( this, "sigil_of_the_hanged_man", STAT_STRENGTH ,  73, 3, 15.0,   0, sigils.hanged_man );
