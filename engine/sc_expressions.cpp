@@ -235,7 +235,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
   if( isdigit( c ) )
   {
     c = expr_str[ current_index ];
-    while( isdigit( c ) )
+    while( isdigit( c ) || c == '.' )
     {
       token_str += c;
       c = expr_str[ ++current_index ];
@@ -243,7 +243,14 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
     return TOK_NUM;
   }
 
-  log_t::output( action -> sim, "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
+  if ( action )
+  {
+    log_t::output( action -> sim, "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
+  }
+  else
+  {
+    printf( "Unexpected token (%c) in %s\n", c, expr_str.c_str() );
+  }
 
   return TOK_UNKNOWN;
 }
@@ -323,11 +330,18 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
     {
       while ( true )
       {
-	if ( stack.empty() ) return false;
+	if ( stack.empty() ) { printf( "rpar stack empty\n" ); return false; }
 	token_t& s = stack.back();
-	if ( s.type == TOK_LPAR ) break;
-	rpn.push_back( s );
-	stack.pop_back();
+	if ( s.type == TOK_LPAR )
+	{
+	  stack.pop_back();
+	  break;
+	}
+	else
+	{
+	  rpn.push_back( s );
+	  stack.pop_back();
+	}
       }
     }
     else // operator
@@ -348,7 +362,7 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
   while ( ! stack.empty() )
   {
     token_t& s = stack.back();
-    if ( s.type == TOK_LPAR ) return false;
+    if ( s.type == TOK_LPAR ) { printf( "stack lpar\n" ); return false; }
     rpn.push_back( s );
     stack.pop_back();
   }
@@ -382,7 +396,7 @@ static action_expr_t* build_expression_tree( action_t* action,
 	log_t::output( action -> sim, 
 		       "Player %s action %s : Unable to decode expression function '%s'\n", 
 		       action -> player -> name(), action -> name(), t.label.c_str() );
-	action -> sim -> canceled = 1;
+	return 0;
 	e = new action_expr_t( action, t.label, t.label );
       }
       stack.push_back( e );
@@ -391,6 +405,7 @@ static action_expr_t* build_expression_tree( action_t* action,
     {
       if ( stack.size() < 1 ) return 0;
       action_expr_t* input = stack.back(); stack.pop_back();
+      if ( ! input ) return 0;
       stack.push_back( new expr_unary_t( action, t.label, t.type, input ) );
     }
     else if ( is_binary( t.type ) )
@@ -398,6 +413,7 @@ static action_expr_t* build_expression_tree( action_t* action,
       if ( stack.size() < 2 ) return 0;
       action_expr_t* right = stack.back(); stack.pop_back();
       action_expr_t* left  = stack.back(); stack.pop_back();
+      if ( ! left || ! right ) return 0;
       stack.push_back( new expr_binary_t( action, t.label, t.type, left, right ) );
     }
   }
@@ -425,12 +441,18 @@ action_expr_t* action_expr_t::parse( action_t* action,
   if( ! convert_to_rpn( action, tokens ) ) 
   {
     log_t::output( action -> sim, "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+    action -> sim -> canceled = true;
     return 0;
   }
 
   action_expr_t* e = build_expression_tree( action, tokens );
 
-  if ( ! e ) log_t::output( action -> sim, "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+  if ( ! e ) 
+  {
+    log_t::output( action -> sim, "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+    action -> sim -> canceled = true;
+    return 0;
+  }
 
   return e;
 }
@@ -443,19 +465,14 @@ int main( int argc, char** argv )
   {
     std::vector<token_t> tokens;
 
-    parse_tokens( tokens, argv[ i ] );
-    convert_to_unary( tokens );
+    parse_tokens( NULL, tokens, argv[ i ] );
+    convert_to_unary( NULL, tokens );
     print_tokens( tokens );
 
-    if( convert_to_rpn( tokens ) )
+    if( convert_to_rpn( NULL, tokens ) )
     {
       printf( "rpn:\n" );
-      num_tokens = tokens.size();
-      for ( int i=0; i < num_tokens; i++ )
-      {
-	token_t& t = tokens[ i ];
-	printf( "%2d  '%s'\n", t.type, t.label.c_str() );
-      }
+      print_tokens( tokens );
 
       action_expr_t* expr = build_expression_tree( 0, tokens );
 

@@ -1329,6 +1329,15 @@ void sim_t::aura_loss( const char* aura_name , int aura_id )
   if( log ) log_t::output( this, "Raid loses %s", aura_name );
 }
 
+// sim_t::time_to_think =====================================================
+
+bool sim_t::time_to_think( double proc_time ) 
+{
+  if ( proc_time == 0 ) return false;
+  if ( proc_time < 0 ) return true; 
+  return current_time - proc_time > reaction_time;
+}
+
 // sim_t::roll ==============================================================
 
 int sim_t::roll( double chance )

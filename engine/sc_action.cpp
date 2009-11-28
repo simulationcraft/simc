@@ -1298,7 +1298,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticking_expr_t : public action_expr_t
     {
       ticking_expr_t( action_t* a ) : action_expr_t( a, "ticking", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> dot -> action -> ticking ? 1 : 0 ); return TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> dot -> ticking() ? 1 : 0 ); return TOK_NUM; }
     };
     return new ticking_expr_t( this );
   }

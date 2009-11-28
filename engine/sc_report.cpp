@@ -173,7 +173,7 @@ static void print_actions( FILE* file, player_t* p )
   int length = 0;
   for ( int i=0; i < num_actions; i++ )
   {
-    if ( length > 80 )
+    if ( length > 80 || ( length > 0 && ( length + action_list[ i ].size() ) > 80 ) )
     {
       util_t::fprintf( file, "\n" );
       length = 0;

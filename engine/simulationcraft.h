@@ -767,7 +767,6 @@ struct buff_t
   virtual double remains();
   virtual bool   remains_gt( double time );
   virtual bool   remains_lt( double time );
-  virtual bool   may_react( int stacks=1 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   virtual void   decrement( int stacks=1, double value=-1.0 );
@@ -775,6 +774,8 @@ struct buff_t
   virtual void   refresh  ( int stacks=0, double value=-1.0 );
   virtual void   bump     ( int stacks=1, double value=-1.0 );
   virtual void   override ( int stacks=1, double value=-1.0 );
+  virtual bool   may_react( int stacks=1 );
+  virtual int    stack_react();
   virtual void   expire();
   virtual void   predict();
   virtual void   reset();
@@ -1079,7 +1080,7 @@ struct sim_t
   std::vector<option_t>& get_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
-  bool      time_to_think( double proc_time ) { if ( proc_time == 0 ) return false; return current_time - proc_time > reaction_time; }
+  bool      time_to_think( double proc_time );
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -2194,6 +2195,7 @@ struct dot_t
     if ( ! action -> ticking ) return 0;
     return ( action -> num_ticks - action -> current_tick );
   }
+  virtual bool ticking() { return action && action -> ticking; }
   virtual const char* name() { return name_str.c_str(); }
 };
 

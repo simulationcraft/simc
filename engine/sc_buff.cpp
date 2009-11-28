@@ -125,9 +125,24 @@ bool buff_t::may_react( int stack )
 
   double occur = stack_occurrence[ stack ];
 
-  if ( occur == 0 ) return true;
+  if ( occur <= 0 ) return true;
 
   return sim -> time_to_think( occur );
+}
+
+// buff_t::stack_react ======================================================
+
+int buff_t::stack_react()
+{
+  int stack = 0;
+
+  for( int i=1; i <= current_stack; i++ )
+  {
+    if ( ! sim -> time_to_think( stack_occurrence[ i ] ) ) break;
+    stack++;
+  }
+
+  return stack;
 }
 
 // buff_t::remains ==========================================================
@@ -381,7 +396,7 @@ void buff_t::predict()
 
   for( int i=0; i <= current_stack; i++ ) 
   {
-    stack_occurrence[ i ] = 0;
+    stack_occurrence[ i ] = -1;
   }
 }
 
@@ -552,6 +567,37 @@ action_expr_t* buff_t::create_expression( action_t* action,
       virtual int evaluate() { result_num = buff -> check(); return TOK_NUM; }
     };
     return new buff_stack_expr_t( action, this );
+  }
+  else if ( type == "react" )
+  {
+    struct buff_react_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_react_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_react", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = buff -> stack_react(); return TOK_NUM; }
+    };
+    return new buff_react_expr_t( action, this );
+  }
+  else if ( type == "cooldown_react" )
+  {
+    struct buff_cooldown_react_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_cooldown_react_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_react", TOK_NUM ), buff(b) {}
+      virtual int evaluate() 
+      { 
+	if ( buff -> check() && ! buff -> may_react() )
+	{
+	  result_num = 0;
+	}
+	else
+	{
+	  result_num = buff -> cooldown_ready - buff -> sim -> current_time;
+	}
+	return TOK_NUM; 
+      }
+    };
+    return new buff_cooldown_react_expr_t( action, this );
   }
 
   return 0;
