@@ -534,7 +534,9 @@ struct dancing_rune_weapon_pet_t : public pet_t
   attack_t* drw_death_strike;
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "dancing_rune_weapon", true ),
-      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), drw_heart_strike( 0 )
+      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), drw_heart_strike( 0 ),
+      drw_death_strike( 0 )
+      
   {
   }
 
