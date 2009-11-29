@@ -13,9 +13,10 @@ actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/raise_dead
 actions+=/sequence,name=unholy,wait_on_ready=1:icy_touch:plague_strike:blood_strike:scourge_strike:blood_strike
+actions+=/summon_gargoyle,time<=20
 actions+=/summon_gargoyle,bloodlust=1
-actions+=/horn_of_winter
 actions+=/death_coil
+actions+=/horn_of_winter
 actions+=/restart_sequence,name=unholy
 head=koltiras_helmet_of_triumph,stats=2102armor_94crit_86exp_150str_174sta,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=10crit_10str_4str

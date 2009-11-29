@@ -61,8 +61,6 @@ struct death_knight_t : public player_t
 {
   // Active
   action_t* active_blood_caked_blade;
-  action_t* active_blood_plague;
-  action_t* active_frost_fever;
   action_t* active_necrosis;
   action_t* active_unholy_blight;
   action_t* active_wandering_plague;
@@ -91,6 +89,10 @@ struct death_knight_t : public player_t
   buff_t* buffs_rune_of_the_fallen_crusader;
   buff_t* buffs_rune_of_razorice;
   buff_t* buffs_unbreakable_armor;
+  
+  // DoTs
+  dot_t* dots_blood_plague;
+  dot_t* dots_frost_fever;
   
   // Presences
   buff_t* buffs_blood_presence;
@@ -317,12 +319,13 @@ struct death_knight_t : public player_t
   {
     // Active
     active_blood_caked_blade   = NULL;
-    active_blood_plague        = NULL;
-    active_frost_fever         = NULL;
     active_necrosis            = NULL;
     active_presence            = 0;
-    active_unholy_blight       = NULL;
     active_wandering_plague    = NULL;
+    
+    // DoTs
+    dots_blood_plague  = get_dot( "blood_plague" );
+    dots_frost_fever   = get_dot( "frost_fever" );
 
     // Pets and Guardians
     active_bloodworms          = NULL;
@@ -379,10 +382,10 @@ struct death_knight_t : public player_t
   {
     int disease_count = 0;
     
-    if ( active_blood_plague )
+    if ( dots_blood_plague -> ticking() )
       disease_count++;
     
-    if ( active_frost_fever )
+    if ( dots_frost_fever -> ticking() )
       disease_count++;
   
     if ( disease_count && talents.crypt_fever )
@@ -812,8 +815,8 @@ struct death_knight_attack_t : public attack_t
   int    min_unholy, max_unholy, exact_unholy;
   int    min_death, max_death, exact_death;
   int    min_runic, max_runic, exact_runic;
-  int    min_blood_plague, max_blood_plague, exact_blood_plague;
-  int    min_frost_fever, max_frost_fever, exact_frost_fever;
+  int    min_blood_plague, max_blood_plague;
+  int    min_frost_fever, max_frost_fever;
   int    min_desolation, max_desolation;
 
   death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
@@ -825,8 +828,8 @@ struct death_knight_attack_t : public attack_t
       min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 ),
       min_death( -1 ), max_death( -1 ), exact_death( -1 ),
       min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
-      min_blood_plague( -1 ), max_blood_plague( -1 ), exact_blood_plague( -1 ),
-      min_frost_fever( -1 ), max_frost_fever( -1 ), exact_frost_fever( -1 ),
+      min_blood_plague( -1 ), max_blood_plague( -1 ),
+      min_frost_fever( -1 ), max_frost_fever( -1 ),
       min_desolation( -1 ), max_desolation( -1 )
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -864,8 +867,8 @@ struct death_knight_spell_t : public spell_t
   int    min_unholy, max_unholy, exact_unholy;
   int    min_death, max_death, exact_death;
   int    min_runic, max_runic, exact_runic;
-  int    min_blood_plague, max_blood_plague, exact_blood_plague;
-  int    min_frost_fever, max_frost_fever, exact_frost_fever;
+  int    min_blood_plague, max_blood_plague;
+  int    min_frost_fever, max_frost_fever;
   int    min_desolation, max_desolation;
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
@@ -876,8 +879,8 @@ struct death_knight_spell_t : public spell_t
       min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 ),
       min_death( -1 ), max_death( -1 ), exact_death( -1 ),
       min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
-      min_blood_plague( -1 ), max_blood_plague( -1 ), exact_blood_plague( -1 ),
-      min_frost_fever( -1 ), max_frost_fever( -1 ), exact_frost_fever( -1 ),
+      min_blood_plague( -1 ), max_blood_plague( -1 ),
+      min_frost_fever( -1 ), max_frost_fever( -1 ),
       min_desolation( -1 ), max_desolation( -1 )
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -1280,10 +1283,8 @@ void death_knight_attack_t::parse_options( option_t* options, const std::string&
     { "runic",         OPT_INT,  &exact_runic },
     { "runic>",        OPT_INT,  &min_runic },
     { "runic<",        OPT_INT,  &max_runic },
-    { "blood_plague",  OPT_INT,  &exact_blood_plague },
     { "blood_plague>", OPT_INT,  &min_blood_plague },
     { "blood_plague<", OPT_INT,  &max_blood_plague },
-    { "frost_fever",   OPT_INT,  &exact_frost_fever },
     { "frost_fever>",  OPT_INT,  &min_frost_fever },
     { "frost_fever<",  OPT_INT,  &max_frost_fever },
     { "desolation>",   OPT_INT,  &min_desolation },
@@ -1441,28 +1442,20 @@ bool death_knight_attack_t::ready()
 
   double ct = sim -> current_time;
 
-  if ( exact_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) != exact_blood_plague ) )
-      return false;
-
   if ( min_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) < min_blood_plague ) )
+    if ( ! p -> dots_blood_plague -> ticking() || ( ( p -> dots_blood_plague -> ready - ct ) < min_blood_plague ) )
       return false;
 
   if ( max_blood_plague > 0 )
-    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> dot -> ready - ct ) > max_blood_plague ) )
-      return false;
-
-  if ( exact_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) != exact_frost_fever ) )
+    if ( p -> dots_blood_plague -> ticking() && ( ( p -> dots_blood_plague -> ready - ct ) > max_blood_plague ) )
       return false;
 
   if ( min_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) < min_frost_fever ) )
+    if ( ! p -> dots_frost_fever -> ticking() || ( ( p -> dots_frost_fever -> ready - ct ) < min_frost_fever ) )
       return false;
 
   if ( max_frost_fever > 0 )
-    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> dot -> ready - ct ) > max_frost_fever ) )
+    if ( p -> dots_frost_fever -> ticking() && ( ( p -> dots_frost_fever -> ready - ct ) > max_frost_fever ) )
       return false;
 
   if ( min_desolation > 0 )
@@ -1532,10 +1525,8 @@ void death_knight_spell_t::parse_options( option_t* options, const std::string& 
     { "runic",         OPT_INT,  &exact_runic },
     { "runic>",        OPT_INT,  &min_runic },
     { "runic<",        OPT_INT,  &max_runic },
-    { "blood_plague",  OPT_INT,  &exact_blood_plague },
     { "blood_plague>", OPT_INT,  &min_blood_plague },
     { "blood_plague<", OPT_INT,  &max_blood_plague },
-    { "frost_fever",   OPT_INT,  &exact_frost_fever },
     { "frost_fever>",  OPT_INT,  &min_frost_fever },
     { "frost_fever<",  OPT_INT,  &max_frost_fever },
     { "desolation>",   OPT_INT,  &min_desolation },
@@ -1659,28 +1650,20 @@ bool death_knight_spell_t::ready()
 
   double ct = sim -> current_time;
 
-  if ( exact_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) != exact_blood_plague ) )
-      return false;
-
   if ( min_blood_plague > 0 )
-    if ( ! p -> active_blood_plague || ( ( p -> active_blood_plague -> dot -> ready - ct ) < min_blood_plague ) )
+    if ( ! p -> dots_blood_plague -> ticking() || ( ( p -> dots_blood_plague -> ready - ct ) < min_blood_plague ) )
       return false;
 
   if ( max_blood_plague > 0 )
-    if ( p -> active_blood_plague && ( ( p -> active_blood_plague -> dot -> ready - ct ) > max_blood_plague ) )
-      return false;
-
-  if ( exact_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) != exact_frost_fever ) )
+    if ( p -> dots_blood_plague -> ticking() && ( ( p -> dots_blood_plague -> ready - ct ) > max_blood_plague ) )
       return false;
 
   if ( min_frost_fever > 0 )
-    if ( ! p -> active_frost_fever || ( ( p -> active_frost_fever -> dot -> ready - ct ) < min_frost_fever ) )
+    if ( ! p -> dots_frost_fever -> ticking() || ( ( p -> dots_frost_fever -> ready - ct ) < min_frost_fever ) )
       return false;
 
   if ( max_frost_fever > 0 )
-    if ( p -> active_frost_fever && ( ( p -> active_frost_fever -> dot -> ready - ct ) > max_frost_fever ) )
+    if ( p -> dots_frost_fever -> ticking() && ( ( p -> dots_frost_fever -> ready - ct ) > max_frost_fever ) )
       return false;
 
   if ( min_desolation > 0 )
@@ -1907,7 +1890,6 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss          = false;
     cooldown -> duration          = 0.0;
     
-    observer = &( p -> active_blood_plague );
     reset();
   }
 
@@ -2369,7 +2351,6 @@ struct frost_fever_t : public death_knight_spell_t
     may_miss          = false;
     cooldown -> duration          = 0.0;
 
-    observer = &( p -> active_frost_fever );
     reset();
   }
 
@@ -2943,10 +2924,8 @@ struct obliterate_t : public death_knight_attack_t
       // 33/66/100% chance to NOT consume the diseases
       if ( ! p -> rng_annihilation -> roll( chance ) )
       {
-        if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
-          p -> active_blood_plague -> cancel();
-        if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
-          p -> active_frost_fever -> cancel();
+        p -> dots_blood_plague -> reset();
+        p -> dots_frost_fever -> reset();
       }
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
       p -> buffs_sigil_virulence -> trigger();
@@ -2997,17 +2976,17 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( result_is_hit() && p -> glyphs.disease )
     {
-      if ( p -> active_blood_plague && p -> active_blood_plague -> ticking )
+      if ( p -> dots_blood_plague -> ticking() )
       {
-         if ( sim -> P330 ) 
-           p -> active_blood_plague -> player_buff();
-         p -> active_blood_plague -> refresh_duration();
+         //if ( sim -> P330 ) 
+         //  p -> active_blood_plague -> player_buff();
+         //p -> active_blood_plague -> refresh_duration();
       }
-      if ( p -> active_frost_fever && p -> active_frost_fever -> ticking )
+      if ( p -> dots_frost_fever -> ticking() )
       {
-         if ( sim -> P330 ) 
-           p -> active_frost_fever -> player_buff();
-         p -> active_frost_fever -> refresh_duration();
+         //if ( sim -> P330 ) 
+         //  p -> active_frost_fever -> player_buff();
+         //p -> active_frost_fever -> refresh_duration();
       }
     }
   }
@@ -3332,14 +3311,13 @@ struct scourge_strike_t : public death_knight_attack_t
 
       if ( p -> glyphs.scourge_strike )
       {
-        if ( p -> active_blood_plague && p -> active_blood_plague -> added_ticks < 3 )
-        {
-          p -> active_blood_plague -> extend_duration( 1 );
-        }
-        if ( p -> active_frost_fever && p -> active_frost_fever -> added_ticks < 3 )
-        {
-          p -> active_frost_fever -> extend_duration( 1 );
-        }
+        if (  p -> dots_blood_plague -> ticking() )
+          if (  p -> dots_blood_plague -> action -> added_ticks < 3 )
+            p -> dots_blood_plague -> action -> extend_duration( 1 );
+
+        if (  p -> dots_frost_fever -> ticking() )
+          if (  p -> dots_frost_fever -> action -> added_ticks < 3 )
+            p -> dots_frost_fever -> action -> extend_duration( 1 );
       }
     }
   }
@@ -3660,8 +3638,8 @@ void death_knight_t::init_actions()
       action_list_str += ":blood_strike";
       action_list_str += "/summon_gargoyle,time<=20";
       action_list_str += "/summon_gargoyle,bloodlust=1";
-      action_list_str += "/horn_of_winter";
       action_list_str += "/death_coil";
+      action_list_str += "/horn_of_winter";
       action_list_str += "/restart_sequence,name=unholy";
     }
     else if ( primary_tree() == TREE_BLOOD )
@@ -4033,9 +4011,8 @@ void death_knight_t::reset()
   player_t::reset();
 
   // Active
-  active_presence     = 0;
-  active_blood_plague = NULL;
-  active_frost_fever  = NULL;
+  active_presence      = 0;
+  active_unholy_blight = NULL;
 
   // Pets and Guardians
   active_bloodworms          = NULL;
@@ -4097,8 +4074,8 @@ void death_knight_t::regen( double periodicity )
   if ( talents.butchery ) 
     resource_gain( RESOURCE_RUNIC, ( periodicity / talents.butchery ), gains_butchery );
 
-  uptimes_blood_plague -> update( active_blood_plague != 0 );
-  uptimes_frost_fever -> update( active_frost_fever != 0 );
+  uptimes_blood_plague -> update( dots_blood_plague -> ticking() );
+  uptimes_frost_fever  -> update( dots_frost_fever -> ticking() );
 }
 
 // death_knight_t::primary_tree =================================================
