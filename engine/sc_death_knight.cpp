@@ -2978,15 +2978,17 @@ struct pestilence_t : public death_knight_spell_t
     {
       if ( p -> dots_blood_plague -> ticking() )
       {
-         //if ( sim -> P330 ) 
-         //  p -> active_blood_plague -> player_buff();
-         //p -> active_blood_plague -> refresh_duration();
+        if ( sim -> P330 ) 
+          p -> dots_blood_plague -> action -> player_buff();
+        
+        p -> dots_blood_plague -> action -> refresh_duration();
       }
       if ( p -> dots_frost_fever -> ticking() )
       {
-         //if ( sim -> P330 ) 
-         //  p -> active_frost_fever -> player_buff();
-         //p -> active_frost_fever -> refresh_duration();
+        if ( sim -> P330 ) 
+          p -> dots_frost_fever -> action -> player_buff();
+        
+        p -> dots_frost_fever -> action -> refresh_duration();
       }
     }
   }
