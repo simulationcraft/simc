@@ -871,6 +871,7 @@ struct death_knight_spell_t : public spell_t
   int    min_blood_plague, max_blood_plague;
   int    min_frost_fever, max_frost_fever;
   int    min_desolation, max_desolation;
+  bool   additive_factors;
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_RUNIC, s, t ),
@@ -882,7 +883,8 @@ struct death_knight_spell_t : public spell_t
       min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
       min_blood_plague( -1 ), max_blood_plague( -1 ),
       min_frost_fever( -1 ), max_frost_fever( -1 ),
-      min_desolation( -1 ), max_desolation( -1 )
+      min_desolation( -1 ), max_desolation( -1 ),
+      additive_factors( false )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1395,13 +1397,9 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-
-  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE!
-  double additive_factors = 0.0;
-
-  additive_factors += p -> buffs_blood_presence -> value();
-  additive_factors += p -> buffs_bone_shield -> up();
-  additive_factors += p -> buffs_desolation -> value();
+  player_multiplier *= 1.0 +  p -> buffs_blood_presence -> value();
+  player_multiplier *= 1.0 +  p -> buffs_bone_shield -> value();
+  player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
 
   if ( school == SCHOOL_PHYSICAL )
   {
@@ -1409,11 +1407,10 @@ void death_knight_attack_t::player_buff()
   }
   else if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
   {
-    additive_factors += p -> talents.black_ice * 0.02;
+    player_multiplier *= 1.0 +  p -> talents.black_ice * 0.02;
   }
   
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
-  player_multiplier *= 1.0 + additive_factors;
 }
 
 // death_knight_attack_t::ready() ===========================================
@@ -1610,16 +1607,29 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
-  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE!
-  double additive_factors = 0.0;
-  
-  additive_factors += p -> buffs_blood_presence -> value();
-  additive_factors += p -> buffs_bone_shield -> up();
-  additive_factors += p -> buffs_desolation -> value();
-  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-    additive_factors += p -> talents.black_ice * 0.02;
+  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE
+  // for some spells (Scourge Strike 3.3 shadow part)
+  if ( additive_factors )
+  {
+    double sum_factors = 0.0;
+    
+    sum_factors += p -> buffs_blood_presence -> value();
+    sum_factors += p -> buffs_bone_shield -> value();
+    sum_factors += p -> buffs_desolation -> value();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      sum_factors += p -> talents.black_ice * 0.02;
 
-  player_multiplier *= 1.0 + additive_factors;
+    player_multiplier *= 1.0 + sum_factors;
+  }
+  else
+  {
+    player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
+    player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
+    player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
+  }
+
   player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   
@@ -3656,7 +3666,7 @@ void death_knight_t::init_actions()
       action_list_str += ":scourge_strike";
       action_list_str += ":blood_strike";
       action_list_str += "/summon_gargoyle,time<=20";
-      action_list_str += "/summon_gargoyle,bloodlust=1";
+      action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
       action_list_str += "/death_coil";
       action_list_str += "/horn_of_winter";
       action_list_str += "/restart_sequence,name=unholy";
@@ -3664,8 +3674,8 @@ void death_knight_t::init_actions()
     else if ( primary_tree() == TREE_BLOOD )
     {
       // TODO: Add Empower Rune Weapon
-      action_list_str += "/hysteria,bloodlust=1";
-      action_list_str += "/dancing_rune_weapon,bloodlust=1";
+      action_list_str += "/hysteria,if=buff.bloodlust.react";
+      action_list_str += "/dancing_rune_weapon,if=buff.bloodlust.react";
       action_list_str += "/sequence,name=blood1,wait_on_ready=1";
       action_list_str += ":icy_touch";
       action_list_str += ":plague_strike";
@@ -3705,12 +3715,12 @@ void death_knight_t::init_actions()
         action_list_str += "/unbreakable_armor,time>=10";
 
       action_list_str += "/raise_dead,time>=15,time<=40"; 
-      action_list_str += "/raise_dead,bloodlust=1"; 
+      action_list_str += "/raise_dead,if=buff.bloodlust.react"; 
 
       if ( glyphs.disease )
       {
         action_list_str += "/icy_touch,frost_fever<=0.1";
-        action_list_str += "/plague_strike,blood_plague<=0.1";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
         action_list_str += "/pestilence,blood_plague<=2";
         action_list_str += "/pestilence,frost_fever<=2";
       }
