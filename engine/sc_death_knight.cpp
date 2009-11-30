@@ -819,6 +819,7 @@ struct death_knight_attack_t : public attack_t
   int    min_blood_plague, max_blood_plague;
   int    min_frost_fever, max_frost_fever;
   int    min_desolation, max_desolation;
+  bool   additive_factors;
 
   death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_RUNIC, s, t ),
@@ -831,7 +832,8 @@ struct death_knight_attack_t : public attack_t
       min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
       min_blood_plague( -1 ), max_blood_plague( -1 ),
       min_frost_fever( -1 ), max_frost_fever( -1 ),
-      min_desolation( -1 ), max_desolation( -1 )
+      min_desolation( -1 ), max_desolation( -1 ),
+      additive_factors( false )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -871,7 +873,6 @@ struct death_knight_spell_t : public spell_t
   int    min_blood_plague, max_blood_plague;
   int    min_frost_fever, max_frost_fever;
   int    min_desolation, max_desolation;
-  bool   additive_factors;
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_RUNIC, s, t ),
@@ -883,8 +884,7 @@ struct death_knight_spell_t : public spell_t
       min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
       min_blood_plague( -1 ), max_blood_plague( -1 ),
       min_frost_fever( -1 ), max_frost_fever( -1 ),
-      min_desolation( -1 ), max_desolation( -1 ),
-      additive_factors( false )
+      min_desolation( -1 ), max_desolation( -1 )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1396,18 +1396,33 @@ void death_knight_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.two_handed_weapon_specialization * 0.02;
     }
   }
+  
+  // 3.3 Scourge Strike: Shadow damage is calcuted with some buffs being additive
+  // Desolation, Bone Shield, Black Ice, Blood Presence
+  if ( additive_factors )
+  {
+    double sum_factors = 0.0;
+    
+    sum_factors += p -> buffs_blood_presence -> value();
+    sum_factors += p -> buffs_bone_shield -> value();
+    sum_factors += p -> buffs_desolation -> value();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      sum_factors += p -> talents.black_ice * 0.02;
 
-  player_multiplier *= 1.0 +  p -> buffs_blood_presence -> value();
-  player_multiplier *= 1.0 +  p -> buffs_bone_shield -> value();
-  player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+    player_multiplier *= 1.0 + sum_factors;
+  }
+  else
+  {
+    player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
+    player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
+    player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
+  }
 
   if ( school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1.0 + p -> buffs_bloody_vengeance -> value();
-  }
-  else if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-  {
-    player_multiplier *= 1.0 +  p -> talents.black_ice * 0.02;
   }
   
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
@@ -1607,28 +1622,11 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
-  // Black Ice, Blood Presnce, Bone Shield and Desolation are ADDITIVE
-  // for some spells (Scourge Strike 3.3 shadow part)
-  if ( additive_factors )
-  {
-    double sum_factors = 0.0;
-    
-    sum_factors += p -> buffs_blood_presence -> value();
-    sum_factors += p -> buffs_bone_shield -> value();
-    sum_factors += p -> buffs_desolation -> value();
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      sum_factors += p -> talents.black_ice * 0.02;
-
-    player_multiplier *= 1.0 + sum_factors;
-  }
-  else
-  {
-    player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
-    player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
-    player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
-  }
+  player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
+  player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
+  player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
 
   player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
@@ -2103,16 +2101,43 @@ struct bone_shield_t : public death_knight_spell_t
     check_talent( p -> talents.bone_shield );
 
     cost_unholy = 1;
-    base_cost = -10;
+    harmful     = false;
+    base_cost   = -10;
+    
     cooldown -> duration    = 60.0;
+  }
+  virtual double cost() SC_CONST 
+  { 
+    if ( player -> in_combat )
+      return death_knight_spell_t::cost();
+        
+    return 0;
   }
 
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_bone_shield -> trigger( 1, 0.02 );
+    if ( p -> in_combat )
+    {
+      // Pre-casting it before the fight, perfect timing would be so that the
+      // used rune is ready when it is needed in the rotation.
+      // Assume we casted Bone Shield somewhere between 8-16s before we start fighting
+      double pre_cast = p -> sim -> range( 8.0, 16.0 );
 
-    death_knight_spell_t::execute();
+      cooldown -> duration -= pre_cast;
+      p -> buffs_bone_shield -> duration -= pre_cast;
+
+      p -> buffs_bone_shield -> trigger( 1, 0.02 );
+      death_knight_spell_t::execute();
+
+      cooldown -> duration = 60;
+      p -> buffs_bone_shield -> duration = 60;
+    }
+    else
+    {
+      p -> buffs_bone_shield -> trigger( 1, 0.02 );
+      death_knight_spell_t::execute();
+    }
   }
 };
 
@@ -3113,6 +3138,7 @@ struct presence_t : public death_knight_spell_t
     {
       // Default to Blood Presence
       switch_to_presence = PRESENCE_BLOOD;
+      cost_blood  = 1;
     }
 
     base_cost   = 0;
@@ -3276,6 +3302,11 @@ struct scourge_strike_t : public death_knight_attack_t
           proc        = true;
           background  = true;
           trigger_gcd = 0;
+          
+          // Only blizzard knows, but for the shadowpart in 3.3 the follwing
+          // +x% buffs are ADDITIVE (which this flag controls)
+          // Bone Shield 2%, Desolation 5%, Blood Presence 15%, Black Ice 10%
+          additive_factors = true;
           
           base_attack_power_multiplier = 0;
           base_dd_min = base_dd_max    = 1;
@@ -3721,18 +3752,18 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/icy_touch,frost_fever<=0.1";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
-        action_list_str += "/pestilence,blood_plague<=2";
-        action_list_str += "/pestilence,frost_fever<=2";
+        action_list_str += "/pestilence,if=dot.blood_plague.remains<=2";
+        action_list_str += "/pestilence,if=dot.frost_fever.remains<=2";
       }
       else
       {
-        action_list_str += "/icy_touch,frost_fever<=2";
-        action_list_str += "/plague_strike,blood_plague<=2";
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
       }
       if ( talents.howling_blast )
-        action_list_str += "/howling_blast,rime=1,killing_machine=1";
+        action_list_str += "/howling_blast,if=buff.rime.react&buff.killing_machine.react";
       if ( talents.frost_strike ) 
-        action_list_str += "/frost_strike,killing_machine=1";
+        action_list_str += "/frost_strike,if=buff.killing_machine.react";
       if ( talents.deathchill )
         action_list_str += "/deathchill";
       action_list_str += "/obliterate";
@@ -3741,7 +3772,7 @@ void death_knight_t::init_actions()
       if ( talents.frost_strike ) 
         action_list_str += "/frost_strike";
       if ( talents.howling_blast )
-        action_list_str += "/howling_blast,rime=1";
+        action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
     }
@@ -3923,7 +3954,7 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
   buffs_bloody_vengeance    = new buff_t( this, "bloody_vengeance",    3,                                30.0,  0.0, talents.bloody_vengeance );
-  buffs_bone_shield         = new buff_t( this, "bone_shield",         4 + glyphs.bone_shield,           60.0, 60.0, talents.bone_shield );
+  buffs_bone_shield         = new buff_t( this, "bone_shield",         4 + glyphs.bone_shield,           60.0,  0.0, talents.bone_shield );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", 1, 12 + 5 * glyphs.dancing_rune_weapon,  0.0, 1, true ); 
   buffs_desolation          = new buff_t( this, "desolation",          1,                                20.0,  0.0, talents.desolation );
   buffs_deathchill          = new buff_t( this, "deathchill",          1,                                30.0 );
