@@ -212,6 +212,7 @@ struct warlock_t : public player_t
   virtual dot_t*    get_dot( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -3656,6 +3657,18 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// warlock_t::create_pets ====================================================
+
+void warlock_t::create_pets()
+{
+  create_pet( "felguard"  );
+  create_pet( "felhunter" );
+  create_pet( "imp"       );
+  create_pet( "succubus"  );
+  create_pet( "infernal"  );
+  create_pet( "doomguard" );
+}
+
 // warlock_t::init_glyphs =====================================================
 
 void warlock_t::init_glyphs()
@@ -4195,16 +4208,7 @@ int warlock_t::decode_set( item_t& item )
 
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, int race_type )
 {
-  warlock_t* p = new warlock_t( sim, name, race_type );
-
-  new  felguard_pet_t( sim, p );
-  new felhunter_pet_t( sim, p );
-  new       imp_pet_t( sim, p );
-  new  succubus_pet_t( sim, p );
-  new  infernal_pet_t( sim, p );
-  new doomguard_pet_t( sim, p );
-
-  return p;
+  return new warlock_t( sim, name, race_type );
 }
 
 // player_t::warlock_init ===================================================

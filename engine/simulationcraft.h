@@ -1659,8 +1659,9 @@ struct player_t
   virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name ) { assert( ! name.empty() ); return 0; }
-  virtual pet_t*    find_pet     ( const std::string& name );
+  virtual void      create_pets() { }
+  virtual pet_t*    create_pet( const std::string& name ) { assert( ! name.empty() ); return 0; }
+  virtual pet_t*    find_pet  ( const std::string& name );
 
   virtual void trigger_replenishment();
 
@@ -1685,7 +1686,7 @@ struct player_t
   static player_t * create_warrior     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
 
   // Raid-wide aura/buff/debuff maintenance
-  static void init        ( sim_t* sim );
+  static bool init        ( sim_t* sim );
   static void combat_begin( sim_t* sim );
   static void combat_end  ( sim_t* sim );
 

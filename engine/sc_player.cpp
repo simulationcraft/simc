@@ -439,8 +439,15 @@ const char* player_t::id()
 
 // player_t::init ==========================================================
 
-void player_t::init( sim_t* sim )
+bool player_t::init( sim_t* sim )
 {
+  if ( sim -> debug ) log_t::output( sim, "Creating Pets." );
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> create_pets();
+  }
+
   if ( sim -> debug ) log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
 
   player_t::death_knight_init( sim );
@@ -454,10 +461,78 @@ void player_t::init( sim_t* sim )
   player_t::warlock_init     ( sim );
   player_t::warrior_init     ( sim );
 
+  if ( sim -> debug ) log_t::output( sim, "Initializing Players." );
+
+  bool too_quiet = true;
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> init_resources( true );
-  }  
+    p -> init();
+    if ( ! p -> quiet ) too_quiet = false;
+  }
+
+  if ( too_quiet && ! sim -> debug )
+  {
+    log_t::output( sim, "No active players in sim!" );
+    return false;
+  }
+
+  if ( sim -> debug ) log_t::output( sim, "Building Parties." );
+
+  int party_index=0;
+  for ( unsigned i=0; i < sim -> party_encoding.size(); i++ )
+  {
+    std::string& party_str = sim -> party_encoding[ i ];
+
+    if ( party_str == "reset" )
+    {
+      party_index = 0;
+      for ( player_t* p = sim -> player_list; p; p = p -> next ) p -> party = 0;
+    }
+    else if ( party_str == "all" )
+    {
+      int member_index = 0;
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
+      {
+        p -> party = 1;
+        p -> member = member_index++;
+      }
+    }
+    else
+    {
+      party_index++;
+
+      std::vector<std::string> player_names;
+      int num_players = util_t::string_split( player_names, party_str, ",;/" );
+      int member_index=0;
+
+      for ( int j=0; j < num_players; j++ )
+      {
+        player_t* p = sim -> find_player( player_names[ j ] );
+        if ( ! p ) 
+	{
+	  util_t::fprintf( sim -> output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+	  return false;
+	}
+        p -> party = party_index;
+        p -> member = member_index++;
+        for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+        {
+          pet -> party = party_index;
+          pet -> member = member_index++;
+        }
+      }
+    }
+  }
+
+  if ( sim -> debug ) log_t::output( sim, "Registering Callbacks." );
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    p -> register_callbacks();
+  }
+
+  return true;
 }
 
 // player_t::init ==========================================================

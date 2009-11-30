@@ -194,7 +194,6 @@ struct hunter_t : public player_t
   }
 
   // Character Definition
-  virtual void      init();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -216,6 +215,7 @@ struct hunter_t : public player_t
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
+  virtual void      create_pets();
   virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -3140,6 +3140,9 @@ action_t* hunter_t::create_action( const std::string& name,
 
 pet_t* hunter_t::create_pet( const std::string& pet_name )
 {
+  pet_t* p = find_pet( pet_name );
+  if ( p ) return p;
+
   // Ferocity
   if ( pet_name == "carrion_bird" ) return new hunter_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
   if ( pet_name == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
@@ -3179,6 +3182,17 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
   if ( pet_name == "wind_serpent" ) return new hunter_pet_t( sim, this, pet_name, PET_WIND_SERPENT );
 
   return 0;
+}
+
+// hunter_t::create_pets ======================================================
+
+void hunter_t::create_pets()
+{
+  create_pet( "cat" );
+  create_pet( "devilsaur" );
+  create_pet( "raptor" );
+  create_pet( "wind_serpent" );
+  create_pet( "wolf" );
 }
 
 // hunter_t::armory ===========================================================
@@ -3267,22 +3281,6 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
         pet -> parse_talents_armory( talent_str );
       }
     }
-  }
-}
-
-// hunter_t::init =============================================================
-
-void hunter_t::init()
-{
-  player_t::init();
-
-  if ( ! find_pet( summon_pet_str ) )
-  {
-    create_pet( "cat" );
-    create_pet( "devilsaur" );
-    create_pet( "raptor" );
-    create_pet( "wind_serpent" );
-    create_pet( "wolf" );
   }
 }
 

@@ -199,6 +199,7 @@ struct priest_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -1908,6 +1909,13 @@ pet_t* priest_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// priest_t::create_pets =====================================================
+
+void priest_t::create_pets()
+{
+  create_pet( "shadow_fiend" );
+}
+
 // priest_t::init_glyphs =====================================================
 
 void priest_t::init_glyphs()
@@ -2418,11 +2426,7 @@ int priest_t::decode_set( item_t& item )
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race_type )
 {
-  priest_t* p =  new priest_t( sim, name, race_type );
-
-  new shadow_fiend_pet_t( sim, p );
-
-  return p;
+  return new priest_t( sim, name, race_type );
 }
 
 // player_t::priest_init =====================================================

@@ -738,76 +738,9 @@ bool sim_t::init()
 
   target -> init();
 
-  bool too_quiet = true;
-
-  for ( player_t* p = player_list; p; p = p -> next )
-  {
-    p -> init();
-    if ( ! p -> quiet ) too_quiet = false;
-  }
-
-  if ( too_quiet && ! debug )
-  {
-    log_t::output( this, "No active players in sim!" );
-    return false;
-  }
-
-  player_t::init( this );
+  if ( ! player_t::init( this ) ) return false;
 
   raid_event_t::init( this );
-
-  // Defer party creation after player_t::init() calls to handle any pets created there.
-
-  int party_index=0;
-  for ( unsigned i=0; i < party_encoding.size(); i++ )
-  {
-    std::string& party_str = party_encoding[ i ];
-
-    if ( party_str == "reset" )
-    {
-      party_index = 0;
-      for ( player_t* p = player_list; p; p = p -> next ) p -> party = 0;
-    }
-    else if ( party_str == "all" )
-    {
-      int member_index = 0;
-      for ( player_t* p = player_list; p; p = p -> next )
-      {
-        p -> party = 1;
-        p -> member = member_index++;
-      }
-    }
-    else
-    {
-      party_index++;
-
-      std::vector<std::string> player_names;
-      int num_players = util_t::string_split( player_names, party_str, ",;/" );
-      int member_index=0;
-
-      for ( int j=0; j < num_players; j++ )
-      {
-        player_t* p = find_player( player_names[ j ] );
-        if ( ! p ) 
-	{
-	  util_t::fprintf( output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
-	  return false;
-	}
-        p -> party = party_index;
-        p -> member = member_index++;
-        for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-        {
-          pet -> party = party_index;
-          pet -> member = member_index++;
-        }
-      }
-    }
-  }
-
-  for ( player_t* p = player_list; p; p = p -> next )
-  {
-    p -> register_callbacks();
-  }
 
   if ( report_precision < 0 ) report_precision = 3;
 

@@ -221,6 +221,7 @@ struct mage_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -3077,6 +3078,14 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// mage_t::create_pets =====================================================
+
+void mage_t::create_pets()
+{
+  create_pet( "water_elemental" );
+  create_pet( "mirror_image" );
+}
+
 // mage_t::init_glyphs ====================================================
 
 void mage_t::init_glyphs()
@@ -3701,12 +3710,7 @@ int mage_t::decode_set( item_t& item )
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name, int race_type )
 {
-  mage_t* p = new mage_t( sim, name, race_type );
-
-  new    mirror_image_pet_t( sim, p );
-  new water_elemental_pet_t( sim, p );
-
-  return p;
+  return new mage_t( sim, name, race_type );
 }
 
 // player_t::mage_init ======================================================

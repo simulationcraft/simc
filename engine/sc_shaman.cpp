@@ -218,6 +218,7 @@ struct shaman_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID : ROLE_SPELL; }
@@ -2968,9 +2969,22 @@ action_t* shaman_t::create_action( const std::string& name,
 
 pet_t* shaman_t::create_pet( const std::string& pet_name )
 {
-  if ( pet_name == "spirit_wolf" ) return new spirit_wolf_pet_t( sim, this );
+  pet_t* p = find_pet( pet_name );
+
+  if ( p ) return p;
+
+  if ( pet_name == "spirit_wolf"    ) return new spirit_wolf_pet_t   ( sim, this );
+  if ( pet_name == "fire_elemental" ) return new fire_elemental_pet_t( sim, this );
 
   return 0;
+}
+
+// shaman_t::create_pets =====================================================
+
+void shaman_t::create_pets()
+{
+  create_pet( "spirit_wolf" );
+  create_pet( "fire_elemental" );
 }
 
 // shaman_t::init_rating ======================================================
@@ -3574,12 +3588,7 @@ int shaman_t::decode_set( item_t& item )
 
 player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race_type )
 {
-  shaman_t* p = new shaman_t( sim, name, race_type );
-
-  new    spirit_wolf_pet_t( sim, p );
-  new fire_elemental_pet_t( sim, p );
-
-  return p;
+  return new shaman_t( sim, name, race_type );
 }
 
 // player_t::shaman_init ====================================================

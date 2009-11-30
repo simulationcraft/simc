@@ -259,7 +259,8 @@ struct druid_t : public player_t
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name );
+  virtual pet_t*    create_pet( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
@@ -3445,6 +3446,12 @@ pet_t* druid_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
+// druid_t::create_pets =====================================================
+
+void druid_t::create_pets()
+{
+  create_pet( "treants" );
+}
 
 // druid_t::init_rating =====================================================
 
@@ -4289,11 +4296,7 @@ player_t* player_t::create_druid( sim_t*             sim,
                                   const std::string& name,
                                   int race_type )
 {
-  druid_t* p = new druid_t( sim, name, race_type );
-
-  new treants_pet_t( sim, p, "treants" );
-
-  return p;
+  return new druid_t( sim, name, race_type );
 }
 
 // player_t::druid_init =====================================================

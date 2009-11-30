@@ -372,6 +372,7 @@ struct death_knight_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
+  virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
@@ -3466,8 +3467,24 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   return player_t::create_action( name, options_str );
 }
 
+// death_knight_t::create_pets ==============================================
+
+void death_knight_t::create_pets()
+{
+  create_pet( "bloodworms" );
+  create_pet( "dancing_rune_weapon" );
+  create_pet( "gargoyle" );
+  create_pet( "ghoul" );
+}
+
+// death_knight_t::create_pet ===============================================
+
 pet_t* death_knight_t::create_pet( const std::string& pet_name )
 {
+  pet_t* p = find_pet( pet_name );
+
+  if ( p ) return p;
+
   if ( pet_name == "bloodworms"          ) return new bloodworms_pet_t          ( sim, this );
   if ( pet_name == "dancing_rune_weapon" ) return new dancing_rune_weapon_pet_t ( sim, this );
   if ( pet_name == "gargoyle"            ) return new gargoyle_pet_t            ( sim, this );
@@ -4305,14 +4322,7 @@ int death_knight_t::decode_set( item_t& item )
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, int race_type )
 {
-  death_knight_t* p = new death_knight_t( sim, name, race_type );
-
-  new bloodworms_pet_t( sim, p );
-  new dancing_rune_weapon_pet_t( sim, p );
-  new gargoyle_pet_t( sim, p );
-  new ghoul_pet_t( sim, p );
-
-  return p;
+  return new death_knight_t( sim, name, race_type );
 }
 
 // player_t::death_knight_init ==============================================
