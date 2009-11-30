@@ -213,6 +213,8 @@ struct druid_t : public player_t
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
 
+    distance = 30;
+
     dots_rip          = get_dot( "rip" );
     dots_rake         = get_dot( "rake" );
     dots_insect_swarm = get_dot( "insect_swarm" );
@@ -580,32 +582,15 @@ static void trigger_t8_2pc_melee( action_t* a )
 
 // trigger_t10_4pc_caster ==================================================
 
-static void trigger_t10_4pc_caster( spell_t* s )
+static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int school )
 {
-  druid_t* p = s -> player -> cast_druid();
+  druid_t* p = player -> cast_druid();
 
   if ( ! p -> set_bonus.tier10_4pc_caster() ) return;
   
-  struct starfire_dot_t : public druid_spell_t
+  struct t10_4pc_caster_dot_t : public druid_spell_t
   {
-    starfire_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_ARCANE, TREE_BALANCE )
-    {
-      may_miss        = false;
-      background      = true;
-      proc            = true;
-      trigger_gcd     = 0;
-      base_cost       = 0;
-      base_multiplier = 1.0;
-      tick_power_mod  = 0;
-      base_tick_time  = 2.0;
-      num_ticks       = 2;
-    }
-    void player_buff() {}
-    void target_debuff( int dmg_type ) {}
-  };
-  struct wrath_dot_t : public druid_spell_t
-  {
-    wrath_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
+    t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_ARCANE, TREE_BALANCE )
     {
       may_miss        = false;
       background      = true;
@@ -621,19 +606,23 @@ static void trigger_t10_4pc_caster( spell_t* s )
     void target_debuff( int dmg_type ) {}
   };
 
-  if ( ! p -> active_starfire_dot ) p -> active_starfire_dot = new starfire_dot_t( p );
-  if ( ! p -> active_wrath_dot ) p -> active_wrath_dot = new wrath_dot_t( p );
+  if ( ! p -> active_starfire_dot ) p -> active_starfire_dot = new t10_4pc_caster_dot_t( p );
+  if ( ! p -> active_wrath_dot )
+  { 
+    p -> active_wrath_dot = new t10_4pc_caster_dot_t( p );
+    p -> active_wrath_dot -> school = SCHOOL_NATURE;
+  }
 
   action_t* active_dot = 0;
-  if ( s -> school == SCHOOL_ARCANE )
+  if ( school == SCHOOL_ARCANE )
     active_dot = p -> active_starfire_dot;
-  else if ( s -> school == SCHOOL_NATURE )
+  else if ( school == SCHOOL_NATURE )
     active_dot = p -> active_wrath_dot;
   else
     return;
 
 
-  double dmg = s -> direct_dmg * 0.07;
+  double dmg = direct_dmg * 0.07;
   if ( active_dot -> ticking )
   {
     int num_ticks = active_dot -> num_ticks;
@@ -2148,10 +2137,6 @@ void druid_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if ( p -> talents.balance_of_power )
-  {
-    player_hit += p -> talents.balance_of_power * 0.02;
-  }
   if ( p -> buffs_moonkin_form -> check() )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
@@ -2935,7 +2920,7 @@ struct starfire_t : public druid_spell_t
 
       if ( result == RESULT_CRIT )
       {
-        trigger_t10_4pc_caster( this );
+        trigger_t10_4pc_caster( player, direct_dmg, school );
 
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
@@ -3025,6 +3010,8 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
+    travel_speed = 21.0;
+
     std::string eclipse_str;
     option_t options[] =
     {
@@ -3077,6 +3064,25 @@ struct wrath_t : public druid_spell_t
     }
   }
 
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+    druid_spell_t::travel( travel_result, travel_dmg );
+    if (travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    {
+      if ( travel_result == RESULT_CRIT )
+      {
+        trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
+        if( ! p -> buffs_eclipse_solar -> check() )
+        {
+          p -> buffs_eclipse_lunar -> trigger();
+        }
+      }
+      trigger_earth_and_moon( this );
+    }
+  }
+
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
@@ -3089,19 +3095,6 @@ struct wrath_t : public druid_spell_t
 	p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
     {
       p -> buffs_eclipse_solar -> expire();
-    }
-
-    if ( result_is_hit() )
-    {
-      if ( result == RESULT_CRIT )
-      {
-        trigger_t10_4pc_caster( this );
-        if( ! p -> buffs_eclipse_solar -> check() )
-        {
-          p -> buffs_eclipse_lunar -> trigger();
-        }
-      }
-      trigger_earth_and_moon( this );
     }
   }
 
@@ -3804,7 +3797,7 @@ void druid_t::init_actions()
       action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature ) action_list_str+="/treants";
-      if ( talents.starfall        ) action_list_str+="/starfall,if=!ticking&!eclipse";
+      if ( talents.starfall        ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire";
       if ( talents.insect_swarm ) action_list_str += "/insect_swarm";
@@ -3812,16 +3805,16 @@ void druid_t::init_actions()
       {
         action_list_str += "/starfire,if=trigger_solar";
         action_list_str += use_str;
-	action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
-	action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
+        action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
+        action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
         action_list_str += "/wrath";
       }
       else
       {
         action_list_str += "/wrath,if=trigger_lunar";
         action_list_str += use_str;
-	action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
-	action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
+        action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
+        action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
         action_list_str += "/starfire";
       }
     }
@@ -3957,7 +3950,9 @@ double druid_t::composite_attack_crit() SC_CONST
 double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
-
+  
+  hit += talents.balance_of_power * 0.02;
+  
   return floor( hit * 10000.0 ) / 10000.0;
 }
 
