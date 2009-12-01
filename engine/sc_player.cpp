@@ -2448,7 +2448,7 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
-  if ( primary_resource() == RESOURCE_MANA && type != PLAYER_GUARDIAN )
+  if ( primary_resource() == RESOURCE_MANA )
   {
     action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
 
