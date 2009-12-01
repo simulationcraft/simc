@@ -34,9 +34,9 @@ Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA   
 Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD      tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
-Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
-Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_51_13_07         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoR     tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
+Rogue_T9_51_13_07_NoR.simc    tricks_of_the_trade_target=Rogue_T9_08_20_43         tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 
 Shaman_T9_16_55_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1
 Shaman_T9_20_51_00_258.simc      tier9_2pc_melee=0  tier9_4pc_melee=0  tier10_2pc_melee=1  tier10_4pc_melee=1  talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053032052000000000000000030205013105021333031131031051
