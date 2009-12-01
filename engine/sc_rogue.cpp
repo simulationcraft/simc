@@ -244,6 +244,7 @@ struct rogue_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      interrupt();
+  virtual void      clear_debuffs();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
@@ -316,6 +317,7 @@ struct rogue_attack_t : public attack_t
   virtual void   player_buff();
   virtual double armor() SC_CONST;
   virtual bool   ready();
+  virtual void   assess_damage( double amount, int dmg_type );
 };
 
 // ==========================================================================
@@ -995,6 +997,22 @@ bool rogue_attack_t::ready()
       return false;
 
   return true;
+}
+
+// rogue_attack_t::assess_damage ===========================================
+
+void rogue_attack_t::assess_damage( double amount,
+				    int    dmg_type )
+{
+  attack_t::assess_damage( amount, dmg_type );
+
+  rogue_t* p = player -> cast_rogue();
+
+  if ( p -> buffs_blade_flurry -> up() && sim -> target -> adds_nearby )
+  {
+    attack_t::assess_damage( amount, dmg_type );
+    stats -> add_result( amount, dmg_type, result );
+  }
 }
 
 // Melee Attack ============================================================
@@ -3441,6 +3459,16 @@ void rogue_t::interrupt()
 
   if ( main_hand_attack ) main_hand_attack -> cancel();
   if (  off_hand_attack )  off_hand_attack -> cancel();
+}
+
+// rogue_t::clear_debuffs ==================================================
+
+void rogue_t::clear_debuffs()
+{
+  player_t::clear_debuffs();
+
+  buffs_poison_doses -> expire();
+  buffs_combo_points -> expire();
 }
 
 // rogue_t::regen ==========================================================

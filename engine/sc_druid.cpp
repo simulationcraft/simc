@@ -245,6 +245,7 @@ struct druid_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
+  virtual void      clear_debuffs();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
@@ -2005,6 +2006,18 @@ struct swipe_bear_t : public druid_bear_attack_t
 
     base_multiplier *= 1.0 + p -> talents.feral_instinct * 0.10;
   }
+
+  virtual void assess_damange( double amount,
+			       int    dmg_type )
+  {
+    druid_bear_attack_t::assess_damage( amount, dmg_type );
+
+    for ( int i=0; i < sim -> target -> adds_nearby && i < 10; i ++ )
+    {
+      druid_bear_attack_t::assess_damage( amount, dmg_type );
+      stats -> add_result( amount, dmg_type, result );
+    }
+  }
 };
 
 // ==========================================================================
@@ -3421,7 +3434,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "prowl"             ) return new             prowl_t( this, options_str );
   if ( name == "ravage"            ) return new            ravage_t( this, options_str );
   if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
-  #endif
+#endif
 
   return player_t::create_action( name, options_str );
 }
@@ -3842,6 +3855,15 @@ void druid_t::interrupt()
   player_t::interrupt();
 
   if ( melee_attack ) melee_attack -> cancel();
+}
+
+// druid_t::clear_debuffs ===================================================
+
+void druid_t::clear_debuffs()
+{
+  player_t::clear_debuffs();
+
+  buffs_combo_points -> expire();
 }
 
 // druid_t::regen ===========================================================

@@ -15,7 +15,8 @@ target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
     initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
-    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
+    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 ),
+    adds_nearby( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -259,6 +260,7 @@ int target_t::get_options( std::vector<option_t>& options )
     { "target_level",          OPT_INT,    &( level                             ) },
     { "target_health",         OPT_FLT,    &( fixed_health                      ) },
     { "target_id",             OPT_STRING, &( id_str                            ) },
+    { "target_adds",           OPT_INT,    &( adds_nearby                       ) },
     // @option_doc loc=global/target/defense title="Target Defense"
     { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
     { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },

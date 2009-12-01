@@ -1822,6 +1822,7 @@ struct target_t
   double attack_speed, attack_damage, weapon_skill;
   double fixed_health, initial_health, current_health;
   double total_dmg;
+  int adds_nearby;
 
   struct debuffs_t
   {
