@@ -3812,8 +3812,8 @@ void druid_t::init_actions()
       if ( talents.force_of_nature ) action_list_str+="/treants";
       if ( talents.starfall        ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
-      action_list_str += "/moonfire";
-      if ( talents.insect_swarm ) action_list_str += "/insect_swarm";
+      action_list_str += "/moonfire,if=!ticking";
+      if ( talents.insect_swarm ) action_list_str += "/insect_swarm,if=!ticking";
       if ( eclipse_cycle == "solar" )
       {
         action_list_str += "/starfire,if=trigger_solar";

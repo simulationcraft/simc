@@ -15,13 +15,13 @@ actions+=/faerie_fire
 actions+=/speed_potion
 actions+=/innervate,trigger=-2000
 actions+=/treants
-actions+=/starfall,skip_on_eclipse=1
-actions+=/starfire,instant=1
-actions+=/moonfire
-actions+=/insect_swarm
-actions+=/wrath,eclipse=trigger
-actions+=/starfire,eclipse=benefit
-actions+=/wrath,eclipse=benefit
+actions+=/starfall,if=!eclipse
+actions+=/starfire,if=buff.t8_4pc_caster.up
+actions+=/moonfire,if=!ticking
+actions+=/insect_swarm,if=!ticking
+actions+=/wrath,if=trigger_lunar
+actions+=/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)
+actions+=/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)
 actions+=/starfire
 head=malfurions_cover_of_triumph,stats=529armor_94hit_86crit_151sp_116sta_116int,gems=chaotic_skyflare_10crit_12sp_9sp,enchant=30sp_20crit
 neck=wail_of_the_valkyr,stats=57crit_43haste_91sp_65sta_65int,gems=10crit_12sp_5sp
@@ -37,7 +37,7 @@ finger2=ring_of_the_darkmender,stats=49haste_28mp5_91sp_65sta_65int,gems=10crit_
 trinket1=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 trinket2=reign_of_the_unliving,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 back=jainas_radiance,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=lightweave_embroidery
-main_hand=miserys_end,stats=44crit_66haste_701sp_66sta_66int,enchant=63sp,weapon=mace_1.80speed_125.1dps_108.12min_342.12max
+main_hand=miserys_end,stats=44crit_66haste_701sp_66sta_66int,enchant=63sp,weapon=mace_1.80speed_108.12min_342.12max
 off_hand=chalice_of_searing_light,stats=57crit_100sp_65sta_65int_57spi
 ranged=idol_of_lunar_fury
 # Gear Summary
@@ -56,4 +56,4 @@ ranged=idol_of_lunar_fury
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=jainas_radiance,enchant=lightweave_embroidery
-# main_hand=miserys_end,weapon=mace_1.80speed_125.1dps_108.12min_342.12max
+# main_hand=miserys_end,weapon=mace_1.80speed_108.12min_342.12max
