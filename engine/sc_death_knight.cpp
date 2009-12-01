@@ -3329,7 +3329,7 @@ struct scourge_strike_t : public death_knight_attack_t
       };
       scourge_strike_shadow = new scourge_strike_shadow_t( player );
 
-      school                    = SCHOOL_PHYSICAL;
+      stats -> school = school  = SCHOOL_PHYSICAL;
       weapon_multiplier        *= 0.50;
       base_dd_min = base_dd_max = 400;
     }
