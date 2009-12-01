@@ -546,14 +546,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_death_strike( 0 )
       
   {
-    drw_heart_strike = new drw_heart_strike_t( this );
-    drw_death_strike = new drw_death_strike_t( this );
   }
 
   virtual void init_base()
   {
     // Everything stays at zero.
     // DRW uses a snapshot of the DKs stats when summoned.
+    drw_heart_strike = new drw_heart_strike_t( this );
+    drw_death_strike = new drw_death_strike_t( this );
   }
 
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
