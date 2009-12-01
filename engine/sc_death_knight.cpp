@@ -654,13 +654,15 @@ struct ghoul_pet_t : public pet_t
   virtual void init_base()
   {
     attribute_base[ ATTR_STRENGTH  ] = 331;
-    attribute_base[ ATTR_AGILITY   ] = 113;
+    attribute_base[ ATTR_AGILITY   ] = 856;
     attribute_base[ ATTR_STAMINA   ] = 361;
     attribute_base[ ATTR_INTELLECT ] = 65;
     attribute_base[ ATTR_SPIRIT    ] = 109;
 
     base_attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
+    initial_attack_power_per_strength = 1.0;
+    initial_attack_power_per_agility  = 1.0;
+
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resource_base[ RESOURCE_ENERGY ] = 100;
@@ -3826,7 +3828,7 @@ void death_knight_t::init_enchant()
       proc        = true;
       trigger_gcd = 0;
       base_dd_min = base_dd_max = 0.01;
-      base_dd_multiplier *= 0.02; // FIXME!!  Need better way to distinguish "heroic" items.
+      base_dd_multiplier *= 0.02;
       reset();
     }
   };
