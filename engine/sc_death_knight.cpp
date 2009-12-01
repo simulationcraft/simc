@@ -24,9 +24,9 @@ enum rune_type
 #define RUNE_GRACE_PERIOD   2.0
 #define RUNIC_POWER_REFUND  0.9
 
-#define GET_BLOOD_RUNE_COUNT(x)  ((x&0x01) + ((x&0x02)>>1))
-#define GET_FROST_RUNE_COUNT(x)  ((x&0x08) + ((x&0x10)>>1) >>3)
-#define GET_UNHOLY_RUNE_COUNT(x) ((x&0x40) + ((x&0x80)>>1) >>6)
+#define GET_BLOOD_RUNE_COUNT(x)  (((x&0x01) + ((x&0x02)>>1))    )
+#define GET_FROST_RUNE_COUNT(x)  (((x&0x08) + ((x&0x10)>>1)) >>3)
+#define GET_UNHOLY_RUNE_COUNT(x) (((x&0x40) + ((x&0x80)>>1)) >>6)
 
 struct dk_rune_t
 {
