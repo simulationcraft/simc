@@ -2978,8 +2978,7 @@ void rogue_t::init_actions()
     if ( primary_tree() == TREE_ASSASSINATION )
     {
       bool rupture_less = ( ! talents.blood_spatter && 
-                            ! talents.serrated_blades &&
-                              talents.improved_eviscerate );
+                            ! talents.serrated_blades );
       if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
       action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
       if ( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";

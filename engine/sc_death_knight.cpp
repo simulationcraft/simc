@@ -60,11 +60,11 @@ enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4
 struct death_knight_t : public player_t
 {
   // Active
+  int       active_presence;
   action_t* active_blood_caked_blade;
   action_t* active_necrosis;
   action_t* active_unholy_blight;
   action_t* active_wandering_plague;
-  int       active_presence;
 
   // Pets and Guardians
   bloodworms_pet_t*          active_bloodworms;
@@ -318,10 +318,11 @@ struct death_knight_t : public player_t
       player_t( sim, DEATH_KNIGHT, name, race_type )
   {
     // Active
+    active_presence            = 0;
     active_blood_caked_blade   = NULL;
     active_necrosis            = NULL;
-    active_presence            = 0;
     active_wandering_plague    = NULL;
+    active_unholy_blight       = NULL;
     
     // DoTs
     dots_blood_plague  = get_dot( "blood_plague" );
@@ -534,15 +535,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
     virtual bool ready() { return false; }
   };
+
   double snapshot_spell_crit, snapshot_attack_crit;
   attack_t* drw_heart_strike;
   attack_t* drw_death_strike;
+
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "dancing_rune_weapon", true ),
       snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), drw_heart_strike( 0 ),
       drw_death_strike( 0 )
       
   {
+    drw_heart_strike = new drw_heart_strike_t( this );
+    drw_death_strike = new drw_death_strike_t( this );
   }
 
   virtual void init_base()
@@ -564,10 +569,12 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_spell_crit  = o -> composite_spell_crit();
     snapshot_attack_crit = o -> composite_attack_crit();
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
-    if ( ! drw_heart_strike )
-      drw_heart_strike = new drw_heart_strike_t( this );
-    if ( ! drw_death_strike )
-      drw_death_strike = new drw_death_strike_t( this );
+  }
+  virtual void dismiss()
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::dismiss();
+    o -> active_dancing_rune_weapon = 0;
   }
 };
 
@@ -4074,8 +4081,7 @@ void death_knight_t::reset()
   player_t::reset();
 
   // Active
-  active_presence      = 0;
-  active_unholy_blight = NULL;
+  active_presence = 0;
 
   // Pets and Guardians
   active_bloodworms          = NULL;
