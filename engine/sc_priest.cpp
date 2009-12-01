@@ -49,15 +49,15 @@ struct priest_t : public player_t
   std::string power_infusion_target_str;
 
   // Mana Resource Tracker
-  struct _mana_resource_t
+  struct mana_resource_t
   {
     double mana_gain;
     double mana_loss;
 
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _mana_resource_t ) ); }
-    _mana_resource_t() { reset(); }
+    void reset() { memset( ( void* ) this, 0x00, sizeof( mana_resource_t ) ); }
+    mana_resource_t() { reset(); }
   };
-  _mana_resource_t _mana_resource;
+  mana_resource_t mana_resource;
 
   double max_mana_cost;
 
@@ -367,11 +367,6 @@ void priest_spell_t::execute()
   priest_t* p = player -> cast_priest();
 
   spell_t::execute();
-
-  if ( cost() > p -> max_mana_cost )
-  {
-    p -> max_mana_cost = cost();
-  }
 
   if ( result_is_hit() )
   {
@@ -1394,6 +1389,8 @@ struct mind_flay_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
+  pet_t* shadow_fiend;
+
   dispersion_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "dispersion", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
@@ -1411,6 +1408,8 @@ struct dispersion_t : public priest_spell_t
     cooldown -> duration = 120;
 
     if ( p -> glyphs.dispersion ) cooldown -> duration -= 45;
+
+    shadow_fiend = p -> find_pet( "shadow_fiend" );
   }
 
   virtual void tick()
@@ -1427,47 +1426,40 @@ struct dispersion_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    double regen_rate = p -> _mana_resource.mana_gain / sim -> current_time;
-    double consumption_rate = ( p -> _mana_resource.mana_loss / sim -> current_time ) - regen_rate;
-    double shadow_fiend_regen = 0.50 * p -> resource_max[ RESOURCE_MANA ];
+    if ( ! shadow_fiend -> sleeping ) return false;
+
+    double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains();
+    double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration;
+
+    if ( sf_cooldown_remains <= 0 ) return false;
+
+    double     max_mana = p -> resource_max    [ RESOURCE_MANA ];
+    double current_mana = p -> resource_current[ RESOURCE_MANA ];
+
+    double consumption_rate = ( p -> mana_resource.mana_loss - p -> mana_resource.mana_gain ) / sim -> current_time;
     double time_to_die = sim -> target -> time_to_die();
 
     if ( consumption_rate <= 0.00001 ) return false;
 
-    double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+    double oom_time = current_mana / consumption_rate;
 
     if ( oom_time >= time_to_die ) return false;
 
-    if ( p -> cooldowns_shadow_fiend -> remains() <= 0 ) return false;
+    double sf_regen = 0.50 * max_mana;
 
-    // Don't cast if Shadowfiend is still up
-    if ( ( p -> cooldowns_shadow_fiend -> remains() ) > 
-         ( ( 300.0 - p -> talents.veiled_shadows * 60.0 ) - 15.0 ) ) return false;
+    consumption_rate -= sf_regen / sf_cooldown_duration;
 
-    if ( oom_time >= p -> cooldowns_shadow_fiend -> remains() )
-    {
-      double new_mana = p -> resource_current[ RESOURCE_MANA ] - consumption_rate * p -> cooldowns_shadow_fiend -> remains() + shadow_fiend_regen;
+    if ( consumption_rate <= 0.00001 ) return false;
+    
+    double future_mana = current_mana + sf_regen - consumption_rate * sf_cooldown_remains;
 
-      if ( new_mana > p -> resource_max[ RESOURCE_MANA ] )
-        new_mana = p -> resource_max[ RESOURCE_MANA ];
-  
-      double oom_time2 = new_mana / consumption_rate;
-      if ( ( p -> cooldowns_shadow_fiend -> remains() + oom_time2 ) >= time_to_die ) return false;
+    if ( future_mana > max_mana ) future_mana = max_mana;
 
-      if ( consumption_rate < ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) ) ) return false;
+    oom_time = future_mana / consumption_rate;
 
-      double consumption_rate2 = consumption_rate - ( shadow_fiend_regen / ( 300.0 - p -> talents.veiled_shadows * 60.0 ) );
-      double oom_time3 = new_mana / consumption_rate2;
+    if ( oom_time >= time_to_die ) return false;
 
-      if ( ( p -> cooldowns_shadow_fiend -> remains() + oom_time3 ) >= time_to_die ) return false;
-    } 
-
-    double trigger = p -> resource_max[ RESOURCE_MANA ] - p -> max_mana_cost;
-
-    if ( ( p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA] ) <
-         trigger ) return false;
-
-    return true;
+    return ( max_mana - current_mana ) > p -> max_mana_cost;
   }
 };
 
@@ -1649,8 +1641,8 @@ struct fortitude_t : public priest_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-	      p -> buffs.fortitude -> trigger( 1, bonus );
-	      p -> init_resources( true );
+	p -> buffs.fortitude -> trigger( 1, bonus );
+	p -> init_resources( true );
       }
     }
   }
@@ -1776,51 +1768,15 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( sim -> infinite_resource [ RESOURCE_MANA ] )
+    if ( sim -> infinite_resource[ RESOURCE_MANA ] )
       return true;
 
-    if ( trigger > 0 && 
-         ( ( p -> resource_max    [ RESOURCE_MANA ] -
-             p -> resource_current[ RESOURCE_MANA ] ) >= trigger ) ) return true;
+    double     max_mana = p -> resource_max    [ RESOURCE_MANA ];
+    double current_mana = p -> resource_current[ RESOURCE_MANA ];
 
-    if ( trigger > 0 ) return false;
+    if ( trigger > 0 ) return ( max_mana - current_mana ) >= trigger;
 
-    // If it's not the first Shadowfiend just activate it anyway
-    if ( cooldown -> ready > 0.0 ) return true;
-
-    if ( sim -> current_time < 15.0 ) return false;
-
-    double shadow_fiend_regen = 0.50 * p -> resource_max[ RESOURCE_MANA ];
-
-    if ( ( p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ] ) >=
-         shadow_fiend_regen ) return true;
-
-    double regen_rate = p -> _mana_resource.mana_gain / sim -> current_time;
-    double consumption_rate = ( p -> _mana_resource.mana_loss / sim -> current_time ) -
-                              regen_rate;
-
-
-    if ( consumption_rate <= ( shadow_fiend_regen / cooldown -> duration ) ) return true;
-
-    int max_fiends_available = (int)( ( sim -> max_time - sim -> current_time ) / cooldown -> duration ) + 1;
-    double mana_required = ( sim -> max_time - sim -> current_time ) * consumption_rate;
-    double min_fiends_needed = ( mana_required - p -> resource_current[ RESOURCE_MANA ] ) / shadow_fiend_regen;
-
-    double temp_trigger = shadow_fiend_regen;
-
-    if ( min_fiends_needed <= ( max_fiends_available - 1.0 ) ) return true;
-
-    if ( (int) min_fiends_needed <=  max_fiends_available ) 
-    {
-      temp_trigger = shadow_fiend_regen * ( min_fiends_needed - (double) max_fiends_available );
-      if ( temp_trigger > shadow_fiend_regen )
-        temp_trigger = shadow_fiend_regen;
-    }
-
-    if ( ( p -> resource_max    [ RESOURCE_MANA ] -
-           p -> resource_current[ RESOURCE_MANA ] ) >= temp_trigger ) return true;
-
-    return false;
+    return ( sim -> current_time > 15.0 );
   }
 };
 
@@ -2135,6 +2091,12 @@ void priest_t::init_actions()
   }
 
   player_t::init_actions();
+
+  for( action_t* a = action_list; a; a = a -> next )
+  {
+    double c = a -> cost();
+    if ( c > max_mana_cost ) max_mana_cost = c;
+  }
 }
 
 // priest_t::init_party ======================================================
@@ -2170,7 +2132,7 @@ void priest_t::reset()
   active_vampiric_touch   = 0;
   active_vampiric_embrace = 0;
 
-  _mana_resource.reset();
+  mana_resource.reset();
 
   init_party();
 }
@@ -2203,7 +2165,7 @@ double priest_t::resource_gain( int       resource,
     if ( source != gains_shadow_fiend &&
          source != gains_dispersion )
     {
-      _mana_resource.mana_gain += actual_amount;
+      mana_resource.mana_gain += actual_amount;
     }
   }
 
@@ -2220,7 +2182,7 @@ double priest_t::resource_loss( int       resource,
 
   if ( resource == RESOURCE_MANA )
   {
-    _mana_resource.mana_loss += actual_amount;
+    mana_resource.mana_loss += actual_amount;
   }
 
   return actual_amount;

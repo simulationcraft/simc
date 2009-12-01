@@ -882,7 +882,7 @@ struct sim_t
   double      queue_gcd_reduction;
   int         strict_gcd_queue;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
-  double      current_time, max_time;
+  double      current_time, max_time, expected_time, vary_combat_length;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
@@ -1085,6 +1085,7 @@ struct sim_t
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
+  double    iteration_adjust();
   player_t* find_player( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   void      aura_gain( const char* name, int aura_id=0 );
@@ -1819,7 +1820,7 @@ struct target_t
   int initial_armor, armor;
   int block_value;
   double attack_speed, attack_damage, weapon_skill;
-  double initial_health, current_health;
+  double fixed_health, initial_health, current_health;
   double total_dmg;
 
   struct debuffs_t
@@ -2162,7 +2163,7 @@ struct cooldown_t
     if ( override >= 0 ) duration = override;
     if ( duration > 0 ) ready = sim -> current_time + duration;
   }
-  virtual double remains() { return ready - sim -> current_time; }
+  virtual double remains() { double diff = ready - sim -> current_time; if ( diff < 0 ) diff = 0; return diff;}
   virtual const char* name() { return name_str.c_str(); }
 };
 

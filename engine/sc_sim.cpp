@@ -378,7 +378,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     channel_lag( 0.250 ), channel_lag_stddev( 0 ),
     queue_gcd_reduction( 0.075 ), strict_gcd_queue( 0 ),
     travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 1.0 ),
-    current_time( 0 ), max_time( 300 ),
+    current_time( 0 ), max_time( 300 ), expected_time( 0 ), vary_combat_length( 0 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
@@ -587,23 +587,30 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( max_time > 0 && current_time > ( max_time * 2.0 ) )
+    if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
     {
       target -> recalculate_health();
       if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
       delete e;
       break;
     }
-    if ( ( target -> initial_health != 0 ) && ( target -> current_health <= 0 ) )
+    if ( target -> initial_health != 0 ) 
     {
-      target -> recalculate_health();
-      if ( debug ) log_t::output( this, "Target has died, ending simulation" );
-      delete e;
-      break;
+      if (  target -> current_health <= 0 ) 
+      {
+	target -> recalculate_health();
+	if ( debug ) log_t::output( this, "Target has died, ending simulation" );
+	delete e;
+	break;
+      }
     }
-    if ( target -> initial_health == 0 && current_time > ( max_time / 2.0 ) )
+    else // initial_health == 0
     {
-      target -> recalculate_health();
+      if ( current_time > ( expected_time / 2.0 ) )
+      {
+	if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
+	target -> recalculate_health();
+      }
     }
     if ( e -> canceled )
     {
@@ -631,6 +638,7 @@ void sim_t::combat( int iteration )
 void sim_t::reset()
 {
   if ( debug ) log_t::output( this, "Reseting Simulator" );
+  expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   current_time = id = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -1319,6 +1327,13 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
   return r;
 }
 
+// sim_t::iteration_adjust ==================================================
+
+double sim_t::iteration_adjust()
+{
+  return 2.0 * ( ( current_iteration / (double) iterations ) - 0.5 );
+}
+
 // sim_t::create_expression =================================================
 
 action_expr_t* sim_t::create_expression( action_t* a,
@@ -1401,6 +1416,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/general title="General"
       { "iterations",                       OPT_INT,    &( iterations                               ) },
       { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+      { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
       { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
       { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
       { "threads",                          OPT_INT,    &( threads                                  ) },
@@ -1746,7 +1762,7 @@ int sim_t::main( int argc, char** argv )
   }
   else
   {
-    if ( max_time <= 0 && target -> initial_health <= 0 )
+    if ( max_time <= 0 && target -> fixed_health <= 0 )
     {
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );

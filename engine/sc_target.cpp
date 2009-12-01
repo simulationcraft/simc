@@ -15,7 +15,7 @@ target_t::target_t( sim_t* s ) :
     sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
     initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
-    initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
+    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -46,7 +46,7 @@ void target_t::assess_damage( double amount,
 {
   total_dmg += amount;
 
-  if ( initial_health > 0 )
+  if ( current_health > 0 )
   {
     current_health -= amount;
 
@@ -69,26 +69,27 @@ void target_t::assess_damage( double amount,
 
 void target_t::recalculate_health()
 {
-  if ( sim -> max_time == 0 ) return;
+  if ( sim -> expected_time == 0 ) return;
 
-  if ( initial_health == 0 )
+  if ( fixed_health == 0 )
   {
     current_health = total_dmg;
-    initial_health = current_health * ( sim -> max_time / sim -> current_time );
+    initial_health = current_health * ( sim -> expected_time / sim -> current_time );
+    fixed_health = initial_health;
   }
   else
   {
-    double delta_time = sim -> current_time - sim -> max_time;
+    double delta_time = sim -> current_time - sim -> expected_time;
     delta_time /= sim -> current_iteration + 1; // dampening factor
 
-    double factor = 1 - ( delta_time / sim -> max_time );
+    double factor = 1 - ( delta_time / sim -> expected_time );
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
-    initial_health *= factor;
+    fixed_health *= factor;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Target initial health calculated to be %.0f", initial_health );
+  if ( sim -> debug ) log_t::output( sim, "Target fixed health calculated to be %.0f", fixed_health );
 }
 
 // target_t::time_to_die =====================================================
@@ -101,7 +102,7 @@ double target_t::time_to_die() SC_CONST
   }
   else
   {
-    return sim -> max_time - sim -> current_time;
+    return sim -> expected_time - sim -> current_time;
   }
 }
 
@@ -115,7 +116,7 @@ double target_t::health_percentage() SC_CONST
   }
   else
   {
-    return 100.0 * ( sim -> max_time - sim -> current_time ) / sim -> max_time;
+    return 100.0 * ( sim -> expected_time - sim -> current_time ) / sim -> expected_time;
   }
 }
 
@@ -185,7 +186,7 @@ void target_t::reset()
   if ( sim -> debug ) log_t::output( sim, "Reseting target %s", name() );
   total_dmg = 0;
   armor = initial_armor;
-  current_health = initial_health;
+  current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
 }
 
 // target_t::combat_begin ====================================================
@@ -256,7 +257,7 @@ int target_t::get_options( std::vector<option_t>& options )
     { "target_name",           OPT_STRING, &( name_str                          ) },
     { "target_race",           OPT_STRING, &( race_str                          ) },
     { "target_level",          OPT_INT,    &( level                             ) },
-    { "target_health",         OPT_FLT,    &( initial_health                    ) },
+    { "target_health",         OPT_FLT,    &( fixed_health                      ) },
     { "target_id",             OPT_STRING, &( id_str                            ) },
     // @option_doc loc=global/target/defense title="Target Defense"
     { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
