@@ -681,8 +681,9 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    a += std::max( sim -> auras.strength_of_earth -> value(),
-                   sim -> auras.horn_of_winter -> value() );
+    if ( o -> talents.master_of_ghouls )
+      a += std::max( sim -> auras.strength_of_earth -> value(),
+                     sim -> auras.horn_of_winter -> value() );
     
     double strength_scaling = 0.7; // % of str ghould gets from the DK
     strength_scaling *= 1.0 + o -> talents.ravenous_dead * .2; // The talent affects the 70% => 70% * 1.6 => 112%
