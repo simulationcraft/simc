@@ -602,7 +602,7 @@ struct gargoyle_pet_t : public pet_t
   double haste_snapshot, power_snapshot;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "gargoyle" ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
+      pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
       power_snapshot( 0.0 )
   {
   }
