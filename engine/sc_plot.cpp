@@ -48,6 +48,7 @@ plot_t::plot_t( sim_t* s ) :
   dps_plot_step( 20.0 ),
   dps_plot_points( 20 ),
   dps_plot_iterations ( -1 ),
+  dps_plot_debug( 0 ),
   current_plot_stat( 0 ),
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
@@ -123,6 +124,8 @@ void plot_t::analyze_stats()
 	delta_sim -> execute();
       }
 
+      if ( dps_plot_debug ) report_t::print_text( sim -> output_file, delta_sim, true );
+
       for ( int k=0; k < num_players; k++ )
       {
 	player_t* p = sim -> players_by_name[ k ];
@@ -180,6 +183,8 @@ int plot_t::get_options( std::vector<option_t>& options )
     { "dps_plot_points",     OPT_INT,    &( dps_plot_points     ) },
     { "dps_plot_stat",       OPT_STRING, &( dps_plot_stat_str   ) },
     { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
+    { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
+    { "dps_plot_debug",      OPT_BOOL,   &( dps_plot_debug      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
