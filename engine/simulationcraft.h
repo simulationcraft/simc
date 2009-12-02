@@ -87,7 +87,7 @@ struct patch_t
 };
 
 #define SC_MAJOR_VERSION "322"
-#define SC_MINOR_VERSION "12"
+#define SC_MINOR_VERSION "13"
 
 // Forward Declarations ======================================================
 
@@ -797,9 +797,9 @@ struct stat_buff_t : public buff_t
   int stat;
   double amount;
   stat_buff_t( player_t*, const std::string& name,
-	       int stat, double amount,
-	       int max_stack=1, double duration=0, double cooldown=0,
-	       double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+               int stat, double amount,
+               int max_stack=1, double duration=0, double cooldown=0,
+               double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~stat_buff_t() { };
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -809,8 +809,8 @@ struct stat_buff_t : public buff_t
 struct debuff_t : public buff_t
 {
   debuff_t( sim_t*, const std::string& name,
-	    int max_stack=1, double duration=0, double cooldown=0,
-	    double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+            int max_stack=1, double duration=0, double cooldown=0,
+            double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual void aura_gain();
   virtual void aura_loss();
 };
@@ -1234,7 +1234,7 @@ struct item_t
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ), 
-	tick( 0 ), reverse( false ) {}
+        tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant;
 
@@ -2288,7 +2288,7 @@ struct unique_gear_t
   static action_callback_t* register_stat_proc( int type, int mask, const std::string& name, player_t*,
                                                 int stat, int max_stacks, double amount,
                                                 double proc_chance, double duration, double cooldown,
-						double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
+                                                double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int mask, const std::string& name, player_t*,
                                                      int max_stacks, int school, double min_dmg, double max_dmg,

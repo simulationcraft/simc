@@ -720,7 +720,7 @@ static void trigger_rage_gain( druid_bear_attack_t* a )
 // druid_cat_attack_t::parse_options =======================================
 
 void druid_cat_attack_t::parse_options( option_t*          options,
-					const std::string& options_str )
+                                        const std::string& options_str )
 {
   option_t base_options[] =
   {
@@ -1358,13 +1358,13 @@ struct shred_t : public druid_cat_attack_t
 
     if ( omen_of_clarity )
       if ( ! p -> buffs_omen_of_clarity -> may_react() )
-	return false;
+        return false;
 
     if ( extend_rip )
       if ( ! p -> glyphs.shred ||
-	   ! p -> dots_rip -> ticking() ||
-	   ( p -> dots_rip -> action -> added_ticks == 3 ) )
-	return false;
+           ! p -> dots_rip -> ticking() ||
+           ( p -> dots_rip -> action -> added_ticks == 3 ) )
+        return false;
 
     return druid_cat_attack_t::ready();
   }
@@ -1536,7 +1536,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 // druid_bear_attack_t::parse_options ======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
-					 const std::string& options_str )
+                                         const std::string& options_str )
 {
   option_t base_options[] =
   {
@@ -1700,12 +1700,12 @@ struct bear_melee_t : public druid_bear_attack_t
     {
       for( int i=0; i < p -> num_active_mauls; i++ )
       {
-	action_t* a = p -> active_mauls[ i ];
-	if ( a -> ready() )
+        action_t* a = p -> active_mauls[ i ];
+        if ( a -> ready() )
         {
-	  active_maul = a;
-	  break;
-	}
+          active_maul = a;
+          break;
+        }
       }
     }
 
@@ -1719,8 +1719,8 @@ struct bear_melee_t : public druid_bear_attack_t
       druid_bear_attack_t::execute();
       if ( result_is_hit() )
       {
-	trigger_rage_gain( this );
-	trigger_omen_of_clarity( this );
+        trigger_rage_gain( this );
+        trigger_omen_of_clarity( this );
       }
     }
   }
@@ -1893,7 +1893,7 @@ struct mangle_bear_t : public druid_bear_attack_t
       target_t* t = sim -> target;
       if( ! sim -> overrides.mangle )
       {
-	t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
+        t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
       }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
@@ -2008,7 +2008,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   }
 
   virtual void assess_damange( double amount,
-			       int    dmg_type )
+                               int    dmg_type )
   {
     druid_bear_attack_t::assess_damage( amount, dmg_type );
 
@@ -2285,7 +2285,7 @@ struct faerie_fire_feral_t : public druid_spell_t
   {
     if ( debuff_only ) 
       if ( sim -> target -> debuffs.faerie_fire -> up() )
-	return false;
+        return false;
 
     return druid_spell_t::ready();
   }
@@ -2331,10 +2331,10 @@ struct faerie_fire_t : public druid_spell_t
     if ( t -> debuffs.faerie_fire -> up() )
     {
       if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.improved_faerie_fire )
-	      return false;
+              return false;
 
       if ( t -> debuffs.misery -> current_value > p -> talents.improved_faerie_fire )
-	      return false;
+              return false;
     }
 
     return druid_spell_t::ready();
@@ -2445,8 +2445,8 @@ struct insect_swarm_t : public druid_spell_t
     tick_power_mod    = 0.2;
 
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.genesis, 5, 0.01 ) +
-			       ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 )  +
-			       ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
+                               ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 )  +
+                               ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
 
     if ( p -> idols.crying_wind )
     {
@@ -2812,11 +2812,11 @@ struct druids_swiftness_t : public druid_spell_t
   {
     if ( sub_cooldown ) 
       if ( sub_cooldown -> remains() > 0 )
-	return false;
+        return false;
 
     if ( sub_dot ) 
       if ( sub_dot -> remains() > 0 )
-	return false;
+        return false;
 
     return druid_spell_t::ready();
   }
@@ -2897,7 +2897,7 @@ struct starfire_t : public druid_spell_t
 
     if( p -> buffs_eclipse_lunar -> up() )
     {
-		player_crit += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
+      player_crit += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
     }
 
     if ( p -> dots_moonfire -> ticking() )
@@ -2921,8 +2921,8 @@ struct starfire_t : public druid_spell_t
     // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
     // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
     if( ! sim -> P330 && p -> wise_eclipse && 
-	p -> buffs_eclipse_lunar -> check() &&
-	p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
+        p -> buffs_eclipse_lunar -> check() &&
+        p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
     {
       p -> buffs_eclipse_lunar -> expire();
     }
@@ -2938,21 +2938,21 @@ struct starfire_t : public druid_spell_t
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
           if ( p -> buffs_eclipse_solar -> trigger() )
-	  {
-	    // When using the Wise-Eclipse AddOn you have an almost guaranteed chance to 
-	    // proc Solar Eclipse which means that you do not suffer from reaction time.
-	    if ( ! sim -> P330 && p -> wise_eclipse && ( total_crit() > 0.80 ) ) 
-	    {
-	      p -> buffs_eclipse_solar -> predict();
-	    }
-	  }
+          {
+            // When using the Wise-Eclipse AddOn you have an almost guaranteed chance to 
+            // proc Solar Eclipse which means that you do not suffer from reaction time.
+            if ( ! sim -> P330 && p -> wise_eclipse && ( total_crit() > 0.80 ) ) 
+            {
+              p -> buffs_eclipse_solar -> predict();
+            }
+          }
         }
       }
       if ( p -> glyphs.starfire )
       {
-	if( p -> dots_moonfire -> ticking() )
-	  if ( p -> dots_moonfire -> action -> added_ticks < 3 )
-	    p -> dots_moonfire -> action -> extend_duration( 1 );
+        if( p -> dots_moonfire -> ticking() )
+          if ( p -> dots_moonfire -> action -> added_ticks < 3 )
+            p -> dots_moonfire -> action -> extend_duration( 1 );
       }
     }
   }
@@ -2973,7 +2973,7 @@ struct starfire_t : public druid_spell_t
 
     if ( instant )
       if ( ! p -> buffs_t8_4pc_caster -> may_react() )
-	return false;
+        return false;
 
     if ( extend_moonfire )
     {
@@ -2994,7 +2994,7 @@ struct starfire_t : public druid_spell_t
 
     if ( eclipse_trigger )
       if ( ! may_trigger_solar_eclipse( p ) )
-	return false;
+        return false;
 
     if ( ! prev_str.empty() )
     {
@@ -3104,8 +3104,8 @@ struct wrath_t : public druid_spell_t
     // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
     // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
     if( ! sim -> P330 && p -> wise_eclipse && 
-	p -> buffs_eclipse_solar -> check() &&
-	p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
+        p -> buffs_eclipse_solar -> check() &&
+        p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
     {
       p -> buffs_eclipse_solar -> expire();
     }
@@ -3142,7 +3142,7 @@ struct wrath_t : public druid_spell_t
     if ( eclipse_benefit )
     {
       if ( ! p -> buffs_eclipse_solar -> may_react() )
-	return false;
+        return false;
 
       // Don't cast wrath if eclipse will fade before the cast finished.
       if ( p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
@@ -3151,7 +3151,7 @@ struct wrath_t : public druid_spell_t
 
     if ( eclipse_trigger )
       if ( ! may_trigger_lunar_eclipse( p ) )
-	return false;
+        return false;
 
     if ( ! prev_str.empty() )
     {
@@ -3319,8 +3319,8 @@ struct mark_of_the_wild_t : public druid_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-	p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
-	p -> init_resources( true );
+        p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
+        p -> init_resources( true );
       }
     }
   }
@@ -3888,7 +3888,7 @@ void druid_t::regen( double periodicity )
     if ( buffs_enrage -> up() ) resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
 
     uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-				resource_max    [ RESOURCE_RAGE ] );
+                                resource_max    [ RESOURCE_RAGE ] );
   }
 }
 
@@ -3996,7 +3996,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   if ( attr == ATTR_STAMINA )
     if ( buffs_bear_form -> check() )
       if ( talents.heart_of_the_wild )
-	m *= 1.0 + 0.02 * talents.heart_of_the_wild;
+        m *= 1.0 + 0.02 * talents.heart_of_the_wild;
 
   return m;
 }
@@ -4062,8 +4062,8 @@ std::vector<talent_translation_t>& druid_t::get_talent_list()
 {
   if(talent_list.empty())
   {
-	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
-	  {
+          talent_translation_t translation_table[][MAX_TALENT_TREES] =
+          {
     { {  1, 5, &( talents.starlight_wrath       ) }, {  1, 5, &( talents.ferocity                ) }, {  1, 2, &( talents.improved_mark_of_the_wild ) } },
     { {  2, 5, &( talents.genesis               ) }, {  2, 5, &( talents.feral_aggression        ) }, {  2, 0, NULL                                   } },
     { {  3, 3, &( talents.moonglow              ) }, {  3, 3, &( talents.feral_instinct          ) }, {  3, 5, &( talents.furor                     ) } },
@@ -4203,16 +4203,16 @@ int druid_t::decode_set( item_t& item )
   const char* s = item.name();
 
   bool is_caster = ( strstr( s, "cover"     ) || 
-		     strstr( s, "mantle"    ) ||
-		     strstr( s, "vestments" ) ||
-		     strstr( s, "trousers"  ) ||
-		     strstr( s, "gloves"    ) );
+                     strstr( s, "mantle"    ) ||
+                     strstr( s, "vestments" ) ||
+                     strstr( s, "trousers"  ) ||
+                     strstr( s, "gloves"    ) );
   
   bool is_melee = ( strstr( s, "headguard"    ) || 
-		    strstr( s, "shoulderpads" ) ||
-		    strstr( s, "raiments"     ) ||
-		    strstr( s, "legguards"    ) ||
-		    strstr( s, "handgrips"    ) );
+                    strstr( s, "shoulderpads" ) ||
+                    strstr( s, "raiments"     ) ||
+                    strstr( s, "legguards"    ) ||
+                    strstr( s, "handgrips"    ) );
 
   if ( strstr( s, "dreamwalker" ) ) 
   {
@@ -4295,8 +4295,8 @@ int druid_t::target_swing()
 
       if ( max_reschedule > 0 )
       {
-	melee_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
-	procs_parry_haste -> occur();
+        melee_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        procs_parry_haste -> occur();
       }
     }
   }
