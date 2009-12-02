@@ -2031,7 +2031,7 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = may_parry = true;
+    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2048,7 +2048,7 @@ struct blood_strike_t : public death_knight_attack_t
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
         group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = may_parry = false;
+        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
       }
@@ -2291,7 +2291,7 @@ struct death_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = may_parry = true;
+    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2313,7 +2313,7 @@ struct death_strike_t : public death_knight_attack_t
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
         group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = may_parry = false;
+        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
       }
@@ -2521,7 +2521,7 @@ struct frost_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = may_parry = true;
+    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2530,7 +2530,7 @@ struct frost_strike_t : public death_knight_attack_t
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
         weapon = &( p -> off_hand_weapon );
-        may_miss = may_dodge = may_parry = false;
+        may_miss = may_dodge = false;
         death_knight_attack_t::execute();
       }
     p -> buffs_killing_machine -> expire();
@@ -2972,7 +2972,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = may_parry = true;
+    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -3003,7 +3003,7 @@ struct obliterate_t : public death_knight_attack_t
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
         group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = may_parry = false;
+        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
         if ( p -> buffs_rime -> trigger() ) 
@@ -3101,7 +3101,7 @@ struct plague_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = may_parry = true;
+    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -3113,7 +3113,7 @@ struct plague_strike_t : public death_knight_attack_t
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
           group_runes( p, 0, 0, 0, use );
-          may_miss = may_dodge = may_parry = false;
+          may_miss = may_dodge = false;
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
