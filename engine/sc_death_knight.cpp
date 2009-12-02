@@ -2624,7 +2624,8 @@ struct horn_of_winter_t : public death_knight_spell_t
   int rebuff_early;
 
   horn_of_winter_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST )
+      death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST ),
+      rebuff_early( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
