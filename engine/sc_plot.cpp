@@ -122,9 +122,12 @@ void plot_t::analyze_stats()
         if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
 	delta_sim -> enchant.add_stat( i, j * dps_plot_step );
 	delta_sim -> execute();
+	if ( dps_plot_debug ) 
+	{
+	  util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
+	  report_t::print_text( sim -> output_file, delta_sim, true );
+	}
       }
-
-      if ( dps_plot_debug ) report_t::print_text( sim -> output_file, delta_sim, true );
 
       for ( int k=0; k < num_players; k++ )
       {
