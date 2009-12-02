@@ -971,7 +971,13 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
   double t = p -> sim -> current_time;
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if ( use[i] ) p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+    if ( use[i] )
+    {
+      if ( p -> sim -> log ) 
+        log_t::output( p -> sim, "%s consumes rune #%d, type %d", p -> name(), i, p -> _runes.slot[i].type );
+
+      p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+    }
 
   if ( count_runes( p ) == 0 )
     p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
@@ -1714,10 +1720,10 @@ bool death_knight_spell_t::ready()
        ( min_death != -1 && c < min_death ) ||
        ( max_death != -1 && c > max_death ) ) return false;
 
-  if ( player -> in_combat )
-    return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
-  else
+  if ( ! player -> in_combat && ! harmful )
     return group_runes( player, 0, 0, 0, use );
+  else
+    return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
 }
 
 void death_knight_spell_t::target_debuff( int dmg_type )
