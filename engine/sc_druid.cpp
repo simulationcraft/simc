@@ -2897,7 +2897,7 @@ struct starfire_t : public druid_spell_t
 
     if( p -> buffs_eclipse_lunar -> up() )
     {
-      player_crit += 0.30 + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
+		player_crit += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
     }
 
     if ( p -> dots_moonfire -> ticking() )
@@ -3121,7 +3121,7 @@ struct wrath_t : public druid_spell_t
 
     if( p -> buffs_eclipse_solar -> up() ) 
     {
-      bonus += 0.30 + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
+      bonus += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
     }
 
     player_multiplier *= 1.0 + bonus;

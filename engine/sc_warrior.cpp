@@ -2709,7 +2709,7 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
   double mult = player_t::composite_attack_power_multiplier();
 
   if ( buffs_tier10_2pc_melee -> up() )
-    mult *= 1.20;
+    mult *= 1.16;
   return mult;
 }
 
