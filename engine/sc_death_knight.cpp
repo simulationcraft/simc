@@ -2549,7 +2549,7 @@ struct frost_strike_t : public death_knight_attack_t
     if ( p -> diseases() ) player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
 
     if ( sim -> target -> health_percentage() < 35 )
-      player_multiplier *= 1 + 0.04 * p -> talents.merciless_combat;
+      player_multiplier *= 1 + 0.06 * p -> talents.merciless_combat;
   }
 };
 
@@ -2754,7 +2754,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p -> diseases() ) player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
 
     if ( sim -> target -> health_percentage() < 35 )
-      player_multiplier *= 1 + 0.04 * p -> talents.merciless_combat;
+      player_multiplier *= 1 + 0.06 * p -> talents.merciless_combat;
   }
   
   virtual bool ready()
@@ -2905,7 +2905,7 @@ struct icy_touch_t : public death_knight_spell_t
       player_multiplier *= 1 + 0.20 * ( p -> talents.glacier_rot / 3.0 );
     
     if ( sim -> target -> health_percentage() < 35 )
-      player_multiplier *= 1 + 0.04 * p -> talents.merciless_combat;
+      player_multiplier *= 1 + 0.06 * p -> talents.merciless_combat;
   }
 };
 
@@ -2964,7 +2964,7 @@ struct obliterate_t : public death_knight_attack_t
     player_crit += p -> buffs_deathchill -> value();
 
     if ( sim -> target -> health_percentage() < 35 )
-      player_multiplier *= 1 + 0.04 * p -> talents.merciless_combat;
+      player_multiplier *= 1 + 0.06 * p -> talents.merciless_combat;
   }
 
   virtual void consume_resource() { }
