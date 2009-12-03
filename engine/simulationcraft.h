@@ -2042,6 +2042,7 @@ struct action_t
   virtual void   last_tick();
   virtual void   travel( int result, double dmg );
   virtual void   assess_damage( double amount, int dmg_type );
+  virtual void   additional_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
   virtual void   schedule_tick();
   virtual void   schedule_travel();

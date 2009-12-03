@@ -1374,6 +1374,15 @@ action_expr_t* sim_t::create_expression( action_t* a,
 	};
 	return new target_health_pct_expr_t( a );
       }
+      else if ( splits[ 1 ] == "adds" )
+      {
+	struct target_adds_expr_t : public action_expr_t
+        {
+	  target_adds_expr_t( action_t* a ) : action_expr_t( a, "target_adds", TOK_NUM ) {}
+	  virtual int evaluate() { result_num = action -> sim -> target -> adds_nearby;  return TOK_NUM; }
+	};
+	return new target_adds_expr_t( a );
+      }
     }
   }
 

@@ -857,6 +857,24 @@ void action_t::assess_damage( double amount,
 
     action_callback_t::trigger( player -> tick_damage_callbacks, this );
   }
+
+  if ( aoe && sim -> target -> adds_nearby )
+  {
+    for ( int i=0; i < sim -> target -> adds_nearby; i++ )
+    {
+      additional_damage( amount, dmg_type );
+    }
+  }
+}
+
+// action_t::additional_damage =============================================
+
+void action_t::additional_damage( double amount,
+				  int    dmg_type )
+{
+  amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
+  sim -> target -> assess_damage( amount, school, dmg_type );
+  stats -> add_result( amount, dmg_type, result );
 }
 
 // action_t::schedule_execute ==============================================

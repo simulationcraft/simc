@@ -1010,8 +1010,7 @@ void rogue_attack_t::assess_damage( double amount,
 
   if ( p -> buffs_blade_flurry -> up() && sim -> target -> adds_nearby )
   {
-    attack_t::assess_damage( amount, dmg_type );
-    stats -> add_result( amount, dmg_type, result );
+    attack_t::additional_damage( amount, dmg_type );
   }
 }
 

@@ -2014,8 +2014,7 @@ struct swipe_bear_t : public druid_bear_attack_t
 
     for ( int i=0; i < sim -> target -> adds_nearby && i < 10; i ++ )
     {
-      druid_bear_attack_t::assess_damage( amount, dmg_type );
-      stats -> add_result( amount, dmg_type, result );
+      druid_bear_attack_t::additional_damage( amount, dmg_type );
     }
   }
 };

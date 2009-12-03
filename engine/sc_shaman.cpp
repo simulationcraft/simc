@@ -1254,6 +1254,18 @@ struct chain_lightning_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+
+  virtual void assess_damange( double amount,
+                               int    dmg_type )
+  {
+    shaman_spell_t::assess_damage( amount, dmg_type );
+
+    for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
+    {
+      amount *= 0.70;
+      shaman_spell_t::additional_damage( amount, dmg_type );
+    }
+  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -2013,6 +2025,7 @@ struct magma_totem_t : public shaman_spell_t
     };
     init_rank( ranks );
 
+    aoe = true;
     base_execute_time = 0;
     base_tick_time    = 2.0;
     direct_power_mod  = 0.75 * base_tick_time / 15.0;

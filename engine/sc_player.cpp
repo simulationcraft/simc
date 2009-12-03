@@ -3677,6 +3677,24 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new in_combat_expr_t( a );
   }
+  if ( name_str == "attack_haste" )
+  {
+    struct attack_haste_expr_t : public action_expr_t
+    {
+      attack_haste_expr_t( action_t* a ) : action_expr_t( a, "attack_haste", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> composite_attack_haste(); return TOK_NUM; }
+    };
+    return new attack_haste_expr_t( a );
+  }
+  if ( name_str == "spell_haste" )
+  {
+    struct spell_haste_expr_t : public action_expr_t
+    {
+      spell_haste_expr_t( action_t* a ) : action_expr_t( a, "spell_haste", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> composite_spell_haste(); return TOK_NUM; }
+    };
+    return new spell_haste_expr_t( a );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
