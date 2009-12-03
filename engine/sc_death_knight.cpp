@@ -2148,8 +2148,8 @@ struct bone_shield_t : public death_knight_spell_t
       p -> buffs_bone_shield -> trigger( 1, 0.02 );
       death_knight_spell_t::execute();
 
-      cooldown -> duration = 60;
-      p -> buffs_bone_shield -> duration = 60;
+      cooldown -> duration += pre_cast;
+      p -> buffs_bone_shield -> duration += pre_cast;
     }
     else
     {
