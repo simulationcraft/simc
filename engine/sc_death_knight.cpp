@@ -3986,7 +3986,7 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
   buffs_bloody_vengeance    = new buff_t( this, "bloody_vengeance",    3,                                30.0,  0.0, talents.bloody_vengeance );
-  buffs_bone_shield         = new buff_t( this, "bone_shield",         4 + glyphs.bone_shield,           60.0,  0.0, talents.bone_shield );
+  buffs_bone_shield         = new buff_t( this, "bone_shield",         4,        ( sim -> P330 ? 300 : 60.0 ),  0.0, talents.bone_shield );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", 1, 12 + 5 * glyphs.dancing_rune_weapon,  0.0, 1, true ); 
   buffs_desolation          = new buff_t( this, "desolation",          1,                                20.0,  0.0, talents.desolation );
   buffs_deathchill          = new buff_t( this, "deathchill",          1,                                30.0 );
