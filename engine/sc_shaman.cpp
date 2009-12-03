@@ -1669,7 +1669,8 @@ struct fire_nova_t : public shaman_spell_t
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
-
+    
+    aoe = true;
     may_crit = true;
     base_execute_time = 0;
     direct_power_mod  = 0.8 / 3.5;
