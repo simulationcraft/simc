@@ -2937,17 +2937,14 @@ struct obliterate_t : public death_knight_attack_t
     cost_unholy = 1;
 
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.8;
     normalize_weapon_speed = true;
-    if ( p -> glyphs.obliterate )
-      weapon_multiplier = 1.0;
-    else
-      weapon_multiplier = 0.8;
-    
     if ( p -> sigils.awareness )
-    {
-      base_dd_min += 420;
-      base_dd_max += 420;
-    }
+      base_dd_adder = 336;
+    
+    // (0.8+0.2)/0.8 = 1.25
+    if ( p -> glyphs.obliterate )
+      base_multiplier *= 1.25;
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_crit += p -> talents.subversion * 0.03;
