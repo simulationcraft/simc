@@ -527,6 +527,7 @@ static void trigger_omen_of_clarity( action_t* a )
   druid_t* p = a -> player -> cast_druid();
 
   if ( a -> aoe ) return;
+  if ( a -> proc ) return;
 
   if ( p -> buffs_omen_of_clarity -> trigger() )
     p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
@@ -2109,7 +2110,7 @@ void druid_spell_t::execute()
 
   if ( result == RESULT_CRIT )
   {
-    if ( p -> buffs_moonkin_form -> check() && ! aoe )
+    if ( p -> buffs_moonkin_form -> check() && ! aoe && ! proc )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
     }
@@ -3208,7 +3209,6 @@ struct starfall_t : public druid_spell_t
         tick_dmg = direct_dmg;
         update_stats( DMG_OVER_TIME );
       }
-
     };
 
     struct starfall_star_t : public druid_spell_t
@@ -3223,7 +3223,7 @@ struct starfall_t : public druid_spell_t
         may_miss          = true;
         may_resist        = true;
         background        = true;
-        aoe               = true; // Prevents Moonkin Form mana gains.
+        proc              = true;
         dual              = true;
 
         base_dd_min = base_dd_max  = 0;
@@ -3259,13 +3259,6 @@ struct starfall_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    num_ticks      = 10;
-    base_tick_time = 1.0;
-
-    cooldown -> duration          = 90;
-    base_execute_time = 0;
-    aoe               = true;
-
     static rank_t ranks[] =
     {
       { 80, 4, 433, 503, 0, 0.39 },
@@ -3276,14 +3269,24 @@ struct starfall_t : public druid_spell_t
     };
     init_rank( ranks );
 
+    num_ticks      = 10;
+    base_tick_time = 1.0;
+
+    cooldown -> duration          = 90;
+    if ( p -> glyphs.starfall )
+      cooldown -> duration  -= 30;
+
+    base_execute_time = 0;
+    
+    may_miss = may_crit = false; // The spell only triggers the buff
+
+
 
     starfall_star = new starfall_star_t( p );
     starfall_star -> base_dd_max = base_dd_max;
     starfall_star -> base_dd_min = base_dd_min;
     base_dd_min = base_dd_max = 0;
 
-    if ( p -> glyphs.starfall )
-      cooldown -> duration  -= 30;
   }
   virtual void tick()
   {
