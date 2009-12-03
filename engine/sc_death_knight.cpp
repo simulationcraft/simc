@@ -2938,11 +2938,18 @@ struct obliterate_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    weapon_multiplier     *= 0.8;
+    if ( p -> glyphs.obliterate )
+      weapon_multiplier = 1.0;
+    else
+      weapon_multiplier = 0.8;
     
+    if ( p -> sigils.awareness )
+    {
+      base_dd_min += 420;
+      base_dd_max += 420;
+    }
+
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
-    base_multiplier *= 1.0 + p -> glyphs.obliterate * 0.2;
-    base_dd_adder = p -> sigils.awareness * 336;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.rime * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
