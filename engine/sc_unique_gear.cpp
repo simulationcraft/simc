@@ -379,16 +379,14 @@ void unique_gear_t::init( player_t* p )
     {
       register_discharge_proc( item, item.equip );
     }
+
+    if ( ! strcmp( item.name(), "black_bruise"            ) ) register_black_bruise           ( &item );
+    if ( ! strcmp( item.name(), "darkmoon_card_greatness" ) ) register_darkmoon_card_greatness( &item );
+    if ( ! strcmp( item.name(), "empowered_deathbringer"  ) ) register_empowered_deathbringer ( &item );
+    if ( ! strcmp( item.name(), "deaths_choice"           ) ) register_deaths_choice          ( &item );
+    if ( ! strcmp( item.name(), "deaths_verdict"          ) ) register_deaths_choice          ( &item );
+    if ( ! strcmp( item.name(), "shadowmourne"            ) ) register_shadowmourne           ( &item );
   }
-
-  item_t* item;
-
-  if ( ( item = p -> find_item( "black_bruise"            ) ) ) register_black_bruise           ( item );
-  if ( ( item = p -> find_item( "darkmoon_card_greatness" ) ) ) register_darkmoon_card_greatness( item );
-  if ( ( item = p -> find_item( "empowered_deathbringer"  ) ) ) register_empowered_deathbringer ( item );
-  if ( ( item = p -> find_item( "deaths_choice"           ) ) ) register_deaths_choice          ( item );
-  if ( ( item = p -> find_item( "deaths_verdict"          ) ) ) register_deaths_choice          ( item );
-  if ( ( item = p -> find_item( "shadowmourne"            ) ) ) register_shadowmourne           ( item );
 
   if ( p -> set_bonus.spellstrike() )
   {
