@@ -133,6 +133,7 @@ struct priest_t : public player_t
     double improved_shadow_word_pain_value;
     double mind_blast_power_mod;
     double mind_flay_power_mod;
+	double mind_nuke_power_mod;
     double misery_power_mod;
     double shadow_form_value;
     double shadow_weaving_value;
@@ -171,6 +172,7 @@ struct priest_t : public player_t
     constants.improved_shadow_word_pain_value = 0.03;
     constants.mind_blast_power_mod            = sim -> P330 ? 0.429 : 1.5 / 3.5;
     constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
+    constants.mind_nuke_power_mod             = 3.0 / 3.5 * 0.9;
     constants.misery_power_mod                = 0.05;
     constants.shadow_form_value               = 0.15;
     constants.shadow_weaving_value            = 0.02;
@@ -1385,6 +1387,141 @@ struct mind_flay_t : public priest_spell_t
   }
 };
 
+// TESTING: Cataclysm Mind Nuke Spell Using Mind Flay values ============================================================
+
+struct mind_nuke_t : public priest_spell_t
+{
+  double mb_wait;
+  int    swp_refresh;
+  int    devious_mind_priority;
+
+  mind_nuke_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "mind_nuke", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_priority( 0 )
+  {
+    priest_t* p = player -> cast_priest();
+
+    option_t options[] =
+    {
+      { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
+      { "mb_wait",               OPT_FLT,  &mb_wait               },
+      { "swp_refresh",           OPT_BOOL, &swp_refresh           },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 9, 588, 588, 0, 0 },
+      { 74, 8, 492, 492, 0, 0 },
+      { 68, 7, 450, 450, 0, 0 },
+      { 60, 6, 363, 363, 0, 0 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 3.0;
+    may_crit          = true;
+
+    if ( p -> set_bonus.tier10_4pc_caster() )
+    {
+      base_execute_time -= 0.5;
+    }
+
+    base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
+    base_cost *= 1.0 - ( p -> talents.focused_mind * 0.05 +
+                         p -> talents.shadow_focus * 0.02 );
+    base_cost  = floor( base_cost );
+    base_hit  += p -> talents.shadow_focus * 0.01;
+
+    direct_power_mod  = p -> constants.mind_nuke_power_mod;
+    direct_power_mod *= 1.0 + p -> talents.misery * p -> constants.misery_power_mod;
+    base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
+                                p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
+    base_crit        += p -> talents.mind_melt * 0.02;
+
+    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
+
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;  
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+    if ( result_is_hit() )
+    {
+      if ( p -> active_shadow_word_pain )
+      {
+        if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * ( 1.0/3.0 ) ) )
+        {
+          p -> active_shadow_word_pain -> refresh_duration();
+        }
+      }
+      if ( result == RESULT_CRIT )
+      {
+   	    p -> buffs_improved_spirit_tap -> trigger( 1, -1.0, p -> talents.improved_spirit_tap ? 0.5 : 0.0 );
+        p -> buffs_glyph_of_shadow -> trigger();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+    priest_spell_t::player_buff();
+    if ( p -> talents.twisted_faith )
+    {
+      if ( p -> active_shadow_word_pain )
+      {
+        player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
+                                 ( p -> sim -> P330 ?
+                                 ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
+                                 ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 ) );
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! priest_spell_t::ready() )
+      return false;
+
+    // Optional check to only cast Mind Nuke if there's 2 or less ticks left on SW:P
+    // This allows a action+=/mind_nuke,swp_refresh to be added as a higher priority to ensure that SW:P doesn't fall off
+    // Won't be necessary as part of a standard rotation, but if there's movement or other delays in casting it would have
+    // it's uses.
+    if ( swp_refresh && ( p -> talents.pain_and_suffering > 0 ) )
+    {
+      if ( ! p -> active_shadow_word_pain )
+        return false;
+
+      if ( ( p -> active_shadow_word_pain -> num_ticks -
+             p -> active_shadow_word_pain -> current_tick ) > 2 )
+        return false;
+    }
+
+    // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast 
+    // is about to come off it's cooldown.
+    if ( mb_wait )
+    {
+      if ( p -> cooldowns_mind_blast -> remains() < mb_wait )
+        return false;
+    }
+
+    // If this option is set, don't cast Mind Flay if we don't have the Tier8 4pc bonus up (only if the character has tier8_4pc=1)
+    if ( devious_mind_priority )
+    {
+      if ( p -> set_bonus.tier8_4pc_caster() && ! p -> buffs_devious_mind -> check() )
+        return false;
+    }
+
+    return true;
+  }
+};
+
+
 // Dispersion Spell ============================================================
 
 struct dispersion_t : public priest_spell_t
@@ -1839,6 +1976,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "inner_focus"       ) return new inner_focus_t       ( this, options_str );
   if ( name == "mind_blast"        ) return new mind_blast_t        ( this, options_str );
   if ( name == "mind_flay"         ) return new mind_flay_t         ( this, options_str );
+  if ( name == "mind_nuke"         ) return new mind_nuke_t         ( this, options_str );
   if ( name == "penance"           ) return new penance_t           ( this, options_str );
   if ( name == "power_infusion"    ) return new power_infusion_t    ( this, options_str );
   if ( name == "shadow_word_death" ) return new shadow_word_death_t ( this, options_str );
@@ -2297,6 +2435,7 @@ std::vector<option_t>& priest_t::get_options()
       { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
       { "const.mind_blast_power_mod",               OPT_FLT,    &( constants.mind_blast_power_mod             ) },
       { "const.mind_flay_power_mod",                OPT_FLT,    &( constants.mind_flay_power_mod              ) },
+      { "const.mind_nuke_power_mod",                OPT_FLT,    &( constants.mind_nuke_power_mod              ) },
       { "const.misery_power_mod",                   OPT_FLT,    &( constants.misery_power_mod                 ) },
       { "const.shadow_form_value",                  OPT_FLT,    &( constants.shadow_form_value                ) },
       { "const.shadow_weaving_value",               OPT_FLT,    &( constants.shadow_weaving_value             ) },
