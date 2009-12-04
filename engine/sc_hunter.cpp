@@ -714,7 +714,7 @@ struct hunter_attack_t : public attack_t
     //even if the ap contribution is normalized (only steady is the exception)
     //But I think that's illogical, dunno if somebody tested it sufficiently
     double weapon_speed = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
-    double bonus_damage = p -> ammo_dps * weapon_speed * weapon_multiplier;
+    double bonus_damage = p -> ammo_dps * weapon_speed;
 
     base_dd_min += bonus_damage;
     base_dd_max += bonus_damage;
@@ -726,8 +726,8 @@ struct hunter_attack_t : public attack_t
     {
       double scope_damage = util_t::ability_rank( player -> level, 15.0,72,  12.0,67,  7.0,0 );
 
-      base_dd_min += scope_damage * weapon_multiplier;
-      base_dd_max += scope_damage * weapon_multiplier;
+      base_dd_min += scope_damage;
+      base_dd_max += scope_damage;
     }
   }
 
@@ -2331,9 +2331,9 @@ struct kill_shot_t : public hunter_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 3, 650, 650, 0, 0.07 },
-      { 75, 2, 500, 500, 0, 0.07 },
-      { 71, 1, 410, 410, 0, 0.07 },
+      { 80, 3, 325, 325, 0, 0.07 },
+      { 75, 2, 250, 250, 0, 0.07 },
+      { 71, 1, 205, 205, 0, 0.07 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );

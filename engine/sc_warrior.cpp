@@ -396,7 +396,10 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> player_buff();
 
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
-			     p -> active_deep_wounds -> player_multiplier );
+	                         p -> active_deep_wounds -> player_multiplier );
+
+  if ( a -> weapon -> slot == SLOT_OFF_HAND )
+    deep_wounds_dmg *= 0.5;
 
   if ( p -> active_deep_wounds -> ticking )
   {
@@ -1256,6 +1259,7 @@ struct devastate_t : public warrior_attack_t
     if ( p -> set_bonus.tier8_2pc_tank() ) base_crit += 0.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
   }
+
   virtual void execute()
   {
     warrior_attack_t::execute();

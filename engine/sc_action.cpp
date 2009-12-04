@@ -263,7 +263,7 @@ void action_t::player_buff()
   {
     player_penetration = p -> composite_spell_penetration();
   }
-
+  
   if ( p -> type != PLAYER_GUARDIAN )
   {
     if ( school == SCHOOL_PHYSICAL )
@@ -556,11 +556,9 @@ double action_t::calculate_weapon_damage()
   double weapon_damage = normalize_weapon_damage ? dmg * 2.8 / weapon -> swing_time : dmg;
   double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-  double hand_multiplier = ( weapon -> slot == SLOT_OFF_HAND ) ? 0.5 : 1.0;
-
   double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
 
-  return ( weapon_damage + power_damage ) * weapon_multiplier * hand_multiplier;
+  return ( weapon_damage + power_damage );
 }
 
 // action_t::calculate_tick_damage ===========================================
@@ -608,15 +606,23 @@ double action_t::calculate_direct_damage()
   double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
 
   if ( base_direct_dmg == 0 ) return 0;
-
-  direct_dmg  = base_direct_dmg + base_dd_adder;
-  direct_dmg += calculate_weapon_damage();
+  
+  direct_dmg  = base_direct_dmg + base_dd_adder + player_dd_adder + target_dd_adder;
+  if ( weapon_multiplier > 0 )
+  {
+    // x% weapon damage + Y
+    // e.g. Obliterate, Shred, Backstab
+    direct_dmg += calculate_weapon_damage();
+    direct_dmg *= weapon_multiplier;
+    
+    // OH penalty
+    if ( weapon && weapon -> slot == SLOT_OFF_HAND )
+      direct_dmg *= 0.5;
+  }
   direct_dmg += direct_power_mod * total_power();
   direct_dmg *= total_dd_multiplier();
 
   double init_direct_dmg = direct_dmg;
-
-  direct_dmg += player_dd_adder + target_dd_adder;  // FIXME! Does this occur before/after crit adjustment?
 
   if ( result == RESULT_GLANCE )
   {
