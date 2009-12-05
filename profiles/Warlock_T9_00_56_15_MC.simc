@@ -5,7 +5,7 @@ origin=http://profiler.wowhead.com/?profile=16488112
 level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000000000000000320330113520253003523135155000005
-glyphs=felguard/metamorphosis/life_tap
+glyphs=felguard/quick_decay/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/spell_stone

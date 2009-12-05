@@ -2521,13 +2521,25 @@ struct conflagrate_t : public warlock_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
-    immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
-                                   p -> talents.improved_immolate    * 0.10 +
-                                   p -> glyphs.immolate              * 0.10 +
-                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
+    if ( sim -> P330 )
+    {
+      immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
+                                     p -> talents.improved_immolate    * 0.10 +
+                                     p -> glyphs.immolate              * 0.10 +
+                                     p -> talents.emberstorm           * 0.03 +
+                                     p -> set_bonus.tier9_4pc_caster() * 0.10 +
+                                     p -> set_bonus.tier8_2pc_caster() * 0.10 );
+    }
+    else
+    {
+      immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
+                                     p -> talents.improved_immolate    * 0.10 +
+                                     p -> glyphs.immolate              * 0.10 +
+                                     p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
-    immolate_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
-                                   p -> set_bonus.tier8_2pc_caster() * 0.10 );
+      immolate_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
+                                     p -> set_bonus.tier8_2pc_caster() * 0.10 );
+    }
 
     shadowflame_multiplier *=  1.0 + p -> talents.emberstorm * 0.03;
 
@@ -3703,7 +3715,8 @@ void warlock_t::init_glyphs()
     {
       //HACK ALERT: Make sure 3.2.2 sims don't use a glyph that's not available yet
       if ( sim -> P330 ) glyphs.quick_decay = 1;
-      else glyphs.curse_of_agony = 1;
+      else if ( talents.metamorphosis ) glyphs.metamorphosis = 1;
+      else  glyphs.curse_of_agony = 1;
     }
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "curse_of_exhaustion" ) ;
