@@ -396,11 +396,12 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> player_buff();
 
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
+                             p -> active_deep_wounds -> weapon_multiplier *
 	                         p -> active_deep_wounds -> player_multiplier );
 
   if ( a -> weapon -> slot == SLOT_OFF_HAND )
     deep_wounds_dmg *= 0.5;
-
+    
   if ( p -> active_deep_wounds -> ticking )
   {
     int num_ticks = p -> active_deep_wounds -> num_ticks;
