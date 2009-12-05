@@ -1255,7 +1255,7 @@ struct chain_lightning_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual void assess_damange( double amount,
+  virtual void assess_damage( double amount,
                                int    dmg_type )
   {
     shaman_spell_t::assess_damage( amount, dmg_type );

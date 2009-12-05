@@ -2005,7 +2005,7 @@ struct swipe_bear_t : public druid_bear_attack_t
     base_multiplier *= 1.0 + p -> talents.feral_instinct * 0.10;
   }
 
-  virtual void assess_damange( double amount,
+  virtual void assess_damage( double amount,
                                int    dmg_type )
   {
     druid_bear_attack_t::assess_damage( amount, dmg_type );
