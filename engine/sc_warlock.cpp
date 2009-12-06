@@ -1130,7 +1130,8 @@ static void trigger_everlasting_affliction( spell_t* s )
   {
     if ( p -> glyphs.quick_decay )
     {
-	    p -> active_corruption -> num_ticks = ( int ) floor( 6.0 / s -> haste() );
+      assert( p -> active_corruption -> snapshot_haste > 0.0 );
+	    p -> active_corruption -> num_ticks = ( int ) floor( 6.0 / p -> active_corruption -> snapshot_haste );
     }
     p -> active_corruption -> refresh_duration();
   }
