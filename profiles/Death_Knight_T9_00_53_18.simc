@@ -38,7 +38,7 @@ trinket2=deaths_choice,stats=256ap
 back=garroshs_rage,stats=182armor_57hit_65crit_103str_111sta,gems=20str_4str,enchant=23haste
 main_hand=cudgel_of_the_damned,stats=88ap_44crit_36haste_58agi_66sta,gems=20str_10str_10agi_10sta_10int_10spi,enchant=rune_of_the_fallen_crusader,weapon=mace_2.60speed_394min_732max
 off_hand=hellscream_slicer,stats=72ap_44hit_44haste_58agi_66sta,gems=20str,enchant=rune_of_razorice,weapon=axe_2.60speed_394min_732max
-ranged=sigil_of_virulence
+ranged=sigil_of_awareness
 # Gear Summary
 # gear_strength=1773
 # gear_agility=157
