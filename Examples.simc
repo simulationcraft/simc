@@ -16,8 +16,11 @@ armory=us,llane,segv,pagezero|inactive,docsuess
 # Verbose method of character download from Armory
 player=segv,region=us,server=llane,talents=marksmanship
 
-# Downloading guild characters of a certain rank
+# Downloading guild characters up to a certain rank
 guild=Wicked+Legion,region=us,server=llane,max_rank=3
+
+# Downloading guild characters of certain rank(s)
+guild=Wicked+Legion,region=us,server=llane,ranks=0/1/3/4/7
 
 # Downloading guild characters of a certain class
 guild=Wicked+Legion,region=us,server=llane,class=warlock
