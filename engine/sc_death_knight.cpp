@@ -1868,7 +1868,7 @@ struct blood_boil_t : public death_knight_spell_t
       { 58, 1, 89, 107, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49941 );
 
     cost_blood = 1;
 
@@ -1901,7 +1901,7 @@ struct blood_plague_t : public death_knight_spell_t
       { 55, 1, 0, 0, 36, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 59879 );
 
     trigger_gcd       = 0;
     base_cost         = 0;
@@ -2000,7 +2000,7 @@ struct blood_strike_t : public death_knight_attack_t
       { 55,  1, 260, 260, 0, -10 },
       { 0,   0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49930 );
 
     cost_blood = 1;
 
@@ -2214,7 +2214,7 @@ struct death_coil_t : public death_knight_spell_t
       { 55, 1, 184, 184, 0, 40 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49895 );
 
     base_execute_time = 0;
     cooldown -> duration          = 0.0;
@@ -2270,7 +2270,7 @@ struct death_strike_t : public death_knight_attack_t
       { 56,  1, 112, 112, 0, -15 },
       {  0,  0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49924 );
 
     cost_frost = 1;
     cost_unholy = 1;
@@ -2394,7 +2394,7 @@ struct frost_fever_t : public death_knight_spell_t
       { 55, 1, 0, 0, 29, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 59921 );
 
     trigger_gcd       = 0;
     base_cost         = 0;
@@ -2496,7 +2496,7 @@ struct frost_strike_t : public death_knight_attack_t
       { 55,  1,  87,  87, 0, 40 },
       { 0,   0,   0,   0, 0,  0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 55268 );
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
@@ -2580,7 +2580,7 @@ struct heart_strike_t : public death_knight_attack_t
       { 55,  1, 250, 250, 0, -10 },
       {  0,  0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 55262 );
 
     cost_blood = 1;
 
@@ -2698,7 +2698,7 @@ struct howling_blast_t : public death_knight_spell_t
       { 60, 1, 198, 214, 0, -15 },
       {  0, 0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 51411 );
 
     base_execute_time = 0;
     cooldown -> duration          = 8.0;
@@ -2852,7 +2852,7 @@ struct icy_touch_t : public death_knight_spell_t
       { 55, 1, 127, 137, 0, -10 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49909 );
 
     cost_frost = 1;
 
@@ -2933,7 +2933,7 @@ struct obliterate_t : public death_knight_attack_t
       { 61,  1, 248, 248, 0, -15 },
       {  0,  0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 51425 );
 
     cost_frost = 1;
     cost_unholy = 1;
@@ -3092,7 +3092,7 @@ struct plague_strike_t : public death_knight_attack_t
       { 55,  1, 125, 125, 0, -10 },
       {  0,  0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49921 );
 
     cost_unholy = 1;
 
@@ -3356,7 +3356,7 @@ struct scourge_strike_t : public death_knight_attack_t
         { 55,  1, 270, 270, 0, -15 },
         {  0,  0,   0,   0, 0,   0 }
       };
-      init_rank( ranks );
+      init_rank( ranks, 55271 );
       weapon_multiplier = 0.40;
     }
     else
@@ -3369,7 +3369,7 @@ struct scourge_strike_t : public death_knight_attack_t
         { 55,  1, 340, 340, 0, -15 },
         {  0,  0,   0,   0, 0,   0 }
       };
-      init_rank( ranks );
+      init_rank( ranks, 55271 );
       scourge_strike_shadow = new scourge_strike_shadow_t( player );
 
       stats -> school = school = SCHOOL_PHYSICAL;
