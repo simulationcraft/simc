@@ -1868,7 +1868,7 @@ struct blood_boil_t : public death_knight_spell_t
       { 58, 1, 89, 107, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49941 );
 
     cost_blood = 1;
 
@@ -1901,7 +1901,7 @@ struct blood_plague_t : public death_knight_spell_t
       { 55, 1, 0, 0, 36, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 59879 );
 
     trigger_gcd       = 0;
     base_cost         = 0;
@@ -1992,15 +1992,15 @@ struct blood_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  6, 764, 764, 0, -10 },
-      { 74,  5, 625, 625, 0, -10 },
-      { 69,  4, 411, 411, 0, -10 },
-      { 64,  3, 347, 347, 0, -10 },
-      { 59,  2, 295, 295, 0, -10 },
-      { 55,  1, 260, 260, 0, -10 },
-      { 0,   0,   0,   0, 0,   0 }
+      { 80,  6, 305.6, 305.6, 0, -10 },
+      { 74,  5, 250,   250,   0, -10 },
+      { 69,  4, 164.4, 164.4, 0, -10 },
+      { 64,  3, 138.8, 138.8, 0, -10 },
+      { 59,  2, 118,   118,   0, -10 },
+      { 55,  1, 104,   104,   0, -10 },
+      { 0,   0, 0,     0,     0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49930 );
 
     cost_blood = 1;
 
@@ -2214,7 +2214,7 @@ struct death_coil_t : public death_knight_spell_t
       { 55, 1, 184, 184, 0, 40 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49895 );
 
     base_execute_time = 0;
     cooldown -> duration          = 0.0;
@@ -2263,14 +2263,14 @@ struct death_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  5, 297, 297, 0, -15 },
-      { 75,  4, 250, 250, 0, -15 },
-      { 70,  3, 165, 165, 0, -15 },
-      { 63,  2, 130, 130, 0, -15 },
-      { 56,  1, 112, 112, 0, -15 },
-      {  0,  0,   0,   0, 0,   0 }
+      { 80,  5, 222.75, 222.75, 0, -15 },
+      { 75,  4, 150,    150,    0, -15 },
+      { 70,  3, 123.75, 123.75, 0, -15 },
+      { 63,  2, 97.5,   97.5,   0, -15 },
+      { 56,  1, 84,     84,     0, -15 },
+      { 0,   0, 0,      0,      0,  0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49924 );
 
     cost_frost = 1;
     cost_unholy = 1;
@@ -2279,9 +2279,7 @@ struct death_strike_t : public death_knight_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier *= 0.75;
 
-    if ( p -> sigils.awareness )
-      base_dd_adder = 420;
-
+    base_dd_adder = p -> sigils.awareness * 315;
     base_crit += p -> talents.improved_death_strike * 0.03;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.improved_death_strike * 0.15;
@@ -2394,7 +2392,7 @@ struct frost_fever_t : public death_knight_spell_t
       { 55, 1, 0, 0, 29, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 59921 );
 
     trigger_gcd       = 0;
     base_cost         = 0;
@@ -2488,15 +2486,15 @@ struct frost_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  6, 250, 250, 0, 40 },
-      { 75,  5, 201, 201, 0, 40 },
-      { 70,  4, 142, 142, 0, 40 },
-      { 65,  3, 115, 115, 0, 40 },
-      { 60,  2, 103, 103, 0, 40 },
-      { 55,  1,  87,  87, 0, 40 },
-      { 0,   0,   0,   0, 0,  0 }
+      { 80,  6, 137.5, 137.5, 0, 40 },
+      { 75,  5, 110.6, 110.6, 0, 40 },
+      { 70,  4,  78.1,  78.1, 0, 40 },
+      { 65,  3,  63.5,  73.5, 0, 40 },
+      { 60,  2,  56.7,  56.7, 0, 40 },
+      { 55,  1,  47.9,  47.9, 0, 40 },
+      { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 55628 );
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
@@ -2572,15 +2570,15 @@ struct heart_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  6, 736, 736, 0, -10 },
-      { 74,  5, 601, 601, 0, -10 },
-      { 69,  4, 395, 395, 0, -10 },
-      { 64,  3, 334, 334, 0, -10 },
-      { 59,  2, 284, 284, 0, -10 },
-      { 55,  1, 250, 250, 0, -10 },
-      {  0,  0,   0,   0, 0,   0 }
+      { 80,  6, 368,   368,   0, -10 },
+      { 74,  5, 300.5, 300.5, 0, -10 },
+      { 69,  4, 197.5, 197.5, 0, -10 },
+      { 64,  3, 167,   167,   0, -10 },
+      { 59,  2, 142,   142,   0, -10 },
+      { 55,  1, 125,   125,   0, -10 },
+      { 0,   0, 0,     0,     0,  0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 55262 );
 
     cost_blood = 1;
 
@@ -2698,7 +2696,7 @@ struct howling_blast_t : public death_knight_spell_t
       { 60, 1, 198, 214, 0, -15 },
       {  0, 0,   0,   0, 0,   0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 51411 );
 
     base_execute_time = 0;
     cooldown -> duration          = 8.0;
@@ -2852,7 +2850,7 @@ struct icy_touch_t : public death_knight_spell_t
       { 55, 1, 127, 137, 0, -10 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49909 );
 
     cost_frost = 1;
 
@@ -2927,13 +2925,13 @@ struct obliterate_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 79,  4, 584, 584, 0, -15 },
-      { 73,  3, 477, 477, 0, -15 },
-      { 67,  2, 305, 305, 0, -15 },
-      { 61,  1, 248, 248, 0, -15 },
-      {  0,  0,   0,   0, 0,   0 }
+      { 79,  4, 467.2, 467.2, 0, -15 },
+      { 73,  3, 381.6, 381.6, 0, -15 },
+      { 67,  2, 244,   244,   0, -15 },
+      { 61,  1, 198.4, 198.4, 0, -15 },
+      { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 51425 );
 
     cost_frost = 1;
     cost_unholy = 1;
@@ -2942,11 +2940,11 @@ struct obliterate_t : public death_knight_attack_t
     weapon_multiplier = 0.8;
     normalize_weapon_speed = true;
     if ( p -> sigils.awareness )
-      base_dd_adder = 420;
+      base_dd_adder = 336;
     
     // (0.8+0.2)/0.8 = 1.25
     if ( p -> glyphs.obliterate )
-      weapon_multiplier = 1.0;
+      base_multiplier *= 1.25;
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
     base_crit += p -> talents.subversion * 0.03;
@@ -3084,15 +3082,15 @@ struct plague_strike_t : public death_knight_attack_t
 
     static rank_t ranks[] =
     {
-      { 80,  6, 378, 378, 0, -10 },
-      { 75,  5, 314, 314, 0, -10 },
-      { 70,  4, 216, 216, 0, -10 },
-      { 65,  3, 178, 178, 0, -10 },
-      { 60,  2, 151, 151, 0, -10 },
-      { 55,  1, 125, 125, 0, -10 },
-      {  0,  0,   0,   0, 0,   0 }
+      { 80,  6, 189,  189,  0, -10 },
+      { 75,  5, 157,  157,  0, -10 },
+      { 70,  4, 108,  108,  0, -10 },
+      { 65,  3, 89,   89,   0, -10 },
+      { 60,  2, 75.5, 75.5, 0, -10 },
+      { 55,  1, 62.5, 62.5, 0, -10 },
+      { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49921 );
 
     cost_unholy = 1;
 
@@ -3295,48 +3293,10 @@ struct rune_tap_t : public death_knight_spell_t
 struct scourge_strike_t : public death_knight_attack_t
 {
   attack_t* scourge_strike_shadow;
-  struct scourge_strike_shadow_t : public death_knight_attack_t
-  {
-    scourge_strike_shadow_t( player_t* player ) : death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
-    {
-      death_knight_t* p = player -> cast_death_knight();
-
-      may_miss    = false;
-      proc        = true;
-      background  = true;
-      trigger_gcd = 0;
-      
-      // Only blizzard knows, but for the shadowpart in 3.3 the follwing
-      // +x% buffs are ADDITIVE (which this flag controls)
-      // Bone Shield 2%, Desolation 5%, Blood Presence 15%, Black Ice 10%
-      additive_factors = true;
-      
-      weapon_multiplier = 0;
-      
-      base_attack_power_multiplier = 0;
-      base_dd_min = base_dd_max    = 0.1;
-
-      base_crit += p -> talents.subversion * 0.03;
-      base_crit += p -> talents.vicious_strikes * 0.03;
-      base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
-    }
-
-    virtual void target_debuff( int dmg_type )
-    {
-      // for each of your diseases on your target, you deal an 
-      // additional 25% of the Physical damage done as Shadow damage.
-      death_knight_t* p = player -> cast_death_knight();
-      death_knight_attack_t::target_debuff( dmg_type );
-
-      // FIX ME!! How does 4T8 play with SS in 3.3
-      target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-    }
-  };
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
       death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
-    check_talent( p -> talents.scourge_strike );
 
     option_t options[] =
     {
@@ -3344,50 +3304,74 @@ struct scourge_strike_t : public death_knight_attack_t
     };
     parse_options( options, options_str );
 
-    weapon = &( p -> main_hand_weapon );
-    normalize_weapon_speed = true;
-    if ( ! p -> sim -> P330 )
+    static rank_t ranks[] =
     {
-      static rank_t ranks[] =
-      {
-        { 79,  4, 635, 635, 0, -15 },
-        { 73,  3, 528, 528, 0, -15 },
-        { 67,  2, 332, 332, 0, -15 },
-        { 55,  1, 270, 270, 0, -15 },
-        {  0,  0,   0,   0, 0,   0 }
-      };
-      init_rank( ranks );
-      weapon_multiplier = 0.40;
-    }
-    else
-    {
-      static rank_t ranks[] =
-      {
-        { 79,  4, 800, 800, 0, -15 },
-        { 73,  3, 653, 653, 0, -15 },
-        { 67,  2, 418, 418, 0, -15 },
-        { 55,  1, 340, 340, 0, -15 },
-        {  0,  0,   0,   0, 0,   0 }
-      };
-      init_rank( ranks );
-      scourge_strike_shadow = new scourge_strike_shadow_t( player );
+      { 79,  4, 317.5, 317.5, 0, -15 },
+      { 73,  3, 259,   259,   0, -15 },
+      { 67,  2, 166,   166,   0, -15 },
+      { 55,  1, 135,   135,   0, -15 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks, 55271 );
+    check_talent( p -> talents.scourge_strike );
 
-      stats -> school = school = SCHOOL_PHYSICAL;
-      weapon_multiplier        = 0.50;
-    }
     cost_frost = 1;
     cost_unholy = 1;
 
-
+    base_dd_adder = p -> sigils.awareness * 187;
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
     base_multiplier *= 1.0 + ( 0.2 * p -> talents.outbreak / 3.0 );
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
 
-    if ( p -> sigils.awareness )
-      base_dd_adder = 420;
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = true;
+    if ( ! p -> sim -> P330 )
+      weapon_multiplier *= 0.40;
+    else
+    {
+      struct scourge_strike_shadow_t : public death_knight_attack_t
+      {
+        scourge_strike_shadow_t( player_t* player ) : death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
+        {
+          death_knight_t* p = player -> cast_death_knight();
 
+          may_miss    = false;
+          proc        = true;
+          background  = true;
+          trigger_gcd = 0;
+          
+          // Only blizzard knows, but for the shadowpart in 3.3 the follwing
+          // +x% buffs are ADDITIVE (which this flag controls)
+          // Bone Shield 2%, Desolation 5%, Blood Presence 15%, Black Ice 10%
+          additive_factors = true;
+          
+          base_attack_power_multiplier = 0;
+          base_dd_min = base_dd_max    = 1;
+
+          base_crit += p -> talents.subversion * 0.03;
+          base_crit += p -> talents.vicious_strikes * 0.03;
+          base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
+        }
+
+        virtual void target_debuff( int dmg_type )
+        {
+          // for each of your diseases on your target, you deal an 
+          // additional 25% of the Physical damage done as Shadow damage.
+          death_knight_t* p = player -> cast_death_knight();
+          death_knight_attack_t::target_debuff( dmg_type );
+
+          // FIX ME!! How does 4T8 play with SS in 3.3
+          target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+        }
+      };
+      scourge_strike_shadow = new scourge_strike_shadow_t( player );
+
+      stats -> school = school  = SCHOOL_PHYSICAL;
+      weapon_multiplier        *= 0.50;
+      base_dd_min = base_dd_max = 400;
+    }
   }
 
   void execute()
