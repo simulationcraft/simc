@@ -3743,25 +3743,15 @@ void death_knight_t::init_actions()
         action_list_str += ",time>=10";
       }
     }
-    if ( race == RACE_DWARF )
-    {
-      if ( talents.bladed_armor > 0 )
-        action_list_str += "/stoneform";
-    }
-    else if ( race == RACE_ORC )
-    {
-      action_list_str += "/blood_fury";
-    }
-    else if ( race == RACE_TROLL )
-    {
-      action_list_str += "/berserking";
-    }
-    else if ( race == RACE_BLOOD_ELF )
-    {
-      action_list_str += "/arcane_torrent";
-    }
+
     // Use slightly into the fight, when debuffs are up
-    action_list_str += ",time>=10";
+    switch ( race )
+    {
+    case RACE_DWARF:     if ( talents.bladed_armor > 0 ) action_list_str += "/stoneform,time>=10"; break;
+    case RACE_ORC:       action_list_str += "/blood_fury,time>=10";     break;
+    case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
+    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
+    }
 
     if ( primary_tree() == TREE_UNHOLY )
     {
