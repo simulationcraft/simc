@@ -137,17 +137,18 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 8 )
+  if( tokens.count() >= 9 )
   {
            patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[ 2 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[ 3 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[ 6 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 8 ].toInt() );
+   fightVarianceChoice->setCurrentIndex( tokens[ 4 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[ 5 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 8 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 9 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -160,7 +161,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 9; i < tokens.count(); i++)
+  for(int i = 10; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -188,16 +189,17 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
-    .arg(        patchChoice->currentIndex() )
-    .arg(      latencyChoice->currentIndex() )
-    .arg(   iterationsChoice->currentIndex() )
-    .arg(  fightLengthChoice->currentIndex() )
-    .arg(   fightStyleChoice->currentIndex() )
-    .arg(      threadsChoice->currentIndex() )
-    .arg(    smoothRNGChoice->currentIndex() )
-    .arg( armoryRegionChoice->currentIndex() )
-    .arg(   armorySpecChoice->currentIndex() )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10" )
+    .arg(         patchChoice->currentIndex() )
+    .arg(       latencyChoice->currentIndex() )
+    .arg(    iterationsChoice->currentIndex() )
+    .arg(   fightLengthChoice->currentIndex() )
+    .arg( fightVarianceChoice->currentIndex() )
+    .arg(    fightStyleChoice->currentIndex() )
+    .arg(       threadsChoice->currentIndex() )
+    .arg(     smoothRNGChoice->currentIndex() )
+    .arg(  armoryRegionChoice->currentIndex() )
+    .arg(    armorySpecChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
@@ -438,15 +440,16 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",        patchChoice = createChoice( 2, "3.2.2", "3.3.0" ) );
-  globalsLayout->addRow(       "Latency",      latencyChoice = createChoice( 2, "Low", "High" ) );
-  globalsLayout->addRow(    "Iterations",   iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
-  globalsLayout->addRow(  "Length (sec)",  fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
-  globalsLayout->addRow(   "Fight Style",   fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
-  globalsLayout->addRow(       "Threads",      threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(    "Smooth RNG",    smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
-  globalsLayout->addRow( "Armory Region", armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
-  globalsLayout->addRow(   "Armory Spec",   armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 2, "3.2.2", "3.3.0" ) );
+  globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
+  globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+  globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
+  globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
+  globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
+  globalsLayout->addRow(   "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
@@ -811,6 +814,9 @@ void SimulationCraftWindow::createToolTips()
 
   fightLengthChoice->setToolTip( "For custom fight lengths use max_time=seconds." );
 
+  fightVarianceChoice->setToolTip( "Varying the fight length over a given spectrum improves\n"
+				   "the analysis of trinkets and abilities with long cooldowns." );
+
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
 				"Helter Skelter: Movement, Stuns, Interrupts" );
 
@@ -1082,6 +1088,10 @@ QString SimulationCraftWindow::mergeOptions()
     options += "dps_plot_iterations=1000\n";
   }
   options += "max_time=" + fightLengthChoice->currentText() + "\n";
+  options += "vary_combat_length=";
+  const char *variance[] = { "0.0", "0.1", "0.2" };
+  options += variance[ fightVarianceChoice->currentIndex() ];
+  options += "\n";
   if( fightStyleChoice->currentText() == "Helter Skelter" )
   {
     options += "raid_events=casting,cooldown=30,duration=3,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
