@@ -1986,8 +1986,8 @@ struct corruption_t : public warlock_spell_t
   virtual void execute()
   {
     base_td = base_td_init;
-    num_ticks = 6;
-    warlock_spell_t::execute();   
+    warlock_spell_t::execute();
+    if ( result_is_hit() ) num_ticks = 6;
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
