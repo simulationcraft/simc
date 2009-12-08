@@ -14,8 +14,8 @@ actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
 actions+=/wild_magic_potion,bloodlust=1
-actions+=/immolate
 actions+=/conflagrate
+actions+=/immolate
 actions+=/chaos_bolt
 actions+=/curse_of_doom,time_to_die>=80
 actions+=/incinerate
@@ -48,8 +48,8 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_
 # gear_intellect=1158
 # gear_spirit=738
 # gear_spell_power=3199
-# gear_hit_rating=307
-# gear_crit_rating=530
+# gear_hit_rating=297
+# gear_crit_rating=540
 # gear_haste_rating=586
 # gear_armor=2176
 # meta_gem=chaotic_skyflare

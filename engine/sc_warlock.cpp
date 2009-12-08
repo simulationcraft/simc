@@ -3927,31 +3927,27 @@ void warlock_t::init_actions()
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
       action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
       action_list_str += "/metamorphosis";
-      action_list_str += "/immolation,P330=1";
-      action_list_str += "/corruption,P330=1";
-      action_list_str += "/curse_of_doom,time_to_die>=90,P330=1";
-      action_list_str += "/curse_of_agony,time_to_die>=28,P330=1";
-      action_list_str += "/immolate,P330=1";
+      action_list_str += "/immolation";
+      action_list_str += "/corruption";
+      action_list_str += "/curse_of_doom,time_to_die>=90";
+      action_list_str += "/curse_of_agony,time_to_die>=28";
+      action_list_str += "/immolate";
       if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/incinerate,molten_core=1,P330=1";
-      action_list_str += "/immolation,health_percentage>=35,P330=0";
-      action_list_str += "/curse_of_doom,time_to_die>=90,P330=0";
-      action_list_str += "/immolate,P330=0";
-      action_list_str += "/corruption,health_percentage>=35,P330=0";
+      action_list_str += "/incinerate,molten_core=1";
     }
     else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/corruption,time_to_die>=20,P330=1/immolate,time_to_die>=15,P330=1";
+      action_list_str += "/corruption,time_to_die>=20/immolate,time_to_die>=15";
       action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/immolate,P330=0/curse_of_agony,time_to_die>=28/corruption,health_percentage>=35,P330=0";
+      action_list_str += "/curse_of_agony,time_to_die>=28";
     }
     else if ( talents.decimation && talents.conflagrate ) // 00_40_31
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/corruption,time_to_die>=20,P330=1/immolate,time_to_die>=15,P330=1/conflagrate";
+      action_list_str += "/corruption,time_to_die>=20/immolate,time_to_die>=15/conflagrate";
       action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/immolate,P330=0/curse_of_agony,time_to_die>=28/corruption,health_percentage>=35,P330=0";
+      action_list_str += "/curse_of_agony,time_to_die>=28";
     }
     else // generic
     {

@@ -1,7 +1,8 @@
 #!simc max_time=300
 
 Globals_T9.simc
-
+patch=3.3.0
+iterations=1000
 Death_Knight_T9_51_00_20.simc
 Death_Knight_T9_03_51_17.simc
 Death_Knight_T9_00_53_18.simc
@@ -43,13 +44,10 @@ Shaman_T9_57_14_00_258.simc
 Shaman_T9_57_14_00_258_ToW.simc
 
 Warlock_T9_00_13_58.simc
-Warlock_T9_00_40_31.simc
-Warlock_T9_00_41_30.simc
-Warlock_T9_00_56_15.simc
+Warlock_T9_00_18_53.simc
 Warlock_T9_03_13_55.simc
-Warlock_T9_03_52_16.simc
-Warlock_T9_53_00_18.simc
-Warlock_T9_53_00_18_DG.simc
+Warlock_T9_00_56_15.simc
+Warlock_T9_55_00_16.simc
 
 Warrior_T9_19_52_00.simc
 Warrior_T9_54_17_00_A.simc

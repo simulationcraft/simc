@@ -14,8 +14,8 @@ actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
 actions+=/wild_magic_potion,bloodlust=1
-actions+=/immolate
 actions+=/conflagrate
+actions+=/immolate
 actions+=/chaos_bolt
 actions+=/curse_of_doom,time_to_die>=80
 actions+=/incinerate

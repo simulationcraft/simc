@@ -5,25 +5,19 @@ Globals_T8.simc
 optimal_raid=1
 
 Warlock_T8_00_13_58.simc
+Warlock_T8_00_18_53.simc
 Warlock_T8_03_13_55.simc
-Warlock_T8_53_00_18.simc
-Warlock_T8_53_00_18_DG.simc
-Warlock_T8_00_40_31.simc
-Warlock_T8_00_41_30.simc
-Warlock_T8_03_52_16.simc
 Warlock_T8_00_56_15.simc
+Warlock_T8_55_00_16.simc
 
 # scwarlockt8
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=13002350 name=Warlock_T8_00_13_58    save=Warlock_T8_00_13_58.simc
+#wowhead=18860614 name=Warlock_T8_00_18_53    save=Warlock_T8_00_18_53.simc
 #wowhead=13003527 name=Warlock_T8_03_13_55    save=Warlock_T8_03_13_55.simc
-#wowhead=13003837 name=Warlock_T8_03_52_16    save=Warlock_T8_03_52_16.simc
-#wowhead=13003573 name=Warlock_T8_53_00_18    save=Warlock_T8_53_00_18.simc 
-#wowhead=13003573 name=Warlock_T8_53_00_18_DG save=Warlock_T8_53_00_18_DG.simc summon_pet=doomguard
-#wowhead=13003653 name=Warlock_T8_00_40_31    save=Warlock_T8_00_40_31.simc
-#wowhead=13003812 name=Warlock_T8_00_41_30    save=Warlock_T8_00_41_30.simc
 #wowhead=13003861 name=Warlock_T8_00_56_15    save=Warlock_T8_00_56_15.simc
+#wowhead=13003573 name=Warlock_T8_55_00_16    save=Warlock_T8_55_00_16.simc
 
 #save_profiles=1
 
