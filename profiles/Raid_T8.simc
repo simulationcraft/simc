@@ -12,10 +12,10 @@ Hunter_T8_07_57_07_HM.simc
 Hunter_T8_01_15_55.simc
 
 Mage_T8_00_53_18.simc
-Mage_T8_18_00_53.simc   focus_magic_target=Mage_T8_20_51_00
+Mage_T8_20_00_51.simc   focus_magic_target=Mage_T8_20_51_00
 Mage_T8_20_51_00.simc   focus_magic_target=Mage_T8_53_18_00
 Mage_T8_53_18_00.simc   focus_magic_target=Mage_T8_57_03_11
-Mage_T8_57_03_11.simc   focus_magic_target=Mage_T8_18_00_53
+Mage_T8_57_03_11.simc   focus_magic_target=Mage_T8_20_00_51
 
 Paladin_T8_05_11_55.simc
 

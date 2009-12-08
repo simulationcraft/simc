@@ -1,10 +1,10 @@
 #!./simc 
 
-mage=Mage_T8_18_00_53
+mage=Mage_T8_20_00_51
 origin=http://profiler.wowhead.com/?profile=13000343
 level=80
 race=undead
-talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=23000503110003000000000000000000000000000000000000000000000533030310033100230152231351
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=00500503310003000000000000000000000000000000000000000000000523030311233100030152231151
 glyphs=molten_armor/frostbolt/water_elemental/slow_fall/arcane_intellect/fire_ward
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast

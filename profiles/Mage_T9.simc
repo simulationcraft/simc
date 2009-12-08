@@ -5,16 +5,16 @@ Globals_T9.simc
 optimal_raid=1
 
 Mage_T9_00_53_18.simc
-Mage_T9_18_00_53.simc   focus_magic_target=Mage_T9_20_51_00
+Mage_T9_20_00_51.simc   focus_magic_target=Mage_T9_20_51_00
 Mage_T9_20_51_00.simc   focus_magic_target=Mage_T9_53_18_00
 Mage_T9_53_18_00.simc   focus_magic_target=Mage_T9_57_03_11
-Mage_T9_57_03_11.simc   focus_magic_target=Mage_T9_18_00_53
+Mage_T9_57_03_11.simc   focus_magic_target=Mage_T9_20_00_51
 
 # scmaget9
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14306487 name=Mage_T9_00_53_18 save=Mage_T9_00_53_18.simc
-#wowhead=14306485 name=Mage_T9_18_00_53 save=Mage_T9_18_00_53.simc
+#wowhead=14306485 name=Mage_T9_18_00_53 save=Mage_T9_18_00_53.simc Deprecated!
 #wowhead=14306481 name=Mage_T9_20_51_00 save=Mage_T9_20_51_00.simc
 #wowhead=14306474 name=Mage_T9_53_18_00 save=Mage_T9_53_18_00.simc
 #wowhead=14306468 name=Mage_T9_57_03_11 save=Mage_T9_57_03_11.simc
