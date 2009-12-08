@@ -818,7 +818,7 @@ void SimulationCraftWindow::createToolTips()
 				   "the analysis of trinkets and abilities with long cooldowns." );
 
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
-				"Helter Skelter: Movement, Stuns, Interrupts" );
+				"Helter Skelter: Movement, Stuns, Interrupts, Target-Switching (every 2min), Adds (20sec every 1min)" );
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
 			     "Most modern desktops have two at least two CPU cores." );
@@ -1021,6 +1021,13 @@ void SimulationCraftWindow::importFinished()
 
 void SimulateThread::run()
 {
+  QFile file( "simc_gui.simc" );
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( options.toAscii() );
+    file.close();
+  }
+
   sim -> html_file_str = "simc_report.html";
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
@@ -1094,7 +1101,11 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   if( fightStyleChoice->currentText() == "Helter Skelter" )
   {
-    options += "raid_events=casting,cooldown=30,duration=3,first=15/movement,cooldown=30,duration=6/stun,cooldown=60,duration=3\n";
+    options += "raid_events=casting,cooldown=30,duration=3,first=15\n";
+    options += "raid_events+=/movement,cooldown=30,duration=5\n";
+    options += "raid_events+=/stun,cooldown=60,duration=2\n";
+    options += "raid_events+=/invulnerable,cooldown=120,duration=3\n";
+    options += "raid_events+=/adds,count=3,cooldown=60,duration=20\n";
   }
   options += "threads=" + threadsChoice->currentText() + "\n";
   options += smoothRNGChoice->currentIndex() ? "smooth_rng=1\n" : "smooth_rng=0\n";

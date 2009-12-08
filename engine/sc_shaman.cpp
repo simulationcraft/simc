@@ -3318,6 +3318,7 @@ void shaman_t::init_actions()
       if ( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
+      action_list_str += "/fire_nova,if=target.adds>2";
       if ( ! talents.totem_of_wrath ) 
       {
 	action_list_str += "/fire_elemental_totem";

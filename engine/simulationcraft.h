@@ -677,7 +677,7 @@ struct raid_event_t
   virtual void schedule();
   virtual void reset();
   virtual void start();
-  virtual void finish() {}
+  virtual void finish();
   virtual void parse_options( option_t*, const std::string& options_str );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
@@ -1823,7 +1823,7 @@ struct target_t
   double attack_speed, attack_damage, weapon_skill;
   double fixed_health, initial_health, current_health;
   double total_dmg;
-  int adds_nearby;
+  int adds_nearby, initial_adds_nearby;
 
   struct debuffs_t
   {

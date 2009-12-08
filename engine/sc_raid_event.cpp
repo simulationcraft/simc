@@ -9,6 +9,35 @@
 // Raid Events
 // ==========================================================================
 
+// Adds =====================================================================
+
+struct adds_event_t : public raid_event_t
+{
+  int count;
+  adds_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "adds" ), count(1)
+  {
+    option_t options[] =
+    {
+      { "count", OPT_INT, &count },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+  virtual void start()
+  {
+    target_t* t = sim -> target;
+    raid_event_t::start();
+    t -> adds_nearby += count;
+  }
+  virtual void finish()
+  {
+    target_t* t = sim -> target;
+    t -> adds_nearby -= count;
+    raid_event_t::finish();
+  }
+};
+
 // Casting ==================================================================
 
 struct casting_event_t : public raid_event_t
@@ -256,6 +285,8 @@ double raid_event_t::duration_time() SC_CONST
 
 void raid_event_t::start()
 {
+  if ( sim -> log ) log_t::output( sim, "Raid event %s starts (%x).", name(), (void*) this );
+
   num_starts++;
 
   affected_players.clear();
@@ -272,6 +303,13 @@ void raid_event_t::start()
 
     affected_players.push_back( p );
   }
+}
+
+// raid_event_t::finish =====================================================
+
+void raid_event_t::finish()
+{
+  if ( sim -> log ) log_t::output( sim, "Raid event %s finishes (%x).", name(), (void*) this );
 }
 
 // raid_event_t::schedule ===================================================
@@ -395,6 +433,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
+  if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
   if ( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );

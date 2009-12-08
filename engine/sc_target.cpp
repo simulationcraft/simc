@@ -188,6 +188,7 @@ void target_t::reset()
   total_dmg = 0;
   armor = initial_armor;
   current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+  adds_nearby = initial_adds_nearby;
 }
 
 // target_t::combat_begin ====================================================
@@ -260,7 +261,7 @@ int target_t::get_options( std::vector<option_t>& options )
     { "target_level",          OPT_INT,    &( level                             ) },
     { "target_health",         OPT_FLT,    &( fixed_health                      ) },
     { "target_id",             OPT_STRING, &( id_str                            ) },
-    { "target_adds",           OPT_INT,    &( adds_nearby                       ) },
+    { "target_adds",           OPT_INT,    &( initial_adds_nearby               ) },
     // @option_doc loc=global/target/defense title="Target Defense"
     { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
     { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
