@@ -17,11 +17,13 @@ actions+=/icy_veins
 actions+=/presence_of_mind,arcane_blast
 actions+=/mana_gem
 actions+=/choose_rotation
-actions+=/arcane_missiles,barrage=1
+actions+=/arcane_missiles,if=buff.missile_barrage.up
 actions+=/mirror_image
-actions+=/arcane_blast
+actions+=/arcane_blast,if=dpm&buff.arcane_blast.stack<3
+actions+=/arcane_blast,if=dps
 actions+=/mana_potion
 actions+=/evocation
+actions+=/arcane_missiles
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 head=sunstriders_hood_of_triumph,stats=282armor_86hit_94haste_151sp_116sta_116int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
