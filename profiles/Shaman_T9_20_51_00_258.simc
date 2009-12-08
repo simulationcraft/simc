@@ -14,10 +14,10 @@ actions+=/strength_of_earth_totem
 actions+=/windfury_totem
 actions+=/auto_attack
 actions+=/snapshot_stats
-actions+=/bloodlust,time_to_die<=60
 actions+=/wind_shear
-actions+=/fire_elemental_totem
+actions+=/bloodlust,time_to_die<=60
 actions+=/shamanistic_rage
+actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
 actions+=/lightning_bolt,maelstrom=5
