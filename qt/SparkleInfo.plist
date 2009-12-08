@@ -15,7 +15,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.googlecode.simulationcraft</string>
 	<key>CFBundleVersion</key>
-	<key>322.14</key>
+	<key>322.15</key>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUEnableSystemProfiling</key>
