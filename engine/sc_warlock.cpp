@@ -686,7 +686,7 @@ struct felguard_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    action_list_str = "cleave/wait";
+    action_list_str = "cleave/wait_until_ready";
   }
   virtual void init_base()
   {
@@ -787,7 +787,7 @@ struct felhunter_pet_t : public warlock_pet_t
 
 //    damage_modifier = 0.8;
 
-    action_list_str = "shadow_bite/wait";
+    action_list_str = "shadow_bite/wait_until_ready";
   }
   virtual void init_base()
   {
@@ -871,7 +871,7 @@ struct succubus_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    action_list_str = "lash_of_pain/wait";
+    action_list_str = "lash_of_pain/wait_until_ready";
   }
   virtual void init_base()
   {

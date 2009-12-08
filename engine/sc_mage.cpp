@@ -216,6 +216,7 @@ struct mage_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
+  virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
@@ -3316,11 +3317,13 @@ void mage_t::init_actions()
     {
       action_list_str += "/mana_gem";
       action_list_str += "/choose_rotation";
-      action_list_str += "/arcane_missiles,barrage=1";
+      action_list_str += "/arcane_missiles,if=buff.missile_barrage.up";
       action_list_str += "/mirror_image";
-      action_list_str += "/arcane_blast";
+      action_list_str += "/arcane_blast,if=dpm&buff.arcane_blast.stack<3";
+      action_list_str += "/arcane_blast,if=dps";
       action_list_str += "/mana_potion";
       action_list_str += "/evocation";
+      action_list_str += "/arcane_missiles";
       if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
@@ -3522,6 +3525,32 @@ double mage_t::resource_loss( int       resource,
   }
 
   return actual_amount;
+}
+
+// mage_t::create_expression ===============================================
+
+action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "dps" )
+  {
+    struct dps_rotation_expr_t : public action_expr_t
+    {
+      dps_rotation_expr_t( action_t* a ) : action_expr_t( a, "dps_rotation" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPS ) ? 1.0 : 0.0; return TOK_NUM; }
+    };
+    return new dps_rotation_expr_t( a );
+  }
+  else if ( name_str == "dpm" )
+  {
+    struct dpm_rotation_expr_t : public action_expr_t
+    {
+      dpm_rotation_expr_t( action_t* a ) : action_expr_t( a, "dpm_rotation" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPM ) ? 1.0 : 0.0; return TOK_NUM; }
+    };
+    return new dpm_rotation_expr_t( a );
+  }
+
+  return player_t::create_expression( a, name_str );
 }
 
 // mage_t::get_talent_trees ================================================

@@ -3263,6 +3263,41 @@ struct wait_until_ready_t : public action_t
   }
 };
 
+// Wait Fixed Action =========================================================
+
+struct wait_fixed_t : public action_t
+{
+  action_expr_t* time_expr;
+
+  wait_fixed_t( player_t* player, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "wait", player )
+  {
+    std::string sec_str = "1.0";
+
+    option_t options[] =
+    {
+      { "sec", OPT_STRING, &sec_str },
+      { NULL,  OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    time_expr = action_expr_t::parse( this, sec_str );
+    trigger_gcd = 0;
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    int result = time_expr -> evaluate();
+    assert( result == TOK_NUM );
+    return time_expr -> result_num;
+  }
+
+  virtual void execute()
+  {
+    player -> total_waiting += time_to_execute;
+  }
+};
+
 // Use Item Action ===========================================================
 
 struct use_item_t : public action_t
@@ -3450,7 +3485,8 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
   if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
-  if ( name == "wait"             ) return new wait_until_ready_t( this, options_str );
+  if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
+  if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
 
   return consumable_t::create_action( this, name, options_str );
 }

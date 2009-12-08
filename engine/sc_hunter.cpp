@@ -2985,8 +2985,7 @@ struct rapid_fire_t : public hunter_spell_t
 
 struct readiness_t : public hunter_spell_t
 {
-  bool wait_for_rf;
-
+  int wait_for_rf;
   std::vector<cooldown_t*> cooldown_list;
 
   readiness_t( player_t* player, const std::string& options_str ) :
