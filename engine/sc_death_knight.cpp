@@ -3060,13 +3060,11 @@ struct pestilence_t : public death_knight_spell_t
     {
       if ( p -> dots_blood_plague -> ticking() )
       {
-        p -> dots_blood_plague -> action -> player_buff();
-        p -> dots_blood_plague -> action -> refresh_duration();
+        p -> blood_plague -> execute();
       }
       if ( p -> dots_frost_fever -> ticking() )
       {
-        p -> dots_frost_fever -> action -> player_buff();
-        p -> dots_frost_fever -> action -> refresh_duration();
+        p -> frost_fever -> execute();
       }
     }
   }
@@ -3715,25 +3713,9 @@ void death_knight_t::init_actions()
     case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
     }
 
-    if ( primary_tree() == TREE_UNHOLY )
+    switch ( primary_tree() )
     {
-      // TODO: Add Empower Rune Weapon
-      action_list_str += "/raise_dead";
-      action_list_str += "/sequence,name=unholy,wait_on_ready=1";
-      action_list_str += ":icy_touch";
-      action_list_str += ":plague_strike";
-      action_list_str += ":blood_strike";
-      action_list_str += ":scourge_strike";
-      action_list_str += ":blood_strike";
-      action_list_str += "/summon_gargoyle,time<=20";
-      action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
-      action_list_str += "/death_coil";
-      action_list_str += "/horn_of_winter";
-      action_list_str += "/restart_sequence,name=unholy";
-    }
-    else if ( primary_tree() == TREE_BLOOD )
-    {
-      // TODO: Add Empower Rune Weapon
+    case TREE_BLOOD:
       action_list_str += "/hysteria,if=buff.bloodlust.react";
       action_list_str += "/dancing_rune_weapon,if=buff.bloodlust.react";
       action_list_str += "/sequence,name=blood1,wait_on_ready=1";
@@ -3753,9 +3735,8 @@ void death_knight_t::init_actions()
       action_list_str += ":heart_strike";
       action_list_str += "/restart_sequence,name=blood1";
       action_list_str += "/restart_sequence,name=blood2";
-    }
-    else if ( primary_tree() == TREE_FROST )
-    {
+      break;
+    case TREE_FROST:
       /*Rotation:
       IT PS OB BS BS Dump
       OB OB OB Dump
@@ -3781,8 +3762,7 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/icy_touch,frost_fever<=0.1";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
-        action_list_str += "/pestilence,if=dot.blood_plague.remains<=2";
-        action_list_str += "/pestilence,if=dot.frost_fever.remains<=2";
+        action_list_str += "/pestilence,if=dot.blood_plague.remains<=2|dot.frost_fever.remains<=2";
       }
       else
       {
@@ -3803,7 +3783,33 @@ void death_knight_t::init_actions()
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/empower_rune_weapon";
+      action_list_str += "/horn_of_winter";      
+      break;
+    case TREE_UNHOLY:
+      action_list_str += "/raise_dead";
+      action_list_str += "/icy_touch,if=dot.frost_fever.remains<1";
+      action_list_str += "/plague_strike,if=dot.blood_plague.remains<1";
+      if ( talents.reaping )
+      {
+        // 0 Death: Always BS
+        // 1 Death: Only BS with 2 blood runes (because 1 blood = death)
+        // 2 Death: With reaping we only use BS to convert
+        action_list_str += "/blood_strike,death=0";
+        action_list_str += "/blood_strike,death=1,blood=2";
+      }
+      else
+      {
+        action_list_str += "/blood_strike";
+      }
+      action_list_str += "/scourge_strike";
+      if ( talents.summon_gargoyle )
+      {
+        action_list_str += "/summon_gargoyle,time<=20";
+        action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
+      }
+      action_list_str += "/death_coil";
       action_list_str += "/horn_of_winter";
+      break;
     }
     action_list_default = 1;
   }
