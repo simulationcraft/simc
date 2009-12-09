@@ -19,21 +19,6 @@ struct _stat_list_t {
 static const _stat_list_t race_stats[] =
 {
   { RACE_HUMAN,     { 20, 20, 20, 20, 20, 0.0 } },
-  { RACE_ORC,	      { 23, 17, 22, 17, 23, 0.0 } },
-  { RACE_DWARF,     { 22, 16, 23, 19, 19, 0.0 } },
-  { RACE_NIGHT_ELF, { 17, 25, 19, 20, 20, 0.0 } },
-  { RACE_UNDEAD,    { 19, 18, 21, 18, 25, 0.0 } },
-  { RACE_TAUREN,    { 25, 15, 22, 15, 22, 0.0 } },
-  { RACE_GNOME,     { 15, 23, 19, 24, 20, 0.0 } },
-  { RACE_TROLL,     { 21, 22, 21, 16, 21, 0.0 } },
-  { RACE_BLOOD_ELF, { 17, 22, 18, 24, 19, 0.0 } },
-  { RACE_DRAENEI,   { 21, 17, 19, 21, 22, 0.0 } },
-  { RACE_NONE, { 0 } }
-};
-
-static const _stat_list_t race_stats_P330[] =
-{
-  { RACE_HUMAN,     { 20, 20, 20, 20, 20, 0.0 } },
   { RACE_ORC,	      { 23, 17, 21, 17, 22, 0.0 } },
   { RACE_DWARF,     { 25, 16, 21, 19, 19, 0.0 } },
   { RACE_NIGHT_ELF, { 16, 24, 20, 20, 20, 0.0 } },
@@ -451,7 +436,6 @@ double rating_t::get_attribute_base( sim_t* sim, int level, int class_type, int 
   double class_value            = 0.0;
   double r                      = 0.0;
   const _stat_list_t* stat_list = 0;
-  bool P330 = ( ( sim != NULL ) && ( sim -> P330 != 0 ) );
 
   if ( level < 60 || level > 80 )
   {
@@ -483,26 +467,12 @@ double rating_t::get_attribute_base( sim_t* sim, int level, int class_type, int 
 
   if ( ( stat_type >= BASE_STAT_STRENGTH ) && ( stat_type <= BASE_STAT_SPIRIT ) )
   {
-    if ( P330 )
+    for ( i = 0; race_stats[ i ].id != 0; i++ )
     {
-      for ( i = 0; race_stats_P330[ i ].id != 0; i++ )
+      if ( race == race_stats[ i ].id )
       {
-        if ( race == race_stats_P330[ i ].id )
-        {
-          race_value = race_stats_P330[ i ].stats[ stat_type ];
-          break;
-        }
-      }
-    }
-    else
-    {
-      for ( i = 0; race_stats[ i ].id != 0; i++ )
-      {
-        if ( race == race_stats[ i ].id )
-        {
-          race_value = race_stats[ i ].stats[ stat_type ];
-          break;
-        }
+        race_value = race_stats[ i ].stats[ stat_type ];
+        break;
       }
     }
   }

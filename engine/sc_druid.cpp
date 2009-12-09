@@ -89,7 +89,6 @@ struct druid_t : public player_t
   double equipped_weapon_dps;
 
   std::string eclipse_cycle;
-  int wise_eclipse;
 
   struct talents_t
   {
@@ -227,7 +226,6 @@ struct druid_t : public player_t
     equipped_weapon_dps = 0;
 
     eclipse_cycle = "solar";
-    wise_eclipse = ( sim -> P330 ? 0 : 1 );
   }
 
   // Character Definition
@@ -2894,7 +2892,7 @@ struct starfire_t : public druid_spell_t
 
     if( p -> buffs_eclipse_lunar -> up() )
     {
-      player_crit += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
+      player_crit += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
     }
 
     if ( p -> dots_moonfire -> ticking() )
@@ -2915,15 +2913,6 @@ struct starfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
 
-    // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
-    // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
-    if( ! sim -> P330 && p -> wise_eclipse && 
-        p -> buffs_eclipse_lunar -> check() &&
-        p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
-    {
-      p -> buffs_eclipse_lunar -> expire();
-    }
-
     if ( result_is_hit() )
     {
       trigger_earth_and_moon( this );
@@ -2934,15 +2923,7 @@ struct starfire_t : public druid_spell_t
 
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
-          if ( p -> buffs_eclipse_solar -> trigger() )
-          {
-            // When using the Wise-Eclipse AddOn you have an almost guaranteed chance to 
-            // proc Solar Eclipse which means that you do not suffer from reaction time.
-            if ( ! sim -> P330 && p -> wise_eclipse && ( total_crit() > 0.80 ) ) 
-            {
-              p -> buffs_eclipse_solar -> predict();
-            }
-          }
+          p -> buffs_eclipse_solar -> trigger();
         }
       }
       if ( p -> glyphs.starfire )
@@ -3093,21 +3074,6 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    druid_spell_t::execute();
-
-    // The WiseEclise AddOn automatically cancels the buff on spell-execute such 
-    // that Starfire can both benefit from Lunar Eclipse -and- trigger Solar Eclipse.
-    if( ! sim -> P330 && p -> wise_eclipse && 
-        p -> buffs_eclipse_solar -> check() &&
-        p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
-    {
-      p -> buffs_eclipse_solar -> expire();
-    }
-  }
-
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
@@ -3118,7 +3084,7 @@ struct wrath_t : public druid_spell_t
 
     if( p -> buffs_eclipse_solar -> up() ) 
     {
-      bonus += ( sim -> P330 ? 0.40 : 0.30 ) + p -> set_bonus.tier8_2pc_caster() * ( sim -> P330 ? 0.07 : 0.15 );
+      bonus += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
     }
 
     player_multiplier *= 1.0 + bonus;
@@ -4176,7 +4142,6 @@ std::vector<option_t>& druid_t::get_options()
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { "eclipse_cycle",             OPT_STRING, &( eclipse_cycle                    ) },
-      { "wise_eclipse",              OPT_BOOL,   &( wise_eclipse                     ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

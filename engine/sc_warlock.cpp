@@ -562,8 +562,7 @@ struct imp_pet_t : public warlock_pet_t
       base_multiplier *= 1.0 + ( o -> talents.empowered_imp * 0.05 + // o -> talents.improved_imp moved up
                                  o -> glyphs.imp            * 0.20 );
 
-      if ( sim -> P330 )
-        base_crit_bonus_multiplier *= 1.0 + o -> talents.ruin * 0.20;
+      base_crit_bonus_multiplier *= 1.0 + o -> talents.ruin * 0.20;
     }
     virtual void execute();
     virtual void player_buff()
@@ -741,11 +740,8 @@ struct felhunter_pet_t : public warlock_pet_t
 
       cooldown -> duration = 6.0;
 
-      if ( sim -> P330 )
-      {
-        cooldown -> duration -= 2.0 * o -> talents.improved_felhunter;
-        base_multiplier *= 1.0 + ( o -> talents.shadow_mastery * 0.03 );
-      }
+      cooldown -> duration -= 2.0 * o -> talents.improved_felhunter;
+      base_multiplier *= 1.0 + ( o -> talents.shadow_mastery * 0.03 );
 
       base_crit_bonus = 0.5;
       base_crit_bonus_multiplier = 2.0;
@@ -760,7 +756,7 @@ struct felhunter_pet_t : public warlock_pet_t
 
       if ( result_is_hit() && o -> talents.improved_felhunter )
       {
-        double amount = p -> resource_max[ RESOURCE_MANA ] * o -> talents.improved_felhunter * ( ( sim -> P330 ) ? 0.08 : 0.04 );
+        double amount = p -> resource_max[ RESOURCE_MANA ] * o -> talents.improved_felhunter * 0.08;
 
         p -> resource_gain( RESOURCE_MANA, amount );
       }
@@ -772,7 +768,7 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
       player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
-      player_multiplier *= 1.0 + o -> active_dots() * ( o -> sim -> P330 ? 0.15 : 0.05 );
+      player_multiplier *= 1.0 + o -> active_dots() * 0.15;
     }
   };
 
@@ -1070,10 +1066,7 @@ static void trigger_molten_core( spell_t* s )
 {
   if ( s -> school != SCHOOL_SHADOW ) return;
   warlock_t* p = s -> player -> cast_warlock();
-  if ( p -> sim -> P330 )
-    p -> buffs_molten_core -> trigger(3);
-  else
-    p -> buffs_molten_core -> trigger();
+  p -> buffs_molten_core -> trigger(3);
 }
 
 // queue_decimation =======================================================
@@ -1173,10 +1166,7 @@ void warlock_spell_t::player_buff()
     player_multiplier *= 1.20;
   }
 
-  if ( p -> sim -> P330 )
-  {
-    player_multiplier *= 1.0 + ( p -> talents.demonic_pact * 0.01 );
-  }
+  player_multiplier *= 1.0 + ( p -> talents.demonic_pact * 0.01 );
 
   if ( p -> buffs_tier10_4pc_caster -> up() )
   {
@@ -1201,7 +1191,6 @@ void warlock_spell_t::player_buff()
     if ( sacrifice == PET_FELGUARD ) player_multiplier *= 1.0 + 0.07;
     if ( sacrifice == PET_IMP      ) player_multiplier *= 1.0 + 0.10;
 
-    if ( p -> buffs_molten_core -> up() && ! p -> sim -> P330 ) player_multiplier *= 1.10;
     if ( p -> buffs_pyroclasm   -> up() ) player_multiplier *= 1.0 + p -> talents.pyroclasm * 0.02;
   }
 
@@ -1310,11 +1299,6 @@ void warlock_spell_t::execute()
 
   spell_t::execute();
 
-  if ( result_is_hit() && ! p -> sim -> P330 )
-  {
-    trigger_molten_core( this );
-  }
-
   if ( may_crit ) p -> buffs_empowered_imp -> expire();
 }
 
@@ -1323,8 +1307,6 @@ void warlock_spell_t::execute()
 void warlock_spell_t::tick()
 {
   spell_t::tick();
-  if ( ! player -> sim -> P330 )
-	trigger_molten_core( this );
 }
 
 // warlock_spell_t::parse_options =============================================
@@ -2009,7 +1991,7 @@ struct corruption_t : public warlock_spell_t
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> glyphs.corruption * 0.04 );
     p -> buffs_tier7_2pc_caster -> trigger();
     if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
-    if ( p -> sim -> P330 ) trigger_molten_core( this );
+    trigger_molten_core( this );
   }
 };
 
@@ -2386,7 +2368,7 @@ struct immolate_t : public warlock_spell_t
                                   p -> set_bonus.tier8_2pc_caster() * 0.10 +
                                   p -> set_bonus.tier9_4pc_caster() * 0.10 );
 
-    if ( p -> sim -> P330 ) num_ticks += p -> talents.molten_core;
+    num_ticks += p -> talents.molten_core;
 
     dot = p -> get_dot( "immo_ua" );
 
@@ -2522,39 +2504,22 @@ struct conflagrate_t : public warlock_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.ruin * 0.20;
 
-    if ( sim -> P330 )
-    {
-      immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
-                                     p -> talents.improved_immolate    * 0.10 +
-                                     p -> glyphs.immolate              * 0.10 +
-                                     p -> talents.emberstorm           * 0.03 +
-                                     p -> set_bonus.tier9_4pc_caster() * 0.10 +
-                                     p -> set_bonus.tier8_2pc_caster() * 0.10 );
-    }
-    else
-    {
-      immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
-                                     p -> talents.improved_immolate    * 0.10 +
-                                     p -> glyphs.immolate              * 0.10 +
-                                     p -> set_bonus.tier9_4pc_caster() * 0.10 );
-
-      immolate_multiplier *= 1.0 + ( p -> talents.emberstorm           * 0.03 +
-                                     p -> set_bonus.tier8_2pc_caster() * 0.10 );
-    }
+    immolate_multiplier *= 1.0 + ( p -> talents.aftermath            * 0.03 +
+                                   p -> talents.improved_immolate    * 0.10 +
+                                   p -> glyphs.immolate              * 0.10 +
+                                   p -> talents.emberstorm           * 0.03 +
+                                   p -> set_bonus.tier9_4pc_caster() * 0.10 +
+                                   p -> set_bonus.tier8_2pc_caster() * 0.10 );
 
     shadowflame_multiplier *=  1.0 + p -> talents.emberstorm * 0.03;
 
-    if ( sim -> P330 )
-    {
-      base_tick_time = 1.0;
-      num_ticks      = 3;
-      tick_may_crit  = true;
-    }
+    base_tick_time = 1.0;
+    num_ticks      = 3;
+    tick_may_crit  = true;
   }
 
   virtual double calculate_tick_damage()
   {
-    if ( ! sim -> P330 ) return 0.0;
     warlock_spell_t::calculate_tick_damage();
     warlock_t* p = player -> cast_warlock();
 
@@ -2604,7 +2569,7 @@ struct conflagrate_t : public warlock_spell_t
     int tick_contribution = 0;
     if( dot_spell == p -> active_immolate )
     {
-      tick_contribution = ( sim -> P330 ) ? 3 : 4;
+      tick_contribution = 3;
     }
     else
     {
@@ -2747,7 +2712,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
     if ( p -> buffs_tier7_2pc_caster -> up() ) player_crit += 0.10;
-    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 ) {
+    if ( p -> buffs_molten_core -> up() ) {
       player_multiplier *= 1 + p -> talents.molten_core * 0.06;
       p -> buffs_molten_core -> decrement();
     }
@@ -2761,7 +2726,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     double h = warlock_spell_t::haste();
-    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 )
+    if ( p -> buffs_molten_core -> up() )
     {
       h *= 1.0 - p -> talents.molten_core * 0.10;
     }
@@ -2870,14 +2835,11 @@ struct soul_fire_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
       trigger_soul_leech( this );
     }
-    if ( ! p -> sim -> P330 )
-      p -> buffs_decimation -> expire();
   }
 
   virtual double execute_time() SC_CONST
@@ -2886,10 +2848,7 @@ struct soul_fire_t : public warlock_spell_t
     double t = warlock_spell_t::execute_time();
     if ( p -> buffs_decimation -> up() )
     {
-		  if ( p -> sim -> P330 )
-        t *= 1.0 - p -> talents.decimation * 0.20;
-      else
-        t *= 1.0 - p -> talents.decimation * 0.30;
+      t *= 1.0 - p -> talents.decimation * 0.20;
       assert( t > 0 );
     }
     return t;
@@ -2910,30 +2869,24 @@ struct soul_fire_t : public warlock_spell_t
 
   virtual void schedule_travel()
   {
-    warlock_t* p = player -> cast_warlock();
-
     warlock_spell_t::schedule_travel();
 
-    if ( p -> sim -> P330 )
-      queue_decimation( this );
+    queue_decimation( this );
   }
 
   virtual void travel( int    travel_result,
                        double travel_dmg )
   {
-    warlock_t* p = player -> cast_warlock();
-
     warlock_spell_t::travel( travel_result, travel_dmg );
 
-    if ( p -> sim -> P330 )
-      trigger_decimation( this, travel_result );
+    trigger_decimation( this, travel_result );
   }
 
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> buffs_molten_core -> up() && p -> sim -> P330 )
+    if ( p -> buffs_molten_core -> up() )
     {
       player_crit += p -> talents.molten_core * 0.05;
       player_multiplier *= 1 + p -> talents.molten_core * 0.06;
@@ -3712,13 +3665,7 @@ void warlock_t::init_glyphs()
     else if ( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
     else if ( n == "siphon_life"         ) glyphs.siphon_life = 1;
     else if ( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
-    else if ( n == "quick_decay"         )
-    {
-      //HACK ALERT: Make sure 3.2.2 sims don't use a glyph that's not available yet
-      if ( sim -> P330 ) glyphs.quick_decay = 1;
-      else if ( talents.metamorphosis ) glyphs.metamorphosis = 1;
-      else  glyphs.curse_of_agony = 1;
-    }
+    else if ( n == "quick_decay"         ) glyphs.quick_decay = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "curse_of_exhaustion" ) ;
     else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
@@ -3808,7 +3755,7 @@ void warlock_t::init_buffs()
   player_t::init_buffs();
 
   buffs_backdraft           = new buff_t( this, "backdraft",           3, 15.0, 0.0, talents.backdraft );
-  buffs_decimation          = new buff_t( this, "decimation",          1, sim -> P330 ? 8.0 : 10.0, 0.0, talents.decimation );
+  buffs_decimation          = new buff_t( this, "decimation",          1,  8.0, 0.0, talents.decimation );
   buffs_demonic_empowerment = new buff_t( this, "demonic_empowerment", 1 );
   buffs_demonic_frenzy      = new buff_t( this, "demonic_frenzy",     10, 10.0 );
   buffs_empowered_imp       = new buff_t( this, "empowered_imp",       1,  8.0, 0.0, talents.empowered_imp / 3.0 );
@@ -3817,7 +3764,7 @@ void warlock_t::init_buffs()
   buffs_haunted             = new buff_t( this, "haunted",             1, 12.0, 0.0, talents.haunt );
   buffs_life_tap_glyph      = new buff_t( this, "life_tap_glyph",      1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis       = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
-  buffs_molten_core         = new buff_t( this, "molten_core",         ((sim -> P330) ? 3 : 1), ((sim -> P330) ? 15.0 : 12.0), 0.0, ((sim -> P330) ? (talents.molten_core * 0.04) : (talents.molten_core * 0.05)) );
+  buffs_molten_core         = new buff_t( this, "molten_core",         3, 15.0, 0.0, talents.molten_core * 0.04 );
   buffs_pet_sacrifice       = new buff_t( this, "pet_sacrifice" );
   buffs_pyroclasm           = new buff_t( this, "pyroclasm",           1, 10.0, 0.0, talents.pyroclasm );
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );

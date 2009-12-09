@@ -170,13 +170,13 @@ struct priest_t : public player_t
     constants.devouring_plague_power_mod      = 3.0 / 15.0 * 0.925;
     constants.improved_devouring_plague_value = 0.05;
     constants.improved_shadow_word_pain_value = 0.03;
-    constants.mind_blast_power_mod            = sim -> P330 ? 0.429 : 1.5 / 3.5;
+    constants.mind_blast_power_mod            = 0.429;
     constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
     constants.mind_nuke_power_mod             = 3.0 / 3.5 * 0.9;
     constants.misery_power_mod                = 0.05;
     constants.shadow_form_value               = 0.15;
     constants.shadow_weaving_value            = 0.02;
-    constants.shadow_word_death_power_mod     = sim -> P330 ? 0.429 : 1.5 / 3.5;
+    constants.shadow_word_death_power_mod     = 0.429;
     constants.shadow_word_pain_power_mod      = 3.0 / 15.0 * 0.915;
     constants.twin_disciplines_value          = 0.01;
     constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
@@ -307,7 +307,7 @@ struct shadow_fiend_pet_t : public pet_t
 
     double sp = p -> composite_spell_power( school );
     sp -= owner -> spirit() *   p -> spell_power_per_spirit;
-    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
+    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.3 : 0.0 );
     return sp;
   }
   virtual double composite_attack_hit() SC_CONST
@@ -412,7 +412,7 @@ void priest_spell_t::assess_damage( double amount,
 
   spell_t::assess_damage( amount, dmg_type );
   
-  if ( ( ! sim -> P330 && p -> active_vampiric_embrace ) || ( sim -> P330 && p -> buffs_vampiric_embrace -> up() ) )
+  if ( p -> buffs_vampiric_embrace -> up() ) 
   {
     p -> resource_gain( RESOURCE_HEALTH, amount * 0.15 * ( 1.0 + p -> talents.improved_vampiric_embrace * 0.333333 ), p -> gains.vampiric_embrace );
 
@@ -701,7 +701,7 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::tick();
-    if ( p -> sim -> P330 && p -> glyphs.shadow_word_pain )
+    if ( p -> glyphs.shadow_word_pain )
       p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
   }
 
@@ -719,13 +719,11 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     
-    if ( p -> sim -> P330 )
-      num_ticks++;
+    num_ticks++;
 
     priest_spell_t::refresh_duration();
 
-    if ( p -> sim -> P330 )
-      num_ticks--;
+    num_ticks--;
   }
 };
 
@@ -792,7 +790,7 @@ struct vampiric_touch_t : public priest_spell_t
     if ( p -> hasted_vampiric_touch == 0 )
       return 0;
   
-    return ( ( p -> hasted_vampiric_touch > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
+    return ( ( p -> hasted_vampiric_touch > 0 ) || ( p -> buffs_shadow_form -> check() ) );
   }
 };
 
@@ -822,7 +820,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     background = true;
     may_crit   = true;
 
-    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * ( sim -> P330 ? 0.10 : 0.05 );
+    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.1;
 
     direct_power_mod  = p -> constants.devouring_plague_power_mod;
 
@@ -830,7 +828,6 @@ struct devouring_plague_burst_t : public priest_spell_t
                                 p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
                                 p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value );
 
-    if ( sim -> P330 )
     base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
 
     base_hit += p -> talents.shadow_focus * 0.01;
@@ -852,17 +849,6 @@ struct devouring_plague_burst_t : public priest_spell_t
       }
     }
     update_stats( DMG_DIRECT );
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::player_buff();
-    if ( ! p -> sim -> P330 )
-    {
-      player_spell_power -= p -> spirit() *   p -> spell_power_per_spirit;
-      player_spell_power -= p -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? ( p -> sim -> P330 ? 0.3 : 0.1 ) : 0.0 );
-    }
   }
 
 };
@@ -948,7 +934,7 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> hasted_devouring_plague == 0 )
       return 0;
   
-    return ( ( p -> hasted_devouring_plague > 0 ) || ( p -> sim -> P330 && p -> buffs_shadow_form -> check() ) );
+    return ( ( p -> hasted_devouring_plague > 0 ) || ( p -> buffs_shadow_form -> check() ) );
   }
 };
 
@@ -970,39 +956,16 @@ struct vampiric_embrace_t : public priest_spell_t
     };
     init_rank( ranks );
 
-    if ( sim -> P330 )
-    {
-      trigger_gcd = 0;
-      base_cost   = 0.0;
-    }
-    else
-    {
-      base_execute_time = 0;
-      base_tick_time    = 300.0;
-      num_ticks         = 1;
-      base_cost         = 0.0;
-      base_cost         = floor( base_cost );
-      base_multiplier   = 0;
-      base_hit          = p -> talents.shadow_focus * 0.01;
-
-      observer = &( p -> active_vampiric_embrace );
-    }
+    trigger_gcd = 0;
+    base_cost   = 0.0;
   }
 
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-      
-    if ( p -> sim -> P330 )
-    {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-      if ( p -> talents.vampiric_embrace )
-        p -> buffs_vampiric_embrace -> trigger();
-    }
-    else
-    {
-      priest_spell_t::execute();
-    }
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( p -> talents.vampiric_embrace )
+      p -> buffs_vampiric_embrace -> trigger();
   }
 
   virtual bool ready()
@@ -1012,12 +975,7 @@ struct vampiric_embrace_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( p -> sim -> P330 )
-    {
-      return p -> talents.vampiric_embrace && ! p -> buffs_vampiric_embrace -> check();
-    }
-
-    return true;
+    return p -> talents.vampiric_embrace && ! p -> buffs_vampiric_embrace -> check();
   }
 
 };
@@ -1269,9 +1227,7 @@ struct mind_flay_tick_t : public priest_spell_t
       if ( p -> active_shadow_word_pain )
       {
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
-                                 ( p -> sim -> P330 ?
-                                 ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
-                                 ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 ) );
+                                 ( p -> glyphs.mind_flay      ? 0.10 : 0.00 );
       }
     }
   }
@@ -1474,9 +1430,7 @@ struct mind_nuke_t : public priest_spell_t
       if ( p -> active_shadow_word_pain )
       {
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
-                                 ( p -> sim -> P330 ?
-                                 ( p -> glyphs.mind_flay        ? 0.10 : 0.00 ) :
-                                 ( p -> glyphs.shadow_word_pain ? 0.10 : 0.00 ) );
+                                 ( p -> glyphs.mind_flay      ? 0.10 : 0.00);
       }
     }
   }
@@ -1956,7 +1910,7 @@ double priest_t::composite_spell_power( int school ) SC_CONST
 
   if ( buffs_glyph_of_shadow -> up() )
   {
-    sp += spirit() * ( sim -> P330 ? 0.30 : 0.10 );
+    sp += spirit() * 0.3;
   }
 
   return floor( sp );
@@ -2169,7 +2123,7 @@ void priest_t::init_actions()
 
     if ( talents.shadow_form ) action_list_str += "/shadow_form";
 
-    if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=1";
+    if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
 
     action_list_str += "/snapshot_stats";
 
@@ -2185,13 +2139,11 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-      action_list_str += "/wild_magic_potion,P330=0";
-      action_list_str += "/speed_potion,P330=1";
+      action_list_str += "/speed_potion";
       action_list_str += "/shadow_fiend";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague/mind_blast";
-      if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace,P330=0";
       if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";

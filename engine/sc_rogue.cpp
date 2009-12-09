@@ -876,17 +876,9 @@ void rogue_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> buffs_master_of_subtlety -> value();
   }
-  if ( p -> talents.murder )
-  {
-    int target_race = sim -> target -> race;
 
-    if ( sim -> P330 ||
-         target_race == RACE_BEAST || target_race == RACE_DRAGONKIN ||
-         target_race == RACE_GIANT || target_race == RACE_HUMANOID  )
-    {
-      player_multiplier *= 1.0 + p -> talents.murder * 0.02;
-    }
-  }
+  player_multiplier *= 1.0 + p -> talents.murder * 0.02;
+
   if ( special && p -> buffs_shadowstep -> check() )
   {
     player_multiplier *= 1.20;
@@ -2519,7 +2511,7 @@ struct deadly_poison_t : public rogue_poison_t
     if ( ! success )
     {
       double chance = 0.30;
-      chance += p -> talents.improved_poisons * ( p -> sim -> P330 ? 0.04 : 0.02 );
+      chance += p -> talents.improved_poisons * 0.04;
       if ( p -> buffs_envenom -> up() )
       {
         chance += 0.15;
@@ -2537,7 +2529,7 @@ struct deadly_poison_t : public rogue_poison_t
 
       if ( result_is_hit() )
       {
-        if ( sim -> P330 && ( p -> buffs_poison_doses -> check() == 5 ) )
+        if ( p -> buffs_poison_doses -> check() == 5 )
         {
           p -> buffs_deadly_proc -> trigger();
           weapon_t* other_w = ( weapon -> slot == SLOT_MAIN_HAND ) ? &( p -> off_hand_weapon ) : &( p -> main_hand_weapon );

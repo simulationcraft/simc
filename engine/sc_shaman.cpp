@@ -1013,7 +1013,7 @@ double shaman_spell_t::haste() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
   double h = spell_t::haste();
-  if ( p -> sim -> P330 && p -> buffs_elemental_mastery -> up() )
+  if ( p -> buffs_elemental_mastery -> up() )
   {
     h *= 1.0 / 1.15;
   }
@@ -1062,10 +1062,6 @@ void shaman_spell_t::player_buff()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
-  if ( ! p -> sim -> P330 && p -> buffs_elemental_mastery -> up() )
-  {
-    player_crit += 0.15;
-  }
   if ( p -> buffs_nature_vulnerability -> up() && school == SCHOOL_NATURE )
   {
     player_multiplier *= 1.0 + ( p -> glyphs.stormstrike ? 0.28 : 0.20 );
@@ -1427,17 +1423,10 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p -> set_bonus.tier9_4pc_caster() )
     {
-      if ( sim -> P330 )
-      {
-	num_ticks      = 3;
-	base_tick_time = 2.0;
-	tick_may_crit  = false;
-	tick_power_mod = 0.0;
-      }
-      else
-      {
-	base_multiplier *= 1.2;
-      }
+      num_ticks      = 3;
+      base_tick_time = 2.0;
+      tick_may_crit  = false;
+      tick_power_mod = 0.0;
     }
 
     if ( p -> totems.thunderfall )
@@ -1460,8 +1449,8 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit() )
     {
-      if ( sim -> P330 && p -> set_bonus.tier9_4pc_caster() )
-          base_td = direct_dmg * 0.1 / num_ticks;
+      if ( p -> set_bonus.tier9_4pc_caster() )
+        base_td = direct_dmg * 0.1 / num_ticks;
     }
   }
 
@@ -1702,9 +1691,6 @@ struct fire_nova_t : public shaman_spell_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-
-    if ( ! p -> sim -> P330 )
-      return false;
 
     if ( ! p -> active_fire_totem )
       return false;
@@ -2242,14 +2228,7 @@ struct fire_elemental_totem_t : public shaman_spell_t
     num_ticks = 1;
     base_tick_time = 120.1;
 
-    if ( sim -> P330 )
-    {
-      cooldown -> duration = p -> glyphs.fire_elemental_totem ? 300 : 600;
-    }
-    else
-    {
-      cooldown -> duration = p -> glyphs.fire_elemental_totem ? 600 : 1200;
-    }
+    cooldown -> duration = p -> glyphs.fire_elemental_totem ? 300 : 600;
 
     observer = &( p -> active_fire_totem );
   }

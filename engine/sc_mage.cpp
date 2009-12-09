@@ -1200,10 +1200,7 @@ struct arcane_barrage_t : public mage_spell_t
 
       if ( result == RESULT_CRIT )
       {
-        if ( sim -> P330 )
-              {
-          sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-              }
+        sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
       }
     }
     p -> buffs_arcane_blast -> expire();
@@ -1284,10 +1281,7 @@ struct arcane_blast_t : public mage_spell_t
       p -> buffs_tier8_2pc -> trigger();
       if ( result == RESULT_CRIT )
       {
-        if ( sim -> P330 )
-        {
-          sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-        }
+        sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
       }
     }
     p -> buffs_arcane_blast -> trigger();
@@ -1373,10 +1367,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
-      if ( sim -> P330 )
-      {
-        sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
-      }
+      sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
       trigger_master_of_elements( this, 0.20 );
     }
   }
@@ -2102,7 +2093,7 @@ struct scorch_t : public mage_spell_t
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + ( p -> talents.arcane_instability * 0.01 ) +
-                              ( ( p -> sim -> P330 && p -> glyphs.improved_scorch ) ? 0.20 : 0.00 );
+                              ( p -> glyphs.improved_scorch * 0.20 );
 
     base_crit        += p -> talents.incineration       * 0.02;
     base_crit        += p -> talents.critical_mass      * 0.02;
@@ -2124,8 +2115,7 @@ struct scorch_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() ) 
     {
-      int stack = ( p -> sim -> P330 ? 1 : ( p -> glyphs.improved_scorch ? 5 : 1 ) );
-      sim -> target -> debuffs.improved_scorch -> trigger( stack, 1.0, ( p -> talents.improved_scorch / 3.0 ) );
+      sim -> target -> debuffs.improved_scorch -> trigger( 1, 1.0, ( p -> talents.improved_scorch / 3.0 ) );
     }
     trigger_hot_streak( this );
   }
@@ -2430,9 +2420,6 @@ struct deep_freeze_t : public mage_spell_t
         return false;
 
     if ( ! target_is_frozen( p ) )
-      return false;
-
-    if ( ! p -> sim -> P330 )
       return false;
 
     return true;
@@ -3348,7 +3335,7 @@ void mage_t::init_actions()
     else if ( primary_tree() == TREE_FROST )
     {
       action_list_str += "/mana_gem/speed_potion";
-      action_list_str += "/deep_freeze,P330=1";
+      action_list_str += "/deep_freeze";
       action_list_str += "/frost_bolt,frozen=1";
       if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
       if ( talents.cold_snap              ) action_list_str += "/cold_snap";
@@ -3755,11 +3742,11 @@ void player_t::mage_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.frostbite       = new debuff_t( sim, "frostbite",       1,                    5.0 );
-  t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", sim -> P330 ? 1 : 5, 30.0 );
-  t -> debuffs.slow            = new debuff_t( sim, "slow",            1,                   15.0 );
-  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5,                   15.0 );
-  t -> debuffs.winters_grasp   = new debuff_t( sim, "winters_grasp",   1,                    5.0 );
+  t -> debuffs.frostbite       = new debuff_t( sim, "frostbite",       1,  5.0 );
+  t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 1, 30.0 );
+  t -> debuffs.slow            = new debuff_t( sim, "slow",            1, 15.0 );
+  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, 15.0 );
+  t -> debuffs.winters_grasp   = new debuff_t( sim, "winters_grasp",   1,  5.0 );
 }
 
 // player_t::mage_combat_begin ==============================================
@@ -3776,7 +3763,7 @@ void player_t::mage_combat_begin( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> override( sim -> P330 ? 1 : 5 );
+  if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> override( 1 );
   if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> override( 5 );
 
   if ( sim -> overrides.arcane_empowerment ) sim -> auras.arcane_empowerment -> override( 1, 3 );

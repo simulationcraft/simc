@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P330( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
     snapshot_haste( -1.0 ),
     if_expr( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
@@ -106,7 +106,7 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "P330",                   OPT_BOOL,   &P330                  },
+    { "P400",                   OPT_BOOL,   &P400                  },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
     { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
@@ -293,7 +293,7 @@ void action_t::player_buff()
       sanctified_retribution_value = 3;
     }
 
-    if ( sim -> P330 && sim -> auras.arcane_empowerment -> up() )
+    if ( sim -> auras.arcane_empowerment -> up() )
     {
       arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
     }
@@ -1203,8 +1203,8 @@ bool action_t::ready()
     if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
       return false;
 
-  if ( P330 != -1 )
-    if ( P330 != sim -> P330 )
+  if ( P400 != -1 )
+    if ( P400 != sim -> P400 )
       return false;
 
   if ( moving != -1 )

@@ -95,7 +95,7 @@ void spell_t::target_debuff( int dmg_type )
   target_hit += std::max( t -> debuffs.improved_faerie_fire -> value(), t -> debuffs.misery -> value() ) * 0.01;
 
   int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
-                                        t -> debuffs.improved_scorch -> stack() * ( sim -> P330 ? 5 : 1 ) ),
+                                        t -> debuffs.improved_scorch -> stack() *  5 ),
 			                                  t -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 

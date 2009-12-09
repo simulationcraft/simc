@@ -1266,7 +1266,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
   if ( ! p -> active_unholy_blight ) p -> active_unholy_blight = new unholy_blight_t( p );
 
-  double unholy_blight_dmg = death_coil_dmg * ( p -> sim -> P330 ? 0.1 : 0.2 );
+  double unholy_blight_dmg = death_coil_dmg * 0.1;
   if ( p -> active_unholy_blight -> ticking )
   {
     int remaining_ticks = p -> active_unholy_blight -> num_ticks - p -> active_unholy_blight -> current_tick;
@@ -2411,12 +2411,11 @@ struct frost_fever_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 5 + p -> talents.epidemic;
     base_attack_power_multiplier *= 0.055 * 1.15 * ( 1 + 0.04 * p -> talents.impurity );
-    base_multiplier  *= 1.0 + ( ( p -> sim -> P330 && p -> glyphs.icy_touch ) ? 0.2 : 0.0 );
+    base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2;
     tick_power_mod    = 1;
 
-    tick_may_crit     = ( p -> set_bonus.tier9_4pc_melee() != 0 && ! p -> sim -> P330 );
     may_miss          = false;
-    cooldown -> duration          = 0.0;
+    cooldown -> duration = 0.0;
 
     reset();
   }
@@ -2891,9 +2890,6 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     if ( result_is_hit() )
     {
-      if ( ! p -> sim -> P330 && p -> glyphs.icy_touch )
-        p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_glyph_icy_touch );
-
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
 
       if ( ! p -> frost_fever )
@@ -2971,10 +2967,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    if ( sim -> P330 )
-      target_multiplier *= 1 + p -> diseases() * 0.1 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-    else
-      target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+    target_multiplier *= 1 + p -> diseases() * 0.1 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
   virtual void player_buff()
@@ -3067,16 +3060,12 @@ struct pestilence_t : public death_knight_spell_t
     {
       if ( p -> dots_blood_plague -> ticking() )
       {
-        if ( sim -> P330 ) 
-          p -> dots_blood_plague -> action -> player_buff();
-        
+        p -> dots_blood_plague -> action -> player_buff();
         p -> dots_blood_plague -> action -> refresh_duration();
       }
       if ( p -> dots_frost_fever -> ticking() )
       {
-        if ( sim -> P330 ) 
-          p -> dots_frost_fever -> action -> player_buff();
-        
+        p -> dots_frost_fever -> action -> player_buff();
         p -> dots_frost_fever -> action -> refresh_duration();
       }
     }
@@ -3351,7 +3340,7 @@ struct scourge_strike_t : public death_knight_attack_t
     }
   };
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "scourge_strike", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      death_knight_attack_t( "scourge_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.scourge_strike );
@@ -3364,35 +3353,19 @@ struct scourge_strike_t : public death_knight_attack_t
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
-    if ( ! p -> sim -> P330 )
+    static rank_t ranks[] =
     {
-      static rank_t ranks[] =
-      {
-        { 79,  4, 635, 635, 0, -15 },
-        { 73,  3, 528, 528, 0, -15 },
-        { 67,  2, 332, 332, 0, -15 },
-        { 55,  1, 270, 270, 0, -15 },
-        {  0,  0,   0,   0, 0,   0 }
-      };
-      init_rank( ranks, 55271 );
-      weapon_multiplier = 0.40;
-    }
-    else
-    {
-      static rank_t ranks[] =
-      {
-        { 79,  4, 800, 800, 0, -15 },
-        { 73,  3, 653, 653, 0, -15 },
-        { 67,  2, 418, 418, 0, -15 },
-        { 55,  1, 340, 340, 0, -15 },
-        {  0,  0,   0,   0, 0,   0 }
-      };
-      init_rank( ranks, 55271 );
-      scourge_strike_shadow = new scourge_strike_shadow_t( player );
+      { 79,  4, 800, 800, 0, -15 },
+      { 73,  3, 653, 653, 0, -15 },
+      { 67,  2, 418, 418, 0, -15 },
+      { 55,  1, 340, 340, 0, -15 },
+      {  0,  0,   0,   0, 0,   0 }
+    };
+    init_rank( ranks, 55271 );
 
-      stats -> school = school = SCHOOL_PHYSICAL;
-      weapon_multiplier        = 0.50;
-    }
+    scourge_strike_shadow = new scourge_strike_shadow_t( player );
+
+    weapon_multiplier        = 0.50;
     cost_frost = 1;
     cost_unholy = 1;
 
@@ -3414,11 +3387,8 @@ struct scourge_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_t* p = player -> cast_death_knight();
-      if ( p -> sim -> P330 )
-      {
-        scourge_strike_shadow -> base_dd_adder = direct_dmg;
-        scourge_strike_shadow -> execute();
-      }
+      scourge_strike_shadow -> base_dd_adder = direct_dmg;
+      scourge_strike_shadow -> execute();
       
       p -> buffs_sigil_virulence -> trigger();
       if ( p -> talents.dirge )
@@ -3437,14 +3407,6 @@ struct scourge_strike_t : public death_knight_attack_t
             p -> dots_frost_fever -> action -> extend_duration( 1 );
       }
     }
-  }
-
-  void target_debuff( int dmg_type )
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type );
-    if ( ! p -> sim -> P330 )
-      target_multiplier *= 1 + p -> diseases() * 0.10 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 };
 
@@ -4021,7 +3983,7 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
   buffs_bloody_vengeance    = new buff_t( this, "bloody_vengeance",    3,                                30.0,  0.0, talents.bloody_vengeance );
-  buffs_bone_shield         = new buff_t( this, "bone_shield",         4,        ( sim -> P330 ? 300 : 60.0 ),  0.0, talents.bone_shield );
+  buffs_bone_shield         = new buff_t( this, "bone_shield",         4,                               300.0,  0.0, talents.bone_shield );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", 1, 12 + 5 * glyphs.dancing_rune_weapon,  0.0, 1, true ); 
   buffs_desolation          = new buff_t( this, "desolation",          1,                                20.0,  0.0, talents.desolation );
   buffs_deathchill          = new buff_t( this, "deathchill",          1,                                30.0 );

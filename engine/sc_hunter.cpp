@@ -188,7 +188,7 @@ struct hunter_t : public player_t
     active_viper_sting     = 0;
 
     ranged_attack = 0;
-	ammo_dps = sim -> P330 ? 91.5 : 67.5;
+	ammo_dps = 91.5;
     quiver_haste = 1.15;
     summon_pet_str = "wolf";
   }
@@ -364,8 +364,7 @@ struct hunter_pet_t : public pet_t
     {
       talents.call_of_the_wild = 1;
       talents.cobra_reflexes   = 2;
-	  if ( sim -> P330 )
-	    talents.culling_the_herd = 3;
+	  talents.culling_the_herd = 3;
       talents.rabid            = 1;
       talents.spiders_bite     = 3;
       talents.spiked_collar    = 3;
@@ -394,8 +393,7 @@ struct hunter_pet_t : public pet_t
     else if ( group() == PET_CUNNING )
     {
       talents.cobra_reflexes   = 2;
-	  if ( sim -> P330 )
-	    talents.culling_the_herd = 3;
+	  talents.culling_the_herd = 3;
       talents.feeding_frenzy   = 2;
       talents.owls_focus       = 2;
       talents.roar_of_recovery = 1;
@@ -1032,13 +1030,9 @@ struct hunter_pet_attack_t : public attack_t
         p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
-        if ( p -> sim -> P330 )
-          p -> buffs_wolverine_bite -> trigger();
+        
+        p -> buffs_wolverine_bite -> trigger();
       }
-    }
-    else if ( ! p -> sim -> P330 && ( result == RESULT_DODGE ) )
-    {
-      p -> buffs_wolverine_bite -> trigger();
     }
     if ( special )
     {
@@ -1062,7 +1056,7 @@ struct hunter_pet_attack_t : public attack_t
 
     player_multiplier *= 1.0 + p -> buffs_monstrous_bite -> stack() * 0.03;
 
-    if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+    if ( p -> buffs_culling_the_herd -> up() ) 
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
     if ( p -> sim -> target -> health_percentage() < 35 )
@@ -1159,7 +1153,7 @@ struct focus_dump_t : public hunter_pet_attack_t
 
     if ( result == RESULT_CRIT )
     {
-      if ( p -> sim -> P330 && p -> talents.culling_the_herd )
+      if ( p -> talents.culling_the_herd )
       {
         p -> buffs_culling_the_herd -> trigger( 1, p -> talents.culling_the_herd );
         o -> buffs_culling_the_herd -> trigger( 1, p -> talents.culling_the_herd );
@@ -1383,7 +1377,7 @@ struct hunter_pet_spell_t : public spell_t
 
     if ( o -> buffs_cobra_strikes -> up() ) player_crit += 1.0;
 
-    if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+    if ( p -> buffs_culling_the_herd -> up() ) 
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
     if ( p -> buffs_kill_command -> up() )
@@ -1700,7 +1694,7 @@ void hunter_attack_t::player_buff()
   player_multiplier *= 1.0 + p -> active_black_arrow * 0.06;
   player_crit += p -> buffs_master_tactician -> value();
     
-  if ( p -> sim -> P330 && p -> buffs_culling_the_herd -> up() ) 
+  if ( p -> buffs_culling_the_herd -> up() ) 
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
   if ( p -> buffs_tier10_2pc -> up() )
