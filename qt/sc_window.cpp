@@ -139,16 +139,15 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QStringList tokens = encoding.split( ' ' );
   if( tokens.count() >= 9 )
   {
-           patchChoice->setCurrentIndex( tokens[ 0 ].toInt() );
-         latencyChoice->setCurrentIndex( tokens[ 1 ].toInt() );
-      iterationsChoice->setCurrentIndex( tokens[ 2 ].toInt() );
-     fightLengthChoice->setCurrentIndex( tokens[ 3 ].toInt() );
-   fightVarianceChoice->setCurrentIndex( tokens[ 4 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[ 5 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 8 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 9 ].toInt() );
+         latencyChoice->setCurrentIndex( tokens[ 0 ].toInt() );
+      iterationsChoice->setCurrentIndex( tokens[ 1 ].toInt() );
+     fightLengthChoice->setCurrentIndex( tokens[ 2 ].toInt() );
+   fightVarianceChoice->setCurrentIndex( tokens[ 3 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[ 6 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 8 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -189,8 +188,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10" )
-    .arg(         patchChoice->currentIndex() )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
     .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -440,7 +438,6 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 2, "3.2.2", "3.3.0" ) );
   globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
@@ -802,9 +799,6 @@ void SimulationCraftWindow::createResultsTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-  patchChoice->setToolTip( "Live: 3.2.2\n"
-			   "PTR: 3.3.0" );
-
   latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
 			     "High: queue=0.150  gcd=0.300  channel=0.500" );
 
@@ -1080,7 +1074,6 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
-  options += "patch=" + patchChoice->currentText() + "\n";
   if( latencyChoice->currentText() == "Low" )
   {
     options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
