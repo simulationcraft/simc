@@ -1291,7 +1291,7 @@ struct player_t
   std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index, type, level, tank, party, member;
-  double      skill, distance, gcd_ready, base_gcd;
+  double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;

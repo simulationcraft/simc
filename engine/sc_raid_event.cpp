@@ -61,6 +61,44 @@ struct casting_event_t : public raid_event_t
   }
 };
 
+// Distraction ==============================================================
+
+struct distraction_event_t : public raid_event_t
+{
+  double skill;
+
+  distraction_event_t( sim_t* s, const std::string& options_str ) :
+      raid_event_t( s, "distraction" ), skill( 0.2 )
+  {
+    option_t options[] =
+    {
+      { "skill", OPT_FLT, &skill },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+  virtual void start()
+  {
+    raid_event_t::start();
+    int num_affected = ( int )affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      p -> skill -= skill;
+    }
+  }
+  virtual void finish()
+  {
+    int num_affected = ( int ) affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      p -> skill += skill;
+    }
+    raid_event_t::finish();
+  }
+};
+
 // Invulnerable =============================================================
 
 struct invulnerable_event_t : public raid_event_t
@@ -435,6 +473,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 {
   if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
+  if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
   if ( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
   if ( name == "movement"     ) return new     movement_event_t( sim, options_str );

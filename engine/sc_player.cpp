@@ -266,7 +266,7 @@ player_t::player_t( sim_t*             s,
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
     next( 0 ), index( -1 ), type( t ), level( 80 ), tank( -1 ),
     party( 0 ), member( 0 ),
-    skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
+    skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
     // Haste
@@ -1871,6 +1871,8 @@ void player_t::combat_end()
 void player_t::reset()
 {
   if ( sim -> debug ) log_t::output( sim, "Reseting player %s", name() );
+
+  skill = initial_skill;
 
   last_cast = 0;
   gcd_ready = 0;
@@ -3932,7 +3934,7 @@ std::vector<option_t>& player_t::get_options()
       { "race",                                 OPT_STRING,   &( race_str                                     ) },
       { "level",                                OPT_INT,      &( level                                        ) },
       { "tank",                                 OPT_INT,      &( tank                                         ) },
-      { "skill",                                OPT_FLT,      &( skill                                        ) },
+      { "skill",                                OPT_FLT,      &( initial_skill                                ) },
       { "distance",                             OPT_FLT,      &( distance                                     ) },
       { "professions",                          OPT_STRING,   &( professions_str                              ) },
       { "actions",                              OPT_STRING,   &( action_list_str                              ) },

@@ -25,7 +25,7 @@
 #define TAB_BIS        3
 #define TAB_HISTORY    4
 
-#define HISTORY_VERSION "1.5"
+#define HISTORY_VERSION "1.7"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -84,6 +84,7 @@ public:
     QComboBox* fightLengthChoice;
     QComboBox* fightVarianceChoice;
     QComboBox* fightStyleChoice;
+    QComboBox* playerSkillChoice;
     QComboBox* threadsChoice;
     QComboBox* smoothRNGChoice;
     QComboBox* armoryRegionChoice;

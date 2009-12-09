@@ -22,6 +22,8 @@ static OptionEntry* getBuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
+      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
+      { "Heroic Presence",       "override.heroic_presence",        "Draenei Heroic Presence Racial"                                             },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
       { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
       { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
@@ -55,10 +57,12 @@ static OptionEntry* getDebuffOptions()
       { "Boss Attack Speed Slow", "override.thunder_clap",        "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
       { "Boss Hit Reduction",     "override.insect_swarm",        "Insect Swarm\nScorpid Sting"                                      },
       { "Bleed Damage",           "override.mangle",              "Mangle\nTrauma"                                                   },
+      { "Bleeding",               "override.bleeding",            "Rip\nRupture\nPiercing Shots"                                     },
       { "Critical Strike",        "override.totem_of_wrath",      "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
       { "Disease Damage",         "override.crypt_fever",         "Crypt Fever"                                                      },
       { "Mana Restore",           "override.judgement_of_wisdom", "Judgement of Wisdom"                                              },
       { "Physical Damage",        "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
+      { "Poisoned",               "override.poisoned",            "Deadly Poison\nSerpent Sting"                                     },
       { "Ranged Attack Power",    "override.hunters_mark",        "Hunter's Mark"                                                    },
       { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
@@ -117,7 +121,9 @@ static QString defaultSimulateText()
 {
   return QString( "# Profile will be downloaded into here.\n"
 		  "# Use the Back/Forward buttons to cycle through the script history.\n"
-		  "# Use the Up/Down arrow keys to cycle through the command-line history.\n" );
+		  "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
+		  "#\n"
+		  "# Clicking Simulate will create a simc_gui.simc profile for review.\n");
 }
 
 static QComboBox* createChoice( int count, ... )
@@ -137,17 +143,18 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 9 )
+  if( tokens.count() >= 10 )
   {
          latencyChoice->setCurrentIndex( tokens[ 0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[ 1 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[ 2 ].toInt() );
    fightVarianceChoice->setCurrentIndex( tokens[ 3 ].toInt() );
       fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[ 5 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[ 6 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 8 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[ 5 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[ 7 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 8 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 9 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -188,12 +195,13 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10" )
     .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
     .arg(    fightStyleChoice->currentIndex() )
+    .arg(   playerSkillChoice->currentIndex() )
     .arg(       threadsChoice->currentIndex() )
     .arg(     smoothRNGChoice->currentIndex() )
     .arg(  armoryRegionChoice->currentIndex() )
@@ -443,6 +451,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "100%", "90%", "75%", "50%" ) );
   globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
@@ -464,7 +473,7 @@ void SimulationCraftWindow::createBuffsTab()
   for( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i!=0 ) checkBox->setChecked( true );
+    if ( i>2 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );
@@ -485,7 +494,7 @@ void SimulationCraftWindow::createDebuffsTab()
   for( int i=0; debuffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
-    if ( i!=0 ) checkBox->setChecked( true );
+    if ( i>0 ) checkBox->setChecked( true );
     checkBox->setToolTip( debuffs[ i ].tooltip );
     debuffsButtonGroup->addButton( checkBox );
     debuffsLayout->addWidget( checkBox );
@@ -812,7 +821,14 @@ void SimulationCraftWindow::createToolTips()
 				   "the analysis of trinkets and abilities with long cooldowns." );
 
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
-				"Helter Skelter: Movement, Stuns, Interrupts, Target-Switching (every 2min), Adds (20sec every 1min)" );
+				"Helter Skelter:\n"
+				"    Movement, Stuns, Interrupts,\n"
+				"    Target-Switching (every 2min)\n"
+				"    Three Adds (for 20sec every 1min)\n"
+				"    Distraction (10% -skill every other 45sec" );
+
+  playerSkillChoice->setToolTip( "100%: No mistakes.  No cheating either.\n"
+				 " 50%: Frequent DoT-clipping and skipping high-priority abilities." );
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
 			     "Most modern desktops have two at least two CPU cores." );
@@ -1099,7 +1115,12 @@ QString SimulationCraftWindow::mergeOptions()
     options += "raid_events+=/stun,cooldown=60,duration=2\n";
     options += "raid_events+=/invulnerable,cooldown=120,duration=3\n";
     options += "raid_events+=/adds,count=3,cooldown=60,duration=20\n";
+    options += "raid_events+=/distraction,skill=0.2,cooldown=90,duration=45\n";
   }
+  options += "default_skill=";
+  const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
+  options += skill[ playerSkillChoice->currentIndex() ];
+  options += "\n";
   options += "threads=" + threadsChoice->currentText() + "\n";
   options += smoothRNGChoice->currentIndex() ? "smooth_rng=1\n" : "smooth_rng=0\n";
   options += "optimal_raid=0\n";

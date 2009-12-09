@@ -92,6 +92,9 @@ log=1
 # Changing the length of the fight in seconds (defaults to 300)
 max_time=180
 
+# Automatically varying the the length of the fight +/- 20%
+vary_combat_length=0.20
+
 # Turning off all the raid buffs and debuffs (defaults is all on)
 optimal_raid=0
 
@@ -155,6 +158,42 @@ unleashed_rage=1
 windfury_totem=1
 winters_chill=1
 wrath_of_air=1
+
+# Modeling player error.  Valid values of skill range from zero to one (default) with 1.0 being perfect.
+# A skill of 0.80 means that 20% of the time the player will clip the last tick on DoTs and skip higher
+# priority actions in favor of lower priority ones.
+skill=0.8
+
+# Specifying skill for multiple players is possible, but must be done before character creation
+default_skill=0.85
+armory=us,llane,segv
+armory=us,llane,docsuess
+
+# Simulating something other than a tank-and-spank requires use of the raid_events option
+# If cooldown_stddev and/or duration_stddev are not specified, they are assumed to be 10% of cooldown/duration values.
+
+# Every 30sec, the boss is casting something that MUST be interrupted, prompting players to use their interrupt skills
+# The duration of the cast is 3sec and the first one occurs 15sec into fight
+raid_events+=casting,cooldown=30,duration=3,first=15
+
+# Every 30sec, all players are required to move for 5sec
+raid_events+=/movement,cooldown=30,duration=5
+
+# Every 40sec, all players within 5yards are required to move for 7sec
+raid_events+=/movement,cooldown=40,duration=7,distance<=5
+
+# Every 60sec, all players are stunned for 2sec
+raid_events+=/stun,cooldown=60,duration=2
+
+# Every 2min, the target becomes invulnerable, interrupting players and shedding all DoTs
+# This can be used to model target-switching
+raid_events+=/invulnerable,cooldown=120,duration=3
+
+# Every 1min, 3 additional targets are nearby the boss and remain for 20sec
+raid_events+=/adds,count=3,cooldown=60,duration=20
+
+# Every other 45sec, all players are distracted suffering a temporary 20% skill drop
+raid_events+=/distraction,skill=0.2,cooldown=90,duration=45
 
 # Specify the patch level to match PTR (defaults to 3.2.2)
 patch=3.3.0

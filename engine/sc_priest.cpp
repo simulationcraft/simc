@@ -717,12 +717,8 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual void refresh_duration()
   {
-    priest_t* p = player -> cast_priest();
-    
     num_ticks++;
-
     priest_spell_t::refresh_duration();
-
     num_ticks--;
   }
 };
