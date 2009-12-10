@@ -289,6 +289,7 @@ static void register_deathbringers_will( item_t* item )
       case HUNTER:       stats =       hunter_stats; break;
       case PALADIN:      stats =      paladin_stats; break;
       case ROGUE:        stats =        rogue_stats; break;
+      case SHAMAN:       stats =       shaman_stats; break;
       case WARRIOR:      stats =      warrior_stats; break;
       }
 
