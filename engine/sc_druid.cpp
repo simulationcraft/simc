@@ -3710,6 +3710,13 @@ void druid_t::init_rng()
 
 void druid_t::init_actions()
 {
+  if ( primary_role() == ROLE_ATTACK && main_hand_weapon.type == WEAPON_NONE )
+  {
+    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     std::string use_str = "";

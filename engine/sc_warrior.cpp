@@ -2565,6 +2565,13 @@ void warrior_t::init_rng()
 
 void warrior_t::init_actions()
 {
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=hearty_rhino";

@@ -914,7 +914,9 @@ struct lava_lash_t : public shaman_attack_t
     };
     parse_options( options, options_str );
 
-    weapon      = &( player -> off_hand_weapon );
+    weapon = &( player -> off_hand_weapon );
+    if ( weapon -> type == WEAPON_NONE ) background = true; // Do not allow execution.
+
     base_dd_min = base_dd_max = 1;
     may_crit    = true;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
@@ -3228,6 +3230,13 @@ void shaman_t::init_rng()
 
 void shaman_t::init_actions()
 {
+  if ( primary_tree() == TREE_ENHANCEMENT && main_hand_weapon.type == WEAPON_NONE )
+  {
+    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     if ( primary_tree() == TREE_ENHANCEMENT )

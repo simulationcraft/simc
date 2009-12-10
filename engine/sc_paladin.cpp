@@ -2327,6 +2327,13 @@ void paladin_t::init_buffs()
 
 void paladin_t::init_actions()
 {
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   active_holy_shield = new holy_shield_discharge_t( this );
 
   active_seal_of_command_proc       = new seal_of_command_proc_t      ( this );

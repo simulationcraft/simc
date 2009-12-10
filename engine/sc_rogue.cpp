@@ -2108,6 +2108,8 @@ struct shiv_t : public rogue_attack_t
     parse_options( options, options_str );
 
     weapon = &( p -> off_hand_weapon );
+    if ( weapon -> type == WEAPON_NONE ) background = true; // Do not allow execution.
+
     base_cost = 20 + weapon -> swing_time * 10.0;
     adds_combo_points = true;
     base_dd_min = base_dd_max = 1;
@@ -2936,6 +2938,13 @@ int rogue_t::primary_tree() SC_CONST
 
 void rogue_t::init_actions()
 {
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";

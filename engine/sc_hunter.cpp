@@ -3474,6 +3474,13 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
+  if ( ranged_weapon.type != WEAPON_RANGED )
+  {
+    log_t::output( sim, "Player %s does not have a ranged weapon at the Ranged slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage";
