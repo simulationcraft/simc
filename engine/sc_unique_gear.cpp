@@ -277,6 +277,7 @@ static void register_deathbringers_will( item_t* item )
       static int       hunter_stats[] = { STAT_AGILITY,  STAT_CRIT_RATING,  STAT_ATTACK_POWER };
       static int      paladin_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
       static int        rogue_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_ARMOR_PENETRATION_RATING };
+      static int       shaman_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_ARMOR_PENETRATION_RATING };
       static int      warrior_stats[] = { STAT_STRENGTH, STAT_CRIT_RATING,  STAT_ARMOR_PENETRATION_RATING };
 
       int* stats=0;
