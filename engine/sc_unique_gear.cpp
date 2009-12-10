@@ -253,6 +253,53 @@ static void register_deaths_choice( item_t* item )
   p -> register_direct_damage_callback( cb );
 }
 
+// register_deathbringers_will ==============================================
+
+static void register_deathbringers_will( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct deathbringers_will_callback_t : public stat_proc_callback_t
+  {
+    deathbringers_will_callback_t( player_t* p ) :
+      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ) {}
+
+    virtual void trigger( action_t* a )
+    {
+      if ( buff -> cooldown_ready > sim -> current_time ) return;
+
+      static int death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      static int        druid_stats[] = { STAT_STRENGTH, STAT_AGILITY,      STAT_ARMOR_PENETRATION_RATING };
+      static int       hunter_stats[] = { STAT_AGILITY,  STAT_CRIT_RATING,  STAT_ATTACK_POWER };
+      static int      paladin_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      static int        rogue_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_ARMOR_PENETRATION_RATING };
+      static int      warrior_stats[] = { STAT_STRENGTH, STAT_CRIT_RATING,  STAT_ARMOR_PENETRATION_RATING };
+
+      int* stats=0;
+
+      switch( a -> player -> type )
+      {
+      case DEATH_KNIGHT: stats = death_knight_stats;
+      case DRUID:        stats =        druid_stats;
+      case HUNTER:       stats =       hunter_stats;
+      case PALADIN:      stats =      paladin_stats;
+      case ROGUE:        stats =        rogue_stats;
+      case WARRIOR:      stats =      warrior_stats;
+      }
+
+      if ( ! stats ) return;
+
+      buff -> stat = stats[ (int) ( sim -> rng -> real() * 2.999 ) ];
+
+      stat_proc_callback_t::trigger( a );
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringers_will_callback_t( p ) );
+}
+
 // register_empowered_deathbringer ==========================================
 
 static void register_empowered_deathbringer( item_t* item )
@@ -382,9 +429,10 @@ void unique_gear_t::init( player_t* p )
 
     if ( ! strcmp( item.name(), "black_bruise"            ) ) register_black_bruise           ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness" ) ) register_darkmoon_card_greatness( &item );
-    if ( ! strcmp( item.name(), "empowered_deathbringer"  ) ) register_empowered_deathbringer ( &item );
+    if ( ! strcmp( item.name(), "deathbringers_will"      ) ) register_deathbringers_will     ( &item );
     if ( ! strcmp( item.name(), "deaths_choice"           ) ) register_deaths_choice          ( &item );
     if ( ! strcmp( item.name(), "deaths_verdict"          ) ) register_deaths_choice          ( &item );
+    if ( ! strcmp( item.name(), "empowered_deathbringer"  ) ) register_empowered_deathbringer ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"            ) ) register_shadowmourne           ( &item );
   }
 
