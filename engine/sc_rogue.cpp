@@ -226,6 +226,7 @@ struct rogue_t : public player_t
 
     // Options
     critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
+    tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
   }
 
@@ -2318,9 +2319,11 @@ struct shadow_dance_t : public rogue_attack_t
 struct tricks_of_the_trade_t : public rogue_attack_t
 {
   player_t* tricks_target;
+  bool unspecified_target;
 
   tricks_of_the_trade_t( player_t* player, const std::string& options_str ) :
-      rogue_attack_t( "tricks_target", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
+    rogue_attack_t( "tricks_target", player, SCHOOL_PHYSICAL, TREE_SUBTLETY ), 
+    unspecified_target( false )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -2343,6 +2346,11 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     {
       tricks_target = 0;
     }
+    else if ( target_str == "other" )
+    {
+      tricks_target = 0;
+      unspecified_target = true;
+    }
     else if ( target_str == "self" )
     {
       tricks_target = p;
@@ -2361,7 +2369,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     rogue_t* p = player -> cast_rogue();
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
 
     consume_resource();
 
@@ -2370,15 +2377,23 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
     update_ready();
 
-    p -> tricks_of_the_trade_target = tricks_target;
+    if ( ! unspecified_target )
+    {
+      if ( sim -> log ) log_t::output( sim, "%s grants %s Tricks of the Trade", p -> name(), tricks_target -> name() );
+
+      p -> tricks_of_the_trade_target = tricks_target;
+    }
   }
 
   virtual bool ready()
   {
-    if ( ! tricks_target ) return false;
+    if ( ! unspecified_target )
+    {
+      if ( ! tricks_target ) return false;
 
-    if ( tricks_target -> buffs.tricks_of_the_trade -> check() )
-      return false;
+      if ( tricks_target -> buffs.tricks_of_the_trade -> check() )
+	return false;
+    }
 
     return rogue_attack_t::ready();
   }
