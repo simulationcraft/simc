@@ -143,18 +143,19 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 10 )
+  if( tokens.count() >= 11 )
   {
-         latencyChoice->setCurrentIndex( tokens[ 0 ].toInt() );
-      iterationsChoice->setCurrentIndex( tokens[ 1 ].toInt() );
-     fightLengthChoice->setCurrentIndex( tokens[ 2 ].toInt() );
-   fightVarianceChoice->setCurrentIndex( tokens[ 3 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[ 4 ].toInt() );
-     playerSkillChoice->setCurrentIndex( tokens[ 5 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[ 6 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[ 7 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 8 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 9 ].toInt() );
+         latencyChoice->setCurrentIndex( tokens[  0 ].toInt() );
+      iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
+     fightLengthChoice->setCurrentIndex( tokens[  2 ].toInt() );
+   fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
+            addsChoice->setCurrentIndex( tokens[  4 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[  5 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[  6 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[  7 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[  8 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[  9 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 10 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -167,7 +168,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 10; i < tokens.count(); i++)
+  for(int i = 11; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -195,11 +196,12 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
     .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
+    .arg(          addsChoice->currentIndex() )
     .arg(    fightStyleChoice->currentIndex() )
     .arg(   playerSkillChoice->currentIndex() )
     .arg(       threadsChoice->currentIndex() )
@@ -450,6 +452,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "10" ) );
   globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "100%", "90%", "75%", "50%" ) );
   globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
@@ -820,6 +823,11 @@ void SimulationCraftWindow::createToolTips()
   fightVarianceChoice->setToolTip( "Varying the fight length over a given spectrum improves\n"
 				   "the analysis of trinkets and abilities with long cooldowns." );
 
+  addsChoice->setToolTip( "Number of additional targets nearby boss for entire fight.\n"
+			  "See Examples tab for how to use raid_events to summon temporary adds.\n"
+			  "Support for multi-DoT has not yet been implemented.\n"
+			  "Many AoE abilities have not yet been implemented." );
+
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
 				"Helter Skelter:\n"
 				"    Movement, Stuns, Interrupts,\n"
@@ -1108,6 +1116,7 @@ QString SimulationCraftWindow::mergeOptions()
   const char *variance[] = { "0.0", "0.1", "0.2" };
   options += variance[ fightVarianceChoice->currentIndex() ];
   options += "\n";
+  options += "target_adds=" + addsChoice->currentText() + "\n";
   if( fightStyleChoice->currentText() == "Helter Skelter" )
   {
     options += "raid_events=casting,cooldown=30,duration=3,first=15\n";
