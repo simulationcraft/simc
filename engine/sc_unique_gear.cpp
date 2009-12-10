@@ -281,12 +281,12 @@ static void register_deathbringers_will( item_t* item )
 
       switch( a -> player -> type )
       {
-      case DEATH_KNIGHT: stats = death_knight_stats;
-      case DRUID:        stats =        druid_stats;
-      case HUNTER:       stats =       hunter_stats;
-      case PALADIN:      stats =      paladin_stats;
-      case ROGUE:        stats =        rogue_stats;
-      case WARRIOR:      stats =      warrior_stats;
+      case DEATH_KNIGHT: stats = death_knight_stats; break;
+      case DRUID:        stats =        druid_stats; break;
+      case HUNTER:       stats =       hunter_stats; break;
+      case PALADIN:      stats =      paladin_stats; break;
+      case ROGUE:        stats =        rogue_stats; break;
+      case WARRIOR:      stats =      warrior_stats; break;
       }
 
       if ( ! stats ) return;
