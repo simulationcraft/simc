@@ -5,34 +5,32 @@ origin=http://profiler.wowhead.com/?profile=13043847
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
-glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
-actions+=/vampiric_embrace,P330=1
+actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/wild_magic_potion,P330=0
-actions+=/speed_potion,P330=1
+actions+=/speed_potion
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
-actions+=/vampiric_embrace,P330=0
 actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=aurora_of_transcendence,stats=74int_106sta_86crit_76haste_150sp_269armor,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+head=aurora_of_transcendence,stats=269armor_86crit_76haste_150sp_106sta_74int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
 neck=wail_of_the_valkyr,stats=58crit_38haste_89sp_58sta_58int
-shoulders=velens_mantle_of_triumph,stats=77sta_77int_67spi_109sp_59crit_248armor,gems=10crit_12sp_5sp,enchant=24sp_15crit
-chest=velens_raiments_of_triumph,stats=103sta_103int_82spi_140sp_82haste_331armor,gems=23sp_23sp_23sp,enchant=10str_10agi_10sta_10int_10spi
+shoulders=velens_mantle_of_triumph,stats=248armor_59crit_109sp_77sta_77int_67spi,gems=10crit_12sp_5sp,enchant=24sp_15crit
+chest=velens_raiments_of_triumph,stats=331armor_82haste_140sp_103sta_103int_82spi,gems=23sp_23sp_23sp,enchant=10str_10agi_10sta_10int_10spi
 waist=cord_of_biting_cold,stats=186armor_51hit_72crit_109sp_77sta_77int,gems=23sp_23sp
 legs=velens_pants_of_triumph,stats=290armor_90hit_74haste_140sp_103sta_103int,gems=23sp_12sp_10spi_7sp,enchant=50sp_20spi
-feet=sandals_of_the_silver_magus,stats=72sta_70int_104sp_47hit_72crit_228armor,gems=10crit_12sp_23sp_6crit,enchant=15sta
+feet=sandals_of_the_silver_magus,stats=228armor_47hit_72crit_104sp_72sta_70int,gems=10crit_12sp_23sp_6crit,enchant=15sta
 wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=23sp,enchant=30sp
 hands=velens_handwraps_of_triumph,stats=207armor_59hit_67crit_109sp_77sta_77int,gems=10crit_12sp_5sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=10crit_12sp_4crit,enchant=23sp
@@ -40,7 +38,7 @@ finger2=firestorm_ring,stats=56hit_33crit_80sp_54sta_59int,gems=23sp_5sp,enchant
 trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
 back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=23sp,enchant=lightweave_embroidery
-main_hand=enlightenment,stats=73sta_103int_621sp_117haste_122crit,gems=23sp_23sp_23sp,enchant=81sp,weapon=staff_3.10speed_172.5dps
+main_hand=enlightenment,stats=122crit_117haste_621sp_73sta_103int,gems=23sp_23sp_23sp,enchant=81sp,weapon=staff_3.10speed_376.39min_693.39max
 ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int,gems=23sp
 # Gear Summary
 # gear_strength=10
@@ -57,4 +55,4 @@ ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int,gems=23sp
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=pennant_cloak,enchant=lightweave_embroidery
-# main_hand=enlightenment,weapon=staff_3.10speed_172.5dps
+# main_hand=enlightenment,weapon=staff_3.10speed_376.39min_693.39max

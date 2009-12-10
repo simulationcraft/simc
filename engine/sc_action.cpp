@@ -144,7 +144,7 @@ void action_t::parse_options( option_t*          options,
 
   if ( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
   {
-    util_t::fprintf( sim -> output_file, "action_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    util_t::fprintf( sim -> output_file, "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
     sim -> canceled = true;
   }
 }

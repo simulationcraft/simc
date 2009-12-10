@@ -1,9 +1,10 @@
-#!simc
+#!./simc 
 
 # *** Not yet updated ***
 priest=Priest_T9_51_20_00_258
 origin=http://profiler.wowhead.com/?profile=13043863
 level=80
+race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=053320313032051233100320005100555000032
 glyphs=hymn_of_hope/penance/smite/levitate/shadowfiend/fading
 actions=flask,type=frost_wyrm
@@ -21,18 +22,17 @@ actions+=/holy_fire
 actions+=/mind_blast
 actions+=/penance
 actions+=/smite
-actions+=/shadow_word_death
-finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=12sp_10int_4crit,enchant=19sp
-finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=4mp5_12sp_5sp,enchant=19sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+actions+=/shadow_word_death,moving=1
+finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=12sp_10int_4crit,enchant=23sp
+finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=5mp5_12sp_5sp,enchant=23sp
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=9sp_8int_4spi
 # Gear Summary
 # gear_stamina=126
 # gear_intellect=121
 # gear_spirit=65
-# gear_spell_power=270
-# gear_mp5=4
+# gear_spell_power=278
+# gear_mp5=5
 # gear_hit_rating=29
 # gear_crit_rating=170
 # gear_haste_rating=91
-# items=flare_of_the_heavens

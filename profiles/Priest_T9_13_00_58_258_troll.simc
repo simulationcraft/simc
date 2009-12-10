@@ -5,28 +5,26 @@ origin=http://profiler.wowhead.com/?profile=13043848
 level=80
 race=troll
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
-glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
-actions+=/vampiric_embrace,P330=1
+actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/wild_magic_potion,P330=0
-actions+=/speed_potion,P330=1
+actions+=/speed_potion
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
-actions+=/vampiric_embrace,P330=0
 actions+=/berserking
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=aurora_of_transcendence,stats=74int_106sta_86crit_76haste_150sp_269armor,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+head=aurora_of_transcendence,stats=269armor_86crit_76haste_150sp_106sta_74int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
 neck=wail_of_the_valkyr,stats=57crit_43haste_91sp_65sta_65int,gems=10crit_12sp_5sp
 shoulders=velens_mantle_of_triumph,stats=260armor_68crit_124sp_86sta_86int_76spi,gems=10crit_12sp_5sp,enchant=24sp_15crit
 chest=velens_raiments_of_triumph,stats=347armor_94haste_160sp_116sta_116int_94spi,gems=23sp_23sp,enchant=10str_10agi_10sta_10int_10spi
@@ -35,13 +33,13 @@ legs=velens_pants_of_triumph,stats=303armor_102hit_86haste_160sp_116sta_116int,g
 feet=boots_of_the_mourning_widow,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=23sp_23sp,enchant=12crit_12hit
 wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,gems=23sp,enchant=30sp
 hands=velens_handwraps_of_triumph,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=10crit_12sp_5sp,enchant=28sp
-finger1=band_of_deplorable_violence,stats=65sta_50spi_65int_91sp_53crit,gems=10crit_12sp_5sp,enchant=23sp
+finger1=band_of_deplorable_violence,stats=53crit_91sp_65sta_65int_50spi,gems=10crit_12sp_5sp,enchant=23sp
 finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=10crit_12sp_4crit,enchant=23sp
 trinket1=reign_of_the_unliving,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=jainas_radiance,stats=74sta_74int_105sp_65crit_57haste_182armor,gems=23sp_5sp,enchant=lightweave_embroidery
-main_hand=miserys_end,stats=66sta_66int_701sp_44crit_66haste,enchant=63sp,weapon=mace_1.80speed_125.3dps
-off_hand=symbol_of_transgression,stats=65sta_65int_57hit_100sp_57crit
+back=jainas_radiance,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=lightweave_embroidery
+main_hand=miserys_end,stats=44crit_66haste_701sp_66sta_66int,enchant=63sp,weapon=mace_1.80speed_108.12min_342.12max
+off_hand=symbol_of_transgression,stats=57hit_57crit_100sp_65sta_65int
 ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int
 # Gear Summary
 # gear_strength=10
@@ -58,4 +56,4 @@ ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=jainas_radiance,enchant=lightweave_embroidery
-# main_hand=miserys_end,weapon=mace_1.80speed_125.3dps
+# main_hand=miserys_end,weapon=mace_1.80speed_108.12min_342.12max
