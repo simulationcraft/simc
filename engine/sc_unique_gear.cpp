@@ -263,8 +263,10 @@ static void register_deathbringers_will( item_t* item )
 
   struct deathbringers_will_callback_t : public stat_proc_callback_t
   {
-    deathbringers_will_callback_t( player_t* p ) :
-      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ) {}
+    bool heroic;
+
+    deathbringers_will_callback_t( player_t* p, bool h ) :
+      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ), heroic(h) {}
 
     virtual void trigger( action_t* a )
     {
@@ -293,11 +295,22 @@ static void register_deathbringers_will( item_t* item )
 
       buff -> stat = stats[ (int) ( sim -> rng -> real() * 2.999 ) ];
 
+      if ( buff -> stat == STAT_ATTACK_POWER )
+      {
+	buff -> amount = heroic ? 1400 : 1200;
+      }
+      else
+      {
+	buff -> amount = heroic ? 700 : 600;
+      }
+
       stat_proc_callback_t::trigger( a );
     }
   };
 
-  p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringers_will_callback_t( p ) );
+  bool heroic = ( item -> encoded_stats_str != "155arpen" );  // FIXME!! Yuck!
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringers_will_callback_t( p, heroic ) );
 }
 
 // register_empowered_deathbringer ==========================================
