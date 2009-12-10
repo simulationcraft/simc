@@ -1271,8 +1271,16 @@ static void print_html_player( FILE* file, player_t* p )
   if ( p -> sim -> scaling -> has_scale_factors() )
   {
     util_t::fprintf( file, "<table class=\"player\">\n" );
-    util_t::fprintf( file, " <tr> <th>Pawn Standard</th> <td>%s</td> </tr>\n", p -> gear_weights_pawn_std_string.c_str() );
+    util_t::fprintf( file, " <tr> <th>Pawn Standard</th> <td>%s</td> </tr>\n",      p -> gear_weights_pawn_std_string.c_str() );
     util_t::fprintf( file, " <tr> <th>Zero Hit/Expertise</th> <td>%s</td> </tr>\n", p -> gear_weights_pawn_alt_string.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+
+    std::string rhada_std = p -> gear_weights_pawn_std_string;  rhada_std.replace( 2, 8, "RhadaTip" );
+    std::string rhada_alt = p -> gear_weights_pawn_alt_string;  rhada_alt.replace( 2, 8, "RhadaTip" );
+
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>RhadaTip Standard</th> <td>%s</td> </tr>\n",  rhada_std.c_str() );
+    util_t::fprintf( file, " <tr> <th>Zero Hit/Expertise</th> <td>%s</td> </tr>\n", rhada_alt.c_str() );
     util_t::fprintf( file, "</table> <br />\n" );
   }
 
