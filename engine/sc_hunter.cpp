@@ -3474,7 +3474,7 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
-  if ( ranged_weapon.type != WEAPON_RANGED )
+  if ( ranged_weapon.group() != WEAPON_RANGED )
   {
     log_t::output( sim, "Player %s does not have a ranged weapon at the Ranged slot.", name() );
     quiet = true;
