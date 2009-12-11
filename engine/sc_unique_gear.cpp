@@ -264,9 +264,13 @@ static void register_deathbringers_will( item_t* item )
   struct deathbringers_will_callback_t : public stat_proc_callback_t
   {
     bool heroic;
+    rng_t* rng;
 
     deathbringers_will_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ), heroic(h) {}
+      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ), heroic(h) 
+    {
+      rng = p -> get_rng( "deathbringers_will_stat" );
+    }
 
     virtual void trigger( action_t* a )
     {
@@ -295,7 +299,7 @@ static void register_deathbringers_will( item_t* item )
 
       if ( ! stats ) return;
 
-      buff -> stat = stats[ (int) ( sim -> rng -> real() * 2.999 ) ];
+      buff -> stat = stats[ (int) ( rng -> range( 0.0, 2.999 ) ) ];
 
       if ( buff -> stat == STAT_ATTACK_POWER )
       {
@@ -365,6 +369,71 @@ static void register_empowered_deathbringer( item_t* item )
   };
 
   p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringer_callback_t( p, new deathbringer_spell_t( p ) ) );
+}
+
+// register_nibelung ========================================================
+
+static void register_nibelung( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct nibelung_spell_t : public spell_t
+  {
+    nibelung_spell_t( player_t* p ) :
+      spell_t( "valkyr_smite", p, RESOURCE_NONE, SCHOOL_HOLY )
+    {
+      trigger_gcd = 0;
+      background  = true;
+      may_crit = true;
+      base_dd_min = 1050;
+      base_dd_max = 1200;
+      base_crit = 0.05;
+      reset();
+    }
+    virtual void player_buff() {}
+  };
+
+  struct nibelung_event_t : public event_t
+  {
+    spell_t* spell;
+    int remaining;
+
+    nibelung_event_t( sim_t* sim, player_t* p, spell_t* s, int r=20 ) : event_t( sim, p ), spell(s), remaining(r)
+    {
+      name = "nibelung";
+      sim -> add_event( this, 1.5 );
+    }
+    virtual void execute()
+    {
+      spell -> execute();
+      if ( --remaining > 0 ) new ( sim ) nibelung_event_t( sim, player, spell, remaining );
+    }
+  };
+	
+  struct nibelung_callback_t : public action_callback_t
+  {
+    spell_t* spell;
+    rng_t* rng;
+
+    nibelung_callback_t( player_t* p, spell_t* s ) :
+      action_callback_t( p -> sim, p ), spell( s )
+    {
+      rng  = p -> get_rng ( "nibelung" );
+    }
+
+    virtual void trigger( action_t* a )
+    {
+      if ( rng -> roll( 0.01 ) )
+      {
+	if ( sim -> log ) log_t::output( sim, "%s summons a Valkyr from the Halls of Valhalla", a -> player -> name() );
+	new ( sim ) nibelung_event_t( sim, a -> player, spell );
+      }
+    }
+  };
+
+  p -> register_spell_direct_result_callback( RESULT_HIT_MASK, new nibelung_callback_t( p, new nibelung_spell_t( p ) ) );
 }
 
 // register_shadowmourne ====================================================
@@ -448,6 +517,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "deaths_choice"           ) ) register_deaths_choice          ( &item );
     if ( ! strcmp( item.name(), "deaths_verdict"          ) ) register_deaths_choice          ( &item );
     if ( ! strcmp( item.name(), "empowered_deathbringer"  ) ) register_empowered_deathbringer ( &item );
+    if ( ! strcmp( item.name(), "nibelung"                ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"            ) ) register_shadowmourne           ( &item );
   }
 
