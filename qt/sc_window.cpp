@@ -454,7 +454,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "10" ) );
   globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
-  globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "100%", "90%", "75%", "50%" ) );
+  globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
@@ -835,8 +835,8 @@ void SimulationCraftWindow::createToolTips()
 				"    Three Adds (for 20sec every 1min)\n"
 				"    Distraction (10% -skill every other 45sec" );
 
-  playerSkillChoice->setToolTip( "100%: No mistakes.  No cheating either.\n"
-				 " 50%: Frequent DoT-clipping and skipping high-priority abilities." );
+  playerSkillChoice->setToolTip( "Elite:       No mistakes.  No cheating either.\n"
+				 "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
 			     "Most modern desktops have two at least two CPU cores." );
