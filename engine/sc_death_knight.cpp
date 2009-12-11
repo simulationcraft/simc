@@ -3042,6 +3042,7 @@ struct pestilence_t : public death_knight_spell_t
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
+    may_crit = false;
     parse_options( options, options_str );
     
     base_cost     = -10;
@@ -3767,9 +3768,9 @@ void death_knight_t::init_actions()
 
       if ( glyphs.disease )
       {
-        action_list_str += "/icy_touch,frost_fever<=0.1";
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
-        action_list_str += "/pestilence,if=dot.blood_plague.remains<=2|dot.frost_fever.remains<=2";
+        action_list_str += "/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5";
       }
       else
       {
@@ -3794,8 +3795,17 @@ void death_knight_t::init_actions()
       break;
     case TREE_UNHOLY:
       action_list_str += "/raise_dead";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<1";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<1";
+      if ( glyphs.disease )
+      {
+        action_list_str += "if=dot.frost_fever.remains<=0.1";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
+        action_list_str += "/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5";
+      }
+      else
+      {
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+      }
       if ( talents.reaping )
       {
         // 0 Death: Always BS
