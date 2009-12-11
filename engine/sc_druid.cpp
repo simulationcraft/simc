@@ -189,7 +189,9 @@ struct druid_t : public player_t
   struct idols_t
   {
     int corruptor;
+    int crying_moon;
     int crying_wind;
+    int lunar_eclipse;
     int lunar_fury;
     int mutilation;
     int raven_goddess;
@@ -199,8 +201,6 @@ struct druid_t : public player_t
     int terror;
     int unseen_moon;
     int worship;
-    int t10_feral_relic;
-    int t10_balance_relic;
     idols_t() { memset( ( void* ) this, 0x0, sizeof( idols_t ) ); }
   };
   idols_t idols;
@@ -3596,8 +3596,8 @@ void druid_t::init_buffs()
   buffs_terror      = new stat_buff_t( this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
   buffs_unseen_moon = new stat_buff_t( this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
   // PTR Idols
-  buffs_t10_feral_relic   = new stat_buff_t( this, "t10_feral_relic",   STAT_AGILITY,     44, 5, 15.0, 0, idols.t10_feral_relic   );
-  buffs_t10_balance_relic = new stat_buff_t( this, "t10_balance_relic", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.t10_balance_relic );
+  buffs_t10_feral_relic   = new stat_buff_t( this, "crying_moon",   STAT_AGILITY,     44, 5, 15.0, 0, idols.crying_moon   );
+  buffs_t10_balance_relic = new stat_buff_t( this, "lunar_eclipse", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.lunar_eclipse );
 
   // simple
   buffs_bear_form    = new buff_t( this, "bear_form" );
@@ -3629,8 +3629,8 @@ void druid_t::init_items()
   else if ( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
   else if ( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if ( idol == "idol_of_worship"            ) idols.worship = 1;
-  else if ( idol == "idol_of_t10_feral_relic"    ) idols.t10_feral_relic = 1;
-  else if ( idol == "idol_of_t10_balance_relic"  ) idols.t10_balance_relic = 1;
+  else if ( idol == "idol_of_the_crying moon"    ) idols.crying_moon = 1;
+  else if ( idol == "idol_of_the_lunar_eclipse"  ) idols.lunar_eclipse = 1;
   // To prevent warnings....
   else if ( idol == "idol_of_awakening"            ) ;
   else if ( idol == "idol_of_flaring_growth"       ) ;
