@@ -3229,11 +3229,11 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deferred_ignite = get_proc( "deferred_ignite",      sim );
-  procs_munched_ignite  = get_proc( "munched_ignite",       sim );
-  procs_rolled_ignite   = get_proc( "rolled_ignite",        sim );
-  procs_mana_gem        = get_proc( "mana_gem",             sim );
-  procs_tier8_4pc       = get_proc( "tier8_4pc",            sim );
+  procs_deferred_ignite = get_proc( "deferred_ignite" );
+  procs_munched_ignite  = get_proc( "munched_ignite"  );
+  procs_rolled_ignite   = get_proc( "rolled_ignite"   );
+  procs_mana_gem        = get_proc( "mana_gem"        );
+  procs_tier8_4pc       = get_proc( "tier8_4pc"       );
 }
 
 // mage_t::init_uptimes ====================================================

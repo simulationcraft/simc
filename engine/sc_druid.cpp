@@ -3679,10 +3679,10 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points_wasted = get_proc( "combo_points_wasted", sim );
-  procs_parry_haste         = get_proc( "parry_haste",         sim );
-  procs_primal_fury         = get_proc( "primal_fury",         sim );
-  procs_tier8_2pc           = get_proc( "tier8_2pc",           sim );
+  procs_combo_points_wasted = get_proc( "combo_points_wasted" );
+  procs_parry_haste         = get_proc( "parry_haste"         );
+  procs_primal_fury         = get_proc( "primal_fury"         );
+  procs_tier8_2pc           = get_proc( "tier8_2pc"           );
 }
 
 // druid_t::init_uptimes ====================================================

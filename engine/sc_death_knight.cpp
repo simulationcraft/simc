@@ -4060,8 +4060,8 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_abominations_might = get_proc( "abominations_might", sim );
-  procs_sudden_doom        = get_proc( "sudden_doom",        sim );
+  procs_abominations_might = get_proc( "abominations_might" );
+  procs_sudden_doom        = get_proc( "sudden_doom"        );
 }
 
 void death_knight_t::init_resources( bool force )

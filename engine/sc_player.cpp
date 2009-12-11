@@ -17,9 +17,9 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
 
   judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
   {
-    gain = p -> get_gain( "judgement_of_wisdom"      );
-    proc = p -> get_proc( "judgement_of_wisdom", sim );
-    rng  = p -> get_rng ( "judgement_of_wisdom"      );
+    gain = p -> get_gain( "judgement_of_wisdom" );
+    proc = p -> get_proc( "judgement_of_wisdom" );
+    rng  = p -> get_rng ( "judgement_of_wisdom" );
   }
 
   virtual void trigger( action_t* a )
@@ -1012,7 +1012,7 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
-  procs.hat_donor = get_proc( "hat_donor", sim );
+  procs.hat_donor = get_proc( "hat_donor" );
 }
 
 // player_t::init_uptimes ==================================================
@@ -2710,8 +2710,7 @@ gain_t* player_t::get_gain( const std::string& name )
 
 // player_t::get_proc =======================================================
 
-proc_t* player_t::get_proc( const std::string& name,
-                            sim_t*             sim )
+proc_t* player_t::get_proc( const std::string& name )
 {
   proc_t* p=0;
 

@@ -1094,7 +1094,7 @@ void sim_t::merge( sim_t& other_sim )
 
     for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
     {
-      proc -> merge( other_p -> get_proc( proc -> name_str, other_p -> sim ) );
+      proc -> merge( other_p -> get_proc( proc -> name_str ) );
     }
 
     for ( gain_t* gain = p -> gain_list; gain; gain = gain -> next )

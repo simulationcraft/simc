@@ -2531,12 +2531,12 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deferred_deep_wounds = get_proc( "deferred_deep_wounds", sim );
-  procs_munched_deep_wounds  = get_proc( "munched_deep_wounds",  sim );
-  procs_rolled_deep_wounds   = get_proc( "rolled_deep_wounds",   sim );
-  procs_glyph_overpower      = get_proc( "glyph_of_overpower",   sim );
-  procs_parry_haste          = get_proc( "parry_haste",          sim );
-  procs_sword_specialization = get_proc( "sword_specialization", sim );
+  procs_deferred_deep_wounds = get_proc( "deferred_deep_wounds" );
+  procs_munched_deep_wounds  = get_proc( "munched_deep_wounds"  );
+  procs_rolled_deep_wounds   = get_proc( "rolled_deep_wounds"   );
+  procs_glyph_overpower      = get_proc( "glyph_of_overpower"   );
+  procs_parry_haste          = get_proc( "parry_haste"          );
+  procs_sword_specialization = get_proc( "sword_specialization" );
 }
 
 // warrior_t::init_uptimes =====================================================

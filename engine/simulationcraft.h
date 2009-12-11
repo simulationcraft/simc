@@ -1771,7 +1771,7 @@ struct player_t
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name );
   gain_t*     get_gain    ( const std::string& name );
-  proc_t*     get_proc    ( const std::string& name, sim_t* );
+  proc_t*     get_proc    ( const std::string& name );
   stats_t*    get_stats   ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );

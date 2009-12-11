@@ -107,7 +107,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
     spell = new discharge_spell_t( name_str.c_str(), p, min, max, school );
 
-    proc = p -> get_proc( name_str.c_str(), sim );
+    proc = p -> get_proc( name_str.c_str() );
     rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
   }
 
@@ -387,8 +387,8 @@ static void register_nibelung( item_t* item )
       trigger_gcd = 0;
       background  = true;
       may_crit = true;
-      base_dd_min = 1050;
-      base_dd_max = 1200;
+      base_dd_min = 1061;
+      base_dd_max = 1189;
       base_crit = 0.05;
       reset();
     }
@@ -400,10 +400,12 @@ static void register_nibelung( item_t* item )
     spell_t* spell;
     int remaining;
 
-    nibelung_event_t( sim_t* sim, player_t* p, spell_t* s, int r=20 ) : event_t( sim, p ), spell(s), remaining(r)
+    nibelung_event_t( sim_t* sim, player_t* p, spell_t* s, int r=0 ) : event_t( sim, p ), spell(s), remaining(r)
     {
       name = "nibelung";
-      sim -> add_event( this, 1.5 );
+      // Valkyr gets off about 16 casts in 30sec
+      if ( remaining == 0 ) remaining = 16;
+      sim -> add_event( this, 1.875 );
     }
     virtual void execute()
     {
@@ -415,20 +417,30 @@ static void register_nibelung( item_t* item )
   struct nibelung_callback_t : public action_callback_t
   {
     spell_t* spell;
+    proc_t* proc;
     rng_t* rng;
 
     nibelung_callback_t( player_t* p, spell_t* s ) :
       action_callback_t( p -> sim, p ), spell( s )
     {
+      proc = p -> get_proc( "nibelung" );
       rng  = p -> get_rng ( "nibelung" );
     }
 
     virtual void trigger( action_t* a )
     {
+      if (   a -> aoe      ||
+	     a -> proc     ||
+	     a -> dual     ||
+	   ! a -> harmful  ||
+	     a -> pseudo_pet)
+	return;
+
       if ( rng -> roll( 0.01 ) )
       {
 	if ( sim -> log ) log_t::output( sim, "%s summons a Valkyr from the Halls of Valhalla", a -> player -> name() );
 	new ( sim ) nibelung_event_t( sim, a -> player, spell );
+	proc -> occur();
       }
     }
   };

@@ -1662,6 +1662,7 @@ struct fire_nova_t : public shaman_spell_t
     init_rank( ranks );
     
     aoe = true;
+    pseudo_pet = true;
     may_crit = true;
     base_execute_time = 0;
     direct_power_mod  = 0.8 / 3.5;
@@ -1679,15 +1680,10 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual void execute()
   {
-    // Does not proc Elemental Focus or Elemental Devastation but does proc Elemental Oath.
-    spell_t::execute();
-    if ( result_is_hit() )
-    {
-      if ( result == RESULT_CRIT )
-      {
-          trigger_elemental_oath( this );
-      }
-    }
+    shaman_spell_t::execute();
+
+    // Does not proc Elemental Focus or Elemental Devastation (pseudo_pet=true) but does proc Elemental Oath.
+    if ( result == RESULT_CRIT ) trigger_elemental_oath( this );
   }
 
   virtual bool ready()
@@ -3210,8 +3206,8 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_lightning_overload = get_proc( "lightning_overload", sim );
-  procs_windfury           = get_proc( "windfury",           sim );
+  procs_lightning_overload = get_proc( "lightning_overload" );
+  procs_windfury           = get_proc( "windfury"           );
 }
 
 // shaman_t::init_rng ========================================================

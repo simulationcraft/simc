@@ -871,7 +871,7 @@ void rogue_attack_t::player_buff()
   }
   if ( p -> buffs_hunger_for_blood -> up() )
   {
-    player_multiplier *= 1.15 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.10 + p -> glyphs.hunger_for_blood * 0.03;
   }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
@@ -2448,7 +2448,7 @@ void rogue_poison_t::player_buff()
 
   if ( p -> buffs_hunger_for_blood -> up() )
   {
-    player_multiplier *= 1.15 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.10 + p -> glyphs.hunger_for_blood * 0.03;
   }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
@@ -3236,13 +3236,13 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points_wasted  = get_proc( "combo_points_wasted",  sim );
-  procs_deadly_poison        = get_proc( "deadly_poisons",       sim );
-  procs_honor_among_thieves  = get_proc( "honor_among_thieves",  sim );
-  procs_ruthlessness         = get_proc( "ruthlessness",         sim );
-  procs_seal_fate            = get_proc( "seal_fate",            sim );
-  procs_sword_specialization = get_proc( "sword_specialization", sim );
-  procs_tier10_4pc           = get_proc( "tier10_4pc"          , sim );
+  procs_combo_points_wasted  = get_proc( "combo_points_wasted"  );
+  procs_deadly_poison        = get_proc( "deadly_poisons"       );
+  procs_honor_among_thieves  = get_proc( "honor_among_thieves"  );
+  procs_ruthlessness         = get_proc( "ruthlessness"         );
+  procs_seal_fate            = get_proc( "seal_fate"            );
+  procs_sword_specialization = get_proc( "sword_specialization" );
+  procs_tier10_4pc           = get_proc( "tier10_4pc"           );
 }
 
 // rogue_t::init_uptimes =====================================================

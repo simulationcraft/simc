@@ -2103,8 +2103,8 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_parry_haste = get_proc( "parry_haste", sim );
-  procs_tier10_2pc  = get_proc( "tier10_2pc",  sim ); 
+  procs_parry_haste = get_proc( "parry_haste" );
+  procs_tier10_2pc  = get_proc( "tier10_2pc"  ); 
 }
 
 // paladin_t::init_rng ======================================================
