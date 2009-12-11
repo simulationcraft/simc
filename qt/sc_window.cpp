@@ -1167,7 +1167,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
-  for( int i=1; plots[ i ].label; i++ )
+  for( int i=0; plots[ i ].label; i++ )
   {
     if( buttons.at( i )->isChecked() )
     {
