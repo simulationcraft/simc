@@ -3308,6 +3308,7 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_t* p = player -> cast_death_knight();
 
       may_miss    = false;
+      may_crit    = false;
       proc        = true;
       background  = true;
       trigger_gcd = 0;
