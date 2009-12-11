@@ -12,15 +12,19 @@ actions+=/presence,choose=blood
 actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/raise_dead,time>=15,time<=40
-actions+=/raise_dead,bloodlust=1
-actions+=/icy_touch,frost_fever<=2
-actions+=/plague_strike,blood_plague<=2
-actions+=/howling_blast,rime=1,killing_machine=1
+actions+=/raise_dead,if=buff.bloodlust.react
+actions+=/icy_touch,frost_fever<=0.1
+actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
+actions+=/pestilence,if=dot.blood_plague.remains<=2|dot.frost_fever.remains<=2
+actions+=/howling_blast,if=buff.rime.react&buff.killing_machine.react
+actions+=/frost_strike,if=buff.killing_machine.react
+actions+=/deathchill
 actions+=/obliterate
-actions+=/blood_strike,death<=2
+actions+=/blood_strike,blood=2,death<=2
+actions+=/blood_strike,blood=1,death<=1
 actions+=/frost_strike
+actions+=/howling_blast,if=buff.rime.react
 actions+=/empower_rune_weapon
-actions+=/howling_blast,rime=1
 actions+=/horn_of_winter
 head=faceplate_of_thunderous_rampage,stats=2009armor_74crit_82arpen_131str_155sta,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=10crit_10str_4str
@@ -56,5 +60,6 @@ ranged=sigil_of_awareness
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
+# trinket2=deaths_choice
 # main_hand=cudgel_of_the_damned,weapon=mace_2.60speed_394min_732max,enchant=rune_of_the_fallen_crusader
 # off_hand=hellscream_slicer,weapon=axe_2.60speed_394min_732max,enchant=rune_of_razorice

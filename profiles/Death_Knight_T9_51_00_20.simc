@@ -11,12 +11,11 @@ actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
 actions+=/auto_attack
-actions+=/hysteria,bloodlust=1
-actions+=/dancing_rune_weapon,bloodlust=1
-actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:raise_dead,wait_on_ready=0
+actions+=/hysteria,if=buff.bloodlust.react
+actions+=/dancing_rune_weapon,if=buff.bloodlust.react
+actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:blood_strike:raise_dead,wait_on_ready=0
 actions+=/death_coil
 actions+=/sequence,name=blood2,wait_on_ready=1:death_strike:heart_strike:heart_strike:heart_strike:heart_strike
-actions+=/death_coil
 actions+=/restart_sequence,name=blood1
 actions+=/restart_sequence,name=blood2
 head=faceplate_of_thunderous_rampage,stats=2009armor_74crit_82arpen_131str_155sta,gems=relentless_earthsiege_10hit_10str_8str,enchant=50ap_20crit
@@ -52,4 +51,5 @@ ranged=sigil_of_virulence
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
+# trinket2=deaths_choice
 # main_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=rune_of_the_fallen_crusader

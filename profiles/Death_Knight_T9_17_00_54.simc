@@ -1,20 +1,23 @@
 #!./simc 
 
-death_knight=Death_Knight_T9_16_00_55
+death_knight=Death_Knight_T9_17_00_54
 origin=http://profiler.wowhead.com/?profile=18127877
 level=80
 race=tauren
-talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=2304020500000000000000000000000000000000000000000000000002300303350032152000150003133151
-glyphs=the_ghoul/scourge_strike/icy_touch/horn_of_winter/pestilence/raise_dead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=2305020500000000000000000000000000000000000000000000000002302203300032152003150003133151
+glyphs=the_ghoul/disease/icy_touch/horn_of_winter/pestilence/raise_dead
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
 actions+=/auto_attack
+actions+=/bone_shield,if=!in_combat
 actions+=/raise_dead
-actions+=/icy_touch,if=dot.frost_fever.remains<1
-actions+=/plague_strike,if=dot.blood_plague.remains<1
+actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
+actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
+actions+=/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5
 actions+=/blood_strike,death=0
+actions+=/blood_strike,death=1,blood=2
 actions+=/scourge_strike
 actions+=/summon_gargoyle,time<=20
 actions+=/summon_gargoyle,if=buff.bloodlust.react
@@ -53,4 +56,5 @@ ranged=sigil_of_virulence
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
+# trinket2=deaths_choice
 # main_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=rune_of_the_fallen_crusader
