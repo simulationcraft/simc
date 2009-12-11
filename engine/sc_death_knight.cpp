@@ -3798,7 +3798,7 @@ void death_knight_t::init_actions()
       action_list_str += "/raise_dead";
       if ( glyphs.disease )
       {
-        action_list_str += "if=dot.frost_fever.remains<=0.1";
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
         action_list_str += "/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5";
       }
