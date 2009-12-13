@@ -760,18 +760,18 @@ struct buff_t
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
 
-  virtual int    check() { return current_stack; }
-  virtual bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
-  virtual int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  virtual double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
-  virtual double remains();
-  virtual bool   remains_gt( double time );
-  virtual bool   remains_lt( double time );
-  virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
-  virtual void   increment( int stacks=1, double value=-1.0 );
-  virtual void   decrement( int stacks=1, double value=-1.0 );
+  int    check() { return current_stack; }
+  bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
+  int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
+  double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  double remains();
+  bool   remains_gt( double time );
+  bool   remains_lt( double time );
+  bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
+  void   increment( int stacks=1, double value=-1.0 );
+  void   decrement( int stacks=1, double value=-1.0 );
   virtual void   start    ( int stacks=1, double value=-1.0 );
-  virtual void   refresh  ( int stacks=0, double value=-1.0 );
+  void   refresh  ( int stacks=0, double value=-1.0 );
   virtual void   bump     ( int stacks=1, double value=-1.0 );
   virtual void   override ( int stacks=1, double value=-1.0 );
   virtual bool   may_react( int stacks=1 );
