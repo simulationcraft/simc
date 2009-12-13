@@ -16,7 +16,7 @@ target_t::target_t( sim_t* s ) :
     initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 ),
-    adds_nearby( 0 )
+    adds_nearby( 0 ), initial_adds_nearby( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
