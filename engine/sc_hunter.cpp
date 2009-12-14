@@ -1217,6 +1217,8 @@ struct monstrous_bite_t : public hunter_pet_attack_t
     base_cost = 20;
     cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast = true;
+
+    id = 55499;
   }
 
   virtual void execute()
@@ -1254,6 +1256,8 @@ struct savage_rend_t : public hunter_pet_attack_t
 
     // FIXME! Assuming pets are not smart enough to wait for Rake to finish ticking
     dot_behavior = DOT_CLIP;
+
+    id = 53582;
   }
 
   virtual void execute()
@@ -1291,6 +1295,8 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     auto_cast   = true;
 
     may_dodge = may_block = may_parry = false;
+
+    id = 53508;
   }
 
   virtual void execute()
@@ -1413,6 +1419,8 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     direct_power_mod = 1.5 / 3.5;
     cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast = true;
+
+    id = 55492;
   }
 };
 
@@ -1435,6 +1443,8 @@ struct lightning_breath_t : public hunter_pet_spell_t
     direct_power_mod = 1.5 / 3.5;
     cooldown -> duration = 10 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast = true;
+
+    id = 25012;
   }
 };
 
@@ -1456,6 +1466,8 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     cooldown -> duration = 5 * 60 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
+
+    id = 53434;
   }
 
   virtual void execute()
@@ -1487,6 +1499,8 @@ struct furious_howl_t : public hunter_pet_spell_t
     cooldown -> duration = 40 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
+
+    id = 64495;
   }
 
   virtual void execute()
@@ -1520,6 +1534,8 @@ struct rabid_t : public hunter_pet_spell_t
     cooldown -> duration = 45 * ( 1.0 - o -> talents.longevity * 0.10 );
     trigger_gcd = 0.0;
     auto_cast = true;
+
+    id = 53401;
   }
 
   virtual void execute()
@@ -1554,6 +1570,8 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     base_tick_time = 3;
     cooldown -> duration = 360 * ( 1.0 - o -> talents.longevity * 0.10 );
     auto_cast = true;
+
+    id = 53517;
   }
 
   virtual void tick()
@@ -1812,7 +1830,7 @@ struct aimed_shot_t : public hunter_attack_t
       { 60, 6, 150, 150, 0, 0.12 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49050 );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1911,7 +1929,7 @@ struct arcane_shot_t : public hunter_attack_t
       { 60, 8,  200, 200, 0, 0.07 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49045 );
 
     // To trigger ppm-based JoW
     weapon = &( p -> ranged_weapon );
@@ -2008,7 +2026,7 @@ struct black_arrow_t : public hunter_attack_t
       { 50, 1, 0, 0,  785/5.0, 0.06 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 63672 );
 
     base_tick_time   = 3.0;
     num_ticks        = 5;
@@ -2094,6 +2112,8 @@ struct chimera_shot_t : public hunter_attack_t
     {
       cooldown -> duration -= 1;
     }
+
+    id = 53209;
   }
 
   virtual double cost() SC_CONST
@@ -2201,7 +2221,7 @@ struct explosive_tick_t : public hunter_attack_t
       { 60, 1,  160, 192, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 60053 );
 
     // To trigger ppm-based JoW
     weapon = &( p -> ranged_weapon );
@@ -2272,6 +2292,8 @@ struct explosive_shot_t : public hunter_attack_t
     base_tick_time = 1.0;
 
     explosive_tick = new explosive_tick_t( p );
+
+    id = 60053;
   }
 
   virtual double cost() SC_CONST
@@ -2330,7 +2352,7 @@ struct kill_shot_t : public hunter_attack_t
       { 71, 1, 205, 205, 0, 0.07 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 61006 );
 
     parse_options( 0, options_str );
 
@@ -2396,7 +2418,7 @@ struct multi_shot_t : public hunter_attack_t
       { 60, 5, 150, 150, 0, 0.13 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49048 );
 
     parse_options( 0, options_str );
 
@@ -2451,6 +2473,8 @@ struct scatter_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+
+    id = 19503;
   }
 };
 
@@ -2479,6 +2503,8 @@ struct scorpid_sting_t : public hunter_attack_t
     base_multiplier = 0;
 
     observer = &( p -> active_scorpid_sting );
+
+    id = 3043;
   }
 
   virtual void execute()
@@ -2529,7 +2555,7 @@ struct serpent_sting_t : public hunter_attack_t
       { 60, 9,  0, 0,  555/5.0, 0.13 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49001 );
 
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
@@ -2613,6 +2639,8 @@ struct silencing_shot_t : public hunter_attack_t
 
     add_ammunition();
     add_scope();
+
+    id = 34490;
   }
 };
 
@@ -2633,7 +2661,7 @@ struct steady_shot_t : public hunter_attack_t
       { 50, 1,  45,  45, 0, 0.05 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49052 );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -2825,6 +2853,8 @@ struct bestial_wrath_t : public hunter_spell_t
 
     base_cost = 0.10 * p -> resource_base[ RESOURCE_MANA ];
     cooldown -> duration = ( 120 - p -> glyphs.bestial_wrath * 20 ) * ( 1 - p -> talents.longevity * 0.1 );
+
+    id = 19574;
   }
 
   virtual void execute()
@@ -2865,6 +2895,8 @@ struct hunters_mark_t : public hunter_spell_t
 
     ap_bonus *= 1.0 + p -> talents.improved_hunters_mark * 0.10
                 + ( p -> glyphs.hunters_mark ? 0.20 : 0 );
+
+    id = 53338;
   }
 
   virtual void execute()
@@ -2902,6 +2934,8 @@ struct kill_command_t : public hunter_spell_t
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.03;
     cooldown -> duration  = 60 - 10 * p -> talents.catlike_reflexes;
     trigger_gcd = 0;
+
+    id = 34026;
   }
 
   virtual void execute()
@@ -2947,6 +2981,8 @@ struct rapid_fire_t : public hunter_spell_t
     cooldown -> duration -= p -> talents.rapid_killing * 60;
     trigger_gcd = 0.0;
     harmful = false;
+
+    id = 34026;
   }
 
   virtual void execute()
@@ -3012,6 +3048,8 @@ struct readiness_t : public hunter_spell_t
     cooldown_list.push_back( p -> get_cooldown( "silencing_shot"   ) );
     cooldown_list.push_back( p -> get_cooldown( "kill_command"     ) );
     cooldown_list.push_back( p -> get_cooldown( "rapid_fire"       ) );
+
+    id = 3045;
   }
 
   virtual void execute()
@@ -3079,6 +3117,8 @@ struct trueshot_aura_t : public hunter_spell_t
     check_talent( p -> talents.trueshot_aura );
     trigger_gcd = 0;
     harmful = false;
+
+    id = 19506;
   }
 
   virtual void execute()
