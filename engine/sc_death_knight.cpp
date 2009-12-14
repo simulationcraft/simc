@@ -47,7 +47,6 @@ struct dk_rune_t
     type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
   }
 
-  void refund()   { cooldown_ready = 0; type  = ( type & RUNE_TYPE_MASK ) | ( ( type >> 1 ) & RUNE_TYPE_DEATH ); }
   void reset()    { cooldown_ready = -RUNE_GRACE_PERIOD - 1; type  = type & RUNE_TYPE_MASK;                               }
 };
 
@@ -1030,14 +1029,6 @@ static void refund_power( action_t* a )
   if ( a -> resource_consumed > 0 )
     p -> resource_gain( RESOURCE_RUNIC, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains_power_refund );
 }
-// Refund Runes =============================================================
-static void refund_runes( player_t* player, const bool* use )
-{
-  death_knight_t* p = player -> cast_death_knight();
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if ( use[i] ) p -> _runes.slot[i].refund();
-}
-
 
 // ==========================================================================
 // Triggers
@@ -1330,13 +1321,17 @@ void death_knight_attack_t::consume_resource()
   double gain = -cost();
   if ( gain > 0 )
   {
-    // calculate_result() gets called before consume_resourcs()
     if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
   }
-  else 
+  else
+  {
     attack_t::consume_resource();
+  }
 
-  consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+  if ( result_is_hit() )
+    consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+  else
+    refund_power( this );
 }
 
 // death_knight_attack_t::execute() =========================================
@@ -1353,11 +1348,6 @@ void death_knight_attack_t::execute()
 
     if ( result == RESULT_CRIT )
       p -> buffs_bloody_vengeance -> trigger( 1, p -> talents.bloody_vengeance * 0.01);
-  }
-  else
-  {
-    refund_power( this );
-    refund_runes( p, use );
   }
 }
 
@@ -1582,13 +1572,17 @@ void death_knight_spell_t::consume_resource()
   double gain = -cost();
   if ( gain > 0 )
   {
-    // calculate_result() gets called before consume_resourcs()
     if ( result_is_hit() ) p -> resource_gain( resource, gain, p -> gains_rune_abilities );
   }
-  else 
+  else
+  {
     spell_t::consume_resource();
+  }
   
-  consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+  if ( result_is_hit() )
+    consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+  else
+    refund_power( this );
 }
 
 // death_knight_spell_t::xecute() ==========================================
@@ -1605,11 +1599,6 @@ void death_knight_spell_t::execute()
     {
       p -> buffs_bloody_vengeance -> trigger();
     }
-  }
-  else
-  {
-    refund_power( this );
-    refund_runes( p, use );
   }
 }
 
@@ -2031,7 +2020,6 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2047,8 +2035,6 @@ struct blood_strike_t : public death_knight_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
-        group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
       }
@@ -2298,7 +2284,6 @@ struct death_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2319,8 +2304,6 @@ struct death_strike_t : public death_knight_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
-        group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
       }
@@ -2531,7 +2514,6 @@ struct frost_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -2540,7 +2522,6 @@ struct frost_strike_t : public death_knight_attack_t
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
         weapon = &( p -> off_hand_weapon );
-        may_miss = may_dodge = false;
         death_knight_attack_t::execute();
       }
     p -> buffs_killing_machine -> expire();
@@ -2986,7 +2967,6 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -3016,8 +2996,6 @@ struct obliterate_t : public death_knight_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
       {
-        group_runes( p, 0, 0, 0, use );
-        may_miss = may_dodge = false;
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
         if ( p -> buffs_rime -> trigger() ) 
@@ -3112,7 +3090,6 @@ struct plague_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-    may_miss = may_dodge = true;
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
 
@@ -3123,8 +3100,6 @@ struct plague_strike_t : public death_knight_attack_t
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
         if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
         {
-          group_runes( p, 0, 0, 0, use );
-          may_miss = may_dodge = false;
           weapon = &( p -> off_hand_weapon );
           death_knight_attack_t::execute();
         }
