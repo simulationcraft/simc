@@ -296,6 +296,8 @@ struct water_elemental_pet_t : public pet_t
       base_dd_max        = 328 + ( player -> level - 50 ) * 11.5;
       direct_power_mod   = ( 5.0 / 6.0 );
       may_crit           = true;
+
+      id = 31707;
     }
     virtual void player_buff()
     {
@@ -1168,7 +1170,7 @@ struct arcane_barrage_t : public mage_spell_t
       { 60, 1, 386,  470, 0, 0.18 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 44781 );
 
     base_execute_time = 0;
     may_crit          = true;
@@ -1233,7 +1235,7 @@ struct arcane_blast_t : public mage_spell_t
       { 64, 1, 842,  978,  0, 195  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42897 );
 
     base_cost *= 0.88;
 
@@ -1323,7 +1325,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
       { 60,  8, 230, 230, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42846 );
 
     dual       = true;
     background = true;
@@ -1403,6 +1405,8 @@ struct arcane_missiles_t : public mage_spell_t
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
 
     arcane_missiles_tick = new arcane_missiles_tick_t( p );
+
+    id = 42846;
   }
 
   virtual void consume_resource()
@@ -1480,6 +1484,8 @@ struct arcane_power_t : public mage_spell_t
     trigger_gcd = 0;
     cooldown -> duration = 120.0;
     cooldown -> duration *= 1.0 - p -> talents.arcane_flows * 0.15;
+
+    id = 12042;
   }
 
   virtual void execute()
@@ -1502,6 +1508,8 @@ struct slow_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.slow );
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
+
+    id = 31589;
   }
 
   virtual void execute()
@@ -1571,6 +1579,8 @@ struct focus_magic_t : public mage_spell_t
     focus_magic_cb = new focus_magic_feedback_callback_t( p );
     focus_magic_cb -> active = false;
     focus_magic_target -> register_spell_result_callback( RESULT_CRIT_MASK, focus_magic_cb );
+
+    id = 54646;
   }
 
   virtual void execute()
@@ -1629,6 +1639,8 @@ struct evocation_t : public mage_spell_t
     cooldown -> duration -= p -> talents.arcane_flows * 60.0;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
+
+    id = 12051;
   }
 
   virtual void tick()
@@ -1683,6 +1695,8 @@ struct presence_of_mind_t : public mage_spell_t
     fast_action = p -> create_action( spell_name.c_str(), spell_options.c_str() );
     fast_action -> base_execute_time = 0;
     fast_action -> background = true;
+
+    id = 12043;
   }
 
   virtual void execute()
@@ -1740,7 +1754,7 @@ struct fire_ball_t : public mage_spell_t
       { 60, 11, 561,  715, 18, 395  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42833 );
 
     may_crit          = true;
     base_execute_time = 3.5;
@@ -1849,7 +1863,7 @@ struct fire_blast_t : public mage_spell_t
       { 54,  7, 431,  509, 0, 340  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42873 );
 
     base_execute_time = 0;
     may_crit          = true;
@@ -1901,7 +1915,7 @@ struct living_bomb_t : public mage_spell_t
       { 60, 1, 306, 306, 153, 0.27 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 55360 );
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
@@ -1997,7 +2011,7 @@ struct pyroblast_t : public mage_spell_t
       { 60,  8,  708,  898, 45, 440  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42891 );
 
     base_execute_time = 5.0;
     base_tick_time    = 3.0;
@@ -2085,7 +2099,7 @@ struct scorch_t : public mage_spell_t
       { 58,  7, 233, 275, 0, 150  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42859 );
 
     base_execute_time = 1.5;
     may_crit          = true;
@@ -2153,6 +2167,8 @@ struct combustion_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.combustion );
     cooldown -> duration = 180;
+
+    id = 11129;
   }
 
   virtual void execute()
@@ -2164,7 +2180,7 @@ struct combustion_t : public mage_spell_t
   }
 };
 
-// Frost Bolt Spell =========================================================
+// Frostbolt Spell ==========================================================
 
 struct frost_bolt_t : public mage_spell_t
 {
@@ -2198,7 +2214,7 @@ struct frost_bolt_t : public mage_spell_t
       { 44, 8,  292, 316, 0, 195 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42842 );
 
     base_execute_time = 3.0;
     may_crit          = true;
@@ -2293,7 +2309,7 @@ struct ice_lance_t : public mage_spell_t
       { 66, 1, 161, 187, 0, 150 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 42914 );
 
     base_execute_time = 0.0;
     may_crit          = true;
@@ -2378,7 +2394,7 @@ struct deep_freeze_t : public mage_spell_t
       { 60, 1, 1469, 1741, 0, 0.09 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 44572 );
 
     base_dd_min      += ( player -> level - 60 ) * 45;
     base_dd_max      += ( player -> level - 60 ) * 45;
@@ -2457,7 +2473,7 @@ struct frostfire_bolt_t : public mage_spell_t
       { 75, 1, 629, 731, 20, 0.14 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47610 );
 
     base_execute_time = 3.0;
     may_crit          = true;
@@ -2552,6 +2568,8 @@ struct icy_veins_t : public mage_spell_t
     trigger_gcd = 0;
     cooldown -> duration  = 180.0;
     cooldown -> duration *= 1.0 - p -> talents.ice_floes * ( 0.20 / 3.0 );
+
+    id = 12472;
   }
 
   virtual void execute()
@@ -2596,6 +2614,8 @@ struct cold_snap_t : public mage_spell_t
     cooldown_list.push_back( p -> get_cooldown( "deep_freeze"     ) );
     cooldown_list.push_back( p -> get_cooldown( "icy_veins"       ) );
     cooldown_list.push_back( p -> get_cooldown( "water_elemental" ) );
+
+    id = 11958;
   }
 
   virtual void execute()
@@ -2620,6 +2640,8 @@ struct molten_armor_t : public mage_spell_t
       mage_spell_t( "molten_armor", player, SCHOOL_FIRE, TREE_FIRE )
   {
     trigger_gcd = 0;
+    
+    id = 43046;
   }
 
   virtual void execute()
@@ -2645,6 +2667,8 @@ struct mage_armor_t : public mage_spell_t
       mage_spell_t( "mage_armor", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     trigger_gcd = 0;
+
+    id = 43024;
   }
 
   virtual void execute()
@@ -2674,6 +2698,8 @@ struct arcane_brilliance_t : public mage_spell_t
     trigger_gcd = 0;
 
     bonus = util_t::ability_rank( player -> level,  60.0,80,  40.0,70,  31.0,0 );
+
+    id = 43002;
   }
 
   virtual void execute()
@@ -2715,6 +2741,8 @@ struct counterspell_t : public mage_spell_t
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
     base_spell_power_multiplier = 0;
     cooldown -> duration = 24;
+
+    id = 2139;
   }
 
   virtual bool ready()
@@ -2755,6 +2783,8 @@ struct water_elemental_spell_t : public mage_spell_t
     }
 
     harmful = false;
+
+    id = 31867;
   }
 
   virtual void execute()
@@ -2797,6 +2827,8 @@ struct mirror_image_spell_t : public mage_spell_t
     cooldown -> duration = 180;
     trigger_gcd = 1;
     harmful = false;
+
+    id = 55342;
   }
 
   virtual void execute()
@@ -2860,6 +2892,7 @@ struct mana_gem_t : public action_t
     cooldown -> duration = 120.0;
     trigger_gcd = 0;
     harmful = false;
+
   }
 
   virtual void execute()
