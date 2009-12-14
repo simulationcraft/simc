@@ -564,6 +564,10 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
     player -> register_tick_damage_callback( cb );
     player -> register_direct_damage_callback( cb );
   }
+  else if ( type == PROC_TICK )
+  {
+    player -> register_tick_callback( cb );
+  }
   else if ( type == PROC_ATTACK )
   {
     player -> register_attack_result_callback( mask, cb );
@@ -700,6 +704,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "sundial_of_the_exiled"           ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "wrath_of_cenarius"               ) e = "OnSpellHit_132SP_5%_10Dur";
 
+  // Some Normal/Heroic items have same name
+  else if ( name == "phylactery_of_the_nameless_lich" ) e = ( id == "50360" ? "OnTick_918SP_10%_20Dur_90Cd" : "OnTick_1032SP_10%_20Dur_90Cd" );
+
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object" ) e = ( id == "50353" ? "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" );
 
@@ -714,30 +721,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving" ) e = ( id == "47182" ? "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"     ) e = ( id == "47316" ? "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" );
-  
-  /* Icecrown Trinkets, names currently not known but the spells are. The % and 
-     Cd values are assumptions taken from other trinkets with similar procs
-  else if ( name == "" ) e = "OnSpellHit_18SP_10Stack_10Dur";
-  else if ( name == "" ) e = "OnSpellHit_20SP_10Stack_10Dur";
-  else if ( name == "" ) e = "OnTick_910SP_10%_45Cd";
-  else if ( name == "" ) e = "OnSpellHit_100MP5_10%_45Cd_15Dur";
-  else if ( name == "" ) e = "OnAttackHit_1250AP_10%_10Dur_50Cd";
-  
-  * PTR trinkets where it's not fully clear how to function or how they determine
-    which of theirs buffs they procc
-  
-  * Item - Icecrown 25 Normal Caster Trinket 1 Base - Your harmful spells 
-    have a chance to increase your spell power by 32 and an additional 32
-    every 2 sec for 20 sec.
-    Stacks itself over time? Have to see PTR.
-  
-  * Your attacks have a chance to awaken the powers of the races of Northrend,
-    temporarily transforming you and increasing your combat capabilities for 
-    30 sec.
-    There are _6_ buffs associated to this proc:
-    +600 Agi/Str/ArPen/Crit/Haste and +1200 AP (heroic: +700/+1400)
-    Have to see if it is random or not at which buffs it procs.
-  */
 
   // Enchants
   else if ( name == "lightweave"            ) e = "OnSpellHit_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
