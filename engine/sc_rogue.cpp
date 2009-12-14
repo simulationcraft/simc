@@ -131,6 +131,7 @@ struct rogue_t : public player_t
     int ghostly_strike;
     int heightened_senses;
     int hemorrhage;
+    int honor_among_thieves;
     int hunger_for_blood;
     int improved_ambush;
     int improved_eviscerate;
@@ -173,7 +174,6 @@ struct rogue_t : public player_t
     int vile_poisons;
     int vitality;
     int weapon_expertise;
-    int honor_among_thieves;
 
     // NYI
     int setup;
@@ -415,6 +415,8 @@ static void trigger_apply_poisons( rogue_attack_t* a )
     p -> active_wound_poison -> execute();
   }
 }
+
+// trigger_other_poisons ===================================================
 
 static void trigger_other_poisons( rogue_t* p, weapon_t* other_w )
 {
@@ -1134,6 +1136,8 @@ struct adrenaline_rush_t : public rogue_attack_t
 
     trigger_gcd = 0;
     cooldown -> duration = 180;
+
+    id = 13750;
   }
 
   virtual void execute()
@@ -1169,7 +1173,7 @@ struct ambush_t : public rogue_attack_t
       { 58,  6, 116, 116, 0, 60 },
       {  0,  0,   0,   0, 0,  0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48691 );
 
     weapon = &( p -> main_hand_weapon );
     may_crit               = true;
@@ -1218,7 +1222,7 @@ struct backstab_t : public rogue_attack_t
       { 60,  9, 150, 150, 0, 60 },
       {  0,  0,   0,   0, 0,  0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48657 );
 
     weapon = &( p -> main_hand_weapon );
     may_crit               = true;
@@ -1281,6 +1285,8 @@ struct blade_flurry_t : public rogue_attack_t
 
     base_cost = p -> glyphs.blade_flurry ? 0 : 25;
     cooldown -> duration  = 120;
+
+    id = 13877;
   }
 
   virtual void execute()
@@ -1328,6 +1334,8 @@ struct envenom_t : public rogue_attack_t
     dose_dmg = ( p -> level >= 80 ? 215 :
                  p -> level >= 74 ? 175 :
                  p -> level >= 69 ? 147 : 117 );
+
+    id = 57993;
   }
 
   virtual void execute()
@@ -1441,6 +1449,8 @@ struct eviscerate_t : public rogue_attack_t
                         p -> level >= 73 ? dmg_73 :
                         p -> level >= 64 ? dmg_64 :
                         dmg_60 );
+
+    id = 48668;
   }
 
   virtual void execute()
@@ -1490,6 +1500,8 @@ struct expose_armor_t : public rogue_attack_t
     base_cost = 25 - p -> talents.improved_expose_armor * 5;
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
+
+    id = 8647;
   }
 
   virtual void execute()
@@ -1543,6 +1555,8 @@ struct feint_t : public rogue_attack_t
 
     base_cost = p -> glyphs.feint ? 10 : 20;
     cooldown -> duration = 10;
+
+    id = 48659;
   }
 
   virtual void execute()
@@ -1577,7 +1591,7 @@ struct garrote_t : public rogue_attack_t
       { 70,  8, 0, 0, 102, 50 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48676 );
 
     // it uses a weapon (for poison app)
     weapon = &( p -> main_hand_weapon );
@@ -1642,6 +1656,8 @@ struct ghostly_strike_t : public rogue_attack_t
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
+
+    id = 14278;
   }
 
   virtual void player_buff()
@@ -1687,6 +1703,8 @@ struct hemorrhage_t : public rogue_attack_t
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
 
     if ( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
+
+    id = 48660;
   }
 
   virtual void execute()
@@ -1731,6 +1749,8 @@ struct hunger_for_blood_t : public rogue_attack_t
     parse_options( options, options_str );
 
     base_cost = 15.0;
+    
+    id = 51662;
   }
 
   virtual void execute()
@@ -1775,6 +1795,8 @@ struct kick_t : public rogue_attack_t
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0;
     cooldown -> duration = 10;
+
+    id = 1766;
   }
 
   virtual bool ready()
@@ -1833,6 +1855,8 @@ struct killing_spree_t : public rogue_attack_t
     if ( p -> glyphs.killing_spree ) cooldown -> duration -= 45;
 
     killing_spree_tick = new killing_spree_tick_t( p );
+
+    id = 51690;
   }
 
   virtual void execute()
@@ -1903,7 +1927,7 @@ struct mutilate_t : public rogue_attack_t
       { 60, 3,  88,  88, 0, 60 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48666 );
 
     may_crit               = true;
     requires_weapon        = WEAPON_DAGGER;
@@ -1975,6 +1999,8 @@ struct premeditation_t : public rogue_attack_t
 
     requires_stealth = true;
     cooldown -> duration = 20;
+
+    id = 14183;
   }
 
   virtual void execute()
@@ -2032,6 +2058,8 @@ struct rupture_t : public rogue_attack_t
                         dmg_60 );
 
     observer = &( p -> active_rupture );
+
+    id = 48672;
   }
 
   virtual void execute()
@@ -2082,6 +2110,8 @@ struct shadowstep_t : public rogue_attack_t
     trigger_gcd = 0;
     base_cost = 10;
     cooldown -> duration = 30;
+
+    id = 36554;
   }
 
   virtual void execute()
@@ -2120,6 +2150,8 @@ struct shiv_t : public rogue_attack_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
     may_crit = false;
+
+    id = 5938;
   }
 
   virtual void execute()
@@ -2161,7 +2193,7 @@ struct sinister_strike_t : public rogue_attack_t
       { 54,  8,  68,  68, 0, 45 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48638 );
 
     weapon = &( p -> main_hand_weapon );
     may_crit               = true;
@@ -2220,6 +2252,8 @@ struct slice_and_dice_t : public rogue_attack_t
 
     requires_combo_points = true;
     base_cost = 25;
+
+    id = 6774;
   }
 
   virtual void execute()
@@ -2302,6 +2336,8 @@ struct shadow_dance_t : public rogue_attack_t
 
     trigger_gcd = 0;
     cooldown -> duration = 60;
+
+    id = 51713;
   }
 
   virtual void execute()
@@ -2362,6 +2398,8 @@ struct tricks_of_the_trade_t : public rogue_attack_t
       assert ( tricks_target != 0 );
       assert ( tricks_target != player );
     }
+
+    id = 57934;
   }
 
   virtual void execute()
@@ -2415,6 +2453,8 @@ struct vanish_t : public rogue_attack_t
 
     trigger_gcd = 0;
     cooldown -> duration = 180 - 30 * p -> talents.elusiveness;
+
+    id = 26889;
   }
 
   virtual void execute()
@@ -2489,6 +2529,8 @@ struct anesthetic_poison_t : public rogue_poison_t
     direct_power_mod = 0;
     base_dd_min      = util_t::ability_rank( p -> level,  218,77,  134,68,  0,0 );
     base_dd_max      = util_t::ability_rank( p -> level,  280,77,  172,68,  0,0 );
+
+    id = 57982;
   }
 
   virtual void execute()
@@ -2517,6 +2559,8 @@ struct deadly_poison_t : public rogue_poison_t
     base_tick_time = 3.0;
     tick_power_mod = 0.12 / num_ticks;
     base_td_init   = util_t::ability_rank( p -> level,  296,80,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
+
+    id = 57972;
   }
 
   virtual void execute()
@@ -2612,6 +2656,8 @@ struct instant_poison_t : public rogue_poison_t
     direct_power_mod = 0.10;
     base_dd_min      = util_t::ability_rank( p -> level,  300,79,  245,73,  161,68,  76,0 );
     base_dd_max      = util_t::ability_rank( p -> level,  400,79,  327,73,  215,68,  100,0 );
+
+    id = 57967;
   }
 
   virtual void execute()
@@ -2655,6 +2701,8 @@ struct wound_poison_t : public rogue_poison_t
     may_crit         = true;
     direct_power_mod = .04;
     base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
+
+    id = 57978;
   }
 
   virtual void execute()
@@ -2818,6 +2866,8 @@ struct cold_blood_t : public spell_t
 
     trigger_gcd = 0;
     cooldown -> duration = 180;
+
+    id = 14177;
   }
 
   virtual void execute()
@@ -2859,6 +2909,8 @@ struct preparation_t : public spell_t
     {
       cooldown_list.push_back( p -> get_cooldown( "blade_flurry" ) );
     }
+
+    id = 14185;
   }
 
   virtual void execute()
@@ -2884,6 +2936,8 @@ struct stealth_t : public spell_t
     spell_t( "stealth", player ), used(false)
   {
     trigger_gcd = 0;
+
+    id = 1784;
   }
 
   virtual void execute()
