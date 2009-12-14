@@ -200,7 +200,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
   }
   if ( c == '!' ) 
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; return TOK_NOTEQ; }
+    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_NOTEQ; }
     return TOK_NOT;
   }
   if ( c == '=' ) 
@@ -210,12 +210,12 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
   }
   if ( c == '<' )
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; return TOK_LTEQ; }
+    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_LTEQ; }
     return TOK_LT;
   }
   if ( c == '>' )
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; return TOK_GTEQ; }
+    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_GTEQ; }
     return TOK_GT;
   }
   if ( c == '(' ) return TOK_LPAR;
@@ -296,6 +296,7 @@ static void convert_to_unary( action_t* action, std::vector<token_t>& tokens )
 
     if ( i > 0 )
       if ( tokens[ i-1 ].type == TOK_NUM ||
+	   tokens[ i-1 ].type == TOK_STR ||
 	   tokens[ i-1 ].type == TOK_RPAR )
 	left_side = true;
 
@@ -434,6 +435,8 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   parse_tokens( action, tokens, expr_str );
 
+  if ( action -> sim -> debug ) print_tokens( tokens );
+
   convert_to_unary( action, tokens );
 
   if ( action -> sim -> debug ) print_tokens( tokens );
@@ -444,6 +447,8 @@ action_expr_t* action_expr_t::parse( action_t* action,
     action -> sim -> canceled = true;
     return 0;
   }
+
+  if ( action -> sim -> debug ) print_tokens( tokens );
 
   action_expr_t* e = build_expression_tree( action, tokens );
 
