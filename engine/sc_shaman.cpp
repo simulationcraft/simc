@@ -1232,23 +1232,22 @@ struct chain_lightning_t : public shaman_spell_t
 
     if ( clearcasting > 0 )
       if ( ! p -> buffs_elemental_focus -> check() )
-	return false;
+	    return false;
 
     if ( conserve > 0 )
     {
       double mana_pct = 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max [ RESOURCE_MANA ];
-
-      if ( ! p -> buffs_elemental_focus -> check() && ( mana_pct < sim -> target -> health_percentage() ) )
-	return false;
+      if ( ( mana_pct - 5.0 ) < sim -> target -> health_percentage() )
+	    return false;
     }
 
     if ( maelstrom > 0 )
       if ( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
-	return false;
+	    return false;
 
     if ( max_lvb_cd > 0  )
       if ( p -> cooldowns_lava_burst -> remains() > ( max_lvb_cd * haste() ) )
-	return false;
+	    return false;
 
     return shaman_spell_t::ready();
   }
