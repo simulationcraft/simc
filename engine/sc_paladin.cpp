@@ -541,7 +541,7 @@ struct avengers_shield_t : public paladin_attack_t
       { 70, 3,  796,  972, 0, 0.26 },
       { 60, 2,  601,  733, 0, 0.26 },
     };
-    init_rank( ranks );
+    init_rank( ranks, 48827 );
 
     trigger_seal = true;
 
@@ -594,6 +594,8 @@ struct crusader_strike_t : public paladin_attack_t
     if ( p -> glyphs.crusader_strike ) base_cost *= 0.80;
 
     if ( p -> librams.radiance ) base_dd_adder += 79;
+
+    id = 35395;
   }
 
   virtual void execute()
@@ -650,6 +652,8 @@ struct divine_storm_t : public paladin_attack_t
 
     if ( p -> librams.discord                ) base_dd_adder += 235;
     if ( p -> librams.venture_co_retribution ) base_dd_adder += 81;
+
+    id = 53385;
   }
 
   virtual void execute()
@@ -687,6 +691,8 @@ struct hammer_of_justice_t : public paladin_attack_t
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
 
     cooldown -> duration = 60 - p -> talents.improved_hammer_of_justice * 10;
+
+    id = 10308;
   }
 
   virtual bool ready()
@@ -721,6 +727,8 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
     if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
+
+    id = 53595;
   }
 
   virtual void execute()
@@ -757,7 +765,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
       { 68, 4,  733,  809, 0, 0.12 },
       { 60, 3,  570,  628, 0, 0.14 },
     };
-    init_rank( ranks );
+    init_rank( ranks, 48806 );
 
     may_parry = false;
     may_dodge = false;
@@ -814,7 +822,7 @@ struct shield_of_righteousness_t : public paladin_attack_t
       { 80, 2, 520, 520, 0, 0.06 },
       { 75, 1, 390, 390, 0, 0.06 },
     };
-    init_rank( ranks );
+    init_rank( ranks, 61411 );
 
     may_parry = false;
     may_dodge = false;
@@ -908,6 +916,8 @@ struct seal_of_command_proc_t : public paladin_attack_t
     weapon_multiplier = 0.36;
     base_multiplier  *= 1.0 + ( p -> talents.judgements_of_the_pure * 0.05 +
                                 p -> set_bonus.tier10_4pc_melee()   * 0.10 );
+
+    id = 20424;
   }
 };
 
@@ -974,6 +984,8 @@ struct seal_of_justice_proc_t : public paladin_attack_t
     background  = true;
     proc        = true;
     trigger_gcd = 0;
+
+    id = 20164;
   }
   virtual void execute() 
   {
@@ -1029,6 +1041,8 @@ struct seal_of_light_proc_t : public paladin_attack_t
 
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
+
+    id = 20165;
   }
 
   virtual void execute()
@@ -1095,6 +1109,8 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10;
 
     if ( p -> librams.divine_purpose ) base_spell_power += 94;
+
+    id = 21084;
   }
 };
 
@@ -1159,6 +1175,7 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+
   }
 
   virtual void player_buff()
@@ -1228,6 +1245,8 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
                                p -> set_bonus.tier10_4pc_melee()        * 0.10 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
+
+    id = 31801;
   }
 };
 
@@ -1282,6 +1301,8 @@ struct seal_of_wisdom_proc_t : public paladin_attack_t
     background  = true;
     proc        = true;
     trigger_gcd = 0;
+
+    id = 21066;
   }
 
   virtual void execute()
@@ -1514,6 +1535,8 @@ struct avenging_wrath_t : public paladin_spell_t
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     base_cost *= 1.0 - p -> talents.benediction * 0.02;
     cooldown -> duration = 180 - 30 * p -> talents.sanctified_wrath;
+
+    id = 31884;
   }
 
   virtual void execute()
@@ -1541,7 +1564,7 @@ struct consecration_tick_t : public paladin_spell_t
       { 60, 5,  56,  56, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48819 );
 
     aoe        = true;
     dual       = true;
@@ -1594,6 +1617,8 @@ struct consecration_t : public paladin_spell_t
     }
 
     consecration_tick = new consecration_tick_t( p );
+
+    id = 48819;
   }
 
   // Consecration ticks are modeled as "direct" damage, requiring a dual-spell setup.
@@ -1624,6 +1649,8 @@ struct divine_favor_t : public paladin_spell_t
     harmful = false;
     trigger_gcd = 0;
     cooldown -> duration = 120;
+
+    id = 20216;
   }
 
   virtual void execute()
@@ -1653,6 +1680,8 @@ struct divine_illumination_t : public paladin_spell_t
     harmful = false;
     trigger_gcd = 0;
     cooldown -> duration = 180;
+
+    id = 31842;
   }
 
   virtual void execute()
@@ -1680,6 +1709,8 @@ struct divine_plea_t : public paladin_spell_t
     harmful = false;
     trigger_gcd = 0;
     cooldown -> duration = 60;
+
+    id = 54428;
   }
 
   virtual void execute()
@@ -1725,7 +1756,7 @@ struct exorcism_t : public paladin_spell_t
       { 60, 6,  564,  628, 0, 0.08 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48801 );
 
     may_crit = true;
     base_execute_time = 1.5;
@@ -1806,7 +1837,7 @@ struct holy_shield_discharge_t : public paladin_spell_t
       { 60, 3, 157, 157, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48952 );
 
     proc = true;
     background = true;
@@ -1831,6 +1862,8 @@ struct holy_shield_t : public paladin_spell_t
 
     harmful  = false;
     cooldown -> duration = 8;
+
+    id = 48952;
   }
 
   virtual void execute()
@@ -1872,7 +1905,7 @@ struct holy_shock_t : public paladin_spell_t
       { 64, 4,  693,  749, 0, 0.21 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48825 );
 
     may_crit         = true;
     direct_power_mod = 1.5/3.5;
@@ -1925,7 +1958,7 @@ struct holy_wrath_t : public paladin_spell_t
       { 60, 2,  551,  649, 0, 0.24 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 48817 );
 
     aoe = true;
     may_crit = true;
