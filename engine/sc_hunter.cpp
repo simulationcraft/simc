@@ -203,6 +203,7 @@ struct hunter_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_scaling();
+  virtual void      init_unique_gear();
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
@@ -3508,6 +3509,58 @@ void hunter_t::init_scaling()
   if ( talents.hunter_vs_wild ) scales_with[ STAT_STAMINA ] = 1;
 
   scales_with[ STAT_EXPERTISE_RATING ] = 0;
+}
+
+// hunter_t::init_unique_gear ================================================
+
+void hunter_t::init_unique_gear()
+{
+  player_t::init_unique_gear();
+
+  item_t* item = find_item( "zods_repeating_longbow" );
+
+  if ( item )  // FIXME! I wish this could be pulled out...
+  {
+    item -> unique = true;
+
+    struct zods_quick_shot_t : public hunter_attack_t
+    {
+      zods_quick_shot_t( hunter_t* p ) : hunter_attack_t( "zods_quick_shot", p, SCHOOL_PHYSICAL )
+      {
+	weapon = &( p -> ranged_weapon );
+	normalize_weapon_speed = true;
+	weapon_multiplier *= 0.5;
+	may_crit    = true;
+	background  = true;
+	trigger_gcd = 0;
+	base_cost   = 0;
+	base_dd_min = 1;
+	base_dd_max = 1;
+	base_multiplier *= p -> ranged_weapon_specialization_multiplier();
+	base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots * 0.06 );
+	add_ammunition();
+	add_scope();
+      }
+    };
+
+    struct zods_trigger_t : public action_callback_t
+    {
+      attack_t* attack;
+      rng_t* rng;
+      zods_trigger_t( player_t* p, attack_t* a ) : action_callback_t( p -> sim, p ), attack(a) 
+      {
+	rng = p -> get_rng( "zods_repeating_longbow" );
+      }
+      virtual void trigger( action_t* a )
+      {
+	if ( ! a -> weapon ) return;
+	if ( a -> weapon -> slot != SLOT_RANGED ) return;
+	if ( rng -> roll( 0.04 ) ) attack -> execute();
+      }
+    };
+
+    register_attack_result_callback( RESULT_ALL_MASK, new zods_trigger_t( this, new zods_quick_shot_t( this ) ) );
+  }
 }
 
 // hunter_t::init_actions ====================================================

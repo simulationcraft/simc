@@ -196,9 +196,12 @@ static bool parse_weapon( item_t&     item,
   std::string tti_speed, tti_dps, tti_dmg;
 
   if ( ! get_tti_value( tti_speed, node, "tti-speed" ) ||
-       ! get_tti_value( tti_dps,   node, "tti-dps"   ) ||
-       ! get_tti_value( tti_dmg,   node, "tti-dmg"   ) )
+       ! get_tti_value( tti_dps,   node, "tti-dps"   ) )
     return true;
+
+  if ( ! get_tti_value( tti_dmg, node, "tti-dmg" ) )
+    if ( ! get_tti_value( tti_dmg, node, "tti-damage" ) )
+      return true;
 
   std::string speed_str, dps_str, dmg_min_str, dmg_max_str;
 

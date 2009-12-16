@@ -313,7 +313,7 @@ struct warlock_pet_t : public pet_t
     base_spell_crit  = 0.0092;
     
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = owner -> initial_attack_crit_per_agility;
+    initial_attack_crit_per_agility   = 0.01 / 52.0;
     initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
 
     health_per_stamina = 10;
@@ -802,7 +802,6 @@ struct felhunter_pet_t : public warlock_pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = 0.01 / 52.0;
 
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
