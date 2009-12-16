@@ -2017,16 +2017,12 @@ void player_t::schedule_ready( double delta_time,
       }
       else if ( last_foreground_action -> channeled )
       {
-        double delta = sim -> channel_lag_stddev * 2.0;
-        lag = rngs.lag_channel -> range( sim -> channel_lag - delta, sim -> channel_lag + delta );
+        lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_stddev );
       }
       else
       {
-        double gcd_delta = sim -> gcd_lag_stddev * 2.0;
-        double gcd_lag = rngs.lag_gcd -> range( sim -> gcd_lag - gcd_delta, sim -> gcd_lag + gcd_delta );
-
-        double queue_delta = sim -> queue_lag_stddev * 2.0;
-        double queue_lag = rngs.lag_queue -> range( sim -> queue_lag - queue_delta, sim -> queue_lag + queue_delta );
+        double   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        double queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
 	double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
