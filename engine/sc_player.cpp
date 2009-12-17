@@ -3792,7 +3792,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
   if ( save_type == SAVE_ALL )
   {
     profile_str += util_t::player_type_string( type ); profile_str += "=" + name_str + "\n";
-    profile_str += "origin=" + origin_str + "\n";
+    profile_str += "origin=\"" + origin_str + "\"\n";
     profile_str += "level=" + util_t::to_string( level ) + "\n";
     profile_str += "race=" + race_str + "\n";
 
