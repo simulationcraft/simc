@@ -866,7 +866,7 @@ void action_t::assess_damage( double amount,
 
   if ( aoe && sim -> target -> adds_nearby )
   {
-    for ( int i=0; i < sim -> target -> adds_nearby; i++ )
+    for ( int i=0; i < sim -> target -> adds_nearby && i < 9; i++ )
     {
       additional_damage( amount, dmg_type );
     }
