@@ -25,7 +25,7 @@
 #define TAB_BIS        3
 #define TAB_HISTORY    4
 
-#define HISTORY_VERSION "2.0"
+#define HISTORY_VERSION "2.1"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;

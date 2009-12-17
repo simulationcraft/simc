@@ -77,6 +77,8 @@ static OptionEntry* getScalingOptions()
   static OptionEntry options[] =
     {
       { "Analyze All Stats",                "",      "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
+      { "Use Positive Deltas Only",         "",      "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
+                                                     "This option forces a positive scale delta, which is useful for classes with soft caps." },
       { "Analyze Strength",                 "str",   "Calculate scale factors for Strength"                 },
       { "Analyze Agility",                  "agi",   "Calculate scale factors for Agility"                  },
       { "Analyze Stamina",                  "sta",   "Calculate scale factors for Stamina"                  },
@@ -452,7 +454,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "10" ) );
+  globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
   globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
   globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
@@ -1151,11 +1153,12 @@ QString SimulationCraftWindow::mergeOptions()
     options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
   }
-  options += "calculate_scale_factors=1\n";
-  options += "scale_only=none";
   buttons = scalingButtonGroup->buttons();
+  options += "calculate_scale_factors=1\n";
+  if( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
+  options += "scale_only=none";
   OptionEntry* scaling = getScalingOptions();
-  for( int i=1; scaling[ i ].label; i++ )
+  for( int i=2; scaling[ i ].label; i++ )
   {
     if( buttons.at( i )->isChecked() )
     {
@@ -1560,7 +1563,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
-  for( int i=1; i < count; i++ )
+  for( int i=2; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }

@@ -58,6 +58,7 @@ scaling_t::scaling_t( sim_t* s ) :
   scale_value( 0 ),
   calculate_scale_factors( 0 ),
   center_scale_delta( 0 ),
+  positive_scale_delta( 0 ),
   scale_lag( 0 ),
   scale_factor_noise( 0.0 ),
   normalize_scale_factors( 0 ),
@@ -114,9 +115,19 @@ void scaling_t::init_deltas()
 
   if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  75 :  150;
   if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  75 :  150;
-  if ( stats.expertise_rating         == 0 ) stats.expertise_rating         =  smooth_scale_factors ? -50 : -100;
 
-  if ( stats.hit_rating   == 0 ) stats.hit_rating   = smooth_scale_factors ? -50 : -100;
+  if ( stats.expertise_rating == 0 ) 
+  {
+    stats.expertise_rating =  smooth_scale_factors ? -50 : -100;
+    if ( positive_scale_delta ) stats.expertise_rating *= -1;
+  }
+
+  if ( stats.hit_rating == 0 ) 
+  {
+    stats.hit_rating = smooth_scale_factors ? -50 : -100;
+    if ( positive_scale_delta ) stats.hit_rating *= -1;
+  }
+
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
   if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
 
@@ -360,6 +371,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "normalize_scale_factors",        OPT_BOOL,   &( normalize_scale_factors              ) },
     { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
     { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
+    { "positive_scale_delta",           OPT_BOOL,   &( positive_scale_delta                 ) },
     { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
     { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
     { "scale_strength",                 OPT_FLT,    &( stats.attribute[ ATTR_STRENGTH  ]    ) },

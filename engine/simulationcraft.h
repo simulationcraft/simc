@@ -1105,6 +1105,7 @@ struct scaling_t
   double scale_value;
   int    calculate_scale_factors;
   int    center_scale_delta;
+  int    positive_scale_delta;
   int    scale_lag;
   double scale_factor_noise;
   int    normalize_scale_factors;
