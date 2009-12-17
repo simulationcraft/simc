@@ -87,7 +87,7 @@ struct patch_t
 };
 
 #define SC_MAJOR_VERSION "330"
-#define SC_MINOR_VERSION "4"
+#define SC_MINOR_VERSION "5"
 
 // Forward Declarations ======================================================
 
