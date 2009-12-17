@@ -709,7 +709,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";
 
   // Some Normal/Heroic items have same name
-  else if ( name == "phylactery_of_the_nameless_lich" ) e = ( id == "50360" ? "OnTick_918SP_10%_20Dur_90Cd" : "OnTick_1032SP_10%_20Dur_90Cd" );
+  else if ( name == "phylactery_of_the_nameless_lich" ) e = ( id == "50360" ? "OnTick_918SP_10%_20Dur_90Cd"       : "OnTick_1032SP_10%_20Dur_90Cd"      );
+  else if ( name == "whispering_fanged_skull"         ) e = ( id == "50342" ? "OnAttackHit_1110AP_35%_15Dur_45Cd" : "OnAttackHit_1250AP_35%_15Dur_45Cd" );
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object" ) e = ( id == "50353" ? "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" );
