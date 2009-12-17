@@ -770,75 +770,77 @@ const char* chart_t::gains( std::string& s,
 
 // chart_t::scale_factors ====================================================
 
+struct compare_scale_factors
+{
+  player_t* player;
+  compare_scale_factors( player_t* p ) : player(p) {}
+  bool operator()( const int& l, const int& r ) SC_CONST
+  {
+    return( player -> scaling.get_stat( l ) > 
+	    player -> scaling.get_stat( r ) );
+  }
+};
+
 const char* chart_t::scale_factors( std::string& s,
                                     player_t* p )
 {
-  double max_factor=0;
+  std::vector<int> scaling_stats;
+
+  for( int i=0; i < STAT_MAX; i++ )
+  {
+    if( p -> scales_with[ i ] )
+    {
+      float s = p -> scaling.get_stat( i );
+      
+      if ( s > 0 ) scaling_stats.push_back( i );
+    }
+  }
+
+  int num_scaling_stats = scaling_stats.size();
+  if ( num_scaling_stats == 0 ) return 0;
+
+  std::sort( scaling_stats.begin(), scaling_stats.end(), compare_scale_factors( p ) );
+
+  double max_scale_factor = p -> scaling.get_stat( scaling_stats[ 0 ] );
 
   char buffer[ 1024 ];
 
-  if ( ! p -> sim -> scaling -> calculate_scale_factors ) return 0;
-
-  int been_there = 0;
-  // TODO: this code shouldn't be needed, but Qt sets calculate_scale_factors even if it's not calculating for any particular stat
-  for( int i=0; i < STAT_MAX; i++ )
-  {
-    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
-    {
-      been_there = 1;
-    }
-  }
-  if ( ! been_there ) return 0;
-
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=500x250";
+  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_scaling_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
-  s += "cht=gom";
-
+  s += "cht=bhg";
   s += "&amp;";
   s += "chd=t:";
-  been_there = 0;
-  for( int i=0; i < STAT_MAX; i++ )
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
-    if ( i == STAT_WEAPON_DPS ||
-	 i == STAT_WEAPON_SPEED ||
-	 i == STAT_WEAPON_OFFHAND_DPS ||
-	 i == STAT_WEAPON_OFFHAND_SPEED )
-      continue;
-
-    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
-    {
-      if( max_factor < p -> scaling.get_stat( i ) ) { max_factor = p -> scaling.get_stat( i ); }
-      snprintf( buffer, sizeof( buffer ), "%s%.*f", (been_there++?",":""), p -> sim -> report_precision, p -> scaling.get_stat( i ) );
-      s += buffer;
-    }
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?"|":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
-
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_factor );
-  s += buffer;
-
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_scale_factor * 2 ); s += buffer;
   s += "&amp;";
-  s += "chl=";
-  been_there = 0;
-  for( int i=0; i < STAT_MAX; i++ )
+  s += "chco=";
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
-    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0.0001 )
-    {
-      snprintf( buffer, sizeof( buffer ), "%s%s", (been_there++?"|":""), util_t::stat_type_abbrev( i ) );
-      s += buffer;
-    }
+    if ( i ) s += ",";
+    s += class_color( p -> type );
   }
-
+  s += "&amp;";
+  s += "chm=";
+  for ( int i=0; i < num_scaling_stats; i++ )
+  {
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
+    snprintf( buffer, sizeof( buffer ), "%st++%.*f++%s,%s,%d,0,15", ( i?"|":"" ), 
+	      p -> sim -> report_precision, factor, name, class_text_color( p -> type ), i ); s += buffer;
+  }
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale Factors", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale+Factors", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
-  s += "&amp;";
-  s += "chls=6";
-  
+
   return s.c_str();
 }
 
