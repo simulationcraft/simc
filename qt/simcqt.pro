@@ -23,5 +23,5 @@ macx {
 	CONFIG += x86 x86_64
 	ICON = icon/simc.icns
 	OBJECTIVE_SOURCES += sc_mac_update.mm
-	LIBS += -framework Sparkle
+	LIBS += -framework Sparkle -framework AppKit
 }
