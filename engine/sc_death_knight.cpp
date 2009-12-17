@@ -3792,12 +3792,14 @@ void death_knight_t::init_actions()
         // 2 Death: With reaping we only use BS to convert
         action_list_str += "/blood_strike,death=0";
         action_list_str += "/blood_strike,death=1,blood=2";
+	action_list_str += "/scourge_strike";
       }
       else
       {
+        action_list_str += "/blood_strike,if=!buff.desolation.up";
+	action_list_str += "/scourge_strike";
         action_list_str += "/blood_strike";
       }
-      action_list_str += "/scourge_strike";
       if ( talents.summon_gargoyle )
       {
         action_list_str += "/summon_gargoyle,time<=20";
