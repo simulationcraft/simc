@@ -3629,7 +3629,7 @@ void druid_t::init_items()
   else if ( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
   else if ( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
   else if ( idol == "idol_of_worship"            ) idols.worship = 1;
-  else if ( idol == "idol_of_the_crying moon"    ) idols.crying_moon = 1;
+  else if ( idol == "idol_of_the_crying_moon"    ) idols.crying_moon = 1;
   else if ( idol == "idol_of_the_lunar_eclipse"  ) idols.lunar_eclipse = 1;
   // To prevent warnings....
   else if ( idol == "idol_of_awakening"            ) ;
