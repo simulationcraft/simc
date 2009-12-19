@@ -1120,11 +1120,7 @@ static void trigger_everlasting_affliction( spell_t* s )
 
   if ( p -> rng_everlasting_affliction -> roll( p -> talents.everlasting_affliction * 0.20 ) )
   {
-    if ( p -> glyphs.quick_decay )
-    {
-      assert( p -> active_corruption -> snapshot_haste > 0.0 );
-	    p -> active_corruption -> num_ticks = ( int ) floor( 6.0 / p -> active_corruption -> snapshot_haste );
-    }
+    p -> active_corruption -> snapshot_haste = p -> composite_spell_haste();
     p -> active_corruption -> refresh_duration();
   }
 }
@@ -1649,6 +1645,7 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> buffs_shadow_embrace -> trigger();
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talents.improved_shadow_bolt / 5.0 );
       trigger_soul_leech( this );
+      trigger_everlasting_affliction( this );
     }
     p -> buffs_tier7_2pc_caster -> expire();
   }
@@ -2113,6 +2110,16 @@ struct drain_soul_t : public warlock_spell_t
     health_multiplier = ( rank -> level >= 6 ) ? 1 : 0;
 
     observer = &( p -> active_drain_soul );
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      warlock_t* p = player -> cast_warlock();
+      trigger_everlasting_affliction( this );
+    }
   }
 
   virtual void tick()
