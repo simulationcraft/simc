@@ -1010,7 +1010,7 @@ void action_t::refresh_duration()
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
     // from the time of the next tick and add the time for the remaining ticks to that event.
 
-    double duration = tick_event -> time + base_tick_time * ( num_ticks - 1 );
+    double duration = tick_event -> time + tick_time() * ( num_ticks - 1 );
 
     dot -> start( this, duration );
   }
