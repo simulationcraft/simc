@@ -15,7 +15,7 @@ actions+=/raise_dead,time>=15,time<=40
 actions+=/raise_dead,if=buff.bloodlust.react
 actions+=/icy_touch,,if=dot.frost_fever.remains<=0.1
 actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
-actions+=/pestilence,if=dot.blood_plague.remains<=2|dot.frost_fever.remains<=2
+actions+=/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5
 actions+=/howling_blast,if=buff.rime.react&buff.killing_machine.react
 actions+=/frost_strike,if=buff.killing_machine.react
 actions+=/deathchill

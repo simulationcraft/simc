@@ -42,8 +42,18 @@ struct dk_rune_t
   void consume( double current_time, double cooldown, bool convert )
   {
     assert ( current_time >= cooldown_ready );
-
-    cooldown_ready = ( current_time <= ( cooldown_ready + RUNE_GRACE_PERIOD ) ? cooldown_ready : current_time ) + cooldown;
+    // First use triggers full cd, after that it is like this:
+    // How does ImpUP interact?
+    // Rune used instantly when it comes back: 10s cd
+    // Rune used 1s after it comes back:        9s cd 
+    // Rune used 2s after it comes back:        8s cd 
+    // Rune used >2s after it comes back:       8s cd 
+    if ( cooldown_ready == -1 ) // First use
+    	cooldown_ready = current_time + cooldown;
+    else if ( cooldown_ready + RUNE_GRACE_PERIOD > current_time ) // 10s - 8s cd
+    	cooldown_ready = cooldown_ready + cooldown;
+    else // >2s rune came back
+      cooldown_ready = current_time + cooldown - RUNE_GRACE_PERIOD;
     type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
   }
 
@@ -109,7 +119,7 @@ struct death_knight_t : public player_t
   gain_t* gains_scent_of_blood;
 
   // Procs
-  proc_t* procs_abominations_might;
+  proc_t* procs_glyph_of_disease;
   proc_t* procs_sudden_doom;
 
   // RNGs
@@ -3037,6 +3047,7 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( result_is_hit() && p -> glyphs.disease )
     {
+      p -> procs_glyph_of_disease -> occur();
       if ( p -> dots_blood_plague -> ticking() )
       {
         p -> blood_plague -> execute();
@@ -4040,7 +4051,7 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_abominations_might = get_proc( "abominations_might" );
+  procs_glyph_of_disease   = get_proc( "glyph_of_disease"   );
   procs_sudden_doom        = get_proc( "sudden_doom"        );
 }
 
