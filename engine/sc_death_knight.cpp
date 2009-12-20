@@ -57,7 +57,7 @@ struct dk_rune_t
     type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
   }
 
-  void reset()    { cooldown_ready = -RUNE_GRACE_PERIOD - 1; type  = type & RUNE_TYPE_MASK;                               }
+  void reset()    { cooldown_ready = -1; type  = type & RUNE_TYPE_MASK;                               }
 };
 
 // ==========================================================================
@@ -982,10 +982,14 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     if ( use[i] )
     {
-      if ( p -> sim -> log ) 
-        log_t::output( p -> sim, "%s consumes rune #%d, type %d", p -> name(), i, p -> _runes.slot[i].type );
-
+    	// Show the consumed type of the rune
+    	// Not the type it is after consumption
+    	int consumed_type = p -> _runes.slot[i].type;
       p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+
+      if ( p -> sim -> log ) 
+        log_t::output( p -> sim, "%s consumes rune #%d, type %d, %.2f", p -> name(), i, consumed_type, p -> _runes.slot[i].cooldown_ready );
+
     }
 
   if ( count_runes( p ) == 0 )
