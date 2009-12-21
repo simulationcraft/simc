@@ -2013,10 +2013,10 @@ struct blood_strike_t : public death_knight_attack_t
 
     base_crit += p -> talents.subversion * 0.03;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
-                                      + p -> talents.guile_of_gorefiend * 0.15
-                                      + p -> talents.blood_of_the_north / 3.0;
+                                      + p -> talents.guile_of_gorefiend * 0.15;
 
-    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
+    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
+                         + p -> talents.blood_of_the_north * 0.10;
     
     convert_runes = p -> talents.blood_of_the_north / 3.0
                   + p -> talents.reaping / 3.0;
@@ -2592,7 +2592,7 @@ struct heart_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.5;
 
     base_crit += p -> talents.subversion * 0.03;
-    base_crit_bonus_multiplier *= 1.0 * p -> talents.might_of_mograine * 0.15;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
     base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07;
     check_talent( p -> talents.heart_strike );
@@ -3723,7 +3723,7 @@ void death_knight_t::init_actions()
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":death_strike";
-      action_list_str += ":blood_strike";
+      action_list_str += ":heart_strike";
       action_list_str += ":raise_dead,wait_on_ready=0";
       action_list_str += "/death_coil";
       action_list_str += "/sequence,name=blood2,wait_on_ready=1";
