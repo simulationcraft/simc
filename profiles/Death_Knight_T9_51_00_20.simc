@@ -13,7 +13,7 @@ actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/hysteria,if=buff.bloodlust.react
 actions+=/dancing_rune_weapon,if=buff.bloodlust.react
-actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:blood_strike:raise_dead,wait_on_ready=0
+actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:heart_strike:raise_dead,wait_on_ready=0
 actions+=/death_coil
 actions+=/sequence,name=blood2,wait_on_ready=1:death_strike:heart_strike:heart_strike:heart_strike:heart_strike
 actions+=/restart_sequence,name=blood1
