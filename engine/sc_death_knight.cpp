@@ -4190,7 +4190,7 @@ void death_knight_t::regen( double periodicity )
 int death_knight_t::primary_tree() SC_CONST
 {
   if ( talents.heart_strike   ) return TREE_BLOOD;
-  if ( talents.frost_strike   ) return TREE_FROST;
+  if ( talents.frost_strike || talents.howling_blast  ) return TREE_FROST;
   if ( talents.scourge_strike ) return TREE_UNHOLY;
 
   return TALENT_TREE_MAX;
