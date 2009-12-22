@@ -3590,14 +3590,14 @@ void druid_t::init_buffs()
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_lunar_fury  = new stat_buff_t( this, "lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
-  buffs_mutilation  = new stat_buff_t( this, "mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
-  buffs_corruptor   = new stat_buff_t( this, "primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
-  buffs_terror      = new stat_buff_t( this, "terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
-  buffs_unseen_moon = new stat_buff_t( this, "unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
+  buffs_lunar_fury  = new stat_buff_t( this, "idol_lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
+  buffs_mutilation  = new stat_buff_t( this, "idol_mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
+  buffs_corruptor   = new stat_buff_t( this, "idol_primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
+  buffs_terror      = new stat_buff_t( this, "idol_terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
+  buffs_unseen_moon = new stat_buff_t( this, "idol_unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
   // PTR Idols
-  buffs_t10_feral_relic   = new stat_buff_t( this, "crying_moon",   STAT_AGILITY,     44, 5, 15.0, 0, idols.crying_moon   );
-  buffs_t10_balance_relic = new stat_buff_t( this, "lunar_eclipse", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.lunar_eclipse );
+  buffs_t10_feral_relic   = new stat_buff_t( this, "idol_crying_moon",   STAT_AGILITY,     44, 5, 15.0, 0, idols.crying_moon   );
+  buffs_t10_balance_relic = new stat_buff_t( this, "idol_lunar_eclipse", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.lunar_eclipse );
 
   // simple
   buffs_bear_form    = new buff_t( this, "bear_form" );
