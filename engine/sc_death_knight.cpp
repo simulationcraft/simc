@@ -3723,7 +3723,6 @@ void death_knight_t::init_actions()
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":death_strike";
-      action_list_str += ":heart_strike";
       action_list_str += ":raise_dead,wait_on_ready=0";
       action_list_str += "/death_coil";
       action_list_str += "/sequence,name=blood2,wait_on_ready=1";
