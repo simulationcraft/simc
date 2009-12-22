@@ -1178,9 +1178,10 @@ static void trigger_sudden_doom( action_t* a )
   death_knight_t* p = a -> player -> cast_death_knight();
 
   if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
-
+  
   p -> procs_sudden_doom -> occur();
-  // TODO: Intialize me
+  
+  //if ( ! p -> sudden_doom ) p -> sudden_doom = new death_coil_t( p, "", true );
   //p -> sudden_doom -> execute();
 }
 
@@ -1643,11 +1644,10 @@ void death_knight_spell_t::player_buff()
 
   player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
   player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
-  player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+  player_multiplier *= 1.0 + p -> buffs_desolation -> value();
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
 
-  player_multiplier *= 1.0 + p -> talents.tundra_stalker * 0.03;
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
   
   if ( sim -> debug )
