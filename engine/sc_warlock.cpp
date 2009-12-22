@@ -2117,7 +2117,6 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
-      warlock_t* p = player -> cast_warlock();
       trigger_everlasting_affliction( this );
     }
   }

@@ -790,7 +790,7 @@ const char* chart_t::scale_factors( std::string& s,
   {
     if( p -> scales_with[ i ] )
     {
-      float s = p -> scaling.get_stat( i );
+      double s = p -> scaling.get_stat( i );
       
       if ( s > 0 ) scaling_stats.push_back( i );
     }
