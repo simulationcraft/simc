@@ -19,7 +19,7 @@ struct _stat_list_t {
 static const _stat_list_t race_stats[] =
 {
   { RACE_HUMAN,     { 20, 20, 20, 20, 20, 0.0 } },
-  { RACE_ORC,	      { 23, 17, 21, 17, 22, 0.0 } },
+  { RACE_ORC,	    { 23, 17, 21, 17, 22, 0.0 } },
   { RACE_DWARF,     { 25, 16, 21, 19, 19, 0.0 } },
   { RACE_NIGHT_ELF, { 16, 24, 20, 20, 20, 0.0 } },
   { RACE_UNDEAD,    { 19, 18, 20, 18, 25, 0.0 } },

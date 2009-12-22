@@ -3653,8 +3653,13 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     }
 
     talents[ count++ ] += decode -> first - '0';
-    talents[ count++ ] += decode -> second - '0';
-    tree_count[ tree ] += 2;
+    tree_count[ tree ] += 1;
+
+    if ( tree_count[ tree ] < tree_size[ tree ] )
+    {
+      talents[ count++ ] += decode -> second - '0';
+      tree_count[ tree ] += 1;
+    }
 
     if ( tree_count[ tree ] >= tree_size[ tree ] )
     {
