@@ -54,6 +54,7 @@ struct hunter_t : public player_t
 
   // Gains
   gain_t* gains_chimera_viper;
+  gain_t* gains_glyph_of_arcane_shot;
   gain_t* gains_invigoration;
   gain_t* gains_rapid_recuperation;
   gain_t* gains_roar_of_recovery;
@@ -159,16 +160,19 @@ struct hunter_t : public player_t
   struct glyphs_t
   {
     int  aimed_shot;
+    int  arcane_shot;
     int  aspect_of_the_viper;
     int  bestial_wrath;
     int  chimera_shot;
     int  explosive_shot;
     int  hunters_mark;
-    int  improved_aspect_of_the_hawk;
     int  kill_shot;
+    int  multi_shot;
     int  rapid_fire;
     int  serpent_sting;
     int  steady_shot;
+    int  the_beast;
+    int  the_hawk;
     int  trueshot_aura;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -536,7 +540,7 @@ struct hunter_pet_t : public pet_t
     double mult = player_t::composite_attack_power_multiplier();
 
     if ( o -> active_aspect == ASPECT_BEAST )
-      mult *= 1.1;
+      mult *= 1.10 + o -> glyphs.the_beast * 0.02;
 
     if ( buffs_rabid -> up() )
       mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
@@ -709,10 +713,8 @@ struct hunter_attack_t : public attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    //Spreadsheet says, it is weapon -> swing_time,
-    //even if the ap contribution is normalized (only steady is the exception)
-    //But I think that's illogical, dunno if somebody tested it sufficiently
-    double weapon_speed = normalize_weapon_speed ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+    // The use of "normalized_weapon_damage" and not "normalized_weapon_speed" is intentional.
+    double weapon_speed = normalize_weapon_damage ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
     double bonus_damage = p -> ammo_dps * weapon_speed;
 
     base_dd_min += bonus_damage;
@@ -1750,8 +1752,7 @@ struct ranged_t : public hunter_attack_t
     add_scope();
 
     iaoth_bonus = 0.03 * p -> talents.improved_aspect_of_the_hawk;
-    if ( p -> glyphs.improved_aspect_of_the_hawk )
-      iaoth_bonus += 0.06;
+    if ( p -> glyphs.the_hawk ) iaoth_bonus += 0.06;
   }
 
   virtual double execute_time() SC_CONST
@@ -1974,10 +1975,17 @@ struct arcane_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
-    if ( result == RESULT_CRIT )
+    if ( result_is_hit() )
     {
-      p -> buffs_cobra_strikes -> trigger( 2 );
-      trigger_hunting_party( this );
+      if ( p -> glyphs.arcane_shot && p -> active_sting() )
+      {
+	p -> resource_gain( RESOURCE_MANA, 0.20 * resource_consumed, p -> gains_glyph_of_arcane_shot );
+      }
+      if ( result == RESULT_CRIT )
+      {
+	p -> buffs_cobra_strikes -> trigger( 2 );
+	trigger_hunting_party( this );
+      }
     }
     p -> buffs_lock_and_load -> decrement();
     p -> buffs_improved_steady_shot -> expire();
@@ -2430,7 +2438,7 @@ struct multi_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
 
     cooldown = p -> get_cooldown( "aimed_multi" );
-    cooldown -> duration = 10;
+    cooldown -> duration = 10 - p -> glyphs.multi_shot;
 
     base_multiplier *= 1.0 + p -> talents.barrage * 0.04;
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
@@ -3332,31 +3340,35 @@ void hunter_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     if      ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
+    else if ( n == "arcane_shot"                 ) glyphs.arcane_shot = 1;
     else if ( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
     else if ( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
     else if ( n == "chimera_shot"                ) glyphs.chimera_shot = 1;
     else if ( n == "explosive_shot"              ) glyphs.explosive_shot = 1;
     else if ( n == "hunters_mark"                ) glyphs.hunters_mark = 1;
-    else if ( n == "improved_aspect_of_the_hawk" ) glyphs.improved_aspect_of_the_hawk = 1;
+    else if ( n == "improved_aspect_of_the_hawk" ) glyphs.the_hawk = 1;
     else if ( n == "kill_shot"                   ) glyphs.kill_shot = 1;
+    else if ( n == "multi_shot"                  ) glyphs.multi_shot = 1;
     else if ( n == "rapid_fire"                  ) glyphs.rapid_fire = 1;
     else if ( n == "serpent_sting"               ) glyphs.serpent_sting = 1;
     else if ( n == "steady_shot"                 ) glyphs.steady_shot = 1;
-    else if ( n == "the_hawk"                    ) glyphs.improved_aspect_of_the_hawk = 1;
+    else if ( n == "the_beast"                   ) glyphs.the_beast = 1;
+    else if ( n == "the_hawk"                    ) glyphs.the_hawk = 1;
     else if ( n == "trueshot_aura"               ) glyphs.trueshot_aura = 1;
     // To prevent warnings....
-    else if ( n == "the_pack"           ) ;
-    else if ( n == "mend_pet"           ) ;
-    else if ( n == "mending"            ) ;
-    else if ( n == "revive_pet"         ) ;
+    else if ( n == "disengage"          ) ;
     else if ( n == "explosive_trap"     ) ;
     else if ( n == "feign_death"        ) ;
-    else if ( n == "scare_beast"        ) ;
-    else if ( n == "possessed_strength" ) ;
-    else if ( n == "disengage"          ) ;
-    else if ( n == "arcane_shot"        ) ;
+    else if ( n == "freezing_trap"      ) ;
     else if ( n == "frost_trap"         ) ;
+    else if ( n == "mend_pet"           ) ;
+    else if ( n == "mending"            ) ;
+    else if ( n == "possessed_strength" ) ;
+    else if ( n == "revive_pet"         ) ;
+    else if ( n == "scare_beast"        ) ;
+    else if ( n == "the_pack"           ) ;
     else if ( n == "volley"             ) ;
+    else if ( n == "wyvern_sting"       ) ;
     else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
   }
 }
@@ -3455,6 +3467,7 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
   gains_chimera_viper        = get_gain( "chimera_viper" );
+  gains_glyph_of_arcane_shot = get_gain( "glyph_of_arcane_shot" );
   gains_invigoration         = get_gain( "invigoration" );
   gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
   gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
@@ -3699,11 +3712,14 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
 {
   double mult = player_t::composite_attack_power_multiplier();
 
+  if ( active_aspect == ASPECT_BEAST )
+  {
+    mult *= 1.10 + glyphs.the_beast * 0.02;
+  }
   if ( buffs_tier10_4pc -> up() )
   {
     mult *= 1.20;
   }
-
   if ( buffs_call_of_the_wild -> up() )
   {
     mult *= 1.1;
