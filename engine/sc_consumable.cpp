@@ -381,14 +381,14 @@ struct indestructible_potion_t : public action_t
       {
         name = "Indestructible Potion Expiration";
         p -> aura_gain( "Indestructible Potion Buff" );
-	      p -> stat_gain( STAT_ARMOR, 3500 );
+	p -> stat_gain( STAT_ARMOR, 3500 );
         sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
         player_t* p = player;
         p -> aura_loss( "Indestructible Potion Buff" );
-	      p -> stat_loss( STAT_ARMOR, 3500 );
+	p -> stat_loss( STAT_ARMOR, 3500 );
       }
     };
 
@@ -599,15 +599,15 @@ action_t* consumable_t::create_action( player_t*          p,
                                        const std::string& name,
                                        const std::string& options_str )
 {
-  if ( name == "dark_rune"             ) return new          dark_rune_t( p, options_str );
-  if ( name == "destruction_potion"    ) return new destruction_potion_t( p, options_str );
-  if ( name == "flask"                 ) return new              flask_t( p, options_str );
-  if ( name == "food"                  ) return new               food_t( p, options_str );
-  if ( name == "health_stone"          ) return new       health_stone_t( p, options_str );
-  if ( name == "indestructible_potion" ) return new       speed_potion_t( p, options_str );
-  if ( name == "mana_potion"           ) return new        mana_potion_t( p, options_str );
-  if ( name == "speed_potion"          ) return new       speed_potion_t( p, options_str );
-  if ( name == "wild_magic_potion"     ) return new  wild_magic_potion_t( p, options_str );
+  if ( name == "dark_rune"             ) return new             dark_rune_t( p, options_str );
+  if ( name == "destruction_potion"    ) return new    destruction_potion_t( p, options_str );
+  if ( name == "flask"                 ) return new                 flask_t( p, options_str );
+  if ( name == "food"                  ) return new                  food_t( p, options_str );
+  if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
+  if ( name == "indestructible_potion" ) return new indestructible_potion_t( p, options_str );
+  if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
+  if ( name == "speed_potion"          ) return new          speed_potion_t( p, options_str );
+  if ( name == "wild_magic_potion"     ) return new     wild_magic_potion_t( p, options_str );
 
   return 0;
 }

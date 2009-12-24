@@ -465,11 +465,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   armory_t::format(  name_str );
   armory_t::format( class_str );
 
-  if ( class_str == "death_knight" )
-  {
-    util_t::fprintf( sim -> output_file, "\nsimulationcraft: The Death Knight module are still in development, so Rawr import is disabled.\n" );
-    return 0;
-  }
+  if ( class_str == "deathknight" ) class_str = "death_knight";
 
   int race_type = translate_rawr_race_str( race_str );
 

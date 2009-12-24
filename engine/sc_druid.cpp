@@ -4181,7 +4181,7 @@ int druid_t::decode_set( item_t& item )
   
   bool is_melee = ( strstr( s, "headguard"    ) || 
                     strstr( s, "shoulderpads" ) ||
-                    strstr( s, "raiments"     ) ||
+                    strstr( s, "raiment"      ) ||
                     strstr( s, "legguards"    ) ||
                     strstr( s, "handgrips"    ) );
 
