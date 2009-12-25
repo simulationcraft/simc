@@ -145,7 +145,7 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 11 )
+  if( tokens.count() >= 12 )
   {
          latencyChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
@@ -153,11 +153,12 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
    fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
             addsChoice->setCurrentIndex( tokens[  4 ].toInt() );
       fightStyleChoice->setCurrentIndex( tokens[  5 ].toInt() );
-     playerSkillChoice->setCurrentIndex( tokens[  6 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[  7 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[  8 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[  9 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+      targetRaceChoice->setCurrentIndex( tokens[  6 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[  7 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[  9 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 11 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -170,7 +171,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 11; i < tokens.count(); i++)
+  for(int i = 12; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -198,13 +199,14 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
     .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
     .arg(          addsChoice->currentIndex() )
     .arg(    fightStyleChoice->currentIndex() )
+    .arg(    targetRaceChoice->currentIndex() )
     .arg(   playerSkillChoice->currentIndex() )
     .arg(       threadsChoice->currentIndex() )
     .arg(     smoothRNGChoice->currentIndex() )
@@ -456,6 +458,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
   globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(   "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
@@ -837,6 +840,8 @@ void SimulationCraftWindow::createToolTips()
 				"    Three Adds (for 20sec every 1min)\n"
 				"    Distraction (10% -skill every other 45sec" );
 
+  targetRaceChoice->setToolTip( "Race of the target and any adds." );
+
   playerSkillChoice->setToolTip( "Elite:       No mistakes.  No cheating either.\n"
 				 "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
@@ -1128,6 +1133,7 @@ QString SimulationCraftWindow::mergeOptions()
     options += "raid_events+=/adds,count=3,cooldown=60,duration=20\n";
     options += "raid_events+=/distraction,skill=0.2,cooldown=90,duration=45\n";
   }
+  options += "target_race=" + targetRaceChoice->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ playerSkillChoice->currentIndex() ];

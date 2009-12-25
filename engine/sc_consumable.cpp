@@ -190,7 +190,7 @@ struct food_t : public action_t
 
   virtual bool ready()
   {
-    return( player -> food        ==  FOOD_NONE );
+    return( player -> food == FOOD_NONE );
   }
 };
 
@@ -371,6 +371,7 @@ struct indestructible_potion_t : public action_t
 
     trigger_gcd = 0;
     harmful = false;
+    cooldown -> duration = 120.0; // Assume the player would not chose to overwrite the buff early.
   }
 
   virtual void execute()
@@ -394,7 +395,8 @@ struct indestructible_potion_t : public action_t
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
     new ( sim ) expiration_t( sim, player );
-    player -> potion_used = 1;
+    // The duration of the buff is long enough to trigger the first one before entering combat.
+    if ( player -> in_combat ) player -> potion_used = 1;
   }
 
   virtual bool ready()
