@@ -1792,7 +1792,14 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  if ( sim -> overrides.heroic_presence )
+  bool allow_heroic_presence = 
+    (race == RACE_NIGHT_ELF) ||
+    (race == RACE_GNOME)     ||
+    (race == RACE_DWARF)     ||
+    (race == RACE_HUMAN)     ||
+    (race == RACE_DRAENEI);
+
+  if ( sim -> overrides.heroic_presence && allow_heroic_presence )
   {
     buffs.heroic_presence -> trigger();
   }

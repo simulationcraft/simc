@@ -1219,6 +1219,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.fortitude              = optimal_raid;
   overrides.frost_fever            = optimal_raid;
   overrides.heart_of_the_crusader  = optimal_raid;
+  overrides.heroic_presence        = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
