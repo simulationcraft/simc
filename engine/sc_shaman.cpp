@@ -3297,18 +3297,27 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-      action_list_str += "/speed_potion";
+      if ( set_bonus.tier9_2pc_caster() || set_bonus.tier10_2pc_caster() )
+      {
+          action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
+      }
+      else
+      {
+          action_list_str += "/speed_potion";
+      }
       if ( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
       action_list_str += "/flame_shock";
       if ( level >= 75 ) action_list_str += "/lava_burst,flame_shock=1";
       action_list_str += "/fire_nova,if=target.adds>2";
       if ( ! talents.totem_of_wrath ) 
       {
-	action_list_str += "/fire_elemental_totem";
-	action_list_str += "/searing_totem";
+	    action_list_str += "/fire_elemental_totem";
+	    action_list_str += "/searing_totem";
       }
-      action_list_str += "/chain_lightning,conserve=1";
-      if ( ! set_bonus.tier9_4pc_caster() ) action_list_str += ",clearcasting=1";
+      if ( ! set_bonus.tier10_2pc_caster() ) {
+          action_list_str += "/chain_lightning,conserve=1";
+          if ( ! set_bonus.tier9_4pc_caster() ) action_list_str += ",clearcasting=1";
+      }
       action_list_str += "/lightning_bolt";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
