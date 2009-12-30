@@ -372,6 +372,8 @@ struct fire_elemental_pet_t : public pet_t
       base_execute_time = 3.0;
       base_dd_min = base_dd_max = 96;
       direct_power_mod = 0.015;
+
+      id = 12470;
     };
     virtual double total_multiplier() SC_CONST { return ( player -> distance > 1 ) ? 0.0 : spell_t::total_multiplier(); }
   };
@@ -403,6 +405,8 @@ struct fire_elemental_pet_t : public pet_t
       base_dd_max = 800;
       direct_power_mod = 0.20;
       cooldown -> duration = 4.0;
+
+      id = 57984;
     };
   };
 
@@ -922,6 +926,8 @@ struct lava_lash_t : public shaman_attack_t
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
     cooldown -> duration = 6;
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
+
+    id = 60103;
   }
 
   virtual void execute()
@@ -974,6 +980,8 @@ struct stormstrike_t : public shaman_attack_t
       base_dd_max += 155;
       base_dd_min += 155;
     }
+
+    id = 17364;
   }
 
   virtual void execute()
@@ -1174,7 +1182,7 @@ struct chain_lightning_t : public shaman_spell_t
       { 56, 4, 493,  551, 0,  550 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49271 );
 
     base_execute_time    = 2.0;
     may_crit             = true;
@@ -1299,7 +1307,7 @@ struct lightning_bolt_t : public shaman_spell_t
       { 44,  8, 282, 316, 0, 195  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49238 );
 
     base_execute_time    = 2.5;
     may_crit             = true;
@@ -1401,7 +1409,7 @@ struct lava_burst_t : public shaman_spell_t
       { 75, 1, 1012, 1290, 0, 0.10 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 60043 );
 
     may_crit             = true;
     base_execute_time    = 2.0;
@@ -1504,6 +1512,8 @@ struct elemental_mastery_t : public shaman_spell_t
     check_talent( p -> talents.elemental_mastery );
     trigger_gcd = 0;
     cooldown -> duration = p -> glyphs.elemental_mastery ? 150.0 : 180.0;
+
+    id = 16166;
   }
 
   virtual void execute()
@@ -1536,6 +1546,8 @@ struct shamans_swiftness_t : public shaman_spell_t
       sub_cooldown = p -> get_cooldown( options_str );
       sub_dot      = p -> get_dot     ( options_str );
     }
+
+    id = 16188;
   }
 
   virtual void execute()
@@ -1587,7 +1599,7 @@ struct earth_shock_t : public shaman_spell_t
       { 48,  6, 359, 381, 0, 345  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49231 );
 
     may_crit          = true;
     base_execute_time = 0;
@@ -1658,7 +1670,7 @@ struct fire_nova_t : public shaman_spell_t
       { 52, 5, 396, 442, 0, 0.22 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 61657 );
     
     aoe = true;
     pseudo_pet = true;
@@ -1738,7 +1750,7 @@ struct frost_shock_t : public shaman_spell_t
       { 46, 3, 333, 353, 0, 325  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49236 );
 
     may_crit = true;
     base_execute_time = 0;
@@ -1800,7 +1812,7 @@ struct flame_shock_t : public shaman_spell_t
       { 60, 6, 309, 309,  86, 450  },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49233 );
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
@@ -1876,6 +1888,8 @@ struct wind_shear_t : public shaman_spell_t
     base_cost = player -> resource_base[ RESOURCE_MANA ] * 0.09;
     base_spell_power_multiplier = 0;
     cooldown -> duration = 6.0 - ( p -> talents.reverberation * 0.2 );
+
+    id = 57994;
   }
 
   virtual bool ready()
@@ -1913,7 +1927,7 @@ struct searing_totem_t : public shaman_spell_t
       { 60,  6, 40,  54, 0, 0.09 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 58704 );
 
     base_execute_time = 0;
     base_tick_time    = 2.5;
@@ -2007,7 +2021,7 @@ struct magma_totem_t : public shaman_spell_t
       { 56,  4, 131, 131, 0, 0.27 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 58734 );
 
     aoe = true;
     base_execute_time = 0;
@@ -2106,6 +2120,8 @@ struct totem_of_wrath_t : public shaman_spell_t
     bonus_spell_power = util_t::ability_rank( p -> level,  280.0,80,  140.0,70,  120.0,0 );
 
     observer = &( p -> active_fire_totem );
+
+    id = 57722;
   }
 
   virtual void execute()
@@ -2174,6 +2190,8 @@ struct flametongue_totem_t : public shaman_spell_t
     bonus *= 1 + p -> talents.enhancing_totems * 0.05;
 
     observer = &( p -> active_fire_totem );
+
+    id = 58656;
   }
 
   virtual void execute()
@@ -2228,6 +2246,8 @@ struct fire_elemental_totem_t : public shaman_spell_t
     cooldown -> duration = p -> glyphs.fire_elemental_totem ? 300 : 600;
 
     observer = &( p -> active_fire_totem );
+
+    id = 2894;
   }
 
   virtual void execute()
@@ -2273,6 +2293,8 @@ struct windfury_totem_t : public shaman_spell_t
                              p -> talents.mental_quickness * 0.02 );
 
     bonus = 0.16 + p -> talents.improved_windfury_totem * 0.02;
+
+    id = 8512;
   }
 
   virtual void execute()
@@ -2342,6 +2364,8 @@ struct flametongue_weapon_t : public shaman_spell_t
     bonus_power = util_t::ability_rank( p -> level,  211.0,80,  186.0,77,  157.0,72,  96.0,65,  45.0,0  );
 
     bonus_power *= 1.0 + p -> talents.elemental_weapons * 0.10;
+
+    id = 58790;
   }
 
   virtual void execute()
@@ -2417,6 +2441,8 @@ struct windfury_weapon_t : public shaman_spell_t
     trigger_gcd = 0;
 
     bonus_power = util_t::ability_rank( p -> level,  1250.0,80,  1090.0,76,  835.0,71,  445.0,0  );
+
+    id = 58804;
   }
 
   virtual void execute()
@@ -2466,6 +2492,8 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
     bonus  = util_t::ability_rank( p -> level,  155,80, 115,75, 86,65,  77,0 );
     bonus *= 1.0 + p -> talents.enhancing_totems * 0.05;
+
+    id = 58643;
   }
 
   virtual void execute()
@@ -2507,6 +2535,8 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
                              p -> talents.mental_quickness * 0.02 );
+
+    id = 3738;
   }
 
   virtual void execute()
@@ -2556,6 +2586,8 @@ struct mana_tide_totem_t : public shaman_spell_t
 
     base_cost_reduction += ( p -> talents.totemic_focus    * 0.05 +
                              p -> talents.mental_quickness * 0.02 );
+
+    id = 16190;
   }
 
   virtual void execute()
@@ -2620,6 +2652,8 @@ struct mana_spring_totem_t : public shaman_spell_t
     regen = util_t::ability_rank( p -> level,  91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
 
     regen *= 1.0 + util_t::talent_rank( p -> talents.restorative_totems, 3, 0.07, 0.12, 0.20 );
+
+    id = 58774;
   }
 
   virtual void execute()
@@ -2659,6 +2693,8 @@ struct bloodlust_t : public shaman_spell_t
     base_cost = ( 0.26 * player -> resource_base[ RESOURCE_MANA ] );
     base_cost_reduction += p -> talents.mental_quickness * 0.02;
     cooldown -> duration = 300;
+
+    id = 2825;
   }
 
   virtual void execute()
@@ -2703,6 +2739,8 @@ struct shamanistic_rage_t : public shaman_spell_t
     parse_options( options, options_str );
 
     cooldown -> duration = 60;
+
+    id = 30823;
   }
 
   virtual void execute()
@@ -2779,7 +2817,7 @@ struct lightning_shield_t : public shaman_spell_t
       { 56, 3, 198, 198, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 49281 );
 
     if ( ! p -> active_lightning_charge )
     {
@@ -2828,7 +2866,7 @@ struct water_shield_t : public shaman_spell_t
       { 55, 6, 0, 0, 0,  38 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 57960 );
 
     trigger_gcd = 0;
   }
@@ -2860,6 +2898,8 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talents.thunderstorm );
     cooldown -> duration = 45.0;
+
+    id = 59159;
   }
 
   virtual void execute()
@@ -2898,6 +2938,8 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     trigger_gcd = 0;
     base_cost  = p -> resource_max[ RESOURCE_MANA ] * 0.12;
     cooldown -> duration = 180.0;
+
+    id = 51533;
   }
 
   virtual void execute()
@@ -3170,8 +3212,8 @@ void shaman_t::init_buffs()
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0 );
-  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",          1,  15.0 ); 
-  buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",        1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
+  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0 ); 
+  buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
 
