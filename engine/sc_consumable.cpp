@@ -382,14 +382,14 @@ struct indestructible_potion_t : public action_t
       {
         name = "Indestructible Potion Expiration";
         p -> aura_gain( "Indestructible Potion Buff" );
-	p -> stat_gain( STAT_ARMOR, 3500 );
+	    p -> stat_gain( STAT_ARMOR, 3500 );
         sim -> add_event( this, 120.0 );
       }
       virtual void execute()
       {
         player_t* p = player;
         p -> aura_loss( "Indestructible Potion Buff" );
-	p -> stat_loss( STAT_ARMOR, 3500 );
+	    p -> stat_loss( STAT_ARMOR, 3500 );
       }
     };
 

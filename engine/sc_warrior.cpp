@@ -364,6 +364,8 @@ static void trigger_deep_wounds( action_t* a )
       base_tick_time = 1.0;
       num_ticks = 6;
       reset(); // required since construction occurs after player_t::init()
+
+      id = 12868;
     }
     virtual void target_debuff( int dmg_type )
     {
@@ -1040,6 +1042,8 @@ struct bladestorm_t : public warrior_attack_t
     if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );
+    
+    id = 46924;
   }
 
   virtual void tick()
@@ -1090,7 +1094,7 @@ struct heroic_strike_t : public warrior_attack_t
       { 56,  8, 178, 178, 0, 15 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47450 );
 
     background   = true;
     may_crit     = true;    
@@ -1161,6 +1165,8 @@ struct bloodthirst_t : public warrior_attack_t
     cooldown -> duration = 4.0;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
+
+    id = 23881;
   }
   virtual void execute()
   {
@@ -1193,6 +1199,8 @@ struct concussion_blow_t : public warrior_attack_t
     base_cost = 15;
     direct_power_mod  = 0.75;
     cooldown -> duration = 30.0;
+
+    id = 12809;
   }
 };
 
@@ -1223,6 +1231,8 @@ struct shockwave_t : public warrior_attack_t
     base_cost = 15;
     direct_power_mod = 0.75;
     cooldown -> duration = 20.0;
+
+    id = 46968;
   }
 };
 
@@ -1248,7 +1258,7 @@ struct devastate_t : public warrior_attack_t
       { 70, 3,  560,  560, 0, 15 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47498 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 1.00;
@@ -1291,7 +1301,7 @@ struct revenge_t : public warrior_attack_t
       { 54, 5, 498, 608, 0, 5 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 57823 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1339,6 +1349,8 @@ struct shield_bash_t : public warrior_attack_t
     cooldown -> duration = 12;
 
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
+
+    id = 72;
   }
 
   virtual bool ready()
@@ -1374,7 +1386,7 @@ struct shield_slam_t : public warrior_attack_t
       { 60, 4, 447,  469, 0, 20 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47488 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1442,7 +1454,7 @@ struct thunderclap_t : public warrior_attack_t
       { 48, 5, 82, 82, 0, 20 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47502 );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1490,7 +1502,7 @@ struct execute_t : public warrior_attack_t
       { 56, 4,  554,  554, 0, 15 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47471 );
 
     excess_rage_mod   = ( p -> level >= 80 ? 38 :
                           p -> level >= 73 ? 30 :
@@ -1606,7 +1618,7 @@ struct mortal_strike_t : public warrior_attack_t
       { 60, 4, 160, 160, 0, 30 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47486 );
 
     may_crit = true;
 
@@ -1655,6 +1667,8 @@ struct overpower_t : public warrior_attack_t
       trigger_gcd = 1.0;
 
     stancemask = STANCE_BATTLE;
+
+    id = 7384;
 
   }
   virtual void execute()
@@ -1705,7 +1719,7 @@ struct rend_t : public warrior_attack_t
       { 60,  7, 0, 0, 37, 10 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47465 );
 
     weapon = &( p -> main_hand_weapon );
 
@@ -1772,7 +1786,7 @@ struct slam_t : public warrior_attack_t
       { 54, 4,  87,  87, 0, 15 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks );
+    init_rank( ranks, 47475 );
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
@@ -1890,6 +1904,8 @@ struct whirlwind_t : public warrior_attack_t
     cooldown -> duration = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
 
     stancemask = STANCE_BERSERKER;
+
+    id = 1680;
   }
 
   virtual void consume_resource() { }
@@ -1935,6 +1951,8 @@ struct pummel_t : public warrior_attack_t
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0;
     cooldown -> duration = 10;
+
+    id = 6552;
   }
 
   virtual bool ready()
@@ -2024,21 +2042,6 @@ bool warrior_spell_t::ready()
   return true;
 }
 
-// Battle Shout ============================================================
-
-struct battle_shout_t : public warrior_spell_t
-{
-  float refresh_early;
-  int   shout_base_bonus;
-  battle_shout_t( player_t* player, const std::string& options_str ) :
-      warrior_spell_t( "battle_shout", player ),
-      refresh_early( 0.0 ),
-      shout_base_bonus( 0 )
-  {
-  }
-  virtual bool ready() { return false; }
-};
-
 // warrior_spell_t::parse_options ===========================================
 
 void warrior_spell_t::parse_options( option_t*          options,
@@ -2055,6 +2058,22 @@ void warrior_spell_t::parse_options( option_t*          options,
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
+
+// Battle Shout ============================================================
+
+struct battle_shout_t : public warrior_spell_t
+{
+  float refresh_early;
+  int   shout_base_bonus;
+  battle_shout_t( player_t* player, const std::string& options_str ) :
+      warrior_spell_t( "battle_shout", player ),
+      refresh_early( 0.0 ),
+      shout_base_bonus( 0 )
+  {
+      id = 47426;
+  }
+  virtual bool ready() { return false; }
+};
 
 // Berserker Rage ==========================================================
 
@@ -2074,6 +2093,8 @@ struct berserker_rage_t : public warrior_spell_t
     harmful = false;
     base_cost = 0;
     cooldown -> duration = 30 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
+
+    id = 18499;
   }
 
   virtual void execute()
@@ -2104,6 +2125,8 @@ struct bloodrage_t : public warrior_spell_t
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown -> duration = 60 * ( 1.0 - 0.11 * p -> talents.intensify_rage );;
+
+    id = 2687;
   }
 
   virtual void execute()
@@ -2134,6 +2157,8 @@ struct death_wish_t : public warrior_spell_t
     base_cost   = 10;
     trigger_gcd = 0;
     cooldown -> duration = 180.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
+
+    id = 12292;
   }
 
   virtual void execute()
@@ -2162,6 +2187,8 @@ struct recklessness_t : public warrior_spell_t
     cooldown -> duration = 300.0 * ( 1.0 - 0.11 * p -> talents.intensify_rage );
 
     stancemask  = STANCE_BERSERKER;
+
+    id = 1719;
   }
 
   virtual void execute()
@@ -2188,6 +2215,8 @@ struct shield_block_t : public warrior_spell_t
 
     harmful = false;
     cooldown -> duration = 60.0 - 10.0 * p -> talents.shield_mastery;
+    
+    id = 2565;
   }
 
   virtual void execute()
