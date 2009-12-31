@@ -81,6 +81,7 @@ struct mage_t : public player_t
   std::string armor_type_str;
   double      ghost_charge_pct;
   int         fof_on_cast;
+  bool		  delayed_tier10_2pc_proc;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -1418,14 +1419,15 @@ struct arcane_missiles_t : public mage_spell_t
       if ( ! trigger_tier8_4pc( this ) )
       {
         p -> buffs_missile_barrage -> expire();
-        p -> buffs_tier10_2pc -> trigger();  // FIXME!! Assume the haste proc affects the AM-channel
       }
+	  p -> delayed_tier10_2pc_proc = true;
     }
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+	p -> delayed_tier10_2pc_proc = false;
     base_tick_time = p -> buffs_missile_barrage -> up() ? 0.5 : 1.0;
     arcane_missiles_tick -> clearcast = p -> buffs_clearcasting -> up();
     mage_spell_t::execute();
@@ -1451,6 +1453,11 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     p -> buffs_arcane_blast -> expire();
+    if ( p -> delayed_tier10_2pc_proc )
+    {
+      p -> buffs_tier10_2pc -> trigger();
+	  p -> delayed_tier10_2pc_proc = false;
+    }
   }
 
   virtual bool ready()
