@@ -4,30 +4,18 @@ Globals_T9.simc
 
 optimal_raid=1
 
-Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
-Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
-Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
-Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
-Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
-Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoR
-Rogue_T9_51_13_07_NoR.simc    tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+Rogue_T9_08_20_43.simc    
+Rogue_T9_18_51_02.simc    
+Rogue_T9_18_51_02_NoR.simc
+Rogue_T9_51_18_02.simc    
+Rogue_T9_51_18_02_R.simc  
 
 
 # scroguet9
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simc
-#wowhead=14562190   name=Rogue_T9_15_51_05_AA      save=Rogue_T9_15_51_05_AA.simc  
-#wowhead=14419498   name=Rogue_T9_15_51_05_FD      save=Rogue_T9_15_51_05_FD.simc
-#wowhead=14562031   name=Rogue_T9_15_51_05_MD      save=Rogue_T9_15_51_05_MD.simc
-#wowhead=15269388   name=Rogue_T9_51_13_07         save=Rogue_T9_51_13_07.simc
-
-### Alternate "Rupture-Less" Combat Spec 
-
-#wowhead=!14562190  name=Rogue_T9_15_51_05_AA_NoR  save=Rogue_T9_15_51_05_AA_NoR.simc
-#wowhead=!14419498  name=Rogue_T9_15_51_05_FD_NoR  save=Rogue_T9_15_51_05_FD_NoR.simc  
-#wowhead=!14562031  name=Rogue_T9_15_51_05_MD_NoR  save=Rogue_T9_15_51_05_MD_NoR.simc  
-#wowhead=!15269388  name=Rogue_T9_51_13_07_NoR     save=Rogue_T9_51_13_07_NoR.simc 
-	
+#wowhead=20631652   name=Rogue_T9_18_51_02         save=Rogue_T9_18_51_02.simc
+#wowhead=!20631652  name=Rogue_T9_18_51_02_NoR     save=Rogue_T9_18_51_02_NoR.simc
+#wowhead=18612609   name=Rogue_T9_51_18_02         save=Rogue_T9_51_18_02.simc
+#wowhead=!18612609  name=Rogue_T9_51_18_02_R       save=Rogue_T9_51_18_02_R.simc

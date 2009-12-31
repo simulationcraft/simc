@@ -3768,8 +3768,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     }
     else if ( splits[ 0 ] == "dot" )
     {
-      dot_t* dot = find_dot( splits[ 1 ] );
-      if ( ! dot ) return 0;
+      dot_t* dot = get_dot( splits[ 1 ] );
       if ( splits[ 2 ] == "remains" )
       {
 	struct dot_remains_expr_t : public action_expr_t

@@ -3625,9 +3625,13 @@ void hunter_t::init_actions()
     if (   talents.silencing_shot ) action_list_str += "/silencing_shot";
     if ( primary_tree() == TREE_MARKSMANSHIP )
     {
-      if( talents.aimed_shot )      action_list_str += "/aimed_shot";
+      if( talents.aimed_shot ) action_list_str += "/aimed_shot";
     }
-    if (   talents.chimera_shot   ) action_list_str += "/chimera_shot";
+    if ( talents.chimera_shot ) 
+    {
+      action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
+      action_list_str += "/chimera_shot";
+    }
     if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
     if (   talents.explosive_shot ) action_list_str += "/explosive_shot";
     if (   talents.black_arrow    ) action_list_str += "/black_arrow";

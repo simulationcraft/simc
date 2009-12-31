@@ -997,7 +997,7 @@ bool rogue_attack_t::ready()
 // rogue_attack_t::assess_damage ===========================================
 
 void rogue_attack_t::assess_damage( double amount,
-				    int    dmg_type )
+                                    int    dmg_type )
 {
   attack_t::assess_damage( amount, dmg_type );
 
@@ -2430,7 +2430,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
       if ( ! tricks_target ) return false;
 
       if ( tricks_target -> buffs.tricks_of_the_trade -> check() )
-	return false;
+        return false;
     }
 
     return rogue_attack_t::ready();
@@ -3016,8 +3016,11 @@ void rogue_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str += "flask,type=endless_rage/food,type=blackened_dragonfin/apply_poison,main_hand=";
-    action_list_str += talents.improved_poisons > 2 ? "instant" : "wound";
+    action_list_str += "flask,type=endless_rage";
+    action_list_str += "/food,type=";
+    action_list_str += ( primary_tree() == TREE_COMBAT ) ? "imperial_manta_steak" : "mega_mammoth_meal";
+    action_list_str += "/apply_poison,main_hand=";
+    action_list_str += ( talents.improved_poisons > 2 ) ? "instant" : "wound";
     action_list_str += ",off_hand=deadly";
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
@@ -3047,38 +3050,60 @@ void rogue_t::init_actions()
     if ( primary_tree() == TREE_ASSASSINATION )
     {
       bool rupture_less = ( ! talents.blood_spatter && 
-                            ! talents.serrated_blades );
-      if ( talents.hunger_for_blood ) action_list_str += "/pool_energy,for_next=1/hunger_for_blood,refresh_at=2";
-      action_list_str += "/slice_and_dice,min_combo_points=1,snd<=1";
-      if ( ! talents.cut_to_the_chase ) action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
+                            ! talents.serrated_blades &&
+                            ! glyphs.rupture );
+      if ( talents.hunger_for_blood ) 
+      {
+	action_list_str += "/pool_energy,for_next=1";
+	action_list_str += "/hunger_for_blood,if=buff.hunger_for_blood.remains<2";
+      }
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<1";
+      if ( ! talents.cut_to_the_chase ) 
+      {
+	action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
+	action_list_str += "/slice_and_dice,if=buff.combo_points.stack>=3&buff.slice_and_dice.remains<2";
+      }
       if ( ! rupture_less )
-        action_list_str += "/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11";
+      {
+        action_list_str += "/rupture,if=buff.combo_points.stack>=4&target.time_to_die>15&time>10&buff.slice_and_dice.remains>11";
+      }
       if ( talents.cold_blood ) action_list_str += "/cold_blood,sync=envenom";
-      action_list_str += "/envenom,min_combo_points=4,no_buff=1";
-      action_list_str += "/envenom,min_combo_points=4,energy>=90";
-      action_list_str += "/envenom,min_combo_points=2,snd<=2";
+      action_list_str += "/envenom,if=buff.combo_points.stack>=4&buff.envenom.down";
+      action_list_str += "/envenom,if=buff.combo_points.stack>=4&energy>90";
+      action_list_str += "/envenom,if=buff.combo_points.stack>=2&buff.slice_and_dice.remains<2";
       action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/mutilate,max_combo_points=3";
-      if ( talents.overkill ) action_list_str += "/vanish,time>=30,energy>=50,max_combo_points=1";
+      action_list_str += "/mutilate,if=buff.combo_points.stack<4";
+      if ( talents.overkill ) action_list_str += "/vanish,if=time>30&energy>50";
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      bool rupture_less = ( ! talents.blood_spatter && 
-                            ! talents.serrated_blades &&
+      bool rupture_less = ( ! talents.blood_spatter       && 
+                            ! talents.serrated_blades     &&
                               talents.improved_eviscerate &&
-                              talents.aggression );
-      action_list_str += "/slice_and_dice,min_combo_points=1,time<=4";
-      action_list_str += "/slice_and_dice,min_combo_points=3,snd<=2";
+                              talents.aggression          &&
+                            ! glyphs.rupture );
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down&time<4";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2&buff.combo_points.stack>=3";
       action_list_str += "/tricks_of_the_trade";
-      if ( talents.killing_spree ) action_list_str += "/killing_spree,energy<=20,snd>=5";
-      if ( talents.blade_flurry  ) action_list_str += "/blade_flurry,snd>=5";
-      if ( ! rupture_less ) action_list_str += "/rupture,min_combo_points=5,time_to_die>=10";
+      if ( talents.killing_spree ) 
+      {
+	action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
+      }
+      if ( talents.blade_flurry  ) 
+      {
+        action_list_str += "/blade_flurry,if=target.adds_never&buff.slice_and_dice.remains>=5";
+        action_list_str += "/blade_flurry,if=target.adds>0";
+      }
+      if ( ! rupture_less ) 
+      {
+	action_list_str += "/rupture,if=buff.combo_points.stack=5&target.time_to_die>10";
+      }
       if (   talents.puncturing_wounds        &&
              talents.opportunity              &&
              talents.close_quarters_combat    &&
-             ! talents.improved_sinister_strike &&
-             ! talents.improved_eviscerate      &&
-             ( main_hand_weapon.type == WEAPON_DAGGER ) )
+           ! talents.improved_sinister_strike &&
+           ! talents.improved_eviscerate      &&
+           ( main_hand_weapon.type == WEAPON_DAGGER ) )
       {
         action_list_str += "/backstab";
       }
@@ -3086,34 +3111,38 @@ void rogue_t::init_actions()
       {
         if ( rupture_less )
         {
-          action_list_str += "/eviscerate,min_combo_points=5,snd>=7";
-          action_list_str += "/eviscerate,min_combo_points=4,snd>=4,energy>=40";
+          action_list_str += "/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7";
+          action_list_str += "/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40";
         }
         else
         {
-          action_list_str += "/eviscerate,min_combo_points=5,rup>=6,snd>=7";
-          action_list_str += "/eviscerate,min_combo_points=4,rup>=5,snd>=4,energy>=40";
+          action_list_str += "/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7&dot.rupture.remains>6";
+          action_list_str += "/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>5";
         }
-        action_list_str += "/eviscerate,min_combo_points=5,time_to_die<=10";
-        action_list_str += "/sinister_strike,max_combo_points=4";
+        action_list_str += "/eviscerate,if=buff.combo_points.stack=5&target.time_to_die<10";
+        action_list_str += "/sinister_strike,if=buff.combo_points.stack<5";
       }
-      if ( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,energy<=20";
+      if ( talents.adrenaline_rush ) action_list_str += "/adrenaline_rush,if=energy<20";
     }
     else if ( primary_tree() == TREE_SUBTLETY )
     {
-      action_list_str += "/pool_energy,for_next=1/slice_and_dice,min_combo_points=4,snd<=3";
+      action_list_str += "/pool_energy,for_next=1/slice_and_dice,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains<3";
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
-      action_list_str += "/rupture,min_combo_points=4";
-      if ( talents.improved_poisons ) action_list_str += "/envenom,min_combo_points=4,env<=1";
-      action_list_str += "/eviscerate,min_combo_points=4";
+      action_list_str += "/rupture,if=buff.combo_points.stack>=4";
+      if ( talents.improved_poisons ) 
+      {
+	action_list_str += "/envenom,if=buff.combo_points.stack>=4&buff.envenom.remains<1";
+      }
+      action_list_str += "/eviscerate,if=buff.combo_points.stack>=4";
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
-      action_list_str += ",max_combo_points=2,energy>=80";
+      action_list_str += ",if=buff.combo_points.stack<=2&energy>=80";
     }
     else
     {
-      action_list_str += "/pool_energy,energy<=60,snd<=5/slice_and_dice,min_combo_points=3,snd<=2";
-      action_list_str += "/sinister_strike,max_combo_points=4";
+      action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
+      action_list_str += "/slice_and_dice,if=buff.combo_points.stack>=3&buff.slice_and_dice.remains<2";
+      action_list_str += "/sinister_strike,if=buff.combo_points.stack<5";
     }
 
     action_list_default = 1;

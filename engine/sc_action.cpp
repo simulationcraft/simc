@@ -1326,6 +1326,24 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new ticking_expr_t( this );
   }
+  if ( name_str == "ticks" )
+  {
+    struct ticks_expr_t : public action_expr_t
+    {
+      ticks_expr_t( action_t* a ) : action_expr_t( a, "ticks", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> dot -> ticking() ? action -> dot -> action -> current_tick : 0 ); return TOK_NUM; }
+    };
+    return new ticks_expr_t( this );
+  }
+  if ( name_str == "ticks_remain" )
+  {
+    struct ticks_remain_expr_t : public action_expr_t
+    {
+      ticks_remain_expr_t( action_t* a ) : action_expr_t( a, "ticks_remain", TOK_NUM ) {}
+      virtual int evaluate() { action_t* a = action -> dot -> action; result_num = ( action -> dot -> ticking() ? ( a -> num_ticks - a -> current_tick ) : 0 ); return TOK_NUM; }
+    };
+    return new ticks_remain_expr_t( this );
+  }
   if ( name_str == "remains" )
   {
     struct remains_expr_t : public action_expr_t

@@ -594,20 +594,24 @@ const char* util_t::food_type_string( int food )
 {
   switch ( food )
   {
-  case FOOD_NONE:                    return "none";
-  case FOOD_SMOKED_SALMON:           return "smoked_salmon";
-  case FOOD_TENDER_SHOVELTUSK_STEAK: return "tender_shoveltusk_steak";
-  case FOOD_SNAPPER_EXTREME:         return "snapper_extreme";
-  case FOOD_POACHED_BLUEFISH:        return "poached_bluefish";
-  case FOOD_BLACKENED_BASILISK:      return "blackened_basilisk";
-  case FOOD_GOLDEN_FISHSTICKS:       return "golden_fishsticks";
-  case FOOD_CRUNCHY_SERPENT:         return "crunchy_serpent";
-  case FOOD_BLACKENED_DRAGONFIN:     return "blackened_dragonfin";
-  case FOOD_RHINOLICIOUS_WORMSTEAK:  return "rhinolicious_wormsteak";
-  case FOOD_HEARTY_RHINO:            return "hearty_rhino";
-  case FOOD_DRAGONFIN_FILET:         return "dragonfin_filet";
-  case FOOD_GREAT_FEAST:             return "great_feast";
-  case FOOD_FISH_FEAST:              return "fish_feast";
+  case FOOD_NONE:                     return "none";
+  case FOOD_BLACKENED_BASILISK:       return "blackened_basilisk";
+  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin";
+  case FOOD_CRUNCHY_SERPENT:          return "crunchy_serpent";
+  case FOOD_DRAGONFIN_FILET:          return "dragonfin_filet";
+  case FOOD_FISH_FEAST:               return "fish_feast";
+  case FOOD_GOLDEN_FISHSTICKS:        return "golden_fishsticks";
+  case FOOD_GREAT_FEAST:              return "great_feast";
+  case FOOD_HEARTY_RHINO:             return "hearty_rhino";
+  case FOOD_IMPERIAL_MANTA_STEAK:     return "imperial_manta_steak";
+  case FOOD_MEGA_MAMMOTH_MEAL:        return "mega_mammoth_meal";
+  case FOOD_POACHED_NORTHERN_SCULPIN: return "poached_northern_sculpin";
+  case FOOD_POACHED_BLUEFISH:         return "poached_bluefish";
+  case FOOD_RHINOLICIOUS_WORMSTEAK:   return "rhinolicious_wormsteak";
+  case FOOD_SMOKED_SALMON:            return "smoked_salmon";
+  case FOOD_SNAPPER_EXTREME:          return "snapper_extreme";
+  case FOOD_TENDER_SHOVELTUSK_STEAK:  return "tender_shoveltusk_steak";
+  case FOOD_VERY_BURNT_WORG:          return "very_burnt_worg";
   }
   return "unknown";
 }

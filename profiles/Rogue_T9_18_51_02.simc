@@ -1,0 +1,64 @@
+#!./simc 
+
+rogue=Rogue_T9_18_51_02
+origin="http://profiler.wowhead.com/?profile=20631652"
+level=80
+race=troll
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=00532000530000000000000000002520510000350152231005012512
+glyphs=sinister_strike/killing_spree/rupture
+actions=flask,type=endless_rage
+actions+=/food,type=imperial_manta_steak
+actions+=/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/kick
+actions+=/berserking
+actions+=/slice_and_dice,if=buff.slice_and_dice.down&time<4
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2&buff.combo_points.stack>=3
+actions+=/tricks_of_the_trade
+actions+=/killing_spree,if=energy<20&buff.slice_and_dice.remains>5
+actions+=/blade_flurry,if=target.adds_never&buff.slice_and_dice.remains>=5
+actions+=/blade_flurry,if=target.adds>0
+actions+=/rupture,if=buff.combo_points.stack=5&target.time_to_die>10
+actions+=/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7&dot.rupture.remains>6
+actions+=/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>5
+actions+=/eviscerate,if=buff.combo_points.stack=5&target.time_to_die<10
+actions+=/sinister_strike,if=buff.combo_points.stack<5
+actions+=/adrenaline_rush,if=energy<20
+head=garonas_helmet_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10str_10agi_10sta_10int_10spi_8agi,enchant=50ap_20crit
+neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20haste
+shoulders=garonas_pauldrons_of_triumph,stats=489armor_135ap_68exp_76arpen_114agi_114sta,gems=20haste,enchant=40ap_15crit
+chest=garonas_breastplate_of_triumph,stats=652armor_188ap_94hit_102crit_137agi_153sta,gems=20haste_20haste,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_merciless_killer,stats=367armor_135ap_68hit_76haste_98agi_114sta,gems=20ap_10haste_20haste_20haste
+legs=legwraps_of_the_broken_beast,stats=570armor_172ap_86hit_102haste_137agi_153sta,gems=20haste_20haste_20haste,enchant=75ap_22crit
+feet=acidmaw_treads,stats=428armor_127ap_69hit_51exp_93agi_85sta,gems=20ap_10haste_20ap_10haste_6crit,enchant=12crit_12hit
+wrists=bracers_of_dark_determination,stats=285armor_98ap_49hit_57crit_69agi_85sta,gems=20haste_20haste,enchant=130ap
+hands=garonas_gauntlets_of_triumph,stats=407armor_135ap_68hit_76crit_114agi_114sta,gems=20haste,enchant=44ap
+finger1=band_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20haste
+finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=20ap_10haste_4agi
+trinket1=deaths_choice,stats=288ap
+trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
+back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20haste,enchant=23haste
+main_hand=stormpike_cleaver,stats=72ap_44hit_44haste_58agi_66sta,gems=20ap_10haste_4agi,enchant=berserking,weapon=axe_2.60speed_394min_732max
+off_hand=lionhead_slasher,stats=72ap_36crit_44arpen_66agi_66sta,gems=20ap_10haste_4agi,enchant=berserking,weapon=axe_1.50speed_227min_423max
+ranged=fezziks_autocannon,stats=49ap_32crit_24haste_48agi_48sta,gems=20ap_10haste_4agi,weapon=gun_2.90speed_527.5min_868.5max
+# Gear Summary
+# gear_strength=20
+# gear_agility=1457
+# gear_stamina=1515
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=2787
+# gear_expertise_rating=205
+# gear_armor_penetration_rating=221
+# gear_hit_rating=534
+# gear_crit_rating=667
+# gear_haste_rating=719
+# gear_armor=3909
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# trinket1=deaths_choice
+# main_hand=stormpike_cleaver,weapon=axe_2.60speed_394min_732max,enchant=berserking
+# off_hand=lionhead_slasher,weapon=axe_1.50speed_227min_423max,enchant=berserking
+# ranged=fezziks_autocannon,weapon=gun_2.90speed_527.5min_868.5max

@@ -130,31 +130,7 @@ struct food_t : public action_t
     player -> food = type;
     switch ( type )
     {
-    case FOOD_TENDER_SHOVELTUSK_STEAK:
-      player -> stat_gain( STAT_SPELL_POWER, 46 );
-      player -> stat_gain( STAT_STAMINA, 40 );
-      break;
-    case FOOD_SNAPPER_EXTREME:
-      player -> stat_gain( STAT_HIT_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
-      break;
-    case FOOD_SMOKED_SALMON:
-      player -> stat_gain( STAT_SPELL_POWER, 35 );
-      player -> stat_gain( STAT_STAMINA, 40 );
-      break;
-    case FOOD_POACHED_BLUEFISH:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
-      break;
     case FOOD_BLACKENED_BASILISK:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
-      break;
-    case FOOD_GOLDEN_FISHSTICKS:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
-      break;
-    case FOOD_CRUNCHY_SERPENT:
       player -> stat_gain( STAT_SPELL_POWER, 23 );
       player -> stat_gain( STAT_SPIRIT, 20 );
       break;
@@ -162,26 +138,60 @@ struct food_t : public action_t
       player -> stat_gain( STAT_AGILITY, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
+    case FOOD_CRUNCHY_SERPENT:
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
+      break;
     case FOOD_DRAGONFIN_FILET:
       player -> stat_gain( STAT_STRENGTH, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
-    case FOOD_RHINOLICIOUS_WORMSTEAK:
-      player -> stat_gain( STAT_EXPERTISE_RATING, 40 );
+    case FOOD_FISH_FEAST:
+      player -> stat_gain( STAT_ATTACK_POWER, 80 );
+      player -> stat_gain( STAT_SPELL_POWER,  46 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
-    case FOOD_HEARTY_RHINO:
-      player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+    case FOOD_GOLDEN_FISHSTICKS:
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_GREAT_FEAST:
       player -> stat_gain( STAT_ATTACK_POWER, 60 );
       player -> stat_gain( STAT_SPELL_POWER,  35 );
       player -> stat_gain( STAT_STAMINA, 30 );
       break;
-    case FOOD_FISH_FEAST:
+    case FOOD_HEARTY_RHINO:
+      player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_IMPERIAL_MANTA_STEAK:
+    case FOOD_VERY_BURNT_WORG:
+      player -> stat_gain( STAT_HASTE_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_MEGA_MAMMOTH_MEAL:
+    case FOOD_POACHED_NORTHERN_SCULPIN:
       player -> stat_gain( STAT_ATTACK_POWER, 80 );
-      player -> stat_gain( STAT_SPELL_POWER,  46 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_POACHED_BLUEFISH:
+      player -> stat_gain( STAT_SPELL_POWER, 23 );
+      player -> stat_gain( STAT_SPIRIT, 20 );
+      break;
+    case FOOD_RHINOLICIOUS_WORMSTEAK:
+      player -> stat_gain( STAT_EXPERTISE_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_SMOKED_SALMON:
+      player -> stat_gain( STAT_SPELL_POWER, 35 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_SNAPPER_EXTREME:
+      player -> stat_gain( STAT_HIT_RATING, 40 );
+      player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_TENDER_SHOVELTUSK_STEAK:
+      player -> stat_gain( STAT_SPELL_POWER, 46 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
     default: assert( 0 );

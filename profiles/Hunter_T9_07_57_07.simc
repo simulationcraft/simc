@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_T9_07_57_07
-origin=http://profiler.wowhead.com/?profile=14189960
+origin="http://profiler.wowhead.com/?profile=14189960"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000153051012300132331352313515000002
@@ -19,6 +19,7 @@ actions+=/rapid_fire
 actions+=/kill_command
 actions+=/silencing_shot
 actions+=/aimed_shot
+actions+=/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25
 actions+=/chimera_shot
 actions+=/kill_shot
 actions+=/readiness,wait_for_rapid_fire=1
@@ -37,8 +38,8 @@ finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=20arpen
 trinket1=deaths_verdict,stats=288ap
 trinket2=deaths_verdict,stats=256ap
 back=vereesas_dexterity,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20arpen_8ap,enchant=22agi
-main_hand=hellion_glaive,stats=188ap_102crit_94arpen_137agi_153sta,gems=20arpen_20arpen,enchant=110ap,weapon=polearm_3.50speed_281.6dps_788min_1183max
-ranged=brk1000,stats=49ap_32crit_24haste_48agi_48sta,gems=20arpen,enchant=40crit,weapon=gun_2.90speed_240.7dps_527.5min_868.5max
+main_hand=hellion_glaive,stats=188ap_102crit_94arpen_137agi_153sta,gems=20arpen_20arpen,enchant=110ap,weapon=polearm_3.50speed_788min_1183max
+ranged=brk1000,stats=49ap_32crit_24haste_48agi_48sta,gems=20arpen,enchant=40crit,weapon=gun_2.90speed_527.5min_868.5max
 # Gear Summary
 # gear_strength=20
 # gear_agility=1444
@@ -55,6 +56,6 @@ ranged=brk1000,stats=49ap_32crit_24haste_48agi_48sta,gems=20arpen,enchant=40crit
 # tier9_2pc_melee=1
 # trinket1=deaths_verdict
 # trinket2=deaths_verdict
-# main_hand=hellion_glaive,weapon=polearm_3.50speed_281.6dps_788min_1183max
-# ranged=brk1000,weapon=gun_2.90speed_240.7dps_527.5min_868.5max
-ammo_dps=67.50
+# main_hand=hellion_glaive,weapon=polearm_3.50speed_788min_1183max
+# ranged=brk1000,weapon=gun_2.90speed_527.5min_868.5max
+ammo_dps=91.50
