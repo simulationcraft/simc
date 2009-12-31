@@ -397,6 +397,7 @@ struct indestructible_potion_t : public action_t
     new ( sim ) expiration_t( sim, player );
     // The duration of the buff is long enough to trigger the first one before entering combat.
     if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
   }
 
   virtual bool ready()
@@ -501,6 +502,7 @@ struct health_stone_t : public action_t
   {
     if ( sim -> log ) log_t::output( sim, "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
+    update_ready();
   }
 
   virtual bool ready()
@@ -551,6 +553,7 @@ struct dark_rune_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
+    update_ready();
   }
 
   virtual bool ready()

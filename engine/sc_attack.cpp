@@ -201,16 +201,13 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( special )
+  if ( delta_level > 2 )
   {
-    if ( delta_level > 2 )
-    {
-      chance -= ( 0.03 + delta_level * 0.006 );
-    }
-    else
-    {
-      chance -= ( delta_level * 0.002 );
-    }
+    chance -= ( 0.03 + delta_level * 0.006 );
+  }
+  else
+  {
+    chance -= ( delta_level * 0.002 );
   }
 
   return chance;

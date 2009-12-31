@@ -3754,8 +3754,9 @@ action_expr_t* player_t::create_expression( action_t* a,
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      cooldown_t* cooldown = find_cooldown( splits[ 1 ] );
-      if ( ! cooldown ) return 0;
+      printf( "%s\n", splits[ 1 ].c_str() );
+
+      cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
       if ( splits[ 2 ] == "remains" )
       {
 	struct cooldown_remains_expr_t : public action_expr_t
