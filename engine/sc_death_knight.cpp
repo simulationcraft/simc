@@ -3013,11 +3013,12 @@ struct obliterate_t : public death_knight_attack_t
       {
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
-        if ( p -> buffs_rime -> trigger() )
-        {
-          p -> cooldowns_howling_blast -> reset();
-          update_ready();
-        }
+        if ( result_is_hit() )
+          if ( p -> buffs_rime -> trigger() ) 
+          {
+            p -> cooldowns_howling_blast -> reset();
+            update_ready();
+          }
       }
 
     p -> buffs_deathchill -> expire();
