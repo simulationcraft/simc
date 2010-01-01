@@ -4176,7 +4176,7 @@ int druid_t::decode_set( item_t& item )
 
   bool is_caster = ( strstr( s, "cover"     ) || 
                      strstr( s, "mantle"    ) ||
-                     strstr( s, "vestments" ) ||
+                     strstr( s, "vestment" ) ||
                      strstr( s, "trousers"  ) ||
                      strstr( s, "gloves"    ) );
   
