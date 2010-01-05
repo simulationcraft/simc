@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_T9_20_51_00_258
-origin=http://profiler.wowhead.com/?profile=14635698
+origin="http://profiler.wowhead.com/?profile=14635698"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053034050000000000000000030205013105021333031131031051
@@ -20,16 +20,16 @@ actions+=/shamanistic_rage
 actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
-actions+=/lightning_bolt,maelstrom=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5
 actions+=/stormstrike
-actions+=/flame_shock
+actions+=/flame_shock,if=!ticking
 actions+=/earth_shock
 actions+=/magma_totem
 actions+=/fire_nova
 actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/shamanistic_rage,tier10_2pc_melee=1
-actions+=/lightning_bolt,maelstrom=4
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
 head=thralls_faceguard_of_triumph,stats=1176armor_172ap_86hit_80crit_137agi_121sta_80int,gems=chaotic_skyflare_20haste_16ap,enchant=50ap_20crit
 neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20exp_4agi
 shoulders=thralls_shoulderguards_of_triumph,stats=1086armor_211ap_60hit_76crit_68agi_90sta_60int,gems=20exp,enchant=40ap_15crit

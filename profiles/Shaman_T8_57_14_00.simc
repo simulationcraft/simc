@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_T8_57_14_00
-origin=http://profiler.wowhead.com/?profile=13000116
+origin="http://profiler.wowhead.com/?profile=13000116"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322300351005050031
@@ -17,12 +17,12 @@ actions+=/wind_shear
 actions+=/bloodlust,time_to_die<=59
 actions+=/speed_potion
 actions+=/elemental_mastery
-actions+=/flame_shock
-actions+=/lava_burst,flame_shock=1
+actions+=/flame_shock,if=!ticking
+actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0
 actions+=/fire_nova,if=target.adds>2
 actions+=/fire_elemental_totem
 actions+=/searing_totem
-actions+=/chain_lightning,conserve=1,clearcasting=1
+actions+=/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1
 actions+=/lightning_bolt
 actions+=/thunderstorm
 head=conquerors_worldbreaker_helm,stats=1067armor_60hit_60crit_115sp_85sta_86int,gems=chaotic_skyflare_8haste_9sp_9sp,enchant=30sp_20crit

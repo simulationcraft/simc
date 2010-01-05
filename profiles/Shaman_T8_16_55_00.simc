@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_T8_16_55_00
-origin=http://profiler.wowhead.com/?profile=13000114
+origin="http://profiler.wowhead.com/?profile=13000114"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053030050000000000000000030205033105021333031131231051
@@ -20,16 +20,16 @@ actions+=/shamanistic_rage
 actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
-actions+=/lightning_bolt,maelstrom=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5
 actions+=/stormstrike
-actions+=/flame_shock
+actions+=/flame_shock,if=!ticking
 actions+=/earth_shock
 actions+=/magma_totem
 actions+=/fire_nova
 actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/shamanistic_rage,tier10_2pc_melee=1
-actions+=/lightning_bolt,maelstrom=4
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
 head=conquerors_worldbreaker_faceguard,stats=1067armor_204ap_73crit_54haste_54agi_74sta_60int,gems=chaotic_skyflare_16exp_6hit,enchant=50ap_20crit
 neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=32ap
 shoulders=conquerors_worldbreaker_shoulderguards,stats=985armor_138ap_49crit_34exp_62agi_66sta_52int,gems=32ap_4crit,enchant=40ap_15crit
