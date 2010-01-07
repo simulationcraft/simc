@@ -681,10 +681,10 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnSpellHit_590SP_25%_10Dur_45Cd";
-  else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellHit_285SP_10%_10Dur_45Cd";
-  else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellHit_285SP_10%_10Dur_45Cd";
-  else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_10%_10Dur_45Cd";
-  else if ( name == "ashen_band_of_unmatched_vengeance"   ) e = "OnAttackHit_480AP_10%_10Dur_45Cd";
+  else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellHit_285SP_10%_10Dur_60Cd";
+  else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellHit_285SP_10%_10Dur_60Cd";
+  else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_10%_10Dur_60Cd";
+  else if ( name == "ashen_band_of_unmatched_vengeance"   ) e = "OnAttackHit_480AP_10%_10Dur_60Cd";
   else if ( name == "banner_of_victory"                   ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
   else if ( name == "black_magic"                         ) e = "OnSpellDirectHit_250Haste_35%_10Dur_35Cd";
   else if ( name == "blood_of_the_old_god"                ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
