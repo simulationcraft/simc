@@ -278,13 +278,13 @@ static void register_deathbringers_will( item_t* item )
 
       // Unholy Death Knights are different than Frost and Blood, so they get a special proc.
       static int uh_death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
-      static int    death_knight_stats[] = { STAT_STRENGTH, STAT_ARMOR_PENETRATION_RATING, STAT_CRIT_RATING };
-      static int           druid_stats[] = { STAT_STRENGTH, STAT_AGILITY,      STAT_ARMOR_PENETRATION_RATING };
+      static int    death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      static int           druid_stats[] = { STAT_STRENGTH, STAT_AGILITY,      STAT_HASTE_RATING };
       static int          hunter_stats[] = { STAT_AGILITY,  STAT_CRIT_RATING,  STAT_ATTACK_POWER };
       static int         paladin_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
-      static int           rogue_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_ARMOR_PENETRATION_RATING };
-      static int          shaman_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_ARMOR_PENETRATION_RATING };
-      static int         warrior_stats[] = { STAT_STRENGTH, STAT_CRIT_RATING,  STAT_ARMOR_PENETRATION_RATING };
+      static int           rogue_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_HASTE_RATING };
+      static int          shaman_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_HASTE_RATING };
+      static int         warrior_stats[] = { STAT_STRENGTH, STAT_CRIT_RATING,  STAT_HASTE_RATING };
 
       int* stats=0;
 
