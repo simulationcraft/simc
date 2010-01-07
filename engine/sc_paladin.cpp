@@ -53,6 +53,7 @@ struct paladin_t : public player_t
   buff_t* buffs_libram_of_reciprocation;
   buff_t* buffs_libram_of_valiance;
   buff_t* buffs_tier8_4pc_tank;
+  buff_t* buffs_libram_of_three_truths;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -178,6 +179,7 @@ struct paladin_t : public player_t
     int radiance;
     int reciprocation;
     int resurgence;
+    int three_truths;
     int valiance;
     int venture_co_protection;
     int venture_co_retribution;
@@ -616,6 +618,7 @@ struct crusader_strike_t : public paladin_attack_t
     if ( p -> librams.    deadly_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 120 );
     if ( p -> librams.   furious_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 144 );
     if ( p -> librams.relentless_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 172 );
+    if ( p -> librams.                   three_truths ) p -> buffs_libram_of_three_truths -> trigger();
   }
 };
 
@@ -2230,10 +2233,11 @@ void paladin_t::init_items()
   else if ( libram == "libram_of_radiance"                        ) librams.radiance = 1;
   else if ( libram == "libram_of_reciprocation"                   ) librams.reciprocation = 1;
   else if ( libram == "libram_of_resurgence"                      ) librams.resurgence = 1;
+  else if ( libram == "libram_of_three_truths"                    ) librams.three_truths = 1;
   else if ( libram == "libram_of_valiance"                        ) librams.valiance = 1;
+  else if ( libram == "libram_of_wracking"                        ) librams.wracking = 1;
   else if ( libram == "venture_co._libram_of_protection"          ) librams.venture_co_protection = 1;
   else if ( libram == "venture_co._libram_of_retribution"         ) librams.venture_co_retribution = 1;
-  else if ( libram == "libram_of_wracking"                        ) librams.wracking = 1;
   // To prevent warnings...
   else if ( libram == "blessed_book_of_nagrand" ) ;
   else if ( libram == "brutal_gladiators_libram_of_fortitude" ) ;
@@ -2352,6 +2356,7 @@ void paladin_t::init_buffs()
   buffs_libram_of_fortitude        = new stat_buff_t( this, "libram_of_fortitude",         STAT_ATTACK_POWER, 172, 1, 10.0            );
   buffs_libram_of_furious_blows    = new stat_buff_t( this, "libram_of_furious_blows",     STAT_CRIT_RATING,   61, 1,  5.0            );
   buffs_libram_of_reciprocation    = new stat_buff_t( this, "libram_of_reciprocation",     STAT_CRIT_RATING,  173, 1, 10.0, 0.0, 0.15 );
+  buffs_libram_of_three_truths     = new stat_buff_t( this, "libram_of_three_truths",      STAT_STRENGTH,      44, 5, 15.0            );
   buffs_libram_of_valiance         = new stat_buff_t( this, "libram_of_valiance",          STAT_STRENGTH,     200, 1, 16.0, 6.0, 0.70 );
   buffs_tier8_4pc_tank             = new stat_buff_t( this, "tier8_4pc_tank",              STAT_BLOCK_VALUE,  225, 1,  6.0            );
 }
