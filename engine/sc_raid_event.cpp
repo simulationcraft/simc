@@ -137,13 +137,15 @@ struct invulnerable_event_t : public raid_event_t
 struct movement_event_t : public raid_event_t
 {
   double move_to;
+  int players_only;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "movement" ), move_to( 0 )
+    raid_event_t( s, "movement" ), move_to( 0 ), players_only( 0 )
   {
     option_t options[] =
     {
-      { "to", OPT_FLT, &move_to },
+      { "to",           OPT_FLT,  &move_to      },
+      { "players_only", OPT_BOOL, &players_only },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -155,6 +157,7 @@ struct movement_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
+      if ( p -> is_pet() && players_only ) continue;
       p -> buffs.moving -> increment();
       if ( p -> sleeping ) continue;
       p -> interrupt();
@@ -166,6 +169,7 @@ struct movement_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
+      if ( p -> is_pet() && players_only ) continue;
       p -> buffs.moving -> decrement();
       if ( p -> sleeping ) continue;
     }
