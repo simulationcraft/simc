@@ -145,18 +145,20 @@ struct discharge_proc_callback_t : public action_callback_t
 
 static void register_black_bruise( item_t* item )
 {
+  // http://ptr.wowhead.com/?item=50035
+
   player_t* p = item -> player;
 
   item -> unique = true;
 
-  // http://ptr.wowhead.com/?item=50035
-  buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.01 ); // FIXME!! Cooldown?
+  bool heroic = ( item -> encoded_stats_str.find( "69sta" ) != std::string::npos );  // FIXME!! Yuck!
 
-  // http://ptr.wowhead.com/?spell=71876
-  // http://ptr.wowhead.com/?spell=71878 <- HEROIC VERSION
+  buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.0275 ); // FIXME!! Cooldown?
+
   struct black_bruise_spell_t : public spell_t
   {
-    black_bruise_spell_t( player_t* player ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW )
+    bool heroic;
+    black_bruise_spell_t( player_t* player, bool h ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW ), heroic(h)
     {
       may_miss    = false;
       may_crit    = false; // FIXME!!  Can the damage crit?
@@ -164,7 +166,7 @@ static void register_black_bruise( item_t* item )
       proc        = true;
       trigger_gcd = 0;
       base_dd_min = base_dd_max = 1;
-      base_dd_multiplier *= 0.10; // FIXME!!  Need better way to distinguish "heroic" items.
+      base_dd_multiplier *= ( heroic ? 0.10 : 0.09 );
       reset();
     }
     virtual void player_buff() { }
@@ -177,8 +179,8 @@ static void register_black_bruise( item_t* item )
     virtual void trigger( action_t* a )
     {
       // FIXME! Can specials trigger the proc?
+      // FIXME! Apparently both hands proc the buff even though only equipped in main hand
       if ( ! a -> weapon ) return;
-      if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
       buff -> trigger();
     }
   };
@@ -204,7 +206,7 @@ static void register_black_bruise( item_t* item )
   };
 
   p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
-  p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p ) ) );
+  p -> register_direct_damage_callback( new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p, heroic ) ) );
 }
 
 // register_darkmoon_card_greatness =========================================
@@ -397,9 +399,11 @@ static void register_nibelung( item_t* item )
     {
       trigger_gcd = 0;
       background  = true;
+      may_miss = false;
       may_crit = true;
-      base_dd_min = 1061;
-      base_dd_max = 1189;
+      // FIXME! Still not sure about the size of the buff.
+      base_dd_min = 1061 * 1.40;
+      base_dd_max = 1189 * 1.40;
       base_crit = 0.05;
       reset();
     }
