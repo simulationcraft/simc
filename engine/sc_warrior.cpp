@@ -171,6 +171,7 @@ struct warrior_t : public player_t
     int overpower;
     int rending;
     int revenge;
+    int shockwave;
     int whirlwind;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -1231,6 +1232,7 @@ struct shockwave_t : public warrior_attack_t
     base_cost = 15;
     direct_power_mod = 0.75;
     cooldown -> duration = 20.0;
+    if ( p -> glyphs.shockwave ) cooldown -> duration -= 3;
 
     id = 46968;
   }
@@ -2388,6 +2390,7 @@ void warrior_t::init_glyphs()
     else if ( n == "overpower"     ) glyphs.overpower = 1;
     else if ( n == "rending"       ) glyphs.rending = 1;
     else if ( n == "revenge"       ) glyphs.revenge = 1;
+    else if ( n == "shockwave"     ) glyphs.shockwave = 1;
     else if ( n == "whirlwind"     ) glyphs.whirlwind = 1;
     else if ( n == "blocking"      ) glyphs.blocking = 1;
     // To prevent warnings....

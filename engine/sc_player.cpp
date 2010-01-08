@@ -646,6 +646,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if ( meta_gem == META_IMPASSIVE_STARFLARE     ) item_stats.crit_rating += 17;
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE   ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM   ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE ) item_stats.attack_power += 42;
   else if ( meta_gem == META_PERSISTENT_EARTHSHATTER ) item_stats.attack_power += 34;
   else if ( meta_gem == META_PERSISTENT_EARTHSIEGE   ) item_stats.attack_power += 42;
   else if ( meta_gem == META_POWERFUL_EARTHSHATTER   ) item_stats.attribute[ ATTR_STAMINA ] += 26;

@@ -353,6 +353,7 @@ const char* util_t::meta_gem_type_string( int type )
   case META_IMPASSIVE_STARFLARE:     return "impassive_starflare";
   case META_INSIGHTFUL_EARTHSIEGE:   return "insightful_earthsiege";
   case META_INSIGHTFUL_EARTHSTORM:   return "insightful_earthstorm";
+  case META_INVIGORATING_EARTHSIEGE: return "invigorating_earthsiege";
   case META_MYSTICAL_SKYFIRE:        return "mystical_skyfire";
   case META_PERSISTENT_EARTHSHATTER: return "persistent_earthshatter";
   case META_PERSISTENT_EARTHSIEGE:   return "persistent_earthsiege";
