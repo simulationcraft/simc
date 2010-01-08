@@ -2557,7 +2557,7 @@ struct deadly_poison_t : public rogue_poison_t
     background     = true;
     num_ticks      = 4;
     base_tick_time = 3.0;
-    tick_power_mod = 0.12 / num_ticks;
+    tick_power_mod = 0.12 / num_ticks * 0.9; // * 0.9 for the 10% Hot-Fix nerf on Jan 7th. 2010.
     base_td_init   = util_t::ability_rank( p -> level,  296,80,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
 
     id = 57972;
@@ -2653,7 +2653,7 @@ struct instant_poison_t : public rogue_poison_t
     trigger_gcd      = 0;
     background       = true;
     may_crit         = true;
-    direct_power_mod = 0.10;
+    direct_power_mod = 0.10 * 0.9; // * 0.9 for the Hot-Fix nerf on Jan. 7th 2010.
     base_dd_min      = util_t::ability_rank( p -> level,  300,79,  245,73,  161,68,  76,0 );
     base_dd_max      = util_t::ability_rank( p -> level,  400,79,  327,73,  215,68,  100,0 );
 
@@ -2699,7 +2699,7 @@ struct wound_poison_t : public rogue_poison_t
     trigger_gcd      = 0;
     background       = true;
     may_crit         = true;
-    direct_power_mod = .04;
+    direct_power_mod = .04 * 0.9; // * 0.9 for the Hot-Fix nerf on Jan. 7th, 2010.
     base_dd_min = base_dd_max = util_t::ability_rank( p -> level,  231,78,  188,72,  112,64,  53,0 );
 
     id = 57978;
