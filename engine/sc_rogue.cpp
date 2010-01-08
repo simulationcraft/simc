@@ -873,7 +873,7 @@ void rogue_attack_t::player_buff()
   }
   if ( p -> buffs_hunger_for_blood -> up() )
   {
-    player_multiplier *= 1.10 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.05 + p -> glyphs.hunger_for_blood * 0.03;
   }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
@@ -2488,7 +2488,7 @@ void rogue_poison_t::player_buff()
 
   if ( p -> buffs_hunger_for_blood -> up() )
   {
-    player_multiplier *= 1.10 + p -> glyphs.hunger_for_blood * 0.03;
+    player_multiplier *= 1.05 + p -> glyphs.hunger_for_blood * 0.03;
   }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
