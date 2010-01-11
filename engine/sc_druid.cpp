@@ -3286,10 +3286,11 @@ struct typhoon_t : public druid_spell_t
       {  0, 0,    0,    0, 0, 0 }
     };
     init_rank( ranks );
-
+    
     base_execute_time = 0;
     direct_power_mod  = 0.193;
     base_multiplier *= 1.0 + 0.15 * p -> talents.gale_winds;
+    aoe = true;
 
     cooldown -> duration = 20;
     if ( p -> glyphs.monsoon )
