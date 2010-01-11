@@ -177,11 +177,13 @@ struct druid_t : public player_t
     int insect_swarm;
     int mangle;
     int moonfire;
+    int monsoon;
     int rip;
     int savage_roar;
     int shred;
     int starfire;
     int starfall;
+    int typhoon;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -3259,6 +3261,44 @@ struct starfall_t : public druid_spell_t
   }
 };
 
+// Typhoon Spell ============================================================
+
+struct typhoon_t : public druid_spell_t
+{
+  typhoon_t( player_t* player, const std::string& options_str ) :
+      druid_spell_t( "typhoon", player, SCHOOL_NATURE, TREE_BALANCE )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.typhoon );
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 5, 1190, 1190, 0, 0.32 },
+      { 75, 4, 1010, 1010, 0, 0.32 },
+      { 70, 3,  735,  735, 0, 0.32 },
+      { 60, 2,  550,  550, 0, 0.32 },
+      { 50, 1,  400,  400, 0, 0.32 },
+      {  0, 0,    0,    0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    base_execute_time = 0;
+    direct_power_mod  = 0.193;
+    base_multiplier *= 1.0 + 0.15 * p -> talents.gale_winds;
+
+    cooldown -> duration = 20;
+    if ( p -> glyphs.monsoon )
+      cooldown -> duration -= 3;
+    if ( p -> glyphs.typhoon )
+      base_cost *= 0.92;
+  }
+};
+
 // Mark of the Wild Spell =====================================================
 
 struct mark_of_the_wild_t : public druid_spell_t
@@ -3392,6 +3432,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
   if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
   if ( name == "treants"           ) return new     treants_spell_t( this, options_str );
+  if ( name == "typhoon"           ) return new           typhoon_t( this, options_str );
   if ( name == "wrath"             ) return new             wrath_t( this, options_str );
 #if 0
   if ( name == "cower"             ) return new             cower_t( this, options_str );
@@ -3452,11 +3493,13 @@ void druid_t::init_glyphs()
     else if ( n == "insect_swarm" ) glyphs.insect_swarm = 1;
     else if ( n == "mangle"       ) glyphs.mangle = 1;
     else if ( n == "moonfire"     ) glyphs.moonfire = 1;
+    else if ( n == "monsoon"      ) glyphs.monsoon = 1;
     else if ( n == "rip"          ) glyphs.rip = 1;
     else if ( n == "savage_roar"  ) glyphs.savage_roar = 1;
     else if ( n == "shred"        ) glyphs.shred = 1;
     else if ( n == "starfire"     ) glyphs.starfire = 1;
     else if ( n == "starfall"     ) glyphs.starfall = 1;
+    else if ( n == "typhoon"      ) glyphs.typhoon = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "aquatic_form"          ) ;
     else if ( n == "barkskin"              ) ;
@@ -3469,7 +3512,6 @@ void druid_t::init_glyphs()
     else if ( n == "hurricane"             ) ;
     else if ( n == "lifebloom"             ) ;
     else if ( n == "maul"                  ) ;
-    else if ( n == "monsoon"               ) ;
     else if ( n == "nourish"               ) ;
     else if ( n == "rapid_rejuvenation"    ) ;
     else if ( n == "rebirth"               ) ;
@@ -3479,7 +3521,6 @@ void druid_t::init_glyphs()
     else if ( n == "swiftmend"             ) ;
     else if ( n == "the_wild"              ) ;
     else if ( n == "thorns"                ) ;
-    else if ( n == "typhoon"               ) ;
     else if ( n == "unburdened_rebirth"    ) ;
     else if ( n == "wild_growth"           ) ;
     else if ( n == "wrath"                 ) ;
@@ -3780,6 +3821,7 @@ void druid_t::init_actions()
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
+      action_list_str += "/typhoon,moving=1";
       action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature ) action_list_str+="/treants";
