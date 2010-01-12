@@ -19,7 +19,7 @@ actions+=/speed_potion
 actions+=/deep_freeze
 actions+=/frost_bolt,frozen=1
 actions+=/fire_ball,brain_freeze=1
-actions+=/cold_snap
+actions+=/cold_snap,if=cooldown.deep_freeze.remains>15
 actions+=/mirror_image
 actions+=/frost_bolt
 actions+=/evocation

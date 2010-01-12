@@ -3372,7 +3372,7 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem/speed_potion";
       action_list_str += "/deep_freeze";
       action_list_str += "/frost_bolt,frozen=1";
-      if ( talents.cold_snap              ) action_list_str += "/cold_snap";
+      if ( talents.cold_snap              ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
       if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
       action_list_str += "/mirror_image";
       action_list_str += "/frost_bolt";
