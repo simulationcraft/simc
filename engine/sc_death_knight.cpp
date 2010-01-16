@@ -2478,15 +2478,13 @@ struct frost_fever_t : public death_knight_spell_t
 // Frost Strike =============================================================
 struct frost_strike_t : public death_knight_attack_t
 {
-  int killing_machine;
   frost_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 )
+      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
     {
-      { "killing_machine", OPT_INT, &killing_machine },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2513,15 +2511,6 @@ struct frost_strike_t : public death_knight_attack_t
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
     base_dd_adder = 113 * p -> sigils.vengeful_heart;
-  }
-
-  virtual bool ready()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
-      return false;
-
-    return death_knight_attack_t::ready();
   }
 
   virtual void consume_resource() { }
@@ -2680,17 +2669,14 @@ struct horn_of_winter_t : public death_knight_spell_t
 // Howling Blast ============================================================
 struct howling_blast_t : public death_knight_spell_t
 {
-  int killing_machine, rime;
   howling_blast_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "howling_blast", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 ), rime( 0 )
+      death_knight_spell_t( "howling_blast", player, SCHOOL_FROST, TREE_FROST )
   {
 
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.howling_blast );
     option_t options[] =
     {
-      { "killing_machine", OPT_INT, &killing_machine },
-      { "rime",            OPT_INT, &rime            },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2768,9 +2754,6 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
-      return false;
-
     if ( p -> buffs_rime -> check() )
     {
       // If Rime is up, runes are no restriction.
@@ -2780,10 +2763,6 @@ struct howling_blast_t : public death_knight_spell_t
       cost_unholy = 1;
       cost_frost  = 1;
       return rime_ready;
-    }
-    else if ( rime )
-    {
-      return false;
     }
     return death_knight_spell_t::ready();
   }
@@ -2838,14 +2817,12 @@ struct hysteria_t : public action_t
 // Icy Touch ================================================================
 struct icy_touch_t : public death_knight_spell_t
 {
-  int killing_machine;
   icy_touch_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST ), killing_machine( 0 )
+      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
     {
-      { "killing_machine", OPT_INT, &killing_machine },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2868,15 +2845,6 @@ struct icy_touch_t : public death_knight_spell_t
     cooldown -> duration          = 0.0;
 
     base_crit += p -> talents.rime * 0.05;
-  }
-
-  virtual bool ready()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    if ( killing_machine && ! p -> buffs_killing_machine -> check() )
-      return false;
-
-    return death_knight_spell_t::ready();
   }
 
   virtual void execute()
