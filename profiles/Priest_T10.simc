@@ -9,9 +9,8 @@ optimal_raid=1
 #Priest_T10_13_00_58_251_SWD.simc
 Priest_T10_13_00_58_264.simc
 Priest_T10_13_00_58_264_SWD.simc
-#Priest_T10_13_00_58_277.simc
-#Priest_T10_13_00_58_277_SWD.simc
-
+Priest_T10_13_00_58_277.simc
+Priest_T10_13_00_58_277_SWD.simc
 #Priest_T9_13_00_58_258_draenei.simc
 #Priest_T9_13_00_58_258_troll.simc
 
@@ -30,9 +29,14 @@ Priest_T10_13_00_58_264_SWD.simc
 #wowhead=18052647 name=Priest_T10_13_00_58_264_SWD  save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
 #back=frostbinders_shredded_cape,id=50205,gems=12sp_10haste_5sp,enchant=lightweave_embroidery
 
-#wowhead=13043848 name=Priest_T10_13_00_58_277      save=Priest_T10_13_00_58_277.simc
+#wowhead=20704178 name=Priest_T10_13_00_58_277	    save=Priest_T10_13_00_58_277.simc
+#enchant_spell_power=38
+## back, wrists, ranged, waist, legs, feet socket bonuses.
 
-#wowhead=13043848 name=Priest_T10_13_00_58_277_SWD  save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
+#wowhead=20704178 name=Priest_T10_13_00_58_277_SWD   save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
+#enchant_spell_power=38
+## back, wrists, ranged, waist, legs, feet socket bonuses.
+
 
 ## Different races
 

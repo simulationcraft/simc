@@ -1,0 +1,59 @@
+#!./simc 
+
+priest=Priest_T10_13_00_58_277_SWD
+origin="http://profiler.wowhead.com/?profile=20704178"
+level=80
+race=night_elf
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
+glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/divine_spirit
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/vampiric_embrace
+actions+=/snapshot_stats
+actions+=/speed_potion
+actions+=/shadow_fiend
+actions+=/shadow_word_pain,shadow_weaving_wait=1
+actions+=/vampiric_touch
+actions+=/devouring_plague
+actions+=/mind_blast
+actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2
+actions+=/mind_flay
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
+head=sanctified_crimson_acolyte_cowl,stats=300armor_122crit_98haste_185sp_139sta_139int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+neck=blood_queens_crimson_choker,stats=65crit_60haste_110sp_78sta_78int,gems=23sp
+shoulders=sanctified_crimson_acolyte_mantle,stats=277armor_90crit_82haste_150sp_103sta_103int,gems=10haste_12sp_5sp,enchant=24sp_15crit
+chest=sanctified_crimson_acolyte_raiments,stats=369armor_114crit_114haste_195sp_139sta_139int,gems=23sp_10haste_12sp_7sp,enchant=10str_10agi_10sta_10int_10spi
+waist=crushing_coldwraith_belt,stats=208armor_74crit_90haste_140sp_103sta_103int,gems=12sp_10spi_23sp_23sp
+legs=plaguebringers_stained_pants,stats=323armor_104hit_116haste_185sp_139sta_139int,gems=23sp_12sp_10spi_10haste_12sp,enchant=50sp_20spi
+feet=plague_scientists_boots,stats=254armor_74crit_90haste_140sp_103sta_103int,gems=12sp_10spi_23sp,enchant=15sta
+wrists=the_ladys_brittle_bracers,stats=162armor_52hit_73crit_110sp_78sta_78int,gems=10haste_12sp,enchant=30sp
+hands=sanctified_crimson_acolyte_handwraps,stats=231armor_82hit_90crit_150sp_103sta_103int,gems=23sp,enchant=28sp
+finger1=ring_of_rapid_ascent,stats=68crit_60haste_110sp_78sta_78int,gems=23sp,enchant=23sp
+finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10haste_12sp_5sp,enchant=23sp,equip=onspellhit_285sp_10%_10dur_60cd
+trinket1=dislodged_foreign_object,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
+trinket2=phylactery_of_the_nameless_lich,stats=172crit,equip=ontick_1032sp_10%_20dur_90cd
+back=frostbinders_shredded_cape,stats=185armor_68crit_60haste_110sp_78sta_78int,gems=10haste_12sp,enchant=lightweave_embroidery
+main_hand=frozen_bonespike,stats=50crit_836sp_75sta_75int_66spi,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_142min_414max
+off_hand=shadow_silk_spindle,stats=68crit_68haste_119sp_78sta_78int
+ranged=corpseimpaling_spike,stats=38crit_30haste_58sp_44sta_44int,gems=10haste_12sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=1436
+# gear_intellect=1421
+# gear_spirit=137
+# gear_spell_power=3373
+# gear_hit_rating=289
+# gear_crit_rating=1222
+# gear_haste_rating=1172
+# gear_armor=2309
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=frostbinders_shredded_cape,enchant=lightweave_embroidery
+# main_hand=frozen_bonespike,weapon=dagger_1.80speed_142min_414max
