@@ -25,43 +25,10 @@ Priest_T10_13_00_58_264_SWD.simc
 #wowhead=18052707 name=Priest_T10_13_00_58_251_SWD  save=Priest_T10_13_00_58_251_SWD.simc	use_shadow_word_death=1
 
 #wowhead=18052647 name=Priest_T10_13_00_58_264      save=Priest_T10_13_00_58_264.simc
-#head=sanctified_crimson_acolyte_cowl,id=51184,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-#shoulders=sanctified_crimson_acolyte_mantle,id=51182,gems=12sp_10haste_5sp,enchant=24sp_15crit
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
-#chest=sanctified_crimson_acolyte_raiments,id=51180,gems=23sp_12sp_10haste_7sp,enchant=10all
-#legs=leggings_of_woven_death,id=49891,gems=23sp_12sp_10haste_12sp_10spi_9sp,enchant=50sp_20spi	
-#feet=plague_scientists_boots,id=50062,gems=23sp,enchant=15sta
-#finger1=ring_of_rapid_ascent,id=50008,gems=0sp,enchant=23sp
-#trinket1=dislodged_foreign_object,id=50353,gems=0sp
-#trinket2=reign_of_the_unliving,id=47188,gems=0sp
-#ranged=corpse_impaling_spike,id=50033,gems=0sp
-#neck=amulet_of_the_silent_eulogy,id=50005,gems=0sp
-#hands=sanctified_crimson_acolyte_handwraps,id=51183,gems=23sp,enchant=28sp
-#main_hand=blade_of_tarasque,id=46980,gems=23sp,enchant=63sp
-#off_hand=chalice_of_benedictus,id=47958,gems=12sp_10haste_5sp
-#wrists=bindings_of_dark_essence,id=47143,gems=12sp_10hit_5sp,enchant=30sp
-#waist=crushing_coldwraith_belt,id=49978,gems=23sp_23sp
-#finger2=band_of_deplorable_violence,id=47237,gems=12sp_10hit_5sp,enchant=23sp
-
+#back=frostbinders_shredded_cape,id=50205,gems=12sp_10haste_5sp,enchant=lightweave_embroidery
  
 #wowhead=18052647 name=Priest_T10_13_00_58_264_SWD  save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
-#head=sanctified_crimson_acolyte_cowl,id=51184,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-#shoulders=sanctified_crimson_acolyte_mantle,id=51182,gems=12sp_10haste_5sp,enchant=24sp_15crit
-#back=jainas_radiance,id=47552,gems=23sp_5sp,enchant=lightweave_embroidery
-#chest=sanctified_crimson_acolyte_raiments,id=51180,gems=23sp_12sp_10haste_7sp,enchant=10all
-#legs=leggings_of_woven_death,id=49891,gems=23sp_12sp_10haste_12sp_10spi_9sp,enchant=50sp_20spi	
-#feet=plague_scientists_boots,id=50062,gems=23sp,enchant=15sta
-#finger1=ring_of_rapid_ascent,id=50008,gems=0sp,enchant=23sp
-#trinket1=dislodged_foreign_object,id=50353,gems=0sp
-#trinket2=reign_of_the_unliving,id=47188,gems=0sp
-#ranged=corpse_impaling_spike,id=50033,gems=0sp
-#neck=amulet_of_the_silent_eulogy,id=50005,gems=0sp
-#hands=sanctified_crimson_acolyte_handwraps,id=51183,gems=23sp,enchant=28sp
-#main_hand=blade_of_tarasque,id=46980,gems=23sp,enchant=63sp
-#off_hand=chalice_of_benedictus,id=47958,gems=12sp_10haste_5sp
-#wrists=bindings_of_dark_essence,id=47143,gems=12sp_10hit_5sp,enchant=30sp
-#waist=crushing_coldwraith_belt,id=49978,gems=23sp_23sp
-#finger2=band_of_deplorable_violence,id=47237,gems=12sp_10hit_5sp,enchant=23sp
+#back=frostbinders_shredded_cape,id=50205,gems=12sp_10haste_5sp,enchant=lightweave_embroidery
 
 #wowhead=13043848 name=Priest_T10_13_00_58_277      save=Priest_T10_13_00_58_277.simc
 
