@@ -609,8 +609,8 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  int T8=0, T9=1, TMAX=2;
-  const char* TNAMES[] = { "T8", "T9" };
+  int T8=0, T9=1, T10=2, TMAX=3;
+  const char* TNAMES[] = { "T8", "T9", "T10" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
@@ -666,6 +666,9 @@ void SimulationCraftWindow::createBestInSlotTab()
       { PRIEST,     T9, "Priest_T9_13_00_58_232",           TAB_WOWHEAD, "13043846" },
       { PRIEST,     T9, "Priest_T9_13_00_58_245",           TAB_WOWHEAD, "13043847" },
       { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
+      { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
+      { PRIEST,    T10, "Priest_T10_13_00_58_264",          TAB_WOWHEAD, "18052647" },
+      { PRIEST,    T10, "Priest_T10_13_00_58_277",          TAB_WOWHEAD, "20704178" },
 
       { ROGUE,      T8, "Rogue_T8_07_51_13_FD",             TAB_WOWHEAD, "13006118" },
       { ROGUE,      T8, "Rogue_T8_08_20_43",                TAB_WOWHEAD, "13006155" },
