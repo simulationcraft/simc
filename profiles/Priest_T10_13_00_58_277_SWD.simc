@@ -5,7 +5,7 @@ origin="http://profiler.wowhead.com/?profile=20704178"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
-glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
@@ -41,13 +41,14 @@ back=frostbinders_shredded_cape,stats=185armor_68crit_60haste_110sp_78sta_78int,
 main_hand=frozen_bonespike,stats=50crit_836sp_75sta_75int_66spi,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_142min_414max
 off_hand=shadow_silk_spindle,stats=68crit_68haste_119sp_78sta_78int
 ranged=corpseimpaling_spike,stats=38crit_30haste_58sp_44sta_44int,gems=10haste_12sp
+enchant_spell_power=38
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
 # gear_stamina=1436
 # gear_intellect=1421
 # gear_spirit=137
-# gear_spell_power=3373
+# gear_spell_power=3411
 # gear_hit_rating=289
 # gear_crit_rating=1222
 # gear_haste_rating=1172
