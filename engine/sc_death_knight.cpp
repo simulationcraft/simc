@@ -1122,7 +1122,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( ! p -> talents.ebon_plaguebringer ) return;
 
   double disease_duration = a -> dot -> ready - a -> sim -> current_time;
-  if ( a -> sim -> target -> debuffs.crypt_fever -> remains_lt( disease_duration ) )
+  if ( a -> sim -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
   {
     double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
     a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
@@ -3329,7 +3329,6 @@ struct scourge_strike_t : public death_knight_attack_t
     cost_frost = 1;
     cost_unholy = 1;
 
-
     base_crit += p -> talents.subversion * 0.03;
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
@@ -3338,7 +3337,6 @@ struct scourge_strike_t : public death_knight_attack_t
 
     if ( p -> sigils.awareness )
       base_dd_adder = 420;
-
   }
 
   void execute()
