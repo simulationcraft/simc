@@ -2501,9 +2501,11 @@ struct insect_swarm_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   double min_eclipse_left;
+  double base_crit_tick, base_crit_direct;
 
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), min_eclipse_left( 0 )
+      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), min_eclipse_left( 0 ),
+      base_crit_tick( 0 ), base_crit_direct( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2534,7 +2536,7 @@ struct moonfire_t : public druid_spell_t
     tick_may_crit     = ( p -> set_bonus.tier9_2pc_caster() != 0 );
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
-    base_crit += util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
+    base_crit = util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
 
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
@@ -2557,9 +2559,11 @@ struct moonfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-
+    
+    base_crit = util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
     druid_spell_t::execute();
-
+    base_crit = 0;
+    
     if ( result_is_hit() )
     {
       num_ticks = 4;
