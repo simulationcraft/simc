@@ -3267,6 +3267,7 @@ struct scourge_strike_t : public death_knight_attack_t
     {
       death_knight_t* p = player -> cast_death_knight();
 
+      weapon = &( player -> main_hand_weapon );
       may_miss = may_parry = may_dodge = false;
       may_crit    = false;
       proc        = true;
@@ -3282,10 +3283,6 @@ struct scourge_strike_t : public death_knight_attack_t
 
       base_attack_power_multiplier = 0;
       base_dd_min = base_dd_max    = 0.1;
-
-      base_crit += p -> talents.subversion * 0.03;
-      base_crit += p -> talents.vicious_strikes * 0.03;
-      base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
     }
 
     virtual void target_debuff( int dmg_type )
