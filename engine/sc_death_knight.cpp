@@ -135,10 +135,6 @@ struct death_knight_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_howling_blast;
 
-  // Auto-Attack
-  attack_t* main_hand_attack;
-  attack_t*  off_hand_attack;
-
   // Diseases
   spell_t* blood_plague;
   spell_t* frost_fever;
@@ -341,10 +337,6 @@ struct death_knight_t : public player_t
     active_bloodworms          = NULL;
     active_dancing_rune_weapon = NULL;
     active_ghoul               = NULL;
-
-    // Auto-Attack
-    main_hand_attack    = NULL;
-    off_hand_attack     = NULL;
 
     sudden_doom         = NULL;
     blood_plague        = NULL;
@@ -654,9 +646,8 @@ struct gargoyle_pet_t : public pet_t
 
 struct ghoul_pet_t : public pet_t
 {
-  attack_t* main_hand_attack;
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "ghoul" ), main_hand_attack( 0 )
+      pet_t( sim, owner, "ghoul" )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
@@ -1145,6 +1136,7 @@ static void trigger_icy_talons( action_t* a )
 // Trigger Necrosis =========================================================
 static void trigger_necrosis( action_t* a )
 {
+  if ( a -> proc ) return;
   death_knight_t* p = a -> player -> cast_death_knight();
 
   if ( ! p -> talents.necrosis )
@@ -3265,8 +3257,6 @@ struct scourge_strike_t : public death_knight_attack_t
   {
     scourge_strike_shadow_t( player_t* player ) : death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
-      death_knight_t* p = player -> cast_death_knight();
-
       weapon = &( player -> main_hand_weapon );
       may_miss = may_parry = may_dodge = false;
       may_crit    = false;

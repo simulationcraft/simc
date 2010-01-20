@@ -312,6 +312,8 @@ player_t::player_t( sim_t*             s,
     armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
     diminished_miss_capi( 0 ), diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+    // Attacks
+    main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
     // Resources
     mana_per_intellect( 0 ), health_per_stamina( 0 ),
     // Consumables

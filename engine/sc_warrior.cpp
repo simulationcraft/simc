@@ -84,10 +84,6 @@ struct warrior_t : public player_t
   rng_t* rng_tier10_4pc_melee;
   rng_t* rng_unbridled_wrath;
 
-  // Auto-Attack
-  attack_t* main_hand_attack;
-  attack_t*  off_hand_attack;
-
   struct talents_t
   {
     int anticipation;           
@@ -187,10 +183,6 @@ struct warrior_t : public player_t
     // Cooldowns
     cooldowns_sword_specialization = get_cooldown( "sword_specializaton" );
     cooldowns_shield_slam          = get_cooldown( "shield_slam"         );
-
-    // Auto-Attack
-    main_hand_attack = 0;
-    off_hand_attack  = 0;
   }
 
   // Character Definition

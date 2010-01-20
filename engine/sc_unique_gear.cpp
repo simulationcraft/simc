@@ -158,7 +158,7 @@ static void register_black_bruise( item_t* item )
   struct black_bruise_spell_t : public spell_t
   {
     bool heroic;
-    black_bruise_spell_t( player_t* player, bool h ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW ), heroic(h)
+    black_bruise_spell_t( player_t* player, bool h ) : spell_t( "black_bruise", player, RESOURCE_NONE, SCHOOL_SHADOW ), heroic( h )
     {
       may_miss    = false;
       may_crit    = false; // FIXME!!  Can the damage crit?
@@ -515,6 +515,65 @@ static void register_shadowmourne( item_t* item )
   p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff, new shadowmourne_spell_t( p ), item -> slot ) );
 }
 
+// register_tiny_abom ====================================================
+
+static void register_tiny_abom( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  buff_t* buff = new buff_t( p, "mote_of_anger", 8, 0, 0, 0.5 );
+
+  struct tiny_abom_trigger_t : public action_callback_t
+  {
+    buff_t* buff;
+    std::string proc_name;
+    stats_t *old_stats;
+
+    tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ), old_stats( p -> get_stats( "manifest_anger" ) )
+    {
+      old_stats -> school = SCHOOL_PHYSICAL;
+    }
+    virtual void trigger( action_t* a )
+    {
+      if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
+      buff -> trigger();
+      if ( buff -> stack() == buff -> max_stack )
+      {
+        buff -> expire();
+        attack_t *attack;
+        if ( a -> weapon -> slot == SLOT_MAIN_HAND )
+        {
+          attack = a -> player -> main_hand_attack;
+        }
+        else
+        {
+          attack = a -> player -> off_hand_attack;
+        }
+        // This is pretty much a hack to repeat a melee attack under a
+        // different name with slightly different parameters.
+        std::swap( proc_name, attack -> name_str );
+        std::swap( old_stats, attack -> stats );
+        attack -> may_glance = false;
+        attack -> special = true;
+        attack -> proc = true;
+        attack -> base_multiplier *= 0.5;
+        attack -> execute();
+        attack -> base_multiplier /= 0.5;
+        attack -> may_glance = true;
+        attack -> special = false;
+        attack -> proc = false;
+        std::swap( proc_name, attack -> name_str );
+        std::swap( old_stats, attack -> stats );
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new tiny_abom_trigger_t( p, buff ) );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -538,14 +597,15 @@ void unique_gear_t::init( player_t* p )
       register_discharge_proc( item, item.equip );
     }
 
-    if ( ! strcmp( item.name(), "black_bruise"            ) ) register_black_bruise           ( &item );
-    if ( ! strcmp( item.name(), "darkmoon_card_greatness" ) ) register_darkmoon_card_greatness( &item );
-    if ( ! strcmp( item.name(), "deathbringers_will"      ) ) register_deathbringers_will     ( &item );
-    if ( ! strcmp( item.name(), "deaths_choice"           ) ) register_deaths_choice          ( &item );
-    if ( ! strcmp( item.name(), "deaths_verdict"          ) ) register_deaths_choice          ( &item );
-    if ( ! strcmp( item.name(), "empowered_deathbringer"  ) ) register_empowered_deathbringer ( &item );
-    if ( ! strcmp( item.name(), "nibelung"                ) ) register_nibelung               ( &item );
-    if ( ! strcmp( item.name(), "shadowmourne"            ) ) register_shadowmourne           ( &item );
+    if ( ! strcmp( item.name(), "black_bruise"              ) ) register_black_bruise           ( &item );
+    if ( ! strcmp( item.name(), "darkmoon_card_greatness"   ) ) register_darkmoon_card_greatness( &item );
+    if ( ! strcmp( item.name(), "deathbringers_will"        ) ) register_deathbringers_will     ( &item );
+    if ( ! strcmp( item.name(), "deaths_choice"             ) ) register_deaths_choice          ( &item );
+    if ( ! strcmp( item.name(), "deaths_verdict"            ) ) register_deaths_choice          ( &item );
+    if ( ! strcmp( item.name(), "empowered_deathbringer"    ) ) register_empowered_deathbringer ( &item );
+    if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
+    if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
+    if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
   }
 
   if ( p -> set_bonus.spellstrike() )

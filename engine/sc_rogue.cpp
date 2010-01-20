@@ -99,10 +99,6 @@ struct rogue_t : public player_t
   rng_t* rng_tier10_4pc;
   rng_t* rng_wound_poison;
 
-  // Auto-Attack
-  attack_t* main_hand_attack;
-  attack_t*  off_hand_attack;
-
   // Options
   std::vector<action_callback_t*> critical_strike_callbacks;
   std::vector<double> critical_strike_intervals;
@@ -219,10 +215,6 @@ struct rogue_t : public player_t
     // Cooldowns
     cooldowns_honor_among_thieves = get_cooldown( "honor_among_thieves" );
     cooldowns_seal_fate           = get_cooldown( "seal_fate"           );
-
-    // Auto-Attack
-    main_hand_attack = 0;
-    off_hand_attack  = 0;
 
     // Options
     critical_strike_intervals_str = "1.50/1.75/2.0/2.25";

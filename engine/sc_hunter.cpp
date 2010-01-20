@@ -74,9 +74,6 @@ struct hunter_t : public player_t
   rng_t* rng_thrill_of_the_hunt;
   rng_t* rng_wild_quiver;
 
-  // Auto-Attack
-  attack_t* ranged_attack;
-
   // Custom Parameters
   double ammo_dps;
   double quiver_haste;
@@ -322,9 +319,6 @@ struct hunter_pet_t : public pet_t
   // Gains
   gain_t* gains_go_for_the_throat;
 
-  // Auto-Attack
-  attack_t* main_hand_attack;
-
   struct talents_t
   {
     int call_of_the_wild;
@@ -345,7 +339,7 @@ struct hunter_pet_t : public pet_t
   talents_t talents;
 
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-      pet_t( sim, owner, pet_name ), pet_type( pt ), main_hand_attack( 0 )
+      pet_t( sim, owner, pet_name ), pet_type( pt )
   {
     if ( ! supported( pet_type ) )
     {

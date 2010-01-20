@@ -1379,6 +1379,12 @@ struct player_t
   weapon_t off_hand_weapon;
   weapon_t ranged_weapon;
 
+  // Main, offhand, and ranged attacks
+  attack_t* main_hand_attack;
+  attack_t*  off_hand_attack;
+  attack_t* ranged_attack;
+
+
   // Resources
   double  resource_base   [ RESOURCE_MAX ];
   double  resource_initial[ RESOURCE_MAX ];

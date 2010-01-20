@@ -68,10 +68,6 @@ struct shaman_t : public player_t
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
 
-  // Auto-Attack
-  attack_t* main_hand_attack;
-  attack_t*  off_hand_attack;
-
   // Weapon Enchants
   attack_t* windfury_weapon_attack;
   spell_t*  flametongue_weapon_spell;
@@ -188,10 +184,6 @@ struct shaman_t : public player_t
     cooldowns_elemental_mastery = get_cooldown( "elemental_mastery" );
     cooldowns_lava_burst        = get_cooldown( "lava_burst"        );
     cooldowns_windfury_weapon   = get_cooldown( "windfury_weapon"   );
-
-    // Auto-Attack
-    main_hand_attack = 0;
-    off_hand_attack  = 0;
 
     // Weapon Enchants
     windfury_weapon_attack   = 0;
