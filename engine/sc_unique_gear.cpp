@@ -543,20 +543,27 @@ static void register_tiny_abom( item_t* item )
     }
     virtual void trigger( action_t* a )
     {
-      if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
       // If this is the first stack, save the weapon which made the
-      // attack for use as the proc later.
+      // attack for use as the proc later.  If this was a proc from a
+      // spell, just use the main hand weapon.
       if ( buff -> trigger() && buff -> stack() == 1 )
       {
         assert( first_stack_attack == NULL );
-        if ( a -> weapon -> slot == SLOT_MAIN_HAND )
+        if ( ! a -> weapon )
         {
           first_stack_attack = a -> player -> main_hand_attack;
         }
         else
         {
-          first_stack_attack = a -> player -> off_hand_attack;
+          if ( a -> weapon -> slot == SLOT_MAIN_HAND )
+          {
+            first_stack_attack = a -> player -> main_hand_attack;
+          }
+          else
+          {
+            first_stack_attack = a -> player -> off_hand_attack;
+          }
         }
       }
       if ( buff -> stack() == buff -> max_stack )
@@ -584,7 +591,7 @@ static void register_tiny_abom( item_t* item )
     }
   };
 
-  p -> register_attack_result_callback( RESULT_HIT_MASK, new tiny_abom_trigger_t( p, buff ) );
+  p -> register_direct_damage_callback( new tiny_abom_trigger_t( p, buff ) );
 }
 
 // ==========================================================================
