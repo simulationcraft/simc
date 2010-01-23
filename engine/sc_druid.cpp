@@ -82,7 +82,6 @@ struct druid_t : public player_t
   // Random Number Generation
   rng_t* rng_primal_fury;
 
-  attack_t* melee_attack;
   attack_t* cat_melee_attack;
   attack_t* bear_melee_attack;
 
@@ -221,7 +220,6 @@ struct druid_t : public player_t
     dots_insect_swarm = get_dot( "insect_swarm" );
     dots_moonfire     = get_dot( "moonfire" );
 
-    melee_attack = 0;
     cat_melee_attack = 0;
     bear_melee_attack = 0;
 
@@ -2183,16 +2181,16 @@ struct auto_attack_t : public action_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    p -> melee_attack -> weapon = &( p -> main_hand_weapon );
-    p -> melee_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
-    p -> melee_attack -> schedule_execute();
+    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
     if ( p -> buffs.moving -> check() ) return false;
-    return( p -> melee_attack -> execute_event == 0 ); // not swinging
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2640,10 +2638,10 @@ struct bear_form_t : public druid_spell_t
     }
 
     // Force melee swing to restart if necessary
-    if ( p -> melee_attack ) p -> melee_attack -> cancel(); 
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel(); 
 
-    p -> melee_attack = p -> bear_melee_attack;
-    p -> melee_attack -> weapon = w;
+    p -> main_hand_attack = p -> bear_melee_attack;
+    p -> main_hand_attack -> weapon = w;
     
     if ( p -> buffs_cat_form     -> check() ) p -> buffs_cat_form     -> expire();
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
@@ -2702,10 +2700,10 @@ struct cat_form_t : public druid_spell_t
     }
 
     // Force melee swing to restart if necessary
-    if ( p -> melee_attack ) p -> melee_attack -> cancel(); 
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel(); 
 
-    p -> melee_attack = p -> cat_melee_attack;
-    p -> melee_attack -> weapon = w;
+    p -> main_hand_attack = p -> cat_melee_attack;
+    p -> main_hand_attack -> weapon = w;
 
     if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
@@ -3874,7 +3872,7 @@ void druid_t::interrupt()
 {
   player_t::interrupt();
 
-  if ( melee_attack ) melee_attack -> cancel();
+  if ( main_hand_attack ) main_hand_attack -> cancel();
 }
 
 // druid_t::clear_debuffs ===================================================
@@ -4307,14 +4305,14 @@ int druid_t::target_swing()
   }
   if ( result == RESULT_PARRY )
   {
-    if ( melee_attack && melee_attack -> execute_event )
+    if ( main_hand_attack && main_hand_attack -> execute_event )
     {
-      double swing_time = melee_attack -> time_to_execute;
-      double max_reschedule = ( melee_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
+      double swing_time = main_hand_attack -> time_to_execute;
+      double max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
       if ( max_reschedule > 0 )
       {
-        melee_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs_parry_haste -> occur();
       }
     }

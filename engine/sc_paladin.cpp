@@ -73,9 +73,6 @@ struct paladin_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_divine_storm;
 
-  // Auto-Attack
-  attack_t* auto_attack;
-
   struct talents_t
   {
     int anticipation;
@@ -207,8 +204,6 @@ struct paladin_t : public player_t
     tier10_2pc_procs_from_strikes     = false;
 
     cooldowns_divine_storm = get_cooldown( "divine_storm" );
-
-    auto_attack = 0;
   }
 
   virtual void      init_race();
@@ -502,7 +497,7 @@ struct auto_attack_t : public paladin_attack_t
       paladin_attack_t( "auto_attack", p )
   {
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
-    p -> auto_attack = new melee_t( p );
+    p -> main_hand_attack = new melee_t( p );
 
     trigger_gcd = 0;
   }
@@ -510,14 +505,14 @@ struct auto_attack_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    p -> auto_attack -> schedule_execute();
+    p -> main_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
     if ( p -> buffs.moving -> check() ) return false;
-    return( p -> auto_attack -> execute_event == 0 ); // not swinging
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2118,7 +2113,7 @@ void paladin_t::interrupt()
 {
   player_t::interrupt();
 
-  if ( auto_attack ) auto_attack -> cancel();
+  if ( main_hand_attack ) main_hand_attack -> cancel();
 }
 
 // paladin_t::init_gains ====================================================
@@ -2519,14 +2514,14 @@ int paladin_t::target_swing()
   }
   if ( result == RESULT_PARRY )
   {
-    if ( auto_attack && auto_attack -> execute_event )
+    if ( main_hand_attack && main_hand_attack -> execute_event )
     {
-      double swing_time = auto_attack -> time_to_execute;
-      double max_reschedule = ( auto_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
+      double swing_time = main_hand_attack -> time_to_execute;
+      double max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
       if ( max_reschedule > 0 )
       {
-	auto_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+	main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
 	procs_parry_haste -> occur();
       }
     }
