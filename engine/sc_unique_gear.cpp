@@ -530,28 +530,40 @@ static void register_tiny_abom( item_t* item )
     buff_t* buff;
     std::string proc_name;
     stats_t *old_stats;
+    attack_t *first_stack_attack;
 
-    tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ), old_stats( p -> get_stats( "manifest_anger" ) )
+    tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ),
+        old_stats( p -> get_stats( "manifest_anger" ) ), first_stack_attack( NULL )
     {
       old_stats -> school = SCHOOL_PHYSICAL;
+    }
+    virtual void reset()
+    {
+      first_stack_attack = NULL;
     }
     virtual void trigger( action_t* a )
     {
       if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
-      buff -> trigger();
-      if ( buff -> stack() == buff -> max_stack )
+      // If this is the first stack, save the weapon which made the
+      // attack for use as the proc later.
+      if ( buff -> trigger() && buff -> stack() == 1 )
       {
-        buff -> expire();
-        attack_t *attack;
+        assert( first_stack_attack == NULL );
         if ( a -> weapon -> slot == SLOT_MAIN_HAND )
         {
-          attack = a -> player -> main_hand_attack;
+          first_stack_attack = a -> player -> main_hand_attack;
         }
         else
         {
-          attack = a -> player -> off_hand_attack;
+          first_stack_attack = a -> player -> off_hand_attack;
         }
+      }
+      if ( buff -> stack() == buff -> max_stack )
+      {
+        attack_t *attack = first_stack_attack;
+        assert( attack != NULL );
+        buff -> expire();
         // This is pretty much a hack to repeat a melee attack under a
         // different name with slightly different parameters.
         std::swap( proc_name, attack -> name_str );
@@ -567,6 +579,7 @@ static void register_tiny_abom( item_t* item )
         attack -> proc = false;
         std::swap( proc_name, attack -> name_str );
         std::swap( old_stats, attack -> stats );
+        first_stack_attack = NULL;
       }
     }
   };
