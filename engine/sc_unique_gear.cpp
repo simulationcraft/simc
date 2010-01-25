@@ -781,7 +781,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "elemental_focus_stone"               ) e = "OnSpellHit_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellHit_505Haste_10%_10Dur_45Cd";
   else if ( name == "eye_of_magtheridon"                  ) e = "OnSpellMiss_170SP_10Dur";
-  else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellHit_25SP_5Stack_10Dur";
+  else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellCast_25SP_5Stack_10Dur";
   else if ( name == "flare_of_the_heavens"                ) e = "OnSpellCast_850SP_10%_10Dur_45Cd";
   else if ( name == "forge_ember"                         ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";

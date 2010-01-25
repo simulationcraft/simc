@@ -3169,6 +3169,7 @@ struct starfall_t : public druid_spell_t
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
         if ( p -> glyphs.focus )
           base_multiplier *= 1.2;
+        id = 53190;
       }
       virtual void execute()
       {
@@ -3202,7 +3203,7 @@ struct starfall_t : public druid_spell_t
 
         starfall_star_splash = new starfall_star_splash_t( p );
 
-        id = 53201;
+        id = 53195;
       }
 
       virtual void execute()
