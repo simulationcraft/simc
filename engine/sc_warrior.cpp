@@ -1356,6 +1356,7 @@ struct shield_bash_t : public warrior_attack_t
 
 // Shield Slam ===============================================================
 
+// TODO: Implement the 3.3.2 diminishing returns.
 struct shield_slam_t : public warrior_attack_t
 {
   int sword_and_board;

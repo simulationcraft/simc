@@ -1420,7 +1420,7 @@ struct lava_burst_t : public shaman_spell_t
 
     cooldown -> duration = 8.0;
 
-    if ( p -> set_bonus.tier10_4pc_caster() ) cooldown -> duration -= 1.5;
+    if ( ( ! p -> sim -> P332 ) && p -> set_bonus.tier10_4pc_caster() ) cooldown -> duration -= 1.5;
 
     if ( p -> set_bonus.tier9_4pc_caster() )
     {
@@ -1452,6 +1452,12 @@ struct lava_burst_t : public shaman_spell_t
     {
       if ( p -> set_bonus.tier9_4pc_caster() )
         base_td = direct_dmg * 0.1 / num_ticks;
+
+      if ( p -> sim -> P332 )
+      {
+        if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
+          p -> active_flame_shock -> extend_duration( 2 );
+      }
     }
   }
 
@@ -1839,7 +1845,6 @@ struct flame_shock_t : public shaman_spell_t
     
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
-    if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 3;
 
     if ( p -> glyphs.shocking )
     {
@@ -1853,6 +1858,9 @@ struct flame_shock_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
+
+    num_ticks = ( p -> set_bonus.tier9_2pc_caster() ) ? 9 : 6;
+    added_ticks = 0;
     shaman_spell_t::execute();
     p -> buffs_stonebreaker -> trigger();
     p -> buffs_tundra       -> trigger();
