@@ -1190,7 +1190,7 @@ struct concussion_blow_t : public warrior_attack_t
 
     may_crit = true;
     base_cost = 15;
-    direct_power_mod  = 0.75;
+    direct_power_mod  = ( p -> sim -> P332 ? 0.375 : 0.75 );
     cooldown -> duration = 30.0;
 
     id = 12809;
@@ -1255,7 +1255,7 @@ struct devastate_t : public warrior_attack_t
     init_rank( ranks, 47498 );
 
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 1.00;
+    weapon_multiplier = ( p -> sim -> P332 ? 1.20 : 1.00 );
 
     may_crit   = true;
     base_cost -= p -> talents.puncture;

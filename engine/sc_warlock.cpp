@@ -556,7 +556,7 @@ struct imp_pet_t : public warlock_pet_t
 
       base_execute_time -= 0.25 * ( o -> talents.improved_fire_bolt + o -> talents.demonic_power );
 
-      base_multiplier *= 1.0 + ( o -> talents.empowered_imp * 0.05 + // o -> talents.improved_imp moved up
+      base_multiplier *= 1.0 + ( o -> talents.empowered_imp * ( sim -> P332 ? 0.10 : 0.05 ) + // o -> talents.improved_imp moved up
                                  o -> glyphs.imp            * 0.20 );
 
       base_crit_bonus_multiplier *= 1.0 + o -> talents.ruin * 0.20;
@@ -1158,7 +1158,7 @@ void warlock_spell_t::player_buff()
     player_multiplier *= 1.20;
   }
 
-  player_multiplier *= 1.0 + ( p -> talents.demonic_pact * 0.01 );
+  player_multiplier *= 1.0 + ( p -> talents.demonic_pact * ( sim -> P332 ? 0.02 : 0.01 ) );
 
   if ( p -> buffs_tier10_4pc_caster -> up() )
   {
@@ -1599,7 +1599,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     base_multiplier *= 1.0 + ( p -> talents.shadow_mastery       * 0.03 +
                                p -> set_bonus.tier6_4pc_caster() * 0.06 +
-                               p -> talents.improved_shadow_bolt * 0.01 );
+                               p -> talents.improved_shadow_bolt * ( p -> sim -> P332 ? 0.02 : 0.01 ) );
 
     base_crit += ( p -> talents.devastation           * 0.05 +
                                p -> set_bonus.tier8_4pc_caster()  * 0.05 +
@@ -2527,6 +2527,9 @@ struct conflagrate_t : public warlock_spell_t
     }
 
     tick_dmg /= 3;
+
+    if ( p -> sim -> P332 )
+      tick_dmg *= 2.0;
 
     return tick_dmg;
   }
@@ -3742,7 +3745,7 @@ void warlock_t::init_buffs()
   buffs_metamorphosis       = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talents.metamorphosis );
   buffs_molten_core         = new buff_t( this, "molten_core",         3, 15.0, 0.0, talents.molten_core * 0.04 );
   buffs_pyroclasm           = new buff_t( this, "pyroclasm",           1, 10.0, 0.0, talents.pyroclasm );
-  buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      2, 12.0, 0.0, talents.shadow_embrace );
+  buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      ( sim -> P332 ? 3 : 2 ), 12.0, 0.0, talents.shadow_embrace );
   buffs_shadow_trance       = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talents.nightfall );
   buffs_tier10_4pc_caster   = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
 
