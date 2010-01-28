@@ -3017,11 +3017,11 @@ struct pestilence_t : public death_knight_spell_t
       p -> procs_glyph_of_disease -> occur();
       if ( p -> dots_blood_plague -> ticking() )
       {
-        p -> blood_plague -> execute();
+        p -> blood_plague -> refresh_duration();
       }
       if ( p -> dots_frost_fever -> ticking() )
       {
-        p -> frost_fever -> execute();
+        p -> frost_fever -> refresh_duration();
       }
     }
   }
