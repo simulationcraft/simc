@@ -2719,6 +2719,7 @@ struct howling_blast_t : public death_knight_spell_t
           p -> frost_fever = new frost_fever_t( p );
 
         p -> frost_fever -> execute();
+        trigger_icy_talons( this );
       }
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
     }
