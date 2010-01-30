@@ -35,19 +35,18 @@ hands=sanctified_crimson_acolyte_handwraps,stats=231armor_82hit_90crit_150sp_103
 finger1=ring_of_rapid_ascent,stats=68crit_60haste_110sp_78sta_78int,gems=23sp,enchant=23sp
 finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10haste_12sp_5sp,enchant=23sp,equip=onspellhit_285sp_10%_10dur_60cd
 trinket1=dislodged_foreign_object,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
-trinket2=phylactery_of_the_nameless_lich,stats=172crit,equip=ontick_1032sp_10%_20dur_90cd
+trinket2=phylactery_of_the_nameless_lich,stats=172crit,equip=ontick_1032sp_30%_20dur_90cd
 back=frostbinders_shredded_cape,stats=185armor_68crit_60haste_110sp_78sta_78int,gems=10haste_12sp,enchant=lightweave_embroidery
 main_hand=frozen_bonespike,stats=50crit_836sp_75sta_75int_66spi,gems=23sp,enchant=63sp,weapon=dagger_1.80speed_142min_414max
 off_hand=shadow_silk_spindle,stats=68crit_68haste_119sp_78sta_78int
 ranged=corpseimpaling_spike,stats=38crit_30haste_58sp_44sta_44int,gems=10haste_12sp
-enchant_spell_power=38
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
 # gear_stamina=1436
 # gear_intellect=1421
 # gear_spirit=137
-# gear_spell_power=3411
+# gear_spell_power=3373
 # gear_hit_rating=289
 # gear_crit_rating=1222
 # gear_haste_rating=1172
