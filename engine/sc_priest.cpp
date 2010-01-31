@@ -1811,18 +1811,6 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 // Shadow Fiend Spell ========================================================
 
 struct shadow_fiend_spell_t : public priest_spell_t
