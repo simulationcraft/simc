@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_T9_54_12_05
-origin=http://profiler.wowhead.com/?profile=14662679
+origin="http://profiler.wowhead.com/?profile=14662679"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=512002015051122431015313510053031000000000000000000005
@@ -35,8 +35,8 @@ finger2=planestalker_signet,stats=115ap_44hit_44arpen_70agi_77sta,gems=20arpen
 trinket1=deaths_verdict,stats=288ap
 trinket2=deaths_verdict,stats=256ap
 back=vereesas_dexterity,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20arpen_8ap,enchant=22agi
-main_hand=hellion_glaive,stats=188ap_102crit_94arpen_137agi_153sta,gems=20arpen_20arpen,enchant=110ap,weapon=polearm_3.50speed_281.6dps_788min_1183max
-ranged=talonstrike,stats=49ap_32haste_32arpen_40agi_48sta,gems=20arpen,enchant=40crit,weapon=crossbow_2.80speed_240.7dps_564min_784max
+main_hand=hellion_glaive,stats=188ap_102crit_94arpen_137agi_153sta,gems=20arpen_20arpen,enchant=110ap,weapon=polearm_3.50speed_788min_1183max
+ranged=talonstrike,stats=49ap_32haste_32arpen_40agi_48sta,gems=20arpen,enchant=40crit,weapon=crossbow_2.80speed_564min_784max
 # Gear Summary
 # gear_strength=20
 # gear_agility=1404
@@ -54,6 +54,6 @@ ranged=talonstrike,stats=49ap_32haste_32arpen_40agi_48sta,gems=20arpen,enchant=4
 # tier9_4pc_melee=1
 # trinket1=deaths_verdict
 # trinket2=deaths_verdict
-# main_hand=hellion_glaive,weapon=polearm_3.50speed_281.6dps_788min_1183max
-# ranged=talonstrike,weapon=crossbow_2.80speed_240.7dps_564min_784max
-ammo_dps=67.50
+# main_hand=hellion_glaive,weapon=polearm_3.50speed_788min_1183max
+# ranged=talonstrike,weapon=crossbow_2.80speed_564min_784max
+ammo_dps=91.50

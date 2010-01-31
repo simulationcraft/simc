@@ -1,29 +1,29 @@
-#!simc
+#!./simc 
 
 rogue=Rogue_T8_51_13_07
-origin=http://profiler.wowhead.com/?profile=13007548
+origin="http://profiler.wowhead.com/?profile=13007548"
 level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=0053230053501005201033310510050050030000000000000000000502
 glyphs=hunger_for_blood/rupture/mutilate
 actions=flask,type=endless_rage
-actions+=/food,type=blackened_dragonfin
+actions+=/food,type=mega_mammoth_meal
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
-actions+=/stealth
 actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/stealth
 actions+=/kick
 actions+=/pool_energy,for_next=1
-actions+=/hunger_for_blood,refresh_at=2
-actions+=/slice_and_dice,min_combo_points=1,snd<=1
-actions+=/rupture,min_combo_points=4,time_to_die>=15,time>=10,snd>=11
+actions+=/hunger_for_blood,if=buff.hunger_for_blood.remains<2
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<1
+actions+=/rupture,if=buff.combo_points.stack>=4&target.time_to_die>15&time>10&buff.slice_and_dice.remains>11
 actions+=/cold_blood,sync=envenom
-actions+=/envenom,min_combo_points=4,no_buff=1
-actions+=/envenom,min_combo_points=4,energy>=90
-actions+=/envenom,min_combo_points=2,snd<=2
+actions+=/envenom,if=buff.combo_points.stack>=4&buff.envenom.down
+actions+=/envenom,if=buff.combo_points.stack>=4&energy>90
+actions+=/envenom,if=buff.combo_points.stack>=2&buff.slice_and_dice.remains<2
 actions+=/tricks_of_the_trade
-actions+=/mutilate,max_combo_points=3
-actions+=/vanish,time>=30,energy>=50,max_combo_points=1
+actions+=/mutilate,if=buff.combo_points.stack<4
+actions+=/vanish,if=time>30&energy>50
 head=conquerors_terrorblade_helmet,stats=480armor_130ap_77crit_59haste_107agi_75sta,gems=relentless_earthsiege_16agi_16ap,enchant=50ap_20crit
 neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=16agi
 shoulders=conquerors_terrorblade_pauldrons,stats=443armor_124ap_56hit_40crit_85agi_74sta,gems=16agi_8ap,enchant=40ap_15crit
@@ -37,13 +37,13 @@ finger1=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16agi,ench
 finger2=godbane_signet,stats=126ap_42crit_36exp_46agi_63sta,enchant=40ap
 trinket1=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16agi_8crit_8agi_6agi,enchant=22agi
-main_hand=fang_of_oblivion,stats=80ap_29crit_24haste_47agi_54sta,gems=8crit_8agi_4agi,enchant=berserking,weapon=dagger_1.80speed_188.3dps
-off_hand=bladetwister,stats=64ap_28crit_37haste_55agi_48sta,gems=16agi,enchant=berserking,weapon=dagger_1.40speed_188.2dps
-ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16agi_4agi,weapon=thrown_2.10speed_232.4dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=16agi_8crit_8agi_6agi,enchant=22agi
+main_hand=fang_of_oblivion,stats=80ap_29crit_24haste_47agi_54sta,gems=8crit_8agi_4agi,enchant=berserking,weapon=dagger_1.80speed_271min_407max
+off_hand=bladetwister,stats=64ap_28crit_37haste_55agi_48sta,gems=16agi,enchant=berserking,weapon=dagger_1.40speed_184min_343max
+ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16agi_4agi,weapon=thrown_2.10speed_390min_586max
 # Gear Summary
-# gear_agility=1451
-# gear_stamina=994
+# gear_agility=1435
+# gear_stamina=1018
 # gear_attack_power=2269
 # gear_expertise_rating=215
 # gear_armor_penetration_rating=157
@@ -52,8 +52,8 @@ ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16agi_4agi,weap
 # gear_haste_rating=209
 # gear_armor=3579
 # meta_gem=relentless_earthsiege
-# tier8_2pc=1
-# tier8_4pc=1
-# main_hand=fang_of_oblivion,weapon=dagger_1.80speed_188.3dps,enchant=berserking
-# off_hand=bladetwister,weapon=dagger_1.40speed_188.2dps,enchant=berserking
-# ranged=twirling_blades,weapon=thrown_2.10speed_232.4dps
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
+# main_hand=fang_of_oblivion,weapon=dagger_1.80speed_271min_407max,enchant=berserking
+# off_hand=bladetwister,weapon=dagger_1.40speed_184min_343max,enchant=berserking
+# ranged=twirling_blades,weapon=thrown_2.10speed_390min_586max

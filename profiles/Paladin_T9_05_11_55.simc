@@ -1,11 +1,11 @@
 #!./simc 
 
 paladin=Paladin_T9_05_11_55
-origin=http://profiler.wowhead.com/?profile=16421920
+origin="http://profiler.wowhead.com/?profile=16421920"
 level=80
 race=blood_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050000000000000000000000005500010000000000000000000005232250203331302133221331
-glyphs=judgement/seal_of_vengeance/consecration/sense_undead
+glyphs=judgement/seal_of_vengeance/consecration
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/auto_attack

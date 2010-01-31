@@ -1,13 +1,13 @@
-#!simc
+#!./simc 
 
 priest=Priest_T8_34_28_09
-origin=http://profiler.wowhead.com/?profile=13000020
+origin="http://profiler.wowhead.com/?profile=13000020"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0533203100300502331000000000005551002020152000000000000324
 glyphs=smite/shadow_word_death/hymn_of_hope/fading/shadowfiend/levitate
 actions=flask,type=frost_wyrm
-actions+=/food,type=tender_shoveltusk_steak
+actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
@@ -20,7 +20,7 @@ actions+=/power_infusion
 actions+=/holy_fire
 actions+=/mind_blast
 actions+=/smite
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
 neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=8crit_9sp_5sp
 shoulders=conquerors_mantle_of_sanctification,stats=236armor_62crit_90sp_53sta_65int_49spi,gems=19sp_5sp,enchant=24sp_15crit
@@ -32,10 +32,10 @@ wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_
 hands=conquerors_handwraps_of_sanctification,stats=197armor_64crit_99sp_62sta_44int_54spi,gems=8hit_9sp_4hit,enchant=28sp
 finger1=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=9sp_8spi_5sp,enchant=23sp
 finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
-trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
+trinket2=illustration_of_the_dragon_soul,equip=onspellcast_20sp_10stack_10dur
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave_embroidery
-main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_93.9min_297.9max
 off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
 ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # Gear Summary
@@ -50,7 +50,7 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=19sp
 # gear_haste_rating=342
 # gear_armor=1996
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
 # back=drape_of_mortal_downfall,enchant=lightweave_embroidery
-# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# main_hand=starshard_edge,weapon=dagger_1.80speed_93.9min_297.9max

@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_T8_00_55_16_M
-origin=http://profiler.wowhead.com/?profile=14726797
+origin="http://profiler.wowhead.com/?profile=14726797"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000550202032322010053120030313511203503012
@@ -13,16 +13,21 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
-actions+=/shred,omen_of_clarity=1
-actions+=/tigers_fury,energy<=40
-actions+=/berserk_cat,tigers_fury=1
-actions+=/savage_roar,cp>=1,savage_roar<=4
+actions+=/tigers_fury,energy<=40,berserk=0
+actions+=/berserk_cat,energy>=70,energy<=90
+actions+=/savage_roar,cp>=1,savage_roar<=1
+actions+=/savage_roar,cp>=5,savage_roar<=6,rip>=6
 actions+=/shred,extend_rip=1,rip<=4
-actions+=/rip,cp>=5,time_to_die>=10
-actions+=/ferocious_bite,cp>=5,rip>=5,savage_roar>=6
-actions+=/mangle_cat,mangle<=2
-actions+=/rake
-actions+=/shred
+actions+=/rip,cp>=5,time_to_die>=6
+actions+=/ferocious_bite,cp>=5,time_to_die<=6
+actions+=/ferocious_bite,cp>=5,rip>=10
+actions+=/mangle_cat,mangle<=1
+actions+=/rake,time_to_die>=9
+actions+=/shred,energy>=70
+actions+=/shred,omen_of_clarity=1
+actions+=/shred,cp<=4,rip<=3
+actions+=/shred,time_to_die<=9
+actions+=/shred,berserk=1
 head=conquerors_nightsong_headguard,stats=480armor_152ap_75crit_50arpen_82agi_122sta,gems=relentless_earthsiege_20arpen_8agi,enchant=50ap_20crit
 neck=pendulum_of_infinity,stats=86ap_48crit_41haste_64agi_70sta,gems=20arpen
 shoulders=conquerors_nightsong_shoulderpads,stats=443armor_112ap_62crit_48exp_77agi_74sta,gems=20arpen_4crit,enchant=40ap_15crit
@@ -37,7 +42,7 @@ finger2=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=34agi_4agi
 trinket1=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20arpen_20arpen,enchant=22agi
-main_hand=dreambinder,stats=140ap_86haste_85arpen_112agi_105sta,gems=20agi_20agi,enchant=berserking,weapon=staff_2.40speed_244.6dps
+main_hand=dreambinder,stats=140ap_86haste_85arpen_112agi_105sta,gems=20agi_20agi,enchant=berserking,weapon=staff_2.40speed_469min_705max
 ranged=idol_of_the_ravenous_beast
 # Gear Summary
 # gear_strength=20
@@ -55,4 +60,4 @@ ranged=idol_of_the_ravenous_beast
 # meta_gem=relentless_earthsiege
 # tier8_2pc_melee=1
 # tier8_4pc_melee=1
-# main_hand=dreambinder,weapon=staff_2.40speed_244.6dps,enchant=berserking
+# main_hand=dreambinder,weapon=staff_2.40speed_469min_705max,enchant=berserking

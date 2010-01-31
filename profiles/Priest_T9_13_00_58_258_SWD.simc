@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_T9_13_00_58_258_SWD
-origin=http://profiler.wowhead.com/?profile=13043848
+origin="http://profiler.wowhead.com/?profile=13043848"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351

@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_T9_19_52_00
-origin=http://profiler.wowhead.com/?profile=13110966
+origin="http://profiler.wowhead.com/?profile=13110966"
 level=80
 race=tauren
 professions=blacksmithing=450/jewelcrafting=450
@@ -43,9 +43,9 @@ finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=
 trinket1=deaths_choice,stats=256ap
 trinket2=deaths_choice,stats=288ap
 back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20arpen_10hit_10str_8ap,enchant=22agi
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps_811min_1217max
-off_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps_811min_1217max
-ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps_368min_552max
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
+off_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
+ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_368min_552max
 # Gear Summary
 # gear_strength=1422
 # gear_agility=426
@@ -64,6 +64,6 @@ ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=throw
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
 # trinket2=deaths_choice
-# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps_811min_1217max,enchant=berserking
-# off_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps_811min_1217max,enchant=berserking
-# ranged=crimson_star,weapon=thrown_1.80speed_255.6dps_368min_552max
+# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=berserking
+# off_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=berserking
+# ranged=crimson_star,weapon=thrown_1.80speed_368min_552max

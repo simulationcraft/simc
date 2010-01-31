@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_T9_20_51_00
-origin=http://profiler.wowhead.com/?profile=14306481
+origin="http://profiler.wowhead.com/?profile=14306481"
 level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2300050331000300000000000000000055031011303330053120300351

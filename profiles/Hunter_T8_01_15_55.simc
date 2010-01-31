@@ -1,7 +1,7 @@
-#!simc
+#!./simc 
 
 hunter=Hunter_T8_01_15_55
-origin=http://profiler.wowhead.com/?profile=13001196
+origin="http://profiler.wowhead.com/?profile=13001196"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=100000000000000000000000000053051010000000000000000005000032500033330532135301311
@@ -34,13 +34,13 @@ finger1=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=20agi_4agi,ench
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20agi,enchant=40ap
 trinket1=dark_matter,stats=222ap,equip=onattackhit_612crit_15%_10dur_45cd
 trinket2=darkmoon_card_greatness,stats=90agi
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20agi_10crit_10agi_6agi,enchant=22agi
-main_hand=lotrafen_spear_of_the_damned,stats=160ap_87crit_80arpen_120agi_105sta,enchant=110ap,weapon=polearm_3.40speed_232.5dps
-ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weapon=crossbow_2.80speed_200.4dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20agi_10crit_10agi_6agi,enchant=22agi
+main_hand=lotrafen_spear_of_the_damned,stats=160ap_87crit_80arpen_120agi_105sta,enchant=110ap,weapon=polearm_3.40speed_632min_949max
+ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weapon=crossbow_2.80speed_465.56min_656.56max
 # Gear Summary
 # gear_strength=10
-# gear_agility=1456
-# gear_stamina=936
+# gear_agility=1440
+# gear_stamina=960
 # gear_intellect=327
 # gear_spirit=10
 # gear_attack_power=2625
@@ -50,9 +50,9 @@ ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weap
 # gear_haste_rating=140
 # gear_armor=7094
 # meta_gem=relentless_earthsiege
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
 # trinket2=darkmoon_card_greatness
-# main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.40speed_232.5dps
-# ranged=skyforge_crossbow,weapon=crossbow_2.80speed_200.4dps
-ammo_dps=67.50
+# main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.40speed_632min_949max
+# ranged=skyforge_crossbow,weapon=crossbow_2.80speed_465.56min_656.56max
+ammo_dps=91.50

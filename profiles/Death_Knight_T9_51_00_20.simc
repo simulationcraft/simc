@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T9_51_00_20
-origin=http://profiler.wowhead.com/?profile=18101892
+origin="http://profiler.wowhead.com/?profile=18101892"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=230502053000330323112300135100000000000000000000000000000230130305003

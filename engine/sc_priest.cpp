@@ -975,6 +975,7 @@ struct mind_flay_tick_t : public priest_spell_t
     dual              = true;
     background        = true;
     may_crit          = true;
+    direct_tick       = true;
     direct_power_mod  = p -> constants.mind_flay_power_mod;
     direct_power_mod *= 1.0 + p -> talents.misery * p -> constants.misery_power_mod;
     base_hit         += p -> talents.shadow_focus * 0.01;
@@ -1289,9 +1290,10 @@ struct penance_tick_t : public priest_spell_t
     };
     init_rank( ranks, 53007 );
 
-    dual       = true;
-    background = true;
-    may_crit   = true;
+    dual        = true;
+    background  = true;
+    may_crit    = true;
+    direct_tick = true;
 
     direct_power_mod  = 0.8 / 3.5;
 

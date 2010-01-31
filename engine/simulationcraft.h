@@ -198,6 +198,9 @@ enum proc_type
   PROC_TICK,
   PROC_ATTACK_DIRECT,
   PROC_SPELL_DIRECT,
+  PROC_TICK_DAMAGE,
+  PROC_DIRECT_DAMAGE,
+  PROC_SPELL_CAST,
   PROC_MAX
 };
 
@@ -211,6 +214,13 @@ enum school_type
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
+
+#define SCHOOL_ATTACK_MASK ( (1 << SCHOOL_BLEED)     | (1 << SCHOOL_PHYSICAL) )
+#define SCHOOL_SPELL_MASK  ( (1 << SCHOOL_ARCANE)    | (1 << SCHOOL_CHAOS)  | \
+                             (1 << SCHOOL_FIRE)      | (1 << SCHOOL_FROST)  | \
+                             (1 << SCHOOL_FROSTFIRE) | (1 << SCHOOL_HOLY)   | \
+                             (1 << SCHOOL_NATURE)    | (1 << SCHOOL_SHADOW) )
+#define SCHOOL_ALL_MASK    (-1)
 
 enum talent_tree_type
 {
@@ -1420,8 +1430,9 @@ struct player_t
   std::vector<action_callback_t*> attack_direct_result_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*> spell_direct_result_callbacks [ RESULT_MAX ];
   std::vector<action_callback_t*> tick_callbacks;
-  std::vector<action_callback_t*> tick_damage_callbacks;
-  std::vector<action_callback_t*> direct_damage_callbacks;
+  std::vector<action_callback_t*> tick_damage_callbacks         [ SCHOOL_MAX ];
+  std::vector<action_callback_t*> direct_damage_callbacks       [ SCHOOL_MAX ];
+  std::vector<action_callback_t*> spell_cast_result_callbacks   [ RESULT_MAX ];
 
   // Action Priority List
   action_t*   action_list;
@@ -1659,8 +1670,9 @@ struct player_t
   virtual void register_attack_direct_result_callback( int result_mask, action_callback_t* );
   virtual void register_spell_direct_result_callback ( int result_mask, action_callback_t* );
   virtual void register_tick_callback                ( action_callback_t* );
-  virtual void register_tick_damage_callback         ( action_callback_t* );
-  virtual void register_direct_damage_callback       ( action_callback_t* );
+  virtual void register_tick_damage_callback         ( int result_mask, action_callback_t* );
+  virtual void register_direct_damage_callback       ( int result_mask, action_callback_t* );
+  virtual void register_spell_cast_result_callback   ( int result_mask, action_callback_t* );
 
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual bool parse_talent_trees( int talents[] );
@@ -1972,7 +1984,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   int id, school, resource, tree, result;
-  bool dual, special, binary, channeled, background, sequence, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
+  bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero;
   int dot_behavior;

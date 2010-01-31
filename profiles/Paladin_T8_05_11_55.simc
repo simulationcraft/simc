@@ -1,7 +1,7 @@
 #!./simc 
 
 paladin=Paladin_T8_05_11_55
-origin=http://profiler.wowhead.com/?profile=14319567
+origin="http://profiler.wowhead.com/?profile=14319567"
 level=80
 race=blood_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050000000000000000000000005500010000000000000000000005232250203331302133221331
@@ -15,12 +15,12 @@ actions+=/hammer_of_justice
 actions+=/divine_plea
 actions+=/arcane_torrent
 actions+=/avenging_wrath
-actions+=/hammer_of_wrath
 actions+=/judgement
-actions+=/divine_storm
 actions+=/crusader_strike
-actions+=/exorcism
+actions+=/divine_storm
 actions+=/consecration
+actions+=/hammer_of_wrath
+actions+=/exorcism
 actions+=/speed_potion
 head=warhelm_of_the_champion,stats=1966armor_61hit_86crit_122str_145sta,gems=chaotic_skyflare_10crit_10str_8str,enchant=50ap_20crit
 neck=frigid_strength_of_hodir,stats=40hit_48arpen_74str_81sta,gems=16str
@@ -35,13 +35,13 @@ finger1=seal_of_the_betrayed_king,stats=40hit_48crit_74str_81sta,gems=10str_15st
 finger2=sifs_promise,stats=42crit_42exp_72str_72sta
 trinket1=darkmoon_card_greatness,stats=90str
 trinket2=comets_trail,stats=240ap,equip=onattackhit_726haste_10%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16str_16str,enchant=23haste
-main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16str_16str,enchant=berserking,weapon=sword2h_3.60speed_244.6dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=16str_16str,enchant=23haste
+main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16str_16str,enchant=berserking,weapon=sword2h_3.60speed_704min_1057max
 ranged=furious_gladiators_libram_of_fortitude
 # Gear Summary
 # gear_strength=1531
-# gear_agility=79
-# gear_stamina=1342
+# gear_agility=63
+# gear_stamina=1366
 # gear_intellect=10
 # gear_spirit=10
 # gear_attack_power=614
@@ -55,4 +55,4 @@ ranged=furious_gladiators_libram_of_fortitude
 # tier8_2pc_melee=1
 # tier8_4pc_melee=1
 # trinket1=darkmoon_card_greatness
-# main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking
+# main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_704min_1057max,enchant=berserking

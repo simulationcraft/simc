@@ -1327,9 +1327,10 @@ struct arcane_missiles_tick_t : public mage_spell_t
     };
     init_rank( ranks, 42846 );
 
-    dual       = true;
-    background = true;
-    may_crit   = true;
+    dual        = true;
+    background  = true;
+    may_crit    = true;
+    direct_tick = true;
 
     direct_power_mod  = 1.0 / 3.5; // bonus per missle
 

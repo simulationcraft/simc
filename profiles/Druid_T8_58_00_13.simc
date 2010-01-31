@@ -1,9 +1,9 @@
-#!simc
+#!./simc 
 
 druid=Druid_T8_58_00_13
-origin=http://profiler.wowhead.com/?profile=13000433
+origin="http://profiler.wowhead.com/?profile=13000433"
 level=80
-race=night_elf
+race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=5012203125331323213305301031000000000000000000000000000000205003012
 glyphs=starfire/moonfire/insect_swarm/the_wild/unburdened_rebirth/thorns
 actions=flask,type=frost_wyrm
@@ -12,17 +12,18 @@ actions+=/mark_of_the_wild
 actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/faerie_fire
+actions+=/typhoon,moving=1
 actions+=/speed_potion
 actions+=/innervate,trigger=-2000
 actions+=/treants
-actions+=/starfall,skip_on_eclipse=1
-actions+=/starfire,instant=1
-actions+=/moonfire
-actions+=/insect_swarm
-actions+=/wrath,eclipse=trigger
+actions+=/starfall,if=!eclipse
+actions+=/starfire,if=buff.t8_4pc_caster.up
+actions+=/moonfire,if=!ticking
+actions+=/insect_swarm,if=!ticking
+actions+=/wrath,if=trigger_lunar
 actions+=/use_item,name=scale_of_fates
-actions+=/starfire,eclipse=benefit
-actions+=/wrath,eclipse=benefit
+actions+=/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)
+actions+=/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)
 actions+=/starfire
 head=conquerors_nightsong_cover,stats=480armor_60hit_115sp_85sta_86int_59spi,gems=chaotic_skyflare_23sp_8int,enchant=30sp_20crit
 neck=pendant_of_fiery_havoc,stats=46hit_41haste_75sp_61sta_51int,gems=23sp
@@ -35,24 +36,24 @@ wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=23sp_
 hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=23sp_23sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=23sp,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=12sp_10spi_5sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 trinket2=scale_of_fates,stats=125sp,use=432haste_20dur_120cd
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=23sp,enchant=lightweave_embroidery
-main_hand=staff_of_endless_winter,stats=104crit_587sp_111sta_128int_84spi,gems=23sp_23sp,enchant=81sp,weapon=staff_2.10speed_165.3dps
+main_hand=staff_of_endless_winter,stats=104crit_587sp_111sta_128int_84spi,gems=23sp_23sp,enchant=81sp,weapon=staff_2.10speed_244.05min_450.05max
 ranged=idol_of_the_shooting_star
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
 # gear_stamina=931
 # gear_intellect=914
-# gear_spirit=457
+# gear_spirit=458
 # gear_spell_power=2535
 # gear_hit_rating=261
 # gear_crit_rating=577
 # gear_haste_rating=424
 # gear_armor=2938
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
 # back=drape_of_mortal_downfall,enchant=lightweave_embroidery
-# main_hand=staff_of_endless_winter,weapon=staff_2.10speed_165.3dps
+# main_hand=staff_of_endless_winter,weapon=staff_2.10speed_244.05min_450.05max

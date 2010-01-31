@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_T9_58_00_13_2T8_2T9
-origin=http://profiler.wowhead.com/?profile=16237439
+origin="http://profiler.wowhead.com/?profile=16237439"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=5012203125331323213305301031000000000000000000000000000000205003012
@@ -12,6 +12,7 @@ actions+=/mark_of_the_wild
 actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/faerie_fire
+actions+=/typhoon,moving=1
 actions+=/speed_potion
 actions+=/innervate,trigger=-2000
 actions+=/treants

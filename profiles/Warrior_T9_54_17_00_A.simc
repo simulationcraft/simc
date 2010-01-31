@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_T9_54_17_00_A
-origin=http://profiler.wowhead.com/?profile=13111680
+origin="http://profiler.wowhead.com/?profile=13111680"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=302203202333510010201220323125132500000502
@@ -34,8 +34,8 @@ finger2=gormoks_band,stats=42haste_41arpen_70str_86sta,gems=20arpen_20arpen
 trinket1=deaths_choice,stats=288ap
 trinket2=deaths_choice,stats=256ap
 back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20arpen_20arpen_8ap,enchant=22agi
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=34arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_281.7dps_811min_1217max
-ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_255.6dps_368min_552max
+main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=34arpen_20arpen,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
+ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=thrown_1.80speed_368min_552max
 # Gear Summary
 # gear_strength=1210
 # gear_agility=448
@@ -54,5 +54,5 @@ ranged=crimson_star,stats=57ap_28exp_28arpen_43agi_43sta,gems=16str,weapon=throw
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
 # trinket2=deaths_choice
-# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_281.7dps_811min_1217max,enchant=berserking
-# ranged=crimson_star,weapon=thrown_1.80speed_255.6dps_368min_552max
+# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=berserking
+# ranged=crimson_star,weapon=thrown_1.80speed_368min_552max

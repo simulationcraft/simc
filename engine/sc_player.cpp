@@ -1975,10 +1975,14 @@ void player_t::reset()
     action_callback_t::reset( spell_result_callbacks        [ i ] );
     action_callback_t::reset( attack_direct_result_callbacks[ i ] );
     action_callback_t::reset( spell_direct_result_callbacks [ i ] );
+    action_callback_t::reset( spell_cast_result_callbacks   [ i ] );
+  }
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    action_callback_t::reset( tick_damage_callbacks         [ i ] );
+    action_callback_t::reset( direct_damage_callbacks       [ i ] );
   }
   action_callback_t::reset( tick_callbacks );
-  action_callback_t::reset( tick_damage_callbacks );
-  action_callback_t::reset( direct_damage_callbacks );
 
   replenishment_targets.clear();
 
@@ -2546,16 +2550,44 @@ void player_t::register_tick_callback( action_callback_t* cb )
 
 // player_t::register_tick_damage_callback ==================================
 
-void player_t::register_tick_damage_callback( action_callback_t* cb )
+void player_t::register_tick_damage_callback( int                mask,
+                                              action_callback_t* cb )
 {
-  tick_damage_callbacks.push_back( cb );
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    {
+      tick_damage_callbacks[ i ].push_back( cb );
+    }
+  }
 }
 
 // player_t::register_direct_damage_callback ================================
 
-void player_t::register_direct_damage_callback( action_callback_t* cb )
+void player_t::register_direct_damage_callback( int                mask,
+                                                action_callback_t* cb )
 {
-  direct_damage_callbacks.push_back( cb );
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    {
+      direct_damage_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_spell_cast_result_callback =================================
+
+void player_t::register_spell_cast_result_callback( int                mask,
+                                                    action_callback_t* cb )
+{
+  for ( int i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    {
+      spell_cast_result_callbacks[ i ].push_back( cb );
+    }
+  }
 }
 
 // player_t::recalculate_haste ==============================================

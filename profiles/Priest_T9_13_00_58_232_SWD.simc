@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_T9_13_00_58_232_SWD
-origin=http://profiler.wowhead.com/?profile=13043846
+origin="http://profiler.wowhead.com/?profile=13043846"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
@@ -35,10 +35,10 @@ wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_80sp_58sta_58int,
 hands=velens_handwraps_of_triumph,stats=207armor_59hit_67crit_109sp_77sta_77int,gems=10crit_12sp_5sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=23sp,enchant=23sp
 finger2=firestorm_ring,stats=56hit_33crit_80sp_54sta_59int,gems=23sp_5sp,enchant=23sp
-trinket1=eye_of_the_broodmother,stats=87crit,equip=onspellhit_25sp_5stack_10dur
-trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+trinket1=eye_of_the_broodmother,stats=87crit,equip=onspellcast_25sp_5stack_10dur
+trinket2=illustration_of_the_dragon_soul,equip=onspellcast_20sp_10stack_10dur
 back=pennant_cloak,stats=157armor_34crit_42haste_64sp_54sta_46int,gems=23sp,enchant=lightweave_embroidery
-main_hand=blade_of_the_silver_disciple,stats=44sta_49int_58haste_621sp_37crit,gems=23sp,enchant=63sp
+main_hand=blade_of_the_silver_disciple,stats=37crit_58haste_621sp_44sta_49int,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_97.42min_310.42max
 off_hand=chalice_of_benedictus,stats=37hit_45haste_69sp_51sta_48int,gems=10crit_12sp_5sp
 ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int,gems=23sp
 # Gear Summary
@@ -49,10 +49,11 @@ ranged=rod_of_imprisoned_souls,stats=31crit_24haste_50sp_40sta_29int,gems=23sp
 # gear_spirit=169
 # gear_spell_power=2625
 # gear_hit_rating=294
-# gear_crit_rating=810
+# gear_crit_rating=814
 # gear_haste_rating=516
 # gear_armor=2023
 # meta_gem=chaotic_skyflare
 # tier8_2pc_caster=1
 # tier9_2pc_caster=1
 # back=pennant_cloak,enchant=lightweave_embroidery
+# main_hand=blade_of_the_silver_disciple,weapon=dagger_1.80speed_97.42min_310.42max

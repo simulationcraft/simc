@@ -1,16 +1,17 @@
-#!simc
+#!./simc 
 
 warrior=Warrior_T8_54_17_00_A
-origin=http://profiler.wowhead.com/?profile=13001790
+origin="http://profiler.wowhead.com/?profile=13001790"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=302203202333510010201220323125132500000502
 glyphs=mortal_strike/rending/execution
 actions=flask,type=endless_rage
-actions+=/food,type=dragonfin_filet
-actions+=/stance,choose=battle
+actions+=/food,type=hearty_rhino
+actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/indestructible_potion
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=95
 actions+=/mortal_strike
@@ -32,13 +33,13 @@ finger1=seal_of_the_betrayed_king,stats=40hit_48crit_74str_81sta,gems=16str
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16str
 trinket1=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 trinket2=dark_matter,stats=222ap,equip=onattackhit_612crit_15%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16str_16str,enchant=22agi
-main_hand=dark_edge_of_depravity,stats=164ap_64hit_85haste_112agi_129sta,gems=34str_16str,enchant=berserking,weapon=polearm_3.50speed_244.7dps
-ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weapon=thrown_2.10speed_232.4dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=16str_16str,enchant=22agi
+main_hand=dark_edge_of_depravity,stats=164ap_64hit_85haste_112agi_129sta,gems=34str_16str,enchant=berserking,weapon=polearm_3.50speed_685min_1028max
+ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weapon=thrown_2.10speed_390min_586max
 # Gear Summary
 # gear_strength=1114
-# gear_agility=501
-# gear_stamina=1252
+# gear_agility=485
+# gear_stamina=1276
 # gear_intellect=10
 # gear_spirit=10
 # gear_attack_power=1173
@@ -49,7 +50,7 @@ ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weap
 # gear_haste_rating=85
 # gear_armor=11148
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
-# main_hand=dark_edge_of_depravity,weapon=polearm_3.50speed_244.7dps,enchant=berserking
-# ranged=twirling_blades,weapon=thrown_2.10speed_232.4dps
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
+# main_hand=dark_edge_of_depravity,weapon=polearm_3.50speed_685min_1028max,enchant=berserking
+# ranged=twirling_blades,weapon=thrown_2.10speed_390min_586max

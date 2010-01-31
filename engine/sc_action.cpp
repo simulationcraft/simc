@@ -19,7 +19,7 @@ action_t::action_t( int         ty,
                     int         tr,
                     bool        sp ) :
     sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
-    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ),
+    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
@@ -847,7 +847,7 @@ void action_t::assess_damage( double amount,
       log_t::damage_event( this, amount, dmg_type );
     }
 
-    action_callback_t::trigger( player -> direct_damage_callbacks, this );
+    action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
   }
   else // DMG_OVER_TIME
   {
@@ -862,7 +862,7 @@ void action_t::assess_damage( double amount,
       log_t::damage_event( this, amount, dmg_type );
     }
 
-    action_callback_t::trigger( player -> tick_damage_callbacks, this );
+    action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
   if ( aoe && sim -> target -> adds_nearby )

@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock=Warlock_T8_03_13_55
-origin=http://profiler.wowhead.com/?profile=13003527
+origin="http://profiler.wowhead.com/?profile=13003527"
 level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=030000000000000000000000000003220030003000000000000000005203215220331051035030351
@@ -35,7 +35,7 @@ wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_
 hands=pharos_gloves,stats=203armor_64crit_74haste_92sp_72sta_72int,gems=9sp_8spi_8haste_9sp_7sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=8haste_9sp_4crit,enchant=23sp
 finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=19sp,enchant=23sp
-trinket1=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+trinket1=illustration_of_the_dragon_soul,equip=onspellcast_20sp_10stack_10dur
 trinket2=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8haste_9sp_5sp,enchant=lightweave_embroidery
 main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_93.9min_297.9max

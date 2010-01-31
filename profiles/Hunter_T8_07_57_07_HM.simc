@@ -1,13 +1,13 @@
-#!simc
+#!./simc 
 
 hunter=Hunter_T8_07_57_07_HM
-origin=http://profiler.wowhead.com/?profile=13630091
+origin="http://profiler.wowhead.com/?profile=13630091"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000053351012300132331152313515000002
 glyphs=serpent_sting/chimera_shot/hunters_mark
 actions=flask,type=endless_rage
-actions+=/food,type=blackened_dragonfin
+actions+=/food,type=hearty_rhino
 actions+=/hunters_mark
 actions+=/summon_pet
 actions+=/trueshot_aura
@@ -18,9 +18,10 @@ actions+=/serpent_sting
 actions+=/rapid_fire
 actions+=/kill_command
 actions+=/silencing_shot
+actions+=/aimed_shot
+actions+=/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25
 actions+=/chimera_shot
 actions+=/kill_shot
-actions+=/aimed_shot
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot
 head=conquerors_scourgestalker_headpiece,stats=1067armor_196ap_59crit_50arpen_82agi_81sta_49int,gems=relentless_earthsiege_20arpen_16ap,enchant=50ap_20crit
@@ -36,13 +37,13 @@ finger1=band_of_lights,stats=98ap_46hit_31arpen_57agi_39sta,gems=20agi_4agi,ench
 finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20agi,enchant=40ap
 trinket1=dark_matter,stats=222ap,equip=onattackhit_612crit_15%_10dur_45cd
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=20arpen_20hit_6agi,enchant=22agi
-main_hand=lotrafen_spear_of_the_damned,stats=160ap_87crit_80arpen_120agi_105sta,enchant=110ap,weapon=polearm_3.40speed_232.5dps
-ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weapon=crossbow_2.80speed_200.4dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20arpen_20hit_6agi,enchant=22agi
+main_hand=lotrafen_spear_of_the_damned,stats=160ap_87crit_80arpen_120agi_105sta,enchant=110ap,weapon=polearm_3.40speed_632min_949max
+ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weapon=crossbow_2.80speed_465.56min_656.56max
 # Gear Summary
 # gear_strength=10
-# gear_agility=1330
-# gear_stamina=968
+# gear_agility=1314
+# gear_stamina=992
 # gear_intellect=321
 # gear_spirit=10
 # gear_attack_power=2447
@@ -51,7 +52,7 @@ ranged=skyforge_crossbow,stats=58ap_23hit_28crit_40agi_40sta,enchant=40crit,weap
 # gear_crit_rating=844
 # gear_armor=6803
 # meta_gem=relentless_earthsiege
-# tier8_2pc=1
-# main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.40speed_232.5dps
-# ranged=skyforge_crossbow,weapon=crossbow_2.80speed_200.4dps
-ammo_dps=67.50
+# tier8_2pc_melee=1
+# main_hand=lotrafen_spear_of_the_damned,weapon=polearm_3.40speed_632min_949max
+# ranged=skyforge_crossbow,weapon=crossbow_2.80speed_465.56min_656.56max
+ammo_dps=91.50

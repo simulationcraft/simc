@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock=Warlock_T9_00_56_15
-origin=http://profiler.wowhead.com/?profile=18859247
+origin="http://profiler.wowhead.com/?profile=18859247"
 level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000000000000000320330113520253013522135155000005

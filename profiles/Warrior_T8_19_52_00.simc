@@ -1,17 +1,18 @@
-#!simc
+#!./simc 
 
 warrior=Warrior_T8_19_52_00
-origin=http://profiler.wowhead.com/?profile=13001761
+origin="http://profiler.wowhead.com/?profile=13001761"
 level=80
 race=tauren
 professions=blacksmithing=450/jewelcrafting=450
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3202030123300000000000000000000325000005520310053120501351
 glyphs=whirlwind/heroic_strike/execution/charge/bloodrage/battle
 actions=flask,type=endless_rage
-actions+=/food,type=dragonfin_filet
-actions+=/stance,choose=berserker
+actions+=/food,type=hearty_rhino
+actions+=/stance,choose=berserker,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/indestructible_potion
 actions+=/bloodrage,rage<=85
 actions+=/heroic_strike,rage>=75,health_percentage<=20
 actions+=/whirlwind,rage<=95,health_percentage<=20
@@ -27,41 +28,41 @@ actions+=/slam,bloodsurge=1,health_percentage>=20
 actions+=/death_wish,time>=10,health_percentage>=20,time_to_die>=135
 actions+=/recklessness,health_percentage>=20,time_to_die>=230
 actions+=/berserker_rage
-head=conquerors_siegebreaker_helmet,stats=1908armor_60crit_68arpen_105str_129sta,gems=chaotic_skyflare_16str_8str,enchant=50ap_20crit
-neck=frigid_strength_of_hodir,stats=40hit_48arpen_74str_81sta,gems=8str_12sta_4str
-shoulders=valorous_siegebreaker_shoulderplates,stats=1741armor_43hit_50crit_83str_90sta,gems=16exp_4str,enchant=40ap_15crit
+head=conquerors_siegebreaker_helmet,stats=1908armor_60crit_68arpen_105str_129sta,gems=chaotic_skyflare_20str_8str,enchant=50ap_20crit
+neck=frigid_strength_of_hodir,stats=40hit_48arpen_74str_81sta,gems=10str_15sta_4str
+shoulders=conquerors_siegebreaker_shoulderplates,stats=1761armor_46hit_54crit_90str_102sta,gems=20str_4str,enchant=40ap_15crit
 shirt=orange_martial_shirt
-chest=conquerors_siegebreaker_battleplate,stats=2348armor_58crit_74arpen_113str_129sta,gems=16str_16str,enchant=10str_10agi_10sta_10int_10spi
-waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=34str_34str_16str_12ap
-legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=16exp_34str_16str,enchant=75ap_22crit
+chest=conquerors_siegebreaker_battleplate,stats=2348armor_58crit_74arpen_113str_129sta,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=souldevouring_cinch,stats=333armor_114ap_53crit_56exp_85agi_65sta,gems=34str_34str_20str_12ap
+legs=legguards_of_cunning_deception,stats=533armor_152ap_78crit_66arpen_112agi_127sta,gems=20exp_34str_20exp,enchant=75ap_22crit
 feet=melancholy_sabatons,stats=1614armor_54crit_84arpen_88str_81sta,enchant=12crit_12hit
-wrists=solar_bindings,stats=267armor_86ap_48haste_47exp_64agi_61sta,gems=16str_16str,enchant=50ap
-hands=conquerors_siegebreaker_gauntlets,stats=1467armor_38hit_60exp_90str_102sta,gems=16str_16arpen,enchant=44ap
-finger1=seal_of_the_betrayed_king,stats=40hit_48crit_74str_81sta,gems=8str_12sta_4str
-finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=16str
+wrists=solar_bindings,stats=267armor_86ap_48haste_47exp_64agi_61sta,gems=20str_20str,enchant=50ap
+hands=conquerors_siegebreaker_gauntlets,stats=1467armor_38hit_60exp_90str_102sta,gems=20str_20str,enchant=44ap
+finger1=seal_of_the_betrayed_king,stats=40hit_48crit_74str_81sta,gems=10exp_15sta_4str
+finger2=branns_signet_ring,stats=96ap_43crit_33arpen_64agi_61sta,gems=20str
 trinket1=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 trinket2=darkmoon_card_greatness,stats=90str
-back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_69agi_31sta,gems=16str_16str,enchant=22agi
-main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16exp_16str,enchant=berserking,weapon=sword2h_3.60speed_244.6dps
-off_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=16str_16str,enchant=berserking,weapon=sword2h_3.60speed_244.6dps
-ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=16str_4agi,weapon=thrown_2.10speed_232.4dps
+back=drape_of_the_faceless_general,stats=157armor_92ap_40crit_30arpen_53agi_55sta,gems=20str_20str,enchant=22agi
+main_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=20str_20str,enchant=berserking,weapon=sword2h_3.60speed_704min_1057max
+off_hand=voldrethar_dark_blade_of_oblivion,stats=86crit_69arpen_130str_145sta,gems=20str_20str,enchant=berserking,weapon=sword2h_3.60speed_704min_1057max
+ranged=twirling_blades,stats=62ap_22hit_28arpen_23agi_28sta,gems=20str_4agi,weapon=thrown_2.10speed_390min_586max
 # Gear Summary
-# gear_strength=1365
-# gear_agility=453
-# gear_stamina=1390
+# gear_strength=1466
+# gear_agility=437
+# gear_stamina=1432
 # gear_intellect=10
 # gear_spirit=10
 # gear_attack_power=873
-# gear_expertise_rating=211
-# gear_armor_penetration_rating=585
-# gear_hit_rating=195
-# gear_crit_rating=848
+# gear_expertise_rating=213
+# gear_armor_penetration_rating=569
+# gear_hit_rating=198
+# gear_crit_rating=852
 # gear_haste_rating=48
-# gear_armor=10368
+# gear_armor=10388
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_melee=1
+# tier8_4pc_melee=1
 # trinket2=darkmoon_card_greatness
-# main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking
-# off_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_244.6dps,enchant=berserking
-# ranged=twirling_blades,weapon=thrown_2.10speed_232.4dps
+# main_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_704min_1057max,enchant=berserking
+# off_hand=voldrethar_dark_blade_of_oblivion,weapon=sword2h_3.60speed_704min_1057max,enchant=berserking
+# ranged=twirling_blades,weapon=thrown_2.10speed_390min_586max

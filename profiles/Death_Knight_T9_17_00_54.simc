@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T9_17_00_54
-origin=http://profiler.wowhead.com/?profile=18127877
+origin="http://profiler.wowhead.com/?profile=18127877"
 level=80
 race=tauren
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=2305020500000000000000000000000000000000000000000000000002302203300032152003150003133151
@@ -10,9 +10,9 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/auto_attack
 actions+=/bone_shield,if=!in_combat
 actions+=/raise_dead
+actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
 actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
 actions+=/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5

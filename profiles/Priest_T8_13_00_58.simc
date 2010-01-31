@@ -1,28 +1,28 @@
-#!simc
+#!./simc 
 
 priest=Priest_T8_13_00_58
-origin=http://profiler.wowhead.com/?profile=13000014
+origin="http://profiler.wowhead.com/?profile=13000014"
 level=80
 race=night_elf
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
-glyphs=mind_flay/shadow_word_pain/shadow/fortitude/fading/levitate
+glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
 actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
+actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/wild_magic_potion
+actions+=/speed_potion
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
 actions+=/mind_blast
-actions+=/vampiric_embrace
-actions+=/dispersion
 actions+=/mind_flay
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
 head=conquerors_circlet_of_sanctification,stats=256armor_70crit_66haste_113sp_84sta_76int,gems=chaotic_skyflare_19sp_8int,enchant=30sp_20crit
 neck=pendant_of_the_shallow_grave,stats=41crit_31haste_74sp_45sta_43int,gems=19sp
 shoulders=conquerors_mantle_of_sanctification,stats=236armor_62crit_90sp_53sta_65int_49spi,gems=19sp_5sp,enchant=24sp_15crit
@@ -34,10 +34,10 @@ wrists=grasps_of_reason,stats=142armor_39haste_75sp_63sta_52int_48spi,gems=19sp_
 hands=conquerors_handwraps_of_sanctification,stats=197armor_64crit_99sp_62sta_44int_54spi,gems=8crit_9sp_4hit,enchant=28sp
 finger1=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=9sp_8spi_5sp,enchant=23sp
 finger2=nebula_band,stats=46crit_36haste_74sp_48sta_36int,gems=19sp,enchant=23sp
-trinket1=flare_of_the_heavens,stats=120crit,equip=onspellhit_850sp_10%_10dur_45cd
-trinket2=illustration_of_the_dragon_soul,equip=onspellhit_20sp_10stack_10dur
+trinket1=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
+trinket2=illustration_of_the_dragon_soul,equip=onspellcast_20sp_10stack_10dur
 back=drape_of_mortal_downfall,stats=162armor_41hit_43crit_75sp_61sta_51int,gems=8crit_9sp_5sp,enchant=lightweave_embroidery
-main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_108.8dps
+main_hand=starshard_edge,stats=39hit_587sp_40sta_55int_43spi,gems=19sp,enchant=63sp,weapon=dagger_1.80speed_93.9min_297.9max
 off_hand=cosmos,stats=51hit_41crit_84sp_52sta_55int
 ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # Gear Summary
@@ -52,7 +52,7 @@ ranged=scepter_of_lost_souls,stats=18crit_29haste_44sp_37sta_26int
 # gear_haste_rating=361
 # gear_armor=1996
 # meta_gem=chaotic_skyflare
-# tier8_2pc=1
-# tier8_4pc=1
+# tier8_2pc_caster=1
+# tier8_4pc_caster=1
 # back=drape_of_mortal_downfall,enchant=lightweave_embroidery
-# main_hand=starshard_edge,weapon=dagger_1.80speed_108.8dps
+# main_hand=starshard_edge,weapon=dagger_1.80speed_93.9min_297.9max

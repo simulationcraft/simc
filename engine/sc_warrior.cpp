@@ -998,6 +998,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     may_crit    = true;
     aoe         = true;
+    direct_tick = true;
   }
   virtual void execute()
   {

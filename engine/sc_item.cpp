@@ -471,6 +471,121 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
+    else if ( t.full == "ontickdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_TICK_DAMAGE;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
+    else if ( t.full == "ondirectdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DIRECT_DAMAGE;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
+    else if ( t.full == "onspelldamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = SCHOOL_SPELL_MASK;
+    }
+    else if ( t.full == "onspelltickdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_TICK_DAMAGE;
+      effect.trigger_mask = SCHOOL_SPELL_MASK;
+    }
+    else if ( t.full == "onspelldirectdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DIRECT_DAMAGE;
+      effect.trigger_mask = SCHOOL_SPELL_MASK;
+    }
+    else if ( t.full == "onattackdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = SCHOOL_ATTACK_MASK;
+    }
+    else if ( t.full == "onattacktickdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_TICK_DAMAGE;
+      effect.trigger_mask = SCHOOL_ATTACK_MASK;
+    }
+    else if ( t.full == "onattackdirectdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DIRECT_DAMAGE;
+      effect.trigger_mask = SCHOOL_ATTACK_MASK;
+    }
+    else if ( t.full == "onarcanedamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_ARCANE);
+    }
+    else if ( t.full == "onbleeddamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_BLEED);
+    }
+    else if ( t.full == "onchaosdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_CHAOS);
+    }
+    else if ( t.full == "onfiredamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_FIRE);
+    }
+    else if ( t.full == "onfrostdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_FROST);
+    }
+    else if ( t.full == "onfrostfiredamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_FROSTFIRE);
+    }
+    else if ( t.full == "onholydamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_HOLY);
+    }
+    else if ( t.full == "onnaturedamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_NATURE);
+    }
+    else if ( t.full == "onphysicaldamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_PHYSICAL);
+    }
+    else if ( t.full == "onshadowdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_SHADOW);
+    }
+    else if ( t.full == "ondraindamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE;
+      effect.trigger_mask = (1 << SCHOOL_DRAIN);
     }
     else if ( t.full == "ontick" )
     {
@@ -480,8 +595,26 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onspellcast" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
+      effect.trigger_type = PROC_SPELL_CAST;
       effect.trigger_mask = RESULT_ALL_MASK;
+    }
+    else if ( t.full == "onspellcasthit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_SPELL_CAST;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if ( t.full == "onspellcastcrit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_SPELL_CAST;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onspellcastmiss" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_SPELL_CAST;
+      effect.trigger_mask = RESULT_MISS_MASK;
     }
     else if ( t.full == "onspellhit" )
     {

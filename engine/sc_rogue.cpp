@@ -1807,9 +1807,10 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    dual       = true;
-    background = true;
-    may_crit   = true;
+    dual        = true;
+    background  = true;
+    may_crit    = true;
+    direct_tick = true;
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + p -> talents.find_weakness * 0.02;
   }

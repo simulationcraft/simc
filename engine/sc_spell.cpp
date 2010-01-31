@@ -192,6 +192,11 @@ void spell_t::execute()
 
   if ( ! aoe && ! pseudo_pet )
   {
+    if ( ! direct_tick )
+    {
+      action_callback_t::trigger( player -> spell_cast_result_callbacks[ result ], this );
+    }
+
     action_callback_t::trigger( player -> spell_result_callbacks       [ result ], this );
     action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
   }
