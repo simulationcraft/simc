@@ -19,7 +19,9 @@ actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1
 actions+=/vampiric_touch
 actions+=/devouring_plague
-actions+=/mind_blast
+actions+=/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.67)
+actions+=/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.67)
+actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.67)
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion

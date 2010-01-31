@@ -146,13 +146,17 @@ struct priest_t : public player_t
   constants_t constants;
 
   bool   use_shadow_word_death;
+  int    use_mind_blast;
+  int    recast_mind_blast;
   int    hasted_devouring_plague;
   int    hasted_shadow_word_pain;
   int    hasted_vampiric_touch;
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
   {
-    use_shadow_word_death = false;
+    use_shadow_word_death    = false;
+    use_mind_blast           = 1;
+    recast_mind_blast        = 0;
     hasted_devouring_plague  = -1;
     hasted_shadow_word_pain  = -1;
     hasted_vampiric_touch    = -1;
@@ -209,6 +213,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_power( int school ) SC_CONST;
 
   virtual void      regen( double periodicity );
+  virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
@@ -923,6 +928,7 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
+      p -> recast_mind_blast = 0;
       p -> buffs_devious_mind -> trigger();
       if ( result == RESULT_CRIT )
       {
@@ -1796,6 +1802,7 @@ struct vampiric_touch_t : public priest_spell_t
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
+      p -> recast_mind_blast = 1;
       trigger_misery( this );
     }
   }
@@ -2143,8 +2150,10 @@ void priest_t::init_actions()
       action_list_str += "/shadow_fiend";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
-      action_list_str += "/devouring_plague/mind_blast";
-      if ( use_shadow_word_death ) action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2";
+      action_list_str += "/devouring_plague";
+      action_list_str += "/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.67)";
+      action_list_str += "/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.67)";
+      action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.67)";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
@@ -2215,6 +2224,8 @@ void priest_t::reset()
 {
   player_t::reset();
 
+  recast_mind_blast = 0;
+
   mana_resource.reset();
 
   init_party();
@@ -2232,6 +2243,42 @@ void priest_t::regen( double periodicity )
   }
 
   player_t::regen( periodicity );
+}
+
+
+// priest_t::create_expression =================================================
+
+action_expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "recast_mind_blast" )
+  {
+    struct recast_mind_blast_expr_t : public action_expr_t
+    {
+      recast_mind_blast_expr_t( action_t* a ) : action_expr_t( a, "recast_mind_blast" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_priest() -> recast_mind_blast; return TOK_NUM; }
+    };
+    return new recast_mind_blast_expr_t( a );
+  }
+  if ( name_str == "use_mind_blast" )
+  {
+    struct use_mind_blast_expr_t : public action_expr_t
+    {
+      use_mind_blast_expr_t( action_t* a ) : action_expr_t( a, "use_mind_blast" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_priest() -> use_mind_blast; return TOK_NUM; }
+    };
+    return new use_mind_blast_expr_t( a );
+  }
+  if ( name_str == "use_shadow_word_death" )
+  {
+    struct use_shadow_word_death_expr_t : public action_expr_t
+    {
+      use_shadow_word_death_expr_t( action_t* a ) : action_expr_t( a, "use_shadow_word_death" ) { result_type = TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_priest() -> use_shadow_word_death; return TOK_NUM; }
+    };
+    return new use_shadow_word_death_expr_t( a );
+  }
+
+  return player_t::create_expression( a, name_str );
 }
 
 // priest_t::resource_gain ===================================================
@@ -2390,6 +2437,7 @@ std::vector<option_t>& priest_t::get_options()
       { "const.vampiric_touch_power_mod",           OPT_FLT,    &( constants.vampiric_touch_power_mod         ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
+      { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
       { "hasted_devouring_plague",                  OPT_INT,    &( hasted_devouring_plague                    ) },
       { "hasted_shadow_word_pain",                  OPT_INT,    &( hasted_shadow_word_pain                    ) },
       { "hasted_vampiric_touch",                    OPT_INT,    &( hasted_vampiric_touch                      ) },
@@ -2411,7 +2459,37 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
 
   if ( save_type == SAVE_ALL )
   {
+    std::string temp_str;
     if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
+    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) || ( hasted_devouring_plague != -1 ) ||
+         ( hasted_shadow_word_pain != -1 ) || ( hasted_vampiric_touch != -1 ) )
+    {
+      profile_str += "## Variables\n";
+    }
+    if ( use_shadow_word_death ) 
+    { 
+      profile_str += "use_shadow_word_death=1\n"; 
+    }
+    if ( use_mind_blast != 1 ) 
+    { 
+      temp_str = use_mind_blast;
+      profile_str += "use_mind_blast=" + temp_str + "\n"; 
+    }
+    if ( hasted_devouring_plague != -1 ) 
+    { 
+      temp_str = hasted_devouring_plague;
+      profile_str += "hasted_devouring_plague=" + temp_str + "\n"; 
+    }
+    if ( hasted_shadow_word_pain != -1 ) 
+    { 
+      temp_str = hasted_shadow_word_pain;
+      profile_str += "hasted_shadow_word_pain=" + temp_str + "\n"; 
+    }
+    if ( hasted_vampiric_touch != -1 ) 
+    { 
+      temp_str = hasted_vampiric_touch;
+      profile_str += "hasted_vampiric_touch=" + temp_str + "\n"; 
+    }
   }
 
   return true;
