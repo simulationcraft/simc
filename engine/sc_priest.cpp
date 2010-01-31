@@ -11,12 +11,6 @@
 
 struct priest_t : public player_t
 {
-  action_t* active_devouring_plague;
-  action_t* active_holy_fire;
-  action_t* active_shadow_word_pain;
-  action_t* active_vampiric_touch;
-  action_t* active_vampiric_embrace;
-
   // Buffs
   buff_t* buffs_devious_mind;
   buff_t* buffs_glyph_of_shadow;
@@ -31,6 +25,12 @@ struct priest_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
   cooldown_t* cooldowns_shadow_fiend;
+
+  // DoTs
+  dot_t* dots_shadow_word_pain;
+  dot_t* dots_vampiric_touch;
+  dot_t* dots_devouring_plague;
+  dot_t* dots_holy_fire;
 
   // Gains
   gain_t* gains_devious_mind;
@@ -133,7 +133,7 @@ struct priest_t : public player_t
     double improved_shadow_word_pain_value;
     double mind_blast_power_mod;
     double mind_flay_power_mod;
-	double mind_nuke_power_mod;
+	  double mind_nuke_power_mod;
     double misery_power_mod;
     double shadow_form_value;
     double shadow_weaving_value;
@@ -152,13 +152,6 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
   {
-    // Active
-    active_devouring_plague  = 0;
-    active_holy_fire         = 0;
-    active_shadow_word_pain  = 0;
-    active_vampiric_touch    = 0;
-    active_vampiric_embrace  = 0;
-
     use_shadow_word_death = false;
     hasted_devouring_plague  = -1;
     hasted_shadow_word_pain  = -1;
@@ -183,6 +176,11 @@ struct priest_t : public player_t
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
     cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
+
+    dots_shadow_word_pain = get_dot( "shadow_word_pain" );
+    dots_vampiric_touch   = get_dot( "vampiric_touch" );
+    dots_devouring_plague = get_dot( "devouring_plague" );
+    dots_holy_fire        = get_dot( "holy_fire" );
   }
 
   // Character Definition
@@ -545,8 +543,6 @@ struct devouring_plague_t : public priest_spell_t
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
     }
-
-    observer = &( p -> active_devouring_plague );
   }
 
   virtual void execute()
@@ -778,8 +774,6 @@ struct holy_fire_t : public priest_spell_t
     base_execute_time -= p -> talents.divine_fury * 0.01;
     base_multiplier   *= 1.0 + p -> talents.searing_light * 0.05;
     base_crit         += p -> talents.holy_specialization * 0.01;
-
-    observer          = &( p -> active_holy_fire );
   }
 };
 
@@ -935,9 +929,9 @@ struct mind_blast_t : public priest_spell_t
         p -> buffs_improved_spirit_tap -> trigger();
         p -> buffs_glyph_of_shadow -> trigger();
       }
-      if ( p -> active_vampiric_touch )
+      if ( p -> dots_vampiric_touch -> ticking() )
       {
-	p -> trigger_replenishment();
+	      p -> trigger_replenishment();
       }
     }
   }
@@ -948,7 +942,7 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( p -> talents.twisted_faith )
     {
-      if ( p -> active_shadow_word_pain ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
+      if ( p -> dots_shadow_word_pain -> ticking() ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
     }
   }
 };
@@ -996,11 +990,11 @@ struct mind_flay_tick_t : public priest_spell_t
     update_stats( DMG_OVER_TIME );
     if ( result_is_hit() )
     {
-      if ( p -> active_shadow_word_pain )
+      if ( p -> dots_shadow_word_pain -> ticking() )
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * ( 1.0/3.0 ) ) )
         {
-          p -> active_shadow_word_pain -> refresh_duration();
+          p -> dots_shadow_word_pain -> action -> refresh_duration();
         }
       }
       if ( result == RESULT_CRIT )
@@ -1017,7 +1011,7 @@ struct mind_flay_tick_t : public priest_spell_t
     priest_spell_t::player_buff();
     if ( p -> talents.twisted_faith )
     {
-      if ( p -> active_shadow_word_pain )
+      if ( p -> dots_shadow_word_pain -> ticking() )
       {
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
                                  ( p -> glyphs.mind_flay      ? 0.10 : 0.00 );
@@ -1111,11 +1105,11 @@ struct mind_flay_t : public priest_spell_t
     // it's uses.
     if ( swp_refresh && ( p -> talents.pain_and_suffering > 0 ) )
     {
-      if ( ! p -> active_shadow_word_pain )
+      if ( ! p -> dots_shadow_word_pain -> ticking() )
         return false;
 
-      if ( ( p -> active_shadow_word_pain -> num_ticks -
-             p -> active_shadow_word_pain -> current_tick ) > 2 )
+      if ( ( p -> dots_shadow_word_pain -> action -> num_ticks -
+             p -> dots_shadow_word_pain -> action -> current_tick ) > 2 )
         return false;
     }
 
@@ -1201,11 +1195,11 @@ struct mind_nuke_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
-      if ( p -> active_shadow_word_pain )
+      if ( p -> dots_shadow_word_pain -> ticking() )
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * ( 1.0/3.0 ) ) )
         {
-          p -> active_shadow_word_pain -> refresh_duration();
+          p -> dots_shadow_word_pain -> action -> refresh_duration();
         }
       }
       if ( result == RESULT_CRIT )
@@ -1222,7 +1216,7 @@ struct mind_nuke_t : public priest_spell_t
     priest_spell_t::player_buff();
     if ( p -> talents.twisted_faith )
     {
-      if ( p -> active_shadow_word_pain )
+      if ( p -> dots_shadow_word_pain -> ticking() )
       {
         player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02 + 
                                  ( p -> glyphs.mind_flay      ? 0.10 : 0.00);
@@ -1243,11 +1237,11 @@ struct mind_nuke_t : public priest_spell_t
     // it's uses.
     if ( swp_refresh && ( p -> talents.pain_and_suffering > 0 ) )
     {
-      if ( ! p -> active_shadow_word_pain )
+      if ( ! p -> dots_shadow_word_pain -> ticking() )
         return false;
 
-      if ( ( p -> active_shadow_word_pain -> num_ticks -
-             p -> active_shadow_word_pain -> current_tick ) > 2 )
+      if ( ( p -> dots_shadow_word_pain -> action -> num_ticks -
+             p -> dots_shadow_word_pain -> action -> current_tick ) > 2 )
         return false;
     }
 
@@ -1592,8 +1586,6 @@ struct shadow_word_pain_t : public priest_spell_t
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
-
-    observer = &( p -> active_shadow_word_pain );
   }
 
   virtual void execute()
@@ -1706,7 +1698,7 @@ struct smite_t : public priest_spell_t
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
     may_crit = ! ( p -> buffs_surge_of_light -> check() );
-    if ( p -> active_holy_fire && p -> glyphs.smite ) player_multiplier *= 1.20;
+    if ( p -> dots_holy_fire -> ticking() && p -> glyphs.smite ) player_multiplier *= 1.20;
   }
 };
 
@@ -1794,8 +1786,6 @@ struct vampiric_touch_t : public priest_spell_t
     base_crit       += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
-
-    observer = &( p -> active_vampiric_touch );
   }
 
   virtual void execute()
@@ -2236,13 +2226,6 @@ void priest_t::init_party()
 void priest_t::reset()
 {
   player_t::reset();
-
-  // Active
-  active_devouring_plague = 0;
-  active_holy_fire        = 0;
-  active_shadow_word_pain = 0;
-  active_vampiric_touch   = 0;
-  active_vampiric_embrace = 0;
 
   mana_resource.reset();
 
