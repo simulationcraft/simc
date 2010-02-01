@@ -2425,8 +2425,8 @@ struct shadowflame_t : public warlock_spell_t
     may_crit          = true;
     base_tick_time    = 2.0;
     num_ticks         = 4;
-    direct_power_mod  = 0.1429;
-    tick_power_mod    = 0.28;
+    direct_power_mod  = 0.106667;
+    tick_power_mod    = 0.066667 ;
 
     cooldown -> duration = 15.0;
 
