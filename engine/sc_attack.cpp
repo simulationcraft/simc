@@ -240,7 +240,7 @@ int attack_t::build_table( double* chances,
   if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
 				     name(), miss, dodge, parry, glance, block, crit );
 
-  double limit = special ? 1.0 : 0.95;
+  double limit = special ? 1.0 : 1.0;
   double total = 0;
   int num_results = 0;
 
