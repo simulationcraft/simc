@@ -17,6 +17,7 @@ struct priest_t : public player_t
   buff_t* buffs_improved_spirit_tap;
   buff_t* buffs_inner_fire;
   buff_t* buffs_inner_fire_armor;
+  buff_t* buffs_inner_focus;
   buff_t* buffs_shadow_form;
   buff_t* buffs_shadow_weaving;
   buff_t* buffs_surge_of_light;
@@ -861,10 +862,10 @@ struct inner_focus_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> aura_gain( "Inner Focus" );
+    p -> buffs_inner_focus -> trigger( 1, 1.0, p -> talents.inner_focus );
     p -> last_foreground_action = free_action;
     free_action -> execute();
-    p -> aura_loss( "Inner Focus" );
+    p -> buffs_inner_focus -> expire();
     update_ready();
   }
 
@@ -2111,6 +2112,7 @@ void priest_t::init_buffs()
   buffs_improved_spirit_tap = new buff_t( this, "improved_spirit_tap", 1,  8.0, 0.0, talents.improved_spirit_tap > 0 ? 1.0 : 0.0 );
   buffs_inner_fire          = new buff_t( this, "inner_fire"                                                                     );
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                               );
+  buffs_inner_focus         = new buff_t( this, "inner_focus"                                                                    );
   buffs_shadow_weaving      = new buff_t( this, "shadow_weaving",      5, 15.0, 0.0, talents.shadow_weaving / 3.0                );
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
@@ -2148,10 +2150,11 @@ void priest_t::init_actions()
     case TREE_SHADOW:
       action_list_str += "/speed_potion";
       action_list_str += "/shadow_fiend";
-      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
+      action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,if=!ticking";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
-      if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
-      action_list_str += "/devouring_plague";
+      if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch,if=!ticking/vampiric_touch,if=dot.vampiric_touch.remains<cast_time";
+      if ( talents.inner_focus ) action_list_str += "/inner_focus,devouring_plague,if=!ticking";
+      action_list_str += "/devouring_plague,if=!ticking";
       action_list_str += "/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.67)";
       action_list_str += "/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.67)";
       action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.67)";
@@ -2162,8 +2165,8 @@ void priest_t::init_actions()
       break;
     case TREE_DISCIPLINE:
       action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
-      if ( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
-      action_list_str += "/shadow_word_pain";
+      if ( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain,if=!ticking";
+      action_list_str += "/shadow_word_pain,if=!ticking";
       if ( talents.power_infusion ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast/";
       if ( talents.penance ) action_list_str += "/penance";
@@ -2175,8 +2178,8 @@ void priest_t::init_actions()
     case TREE_HOLY:
     default:
       action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
-      if ( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain";
-      action_list_str += "/shadow_word_pain";
+      if ( talents.inner_focus ) action_list_str += "/inner_focus,shadow_word_pain,if=!ticking";
+      action_list_str += "/shadow_word_pain,if=!ticking";
       if ( talents.power_infusion ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast";
       if ( race == RACE_TROLL     ) action_list_str += "/berserking";
