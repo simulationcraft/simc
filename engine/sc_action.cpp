@@ -264,6 +264,8 @@ void action_t::player_buff()
   {
     player_penetration = p -> composite_spell_penetration();
   }
+
+  player_multiplier = p -> composite_player_multiplier( school );
   
   if ( p -> type != PLAYER_GUARDIAN )
   {

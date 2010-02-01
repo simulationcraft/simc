@@ -1718,6 +1718,14 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
+// player_t::composite_player_multiplier ================================
+
+double player_t::composite_player_multiplier( int school ) SC_CONST
+{
+  double m = 1.0;
+  return m;
+}
+
 // player_t::strength() ====================================================
 
 double player_t::strength() SC_CONST

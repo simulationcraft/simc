@@ -1638,6 +1638,8 @@ struct player_t
   virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
 
+  virtual double composite_player_multiplier( int school ) SC_CONST;
+
   virtual double strength() SC_CONST;
   virtual double agility() SC_CONST;
   virtual double stamina() SC_CONST;
