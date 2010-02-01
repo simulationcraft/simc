@@ -1414,8 +1414,9 @@ struct judgement_t : public paladin_attack_t
       {
         t -> debuffs.judgements_of_the_just -> trigger();
       }
-      // FIXME! Assume JoW for now.
-      t -> debuffs.judgement_of_wisdom -> trigger();
+      // FIXME! Assume JoW for now unless override set to 0.
+      if ( sim -> overrides.judgement_of_wisdom )
+        t -> debuffs.judgement_of_wisdom -> trigger();
     }
     trigger_judgements_of_the_wise( seal );
     
