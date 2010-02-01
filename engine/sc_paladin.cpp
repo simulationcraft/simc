@@ -1382,17 +1382,24 @@ struct judgement_t : public paladin_attack_t
     case SEAL_OF_VENGEANCE:     return seal_of_vengeance;
     case SEAL_OF_WISDOM:        return seal_of_wisdom;
     }
-    assert( 0 ); 
     return 0;
   }
 
-  virtual double cost() SC_CONST { return active_seal() -> cost(); }
+  virtual double cost() SC_CONST 
+  { 
+    action_t* seal = active_seal(); 
+    if ( ! seal ) return 0.0;
+    return seal -> cost(); 
+  }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
     target_t* t = sim -> target;
     action_t* seal = active_seal();
+
+    if ( ! seal )
+      return;
 
     seal -> execute();
 
@@ -1428,7 +1435,9 @@ struct judgement_t : public paladin_attack_t
 
   virtual bool ready()
   {
-    if( ! active_seal() -> ready() ) return false;
+    action_t* seal = active_seal();
+    if( ! seal ) return false;
+    if( ! seal -> ready() ) return false;
     return paladin_attack_t::ready();
   }
 };
