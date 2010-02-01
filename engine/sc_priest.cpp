@@ -2149,12 +2149,12 @@ void priest_t::init_actions()
       action_list_str += "/speed_potion";
       action_list_str += "/shadow_fiend";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1";
+      if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch";
       action_list_str += "/devouring_plague";
       action_list_str += "/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.67)";
       action_list_str += "/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.67)";
       action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.67)";
-      if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death,moving=1"; // when moving
