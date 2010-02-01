@@ -983,8 +983,13 @@ void player_t::init_buffs()
   buffs.stunned = new buff_t( this, "stunned", -1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap   = new stat_buff_t( this, "blood_fury_ap", STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
-  buffs.blood_fury_sp   = new stat_buff_t( this, "blood_fury_sp", STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
+  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
+  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
+  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
 }
 
 // player_t::init_gains ====================================================
@@ -1661,6 +1666,8 @@ double player_t::composite_spell_crit() SC_CONST
     {
       sc += 0.05;
     }
+
+    if ( buffs.destruction_potion -> check() ) sc += 0.02;
   }
 
   return sc;

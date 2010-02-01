@@ -225,27 +225,10 @@ struct destruction_potion_t : public action_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        name = "Destruction Potion Expiration";
-        p -> aura_gain( "Destruction Potion Buff" );
-        p -> stat_gain( STAT_SPELL_POWER, 120 );
-        p -> spell_crit += 0.02;
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player_t* p = player;
-        p -> aura_loss( "Destruction Potion Buff" );
-        p -> stat_loss( STAT_SPELL_POWER, 120 );
-        p -> spell_crit -= 0.02;
-      }
-    };
+    player -> buffs.destruction_potion -> trigger();
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    new ( sim ) expiration_t( sim, player );
+
     player -> potion_used = 1;
   }
 
@@ -279,25 +262,10 @@ struct speed_potion_t : public action_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        name = "Speed Potion Expiration";
-        p -> aura_gain( "Speed Potion Buff" );
-	      p -> stat_gain( STAT_HASTE_RATING, 500 );
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player_t* p = player;
-        p -> aura_loss( "Speed Potion Buff" );
-	      p -> stat_loss( STAT_HASTE_RATING, 500 );
-      }
-    };
+    player -> buffs.speed_potion -> trigger();
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    new ( sim ) expiration_t( sim, player );
+
     player -> potion_used = 1;
   }
 
@@ -331,27 +299,10 @@ struct wild_magic_potion_t : public action_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        name = "Wild Magic Potion Expiration";
-        p -> aura_gain( "Wild Magic Potion Buff" );
-        p -> stat_gain( STAT_CRIT_RATING, 200 );
-        p -> stat_gain( STAT_SPELL_POWER, 200 );
-        sim -> add_event( this, 15.0 );
-      }
-      virtual void execute()
-      {
-        player_t* p = player;
-        p -> aura_loss( "Wild Magic Potion Buff" );
-        p -> stat_loss( STAT_CRIT_RATING, 200 );
-        p -> stat_loss( STAT_SPELL_POWER, 200 );
-      }
-    };
+    player -> buffs.wild_magic_potion_sp   -> trigger();
+    player -> buffs.wild_magic_potion_crit -> trigger();
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    new ( sim ) expiration_t( sim, player );
     player -> potion_used = 1;
   }
 
@@ -386,25 +337,10 @@ struct indestructible_potion_t : public action_t
 
   virtual void execute()
   {
-    struct expiration_t : public event_t
-    {
-      expiration_t( sim_t* sim, player_t* p ) : event_t( sim, p )
-      {
-        name = "Indestructible Potion Expiration";
-        p -> aura_gain( "Indestructible Potion Buff" );
-	    p -> stat_gain( STAT_ARMOR, 3500 );
-        sim -> add_event( this, 120.0 );
-      }
-      virtual void execute()
-      {
-        player_t* p = player;
-        p -> aura_loss( "Indestructible Potion Buff" );
-	    p -> stat_loss( STAT_ARMOR, 3500 );
-      }
-    };
+    player -> buffs.indestructible_potion -> trigger();
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    new ( sim ) expiration_t( sim, player );
+
     // The duration of the buff is long enough to trigger the first one before entering combat.
     if ( player -> in_combat ) player -> potion_used = 1;
     update_ready();

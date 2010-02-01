@@ -1499,10 +1499,12 @@ struct player_t
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* demonic_pact;
+    buff_t* destruction_potion;
     buff_t* divine_spirit;
     buff_t* focus_magic;
     buff_t* fortitude;
     buff_t* heroic_presence;
+    buff_t* indestructible_potion;
     buff_t* innervate;
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
@@ -1511,9 +1513,12 @@ struct player_t
     buff_t* power_infusion;
     buff_t* hysteria;
     buff_t* replenishment;
+    buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
+    buff_t* wild_magic_potion_sp;
+    buff_t* wild_magic_potion_crit;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
