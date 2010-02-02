@@ -1514,12 +1514,12 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
 
   if( url.count( ".wowarmory." ) )
   {
-    armoryView->setUrl( url );
+    armoryView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_ARMORY );
   }
   else if( url.count( ".wowhead." ) )
   {
-    wowheadView->setUrl( url );
+    wowheadView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_WOWHEAD );
   }
   else

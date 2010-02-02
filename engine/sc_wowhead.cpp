@@ -601,11 +601,6 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
   std::string type_str = util_t::player_type_string( player_type );
 
-  if ( type_str == "death_knight" )
-  {
-    util_t::fprintf( sim -> output_file, "\nsimulationcraft: Warning: The Death Knight module is still in development.\n" );
-  }
-
   std::string rid_str;
   if ( ! js_t::get_value( rid_str, profile_js, "race" ) )
   {

@@ -682,11 +682,6 @@ player_t* armory_t::download_player( sim_t* sim,
   util_t::format_name( name_str );
   armory_t::format( race_str );
 
-  if ( type_str == "death_knight" )
-  {
-    util_t::fprintf( sim -> output_file, "simulationcraft: Warning: The Death Knight module is still in development.\n" );
-  }
-
   int race_type = util_t::parse_race_type( race_str );
 
   player_t* p = player_t::create( sim, type_str, name_str, race_type );
@@ -702,11 +697,8 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server;
 
-  std::string temp_origin_str;
-
-  temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + temp_name;
+  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + temp_name;
   http_t::format( p -> origin_str, temp_origin_str );
-
 
   std::string last_modified;
   if ( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
