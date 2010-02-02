@@ -2261,6 +2261,7 @@ void paladin_t::init_items()
   else if ( libram == "libram_of_renewal" ) ;
   else if ( libram == "libram_of_repentance" ) ;
   else if ( libram == "libram_of_souls_redeemed" ) ;
+  else if ( libram == "libram_of_the_eternal_tower" ) ;
   else if ( libram == "libram_of_the_lightbringer" ) ;
   else if ( libram == "libram_of_the_resolute" ) ;
   else if ( libram == "libram_of_the_sacred_shield" ) ;
