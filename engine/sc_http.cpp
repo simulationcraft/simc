@@ -562,13 +562,11 @@ bool http_t::download( std::string& result,
 
 #ifdef UNIT_TEST
 
-void thread_t::mutex_lock( void* mutex ) {}
-void thread_t::mutex_unlock( void* mutex ) {}
+void thread_t::mutex_lock( void*& mutex ) {}
+void thread_t::mutex_unlock( void*& mutex ) {}
 
 int main( int argc, char** argv )
 {
-  http_t::load_cache();
-
   std::string result;
 
   if ( http_t::get( result, "http://www.wowarmory.com/character-sheet.xml?r=Llane&n=Pagezero" ) )
@@ -582,8 +580,6 @@ int main( int argc, char** argv )
     util_t::printf( "%s\n", result.c_str() );
   }
   else util_t::printf( "Unable to download wowhead data.\n" );
-
-  http_t::save_cache();
 
   return 0;
 }

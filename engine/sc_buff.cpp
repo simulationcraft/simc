@@ -18,7 +18,7 @@ buff_t::buff_t( sim_t*             s,
                 double             cd,
                 double             ch,
                 bool               q,
-		bool               r,
+                bool               r,
                 int                rng_type,
                 int                id ) :
   sim( s ), player( 0 ), name_str( n ), 
@@ -47,7 +47,7 @@ buff_t::buff_t( player_t*          p,
                 double             cd,
                 double             ch,
                 bool               q,
-		bool               r,
+                bool               r,
                 int                rng_type,
                 int                id ) :
   sim( p -> sim ), player( p ), name_str( n ), 
@@ -183,6 +183,18 @@ bool buff_t::remains_lt( double time )
 
   return ( time_remaining < time );
 }
+
+// buff_t::trigger ==========================================================
+
+bool buff_t::trigger( action_t* a,
+                      int       stacks,
+                      double    value )
+{
+  double chance = default_chance;
+  if ( chance < 0 ) chance = a -> ppm_proc_chance( -chance );
+  return trigger( stacks, value, chance );
+}
+
 
 // buff_t::trigger ==========================================================
 
@@ -329,7 +341,7 @@ void buff_t::refresh( int    stacks,
 // buff_t::bump =============================================================
 
 void buff_t::bump( int    stacks,
-		   double value )
+                   double value )
 {
   if ( max_stack == 0 ) return;
 
@@ -359,7 +371,7 @@ void buff_t::bump( int    stacks,
 // buff_t::override =========================================================
 
 void buff_t::override( int    stacks,
-		       double value )
+                       double value )
 {
   assert( max_stack != 0 );
   assert( current_stack == 0 );
@@ -516,7 +528,7 @@ buff_t* buff_t::find( player_t* p,
 // buff_t::create_expression ================================================
 
 action_expr_t* buff_t::create_expression( action_t* action,
-					  const std::string& type )
+                                          const std::string& type )
 {
   if ( type == "remains" )
   {
@@ -586,15 +598,15 @@ action_expr_t* buff_t::create_expression( action_t* action,
       buff_cooldown_react_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_react", TOK_NUM ), buff(b) {}
       virtual int evaluate() 
       { 
-	if ( buff -> check() && ! buff -> may_react() )
-	{
-	  result_num = 0;
-	}
-	else
-	{
-	  result_num = buff -> cooldown_ready - buff -> sim -> current_time;
-	}
-	return TOK_NUM; 
+        if ( buff -> check() && ! buff -> may_react() )
+        {
+          result_num = 0;
+        }
+        else
+        {
+          result_num = buff -> cooldown_ready - buff -> sim -> current_time;
+        }
+        return TOK_NUM; 
       }
     };
     return new buff_cooldown_react_expr_t( action, this );
@@ -610,17 +622,17 @@ action_expr_t* buff_t::create_expression( action_t* action,
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( player_t*          p,
-			  const std::string& n,
-			  int                st,
-			  double             a,
-			  int                ms,
-			  double             d,
-			  double             cd,
-			  double             ch,
-			  bool               q,
-			  bool               r,
-			  int                rng_type,
-			  int                id ) :
+                          const std::string& n,
+                          int                st,
+                          double             a,
+                          int                ms,
+                          double             d,
+                          double             cd,
+                          double             ch,
+                          bool               q,
+                          bool               r,
+                          int                rng_type,
+                          int                id ) :
   buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id ), stat(st), amount(a)
 {
 }
@@ -628,7 +640,7 @@ stat_buff_t::stat_buff_t( player_t*          p,
 // stat_buff_t::bump ========================================================
 
 void stat_buff_t::bump( int    stacks,
-			double value )
+                        double value )
 {
   if ( max_stack == 0 ) return;
   if ( value > 0 ) 
@@ -649,7 +661,7 @@ void stat_buff_t::bump( int    stacks,
 // stat_buff_t::decrement ===================================================
 
 void stat_buff_t::decrement( int    stacks,
-			     double value )
+                             double value )
 {
   if ( max_stack == 0 ) return;
   if ( stacks == 0 || current_stack <= stacks )
@@ -683,15 +695,15 @@ void stat_buff_t::expire()
 // debuff_t::debuff_t =======================================================
 
 debuff_t::debuff_t( sim_t*             s,
-		    const std::string& n,
-		    int                ms,
-		    double             d,
-		    double             cd,
-		    double             ch,
-		    bool               q,
-		    bool               r,
-		    int                rng_type,
-		    int                id ) :
+                    const std::string& n,
+                    int                ms,
+                    double             d,
+                    double             cd,
+                    double             ch,
+                    bool               q,
+                    bool               r,
+                    int                rng_type,
+                    int                id ) :
   buff_t( s, n, ms, d, cd, ch, q, r, rng_type, id )
 {
 }

@@ -842,10 +842,10 @@ void action_t::assess_damage( double amount,
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
-		     player -> name(), name(),
-		     sim -> target -> name(), amount,
-		     util_t::school_type_string( school ),
-		     util_t::result_type_string( result ) );
+                     player -> name(), name(),
+                     sim -> target -> name(), amount,
+                     util_t::school_type_string( school ),
+                     util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
     }
 
@@ -856,11 +856,11 @@ void action_t::assess_damage( double amount,
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-		     player -> name(), name(),
-		     current_tick, num_ticks,
-		     sim -> target -> name(), amount,
-		     util_t::school_type_string( school ),
-		     util_t::result_type_string( result ) );
+                     player -> name(), name(),
+                     current_tick, num_ticks,
+                     sim -> target -> name(), amount,
+                     util_t::school_type_string( school ),
+                     util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
     }
 
@@ -879,7 +879,7 @@ void action_t::assess_damage( double amount,
 // action_t::additional_damage =============================================
 
 void action_t::additional_damage( double amount,
-				  int    dmg_type )
+                                  int    dmg_type )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   sim -> target -> assess_damage( amount, school, dmg_type );
@@ -1151,10 +1151,10 @@ bool action_t::ready()
       double delta = remains - execute_time();
 
       if ( delta > 3.0 )
-	return false;
+        return false;
 
       if ( delta > 0 && sim -> roll( player -> skill ) )
-	return false;
+        return false;
     }
   }
 
@@ -1372,5 +1372,23 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   return player -> create_expression( this, name_str );
+}
+
+// action_t::ppm_proc_chance ================================================
+
+double action_t::ppm_proc_chance( double PPM ) SC_CONST
+{
+  if ( weapon )
+  {
+    return weapon -> proc_chance_on_swing( PPM, time_to_execute );
+  }
+  else
+  {
+    double time = channeled ? time_to_tick : time_to_execute;
+
+    if ( time == 0 ) time = player -> base_gcd;
+
+    return( PPM * time / 60.0 );
+  }
 }
 

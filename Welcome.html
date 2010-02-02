@@ -111,11 +111,27 @@
               the desired fight length is reached.  At the end of every proceeding iteration, the target health is 
               re-evaluated based upon whether the fight ended early or late.  The end result is that after many
               iterations, the average fight length matches the desired value.</li>
+	  <li><b>Vary Length:</b> In order to smooth out the effects of very powerful procs and/or abilities one can
+	      tell the simulator to vary the fight length.  The sim will perform an even distribution of fight lengths
+              from <i>length-variance</i> to <i>length+variance</i>.
+	  <li><b>Adds:</b> While it is possible to specify raid events that spawn adds that are only temporary, this
+              option specifies adds that are present the entire fight.  It is vital to understand that SimC has not
+              yet implemented multi-DoT support.  Only abilities that affect multiple additional targets nearby the
+              main target have been implemented, such as <i>Cleave</i>, <i>Chain Lightning</i>, and <i>Blade Flurry</i>.
+              In addition, only those AoE spells occasionally used in single-target scenarios have been implemented.
 	  <li><b>Fight Style:</b> One of the most common criticisms of theorycrafting tools is that they only model
               <i>tank-n-spank</i> fights in which the player gets to stand perfectly still just hitting keys/buttons.
               SimulationCraft supports a wide array of <i>raid events</i> including movement, stuns, splash damage,
               target (in)vulnerability, etc.  The <i>Helter Skelter</i> option throws in an interesting mix of
               these random events so that the user may see how badly DPS suffers under adverse conditions.</li>
+	  <li><b>Target Race:</b> Some races, classes, and talents provide bonuses that are specific to the target race.
+              One thing to consider is that this controls the race of the boss <i>and</i> any adds that may be present.
+	  <li><b>Player Skill:</b> Whenever a player is considered <i>ready to do something</i> the sim walks through
+	       thier prioritized list of actions and executes the very first one that is available.  If a player is below
+               100% skill then there is a chance that it may skip an action even if it is available and make use
+               of a lower-priority action instead.  DoTs are considered available when the last tick will occur after 
+               <i>current_time+dot_cast_time</i>.  When a player is below 100% skill there is a chance that the DoT is 
+               refreshed too early, clipping the last tick.
 	  <li><b>Threads:</b> The iterative nature of SimulationCraft means that parallel processing is a very
               effective means to increase performance.  Most modern desktops have at least two CPU cores.  Match
               the number of threads to the number of CPU cores for optimal performance.</li>
@@ -125,6 +141,7 @@
               individual RNG calculations.  This will increase convergence by an order of magnitude, allowing
               the use of far fewer iterations.  However, as with formulation, introducing this kind of determinism
               into the RNG can intefere with the scale factor generation of non-linear stats.  Use with caution.</li> 
+	  <li><b>Armory Region:</b> This option controls which region (US, EU, TW, CN) the Amory Import tab uses.
 	  <li><b>Armory Spec:</b> Players may have two talent/glyph combinations, but only one may be active at
               a time.  When a player is downloaded from the Armory, by default the <i>active</i> talent/glyph
               setup is used.  This parameter allows one to access the <i>inactive</i> setup during import.</li>
@@ -154,7 +171,8 @@
         way to do this is via the <i>Search</i> mechanism.  The <i>Armory Spec</i> toggle under <i>Options</i> controls
         whether to use the <i>active</i> or the <i>inactive</i> talent/glyph setup.  There is no need to wait for the
         web page to be fully rendered.  The import process uses the URL at the command-line.  Note that the URL at the
-        command-line can be modified directly in the same manner as a normal web browswer.
+        command-line can be modified directly in the same manner as a normal web browswer.<b>The Armory tab defaults to
+        US region.  See the <i>Options</i> tab to change the region to EU, TW, or CN.</b>
     </dd>
     <dt><a name="importing_from_wowhead" /><h2>Importing from Wowhead</h2></dt>
     <dd>Characters can be downloaded from the Wowhead Profiler in two ways.  The first type of download is simply accessing
@@ -197,7 +215,7 @@
         lava or other such trivial distractions.  While truly modeling individual boss fights is a near-impossible task,
         SimulationCraft does support a wide array of raid events.  <p>Experimenting with these events allows one to determine 
         how succeptible talent/gear combinations are to adverse conditions.  Supported events include movement, stuns, AoE damage,
-        boss (in)vulnerability, boss casting requiring use interrupts.  The intervals and durations are user-specified,
+        adds spawning, boss (in)vulnerability, boss casting requiring use interrupts.  The intervals and durations are user-specified,
         as are the degree of randomness applied to each.  <p>When a player is <i>moving</i> auto-attacks are halted and only ranged 
         instant-casts are allowed.  To further control the actions taken while moving, there is a <i>moving=1</i> conditional
         that can be specified with actions to prevent them from being used in normal circumstances.   While <i>stunned</i>, even
@@ -206,7 +224,9 @@
         used to model players changing their rotations to perform interrupts.  Player interrupt actions are not considered
         <i>ready</i> unless the boss is in mid-cast.  This means that it is safe to give these actions a high-priority
         because they will not be used unless necessary. The <i>damage</i> event is used to model splash damage from AoE,
-        which is helpful for talents such as <i>Incanters Absorbtion</i>.  For more details, see the <i>Examples</i> tab.
+        which is helpful for talents such as <i>Incanters Absorbtion</i>.  Note that multi-DoT and many true AoE abilities
+        are not yet supported, so some modules take more advantage of adds spawning than others. For more details, see 
+        the <i>Examples</i> tab.
        </dd>
     </dl>
   </body>

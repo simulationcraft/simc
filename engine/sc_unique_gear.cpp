@@ -42,7 +42,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
-    if ( buff -> trigger() )
+    if ( buff -> trigger( a ) )
     {
       if ( tick > 0 ) // The buff stacks over time.
       {
@@ -279,11 +279,11 @@ static void register_deathbringers_will( item_t* item )
       if ( buff -> cooldown_ready > sim -> current_time ) return;
 
       // Unholy Death Knights are different than Frost and Blood, so they get a special proc.
-      static int uh_death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
-      static int    death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      static int uh_death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING  };
+      static int    death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING  };
       static int           druid_stats[] = { STAT_STRENGTH, STAT_AGILITY,      STAT_HASTE_RATING };
       static int          hunter_stats[] = { STAT_AGILITY,  STAT_CRIT_RATING,  STAT_ATTACK_POWER };
-      static int         paladin_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      static int         paladin_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING  };
       static int           rogue_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_HASTE_RATING };
       static int          shaman_stats[] = { STAT_AGILITY,  STAT_ATTACK_POWER, STAT_HASTE_RATING };
       static int         warrior_stats[] = { STAT_STRENGTH, STAT_CRIT_RATING,  STAT_HASTE_RATING };
@@ -292,22 +292,13 @@ static void register_deathbringers_will( item_t* item )
 
       switch ( a -> player -> type )
       {
-      case DEATH_KNIGHT:
-        if ( a -> player -> primary_tree() == TREE_UNHOLY )
-        {
-          stats = uh_death_knight_stats;
-        }
-        else
-        {
-          stats = death_knight_stats;
-        }
-        break;
-      case DRUID:        stats =        druid_stats; break;
-      case HUNTER:       stats =       hunter_stats; break;
-      case PALADIN:      stats =      paladin_stats; break;
-      case ROGUE:        stats =        rogue_stats; break;
-      case SHAMAN:       stats =       shaman_stats; break;
-      case WARRIOR:      stats =      warrior_stats; break;
+      case DEATH_KNIGHT: stats = ( a -> player -> primary_tree() == TREE_UNHOLY ) ? uh_death_knight_stats : death_knight_stats; break;
+      case DRUID:        stats =   druid_stats; break;
+      case HUNTER:       stats =  hunter_stats; break;
+      case PALADIN:      stats = paladin_stats; break;
+      case ROGUE:        stats =   rogue_stats; break;
+      case SHAMAN:       stats =  shaman_stats; break;
+      case WARRIOR:      stats = warrior_stats; break;
       }
 
       if ( ! stats ) return;
@@ -554,20 +545,13 @@ static void register_tiny_abom( item_t* item )
       if ( buff -> trigger() && buff -> stack() == 1 )
       {
         assert( first_stack_attack == NULL );
-        if ( ! a -> weapon )
+	if ( a -> weapon && a -> weapon -> slot == SLOT_OFF_HAND )
         {
-          first_stack_attack = a -> player -> main_hand_attack;
-        }
-        else
+	  first_stack_attack = a -> player -> off_hand_attack;
+	}
+	else
         {
-          if ( a -> weapon -> slot == SLOT_MAIN_HAND )
-          {
-            first_stack_attack = a -> player -> main_hand_attack;
-          }
-          else
-          {
-            first_stack_attack = a -> player -> off_hand_attack;
-          }
+	  first_stack_attack = a -> player -> main_hand_attack;
         }
       }
       if ( buff -> stack() == buff -> max_stack )
@@ -643,18 +627,18 @@ void unique_gear_t::init( player_t* p )
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( int                type,
-    int                mask,
-    const std::string& name,
-    player_t*          player,
-    int                stat,
-    int                max_stacks,
-    double             amount,
-    double             proc_chance,
-    double             duration,
-    double             cooldown,
-    double             tick,
-    bool               reverse,
-    int                rng_type )
+						      int                mask,
+						      const std::string& name,
+						      player_t*          player,
+						      int                stat,
+						      int                max_stacks,
+						      double             amount,
+						      double             proc_chance,
+						      double             duration,
+						      double             cooldown,
+						      double             tick,
+						      bool               reverse,
+						      int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type );
 
@@ -796,16 +780,16 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   if      ( name == "abyssal_rune"                        ) e = "OnSpellCast_590SP_25%_10Dur_45Cd";
   else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
-  else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_10%_10Dur_60Cd";
-  else if ( name == "ashen_band_of_unmatched_vengeance"   ) e = "OnAttackHit_480AP_10%_10Dur_60Cd";
+  else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
+  else if ( name == "ashen_band_of_unmatched_vengeance"   ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "banner_of_victory"                   ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
   else if ( name == "black_magic"                         ) e = "OnSpellDirectHit_250Haste_35%_10Dur_35Cd";
   else if ( name == "blood_of_the_old_god"                ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"         ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if ( name == "comets_trail"                        ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
   else if ( name == "corens_chromium_coaster"             ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
-  else if ( name == "dark_matter"						              ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
-  else if ( name == "darkmoon_card_crusade"				        ) e = "OnDamage_8SP_10Stack_10Dur";
+  else if ( name == "dark_matter"                         ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
+  else if ( name == "darkmoon_card_crusade"               ) e = "OnDamage_8SP_10Stack_10Dur";
   else if ( name == "dying_curse"                         ) e = "OnSpellCast_765SP_15%_10Dur_45Cd";
   else if ( name == "elemental_focus_stone"               ) e = "OnSpellCast_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
@@ -833,8 +817,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellCastHit_132SP_5%_10Dur";
 
   // Some Normal/Heroic items have same name
-  else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( id == "50360" ? "OnSpellTickDamage_918SP_30%_20Dur_90Cd"       : "OnSpellTickDamage_1032SP_30%_20Dur_90Cd"      );
-  else if ( name == "whispering_fanged_skull"             ) e = ( id == "50342" ? "OnAttackHit_1110AP_35%_15Dur_45Cd" : "OnAttackHit_1250AP_35%_15Dur_45Cd" );
+  else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( id == "50360" ? "OnSpellTickDamage_918SP_30%_20Dur_90Cd" : "OnSpellTickDamage_1032SP_30%_20Dur_90Cd" );
+  else if ( name == "whispering_fanged_skull"             ) e = ( id == "50342" ? "OnAttackHit_1110AP_35%_15Dur_45Cd"      : "OnAttackHit_1250AP_35%_15Dur_45Cd"       );
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( id == "50353" ? "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" );

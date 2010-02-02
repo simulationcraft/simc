@@ -96,7 +96,7 @@ void spell_t::target_debuff( int dmg_type )
 
   int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
                                         t -> debuffs.improved_scorch -> stack() *  5 ),
-			                                  t -> debuffs.improved_shadow_bolt -> stack() * 5 );
+                                        t -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 
   if ( sim -> debug )
@@ -132,12 +132,12 @@ double spell_t::miss_chance( int delta_level ) SC_CONST
 double spell_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
-	
+        
   if ( ! player -> is_pet() && delta_level > 2 && sim -> spell_crit_suppression )
   {
     chance -= 0.03;
   }
-	
+        
   return chance;
 }
 

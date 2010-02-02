@@ -34,22 +34,8 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
     double base_mana = p -> resource_base[ RESOURCE_MANA ];
 
     double PPM = 15.0;
-    double proc_chance = 0;
 
-    if ( a -> weapon )
-    {
-      proc_chance = a -> weapon -> proc_chance_on_swing( PPM, a -> time_to_execute );
-    }
-    else
-    {
-      double time_to_execute = a -> channeled ? a -> time_to_tick : a -> time_to_execute;
-
-      if ( time_to_execute == 0 ) time_to_execute = p -> base_gcd;
-
-      proc_chance = PPM * time_to_execute / 60.0;
-    }
-
-    if ( ! rng -> roll( proc_chance ) )
+    if ( ! rng -> roll( a -> ppm_proc_chance( PPM ) ) )
       return;
 
     proc -> occur();
@@ -512,10 +498,10 @@ bool player_t::init( sim_t* sim )
       {
         player_t* p = sim -> find_player( player_names[ j ] );
         if ( ! p ) 
-	{
-	  util_t::fprintf( sim -> output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
-	  return false;
-	}
+        {
+          util_t::fprintf( sim -> output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+          return false;
+        }
         p -> party = party_index;
         p -> member = member_index++;
         for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
@@ -2053,17 +2039,17 @@ void player_t::schedule_ready( double delta_time,
         double   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
         double queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
-	double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
+        double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
-	if ( diff > 0 && ( last_foreground_action -> time_to_execute == 0 || sim -> strict_gcd_queue ) )
-	{
-	  lag = gcd_lag;
-	}
-	else
-	{
-	  lag = queue_lag;
-	  action_queued = true;
-	}
+        if ( diff > 0 && ( last_foreground_action -> time_to_execute == 0 || sim -> strict_gcd_queue ) )
+        {
+          lag = gcd_lag;
+        }
+        else
+        {
+          lag = queue_lag;
+          action_queued = true;
+        }
       }
     }
 
@@ -2128,7 +2114,7 @@ action_t* player_t::execute_action()
   for ( action = action_list; action; action = action -> next )
   {
     if ( action -> background ||
-	 action -> sequence )
+         action -> sequence )
       continue;
 
     if ( action -> ready() )
@@ -3433,8 +3419,8 @@ struct use_item_t : public action_t
     }
     else if ( e.stat )
     {
-      if( e.max_stacks  <= 0 ) e.max_stacks  = 1;
-      if( e.proc_chance <= 0 ) e.proc_chance = 1;
+      if( e.max_stacks  == 0 ) e.max_stacks  = 1;
+      if( e.proc_chance == 0 ) e.proc_chance = 1;
       
       buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
     }
@@ -3741,7 +3727,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 // player_t::create_expression ==============================================
 
 action_expr_t* player_t::create_expression( action_t* a,
-					    const std::string& name_str )
+                                            const std::string& name_str )
 {
   int resource_type = util_t::parse_resource_type( name_str );
   if ( resource_type != RESOURCE_NONE )
@@ -3807,13 +3793,13 @@ action_expr_t* player_t::create_expression( action_t* a,
       cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
       if ( splits[ 2 ] == "remains" )
       {
-	struct cooldown_remains_expr_t : public action_expr_t
-	{
-	  cooldown_t* cooldown;
-	  cooldown_remains_expr_t( action_t* a, cooldown_t* c ) : action_expr_t( a, "cooldown_remains", TOK_NUM ), cooldown(c) {}
-	  virtual int evaluate() { result_num = cooldown -> remains(); return TOK_NUM; }
-	};
-	return new cooldown_remains_expr_t( a, cooldown );
+        struct cooldown_remains_expr_t : public action_expr_t
+        {
+          cooldown_t* cooldown;
+          cooldown_remains_expr_t( action_t* a, cooldown_t* c ) : action_expr_t( a, "cooldown_remains", TOK_NUM ), cooldown(c) {}
+          virtual int evaluate() { result_num = cooldown -> remains(); return TOK_NUM; }
+        };
+        return new cooldown_remains_expr_t( a, cooldown );
       }
     }
     else if ( splits[ 0 ] == "dot" )
@@ -3821,13 +3807,13 @@ action_expr_t* player_t::create_expression( action_t* a,
       dot_t* dot = get_dot( splits[ 1 ] );
       if ( splits[ 2 ] == "remains" )
       {
-	struct dot_remains_expr_t : public action_expr_t
-	{
-	  dot_t* dot;
-	  dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot(d) {}
-	  virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
-	};
-	return new dot_remains_expr_t( a, dot );
+        struct dot_remains_expr_t : public action_expr_t
+        {
+          dot_t* dot;
+          dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot(d) {}
+          virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
+        };
+        return new dot_remains_expr_t( a, dot );
       }
     }
   }

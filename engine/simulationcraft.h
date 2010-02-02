@@ -782,11 +782,12 @@ struct buff_t
   double remains();
   bool   remains_gt( double time );
   bool   remains_lt( double time );
+  bool   trigger  ( action_t*, int stacks=1, double value=-1.0 );
   bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
   virtual void   start    ( int stacks=1, double value=-1.0 );
-  void   refresh  ( int stacks=0, double value=-1.0 );
+          void   refresh  ( int stacks=0, double value=-1.0 );
   virtual void   bump     ( int stacks=1, double value=-1.0 );
   virtual void   override ( int stacks=1, double value=-1.0 );
   virtual bool   may_react( int stacks=1 );
@@ -2113,6 +2114,8 @@ struct action_t
   virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier; }
 
   virtual action_expr_t* create_expression( const std::string& name );
+
+  virtual double ppm_proc_chance( double PPM ) SC_CONST;
 };
 
 // Attack ====================================================================
