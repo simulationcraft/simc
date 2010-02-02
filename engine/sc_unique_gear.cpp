@@ -473,7 +473,8 @@ static void register_shadowmourne( item_t* item )
 
   // http://ptr.wowhead.com/?spell=71903
   // FIX ME! Duration? Colldown? Chance?
-  buff_t* buff = new stat_buff_t( p, "shadowmourne", STAT_STRENGTH, 40, 10, 60.0, 0.20 );
+  buff_t* buff_stacks = new stat_buff_t( p, "shadowmourne_stacks", STAT_STRENGTH,  30, 10, 60.0, 0.20 );
+  buff_t* buff_final  = new stat_buff_t( p, "shadowmourne_final",  STAT_STRENGTH, 270, 10, 10.0, 1 );
 
   struct shadowmourne_spell_t : public spell_t
   {
@@ -493,26 +494,29 @@ static void register_shadowmourne( item_t* item )
 
   struct shadowmourne_trigger_t : public action_callback_t
   {
-    buff_t* buff;
+    buff_t* buff_stacks;
+    buff_t* buff_final;
     spell_t* spell;
     int slot;
 
-    shadowmourne_trigger_t( player_t* p, buff_t* b, spell_t* sp, int s ) : action_callback_t( p -> sim, p ), buff( b ), spell( sp ), slot( s ) {}
+    shadowmourne_trigger_t( player_t* p, buff_t* b1, buff_t* b2, spell_t* sp, int s ) : 
+      action_callback_t( p -> sim, p ), buff_stacks( b1 ), buff_final( b2 ), spell( sp ), slot( s ) {}
     virtual void trigger( action_t* a )
     {
       // FIXME! Can specials trigger the proc?
       if ( ! a -> weapon ) return;
       if ( a -> weapon -> slot != slot ) return;
-      buff -> trigger();
-      if ( buff -> stack() == buff -> max_stack )
+      buff_stacks -> trigger();
+      if ( buff_stacks -> stack() == buff_stacks -> max_stack )
       {
-        buff -> expire();
+        buff_stacks -> expire();
+        buff_final  -> trigger();
         spell -> execute();
       }
     }
   };
 
-  p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff, new shadowmourne_spell_t( p ), item -> slot ) );
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff_stacks, buff_final, new shadowmourne_spell_t( p ), item -> slot ) );
 }
 
 // register_tiny_abom ====================================================
