@@ -2152,7 +2152,7 @@ void druid_spell_t::player_buff()
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
 
-  player_multiplier *= 1.0 + p -> talents.earth_and_moon * ( sim -> P332 ? 0.02 : 0.01 );
+  player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.02;
 }
 
 // druid_spell_t::target_debuff ============================================
