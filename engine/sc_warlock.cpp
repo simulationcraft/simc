@@ -3867,7 +3867,8 @@ void warlock_t::init_actions()
       if ( talents.conflagrate ) action_list_str += "/conflagrate";
       action_list_str += "/immolate";
       action_list_str += "/chaos_bolt";
-      action_list_str += "/curse_of_doom,time_to_die>=80";
+      action_list_str += "/curse_of_doom,time_to_die>=90";
+      action_list_str += "/curse_of_agony,time_to_die>=28,moving=1";
     }
     else if ( talents.metamorphosis ) // 00_56_15
     {
@@ -3906,8 +3907,6 @@ void warlock_t::init_actions()
 
     // instants to use when moving if possible
     action_list_str += "/" + tap_str + ",mana_percentage<=20,buff_refresh=1,moving=1";
-    action_list_str += "/corruption,time_to_die>=20,moving=1";
-    action_list_str += "/curse_of_agony,time_to_die>=30,moving=1";
     if ( talents.shadow_burn ) action_list_str += "/shadow_burn,moving=1";
     if ( talents.shadowfury  ) action_list_str += "/shadowfury,moving=1";
 
