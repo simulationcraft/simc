@@ -3816,6 +3816,7 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+    std::string tap_str = ( talents.dark_pact ) ? "dark_pact" : "life_tap";
     action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
     action_list_str += ( talents.master_conjuror || talents.haunt ) ? "/spell_stone" : "/fire_stone";
     action_list_str += "/fel_armor/summon_pet";
@@ -3834,7 +3835,7 @@ void warlock_t::init_actions()
     action_list_str += "/snapshot_stats";
     if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
     {
-      action_list_str+="/life_tap,buff_refresh=1";
+      action_list_str+="/" + tap_str + ",buff_refresh=1";
     }
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3856,10 +3857,9 @@ void warlock_t::init_actions()
     action_list_str += "/wild_magic_potion,bloodlust=1";
     if ( talents.haunt || talents.unstable_affliction ) // 41+_xx_xx
     {
-      if ( talents.haunt ) action_list_str += "/haunt,debuff=1";
+      if ( talents.haunt ) action_list_str += "/haunt";
       action_list_str += "/corruption/curse_of_agony";
       if ( talents.unstable_affliction ) action_list_str += "/unstable_affliction";
-      if ( talents.haunt ) action_list_str += "/haunt";
       if ( talents.soul_siphon ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
     }
     else if ( talents.chaos_bolt ) // 00_13_58
@@ -3905,13 +3905,13 @@ void warlock_t::init_actions()
     action_list_str += talents.emberstorm ? "/incinerate" : "/shadow_bolt";
 
     // instants to use when moving if possible
-    action_list_str += "/life_tap,mana_percentage<=20,buff_refresh=1,moving=1";
+    action_list_str += "/" + tap_str + ",mana_percentage<=20,buff_refresh=1,moving=1";
     action_list_str += "/corruption,time_to_die>=20,moving=1";
     action_list_str += "/curse_of_agony,time_to_die>=30,moving=1";
     if ( talents.shadow_burn ) action_list_str += "/shadow_burn,moving=1";
     if ( talents.shadowfury  ) action_list_str += "/shadowfury,moving=1";
 
-    action_list_str += "/life_tap"; // to use when no mana or nothing else is possible
+    action_list_str += "/" + tap_str; // to use when no mana or nothing else is possible
 
     action_list_default = 1;
   }
