@@ -54,6 +54,7 @@ action_t::action_t( int         ty,
     min_health_percentage( 0 ), max_health_percentage( 0 ),
     P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
     snapshot_haste( -1.0 ),
+    recast( false ),
     if_expr( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
@@ -1134,7 +1135,12 @@ bool action_t::ready()
   if ( ( scale_ticks_with_haste() > 0 ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
   {
     check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
-  }  
+  }
+
+  if ( recast )
+  {
+    check_duration = false;
+  }
 
   if ( check_duration )
   {

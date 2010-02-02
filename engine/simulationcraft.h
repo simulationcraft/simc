@@ -2036,6 +2036,7 @@ struct action_t
   double min_health_percentage, max_health_percentage;
   int P400, moving, vulnerable, invulnerable, wait_on_ready;
   double snapshot_haste;
+  bool recast;
   std::string if_expr_str;
   action_expr_t* if_expr;
   std::string sync_str;

@@ -1904,13 +1904,16 @@ struct shadowfury_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
+  int tier10_4pc;
+  bool tier10_4pc_effect;
   corruption_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "corruption", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+      warlock_spell_t( "corruption", player, SCHOOL_SHADOW, TREE_AFFLICTION ), tier10_4pc( 0 ), tier10_4pc_effect( false )
   {
     warlock_t* p = player -> cast_warlock();
 
     option_t options[] =
     {
+      { "tier10_4pc",    OPT_BOOL,  &tier10_4pc   },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1954,7 +1957,11 @@ struct corruption_t : public warlock_spell_t
   {
     base_td = base_td_init;
     warlock_spell_t::execute();
-    if ( result_is_hit() ) num_ticks = 6;
+    if ( result_is_hit() ) {
+      warlock_t* p = player -> cast_warlock();
+      tier10_4pc_effect = p -> buffs_tier10_4pc_caster -> up();
+      num_ticks = 6;
+    }
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
@@ -1977,6 +1984,22 @@ struct corruption_t : public warlock_spell_t
     p -> buffs_tier7_2pc_caster -> trigger();
     if ( p -> set_bonus.tier6_2pc_caster() ) p -> resource_gain( RESOURCE_HEALTH, 70 );
     trigger_molten_core( this );
+  }
+
+  virtual bool ready()
+  {
+    if ( tier10_4pc )
+    {
+      warlock_t* p = player -> cast_warlock();
+      if ( ! tier10_4pc_effect && p -> buffs_tier10_4pc_caster -> up() )
+      {
+        recast = true;
+        bool ret = warlock_spell_t::ready();
+        recast = false;
+        return ret;
+      }
+    }
+    return warlock_spell_t::ready();
   }
 };
 

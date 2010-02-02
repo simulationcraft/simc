@@ -597,7 +597,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
       util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalized_to ), sim -> report_precision, p -> scaling.get_stat( p -> normalized_to ) );
     }
 
-    util_t::fprintf( file, "  Lag=%.*f", sim -> report_precision, p -> scaling_lag );
+    if ( sim -> scaling -> scale_lag ) util_t::fprintf( file, "  Lag=%.*f", sim -> report_precision, p -> scaling_lag );
 
     util_t::fprintf( file, "\n" );
   }
