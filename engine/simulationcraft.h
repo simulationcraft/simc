@@ -86,8 +86,8 @@ struct patch_t
   patch_t() { mask = encode( 3, 3, 0 ); }
 };
 
-#define SC_MAJOR_VERSION "330"
-#define SC_MINOR_VERSION "7"
+#define SC_MAJOR_VERSION "332"
+#define SC_MINOR_VERSION "0"
 
 // Forward Declarations ======================================================
 

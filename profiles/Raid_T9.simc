@@ -1,8 +1,7 @@
 #!simc max_time=300
 
 Globals_T9.simc
-patch=3.3.0
-iterations=1000
+
 Death_Knight_T9_51_00_20.simc
 Death_Knight_T9_03_51_17.simc
 Death_Knight_T9_00_53_18.simc
