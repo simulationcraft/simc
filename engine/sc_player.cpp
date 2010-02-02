@@ -3816,6 +3816,31 @@ action_expr_t* player_t::create_expression( action_t* a,
         return new dot_remains_expr_t( a, dot );
       }
     }
+    else if ( splits[ 0 ] == "swing" )
+    {
+      std::string& s = splits[ 1 ];
+      int hand = SLOT_NONE;
+      if ( s == "mh" || s == "mainhand" || s == "main_hand" ) hand = SLOT_MAIN_HAND;
+      if ( s == "oh" || s ==  "offhand" || s ==  "off_hand" ) hand = SLOT_OFF_HAND;
+      if ( hand == SLOT_NONE ) return 0;
+      if ( splits[ 2 ] == "remains" )
+      {
+        struct swing_remains_expr_t : public action_expr_t
+        {
+	  int slot;
+          swing_remains_expr_t( action_t* a, int s ) : action_expr_t( a, "swing_remains", TOK_NUM ), slot(s) {}
+          virtual int evaluate() 
+	  { 
+	    result_num = 9999;
+	    player_t* p = action -> player;
+	    attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
+	    if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
+	    return TOK_NUM; 
+	  }
+        };
+        return new swing_remains_expr_t( a, hand );
+      }
+    }
   }
 
   return sim -> create_expression( a, name_str );
