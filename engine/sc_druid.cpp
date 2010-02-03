@@ -593,6 +593,7 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
     t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_ARCANE, TREE_BALANCE )
     {
       may_miss        = false;
+      may_resist      = false;
       background      = true;
       proc            = true;
       trigger_gcd     = 0;
