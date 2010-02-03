@@ -212,6 +212,7 @@ struct priest_t : public player_t
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_player_multiplier( int school ) SC_CONST;
 
   virtual void      regen( double periodicity );
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -397,7 +398,6 @@ void priest_spell_t::player_buff()
 
   if ( school == SCHOOL_SHADOW )
   {
-    player_multiplier *= 1.0 + p -> buffs_shadow_form -> check() * p -> constants.shadow_form_value;
     player_multiplier *= 1.0 + p -> buffs_shadow_weaving -> stack() * p -> constants.shadow_weaving_value;
   }
 
@@ -1922,6 +1922,20 @@ double priest_t::composite_spell_power( int school ) SC_CONST
   }
 
   return floor( sp );
+}
+
+// priest_t::composite_player_multiplier =========================================
+
+double priest_t::composite_player_multiplier( int school ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( school == SCHOOL_SHADOW )
+  {
+    m *= 1.0 + buffs_shadow_form -> check() * constants.shadow_form_value;
+  }
+
+  return m;
 }
 
 // priest_t::create_action ===================================================
