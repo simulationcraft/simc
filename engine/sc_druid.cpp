@@ -12,7 +12,7 @@
 struct druid_t : public player_t
 {
   // Active
-  action_t* active_starfire_dot;
+  action_t* active_t10_4pc_caster_dot;
   action_t* active_wrath_dot;
 
   std::vector<action_t*> active_mauls;
@@ -208,7 +208,7 @@ struct druid_t : public player_t
 
   druid_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, DRUID, name, race_type )
   {
-    active_starfire_dot = 0;
+    active_t10_4pc_caster_dot = 0;
     active_wrath_dot    = 0;
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
@@ -590,7 +590,7 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   
   struct t10_4pc_caster_dot_t : public druid_spell_t
   {
-    t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_ARCANE, TREE_BALANCE )
+    t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
     {
       may_miss        = false;
       may_resist      = false;
@@ -607,34 +607,20 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
     void target_debuff( int dmg_type ) {}
   };
 
-  if ( ! p -> active_starfire_dot ) p -> active_starfire_dot = new t10_4pc_caster_dot_t( p );
-  if ( ! p -> active_wrath_dot )
-  { 
-    p -> active_wrath_dot = new t10_4pc_caster_dot_t( p );
-    p -> active_wrath_dot -> school = SCHOOL_NATURE;
-  }
-
-  action_t* active_dot = 0;
-  if ( school == SCHOOL_ARCANE )
-    active_dot = p -> active_starfire_dot;
-  else if ( school == SCHOOL_NATURE )
-    active_dot = p -> active_wrath_dot;
-  else
-    return;
-
+  if ( ! p -> active_t10_4pc_caster_dot ) p -> active_t10_4pc_caster_dot = new t10_4pc_caster_dot_t( p );
 
   double dmg = direct_dmg * 0.07;
-  if ( active_dot -> ticking )
+  if (  p -> active_t10_4pc_caster_dot -> ticking )
   {
-    int num_ticks = active_dot -> num_ticks;
-    int remaining_ticks = num_ticks - active_dot -> current_tick;
+    int num_ticks =  p -> active_t10_4pc_caster_dot -> num_ticks;
+    int remaining_ticks = num_ticks -  p -> active_t10_4pc_caster_dot -> current_tick;
 
-    dmg += active_dot -> base_td * remaining_ticks;
+    dmg +=  p -> active_t10_4pc_caster_dot -> base_td * remaining_ticks;
 
-    active_dot -> cancel();
+    p -> active_t10_4pc_caster_dot -> cancel();
   }
-  active_dot -> base_td = dmg / active_dot -> num_ticks;
-  active_dot -> schedule_tick();
+   p -> active_t10_4pc_caster_dot -> base_td = dmg /  p -> active_t10_4pc_caster_dot -> num_ticks;
+   p -> active_t10_4pc_caster_dot -> schedule_tick();
 }
 
 // trigger_primal_fury =====================================================
