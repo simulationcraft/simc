@@ -266,49 +266,6 @@ void action_t::player_buff()
   }
 
   player_multiplier = p -> composite_player_multiplier( school );
-  
-  if ( p -> type != PLAYER_GUARDIAN )
-  {
-    if ( school == SCHOOL_PHYSICAL )
-    {
-      if ( p -> buffs.hysteria -> up() )
-      {
-        player_multiplier *= 1.2;
-      }
-    }
-    if ( p -> buffs.tricks_of_the_trade -> up() )
-    {
-      player_multiplier *= 1.15;
-    }
-
-    double ferocious_inspiration_value = 0.0;
-    double sanctified_retribution_value = 0.0;
-    double arcane_empowerment_value = 0.0;
-    double max_value = 0.0;
-
-    if ( sim -> auras.ferocious_inspiration -> up() )
-    {
-      ferocious_inspiration_value = sim -> auras.ferocious_inspiration -> value();
-    }
-
-    if ( sim -> auras.sanctified_retribution -> up() )
-    {
-      sanctified_retribution_value = 3;
-    }
-
-    if ( sim -> auras.arcane_empowerment -> up() )
-    {
-      arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
-    }
-
-    max_value = sanctified_retribution_value;
-    if ( ferocious_inspiration_value > max_value )
-      max_value = ferocious_inspiration_value;
-    if ( arcane_empowerment_value > max_value )
-      max_value = arcane_empowerment_value;
-
-    player_multiplier *= 1.00 + 0.01 * max_value;
-  }
 
   if ( base_attack_power_multiplier > 0 )
   {
@@ -320,11 +277,6 @@ void action_t::player_buff()
   {
     player_spell_power            = p -> composite_spell_power( school );
     player_spell_power_multiplier = p -> composite_spell_power_multiplier();
-  }
-
-  if ( ( p -> race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
-  {
-    player_multiplier *= 1.05;
   }
 
   if ( sim -> debug )
