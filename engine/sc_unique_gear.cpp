@@ -442,7 +442,7 @@ static void register_nibelung( item_t* item )
              a -> pseudo_pet )
         return;
 
-      if ( rng -> roll( 0.01 ) )
+      if ( rng -> roll( 0.02 ) )
       {
         if ( sim -> log ) log_t::output( sim, "%s summons a Valkyr from the Halls of Valhalla", a -> player -> name() );
         new ( sim ) nibelung_event_t( sim, a -> player, spell );
