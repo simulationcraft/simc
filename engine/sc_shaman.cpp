@@ -3342,7 +3342,11 @@ void shaman_t::init_actions()
       {
           action_list_str += "/speed_potion";
       }
-      if ( talents.elemental_mastery ) action_list_str += "/elemental_mastery";
+      if ( talents.elemental_mastery )
+      {
+          action_list_str += "/elemental_mastery,time_to_die<=17";
+          action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
+      }
       action_list_str += "/flame_shock,if=!ticking";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0";
       action_list_str += "/fire_nova,if=target.adds>2";
