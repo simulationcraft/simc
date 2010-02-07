@@ -2300,6 +2300,7 @@ struct death_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_sigil_virulence -> trigger();
+      p -> buffs_sigil_hanged_man -> trigger();
 
       if ( p -> talents.dirge )
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
@@ -2959,6 +2960,7 @@ struct obliterate_t : public death_knight_attack_t
       }
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
       p -> buffs_sigil_virulence -> trigger();
+      p -> buffs_sigil_hanged_man -> trigger();
 
       if ( p -> buffs_rime -> trigger() )
       {
@@ -3337,6 +3339,7 @@ struct scourge_strike_t : public death_knight_attack_t
       scourge_strike_shadow -> execute();
 
       p -> buffs_sigil_virulence -> trigger();
+      p -> buffs_sigil_hanged_man -> trigger();
       if ( p -> talents.dirge )
       {
         p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.dirge, p -> gains_dirge );
