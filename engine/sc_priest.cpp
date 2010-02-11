@@ -1059,7 +1059,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( p -> set_bonus.tier10_4pc_caster() )
     {
-      base_tick_time -= 0.5 / num_ticks;
+      base_tick_time -= 0.51 / num_ticks;
     }
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
