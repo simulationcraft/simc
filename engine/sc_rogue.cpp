@@ -1498,13 +1498,15 @@ struct expose_armor_t : public rogue_attack_t
 
   virtual void execute()
   {
+    double duration;
     rogue_t* p = player -> cast_rogue();
+
+    duration = 6 * p -> buffs_combo_points -> current_stack;
     rogue_attack_t::execute();
     if ( result_is_hit() )
     {
       target_t* t = sim -> target;
 
-      double duration = 6 * p -> buffs_combo_points -> current_stack;
       if ( p -> glyphs.expose_armor ) duration += 10;
 
       if( t -> debuffs.expose_armor -> remains_lt( duration ) )
