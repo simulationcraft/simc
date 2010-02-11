@@ -2016,6 +2016,7 @@ void priest_t::init_glyphs()
     else if ( n == "fortitude"         ) ;
     else if ( n == "guardian_spirit"   ) ;
     else if ( n == "levitate"          ) ;
+    else if ( n == "mind_sear"         ) ;
     else if ( n == "pain_suppression"  ) ;
     else if ( n == "power_word_shield" ) ;
     else if ( n == "prayer_of_healing" ) ;
