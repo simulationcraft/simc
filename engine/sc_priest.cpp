@@ -2490,22 +2490,22 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
     }
     if ( use_mind_blast != 1 ) 
     { 
-      temp_str = use_mind_blast;
+      temp_str = util_t::to_string( use_mind_blast );
       profile_str += "use_mind_blast=" + temp_str + "\n"; 
     }
     if ( hasted_devouring_plague != -1 ) 
     { 
-      temp_str = hasted_devouring_plague;
+      temp_str = util_t::to_string( hasted_devouring_plague );
       profile_str += "hasted_devouring_plague=" + temp_str + "\n"; 
     }
     if ( hasted_shadow_word_pain != -1 ) 
     { 
-      temp_str = hasted_shadow_word_pain;
+      temp_str = util_t::to_string( hasted_shadow_word_pain );
       profile_str += "hasted_shadow_word_pain=" + temp_str + "\n"; 
     }
     if ( hasted_vampiric_touch != -1 ) 
     { 
-      temp_str = hasted_vampiric_touch;
+      temp_str = util_t::to_string( hasted_vampiric_touch );
       profile_str += "hasted_vampiric_touch=" + temp_str + "\n"; 
     }
   }
