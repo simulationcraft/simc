@@ -2120,6 +2120,9 @@ struct bone_shield_t : public death_knight_spell_t
 
     id = 49222;
   }
+
+  virtual double gcd() SC_CONST { return player -> in_combat ? death_knight_spell_t::gcd() : 0; }
+
   virtual double cost() SC_CONST
   {
     if ( player -> in_combat )
@@ -2128,14 +2131,24 @@ struct bone_shield_t : public death_knight_spell_t
     return 0;
   }
 
+  virtual bool ready()
+  {
+    // Bone shield is "ready" if it hasn't yet been cast or has fallen
+    // off.
+    death_knight_t* p = player -> cast_death_knight();
+    return p -> buffs_bone_shield -> value() == 0;
+  }
+
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> in_combat )
+    if ( ! p -> in_combat )
     {
-      // Pre-casting it before the fight, perfect timing would be so that the
-      // used rune is ready when it is needed in the rotation.
-      // Assume we casted Bone Shield somewhere between 8-16s before we start fighting
+      // Pre-casting it before the fight, perfect timing would be so
+      // that the used rune is ready when it is needed in the
+      // rotation.  Assume we casted Bone Shield somewhere between
+      // 8-16s before we start fighting.  The cost in this case is
+      // zero and we don't cause any cooldown.
       double pre_cast = p -> sim -> range( 8.0, 16.0 );
 
       cooldown -> duration -= pre_cast;
@@ -3199,6 +3212,7 @@ struct raise_dead_t : public death_knight_spell_t
     parse_options( options, options_str );
 
     cooldown -> duration   = 180.0;
+    harmful = false;
     trigger_gcd = 0;
 
     id = 46584;
@@ -3744,7 +3758,7 @@ void death_knight_t::init_actions()
       break;
     case TREE_UNHOLY:
       if ( talents.bone_shield )
-        action_list_str += "/bone_shield,if=!in_combat";
+        action_list_str += "/bone_shield";
       action_list_str += "/raise_dead";
       action_list_str += "/auto_attack";
       if ( glyphs.disease )

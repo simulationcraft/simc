@@ -10,7 +10,7 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/bone_shield,if=!in_combat
+actions+=/bone_shield
 actions+=/raise_dead
 actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
