@@ -3812,7 +3812,7 @@ void druid_t::init_actions()
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
-      action_list_str += "/typhoon,moving=1";
+      if ( talents.typhoon ) action_list_str += "/typhoon,moving=1";
       action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature ) action_list_str+="/treants";
