@@ -3793,7 +3793,8 @@ void death_knight_t::init_actions()
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
       }
       action_list_str += "/death_coil";
-      action_list_str += "/horn_of_winter";
+      action_list_str += "/empower_rune_weapon";
+      action_list_str += "/horn_of_winter,rebuff_early=1,runic<=90";
       break;
     }
     action_list_default = 1;
