@@ -977,7 +977,12 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
       // Show the consumed type of the rune
       // Not the type it is after consumption
       int consumed_type = p -> _runes.slot[i].type;
-      p -> _runes.slot[i].consume( t, 10.0, convert_runes );
+      double cooldown = 10.0;
+      if ( p -> active_presence == PRESENCE_UNHOLY )
+      {
+	cooldown -= 0.5 * p -> talents.improved_unholy_presence;
+      }
+      p -> _runes.slot[i].consume( t, cooldown, convert_runes );
 
       if ( p -> sim -> log )
         log_t::output( p -> sim, "%s consumes rune #%d, type %d, %.2f", p -> name(), i, consumed_type, p -> _runes.slot[i].cooldown_ready );
