@@ -1404,7 +1404,12 @@ void death_knight_attack_t::player_buff()
     // +1/2/3% melee hit, ONLY one-handers
     // Does not apply to spells!
     if ( weapon -> slot == SLOT_OFF_HAND )
-      player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
+    {
+      if ( sim -> P335 )
+        player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.25/3.0;
+      else
+        player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
+    }
 
     if ( weapon -> group() == WEAPON_1H )
     {
@@ -3637,10 +3642,14 @@ void death_knight_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_HEALTH );
   base_attack_crit                 = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  
+  double str_mult = talents.veteran_of_the_third_war * 0.02 +
+                    talents.abominations_might * 0.01 +
+                    talents.ravenous_dead * 0.01;
+  if ( sim -> P335 )
+    str_mult += talents.endless_winter * 0.02;
 
-  attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + ( talents.veteran_of_the_third_war * 0.02 +
-      talents.abominations_might * 0.01 +
-      talents.ravenous_dead * 0.01 );
+  attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
 
   // For some reason, my buffless, naked Death Knight Human with
@@ -3884,14 +3893,21 @@ void death_knight_t::init_enchant()
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      buff -> trigger( 1, 0.01, 0.30 );
+      if ( a -> sim -> P335 )
+        buff -> trigger( 1, 0.02, 1.0 );
+      else
+        buff -> trigger( 1, 0.01, 0.30 );
 
       razorice_damage_proc -> base_dd_min = w -> min_dmg;
       razorice_damage_proc -> base_dd_max = w -> max_dmg;
       razorice_damage_proc -> execute();
     }
   };
-  buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0 );
+  if ( sim -> P335 )
+    buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
+  else
+    buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0 );
+    
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
@@ -4146,7 +4162,12 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
   {
     m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
     if ( buffs_unbreakable_armor -> check() )
-      m *= 1.10;
+    {
+      if ( sim -> P335 )
+        m *= 1.10;
+      else
+        m *= 1.20;
+    }
   }
 
   return m;
