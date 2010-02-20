@@ -3305,7 +3305,13 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_attack_t::target_debuff( dmg_type );
 
       // FIX ME!! How does 4T8 play with SS in 3.3
-      target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+      if ( sim -> P335 )
+      {
+        target_multiplier *= p -> diseases() * 0.12 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+      }
+      else {
+        target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+      }
     }
   };
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
@@ -3334,7 +3340,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     scourge_strike_shadow = new scourge_strike_shadow_t( player );
 
-    weapon_multiplier        = 0.50;
+    weapon_multiplier        = sim -> P335 ? 0.70 : 0.50;
     cost_frost = 1;
     cost_unholy = 1;
 
