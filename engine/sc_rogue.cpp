@@ -1646,7 +1646,10 @@ struct ghostly_strike_t : public rogue_attack_t
     adds_combo_points           = true;
     cooldown -> duration        = p -> glyphs.ghostly_strike ? 30 : 20;
     base_cost                   = 40;
-    weapon_multiplier          *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
+    if ( p -> sim -> P335 && p -> off_hand_weapon.type == WEAPON_DAGGER )
+      weapon_multiplier        *= 1.80 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
+    else
+      weapon_multiplier        *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + p -> talents.find_weakness * 0.02;
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -1685,7 +1688,11 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
-    weapon_multiplier          *= 1.10 + p -> talents.sinister_calling     * 0.02;
+    if ( p -> sim -> P335 && p -> off_hand_weapon.type == WEAPON_DAGGER )
+      weapon_multiplier        *= 1.60 + p -> talents.sinister_calling     * 0.02;
+    else
+      weapon_multiplier        *= 1.10 + p -> talents.sinister_calling     * 0.02;
+
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
                                           p -> talents.surprise_attacks    * 0.10 +
                                           p -> set_bonus.tier6_4pc_melee() * 0.06 );
