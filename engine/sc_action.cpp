@@ -52,7 +52,7 @@ action_t::action_t( int         ty,
     min_current_time( 0 ), max_current_time( 0 ),
     min_time_to_die( 0 ), max_time_to_die( 0 ),
     min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    P335( -1 ), P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
     snapshot_haste( -1.0 ),
     recast( false ),
     if_expr( NULL ),
@@ -107,6 +107,7 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
+    { "P335",                   OPT_BOOL,   &P335                  },
     { "P400",                   OPT_BOOL,   &P400                  },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
@@ -1161,6 +1162,10 @@ bool action_t::ready()
 
   if ( player -> buffs.moving -> check() )
     if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
+      return false;
+
+  if ( P335 != -1 )
+    if ( P335 != sim -> P335 )
       return false;
 
   if ( P400 != -1 )
