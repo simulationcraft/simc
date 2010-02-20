@@ -2041,6 +2041,7 @@ struct rupture_t : public rogue_attack_t
     if ( p -> talents.surprise_attacks ) may_dodge = false;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) tick_may_crit = true;
+    if ( p -> sim -> P335 ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
