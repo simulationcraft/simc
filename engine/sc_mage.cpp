@@ -1781,8 +1781,13 @@ struct fire_ball_t : public mage_spell_t
 
     if ( p -> glyphs.fire_ball )
     {
-      base_crit += 0.05;
-      num_ticks = 0;
+      if ( p -> sim -> P333 )
+        base_execute_time -= 0.15;
+      else
+      {
+        base_crit += 0.05;
+        num_ticks = 0;
+      }
     }
 
     may_torment  = true;
