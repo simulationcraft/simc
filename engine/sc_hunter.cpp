@@ -206,6 +206,7 @@ struct hunter_t : public player_t
   virtual void      init_scaling();
   virtual void      init_unique_gear();
   virtual void      init_actions();
+  virtual void      combat_begin();
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
@@ -1024,7 +1025,8 @@ struct hunter_pet_attack_t : public attack_t
       if ( result == RESULT_CRIT )
       {
         hunter_t* o = p -> owner -> cast_hunter();
-        p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
+        if ( ! sim -> P333 )
+          p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
         
@@ -3662,6 +3664,16 @@ int hunter_t::primary_tree() SC_CONST
   return TALENT_TREE_MAX;
 }
 
+// hunter_t::combat_begin =====================================================
+
+void hunter_t::combat_begin()
+{
+  player_t::combat_begin();
+  
+  if ( sim -> P333 )
+    sim -> auras.ferocious_inspiration -> trigger( 1, talents.ferocious_inspiration, talents.ferocious_inspiration > 0 );
+}
+
 // hunter_t::reset ===========================================================
 
 void hunter_t::reset()
@@ -3969,7 +3981,10 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, int race
 void player_t::hunter_init( sim_t* sim )
 {
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
-  sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration", 1, 10.0 );
+  if ( sim -> P333 )
+    sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
+  else
+    sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration", 1, 10.0 );
 
   target_t* t = sim -> target;
   t -> debuffs.hunters_mark  = new debuff_t( sim, "hunters_mark",  1, 300.0 );
