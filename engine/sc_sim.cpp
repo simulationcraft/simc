@@ -371,7 +371,7 @@ static bool parse_rawr( sim_t*             sim,
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P335( false ), P400( false ),
+    parent( p ), P333( false ), P400( false ),
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), canceled( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
@@ -720,7 +720,7 @@ bool sim_t::init()
     deterministic_roll = 1;
   }
 
-  P335 = patch.after( 3, 3, 5 );
+  P333 = patch.after( 3, 3, 3 );
   P400 = patch.after( 4, 0, 0 );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.

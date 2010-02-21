@@ -1646,7 +1646,7 @@ struct ghostly_strike_t : public rogue_attack_t
     adds_combo_points           = true;
     cooldown -> duration        = p -> glyphs.ghostly_strike ? 30 : 20;
     base_cost                   = 40;
-    if ( p -> sim -> P335 && p -> off_hand_weapon.type == WEAPON_DAGGER )
+    if ( p -> sim -> P333 && p -> off_hand_weapon.type == WEAPON_DAGGER )
       weapon_multiplier        *= 1.80 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     else
       weapon_multiplier        *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
@@ -1688,7 +1688,7 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed      = true;
     adds_combo_points           = true;
     base_cost                   = 35 - p -> talents.slaughter_from_the_shadows;
-    if ( p -> sim -> P335 && p -> off_hand_weapon.type == WEAPON_DAGGER )
+    if ( p -> sim -> P333 && p -> off_hand_weapon.type == WEAPON_DAGGER )
       weapon_multiplier        *= 1.60 + p -> talents.sinister_calling     * 0.02;
     else
       weapon_multiplier        *= 1.10 + p -> talents.sinister_calling     * 0.02;
@@ -2048,7 +2048,7 @@ struct rupture_t : public rogue_attack_t
     if ( p -> talents.surprise_attacks ) may_dodge = false;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) tick_may_crit = true;
-    if ( p -> sim -> P335 ) tick_may_crit = true;
+    if ( p -> sim -> P333 ) tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };

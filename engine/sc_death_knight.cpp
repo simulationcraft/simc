@@ -1405,7 +1405,7 @@ void death_knight_attack_t::player_buff()
     // Does not apply to spells!
     if ( weapon -> slot == SLOT_OFF_HAND )
     {
-      if ( sim -> P335 )
+      if ( sim -> P333 )
         player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.25/3.0;
       else
         player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
@@ -3310,7 +3310,7 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_attack_t::target_debuff( dmg_type );
 
       // FIX ME!! How does 4T8 play with SS in 3.3
-      if ( sim -> P335 )
+      if ( sim -> P333 )
       {
         target_multiplier *= p -> diseases() * 0.12 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
       }
@@ -3345,7 +3345,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     scourge_strike_shadow = new scourge_strike_shadow_t( player );
 
-    weapon_multiplier        = sim -> P335 ? 0.70 : 0.50;
+    weapon_multiplier        = sim -> P333 ? 0.70 : 0.50;
     cost_frost = 1;
     cost_unholy = 1;
 
@@ -3646,7 +3646,7 @@ void death_knight_t::init_base()
   double str_mult = talents.veteran_of_the_third_war * 0.02 +
                     talents.abominations_might * 0.01 +
                     talents.ravenous_dead * 0.01;
-  if ( sim -> P335 )
+  if ( sim -> P333 )
     str_mult += talents.endless_winter * 0.02;
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
@@ -3893,7 +3893,7 @@ void death_knight_t::init_enchant()
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      if ( a -> sim -> P335 )
+      if ( a -> sim -> P333 )
         buff -> trigger( 1, 0.02, 1.0 );
       else
         buff -> trigger( 1, 0.01, 0.30 );
@@ -3903,7 +3903,7 @@ void death_knight_t::init_enchant()
       razorice_damage_proc -> execute();
     }
   };
-  if ( sim -> P335 )
+  if ( sim -> P333 )
     buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
   else
     buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0 );
@@ -4163,7 +4163,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
     m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
     if ( buffs_unbreakable_armor -> check() )
     {
-      if ( sim -> P335 )
+      if ( sim -> P333 )
         m *= 1.10;
       else
         m *= 1.20;
