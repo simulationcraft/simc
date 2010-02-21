@@ -1,0 +1,19 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+Death_Knight_T10_51_00_20.simc
+Death_Knight_T10_51_00_20_GoD.simc
+Death_Knight_T10_14_00_57.simc
+Death_Knight_T10_00_54_17.simc
+
+# simcraftdkt9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=20837928 name=Death_Knight_T10_51_00_20      save=Death_Knight_T10_51_00_20.simc
+#wowhead=20837965 name=Death_Knight_T10_51_00_20_GoD  save=Death_Knight_T10_51_00_20_GoD.simc
+#wowhead=20837974 name=Death_Knight_T10_14_00_57      save=Death_Knight_T10_14_00_57.simc
+#wowhead=20838012 name=Death_Knight_T10_00_54_17      save=Death_Knight_T10_00_54_17.simc
+#save_profiles=1

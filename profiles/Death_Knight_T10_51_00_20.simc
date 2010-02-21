@@ -1,0 +1,55 @@
+#!./simc 
+
+death_knight=Death_Knight_T10_51_00_20
+origin="http://profiler.wowhead.com/?profile=20837928"
+level=80
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=230502053000330323112300135100000000000000000000000000000230130305003
+glyphs=dancing_rune_weapon/dark_death/death_strike/horn_of_winter/pestilence/raise_dead
+actions=flask,type=endless_rage
+actions+=/food,type=dragonfin_filet
+actions+=/presence,choose=blood
+actions+=/snapshot_stats
+actions+=/auto_attack
+actions+=/hysteria,if=buff.bloodlust.react
+actions+=/dancing_rune_weapon,if=buff.bloodlust.react
+actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:raise_dead,wait_on_ready=0
+actions+=/death_coil
+actions+=/sequence,name=blood2,wait_on_ready=1:death_strike:heart_strike:heart_strike:heart_strike:heart_strike
+actions+=/restart_sequence,name=blood1
+actions+=/restart_sequence,name=blood2
+head=sanctified_scourgelord_helmet,stats=2239armor_114crit_106arpen_185str_209sta,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
+neck=lanathels_chain_of_flagellation,stats=52exp_73arpen_108str_116sta,gems=20str
+shoulders=sanctified_scourgelord_shoulderplates,stats=2067armor_90crit_82arpen_147str_155sta,gems=20str_4str,enchant=40ap_15crit
+chest=sanctified_scourgelord_battleplate,stats=2756armor_122crit_106arpen_193str_209sta,gems=34str_10str_10agi_10sta_10int_10spi_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,stats=1550armor_85crit_78arpen_139str_155sta,gems=20str_20str_20str
+legs=sanctified_scourgelord_legplates,stats=2412armor_122crit_106exp_193str_209sta,gems=20str_20str,enchant=75ap_22crit
+feet=bloodsoaked_saronite_stompers,stats=1895armor_90crit_74arpen_139str_155sta,gems=20str_20str,enchant=12crit_12hit
+wrists=polar_bear_claw_bracers,stats=1206armor_60hit_68crit_108str_116sta,gems=20str_34str,enchant=50ap
+hands=sanctified_scourgelord_gauntlets,stats=1723armor_82hit_90crit_147str_155sta,gems=10crit_10str_34str_4str,enchant=15str
+finger1=might_of_blight,stats=68crit_60arpen_108str_116sta,gems=20str
+finger2=ashen_band_of_endless_might,stats=59hit_59crit_99str_107sta,gems=10crit_10str_4str
+trinket1=deathbringers_will,stats=167arpen
+trinket2=deaths_choice,stats=288ap
+back=garroshs_rage,stats=182armor_57hit_65crit_103str_111sta,gems=20str_4str,enchant=23haste
+main_hand=shadowmourne,stats=114crit_114arpen_223str_198sta,gems=20str_20str_20str_8str,weapon=axe2h_3.70speed_954min_1592max
+ranged=sigil_of_virulence
+# Gear Summary
+# gear_strength=2407
+# gear_agility=41
+# gear_stamina=2031
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=503
+# gear_expertise_rating=158
+# gear_armor_penetration_rating=860
+# gear_hit_rating=270
+# gear_crit_rating=1176
+# gear_haste_rating=23
+# gear_armor=16030
+# meta_gem=relentless_earthsiege
+# tier10_2pc_melee=1
+# tier10_4pc_melee=1
+# trinket1=deathbringers_will
+# trinket2=deaths_choice
+# main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max
