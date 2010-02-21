@@ -1200,7 +1200,7 @@ struct arcane_barrage_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger();
 
-      if ( result == RESULT_CRIT )
+      if ( ( ! sim -> P333 ) && ( result == RESULT_CRIT ) )
       {
         sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
       }
@@ -1281,7 +1281,7 @@ struct arcane_blast_t : public mage_spell_t
     {
       p -> buffs_missile_barrage -> trigger( 1, 1.0, p -> talents.missile_barrage * 0.08 );
       p -> buffs_tier8_2pc -> trigger();
-      if ( result == RESULT_CRIT )
+      if ( ( ! sim -> P333 ) && ( result == RESULT_CRIT ) )
       {
         sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
       }
@@ -1370,7 +1370,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
-      sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment );
+      sim -> auras.arcane_empowerment -> trigger( 1, p -> talents.arcane_empowerment, p -> talents.arcane_empowerment && ! sim -> P333 );
       trigger_master_of_elements( this, 0.20 );
     }
   }
@@ -3470,6 +3470,11 @@ void mage_t::combat_begin()
       exit( 0 );
     }
   }
+
+  if ( sim -> P333 )
+  {
+    sim -> auras.arcane_empowerment -> trigger( 1, talents.arcane_empowerment, talents.arcane_empowerment > 0 );
+  }
 }
 
 // mage_t::reset ===========================================================
@@ -3768,7 +3773,10 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, int race_t
 
 void player_t::mage_init( sim_t* sim )
 {
-  sim -> auras.arcane_empowerment = new aura_t( sim, "arcane_empowerment", 1, 10.0 );
+  if ( sim -> P333 )
+    sim -> auras.arcane_empowerment = new aura_t( sim, "arcane_empowerment" );
+  else
+    sim -> auras.arcane_empowerment = new aura_t( sim, "arcane_empowerment", 1, 10.0 );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
