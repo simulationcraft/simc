@@ -51,22 +51,22 @@ static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
     {
-      { "Toggle All Debuffs",     "",                             "Toggle all debuffs on/off"                                        },
-      { "Armor (Major)",          "override.sunder_armor",        "Acid Spit\nExpose Armor\nSunder Armor"                            },
-      { "Armor (Minor)",          "override.faerie_fire",         "Curse of Weakness\nFaerie Fire"                                   },
-      { "Boss Attack Speed Slow", "override.thunder_clap",        "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
-      { "Boss Hit Reduction",     "override.insect_swarm",        "Insect Swarm\nScorpid Sting"                                      },
-      { "Bleed Damage",           "override.mangle",              "Mangle\nTrauma"                                                   },
-      { "Bleeding",               "override.bleeding",            "Rip\nRupture\nPiercing Shots"                                     },
-      { "Critical Strike",        "override.totem_of_wrath",      "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
-      { "Disease Damage",         "override.crypt_fever",         "Crypt Fever"                                                      },
-      { "Mana Restore",           "override.judgement_of_wisdom", "Judgement of Wisdom"                                              },
-      { "Physical Damage",        "override.blood_frenzy",        "Blood Frenzy\nSavage Combat"                                      },
-      { "Poisoned",               "override.poisoned",            "Deadly Poison\nSerpent Sting"                                     },
-      { "Ranged Attack Power",    "override.hunters_mark",        "Hunter's Mark"                                                    },
-      { "Spell Critical Strike",  "override.improved_scorch",     "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
-      { "Spell Damage",           "override.earth_and_moon",      "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
-      { "Spell Hit",              "override.misery",              "Improved Faerie Fire\nMisery"                                     },
+      { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                        },
+      { "Armor (Major)",          "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
+      { "Armor (Minor)",          "override.faerie_fire",           "Curse of Weakness\nFaerie Fire"                                   },
+      { "Boss Attack Speed Slow", "override.thunder_clap",          "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
+      { "Boss Hit Reduction",     "override.insect_swarm",          "Insect Swarm\nScorpid Sting"                                      },
+      { "Bleed Damage",           "override.mangle",                "Mangle\nTrauma"                                                   },
+      { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                     },
+      { "Critical Strike",        "override.master_poisoner",       "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
+      { "Disease Damage",         "override.crypt_fever",           "Crypt Fever"                                                      },
+      { "Mana Restore",           "override.judgement_of_wisdom",   "Judgement of Wisdom"                                              },
+      { "Physical Damage",        "override.blood_frenzy",          "Blood Frenzy\nSavage Combat"                                      },
+      { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                     },
+      { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                    },
+      { "Spell Critical Strike",  "override.improved_scorch",       "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
+      { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
+      { "Spell Hit",              "override.misery",                "Improved Faerie Fire\nMisery"                                     },
       { NULL, NULL, NULL }
     };
   return options;
