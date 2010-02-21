@@ -4022,8 +4022,7 @@ void death_knight_t::init_enchant()
 
       // RotFC is 2 PPM.
       double PPM        = 2.0;
-      double swing_time = a -> time_to_execute;
-      double chance     = w -> proc_chance_on_swing( PPM, swing_time );
+      double chance     = w -> proc_chance_on_swing( PPM );
 
       buff -> trigger( 1, 0.15, chance );
     }
