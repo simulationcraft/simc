@@ -2219,7 +2219,7 @@ struct frost_bolt_t : public mage_spell_t
 
     base_execute_time = 3.0;
     may_crit          = true;
-    direct_power_mod  = ( base_execute_time / 3.5 ) * 0.95;
+    direct_power_mod  = ( base_execute_time / 3.5 ) * ( p -> sim -> P333 ? 1.0 : 0.95 );
     base_cost        *= 1.0 - p -> talents.precision     * 0.01;
     base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
     base_execute_time -= p -> talents.improved_frost_bolt * 0.1;
@@ -2447,13 +2447,14 @@ struct deep_freeze_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
+  int brain_freeze;
   int dot_wait;
   int frozen;
   int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ),
-      dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
+      brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2461,6 +2462,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     option_t options[] =
     {
+      { "brain_freeze", OPT_BOOL, &brain_freeze },
       { "dot_wait",     OPT_BOOL, &dot_wait     },
       { "frozen",       OPT_BOOL, &frozen       },
       { "ghost_charge", OPT_BOOL, &ghost_charge },
@@ -2511,6 +2513,20 @@ struct frostfire_bolt_t : public mage_spell_t
     may_torment = true;
   }
 
+  virtual double cost() SC_CONST
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> sim -> P333 && p -> buffs_brain_freeze -> check() ) return 0;
+    return mage_spell_t::cost();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> sim -> P333 && p -> buffs_brain_freeze -> up() ) return 0;
+    return mage_spell_t::execute_time();
+  }
+
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
@@ -2524,6 +2540,8 @@ struct frostfire_bolt_t : public mage_spell_t
       if ( fof_on_cast ) trigger_fingers_of_frost( this );
     }
     trigger_hot_streak( this );
+    if ( p -> sim -> P333 )
+      consume_brain_freeze( this );
   }
 
   virtual void travel( int    travel_result,
@@ -2536,6 +2554,10 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
+
+    if ( brain_freeze )
+      if ( ! p -> buffs_brain_freeze -> may_react() )
+        return false;
 
     if ( ghost_charge != -1 )
       if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
@@ -3223,7 +3245,10 @@ void mage_t::init_buffs()
 
   buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4, 6.0 );
   buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
-  buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0, talents.brain_freeze * 0.05 );
+  if ( sim -> P333 )
+    buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 1.0, talents.brain_freeze * 0.05 );
+  else
+    buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0,   talents.brain_freeze * 0.05 );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
@@ -3374,6 +3399,7 @@ void mage_t::init_actions()
       action_list_str += "/deep_freeze";
       action_list_str += "/frost_bolt,frozen=1";
       if ( talents.cold_snap              ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
+      if ( talents.brain_freeze           ) action_list_str += "/frostfire_bolt,brain_freeze=1,P333=1";
       if ( talents.brain_freeze           ) action_list_str += "/fire_ball,brain_freeze=1";
       action_list_str += "/mirror_image";
       action_list_str += "/frost_bolt";
