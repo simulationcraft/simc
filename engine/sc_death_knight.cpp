@@ -3751,11 +3751,16 @@ double death_knight_t::composite_attack_haste() SC_CONST
   // are two different buff that don't stack (does not stack with WF totem)
   // If you got 16% WF totem, 20% IT but not ITT you will gain 20% haste.
   // I can't make up a case where you would go 5/5 IT but not take IIT.
-  double it_haste = buffs_icy_talons -> value();
-  if ( it_haste > sim -> auras.windfury_totem -> current_value && ! sim -> auras.improved_icy_talons -> check() )
+  if ( sim -> P333 )
+    haste *= 1.0/ ( 1.0 + buffs_icy_talons -> value() );
+  else
   {
-    haste *= ( 1.0 + sim -> auras.windfury_totem -> current_value );
-    haste *= 1.0/ ( 1.0 + it_haste );
+    double it_haste = buffs_icy_talons -> value();
+    if ( it_haste > sim -> auras.windfury_totem -> current_value && ! sim -> auras.improved_icy_talons -> check() )
+    {
+      haste *= ( 1.0 + sim -> auras.windfury_totem -> current_value );
+      haste *= 1.0/ ( 1.0 + it_haste );
+    }
   }
 
   return haste;
