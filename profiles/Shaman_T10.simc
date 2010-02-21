@@ -1,0 +1,16 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+Shaman_T10_19_52_00.simc
+Shaman_T10_57_14_00.simc
+Shaman_T10_57_14_00_ToW.simc
+
+#simcraftshamant9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=20837779 name=Shaman_T10_19_52_00     save=Shaman_T10_19_52_00.simc 
+#wowhead=20837754 name=Shaman_T10_57_14_00     save=Shaman_T10_57_14_00.simc
+#wowhead=20837752 name=Shaman_T10_57_14_00_ToW save=Shaman_T10_57_14_00_ToW.simc

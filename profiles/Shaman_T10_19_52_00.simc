@@ -1,0 +1,67 @@
+#!./simc 
+
+shaman=Shaman_T10_19_52_00
+origin="http://profiler.wowhead.com/?profile=20837779"
+level=80
+race=tauren
+talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053031052000000000000000030205033005021333031131031051
+glyphs=windfury_weapon/stormstrike/feral_spirit
+actions=flask,type=endless_rage
+actions+=/food,type=fish_feast
+actions+=/windfury_weapon,weapon=main
+actions+=/flametongue_weapon,weapon=off
+actions+=/strength_of_earth_totem
+actions+=/windfury_totem
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/wind_shear
+actions+=/bloodlust,time_to_die<=60
+actions+=/shamanistic_rage
+actions+=/fire_elemental_totem
+actions+=/spirit_wolf
+actions+=/speed_potion
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5
+actions+=/stormstrike
+actions+=/flame_shock,if=!ticking
+actions+=/earth_shock
+actions+=/magma_totem
+actions+=/fire_nova
+actions+=/lightning_shield
+actions+=/lava_lash
+actions+=/shamanistic_rage,tier10_2pc_melee=1
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
+head=sanctified_frost_witchs_faceguard,stats=1253armor_212ap_114crit_80haste_175agi_144sta_96int,gems=relentless_earthsiege_20exp_16ap,enchant=50ap_20crit
+neck=sindragosas_cruel_claw,stats=120ap_60haste_68arpen_102agi_102sta,gems=20hit
+shoulders=sanctified_frost_witchs_shoulderguards,stats=1157armor_165ap_90crit_63haste_136agi_107sta_71int,gems=20hit,enchant=40ap_15crit
+chest=sanctified_frost_witchs_chestguard,stats=1542armor_212ap_114crit_88haste_183agi_144sta_96int,gems=10hit_10exp_10str_10agi_10sta_10int_10spi_12ap,enchant=10str_10agi_10sta_10int_10spi
+waist=nerubar_stalkers_cord,stats=867armor_181ap_74crit_71arpen_120agi_107sta_71int,gems=20hit_20exp_20exp_6agi
+legs=sanctified_frost_witchs_warkilt,stats=1349armor_212ap_88hit_114crit_183agi_144sta_96int,gems=20exp_20hit_12ap,enchant=75ap_22crit
+feet=treads_of_the_wasteland,stats=1060armor_165ap_55hit_90crit_128agi_107sta_71int,gems=20haste_20haste_6agi,enchant=15sta
+wrists=scourge_hunters_vambraces,stats=675armor_120ap_68crit_46arpen_102agi_80sta_54int,gems=20hit,enchant=130ap
+hands=anubar_stalkers_gloves,stats=964armor_149ap_90crit_63haste_128agi_107sta_71int,gems=20hit_10hit_10exp_6agi,enchant=44ap
+finger1=ashen_band_of_endless_vengeance,stats=135ap_59hit_59crit_88agi_84sta,gems=20haste_4agi,equip=onattackhit_480ap_1ppm_10dur_60cd
+finger2=band_of_the_bone_colossus,stats=120ap_62hit_65haste_102agi_102sta,gems=20haste_4agi
+trinket1=herkuml_war_token,stats=153haste,equip=onattackhit_17ap_20stack_10dur
+trinket2=tiny_abomination_in_a_jar,stats=85hit
+back=shadowvault_slayers_cloak,stats=185armor_120ap_60crit_68haste_102agi_102sta,gems=20hit_4agi,enchant=23haste
+main_hand=havocs_call_blade_of_lordaeron_kings,stats=95ap_56crit_48haste_84agi_84sta,gems=20exp,enchant=berserking,weapon=axe_2.60speed_481min_895max
+off_hand=havocs_call_blade_of_lordaeron_kings,stats=95ap_56crit_48haste_84agi_84sta,gems=20exp,enchant=berserking,weapon=axe_2.60speed_481min_895max
+ranged=bizuris_totem_of_shattered_ice
+# Gear Summary
+# gear_strength=20
+# gear_agility=1788
+# gear_stamina=1533
+# gear_intellect=646
+# gear_spirit=20
+# gear_attack_power=2480
+# gear_expertise_rating=140
+# gear_armor_penetration_rating=185
+# gear_hit_rating=509
+# gear_crit_rating=1042
+# gear_haste_rating=839
+# gear_armor=9052
+# meta_gem=relentless_earthsiege
+# tier10_2pc_melee=1
+# trinket2=tiny_abomination_in_a_jar
+# main_hand=havocs_call_blade_of_lordaeron_kings,weapon=axe_2.60speed_481min_895max,enchant=berserking
+# off_hand=havocs_call_blade_of_lordaeron_kings,weapon=axe_2.60speed_481min_895max,enchant=berserking
