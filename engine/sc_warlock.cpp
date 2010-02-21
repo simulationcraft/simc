@@ -2365,6 +2365,7 @@ struct immolate_t : public warlock_spell_t
     num_ticks         = 5;
     direct_power_mod  = 0.20;
     tick_power_mod    = 0.20;
+    if ( p -> sim -> P333 ) tick_may_crit = true;
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.cataclysm, 3, 0.04, 0.07, 0.10 );
 
