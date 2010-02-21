@@ -1840,6 +1840,7 @@ struct flame_shock_t : public shaman_spell_t
     
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
+    if ( p -> sim -> P333 ) tick_may_crit = true;
 
     if ( p -> glyphs.shocking )
     {
@@ -1861,6 +1862,13 @@ struct flame_shock_t : public shaman_spell_t
     p -> buffs_tundra       -> trigger();
   }
 
+  virtual int scale_ticks_with_haste() SC_CONST
+  {
+    if ( player -> sim -> P333 )
+      return 1;
+  
+    return 0;
+  }
   virtual void tick()
   {
     shaman_t* p = player -> cast_shaman();
