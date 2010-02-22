@@ -839,6 +839,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence_t( player_t* player ) :
         spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
     {
+		trigger_gcd = 0;
     }
     virtual void execute()
     {
@@ -858,6 +859,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
         }
       }
     }
+    virtual bool ready() { return false; }
   };
   struct drw_plague_strike_t : public attack_t
   {
@@ -3484,6 +3486,9 @@ struct pestilence_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
+    if ( p -> buffs_dancing_rune_weapon -> check() )
+	  p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
+
     if ( result_is_hit() && p -> glyphs.disease )
     {
       p -> procs_glyph_of_disease -> occur();
