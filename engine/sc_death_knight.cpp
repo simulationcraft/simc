@@ -584,42 +584,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
     }
   };
-  struct drw_blood_strike_t : public attack_t
-  {
-    drw_blood_strike_t( player_t* player ) :
-        attack_t( "blood_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
-    {
-      background  = true;
-      trigger_gcd = 0;
-      may_crit = true;
-
-      weapon = &( player -> main_hand_weapon );
-      normalize_weapon_speed = true;
-      weapon_multiplier     *= 0.4;
-
-	  pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-      base_crit += o -> talents.subversion * 0.03;
-      base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
-      base_multiplier *= 1 + o -> talents.bloody_strikes * 0.15;
-      base_multiplier *= 0.50; // DRW malus
-      base_dd_min = base_dd_max = 764;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-    virtual void target_debuff( int dmg_type )
-    {
-	  dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      pet_t* pet = player -> cast_pet();
-      death_knight_t* o = pet -> owner -> cast_death_knight();
-      attack_t::target_debuff( dmg_type );
-      target_multiplier *= 1 + p -> drw_diseases() * 0.125 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
-    }
-    virtual bool ready() { return false; }
-  };
   struct drw_death_coil_t : public spell_t
   {
     drw_death_coil_t( player_t* player ) :
@@ -648,6 +612,81 @@ struct dancing_rune_weapon_pet_t : public pet_t
       {
         base_multiplier *= 1.05;
       }
+    }
+    virtual bool ready() { return false; }
+  };
+  struct drw_blood_strike_t : public attack_t
+  {
+	bool proc_sd;
+	bool roll_sd;
+    drw_blood_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
+        attack_t( "blood_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    {
+      background  = true;
+      trigger_gcd = 0;
+      may_crit = true;
+
+      weapon = &( player -> main_hand_weapon );
+      normalize_weapon_speed = true;
+      weapon_multiplier     *= 0.4;
+
+	  pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+      base_crit += o -> talents.subversion * 0.03;
+      base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
+      base_multiplier *= 1 + o -> talents.bloody_strikes * 0.15;
+      base_multiplier *= 0.50; // DRW malus
+      base_dd_min = base_dd_max = 764;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+
+      if ( sd )
+      {
+		proc_sd = true;
+      }
+      else
+      {
+		proc_sd = false;
+      }
+      if ( sd_miss )
+      {
+		roll_sd = true;
+      }
+      else
+      {
+		roll_sd = false;
+      }
+      reset();
+    }
+    virtual void target_debuff( int dmg_type )
+    {
+	  dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = player -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+      attack_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + p -> drw_diseases() * 0.125 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
+    }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = p -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+
+      attack_t::execute();
+
+      if ( result_is_hit() && proc_sd )
+      {
+        p -> drw_death_coil -> execute();
+      }
+      proc_sd = false;
+      if ( result_is_hit() && roll_sd )
+      {
+		if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
+      }
+      roll_sd = false;
     }
     virtual bool ready() { return false; }
   };
@@ -706,12 +745,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
       spell_t::target_debuff( dmg_type );
       target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
     }
-
     virtual bool ready()     { return false; }
   };
   struct drw_heart_strike_t : public attack_t
   {
-    drw_heart_strike_t( player_t* player ) :
+	bool proc_sd;
+	bool roll_sd;
+    drw_heart_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
         attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
@@ -734,6 +774,23 @@ struct dancing_rune_weapon_pet_t : public pet_t
       {
         base_multiplier *= 1.05;
       }
+      if ( sd )
+      {
+		proc_sd = true;
+      }
+      else
+      {
+		proc_sd = false;
+      }
+      if ( sd_miss )
+      {
+		roll_sd = true;
+      }
+      else
+      {
+		roll_sd = false;
+      }
+      reset();
     }
     void target_debuff( int dmg_type )
     {
@@ -742,6 +799,25 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = pet -> owner -> cast_death_knight();
       attack_t::target_debuff( dmg_type );
       target_multiplier *= 1 + p -> drw_diseases() * 0.1 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
+    }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = p -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+
+      attack_t::execute();
+
+      if ( result_is_hit() && proc_sd )
+      {
+        p -> drw_death_coil -> execute();
+      }
+      proc_sd = false;
+      if ( result_is_hit() && roll_sd )
+      {
+		if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
+      }
+      roll_sd = false;
     }
     virtual bool ready() { return false; }
   };
@@ -928,11 +1004,15 @@ struct dancing_rune_weapon_pet_t : public pet_t
   double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot;
   spell_t*  drw_blood_boil;
   spell_t*  drw_blood_plague;
-  attack_t* drw_blood_strike;
   spell_t*  drw_death_coil;
+  attack_t* drw_blood_strike;
+  attack_t* drw_blood_strike_sd;
+  attack_t* drw_blood_strike_sd_roll;
   attack_t* drw_death_strike;
   spell_t*  drw_frost_fever;
   attack_t* drw_heart_strike;
+  attack_t* drw_heart_strike_sd;
+  attack_t* drw_heart_strike_sd_roll;
   spell_t*  drw_icy_touch;
   attack_t* drw_obliterate;
   spell_t*  drw_pestilence;
@@ -943,9 +1023,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
       pet_t( sim, owner, "dancing_rune_weapon", true ),
       hysteria( 1 ), snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
       haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
-      drw_blood_strike( 0 ), drw_death_coil( 0 ), drw_death_strike( 0 ),
-      drw_frost_fever( 0 ), drw_heart_strike( 0 ), drw_icy_touch( 0 ),
-      drw_obliterate( 0 ), drw_pestilence( 0 ), drw_plague_strike( 0 ),
+      drw_death_coil( 0 ), drw_blood_strike( 0 ), drw_blood_strike_sd( 0 ),
+      drw_blood_strike_sd_roll( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
+      drw_heart_strike( 0 ), drw_heart_strike_sd( 0 ), drw_heart_strike_sd_roll( 0 ),
+      drw_icy_touch( 0 ), drw_obliterate( 0 ), drw_pestilence( 0 ), drw_plague_strike( 0 ),
       drw_melee( 0 )
   {
     dots_drw_blood_plague  = get_dot( "blood_plague" );
@@ -962,18 +1043,22 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     // Everything stays at zero.
     // DRW uses a snapshot of the DKs stats when summoned.
-    drw_blood_boil    = new drw_blood_boil_t   ( this );
-    drw_blood_plague  = new drw_blood_plague_t ( this );
-    drw_blood_strike  = new drw_blood_strike_t ( this );
-    drw_death_coil    = new drw_death_coil_t   ( this );
-    drw_death_strike  = new drw_death_strike_t ( this );
-    drw_frost_fever   = new drw_frost_fever_t  ( this );
-    drw_heart_strike  = new drw_heart_strike_t ( this );
-    drw_icy_touch     = new drw_icy_touch_t    ( this );
-    drw_obliterate    = new drw_obliterate_t   ( this );
-    drw_pestilence    = new drw_pestilence_t   ( this );
-    drw_plague_strike = new drw_plague_strike_t( this );
-    drw_melee         = new drw_melee_t        ( this );
+    drw_blood_boil           = new drw_blood_boil_t   ( this );
+    drw_blood_plague         = new drw_blood_plague_t ( this );
+    drw_death_coil           = new drw_death_coil_t   ( this );
+    drw_blood_strike         = new drw_blood_strike_t ( this, false, false );
+    drw_blood_strike_sd      = new drw_blood_strike_t ( this, true, false );
+    drw_blood_strike_sd_roll = new drw_blood_strike_t ( this, false, true );
+    drw_death_strike         = new drw_death_strike_t ( this );
+    drw_frost_fever          = new drw_frost_fever_t  ( this );
+    drw_heart_strike         = new drw_heart_strike_t ( this, false, false );
+    drw_heart_strike_sd      = new drw_heart_strike_t ( this, true, false );
+    drw_heart_strike_sd_roll = new drw_heart_strike_t ( this, false, true );
+    drw_icy_touch            = new drw_icy_touch_t    ( this );
+    drw_obliterate           = new drw_obliterate_t   ( this );
+    drw_pestilence           = new drw_pestilence_t   ( this );
+    drw_plague_strike        = new drw_plague_strike_t( this );
+    drw_melee                = new drw_melee_t        ( this );
   }
 
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
@@ -2617,16 +2702,18 @@ struct death_coil_t : public death_knight_spell_t
 };
 
 // Trigger Sudden Doom ======================================================
-static void trigger_sudden_doom( action_t* a )
+static bool trigger_sudden_doom( action_t* a )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
 
-  if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
+  if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return false;
 
   p -> procs_sudden_doom -> occur();
 
   if ( ! p -> sudden_doom ) p -> sudden_doom = new death_coil_t( p, "", true );
   p -> sudden_doom -> execute();
+
+  return true;
 }
 
 // Blood Strike =============================================================
@@ -2694,8 +2781,19 @@ struct blood_strike_t : public death_knight_attack_t
     {
       p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
-      trigger_sudden_doom( this );
+      if ( trigger_sudden_doom( this ) )
+      {
+		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike_sd -> execute();
+      }
+      else
+      {
+		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
+      }
       p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
+    }
+    else
+    {
+      if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike_sd_roll -> execute();
     }
     // 30/60/100% to also hit with OH
     double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
@@ -3056,14 +3154,22 @@ struct heart_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
-
     if ( result_is_hit() )
     {
       p -> buffs_tier9_2pc_melee -> trigger();
       trigger_abominations_might( this, 0.25 );
-      trigger_sudden_doom( this );
+      if ( trigger_sudden_doom( this ) )
+      {
+		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike_sd -> execute();
+      }
+      else
+      {
+		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
+      }
+    }
+    else
+    {
+      if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike_sd_roll -> execute();
     }
   }
 };
