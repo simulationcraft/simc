@@ -493,6 +493,23 @@ struct bloodworms_pet_t : public pet_t
 
 struct dancing_rune_weapon_pet_t : public pet_t
 {
+  dot_t* dots_drw_blood_plague;
+  dot_t* dots_drw_frost_fever;
+
+  int  drw_diseases()
+  {
+    int drw_disease_count = 0;
+
+    if ( dots_drw_blood_plague -> ticking() )
+      drw_disease_count++;
+
+    if ( dots_drw_frost_fever -> ticking() )
+      drw_disease_count++;
+
+    return drw_disease_count;
+  }
+
+  double hysteria;
   struct drw_blood_boil_t : public spell_t
   {
     drw_blood_boil_t( player_t* player ) :
@@ -522,7 +539,50 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
     }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      base_dd_adder = ( p -> drw_diseases() ? 95 : 0 );
+      direct_power_mod  = 0.06 + ( p -> drw_diseases() ? 0.035 : 0 );
+      spell_t::execute();
+    }
     virtual bool ready() { return false; }
+  };
+  struct drw_blood_plague_t : public spell_t
+  {
+    drw_blood_plague_t( player_t* player ) :
+        spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      background        = true;
+      base_td           = 36;
+      trigger_gcd       = 0;
+      base_tick_time    = 3.0;
+      num_ticks         = 5 + o -> talents.epidemic;
+      base_attack_power_multiplier = 1;
+      tick_power_mod    = 0.055 * 1.15;
+      base_spell_power_multiplier  = 0;
+      base_multiplier  *= 0.50;
+
+      tick_may_crit     = ( o -> set_bonus.tier9_4pc_melee() != 0 );
+      may_miss          = false;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+
+      reset();
+    }
+    virtual bool ready() { return false; }
+
+    virtual void target_debuff( int dmg_type )
+    {
+      spell_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
+    }
   };
   struct drw_blood_strike_t : public attack_t
   {
@@ -550,6 +610,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
     }
+    virtual void target_debuff( int dmg_type )
+    {
+	  dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = player -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+      attack_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + p -> drw_diseases() * 0.125 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
+    }
     virtual bool ready() { return false; }
   };
   struct drw_death_coil_t : public spell_t
@@ -573,7 +641,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_dd_adder = 380 * o -> sigils.vengeful_heart;
 
       direct_power_mod  = 0.15;
-      base_multiplier *= 0.5;
+      base_multiplier *= 0.50;
       base_dd_min = base_dd_max = 443;
 
       if ( o -> race == RACE_ORC )
@@ -612,6 +680,35 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
     virtual bool ready() { return false; }
   };
+  struct drw_frost_fever_t : public spell_t
+  {
+    drw_frost_fever_t( player_t* player ) :
+        spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      background        = true;
+      trigger_gcd       = 0;
+      base_td           = 29;
+      base_tick_time    = 3.0;
+      num_ticks         = 5 + o -> talents.epidemic;
+      base_multiplier  *= 1.0 + o -> glyphs.icy_touch * 0.2;
+      base_attack_power_multiplier = 1;
+      tick_power_mod    = 0.055 * 1.15;
+      base_spell_power_multiplier  = 0;
+      base_multiplier  *= 0.50;
+
+      may_miss          = false;
+    }
+   virtual void target_debuff( int dmg_type )
+    {
+      spell_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
+    }
+
+    virtual bool ready()     { return false; }
+  };
   struct drw_heart_strike_t : public attack_t
   {
     drw_heart_strike_t( player_t* player ) :
@@ -638,11 +735,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
     }
+    void target_debuff( int dmg_type )
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = player -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+      attack_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + p -> drw_diseases() * 0.1 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
+    }
     virtual bool ready() { return false; }
   };
   struct drw_icy_touch_t : public spell_t
   {
-    drw_icy_touch_t( pet_t* player ) :
+    drw_icy_touch_t( player_t* player ) :
         spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_BLOOD )
     {
 	  pet_t* p = player -> cast_pet();
@@ -664,6 +769,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
       if ( o -> race == RACE_ORC )
       {
         base_multiplier *= 1.05;
+      }
+    }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+
+      spell_t::execute();
+
+      if ( result_is_hit() )
+      {
+        if ( ! p -> drw_frost_fever )
+          p -> drw_frost_fever = new drw_frost_fever_t( p );
+        p -> drw_frost_fever -> execute();
       }
     }
     virtual bool ready() { return false; }
@@ -695,12 +813,56 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
     }
+    virtual void target_debuff( int dmg_type )
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* pet = player -> cast_pet();
+      death_knight_t* o = pet -> owner -> cast_death_knight();
+      attack_t::target_debuff( dmg_type );
+      target_multiplier *= 1 + p -> drw_diseases() * 0.1 * ( 1.0 + o -> set_bonus.tier8_4pc_melee() * .2 );
+    }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      attack_t::execute();
+
+      if ( result_is_hit() )
+      {
+        p -> dots_drw_blood_plague -> reset();
+        p -> dots_drw_frost_fever -> reset();
+      }
+    }
     virtual bool ready() { return false; }
+  };
+  struct drw_pestilence_t : public spell_t
+  {
+    drw_pestilence_t( player_t* player ) :
+        spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+    {
+    }
+    virtual void execute()
+    {
+      spell_t::execute();
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      pet_t* e = player -> cast_pet();
+      death_knight_t* o = e -> owner -> cast_death_knight();
+      if ( result_is_hit() && o -> glyphs.disease )
+      {
+        if ( p -> dots_drw_blood_plague -> ticking() )
+        {
+          p -> drw_blood_plague -> refresh_duration();
+        }
+        if ( p -> dots_drw_frost_fever -> ticking() )
+        {
+          p -> drw_frost_fever -> refresh_duration();
+        }
+      }
+    }
   };
   struct drw_plague_strike_t : public attack_t
   {
-    drw_plague_strike_t( pet_t* player ) :
-        attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    drw_plague_strike_t( player_t* player ) :
+        attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -723,6 +885,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
     }
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+
+      attack_t::execute();
+
+      if ( result_is_hit() )
+      {
+        if ( ! p -> drw_blood_plague )
+          p -> drw_blood_plague = new drw_blood_plague_t( p );
+        p -> drw_blood_plague -> execute();
+      }
+    }
     virtual bool ready() { return false; }
   };
   struct drw_melee_t : public attack_t
@@ -738,7 +913,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_crit = true;
       background = true;
       repeating = true;
-      weapon_power_mod *= 2.0;
+      weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
       base_multiplier *= 0.5;
 
       if ( p -> owner -> race == RACE_ORC )
@@ -750,23 +925,31 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot;
   spell_t*  drw_blood_boil;
+  spell_t*  drw_blood_plague;
   attack_t* drw_blood_strike;
   spell_t*  drw_death_coil;
   attack_t* drw_death_strike;
+  spell_t*  drw_frost_fever;
   attack_t* drw_heart_strike;
   spell_t*  drw_icy_touch;
   attack_t* drw_obliterate;
+  spell_t*  drw_pestilence;
   attack_t* drw_plague_strike;
   attack_t* drw_melee;
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "dancing_rune_weapon", true ),
-      snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ), haste_snapshot( 1.0 ),
-      drw_blood_boil( 0 ), drw_blood_strike( 0 ), drw_death_coil( 0 ), drw_death_strike( 0 ),
-      drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_obliterate( 0 ), drw_plague_strike( 0 ),
+      hysteria( 1 ), snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
+      haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
+      drw_blood_strike( 0 ), drw_death_coil( 0 ), drw_death_strike( 0 ),
+      drw_frost_fever( 0 ), drw_heart_strike( 0 ), drw_icy_touch( 0 ),
+      drw_obliterate( 0 ), drw_pestilence( 0 ), drw_plague_strike( 0 ),
       drw_melee( 0 )
   {
-	main_hand_weapon.type     = WEAPON_SWORD_2H;
+    dots_drw_blood_plague  = get_dot( "blood_plague" );
+    dots_drw_frost_fever   = get_dot( "frost_fever" );
+
+	main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685;
     main_hand_weapon.max_dmg    = 975;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
@@ -778,12 +961,15 @@ struct dancing_rune_weapon_pet_t : public pet_t
     // Everything stays at zero.
     // DRW uses a snapshot of the DKs stats when summoned.
     drw_blood_boil    = new drw_blood_boil_t   ( this );
+    drw_blood_plague  = new drw_blood_plague_t ( this );
     drw_blood_strike  = new drw_blood_strike_t ( this );
     drw_death_coil    = new drw_death_coil_t   ( this );
     drw_death_strike  = new drw_death_strike_t ( this );
+    drw_frost_fever   = new drw_frost_fever_t  ( this );
     drw_heart_strike  = new drw_heart_strike_t ( this );
     drw_icy_touch     = new drw_icy_touch_t    ( this );
     drw_obliterate    = new drw_obliterate_t   ( this );
+    drw_pestilence    = new drw_pestilence_t   ( this );
     drw_plague_strike = new drw_plague_strike_t( this );
     drw_melee         = new drw_melee_t        ( this );
   }
@@ -793,12 +979,17 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double haste()                                 { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
-
+  virtual double composite_player_multiplier( int school ) SC_CONST {
+	double m = player_t::composite_player_multiplier( school );
+	if ( school == SCHOOL_PHYSICAL ) m *= hysteria;
+	return m;
+  }
   virtual void summon( double duration=0 )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
     o -> active_dancing_rune_weapon = this;
+    if ( owner -> buffs.hysteria -> up() ) hysteria = 1.2; //Hysteria is the only player multiplier that affects DRW and it only effective it is active at summoning.
     snapshot_spell_crit  = o -> composite_spell_crit();
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
@@ -810,6 +1001,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::dismiss();
     o -> active_dancing_rune_weapon = 0;
+    hysteria = 1;
   }
 };
 
@@ -1673,7 +1865,7 @@ void death_knight_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
     player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
-    player_multiplier *= 1.0 +  p -> buffs_desolation -> value();
+    player_multiplier *= 1.0 + p -> buffs_desolation -> value();
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
       player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
   }
@@ -2128,9 +2320,7 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     if ( p -> buffs_dancing_rune_weapon -> check() )
 	  p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
-
   }
-
 };
 
 // Blood Plague =============================================================
@@ -3355,7 +3545,6 @@ struct plague_strike_t : public death_knight_attack_t
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
 	  p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
-
 
     if ( result_is_hit() )
     {
