@@ -1598,19 +1598,6 @@ static void trigger_necrosis( action_t* a )
   p -> active_necrosis -> execute();
 }
 
-// Trigger Sudden Doom ======================================================
-static void trigger_sudden_doom( action_t* a )
-{
-  death_knight_t* p = a -> player -> cast_death_knight();
-
-  if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
-
-  p -> procs_sudden_doom -> occur();
-
-  //if ( ! p -> sudden_doom ) p -> sudden_doom = new death_coil_t( p, "", true );
-  //p -> sudden_doom -> execute();
-}
-
 // Trigger Wandering Plague =================================================
 static void trigger_wandering_plague( action_t* a, double disease_damage )
 {
@@ -2413,85 +2400,6 @@ struct blood_plague_t : public death_knight_spell_t
   }
 };
 
-// Blood Strike =============================================================
-struct blood_strike_t : public death_knight_attack_t
-{
-  blood_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
-  {
-    death_knight_t* p = player -> cast_death_knight();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    static rank_t ranks[] =
-    {
-      { 80,  6, 764, 764, 0, -10 },
-      { 74,  5, 625, 625, 0, -10 },
-      { 69,  4, 411, 411, 0, -10 },
-      { 64,  3, 347, 347, 0, -10 },
-      { 59,  2, 295, 295, 0, -10 },
-      { 55,  1, 260, 260, 0, -10 },
-      { 0,   0,   0,   0, 0,   0 }
-    };
-    init_rank( ranks, 49930 );
-
-    cost_blood = 1;
-
-    weapon = &( p -> main_hand_weapon );
-    normalize_weapon_speed = true;
-    weapon_multiplier *= 0.4;
-
-    base_crit += p -> talents.subversion * 0.03;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
-                                  + p -> talents.guile_of_gorefiend * 0.15;
-
-    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
-                       + p -> talents.blood_of_the_north * 0.10;
-
-    convert_runes = p -> talents.blood_of_the_north / 3.0
-                    + p -> talents.reaping / 3.0;
-  }
-
-  virtual void target_debuff( int dmg_type )
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-  }
-
-  virtual void consume_resource() { }
-  virtual void execute()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
-    death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
-
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
-
-    if ( result_is_hit() )
-    {
-      p -> buffs_tier9_2pc_melee -> trigger();
-      trigger_abominations_might( this, 0.25 );
-      trigger_sudden_doom( this );
-      p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
-    }
-    // 30/60/100% to also hit with OH
-    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
-      {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
-      }
-  }
-};
-
 // Blood Tap ================================================================
 struct blood_tap_t : public death_knight_spell_t
 {
@@ -2686,6 +2594,7 @@ struct death_coil_t : public death_knight_spell_t
       base_cost = 0;
       trigger_gcd = 0;
     }
+    reset();
   }
 
   void execute()
@@ -2704,6 +2613,98 @@ struct death_coil_t : public death_knight_spell_t
     if ( proc ) return false;
 
     return death_knight_spell_t::ready();
+  }
+};
+
+// Trigger Sudden Doom ======================================================
+static void trigger_sudden_doom( action_t* a )
+{
+  death_knight_t* p = a -> player -> cast_death_knight();
+
+  if ( ! p -> sim -> roll( p -> talents.sudden_doom * 0.05 ) ) return;
+
+  p -> procs_sudden_doom -> occur();
+
+  if ( ! p -> sudden_doom ) p -> sudden_doom = new death_coil_t( p, "", true );
+  p -> sudden_doom -> execute();
+}
+
+// Blood Strike =============================================================
+struct blood_strike_t : public death_knight_attack_t
+{
+  blood_strike_t( player_t* player, const std::string& options_str  ) :
+      death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80,  6, 764, 764, 0, -10 },
+      { 74,  5, 625, 625, 0, -10 },
+      { 69,  4, 411, 411, 0, -10 },
+      { 64,  3, 347, 347, 0, -10 },
+      { 59,  2, 295, 295, 0, -10 },
+      { 55,  1, 260, 260, 0, -10 },
+      { 0,   0,   0,   0, 0,   0 }
+    };
+    init_rank( ranks, 49930 );
+
+    cost_blood = 1;
+
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = true;
+    weapon_multiplier *= 0.4;
+
+    base_crit += p -> talents.subversion * 0.03;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
+                                  + p -> talents.guile_of_gorefiend * 0.15;
+
+    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
+                       + p -> talents.blood_of_the_north * 0.10;
+
+    convert_runes = p -> talents.blood_of_the_north / 3.0
+                    + p -> talents.reaping / 3.0;
+  }
+
+  virtual void target_debuff( int dmg_type )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    death_knight_attack_t::target_debuff( dmg_type );
+    target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+  }
+
+  virtual void consume_resource() { }
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    weapon = &( p -> main_hand_weapon );
+    death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
+
+    if ( p -> buffs_dancing_rune_weapon -> check() )
+	  p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
+
+    if ( result_is_hit() )
+    {
+      p -> buffs_tier9_2pc_melee -> trigger();
+      trigger_abominations_might( this, 0.25 );
+      trigger_sudden_doom( this );
+      p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
+    }
+    // 30/60/100% to also hit with OH
+    double chance = util_t::talent_rank( p -> talents.threat_of_thassarian, 3, 0.30, 0.60, 1.0 );
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      if ( p -> rng_threat_of_thassarian -> roll ( chance ) )
+      {
+        weapon = &( p -> off_hand_weapon );
+        death_knight_attack_t::execute();
+      }
   }
 };
 
