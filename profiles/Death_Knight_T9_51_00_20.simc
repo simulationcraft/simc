@@ -16,8 +16,8 @@ actions+=/dancing_rune_weapon,if=buff.bloodlust.react
 actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:raise_dead,wait_on_ready=0
 actions+=/death_coil
 actions+=/sequence,name=blood2,wait_on_ready=1:death_strike:heart_strike:heart_strike:heart_strike:heart_strike
-actions+=/restart_sequence,name=blood1
-actions+=/restart_sequence,name=blood2
+actions+=/restart_sequence,name=blood1,if=buff.moving.down
+actions+=/restart_sequence,name=blood2,if=buff.moving.down
 head=faceplate_of_thunderous_rampage,stats=2009armor_74crit_82arpen_131str_155sta,gems=relentless_earthsiege_10hit_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=10hit_10str_4str
 shoulders=koltiras_shoulderplates_of_triumph,stats=1941armor_68hit_76crit_122str_130sta,gems=34str_4str,enchant=40ap_15crit

@@ -4337,7 +4337,10 @@ void death_knight_t::init_actions()
       break;
     case TREE_UNHOLY:
       if ( talents.bone_shield )
-        action_list_str += "/bone_shield";
+      {
+        action_list_str += "/sequence,name=bt_bs:blood_tap:bone_shield";
+        action_list_str += "/restart_sequence,name=bt_bs,if=buff.moving.down&in_combat&buff.bone_shield.remains<10";
+      }
       action_list_str += "/raise_dead";
       action_list_str += "/auto_attack";
       if ( glyphs.disease )

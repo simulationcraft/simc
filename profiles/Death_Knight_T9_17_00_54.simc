@@ -10,7 +10,8 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/bone_shield
+actions+=/sequence,name=bt_bs:blood_tap:bone_shield
+actions+=/restart_sequence,name=bt_bs,if=buff.moving.down&in_combat&buff.bone_shield.remains<10
 actions+=/raise_dead
 actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
