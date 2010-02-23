@@ -2756,7 +2756,8 @@ struct shamanistic_rage_t : public shaman_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_shamanistic_rage -> trigger();
-    p -> buffs_tier10_2pc_melee -> trigger();
+    if ( p -> set_bonus.tier10_2pc_melee() )
+      p -> buffs_tier10_2pc_melee -> trigger();
   }
 
   virtual bool ready()
@@ -3218,8 +3219,8 @@ void shaman_t::init_buffs()
   buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
-  buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0 );
-  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0 ); 
+  buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0, 0.0, talents.shamanistic_rage      );
+  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0 ); 
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
