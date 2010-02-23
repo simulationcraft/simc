@@ -2568,14 +2568,6 @@ struct bone_shield_t : public death_knight_spell_t
     return 0;
   }
 
-  virtual bool ready()
-  {
-    // Bone shield is "ready" if it hasn't yet been cast or has fallen
-    // off.
-    death_knight_t* p = player -> cast_death_knight();
-    return p -> buffs_bone_shield -> value() == 0;
-  }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
