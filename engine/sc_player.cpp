@@ -256,7 +256,7 @@ player_t::player_t( sim_t*             s,
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
     // Haste
-    base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ), 
+    base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
     // Spell Mechanics
@@ -285,9 +285,9 @@ player_t::player_t( sim_t*             s,
     attack_crit_per_agility( 0 ),   initial_attack_crit_per_agility( 0 ),
     position( POSITION_BACK ),
     // Defense Mechanics
-    target_auto_attack( 0 ), 
+    target_auto_attack( 0 ),
     base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
-    base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ), 
+    base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ),
     base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), buffed_block_value( 0 ),
     base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),     buffed_defense( 0 ),
     base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
@@ -313,8 +313,8 @@ player_t::player_t( sim_t*             s,
     action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
     // Reporting
     quiet( 0 ), last_foreground_action( 0 ),
-    current_time( 0 ), total_seconds( 0 ), 
-    total_waiting( 0 ), total_foreground_actions( 0 ), 
+    current_time( 0 ), total_seconds( 0 ),
+    total_waiting( 0 ), total_foreground_actions( 0 ),
     iteration_dmg( 0 ), total_dmg( 0 ),
     dps( 0 ), dps_min( 0 ), dps_max( 0 ), dps_std_dev( 0 ), dps_error( 0 ), dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
@@ -497,7 +497,7 @@ bool player_t::init( sim_t* sim )
       for ( int j=0; j < num_players; j++ )
       {
         player_t* p = sim -> find_player( player_names[ j ] );
-        if ( ! p ) 
+        if ( ! p )
         {
           util_t::fprintf( sim -> output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
           return false;
@@ -972,7 +972,7 @@ void player_t::init_buffs()
   buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
   buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 120.0, 120.0 );
   buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
@@ -1329,7 +1329,7 @@ double player_t::composite_tank_miss( int school ) SC_CONST
     m = 0.05;
 
     double delta = composite_defense() - sim -> target -> weapon_skill;
-  
+
     if( delta > 0 )
     {
       m += delta * 0.0004;
@@ -1354,7 +1354,7 @@ double player_t::composite_tank_miss( int school ) SC_CONST
     m = 0.04;
 
     int delta = level - sim -> target -> level;
-  
+
     if( delta > 0 )
     {
       m += delta * 0.01;
@@ -1395,7 +1395,7 @@ double player_t::composite_tank_dodge() SC_CONST
   d += agility() * dodge_per_agility;
 
   double delta = composite_defense() - sim -> target -> weapon_skill;
-  
+
   if( delta > 0 )
   {
     d += delta * 0.0004;
@@ -1418,7 +1418,7 @@ double player_t::composite_tank_parry() SC_CONST
   double p = parry;
 
   double delta = composite_defense() - sim -> target -> weapon_skill;
-  
+
   if( delta > 0 )
   {
     p += delta * 0.0004;
@@ -1441,7 +1441,7 @@ double player_t::composite_tank_block() SC_CONST
   double b = block;
 
   double delta = composite_defense() - sim -> target -> weapon_skill;
-  
+
   if( delta > 0 )
   {
     b += delta * 0.0004;
@@ -1479,7 +1479,7 @@ double player_t::composite_tank_crit( int school ) SC_CONST
     c = 0.05 + 0.002 * ( sim -> target -> level - level );
 
     double delta = composite_defense() - sim -> target -> weapon_skill;
-  
+
     if( delta > 0 )
     {
       c -= delta * 0.0004;
@@ -1845,7 +1845,7 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  bool allow_heroic_presence = 
+  bool allow_heroic_presence =
     (race == RACE_NIGHT_ELF) ||
     (race == RACE_GNOME)     ||
     (race == RACE_DWARF)     ||
@@ -1981,7 +1981,7 @@ void player_t::reset()
   attack_power_per_strength = initial_attack_power_per_strength;
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
-  
+
   armor_multiplier  = initial_armor_multiplier;
   armor_per_agility = initial_armor_per_agility;
   dodge_per_agility = initial_dodge_per_agility;
@@ -2393,10 +2393,10 @@ void player_t::stat_gain( int    stat,
     spell_crit        += amount / rating.spell_crit;
     break;
 
-  case STAT_HASTE_RATING: 
+  case STAT_HASTE_RATING:
     stats.haste_rating += amount;
-    haste_rating       += amount; 
-    recalculate_haste(); 
+    haste_rating       += amount;
+    recalculate_haste();
     break;
 
   case STAT_ARMOR:          stats.armor          += amount; armor       += amount;                  break;
@@ -2456,10 +2456,10 @@ void player_t::stat_loss( int    stat,
     spell_crit        -= amount / rating.spell_crit;
     break;
 
-  case STAT_HASTE_RATING: 
+  case STAT_HASTE_RATING:
     stats.haste_rating -= amount;
-    haste_rating       -= amount; 
-    recalculate_haste(); 
+    haste_rating       -= amount;
+    recalculate_haste();
     break;
 
   case STAT_ARMOR:          stats.armor          -= amount; armor       -= amount;                  break;
@@ -2477,7 +2477,7 @@ void player_t::stat_loss( int    stat,
 
 // player_t::summon_pet =====================================================
 
-void player_t::summon_pet( const char* pet_name, 
+void player_t::summon_pet( const char* pet_name,
                            double      duration )
 {
   for ( pet_t* p = pet_list; p; p = p -> next_pet )
@@ -3465,7 +3465,7 @@ struct use_item_t : public action_t
     {
       if( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if( e.proc_chance == 0 ) e.proc_chance = 1;
-      
+
       buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
     }
     else assert( false );
@@ -3873,13 +3873,13 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
 	  int slot;
           swing_remains_expr_t( action_t* a, int s ) : action_expr_t( a, "swing_remains", TOK_NUM ), slot(s) {}
-          virtual int evaluate() 
-	  { 
+          virtual int evaluate()
+	  {
 	    result_num = 9999;
 	    player_t* p = action -> player;
 	    attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
 	    if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
-	    return TOK_NUM; 
+	    return TOK_NUM;
 	  }
         };
         return new swing_remains_expr_t( a, hand );
@@ -3965,14 +3965,14 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     for ( int i=0; i < STAT_MAX; i++ )
     {
       double value = initial_stats.get_stat( i );
-      if ( value != 0 ) 
+      if ( value != 0 )
       {
         profile_str += "# gear_";
         profile_str += util_t::stat_type_string( i );
         profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
       }
     }
-    if ( meta_gem != META_GEM_NONE ) 
+    if ( meta_gem != META_GEM_NONE )
     {
       profile_str += "# meta_gem=";
       profile_str += util_t::meta_gem_type_string( meta_gem );
