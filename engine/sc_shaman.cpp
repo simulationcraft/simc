@@ -215,6 +215,7 @@ struct shaman_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talents.dual_wield ? ROLE_HYBRID : ROLE_SPELL; }
   virtual int       primary_tree() SC_CONST;
+  virtual void      combat_begin();
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -545,6 +546,7 @@ static void trigger_windfury_weapon( attack_t* a )
 
   shaman_t* p = a -> player -> cast_shaman();
 
+  if ( a -> proc ) return;
   if ( a -> weapon == 0 ) return;
   if ( a -> weapon -> buff_type != WINDFURY_IMBUE ) return;
 
@@ -587,6 +589,7 @@ static void stack_maelstrom_weapon( attack_t* a )
 
 static void trigger_unleashed_rage( attack_t* a )
 {
+  if ( a -> sim -> P333 ) return;
   if ( a -> proc ) return;
 
   shaman_t* s = a -> player -> cast_shaman();
@@ -701,7 +704,8 @@ static void trigger_lightning_overload( spell_t* s,
 
 static void trigger_elemental_oath( spell_t* s )
 {
-  if ( s -> pseudo_pet ) return;
+  if ( s -> sim -> P333 ) return;
+  if ( s -> pseudo_pet  ) return;
 
   shaman_t* shaman = s -> player -> cast_shaman();
 
@@ -3454,6 +3458,25 @@ void shaman_t::regen( double periodicity )
   }
 }
 
+// shaman_t::combat_begin =================================================
+
+void shaman_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( sim -> P333 )
+  {
+    if ( talents.elemental_oath ) sim -> auras.elemental_oath -> trigger();
+
+    int ur = util_t::talent_rank( talents.unleashed_rage, 3, 4, 7, 10 );
+
+    if ( ur >= sim -> auras.unleashed_rage -> current_value )
+    {
+      sim -> auras.unleashed_rage -> trigger( 1, ur );
+    }
+  }
+}
+
 // shaman_t::primary_tree =================================================
 
 int shaman_t::primary_tree() SC_CONST
@@ -3649,12 +3672,12 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, 15.0 );
+  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, ( sim -> P333 ? 0.0 : 15.0 ) );
   sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
   sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, 300.0 );
   sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
   sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
-  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, 10.0 );
+  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, ( sim -> P333 ? 0.0 : 10.0 ) );
   sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
   sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
 

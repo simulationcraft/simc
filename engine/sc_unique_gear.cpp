@@ -557,6 +557,7 @@ static void register_tiny_abom( item_t* item )
       {
         attack_t *attack = first_stack_attack;
         assert( attack != NULL );
+        first_stack_attack = NULL;
         buff -> expire();
         // This is pretty much a hack to repeat a melee attack under a
         // different name with slightly different parameters.
@@ -573,7 +574,6 @@ static void register_tiny_abom( item_t* item )
         attack -> proc = false;
         std::swap( proc_name, attack -> name_str );
         std::swap( old_stats, attack -> stats );
-        first_stack_attack = NULL;
       }
     }
   };

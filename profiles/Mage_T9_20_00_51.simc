@@ -18,8 +18,9 @@ actions+=/mana_gem
 actions+=/speed_potion
 actions+=/deep_freeze
 actions+=/frost_bolt,frozen=1
-actions+=/fire_ball,brain_freeze=1
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15
+actions+=/fire_ball,if=buff.brain_freeze.react,P333=0
+actions+=/frostfire_bolt,if=buff.brain_freeze.react,P333=1
 actions+=/mirror_image
 actions+=/frost_bolt
 actions+=/evocation

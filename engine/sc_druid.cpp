@@ -2753,6 +2753,8 @@ struct moonkin_form_t : public druid_spell_t
     }
 
     p -> spell_power_per_spirit += ( p -> talents.improved_moonkin_form * 0.10 );
+
+    p -> armor_multiplier += 3.7;
   }
 
   virtual bool ready()

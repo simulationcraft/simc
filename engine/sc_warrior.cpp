@@ -545,6 +545,8 @@ static void trigger_sword_specialization( attack_t* a )
 
 static void trigger_rampage( attack_t* a )
 {
+  if ( a -> sim -> P333 ) return;
+
   warrior_t* p = a -> player -> cast_warrior();
 
   if ( p -> talents.rampage == 0 )
@@ -1310,6 +1312,7 @@ struct revenge_t : public warrior_attack_t
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
       cooldown -> duration -= ( p -> talents.unrelenting_assault * 2 );
     }
+    if ( sim -> P333 ) base_multiplier *= 1.50;
     stancemask = STANCE_DEFENSE;
   }
   virtual void execute()
@@ -2703,10 +2706,19 @@ int warrior_t::primary_tree() SC_CONST
 void warrior_t::combat_begin()
 {
   player_t::combat_begin();
+
   // We start with zero rage into combat.
   resource_current[ RESOURCE_RAGE ] = 0;
+
   if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
+  {
     buffs_battle_stance -> trigger();
+  }
+
+  if ( sim -> P333 )
+  {
+    if (  talents.rampage ) sim -> auras.rampage -> trigger();
+  }
 }
 
 // warrior_t::reset ===========================================================
@@ -3117,7 +3129,7 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, int rac
 void player_t::warrior_init( sim_t* sim )
 {
   sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
-  sim -> auras.rampage      = new aura_t( sim, "rampage",      1,  10.0 );
+  sim -> auras.rampage      = new aura_t( sim, "rampage",      1, ( sim -> P333 ? 0.0 : 10.0 ) );
 
   target_t* t = sim -> target;
   t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );

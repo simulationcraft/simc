@@ -12,7 +12,6 @@ actions+=/mark_of_the_wild
 actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/faerie_fire
-actions+=/typhoon,moving=1
 actions+=/speed_potion
 actions+=/innervate,trigger=-2000
 actions+=/treants

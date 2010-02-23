@@ -3476,10 +3476,20 @@ struct wait_for_decimation_t : public action_t
 
 struct demonic_pact_callback_t : public action_callback_t
 {
-  demonic_pact_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+  double cooldown_ready;
+
+  demonic_pact_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), cooldown_ready(0) {}
+
+  virtual void reset() { action_callback_t::reset(); cooldown_ready=0; }
 
   virtual void trigger( action_t* a )
   {
+    if ( sim -> P333 )
+    {
+      if ( sim -> current_time < cooldown_ready ) return;
+      cooldown_ready = sim -> current_time + 20;
+    }
+
     warlock_t* o = listener -> cast_pet() -> owner -> cast_warlock();
 
     // HACK ALERT!!!  To prevent spell power contributions from ToW/FT/IDS/DP buffs, we fiddle with player type
@@ -4166,7 +4176,7 @@ void player_t::warlock_init( sim_t* sim )
 {
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.demonic_pact = new buff_t( p, "demonic_pact", 1, 12.0 );
+    p -> buffs.demonic_pact = new buff_t( p, "demonic_pact", 1, ( sim -> P333 ? 45.0 : 12.0 ) );
   }
 
   target_t* t = sim -> target;
