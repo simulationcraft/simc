@@ -5,7 +5,7 @@ Globals_T10.simc
 Death_Knight_T9_51_00_20.simc
 Death_Knight_T9_03_51_17.simc
 Death_Knight_T9_00_53_18.simc
-Death_Knight_T9_16_00_55.simc
+Death_Knight_PTR_16_00_55.simc
 
 Druid_T9_00_55_16.simc
 Druid_T9_00_55_16_M.simc
@@ -17,11 +17,10 @@ Hunter_T9_07_57_07.simc
 Hunter_T9_07_57_07_HM.simc
 Hunter_T9_53_14_04.simc
 
-Mage_T9_00_53_18.simc
-Mage_T9_20_00_51.simc   focus_magic_target=Mage_T9_20_51_00
-Mage_T9_20_51_00.simc   focus_magic_target=Mage_T9_53_18_00
-Mage_T9_53_18_00.simc   focus_magic_target=Mage_T9_57_03_11
-Mage_T9_57_03_11.simc   focus_magic_target=Mage_T9_20_00_51
+Mage_T10_00_53_18.simc
+Mage_T10_18_00_53.simc   focus_magic_target=Mage_T10_20_51_00
+Mage_T10_20_51_00.simc   focus_magic_target=Mage_T10_57_03_11
+Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 
 Paladin_T9_05_11_55.simc
 
@@ -30,14 +29,14 @@ Priest_T10_13_00_58_264_SWD.simc
 Priest_T10_13_00_58_277.simc
 Priest_T10_13_00_58_277_SWD.simc
 
-Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
-Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
-Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
-Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
-Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
-Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
-Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+#Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
+#Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
+#Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
+#Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
+#Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
+#Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07
+#Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
+#Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
 
 Shaman_T9_16_55_00_258.simc
 Shaman_T9_20_51_00_258.simc
@@ -54,4 +53,3 @@ Warrior_T9_19_52_00.simc
 Warrior_T9_54_17_00_A.simc
 Warrior_T9_54_17_00_M.simc
 Warrior_T9_54_17_00_S.simc
-
