@@ -3139,13 +3139,15 @@ struct starfall_t : public druid_spell_t
 
         static rank_t ranks[] =
         {
-          { 80, 4, 78, 78, 0, 0 },
-          { 75, 3, 66, 66, 0, 0 },
-          { 70, 2, 45, 45, 0, 0 },
-          { 60, 1, 20, 20, 0, 0 },
-          { 0, 0, 0, 0, 0, 0 }
+          { 80, 4,  78,  78, 0, 0 },
+          { 75, 3,  66,  66, 0, 0 },
+          { 70, 2,  45,  45, 0, 0 },
+          { 60, 1,  20,  20, 0, 0 },
+          {  0, 0,   0,   0, 0, 0 }
         };
+        
         init_rank( ranks );
+        if ( p -> sim -> P333 ) base_dd_min = base_dd_max = 101;
         direct_power_mod  = 0.012;
         may_crit          = true;
         may_miss          = true;
@@ -3225,6 +3227,11 @@ struct starfall_t : public druid_spell_t
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
+    if ( p -> sim -> P333 ) 
+    {
+      base_dd_min = 563;
+      base_dd_max = 653;
+    }
 
     num_ticks      = 10;
     base_tick_time = 1.0;
@@ -3283,6 +3290,7 @@ struct typhoon_t : public druid_spell_t
     direct_power_mod  = 0.193;
     base_multiplier *= 1.0 + 0.15 * p -> talents.gale_winds;
     aoe = true;
+    if ( p -> sim -> P333) base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.25;
 
     cooldown -> duration = 20;
     if ( p -> glyphs.monsoon )
