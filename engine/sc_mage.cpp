@@ -541,7 +541,7 @@ static void trigger_ignite( spell_t* s,
       trigger_gcd    = 0;
       background     = true;
       proc           = true;
-      may_resist     = false;
+      may_resist     = true;
       reset();
     }
     virtual void target_debuff( int dmg_type ) {}
@@ -2038,6 +2038,12 @@ struct pyroblast_t : public mage_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
                                           ( p -> talents.burnout     * 0.10 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+
+    if ( sim -> P333 ) 
+    {
+      direct_power_mod += p -> talents.empowered_fire * 0.05;
+      may_torment = true;
+    }
   }
 
   virtual void execute()
@@ -2176,7 +2182,7 @@ struct combustion_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.combustion );
-    cooldown -> duration = 180;
+    cooldown -> duration = ( sim -> P333 ? 120 : 180 );
 
     id = 11129;
   }

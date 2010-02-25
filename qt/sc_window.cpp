@@ -145,20 +145,21 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 12 )
+  if( tokens.count() >= 13 )
   {
-         latencyChoice->setCurrentIndex( tokens[  0 ].toInt() );
-      iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
-     fightLengthChoice->setCurrentIndex( tokens[  2 ].toInt() );
-   fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
-            addsChoice->setCurrentIndex( tokens[  4 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[  5 ].toInt() );
-      targetRaceChoice->setCurrentIndex( tokens[  6 ].toInt() );
-     playerSkillChoice->setCurrentIndex( tokens[  7 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[  9 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 10 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 11 ].toInt() );
+           patchChoice->setCurrentIndex( tokens[  0 ].toInt() );
+         latencyChoice->setCurrentIndex( tokens[  1 ].toInt() );
+      iterationsChoice->setCurrentIndex( tokens[  2 ].toInt() );
+     fightLengthChoice->setCurrentIndex( tokens[  3 ].toInt() );
+   fightVarianceChoice->setCurrentIndex( tokens[  4 ].toInt() );
+            addsChoice->setCurrentIndex( tokens[  5 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[  6 ].toInt() );
+      targetRaceChoice->setCurrentIndex( tokens[  7 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[  8 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[  9 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 11 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 12 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -171,7 +172,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 12; i < tokens.count(); i++)
+  for(int i = 13; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -199,7 +200,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13" )
+    .arg(         patchChoice->currentIndex() )
     .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -452,6 +454,7 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 2, "3.3.2", "3.3.3" ) );
   globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
@@ -819,6 +822,9 @@ void SimulationCraftWindow::createResultsTab()
 
 void SimulationCraftWindow::createToolTips()
 {
+  patchChoice->setToolTip( "3.3.2: Live\n"
+			   "3.3.3: PTR" );
+
   latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
 			     "High: queue=0.150  gcd=0.300  channel=0.500" );
 
@@ -1108,6 +1114,7 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
+  options += "patch=" + patchChoice->currentText() + "\n";
   if( latencyChoice->currentText() == "Low" )
   {
     options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
