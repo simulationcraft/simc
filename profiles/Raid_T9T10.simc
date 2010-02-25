@@ -41,9 +41,9 @@ Shaman_T9_57_14_00_258_ToW.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2p
 
 Warlock_T9_00_13_58.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Warlock_T9_00_18_53.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
-Warlock_T9_03_13_55.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Warlock_T9_00_56_15.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 Warlock_T9_55_00_16.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
+Warlock_T9_56_00_15.simc  tier9_2pc_caster=0 tier9_4pc_caster=0 tier10_2pc_caster=1 tier10_4pc_caster=1
 
 Warrior_T9_19_52_00.simc    tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
 Warrior_T9_54_17_00_A.simc  tier9_2pc_melee=0 tier9_4pc_melee=0 tier10_2pc_melee=1 tier10_4pc_melee=1
