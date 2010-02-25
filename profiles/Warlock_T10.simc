@@ -1,0 +1,22 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+Warlock_T9_00_13_58.simc
+Warlock_T9_00_18_53.simc
+Warlock_T9_00_56_15.simc
+Warlock_T9_55_00_16.simc
+Warlock_T9_56_00_15.simc
+
+# scwarlockt10
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=20850041 name=Warlock_T10_56_00_15    save=Warlock_T10_56_00_15.simc
+#wowhead=20850045 name=Warlock_T10_55_00_16    save=Warlock_T10_55_00_16.simc
+#wowhead=20850049 name=Warlock_T10_00_13_58    save=Warlock_T10_00_13_58.simc
+#wowhead=20850054 name=Warlock_T10_00_18_53    save=Warlock_T10_00_18_53.simc
+#wowhead=20850056 name=Warlock_T10_00_56_15    save=Warlock_T10_00_56_15.simc
+
+#save_profiles=1

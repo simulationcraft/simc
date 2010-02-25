@@ -1,0 +1,58 @@
+#!./simc 
+
+warlock=Warlock_T10_55_00_16
+origin="http://profiler.wowhead.com/?profile=20850045"
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=235002200102351025350033115100000000000000000000000000055001005
+glyphs=quick_decay/haunt/life_tap
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/spell_stone
+actions+=/fel_armor
+actions+=/summon_pet,felhunter
+actions+=/snapshot_stats
+actions+=/life_tap,buff_refresh=1
+actions+=/use_item,name=nevermelting_ice_crystal
+actions+=/wild_magic_potion,bloodlust=1
+actions+=/haunt
+actions+=/corruption
+actions+=/curse_of_agony
+actions+=/unstable_affliction
+actions+=/drain_soul,health_percentage<=25,interrupt=1
+actions+=/shadow_bolt
+actions+=/life_tap,mana_percentage<=20,buff_refresh=1,moving=1
+actions+=/life_tap
+head=sanctified_dark_coven_hood,stats=300armor_114crit_106haste_186sp_139sta_139int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+neck=bone_sentinels_amulet,stats=60haste_110sp_78sta_78int_68spi,gems=12sp_10spi_5sp
+shoulders=sanctified_dark_coven_shoulderpads,stats=277armor_90crit_82haste_150sp_103sta_103int,gems=10haste_12sp_5sp,enchant=24sp_15crit
+chest=sanctified_dark_coven_robe,stats=369armor_122crit_106haste_195sp_139sta_139int,gems=23sp_10haste_12sp_7sp,enchant=10str_10agi_10sta_10int_10spi
+waist=crushing_coldwraith_belt,stats=208armor_74crit_90haste_140sp_103sta_103int,gems=12sp_10spi_23sp_23sp_7sp
+legs=plaguebringers_stained_pants,stats=323armor_104hit_116haste_185sp_139sta_139int,gems=23sp_12sp_10spi_10haste_12sp_9sp,enchant=50sp_20spi
+feet=plague_scientists_boots,stats=254armor_74crit_90haste_140sp_103sta_103int,gems=12sp_10spi_23sp_7sp,enchant=15sta
+wrists=death_surgeons_sleeves,stats=162armor_60crit_110sp_78sta_78int_68spi,gems=12sp_10spi_5sp,enchant=30sp
+hands=sanctified_dark_coven_gloves,stats=231armor_82hit_90crit_150sp_103sta_103int,gems=12sp_10spi_5sp,enchant=28sp
+finger1=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10haste_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
+finger2=memory_of_malygos,stats=60haste_110sp_78sta_78int_68spi,gems=10haste_12sp_5sp,enchant=23sp
+trinket1=nevermelting_ice_crystal,stats=111sp,use=onspelldirectcrit_184crit_5stack_20dur_180cd_reverse
+trinket2=dislodged_foreign_object,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
+back=greatcloak_of_the_turned_champion,stats=185armor_60haste_110sp_78sta_78int_68spi,gems=12sp_10spi_5sp,enchant=lightweave_embroidery
+main_hand=rigormortis,stats=50hit_66haste_836sp_76sta_76int,gems=12sp_10spi,enchant=63sp,weapon=sword_1.80speed_142min_414max
+off_hand=sundial_of_eternal_dusk,stats=68haste_119sp_78sta_78int_68spi
+ranged=corpseimpaling_spike,stats=38crit_30haste_58sp_44sta_44int,gems=10haste_12sp_5sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=1437
+# gear_intellect=1422
+# gear_spirit=461
+# gear_spell_power=3456
+# gear_hit_rating=287
+# gear_crit_rating=718
+# gear_haste_rating=1228
+# gear_armor=2309
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=greatcloak_of_the_turned_champion,enchant=lightweave_embroidery
+# main_hand=rigormortis,weapon=sword_1.80speed_142min_414max
