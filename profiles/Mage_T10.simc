@@ -1,0 +1,10 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+Mage_T10_00_53_18.simc
+Mage_T10_20_00_51.simc   focus_magic_target=Mage_T10_20_51_00
+Mage_T10_20_51_00.simc   focus_magic_target=Mage_T10_57_03_11
+Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_20_00_51

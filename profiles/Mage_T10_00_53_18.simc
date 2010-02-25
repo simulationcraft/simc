@@ -1,0 +1,57 @@
+#!./simc 
+
+mage=Mage_T10_00_53_18
+origin="/Users/wrd/Desktop/T10/Mage_0_53_18.xml"
+level=80
+race=undead
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=00000000000000000000000000000023050300123033310531203013512033030310030000000000000000
+glyphs=frostfire/molten_armor/living_bomb
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/arcane_brilliance
+actions+=/snapshot_stats
+actions+=/counterspell
+actions+=/scorch,debuff=1
+actions+=/combustion
+actions+=/icy_veins
+actions+=/mana_gem
+actions+=/speed_potion
+actions+=/living_bomb
+actions+=/pyroblast,hot_streak=1
+actions+=/mirror_image
+actions+=/frostfire_bolt
+actions+=/evocation
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+head=sanctified_bloodmage_hood,stats=300armor_122crit_98haste_186sp_139sta_139int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
+neck=blood_queens_crimson_choker,stats=65crit_60haste_110sp_78sta_78int,gems=10crit_12sp
+shoulders=sanctified_bloodmage_shoulderpads,stats=277armor_90crit_82haste_150sp_103sta_103int,gems=10crit_12sp_5sp,enchant=24sp_15crit
+chest=sanctified_bloodmage_robe,stats=369armor_106crit_122haste_195sp_139sta_139int,gems=10crit_12sp_12sp_10spi_7sp,enchant=15spi
+waist=crushing_coldwraith_belt,stats=208armor_74crit_90haste_140sp_103sta_103int,gems=10crit_12sp_10crit_12sp_10crit_12sp
+legs=sanctified_bloodmage_leggings,stats=323armor_106hit_122crit_195sp_139sta_139int,gems=12sp_10spi_10crit_12sp_7sp,enchant=50sp_20spi
+feet=plague_scientists_boots,stats=254armor_74crit_90haste_140sp_103sta_103int,gems=10crit_12sp_10crit_12sp,enchant=15sta
+wrists=the_ladys_brittle_bracers,stats=162armor_52hit_73crit_110sp_78sta_78int,gems=10crit_12sp,enchant=30sp
+hands=sanctified_bloodmage_gloves,stats=231armor_82hit_90crit_150sp_103sta_103int,gems=12sp_10spi_5sp,enchant=28sp
+finger1=ring_of_rapid_ascent,stats=68crit_60haste_110sp_78sta_78int,gems=10crit_12sp,enchant=23sp
+finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10crit_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
+trinket1=dislodged_foreign_object,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
+trinket2=muradins_spyglass,stats=152crit,equip=onspelldamage_20sp_10stack_10dur
+back=frostbinders_shredded_cape,stats=185armor_68crit_60haste_110sp_78sta_78int,gems=10crit_12sp,enchant=lightweave_embroidery
+main_hand=bloodsurge_kelthuzads_blade_of_agony,stats=55crit_71haste_893sp_81sta_81int,gems=10crit_12sp,enchant=black_magic,weapon=sword_1.80speed_160min_447max
+off_hand=shadow_silk_spindle,stats=68crit_68haste_119sp_78sta_78int
+ranged=corpseimpaling_spike,stats=38crit_30haste_58sp_44sta_44int,gems=10crit_12sp
+# Gear Summary
+# gear_stamina=1432
+# gear_intellect=1417
+# gear_spirit=76
+# gear_spell_power=3241
+# gear_hit_rating=291
+# gear_crit_rating=1471
+# gear_haste_rating=1065
+# gear_armor=2309
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=frostbinders_shredded_cape,enchant=lightweave_embroidery
+# main_hand=bloodsurge_kelthuzads_blade_of_agony,weapon=sword_1.80speed_160min_447max,enchant=black_magic
+armor_type=molten

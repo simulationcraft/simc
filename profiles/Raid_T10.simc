@@ -2,10 +2,10 @@
 
 Globals_T10.simc
 
-Death_Knight_T9_51_00_20.simc
-Death_Knight_T9_03_51_17.simc
-Death_Knight_T9_00_53_18.simc
-Death_Knight_PTR_16_00_55.simc
+Death_Knight_T10_51_00_20.simc
+Death_Knight_T10_51_00_20_GoD.simc
+Death_Knight_T10_14_00_57.simc
+Death_Knight_T10_00_54_17.simc
 
 Druid_T9_00_55_16.simc
 Druid_T9_00_55_16_M.simc
@@ -38,10 +38,9 @@ Priest_T10_13_00_58_277_SWD.simc
 #Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
 #Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
 
-Shaman_T9_16_55_00_258.simc
-Shaman_T9_20_51_00_258.simc
-Shaman_T9_57_14_00_258.simc
-Shaman_T9_57_14_00_258_ToW.simc
+Shaman_T10_19_52_00.simc
+Shaman_T10_57_14_00.simc
+Shaman_T10_57_14_00_ToW.simc
 
 Warlock_T9_00_13_58.simc
 Warlock_T9_00_18_53.simc
