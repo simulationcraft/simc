@@ -4,19 +4,19 @@ Globals_T9.simc
 
 optimal_raid=1
 
-#Warlock_T9_00_13_58.simc
-#Warlock_T9_00_18_53.simc
-#Warlock_T9_00_56_15.simc
-#Warlock_T9_55_00_16.simc
-#Warlock_T9_56_00_15.simc
+Warlock_T9_00_13_58.simc
+Warlock_T9_00_18_53.simc
+Warlock_T9_00_56_15.simc
+Warlock_T9_55_00_16.simc
+Warlock_T9_56_00_15.simc
 
 # scwarlockt9
 # Uncomment below and comment out above to download profiles.
 
-wowhead=13808359 name=Warlock_T9_00_13_58    save=Warlock_T9_00_13_58.simc
-wowhead=18859553 name=Warlock_T9_00_18_53    save=Warlock_T9_00_18_53.simc
-wowhead=15214160 name=Warlock_T9_55_00_16    save=Warlock_T9_55_00_16.simc
-wowhead=20850306 name=Warlock_T9_56_00_15    save=Warlock_T9_56_00_15.simc
-wowhead=18859247 name=Warlock_T9_00_56_15    save=Warlock_T9_00_56_15.simc
+#wowhead=13808359 name=Warlock_T9_00_13_58    save=Warlock_T9_00_13_58.simc
+#wowhead=18859553 name=Warlock_T9_00_18_53    save=Warlock_T9_00_18_53.simc
+#wowhead=15214160 name=Warlock_T9_55_00_16    save=Warlock_T9_55_00_16.simc
+#wowhead=20850306 name=Warlock_T9_56_00_15    save=Warlock_T9_56_00_15.simc
+#wowhead=18859247 name=Warlock_T9_00_56_15    save=Warlock_T9_00_56_15.simc
 
-save_profiles=1
+#save_profiles=1
