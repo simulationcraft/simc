@@ -2293,7 +2293,7 @@ struct melee_t : public death_knight_attack_t
         p -> buffs_scent_of_blood -> decrement();
       }
       // KM: 1/2/3/4/5 PPM proc, only auto-attacks
-      double chance = weapon -> proc_chance_on_swing( p -> talents.killing_machine, time_to_execute );
+      double chance = weapon -> proc_chance_on_swing( p -> talents.killing_machine );
       p -> buffs_killing_machine -> trigger( 1, 1, chance );
     }
   }

@@ -3147,8 +3147,12 @@ struct starfall_t : public druid_spell_t
         };
         
         init_rank( ranks );
-        if ( p -> sim -> P333 ) base_dd_min = base_dd_max = 101;
         direct_power_mod  = 0.012;
+        if ( p -> sim -> P333 )
+        {
+          base_dd_min = base_dd_max = 101;
+          direct_power_mod  = 0.13;
+        }
         may_crit          = true;
         may_miss          = true;
         may_resist        = true;
@@ -3177,7 +3181,8 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
 
-        direct_power_mod  = 0.05;
+        direct_power_mod  = 0.046;
+        if ( p -> sim -> P333 ) direct_power_mod = 0.37;
         may_crit          = true;
         may_miss          = true;
         may_resist        = true;
