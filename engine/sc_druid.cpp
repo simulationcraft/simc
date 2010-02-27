@@ -2397,17 +2397,14 @@ struct innervate_t : public druid_spell_t
 
 struct insect_swarm_t : public druid_spell_t
 {
-  double min_eclipse_left;
-
   insect_swarm_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ), min_eclipse_left( 0 )
+      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.insect_swarm );
 
     option_t options[] =
     {
-      { "eclipse_left>", OPT_FLT, &min_eclipse_left },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2466,17 +2463,6 @@ struct insect_swarm_t : public druid_spell_t
       if ( p -> buffs_eclipse_lunar -> check() )
         return false;
 
-    if ( min_eclipse_left > 0 )
-    {
-      if ( p  -> buffs_eclipse_solar -> check() )
-        if ( p  -> buffs_eclipse_solar -> remains_lt( min_eclipse_left ) )
-          return false;
-
-      if ( p  -> buffs_eclipse_lunar -> check() )
-        if ( p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ) )
-          return false;
-    }
-
     return true;
   }
 };
@@ -2485,18 +2471,16 @@ struct insect_swarm_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  double min_eclipse_left;
   double base_crit_tick, base_crit_direct;
 
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), min_eclipse_left( 0 ),
+      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
       base_crit_tick( 0 ), base_crit_direct( 0 )
   {
     druid_t* p = player -> cast_druid();
 
     option_t options[] =
     {
-      { "eclipse_left>",   OPT_FLT, &min_eclipse_left },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2570,17 +2554,6 @@ struct moonfire_t : public druid_spell_t
     if ( skip_on_eclipse < 0 )
       if ( p -> buffs_eclipse_solar -> check() )
         return false;
-
-    if ( min_eclipse_left > 0 )
-    {
-      if ( p  -> buffs_eclipse_solar -> check() )
-        if ( p  -> buffs_eclipse_solar -> remains_lt( min_eclipse_left ) )
-          return false;
-
-      if ( p  -> buffs_eclipse_lunar -> check() )
-        if ( p  -> buffs_eclipse_lunar -> remains_lt( min_eclipse_left ) )
-          return false;
-    }
 
     return true;
   }
