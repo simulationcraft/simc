@@ -250,7 +250,7 @@ player_t::player_t( sim_t*             s,
                     int                r ) :
     sim( s ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 80 ), tank( -1 ),
+    next( 0 ), index( -1 ), type( t ), level( 80 ), use_pre_potion( -1 ), tank( -1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
@@ -3910,6 +3910,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     profile_str += "origin=\"" + origin_str + "\"\n";
     profile_str += "level=" + util_t::to_string( level ) + "\n";
     profile_str += "race=" + race_str + "\n";
+    profile_str += "use_pre_potion" + util_t::to_string( use_pre_potion ) + "\n";
 
     if ( professions_str.size() > 0 )
     {
@@ -4043,6 +4044,7 @@ std::vector<option_t>& player_t::get_options()
       { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
       { "race",                                 OPT_STRING,   &( race_str                                     ) },
       { "level",                                OPT_INT,      &( level                                        ) },
+      { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                               ) },
       { "tank",                                 OPT_INT,      &( tank                                         ) },
       { "skill",                                OPT_FLT,      &( initial_skill                                ) },
       { "distance",                             OPT_FLT,      &( distance                                     ) },

@@ -163,9 +163,9 @@ enum dot_behavior_type { DOT_WAIT=0, DOT_CLIP, DOT_REFRESH };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT, 
+enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
                       BASE_STAT_HEALTH, BASE_STAT_MANA,
-                      BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT, 
+                      BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                       BASE_STAT_DODGE_PER_AGI,
                       BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MAX };
 
@@ -352,8 +352,8 @@ enum stat_type
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
-  STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED, 
-  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING, 
+  STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
   STAT_MAX
 };
@@ -866,7 +866,7 @@ struct action_expr_t
   int result_type;
   double result_num;
   std::string result_str;
-  
+
   action_expr_t( action_t* a, const std::string& n, int t=TOK_UNKNOWN ) : action(a), name_str(n), result_type(t), result_num(0) {}
   action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action(a), name_str(n) { result_type = TOK_NUM; result_num = constant_value; }
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action(a), name_str(n) { result_type = TOK_STR; result_str = constant_value; }
@@ -1252,7 +1252,7 @@ struct item_t
     bool reverse;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
-        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ), 
+        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant;
@@ -1308,13 +1308,13 @@ struct player_t
   std::string name_str, talents_str, glyphs_str, id_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
-  int         index, type, level, tank, party, member;
+  int         index, type, level, use_pre_potion, tank, party, member;
   double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;
-  
+
   // Option Parsing
   std::vector<option_t> options;
 
@@ -1492,7 +1492,7 @@ struct player_t
   struct buffs_t
   {
     buff_t* arcane_brilliance;
-    buff_t* berserking; 
+    buff_t* berserking;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
     buff_t* blessing_of_wisdom;
@@ -2185,7 +2185,7 @@ struct sequence_t : public action_t
 
 // Cooldown ==================================================================
 
-struct cooldown_t 
+struct cooldown_t
 {
   sim_t* sim;
   player_t* player;
@@ -2197,8 +2197,8 @@ struct cooldown_t
   cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
   virtual ~cooldown_t() {}
   virtual void reset() { ready=-1; }
-  virtual void start( double override=-1 ) 
-  { 
+  virtual void start( double override=-1 )
+  {
     if ( override >= 0 ) duration = override;
     if ( duration > 0 ) ready = sim -> current_time + duration;
   }
@@ -2208,7 +2208,7 @@ struct cooldown_t
 
 // DoT =======================================================================
 
-struct dot_t 
+struct dot_t
 {
   player_t* player;
   action_t* action;
@@ -2224,14 +2224,14 @@ struct dot_t
     action = a;
     ready = player -> sim -> current_time + duration;
   }
-  virtual double remains() 
-  { 
+  virtual double remains()
+  {
     if ( ! action ) return 0;
     if ( ! action -> ticking ) return 0;
-    return ready - player -> sim -> current_time; 
+    return ready - player -> sim -> current_time;
   }
-  virtual int ticks() 
-  { 
+  virtual int ticks()
+  {
     if ( ! action ) return 0;
     if ( ! action -> ticking ) return 0;
     return ( action -> num_ticks - action -> current_tick );
