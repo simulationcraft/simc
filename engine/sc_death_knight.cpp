@@ -2745,7 +2745,7 @@ struct blood_strike_t : public death_knight_attack_t
                                   + p -> talents.guile_of_gorefiend * 0.15;
 
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
-                       + p -> talents.blood_of_the_north * 0.10;
+                         + util_t::talent_rank( p -> talents.blood_of_the_north, 3, 0.03, 0.06, 0.10 );
 
     convert_runes = p -> talents.blood_of_the_north / 3.0
                     + p -> talents.reaping / 3.0;
@@ -3053,7 +3053,7 @@ struct frost_strike_t : public death_knight_attack_t
     weapon_multiplier     *= 0.55;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.guile_of_gorefiend * 0.15;
-    base_multiplier *= 1.0 + p -> talents.blood_of_the_north / 3.0;
+    base_multiplier *= 1.0 + util_t::talent_rank( p -> talents.blood_of_the_north, 3, 0.03, 0.06, 0.10 );
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
     base_dd_adder = 113 * p -> sigils.vengeful_heart;
