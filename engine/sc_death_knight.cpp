@@ -1505,18 +1505,21 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
     }
   }
 
-  std::string rune_str;
-  for ( int j = 0; j < RUNE_SLOT_MAX; ++j)
+  if ( p -> sim -> log )
   {
-    char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
-    if ( p -> _runes.slot[j].is_death() )
-      rune_letter = 'd';
+    std::string rune_str;
+    for ( int j = 0; j < RUNE_SLOT_MAX; ++j)
+    {
+      char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
+      if ( p -> _runes.slot[j].is_death() )
+	rune_letter = 'd';
 
-    if ( p -> _runes.slot[j].is_ready( p -> sim -> current_time ) )
-      rune_letter = toupper(rune_letter);
-    rune_str += rune_letter;
+      if ( p -> _runes.slot[j].is_ready( p -> sim -> current_time ) )
+	rune_letter = toupper(rune_letter);
+      rune_str += rune_letter;
+    }
+    log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str());
   }
-  log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str());
 
   if ( count_runes( p ) == 0 )
     p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
