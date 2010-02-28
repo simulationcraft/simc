@@ -18,6 +18,8 @@ enum rune_type
   RUNE_TYPE_NONE=0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH=8
 };
 
+const char *rune_symbols = "!bfu!!";
+
 #define RUNE_TYPE_MASK     3
 #define RUNE_SLOT_MAX      6
 
@@ -1485,6 +1487,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
   double t = p -> sim -> current_time;
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
     if ( use[i] )
     {
       // Show the consumed type of the rune
@@ -1499,8 +1502,21 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
 
       if ( p -> sim -> log )
         log_t::output( p -> sim, "%s consumes rune #%d, type %d, %.2f", p -> name(), i, consumed_type, p -> _runes.slot[i].cooldown_ready );
-
     }
+  }
+
+  std::string rune_str;
+  for ( int j = 0; j < RUNE_SLOT_MAX; ++j)
+  {
+    char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
+    if ( p -> _runes.slot[j].is_death() )
+      rune_letter = 'd';
+
+    if ( p -> _runes.slot[j].is_ready( p -> sim -> current_time ) )
+      rune_letter = toupper(rune_letter);
+    rune_str += rune_letter;
+  }
+  log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str());
 
   if ( count_runes( p ) == 0 )
     p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
@@ -2500,6 +2516,7 @@ struct blood_tap_t : public death_knight_spell_t
     trigger_gcd = 0;
     base_cost   = 0;
     id          = 45529;
+    harmful     = false;
   }
 
   void execute()
@@ -4283,6 +4300,7 @@ void death_knight_t::init_actions()
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
       action_list_str += ":heart_strike";
+      action_list_str += "/speed_potion";
       action_list_str += "/restart_sequence,name=blood1";
       action_list_str += "/restart_sequence,name=blood2";
       break;
@@ -4302,6 +4320,7 @@ void death_knight_t::init_actions()
       // UA 'lags' in updating armor, so first ghoul should be a few
       // seconds after it, second ghoud then with bloodlust
       action_list_str += "/auto_attack";
+      action_list_str += "/speed_potion";
       if ( talents.unbreakable_armor )
         action_list_str += "/unbreakable_armor,time>=10";
 
@@ -4369,6 +4388,7 @@ void death_knight_t::init_actions()
         action_list_str += "/scourge_strike";
         action_list_str += "/blood_strike";
       }
+      action_list_str += "/speed_potion";
       if ( talents.summon_gargoyle )
       {
         action_list_str += "/summon_gargoyle,time<=20";
