@@ -229,15 +229,15 @@ struct destruction_potion_t : public action_t
   {
     if ( player -> in_combat )
     {
-	  player -> buffs.destruction_potion -> trigger();
+      player -> buffs.destruction_potion -> trigger();
     }
     else
     {
-	  cooldown -> duration -= 5.0;
-	  player -> buffs.destruction_potion -> duration -= 5.0;
-	  player -> buffs.destruction_potion -> trigger();
-	  cooldown -> duration += 5.0;
-	  player -> buffs.destruction_potion -> duration += 5.0;
+      cooldown -> duration -= 5.0;
+      player -> buffs.destruction_potion -> duration -= 5.0;
+      player -> buffs.destruction_potion -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.destruction_potion -> duration += 5.0;
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -248,8 +248,8 @@ struct destruction_potion_t : public action_t
 
   virtual bool ready()
   {
-	if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
-	  return false;
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
 
     if ( player -> potion_used )
       return false;
@@ -283,15 +283,15 @@ struct speed_potion_t : public action_t
   {
     if ( player -> in_combat )
     {
-	  player -> buffs.speed_potion -> trigger();
+      player -> buffs.speed_potion -> trigger();
     }
     else
     {
-	  cooldown -> duration -= 5.0;
-	  player -> buffs.speed_potion -> duration -= 5.0;
-	  player -> buffs.speed_potion -> trigger();
-	  cooldown -> duration += 5.0;
-	  player -> buffs.speed_potion -> duration += 5.0;
+      cooldown -> duration -= 5.0;
+      player -> buffs.speed_potion -> duration -= 5.0;
+      player -> buffs.speed_potion -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.speed_potion -> duration += 5.0;
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -302,8 +302,8 @@ struct speed_potion_t : public action_t
 
   virtual bool ready()
   {
-	if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
-	  return false;
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
 
     if ( player -> potion_used )
       return false;
@@ -337,19 +337,19 @@ struct wild_magic_potion_t : public action_t
   {
     if ( player -> in_combat )
     {
-	  player -> buffs.wild_magic_potion_sp   -> trigger();
-	  player -> buffs.wild_magic_potion_crit -> trigger();
+      player -> buffs.wild_magic_potion_sp   -> trigger();
+      player -> buffs.wild_magic_potion_crit -> trigger();
     }
     else
     {
-	  cooldown -> duration -= 5.0;
-	  player -> buffs.wild_magic_potion_sp   -> duration -= 5.0;
-	  player -> buffs.wild_magic_potion_crit -> duration -= 5.0;
-	  player -> buffs.wild_magic_potion_sp   -> trigger();
-	  player -> buffs.wild_magic_potion_crit -> trigger();
-	  cooldown -> duration += 5.0;
-	  player -> buffs.wild_magic_potion_sp   -> duration += 5.0;
-	  player -> buffs.wild_magic_potion_crit -> duration += 5.0;
+      cooldown -> duration -= 5.0;
+      player -> buffs.wild_magic_potion_sp   -> duration -= 5.0;
+      player -> buffs.wild_magic_potion_crit -> duration -= 5.0;
+      player -> buffs.wild_magic_potion_sp   -> trigger();
+      player -> buffs.wild_magic_potion_crit -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.wild_magic_potion_sp   -> duration += 5.0;
+      player -> buffs.wild_magic_potion_crit -> duration += 5.0;
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -359,8 +359,8 @@ struct wild_magic_potion_t : public action_t
 
   virtual bool ready()
   {
-	if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
-	  return false;
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
 
     if ( player -> potion_used )
       return false;
@@ -394,15 +394,15 @@ struct indestructible_potion_t : public action_t
   {
     if ( player -> in_combat )
     {
-	  player -> buffs.speed_potion -> trigger();
+      player -> buffs.speed_potion -> trigger();
     }
     else
     {
-	  cooldown -> duration -= 5.0;
-	  player -> buffs.indestructible_potion -> duration -= 5.0;
-	  player -> buffs.indestructible_potion -> trigger();
-	  cooldown -> duration += 5.0;
-	  player -> buffs.indestructible_potion -> duration += 5.0;
+      cooldown -> duration -= 5.0;
+      player -> buffs.indestructible_potion -> duration -= 5.0;
+      player -> buffs.indestructible_potion -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.indestructible_potion -> duration += 5.0;
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -413,8 +413,8 @@ struct indestructible_potion_t : public action_t
 
   virtual bool ready()
   {
-	if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
-	  return false;
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
 
     if ( player -> potion_used )
       return false;
