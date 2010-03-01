@@ -544,13 +544,13 @@ static void register_tiny_abom( item_t* item )
       if ( buff -> trigger() && buff -> stack() == 1 )
       {
         assert( first_stack_attack == NULL );
-	if ( a -> weapon && a -> weapon -> slot == SLOT_OFF_HAND )
+        if ( a -> weapon && a -> weapon -> slot == SLOT_OFF_HAND )
         {
-	  first_stack_attack = a -> player -> off_hand_attack;
-	}
-	else
+          first_stack_attack = a -> player -> off_hand_attack;
+        }
+        else
         {
-	  first_stack_attack = a -> player -> main_hand_attack;
+          first_stack_attack = a -> player -> main_hand_attack;
         }
       }
       if ( buff -> stack() == buff -> max_stack )
