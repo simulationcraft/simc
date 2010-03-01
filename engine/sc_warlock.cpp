@@ -2956,12 +2956,12 @@ struct life_tap_t : public warlock_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> procs_life_tap -> occur();
     double mana     = base_tap + 3.0 * p -> spirit();
+	p -> buffs_life_tap_glyph -> trigger();
 	if ( sim -> P333 ) mana = ( base_tap + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) );
     p -> resource_loss( RESOURCE_HEALTH, mana );
     mana *= ( 1.0 + p -> talents.improved_life_tap * 0.10 );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talents.mana_feed ) p -> active_pet -> resource_gain( RESOURCE_MANA, mana );
-    p -> buffs_life_tap_glyph -> trigger();
     p -> buffs_tier7_4pc_caster -> trigger();
   }
 
@@ -3055,10 +3055,9 @@ struct dark_pact_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> procs_dark_pact -> occur();
-    player_buff();
-    double mana = ( base_dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) ) ) * base_multiplier * player_multiplier;
-    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_dark_pact );
     p -> buffs_life_tap_glyph -> trigger();
+    double mana = base_dd_max + ( direct_power_mod * p -> composite_spell_power( SCHOOL_SHADOW ) );
+    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_dark_pact );
   }
 
   virtual bool ready()
