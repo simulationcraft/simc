@@ -1429,7 +1429,7 @@ static double get_rune_cooldown( player_t* player, const rune_type type )
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     if ( p -> _runes.slot[i].get_type() == type ||
-	 (type == RUNE_TYPE_DEATH && p -> _runes.slot[i].is_death() ) )
+         ( type == RUNE_TYPE_DEATH && p -> _runes.slot[i].is_death() ) )
     {
       ret = std::min( ret, p -> _runes.slot[i].time_til_ready( t ) );
     }
@@ -1458,7 +1458,7 @@ static int count_runes( player_t* player )
 }
 
 // Count Death Runes ========================================================
-static int count_death_runes( death_knight_t* p )
+static int count_death_runes( death_knight_t* p, bool inactive )
 {
   // Getting death rune count is a bit more complicated as it depends
   // on talents which runetype can be converted to death runes
@@ -1467,7 +1467,7 @@ static int count_death_runes( death_knight_t* p )
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if ( r.is_ready( t ) && r.is_death() )
+    if ( ( inactive || r.is_ready( t ) ) && r.is_death() )
       ++count;
   }
   return count;
@@ -2337,27 +2337,54 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     double t = p -> sim -> current_time;
 
-    // If you have a non-death blood rune, it will convert and activate that one.
+    // Blood tap has some odd behavior.  One of the oddest is that, if
+    // you have a death rune on cooldown and a full blood rune, using
+    // it will take the death rune off cooldown and turn the blood
+    // rune into a death rune!  This allows for a nice sequence for
+    // Unholy Death Knights: "IT PS BS SS tap SS" which replaces a
+    // blood strike with a scourge strike.
+
+    // Find a non-death blood rune and refresh it.
+    bool rune_was_refreshed = false;
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() )
+      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready( t ) )
+      {
+        r.cooldown_ready = 0;
+        rune_was_refreshed = true;
+        break;
+      }
+    }
+    // Couldn't find a non-death blood rune needing refreshed?
+    // Instead, refresh a death rune that is a blood rune.
+    if ( ! rune_was_refreshed )
+    {
+      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+      {
+        dk_rune_t& r = p -> _runes.slot[i];
+        if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready( t ) )
+        {
+          r.cooldown_ready = 0;
+          rune_was_refreshed = true;
+          break;
+        }
+      }
+    }
+
+    // Now find a ready blood rune and turn it into a death rune.
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    {
+      dk_rune_t& r = p -> _runes.slot[i];
+      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && r.is_ready( t ) )
       {
         r.type = ( r.type & RUNE_TYPE_MASK ) | RUNE_TYPE_DEATH;
-        r.cooldown_ready = 0;
-        return;
+        break;
       }
     }
-    // If all your blood runes were already death runes, it will activate one.
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    {
-      dk_rune_t& r = p -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_ready( t ) )
-      {
-        r.cooldown_ready = 0;
-        return;
-      }
-    }
+
+    // Rune tap gives 10 RP.
+    p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_rune_abilities );
   }
 };
 
@@ -3936,17 +3963,18 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     return new unholy_expr_t( a );
   }
 
-  if ( name_str == "death" )
+  if ( name_str == "death" || name_str == "inactive_death" )
   {
     struct death_expr_t : public action_expr_t
     {
-      death_expr_t( action_t* a ) : action_expr_t( a, "death" ) { result_type = TOK_NUM; }
+      std::string name;
+      death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { result_type = TOK_NUM; }
       virtual int evaluate()
       {
-        result_num = count_death_runes( action -> player -> cast_death_knight() ); return TOK_NUM;
+        result_num = count_death_runes( action -> player -> cast_death_knight(), name == "inactive_death" ); return TOK_NUM;
       }
     };
-    return new death_expr_t( a );
+    return new death_expr_t( a, name_str );
   }
 
   struct cooldown_expr_t : public action_expr_t
@@ -4234,15 +4262,12 @@ void death_knight_t::init_actions()
         action_list_str += "/frost_strike";
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,if=buff.rime.react";
-      action_list_str += "/empower_rune_weapon";
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75";
       action_list_str += "/horn_of_winter";
       break;
     case TREE_UNHOLY:
       if ( talents.bone_shield )
-      {
-        action_list_str += "/sequence,name=bt_bs:blood_tap:bone_shield";
-        action_list_str += "/restart_sequence,name=bt_bs,if=buff.moving.down&in_combat&buff.bone_shield.remains<10";
-      }
+        action_list_str += "/bone_shield,if=!buff.bone_shield.up";
       action_list_str += "/raise_dead";
       action_list_str += "/auto_attack";
       if ( glyphs.disease )
@@ -4261,6 +4286,7 @@ void death_knight_t::init_actions()
         // 0 Death: Always BS
         // 1 Death: Only BS with 2 blood runes (because 1 blood = death)
         // 2 Death: With reaping we only use BS to convert
+        action_list_str += "/blood_tap,if=frost=0&unholy=0&blood=1&inactive_death=1";
         action_list_str += "/blood_strike,if=death=0";
         action_list_str += "/blood_strike,if=death=1&blood=2";
         action_list_str += "/scourge_strike";
