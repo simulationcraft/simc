@@ -1424,17 +1424,18 @@ static double get_rune_cooldown( player_t* player, const rune_type type )
 {
   death_knight_t* p = player -> cast_death_knight();
   double t = p -> sim -> current_time;
-  double ret = 11.0;
+  double ret = 20.0;
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
-    if ( p -> _runes.slot[i].get_type() == type )
+    if ( p -> _runes.slot[i].get_type() == type ||
+	 (type == RUNE_TYPE_DEATH && p -> _runes.slot[i].is_death() ) )
     {
       ret = std::min( ret, p -> _runes.slot[i].time_til_ready( t ) );
     }
   }
 
-  assert ( ret <= 10.0 && ret >= 0.0 );
+  assert ( ret >= 0.0 );
 
   return ret;
 }
@@ -3967,6 +3968,10 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   if ( name_str == "frost_cooldown" )
   {
     return new cooldown_expr_t( a, "frost", RUNE_TYPE_FROST );
+  }
+  if ( name_str == "death_cooldown" )
+  {
+    return new cooldown_expr_t( a, "death", RUNE_TYPE_DEATH );
   }
 
   return player_t::create_expression( a, name_str );
