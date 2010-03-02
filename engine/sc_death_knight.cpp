@@ -60,6 +60,11 @@ struct dk_rune_t
   }
 
   void reset()    { cooldown_ready = -1; type  = type & RUNE_TYPE_MASK;                               }
+  double time_til_ready( double current_time )
+  {
+    return std::max( 0.0, cooldown_ready - current_time );
+  }
+
 };
 
 // ==========================================================================
@@ -1413,6 +1418,26 @@ struct death_knight_spell_t : public spell_t
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
+
+// Rune cooldown
+static double get_rune_cooldown( player_t* player, const rune_type type )
+{
+  death_knight_t* p = player -> cast_death_knight();
+  double t = p -> sim -> current_time;
+  double ret = 11.0;
+
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    if ( p -> _runes.slot[i].get_type() == type )
+    {
+      ret = std::min( ret, p -> _runes.slot[i].time_til_ready( t ) );
+    }
+  }
+
+  assert ( ret <= 10.0 && ret >= 0.0 );
+
+  return ret;
+}
 
 // Count Runes ==============================================================
 static int count_runes( player_t* player )
@@ -3919,6 +3944,31 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     };
     return new death_expr_t( a );
   }
+
+  struct cooldown_expr_t : public action_expr_t
+  {
+    rune_type type;
+    cooldown_expr_t( action_t* a, const char* name, rune_type type_in ) :
+        action_expr_t( a, name ), type( type_in ) { result_type = TOK_NUM; }
+    virtual int evaluate()
+    {
+      result_num = get_rune_cooldown( action -> player, type ); return TOK_NUM;
+    }
+  };
+
+  if ( name_str == "blood_cooldown" )
+  {
+    return new cooldown_expr_t( a, "blood", RUNE_TYPE_BLOOD );
+  }
+  if ( name_str == "unholy_cooldown" )
+  {
+    return new cooldown_expr_t( a, "unholy", RUNE_TYPE_UNHOLY );
+  }
+  if ( name_str == "frost_cooldown" )
+  {
+    return new cooldown_expr_t( a, "frost", RUNE_TYPE_FROST );
+  }
+
   return player_t::create_expression( a, name_str );
 }
 
