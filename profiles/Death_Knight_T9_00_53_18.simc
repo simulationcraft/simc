@@ -4,6 +4,7 @@ death_knight=Death_Knight_T9_00_53_18
 origin="http://profiler.wowhead.com/?profile=18133139"
 level=80
 race=tauren
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=000000000000000000000000000032005350352003012300033001351230200305003
 glyphs=frost_strike/obliterate/icy_touch/horn_of_winter/pestilence/raise_dead
 actions=flask,type=endless_rage
@@ -11,6 +12,7 @@ actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
 actions+=/auto_attack
+actions+=/speed_potion
 actions+=/raise_dead,time>=15,time<=40
 actions+=/raise_dead,if=buff.bloodlust.react
 actions+=/icy_touch,if=dot.frost_fever.remains<=2
@@ -18,8 +20,8 @@ actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/howling_blast,if=buff.rime.react&buff.killing_machine.react
 actions+=/frost_strike,if=buff.killing_machine.react
 actions+=/obliterate
-actions+=/blood_strike,blood=2,death<=2
-actions+=/blood_strike,blood=1,death<=1
+actions+=/blood_strike,if=blood=2&death<=2
+actions+=/blood_strike,if=blood=1&death<=1
 actions+=/frost_strike
 actions+=/howling_blast,if=buff.rime.react
 actions+=/empower_rune_weapon

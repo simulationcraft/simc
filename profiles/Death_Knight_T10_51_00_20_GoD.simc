@@ -4,6 +4,7 @@ death_knight=Death_Knight_T10_51_00_20_GoD
 origin="http://profiler.wowhead.com/?profile=20837965"
 level=80
 race=tauren
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=230502053000330323112300135100000000000000000000000000000230220305003
 glyphs=dancing_rune_weapon/disease/death_strike/horn_of_winter/pestilence/raise_dead
 actions=flask,type=endless_rage
@@ -16,8 +17,9 @@ actions+=/dancing_rune_weapon,if=buff.bloodlust.react
 actions+=/sequence,name=blood1,wait_on_ready=1:icy_touch:plague_strike:heart_strike:heart_strike:death_strike:raise_dead,wait_on_ready=0
 actions+=/death_coil
 actions+=/sequence,name=blood2,wait_on_ready=1:death_strike:heart_strike:heart_strike:heart_strike:heart_strike
-actions+=/restart_sequence,name=blood1,if=buff.moving.down
-actions+=/restart_sequence,name=blood2,if=buff.moving.down
+actions+=/speed_potion
+actions+=/restart_sequence,name=blood1
+actions+=/restart_sequence,name=blood2
 head=sanctified_scourgelord_helmet,stats=2239armor_114crit_106arpen_185str_209sta,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
 neck=lanathels_chain_of_flagellation,stats=52exp_73arpen_108str_116sta,gems=20str
 shoulders=sanctified_scourgelord_shoulderplates,stats=2067armor_90crit_82arpen_147str_155sta,gems=20str_4str,enchant=40ap_15crit

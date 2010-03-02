@@ -23,7 +23,7 @@ actions+=/death_strike,frost_fever>=6,blood_plague>=6
 actions+=/heart_strike
 actions+=/death_coil
 #actions+=/raise_dead
-#actions+=/horn_of_winter,rebuff_early=1,frost_fever>=2,blood_plague>=2
+#actions+=/horn_of_winter,frost_fever>=2,blood_plague>=2
 head=warhelm_of_the_champion,stats=1966armor_61hit_60crit_122str_145sta,gems=relentless_earthsiege_8str_8hit_8str,enchant=50ap_20crit
 neck=seed_of_budding_carnage,stats=92ap_32hit_38arpen_57agi_54sta,gems=16str_4hit
 shoulders=conquerors_darkruned_shoulderplates,stats=1761armor_56haste_41hit_90str_102sta,gems=16str,enchant=40ap_15crit

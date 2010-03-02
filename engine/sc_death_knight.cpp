@@ -375,6 +375,7 @@ struct death_knight_t : public player_t
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
@@ -517,7 +518,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_blood_boil_t( player_t* player ) :
         spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
     {
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       background  = true;
       trigger_gcd = 0;
@@ -591,7 +592,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_coil_t( player_t* player ) :
         spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
     {
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       background  = true;
       trigger_gcd = 0;
@@ -619,8 +620,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
   };
   struct drw_blood_strike_t : public attack_t
   {
-	bool proc_sd;
-	bool roll_sd;
+    bool proc_sd;
+    bool roll_sd;
     drw_blood_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
         attack_t( "blood_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
@@ -632,7 +633,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       normalize_weapon_speed = true;
       weapon_multiplier     *= 0.4;
 
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       base_crit += o -> talents.subversion * 0.03;
       base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
@@ -647,25 +648,25 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       if ( sd )
       {
-		proc_sd = true;
+        proc_sd = true;
       }
       else
       {
-		proc_sd = false;
+        proc_sd = false;
       }
       if ( sd_miss )
       {
-		roll_sd = true;
+        roll_sd = true;
       }
       else
       {
-		roll_sd = false;
+        roll_sd = false;
       }
       reset();
     }
     virtual void target_debuff( int dmg_type )
     {
-	  dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
       pet_t* pet = player -> cast_pet();
       death_knight_t* o = pet -> owner -> cast_death_knight();
       attack_t::target_debuff( dmg_type );
@@ -686,7 +687,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       proc_sd = false;
       if ( result_is_hit() && roll_sd )
       {
-		if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
+        if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
       }
       roll_sd = false;
     }
@@ -705,7 +706,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       normalize_weapon_speed = true;
       weapon_multiplier     *= 0.75;
 
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> sigils.awareness )  base_dd_adder = 420;
       base_crit += o -> talents.improved_death_strike * 0.03;
@@ -742,7 +743,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       may_miss          = false;
     }
-   virtual void target_debuff( int dmg_type )
+    virtual void target_debuff( int dmg_type )
     {
       spell_t::target_debuff( dmg_type );
       target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
@@ -751,8 +752,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
   };
   struct drw_heart_strike_t : public attack_t
   {
-	bool proc_sd;
-	bool roll_sd;
+    bool proc_sd;
+    bool roll_sd;
     drw_heart_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
         attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
@@ -764,7 +765,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       normalize_weapon_speed = true;
       weapon_multiplier     *= 0.5;
 
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       base_crit += o -> talents.subversion * 0.03;
       base_crit_bonus_multiplier *= 1.0 * o -> talents.might_of_mograine * 0.15;
@@ -778,19 +779,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
       }
       if ( sd )
       {
-		proc_sd = true;
+        proc_sd = true;
       }
       else
       {
-		proc_sd = false;
+        proc_sd = false;
       }
       if ( sd_miss )
       {
-		roll_sd = true;
+        roll_sd = true;
       }
       else
       {
-		roll_sd = false;
+        roll_sd = false;
       }
       reset();
     }
@@ -817,7 +818,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       proc_sd = false;
       if ( result_is_hit() && roll_sd )
       {
-		if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
+        if ( p -> sim -> roll( o -> talents.sudden_doom * 0.05 ) ) p -> drw_death_coil -> execute();
       }
       roll_sd = false;
     }
@@ -828,7 +829,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_icy_touch_t( player_t* player ) :
         spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_BLOOD )
     {
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       background  = true;
       trigger_gcd = 0;
@@ -877,7 +878,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       normalize_weapon_speed = true;
       weapon_multiplier     *= 0.8;
 
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> glyphs.obliterate ) weapon_multiplier *= 1.0;
       if ( o -> sigils.awareness )  base_dd_adder = 420;
@@ -917,7 +918,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence_t( player_t* player ) :
         spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
     {
-		trigger_gcd = 0;
+      trigger_gcd = 0;
     }
     virtual void execute()
     {
@@ -952,7 +953,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       normalize_weapon_speed = true;
       weapon_multiplier     *= 0.5;
 
-	  pet_t* p = player -> cast_pet();
+      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       base_crit += o -> talents.vicious_strikes * 0.03;
       base_crit_bonus_multiplier *= 1.0 + ( o -> talents.vicious_strikes * 0.15 );
@@ -1034,7 +1035,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     dots_drw_blood_plague  = get_dot( "blood_plague" );
     dots_drw_frost_fever   = get_dot( "frost_fever" );
 
-	main_hand_weapon.type       = WEAPON_SWORD_2H;
+    main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685;
     main_hand_weapon.max_dmg    = 975;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
@@ -1068,10 +1069,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double haste()                                 { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
-  virtual double composite_player_multiplier( int school ) SC_CONST {
-	double m = player_t::composite_player_multiplier( school );
-	if ( school == SCHOOL_PHYSICAL ) m *= hysteria;
-	return m;
+  virtual double composite_player_multiplier( int school ) SC_CONST
+  {
+    double m = player_t::composite_player_multiplier( school );
+    if ( school == SCHOOL_PHYSICAL ) m *= hysteria;
+    return m;
   }
   virtual void summon( double duration=0 )
   {
@@ -1337,28 +1339,12 @@ struct death_knight_attack_t : public attack_t
   int    cost_unholy;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
-  int    min_blood, max_blood, exact_blood;
-  int    min_frost, max_frost, exact_frost;
-  int    min_unholy, max_unholy, exact_unholy;
-  int    min_death, max_death, exact_death;
-  int    min_runic, max_runic, exact_runic;
-  int    min_blood_plague, max_blood_plague;
-  int    min_frost_fever, max_frost_fever;
-  int    min_desolation, max_desolation;
   bool   additive_factors;
 
   death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_RUNIC, s, t ),
       requires_weapon( true ),
       cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
-      min_blood( -1 ), max_blood( -1 ), exact_blood( -1 ),
-      min_frost( -1 ), max_frost( -1 ), exact_frost( -1 ),
-      min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 ),
-      min_death( -1 ), max_death( -1 ), exact_death( -1 ),
-      min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
-      min_blood_plague( -1 ), max_blood_plague( -1 ),
-      min_frost_fever( -1 ), max_frost_fever( -1 ),
-      min_desolation( -1 ), max_desolation( -1 ),
       additive_factors( false )
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -1370,7 +1356,6 @@ struct death_knight_attack_t : public attack_t
     base_crit += p -> talents.ebon_plaguebringer * 0.01;
   }
 
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   reset();
 
   virtual void   consume_resource();
@@ -1391,26 +1376,10 @@ struct death_knight_spell_t : public spell_t
   int    cost_unholy;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
-  int    min_blood, max_blood, exact_blood;
-  int    min_frost, max_frost, exact_frost;
-  int    min_unholy, max_unholy, exact_unholy;
-  int    min_death, max_death, exact_death;
-  int    min_runic, max_runic, exact_runic;
-  int    min_blood_plague, max_blood_plague;
-  int    min_frost_fever, max_frost_fever;
-  int    min_desolation, max_desolation;
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_RUNIC, s, t ),
-      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false ),
-      min_blood( -1 ), max_blood( -1 ), exact_blood( -1 ),
-      min_frost( -1 ), max_frost( -1 ), exact_frost( -1 ),
-      min_unholy( -1 ), max_unholy( -1 ), exact_unholy( -1 ),
-      min_death( -1 ), max_death( -1 ), exact_death( -1 ),
-      min_runic( -1 ), max_runic( -1 ), exact_runic( -1 ),
-      min_blood_plague( -1 ), max_blood_plague( -1 ),
-      min_frost_fever( -1 ), max_frost_fever( -1 ),
-      min_desolation( -1 ), max_desolation( -1 )
+      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1432,7 +1401,6 @@ struct death_knight_spell_t : public spell_t
     base_crit += p -> talents.ebon_plaguebringer * 0.01;
   }
 
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   reset();
 
   virtual void   consume_resource();
@@ -1496,7 +1464,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
       double cooldown = 10.0;
       if ( p -> active_presence == PRESENCE_UNHOLY )
       {
-	cooldown -= 0.5 * p -> talents.improved_unholy_presence;
+        cooldown -= 0.5 * p -> talents.improved_unholy_presence;
       }
       p -> _runes.slot[i].consume( t, cooldown, convert_runes );
 
@@ -1508,17 +1476,17 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
   if ( p -> sim -> log )
   {
     std::string rune_str;
-    for ( int j = 0; j < RUNE_SLOT_MAX; ++j)
+    for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
     {
       char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
       if ( p -> _runes.slot[j].is_death() )
-	rune_letter = 'd';
+        rune_letter = 'd';
 
       if ( p -> _runes.slot[j].is_ready( p -> sim -> current_time ) )
-	rune_letter = toupper(rune_letter);
+        rune_letter = toupper( rune_letter );
       rune_str += rune_letter;
     }
-    log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str());
+    log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
   }
 
   if ( count_runes( p ) == 0 )
@@ -1804,39 +1772,6 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 // Death Knight Attack Methods
 // ==========================================================================
 
-// death_knight_attack_t::parse_options =====================================
-
-void death_knight_attack_t::parse_options( option_t* options, const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { "blood",         OPT_INT,  &exact_blood },
-    { "blood>",        OPT_INT,  &min_blood },
-    { "blood<",        OPT_INT,  &max_blood },
-    { "frost",         OPT_INT,  &exact_frost },
-    { "frost>",        OPT_INT,  &min_frost },
-    { "frost<",        OPT_INT,  &max_frost },
-    { "unholy",        OPT_INT,  &exact_unholy },
-    { "unholy>",       OPT_INT,  &min_unholy },
-    { "unholy<",       OPT_INT,  &max_unholy },
-    { "death",         OPT_INT,  &exact_death },
-    { "death>",        OPT_INT,  &min_death },
-    { "death<",        OPT_INT,  &max_death },
-    { "runic",         OPT_INT,  &exact_runic },
-    { "runic>",        OPT_INT,  &min_runic },
-    { "runic<",        OPT_INT,  &max_runic },
-    { "blood_plague>", OPT_INT,  &min_blood_plague },
-    { "blood_plague<", OPT_INT,  &max_blood_plague },
-    { "frost_fever>",  OPT_INT,  &min_frost_fever },
-    { "frost_fever<",  OPT_INT,  &max_frost_fever },
-    { "desolation>",   OPT_INT,  &min_desolation },
-    { "desolation<",   OPT_INT,  &max_desolation },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
-
 // death_knight_attack_t::reset() ===========================================
 
 void death_knight_attack_t::reset()
@@ -1984,65 +1919,6 @@ bool death_knight_attack_t::ready()
     if ( ! weapon || weapon->group() == WEAPON_RANGED )
       return false;
 
-  if ( exact_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] != exact_runic )
-      return false;
-
-  if ( min_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] < min_runic )
-      return false;
-
-  if ( max_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] > max_runic )
-      return false;
-
-  double ct = sim -> current_time;
-
-  if ( min_blood_plague > 0 )
-    if ( ! p -> dots_blood_plague -> ticking() || ( ( p -> dots_blood_plague -> ready - ct ) < min_blood_plague ) )
-      return false;
-
-  if ( max_blood_plague > 0 )
-    if ( p -> dots_blood_plague -> ticking() && ( ( p -> dots_blood_plague -> ready - ct ) > max_blood_plague ) )
-      return false;
-
-  if ( min_frost_fever > 0 )
-    if ( ! p -> dots_frost_fever -> ticking() || ( ( p -> dots_frost_fever -> ready - ct ) < min_frost_fever ) )
-      return false;
-
-  if ( max_frost_fever > 0 )
-    if ( p -> dots_frost_fever -> ticking() && ( ( p -> dots_frost_fever -> ready - ct ) > max_frost_fever ) )
-      return false;
-
-  if ( min_desolation > 0 )
-    if ( ! p -> buffs_desolation || ( p -> buffs_desolation -> remains_lt( min_desolation ) ) )
-      return false;
-
-  if ( max_desolation > 0 )
-    if ( p -> buffs_desolation && ( p -> buffs_desolation -> remains_gt( max_desolation ) ) )
-      return false;
-
-  int count = count_runes( p );
-  int c = GET_BLOOD_RUNE_COUNT( count );
-  if ( ( exact_blood != -1 && c != exact_blood ) ||
-       ( min_blood != -1 && c < min_blood ) ||
-       ( max_blood != -1 && c > max_blood ) ) return false;
-
-  c = GET_FROST_RUNE_COUNT( count );
-  if ( ( exact_frost != -1 && c != exact_frost ) ||
-       ( min_frost != -1 && c < min_frost ) ||
-       ( max_frost != -1 && c > max_frost ) ) return false;
-
-  c = GET_UNHOLY_RUNE_COUNT( count );
-  if ( ( exact_unholy != -1 && c != exact_unholy ) ||
-       ( min_unholy != -1 && c < min_unholy ) ||
-       ( max_unholy != -1 && c > max_unholy ) ) return false;
-
-  c = count_death_runes( p );
-  if ( ( exact_death != -1 && c != exact_death ) ||
-       ( min_death != -1 && c < min_death ) ||
-       ( max_death != -1 && c > max_death ) ) return false;
-
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
 }
 
@@ -2059,39 +1935,6 @@ void death_knight_attack_t::target_debuff( int dmg_type )
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
-
-// death_knight_spell_t::parse_options() ====================================
-
-void death_knight_spell_t::parse_options( option_t* options, const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { "blood",         OPT_INT,  &exact_blood },
-    { "blood>",        OPT_INT,  &min_blood },
-    { "blood<",        OPT_INT,  &max_blood },
-    { "frost",         OPT_INT,  &exact_frost },
-    { "frost>",        OPT_INT,  &min_frost },
-    { "frost<",        OPT_INT,  &max_frost },
-    { "unholy",        OPT_INT,  &exact_unholy },
-    { "unholy>",       OPT_INT,  &min_unholy },
-    { "unholy<",       OPT_INT,  &max_unholy },
-    { "death",         OPT_INT,  &exact_death },
-    { "death>",        OPT_INT,  &min_death },
-    { "death<",        OPT_INT,  &max_death },
-    { "runic",         OPT_INT,  &exact_runic },
-    { "runic>",        OPT_INT,  &min_runic },
-    { "runic<",        OPT_INT,  &max_runic },
-    { "blood_plague>", OPT_INT,  &min_blood_plague },
-    { "blood_plague<", OPT_INT,  &max_blood_plague },
-    { "frost_fever>",  OPT_INT,  &min_frost_fever },
-    { "frost_fever<",  OPT_INT,  &max_frost_fever },
-    { "desolation>",   OPT_INT,  &min_desolation },
-    { "desolation<",   OPT_INT,  &max_desolation },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
 
 // death_knight_spell_t::reset() ============================================
 
@@ -2181,69 +2024,8 @@ void death_knight_spell_t::player_buff()
 
 bool death_knight_spell_t::ready()
 {
-  death_knight_t* p = player -> cast_death_knight();
-
   if ( ! spell_t::ready() )
     return false;
-
-  if ( exact_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] != exact_runic )
-      return false;
-
-  if ( min_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] < min_runic )
-      return false;
-
-  if ( max_runic > 0 )
-    if ( p -> resource_current[ RESOURCE_RUNIC ] > max_runic )
-      return false;
-
-  double ct = sim -> current_time;
-
-  if ( min_blood_plague > 0 )
-    if ( ! p -> dots_blood_plague -> ticking() || ( ( p -> dots_blood_plague -> ready - ct ) < min_blood_plague ) )
-      return false;
-
-  if ( max_blood_plague > 0 )
-    if ( p -> dots_blood_plague -> ticking() && ( ( p -> dots_blood_plague -> ready - ct ) > max_blood_plague ) )
-      return false;
-
-  if ( min_frost_fever > 0 )
-    if ( ! p -> dots_frost_fever -> ticking() || ( ( p -> dots_frost_fever -> ready - ct ) < min_frost_fever ) )
-      return false;
-
-  if ( max_frost_fever > 0 )
-    if ( p -> dots_frost_fever -> ticking() && ( ( p -> dots_frost_fever -> ready - ct ) > max_frost_fever ) )
-      return false;
-
-  if ( min_desolation > 0 )
-    if ( ! p -> buffs_desolation || ( p -> buffs_desolation -> remains_lt( min_desolation ) ) )
-      return false;
-
-  if ( max_desolation > 0 )
-    if ( p -> buffs_desolation && ( p -> buffs_desolation -> remains_gt( max_desolation ) ) )
-      return false;
-
-  int count = count_runes( p );
-  int c = GET_BLOOD_RUNE_COUNT( count );
-  if ( ( exact_blood != -1 && c != exact_blood ) ||
-       ( min_blood != -1 && c < min_blood ) ||
-       ( max_blood != -1 && c > max_blood ) ) return false;
-
-  c = GET_FROST_RUNE_COUNT( count );
-  if ( ( exact_frost != -1 && c != exact_frost ) ||
-       ( min_frost != -1 && c < min_frost ) ||
-       ( max_frost != -1 && c > max_frost ) ) return false;
-
-  c = GET_UNHOLY_RUNE_COUNT( count );
-  if ( ( exact_unholy != -1 && c != exact_unholy ) ||
-       ( min_unholy != -1 && c < min_unholy ) ||
-       ( max_unholy != -1 && c > max_unholy ) ) return false;
-
-  c = count_death_runes( p );
-  if ( ( exact_death != -1 && c != exact_death ) ||
-       ( min_death != -1 && c < min_death ) ||
-       ( max_death != -1 && c > max_death ) ) return false;
 
   if ( ! player -> in_combat && ! harmful )
     return group_runes( player, 0, 0, 0, use );
@@ -2412,7 +2194,7 @@ struct blood_boil_t : public death_knight_spell_t
     direct_power_mod  = 0.06 + ( p -> diseases() ? 0.035 : 0 );
     death_knight_spell_t::execute();
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
+      p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
   }
 };
 
@@ -2700,7 +2482,7 @@ struct death_coil_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
+      p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
 
     if ( result_is_hit() ) trigger_unholy_blight( this, direct_dmg );
   }
@@ -2765,7 +2547,7 @@ struct blood_strike_t : public death_knight_attack_t
                                   + p -> talents.guile_of_gorefiend * 0.15;
 
     base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
-                         + util_t::talent_rank( p -> talents.blood_of_the_north, 3, 0.03, 0.06, 0.10 );
+                       + util_t::talent_rank( p -> talents.blood_of_the_north, 3, 0.03, 0.06, 0.10 );
 
     convert_runes = p -> talents.blood_of_the_north / 3.0
                     + p -> talents.reaping / 3.0;
@@ -2787,7 +2569,7 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
+      p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
 
     if ( result_is_hit() )
     {
@@ -2795,11 +2577,11 @@ struct blood_strike_t : public death_knight_attack_t
       trigger_abominations_might( this, 0.25 );
       if ( trigger_sudden_doom( this ) )
       {
-		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike_sd -> execute();
+        if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike_sd -> execute();
       }
       else
       {
-		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
+        if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_blood_strike -> execute();
       }
       p -> buffs_desolation -> trigger( 1, p -> talents.desolation * 0.01 );
     }
@@ -3172,11 +2954,11 @@ struct heart_strike_t : public death_knight_attack_t
       trigger_abominations_might( this, 0.25 );
       if ( trigger_sudden_doom( this ) )
       {
-		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike_sd -> execute();
+        if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike_sd -> execute();
       }
       else
       {
-		if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
+        if ( p -> buffs_dancing_rune_weapon -> check() ) p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
       }
     }
     else
@@ -3190,17 +2972,14 @@ struct heart_strike_t : public death_knight_attack_t
 struct horn_of_winter_t : public death_knight_spell_t
 {
   double bonus;
-  int rebuff_early;
 
   horn_of_winter_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST ),
-      rebuff_early( 0 )
+      death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     option_t options[] =
     {
-      { "rebuff_early", OPT_INT, &rebuff_early },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3221,20 +3000,6 @@ struct horn_of_winter_t : public death_knight_spell_t
     sim -> auras.horn_of_winter -> trigger( 1, bonus );
 
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! death_knight_spell_t::ready() )
-      return false;
-
-    // In case they're using it for the runic power
-    if ( rebuff_early )
-    {
-      return true;
-    }
-
-    return sim -> auras.strength_of_earth -> current_value < bonus;
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? death_knight_spell_t::gcd() : 0; }
@@ -3430,7 +3195,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_icy_touch -> execute();
+      p -> active_dancing_rune_weapon -> drw_icy_touch -> execute();
 
 
     if ( result_is_hit() )
@@ -3535,7 +3300,7 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_obliterate -> execute();
+      p -> active_dancing_rune_weapon -> drw_obliterate -> execute();
 
 
     if ( result_is_hit() )
@@ -3606,7 +3371,7 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
+      p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
 
     if ( result_is_hit() && p -> glyphs.disease )
     {
@@ -3668,7 +3433,7 @@ struct plague_strike_t : public death_knight_attack_t
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-	  p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
+      p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
 
     if ( result_is_hit() )
     {
@@ -3888,7 +3653,8 @@ struct scourge_strike_t : public death_knight_attack_t
       {
         target_multiplier *= p -> diseases() * 0.12 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
       }
-      else {
+      else
+      {
         target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
       }
     }
@@ -4098,6 +3864,62 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+action_expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "blood" )
+  {
+    struct blood_expr_t : public action_expr_t
+    {
+      blood_expr_t( action_t* a ) : action_expr_t( a, "blood" ) { result_type = TOK_NUM; }
+      virtual int evaluate()
+      {
+        result_num = GET_BLOOD_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+      }
+    };
+    return new blood_expr_t( a );
+  }
+
+  if ( name_str == "frost" )
+  {
+    struct frost_expr_t : public action_expr_t
+    {
+      frost_expr_t( action_t* a ) : action_expr_t( a, "frost" ) { result_type = TOK_NUM; }
+      virtual int evaluate()
+      {
+        result_num = GET_FROST_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+      }
+    };
+    return new frost_expr_t( a );
+  }
+
+  if ( name_str == "unholy" )
+  {
+    struct unholy_expr_t : public action_expr_t
+    {
+      unholy_expr_t( action_t* a ) : action_expr_t( a, "unholy" ) { result_type = TOK_NUM; }
+      virtual int evaluate()
+      {
+        result_num = GET_UNHOLY_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+      }
+    };
+    return new unholy_expr_t( a );
+  }
+
+  if ( name_str == "death" )
+  {
+    struct death_expr_t : public action_expr_t
+    {
+      death_expr_t( action_t* a ) : action_expr_t( a, "death" ) { result_type = TOK_NUM; }
+      virtual int evaluate()
+      {
+        result_num = count_death_runes( action -> player -> cast_death_knight() ); return TOK_NUM;
+      }
+    };
+    return new death_expr_t( a );
+  }
+  return player_t::create_expression( a, name_str );
 }
 
 // death_knight_t::create_pets ==============================================
@@ -4348,8 +4170,8 @@ void death_knight_t::init_actions()
       if ( talents.deathchill )
         action_list_str += "/deathchill";
       action_list_str += "/obliterate";
-      action_list_str += "/blood_strike,blood=2,death<=2";
-      action_list_str += "/blood_strike,blood=1,death<=1";
+      action_list_str += "/blood_strike,if=blood=2&death<=2";
+      action_list_str += "/blood_strike,if=blood=1&death<=1";
       if ( talents.frost_strike )
         action_list_str += "/frost_strike";
       if ( talents.howling_blast )
@@ -4381,8 +4203,8 @@ void death_knight_t::init_actions()
         // 0 Death: Always BS
         // 1 Death: Only BS with 2 blood runes (because 1 blood = death)
         // 2 Death: With reaping we only use BS to convert
-        action_list_str += "/blood_strike,death=0";
-        action_list_str += "/blood_strike,death=1,blood=2";
+        action_list_str += "/blood_strike,if=death=0";
+        action_list_str += "/blood_strike,if=death=1&blood=2";
         action_list_str += "/scourge_strike";
       }
       else
@@ -4399,7 +4221,7 @@ void death_knight_t::init_actions()
       }
       action_list_str += "/death_coil";
       action_list_str += "/empower_rune_weapon";
-      action_list_str += "/horn_of_winter,rebuff_early=1,runic<=90";
+      action_list_str += "/horn_of_winter,if=runic_power<=90";
       break;
     }
     action_list_default = 1;

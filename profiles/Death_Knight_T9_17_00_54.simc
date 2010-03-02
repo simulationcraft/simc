@@ -4,6 +4,7 @@ death_knight=Death_Knight_T9_17_00_54
 origin="http://profiler.wowhead.com/?profile=18127877"
 level=80
 race=tauren
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=2305020500000000000000000000000000000000000000000000000002302203300032152003150003133151
 glyphs=the_ghoul/disease/icy_touch/horn_of_winter/pestilence/raise_dead
 actions=flask,type=endless_rage
@@ -17,13 +18,15 @@ actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
 actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
 actions+=/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5
-actions+=/blood_strike,death=0
-actions+=/blood_strike,death=1,blood=2
+actions+=/blood_strike,if=death=0
+actions+=/blood_strike,if=death=1&blood=2
 actions+=/scourge_strike
+actions+=/speed_potion
 actions+=/summon_gargoyle,time<=20
 actions+=/summon_gargoyle,if=buff.bloodlust.react
 actions+=/death_coil
-actions+=/horn_of_winter
+actions+=/empower_rune_weapon
+actions+=/horn_of_winter,if=runic_power<=90
 head=koltiras_helmet_of_triumph,stats=2102armor_94crit_86exp_150str_174sta,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,stats=49hit_57crit_89str_97sta,gems=10crit_10str_4str
 shoulders=koltiras_shoulderplates_of_triumph,stats=1941armor_68hit_76crit_122str_130sta,gems=20str_4str,enchant=40ap_15crit
