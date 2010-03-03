@@ -86,7 +86,7 @@ struct warrior_t : public player_t
 
   struct talents_t
   {
-    int anticipation;           
+    int anticipation;
     int armored_to_the_teeth;
     int anger_management;
     int bladestorm;
@@ -396,7 +396,7 @@ static void trigger_deep_wounds( action_t* a )
 
   if ( a -> weapon -> slot == SLOT_OFF_HAND )
     deep_wounds_dmg *= 0.5;
-    
+
   if ( p -> active_deep_wounds -> ticking )
   {
     int num_ticks = p -> active_deep_wounds -> num_ticks;
@@ -418,7 +418,7 @@ static void trigger_deep_wounds( action_t* a )
       p -> procs_deferred_deep_wounds -> occur();
       p -> active_deep_wounds -> cancel();
     }
-    
+
     p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
     p -> active_deep_wounds -> schedule_tick();
     trigger_blood_frenzy( p -> active_deep_wounds );
@@ -454,7 +454,7 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  if ( p -> deep_wounds_delay_event ) 
+  if ( p -> deep_wounds_delay_event )
   {
     // There is an SPELL_AURA_APPLIED already in the queue.
     if ( sim -> log ) log_t::output( sim, "Player %s munches Deep Wounds.", p -> name() );
@@ -465,7 +465,7 @@ static void trigger_deep_wounds( action_t* a )
 
   if ( p -> active_deep_wounds -> ticking )
   {
-    if ( p -> active_deep_wounds -> tick_event -> occurs() < 
+    if ( p -> active_deep_wounds -> tick_event -> occurs() <
 	 p -> deep_wounds_delay_event -> occurs() )
     {
       // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
@@ -551,7 +551,7 @@ static void trigger_rampage( attack_t* a )
 
   if ( p -> talents.rampage == 0 )
     return;
-  
+
   p -> sim -> auras.rampage -> trigger();
 }
 
@@ -604,10 +604,10 @@ static void trigger_trauma( action_t* a )
   if ( p -> talents.trauma == 0 )
     return;
 
-  if ( a -> weapon == 0 ) 
+  if ( a -> weapon == 0 )
     return;
 
-  if ( a -> aoe && a -> weapon -> slot != SLOT_MAIN_HAND ) 
+  if ( a -> aoe && a -> weapon -> slot != SLOT_MAIN_HAND )
     return;
 
   target_t* t = a -> sim -> target;
@@ -792,13 +792,13 @@ void warrior_attack_t::player_buff()
   }
 
   player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
-  player_multiplier *= 1.0 + std::max( p -> buffs_enrage        -> value(), 
+  player_multiplier *= 1.0 + std::max( p -> buffs_enrage        -> value(),
 				       p -> buffs_wrecking_crew -> value() );
 
   if ( p -> talents.titans_grip && p -> dual_wield() )
   {
-    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H || 
-	 p ->  off_hand_attack -> weapon -> group() == WEAPON_2H ) 
+    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H ||
+	 p ->  off_hand_attack -> weapon -> group() == WEAPON_2H )
     {
       player_multiplier *= 0.90;
     }
@@ -888,7 +888,7 @@ struct melee_t : public warrior_attack_t
   virtual double execute_time() SC_CONST
   {
     double t = warrior_attack_t::execute_time();
-    if ( ! player -> in_combat ) 
+    if ( ! player -> in_combat )
     {
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
     }
@@ -974,7 +974,7 @@ struct auto_attack_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     p -> main_hand_attack -> schedule_execute();
-    if ( p -> off_hand_attack ) 
+    if ( p -> off_hand_attack )
     {
       p -> off_hand_attack -> schedule_execute();
     }
@@ -1038,7 +1038,7 @@ struct bladestorm_t : public warrior_attack_t
     if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );
-    
+
     id = 46924;
   }
 
@@ -1093,7 +1093,7 @@ struct heroic_strike_t : public warrior_attack_t
     init_rank( ranks, 47450 );
 
     background   = true;
-    may_crit     = true;    
+    may_crit     = true;
     base_cost   -= p -> talents.improved_heroic_strike;
     base_crit   += p -> talents.incite * 0.05;
     trigger_gcd  = 0;
@@ -1572,7 +1572,7 @@ struct execute_t : public warrior_attack_t
     p -> buffs_sudden_death -> decrement();
     p -> buffs_tier10_4pc_melee -> decrement();
   }
-  
+
   virtual bool ready()
   {
     if ( ! warrior_attack_t::ready() )
@@ -1899,7 +1899,7 @@ struct whirlwind_t : public warrior_attack_t
     may_crit = true;
     base_cost = 25;
     base_multiplier *= 1 + p -> talents.improved_whirlwind * 0.10 + p -> talents.unending_fury * 0.02;
-    
+
     cooldown -> duration = 10.0 - ( p -> glyphs.whirlwind ? 2 : 0 );
 
     stancemask = STANCE_BERSERKER;
@@ -1993,7 +1993,7 @@ void warrior_spell_t::execute()
   // rage. "Reduces the rage cost of your next ability is reduced by 5."
   warrior_t* p = player -> cast_warrior();
   p -> buffs_tier7_4pc_melee -> expire();
-  
+
   update_ready();
 }
 
@@ -2214,7 +2214,7 @@ struct shield_block_t : public warrior_spell_t
 
     harmful = false;
     cooldown -> duration = 60.0 - 10.0 * p -> talents.shield_mastery;
-    
+
     id = 2565;
   }
 
@@ -2301,7 +2301,7 @@ struct stance_t : public warrior_spell_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-  
+
     if ( ! warrior_spell_t::ready() )
       return false;
 
@@ -2491,7 +2491,7 @@ void warrior_t::init_scaling()
 {
   player_t::init_scaling();
 
-  if ( talents.armored_to_the_teeth ) 
+  if ( talents.armored_to_the_teeth )
   {
     scales_with[ STAT_ARMOR ] = 1;
   }
@@ -2531,7 +2531,7 @@ void warrior_t::init_buffs()
   buffs_tier10_4pc_melee          = new buff_t( this, "tier10_4pc_melee",          2, 20.0,   0, set_bonus.tier10_4pc_melee() );
   buffs_glyph_of_blocking         = new buff_t( this, "glyph_of_blocking",         1, 10.0,   0, glyphs.blocking );
   buffs_glyph_of_revenge          = new buff_t( this, "glyph_of_revenge",          1,    0,   0, glyphs.revenge );
-  
+
   buffs_tier8_2pc_melee = new stat_buff_t( this, "tier8_2pc_melee", STAT_HASTE_RATING, 150, 1, 5.0, 0, set_bonus.tier8_2pc_melee() * 0.40 );
 }
 
@@ -2745,7 +2745,7 @@ void warrior_t::interrupt()
 double warrior_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
-  if ( talents.armored_to_the_teeth ) 
+  if ( talents.armored_to_the_teeth )
   {
     ap += talents.armored_to_the_teeth * composite_armor() / 108.0;
   }
@@ -2768,7 +2768,7 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 double warrior_t::composite_attack_hit() SC_CONST
 {
   double ah = player_t::composite_attack_hit();
-  if ( talents.precision ) 
+  if ( talents.precision )
   {
     ah += talents.precision * 0.01;
   }
@@ -2780,7 +2780,7 @@ double warrior_t::composite_attack_hit() SC_CONST
 double warrior_t::composite_attack_crit() SC_CONST
 {
   double ac = player_t::composite_attack_crit();
-  if ( talents.cruelty ) 
+  if ( talents.cruelty )
   {
     ac += talents.cruelty * 0.01;
   }
@@ -3076,19 +3076,19 @@ int warrior_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_melee = ( strstr( s, "helmet"         ) || 
+  bool is_melee = ( strstr( s, "helmet"         ) ||
 		    strstr( s, "shoulderplates" ) ||
 		    strstr( s, "battleplate"    ) ||
 		    strstr( s, "legplates"      ) ||
 		    strstr( s, "gauntlets"      ) );
 
-  bool is_tank = ( strstr( s, "greathelm"   ) || 
+  bool is_tank = ( strstr( s, "greathelm"   ) ||
 		   strstr( s, "pauldrons"   ) ||
 		   strstr( s, "breastplate" ) ||
 		   strstr( s, "legguards"   ) ||
 		   strstr( s, "handguards"  ) );
-  
-  if ( strstr( s, "dreadnaught" ) ) 
+
+  if ( strstr( s, "dreadnaught" ) )
   {
     if ( is_melee ) return SET_T7_MELEE;
     if ( is_tank  ) return SET_T7_TANK;
@@ -3099,7 +3099,7 @@ int warrior_t::decode_set( item_t& item )
     if ( is_tank  ) return SET_T8_TANK;
   }
   if ( strstr( s, "wrynns" ) ||
-       strstr( s, "hellscreams"  ) ) 
+       strstr( s, "hellscreams"  ) )
   {
     if ( is_melee ) return SET_T9_MELEE;
     if ( is_tank  ) return SET_T9_TANK;
@@ -3135,7 +3135,7 @@ void player_t::warrior_init( sim_t* sim )
   t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );
   t -> debuffs.sunder_armor = new debuff_t( sim, "sunder_armor", 1, 30.0 );
   t -> debuffs.thunder_clap = new debuff_t( sim, "thunder_clap", 1, 30.0 );
-  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, 15.0 );
+  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, ( sim -> P333 ? 60.0 : 15.0 ) );
 }
 
 // player_t::warrior_combat_begin ===========================================
