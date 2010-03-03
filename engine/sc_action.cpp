@@ -357,6 +357,17 @@ void action_t::target_debuff( int dmg_type )
 
   if ( t -> debuffs.winters_grasp -> up() ) target_hit += 0.02;
 
+  if ( t -> resilience > 0 )
+  {
+  	double percent_resil = t -> resilience / 94.3;
+	double crit_chance_reduce = percent_resil * 0.01;
+	double crit_damage_reduce = percent_resil * 2.2 * 0.01;
+	double damage_reduce = percent_resil * 2 * 0.01;
+	target_crit -= crit_chance_reduce;
+	target_crit_multiplier *= 1 - crit_damage_reduce;
+	target_multiplier *= 1 - damage_reduce;
+  }
+
   if ( sim -> debug )
     log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                    name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );

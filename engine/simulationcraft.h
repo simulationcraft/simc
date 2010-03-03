@@ -1857,6 +1857,7 @@ struct target_t
   double fixed_health, initial_health, current_health;
   double total_dmg;
   int adds_nearby, initial_adds_nearby;
+  double resilience;
 
   struct debuffs_t
   {

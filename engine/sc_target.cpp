@@ -16,7 +16,7 @@ target_t::target_t( sim_t* s ) :
     initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 ),
-    adds_nearby( 0 ), initial_adds_nearby( 0 )
+    adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 }
@@ -158,6 +158,12 @@ void target_t::init()
     }
   }
 
+  if( resilience > 0 )
+  {
+  	// 1414.5 current capped resilience
+  	resilience = std::min(resilience, 1414.5);
+  }
+
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 
   if ( ! race_str.empty() )
@@ -275,6 +281,7 @@ int target_t::get_options( std::vector<option_t>& options )
     { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
     { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
     { "target_weapon_skill",   OPT_FLT,    &( weapon_skill                      ) },
+    { "target_resilience",     OPT_FLT,    &( resilience                        ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
