@@ -2947,7 +2947,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     base_tap = util_t::ability_rank( player -> level,  1490,80,  710,68,  500,0 );
-	direct_power_mod = 0.96;
+	direct_power_mod = 0.5;
   }
 
   virtual void execute()
