@@ -3496,7 +3496,8 @@ struct demonic_pact_callback_t : public action_callback_t
 	// HACK ALERT!!! Remove "double-dip" during crit scale factor generation.
 	if ( sim -> scaling -> scale_stat == STAT_CRIT_RATING && o -> talents.improved_demonic_tactics )
 	{
-		if ( ! sim -> rng -> roll( a -> player_crit / ( a -> player_crit + sim -> scaling -> scale_value * o -> talents.improved_demonic_tactics * 0.10 / o -> rating.spell_crit ) ) ) return;
+		if ( ! sim -> rng -> roll( a -> player_crit / ( a -> player_crit + sim -> scaling -> scale_value * o -> talents.improved_demonic_tactics * 0.10 / o -> rating.spell_crit ) ) ) 
+			return;
 	}
 	// HACK ALERT!!! Remove "double-dip" during int scale factor generation.
 	if ( sim -> scaling -> scale_stat == STAT_INTELLECT && o -> talents.improved_demonic_tactics )
@@ -3530,7 +3531,7 @@ struct demonic_pact_callback_t : public action_callback_t
 	  // HACK ALERT!!! Remove "double-dip" during spirit scale factor generation.
       if ( p != o && sim -> scaling -> scale_stat == STAT_SPIRIT )
       {
-        p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * 0.30 * 0.10;
+        p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * o -> spell_power_per_spirit * 0.10;
       }
     }
   }
