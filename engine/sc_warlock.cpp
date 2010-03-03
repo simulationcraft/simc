@@ -3507,15 +3507,8 @@ struct demonic_pact_callback_t : public action_callback_t
 
     // HACK ALERT!!!  To prevent spell power contributions from ToW/FT/IDS/DP buffs, we fiddle with player type
     o -> type = PLAYER_GUARDIAN;
-    double buff = o -> composite_spell_power( SCHOOL_MAX );
+    double buff = o -> composite_spell_power( SCHOOL_MAX ) * 0.10;
     o -> type = WARLOCK;
-
-    if ( o -> buffs_life_tap_glyph -> check() )
-    {
-      buff -= o -> spirit() * 0.20;
-    }
-
-    buff *= 0.10;
 
     for( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -3532,6 +3525,16 @@ struct demonic_pact_callback_t : public action_callback_t
       if ( p != o && sim -> scaling -> scale_stat == STAT_SPIRIT )
       {
         p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * o -> spell_power_per_spirit * 0.10;
+      }
+	  // HACK ALERT!!! Remove "double-dip" during intellect scale factor generation.
+      if ( p != o && sim -> scaling -> scale_stat == STAT_INTELLECT )
+      {
+        p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * o -> talents.demonic_knowledge * 0.04 * 0.10;
+      }
+	  // HACK ALERT!!! Remove "double-dip" during stamina scale factor generation.
+      if ( p != o && sim -> scaling -> scale_stat == STAT_STAMINA )
+      {
+        p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * o -> talents.demonic_knowledge * 0.04 * 0.10;
       }
     }
   }
