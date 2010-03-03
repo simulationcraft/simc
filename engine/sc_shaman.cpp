@@ -1456,7 +1456,7 @@ struct lava_burst_t : public shaman_spell_t
         base_td = direct_dmg * 0.1 / num_ticks;
 
       if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
-        p -> active_flame_shock -> extend_duration( p -> sim -> P333 ? 4 : 2 );
+        p -> active_flame_shock -> extend_duration( 2 );
     }
   }
 
