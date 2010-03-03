@@ -1179,7 +1179,7 @@ struct ambush_t : public rogue_attack_t
     requires_stealth       = true;
     adds_combo_points      = true;
     weapon_multiplier     *= 2.75;
-    base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
+    base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 +
 				     p -> talents.slaughter_from_the_shadows * 0.01 );
@@ -1227,7 +1227,7 @@ struct backstab_t : public rogue_attack_t
     requires_weapon        = WEAPON_DAGGER;
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
-    base_cost             -= p -> talents.slaughter_from_the_shadows * 3;
+    base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
     weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.02;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression          * 0.03 +

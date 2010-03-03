@@ -1306,13 +1306,18 @@ struct revenge_t : public warrior_attack_t
     may_crit = true;
     direct_power_mod  = 0.207;
     cooldown -> duration = 5.0;
-    base_multiplier  *= 1 + p -> talents.improved_revenge * 0.1;
+    base_multiplier  *= 1 + p -> talents.improved_revenge * ( p -> sim -> P333 ? 0.3 : 0.1 );
     if ( p -> talents.unrelenting_assault )
     {
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
       cooldown -> duration -= ( p -> talents.unrelenting_assault * 2 );
     }
-    if ( sim -> P333 ) base_multiplier *= 1.50;
+    if ( sim -> P333 )
+    {
+	  direct_power_mod = 0.31;
+	  base_dd_min = 1636;
+	  base_dd_max = 1998;
+    }
     stancemask = STANCE_DEFENSE;
   }
   virtual void execute()
@@ -2476,7 +2481,7 @@ void warrior_t::init_base()
   diminished_parry_capi = 1.0 / 0.47003525;
 
   attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
-  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
+  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * ( sim -> P333 ? 0.03 : 0.02 );
 
   health_per_stamina = 10;
 

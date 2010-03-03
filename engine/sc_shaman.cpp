@@ -1790,6 +1790,7 @@ struct frost_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
+  double td_multiplier;
   flame_shock_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "flame_shock", player, SCHOOL_FIRE, TREE_ELEMENTAL )
   {
@@ -1827,7 +1828,9 @@ struct flame_shock_t : public shaman_spell_t
 
     base_td_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
                                   p -> set_bonus.tier9_4pc_melee() * 0.25 +
-                                  util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) );
+                                  util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) +
+                                  p -> set_bonus.tier8_2pc_caster() * ( p -> sim -> P333 ? 0.2 : 0 ) );
+
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
                               p -> talents.mental_quickness  * 0.02 +
@@ -1844,6 +1847,7 @@ struct flame_shock_t : public shaman_spell_t
 
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
+
     if ( p -> sim -> P333 ) tick_may_crit = true;
 
     if ( p -> glyphs.shocking )
