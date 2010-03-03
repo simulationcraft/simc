@@ -747,6 +747,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_multiplier  *= 0.50;
 
       may_miss          = false;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
     }
     virtual void target_debuff( int dmg_type )
     {
