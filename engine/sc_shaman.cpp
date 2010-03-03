@@ -37,7 +37,7 @@ struct shaman_t : public player_t
   buff_t* buffs_quaking_earth;
   buff_t* buffs_shamanistic_rage;
   buff_t* buffs_shattered_ice;
-  buff_t* buffs_stonebreaker;  
+  buff_t* buffs_stonebreaker;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_totem_of_wrath_glyph;
@@ -355,7 +355,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_shield_t : public spell_t
   {
-    fire_shield_t( player_t* player ) : 
+    fire_shield_t( player_t* player ) :
       spell_t( "fire_shield", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
       aoe = true;
@@ -373,7 +373,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_nova_t : public spell_t
   {
-    fire_nova_t( player_t* player ) : 
+    fire_nova_t( player_t* player ) :
       spell_t( "fire_nova", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
       aoe = true;
@@ -388,7 +388,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_blast_t : public spell_t
   {
-    fire_blast_t( player_t* player ) : 
+    fire_blast_t( player_t* player ) :
       spell_t( "fire_blast", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
       may_crit = true;
@@ -405,7 +405,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_melee_t : public attack_t
   {
-    fire_melee_t( player_t* player ) : 
+    fire_melee_t( player_t* player ) :
       attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
       may_crit = true;
@@ -814,7 +814,7 @@ struct melee_t : public shaman_attack_t
   virtual double execute_time() SC_CONST
   {
     double t = shaman_attack_t::execute_time();
-    if ( ! player -> in_combat ) 
+    if ( ! player -> in_combat )
     {
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
     }
@@ -882,7 +882,7 @@ struct auto_attack_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     p -> main_hand_attack -> schedule_execute();
-    if ( p -> off_hand_attack ) 
+    if ( p -> off_hand_attack )
     {
       p -> off_hand_attack -> schedule_execute();
     }
@@ -1098,7 +1098,7 @@ void shaman_spell_t::execute()
   {
     if ( result == RESULT_CRIT )
     {
-      if ( ! proc && ! pseudo_pet ) 
+      if ( ! proc && ! pseudo_pet )
       {
         trigger_elemental_oath( this );
         p -> buffs_elemental_devastation -> trigger();
@@ -1149,7 +1149,7 @@ struct chain_lightning_t : public shaman_spell_t
   int      clearcasting;
   int      conserve;
   double   max_lvb_cd;
-  int      maelstrom;  
+  int      maelstrom;
   stats_t* lightning_overload_stats;
   double   lightning_overload_chance;
 
@@ -1164,7 +1164,7 @@ struct chain_lightning_t : public shaman_spell_t
       { "clearcasting", OPT_INT, &clearcasting },
       { "conserve", OPT_INT, &conserve    },
       { "lvb_cd<",   OPT_FLT, &max_lvb_cd },
-      { "maelstrom", OPT_INT, &maelstrom  },  
+      { "maelstrom", OPT_INT, &maelstrom  },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1456,7 +1456,7 @@ struct lava_burst_t : public shaman_spell_t
         base_td = direct_dmg * 0.1 / num_ticks;
 
       if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
-        p -> active_flame_shock -> extend_duration( 2 );
+        p -> active_flame_shock -> extend_duration( p -> sim -> P333 ? 4 : 2 );
     }
   }
 
@@ -1557,11 +1557,11 @@ struct shamans_swiftness_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if ( sub_cooldown ) 
+    if ( sub_cooldown )
       if ( sub_cooldown -> remains() > 0 )
 	return false;
 
-    if ( sub_dot ) 
+    if ( sub_dot )
       if ( sub_dot -> remains() > 0 )
 	return false;
 
@@ -1668,7 +1668,7 @@ struct fire_nova_t : public shaman_spell_t
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 61657 );
-    
+
     aoe = true;
     pseudo_pet = true;
     may_crit = true;
@@ -1841,7 +1841,7 @@ struct flame_shock_t : public shaman_spell_t
 			      p -> talents.booming_echoes * 1.0 );
 
     if ( p -> glyphs.flame_shock ) tick_may_crit = true;
-    
+
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
     if ( p -> sim -> P333 ) tick_may_crit = true;
@@ -1870,7 +1870,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     if ( player -> sim -> P333 )
       return 1;
-  
+
     return 0;
   }
   virtual void tick()
@@ -2889,7 +2889,7 @@ struct water_shield_t : public shaman_spell_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-    if ( p -> buffs_water_shield -> check() ) 
+    if ( p -> buffs_water_shield -> check() )
       return false;
     return shaman_spell_t::ready();
   }
@@ -3219,7 +3219,7 @@ void shaman_t::init_buffs()
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  4,  12.0 );
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0, 0.0, talents.shamanistic_rage      );
-  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee() ); 
+  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee() );
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
@@ -3308,7 +3308,7 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-      
+
       action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
@@ -3363,7 +3363,7 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock,if=!ticking";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0";
       action_list_str += "/fire_nova,if=target.adds>2";
-      if ( ! talents.totem_of_wrath ) 
+      if ( ! talents.totem_of_wrath )
       {
 	    action_list_str += "/fire_elemental_totem";
 	    action_list_str += "/searing_totem";
@@ -3410,7 +3410,7 @@ double shaman_t::composite_attack_power_multiplier() SC_CONST
 {
   double multiplier = player_t::composite_attack_power_multiplier();
 
-  if ( buffs_tier10_4pc_melee -> up() ) 
+  if ( buffs_tier10_4pc_melee -> up() )
   {
     multiplier *= 1.20;
   }
@@ -3621,13 +3621,13 @@ int shaman_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_caster = ( strstr( s, "helm"     ) || 
+  bool is_caster = ( strstr( s, "helm"     ) ||
                      strstr( s, "shoulderpads" ) ||
                      strstr( s, "hauberk"      ) ||
                      strstr( s, "kilt"         ) ||
                      strstr( s, "gloves"       ) );
-  
-  bool is_melee = ( strstr( s, "faceguard"      ) || 
+
+  bool is_melee = ( strstr( s, "faceguard"      ) ||
                     strstr( s, "shoulderguards" ) ||
                     strstr( s, "chestguard"     ) ||
                     strstr( s, "warkilt"        ) ||
@@ -3638,13 +3638,13 @@ int shaman_t::decode_set( item_t& item )
     if ( is_melee  ) return SET_T7_MELEE;
     if ( is_caster ) return SET_T7_CASTER;
   }
-  if ( strstr( s, "worldbreaker" ) ) 
+  if ( strstr( s, "worldbreaker" ) )
   {
     if ( is_melee  ) return SET_T8_MELEE;
     if ( is_caster ) return SET_T8_CASTER;
   }
   if ( strstr( s, "nobundos" ) ||
-       strstr( s, "thralls"  ) ) 
+       strstr( s, "thralls"  ) )
   {
     if ( is_melee  ) return SET_T9_MELEE;
     if ( is_caster ) return SET_T9_CASTER;
@@ -3683,7 +3683,7 @@ void player_t::shaman_init( sim_t* sim )
   sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
 
   sim -> target -> debuffs.totem_of_wrath = new debuff_t( sim, "totem_of_wrath_debuff" );
-  
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.bloodlust = new buff_t( p, "bloodlust", 1, 40.0, 600.0 );
@@ -3694,7 +3694,7 @@ void player_t::shaman_init( sim_t* sim )
 
 void player_t::shaman_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.totem_of_wrath ) 
+  if ( sim -> overrides.totem_of_wrath )
   {
     sim -> auras.totem_of_wrath -> override( 1, 280.0 );
     sim -> target -> debuffs.totem_of_wrath -> override();
