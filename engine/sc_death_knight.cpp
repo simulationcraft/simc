@@ -3444,6 +3444,7 @@ struct pestilence_t : public death_knight_spell_t
       if ( p -> dots_frost_fever -> ticking() )
       {
         p -> frost_fever -> refresh_duration();
+        if ( p -> sim -> P333 ) trigger_icy_talons( this );
       }
     }
   }
