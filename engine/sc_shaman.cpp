@@ -1880,7 +1880,13 @@ struct flame_shock_t : public shaman_spell_t
   virtual void tick()
   {
     shaman_t* p = player -> cast_shaman();
+    // Currently not possible to give add a crit bonus multiplier
+    // only to ticks and not the initial hit.
+    double old_BCBM = base_crit_bonus_multiplier;
+    if ( p -> sim -> P333 && p -> glyphs.flame_shock )
+      base_crit_bonus_multiplier += 0.30;
     shaman_spell_t::tick();
+    base_crit_bonus_multiplier = old_BCBM;
     p -> buffs_shattered_ice -> trigger();
   }
 };
