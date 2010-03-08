@@ -967,7 +967,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
       base_crit += o -> talents.vicious_strikes * 0.03;
       base_crit_bonus_multiplier *= 1.0 + ( o -> talents.vicious_strikes * 0.15 );
-      base_multiplier *= 1.0 + ( o -> talents.outbreak * 0.10 );
+      base_multiplier *= 1.0 + ( o -> talents.outbreak * 0.10
+		                       + o -> glyphs.plague_strike * 0.20 );
       base_multiplier *= 0.50; // DRW malus
       base_dd_min = base_dd_max = 378;
 
@@ -2621,7 +2622,20 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
+	double old_BM = base_multiplier;
+	if ( p -> glyphs.death_strike )
+	{
+	  if ( p -> resource_current[ RESOURCE_RUNIC ] >= 25 )
+	  {
+        base_multiplier *= 1.25
+	  }
+	  else
+	  {
+	    base_multiplier *= 1 + ( p -> resource_current[ RESOURCE_RUNIC ] * 0.01 )
+	  }
+	}
     death_knight_attack_t::execute();
+	base_multiplier = old_BM;
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
@@ -3477,7 +3491,8 @@ struct plague_strike_t : public death_knight_attack_t
 
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
-    base_multiplier *= 1.0 + ( p -> talents.outbreak * 0.10 );
+    base_multiplier *= 1.0 + ( p -> talents.outbreak * 0.10
+		                     + p -> glyphs.plague_strike * 0.20 );
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
