@@ -76,22 +76,25 @@ static OptionEntry* getScalingOptions()
 {
   static OptionEntry options[] =
     {
-      { "Analyze All Stats",                "",      "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-      { "Use Positive Deltas Only",         "",      "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
-                                                     "This option forces a positive scale delta, which is useful for classes with soft caps." },
-      { "Analyze Strength",                 "str",   "Calculate scale factors for Strength"                 },
-      { "Analyze Agility",                  "agi",   "Calculate scale factors for Agility"                  },
-      { "Analyze Stamina",                  "sta",   "Calculate scale factors for Stamina"                  },
-      { "Analyze Intellect",                "int",   "Calculate scale factors for Intellect"                },
-      { "Analyze Spirit",                   "spi",   "Calculate scale factors for Spirit"                   },
-      { "Analyze Spell Power",              "sp",    "Calculate scale factors for Spell Power"              },
-      { "Analyze Attack Power",             "ap",    "Calculate scale factors for Attack Power"             },
-      { "Analyze Expertise Rating",         "exp",   "Calculate scale factors for Expertise Rating"         },
-      { "Analyze Armor Penetration Rating", "arpen", "Calculate scale factors for Armor Penetration Rating" },
-      { "Analyze Hit Rating",               "hit",   "Calculate scale factors for Hit Rating"               },
-      { "Analyze Crit Rating",              "crit",  "Calculate scale factors for Crit Rating"              },
-      { "Analyze Haste Rating",             "haste", "Calculate scale factors for Haste Rating"             },
-      { "Analyze Weapon DPS",               "wdps",  "Calculate scale factors for Weapon DPS"               },
+      { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
+      { "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
+                                                        "This option forces a positive scale delta, which is useful for classes with soft caps." },
+      { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
+      { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
+      { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
+      { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
+      { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
+      { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
+      { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
+      { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
+      { "Analyze Armor Penetration Rating", "arpen",    "Calculate scale factors for Armor Penetration Rating" },
+      { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
+      { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+      { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+      { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
+	  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
+      { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
+	  { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
       { NULL, NULL, NULL }
     };
   return options;
@@ -1173,6 +1176,7 @@ QString SimulationCraftWindow::mergeOptions()
   buttons = scalingButtonGroup->buttons();
   options += "calculate_scale_factors=1\n";
   if( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
+  if( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
   OptionEntry* scaling = getScalingOptions();
   for( int i=2; scaling[ i ].label; i++ )
