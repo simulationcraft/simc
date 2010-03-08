@@ -1992,8 +1992,6 @@ void death_knight_spell_t::consume_resource()
 
   if ( result_is_hit() )
     consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
-  else
-    refund_power( this );
 }
 
 // death_knight_spell_t::xecute() ==========================================
@@ -2411,7 +2409,6 @@ struct bone_shield_t : public death_knight_spell_t
 
     cost_unholy = 1;
     harmful     = false;
-    base_cost   = -10;
 
     cooldown -> duration    = 60.0;
 
@@ -2454,6 +2451,7 @@ struct bone_shield_t : public death_knight_spell_t
       p -> buffs_bone_shield -> trigger( 1, 0.02 );
       death_knight_spell_t::execute();
     }
+    p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_rune_abilities );
   }
 };
 
@@ -3419,7 +3417,6 @@ struct pestilence_t : public death_knight_spell_t
     may_crit = false;
     parse_options( options, options_str );
 
-    base_cost     = -10;
     cost_blood    = 1;
     convert_runes = p -> talents.blood_of_the_north / 3.0
                     + p -> talents.reaping / 3.0;
@@ -3447,6 +3444,7 @@ struct pestilence_t : public death_knight_spell_t
         if ( p -> sim -> P333 ) trigger_icy_talons( this );
       }
     }
+    p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_rune_abilities );
   }
 };
 
