@@ -302,7 +302,7 @@ void SimulationCraftWindow::loadHistory()
     for( int i=0; i < count; i++ )
     {
       QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
-      item->setFont( QFont( "fixed" ) );
+      //item->setFont( QFont( "fixed" ) );
       historyList->addItem( item );
     }
 
@@ -612,18 +612,18 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  int T8=0, T9=1, T10=2, TMAX=3;
+  const int T8=0, T9=1, T10=2, TMAX=3;
   const char* TNAMES[] = { "T8", "T9", "T10" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
-    top->setFont( 0, QFont( "fixed" ) );
+    //top->setFont( 0, QFont( "fixed" ) );
     bisTree->addTopLevelItem( top );
     for( int j=0; j < TMAX; j++ )
     {
       top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( TNAMES[ j ] ) ) );
-      rootItems[ i ][ j ]->setFont( 0, QFont( "fixed" ) );
+      //rootItems[ i ][ j ]->setFont( 0, QFont( "fixed" ) );
     }
   }
 
@@ -737,8 +737,8 @@ void SimulationCraftWindow::createBestInSlotTab()
     url += b.id;
     QStringList labels = QStringList( b.name ); labels += url;
     QTreeWidgetItem* item = new QTreeWidgetItem( labels );
-    item->setFont( 0, QFont( "fixed" ) );
-    item->setFont( 1, QFont( "fixed" ) );
+    //item->setFont( 0, QFont( "fixed" ) );
+    //item->setFont( 1, QFont( "fixed" ) );
     rootItems[ b.type ][ b.tier ]->addChild( item );
   }
 
@@ -751,7 +751,7 @@ void SimulationCraftWindow::createSimulateTab()
 {
   simulateText = new SimulationCraftTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  simulateText->document()->setDefaultFont( QFont( "fixed" ) );
+  //simulateText->document()->setDefaultFont( QFont( "fixed" ) );
   simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
 }
@@ -760,7 +760,7 @@ void SimulationCraftWindow::createOverridesTab()
 {
   overridesText = new SimulationCraftTextEdit();
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  overridesText->document()->setDefaultFont( QFont( "fixed" ) );
+  //overridesText->document()->setDefaultFont( QFont( "fixed" ) );
   overridesText->setPlainText( "# User-specified persistent global and player parms will set here.\n" );
   mainTab->addTab( overridesText, "Overrides" );
 }
@@ -769,7 +769,7 @@ void SimulationCraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  logText->document()->setDefaultFont( QFont( "fixed" ) );
+  //logText->document()->setDefaultFont( QFont( "fixed" ) );
   logText->setReadOnly(true);
   logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );
   mainTab->addTab( logText, "Log" );
@@ -880,6 +880,7 @@ sim_t* SimulationCraftWindow::initSim()
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> seed = (int) time( NULL );
     sim -> report_progress = 0;
+    sim -> parse_option( "patch", patchChoice->currentText().toStdString() );
   }
   return sim;
 }
@@ -1034,7 +1035,7 @@ void SimulationCraftWindow::importFinished()
     if( ! found )
     {
       QListWidgetItem* item = new QListWidgetItem( label );
-      item->setFont( QFont( "fixed" ) );
+      //item->setFont( QFont( "fixed" ) );
 
       historyList->addItem( item );
       historyList->sortItems();

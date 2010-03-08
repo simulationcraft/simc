@@ -1182,7 +1182,7 @@ struct ambush_t : public rogue_attack_t
     base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 +
-				     p -> talents.slaughter_from_the_shadows * 0.01 );
+                                     p -> talents.slaughter_from_the_shadows * 0.01 );
     base_crit             += p -> talents.improved_ambush * 0.25;
   }
 
@@ -1228,7 +1228,8 @@ struct backstab_t : public rogue_attack_t
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
     base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
-    weapon_multiplier     *= 1.50 + p -> talents.sinister_calling * 0.02;
+    weapon_multiplier     *= 1.50;
+    weapon_multiplier     *= 1.0 + p -> talents.sinister_calling * 0.02;
 
     base_multiplier *= 1.0 + ( p -> talents.aggression          * 0.03 +
                                p -> talents.blade_twisting      * 0.05 +
@@ -1236,7 +1237,7 @@ struct backstab_t : public rogue_attack_t
                                p -> talents.opportunity         * 0.10 +
                                p -> talents.surprise_attacks    * 0.10 +
                                p -> set_bonus.tier6_4pc_melee() * 0.06 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 );
+                               p -> talents.slaughter_from_the_shadows * 0.01 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.10 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -1325,7 +1326,7 @@ struct envenom_t : public rogue_attack_t
     base_cost = 35;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 +
+                               p -> talents.slaughter_from_the_shadows * 0.01 +
                                util_t::talent_rank( p -> talents.vile_poisons, 3, 0.07, 0.14, 0.20 ) );
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
@@ -1433,7 +1434,7 @@ struct eviscerate_t : public rogue_attack_t
 
     base_multiplier *= 1.0 + ( p -> talents.aggression    * 0.03 +
                                p -> talents.find_weakness * 0.02 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 +
+                               p -> talents.slaughter_from_the_shadows * 0.01 +
                                util_t::talent_rank( p -> talents.improved_eviscerate, 3, 0.07, 0.14, 0.20 ) );
 
     if ( p -> glyphs.eviscerate ) base_crit += 0.10;
@@ -1613,7 +1614,7 @@ struct garrote_t : public rogue_attack_t
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                 p -> talents.opportunity   * 0.10 +
                                 p -> talents.blood_spatter * 0.15 +
-				p -> talents.slaughter_from_the_shadows * 0.01 );
+                                p -> talents.slaughter_from_the_shadows * 0.01 );
   }
 
   virtual void execute()
@@ -1660,7 +1661,7 @@ struct ghostly_strike_t : public rogue_attack_t
     else
       weapon_multiplier        *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     base_multiplier            *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-					  p -> talents.slaughter_from_the_shadows * 0.01 );
+                                          p -> talents.slaughter_from_the_shadows * 0.01 );
     base_crit                  += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -1698,15 +1699,14 @@ struct hemorrhage_t : public rogue_attack_t
     normalize_weapon_speed = true;
     adds_combo_points      = true;
     base_cost              = 35 - p -> talents.slaughter_from_the_shadows;
-    if ( sim -> P333 && weapon -> type == WEAPON_DAGGER )
-      weapon_multiplier *= 1.60 + p -> talents.sinister_calling     * 0.02;
-    else
-      weapon_multiplier *= 1.10 + p -> talents.sinister_calling     * 0.02;
+
+    weapon_multiplier *= ( sim -> P333 && weapon -> type == WEAPON_DAGGER ) ? 1.60 : 1.10;
+    weapon_multiplier *= 1.0 + p -> talents.sinister_calling * 0.02;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
-			       p -> talents.surprise_attacks    * 0.10 +
-			       p -> set_bonus.tier6_4pc_melee() * 0.06 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 );
+                               p -> talents.surprise_attacks    * 0.10 +
+                               p -> set_bonus.tier6_4pc_melee() * 0.06 +
+                               p -> talents.slaughter_from_the_shadows * 0.01 );
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -1833,7 +1833,7 @@ struct killing_spree_tick_t : public rogue_attack_t
     direct_tick = true;
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + ( p -> talents.find_weakness * 0.02 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 );
+                               p -> talents.slaughter_from_the_shadows * 0.01 );
   }
 
   virtual void execute()
@@ -1952,7 +1952,7 @@ struct mutilate_t : public rogue_attack_t
     base_multiplier  *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
                                 p -> talents.opportunity         * 0.10 +
                                 p -> set_bonus.tier6_4pc_melee() * 0.06 +
-				p -> talents.slaughter_from_the_shadows * 0.01 );
+                                p -> talents.slaughter_from_the_shadows * 0.01 );
 
     base_crit += ( p -> talents.puncturing_wounds * 0.05 +
                    p -> talents.turn_the_tables   * 0.02 );
@@ -2057,7 +2057,7 @@ struct rupture_t : public rogue_attack_t
                                     p -> talents.find_weakness       * 0.02 +
                                     p -> talents.serrated_blades     * 0.10 +
                                     p -> set_bonus.tier7_2pc_melee() * 0.10 +
-				    p -> talents.slaughter_from_the_shadows * 0.01 );
+                                    p -> talents.slaughter_from_the_shadows * 0.01 );
 
     if ( p -> talents.surprise_attacks ) may_dodge = false;
 
@@ -2171,7 +2171,7 @@ struct shiv_t : public rogue_attack_t
     base_dd_min = base_dd_max = 1;
     base_multiplier *= 1.0 + ( p -> talents.find_weakness    * 0.02 +
                                p -> talents.surprise_attacks * 0.10 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 );
+                               p -> talents.slaughter_from_the_shadows * 0.01 );
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
@@ -2233,7 +2233,7 @@ struct sinister_strike_t : public rogue_attack_t
                                p -> talents.find_weakness       * 0.02 +
                                p -> talents.surprise_attacks    * 0.10 +
                                p -> set_bonus.tier6_4pc_melee() * 0.06 +
-			       p -> talents.slaughter_from_the_shadows * 0.01 );
+                               p -> talents.slaughter_from_the_shadows * 0.01 );
 
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
@@ -3078,19 +3078,20 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      bool rupture_less = ( ! talents.blood_spatter &&
+      bool rupture_less = ( ! sim -> P333             &&
+                            ! talents.blood_spatter   &&
                             ! talents.serrated_blades &&
                             ! glyphs.rupture );
       if ( talents.hunger_for_blood )
       {
-	action_list_str += "/pool_energy,for_next=1";
-	action_list_str += "/hunger_for_blood,if=buff.hunger_for_blood.remains<2";
+        action_list_str += "/pool_energy,for_next=1";
+        action_list_str += "/hunger_for_blood,if=buff.hunger_for_blood.remains<2";
       }
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<1";
       if ( ! talents.cut_to_the_chase )
       {
-	action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
-	action_list_str += "/slice_and_dice,if=buff.combo_points.stack>=3&buff.slice_and_dice.remains<2";
+        action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
+        action_list_str += "/slice_and_dice,if=buff.combo_points.stack>=3&buff.slice_and_dice.remains<2";
       }
       if ( ! rupture_less )
       {
@@ -3106,7 +3107,8 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      bool rupture_less = ( ! talents.blood_spatter       &&
+      bool rupture_less = ( ! sim -> P333                 &&
+                            ! talents.blood_spatter       &&
                             ! talents.serrated_blades     &&
                               talents.improved_eviscerate &&
                               talents.aggression          &&
@@ -3116,7 +3118,7 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade";
       if ( talents.killing_spree )
       {
-	action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
+        action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
       }
       if ( talents.blade_flurry  )
       {
@@ -3125,7 +3127,7 @@ void rogue_t::init_actions()
       }
       if ( ! rupture_less )
       {
-	action_list_str += "/rupture,if=buff.combo_points.stack=5&target.time_to_die>10";
+        action_list_str += "/rupture,if=buff.combo_points.stack=5&target.time_to_die>10";
       }
       if (   talents.puncturing_wounds        &&
              talents.opportunity              &&
@@ -3161,7 +3163,7 @@ void rogue_t::init_actions()
       action_list_str += "/rupture,if=buff.combo_points.stack>=4";
       if ( talents.improved_poisons )
       {
-	action_list_str += "/envenom,if=buff.combo_points.stack>=4&buff.envenom.remains<1";
+        action_list_str += "/envenom,if=buff.combo_points.stack>=4&buff.envenom.remains<1";
       }
       action_list_str += "/eviscerate,if=buff.combo_points.stack>=4";
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
