@@ -2622,20 +2622,7 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-	double old_BM = base_multiplier;
-	if ( p -> glyphs.death_strike )
-	{
-	  if ( p -> resource_current[ RESOURCE_RUNIC ] >= 25 )
-	  {
-        base_multiplier *= 1.25
-	  }
-	  else
-	  {
-	    base_multiplier *= 1 + ( p -> resource_current[ RESOURCE_RUNIC ] * 0.01 )
-	  }
-	}
     death_knight_attack_t::execute();
-	base_multiplier = old_BM;
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
@@ -2716,7 +2703,20 @@ struct death_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
+	double old_BM = base_multiplier;
+	if ( p -> glyphs.death_strike )
+	{
+	  if ( p -> resource_current[ RESOURCE_RUNIC ] >= 25 )
+	  {
+        base_multiplier *= 1.25;
+	  }
+	  else
+	  {
+	    base_multiplier *= 1 + ( p -> resource_current[ RESOURCE_RUNIC ] * 0.01 );
+	  }
+	}
     death_knight_attack_t::execute();
+	base_multiplier = old_BM;
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
