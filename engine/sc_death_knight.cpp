@@ -642,7 +642,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
       base_crit += o -> talents.subversion * 0.03;
       base_crit_bonus_multiplier *= 1.0 + o -> talents.might_of_mograine * 0.15;
-      base_multiplier *= 1 + o -> talents.bloody_strikes * 0.15;
+      base_multiplier *= 1 + o -> talents.bloody_strikes * 0.05;
       base_multiplier *= 0.50; // DRW malus
       base_dd_min = base_dd_max = 764;
 
@@ -2214,7 +2214,7 @@ struct blood_boil_t : public death_knight_spell_t
     base_execute_time = 0;
     cooldown -> duration          = 0.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15;
-    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15;
+    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.10;
 
     direct_power_mod  = 0.06;
   }
@@ -2604,7 +2604,7 @@ struct blood_strike_t : public death_knight_attack_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.might_of_mograine * 0.15
                                   + p -> talents.guile_of_gorefiend * 0.15;
 
-    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.15
+    base_multiplier *= 1 + p -> talents.bloody_strikes * 0.05
                        + util_t::talent_rank( p -> talents.blood_of_the_north, 3, 0.03, 0.06, 0.10 );
 
     convert_runes = p -> talents.blood_of_the_north / 3.0
@@ -2616,6 +2616,8 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
     target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+    if ( sim -> target -> debuffs.snared() && p -> glyphs.blood_strike )
+      target_multiplier *= 1.20;
   }
 
   virtual void consume_resource() { }
@@ -2704,20 +2706,7 @@ struct death_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
-	double old_BM = base_multiplier;
-	if ( p -> glyphs.death_strike )
-	{
-	  if ( p -> resource_current[ RESOURCE_RUNIC ] >= 25 )
-	  {
-        base_multiplier *= 1.25;
-	  }
-	  else
-	  {
-	    base_multiplier *= 1 + ( p -> resource_current[ RESOURCE_RUNIC ] * 0.01 );
-	  }
-	}
     death_knight_attack_t::execute();
-	base_multiplier = old_BM;
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
@@ -2741,6 +2730,22 @@ struct death_strike_t : public death_knight_attack_t
         weapon = &( p -> off_hand_weapon );
         death_knight_attack_t::execute();
       }
+  }
+  virtual void player_buff()
+  {
+    death_knight_attack_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> glyphs.death_strike )
+    {
+      if ( p -> resource_current[ RESOURCE_RUNIC ] >= 25 )
+      {
+        player_multiplier *= 1.25;
+      }
+	  else
+      {
+        player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC ] * 0.01;
+      }
+    }
   }
 };
 
@@ -3862,7 +3867,7 @@ struct unbreakable_armor_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_unbreakable_armor -> trigger( 1, 0.25 );
+    p -> buffs_unbreakable_armor -> trigger( 1, 0.25 + p -> glyphs.unbreakable_armor * 0.30 );
   }
 };
 
@@ -4555,7 +4560,6 @@ void death_knight_t::init_gains()
   gains_butchery           = get_gain( "butchery" );
   gains_chill_of_the_grave = get_gain( "chill_of_the_grave" );
   gains_dirge              = get_gain( "dirge" );
-  gains_glyph_icy_touch    = get_gain( "glyph_icy_touch" );
   gains_horn_of_winter     = get_gain( "horn_of_winter" );
   gains_power_refund       = get_gain( "power_refund" );
   gains_rune_abilities     = get_gain( "rune_abilities" );
