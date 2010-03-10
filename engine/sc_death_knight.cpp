@@ -119,7 +119,6 @@ struct death_knight_t : public player_t
   gain_t* gains_butchery;
   gain_t* gains_chill_of_the_grave;
   gain_t* gains_dirge;
-  gain_t* gains_glyph_icy_touch;
   gain_t* gains_horn_of_winter;
   gain_t* gains_power_refund;
   gain_t* gains_rune_abilities;
