@@ -1837,7 +1837,7 @@ struct flame_shock_t : public shaman_spell_t
                               p -> talents.shamanistic_focus * 0.45 );
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20
-                                      + p -> glyphs.flame_shock * 0.60;
+                                      + p -> glyphs.flame_shock * ( p -> sim -> P333 ? 0.60 : 0.0 );
 
     cooldown = p -> get_cooldown( "shock" );
     cooldown -> duration  = 6.0;
