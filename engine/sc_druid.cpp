@@ -3152,7 +3152,7 @@ struct starfall_t : public druid_spell_t
         base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
         if ( p -> glyphs.focus )
-          base_multiplier *= 1.2;
+          base_multiplier *= ( p -> sim -> P333 ? 1.1 : 1.2 );
         id = 53190;
       }
       virtual void execute()
