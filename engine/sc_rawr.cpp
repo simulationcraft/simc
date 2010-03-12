@@ -147,10 +147,11 @@ static const char* translate_glyph_name( player_t* p,
   case PALADIN:
     switch ( index )
     {
-    case  1: return "avenging_wrath";
-    case  2: return "avengers_shield";
-    case  3: return "seal_of_blood";
-    case  4: return "seal_of_righteousness";
+    case  0: return "avenging_wrath";
+    case  1: return "avengers_shield";
+    case  2: return "seal_of_blood";
+    case  3: return "seal_of_righteousness";
+//  case  4: return "vengeance";
     case  5: return "hammer_of_wrath";
     case  6: return "beacon_of_light";
     case  7: return "divine_plea";
@@ -299,18 +300,19 @@ static const char* translate_glyph_name( player_t* p,
     case  1: return "conflagrate";
     case  2: return "corruption";
     case  3: return "curse_of_agony";
-    case  4: return "felguard";
-    case  5: return "haunt";
-    case  6: return "immolate";
-    case  7: return "imp";
-    case  8: return "incinerate";
-    case  9: return "life_tap";
-    case 10: return "metamorphosis";
-    case 11: return "searing_pain";
-    case 12: return "shadow_bolt";
-    case 13: return "shadow_burn";
-    case 14: return "unstable_affliction";
-    case 15: return "quick_decay";
+    case  4: return "death_coil";
+    case  5: return "felguard";
+    case  6: return "haunt";
+    case  7: return "immolate";
+    case  8: return "imp";
+    case  9: return "incinerate";
+    case 10: return "life_tap";
+    case 11: return "metamorphosis";
+    case 12: return "quick_decay";
+    case 13: return "searing_pain";
+    case 14: return "shadow_bolt";
+    case 15: return "shadow_burn";
+    case 16: return "unstable_affliction";
     default: return 0;
     }
   case WARRIOR:
