@@ -3866,7 +3866,7 @@ struct unbreakable_armor_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_unbreakable_armor -> trigger( 1, 0.25 + p -> glyphs.unbreakable_armor * 0.30 );
+    p -> buffs_unbreakable_armor -> trigger( 1, 0.25 + p -> glyphs.unbreakable_armor * 0.05 );
   }
 };
 
