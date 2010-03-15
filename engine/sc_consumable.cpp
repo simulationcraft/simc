@@ -394,7 +394,7 @@ struct indestructible_potion_t : public action_t
   {
     if ( player -> in_combat )
     {
-      player -> buffs.speed_potion -> trigger();
+      player -> buffs.indestructible_potion -> trigger();
     }
     else
     {
