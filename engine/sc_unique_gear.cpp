@@ -153,7 +153,7 @@ static void register_black_bruise( item_t* item )
 
   bool heroic = ( item -> encoded_stats_str.find( "69sta" ) != std::string::npos );  // FIXME!! Yuck!
 
-  buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.0330 ); // FIXME!! Cooldown?
+  buff_t* buff = new buff_t( p, "black_bruise", 1, 10, 0.0, 0.03 ); // FIXME!! Cooldown?
 
   struct black_bruise_spell_t : public spell_t
   {
