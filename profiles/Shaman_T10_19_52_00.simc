@@ -4,6 +4,7 @@ shaman=Shaman_T10_19_52_00
 origin="http://profiler.wowhead.com/?profile=20837779"
 level=80
 race=tauren
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=053031052000000000000000030205033005021333031131031051
 glyphs=windfury_weapon/stormstrike/feral_spirit
 actions=flask,type=endless_rage
@@ -16,7 +17,6 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/wind_shear
 actions+=/bloodlust,time_to_die<=60
-actions+=/shamanistic_rage
 actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
@@ -30,6 +30,7 @@ actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/shamanistic_rage,tier10_2pc_melee=1
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
+actions+=/shamanistic_rage
 head=sanctified_frost_witchs_faceguard,stats=1253armor_212ap_114crit_80haste_175agi_144sta_96int,gems=relentless_earthsiege_20exp_16ap,enchant=50ap_20crit
 neck=sindragosas_cruel_claw,stats=120ap_60haste_68arpen_102agi_102sta,gems=20hit
 shoulders=sanctified_frost_witchs_shoulderguards,stats=1157armor_165ap_90crit_63haste_136agi_107sta_71int,gems=20hit,enchant=40ap_15crit
@@ -62,6 +63,7 @@ ranged=bizuris_totem_of_shattered_ice
 # gear_armor=9052
 # meta_gem=relentless_earthsiege
 # tier10_2pc_melee=1
+# tier10_4pc_melee=1
 # trinket2=tiny_abomination_in_a_jar
 # main_hand=havocs_call_blade_of_lordaeron_kings,weapon=axe_2.60speed_481min_895max,enchant=berserking
 # off_hand=havocs_call_blade_of_lordaeron_kings,weapon=axe_2.60speed_481min_895max,enchant=berserking

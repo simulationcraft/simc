@@ -1,9 +1,10 @@
 #!./simc 
 
-shaman=Shaman_t10_57_14_00_tow
+shaman=Shaman_T10_57_14_00_ToW
 origin="http://profiler.wowhead.com/?profile=20837752"
 level=80
 race=tauren
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=5530001503213351322301351005050031
 glyphs=flame_shock/totem_of_wrath/lightning_bolt
 actions=flask,type=frost_wyrm
@@ -31,29 +32,30 @@ chest=sanctified_frost_witchs_hauberk,stats=1542armor_122crit_106haste_195sp_139
 waist=crushing_coldwraith_belt,stats=208armor_74crit_90haste_140sp_103sta_103int,gems=23sp_23sp_23sp
 legs=plaguebringers_stained_pants,stats=323armor_104hit_116haste_185sp_139sta_139int,gems=23sp_5mp5_12sp_10hit_12sp,enchant=50sp_30sta
 feet=plague_scientists_boots,stats=254armor_74crit_90haste_140sp_103sta_103int,gems=23sp_23sp,enchant=15sta
-wrists=bloodsunders_bracers,stats=675armor_60crit_68haste_110sp_78sta_78int,gems=10hit_12sp,enchant=30sp
+wrists=bloodsunders_bracers,stats=675armor_60crit_68haste_110sp_78sta_78int,gems=10hit_12sp_5sp,enchant=30sp
 hands=sanctified_frost_witchs_gloves,stats=964armor_82hit_90crit_150sp_103sta_103int,gems=23sp_5sp,enchant=28sp
 finger1=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10hit_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
 finger2=ring_of_rapid_ascent,stats=68crit_60haste_110sp_78sta_78int,gems=39sp,enchant=23sp
 trinket1=phylactery_of_the_nameless_lich,stats=172crit,equip=onspelltickdamage_1032sp_30%_20dur_90cd
 trinket2=dislodged_foreign_object,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 back=frostbinders_shredded_cape,stats=185armor_68crit_60haste_110sp_78sta_78int,gems=10hit_12sp,enchant=23haste
-main_hand=royal_scepter_of_terenas_ii,enchant=63sp
-off_hand=bulwark_of_smouldering_steel,stats=9262armor_259blockv_68crit_60haste_110sp_78sta_78int,gems=10hit_12sp,enchant=25int
+main_hand=royal_scepter_of_terenas_ii,stats=55crit_35mp5_893sp_81sta_81int,gems=23sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+off_hand=bulwark_of_smouldering_steel,stats=9262armor_259blockv_68crit_60haste_110sp_78sta_78int,gems=10hit_12sp_5sp,enchant=25int
 ranged=bizuris_totem_of_shattered_ice
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
-# gear_stamina=1347
-# gear_intellect=1327
+# gear_stamina=1428
+# gear_intellect=1408
 # gear_spirit=10
-# gear_spell_power=2513
-# gear_mp5=15
+# gear_spell_power=3439
+# gear_mp5=50
 # gear_hit_rating=287
-# gear_crit_rating=1121
+# gear_crit_rating=1176
 # gear_haste_rating=1155
 # gear_armor=15823
 # gear_block_value=259
 # meta_gem=chaotic_skyflare
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
+# main_hand=royal_scepter_of_terenas_ii,weapon=mace_1.80speed_160min_447max

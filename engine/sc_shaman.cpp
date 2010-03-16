@@ -3623,7 +3623,7 @@ int shaman_t::decode_set( item_t& item )
   bool is_caster = ( strstr( s, "helm"     ) ||
                      strstr( s, "shoulderpads" ) ||
                      strstr( s, "hauberk"      ) ||
-                     strstr( s, "kilt"         ) ||
+                   ( strstr( s, "kilt"         ) && !strstr( s, "warkilt" ) ) ||
                      strstr( s, "gloves"       ) );
 
   bool is_melee = ( strstr( s, "faceguard"      ) ||
