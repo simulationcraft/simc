@@ -828,7 +828,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightning_capacitor"                 ) e = "OnSpellDirectCrit_750Nature_3Stack_2.5Cd";
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellDirectCrit_1276Nature_4Stack_2.5Cd";
-  else if ( name == "bryntroll_the_bone_arbiter"          ) e = "OnAttackHit_2200Drain_11%";
+  else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( id == "50415" ? "OnAttackHit_2250Drain_11%" : "OnAttackHit_2538Drain_11%" );
 
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving"               ) e = ( id == "47182" ? "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" );
