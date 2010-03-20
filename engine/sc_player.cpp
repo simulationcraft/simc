@@ -1293,6 +1293,8 @@ double player_t::composite_attack_hit() SC_CONST
 {
   double ah = attack_hit;
 
+  // Changes here may need to be reflected in the corresponding pet_t
+  // function in simulationcraft.h
   if ( buffs.heroic_presence -> check() ) ah += 0.01;
 
   return ah;
@@ -1665,6 +1667,8 @@ double player_t::composite_spell_hit() SC_CONST
 {
   double sh = spell_hit;
 
+  // Changes here may need to be reflected in the corresponding pet_t
+  // function in simulationcraft.h
   if ( buffs.heroic_presence -> check() ) sh += 0.01;
 
   return sh;

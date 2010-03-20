@@ -146,8 +146,8 @@ double attack_t::total_expertise() SC_CONST
 {
   double e = base_expertise + player_expertise + target_expertise;
 
-  // Round down to dicrete units of Expertise?
-  if ( false ) e = floor( 100.0 * e ) / 100.0;
+  // Round down to dicrete units of Expertise?  Yes, apparently so.
+  if ( true ) e = floor( 100.0 * e ) / 100.0;
 
   return e;
 }
