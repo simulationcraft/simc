@@ -388,13 +388,13 @@ static void print_spell_stats( FILE* file, player_t* p )
 static void print_attack_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.0f|%.0f(%.0f)  penetration=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)\n",
+                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f|%.2f(%.0f)  penetration=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)\n",
                    p -> buffed_attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
-                   100 * p -> buffed_attack_hit,               100 * p -> composite_attack_hit(),              p -> stats.hit_rating,
-                   100 * p -> buffed_attack_crit,              100 * p -> composite_attack_crit(),             p -> stats.crit_rating,
-                   floor(100 * p -> buffed_attack_expertise),  floor(100 * p -> composite_attack_expertise()), p -> stats.expertise_rating,
-                   100 * p -> buffed_attack_penetration,       100 * p -> composite_attack_penetration(),      p -> stats.armor_penetration_rating,
-                   100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ),            p -> stats.haste_rating );
+                   100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
+                   100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
+                   100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating,
+                   100 * p -> buffed_attack_penetration, 100 * p -> composite_attack_penetration(), p -> stats.armor_penetration_rating,
+                   100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ), p -> stats.haste_rating );
 }
 
 // print_defense_stats =======================================================
