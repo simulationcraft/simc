@@ -1249,6 +1249,7 @@ struct savage_roar_t : public druid_cat_attack_t
     requires_combo_points = true;
     base_cost = 25;
     id = 52610;
+    harmful = false;
 
     buff_value = 0.30;
     if( p -> glyphs.savage_roar ) buff_value += 0.03;
@@ -1257,12 +1258,15 @@ struct savage_roar_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
     if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
+
+    // execute clears CP, so has to be after calculation duration
+    druid_cat_attack_t::execute();
+
     p -> buffs_savage_roar -> duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
-    p -> buffs_combo_points -> expire();
+    //p -> buffs_combo_points -> expire();
   }
 };
 
