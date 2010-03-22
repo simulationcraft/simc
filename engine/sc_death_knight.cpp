@@ -4254,10 +4254,10 @@ void death_knight_t::init_actions()
       */
       // UA 'lags' in updating armor, so first ghoul should be a few
       // seconds after it, second ghoud then with bloodlust
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
       action_list_str += "/auto_attack";
-      action_list_str += "/speed_potion";
       if ( talents.unbreakable_armor )
-        action_list_str += "/unbreakable_armor,time>=10";
+        action_list_str += "/unbreakable_armor,time>=10,if=cooldown.blood_tap.remains>=58"; //Forces Unbreakable Armor to only be used in combination with Blood Tap
 
       action_list_str += "/raise_dead,time>=15,time<=40";
       action_list_str += "/raise_dead,if=buff.bloodlust.react";
@@ -4275,19 +4275,26 @@ void death_knight_t::init_actions()
       }
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,if=buff.rime.react&buff.killing_machine.react";
-      if ( talents.frost_strike )
-        action_list_str += "/frost_strike,if=buff.killing_machine.react";
       if ( talents.deathchill )
         action_list_str += "/deathchill";
       action_list_str += "/obliterate";
+      // If you are using Unbreakable Armor, only use Blood Tap after you have consumed Death runes in your rotation.
+      // If not, use Blood Tap to produce an extra Obliterate once a minute.
+      if ( talents.unbreakable_armor )
+      {
+        action_list_str += "/blood_tap,time>=10,if=blood=0&frost=0&unholy=0&inactive_death=0";
+      }
+      else
+      {
+        action_list_str += "/blood_tap,if=blood=1&inactive_death=1";
+      }
       action_list_str += "/blood_strike,if=blood=2&death<=2";
       action_list_str += "/blood_strike,if=blood=1&death<=1";
       if ( talents.frost_strike )
         action_list_str += "/frost_strike";
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75";
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,if=buff.rime.react";
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75";
-      action_list_str += "/horn_of_winter";
       break;
     case TREE_UNHOLY:
       if ( talents.bone_shield )
