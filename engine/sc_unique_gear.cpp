@@ -463,8 +463,8 @@ static void register_shadowmourne( item_t* item )
 
   // http://ptr.wowhead.com/?spell=71903
   // FIX ME! Duration? Colldown? Chance?
-  buff_t* buff_stacks = new stat_buff_t( p, "shadowmourne_stacks", STAT_STRENGTH,  30, 10, 60.0, 0.20 );
-  buff_t* buff_final  = new stat_buff_t( p, "shadowmourne_final",  STAT_STRENGTH, 270, 10, 10.0, 1 );
+  buff_t* buff_stacks = new stat_buff_t( p, "shadowmourne_stacks", STAT_STRENGTH,  30, 10, 60.0,  0.0, 0.20 );
+  buff_t* buff_final  = new stat_buff_t( p, "shadowmourne_final",  STAT_STRENGTH, 270, 10, 10.0, 10.0, 1 );
 
   struct shadowmourne_spell_t : public spell_t
   {
@@ -496,7 +496,10 @@ static void register_shadowmourne( item_t* item )
       // FIXME! Can specials trigger the proc?
       if ( ! a -> weapon ) return;
       if ( a -> weapon -> slot != slot ) return;
-      buff_stacks -> trigger();
+      // http://elitistjerks.com/f15/t89289-shadowmourne/p6/#post1592143
+      // Full Stack => Final buff + 10s cd on stack gain
+      // Basically means no now stacks if the final buff is up
+      if ( ! buff_final -> check() ) buff_stacks -> trigger();
       if ( buff_stacks -> stack() == buff_stacks -> max_stack )
       {
         buff_stacks -> expire();
