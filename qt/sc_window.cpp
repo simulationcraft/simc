@@ -881,7 +881,6 @@ sim_t* SimulationCraftWindow::initSim()
   {
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
-    sim -> seed = (int) time( NULL );
     sim -> report_progress = 0;
     sim -> parse_option( "patch", patchChoice->currentText().toStdString() );
   }

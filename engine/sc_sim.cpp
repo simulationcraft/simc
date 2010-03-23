@@ -428,6 +428,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     // Inherit 'plot' settings from parent because are set outside of the config file
     enchant = parent -> enchant;
+
+    seed = parent -> seed;
   }
 }
 
@@ -707,6 +709,10 @@ void sim_t::combat_end()
 
 bool sim_t::init()
 {
+  if ( seed == 0 ) seed = ( int ) time( NULL );
+
+  if( ! parent ) srand( seed );
+
   rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
   deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
@@ -1780,9 +1786,6 @@ int sim_t::main( int argc, char** argv )
   }
 
   current_throttle = armory_throttle;
-
-  if ( seed == 0 ) seed = ( int ) time( NULL );
-  srand( seed );
 
   patch.decode(&arch, &version, &revision);
   util_t::fprintf( output_file,
