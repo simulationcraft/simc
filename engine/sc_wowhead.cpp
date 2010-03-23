@@ -139,6 +139,7 @@ static bool parse_gems( item_t&           item,
   int sockets[ 3 ] = { 0, 0, 0 };
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, stats_str, "," );
+  int num_sockets = 0;
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -150,11 +151,22 @@ static bool parse_gems( item_t&           item,
       if ( type_str == "socket1" ) sockets[ 0 ] = value;
       if ( type_str == "socket2" ) sockets[ 1 ] = value;
       if ( type_str == "socket3" ) sockets[ 2 ] = value;
+      if ( type_str == "nsockets" ) num_sockets = value;
+    }
+  }
+
+  if ( num_sockets < 3 )
+  {
+    if ( item.slot == SLOT_WRISTS ||
+	 item.slot == SLOT_HANDS  ||
+	 item.slot == SLOT_WAIST  )
+    {
+      num_sockets++;
     }
   }
 
   bool match = true;
-  for ( int i=0; i < 3; i++ )
+  for ( int i=0; i < num_sockets; i++ )
   {
     int gem = item_t::parse_gem( item, gem_ids[ i ] );
 
@@ -690,15 +702,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
         return 0;
       }
       if ( i ) p -> glyphs_str += "/";
-      // HACK ALERT - quick decay glyph is not in wowhead yet
-      if ( id.compare("14604901") == 0 || id.compare("15214160") == 0 || id.compare("13003573") == 0 )
-      {
-        p -> glyphs_str += ( glyph_name.compare("curse_of_agony") == 0 ) ? "quick_decay" : glyph_name; 
-      }
-      else
-      {
-        p -> glyphs_str += glyph_name;
-      }
+      p -> glyphs_str += glyph_name;
     }
   }
 
