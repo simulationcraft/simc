@@ -2946,8 +2946,12 @@ struct life_tap_t : public warlock_spell_t
 
     harmful = false;
 
-    base_tap = util_t::ability_rank( player -> level,  1490,80,  710,68,  500,0 );
-	direct_power_mod = 0.5;
+	if ( sim -> P333 )
+      base_tap = util_t::ability_rank( player -> level,  2400,80,  710,68,  500,0 ); //FIXME need to test new base mana at levels below 80
+	else
+	  base_tap = util_t::ability_rank( player -> level,  1490,80,  710,68,  500,0 );
+
+	direct_power_mod = 0.6;
   }
 
   virtual void execute()
