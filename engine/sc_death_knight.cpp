@@ -4658,7 +4658,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
     m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
     if ( buffs_unbreakable_armor -> check() )
     {
-      m *= 1.10;
+      m *= 1.20;
     }
   }
 
