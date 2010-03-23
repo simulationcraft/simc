@@ -1093,10 +1093,6 @@ struct mangle_cat_t : public druid_cat_attack_t
     {
       druid_t* p = player -> cast_druid();
       target_t* t = sim -> target;
-      if( ! sim -> overrides.mangle )
-      {
-	t -> debuffs.mangle -> duration = 60.0;
-      }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
       p -> buffs_terror -> trigger();
@@ -1880,10 +1876,6 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( result_is_hit() )
     {
       target_t* t = sim -> target;
-      if( ! sim -> overrides.mangle )
-      {
-	t -> debuffs.mangle -> duration = 60.0;
-      }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
       p -> buffs_terror -> trigger();
@@ -3119,14 +3111,14 @@ struct starfall_t : public druid_spell_t
         static rank_t ranks[] =
         {
           { 80, 4, 101, 101, 0, 0 },
-          { 75, 3,  66,  66, 0, 0 },
-          { 70, 2,  45,  45, 0, 0 },
-          { 60, 1,  20,  20, 0, 0 },
+          { 75, 3,  84,  85, 0, 0 },
+          { 70, 2,  57,  58, 0, 0 },
+          { 60, 1,  25,  26, 0, 0 },
           {  0, 0,   0,   0, 0, 0 }
         };
 
         init_rank( ranks );
-	direct_power_mod  = 0.13;
+        direct_power_mod  = 0.13;
 
         may_crit          = true;
         may_miss          = true;
@@ -3198,10 +3190,10 @@ struct starfall_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 4, 563, 653, 0, 0.39 },
-      { 75, 3, 366, 424, 0, 0.39 },
-      { 70, 2, 250, 290, 0, 0.39 },
-      { 60, 1, 111, 129, 0, 0.39 },
+      { 80, 4, 563, 653, 0, 0.35 },
+      { 75, 3, 474, 551, 0, 0.35 },
+      { 70, 2, 324, 377, 0, 0.35 },
+      { 60, 1, 114, 167, 0, 0.35 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
