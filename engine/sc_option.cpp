@@ -171,13 +171,13 @@ bool option_t::parse( sim_t*             sim,
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
     case OPT_BOOL:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
-      if ( v != "0" && v != "1" ) util_t::fprintf( sim -> output_file, "simulationcraft: Acceptable values for '%s' are '1' or '0'\n", name );
+      if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
     case OPT_FUNC: return ( ( option_function_t ) address )( sim, n, v );
     case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
-      util_t::fprintf( sim -> output_file, "simulationcraft: option '%s' has been deprecated.\n", name );
-      if ( address ) util_t::fprintf( sim -> output_file, "simulationcraft: please use '%s' instead.\n", ( char* ) address );
+      sim -> errorf( "Option '%s' has been deprecated.\n", name );
+      if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );
       exit( 0 );
     default: assert( 0 );
     }
@@ -221,7 +221,7 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( index == std::string::npos )
     {
-      util_t::fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
+      sim -> errorf( "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
       return false;
     }
 
@@ -230,7 +230,7 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( ! option_t::parse( sim, options, n, v ) )
     {
-      util_t::fprintf( sim -> output_file, "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
+      sim -> errorf( "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
       return false;
     }
   }
@@ -312,7 +312,7 @@ bool option_t::parse_token( sim_t*       sim,
     FILE* file = open_file( sim, token );
     if ( ! file )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
+      sim -> errorf( "Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
       return false;
     }
     sim -> active_files.push_back( token );
@@ -332,7 +332,7 @@ bool option_t::parse_token( sim_t*       sim,
     FILE* file = open_file( sim, value );
     if ( ! file )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to open input parameter file '%s'\n", value.c_str() );
+      sim -> errorf( "Unable to open input parameter file '%s'\n", value.c_str() );
     }
     sim -> active_files.push_back( token );
     parse_file( sim, file );
@@ -341,7 +341,7 @@ bool option_t::parse_token( sim_t*       sim,
   }
   else if ( ! sim -> parse_option( name, value ) )
   {
-    util_t::fprintf( sim -> output_file, "simulationcraft: Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
+    sim -> errorf( "Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
     return false;
   }
 

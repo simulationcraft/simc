@@ -344,8 +344,8 @@ struct hunter_pet_t : public pet_t
   {
     if ( ! supported( pet_type ) )
     {
-      util_t::fprintf( stdout, "simulationcraft: Pet %s is not yet supported.\n", pet_name.c_str() );
-      exit( 0 );
+      sim -> errorf( "Pet %s is not yet supported.\n", pet_name.c_str() );
+      sim -> cancel();
     }
 
     hunter_t* o = owner -> cast_hunter();
@@ -939,9 +939,8 @@ static void check_pet_type( action_t* a, int pet_type )
 
   if ( p -> pet_type != pet_type )
   {
-    util_t::fprintf( a -> sim -> output_file,
-		     "\nsimulationcraft: Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
-		     o -> name(), p -> name(), a -> name() );
+    a -> sim -> errorf( "Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
+			o -> name(), p -> name(), a -> name() );
     a -> background = true;
   }
 }
@@ -3367,7 +3366,10 @@ void hunter_t::init_glyphs()
     else if ( n == "the_pack"           ) ;
     else if ( n == "volley"             ) ;
     else if ( n == "wyvern_sting"       ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 
@@ -3580,7 +3582,7 @@ void hunter_t::init_actions()
 {
   if ( ranged_weapon.group() != WEAPON_RANGED )
   {
-    log_t::output( sim, "Player %s does not have a ranged weapon at the Ranged slot.", name() );
+    sim -> errorf( "Player %s does not have a ranged weapon at the Ranged slot.", name() );
     quiet = true;
     return;
   }

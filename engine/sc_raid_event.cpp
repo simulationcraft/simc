@@ -461,8 +461,8 @@ void raid_event_t::parse_options( option_t*          options,
 
   if ( ! option_t::parse( sim, name(), merged_options, options_str ) )
   {
-    util_t::fprintf( sim -> output_file, "raid_event_t: %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
-    assert( false );
+    sim -> errorf( "Raid Event %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    sim -> cancel();
   }
 
   if( cooldown > 0 && cooldown_stddev == 0 ) cooldown_stddev = 0.10 * cooldown;
@@ -517,8 +517,9 @@ void raid_event_t::init( sim_t* sim )
 
     if ( ! e )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unknown raid event: %s\n", splits[ i ].c_str() );
-      assert( false );
+      sim -> errorf( "Unknown raid event: %s\n", splits[ i ].c_str() );
+      sim -> cancel();
+      continue;
     }
 
     assert( e -> cooldown > 0 );

@@ -46,7 +46,7 @@ namespace   // ANONYMOUS NAMESPACE =========================================
 
 // Forward Declarations ====================================================
 
-static int create_children( xml_node_t* root, const std::string& input, std::string::size_type& index );
+  static int create_children( sim_t* sim, xml_node_t* root, const std::string& input, std::string::size_type& index );
 
 // simplify_xml ============================================================
 
@@ -111,7 +111,8 @@ static bool parse_name( std::string&            name_str,
 
 // create_parameter ========================================================
 
-static void create_parameter( xml_node_t*             node,
+static void create_parameter( sim_t*                  sim,
+			      xml_node_t*             node,
                               const std::string&      input,
                               std::string::size_type& index )
 {
@@ -140,7 +141,8 @@ static void create_parameter( xml_node_t*             node,
 
 // create_node =============================================================
 
-static xml_node_t* create_node( const std::string&      input,
+static xml_node_t* create_node( sim_t*                  sim,
+				const std::string&      input,
                                 std::string::size_type& index )
 {
   char c = input[ index ];
@@ -152,10 +154,9 @@ static xml_node_t* create_node( const std::string&      input,
 
   xml_node_t* node = new xml_node_t( name_str );
 
-//  while ( input[ index ] == ' ' )
   while ( is_white_space( input[ index ] ) )
   {
-    create_parameter( node, input, ++index );
+    create_parameter( sim, node, input, ++index );
   }
 
   c = input[ index ];
@@ -166,13 +167,14 @@ static xml_node_t* create_node( const std::string&      input,
   }
   else if ( c == '>' )
   {
-    create_children( node, input, ++index );
+    create_children( sim, node, input, ++index );
   }
   else
   {
-    util_t::printf( "Unexpected character '%c' at index %d (%s)\n", c, ( int ) index, node -> name() );
-    util_t::printf( "%s\n", input.c_str() );
-    assert( false );
+    sim -> errorf( "Unexpected character '%c' at index %d (%s)\n", c, ( int ) index, node -> name() );
+    sim -> errorf( "%s\n", input.c_str() );
+    sim -> cancel();
+    return 0;
   }
 
   return node;
@@ -180,11 +182,12 @@ static xml_node_t* create_node( const std::string&      input,
 
 // create_children =========================================================
 
-static int create_children( xml_node_t*             root,
+static int create_children( sim_t*                  sim,
+			    xml_node_t*             root,
                             const std::string&      input,
                             std::string::size_type& index )
 {
-  while ( true )
+  while ( ! sim -> canceled )
   {
     while ( is_white_space( input[ index ] ) ) index++;
 
@@ -209,9 +212,10 @@ static int create_children( xml_node_t*             root,
           std::string::size_type finish = input.find( "]]", index );
           if ( finish == std::string::npos )
           {
-            util_t::printf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
-            util_t::printf( "%s\n", input.c_str() );
-            assert( false );
+            sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
+            sim -> errorf( "%s\n", input.c_str() );
+            sim -> cancel();
+	    return 0;
           }
           root -> parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish-index ) ) );
           index = finish + 2;
@@ -225,7 +229,7 @@ static int create_children( xml_node_t*             root,
       }
       else
       {
-        root -> children.push_back( create_node( input, index ) );
+        root -> children.push_back( create_node( sim, input, index ) );
       }
     }
     else if ( input[ index ] == '\0' )
@@ -301,11 +305,11 @@ const char* xml_t::get_name( xml_node_t* node )
 
 // xml_t::download =========================================================
 
-xml_node_t* xml_t::download( const std::string& url,
+xml_node_t* xml_t::download( sim_t*             sim,
+			     const std::string& url,
                              const std::string& confirmation,
                              int64_t            timestamp,
-                             int                throttle_seconds
-                           )
+                             int                throttle_seconds )
 {
   thread_t::mutex_lock( xml_mutex );
 
@@ -324,7 +328,7 @@ xml_node_t* xml_t::download( const std::string& url,
 
     if ( http_t::get( result, url, confirmation, timestamp, throttle_seconds ) )
     {
-      node = xml_t::create( result );
+      node = xml_t::create( sim, result );
 
       if ( node ) xml_cache.push_back( xml_cache_t( url, node ) );
     }
@@ -337,7 +341,8 @@ xml_node_t* xml_t::download( const std::string& url,
 
 // xml_t::download =========================================================
 
-xml_node_t* xml_t::download_cache( const std::string& url,
+xml_node_t* xml_t::download_cache( sim_t*             sim,
+				   const std::string& url,
                                    int64_t            timestamp )
 {
   thread_t::mutex_lock( xml_mutex );
@@ -359,7 +364,7 @@ xml_node_t* xml_t::download_cache( const std::string& url,
 
     if ( http_t::cache_get( result, url, timestamp ) )
     {
-      node = xml_t::create( result );
+      node = xml_t::create( sim, result );
 
       if ( node ) xml_cache.push_back( xml_cache_t( url, node ) );
     }
@@ -374,7 +379,7 @@ xml_node_t* xml_t::download_cache( const std::string& url,
 
 // xml_t::create ===========================================================
 
-xml_node_t* xml_t::create( const std::string& input )
+xml_node_t* xml_t::create( sim_t* sim, const std::string& input )
 {
   xml_node_t* root = new xml_node_t( "root" );
 
@@ -382,20 +387,20 @@ xml_node_t* xml_t::create( const std::string& input )
   std::string::size_type index=0;
 
   simplify_xml( buffer );
-  create_children( root, buffer, index );
+  create_children( sim, root, buffer, index );
 
   return root;
 }
 
 // xml_t::create ===========================================================
 
-xml_node_t* xml_t::create( FILE* input )
+xml_node_t* xml_t::create( sim_t* sim, FILE* input )
 {
   if ( ! input ) return 0;
   std::string buffer;
   char c;
   while ( ( c = fgetc( input ) ) != EOF ) buffer += c;
-  return create( buffer );
+  return create( sim, buffer );
 }
 
 // xml_t::get_child ========================================================
@@ -554,25 +559,3 @@ void xml_t::print( xml_node_t* root,
   }
 }
 
-#ifdef UNIT_TEST
-
-int main( int argc, char** argv )
-{
-  if ( argc < 2 )
-  {
-    util_t::printf( "Usage: xml filename\n" );
-    exit( 0 );
-  }
-  FILE* file = fopen( argv[ 1 ], "r" );
-  if ( ! file )
-  {
-    util_t::printf( "Unable to open file %s\n", argv[ 1 ] );
-    exit( 0 );
-  }
-
-  xml_t::print( xml_t::create( file ) );
-
-  return 0;
-}
-
-#endif

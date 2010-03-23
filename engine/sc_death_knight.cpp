@@ -4184,7 +4184,7 @@ void death_knight_t::init_actions()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
-    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }
@@ -4497,7 +4497,10 @@ void death_knight_t::init_glyphs()
     else if ( n == "pestilence"          ) glyphs.pestilence = 1;
     else if ( n == "raise_dead"          ) glyphs.raise_dead = 1;
 
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 
@@ -4622,7 +4625,7 @@ void death_knight_t::init_items()
   else if ( sigil == "sigil_of_virulence"                    ) sigils.virulence = 1;
   else
   {
-    log_t::output( sim, "simulationcraft: %s has unknown sigil %s", name(), sigil.c_str() );
+    sim -> errorf( "Player %s has unknown sigil %s", name(), sigil.c_str() );
   }
 }
 

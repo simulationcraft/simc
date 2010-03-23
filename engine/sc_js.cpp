@@ -99,7 +99,8 @@ static char parse_token( std::string&            token_str,
 
 // parse_value =============================================================
 
-static void parse_value( js_node_t*              node,
+static void parse_value( sim_t*                  sim,
+			 js_node_t*              node,
                          const std::string&      input,
                          std::string::size_type& index )
 {
@@ -108,14 +109,15 @@ static void parse_value( js_node_t*              node,
 
   if ( token_type == '{' )
   {
-    while ( true )
+    while ( ! sim -> canceled )
     {
       token_type = parse_token( token_str, input, index );
       if ( token_type == '}' ) break;
       if ( token_type != 'S' )
       {
-        util_t::printf( "Unexpected token '%c' (%s) at index %d (%s)\n", token_type, token_str.c_str(), ( int ) index, node -> name() );
-        assert( false );
+        sim -> errorf( "Unexpected token '%c' (%s) at index %d (%s)\n", token_type, token_str.c_str(), ( int ) index, node -> name() );
+        sim -> cancel();
+	return;
       }
       js_node_t* child = new js_node_t( token_str );
       node -> children.push_back( child );
@@ -123,29 +125,32 @@ static void parse_value( js_node_t*              node,
       token_type = parse_token( token_str, input, index );
       if ( token_type != ':' )
       {
-        util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-        assert( false );
+        sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+        sim -> cancel();
+	return;
       }
-      parse_value( child, input, index );
+      parse_value( sim, child, input, index );
 
       token_type = parse_token( token_str, input, index );
       if ( token_type == ',' ) continue;
       if ( token_type == '}' ) break;
 
-      util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-      assert( false );
+      sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+      sim -> cancel();
+      return;
     }
   }
   else if ( token_type == '[' )
   {
-    while ( true )
+    while ( ! sim -> canceled )
     {
       token_type = parse_token( token_str, input, index );
       if ( token_type == ']' ) break;
       if ( token_type != 'S' )
       {
-        util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-        assert( false );
+        sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+        sim -> cancel();
+	return;
       }
       node -> vector_value.push_back( token_str );
 
@@ -153,8 +158,9 @@ static void parse_value( js_node_t*              node,
       if ( token_type == ',' ) continue;
       if ( token_type == ']' ) break;
 
-      util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-      assert( false );
+      sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+      sim -> cancel();
+      return;
     }
   }
   else if ( token_type == 'N' )
@@ -162,16 +168,18 @@ static void parse_value( js_node_t*              node,
     token_type = parse_token( token_str, input, index );
     if ( token_type != 'S' )
     {
-      util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-      assert( false );
+      sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+      sim -> cancel();
+      return;
     }
     node -> scalar_value = token_str;
 
     token_type = parse_token( token_str, input, index );
     if ( token_type != '(' )
     {
-      util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-      assert( false );
+      sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+      sim -> cancel();
+      return;
     }
 
     std::string::size_type start = index;
@@ -179,19 +187,20 @@ static void parse_value( js_node_t*              node,
     if ( token_type == ')' ) return;
     index = start;
 
-    while ( true )
+    while ( ! sim -> canceled )
     {
       js_node_t* child = new js_node_t( node -> scalar_value );
       node -> children.push_back( child );
 
-      parse_value( child, input, index );
+      parse_value( sim, child, input, index );
 
       token_type = parse_token( token_str, input, index );
       if ( token_type == ',' ) continue;
       if ( token_type == ')' ) break;
 
-      util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-      assert( false );
+      sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+      sim -> cancel();
+      return;
     }
   }
   else if ( token_type == 'S' )
@@ -200,8 +209,8 @@ static void parse_value( js_node_t*              node,
   }
   else
   {
-    util_t::printf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
-    assert( false );
+    sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
+    sim -> cancel();
   }
 }
 
@@ -244,7 +253,7 @@ static js_node_t* split_path( js_node_t*         node,
 
 // js_t::create ===========================================================
 
-js_node_t* js_t::create( const std::string& input )
+js_node_t* js_t::create( sim_t* sim, const std::string& input )
 {
   js_node_t* root = new js_node_t( "root" );
 
@@ -252,20 +261,20 @@ js_node_t* js_t::create( const std::string& input )
 
   // Only parsing "values" not "statements" nor "expressions".
 
-  parse_value( root, input, index );
+  parse_value( sim, root, input, index );
 
   return root;
 }
 
 // js_t::create ===========================================================
 
-js_node_t* js_t::create( FILE* input )
+js_node_t* js_t::create( sim_t* sim, FILE* input )
 {
   if ( ! input ) return 0;
   std::string buffer;
   char c;
   while ( ( c = fgetc( input ) ) != EOF ) buffer += c;
-  return create( buffer );
+  return create( sim, buffer );
 }
 
 // js_t::get_child ========================================================
@@ -435,33 +444,3 @@ void js_t::print( js_node_t* root,
   }
 }
 
-#ifdef UNIT_TEST
-
-int main( int argc, char** argv )
-{
-  if ( argc < 2 )
-  {
-    util_t::printf( "Usage: js filename\n" );
-    exit( 0 );
-  }
-  FILE* file = fopen( argv[ 1 ], "r" );
-  if ( ! file )
-  {
-    util_t::printf( "Unable to open file %s\n", argv[ 1 ] );
-    exit( 0 );
-  }
-
-  std::string buffer;
-  char c;
-  while ( ( c = fgetc( file ) ) != EOF )
-  {
-    //if( c == '\\' ) c = fgetc( file );
-    buffer += c;
-  }
-
-  js_t::print( js_t::create( buffer ) );
-
-  return 0;
-}
-
-#endif

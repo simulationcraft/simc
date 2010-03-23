@@ -213,7 +213,7 @@ static bool parse_talent_url( sim_t* sim,
     int part_count = util_t::string_split( parts, url, "&" );
     if( part_count <= 0 )
     {
-      util_t::fprintf( sim -> output_file, "Malformed talent string: %s\n", url.c_str() );
+      sim -> errorf( "Player %s has malformed talent string: %s\n", p -> name(), url.c_str() );
       return false;
     }
 
@@ -230,7 +230,7 @@ static bool parse_talent_url( sim_t* sim,
     }
   }
 
-  util_t::fprintf( sim -> output_file, "simulationcraft: Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
+  sim -> errorf( "Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
 
   return false;
 }
@@ -461,7 +461,7 @@ bool player_t::init( sim_t* sim )
 
   if ( too_quiet && ! sim -> debug )
   {
-    log_t::output( sim, "No active players in sim!" );
+    sim -> errorf( "No active players in sim!" );
     return false;
   }
 
@@ -499,7 +499,7 @@ bool player_t::init( sim_t* sim )
         player_t* p = sim -> find_player( player_names[ j ] );
         if ( ! p )
         {
-          util_t::fprintf( sim -> output_file, "simulationcraft: ERROR! Unable to find player %s\n", player_names[ j ].c_str() );
+          sim -> errorf( "Unable to find player %s for party creation.\n", player_names[ j ].c_str() );
           return false;
         }
         p -> party = party_index;
@@ -569,7 +569,7 @@ void player_t::init_items()
   {
     if ( find_item( splits[ i ] ) )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
+      sim -> errorf( "Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
     }
     items.push_back( item_t( this, splits[ i ] ) );
   }
@@ -583,7 +583,7 @@ void player_t::init_items()
 
     if ( ! item.init() )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
+      sim -> errorf( "Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
       return;
     }
 
@@ -874,7 +874,7 @@ void player_t::init_professions()
     int prof_type = util_t::parse_profession_type( prof_name );
     if ( prof_type == PROFESSION_NONE )
     {
-      util_t::fprintf( sim -> output_file, "Invalid profession encoding: %s\n", professions_str.c_str() );
+      sim -> errorf( "Invalid profession encoding: %s\n", professions_str.c_str() );
       return;
     }
 
@@ -927,7 +927,7 @@ void player_t::init_actions()
       action_t* a = create_action( action_name, action_options );
       if ( ! a )
       {
-        util_t::fprintf( sim -> output_file, "player_t: Unknown action: %s\n", splits[ i ].c_str() );
+        sim -> errorf( "Player %s has unknown action: %s\n", name(), splits[ i ].c_str() );
         return;
       }
 
@@ -2492,7 +2492,7 @@ void player_t::summon_pet( const char* pet_name,
       return;
     }
   }
-  util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s is unable to summon pet '%s'\n", name(), pet_name );
+  sim -> errorf( "Player %s is unable to summon pet '%s'\n", name(), pet_name );
 }
 
 // player_t::dismiss_pet ====================================================
@@ -3123,8 +3123,8 @@ struct cycle_t : public action_t
       current_action = next;
       if ( ! current_action )
       {
-        util_t::fprintf( sim -> output_file, "simulationcraft: player %s has no actions after 'cycle'\n", player -> name() );
-        exit( 0 );
+        sim -> errorf( "Player %s has no actions after 'cycle'\n", player -> name() );
+        sim -> cancel();
       }
       for ( action_t* a = next; a; a = a -> next ) a -> background = true;
     }
@@ -3410,19 +3410,19 @@ struct use_item_t : public action_t
 
     if ( item_name.empty() )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
+      sim -> errorf( "Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
       return;
     }
 
     item = player -> find_item( item_name );
     if ( ! item )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
       return;
     }
     if ( ! item -> use.active() )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
+      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
       item = 0;
       return;
     }
@@ -3634,16 +3634,16 @@ bool player_t::parse_talent_trees( int talents[] )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-        int talents[MAX_TALENT_SLOTS] = {0};
+  int talents[MAX_TALENT_SLOTS] = {0};
 
   const char *buffer = talent_string.c_str();
 
   for(unsigned int i = 0; i < talent_string.size(); i++)
   {
-        char c = buffer[ i ];
+    char c = buffer[ i ];
     if ( c < '0' || c > '5' )
     {
-      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s has illegal character '%c' in talent encoding.\n", name(), c );
+      sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
     }
     talents[i] = c - '0';
@@ -3714,7 +3714,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   {
     if ( (tree >= MAX_TALENT_TREES) || (count > talent_list.size()) )
     {
-      util_t::fprintf( sim -> output_file, "Malformed wowhead talent string. Too many talents or trees specified.\n" );
+      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talents or trees specified.\n", name() );
       return false;
     }
 
@@ -3739,7 +3739,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     if ( ! decode )
     {
-      util_t::fprintf( sim -> output_file, "Malformed wowhead talent string. Translation for '%c' unknown.\n", c );
+      sim -> errorf( "Player %s has malformed wowhead talent string. Translation for '%c' unknown.\n", name(), c );
       return false;
     }
 

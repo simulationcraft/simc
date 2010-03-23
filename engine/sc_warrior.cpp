@@ -2411,7 +2411,10 @@ void warrior_t::init_glyphs()
     else if ( n == "taunt"            ) ;
     else if ( n == "thunder_clap"     ) ;
     else if ( n == "vigilance"        ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 
@@ -2601,7 +2604,7 @@ void warrior_t::init_actions()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
-    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }

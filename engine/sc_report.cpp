@@ -692,7 +692,7 @@ static void print_reference_dps( FILE* file, sim_t* sim )
 
   if ( ! ref_p )
   {
-    util_t::fprintf( file, "Unable to locate reference player: %s\n", sim -> reference_player_str.c_str() );
+    sim -> errorf( "Unable to locate reference player: %s\n", sim -> reference_player_str.c_str() );
     return;
   }
 
@@ -1983,8 +1983,8 @@ void report_t::print_html( sim_t* sim )
   FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
   if ( ! file )
   {
-    util_t::fprintf( stderr, "simulationcraft: Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
-    exit( 0 );
+    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+    return;
   }
 
   util_t::fprintf( file, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" );
@@ -1995,6 +1995,14 @@ void report_t::print_html( sim_t* sim )
 
   util_t::fprintf( file, "</head>\n" );
   util_t::fprintf( file, "<body>\n" );
+
+  if( ! sim -> error_list.empty() )
+  {
+    util_t::fprintf( file, "<pre>\n" );
+    int num_errors = sim -> error_list.size();
+    for( int i=0; i < num_errors; i++ ) util_t::fprintf( file, "%s\n", sim -> error_list[ i ].c_str() );
+    util_t::fprintf( file, "</pre>\n" );
+  }
 
   int arch = 0, version = 0, revision = 0;
   sim -> patch.decode( &arch, &version, &revision );
@@ -2051,8 +2059,8 @@ void report_t::print_wiki( sim_t* sim )
   FILE* file = fopen( sim -> wiki_file_str.c_str(), "w" );
   if ( ! file )
   {
-    util_t::fprintf( stderr, "simulationcraft: Unable to open wiki file '%s'\n", sim -> wiki_file_str.c_str() );
-    exit( 0 );
+    sim -> errorf( "Unable to open wiki file '%s'\n", sim -> wiki_file_str.c_str() );
+    return;
   }
 
   std::string wiki_name = sim -> wiki_file_str;
@@ -2183,7 +2191,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_gear_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
       }
       else
       {
@@ -2199,7 +2207,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_talents_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
       }
       else
       {
@@ -2215,7 +2223,7 @@ void report_t::print_profiles( sim_t* sim )
       file = fopen( p -> save_actions_str.c_str(), "w" );
       if ( ! file )
       {
-        util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
       }
       else
       {
@@ -2240,7 +2248,7 @@ void report_t::print_profiles( sim_t* sim )
     file = fopen( file_name.c_str(), "w" );
     if ( ! file )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
+      sim -> errorf( "Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
       continue;
     }
 

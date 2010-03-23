@@ -2362,7 +2362,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "flametongue_weapon: weapon option must be one of main/off/both\n" );
+      sim -> errorf( "Player %s: flametongue_weapon: weapon option must be one of main/off/both\n", p -> name() );
       assert( 0 );
     }
     trigger_gcd = 0;
@@ -2441,8 +2441,8 @@ struct windfury_weapon_t : public shaman_spell_t
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "windfury_weapon: weapon option must be one of main/off/both\n" );
-      assert( 0 );
+      sim -> errorf( "Player %s: windfury_weapon: weapon option must be one of main/off/both\n", p -> name() );
+      sim -> cancel();
     }
     trigger_gcd = 0;
 
@@ -3079,7 +3079,10 @@ void shaman_t::init_glyphs()
     else if ( n == "water_mastery"        ) ;
     else if ( n == "water_shield"         ) ;
     else if ( n == "water_walking"        ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 
@@ -3182,7 +3185,7 @@ void shaman_t::init_items()
   else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
   else
   {
-    log_t::output( sim, "simulationcraft: %s has unknown totem %s", name(), totem.c_str() );
+    sim -> errorf( "Player %s has unknown totem %s", name(), totem.c_str() );
   }
 }
 
@@ -3275,7 +3278,7 @@ void shaman_t::init_actions()
 {
   if ( primary_tree() == TREE_ENHANCEMENT && main_hand_weapon.type == WEAPON_NONE )
   {
-    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }

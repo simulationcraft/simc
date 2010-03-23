@@ -80,7 +80,7 @@ static bool parse_patch( sim_t*             sim,
 
   if ( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
   {
-    util_t::fprintf( sim -> output_file, "simulationcraft: Expected format: -patch=#.#.#\n" );
+    sim -> errorf( "Expected format: -patch=#.#.#\n" );
     return false;
   }
 
@@ -117,7 +117,7 @@ static bool parse_active( sim_t*             sim,
     }
     if ( ! sim -> active_player )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to find player %s\n", value.c_str() );
+      sim -> errorf( "Unable to find player %s to make active.\n", value.c_str() );
       return false;
     }
   }
@@ -185,9 +185,8 @@ static bool parse_player( sim_t*             sim,
 
       if ( sim -> active_player )
         if ( player_name != sim -> active_player -> name() )
-          util_t::fprintf( sim -> output_file,
-			   "simulationcraft: Warning! Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
-                          player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
+          sim -> errorf( "Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
+			 player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
 
     }
   }
@@ -212,7 +211,7 @@ static bool parse_armory( sim_t*             sim,
 
     if ( num_splits < 3 )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Expected format is: armory=region,server,player1,player2,...\n" );
+      sim -> errorf( "Expected format is: armory=region,server,player1,player2,...\n" );
       return false;
     }
 
@@ -336,7 +335,7 @@ static bool parse_wowhead( sim_t*             sim,
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
+      sim -> errorf( "Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
       return false;
     }
   }
@@ -355,7 +354,7 @@ static bool parse_rawr( sim_t*             sim,
     sim -> active_player = rawr_t::load_player( sim, value );
     if ( ! sim -> active_player )
     {
-      util_t::fprintf( sim -> output_file, "\nsimulationcraft: Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
+      sim -> errorf( "Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
   }
 
@@ -1677,11 +1676,15 @@ bool sim_t::parse_options( int    _argc,
   }
   else if ( ! output_file_str.empty() )
   {
-    output_file = fopen( output_file_str.c_str(), "w" );
-    if ( ! output_file )
+    FILE* f = fopen( output_file_str.c_str(), "w" );
+    if ( f )
     {
-      util_t::fprintf( output_file, "simulationcraft: Unable to open output file '%s'\n", output_file_str.c_str() );
-      exit( 0 );
+      output_file = f;
+    }
+    else
+    {
+      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      cancel();
     }
   }
   if ( ! log_file_str.empty() )
@@ -1689,8 +1692,8 @@ bool sim_t::parse_options( int    _argc,
     log_file = fopen( log_file_str.c_str(), "w" );
     if ( ! log_file )
     {
-      util_t::fprintf( output_file, "simulationcraft: Unable to open combat log file '%s'\n", log_file_str.c_str() );
-      exit( 0 );
+      errorf( "Unable to open combat log file '%s'\n", log_file_str.c_str() );
+      cancel();
     }
     log = 1;
   }
@@ -1716,11 +1719,11 @@ void sim_t::cancel()
 
   if( current_iteration >= 0 ) 
   {
-    util_t::fprintf( output_file, "\nSimulation has been canceled after %d iterations! (thread=%d)\n", current_iteration+1, thread_index );
+    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration+1, thread_index );
   }
   else
   {
-    util_t::fprintf( output_file, "\nSimulation has been canceled during player setup! (thread=%d)\n", thread_index );
+    errorf( "Simulation has been canceled during player setup! (thread=%d)\n", thread_index );
   }
   fflush( output_file );
 
@@ -1781,9 +1784,11 @@ int sim_t::main( int argc, char** argv )
 
   if ( ! parse_options( argc, argv ) )
   {
-    util_t::fprintf( output_file, "simulationcraft: ERROR! Incorrect option format..\n" );
-    exit( 0 );
+    errorf( "ERROR! Incorrect option format..\n" );
+    cancel();
   }
+
+  if( canceled ) return 0;
 
   current_throttle = armory_throttle;
 
@@ -1826,6 +1831,42 @@ int sim_t::main( int argc, char** argv )
   sim_signal_handler_t::init( 0 );
 
   return 0;
+}
+
+// sim_t::errorf ============================================================
+
+int sim_t::errorf( const char* format, ... )
+{
+  va_list fmtargs;
+  int retcode = 0;
+  char *p_locale = NULL;
+  char buffer_locale[ 1024 ];
+  char buffer_printf[ 1024 ];
+
+  p_locale = setlocale( LC_CTYPE, NULL );
+  if ( p_locale != NULL )
+  {
+    strncpy( buffer_locale, p_locale, 1023 );
+    buffer_locale[1023] = '\0';
+  }
+  else
+  {
+    buffer_locale[0] = '\0';
+  }
+
+  setlocale( LC_CTYPE, "" );
+
+  va_start( fmtargs, format );
+  retcode = vsnprintf( buffer_printf, 1023, format, fmtargs );
+  va_end( fmtargs );
+
+  fprintf( output_file, "%s", buffer_printf );
+  fprintf( output_file, "\n" );
+  error_list.push_back( buffer_printf );
+
+  setlocale( LC_CTYPE, p_locale );
+
+  return retcode;
 }
 
 // ==========================================================================

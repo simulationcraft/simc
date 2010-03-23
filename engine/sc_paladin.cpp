@@ -2206,7 +2206,10 @@ void paladin_t::init_glyphs()
     else if ( n == "seal_of_wisdom"          ) ;
     else if ( n == "spiritual_attunement"    ) ;
     else if ( n == "turn_evil"               ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 
@@ -2278,7 +2281,7 @@ void paladin_t::init_items()
   else if ( libram == "venture_co_libram_of_mostly_holy_deeds" ) ;
   else if ( ! libram.empty() )
   {
-    log_t::output( sim, "simulationcraft: %s has unknown libram %s", name(), libram.c_str() );
+    sim -> errorf( "Player %s has unknown libram %s", name(), libram.c_str() );
   }
 }
 
@@ -2373,7 +2376,7 @@ void paladin_t::init_actions()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
-    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }

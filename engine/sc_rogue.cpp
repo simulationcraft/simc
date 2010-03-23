@@ -2819,8 +2819,8 @@ struct apply_poison_t : public rogue_poison_t
     if ( main_hand_str.empty() &&
          off_hand_str.empty() )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'anesthetic/deadly/instant/wound'.\n" );
-      exit( 0 );
+      sim -> errorf( "Player %s: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'anesthetic/deadly/instant/wound'.\n", p -> name() );
+      sim -> cancel();
     }
 
     trigger_gcd = 0;
@@ -3038,7 +3038,7 @@ void rogue_t::init_actions()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
-    log_t::output( sim, "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }
@@ -3263,7 +3263,10 @@ void rogue_t::init_glyphs()
     else if ( n == "safe_fall"           ) ;
     else if ( n == "sprint"              ) ;
     else if ( n == "vanish"              ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 

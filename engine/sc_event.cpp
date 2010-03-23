@@ -142,9 +142,9 @@ void action_tick_event_t::execute()
 {
   if ( action -> current_tick >= action -> num_ticks )
   {
-    util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has corrupt tick (%d of %d) event on action %s!\n",
-                    player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
-    assert( false );
+    sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
+		   player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
+    sim -> cancel();
   }
 
   action -> tick_event = 0;

@@ -62,8 +62,8 @@ action_t::action_t( int         ty,
 
   if ( ! player -> initialized )
   {
-    util_t::fprintf( sim -> output_file, "simulationcraft: Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
-    assert( 0 );
+    sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
+    sim -> cancel();
   }
 
   action_t** last = &( p -> action_list );
@@ -146,8 +146,8 @@ void action_t::parse_options( option_t*          options,
 
   if ( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
   {
-    util_t::fprintf( sim -> output_file, "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
-    sim -> canceled = true;
+    sim -> errorf( "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
+    sim -> cancel();
   }
 }
 
@@ -187,9 +187,8 @@ rank_t* action_t::init_rank( rank_t* rank_list,
     }
   }
 
-  util_t::fprintf( sim -> output_file, "%s unable to find valid rank for %s\n", player -> name(), name() );
-
-  sim -> canceled = true;
+  sim -> errorf( "%s unable to find valid rank for %s\n", player -> name(), name() );
+  sim -> cancel();
 
   return 0;
 }
@@ -1228,8 +1227,8 @@ void action_t::reset()
 
     if ( ! sync_action )
     {
-      util_t::fprintf( sim -> output_file, "simulationcraft: Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
-      exit( 0 );
+      sim -> errorf( "Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
+      sim -> cancel();
     }
   }
 
@@ -1278,12 +1277,12 @@ void action_t::check_talent( int talent_rank )
   if ( player -> is_pet() )
   {
     pet_t* p = player -> cast_pet();
-    util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s has pet %s attempting to execute action %s without the required talent.\n",
-                    p -> owner -> name(), p -> name(), name() );
+    sim -> errorf( "Player %s has pet %s attempting to execute action %s without the required talent.\n", 
+		   p -> owner -> name(), p -> name(), name() );
   }
   else
   {
-    util_t::fprintf( sim -> output_file, "\nsimulationcraft: Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
+    sim -> errorf( "Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
   }
 
   background = true; // prevent action from being executed

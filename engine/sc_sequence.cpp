@@ -43,8 +43,9 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
     {
-      util_t::fprintf( sim -> output_file, "sequence_t: Unknown action: %s\n", splits[ i ].c_str() );
-      assert( false );
+      sim -> errorf( "Player %s has unknown sequence action: %s\n", p -> name(), splits[ i ].c_str() );
+      sim -> cancel();
+      continue;
     }
 
     a -> sequence = true;

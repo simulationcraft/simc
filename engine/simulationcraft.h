@@ -1058,6 +1058,7 @@ struct sim_t
   std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
+  std::vector<std::string> error_list;
   FILE* output_file;
   FILE* log_file;
   int armory_throttle;
@@ -1108,6 +1109,7 @@ struct sim_t
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
   action_expr_t* create_expression( action_t*, const std::string& name );
+  int       errorf( const char* format, ... );
 };
 
 // Scaling ===================================================================
@@ -2632,10 +2634,10 @@ struct xml_t
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-  static xml_node_t* download( const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
-  static xml_node_t* download_cache( const std::string& url, int64_t timestamp=0 );
-  static xml_node_t* create( const std::string& input );
-  static xml_node_t* create( FILE* input );
+  static xml_node_t* download( sim_t* sim, const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
+  static xml_node_t* download_cache( sim_t* sim, const std::string& url, int64_t timestamp=0 );
+  static xml_node_t* create( sim_t* sim, const std::string& input );
+  static xml_node_t* create( sim_t* sim, FILE* input );
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
 };
 
@@ -2652,8 +2654,8 @@ struct js_t
   static bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-  static js_node_t* create( const std::string& input );
-  static js_node_t* create( FILE* input );
+  static js_node_t* create( sim_t* sim, const std::string& input );
+  static js_node_t* create( sim_t* sim, FILE* input );
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
 };
 

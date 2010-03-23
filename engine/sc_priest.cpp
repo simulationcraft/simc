@@ -2025,7 +2025,10 @@ void priest_t::init_glyphs()
     else if ( n == "shackle_undead"    ) ;
     else if ( n == "shadow_protection" ) ;
     else if ( n == "shadowfiend"       ) ;
-    else if ( ! sim -> parent ) util_t::fprintf( sim -> output_file, "simulationcraft: Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    else if ( ! sim -> parent ) 
+    {
+      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
+    }
   }
 }
 

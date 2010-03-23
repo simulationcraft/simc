@@ -34,8 +34,8 @@ struct expr_unary_t : public action_expr_t
     }
     else
     {
-      log_t::output( action -> sim, "%s-%s: Unexpected input type (%s) for unary operator '%s'\n", 
-		     action -> player -> name(), action -> name(), input -> name(), name() );
+      action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n", 
+			       action -> player -> name(), action -> name(), input -> name(), name() );
     }
     return result_type;
   }
@@ -56,8 +56,9 @@ struct expr_binary_t : public action_expr_t
     int right_result = right -> evaluate();
     if ( left_result != right_result )
     {
-      log_t::output( action -> sim, "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n", 
-		     action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
+      action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n", 
+			       action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
+      action -> sim -> cancel();
     }
     else if ( left_result == TOK_NUM )
     {
@@ -245,7 +246,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
 
   if ( action )
   {
-    log_t::output( action -> sim, "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
+    action -> sim -> errorf( "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
   }
   else
   {
@@ -394,9 +395,8 @@ static action_expr_t* build_expression_tree( action_t* action,
       action_expr_t* e = action -> create_expression( t.label );
       if ( ! e ) 
       {
-	log_t::output( action -> sim, 
-		       "Player %s action %s : Unable to decode expression function '%s'\n", 
-		       action -> player -> name(), action -> name(), t.label.c_str() );
+	action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n", 
+				 action -> player -> name(), action -> name(), t.label.c_str() );
 	return 0;
 	e = new action_expr_t( action, t.label, t.label );
       }
@@ -443,8 +443,8 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   if( ! convert_to_rpn( action, tokens ) ) 
   {
-    log_t::output( action -> sim, "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
-    action -> sim -> canceled = true;
+    action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+    action -> sim -> cancel();
     return 0;
   }
 
@@ -454,8 +454,8 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   if ( ! e ) 
   {
-    log_t::output( action -> sim, "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
-    action -> sim -> canceled = true;
+    action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+    action -> sim -> cancel();
     return 0;
   }
 
