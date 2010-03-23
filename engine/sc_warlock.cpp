@@ -3529,6 +3529,7 @@ struct demonic_pact_callback_t : public action_callback_t
       if ( p != o && sim -> scaling -> scale_stat == STAT_SPIRIT )
       {
         p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * o -> spell_power_per_spirit * 0.10;
+		if ( o -> buffs_life_tap_glyph -> up() ) p -> buffs.demonic_pact -> current_value -= sim -> scaling -> scale_value * 0.20 * 0.10;
       }
 	  // HACK ALERT!!! Remove "double-dip" during intellect scale factor generation.
       if ( p != o && sim -> scaling -> scale_stat == STAT_INTELLECT )
