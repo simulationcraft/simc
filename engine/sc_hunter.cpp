@@ -1024,11 +1024,8 @@ struct hunter_pet_attack_t : public attack_t
       if ( result == RESULT_CRIT )
       {
         hunter_t* o = p -> owner -> cast_hunter();
-        if ( ! sim -> P333 )
-          p -> sim -> auras.ferocious_inspiration -> trigger( 1, o -> talents.ferocious_inspiration, o -> talents.ferocious_inspiration > 0 );
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
-
         p -> buffs_wolverine_bite -> trigger();
       }
     }
@@ -2680,8 +2677,8 @@ struct steady_shot_t : public hunter_attack_t
 
     base_cost *= 1.0 - p -> talents.master_marksman * 0.05;
 
-    base_multiplier *= 1.0 + p -> talents.sniper_training              * 0.02
-                       + p -> talents.ferocious_inspiration * ( p -> sim -> P333 ? 0.03 : 0 );
+    base_multiplier *= 1.0 + ( p -> talents.sniper_training       * 0.02 +
+			       p -> talents.ferocious_inspiration * 0.03 );
 
     base_multiplier *= p -> ranged_weapon_specialization_multiplier();
 
@@ -3674,8 +3671,7 @@ void hunter_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( sim -> P333 )
-    sim -> auras.ferocious_inspiration -> trigger( 1, talents.ferocious_inspiration, talents.ferocious_inspiration > 0 );
+  sim -> auras.ferocious_inspiration -> trigger( 1, talents.ferocious_inspiration, talents.ferocious_inspiration > 0 );
 }
 
 // hunter_t::reset ===========================================================
@@ -3985,10 +3981,7 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, int race
 void player_t::hunter_init( sim_t* sim )
 {
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
-  if ( sim -> P333 )
-    sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
-  else
-    sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration", 1, 10.0 );
+  sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
 
   target_t* t = sim -> target;
   t -> debuffs.hunters_mark  = new debuff_t( sim, "hunters_mark",  1, 300.0 );

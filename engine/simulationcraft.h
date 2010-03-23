@@ -83,11 +83,11 @@ struct patch_t
     *version  = ( int ) m % 100; m /= 100;
     *arch     = ( int ) m % 100;
   }
-  patch_t() { mask = encode( 3, 3, 2 ); }
+  patch_t() { mask = encode( 3, 3, 3 ); }
 };
 
-#define SC_MAJOR_VERSION "332"
-#define SC_MINOR_VERSION "4"
+#define SC_MAJOR_VERSION "333"
+#define SC_MINOR_VERSION "0"
 
 // Forward Declarations ======================================================
 
@@ -887,7 +887,6 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  int         P333;
   int         P400;
   event_t*    free_list;
   target_t*   target;
@@ -2044,7 +2043,7 @@ struct action_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int P333, P400, moving, vulnerable, invulnerable, wait_on_ready;
+  int P400, moving, vulnerable, invulnerable, wait_on_ready;
   double snapshot_haste;
   bool recast;
   std::string if_expr_str;

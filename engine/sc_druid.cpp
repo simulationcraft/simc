@@ -1082,8 +1082,8 @@ struct mangle_cat_t : public druid_cat_attack_t
     base_cost -= p -> talents.ferocity;
     base_cost -= p -> talents.improved_mangle * 2;
 
-    base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1
-                        + p -> glyphs.mangle * ( p -> sim -> P333 ? 0.1 : 0.0 );
+    base_multiplier  *= 1.0 + ( p -> talents.savage_fury * 0.1 +
+				p -> glyphs.mangle       * 0.1 );
   }
 
   virtual void execute()
@@ -1095,14 +1095,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       target_t* t = sim -> target;
       if( ! sim -> overrides.mangle )
       {
-        if ( ! p -> sim -> P333 )
-        {
-		  t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
-	    }
-	    else
-	    {
-		  t -> debuffs.mangle -> duration = 60.0;
-	    }
+	t -> debuffs.mangle -> duration = 60.0;
       }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
@@ -1872,8 +1865,8 @@ struct mangle_bear_t : public druid_bear_attack_t
     may_crit = true;
     base_cost -= p -> talents.ferocity;
 
-    base_multiplier *= 1.0 + p -> talents.savage_fury * 0.10
-                       + p -> glyphs.mangle * ( p -> sim -> P333 ? 0.1 : 0.0 );
+    base_multiplier *= 1.0 + ( p -> talents.savage_fury * 0.10 +
+			       p -> glyphs.mangle       * 0.10 );
 
     cooldown = p -> get_cooldown( "mangle_bear" );
     cooldown -> duration = 6.0 - p -> talents.improved_mangle * 0.5;
@@ -1889,14 +1882,7 @@ struct mangle_bear_t : public druid_bear_attack_t
       target_t* t = sim -> target;
       if( ! sim -> overrides.mangle )
       {
-        if ( ! p -> sim -> P333 )
-        {
-	      t -> debuffs.mangle -> duration = 12.0 + ( p -> glyphs.mangle ? 6.0 : 0.0 );
-	    }
-	    else
-	    {
-	      t -> debuffs.mangle -> duration = 60.0;
-	    }
+	t -> debuffs.mangle -> duration = 60.0;
       }
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
@@ -3132,7 +3118,7 @@ struct starfall_t : public druid_spell_t
 
         static rank_t ranks[] =
         {
-          { 80, 4,  78,  78, 0, 0 },
+          { 80, 4, 101, 101, 0, 0 },
           { 75, 3,  66,  66, 0, 0 },
           { 70, 2,  45,  45, 0, 0 },
           { 60, 1,  20,  20, 0, 0 },
@@ -3140,12 +3126,8 @@ struct starfall_t : public druid_spell_t
         };
 
         init_rank( ranks );
-        direct_power_mod  = 0.012;
-        if ( p -> sim -> P333 )
-        {
-          base_dd_min = base_dd_max = 101;
-          direct_power_mod  = 0.13;
-        }
+	direct_power_mod  = 0.13;
+
         may_crit          = true;
         may_miss          = true;
         may_resist        = true;
@@ -3155,8 +3137,7 @@ struct starfall_t : public druid_spell_t
 
         base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
         base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
-        if ( p -> glyphs.focus )
-          base_multiplier *= ( p -> sim -> P333 ? 1.1 : 1.2 );
+        if ( p -> glyphs.focus ) base_multiplier *= 1.1;
         id = 53190;
       }
       virtual void execute()
@@ -3174,14 +3155,13 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
 
-        direct_power_mod  = 0.046;
-        if ( p -> sim -> P333 ) direct_power_mod = 0.37;
-        may_crit          = true;
-        may_miss          = true;
-        may_resist        = true;
-        background        = true;
-        proc              = true;
-        dual              = true;
+        direct_power_mod = 0.37;
+        may_crit         = true;
+        may_miss         = true;
+        may_resist       = true;
+        background       = true;
+        proc             = true;
+        dual             = true;
 
         base_dd_min = base_dd_max  = 0;
         base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
@@ -3218,18 +3198,13 @@ struct starfall_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 4, 433, 503, 0, 0.39 },
+      { 80, 4, 563, 653, 0, 0.39 },
       { 75, 3, 366, 424, 0, 0.39 },
       { 70, 2, 250, 290, 0, 0.39 },
       { 60, 1, 111, 129, 0, 0.39 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
-    if ( p -> sim -> P333 )
-    {
-      base_dd_min = 563;
-      base_dd_max = 653;
-    }
 
     num_ticks      = 10;
     base_tick_time = 1.0;
@@ -3275,11 +3250,11 @@ struct typhoon_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 1190, 1190, 0, 0.32 },
-      { 75, 4, 1010, 1010, 0, 0.32 },
-      { 70, 3,  735,  735, 0, 0.32 },
-      { 60, 2,  550,  550, 0, 0.32 },
-      { 50, 1,  400,  400, 0, 0.32 },
+      { 80, 5, 1190, 1190, 0, 0.25 },
+      { 75, 4, 1010, 1010, 0, 0.25 },
+      { 70, 3,  735,  735, 0, 0.25 },
+      { 60, 2,  550,  550, 0, 0.25 },
+      { 50, 1,  400,  400, 0, 0.25 },
       {  0, 0,    0,    0, 0, 0 }
     };
     init_rank( ranks );
@@ -3288,7 +3263,6 @@ struct typhoon_t : public druid_spell_t
     direct_power_mod  = 0.193;
     base_multiplier *= 1.0 + 0.15 * p -> talents.gale_winds;
     aoe = true;
-    if ( p -> sim -> P333) base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.25;
 
     cooldown -> duration = 20;
     if ( p -> glyphs.monsoon )
@@ -4352,7 +4326,7 @@ void player_t::druid_init( sim_t* sim )
   t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, 300.0 );
   t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
   t -> debuffs.insect_swarm         = new debuff_t( sim, "insect_swarm",         1,  12.0 );
-  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  ( sim -> P333 ? 60.0 : 12.0 ) );
+  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
 }
 
 // player_t::druid_combat_begin =============================================

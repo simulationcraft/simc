@@ -585,25 +585,6 @@ static void stack_maelstrom_weapon( attack_t* a )
           p -> buffs_tier10_4pc_melee -> trigger();
 }
 
-// trigger_unleashed_rage =================================================
-
-static void trigger_unleashed_rage( attack_t* a )
-{
-  if ( a -> sim -> P333 ) return;
-  if ( a -> proc ) return;
-
-  shaman_t* s = a -> player -> cast_shaman();
-
-  if ( s -> talents.unleashed_rage == 0 ) return;
-
-  int ur = util_t::talent_rank( s -> talents.unleashed_rage, 3, 4, 7, 10 );
-
-  if ( ur >= s -> sim -> auras.unleashed_rage -> current_value )
-  {
-    s -> sim -> auras.unleashed_rage -> trigger( 1, ur );
-  }
-}
-
 // trigger_improved_stormstrike =============================================
 
 static void trigger_improved_stormstrike( attack_t* a )
@@ -700,21 +681,6 @@ static void trigger_lightning_overload( spell_t* s,
   }
 }
 
-// trigger_elemental_oath =====================================================
-
-static void trigger_elemental_oath( spell_t* s )
-{
-  if ( s -> sim -> P333 ) return;
-  if ( s -> pseudo_pet  ) return;
-
-  shaman_t* shaman = s -> player -> cast_shaman();
-
-  if ( shaman -> talents.elemental_oath == 0 ) return;
-
-  s -> sim -> auras.elemental_oath -> trigger();
-}
-
-
 // =========================================================================
 // Shaman Attack
 // =========================================================================
@@ -731,7 +697,6 @@ void shaman_attack_t::execute()
   {
     if ( result == RESULT_CRIT )
     {
-      trigger_unleashed_rage( this );
       p -> buffs_flurry -> trigger( 3 );
     }
     if ( p -> buffs_shamanistic_rage -> up() )
@@ -1100,7 +1065,6 @@ void shaman_spell_t::execute()
     {
       if ( ! proc && ! pseudo_pet )
       {
-        trigger_elemental_oath( this );
         p -> buffs_elemental_devastation -> trigger();
         p -> buffs_elemental_focus -> trigger( 2 );
       }
@@ -1686,14 +1650,6 @@ struct fire_nova_t : public shaman_spell_t
     if ( p -> glyphs.fire_nova ) cooldown -> duration -= 3.0;
   }
 
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    // Does not proc Elemental Focus or Elemental Devastation (pseudo_pet=true) but does proc Elemental Oath.
-    if ( result == RESULT_CRIT ) trigger_elemental_oath( this );
-  }
-
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
@@ -1829,15 +1785,15 @@ struct flame_shock_t : public shaman_spell_t
     base_td_multiplier *= 1.0 + ( p -> talents.concussion       * 0.01 +
                                   p -> set_bonus.tier9_4pc_melee() * 0.25 +
                                   util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.20 ) +
-                                  p -> set_bonus.tier8_2pc_caster() * ( p -> sim -> P333 ? 0.2 : 0 ) );
+                                  p -> set_bonus.tier8_2pc_caster() * 0.2 );
 
 
     base_cost_reduction  += ( p -> talents.convection        * 0.02 +
                               p -> talents.mental_quickness  * 0.02 +
                               p -> talents.shamanistic_focus * 0.45 );
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20
-                                      + p -> glyphs.flame_shock * ( p -> sim -> P333 ? 0.60 : 0.0 );
+    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.elemental_fury * 0.20 +
+					  p -> glyphs.flame_shock     * 0.60 );
 
     cooldown = p -> get_cooldown( "shock" );
     cooldown -> duration  = 6.0;
@@ -1849,7 +1805,7 @@ struct flame_shock_t : public shaman_spell_t
     // T8 2pc not yet changed
     if ( p -> set_bonus.tier8_2pc_caster() ) tick_may_crit = true;
 
-    if ( p -> sim -> P333 ) tick_may_crit = true;
+    tick_may_crit = true;
 
     if ( p -> glyphs.shocking )
     {
@@ -1873,10 +1829,7 @@ struct flame_shock_t : public shaman_spell_t
 
   virtual int scale_ticks_with_haste() SC_CONST
   {
-    if ( player -> sim -> P333 )
-      return 1;
-
-    return 0;
+    return 1;
   }
 };
 
@@ -3467,16 +3420,13 @@ void shaman_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( sim -> P333 )
+  if ( talents.elemental_oath ) sim -> auras.elemental_oath -> trigger();
+
+  int ur = util_t::talent_rank( talents.unleashed_rage, 3, 4, 7, 10 );
+
+  if ( ur >= sim -> auras.unleashed_rage -> current_value )
   {
-    if ( talents.elemental_oath ) sim -> auras.elemental_oath -> trigger();
-
-    int ur = util_t::talent_rank( talents.unleashed_rage, 3, 4, 7, 10 );
-
-    if ( ur >= sim -> auras.unleashed_rage -> current_value )
-    {
-      sim -> auras.unleashed_rage -> trigger( 1, ur );
-    }
+    sim -> auras.unleashed_rage -> trigger( 1, ur );
   }
 }
 
@@ -3675,12 +3625,12 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, int race
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, ( sim -> P333 ? 0.0 : 15.0 ) );
+  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, 0.0 );
   sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
   sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, 300.0 );
   sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
   sim -> auras.totem_of_wrath    = new aura_t( sim, "totem_of_wrath",    1, 300.0 );
-  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, ( sim -> P333 ? 0.0 : 10.0 ) );
+  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, 0.0 );
   sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
   sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
 

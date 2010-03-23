@@ -541,20 +541,6 @@ static void trigger_sword_specialization( attack_t* a )
   }
 }
 
-// trigger_rampage ==========================================================
-
-static void trigger_rampage( attack_t* a )
-{
-  if ( a -> sim -> P333 ) return;
-
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( p -> talents.rampage == 0 )
-    return;
-
-  p -> sim -> auras.rampage -> trigger();
-}
-
 // trigger_sudden_death =====================================================
 
 static void trigger_sudden_death( action_t* a )
@@ -708,7 +694,6 @@ void warrior_attack_t::execute()
     // Critproccgalore
     if( result == RESULT_CRIT )
     {
-      trigger_rampage( this );
       trigger_deep_wounds( this );
       trigger_trauma( this );
       p -> buffs_wrecking_crew -> trigger( 1, p -> talents.wrecking_crew * 0.02 );
@@ -1291,11 +1276,11 @@ struct revenge_t : public warrior_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 1454, 1776, 0, 5 },
-      { 70, 8, 855, 1045, 0, 5 },
-      { 63, 7, 699, 853, 0, 5 },
-      { 60, 6, 643, 785, 0, 5 },
-      { 54, 5, 498, 608, 0, 5 },
+      { 80, 9, 1636, 1998, 0, 5 },
+      { 70, 8,  855, 1045, 0, 5 },
+      { 63, 7,  699,  853, 0, 5 },
+      { 60, 6,  643,  785, 0, 5 },
+      { 54, 5,  498,  608, 0, 5 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 57823 );
@@ -1304,20 +1289,15 @@ struct revenge_t : public warrior_attack_t
     weapon_multiplier = 0;
 
     may_crit = true;
-    direct_power_mod  = 0.207;
+    direct_power_mod = 0.31;
     cooldown -> duration = 5.0;
-    base_multiplier  *= 1 + p -> talents.improved_revenge * ( p -> sim -> P333 ? 0.3 : 0.1 );
+    base_multiplier  *= 1 + p -> talents.improved_revenge * 0.3;
     if ( p -> talents.unrelenting_assault )
     {
       base_multiplier *= 1 + p -> talents.unrelenting_assault * 0.1;
       cooldown -> duration -= ( p -> talents.unrelenting_assault * 2 );
     }
-    if ( sim -> P333 )
-    {
-	  direct_power_mod = 0.31;
-	  base_dd_min = 1636;
-	  base_dd_max = 1998;
-    }
+
     stancemask = STANCE_DEFENSE;
   }
   virtual void execute()
@@ -2484,7 +2464,7 @@ void warrior_t::init_base()
   diminished_parry_capi = 1.0 / 0.47003525;
 
   attribute_multiplier_initial[ ATTR_STRENGTH ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.02;
-  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * ( sim -> P333 ? 0.03 : 0.02 );
+  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + talents.strength_of_arms * 0.02 + talents.vitality * 0.03;
 
   health_per_stamina = 10;
 
@@ -2723,10 +2703,7 @@ void warrior_t::combat_begin()
     buffs_battle_stance -> trigger();
   }
 
-  if ( sim -> P333 )
-  {
-    if (  talents.rampage ) sim -> auras.rampage -> trigger();
-  }
+  if (  talents.rampage ) sim -> auras.rampage -> trigger();
 }
 
 // warrior_t::reset ===========================================================
@@ -3137,13 +3114,13 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, int rac
 void player_t::warrior_init( sim_t* sim )
 {
   sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
-  sim -> auras.rampage      = new aura_t( sim, "rampage",      1, ( sim -> P333 ? 0.0 : 10.0 ) );
+  sim -> auras.rampage      = new aura_t( sim, "rampage",      1, 0.0 );
 
   target_t* t = sim -> target;
   t -> debuffs.blood_frenzy = new debuff_t( sim, "blood_frenzy", 1, 15.0 );
   t -> debuffs.sunder_armor = new debuff_t( sim, "sunder_armor", 1, 30.0 );
   t -> debuffs.thunder_clap = new debuff_t( sim, "thunder_clap", 1, 30.0 );
-  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, ( sim -> P333 ? 60.0 : 15.0 ) );
+  t -> debuffs.trauma       = new debuff_t( sim, "trauma",       1, 60.0 );
 }
 
 // player_t::warrior_combat_begin ===========================================

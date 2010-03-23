@@ -20,8 +20,7 @@ actions+=/speed_potion
 actions+=/frost_bolt,frozen=1
 actions+=/water_elemental
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15
-actions+=/fire_ball,if=buff.brain_freeze.react,P333=0
-actions+=/frostfire_bolt,if=buff.brain_freeze.react,P333=1
+actions+=/frostfire_bolt,if=buff.brain_freeze.react
 actions+=/frost_bolt
 actions+=/evocation
 actions+=/ice_lance,moving=1,frozen=1

@@ -1891,10 +1891,7 @@ void death_knight_attack_t::player_buff()
     // Does not apply to spells!
     if ( weapon -> slot == SLOT_OFF_HAND )
     {
-      if ( sim -> P333 )
-        player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.25/3.0;
-      else
-        player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.05;
+      player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel * 0.25/3.0;
     }
 
     if ( weapon -> group() == WEAPON_1H )
@@ -3352,10 +3349,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    if ( p -> sim -> P333 )
-      target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-    else
-      target_multiplier *= 1 + p -> diseases() * 0.1 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
+    target_multiplier *= 1 + p -> diseases() * 0.125 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
   }
 
   virtual void player_buff()
@@ -3460,7 +3454,7 @@ struct pestilence_t : public death_knight_spell_t
       if ( p -> dots_frost_fever -> ticking() )
       {
         p -> frost_fever -> refresh_duration();
-        if ( p -> sim -> P333 ) trigger_icy_talons( this );
+        trigger_icy_talons( this );
       }
     }
     p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_rune_abilities );
@@ -3729,14 +3723,7 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_attack_t::target_debuff( dmg_type );
 
       // FIX ME!! How does 4T8 play with SS in 3.3
-      if ( sim -> P333 )
-      {
-        target_multiplier *= p -> diseases() * 0.12 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-      }
-      else
-      {
-        target_multiplier *= p -> diseases() * 0.25 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
-      }
+      target_multiplier *= p -> diseases() * 0.12 * ( 1.0 + p -> set_bonus.tier8_4pc_melee() * .2 );
     }
   };
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
@@ -3765,7 +3752,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     scourge_strike_shadow = new scourge_strike_shadow_t( player );
 
-    weapon_multiplier        = sim -> P333 ? 0.70 : 0.50;
+    weapon_multiplier = 0.70;
     cost_frost = 1;
     cost_unholy = 1;
 
@@ -4081,17 +4068,8 @@ double death_knight_t::composite_attack_haste() SC_CONST
   // are two different buff that don't stack (does not stack with WF totem)
   // If you got 16% WF totem, 20% IT but not ITT you will gain 20% haste.
   // I can't make up a case where you would go 5/5 IT but not take IIT.
-  if ( sim -> P333 )
-    haste *= 1.0/ ( 1.0 + buffs_icy_talons -> value() );
-  else
-  {
-    double it_haste = buffs_icy_talons -> value();
-    if ( it_haste > sim -> auras.windfury_totem -> current_value && ! sim -> auras.improved_icy_talons -> check() )
-    {
-      haste *= ( 1.0 + sim -> auras.windfury_totem -> current_value );
-      haste *= 1.0/ ( 1.0 + it_haste );
-    }
-  }
+
+  haste *= 1.0/ ( 1.0 + buffs_icy_talons -> value() );
 
   return haste;
 }
@@ -4154,11 +4132,10 @@ void death_knight_t::init_base()
   base_attack_crit                 = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
-  double str_mult = talents.veteran_of_the_third_war * 0.02 +
-                    talents.abominations_might * 0.01 +
-                    talents.ravenous_dead * 0.01;
-  if ( sim -> P333 )
-    str_mult += talents.endless_winter * 0.02;
+  double str_mult = ( talents.veteran_of_the_third_war * 0.02 +
+		      talents.abominations_might       * 0.01 +
+		      talents.ravenous_dead            * 0.01 + 
+		      talents.endless_winter           * 0.02 );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
@@ -4414,20 +4391,15 @@ void death_knight_t::init_enchant()
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      if ( a -> sim -> P333 )
-        buff -> trigger( 1, 0.02, 1.0 );
-      else
-        buff -> trigger( 1, 0.01, 0.30 );
+      buff -> trigger( 1, 0.02, 1.0 );
 
       razorice_damage_proc -> base_dd_min = w -> min_dmg;
       razorice_damage_proc -> base_dd_max = w -> max_dmg;
       razorice_damage_proc -> execute();
     }
   };
-  if ( sim -> P333 )
-    buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
-  else
-    buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 10, 20.0 );
+  
+  buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
 
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
@@ -4686,10 +4658,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
     m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
     if ( buffs_unbreakable_armor -> check() )
     {
-      if ( sim -> P333 )
-        m *= 1.10;
-      else
-        m *= 1.20;
+      m *= 1.10;
     }
   }
 

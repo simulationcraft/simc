@@ -308,7 +308,6 @@ struct rogue_attack_t : public attack_t
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
-  virtual double armor() SC_CONST;
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
 };
@@ -834,7 +833,7 @@ void rogue_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  if ( p -> talents.serrated_blades && p -> sim -> P333 )
+  if ( p -> talents.serrated_blades )
   {
     player_penetration += p -> talents.serrated_blades * 0.03;
   }
@@ -894,22 +893,6 @@ void rogue_attack_t::player_buff()
   }
 }
 
-
-// rogue_attack_t::armor() ================================================
-
-double rogue_attack_t::armor() SC_CONST
-{
-  rogue_t* p = player -> cast_rogue();
-
-  double adjusted_armor = attack_t::armor();
-
-  if ( p -> talents.serrated_blades && ! p -> sim -> P333 )
-  {
-    adjusted_armor -= p -> level * 8 * p -> talents.serrated_blades / 3.0;
-  }
-
-  return adjusted_armor;
-}
 
 // rogue_attack_t::ready() ================================================
 
@@ -1179,7 +1162,7 @@ struct ambush_t : public rogue_attack_t
     requires_stealth       = true;
     adds_combo_points      = true;
     weapon_multiplier     *= 2.75;
-    base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
+    base_cost             -= p -> talents.slaughter_from_the_shadows * 4;
     base_multiplier       *= 1.0 + ( p -> talents.find_weakness * 0.02 +
                                      p -> talents.opportunity   * 0.10 +
                                      p -> talents.slaughter_from_the_shadows * 0.01 );
@@ -1227,7 +1210,7 @@ struct backstab_t : public rogue_attack_t
     requires_weapon        = WEAPON_DAGGER;
     requires_position      = POSITION_BACK;
     adds_combo_points      = true;
-    base_cost             -= p -> talents.slaughter_from_the_shadows * ( p -> sim -> P333 ? 4 : 3 );
+    base_cost             -= p -> talents.slaughter_from_the_shadows * 4;
     weapon_multiplier     *= 1.50;
     weapon_multiplier     *= 1.0 + p -> talents.sinister_calling * 0.02;
 
@@ -1656,7 +1639,7 @@ struct ghostly_strike_t : public rogue_attack_t
     adds_combo_points           = true;
     cooldown -> duration        = p -> glyphs.ghostly_strike ? 30 : 20;
     base_cost                   = 40;
-    if ( sim -> P333 && weapon -> type == WEAPON_DAGGER )
+    if ( weapon -> type == WEAPON_DAGGER )
       weapon_multiplier        *= 1.80 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
     else
       weapon_multiplier        *= 1.25 + ( p -> glyphs.ghostly_strike ? 0.4 : 0.0 );
@@ -1700,7 +1683,7 @@ struct hemorrhage_t : public rogue_attack_t
     adds_combo_points      = true;
     base_cost              = 35 - p -> talents.slaughter_from_the_shadows;
 
-    weapon_multiplier *= ( sim -> P333 && weapon -> type == WEAPON_DAGGER ) ? 1.60 : 1.10;
+    weapon_multiplier *= ( weapon -> type == WEAPON_DAGGER ) ? 1.60 : 1.10;
     weapon_multiplier *= 1.0 + p -> talents.sinister_calling * 0.02;
 
     base_multiplier *= 1.0 + ( p -> talents.find_weakness       * 0.02 +
@@ -2062,7 +2045,8 @@ struct rupture_t : public rogue_attack_t
     if ( p -> talents.surprise_attacks ) may_dodge = false;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) tick_may_crit = true;
-    if ( sim -> P333 ) tick_may_crit = true;
+
+    tick_may_crit = true;
 
     static double dmg_79[] = { 145, 163, 181, 199, 217 };
     static double dmg_74[] = { 122, 137, 152, 167, 182 };
@@ -2130,11 +2114,8 @@ struct shadowstep_t : public rogue_attack_t
     base_cost = 10;
     cooldown -> duration = 30;
 
-    if ( sim -> P333 )
-    {
-      cooldown -> duration -= p -> talents.filthy_tricks * 5;
-      base_cost            -= p -> talents.filthy_tricks * 5;
-    }
+    cooldown -> duration -= p -> talents.filthy_tricks * 5;
+    base_cost            -= p -> talents.filthy_tricks * 5;
 
     id = 36554;
   }
@@ -2402,7 +2383,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     trigger_gcd = 0;
 
     base_cost = 15;
-    if ( sim -> P333 ) base_cost -= p -> talents.filthy_tricks * 5.0;
+    base_cost -= p -> talents.filthy_tricks * 5.0;
     if ( p -> set_bonus.tier10_2pc_melee() ) base_cost = 0;
 
     cooldown -> duration  = 30.0 - p -> talents.filthy_tricks * 5.0;
@@ -3084,7 +3065,7 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      bool rupture_less = ( ! sim -> P333             &&
+      bool rupture_less = (   false                   &&
                             ! talents.blood_spatter   &&
                             ! talents.serrated_blades &&
                             ! glyphs.rupture );
@@ -3113,7 +3094,7 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      bool rupture_less = ( ! sim -> P333                 &&
+      bool rupture_less = (   false                       &&
                             ! talents.blood_spatter       &&
                             ! talents.serrated_blades     &&
                               talents.improved_eviscerate &&
