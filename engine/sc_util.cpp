@@ -368,6 +368,8 @@ const char* util_t::meta_gem_type_string( int type )
   case META_SWIFT_STARFIRE:          return "swift_starfire";
   case META_SWIFT_STARFLARE:         return "swift_starflare";
   case META_TIRELESS_STARFLARE:      return "tireless_starflare";
+  case META_TRENCHANT_EARTHSHATTER:  return "trenchant_earthshatter";
+  case META_TRENCHANT_EARTHSIEGE:    return "trenchant_earthsiege";
   }
   return "unknown";
 }

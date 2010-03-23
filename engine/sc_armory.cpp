@@ -684,6 +684,11 @@ player_t* armory_t::download_player( sim_t* sim,
 
   int race_type = util_t::parse_race_type( race_str );
 
+  if( ! talents_description.empty() && ( talents_description != "active" ) )
+  {
+    name_str += "_" + talents_description;
+  }
+
   player_t* p = player_t::create( sim, type_str, name_str, race_type );
   sim -> active_player = p;
   if ( ! p )

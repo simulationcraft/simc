@@ -648,6 +648,8 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if ( meta_gem == META_SWIFT_STARFIRE          ) item_stats.spell_power  += 12;
   else if ( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
   else if ( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
+  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER  ) item_stats.spell_power  += 20;
+  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE    ) item_stats.spell_power  += 25;
 
   if ( meta_gem == META_AUSTERE_EARTHSIEGE )
   {
