@@ -3048,9 +3048,15 @@ void rogue_t::init_actions()
     action_list_str += "flask,type=endless_rage";
     action_list_str += "/food,type=";
     action_list_str += ( primary_tree() == TREE_COMBAT ) ? "imperial_manta_steak" : "mega_mammoth_meal";
-    action_list_str += "/apply_poison,main_hand=";
+
+    action_list_str += "/apply_poison";
+    std::string slow_hand = "main_hand";
+    std::string fast_hand = "off_hand";
+    if( main_hand_weapon.swing_time <= off_hand_weapon.swing_time ) std::swap( slow_hand, fast_hand );
+    action_list_str += "," + slow_hand + "=";
     action_list_str += ( talents.improved_poisons > 2 ) ? "instant" : "wound";
-    action_list_str += ",off_hand=deadly";
+    action_list_str += "," + fast_hand + "=deadly";
+
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
     if ( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
