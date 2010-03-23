@@ -1,3 +1,0 @@
-# Robots shouldn't attempt to run the simulation
-User-agent: *
-Disallow: /simulation.xml
