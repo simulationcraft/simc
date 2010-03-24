@@ -2887,7 +2887,8 @@ struct starfire_t : public druid_spell_t
 
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
-          p -> buffs_eclipse_solar -> trigger();
+          if ( p -> buffs_eclipse_solar -> trigger() )
+            p -> buffs_eclipse_lunar -> cooldown_ready = sim -> current_time + 15;
         }
       }
       if ( p -> glyphs.starfire )
@@ -3031,7 +3032,8 @@ struct wrath_t : public druid_spell_t
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
         if( ! p -> buffs_eclipse_solar -> check() )
         {
-          p -> buffs_eclipse_lunar -> trigger();
+          if ( p -> buffs_eclipse_lunar -> trigger() )
+            p -> buffs_eclipse_solar -> cooldown_ready = sim -> current_time + 15;
         }
       }
       trigger_earth_and_moon( this );
