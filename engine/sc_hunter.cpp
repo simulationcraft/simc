@@ -1023,7 +1023,6 @@ struct hunter_pet_attack_t : public attack_t
 
       if ( result == RESULT_CRIT )
       {
-        hunter_t* o = p -> owner -> cast_hunter();
         p -> buffs_frenzy -> trigger();
         if ( special ) trigger_invigoration( this );
         p -> buffs_wolverine_bite -> trigger();
