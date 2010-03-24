@@ -1077,7 +1077,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
   virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
-  virtual double haste()                                 { return haste_snapshot; }
+  virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
   virtual double composite_player_multiplier( int school ) SC_CONST
@@ -4063,9 +4063,11 @@ double death_knight_t::composite_attack_haste() SC_CONST
   double haste = player_t::composite_attack_haste();
   haste *= 1.0 / ( 1.0 + buffs_unholy_presence -> value() );
 
+  if ( talents.improved_icy_talons )
+    haste *= 1 / 1.05;
+
   // Icy Talons now stacks with Windfury.
-  // player_t::composite_attack_haste factors in IIT and windfury
-  // already.
+
   haste *= 1.0 / ( 1.0 + buffs_icy_talons -> value() );
 
   return haste;
