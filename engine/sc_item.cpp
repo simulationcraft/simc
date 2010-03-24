@@ -264,6 +264,8 @@ bool item_t::init()
 
 bool item_t::decode_stats()
 {
+  if ( encoded_stats_str == "none" ) return true;
+
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoded_stats_str );
 
@@ -307,6 +309,8 @@ bool item_t::decode_stats()
 
 bool item_t::decode_gems()
 {
+  if ( encoded_gems_str == "none" ) return true;
+
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoded_gems_str );
 
@@ -350,6 +354,8 @@ bool item_t::decode_gems()
 
 bool item_t::decode_enchant()
 {
+  if ( encoded_enchant_str == "none" ) return true;
+
   if( encoded_enchant_str == "berserking"  ||
       encoded_enchant_str == "executioner" ||
       encoded_enchant_str == "mongoose"    ||
@@ -427,7 +433,7 @@ bool item_t::decode_enchant()
 bool item_t::decode_special( special_effect_t& effect,
                              const std::string& encoding )
 {
-  if ( encoding == "custom" ) return true;
+  if ( encoding == "custom" || encoding == "none" ) return true;
 
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoding );
