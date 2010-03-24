@@ -2171,12 +2171,12 @@ void priest_t::init_actions()
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,if=!ticking";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch,if=!ticking/vampiric_touch,if=dot.vampiric_touch.remains<cast_time";
-      if ( talents.inner_focus ) action_list_str += "/inner_focus,devouring_plague,if=!ticking";
       action_list_str += "/devouring_plague,if=!ticking";
       action_list_str += "/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.60)";
       action_list_str += "/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.60)";
       action_list_str += "/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.60)";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      if ( talents.inner_focus ) action_list_str += talents.mind_flay ? "/inner_focus,mind_flay" : "/inner_focus,smite";
       action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death,moving=1"; // when moving
       if ( talents.dispersion ) action_list_str += "/dispersion";
