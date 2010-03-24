@@ -740,7 +740,7 @@ double druid_cat_attack_t::cost() SC_CONST
   druid_t* p = player -> cast_druid();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> buffs_omen_of_clarity -> check() ) return 0;
+  if ( harmful &&  p -> buffs_omen_of_clarity -> check() ) return 0;
   if ( p -> buffs_berserk -> check() ) c *= 0.5;
   return c;
 }
@@ -751,7 +751,7 @@ void druid_cat_attack_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   attack_t::consume_resource();
-  if ( p -> buffs_omen_of_clarity -> up() )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a energy gain.
     double amount = attack_t::cost();
@@ -1545,7 +1545,7 @@ double druid_bear_attack_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   double c = attack_t::cost();
-  if ( p -> buffs_omen_of_clarity -> check() ) return 0;
+  if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   return c;
 }
 
@@ -1555,7 +1555,7 @@ void druid_bear_attack_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   attack_t::consume_resource();
-  if ( p -> buffs_omen_of_clarity -> up() )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a rage gain.
     double amount = attack_t::cost();
@@ -2039,7 +2039,7 @@ bool druid_spell_t::ready()
 double druid_spell_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( p -> buffs_omen_of_clarity -> check() ) return 0;
+  if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   return spell_t::cost();
 }
 
@@ -2110,7 +2110,7 @@ void druid_spell_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   spell_t::consume_resource();
-  if ( p -> buffs_omen_of_clarity -> up() )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
