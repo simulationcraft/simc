@@ -786,12 +786,11 @@ struct melee_t : public shaman_attack_t
     return t;
   }
 
-/*
   void execute()
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> executing )
+    if ( time_to_execute > 0 && p -> executing )      
     {
       if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
       schedule_execute();
@@ -801,7 +800,6 @@ struct melee_t : public shaman_attack_t
       shaman_attack_t::execute();
     }
   }
-*/
 
   void schedule_execute()
   {

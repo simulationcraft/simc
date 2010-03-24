@@ -584,6 +584,7 @@ static void register_tiny_abom( item_t* item )
     attack_t *first_stack_attack;
     int result;
     double resource_consumed, direct_dmg, resisted_dmg, blocked_dmg;
+    double time_to_execute;
 
     tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ),
         old_stats( p -> get_stats( "manifest_anger" ) ), first_stack_attack( NULL )
@@ -630,17 +631,17 @@ static void register_tiny_abom( item_t* item )
         // attack that caused manifest_anger. Otherwise direct damage
         // callbacks that are triggered after manifest_anger has executed,
         // will use the results of the manifest_anger attack.
-        result = attack -> result;
-        resource_consumed = attack -> resource_consumed;
-        direct_dmg = attack -> direct_dmg;
-        resisted_dmg = attack -> resisted_dmg;
-        blocked_dmg = attack -> blocked_dmg;
 
         std::swap( proc_name, attack -> name_str );
         std::swap( old_stats, attack -> stats );
+        result            = attack -> result;
+        resource_consumed = attack -> resource_consumed;
+        direct_dmg        = attack -> direct_dmg;
+        resisted_dmg      = attack -> resisted_dmg;
+        blocked_dmg       = attack -> blocked_dmg;
+	time_to_execute   = attack -> time_to_execute;
 
-        // Apparently, the manifest anger attacks are "yellow", so no dual wield 
-        // hit penalty
+	attack -> time_to_execute = 0;
         attack -> base_hit += ( attack -> player -> dual_wield() ) ? 0.19 : 0;
         attack -> repeating = false;
         attack -> may_glance = false;
@@ -653,21 +654,19 @@ static void register_tiny_abom( item_t* item )
         attack -> repeating = true;
         attack -> base_hit -= ( attack -> player -> dual_wield() ) ? 0.19 : 0;
 
-        // Restore original values of both the stats for the attack
-        // as well as the result that caused manifest_anger to proc
         std::swap( proc_name, attack -> name_str );
         std::swap( old_stats, attack -> stats );
-        attack -> result = result;
+        attack -> result            = result;
         attack -> resource_consumed = resource_consumed;
-        attack -> direct_dmg = direct_dmg;
-        attack -> resisted_dmg = resisted_dmg;
-        attack -> blocked_dmg = blocked_dmg;
+        attack -> direct_dmg        = direct_dmg;
+        attack -> resisted_dmg      = resisted_dmg;
+        attack -> blocked_dmg       = blocked_dmg;
+	attack -> time_to_execute   = time_to_execute;
       }
     }
   };
 
-  // Note, shamans have lava lash, that procs motes, but is not a physical damage ability
-  p -> register_direct_damage_callback( (1 << SCHOOL_PHYSICAL) | (1 << SCHOOL_FIRE), new tiny_abom_trigger_t( p, buff ) );
+  p -> register_direct_damage_callback( -1, new tiny_abom_trigger_t( p, buff ) );
 }
 
 // ==========================================================================
