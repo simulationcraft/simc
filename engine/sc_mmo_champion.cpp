@@ -340,6 +340,25 @@ static bool parse_item_name( item_t&            item,
   return true;
 }
 
+// parse_item_heroic =========================================================
+
+static bool parse_item_heroic( item_t&     item,
+                               xml_node_t* node )
+{
+  std::string heroic_str;
+  item.armory_heroic_str = "";
+
+  if ( xml_t::get_value( heroic_str, node, "tti-heroic" ) )
+  {
+    item.armory_heroic_str = "1";
+  }
+
+  armory_t::format( item.armory_heroic_str );
+
+  return true;
+}
+
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 
@@ -448,6 +467,12 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_heroic( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine heroic flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -484,6 +509,12 @@ bool mmo_champion_t::download_slot( item_t&            item,
   if ( ! parse_item_name( item, node, item_id ) )
   {
     item.sim -> errorf( "Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_heroic( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine heroic flag for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 

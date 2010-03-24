@@ -1213,7 +1213,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   int slot;
-  bool unique, unique_enchant;
+  bool unique, unique_enchant, is_heroic;
 
   // Option Data
   std::string option_name_str;
@@ -1224,6 +1224,7 @@ struct item_t
   std::string option_equip_str;
   std::string option_use_str;
   std::string option_weapon_str;
+  std::string option_heroic_str;
   std::string options_str;
 
   // Armory Data
@@ -1233,6 +1234,7 @@ struct item_t
   std::string armory_gems_str;
   std::string armory_enchant_str;
   std::string armory_weapon_str;
+  std::string armory_heroic_str;
 
   // Encoded Data
   std::string id_str;
@@ -1243,6 +1245,7 @@ struct item_t
   std::string encoded_equip_str;
   std::string encoded_use_str;
   std::string encoded_weapon_str;
+  std::string encoded_heroic_str;
 
   // Extracted data
   gear_stats_t stats;
@@ -1260,9 +1263,10 @@ struct item_t
     bool active() { return stat || school; }
   } use, equip, enchant;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ), is_heroic( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
+  bool heroic() SC_CONST;
   const char* name() SC_CONST;
   const char* slot_name() SC_CONST;
   weapon_t* weapon() SC_CONST;
@@ -1274,6 +1278,7 @@ struct item_t
   bool decode_enchant();
   bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
+  bool decode_heroic();
 
   static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
@@ -2345,14 +2350,17 @@ struct unique_gear_t
 
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,
+                                  const bool         item_heroic,
                                   const std::string& item_id=std::string() );
 
   static bool get_hidden_encoding( std::string&       encoding,
                                    const std::string& item_name,
+                                   const bool         item_heroic,
                                    const std::string& item_id=std::string() );
 
   static bool get_use_encoding  ( std::string& encoding,
                                   const std::string& item_name,
+                                  const bool         item_heroic,
                                   const std::string& item_id=std::string() );
 };
 

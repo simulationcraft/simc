@@ -786,6 +786,7 @@ struct melee_t : public shaman_attack_t
     return t;
   }
 
+/*
   void execute()
   {
     shaman_t* p = player -> cast_shaman();
@@ -800,6 +801,7 @@ struct melee_t : public shaman_attack_t
       shaman_attack_t::execute();
     }
   }
+*/
 
   void schedule_execute()
   {

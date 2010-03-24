@@ -300,6 +300,39 @@ static bool parse_item_name( item_t&     item,
   return true;
 }
 
+// parse_item_heroic =========================================================
+
+static bool parse_item_heroic( item_t&     item,
+                               xml_node_t* node )
+{
+  std::string info_str;
+  item.armory_heroic_str = "";
+
+  if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
+    return false;
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, info_str, "," );
+
+  for ( int i=0; i < num_splits; i++ )
+  {
+    std::string type_str, value_str;
+
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    {
+      if ( type_str == "heroic"   )
+      {
+        item.armory_heroic_str = value_str;
+        break;
+      }
+    }
+  }
+
+  armory_t::format( item.armory_heroic_str );
+
+  return true;
+}
+
 // translate_profession_id ==================================================
 
 static const char* translate_profession_id( int type )
@@ -446,6 +479,12 @@ bool wowhead_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_heroic( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine heroic flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -482,6 +521,12 @@ bool wowhead_t::download_slot( item_t&            item,
   if ( ! parse_item_name( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_heroic( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine heroic flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 

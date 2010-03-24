@@ -4024,6 +4024,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
         profile_str += item.slot_name();
         profile_str += "=";
         profile_str += item.name();
+        if ( item.heroic() ) profile_str += ",heroic=1";
         if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
         if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
         profile_str += "\n";

@@ -232,6 +232,18 @@ static bool parse_item_name( item_t& item,
   return true;
 }
 
+// parse_item_heroic ========================================================
+
+static bool parse_item_heroic( item_t& item,
+                               xml_node_t* node )
+{
+  if ( ! xml_t::get_value( item.armory_heroic_str, node, "heroic/." ) ) item.armory_heroic_str = "";
+
+  armory_t::format( item.armory_heroic_str );
+
+  return true;
+}
+
 // parse_item_stats =========================================================
 
 static bool parse_item_stats( item_t& item,
@@ -880,6 +892,12 @@ bool armory_t::download_slot( item_t& item,
     return false;
   }
 
+  if ( ! parse_item_heroic( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse heroic flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -926,6 +944,12 @@ bool armory_t::download_item( item_t& item,
   if ( ! parse_item_name( item, item_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse name for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_heroic( item, item_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse heroic flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 
