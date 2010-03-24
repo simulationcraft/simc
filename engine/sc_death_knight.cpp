@@ -372,6 +372,7 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
+  virtual double    composite_player_multiplier( int school ) SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual int       target_swing();
@@ -1154,7 +1155,7 @@ struct gargoyle_pet_t : public pet_t
 
     gargoyle_strike = new gargoyle_strike_t( this );
   }
-  virtual double haste() { return haste_snapshot; }
+  virtual double composite_spell_haste() SC_CONST { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST { return power_snapshot; }
 
   virtual void summon( double duration=0 )
@@ -1917,14 +1918,19 @@ void death_knight_attack_t::player_buff()
       sum_factors += p -> talents.black_ice * 0.02;
 
     player_multiplier *= 1.0 + sum_factors;
+    
+    // If it is frost or shadow and black ice is in play, it would
+    // otherwise be double counted; divide here to
+    // player_t::composite_player_multiplier's multiplication is
+    // cancelled out.
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      player_multiplier /= 1.0 + p -> talents.black_ice * 0.02;
   }
   else
   {
     player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
     player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
     player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
   }
 
   if ( school == SCHOOL_PHYSICAL )
@@ -2037,9 +2043,6 @@ void death_knight_spell_t::player_buff()
   player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
   player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
   player_multiplier *= 1.0 + p -> buffs_desolation -> value();
-  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-    player_multiplier *= 1.0 + p -> talents.black_ice * 0.02;
-
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 
   if ( sim -> debug )
@@ -2519,7 +2522,6 @@ struct death_coil_t : public death_knight_spell_t
                                 0.15 * p -> glyphs.dark_death );
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_dd_adder = 380 * p -> sigils.vengeful_heart;
-
 
     if ( sudden_doom )
     {
@@ -4059,17 +4061,12 @@ double death_knight_t::composite_armor() SC_CONST
 double death_knight_t::composite_attack_haste() SC_CONST
 {
   double haste = player_t::composite_attack_haste();
-  haste *= 1.0/ ( 1.0 + buffs_unholy_presence -> value() );
+  haste *= 1.0 / ( 1.0 + buffs_unholy_presence -> value() );
 
-  if ( talents.improved_icy_talons )
-    haste *= 1.0/ ( 1.0 + 0.05 );
-
-  // Icy Talons give the DK 20%/20s, Imp.IT makes that buff raidwide, which
-  // are two different buff that don't stack (does not stack with WF totem)
-  // If you got 16% WF totem, 20% IT but not ITT you will gain 20% haste.
-  // I can't make up a case where you would go 5/5 IT but not take IIT.
-
-  haste *= 1.0/ ( 1.0 + buffs_icy_talons -> value() );
+  // Icy Talons now stacks with Windfury.
+  // player_t::composite_attack_haste factors in IIT and windfury
+  // already.
+  haste *= 1.0 / ( 1.0 + buffs_icy_talons -> value() );
 
   return haste;
 }
@@ -4670,6 +4667,14 @@ double death_knight_t::composite_spell_hit() SC_CONST
   double hit = player_t::composite_spell_hit();
   hit += 0.01 * talents.virulence;
   return hit;
+}
+
+double death_knight_t::composite_player_multiplier( int school ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school );
+  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    m *= 1.0 + talents.black_ice * 0.02;
+  return m;
 }
 
 void death_knight_t::regen( double periodicity )
