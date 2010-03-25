@@ -1032,6 +1032,38 @@ int util_t::string_split( const std::string& str,
   return str_size;
 }
 
+// util_t::string_strip_quotes =============================================
+
+int util_t::string_strip_quotes( std::string& str )
+{
+  std::string old_string = str;
+
+  std::string::size_type cut_pt;
+
+  std::string search = "";
+  search += '"';
+  std::string temp_str;
+
+  while ( ( cut_pt = old_string.find_first_of( search ) ) != old_string.npos )
+  {
+    if ( cut_pt > 0 )
+    {
+      temp_str = old_string.substr( 0, cut_pt );
+      temp_str += old_string.substr( cut_pt + 1 );
+      old_string = temp_str;
+    }
+    else
+    {
+      temp_str = old_string.substr( 1 );
+      old_string = temp_str;
+    }
+  }
+
+  str = old_string;
+
+  return 0;
+}
+
 // util_t::to_string =======================================================
 
 std::string& util_t::to_string( int i )

@@ -105,7 +105,11 @@ static void parse_stats( std::string& encoding,
                          const std::string& stats_str )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, stats_str, "," );
+  std::string temp_stats_str = stats_str;
+
+  util_t::string_strip_quotes( temp_stats_str );
+
+  int num_splits = util_t::string_split( splits, temp_stats_str, ",", true );
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -136,9 +140,13 @@ static bool parse_gems( item_t&           item,
   if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
+  std::string temp_stats_str = stats_str;
+
+  util_t::string_strip_quotes( temp_stats_str );
+
   int sockets[ 3 ] = { 0, 0, 0 };
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, stats_str, "," );
+  int num_splits = util_t::string_split( splits, temp_stats_str, "," );
   int num_sockets = 0;
 
   for ( int i=0; i < num_splits; i++ )
@@ -216,9 +224,13 @@ static bool parse_weapon( item_t&     item,
   if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
+  std::string temp_stats_str = stats_str;
+
+  util_t::string_strip_quotes( temp_stats_str );
+
   std::string speed, dps, dmgmin, dmgmax;
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, stats_str, "," );
+  int num_splits = util_t::string_split( splits, temp_stats_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -311,8 +323,12 @@ static bool parse_item_heroic( item_t&     item,
   if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
     return false;
 
+  std::string temp_info_str = info_str;
+
+  util_t::string_strip_quotes( temp_info_str );
+
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, info_str, "," );
+  int num_splits = util_t::string_split( splits, temp_info_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
