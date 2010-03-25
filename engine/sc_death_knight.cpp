@@ -1905,32 +1905,29 @@ void death_knight_attack_t::player_buff()
     }
   }
 
-  // 3.3 Scourge Strike: Shadow damage is calcuted with some buffs being additive
-  // Desolation, Bone Shield, Black Ice, Blood Presence
+  // 3.3 Scourge Strike: Shadow damage is calcuted with some buffs
+  // being additive Desolation, Bone Shield, Black Ice, Blood
+  // Presence.  We divide away the multiplier as if they weren't
+  // additive then multiply by the additive multiplier to get the
+  // correct value since composite_player_multiplier will already have
+  // factored these in.
   if ( additive_factors )
   {
-    double sum_factors = 0.0;
+    std::vector<double> sum_factors;
 
-    sum_factors += p -> buffs_blood_presence -> value();
-    sum_factors += p -> buffs_bone_shield -> value();
-    sum_factors += p -> buffs_desolation -> value();
+    sum_factors.push_back( p -> buffs_blood_presence -> value() );
+    sum_factors.push_back( p -> buffs_bone_shield -> value() );
+    sum_factors.push_back( p -> buffs_desolation -> value() );
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      sum_factors += p -> talents.black_ice * 0.02;
+      sum_factors.push_back( p -> talents.black_ice * 0.02 );
 
-    player_multiplier *= 1.0 + sum_factors;
-    
-    // If it is frost or shadow and black ice is in play, it would
-    // otherwise be double counted; divide here to
-    // player_t::composite_player_multiplier's multiplication is
-    // cancelled out.
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      player_multiplier /= 1.0 + p -> talents.black_ice * 0.02;
-  }
-  else
-  {
-    player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
-    player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
-    player_multiplier *= 1.0 + p -> buffs_desolation -> value();
+    double sum = 0;
+    double divisor = 1.0;
+    for (size_t i = 0; i < sum_factors.size(); ++i) {
+      sum += sum_factors[i];
+      divisor *= 1.0 + sum_factors[i];
+    }
+    player_multiplier = player_multiplier * (1.0 + sum) / divisor;
   }
 
   if ( school == SCHOOL_PHYSICAL )
@@ -2040,9 +2037,6 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.bloody_vengeance * 0.01 * p -> buffs_bloody_vengeance -> stack();
   }
 
-  player_multiplier *= 1.0 + p -> buffs_blood_presence -> value();
-  player_multiplier *= 1.0 + p -> buffs_bone_shield -> value();
-  player_multiplier *= 1.0 + p -> buffs_desolation -> value();
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 
   if ( sim -> debug )
@@ -4681,6 +4675,10 @@ double death_knight_t::composite_spell_hit() SC_CONST
 double death_knight_t::composite_player_multiplier( int school ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school );
+  // Factor flat multipliers here so they effect procs, grenades, etc.
+  m *= 1.0 + buffs_blood_presence -> value();
+  m *= 1.0 + buffs_bone_shield -> value();
+  m *= 1.0 + buffs_desolation -> value();
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     m *= 1.0 + talents.black_ice * 0.02;
   return m;
