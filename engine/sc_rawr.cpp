@@ -151,7 +151,7 @@ static const char* translate_glyph_name( player_t* p,
     case  1: return "avengers_shield";
     case  2: return "seal_of_blood";
     case  3: return "seal_of_righteousness";
-//  case  4: return "vengeance";
+    case  4: return "seal_of_vengeance";
     case  5: return "hammer_of_wrath";
     case  6: return "beacon_of_light";
     case  7: return "divine_plea";
@@ -163,7 +163,7 @@ static const char* translate_glyph_name( player_t* p,
     case 13: return "seal_of_wisdom";
     case 14: return "cleansing";
     case 15: return "seal_of_light";
-    case 16: return "wise";
+    case 16: return "the_wise";
     case 17: return "turn_evil";
     case 18: return "consecration";
     case 19: return "crusader_strike";
