@@ -4276,6 +4276,15 @@ void death_knight_t::init_actions()
       if ( talents.bone_shield )
         action_list_str += "/bone_shield,if=!buff.bone_shield.up";
       action_list_str += "/raise_dead";
+      if ( talents.bladed_armor > 0 )
+      {
+        action_list_str += "/indestructible_potion,if=!in_combat";
+        action_list_str += "/speed_potion,if=buff.bloodlust.react";
+      }
+      else
+      {
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+      }
       action_list_str += "/auto_attack";
       if ( glyphs.disease )
       {
@@ -4304,15 +4313,13 @@ void death_knight_t::init_actions()
         action_list_str += "/scourge_strike";
         action_list_str += "/blood_strike";
       }
-      action_list_str += "/speed_potion";
       if ( talents.summon_gargoyle )
       {
         action_list_str += "/summon_gargoyle,time<=20";
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
       }
+      action_list_str += "/empower_rune_weapon,if=blood=0&frost=0&unholy=0";
       action_list_str += "/death_coil";
-      action_list_str += "/empower_rune_weapon";
-      action_list_str += "/horn_of_winter,if=runic_power<=90";
       break;
     }
     action_list_default = 1;
