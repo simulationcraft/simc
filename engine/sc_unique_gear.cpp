@@ -170,6 +170,7 @@ static void register_black_bruise( item_t* item )
       reset();
     }
     virtual void player_buff() { }
+    virtual double total_dd_multiplier() SC_CONST { return base_dd_multiplier; }
   };
 
   struct black_bruise_trigger_t : public action_callback_t
@@ -181,6 +182,8 @@ static void register_black_bruise( item_t* item )
       // FIXME! Can specials trigger the proc?
       // FIXME! Apparently both hands proc the buff even though only equipped in main hand
       if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
+
       buff -> trigger();
     }
   };
@@ -194,19 +197,19 @@ static void register_black_bruise( item_t* item )
     {
       // FIXME! Can specials trigger the damage?
       // FIXME! What about melee attacks that do no weapon damage?
-      // FIXME! Is the 10% after normal damage reduction?
-      // FIXME! Does the 10% benefit from debuffs?
       if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
+
       if ( buff -> up() )
       {
-        spell -> base_dd_adder = a -> direct_dmg;
+        spell -> base_dd_adder = a -> direct_dmg - 1;
         spell -> execute();
       }
     }
   };
 
   p -> register_attack_result_callback( RESULT_HIT_MASK, new black_bruise_trigger_t( p, buff ) );
-  p -> register_direct_damage_callback( (1 << SCHOOL_PHYSICAL), new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p, heroic ) ) );
+  p -> register_direct_damage_callback( -1, new black_bruise_damage_t( p, buff, new black_bruise_spell_t( p, heroic ) ) );
 }
 
 // register_darkmoon_card_greatness =========================================
