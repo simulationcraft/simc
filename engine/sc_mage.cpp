@@ -3232,7 +3232,7 @@ void mage_t::init_buffs()
 
   buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4, 6.0 );
   buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
-  buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 0.5, talents.brain_freeze * 0.05 );
+  buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 2.0, talents.brain_freeze * 0.05 );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration * 0.02 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost * 0.15/2 );
