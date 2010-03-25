@@ -968,7 +968,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_crit += o -> talents.vicious_strikes * 0.03;
       base_crit_bonus_multiplier *= 1.0 + ( o -> talents.vicious_strikes * 0.15 );
       base_multiplier *= 1.0 + ( o -> talents.outbreak * 0.10
-		                       + o -> glyphs.plague_strike * 0.20 );
+                                 + o -> glyphs.plague_strike * 0.20 );
       base_multiplier *= 0.50; // DRW malus
       base_dd_min = base_dd_max = 378;
 
@@ -1096,7 +1096,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
-	attack_penetration   = o -> composite_attack_penetration();
+    attack_penetration   = o -> composite_attack_penetration();
     drw_melee -> schedule_execute();
   }
   virtual void dismiss()
@@ -1923,11 +1923,12 @@ void death_knight_attack_t::player_buff()
 
     double sum = 0;
     double divisor = 1.0;
-    for (size_t i = 0; i < sum_factors.size(); ++i) {
+    for ( size_t i = 0; i < sum_factors.size(); ++i )
+    {
       sum += sum_factors[i];
       divisor *= 1.0 + sum_factors[i];
     }
-    player_multiplier = player_multiplier * (1.0 + sum) / divisor;
+    player_multiplier = player_multiplier * ( 1.0 + sum ) / divisor;
   }
 
   if ( school == SCHOOL_PHYSICAL )
@@ -2733,7 +2734,7 @@ struct death_strike_t : public death_knight_attack_t
       {
         player_multiplier *= 1.25;
       }
-	  else
+      else
       {
         player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC ] * 0.01;
       }
@@ -3487,7 +3488,7 @@ struct plague_strike_t : public death_knight_attack_t
     base_crit += p -> talents.vicious_strikes * 0.03;
     base_crit_bonus_multiplier *= 1.0 + ( p -> talents.vicious_strikes * 0.15 );
     base_multiplier *= 1.0 + ( p -> talents.outbreak * 0.10
-		                     + p -> glyphs.plague_strike * 0.20 );
+                               + p -> glyphs.plague_strike * 0.20 );
 
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
@@ -4126,9 +4127,9 @@ void death_knight_t::init_base()
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
   double str_mult = ( talents.veteran_of_the_third_war * 0.02 +
-		      talents.abominations_might       * 0.01 +
-		      talents.ravenous_dead            * 0.01 + 
-		      talents.endless_winter           * 0.02 );
+                      talents.abominations_might       * 0.01 +
+                      talents.ravenous_dead            * 0.01 +
+                      talents.endless_winter           * 0.02 );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + talents.veteran_of_the_third_war * 0.02;
@@ -4398,7 +4399,7 @@ void death_knight_t::init_enchant()
       razorice_damage_proc -> execute();
     }
   };
-  
+
   buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
 
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
@@ -4469,7 +4470,7 @@ void death_knight_t::init_glyphs()
     else if ( n == "pestilence"          ) glyphs.pestilence = 1;
     else if ( n == "raise_dead"          ) glyphs.raise_dead = 1;
 
-    else if ( ! sim -> parent ) 
+    else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
     }
