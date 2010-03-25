@@ -4,6 +4,7 @@ paladin=Paladin_T9_05_11_55
 origin="http://profiler.wowhead.com/?profile=16421920"
 level=80
 race=blood_elf
+use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050000000000000000000000005500010000000000000000000005232250203331302133221331
 glyphs=judgement/seal_of_vengeance/consecration
 actions=flask,type=endless_rage
@@ -22,28 +23,28 @@ actions+=/consecration
 actions+=/hammer_of_wrath
 actions+=/exorcism
 actions+=/speed_potion
-head=liadrins_helm_of_triumph,stats=2102armor_94crit_86haste_150str_174sta,gems=relentless_earthsiege_10haste_10str_8str,enchant=50ap_20crit
-neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20str_4agi
-shoulders=liadrins_shoulderplates_of_triumph,stats=1941armor_68hit_76crit_122str_130sta,gems=20str_4str,enchant=40ap_15crit
-chest=vest_of_calamitous_fate,stats=652armor_172ap_86crit_102haste_137agi_153sta,gems=20str_20str_20str,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_the_pitiless_killer,stats=367armor_135ap_68hit_76haste_98agi_114sta,gems=10haste_10str_20str_34str_6agi
-legs=liadrins_legplates_of_triumph,stats=2264armor_94crit_94exp_158str_174sta,gems=10haste_10str_20str_20str_6str,enchant=75ap_22crit
-feet=greaves_of_the_saronite_citadel,stats=1779armor_76crit_60exp_114str_130sta,gems=10crit_10str_20str_6str,enchant=12crit_12hit
-wrists=armbands_of_dark_determination,stats=285armor_98ap_49hit_57crit_69agi_85sta,gems=20str_20str_34str,enchant=50ap
-hands=liadrins_gauntlets_of_triumph,stats=1617armor_68hit_76crit_122str_130sta,gems=10haste_10str_34str_4str,enchant=44ap
-finger1=band_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20str
-finger2=ring_of_the_violent_temperament,stats=57crit_49haste_89str_97sta,gems=10crit_10str_20str_4str
+head=liadrins_helm_of_triumph,heroic=1,stats=2102armor_94crit_86haste_174sta_150str,gems=relentless_earthsiege_10haste_10str_8str,enchant=50ap_20crit
+neck=charge_of_the_eredar,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20str_4agi
+shoulders=liadrins_shoulderplates_of_triumph,heroic=1,stats=1941armor_76crit_68hit_130sta_122str,gems=20str_4str,enchant=40ap_15crit
+chest=vest_of_calamitous_fate,heroic=1,stats=137agi_652armor_172ap_86crit_102haste_153sta,gems=20str_20str_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_pitiless_killer,heroic=1,stats=98agi_367armor_135ap_76haste_68hit_114sta,gems=10haste_10str_20str_34str_6agi
+legs=liadrins_legplates_of_triumph,heroic=1,stats=2264armor_94crit_94exp_174sta_158str,gems=10haste_10str_20str_6str,enchant=75ap_22crit
+feet=greaves_of_the_saronite_citadel,heroic=1,stats=1779armor_76crit_60exp_130sta_114str,gems=10crit_10str_20str_6str,enchant=12crit_12hit
+wrists=armbands_of_dark_determination,heroic=1,stats=69agi_285armor_98ap_57crit_49hit_85sta,gems=20str_20str_34str,enchant=50ap
+hands=liadrins_gauntlets_of_triumph,heroic=1,stats=1617armor_76crit_68hit_130sta_122str,gems=10haste_10str_34str_4str,enchant=44ap
+finger1=band_of_callous_aggression,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20str
+finger2=ring_of_the_violent_temperament,heroic=1,stats=57crit_49haste_97sta_89str,gems=10crit_10str_4str
 trinket1=deaths_choice,stats=256ap
-trinket2=deaths_choice,stats=288ap
-back=sylvanas_cunning,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20str_8ap,enchant=23haste
-main_hand=dualblade_butcher,stats=94crit_94arpen_158str_174sta,gems=20str_10str_10agi_10sta_10int_10spi_6str,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
+trinket2=deaths_choice,heroic=1,stats=288ap
+back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20str_8ap,enchant=23haste
+main_hand=dualblade_butcher,heroic=1,stats=94arpen_94crit_174sta_158str,gems=20str_9agi_9int_9spi_9sta_9str_6str,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
 ranged=libram_of_valiance
 # Gear Summary
-# gear_strength=1433
-# gear_agility=606
-# gear_stamina=1648
-# gear_intellect=20
-# gear_spirit=20
+# gear_strength=1392
+# gear_agility=605
+# gear_stamina=1647
+# gear_intellect=19
+# gear_spirit=19
 # gear_attack_power=1526
 # gear_expertise_rating=154
 # gear_armor_penetration_rating=151
@@ -55,5 +56,5 @@ ranged=libram_of_valiance
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
 # trinket1=deaths_choice
-# trinket2=deaths_choice
-# main_hand=dualblade_butcher,weapon=axe2h_3.60speed_811min_1217max,enchant=berserking
+# trinket2=deaths_choice,heroic=1
+# main_hand=dualblade_butcher,heroic=1,weapon=axe2h_3.60speed_811min_1217max,enchant=berserking
