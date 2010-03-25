@@ -909,6 +909,7 @@ struct sim_t
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, spell_crit_suppression, log, debug;
   int         save_profiles;
+  int         normalized_stat;
   std::string current_name, default_region_str, default_server_str;
 
   // Default stat enchants
@@ -1493,7 +1494,6 @@ struct player_t
   // Scale Factors
   gear_stats_t scaling;
   gear_stats_t normalized_scaling;
-  int          normalized_to;
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
   double       over_cap[ STAT_MAX ];
@@ -1669,6 +1669,7 @@ struct player_t
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual int    primary_tree() SC_CONST     { return TALENT_TREE_MAX; }
+  virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );
   virtual void stat_loss( int stat, double amount );

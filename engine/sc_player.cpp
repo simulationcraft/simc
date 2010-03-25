@@ -320,7 +320,7 @@ player_t::player_t( sim_t*             s,
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
-    meta_gem( META_GEM_NONE ), normalized_to( STAT_NONE ), scaling_lag( 0 ), rng_list( 0 )
+    meta_gem( META_GEM_NONE ), scaling_lag( 0 ), rng_list( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -2354,6 +2354,19 @@ bool player_t::resource_available( int    resource,
 
   return resource_current[ resource ] >= cost;
 }
+
+// player_t::normalize_by ===================================================
+
+int player_t::normalize_by() SC_CONST
+{
+  if ( sim -> normalized_stat != STAT_NONE ) 
+  {
+    return sim -> normalized_stat; 
+  }
+
+  return ( primary_role() == ROLE_SPELL ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER;
+}
+
 
 // player_t::stat_gain ======================================================
 

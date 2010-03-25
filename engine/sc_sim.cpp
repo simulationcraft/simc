@@ -383,6 +383,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
     armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
     optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
+    normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),

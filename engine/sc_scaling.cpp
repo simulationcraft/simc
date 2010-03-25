@@ -44,6 +44,31 @@ static bool stat_may_cap( int stat )
   return false;
 }
 
+// parse_normalize_scale_factors ============================================
+
+static bool parse_normalize_scale_factors( sim_t* sim, 
+                                           const std::string& name,
+                                           const std::string& value )
+{
+  if ( name != "normalize_scale_factors" ) return false;
+
+  if ( value == "1" )
+  {
+    sim -> scaling -> normalize_scale_factors = 1;
+  }
+  else
+  {
+    if ( ( sim -> normalized_stat = util_t::parse_stat_type( value ) ) == STAT_NONE )
+    {
+      return false;
+    }
+
+    sim -> scaling -> normalize_scale_factors = 1;
+  }
+
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -320,12 +345,7 @@ void scaling_t::normalize()
   {
     if ( p -> quiet ) continue;
 
-    double sp = p -> scaling.get_stat( STAT_SPELL_POWER );
-    double ap = p -> scaling.get_stat( STAT_ATTACK_POWER );
-
-    p -> normalized_to = ( sp > ap ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER;
-
-    double divisor = p -> scaling.get_stat( p -> normalized_to );
+    double divisor = p -> scaling.get_stat( p -> normalize_by() );
 
     if ( divisor == 0 ) continue;
 
@@ -368,7 +388,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     // @option_doc loc=global/scale_factors title="Scale Factors"
     { "calculate_scale_factors",        OPT_BOOL,   &( calculate_scale_factors              ) },
     { "smooth_scale_factors",           OPT_BOOL,   &( smooth_scale_factors                 ) },
-    { "normalize_scale_factors",        OPT_BOOL,   &( normalize_scale_factors              ) },
+    { "normalize_scale_factors",        OPT_FUNC,   ( void* ) ::parse_normalize_scale_factors },
     { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
     { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
     { "positive_scale_delta",           OPT_BOOL,   &( positive_scale_delta                 ) },

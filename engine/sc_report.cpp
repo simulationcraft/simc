@@ -594,7 +594,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
 
     if ( sim -> scaling -> normalize_scale_factors )
     {
-      util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalized_to ), sim -> report_precision, p -> scaling.get_stat( p -> normalized_to ) );
+      util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
     }
 
     if ( sim -> scaling -> scale_lag ) util_t::fprintf( file, "  Lag=%.*f", sim -> report_precision, p -> scaling_lag );
@@ -626,7 +626,7 @@ static void print_scale_factors( FILE* file, player_t* p )
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )
   {
-    util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalized_to ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalized_to ) );
+    util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
   }
   util_t::fprintf( file, "\n" );
 
