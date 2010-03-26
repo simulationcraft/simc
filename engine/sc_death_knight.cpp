@@ -4189,26 +4189,37 @@ void death_knight_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_BLOOD:
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
       action_list_str += "/auto_attack";
+      action_list_str += "/hysteria,time<=60";
       action_list_str += "/hysteria,if=buff.bloodlust.react";
-      action_list_str += "/dancing_rune_weapon,if=buff.bloodlust.react";
-      action_list_str += "/sequence,name=blood1,wait_on_ready=1";
-      action_list_str += ":icy_touch";
-      action_list_str += ":plague_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += ":death_strike";
-      action_list_str += ":raise_dead,wait_on_ready=0";
+      action_list_str += "/raise_dead,time<=60";
+      action_list_str += "/raise_dead,if=buff.bloodlust.react";
+      if ( talents.epidemic < 2 )
+      {
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1&unholy_cooldown<=2";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1&dot.frost_fever.remains>=13";
+      }
+      else if ( glyphs.disease )
+      {
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0.1";
+        action_list_str += "/pestilence,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5";
+      }
+      else
+      {
+        action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
+        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+      }
+      action_list_str += "/heart_strike";
+      action_list_str += "/death_strike";
+      if ( talents.dancing_rune_weapon )
+      {
+        action_list_str += "/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5";
+        action_list_str += "/dancing_rune_weapon,if=(dot.frost_fever.remains<=5|dot.blood_plague.remains<=5)&buff.bloodlust.react";
+      }
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
       action_list_str += "/death_coil";
-      action_list_str += "/sequence,name=blood2,wait_on_ready=1";
-      action_list_str += ":death_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += ":heart_strike";
-      action_list_str += "/speed_potion";
-      action_list_str += "/restart_sequence,name=blood1";
-      action_list_str += "/restart_sequence,name=blood2";
       break;
     case TREE_FROST:
       /*Rotation:
