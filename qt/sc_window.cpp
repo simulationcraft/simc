@@ -635,7 +635,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   bis_entry_t bisList[] = 
     {
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_51_00_20",      TAB_WOWHEAD, "18101892" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_17_00_54",      TAB_WOWHEAD, "18127877" },
+      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_17_54",      TAB_WOWHEAD, "20992958" },
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_53_18",      TAB_WOWHEAD, "18133139" },
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_03_51_17",      TAB_WOWHEAD, "18133075" },
       { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "20837928" },
