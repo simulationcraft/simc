@@ -3796,7 +3796,7 @@ void druid_t::init_actions()
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature )
       {
-        action_list_str+="/treants,time<=6";
+        action_list_str+="/treants,time<=60";
         action_list_str+="/treants,if=buff.bloodlust.react";
       }
       if ( talents.starfall ) action_list_str+="/starfall,if=!eclipse";

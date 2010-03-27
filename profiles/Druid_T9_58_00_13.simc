@@ -16,7 +16,7 @@ actions+=/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.re
 actions+=/faerie_fire
 actions+=/typhoon,moving=1
 actions+=/innervate,trigger=-2000
-actions+=/treants,time<=6
+actions+=/treants,time<=60
 actions+=/treants,if=buff.bloodlust.react
 actions+=/starfall,if=!eclipse
 actions+=/starfire,if=buff.t8_4pc_caster.up
