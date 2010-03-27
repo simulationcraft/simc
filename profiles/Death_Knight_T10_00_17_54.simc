@@ -1,0 +1,46 @@
+#!./simc 
+
+death_knight=Death_Knight_T10_00_17_54
+origin="http://profiler.wowhead.com/?profile=20994690"
+level=80
+race=tauren
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=
+actions=flask,type=endless_rage
+actions+=/food,type=dragonfin_filet
+actions+=/presence,choose=blood
+actions+=/snapshot_stats
+head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_114crit_106arpen_185str_209sta,gems=chaotic_skyflare_34str_8str,enchant=50ap_20crit
+neck=ahnkahar_onyx_neckguard,heroic=1,stats=68crit_60hit_116sta_108str,gems=34str
+shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_90crit_82arpen_147str_155sta,gems=34str_4str,enchant=40ap_15crit
+chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_122crit_106arpen_193str_209sta,gems=20str_15sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,heroic=1,stats=1550armor_85crit_78arpen_139str_155sta,gems=10haste_10str_20str_20str_6str
+legs=scourge_reavers_legplates,heroic=1,stats=2412armor_122crit_98haste_209sta_185str,gems=10haste_10str_20str_10str_10agi_10sta_10int_10spi_8str,enchant=75ap_22crit
+feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_90crit_74arpen_139str_155sta,gems=20str_20str,enchant=12crit_12hit
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_60hit_68crit_108str_116sta,gems=10haste_10str_20str_4str,enchant=50ap
+hands=sanctified_scourgelord_gauntlets,heroic=1,stats=1723armor_82hit_90crit_147str_155sta,gems=10haste_10str_20str_4str,enchant=15str
+finger1=might_of_blight,heroic=1,stats=68crit_60arpen_108str_116sta,gems=10haste_10str_4str
+finger2=ashen_band_of_endless_might,stats=59hit_59crit_99str_107sta,gems=10haste_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+trinket1=deathbringers_will,stats=167arpen
+trinket2=deaths_choice,heroic=1,stats=288ap
+back=winding_sheet,heroic=1,stats=185armor_68crit_60haste_108str_116sta,gems=10haste_10str_4str,enchant=23haste
+main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20str_20str_20str_8str,enchant=rune_of_the_fallen_crusader,weapon=axe2h_3.70speed_954min_1592max
+ranged=sigil_of_the_hanged_man
+# Gear Summary
+# gear_strength=2386
+# gear_agility=20
+# gear_stamina=2051
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=503
+# gear_armor_penetration_rating=787
+# gear_hit_rating=273
+# gear_crit_rating=1248
+# gear_haste_rating=251
+# gear_armor=16033
+# meta_gem=chaotic_skyflare
+# tier10_2pc_melee=1
+# tier10_4pc_melee=1
+# trinket1=deathbringers_will
+# trinket2=deaths_choice,heroic=1
+# main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=rune_of_the_fallen_crusader
