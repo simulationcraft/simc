@@ -5,8 +5,8 @@ origin="http://profiler.wowhead.com/?profile=14187592"
 level=80
 race=tauren
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=5012203125331323213305301031000000000000000000000000000000205003012
-glyphs=starfire/moonfire/insect_swarm/the_wild/unburdened_rebirth/thorns
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=5102203125331303213305311131000000000000000000000000000000205003012
+glyphs=starfire/moonfire/starfall/the_wild/unburdened_rebirth/thorns
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/mark_of_the_wild
@@ -14,6 +14,7 @@ actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)
 actions+=/faerie_fire
+actions+=/typhoon,moving=1
 actions+=/innervate,trigger=-2000
 actions+=/treants,time<=6
 actions+=/treants,if=buff.bloodlust.react
