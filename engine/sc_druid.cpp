@@ -3790,9 +3790,9 @@ void druid_t::init_actions()
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
+      action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)";
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
       if ( talents.typhoon ) action_list_str += "/typhoon,moving=1";
-      action_list_str += "/speed_potion";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature ) action_list_str+="/treants";
       if ( talents.starfall        ) action_list_str+="/starfall,if=!eclipse";
