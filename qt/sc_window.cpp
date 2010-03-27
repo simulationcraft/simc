@@ -646,7 +646,6 @@ void SimulationCraftWindow::createBestInSlotTab()
       { DRUID,      T9, "Druid_T9_00_55_16",                TAB_WOWHEAD, "14717965" },
       { DRUID,      T9, "Druid_T9_00_55_16_M",              TAB_WOWHEAD, "14726081" },
       { DRUID,      T9, "Druid_T9_58_00_13",                TAB_WOWHEAD, "14187592" },
-      { DRUID,      T9, "Druid_T9_58_00_13_2T8_2T9",        TAB_WOWHEAD, "16237439" },
 
       { HUNTER,     T9, "Hunter_T9_02_18_51",               TAB_WOWHEAD, "14649679" },
       { HUNTER,     T9, "Hunter_T9_07_57_07",               TAB_WOWHEAD, "14189960" },

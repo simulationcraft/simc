@@ -3794,8 +3794,12 @@ void druid_t::init_actions()
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
       if ( talents.typhoon ) action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,trigger=-2000";
-      if ( talents.force_of_nature ) action_list_str+="/treants";
-      if ( talents.starfall        ) action_list_str+="/starfall,if=!eclipse";
+      if ( talents.force_of_nature )
+      {
+        action_list_str+="/treants,time<=6";
+        action_list_str+="/treants,if=buff.bloodlust.react";
+      }
+      if ( talents.starfall ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking";
       if ( talents.insect_swarm ) action_list_str += "/insect_swarm,if=!ticking";
