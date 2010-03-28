@@ -3149,7 +3149,7 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
 
-        direct_power_mod = 0.37;
+        direct_power_mod = 0.30;
         may_crit         = true;
         may_miss         = true;
         may_resist       = true;
