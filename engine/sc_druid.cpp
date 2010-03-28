@@ -3664,6 +3664,8 @@ void druid_t::init_scaling()
   player_t::init_scaling();
 
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
+
+  scales_with[ STAT_WEAPON_SPEED  ] = 0;
 }
 
 // druid_t::init_gains ======================================================
@@ -3764,25 +3766,29 @@ void druid_t::init_actions()
         action_list_str += "flask,type=endless_rage";
         action_list_str += "/food,type=hearty_rhino";
         action_list_str += "/cat_form";
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += "/maim";
         action_list_str += "/faerie_fire_feral,debuff_only=1";
-        action_list_str += "/tigers_fury,energy<=40,berserk=0";
-        if ( talents.berserk )action_list_str += "/berserk_cat,energy>=70,energy<=90";
-        action_list_str += "/savage_roar,cp>=1,savage_roar<=1";
-        action_list_str += "/savage_roar,cp>=5,savage_roar<=6,rip>=6";
-        if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,rip<=4";
-        action_list_str += "/rip,cp>=5,time_to_die>=6";
-        action_list_str += "/ferocious_bite,cp>=5,time_to_die<=6";
-        action_list_str += "/ferocious_bite,cp>=5,rip>=10";
+        action_list_str += "/tigers_fury,energy<=30,if=!buff.berserk.up";
+        if ( talents.berserk )action_list_str += "/berserk_cat,energy>=80,energy<=90";
+        action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
+        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&dot.rip.remains-buff.savage_roar.remains>=0&buff.savage_roar.remains<=8";
+        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&buff.savage_roar.remains-dot.rip.remains<=3&buff.savage_roar.remains<=8";
+        if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
+        action_list_str += "/rip,time_to_die>=6,if=buff.combo_points.stack>=5";
+        action_list_str += "/ferocious_bite,time_to_die<=6,if=buff.combo_points.stack>=5";
+        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
         if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=1";
         action_list_str += "/rake,time_to_die>=9";
-        action_list_str += "/shred,energy>=70";
-        action_list_str += "/shred,omen_of_clarity=1";
-        action_list_str += "/shred,cp<=4,rip<=3";
+        action_list_str += "/shred,energy>=80";
+        action_list_str += "/shred,if=buff.omen_of_clarity.react";
+        action_list_str += "/shred,if=buff.combo_points.stack<=4&dot.rip.remains<=3";
         action_list_str += "/shred,time_to_die<=9";
-        action_list_str += "/shred,berserk=1";
+        action_list_str += "/shred,if=buff.berserk.up";
+        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3";
+        action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
       }
     }
     else

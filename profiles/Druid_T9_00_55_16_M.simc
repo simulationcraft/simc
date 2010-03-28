@@ -3,46 +3,51 @@
 druid=Druid_T9_00_55_16_M
 origin="http://profiler.wowhead.com/?profile=14726081"
 level=80
-race=night_elf
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000550202032322010053120030313511203503012
+race=tauren
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=0000000000000000000000000000552202032322010053100030313511203503012
 glyphs=rip/shred/savage_roar/the_wild/unburdened_rebirth/dash
 actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino
 actions+=/cat_form
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
-actions+=/tigers_fury,energy<=40,berserk=0
-actions+=/berserk_cat,energy>=70,energy<=90
-actions+=/savage_roar,cp>=1,savage_roar<=1
-actions+=/savage_roar,cp>=5,savage_roar<=6,rip>=6
-actions+=/shred,extend_rip=1,rip<=4
-actions+=/rip,cp>=5,time_to_die>=6
-actions+=/ferocious_bite,cp>=5,time_to_die<=6
-actions+=/ferocious_bite,cp>=5,rip>=10
+actions+=/tigers_fury,energy<=30,if=!buff.berserk.up
+actions+=/berserk_cat,energy>=80,energy<=90
+actions+=/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1
+actions+=/savage_roar,if=buff.combo_points.stack>=3&dot.rip.remains-buff.savage_roar.remains>=0&buff.savage_roar.remains<=8
+actions+=/savage_roar,if=buff.combo_points.stack>=3&buff.savage_roar.remains-dot.rip.remains<=3&buff.savage_roar.remains<=8
+actions+=/shred,extend_rip=1,if=dot.rip.remains<=4
+actions+=/rip,time_to_die>=6,if=buff.combo_points.stack>=5
+actions+=/ferocious_bite,time_to_die<=6,if=buff.combo_points.stack>=5
+actions+=/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11
 actions+=/mangle_cat,mangle<=1
 actions+=/rake,time_to_die>=9
-actions+=/shred,energy>=70
-actions+=/shred,omen_of_clarity=1
-actions+=/shred,cp<=4,rip<=3
+actions+=/shred,energy>=80
+actions+=/shred,if=buff.omen_of_clarity.react
+actions+=/shred,if=buff.combo_points.stack<=4&dot.rip.remains<=3
 actions+=/shred,time_to_die<=9
-actions+=/shred,berserk=1
-head=malfurions_headguard_of_triumph,stats=529armor_172ap_102crit_86exp_137agi_153sta,gems=relentless_earthsiege_10haste_10agi_8agi,enchant=50ap_20crit
-neck=charge_of_the_eredar,stats=98ap_61crit_50haste_77agi_85sta,gems=20agi_4agi
-shoulders=malfurions_shoulderpads_of_triumph,stats=489armor_151ap_76haste_68arpen_106agi_114sta,gems=10haste_10agi_4agi,enchant=40ap_15crit
-chest=malfurions_raiments_of_triumph,stats=652armor_204ap_96crit_92haste_137agi_153sta,gems=20arpen_10haste_10agi_20arpen_6agi,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_the_merciless_killer,stats=367armor_135ap_68hit_76haste_98agi_114sta,gems=10haste_10agi_20arpen_34arpen_6agi
-legs=malfurions_legguards_of_triumph,stats=570armor_172ap_86hit_102crit_137agi_153sta,gems=20arpen_20arpen_20arpen,enchant=75ap_22crit
-feet=treads_of_the_icewalker,stats=448armor_135ap_76hit_68arpen_98agi_114sta,gems=10haste_10agi_20arpen_6agi,enchant=16agi
-wrists=bracers_of_dark_determination,stats=285armor_98ap_49hit_57crit_69agi_85sta,gems=20arpen_20arpen_34arpen,enchant=50ap
-hands=gloves_of_the_silver_assassin,stats=389armor_145ap_61crit_61arpen_97agi_57sta,gems=20exp_20exp_34arpen_6agi,enchant=20agi
-finger1=ring_of_callous_aggression,stats=98ap_61crit_50haste_77agi_85sta,gems=20arpen
-finger2=dexterous_brightstone_ring,stats=101ap_50haste_50arpen_76agi_76sta,gems=20arpen
-trinket1=deaths_verdict,stats=288ap
+actions+=/shred,if=buff.berserk.up
+actions+=/shred,if=cooldown.tigers_fury.remains<=3
+actions+=/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2
+head=runetotems_headguard_of_triumph,heroic=1,stats=137agi_529armor_172ap_102crit_86exp_153sta,gems=relentless_earthsiege_10agi_10haste_8agi,enchant=50ap_20crit
+neck=charge_of_the_eredar,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20agi_4agi
+shoulders=runetotems_shoulderpads_of_triumph,heroic=1,stats=106agi_489armor_68arpen_151ap_76haste_114sta,gems=10agi_10haste_4agi,enchant=40ap_15crit
+chest=runetotems_raiments_of_triumph,heroic=1,stats=137agi_652armor_204ap_96crit_92haste_153sta,gems=20arpen_10agi_10haste_6agi,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_pitiless_killer,heroic=1,stats=98agi_367armor_135ap_76haste_68hit_114sta,gems=10agi_10haste_20arpen_34arpen_6agi
+legs=runetotems_legguards_of_triumph,heroic=1,stats=137agi_570armor_172ap_102crit_86hit_153sta,gems=20arpen_20arpen,enchant=75ap_22crit
+feet=icewalker_treads,heroic=1,stats=98agi_448armor_68arpen_135ap_76hit_114sta,gems=10agi_10haste_20arpen_6agi,enchant=16agi
+wrists=armbands_of_dark_determination,heroic=1,stats=69agi_285armor_98ap_57crit_49hit_85sta,gems=20arpen_20arpen_34arpen,enchant=50ap
+hands=sunreaver_assassins_gloves,heroic=1,stats=97agi_389armor_61arpen_145ap_61crit_57sta,gems=20exp_20exp_34arpen_6agi,enchant=20agi
+finger1=band_of_callous_aggression,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20arpen
+finger2=dexterous_brightstone_ring,stats=76agi_50arpen_101ap_50haste_76sta
+trinket1=deaths_choice,heroic=1,stats=288ap
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
-back=vereesas_dexterity,stats=182armor_114ap_65crit_57arpen_97agi_97sta,gems=20agi_8ap,enchant=22agi
-main_hand=lupine_longstaff,stats=204ap_102haste_94arpen_137agi_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_540min_811max
+back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20agi_8ap,enchant=22agi
+main_hand=twins_pact,heroic=1,stats=137agi_94arpen_204ap_102haste_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_540min_811max
 ranged=idol_of_mutilation
 # Gear Summary
 # gear_strength=20
@@ -52,7 +57,7 @@ ranged=idol_of_mutilation
 # gear_spirit=20
 # gear_attack_power=2338
 # gear_expertise_rating=126
-# gear_armor_penetration_rating=740
+# gear_armor_penetration_rating=680
 # gear_hit_rating=279
 # gear_crit_rating=764
 # gear_haste_rating=546
@@ -60,5 +65,5 @@ ranged=idol_of_mutilation
 # meta_gem=relentless_earthsiege
 # tier9_2pc_melee=1
 # tier9_4pc_melee=1
-# trinket1=deaths_verdict
-# main_hand=lupine_longstaff,weapon=staff_2.40speed_540min_811max,enchant=berserking
+# trinket1=deaths_choice,heroic=1
+# main_hand=twins_pact,heroic=1,weapon=staff_2.40speed_540min_811max,enchant=berserking
