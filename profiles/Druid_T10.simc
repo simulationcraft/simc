@@ -1,0 +1,16 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+override.mangle=0
+
+Druid_T10_58_00_13.simc
+
+# simcraftdruidt10
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=20996475 name=Druid_T10_58_00_13   save=Druid_T10_58_00_13.simc   eclipse_cycle=lunar
+
+#save_profiles=1
