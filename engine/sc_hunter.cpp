@@ -2564,6 +2564,7 @@ struct serpent_sting_t : public hunter_attack_t
                                p -> set_bonus.tier8_2pc_melee() * 0.1 );
 
     tick_may_crit = ( p -> set_bonus.tier9_2pc_melee() != 0 );
+    base_crit_bonus_multiplier *= 1.0 + ( p -> talents.mortal_shots * 0.06 );
 
     observer = &( p -> active_serpent_sting );
   }
