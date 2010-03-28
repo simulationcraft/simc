@@ -686,6 +686,9 @@ void SimulationCraftWindow::createBestInSlotTab()
       { SHAMAN,     T9, "Shaman_T9_57_14_00_245",           TAB_WOWHEAD, "14636463" },
       { SHAMAN,     T9, "Shaman_T9_57_14_00_258",           TAB_WOWHEAD, "14636542" },
       { SHAMAN,     T9, "Shaman_T9_57_14_00_258_ToW",       TAB_WOWHEAD, "14731192" },
+      { SHAMAN,    T10, "Shaman_T10_19_52_00",              TAB_WOWHEAD, "20837779" },
+      { SHAMAN,    T10, "Shaman_T10_57_14_00",              TAB_WOWHEAD, "20837754" },
+      { SHAMAN,    T10, "Shaman_T10_57_14_00_ToW",          TAB_WOWHEAD, "20837752" },
 
       { WARLOCK,    T9, "Warlock_T9_00_13_58",              TAB_WOWHEAD, "13808359" },
       { WARLOCK,    T9, "Warlock_T9_00_18_53",              TAB_WOWHEAD, "18859553" },
