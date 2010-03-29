@@ -3587,9 +3587,10 @@ void hunter_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage";
-    action_list_str += ( primary_tree() != TREE_MARKSMANSHIP ) ? "/food,type=blackened_dragonfin" : "/food,type=hearty_rhino";
+    action_list_str += ( primary_tree() != TREE_SURVIVAL ) ? "/food,type=hearty_rhino" : "/food,type=blackened_dragonfin";
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
+    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
@@ -3601,52 +3602,138 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-    if ( race == RACE_ORC )
+    switch ( race )
     {
-      action_list_str += "/blood_fury";
+    case RACE_ORC:       action_list_str += "/blood_fury,time>=10";     break;
+    case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
+    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
     }
-    else if ( race == RACE_TROLL )
+    switch ( primary_tree() )
     {
-      action_list_str += "/berserking";
-    }
-    else if ( race == RACE_BLOOD_ELF )
-    {
-      action_list_str += "/arcane_torrent";
-    }
-    if ( talents.bestial_wrath ) action_list_str += "/kill_command,sync=bestial_wrath/bestial_wrath";
-    action_list_str += "/aspect";
-    if ( talents.chimera_shot ) action_list_str += "/serpent_sting";
-    action_list_str += "/rapid_fire";
-    if ( primary_tree() != TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
-    if ( ! talents.bestial_wrath  ) action_list_str += "/kill_command";
-    if (   talents.silencing_shot ) action_list_str += "/silencing_shot";
-    if ( primary_tree() == TREE_MARKSMANSHIP )
-    {
-      if( talents.aimed_shot ) action_list_str += "/aimed_shot";
-    }
-    if ( talents.chimera_shot )
-    {
-      action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
-      action_list_str += "/chimera_shot";
-    }
-    if ( primary_tree() == TREE_MARKSMANSHIP ) action_list_str += "/kill_shot";
-    if (   talents.explosive_shot ) action_list_str += "/explosive_shot";
-    if (   talents.black_arrow    ) action_list_str += "/black_arrow";
-    if ( ! talents.chimera_shot   ) action_list_str += "/serpent_sting";
-    if ( primary_tree() == TREE_MARKSMANSHIP )
-    {
-      if( talents.improved_arcane_shot ) action_list_str += "/arcane_shot";
-      if( talents.readiness            ) action_list_str += "/readiness,wait_for_rapid_fire=1";
-    }
-    else
-    {
-      if ( ! talents.aimed_shot     ) action_list_str += "/multi_shot";
+    case TREE_BEAST_MASTERY:
+      if ( talents.bestial_wrath )
+      {
+        action_list_str += "/kill_command,sync=bestial_wrath";
+        if ( talents.catlike_reflexes == 0 )
+        {
+          action_list_str += "/kill_command,if=cooldown.bestial_wrath.remains>=60";
+        }
+        else if ( talents.catlike_reflexes == 1 )
+        {
+          action_list_str += "/kill_command,if=cooldown.bestial_wrath.remains>=50";
+        }
+        else if ( talents.catlike_reflexes == 2 )
+        {
+          action_list_str += "/kill_command,if=cooldown.bestial_wrath.remains>=40";
+        }
+        else
+        {
+          action_list_str += "/kill_command,if=cooldown.bestial_wrath.remains>=30";
+        }
+        action_list_str += "/bestial_wrath";
+      }
+      else
+      {
+        action_list_str += "/kill_command";
+      }
+      action_list_str += "/aspect";
+      if ( talents.rapid_killing == 0 )
+      {
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      else if ( talents.rapid_killing == 1 )
+      {
+        action_list_str += "/rapid_fire";
+      }
+      else
+      {
+        action_list_str += "/rapid_fire,time<=60";
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      action_list_str += "/kill_shot";
+      action_list_str += "/serpent_sting";
+      if ( talents.aimed_shot )
+      {
+        action_list_str += "/aimed_shot";
+      }
+      else
+      {
+        action_list_str += "/multi_shot";
+      }
+      if ( ( talents.improved_arcane_shot > 0 ) || ! glyphs.steady_shot || ( initial_stats.armor_penetration_rating < 800 ) )
+      {      
+        action_list_str += "/arcane_shot";
+      }
+      action_list_str += "/steady_shot";
+      break;
+    case TREE_MARKSMANSHIP:
+      action_list_str += "/aspect";
+      action_list_str += "/serpent_sting";
+      if ( talents.rapid_killing == 0 ) 
+      {
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      else if ( talents.rapid_killing == 1 )
+      {
+        action_list_str += "/rapid_fire";
+      }
+      else
+      {
+        action_list_str += "/rapid_fire,time<=60";
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      action_list_str += "/kill_command";
+      if ( talents.silencing_shot ) action_list_str += "/silencing_shot";
+      if ( talents.aimed_shot ) 
+      {
+        action_list_str += "/aimed_shot";
+      }
+      else
+      {
+        action_list_str += "/multi_shot";
+      }
+      if ( talents.chimera_shot )
+      {
+        action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
+        action_list_str += "/chimera_shot";
+      }
+      action_list_str += "/kill_shot";
+      if ( talents.improved_arcane_shot > 0 ) action_list_str += "/arcane_shot";
+      if ( talents.rapid_killing == 0 ) action_list_str += "/readiness,time<=60";
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
+      action_list_str += "/steady_shot";
+      break;
+    case TREE_SURVIVAL:
+      action_list_str += "/aspect";
+      if ( talents.rapid_killing == 0 )
+      {
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      else if ( talents.rapid_killing == 1 )
+      {
+        action_list_str += "/rapid_fire";
+      }
+      else
+      {
+        action_list_str += "/rapid_fire,time<=60";
+        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
+      }
+      action_list_str += "/kill_command";
+      if ( talents.explosive_shot ) action_list_str += "/explosive_shot";
+      if ( talents.black_arrow ) action_list_str += "/black_arrow";
+      action_list_str += "/serpent_sting";
+      if ( talents.aimed_shot )
+      {
+        action_list_str += "/aimed_shot";
+      }
+      else
+      {
+        action_list_str += "/multi_shot";
+      }
       if ( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
-      if (   talents.readiness      ) action_list_str += "/readiness,wait_for_rapid_fire=1";
-      if (   talents.aimed_shot     ) action_list_str += "/aimed_shot";
+      action_list_str += "/steady_shot";
+      break;
     }
-
-    action_list_str += "/steady_shot";
 
     action_list_default = 1;
   }
