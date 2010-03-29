@@ -3660,10 +3660,7 @@ void hunter_t::init_actions()
       {
         action_list_str += "/multi_shot";
       }
-      if ( ( talents.improved_arcane_shot > 0 ) || ! glyphs.steady_shot || ( initial_stats.armor_penetration_rating < 800 ) )
-      {      
-        action_list_str += "/arcane_shot";
-      }
+      if ( ( talents.improved_arcane_shot > 0 ) || ! glyphs.steady_shot || ( initial_stats.armor_penetration_rating < 800 ) ) action_list_str += "/arcane_shot";
       action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
@@ -3698,7 +3695,7 @@ void hunter_t::init_actions()
         action_list_str += "/chimera_shot";
       }
       action_list_str += "/kill_shot";
-      if ( talents.improved_arcane_shot > 0 ) action_list_str += "/arcane_shot";
+      if ( ( talents.improved_arcane_shot > 0 ) || ! glyphs.steady_shot || ( initial_stats.armor_penetration_rating < 600 ) ) action_list_str += "/arcane_shot";
       if ( talents.rapid_killing == 0 ) action_list_str += "/readiness,time<=60";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot";
