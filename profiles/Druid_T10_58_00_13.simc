@@ -16,7 +16,7 @@ actions+=/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.re
 actions+=/faerie_fire
 actions+=/typhoon,moving=1
 actions+=/innervate,trigger=-2000
-actions+=/treants,time<=6
+actions+=/treants,time<=60
 actions+=/treants,if=buff.bloodlust.react
 actions+=/starfall,if=!eclipse
 actions+=/starfire,if=buff.t8_4pc_caster.up
@@ -27,21 +27,21 @@ actions+=/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_
 actions+=/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)
 actions+=/starfire
 head=sanctified_lasherweave_cover,heroic=1,stats=564armor_114crit_106haste_139int_186sp_139sta,gems=chaotic_skyflare_39sp_9sp,enchant=30sp_20crit
-neck=blood_queens_crimson_choker,heroic=1,stats=65crit_60haste_78int_110sp_78sta,gems=39sp
+neck=blood_queens_crimson_choker,heroic=1,stats=65crit_60haste_110sp_78sta_78int,gems=39sp
 shoulders=sanctified_lasherweave_mantle,heroic=1,stats=521armor_90crit_82haste_103int_150sp_103sta,gems=39sp_5sp,enchant=24sp_15crit
 chest=sanctified_lasherweave_vestment,heroic=1,stats=694armor_122crit_106haste_139int_195sp_139sta,gems=23sp_10haste_12sp_7sp,enchant=10str_10agi_10sta_10int_10spi
 waist=professors_bloodied_smock,heroic=1,stats=391armor_90haste_103int_74spi_140sp_103sta,gems=23sp_23sp_23sp
 legs=sanctified_lasherweave_trousers,heroic=1,stats=608armor_122crit_106hit_139int_195sp_139sta,gems=23sp_10haste_12sp_7sp,enchant=50sp_20spi
 feet=boots_of_unnatural_growth,heroic=1,stats=477armor_90crit_103int_74spi_140sp_103sta,gems=10haste_12sp_23sp_7sp,enchant=12crit_12hit
-wrists=bracers_of_eternal_dreaming,heroic=1,stats=304armor_60crit_78int_68spi_110sp_78sta,gems=10spi_12sp_5sp,enchant=30sp
+wrists=bracers_of_eternal_dreaming,heroic=1,stats=304armor_60crit_78int_68spi_110sp_78sta,gems=12sp_10spi_5sp,enchant=30sp
 hands=sanctified_lasherweave_gloves,heroic=1,stats=434armor_90crit_82hit_103int_150sp_103sta,gems=23sp_5sp,enchant=28sp
-finger1=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_78int_110sp_78sta,gems=10spi_12sp_5sp
-finger2=ashen_band_of_endless_destruction,stats=64haste_51hit_73int_101sp_73sta,gems=10hit_12sp_5sp,equip=onspellcasthit_285sp_10%_10dur_60cd
+finger1=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_110sp_78sta_78int,gems=12sp_10spi
+finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10hit_12sp_5sp,equip=onspellcasthit_285sp_10%_10dur_60cd
 trinket1=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 trinket2=reign_of_the_dead,heroic=1,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
-back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_78int_110sp_78sta,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_81int_35mp5_893sp_81sta,gems=23sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119sp_78sta
+back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_110sp_78sta_78int,gems=10haste_12sp,enchant=lightweave_embroidery
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_119sp_78sta_78int
 ranged=idol_of_the_lunar_eclipse
 # Gear Summary
 # gear_strength=10
@@ -49,11 +49,10 @@ ranged=idol_of_the_lunar_eclipse
 # gear_stamina=1383
 # gear_intellect=1383
 # gear_spirit=267
-# gear_spell_power=3547
-# gear_mp5=35
+# gear_spell_power=3542
 # gear_hit_rating=261
 # gear_crit_rating=1080
-# gear_haste_rating=906
+# gear_haste_rating=977
 # gear_armor=4178
 # meta_gem=chaotic_skyflare
 # tier10_2pc_caster=1
