@@ -1,9 +1,9 @@
 #!./simc 
 
-priest=Priest_T10_13_00_58_264_SWD
-origin="http://profiler.wowhead.com/?profile=18052647"
+priest=Priest_T10_13_00_58_264_troll
+origin="http://profiler.wowhead.com/?profile=21000831"
 level=80
-race=night_elf
+race=troll
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
@@ -18,6 +18,7 @@ actions+=/snapshot_stats
 actions+=/speed_potion
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1,if=!ticking
+actions+=/berserking
 actions+=/vampiric_touch,if=!ticking
 actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
 actions+=/devouring_plague,if=!ticking
@@ -60,5 +61,3 @@ ranged=corpseimpaling_spike,stats=34crit_34haste_60sp_39sta_39int
 # tier10_4pc_caster=1
 # back=frostbinders_shredded_cape,enchant=lightweave_embroidery
 # main_hand=royal_scepter_of_terenas_ii,weapon=mace_1.80speed_128.55999755859375min_387.55996704101562max
-## Variables
-use_shadow_word_death=1

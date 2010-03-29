@@ -5,49 +5,48 @@ Globals_T10.simc
 optimal_raid=1
 
 # Shadow DPS
-#Priest_T10_13_00_58_251.simc
-#Priest_T10_13_00_58_251_SWD.simc
 Priest_T10_13_00_58_264.simc
 Priest_T10_13_00_58_264_SWD.simc
 Priest_T10_13_00_58_277.simc
 Priest_T10_13_00_58_277_SWD.simc
-#Priest_T9_13_00_58_258_draenei.simc
-#Priest_T9_13_00_58_258_troll.simc
+Priest_T10_13_00_58_264_draenei.simc
+Priest_T10_13_00_58_277_draenei.simc
+Priest_T10_13_00_58_264_troll.simc
+Priest_T10_13_00_58_277_troll.simc
+
 
 # scpriestt10
 # Uncomment below and comment out above to download profiles.
 
 # Shadow DPS
 
-#wowhead=18052707 name=Priest_T10_13_00_58_251      save=Priest_T10_13_00_58_251.simc
-   
-#wowhead=18052707 name=Priest_T10_13_00_58_251_SWD  save=Priest_T10_13_00_58_251_SWD.simc	use_shadow_word_death=1
-
 #wowhead=18052647 name=Priest_T10_13_00_58_264      save=Priest_T10_13_00_58_264.simc
-#back=frostbinders_shredded_cape,id=50205,gems=12sp_10haste_5sp,enchant=lightweave_embroidery
  
 #wowhead=18052647 name=Priest_T10_13_00_58_264_SWD  save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
-#back=frostbinders_shredded_cape,id=50205,gems=12sp_10haste_5sp,enchant=lightweave_embroidery
 
 #wowhead=20704178 name=Priest_T10_13_00_58_277	    save=Priest_T10_13_00_58_277.simc
-#enchant_spell_power=38
-## back, wrists, ranged, waist, legs, feet socket bonuses.
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 #wowhead=20704178 name=Priest_T10_13_00_58_277_SWD   save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
-#enchant_spell_power=38
-## back, wrists, ranged, waist, legs, feet socket bonuses.
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 
 ## Different races
 
 ## Draenei (or other alliance priest with a Draenei in the group)
-#wowhead=13043848 name=Priest_T10_13_00_58_277_draenei    save=Priest_T10_13_00_58_277_draenei.simc race=draenei
+
+#wowhead=21000736 name=Priest_T10_13_00_58_264_draenei      save=Priest_T10_13_00_58_264_draenei.simc
+
+#wowhead=21000778 name=Priest_T10_13_00_58_277_draenei    save=Priest_T10_13_00_58_277_draenei.simc
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 ## Troll
-#wowhead=13043848 name=Priest_T10_13_00_58_277_troll      save=Priest_T10_13_00_58_277_troll.simc race=troll
+
+#wowhead=21000831 name=Priest_T10_13_00_58_264_troll	    save=Priest_T10_13_00_58_264_troll.simc
+
+#wowhead=21000835 name=Priest_T10_13_00_58_277_troll	    save=Priest_T10_13_00_58_277_troll.simc
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+
 
 ## Extra intermediate profiles
-
-#save_profiles=1
-
 

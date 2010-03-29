@@ -1,9 +1,9 @@
 #!./simc 
 
-priest=Priest_T10_13_00_58_277
-origin="http://profiler.wowhead.com/?profile=20704178"
+priest=Priest_T10_13_00_58_277_draenei
+origin="http://profiler.wowhead.com/?profile=21000778"
 level=80
-race=night_elf
+race=draenei
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate

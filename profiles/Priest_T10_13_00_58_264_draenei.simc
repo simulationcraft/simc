@@ -1,9 +1,9 @@
 #!./simc 
 
-priest=Priest_T10_13_00_58_264_SWD
-origin="http://profiler.wowhead.com/?profile=18052647"
+priest=Priest_T10_13_00_58_264_draenei
+origin="http://profiler.wowhead.com/?profile=21000736"
 level=80
-race=night_elf
+race=draenei
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
@@ -34,10 +34,10 @@ chest=sanctified_crimson_acolyte_raiments,stats=354armor_100crit_100haste_171sp_
 waist=crushing_coldwraith_belt,stats=199armor_64crit_80haste_122sp_92sta_92int,gems=12sp_10spi_23sp_23sp_7sp
 legs=leggings_of_woven_death,stats=309armor_84crit_108haste_162sp_123sta_123int,gems=23sp_10haste_12sp_12sp_10spi_9sp,enchant=50sp_20spi
 feet=plague_scientists_boots,stats=243armor_64crit_80haste_122sp_92sta_92int,gems=12sp_10spi_23sp_7sp,enchant=15sta
-wrists=the_ladys_brittle_bracers,stats=155armor_45hit_65crit_97sp_69sta_69int,gems=10hit_12sp_5sp,enchant=30sp
+wrists=the_ladys_brittle_bracers,stats=155armor_45hit_65crit_97sp_69sta_69int,gems=10haste_12sp_5sp,enchant=30sp
 hands=sanctified_crimson_acolyte_handwraps,stats=221armor_72hit_80crit_132sp_92sta_92int,gems=23sp,enchant=28sp
 finger1=valanars_other_signet_ring,stats=38hit_69haste_97sp_69sta_69int,gems=23sp,enchant=23sp
-finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10hit_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
+finger2=ashen_band_of_endless_destruction,stats=51hit_64haste_101sp_73sta_73int,gems=10haste_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
 trinket1=dislodged_foreign_object,stats=155haste,equip=onspellcast_105sp_10stack_10%_20dur_45cd_2tick
 trinket2=phylactery_of_the_nameless_lich,stats=152crit,equip=onspelltickdamage_1073sp_30%_20dur_100cd
 back=frostbinders_shredded_cape,stats=177armor_60crit_52haste_97sp_69sta_69int,gems=10haste_12sp,enchant=lightweave_embroidery
@@ -51,14 +51,12 @@ ranged=corpseimpaling_spike,stats=34crit_34haste_60sp_39sta_39int
 # gear_intellect=1275
 # gear_spirit=71
 # gear_spell_power=3072
-# gear_hit_rating=288
+# gear_hit_rating=268
 # gear_crit_rating=1070
-# gear_haste_rating=1121
+# gear_haste_rating=1141
 # gear_armor=2210
 # meta_gem=chaotic_skyflare
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
 # back=frostbinders_shredded_cape,enchant=lightweave_embroidery
 # main_hand=royal_scepter_of_terenas_ii,weapon=mace_1.80speed_128.55999755859375min_387.55996704101562max
-## Variables
-use_shadow_word_death=1
