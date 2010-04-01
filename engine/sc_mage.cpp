@@ -786,6 +786,9 @@ static void trigger_brain_freeze( spell_t* s )
   if ( s -> school != SCHOOL_FROST &&
        s -> school != SCHOOL_FROSTFIRE ) return;
 
+  // Game hotfixed so that Frostfire Bolt cannot proc Brain Freeze.
+  if ( s -> name_str == "frostfire_bolt" ) return;
+
   mage_t* p = s -> player -> cast_mage();
 
   p -> buffs_brain_freeze -> trigger();
