@@ -333,7 +333,7 @@
 /* Begin PBXLegacyTarget section */
 		442BD327107A79ED00AFCDF4 /* Generate Qt Project */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-spec macx-xcode";
+			buildArgumentsString = "-spec macx-xcode QMAKE_OBJECTIVE_CC=/Developer/usr/bin/g++";
 			buildConfigurationList = 442BD32D107A7A1700AFCDF4 /* Build configuration list for PBXLegacyTarget "Generate Qt Project" */;
 			buildPhases = (
 			);
