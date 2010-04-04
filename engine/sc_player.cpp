@@ -830,7 +830,16 @@ void player_t::init_resources( bool force )
       resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
 
       if ( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
-      if ( i == RESOURCE_HEALTH ) resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
+      if ( i == RESOURCE_HEALTH ) 
+      {
+        resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
+
+        if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+        {
+          // ICC buff.
+          resource_initial[ i ] *= 1.10;
+        }
+      }
     }
     resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
   }
@@ -961,10 +970,12 @@ void player_t::init_rating()
 
 void player_t::init_buffs()
 {
-  buffs.berserking      = new buff_t( this, "berserking",      1, 10.0 );
-  buffs.heroic_presence = new buff_t( this, "heroic_presence", 1       );
-  buffs.replenishment   = new buff_t( this, "replenishment",   1, 15.0 );
-  buffs.stoneform       = new buff_t( this, "stoneform",       1,  8.0 );
+  buffs.berserking           = new buff_t( this, "berserking",          1, 10.0 );
+  buffs.heroic_presence      = new buff_t( this, "heroic_presence",     1       );
+  buffs.replenishment        = new buff_t( this, "replenishment",       1, 15.0 );
+  buffs.stoneform            = new buff_t( this, "stoneform",           1,  8.0 );
+  buffs.hellscreams_warsong  = new buff_t( this, "hellscreams_warsong", 1       );
+  buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
 
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  -1 );
@@ -1718,6 +1729,12 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
+    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+    {
+      // ICC buff.
+      m *= 1.10;
+    }
+
     if ( school == SCHOOL_PHYSICAL )
     {
       if ( buffs.hysteria -> up() )
@@ -1851,14 +1868,23 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  bool allow_heroic_presence =
+  bool is_alliance =
     (race == RACE_NIGHT_ELF) ||
     (race == RACE_GNOME)     ||
     (race == RACE_DWARF)     ||
     (race == RACE_HUMAN)     ||
     (race == RACE_DRAENEI);
 
-  if ( sim -> overrides.heroic_presence && allow_heroic_presence )
+  if ( sim -> overrides.strength_of_wrynn )
+  {
+    buffs.strength_of_wrynn -> trigger();
+  }
+  if ( sim -> overrides.hellscreams_warsong )
+  {
+    buffs.hellscreams_warsong -> trigger();
+  }
+
+  if ( sim -> overrides.heroic_presence && is_alliance )
   {
     buffs.heroic_presence -> trigger();
   }

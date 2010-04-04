@@ -964,6 +964,7 @@ struct sim_t
     int fortitude;
     int frost_fever;
     int heart_of_the_crusader;
+    int hellscreams_warsong;
     int heroic_presence;
     int horn_of_winter;
     int hunters_mark;
@@ -990,6 +991,7 @@ struct sim_t
     int savage_combat;
     int scorpid_sting;
     int strength_of_earth;
+    int strength_of_wrynn;
     int sunder_armor;
     int swift_retribution;
     int thunder_clap;
@@ -1513,6 +1515,7 @@ struct player_t
     buff_t* divine_spirit;
     buff_t* focus_magic;
     buff_t* fortitude;
+    buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
     buff_t* indestructible_potion;
     buff_t* innervate;
@@ -1525,6 +1528,7 @@ struct player_t
     buff_t* replenishment;
     buff_t* speed_potion;
     buff_t* stoneform;
+    buff_t* strength_of_wrynn;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* wild_magic_potion_sp;
