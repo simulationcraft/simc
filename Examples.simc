@@ -207,3 +207,8 @@ channel_lag=0.250
 gcd_lag=0.150
 queue_lag=0.075
 
+# Non-Raid Settings 
+
+# The default level of the target is 83.  Changing it will change the effect of various combat ratings.
+target_level=82
+
