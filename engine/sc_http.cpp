@@ -403,7 +403,18 @@ bool http_t::download( std::string& result,
   }
 
   char buffer[2048];
-  sprintf( buffer, "GET %s HTTP/1.0\r\nUser-Agent: Firefox/3.0\r\nAccept: */*\r\nHost: %s\r\nCookie: loginChecked=1\r\nConnection: close\r\n\r\n", path.c_str(), host.c_str() );
+  sprintf( buffer, 
+	   "GET %s HTTP/1.0\r\n"
+	   "User-Agent: Firefox/3.0\r\n"
+	   "Accept: */*\r\n"
+	   "Host: %s\r\n"
+	   "Cookie: loginChecked=1\r\n"
+	   "Cookie: cookieLangId=en_US\r\n"
+	   "Connection: close\r\n"
+	   "\r\n", 
+	   path.c_str(), 
+	   host.c_str() );
+
   r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
   if ( r != ( int ) strlen( buffer ) )
   {
