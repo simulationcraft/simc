@@ -61,7 +61,7 @@ static js_node_t* download_profile( sim_t* sim,
       if ( finish != std::string::npos )
       {
         std::string buffer = result.substr( start, ( finish - start ) + 1 );
-        if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n", buffer.c_str() );
+        if ( sim -> debug ) util_t::fprintf( sim -> output_file, "Profile JS:\n%s\n", buffer.c_str() );
         return js_t::create( sim, buffer );
       }
     }
@@ -730,26 +730,40 @@ player_t* wowhead_t::download_player( sim_t* sim,
   js_t::get_value( active_talents, profile_js, "talents/active" );
   if ( ! use_active_talents ) active_talents = ( active_talents ? 0 : 1 );
 
-  std::vector<std::string> talent_encodings;
-  int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
-  if ( num_builds == 2 )
+  js_node_t* builds = js_t::get_node( profile_js, "talents/builds" );
+
+  if ( builds ) // !!! NEW FORMAT !!!
   {
-    std::string& encoding = talent_encodings[ active_talents ];
-    if ( ! p -> parse_talents_armory( encoding ) )
+    js_node_t* build = js_t::get_node( builds, active_talents ? "1" : "0" );
+    if( ! build )
     {
-      sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
+      sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
       return 0;
     }
-    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
-  }
+    
+    std::string talent_encoding;
+    if ( ! js_t::get_value( talent_encoding, build, "talents" ) )
+    {
+      sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
+      return 0;
+    }
 
-  std::vector<std::string> glyph_encodings;
-  num_builds = js_t::get_value( glyph_encodings, profile_js, "glyphs" );
-  if ( num_builds == 2 )
-  {
-    p -> glyphs_str = "";
+    if ( ! p -> parse_talents_armory( talent_encoding ) )
+    {
+      sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
+      return 0;
+    }
+    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talent_encoding;
+    
+    std::string glyph_encoding;
+    if ( ! js_t::get_value( glyph_encoding, build, "glyphs" ) )
+    {
+      sim -> errorf( "Player %s unable to access glyph encoding from profile.\n", p -> name() );
+      return 0;
+    }
+
     std::vector<std::string> glyph_ids;
-    int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
+    int num_glyphs = util_t::string_split( glyph_ids, glyph_encoding, ":" );
     for ( int i=0; i < num_glyphs; i++ )
     {
       std::string& glyph_id = glyph_ids[ i ];
@@ -758,10 +772,47 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
       if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
       {
-        return 0;
+	return 0;
       }
       if ( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
+    }
+  }
+  else // !!! OLD FORMAT !!!
+  {
+    std::vector<std::string> talent_encodings;
+    int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
+    if ( num_builds == 2 )
+    {
+      std::string& encoding = talent_encodings[ active_talents ];
+      if ( ! p -> parse_talents_armory( encoding ) )
+      {
+	sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
+	return 0;
+      }
+      p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
+    }
+
+    std::vector<std::string> glyph_encodings;
+    num_builds = js_t::get_value( glyph_encodings, profile_js, "glyphs" );
+    if ( num_builds == 2 )
+    {
+      p -> glyphs_str = "";
+      std::vector<std::string> glyph_ids;
+      int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
+      for ( int i=0; i < num_glyphs; i++ )
+      {
+	std::string& glyph_id = glyph_ids[ i ];
+	if ( glyph_id == "0" ) continue;
+	std::string glyph_name;
+
+	if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
+        {
+	  return 0;
+	}
+	if ( i ) p -> glyphs_str += "/";
+	p -> glyphs_str += glyph_name;
+      }
     }
   }
 
