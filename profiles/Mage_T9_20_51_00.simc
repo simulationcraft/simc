@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_T9_20_51_00
-origin="http://profiler.wowhead.com/?profile=14306481"
+origin="http://profiler.wowhead.com/profile=14306481"
 level=80
 race=undead
 use_pre_potion=-1

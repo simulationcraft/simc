@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_T10_13_00_58_277
-origin="http://profiler.wowhead.com/?profile=20704178"
+origin="http://profiler.wowhead.com/profile=20704178"
 level=80
 race=night_elf
 use_pre_potion=-1

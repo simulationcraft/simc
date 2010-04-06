@@ -1,7 +1,7 @@
 #!./simc 
 
 paladin=Paladin_T10_09_05_57_N
-origin="http://profiler.wowhead.com/?profile=20966865"
+origin="http://profiler.wowhead.com/profile=20966865"
 level=80
 race=draenei
 use_pre_potion=-1

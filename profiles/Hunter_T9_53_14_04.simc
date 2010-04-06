@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_T9_53_14_04
-origin="http://profiler.wowhead.com/?profile=14663160"
+origin="http://profiler.wowhead.com/profile=14663160"
 level=80
 race=tauren
 use_pre_potion=-1

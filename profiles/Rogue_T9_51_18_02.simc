@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_T9_51_18_02
-origin="http://profiler.wowhead.com/?profile=18612609"
+origin="http://profiler.wowhead.com/profile=18612609"
 level=80
 race=troll
 use_pre_potion=-1

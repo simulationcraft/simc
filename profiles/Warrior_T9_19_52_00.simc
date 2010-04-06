@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_T9_19_52_00
-origin="http://profiler.wowhead.com/?profile=13110966"
+origin="http://profiler.wowhead.com/profile=13110966"
 level=80
 race=tauren
 use_pre_potion=-1

@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_T10_13_00_58_264_troll
-origin="http://profiler.wowhead.com/?profile=21000831"
+origin="http://profiler.wowhead.com/profile=21000831"
 level=80
 race=troll
 use_pre_potion=-1

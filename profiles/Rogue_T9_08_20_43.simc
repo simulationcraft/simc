@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_T9_08_20_43
-origin="http://profiler.wowhead.com/?profile=14562456"
+origin="http://profiler.wowhead.com/profile=14562456"
 level=80
 race=undead
 use_pre_potion=-1

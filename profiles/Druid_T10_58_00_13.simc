@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_T10_58_00_13
-origin="http://profiler.wowhead.com/?profile=20996475"
+origin="http://profiler.wowhead.com/profile=20996475"
 level=80
 race=tauren
 use_pre_potion=-1

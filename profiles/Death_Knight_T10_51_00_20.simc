@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T10_51_00_20
-origin="http://profiler.wowhead.com/?profile=20837928"
+origin="http://profiler.wowhead.com/profile=20837928"
 level=80
 race=tauren
 use_pre_potion=-1

@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_T9_02_18_51
-origin="http://profiler.wowhead.com/?profile=14649679"
+origin="http://profiler.wowhead.com/profile=14649679"
 level=80
 race=night_elf
 use_pre_potion=-1

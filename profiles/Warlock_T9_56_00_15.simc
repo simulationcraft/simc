@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock=Warlock_T9_56_00_15
-origin="http://profiler.wowhead.com/?profile=20850306"
+origin="http://profiler.wowhead.com/profile=20850306"
 level=80
 race=undead
 use_pre_potion=-1

@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_T10_13_00_58_277_draenei
-origin="http://profiler.wowhead.com/?profile=21000778"
+origin="http://profiler.wowhead.com/profile=21000778"
 level=80
 race=draenei
 use_pre_potion=-1

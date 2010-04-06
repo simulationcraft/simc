@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_T9_16_55_00_258
-origin="http://profiler.wowhead.com/?profile=14635667"
+origin="http://profiler.wowhead.com/profile=14635667"
 level=80
 race=tauren
 use_pre_potion=-1

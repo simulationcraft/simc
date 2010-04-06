@@ -1,7 +1,7 @@
 #!./simc 
 
 paladin=Paladin_T9_05_11_55
-origin="http://profiler.wowhead.com/?profile=16421920"
+origin="http://profiler.wowhead.com/profile=16421920"
 level=80
 race=blood_elf
 use_pre_potion=-1
