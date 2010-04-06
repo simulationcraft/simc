@@ -471,7 +471,12 @@ bool http_t::download( std::string& result,
   {
     std::wstring wURL( url.length(), L' ' );
     std::copy( url.begin(), url.end(), wURL.begin() );
-    hFile = InternetOpenUrl( hINet, wURL.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0 );
+
+    std::wstring wHeaders = L"";
+    wHeaders += L"Cookie: loginChecked=1\r\n";
+	  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+
+    hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
     {
       char buffer[ 20000 ];
