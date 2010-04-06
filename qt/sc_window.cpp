@@ -570,7 +570,7 @@ void SimulationCraftWindow::createImportTab()
   importTab->addTab( armoryView, "Armory" );
 
   wowheadView = new SimulationCraftWebView( this );
-  wowheadView->setUrl( QUrl( "http://ptr.wowhead.com/profiles" ) );
+  wowheadView->setUrl( QUrl( "http://www.wowhead.com/profiles" ) );
   importTab->addTab( wowheadView, "Wowhead" );
   
   createRawrTab();
@@ -921,13 +921,14 @@ void ImportThread::importArmory()
 void ImportThread::importWowhead()
 {
   QString id;
-  QStringList tokens = url.split( QRegExp( "[?&=]" ), QString::SkipEmptyParts );
+  QStringList tokens = url.split( QRegExp( "[/?&=]" ), QString::SkipEmptyParts );
   int count = tokens.count();
   for( int i=0; i < count-1; i++ ) 
   {
     if( tokens[ i ] == "profile" )
     {
       id = tokens[ i+1 ];
+      break;
     }
   }
   if( id.isEmpty() )
