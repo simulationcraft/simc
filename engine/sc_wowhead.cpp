@@ -45,10 +45,11 @@ std::string& format_server( std::string& name )
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id )
 {
-  std::string url = "http://www.wowhead.com/profile=load&id=" + id;
+  std::string url_www = "http://www.wowhead.com/profile=load&id=" + id;
+  std::string url_ptr = "http://ptr.wowhead.com/profile=load&id=" + id;
   std::string result;
 
-  if ( http_t::download( result, url ) )
+  if ( http_t::download( result, url_www ) || http_t::download( result, url_ptr ) )
   {
     std::string::size_type start = result.find( "WowheadProfiler.registerProfile(" );
     if ( start != std::string::npos ) start = result.find( "{", start );
@@ -75,8 +76,8 @@ static xml_node_t* download_id( sim_t* sim,
                                 int cache_only=0 )
 {
   if ( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
-  std::string url_www = "http://www.wowhead.com/?item=" + id_str + "&xml";
-  std::string url_ptr = "http://ptr.wowhead.com/?item=" + id_str + "&xml";
+  std::string url_www = "http://www.wowhead.com/item=" + id_str + "&xml";
+  std::string url_ptr = "http://ptr.wowhead.com/item=" + id_str + "&xml";
 
   xml_node_t *node;
 
@@ -585,7 +586,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   std::string server_name = server;
   format_server( server_name );
 
-  std::string url = "http://www.wowhead.com/?profile=" + region + "." + server_name + "." + character_name;
+  std::string url = "http://www.wowhead.com/profile=" + region + "." + server_name + "." + character_name;
   std::string result;
 
   if ( http_t::download( result, url ) )
@@ -700,7 +701,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int user_id=0;
   if ( js_t::get_value( user_id, profile_js, "user" ) && ( user_id != 0 ) )
   {
-    p -> origin_str = "http://profiler.wowhead.com/?profile=" + id;
+    p -> origin_str = "http://profiler.wowhead.com/profile=" + id;
   }
   else
   {
@@ -708,7 +709,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     std::string character_name = name_str;
     format_server( server_name );
     armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-    p -> origin_str = "http://profiler.wowhead.com/?profile=" + p -> region_str + "." + server_name + "." + character_name;
+    p -> origin_str = "http://profiler.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
   p -> professions_str = "";
