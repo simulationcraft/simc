@@ -74,7 +74,6 @@ wowhead=21000437 name=Hunter_T10_53_14_04            save=Hunter_T10_53_14_04.si
 
 
 
-
 ############################
 # Mages                    #
 ############################
@@ -88,8 +87,13 @@ wowhead=14306474 name=Mage_T9_53_18_00               save=Mage_T9_53_18_00.simc
 wowhead=14306468 name=Mage_T9_57_03_11               save=Mage_T9_57_03_11.simc
 
 
-# T10:
+# T10: scmaget10
 
+wowhead=21150130 name=Mage_T10_00_53_18              save=Mage_T10_00_53_18.simc
+wowhead=21150215 name=Mage_T10_18_00_53		     save=Mage_T10_18_00_53.simc
+wowhead=21150274 name=Mage_T10_20_00_51		     save=Mage_T10_20_00_51.simc
+wowhead=21150300 name=Mage_T10_20_51_00		     save=Mage_T10_20_51_00.simc
+wowhead=21150329 name=Mage_T10_57_03_11		     save=Mage_T10_57_03_11.simc
 
 
 
