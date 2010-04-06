@@ -27,23 +27,23 @@ actions+=/evocation
 actions+=/arcane_missiles
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
-head=sunstriders_hood_of_triumph,heroic=1,stats=282armor_86hit_94haste_151sp_116sta_116int,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-neck=cry_of_the_valkyr,heroic=1,stats=57crit_43haste_91sp_65sta_65int,gems=10haste_12sp_5sp
-shoulders=sunstriders_shoulderpads_of_triumph,heroic=1,stats=260armor_68crit_76haste_124sp_86sta_86int,gems=23sp,enchant=24sp_15crit
-chest=skyweaver_vestments,heroic=1,stats=347armor_86hit_94haste_151sp_116sta_116int,gems=12sp_10spi_10haste_12sp_23sp_9sp,enchant=10str_10agi_10sta_10int_10spi
-waist=cord_of_the_tenebrous_mist,heroic=1,stats=195armor_60haste_114sp_86sta_86int_76spi,gems=12sp_10spi_23sp_23sp_7sp
-legs=sunstriders_leggings_of_triumph,heroic=1,stats=303armor_102crit_160sp_116sta_116int_86spi,gems=10haste_12sp_10haste_12sp_7sp,enchant=50sp_20spi
-feet=sandals_of_the_mourning_widow,heroic=1,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=12sp_10spi_23sp_7sp,enchant=12crit_12hit
-wrists=bindings_of_the_ashen_saint,heroic=1,stats=152armor_49haste_91sp_65sta_65int_57spi,gems=23sp,enchant=30sp
-hands=sunstriders_gauntlets_of_triumph,heroic=1,stats=217armor_76crit_68haste_124sp_86sta_86int,gems=23sp_4crit,enchant=28sp
-finger1=circle_of_the_darkmender,heroic=1,stats=49haste_28mp5_91sp_65sta_65int,gems=10haste_12sp_5sp,enchant=23sp
-finger2=lurid_manifestation,heroic=1,stats=53crit_91sp_65sta_65int_50spi,gems=10crit_12sp_5sp,enchant=23sp
+head=sunstriders_hood_of_triumph,heroic=1,stats=282armor_94haste_86hit_116int_151sp_116sta,gems=chaotic_skyflare_10spi_12sp_9sp,enchant=30sp_20crit
+neck=cry_of_the_valkyr,heroic=1,stats=57crit_43haste_65int_91sp_65sta,gems=10haste_12sp_5sp
+shoulders=sunstriders_shoulderpads_of_triumph,heroic=1,stats=260armor_68crit_76haste_86int_124sp_86sta,gems=23sp,enchant=24sp_15crit
+chest=skyweaver_vestments,heroic=1,stats=347armor_94haste_86hit_116int_151sp_116sta,gems=10spi_12sp_10haste_12sp_23sp_9sp,enchant=10str_10agi_10sta_10int_10spi
+waist=cord_of_the_tenebrous_mist,heroic=1,stats=195armor_60haste_86int_76spi_114sp_86sta,gems=10spi_12sp_23sp_23sp_7sp
+legs=sunstriders_leggings_of_triumph,heroic=1,stats=303armor_102crit_116int_86spi_160sp_116sta,gems=10haste_12sp_10haste_12sp_7sp,enchant=50sp_20spi
+feet=sandals_of_the_mourning_widow,heroic=1,stats=238armor_68haste_86int_76spi_124sp_86sta,gems=10spi_12sp_23sp_7sp,enchant=12crit_12hit
+wrists=bindings_of_the_ashen_saint,heroic=1,stats=152armor_49haste_65int_57spi_91sp_65sta,gems=23sp,enchant=30sp
+hands=sunstriders_gauntlets_of_triumph,heroic=1,stats=217armor_76crit_68haste_86int_124sp_86sta,gems=23sp_4crit,enchant=28sp
+finger1=circle_of_the_darkmender,heroic=1,stats=49haste_65int_28mp5_91sp_65sta,gems=10haste_12sp_5sp,enchant=23sp
+finger2=lurid_manifestation,heroic=1,stats=53crit_65int_50spi_91sp_65sta,gems=10crit_12sp_5sp,enchant=23sp
 trinket1=reign_of_the_dead,heroic=1,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=aethas_intensity,heroic=1,stats=182armor_65crit_57haste_105sp_74sta_74int,gems=23sp_5sp,enchant=lightweave_embroidery
-main_hand=mortalis,heroic=1,stats=58crit_39haste_701sp_58sta_66int,gems=10crit_12sp_5sp,enchant=63sp,weapon=sword_1.80speed_108.12min_342.12max
-off_hand=lightbane_focus,heroic=1,stats=43hit_51haste_80sp_58sta_55int,gems=10haste_12sp_5sp
-ranged=scepter_of_imprisoned_souls,heroic=1,stats=31crit_24haste_50sp_40sta_29int
+back=aethas_intensity,heroic=1,stats=182armor_65crit_57haste_74int_105sp_74sta,gems=23sp_5sp,enchant=lightweave_embroidery
+main_hand=mortalis,heroic=1,stats=58crit_39haste_66int_701sp_58sta,gems=10crit_12sp_5sp,enchant=63sp,weapon=sword_1.80speed_108.12001037597656min_342.1199951171875max
+off_hand=lightbane_focus,heroic=1,stats=51haste_43hit_55int_80sp_58sta,gems=10haste_12sp_5sp
+ranged=scepter_of_imprisoned_souls,heroic=1,stats=31crit_24haste_29int_50sp_40sta
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
@@ -60,5 +60,5 @@ ranged=scepter_of_imprisoned_souls,heroic=1,stats=31crit_24haste_50sp_40sta_29in
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=aethas_intensity,heroic=1,enchant=lightweave_embroidery
-# main_hand=mortalis,heroic=1,weapon=sword_1.80speed_108.12min_342.12max
+# main_hand=mortalis,heroic=1,weapon=sword_1.80speed_108.12001037597656min_342.1199951171875max
 armor_type=molten

@@ -23,10 +23,10 @@ actions+=/exorcism
 actions+=/speed_potion
 head=sanctified_lightsworn_helmet,stats=2145armor_100crit_92haste_185sta_161str,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
 neck=ahnkahar_onyx_neckguard,stats=60crit_52hit_103sta_95str,gems=20str
-shoulders=sanctified_lightsworn_shoulderplates,stats=1980armor_80crit_72haste_137sta_129str,gems=34str_4str,enchant=40ap_15crit
+shoulders=sanctified_lightsworn_shoulderplates,stats=1980armor_80crit_72haste_137sta_129str,gems=20str_4str,enchant=40ap_15crit
 chest=sanctified_lightsworn_battleplate,stats=2641armor_108crit_92haste_185sta_169str,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
 waist=vengeful_noose,stats=120agi_374armor_80arpen_129ap_64haste_120sta,gems=20str_20str_20str
-legs=sanctified_lightsworn_legplates,stats=2310armor_108crit_92exp_185sta_169str,gems=10crit_10str_9agi_9int_9spi_9sta_9str_6str,enchant=75ap_22crit
+legs=sanctified_lightsworn_legplates,stats=2310armor_108crit_92exp_185sta_169str,gems=10crit_10str_10agi_10int_10spi_10sta_10str_6str,enchant=75ap_22crit
 feet=bloodsoaked_saronite_stompers,stats=1815armor_72arpen_80crit_137sta_129str,gems=10crit_10str_20str_6str,enchant=32ap
 wrists=polar_bear_claw_bracers,stats=1155armor_60crit_52hit_103sta_95str,gems=10crit_10str_20str_4str,enchant=50ap
 hands=fleshrending_gauntlets,stats=1650armor_80crit_64haste_137sta_121str,gems=10crit_10str_20str_20str_6str,enchant=44ap
@@ -35,19 +35,19 @@ finger2=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gem
 trinket1=deaths_choice,stats=256ap
 trinket2=tiny_abomination_in_a_jar,stats=85hit
 back=winding_sheet,stats=177armor_60crit_52haste_103sta_95str,gems=10crit_10str_4str,enchant=22agi
-main_hand=shadows_edge,stats=92arpen_92crit_185sta_185str,gems=34str_34str_6str,enchant=berserking,weapon=axe2h_3.70speed_872min_1309max
+main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=34str_34str_34str_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
 ranged=libram_of_three_truths
 # Gear Summary
-# gear_strength=1912
-# gear_agility=270
-# gear_stamina=1786
-# gear_intellect=19
-# gear_spirit=19
+# gear_strength=1973
+# gear_agility=271
+# gear_stamina=1800
+# gear_intellect=20
+# gear_spirit=20
 # gear_attack_power=811
 # gear_expertise_rating=144
-# gear_armor_penetration_rating=244
+# gear_armor_penetration_rating=266
 # gear_hit_rating=248
-# gear_crit_rating=1064
+# gear_crit_rating=1086
 # gear_haste_rating=436
 # gear_armor=14247
 # meta_gem=relentless_earthsiege
@@ -55,4 +55,4 @@ ranged=libram_of_three_truths
 # tier10_4pc_melee=1
 # trinket1=deaths_choice
 # trinket2=tiny_abomination_in_a_jar
-# main_hand=shadows_edge,weapon=axe2h_3.70speed_872min_1309max,enchant=berserking
+# main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking

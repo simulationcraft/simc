@@ -24,7 +24,7 @@ actions+=/speed_potion
 head=sanctified_lightsworn_helmet,heroic=1,stats=2239armor_114crit_106haste_209sta_185str,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
 neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68arpen_120ap_60haste_102sta,gems=20str
 shoulders=sanctified_lightsworn_shoulderplates,heroic=1,stats=2067armor_90crit_82haste_155sta_147str,gems=20str_4str,enchant=40ap_15crit
-chest=sanctified_lightsworn_battleplate,heroic=1,stats=2756armor_122crit_106haste_209sta_193str,gems=20str_9agi_9int_9spi_9sta_9str_6str,enchant=10str_10agi_10sta_10int_10spi
+chest=sanctified_lightsworn_battleplate,heroic=1,stats=2756armor_122crit_106haste_209sta_193str,gems=20str_10agi_10int_10spi_10sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
 waist=astrylians_sutured_cinch,heroic=1,stats=120agi_391armor_74arpen_181ap_90crit_136sta,gems=20str_20str_20str
 legs=sanctified_lightsworn_legplates,heroic=1,stats=2412armor_122crit_106exp_209sta_193str,gems=20str_20str,enchant=75ap_22crit
 feet=frostbitten_fur_boots,heroic=1,stats=120agi_477armor_74arpen_181ap_90crit_136sta,gems=20str_20str,enchant=32ap
@@ -35,17 +35,17 @@ finger2=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gem
 trinket1=deaths_choice,heroic=1,stats=288ap
 trinket2=tiny_abomination_in_a_jar,heroic=1,stats=85hit
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=20exp,enchant=22agi
-main_hand=oathbinder_charge_of_the_rangergeneral,heroic=1,stats=179agi_122arpen_228ap_114crit_195sta,gems=34str_34str_34str,enchant=berserking,weapon=polearm_3.60speed_991min_1487max
+main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=34str_34str_34str_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
 ranged=libram_of_three_truths
 # Gear Summary
-# gear_strength=1352
-# gear_agility=977
-# gear_stamina=1915
-# gear_intellect=19
-# gear_spirit=19
-# gear_attack_power=1784
+# gear_strength=1584
+# gear_agility=799
+# gear_stamina=1919
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=1556
 # gear_expertise_rating=126
-# gear_armor_penetration_rating=406
+# gear_armor_penetration_rating=398
 # gear_hit_rating=206
 # gear_crit_rating=1078
 # gear_haste_rating=561
@@ -55,4 +55,4 @@ ranged=libram_of_three_truths
 # tier10_4pc_melee=1
 # trinket1=deaths_choice,heroic=1
 # trinket2=tiny_abomination_in_a_jar,heroic=1
-# main_hand=oathbinder_charge_of_the_rangergeneral,heroic=1,weapon=polearm_3.60speed_991min_1487max,enchant=berserking
+# main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking

@@ -37,14 +37,14 @@ finger2=ring_of_the_violent_temperament,heroic=1,stats=57crit_49haste_97sta_89st
 trinket1=deaths_choice,stats=256ap
 trinket2=deaths_choice,heroic=1,stats=288ap
 back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20str_8ap,enchant=23haste
-main_hand=dualblade_butcher,heroic=1,stats=94arpen_94crit_174sta_158str,gems=20str_9agi_9int_9spi_9sta_9str_6str,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
+main_hand=dualblade_butcher,heroic=1,stats=94arpen_94crit_174sta_158str,gems=20str_10agi_10int_10spi_10sta_10str_6str,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
 ranged=libram_of_valiance
 # Gear Summary
-# gear_strength=1392
-# gear_agility=605
-# gear_stamina=1647
-# gear_intellect=19
-# gear_spirit=19
+# gear_strength=1393
+# gear_agility=606
+# gear_stamina=1648
+# gear_intellect=20
+# gear_spirit=20
 # gear_attack_power=1526
 # gear_expertise_rating=154
 # gear_armor_penetration_rating=151

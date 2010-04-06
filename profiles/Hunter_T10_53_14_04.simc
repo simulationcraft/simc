@@ -38,7 +38,7 @@ trinket1=whispering_fanged_skull,heroic=1,stats=148crit,equip=onattackhit_1250ap
 trinket2=deathbringers_will,heroic=1,stats=167arpen
 back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20arpen_8ap,enchant=22agi
 main_hand=oathbinder_charge_of_the_rangergeneral,heroic=1,stats=179agi_122arpen_228ap_114crit_195sta,gems=20arpen_20arpen_20arpen,enchant=110ap,weapon=polearm_3.60speed_991min_1487max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_66ap_41crit_33haste_62sta,gems=20arpen,enchant=40crit,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20arpen,enchant=40crit,weapon=crossbow_3.00speed_782min_1071max
 # Gear Summary
 # gear_strength=20
 # gear_agility=1930
@@ -46,10 +46,10 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_66ap_41crit_33haste
 # gear_intellect=646
 # gear_spirit=20
 # gear_attack_power=2564
-# gear_armor_penetration_rating=1328
+# gear_armor_penetration_rating=1361
 # gear_hit_rating=267
 # gear_crit_rating=1330
-# gear_haste_rating=93
+# gear_haste_rating=60
 # gear_armor=9049
 # meta_gem=relentless_earthsiege
 # tier10_2pc_melee=1

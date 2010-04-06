@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T10_00_53_18
-origin="http://profiler.wowhead.com/profile=20987909"
+origin="http://profiler.wowhead.com/profile=21149986"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -26,22 +26,22 @@ actions+=/blood_strike,if=blood=1&death<=1
 actions+=/frost_strike
 actions+=/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75
 actions+=/howling_blast,if=buff.rime.react
-head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_114crit_106arpen_185str_209sta,gems=relentless_earthsiege_34arpen_8str,enchant=50ap_20crit
-neck=lanathels_chain_of_flagellation,heroic=1,stats=52exp_73arpen_108str_116sta,gems=10hit_10str_4str
-shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_90crit_82arpen_147str_155sta,gems=34arpen_4str,enchant=40ap_15crit
-chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_122crit_106arpen_193str_209sta,gems=10hit_10exp_10str_10agi_10sta_10int_10spi_6str,enchant=10str_10agi_10sta_10int_10spi
-waist=coldwraith_links,heroic=1,stats=1550armor_85crit_78arpen_139str_155sta,gems=10hit_10str_20arpen_20arpen_6str
-legs=sanctified_scourgelord_legplates,heroic=1,stats=2412armor_122crit_106exp_193str_209sta,gems=20arpen_20arpen,enchant=75ap_22crit
-feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_90crit_74arpen_139str_155sta,gems=20arpen_20arpen,enchant=12crit_12hit
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_60hit_68crit_108str_116sta,gems=10hit_10str_34arpen_4str,enchant=50ap
-hands=fleshrending_gauntlets,heroic=1,stats=1723armor_90crit_74haste_139str_155sta,gems=10hit_10str_20arpen_20arpen_6str,enchant=20hit
-finger1=might_of_blight,heroic=1,stats=68crit_60arpen_108str_116sta,gems=10hit_10str_4str
-finger2=ashen_band_of_endless_might,stats=59hit_59crit_99str_107sta,gems=10hit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=relentless_earthsiege_34arpen_8str,enchant=50ap_20crit
+neck=lanathels_chain_of_flagellation,heroic=1,stats=73arpen_52exp_116sta_108str,gems=10hit_10str_4str
+shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_82arpen_90crit_155sta_147str,gems=34arpen_4str,enchant=40ap_15crit
+chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_106arpen_122crit_209sta_193str,gems=10exp_10hit_10agi_10int_10spi_10sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,heroic=1,stats=1550armor_78arpen_85crit_155sta_139str,gems=10hit_10str_20arpen_20arpen_6str
+legs=sanctified_scourgelord_legplates,heroic=1,stats=2412armor_122crit_106exp_209sta_193str,gems=20arpen_20arpen,enchant=75ap_22crit
+feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74arpen_90crit_155sta_139str,gems=20arpen_20arpen,enchant=12crit_12hit
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10hit_10str_34arpen_4str,enchant=50ap
+hands=fleshrending_gauntlets,heroic=1,stats=1723armor_90crit_74haste_155sta_139str,gems=10hit_10str_20arpen_20arpen_6str,enchant=20hit
+finger1=might_of_blight,heroic=1,stats=60arpen_68crit_116sta_108str,gems=10hit_10str_4str
+finger2=ashen_band_of_endless_might,stats=59crit_59hit_107sta_99str,gems=10hit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
 trinket1=deaths_choice,heroic=1,stats=288ap
-trinket2=deathbringers_will,stats=167arpen
-back=winding_sheet,heroic=1,stats=185armor_68crit_60haste_108str_116sta,gems=10hit_10str_4str,enchant=23haste
-main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=95ap_56crit_48haste_84agi_84sta,gems=20arpen,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_481min_895max
-off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=95ap_56crit_48haste_84agi_84sta,gems=20arpen,enchant=rune_of_razorice,weapon=axe_2.60speed_481min_895max
+trinket2=deathbringers_will,heroic=1,stats=167arpen
+back=winding_sheet,heroic=1,stats=185armor_68crit_60haste_116sta_108str,gems=10hit_10str_4str,enchant=23haste
+main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_481min_895max
+off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen,enchant=rune_of_razorice,weapon=axe_2.60speed_481min_895max
 ranged=sigil_of_the_hanged_man
 # Gear Summary
 # gear_strength=1806
@@ -60,6 +60,6 @@ ranged=sigil_of_the_hanged_man
 # tier10_2pc_melee=1
 # tier10_4pc_melee=1
 # trinket1=deaths_choice,heroic=1
-# trinket2=deathbringers_will
+# trinket2=deathbringers_will,heroic=1
 # main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max,enchant=rune_of_the_fallen_crusader
 # off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max,enchant=rune_of_razorice

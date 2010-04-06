@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T10_51_00_20_GoD
-origin="http://profiler.wowhead.com/profile=20837965"
+origin="http://profiler.wowhead.com/profile=21149980"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -26,18 +26,18 @@ actions+=/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_
 actions+=/dancing_rune_weapon,if=(dot.frost_fever.remains<=5|dot.blood_plague.remains<=5)&buff.bloodlust.react
 actions+=/empower_rune_weapon,if=blood=0&unholy=0&frost=0
 actions+=/death_coil
-head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_114crit_106arpen_185str_209sta,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
-neck=lanathels_chain_of_flagellation,heroic=1,stats=52exp_73arpen_108str_116sta,gems=20str
-shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_90crit_82arpen_147str_155sta,gems=20str_4str,enchant=40ap_15crit
-chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_122crit_106arpen_193str_209sta,gems=34str_10str_10agi_10sta_10int_10spi_6str,enchant=10str_10agi_10sta_10int_10spi
-waist=coldwraith_links,heroic=1,stats=1550armor_85crit_78arpen_139str_155sta,gems=20str_20str_20str
-legs=sanctified_scourgelord_legplates,heroic=1,stats=2412armor_122crit_106exp_193str_209sta,gems=20str_20str,enchant=75ap_22crit
-feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_90crit_74arpen_139str_155sta,gems=20str_20str,enchant=12crit_12hit
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_60hit_68crit_108str_116sta,gems=20str_34str,enchant=50ap
-hands=sanctified_scourgelord_gauntlets,heroic=1,stats=1723armor_82hit_90crit_147str_155sta,gems=10crit_10str_34str_4str,enchant=15str
-finger1=might_of_blight,heroic=1,stats=68crit_60arpen_108str_116sta,gems=20str
-finger2=ashen_band_of_endless_might,stats=59hit_59crit_99str_107sta,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
-trinket1=deathbringers_will,stats=167arpen
+head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
+neck=lanathels_chain_of_flagellation,heroic=1,stats=73arpen_52exp_116sta_108str,gems=20str
+shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_82arpen_90crit_155sta_147str,gems=20str_4str,enchant=40ap_15crit
+chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_106arpen_122crit_209sta_193str,gems=34str_10agi_10int_10spi_10sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,heroic=1,stats=1550armor_78arpen_85crit_155sta_139str,gems=20str_20str_20str
+legs=sanctified_scourgelord_legplates,heroic=1,stats=2412armor_122crit_106exp_209sta_193str,gems=20str_20str,enchant=75ap_22crit
+feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74arpen_90crit_155sta_139str,gems=20str_20str,enchant=12crit_12hit
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=20str_34str,enchant=50ap
+hands=sanctified_scourgelord_gauntlets,heroic=1,stats=1723armor_90crit_82hit_155sta_147str,gems=10crit_10str_34str_4str,enchant=15str
+finger1=might_of_blight,heroic=1,stats=60arpen_68crit_116sta_108str,gems=20str
+finger2=ashen_band_of_endless_might,stats=59crit_59hit_107sta_99str,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+trinket1=deathbringers_will,heroic=1,stats=167arpen
 trinket2=deaths_choice,heroic=1,stats=288ap
 back=garroshs_rage,heroic=1,stats=182armor_65crit_57hit_111sta_103str,gems=20str_4str,enchant=23haste
 main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20str_20str_20str_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
@@ -58,6 +58,6 @@ ranged=sigil_of_virulence
 # meta_gem=relentless_earthsiege
 # tier10_2pc_melee=1
 # tier10_4pc_melee=1
-# trinket1=deathbringers_will
+# trinket1=deathbringers_will,heroic=1
 # trinket2=deaths_choice,heroic=1
 # main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking

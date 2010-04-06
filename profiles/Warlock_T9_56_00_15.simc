@@ -23,23 +23,23 @@ actions+=/drain_soul,health_percentage<=25,interrupt=1
 actions+=/shadow_bolt
 actions+=/dark_pact,mana_percentage<=20,buff_refresh=1,moving=1
 actions+=/dark_pact
-head=guldans_hood_of_triumph,heroic=1,stats=282armor_94crit_151sp_116sta_116int_86spi,gems=chaotic_skyflare_12sp_10spi_9sp,enchant=30sp_20crit
-neck=cry_of_the_valkyr,heroic=1,stats=57crit_43haste_91sp_65sta_65int,gems=10haste_12sp_5sp
-shoulders=guldans_shoulderpads_of_triumph,heroic=1,stats=260armor_76crit_124sp_86sta_86int_68spi,gems=10haste_12sp_5sp,enchant=24sp_15crit
-chest=guldans_robe_of_triumph,heroic=1,stats=347armor_94hit_160sp_116sta_116int_94spi,gems=23sp_12sp_10spi_7sp,enchant=10str_10agi_10sta_10int_10spi
-waist=belt_of_the_tenebrous_mist,heroic=1,stats=195armor_60haste_114sp_86sta_86int_76spi,gems=12sp_10spi_23sp_23sp_7sp
-legs=guldans_leggings_of_triumph,heroic=1,stats=303armor_102crit_86haste_160sp_116sta_116int,gems=23sp_10haste_12sp_7sp,enchant=50sp_20spi
-feet=sandals_of_the_mourning_widow,heroic=1,stats=238armor_68haste_124sp_86sta_86int_76spi,gems=12sp_10spi_23sp_7sp,enchant=12crit_12hit
-wrists=bindings_of_the_ashen_saint,heroic=1,stats=152armor_49haste_91sp_65sta_65int_57spi,gems=12sp_10spi_5sp,enchant=30sp
-hands=guldans_gloves_of_triumph,heroic=1,stats=217armor_68hit_76crit_124sp_86sta_86int,gems=23sp_4crit,enchant=28sp
-finger1=lurid_manifestation,heroic=1,stats=53crit_91sp_65sta_65int_50spi,gems=10haste_12sp_5sp,enchant=23sp
-finger2=conductive_seal,stats=55haste_75sp_52sta_48int_39spi,gems=12sp_10spi_5sp,enchant=23sp
+head=guldans_hood_of_triumph,heroic=1,stats=282armor_94crit_116int_86spi_151sp_116sta,gems=chaotic_skyflare_10spi_12sp_9sp,enchant=30sp_20crit
+neck=cry_of_the_valkyr,heroic=1,stats=57crit_43haste_65int_91sp_65sta,gems=10haste_12sp_5sp
+shoulders=guldans_shoulderpads_of_triumph,heroic=1,stats=260armor_76crit_86int_68spi_124sp_86sta,gems=10haste_12sp_5sp,enchant=24sp_15crit
+chest=guldans_robe_of_triumph,heroic=1,stats=347armor_94hit_116int_94spi_160sp_116sta,gems=23sp_10spi_12sp_7sp,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_tenebrous_mist,heroic=1,stats=195armor_60haste_86int_76spi_114sp_86sta,gems=10spi_12sp_23sp_23sp_7sp
+legs=guldans_leggings_of_triumph,heroic=1,stats=303armor_102crit_86haste_116int_160sp_116sta,gems=23sp_10haste_12sp_7sp,enchant=50sp_20spi
+feet=sandals_of_the_mourning_widow,heroic=1,stats=238armor_68haste_86int_76spi_124sp_86sta,gems=10spi_12sp_23sp_7sp,enchant=12crit_12hit
+wrists=bindings_of_the_ashen_saint,heroic=1,stats=152armor_49haste_65int_57spi_91sp_65sta,gems=10spi_12sp_5sp,enchant=30sp
+hands=guldans_gloves_of_triumph,heroic=1,stats=217armor_76crit_68hit_86int_124sp_86sta,gems=23sp_4crit,enchant=28sp
+finger1=lurid_manifestation,heroic=1,stats=53crit_65int_50spi_91sp_65sta,gems=10haste_12sp_5sp,enchant=23sp
+finger2=conductive_seal,stats=55haste_48int_39spi_75sp_52sta,gems=10spi_12sp_5sp,enchant=23sp
 trinket1=reign_of_the_dead,heroic=1,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=flare_of_the_heavens,stats=120crit,equip=onspellcast_850sp_10%_10dur_45cd
-back=lady_liadrins_conviction,heroic=1,stats=182armor_57haste_105sp_74sta_74int_65spi,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
-main_hand=barb_of_tarasque,heroic=1,stats=51hit_57haste_692sp_48sta_65int,gems=12sp_10spi_5sp,enchant=63sp,weapon=dagger_1.80speed_108.12min_342.12max
-off_hand=lightbane_focus,heroic=1,stats=43hit_51haste_80sp_58sta_55int,gems=10haste_12sp_5sp
-ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_4spi
+back=lady_liadrins_conviction,heroic=1,stats=182armor_57haste_74int_65spi_105sp_74sta,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
+main_hand=barb_of_tarasque,heroic=1,stats=57haste_51hit_65int_692sp_48sta,gems=10spi_12sp_5sp,enchant=63sp,weapon=dagger_1.80speed_108.12001037597656min_342.1199951171875max
+off_hand=lightbane_focus,heroic=1,stats=51haste_43hit_55int_80sp_58sta,gems=10haste_12sp_5sp
+ranged=petrified_ivy_sprig,stats=29hit_19int_22spi_45sp_26sta,gems=10haste_12sp_4spi
 # Gear Summary
 # gear_strength=10
 # gear_agility=10
@@ -55,4 +55,4 @@ ranged=petrified_ivy_sprig,stats=29hit_45sp_26sta_19int_22spi,gems=10haste_12sp_
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
 # back=lady_liadrins_conviction,heroic=1,enchant=lightweave_embroidery
-# main_hand=barb_of_tarasque,heroic=1,weapon=dagger_1.80speed_108.12min_342.12max
+# main_hand=barb_of_tarasque,heroic=1,weapon=dagger_1.80speed_108.12001037597656min_342.1199951171875max

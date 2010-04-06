@@ -47,7 +47,7 @@ finger2=dexterous_brightstone_ring,stats=76agi_50arpen_101ap_50haste_76sta
 trinket1=deaths_choice,heroic=1,stats=288ap
 trinket2=mjolnir_runestone,stats=102crit,equip=onattackhit_665arpen_15%_10dur_45cd
 back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20agi_8ap,enchant=22agi
-main_hand=twins_pact,heroic=1,stats=137agi_94arpen_204ap_102haste_141sta,gems=10str_10agi_10sta_10int_10spi_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_540min_811max
+main_hand=twins_pact,heroic=1,stats=137agi_94arpen_204ap_102haste_141sta,gems=10agi_10int_10spi_10sta_10str_20arpen_6agi,enchant=berserking,weapon=staff_2.40speed_540min_811max
 ranged=idol_of_mutilation
 # Gear Summary
 # gear_strength=20
