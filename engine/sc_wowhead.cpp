@@ -733,7 +733,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   if ( builds ) // !!! NEW FORMAT !!!
   {
-    js_node_t* build = js_t::get_node( builds, active_talents ? "1" : "0" );
+    js_node_t* build = js_t::get_node( builds, ( active_talents ? "1" : "0" ) );
     if( ! build )
     {
       sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );

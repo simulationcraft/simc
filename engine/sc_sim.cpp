@@ -302,7 +302,7 @@ static bool parse_wowhead( sim_t*             sim,
   if ( name == "wowhead" )
   {
     std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, value, "," );
+    int num_splits = util_t::string_split( splits, value, ",." );
 
     if ( num_splits == 1 )
     {

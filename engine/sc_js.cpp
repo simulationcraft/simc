@@ -230,6 +230,13 @@ static js_node_t* search_tree( js_node_t*         root,
   if ( depth == 0 ) return 0;
 
   int num_children = ( int ) root -> children.size();
+
+  for ( int i=0; i < num_children; i++ )
+  {
+    js_node_t* node = search_tree( root -> children[ i ], name_str, 0 );
+    if ( node ) return node;
+  }
+
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = search_tree( root -> children[ i ], name_str, depth-1 );
