@@ -570,7 +570,7 @@ void SimulationCraftWindow::createImportTab()
   importTab->addTab( armoryView, "Armory" );
 
   wowheadView = new SimulationCraftWebView( this );
-  wowheadView->setUrl( QUrl( "http://ptr.wowhead.com/?profiles" ) );
+  wowheadView->setUrl( QUrl( "http://ptr.wowhead.com/profiles" ) );
   importTab->addTab( wowheadView, "Wowhead" );
   
   createRawrTab();
@@ -715,7 +715,7 @@ void SimulationCraftWindow::createBestInSlotTab()
     QString url = "";
     switch( b.site )
     {
-    case TAB_WOWHEAD: url += "http://www.wowhead.com/?profile="; break;
+    case TAB_WOWHEAD: url += "http://www.wowhead.com/profile="; break;
     default: assert(0);
     }
     url += b.id;
