@@ -771,7 +771,7 @@ struct melee_t : public shaman_attack_t
     double h = shaman_attack_t::haste();
     if ( p -> buffs_flurry -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + p -> set_bonus.tier7_4pc_melee() ) );
+      h *= 1.0 / ( 1.0 + 0.05 * ( p -> talents.flurry + 1 + p -> set_bonus.tier7_4pc_melee() ) );
     }
     return h;
   }
