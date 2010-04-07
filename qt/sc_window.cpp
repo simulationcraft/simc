@@ -1412,7 +1412,10 @@ void SimulationCraftWindow::rawrButtonClicked( bool checked )
     dir.setSorting( QDir::Name );
     dir.setFilter( QDir::Files );
     dir.setNameFilters( QStringList( "*.xml" ) );
-    rawrDir->setText( dir.absolutePath() + DIRECTORY_DELIMITER );
+    QString pathName = dir.absolutePath();
+    if ( ! strcmp( DIRECTORY_DELIMITER, "\\" ) ) pathName.replace( QString( "/" ), QString( "\\" ) );
+    pathName += DIRECTORY_DELIMITER;
+    rawrDir->setText( pathName );
     rawrList->clear();
     rawrList->addItems( dir.entryList() );
   }
