@@ -5,7 +5,7 @@ origin="http://profiler.wowhead.com/profile=14651857"
 level=80
 race=tauren
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000053351012300132331152313515000002
+talents=http://www.wowarmory.com/talent-calc.xml?cid=3&tal=502000000000000000000000000053351012300132331350313515000002
 glyphs=serpent_sting/steady_shot/hunters_mark/mend_pet/feign_death
 actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino
