@@ -655,6 +655,8 @@ void SimulationCraftWindow::createBestInSlotTab()
       { HUNTER,     T9, "Hunter_T9_07_57_07_HM",            TAB_WOWHEAD, "14651857" },
       { HUNTER,     T9, "Hunter_T9_53_14_04",               TAB_WOWHEAD, "14663160" },
       { HUNTER,    T10, "Hunter_T10_53_14_04",              TAB_WOWHEAD, "21000437" },
+      { HUNTER,    T10, "Hunter_T10_07_57_07",              TAB_WOWHEAD, "21156150" },
+      { HUNTER,    T10, "Hunter_T10_07_57_07_HM",           TAB_WOWHEAD, "21156134" },
 
       { MAGE,       T9, "Mage_T9_00_53_18",                 TAB_WOWHEAD, "14306487" },
       { MAGE,       T9, "Mage_T9_20_00_51",                 TAB_WOWHEAD, "21000875" },

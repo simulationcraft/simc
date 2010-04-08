@@ -5,10 +5,14 @@ Globals_T10.simc
 optimal_raid=1
 
 Hunter_T10_53_14_04.simc
+Hunter_T10_07_57_07.simc
+Hunter_T10_07_57_07_HM.simc
 
 # schuntert8
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=21000437 name=Hunter_T10_53_14_04    save=Hunter_T10_53_14_04.simc
+#wowhead=21156150 name=Hunter_T10_07_57_07    save=Hunter_T10_07_57_07.simc
+#wowhead=21156134 name=Hunter_T10_07_57_07_HM save=Hunter_T10_07_57_07_HM.simc
 
 #save_profiles=1
