@@ -5,6 +5,7 @@ Globals_T9.simc
 optimal_raid=1
 
 Hunter_T9_02_18_51.simc
+Hunter_T9_01_18_52_Rep.simc
 Hunter_T9_07_57_07.simc
 Hunter_T9_07_57_07_HM.simc
 Hunter_T9_53_14_04.simc
@@ -15,6 +16,7 @@ Hunter_T9_53_14_04.simc
 #wowhead=14189960 name=Hunter_T9_07_57_07    save=Hunter_T9_07_57_07.simc
 #wowhead=14651857 name=Hunter_T9_07_57_07_HM save=Hunter_T9_07_57_07_HM.simc
 #wowhead=14649679 name=Hunter_T9_02_18_51    save=Hunter_T9_02_18_51.simc
+#wowhead=21156704 name=Hunter_T9_01_18_52    save=Hunter_T9_01_18_52_Rep.simc
 #wowhead=14663160 name=Hunter_T9_53_14_04    save=Hunter_T9_53_14_04.simc
 
 #save_profiles=1
