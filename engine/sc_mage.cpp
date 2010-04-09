@@ -3320,6 +3320,14 @@ void mage_t::init_actions()
     if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
     action_list_str += "/arcane_brilliance";
     if ( talents.focus_magic ) action_list_str += "/focus_magic";
+    if ( primary_tree() == TREE_ARCANE )
+    {
+      action_list_str += "/speed_potion,if=!in_combat";
+    }
+    else
+    {
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+    }
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
     if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
@@ -3343,6 +3351,7 @@ void mage_t::init_actions()
     if ( talents.combustion   ) action_list_str += "/combustion";
     if ( talents.arcane_power ) action_list_str += "/arcane_power";
     if ( talents.icy_veins    ) action_list_str += "/icy_veins";
+    action_list_str += "/mirror_image";
     if ( talents.presence_of_mind )
     {
       action_list_str += "/presence_of_mind,";
@@ -3351,23 +3360,23 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       action_list_str += "/mana_gem";
+      action_list_str += "/mana_potion";
+      action_list_str += "/evocation,if=!buff.arcane_blast.up";
       action_list_str += "/choose_rotation";
-      action_list_str += "/arcane_missiles,if=buff.missile_barrage.up";
-      action_list_str += "/mirror_image";
+      action_list_str += "/arcane_missiles,if=dpm&buff.missile_barrage.react";
+      action_list_str += "/arcane_missiles,if=dps&buff.missile_barrage.react&buff.arcane_blast.stack>3";
+      action_list_str += "/arcane_missiles,if=dps&buff.missile_barrage.react&buff.arcane_power.up";
       action_list_str += "/arcane_blast,if=dpm&buff.arcane_blast.stack<3";
       action_list_str += "/arcane_blast,if=dps";
-      action_list_str += "/mana_potion";
-      action_list_str += "/evocation";
       action_list_str += "/arcane_missiles";
       if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
     else if ( primary_tree() == TREE_FIRE )
     {
-      action_list_str += "/mana_gem/speed_potion";
+      action_list_str += "/mana_gem";
+      if ( talents.hot_streak  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       if ( talents.living_bomb ) action_list_str += "/living_bomb";
-      if ( talents.hot_streak  ) action_list_str += "/pyroblast,hot_streak=1";
-      action_list_str += "/mirror_image";
       if ( talents.piercing_ice && talents.ice_shards )
       {
         action_list_str += "/frostfire_bolt";
@@ -3382,15 +3391,14 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      action_list_str += "/mana_gem/speed_potion";
+      action_list_str += "/mana_gem";
       action_list_str += "/deep_freeze";
       action_list_str += "/frost_bolt,frozen=1";
       if ( talents.cold_snap ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
       if ( talents.brain_freeze ) 
       {
-	action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
+	      action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
       }
-      action_list_str += "/mirror_image";
       action_list_str += "/frost_bolt";
       action_list_str += "/evocation";
       action_list_str += "/ice_lance,moving=1,frozen=1"; // when moving

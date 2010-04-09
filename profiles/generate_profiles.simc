@@ -86,9 +86,8 @@ wowhead=21157167 name=Hunter_T10_03_15_53_HP         save=Hunter_T10_03_15_53_HP
 # T9: scmaget9
 
 wowhead=14306487 name=Mage_T9_00_53_18 		     save=Mage_T9_00_53_18.simc
-wowhead=21000875 name=Mage_T9_20_00_51               save=Mage_T9_20_00_51.simc
+wowhead=21000875 name=Mage_T9_18_00_53               save=Mage_T9_18_00_53.simc
 wowhead=14306481 name=Mage_T9_20_51_00               save=Mage_T9_20_51_00.simc
-wowhead=14306474 name=Mage_T9_53_18_00               save=Mage_T9_53_18_00.simc
 wowhead=14306468 name=Mage_T9_57_03_11               save=Mage_T9_57_03_11.simc
 
 
