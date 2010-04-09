@@ -576,13 +576,15 @@ static void stack_maelstrom_weapon( attack_t* a )
   if ( p -> talents.maelstrom_weapon == 0 ) return;
 
   double chance = a -> weapon -> proc_chance_on_swing( p -> talents.maelstrom_weapon * 2.0 );
+  bool can_increase = p -> buffs_maelstrom_weapon -> check() <  p -> buffs_maelstrom_weapon -> max_stack;
 
   if ( p -> set_bonus.tier8_4pc_melee() ) chance *= 1.20;
 
   p -> buffs_maelstrom_weapon -> trigger( 1, 1, chance );
 
-  if ( p -> set_bonus.tier10_4pc_melee() && ( p -> buffs_maelstrom_weapon -> stack() == 5 ) )
-          p -> buffs_tier10_4pc_melee -> trigger();
+  if ( p -> set_bonus.tier10_4pc_melee() &&
+       ( can_increase && p -> buffs_maelstrom_weapon -> stack() == p -> buffs_maelstrom_weapon -> max_stack ) )
+    p -> buffs_tier10_4pc_melee -> trigger();
 }
 
 // trigger_improved_stormstrike =============================================
