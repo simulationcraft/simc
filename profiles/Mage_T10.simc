@@ -5,8 +5,7 @@ Globals_T10.simc
 optimal_raid=1
 
 Mage_T10_00_53_18.simc
-Mage_T10_18_00_53.simc	 focus_magic_target=Mage_T10_20_00_51
-Mage_T10_20_00_51.simc   focus_magic_target=Mage_T10_20_51_00
+Mage_T10_18_00_53.simc	 focus_magic_target=Mage_T10_20_51_00
 Mage_T10_20_51_00.simc   focus_magic_target=Mage_T10_57_03_11
 Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 
@@ -16,6 +15,5 @@ Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 
 #wowhead=21150130 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
 #wowhead=21150215 name=Mage_T10_18_00_53		 save=Mage_T10_18_00_53.simc
-#wowhead=21150274 name=Mage_T10_20_00_51		 save=Mage_T10_20_00_51.simc
 #wowhead=21150300 name=Mage_T10_20_51_00		 save=Mage_T10_20_51_00.simc
 #wowhead=21150329 name=Mage_T10_57_03_11		 save=Mage_T10_57_03_11.simc
