@@ -25,10 +25,10 @@ Priest_T10_13_00_58_277_troll.simc
 #wowhead=18052647 name=Priest_T10_13_00_58_264_SWD  save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
 
 #wowhead=20704178 name=Priest_T10_13_00_58_277	    save=Priest_T10_13_00_58_277.simc
-#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=black_magic,weapon=mace_1.80speed_160min_447max
 
 #wowhead=20704178 name=Priest_T10_13_00_58_277_SWD   save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
-#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=black_magic,weapon=mace_1.80speed_160min_447max
 
 
 ## Different races
@@ -38,14 +38,14 @@ Priest_T10_13_00_58_277_troll.simc
 #wowhead=21000736 name=Priest_T10_13_00_58_264_draenei      save=Priest_T10_13_00_58_264_draenei.simc
 
 #wowhead=21000778 name=Priest_T10_13_00_58_277_draenei    save=Priest_T10_13_00_58_277_draenei.simc
-#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=black_magic,weapon=mace_1.80speed_160min_447max
 
 ## Troll
 
 #wowhead=21000831 name=Priest_T10_13_00_58_264_troll	    save=Priest_T10_13_00_58_264_troll.simc
 
 #wowhead=21000835 name=Priest_T10_13_00_58_277_troll	    save=Priest_T10_13_00_58_277_troll.simc
-#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+#main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=black_magic,weapon=mace_1.80speed_160min_447max
 
 
 ## Extra intermediate profiles

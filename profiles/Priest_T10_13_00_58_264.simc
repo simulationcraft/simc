@@ -15,7 +15,7 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/speed_potion
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1,if=!ticking
 actions+=/vampiric_touch,if=!ticking

@@ -15,7 +15,7 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/speed_potion
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1,if=!ticking
 actions+=/vampiric_touch,if=!ticking
@@ -38,7 +38,7 @@ wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_58int_80sp_58sta,
 hands=velens_handwraps_of_triumph,stats=207armor_67crit_59hit_77int_109sp_77sta,gems=10crit_12sp_5sp,enchant=28sp
 finger1=nebula_band,stats=46crit_36haste_36int_74sp_48sta,gems=23sp,enchant=23sp
 finger2=firestorm_ring,heroic=1,stats=33crit_56hit_59int_80sp_54sta,gems=23sp_5sp,enchant=23sp
-trinket1=eye_of_the_broodmother,stats=87crit,equip=onspellcast_25sp_5stack_10dur
+trinket1=eye_of_the_broodmother,stats=87crit,equip=onspelldamage_25sp_5stack_10dur
 trinket2=illustration_of_the_dragon_soul,equip=onspellcast_20sp_10stack_10dur
 back=pennant_cloak,stats=157armor_34crit_42haste_46int_64sp_54sta,gems=23sp,enchant=lightweave_embroidery
 main_hand=blade_of_the_silver_disciple,heroic=1,stats=37crit_58haste_49int_621sp_44sta,gems=23sp_4crit,enchant=63sp,weapon=dagger_1.80speed_97.420013427734375min_310.42001342773437max

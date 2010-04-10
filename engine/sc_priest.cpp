@@ -2166,7 +2166,7 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-      action_list_str += "/speed_potion";
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
       action_list_str += "/shadow_fiend";
       action_list_str += "/shadow_word_pain,shadow_weaving_wait=1,if=!ticking";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";

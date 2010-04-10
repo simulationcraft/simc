@@ -3,7 +3,7 @@
 priest=Priest_T9_13_00_58_258_SWD
 origin="http://profiler.wowhead.com/profile=13043848"
 level=80
-race=night_elf
+race=undead
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0503203000000000000000000000000000000000000000000000000325023051223010323152301351
 glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
@@ -15,7 +15,8 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/speed_potion
+actions+=/use_item,name=zabras_handwraps_of_triumph
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
 actions+=/shadow_fiend
 actions+=/shadow_word_pain,shadow_weaving_wait=1,if=!ticking
 actions+=/vampiric_touch,if=!ticking
@@ -28,37 +29,36 @@ actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 head=aurora_of_transcendence,stats=269armor_86crit_76haste_74int_150sp_106sta,gems=chaotic_skyflare_10spi_12sp_9sp,enchant=30sp_20crit
-neck=wail_of_the_valkyr,heroic=1,stats=57crit_43haste_65int_91sp_65sta,gems=10crit_12sp_5sp
-shoulders=velens_mantle_of_triumph,heroic=1,stats=260armor_68crit_86int_76spi_124sp_86sta,gems=10crit_12sp_5sp,enchant=24sp_15crit
-chest=velens_raiments_of_triumph,heroic=1,stats=347armor_94haste_116int_94spi_160sp_116sta,gems=23sp_23sp,enchant=10str_10agi_10sta_10int_10spi
-waist=cord_of_biting_cold,heroic=1,stats=195armor_73crit_58hit_86int_114sp_86sta,gems=10spi_12sp_23sp_23sp_7sp
-legs=velens_pants_of_triumph,heroic=1,stats=303armor_86haste_102hit_116int_160sp_116sta,gems=23sp_23sp,enchant=50sp_20spi
-feet=boots_of_the_mourning_widow,heroic=1,stats=238armor_68haste_86int_76spi_124sp_86sta,gems=23sp_23sp,enchant=12crit_12hit
-wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_58int_80sp_58sta,gems=23sp,enchant=30sp
-hands=velens_handwraps_of_triumph,heroic=1,stats=217armor_76crit_68hit_86int_124sp_86sta,gems=10crit_12sp_5sp,enchant=28sp
-finger1=band_of_deplorable_violence,heroic=1,stats=53crit_65int_50spi_91sp_65sta,gems=10crit_12sp_5sp,enchant=23sp
-finger2=nebula_band,stats=46crit_36haste_36int_74sp_48sta,gems=10crit_12sp_4crit,enchant=23sp
+neck=cry_of_the_valkyr,heroic=1,stats=57crit_43haste_65int_91sp_65sta,gems=10haste_12sp_5sp
+shoulders=zabras_mantle_of_triumph,heroic=1,stats=260armor_68crit_86int_76spi_124sp_86sta,gems=10haste_12sp_5sp,enchant=24sp_15crit
+chest=zabras_raiments_of_triumph,heroic=1,stats=347armor_94haste_116int_94spi_160sp_116sta,gems=23sp_10spi_12sp_7sp,enchant=15spi
+waist=belt_of_the_tenebrous_mist,heroic=1,stats=195armor_60haste_86int_76spi_114sp_86sta,gems=10spi_12sp_23sp_23sp_7sp
+legs=zabras_pants_of_triumph,heroic=1,stats=303armor_86haste_102hit_116int_160sp_116sta,gems=23sp_10spi_12sp_7sp,enchant=50sp_20spi
+feet=sandals_of_the_mourning_widow,heroic=1,stats=238armor_68haste_86int_76spi_124sp_86sta,gems=10spi_12sp_10haste_12sp_7sp,enchant=12crit_12hit
+wrists=bejeweled_wizards_bracers,stats=145armor_42crit_50haste_58int_80sp_58sta,gems=10spi_12sp_5sp,enchant=30sp
+hands=zabras_handwraps_of_triumph,heroic=1,stats=217armor_76crit_68hit_86int_124sp_86sta,gems=10haste_12sp_5sp,enchant=hyperspeed_accelerators
+finger1=lurid_manifestation,heroic=1,stats=53crit_65int_50spi_91sp_65sta,gems=10haste_12sp_5sp
+finger2=runed_signet_of_the_kirin_tor,stats=53crit_54haste_54int_94sp_78sta
 trinket1=reign_of_the_unliving,heroic=1,stats=168sp,equip=onspelldirectcrit_2117fire_3stack_2.0cd
 trinket2=reign_of_the_unliving,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2.0cd
-back=jainas_radiance,heroic=1,stats=182armor_65crit_57haste_74int_105sp_74sta,gems=23sp_5sp,enchant=lightweave_embroidery
-main_hand=miserys_end,heroic=1,stats=44crit_66haste_66int_701sp_66sta,enchant=63sp,weapon=mace_1.80speed_108.12001037597656min_342.1199951171875max
-off_hand=symbol_of_transgression,heroic=1,stats=57crit_57hit_65int_100sp_65sta
-ranged=rod_of_imprisoned_souls,heroic=1,stats=31crit_24haste_29int_50sp_40sta
+back=aethas_intensity,heroic=1,stats=182armor_65crit_57haste_74int_105sp_74sta,gems=23sp_5sp,enchant=lightweave_embroidery
+main_hand=barb_of_tarasque,heroic=1,stats=57haste_51hit_65int_692sp_48sta,gems=10spi_12sp_5sp,enchant=black_magic,weapon=dagger_1.80speed_108.12001037597656min_342.1199951171875max
+off_hand=talisman_of_heedless_sins,heroic=1,stats=57crit_57hit_65int_100sp_65sta
+ranged=scepter_of_imprisoned_souls,heroic=1,stats=31crit_24haste_29int_50sp_40sta
 # Gear Summary
-# gear_strength=10
-# gear_agility=10
-# gear_stamina=1173
-# gear_intellect=1118
-# gear_spirit=347
-# gear_spell_power=3192
-# gear_hit_rating=297
-# gear_crit_rating=820
-# gear_haste_rating=600
+# gear_stamina=1175
+# gear_intellect=1125
+# gear_spirit=478
+# gear_spell_power=3042
+# gear_hit_rating=290
+# gear_crit_rating=656
+# gear_haste_rating=719
 # gear_armor=2156
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1
 # tier9_4pc_caster=1
-# back=jainas_radiance,heroic=1,enchant=lightweave_embroidery
-# main_hand=miserys_end,heroic=1,weapon=mace_1.80speed_108.12001037597656min_342.1199951171875max
+# hands=zabras_handwraps_of_triumph,heroic=1,enchant=hyperspeed_accelerators
+# back=aethas_intensity,heroic=1,enchant=lightweave_embroidery
+# main_hand=barb_of_tarasque,heroic=1,weapon=dagger_1.80speed_108.12001037597656min_342.1199951171875max,enchant=black_magic
 ## Variables
 use_shadow_word_death=1
