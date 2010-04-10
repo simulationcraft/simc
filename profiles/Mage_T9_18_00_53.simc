@@ -43,16 +43,16 @@ trinket2=reign_of_the_dead,stats=150sp,equip=onspelldirectcrit_1882fire_3stack_2
 back=aethas_intensity,heroic=1,stats=182armor_65crit_57haste_74int_105sp_74sta,gems=23sp_5sp,enchant=lightweave_embroidery
 main_hand=barb_of_tarasque,heroic=1,stats=57haste_51hit_65int_692sp_48sta,gems=23sp,enchant=black_magic,weapon=dagger_1.80speed_108.12001037597656min_342.1199951171875max
 off_hand=lightbane_focus,heroic=1,stats=51haste_43hit_55int_80sp_58sta,gems=10haste_12sp_5sp
-ranged=scepter_of_imprisoned_souls,stats=28crit_21haste_26int_44sp_36sta
+ranged=scepter_of_imprisoned_souls,heroic=1,stats=31crit_24haste_29int_50sp_40sta
 # Gear Summary
-# gear_stamina=1181
-# gear_intellect=1161
+# gear_stamina=1185
+# gear_intellect=1164
 # gear_spirit=351
-# gear_spell_power=3158
+# gear_spell_power=3164
 # gear_mp5=28
 # gear_hit_rating=288
-# gear_crit_rating=521
-# gear_haste_rating=891
+# gear_crit_rating=524
+# gear_haste_rating=894
 # gear_armor=2176
 # meta_gem=chaotic_skyflare
 # tier9_2pc_caster=1

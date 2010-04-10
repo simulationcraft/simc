@@ -35,10 +35,10 @@ Priest_T9_13_00_58_258_troll.simc
 ## Different races
 
 ## Draenei (or other alliance priest with a Draenei in the group)
-#wowhead=13043848 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simc race=draenei
+#wowhead=21160579 name=Priest_T9_13_00_58_258_draenei      save=Priest_T9_13_00_58_258_draenei.simc
 
 ## Troll
-#wowhead=13043848 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simc race=troll
+#wowhead=21160689 name=Priest_T9_13_00_58_258_troll      save=Priest_T9_13_00_58_258_troll.simc
 
 
 #save_profiles=1

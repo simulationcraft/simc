@@ -86,7 +86,7 @@ wowhead=21157167 name=Hunter_T10_03_15_53_HP         save=Hunter_T10_03_15_53_HP
 # T9: scmaget9
 
 wowhead=14306487 name=Mage_T9_00_53_18 		     save=Mage_T9_00_53_18.simc
-wowhead=21000875 name=Mage_T9_18_00_53               save=Mage_T9_18_00_53.simc
+wowhead=14306485 name=Mage_T9_18_00_53               save=Mage_T9_18_00_53.simc
 wowhead=14306481 name=Mage_T9_20_51_00               save=Mage_T9_20_51_00.simc
 wowhead=14306468 name=Mage_T9_57_03_11               save=Mage_T9_57_03_11.simc
 
@@ -131,30 +131,30 @@ wowhead=13043847 name=Priest_T9_13_00_58_245         save=Priest_T9_13_00_58_245
 wowhead=13043847 name=Priest_T9_13_00_58_245_SWD     save=Priest_T9_13_00_58_245_SWD.simc	use_shadow_word_death=1
 wowhead=13043848 name=Priest_T9_13_00_58_258         save=Priest_T9_13_00_58_258.simc
 wowhead=13043848 name=Priest_T9_13_00_58_258_SWD     save=Priest_T9_13_00_58_258_SWD.simc	use_shadow_word_death=1
-wowhead=13043848 name=Priest_T9_13_00_58_258_draenei save=Priest_T9_13_00_58_258_draenei.simc   race=draenei
-wowhead=13043848 name=Priest_T9_13_00_58_258_troll   save=Priest_T9_13_00_58_258_troll.simc     race=troll
+wowhead=21160579 name=Priest_T9_13_00_58_258_draenei save=Priest_T9_13_00_58_258_draenei.simc   
+wowhead=21160689 name=Priest_T9_13_00_58_258_troll   save=Priest_T9_13_00_58_258_troll.simc    
 
 # T10: scpriestt10
 
 wowhead=18052647 name=Priest_T10_13_00_58_264        save=Priest_T10_13_00_58_264.simc
 wowhead=18052647 name=Priest_T10_13_00_58_264_SWD    save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
 
-wowhead=20704178 name=Priest_T10_13_00_58_277	     save=Priest_T10_13_00_58_277.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+wowhead=21160543 name=Priest_T10_13_00_58_277	     save=Priest_T10_13_00_58_277.simc
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
-wowhead=20704178 name=Priest_T10_13_00_58_277_SWD    save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+wowhead=21160543 name=Priest_T10_13_00_58_277_SWD    save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 
 wowhead=21000736 name=Priest_T10_13_00_58_264_draenei save=Priest_T10_13_00_58_264_draenei.simc
 
 wowhead=21000778 name=Priest_T10_13_00_58_277_draenei save=Priest_T10_13_00_58_277_draenei.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 wowhead=21000831 name=Priest_T10_13_00_58_264_troll   save=Priest_T10_13_00_58_264_troll.simc
 
 wowhead=21000835 name=Priest_T10_13_00_58_277_troll   save=Priest_T10_13_00_58_277_troll.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
 
 
