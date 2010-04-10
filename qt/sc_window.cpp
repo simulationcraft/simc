@@ -671,10 +671,11 @@ void SimulationCraftWindow::createBestInSlotTab()
       { MAGE,      T10, "Mage_T10_57_03_11",                TAB_WOWHEAD, "21150329" },
 
       { PALADIN,    T9, "Paladin_T9_05_11_55",              TAB_WOWHEAD, "16421920" },
-      { PALADIN,   T10, "Paladin_T9_09_05_57_H",            TAB_WOWHEAD, "20977380" },
-      { PALADIN,   T10, "Paladin_T9_09_05_57_N",            TAB_WOWHEAD, "20966865" },
-      { PALADIN,   T10, "Paladin_T9_09_05_57_HA",           TAB_WOWHEAD, "20980773" },
-      { PALADIN,   T10, "Paladin_T9_09_05_57_HAA",          TAB_WOWHEAD, "20983668" },
+      { PALADIN,   T10, "Paladin_T10_05_11_55",             TAB_WOWHEAD, "16266770" },
+      { PALADIN,   T10, "Paladin_T10_09_05_57_H",           TAB_WOWHEAD, "20977380" },
+      { PALADIN,   T10, "Paladin_T10_09_05_57_N",           TAB_WOWHEAD, "20966865" },
+      { PALADIN,   T10, "Paladin_T10_09_05_57_HA",          TAB_WOWHEAD, "20980773" },
+      { PALADIN,   T10, "Paladin_T10_09_05_57_HAA",         TAB_WOWHEAD, "20983668" },
 
       { PRIEST,     T9, "Priest_T9_13_00_58_232",           TAB_WOWHEAD, "13043846" },
       { PRIEST,     T9, "Priest_T9_13_00_58_245",           TAB_WOWHEAD, "13043847" },

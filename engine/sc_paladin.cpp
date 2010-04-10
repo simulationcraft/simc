@@ -1810,6 +1810,25 @@ struct exorcism_t : public paladin_spell_t
     p -> buffs_the_art_of_war -> expire();
   }
 
+  virtual void schedule_execute()
+  {
+    paladin_spell_t::schedule_execute();
+
+    paladin_t* p = player -> cast_paladin();
+
+    // While exorcism is casting, the auto_attack is paused
+    // So we simply reschedule the auto_attack by exorcism's casttime
+    double time_to_next_hit;
+    // Mainhand
+    if ( p -> main_hand_attack )
+    {
+      time_to_next_hit  = p -> main_hand_attack -> execute_event -> occurs();
+      time_to_next_hit -= sim -> current_time;
+      time_to_next_hit += execute_time();
+      p -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+  }
+
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
@@ -2393,13 +2412,12 @@ void paladin_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet/auto_attack";
+    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet/speed_potion,if=!in_combat|buff.bloodlust.react/auto_attack";
     if      ( glyphs.seal_of_command       ) action_list_str += "/seal_of_command";
     else if ( glyphs.seal_of_righteousness ) action_list_str += "/seal_of_righteousness";
     else                                     action_list_str += "/seal_of_vengeance";
     action_list_str += "/snapshot_stats";
     action_list_str += "/hammer_of_justice";
-    action_list_str += "/divine_plea";
     if ( talents.holy_shield && tank > 0 ) action_list_str += "/holy_shield";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -2411,7 +2429,8 @@ void paladin_t::init_actions()
       }
     }
     if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-    action_list_str += "/avenging_wrath";
+    action_list_str += "/avenging_wrath,time<=60";
+    action_list_str += "/avenging_wrath,if=buff.bloodlust.react";
     if ( talents.avengers_shield && 
           glyphs.avengers_shield ) action_list_str += "/avengers_shield";
 
@@ -2421,10 +2440,10 @@ void paladin_t::init_actions()
     if ( talents.divine_storm    ) action_list_str += "/divine_storm";
     action_list_str += "/consecration";
     action_list_str += "/hammer_of_wrath";
-    action_list_str += "/exorcism";
+    action_list_str += "/exorcism,if=buff.the_art_of_war.react";
     if ( talents.holy_shock ) action_list_str += "/holy_shock";
     if ( main_hand_weapon.group() == WEAPON_1H ) action_list_str += "/shield_of_righteousness";
-    action_list_str += "/speed_potion";
+    action_list_str += "/divine_plea";
 
     action_list_default = 1;
   }
