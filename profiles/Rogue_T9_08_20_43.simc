@@ -10,6 +10,7 @@ glyphs=slice_and_dice/eviscerate/rupture
 actions=flask,type=endless_rage
 actions+=/food,type=mega_mammoth_meal
 actions+=/apply_poison,main_hand=wound,off_hand=deadly
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/stealth

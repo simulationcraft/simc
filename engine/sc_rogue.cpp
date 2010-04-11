@@ -3037,7 +3037,7 @@ void rogue_t::init_actions()
     action_list_str += "," + slow_hand + "=";
     action_list_str += ( talents.improved_poisons > 2 ) ? "instant" : "wound";
     action_list_str += "," + fast_hand + "=deadly";
-
+    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20";
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
     if ( talents.overkill || talents.master_of_subtlety ) action_list_str += "/stealth";
@@ -3065,8 +3065,7 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      bool rupture_less = (   false                   &&
-                            ! talents.blood_spatter   &&
+      bool rupture_less = ( ! talents.blood_spatter   &&
                             ! talents.serrated_blades &&
                             ! glyphs.rupture );
       if ( talents.hunger_for_blood )

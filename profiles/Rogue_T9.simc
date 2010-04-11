@@ -5,8 +5,7 @@ Globals_T9.simc
 optimal_raid=1
 
 Rogue_T9_08_20_43.simc    
-Rogue_T9_18_51_02.simc    
-Rogue_T9_18_51_02_NoR.simc
+Rogue_T9_20_51_00.simc    
 Rogue_T9_51_18_02.simc    
 Rogue_T9_51_18_02_R.simc  
 
@@ -15,7 +14,6 @@ Rogue_T9_51_18_02_R.simc
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14562456   name=Rogue_T9_08_20_43         save=Rogue_T9_08_20_43.simc
-#wowhead=20631652   name=Rogue_T9_18_51_02         save=Rogue_T9_18_51_02.simc
-#wowhead=!20631652  name=Rogue_T9_18_51_02_NoR     save=Rogue_T9_18_51_02_NoR.simc
+#wowhead=20631652   name=Rogue_T9_20_51_00         save=Rogue_T9_20_51_00.simc
 #wowhead=18612609   name=Rogue_T9_51_18_02         save=Rogue_T9_51_18_02.simc
-#wowhead=!18612609  name=Rogue_T9_51_18_02_R       save=Rogue_T9_51_18_02_R.simc
+#wowhead=21162157   name=Rogue_T9_51_18_02_R       save=Rogue_T9_51_18_02_R.simc

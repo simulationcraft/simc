@@ -1,0 +1,67 @@
+#!./simc 
+
+rogue=Rogue_T10_51_18_02_R
+origin="http://profiler.wowhead.com/profile=21162335"
+level=80
+race=undead
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=0053230053501005201033310510050050050030000000000000000002
+glyphs=hunger_for_blood/mutilate/rupture
+actions=flask,type=endless_rage
+actions+=/food,type=mega_mammoth_meal
+actions+=/apply_poison,main_hand=instant,off_hand=deadly
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/stealth
+actions+=/kick
+actions+=/use_item,name=sanctified_shadowblade_gauntlets
+actions+=/pool_energy,for_next=1
+actions+=/hunger_for_blood,if=buff.hunger_for_blood.remains<2
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<1
+actions+=/rupture,if=buff.combo_points.stack>=4&target.time_to_die>15&time>10&buff.slice_and_dice.remains>11
+actions+=/cold_blood,sync=envenom
+actions+=/envenom,if=buff.combo_points.stack>=4&buff.envenom.down
+actions+=/envenom,if=buff.combo_points.stack>=4&energy>90
+actions+=/envenom,if=buff.combo_points.stack>=2&buff.slice_and_dice.remains<2
+actions+=/tricks_of_the_trade
+actions+=/mutilate,if=buff.combo_points.stack<4
+actions+=/vanish,if=time>30&energy>50
+head=geistlords_punishment_sack,heroic=1,stats=159agi_564armor_244ap_122crit_98hit_183sta,gems=relentless_earthsiege_10exp_10hit_8agi,enchant=50ap_20crit
+neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68arpen_120ap_60haste_102sta,gems=20ap_10haste
+shoulders=sanctified_shadowblade_pauldrons,heroic=1,stats=136agi_521armor_165ap_90crit_82hit_136sta,gems=20ap_10haste_4agi,enchant=40ap_15crit
+chest=sanctified_shadowblade_breastplate,heroic=1,stats=183agi_694armor_106arpen_212ap_122crit_183sta,gems=20ap_10haste_20haste_6agi,enchant=10str_10agi_10sta_10int_10spi
+waist=astrylians_sutured_cinch,heroic=1,stats=120agi_391armor_74arpen_181ap_90crit_136sta,gems=10agi_10int_10spi_10sta_10str_20ap_10haste_20ap_10haste_6agi
+legs=sanctified_shadowblade_legplates,heroic=1,stats=183agi_608armor_212ap_122crit_106exp_183sta,gems=68ap_34haste_6agi,enchant=75ap_22crit
+feet=icewalker_treads,heroic=1,stats=98agi_448armor_68arpen_135ap_76hit_114sta,gems=20ap_10haste_20ap_10haste_6agi,enchant=24crit
+wrists=toskks_maximized_wristguards,heroic=1,stats=102agi_304armor_68arpen_120ap_60crit_102sta,gems=20haste_4agi,enchant=50ap
+hands=sanctified_shadowblade_gauntlets,heroic=1,stats=136agi_434armor_165ap_90crit_82haste_136sta,gems=20ap_10haste_4agi,enchant=hyperspeed_accelerators
+finger1=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gems=34haste_4agi,equip=onattackhit_480ap_1ppm_10dur_60cd
+finger2=seal_of_many_mouths,heroic=1,stats=102agi_120ap_68crit_60exp_102sta,gems=20ap_10haste_4agi
+trinket1=herkuml_war_token,stats=153haste,equip=onattackhit_17ap_20stack_10dur
+trinket2=tiny_abomination_in_a_jar,heroic=1,stats=85hit
+back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=20ap_10haste_4agi,enchant=23haste
+main_hand=heavens_fall_kryss_of_a_thousand_lies,heroic=1,stats=76agi_111ap_48crit_56haste_84sta,gems=20exp,enchant=berserking,weapon=dagger_1.80speed_381min_572max
+off_hand=lungbreaker,heroic=1,stats=78agi_44arpen_88ap_52crit_78sta,gems=20haste_4agi,enchant=berserking,weapon=dagger_1.40speed_245min_456max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20exp,weapon=crossbow_3.00speed_782min_1071max
+# Gear Summary
+# gear_strength=20
+# gear_agility=1828
+# gear_stamina=1807
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=2677
+# gear_expertise_rating=216
+# gear_armor_penetration_rating=461
+# gear_hit_rating=410
+# gear_crit_rating=1105
+# gear_haste_rating=670
+# gear_armor=4149
+# meta_gem=relentless_earthsiege
+# tier10_2pc_melee=1
+# tier10_4pc_melee=1
+# hands=sanctified_shadowblade_gauntlets,heroic=1,enchant=hyperspeed_accelerators
+# trinket2=tiny_abomination_in_a_jar,heroic=1
+# main_hand=heavens_fall_kryss_of_a_thousand_lies,heroic=1,weapon=dagger_1.80speed_381min_572max,enchant=berserking
+# off_hand=lungbreaker,heroic=1,weapon=dagger_1.40speed_245min_456max,enchant=berserking
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max

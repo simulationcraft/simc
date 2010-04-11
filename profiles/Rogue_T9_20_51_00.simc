@@ -1,0 +1,68 @@
+#!./simc 
+
+rogue=Rogue_T9_20_51_00
+origin="http://profiler.wowhead.com/profile=20631652"
+level=80
+race=undead
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=0053200051400000000000000000252051000035015223100501251
+glyphs=sinister_strike/killing_spree/rupture
+actions=flask,type=endless_rage
+actions+=/food,type=imperial_manta_steak
+actions+=/apply_poison,main_hand=instant,off_hand=deadly
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/kick
+actions+=/use_item,name=garonas_gauntlets_of_triumph
+actions+=/slice_and_dice,if=buff.slice_and_dice.down&time<4
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2&buff.combo_points.stack>=3
+actions+=/tricks_of_the_trade
+actions+=/killing_spree,if=energy<20&buff.slice_and_dice.remains>5
+actions+=/blade_flurry,if=target.adds_never&buff.slice_and_dice.remains>=5
+actions+=/blade_flurry,if=target.adds>0
+actions+=/rupture,if=buff.combo_points.stack=5&target.time_to_die>10
+actions+=/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7&dot.rupture.remains>6
+actions+=/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>5
+actions+=/eviscerate,if=buff.combo_points.stack=5&target.time_to_die<10
+actions+=/sinister_strike,if=buff.combo_points.stack<5
+actions+=/adrenaline_rush,if=energy<20
+head=garonas_helmet_of_triumph,heroic=1,stats=137agi_529armor_172ap_102crit_86exp_153sta,gems=relentless_earthsiege_10agi_10int_10spi_10sta_10str_8agi,enchant=50ap_20crit
+neck=charge_of_the_eredar,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=40ap_4agi
+shoulders=garonas_pauldrons_of_triumph,heroic=1,stats=114agi_489armor_76arpen_135ap_68exp_114sta,gems=40ap,enchant=40ap_15crit
+chest=garonas_breastplate_of_triumph,heroic=1,stats=137agi_652armor_188ap_102crit_94hit_153sta,gems=20agi_20agi,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_the_merciless_killer,heroic=1,stats=98agi_367armor_135ap_76haste_68hit_114sta,gems=20ap_10haste_20agi_20agi_6agi
+legs=legwraps_of_the_broken_beast,heroic=1,stats=137agi_570armor_172ap_102haste_86hit_153sta,gems=34agi_34agi_68ap,enchant=75ap_22crit
+feet=icewalker_treads,heroic=1,stats=98agi_448armor_68arpen_135ap_76hit_114sta,gems=10agi_10haste_20agi_6agi,enchant=24crit
+wrists=armbands_of_dark_determination,heroic=1,stats=69agi_285armor_98ap_57crit_49hit_85sta,gems=20agi_20agi,enchant=50ap
+hands=garonas_gauntlets_of_triumph,heroic=1,stats=114agi_407armor_135ap_76crit_68hit_114sta,gems=20agi_4agi,enchant=hyperspeed_accelerators
+finger1=band_of_callous_aggression,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20agi
+finger2=runed_band_of_the_kirin_tor,stats=80agi_107ap_55crit_51haste_80sta
+trinket1=deaths_choice,heroic=1,stats=288ap
+trinket2=deaths_choice,stats=256ap
+back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=40ap_8ap,enchant=23agi
+main_hand=hellscream_slicer,heroic=1,stats=58agi_72ap_44haste_44hit_66sta,gems=10agi_10haste_4agi,enchant=berserking,weapon=axe_2.60speed_394min_732max
+off_hand=blood_fury,heroic=1,stats=66agi_44arpen_72ap_36crit_66sta,gems=10agi_10haste_4agi,enchant=berserking,weapon=axe_1.50speed_227min_423max
+ranged=fezziks_autocannon,heroic=1,stats=48agi_49ap_32crit_24haste_48sta,gems=10agi_10haste_4agi,weapon=gun_2.90speed_527.5min_868.5max
+# Gear Summary
+# gear_strength=20
+# gear_agility=1799
+# gear_stamina=1547
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=2755
+# gear_expertise_rating=154
+# gear_armor_penetration_rating=245
+# gear_hit_rating=485
+# gear_crit_rating=728
+# gear_haste_rating=447
+# gear_armor=3929
+# meta_gem=relentless_earthsiege
+# tier9_2pc_melee=1
+# tier9_4pc_melee=1
+# hands=garonas_gauntlets_of_triumph,heroic=1,enchant=hyperspeed_accelerators
+# trinket1=deaths_choice,heroic=1
+# trinket2=deaths_choice
+# main_hand=hellscream_slicer,heroic=1,weapon=axe_2.60speed_394min_732max,enchant=berserking
+# off_hand=blood_fury,heroic=1,weapon=axe_1.50speed_227min_423max,enchant=berserking
+# ranged=fezziks_autocannon,heroic=1,weapon=gun_2.90speed_527.5min_868.5max

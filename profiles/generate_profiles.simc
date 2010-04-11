@@ -167,13 +167,16 @@ main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_
 # T9: scroguet9
 
 wowhead=14562456   name=Rogue_T9_08_20_43             save=Rogue_T9_08_20_43.simc
-wowhead=20631652   name=Rogue_T9_18_51_02             save=Rogue_T9_18_51_02.simc
-wowhead=!20631652  name=Rogue_T9_18_51_02_NoR         save=Rogue_T9_18_51_02_NoR.simc
+wowhead=20631652   name=Rogue_T9_20_51_00             save=Rogue_T9_20_51_00.simc
 wowhead=18612609   name=Rogue_T9_51_18_02             save=Rogue_T9_51_18_02.simc
-wowhead=!18612609  name=Rogue_T9_51_18_02_R           save=Rogue_T9_51_18_02_R.simc
+wowhead=21162157   name=Rogue_T9_51_18_02_R           save=Rogue_T9_51_18_02_R.simc
 
 
-# T10:
+# T10: scroguet9
+
+wowhead=21162773   name=Rogue_T10_20_51_00            save=Rogue_T10_20_51_00.simc
+wowhead=21162321   name=Rogue_T10_51_18_02            save=Rogue_T10_51_18_02.simc
+wowhead=21162335   name=Rogue_T10_51_18_02_R          save=Rogue_T10_51_18_02_R.simc
 
 
 

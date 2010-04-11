@@ -685,10 +685,12 @@ void SimulationCraftWindow::createBestInSlotTab()
       { PRIEST,    T10, "Priest_T10_13_00_58_277",          TAB_WOWHEAD, "20704178" },
 
       { ROGUE,      T9, "Rogue_T9_08_20_43",                TAB_WOWHEAD, "14562456" },
-      { ROGUE,      T9, "Rogue_T9_18_51_02",                TAB_WOWHEAD, "20631652" },
-      { ROGUE,      T9, "Rogue_T9_18_51_02_NoR",            TAB_WOWHEAD, "!20631652" },
+      { ROGUE,      T9, "Rogue_T9_20_51_00",                TAB_WOWHEAD, "20631652" },
       { ROGUE,      T9, "Rogue_T9_51_18_02",                TAB_WOWHEAD, "18612609" },
-      { ROGUE,      T9, "Rogue_T9_51_18_02_R",              TAB_WOWHEAD, "!18612609" },
+      { ROGUE,      T9, "Rogue_T9_51_18_02_R",              TAB_WOWHEAD, "21162157" },
+      { ROGUE,     T10, "Rogue_T10_20_51_00",               TAB_WOWHEAD, "21162773" },
+      { ROGUE,     T10, "Rogue_T10_51_18_02",               TAB_WOWHEAD, "21162321" },
+      { ROGUE,     T10, "Rogue_T10_51_18_02_R",             TAB_WOWHEAD, "21162335" },
 
       { SHAMAN,     T9, "Shaman_T9_16_55_00_258",           TAB_WOWHEAD, "14635667" },
       { SHAMAN,     T9, "Shaman_T9_20_51_00_258",           TAB_WOWHEAD, "14635698" },
