@@ -13,7 +13,9 @@ Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 # scmaget10
 # Uncomment below and comment out above to download profiles.
 
-#wowhead=21150130 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
+#wowhead=21162630 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
+#main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+
 #wowhead=21150215 name=Mage_T10_18_00_53		 save=Mage_T10_18_00_53.simc
 #wowhead=21150300 name=Mage_T10_20_51_00		 save=Mage_T10_20_51_00.simc
 #wowhead=21150329 name=Mage_T10_57_03_11		 save=Mage_T10_57_03_11.simc

@@ -3320,14 +3320,7 @@ void mage_t::init_actions()
     if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
     action_list_str += "/arcane_brilliance";
     if ( talents.focus_magic ) action_list_str += "/focus_magic";
-    if ( primary_tree() == TREE_ARCANE )
-    {
-      action_list_str += "/speed_potion,if=!in_combat";
-    }
-    else
-    {
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
-    }
+    action_list_str += "/speed_potion";
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
     if ( talents.improved_scorch ) action_list_str += "/scorch,debuff=1";
