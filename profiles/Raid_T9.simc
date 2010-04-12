@@ -27,11 +27,10 @@ Paladin_T9_05_11_55.simc
 Priest_T9_13_00_58_258.simc
 Priest_T9_13_00_58_258_SWD.simc
 
-Rogue_T9_08_20_43.simc    
-Rogue_T9_18_51_02.simc    
-Rogue_T9_18_51_02_NoR.simc
-Rogue_T9_51_18_02.simc    
-Rogue_T9_51_18_02_R.simc  
+Rogue_T9_08_20_43.simc  tricks_of_the_trade_target=Rogue_T9_20_51_00
+Rogue_T9_20_51_00.simc  tricks_of_the_trade_target=Rogue_T9_08_20_43
+Rogue_T9_51_18_02.simc  tricks_of_the_trade_target=Rogue_T9_51_18_02_R
+Rogue_T9_51_18_02_R.simc  tricks_of_the_trade_target=Rogue_T9_51_18_02
 
 Shaman_T9_16_55_00_258.simc
 Shaman_T9_20_51_00_258.simc

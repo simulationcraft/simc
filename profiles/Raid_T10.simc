@@ -32,14 +32,9 @@ Priest_T10_13_00_58_264_SWD.simc
 Priest_T10_13_00_58_277.simc
 Priest_T10_13_00_58_277_SWD.simc
 
-#Rogue_T9_08_20_43.simc        tricks_of_the_trade_target=Rogue_T9_15_51_05_AA
-#Rogue_T9_15_51_05_AA.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_AA_NoR
-#Rogue_T9_15_51_05_AA_NoR.simc tricks_of_the_trade_target=Rogue_T9_15_51_05_FD
-#Rogue_T9_15_51_05_FD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD
-#Rogue_T9_15_51_05_MD.simc     tricks_of_the_trade_target=Rogue_T9_15_51_05_MD_NoR
-#Rogue_T9_15_51_05_MD_NoR.simc tricks_of_the_trade_target=Rogue_T9_51_13_07
-#Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_51_13_07_NoM
-#Rogue_T9_51_13_07.simc        tricks_of_the_trade_target=Rogue_T9_08_20_43  name=Rogue_T9_51_13_07_NoM murder=0
+Rogue_T10_20_51_00.simc     tricks_of_the_trade_target=Rogue_T10_51_18_02
+Rogue_T10_51_18_02.simc     tricks_of_the_trade_target=Rogue_T10_51_18_02_R
+Rogue_T10_51_18_02_R.simc   tricks_of_the_trade_target=Rogue_T10_20_51_00
 
 Shaman_T10_19_52_00.simc
 Shaman_T10_57_14_00.simc

@@ -4,10 +4,10 @@ Globals_T9.simc
 
 optimal_raid=1
 
-Rogue_T9_08_20_43.simc    
-Rogue_T9_20_51_00.simc    
-Rogue_T9_51_18_02.simc    
-Rogue_T9_51_18_02_R.simc  
+Rogue_T9_08_20_43.simc  tricks_of_the_trade_target=Rogue_T9_20_51_00
+Rogue_T9_20_51_00.simc  tricks_of_the_trade_target=Rogue_T9_08_20_43
+Rogue_T9_51_18_02.simc  tricks_of_the_trade_target=Rogue_T9_51_18_02_R
+Rogue_T9_51_18_02_R.simc  tricks_of_the_trade_target=Rogue_T9_51_18_02
 
 
 # scroguet9
