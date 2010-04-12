@@ -14,11 +14,11 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/indestructible_potion
 actions+=/bloodrage,rage<=85
-actions+=/heroic_strike,rage>=95
-actions+=/mortal_strike
+actions+=/heroic_strike,rage>=50
 actions+=/rend
 actions+=/overpower
 actions+=/bladestorm
+actions+=/mortal_strike
 actions+=/execute
 actions+=/slam
 head=hellscreams_helmet_of_triumph,heroic=1,stats=2102armor_86crit_94hit_174sta_150str,gems=relentless_earthsiege_10agi_10int_10spi_10sta_10str_8str,enchant=50ap_20crit
