@@ -2625,32 +2625,25 @@ void warrior_t::init_actions()
         action_list_str += "/indestructible_potion";
       action_list_str += "/bloodrage,rage<=85";
       action_list_str += "/heroic_strike,rage>=95";
-      action_list_str += "/mortal_strike";
       action_list_str += "/rend";
       action_list_str += "/overpower";
       action_list_str += "/bladestorm";
+      action_list_str += "/mortal_strike";
       action_list_str += "/execute";
-      //action_list_str += "/slam,rage>=40";
       action_list_str += "/slam";
     }
     else if ( primary_tree() == TREE_FURY )
     {
       if ( talents.armored_to_the_teeth )
         action_list_str += "/indestructible_potion";
-      action_list_str += "/bloodrage,rage<=85";
-      action_list_str += "/heroic_strike,rage>=75,health_percentage<=20";
-      action_list_str += "/whirlwind,rage<=95,health_percentage<=20";
-      action_list_str += "/bloodthirst,rage<=75,health_percentage<=20";
-      action_list_str += "/slam,bloodsurge=1,rage<=45,health_percentage<=20";
-      action_list_str += "/death_wish,health_percentage<=20";
+      action_list_str += "/bloodrage,rage<=65";
+      action_list_str += "/recklessness";
+      action_list_str += "/death_wish";
+      action_list_str += "/heroic_strike,rage>=25";
+      action_list_str += "/whirlwind";
+      action_list_str += "/bloodthirst";
+      action_list_str += "/slam,bloodsurge=1";
       action_list_str += "/execute";
-      action_list_str += "/recklessness,health_percentage<=20";
-      action_list_str += "/heroic_strike,rage>=42,health_percentage>=20";
-      action_list_str += "/whirlwind,health_percentage>=20";
-      action_list_str += "/bloodthirst,health_percentage>=20";
-      action_list_str += "/slam,bloodsurge=1,health_percentage>=20";
-      action_list_str += "/death_wish,time>=10,health_percentage>=20,time_to_die>=135";
-      action_list_str += "/recklessness,health_percentage>=20,time_to_die>=230";
       action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
