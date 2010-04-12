@@ -2624,7 +2624,7 @@ void warrior_t::init_actions()
       if ( talents.armored_to_the_teeth )
         action_list_str += "/indestructible_potion";
       action_list_str += "/bloodrage,rage<=85";
-      action_list_str += "/heroic_strike,rage>=95";
+      action_list_str += "/heroic_strike,rage>=50";
       action_list_str += "/rend";
       action_list_str += "/overpower";
       action_list_str += "/bladestorm";

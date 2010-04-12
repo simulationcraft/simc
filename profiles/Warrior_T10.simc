@@ -1,0 +1,19 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+
+Warrior_T10_19_52_00.simc
+Warrior_T10_55_08_08.simc
+
+
+# warrior t10 by philoptik@hotmail.com
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=20969288 name=Warrior_T10_19_52_00    save=Warrior_T10_19_52_00.simc
+#wowhead=20977076 name=Warrior_T10_55_08_08    save=Warrior_T10_55_08_08.simc
+
+
+#save_profiles=1
