@@ -602,8 +602,6 @@ static void register_tiny_abom( item_t* item )
     {
       if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
-      // We cannot proc a mote from manifest_anger attack
-      if ( a -> name_str == "manifest_anger" ) return;
 
       // If this is the first stack, save the weapon which made the
       // attack for use as the proc later.  If this was a proc from a
@@ -649,11 +647,13 @@ static void register_tiny_abom( item_t* item )
         attack -> repeating = false;
         attack -> may_glance = false;
         attack -> special = true;
+        attack -> proc = true;
         attack -> base_multiplier *= 0.5;
         attack -> execute();
         attack -> base_multiplier /= 0.5;
-        attack -> may_glance = true;
+        attack -> proc = false;
         attack -> special = false;
+        attack -> may_glance = true;
         attack -> repeating = true;
         attack -> base_hit -= ( attack -> player -> dual_wield() ) ? 0.19 : 0;
 
