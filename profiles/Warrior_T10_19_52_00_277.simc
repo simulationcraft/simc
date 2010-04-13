@@ -1,9 +1,9 @@
 #!./simc 
 
-warrior=Warrior_T10_19_52_00
+warrior=Warrior_T10_19_52_00_277
 origin="http://profiler.wowhead.com/profile=20969288"
 level=80
-race=human
+race=tauren
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3202300123300000000000000000000305050002520310053120501351
 glyphs=heroic_strike/whirlwind/execution
@@ -19,7 +19,7 @@ actions+=/death_wish
 actions+=/heroic_strike,rage>=25
 actions+=/whirlwind
 actions+=/bloodthirst
-actions+=/slam,bloodsurge=1
+actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
 actions+=/berserker_rage
 head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=relentless_earthsiege_34arpen_8str,enchant=50ap_20crit
@@ -29,18 +29,18 @@ chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_106arpen_122
 waist=coldwraith_links,heroic=1,stats=1550armor_78arpen_85crit_155sta_139str,gems=10haste_10str_20arpen_20str_6str
 legs=sanctified_ymirjar_lords_legplates,heroic=1,stats=2412armor_122crit_106exp_208sta_193str,gems=20arpen_20arpen,enchant=75ap_22crit
 feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74arpen_90crit_155sta_139str,gems=20arpen_34str,enchant=15sta
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10haste_10str_20str_4str,enchant=50ap
-hands=aldrianas_gloves_of_secrecy,heroic=1,stats=128agi_434armor_90arpen_165ap_74haste_136sta,gems=10hit_10str_20str_34arpen_6agi,enchant=44ap
-finger1=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gems=10haste_10str_4agi,equip=onattackhit_480ap_1ppm_10dur_60cd
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10hit_10str_20str_4str,enchant=50ap
+hands=aldrianas_gloves_of_secrecy,heroic=1,stats=128agi_434armor_90arpen_165ap_74haste_136sta,gems=20hit_20str_34arpen_6agi,enchant=44ap
+finger1=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gems=20hit_4agi,equip=onattackhit_480ap_1ppm_10dur_60cd
 finger2=frostbrood_sapphire_ring,heroic=1,stats=102agi_68arpen_120ap_60crit_102sta,gems=20arpen_4crit
 trinket1=deathbringers_will,heroic=1,stats=167arpen
 trinket2=deaths_verdict,heroic=1,stats=288ap
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=10haste_10str_4agi,enchant=22agi
 main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20arpen_20arpen_20arpen_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
 off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=122crit_114exp_222sta_198str,gems=20arpen_20arpen_20arpen,enchant=berserking,weapon=sword2h_3.60speed_991min_1487max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20arpen,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20arpen,enchant=40crit,weapon=crossbow_3.00speed_782min_1071max
 # Gear Summary
-# gear_strength=1725
+# gear_strength=1705
 # gear_agility=651
 # gear_stamina=2255
 # gear_intellect=10
@@ -48,9 +48,9 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # gear_attack_power=1273
 # gear_expertise_rating=220
 # gear_armor_penetration_rating=1354
-# gear_hit_rating=129
-# gear_crit_rating=1208
-# gear_haste_rating=242
+# gear_hit_rating=169
+# gear_crit_rating=1248
+# gear_haste_rating=222
 # gear_armor=14744
 # meta_gem=relentless_earthsiege
 # tier10_2pc_melee=1

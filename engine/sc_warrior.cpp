@@ -2623,13 +2623,14 @@ void warrior_t::init_actions()
     {
       if ( talents.armored_to_the_teeth )
         action_list_str += "/indestructible_potion";
-      action_list_str += "/bloodrage,rage<=85";
+      action_list_str += "/bloodrage,rage<=65";
       action_list_str += "/heroic_strike,rage>=50";
       action_list_str += "/rend";
-      action_list_str += "/overpower";
+      action_list_str += "/overpower,if=buff.taste_for_blood.react";
       action_list_str += "/bladestorm";
       action_list_str += "/mortal_strike";
-      action_list_str += "/execute";
+      action_list_str += "/execute,health_percentage>=20,if=buff.sudden_death.react";
+      action_list_str += "/execute,health_percentage<=20";
       action_list_str += "/slam";
     }
     else if ( primary_tree() == TREE_FURY )
@@ -2642,19 +2643,18 @@ void warrior_t::init_actions()
       action_list_str += "/heroic_strike,rage>=25";
       action_list_str += "/whirlwind";
       action_list_str += "/bloodthirst";
-      action_list_str += "/slam,bloodsurge=1";
+      action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute";
       action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
-      action_list_str += "/bloodrage,rage<=85";
-      action_list_str += "/heroic_strike,rage>=50";
+      action_list_str += "/bloodrage,rage<=65";
+      action_list_str += "/heroic_strike,rage>=15";
+      action_list_str += "/revenge";
+      if ( talents.shockwave       ) action_list_str += "/shockwave";
       action_list_str += "/shield_block,sync=shield_slam";
       action_list_str += "/shield_slam";
-      action_list_str += "/revenge";
-      if ( talents.concussion_blow ) action_list_str += "/concussion_blow";
-      if ( talents.shockwave       ) action_list_str += "/shockwave";
       if ( talents.devastate       ) action_list_str += "/devastate";
     }
     else

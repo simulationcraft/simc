@@ -1,0 +1,62 @@
+#!./simc 
+
+warrior=Warrior_T10_19_52_00_264
+origin="http://profiler.wowhead.com/profile=21168560"
+level=80
+race=tauren
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3202300123300000000000000000000305050002520310053120501351
+glyphs=heroic_strike/whirlwind/execution
+actions=flask,type=endless_rage
+actions+=/food,type=hearty_rhino
+actions+=/stance,choose=berserker,if=in_combat=0
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/indestructible_potion
+actions+=/bloodrage,rage<=65
+actions+=/recklessness
+actions+=/death_wish
+actions+=/heroic_strike,rage>=25
+actions+=/whirlwind
+actions+=/bloodthirst
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/execute
+actions+=/berserker_rage
+head=sanctified_ymirjar_lords_helmet,stats=2145armor_92arpen_100crit_185sta_161str,gems=relentless_earthsiege_34arpen_8str,enchant=50ap_20crit
+neck=sindragosas_cruel_claw,stats=90agi_60arpen_105ap_52haste_90sta,gems=34arpen
+shoulders=sanctified_ymirjar_lords_shoulderplates,stats=1980armor_72arpen_80crit_137sta_129str,gems=20arpen_4str,enchant=40ap_15crit
+chest=sanctified_ymirjar_lords_battleplate,stats=2641armor_92arpen_108crit_185sta_169str,gems=20arpen_10arpen_15sta_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,stats=1485armor_68arpen_75crit_137sta_121str,gems=20arpen_20arpen_20arpen
+legs=legplates_of_aetheric_strife,heroic=1,stats=2310armor_108arpen_84crit_185sta_161str,gems=20arpen_20arpen_20arpen,enchant=75ap_22crit
+feet=bloodsoaked_saronite_stompers,stats=1815armor_72arpen_80crit_137sta_129str,gems=20arpen_20arpen,enchant=32ap
+wrists=polar_bear_claw_bracers,stats=1155armor_60crit_52hit_103sta_95str,gems=20arpen_20arpen,enchant=50ap
+hands=sanctified_ymirjar_lords_gauntlets,stats=1650armor_80crit_72hit_137sta_129str,gems=20exp_20arpen,enchant=44ap
+finger1=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gems=20arpen,equip=onattackhit_480ap_1ppm_10dur_60cd
+finger2=frostbrood_sapphire_ring,stats=90agi_60arpen_105ap_52crit_90sta,gems=20arpen_4agi
+trinket1=deathbringers_will,stats=155arpen
+trinket2=deaths_verdict,stats=256ap
+back=recovered_scarlet_onslaught_cape,stats=90agi_177armor_52arpen_105ap_60crit_90sta,gems=34arpen,enchant=22agi
+main_hand=glorenzelg_highblade_of_the_silver_hand,stats=115crit_99exp_197sta_181str,gems=20arpen_20arpen_6str,enchant=berserking,weapon=sword2h_3.60speed_895min_1344max
+off_hand=glorenzelg_highblade_of_the_silver_hand,stats=115crit_99exp_197sta_181str,gems=20arpen_20arpen_6str,enchant=berserking,weapon=sword2h_3.60speed_895min_1344max
+ranged=falinrush_defender_of_quelthalas,stats=54agi_36arpen_72ap_36crit_54sta,enchant=40crit,weapon=crossbow_3.00speed_688.07000732421875min_948.07000732421875max
+# Gear Summary
+# gear_strength=1496
+# gear_agility=469
+# gear_stamina=2033
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=1069
+# gear_expertise_rating=218
+# gear_armor_penetration_rating=1359
+# gear_hit_rating=183
+# gear_crit_rating=1201
+# gear_haste_rating=52
+# gear_armor=15358
+# meta_gem=relentless_earthsiege
+# tier10_2pc_melee=1
+# tier10_4pc_melee=1
+# trinket1=deathbringers_will
+# trinket2=deaths_verdict
+# main_hand=glorenzelg_highblade_of_the_silver_hand,weapon=sword2h_3.60speed_895min_1344max,enchant=berserking
+# off_hand=glorenzelg_highblade_of_the_silver_hand,weapon=sword2h_3.60speed_895min_1344max,enchant=berserking
+# ranged=falinrush_defender_of_quelthalas,weapon=crossbow_3.00speed_688.07000732421875min_948.07000732421875max

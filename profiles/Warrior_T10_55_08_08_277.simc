@@ -1,9 +1,9 @@
 #!./simc 
 
-warrior=Warrior_T10_55_08_08
+warrior=Warrior_T10_55_08_08_277
 origin="http://profiler.wowhead.com/profile=20977076"
 level=80
-race=human
+race=tauren
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=30203220233351001020122132312513050000000000000000000000002033
 glyphs=mortal_strike/rending/execution/command/charge/bloodrage
@@ -13,13 +13,14 @@ actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/indestructible_potion
-actions+=/bloodrage,rage<=85
+actions+=/bloodrage,rage<=65
 actions+=/heroic_strike,rage>=50
 actions+=/rend
-actions+=/overpower
+actions+=/overpower,if=buff.taste_for_blood.react
 actions+=/bladestorm
 actions+=/mortal_strike
-actions+=/execute
+actions+=/execute,health_percentage>=20,if=buff.sudden_death.react
+actions+=/execute,health_percentage<=20
 actions+=/slam
 head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=relentless_earthsiege_34arpen_8str,enchant=50ap_20crit
 neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68arpen_120ap_60haste_102sta,gems=20str
