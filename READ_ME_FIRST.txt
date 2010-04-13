@@ -26,10 +26,10 @@ Windows Platforms:
 (1) simc.exe => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.  Accepts drag-n-drop of .simc profiles.
 (3) vcredist_x86.exe => Installs C++ runtime libraries (some Windows platforms already have this).
-(4) Win32OpenSSL_Light-0_9_8k.exe => Installs OpenSSL which may be required by the Qt GUI 
+(4) Win32OpenSSL_Light-0_9_8k.exe => OpenSSL for Qt (some Windows platforms already have this).
 (5) Examples.simc => Reference documentation for the many parameters
 (6) Legend.html => Glossary for simulation output
-(7) mingw*.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(7) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
@@ -66,14 +66,14 @@ then simply be invoked directly via #! magic.
 
 =============================================================================================
 
-What about a Graphic User Interface?  (AKA "Where did the .BAT files go?)
+What about a Graphic User Interface?
 
 There is a beta-level GUI built using Qt that is now being bundled with the CLI version.
-This executable (simcqt.exe) also replaces the older .BAT files.  If you associate the 
-.simc extension with the simcqt.exe executable you will be able to simply double-click
-your config files.  Alternatively, you can simply drag-and-drop a config file on top
-of simcqt.exe.  It will load the config and allow you to set up different options,
-such as calculating scale factors, after which you press "Simulate!" to start it running.
+If you associate the .simc extension with the simcqt.exe executable you will be able to 
+simply double-click your config files.  Alternatively, you can simply drag-and-drop a 
+config file on top of simcqt.exe.  It will load the config and allow you to set up 
+different options, such as calculating scale factors, after which you press "Simulate!" 
+to start it running.
 
 =============================================================================================
 
