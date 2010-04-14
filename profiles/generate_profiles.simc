@@ -110,14 +110,13 @@ wowhead=21150329 name=Mage_T10_57_03_11		     save=Mage_T10_57_03_11.simc
 wowhead=16421920 name=Paladin_T9_05_11_55            save=Paladin_T9_05_11_55.simc
 
 
-# T10: Mocean
+# T10: simulationcraft
 
-wowhead=20977380  name=Paladin_T10_09_05_57_H        save=Paladin_T10_09_05_57_H.simc
-wowhead=20966865  name=Paladin_T10_09_05_57_N        save=Paladin_T10_09_05_57_N.simc
-wowhead=20980773  name=Paladin_T10_09_05_57_HA       save=Paladin_T10_09_05_57_HA.simc
-wowhead=20983668  name=Paladin_T10_09_05_57_HAA      save=Paladin_T10_09_05_57_HAA.simc
-wowhead=16266770  name=Paladin_T10_05_11_55          save=Paladin_T10_05_11_55.simc
-
+wowhead=21176231  name=Paladin_T10_09_05_57_H        save=Paladin_T10_09_05_57_HP.simc
+wowhead=21176233  name=Paladin_T10_09_05_57_N        save=Paladin_T10_09_05_57_NP.simc
+wowhead=21176206  name=Paladin_T10_09_05_57_HA       save=Paladin_T10_09_05_57_HA.simc
+wowhead=21176225  name=Paladin_T10_09_05_57_HAA      save=Paladin_T10_09_05_57_HAA.simc
+wowhead=21176420  name=Paladin_T10_05_11_55          save=Paladin_T10_05_11_55_HPH.simc
 
 
 #############################
