@@ -7,6 +7,7 @@ optimal_raid=1
 override.mangle=0
 
 Druid_T9_58_00_13.simc
+Druid_T9_58_00_13_IS.simc
 Druid_T9_00_55_16.simc
 Druid_T9_00_55_16_M.simc
 
@@ -14,6 +15,8 @@ Druid_T9_00_55_16_M.simc
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=14187592 name=Druid_T9_58_00_13   save=Druid_T9_58_00_13.simc   eclipse_cycle=lunar
+
+#wowhead=14187592 name=Druid_T9_58_00_13_IS   save=Druid_T9_58_00_13_IS.simc   eclipse_cycle=lunar   use_IS=1
 
 #wowhead=14717965 name=Druid_T9_00_55_16   save=Druid_T9_00_55_16.simc
 

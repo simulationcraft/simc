@@ -1,6 +1,6 @@
 #!./simc 
 
-druid=Druid_T10_58_00_13
+druid=Druid_T10_58_00_13_IS
 origin="http://profiler.wowhead.com/profile=20996475"
 level=80
 race=tauren
@@ -20,6 +20,7 @@ actions+=/treants,time>=5
 actions+=/starfall,if=!eclipse
 actions+=/starfire,if=buff.t8_4pc_caster.up
 actions+=/moonfire,if=!ticking&!eclipse
+actions+=/insect_swarm,if=!ticking&!eclipse
 actions+=/wrath,if=trigger_lunar
 actions+=/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)
 actions+=/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)
