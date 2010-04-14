@@ -88,7 +88,6 @@ struct druid_t : public player_t
   double equipped_weapon_dps;
 
   std::string eclipse_cycle;
-  int use_IS;
 
   struct talents_t
   {
@@ -227,7 +226,6 @@ struct druid_t : public player_t
     equipped_weapon_dps = 0;
 
     eclipse_cycle = "solar";
-    use_IS = -1;
   }
 
   // Character Definition
@@ -3809,7 +3807,7 @@ void druid_t::init_actions()
       if ( talents.starfall ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking&!eclipse";
-      if ( talents.insect_swarm && ( ( use_IS > 0 ) || glyphs.insect_swarm ) ) action_list_str += "/insect_swarm,if=!ticking&!eclipse";
+      if ( talents.insect_swarm && ( glyphs.insect_swarm ) action_list_str += "/insect_swarm,if=!ticking&!eclipse";
       if ( eclipse_cycle == "solar" )
       {
         action_list_str += "/starfire,if=trigger_solar";
@@ -4173,7 +4171,6 @@ std::vector<option_t>& druid_t::get_options()
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { "eclipse_cycle",             OPT_STRING, &( eclipse_cycle                    ) },
-      { "use_IS",                    OPT_INT,  &( use_IS                            ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
