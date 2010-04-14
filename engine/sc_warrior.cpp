@@ -1816,33 +1816,6 @@ struct slam_t : public warrior_attack_t
     }
   }
 
-  virtual void schedule_execute()
-  {
-    warrior_attack_t::schedule_execute();
-
-    warrior_t* p = player -> cast_warrior();
-
-    /*// While slam is casting, the auto_attack is paused
-    // So we simply reschedule the auto_attack by slam's casttime
-    double time_to_next_hit;
-    // Mainhand
-    if ( p -> main_hand_attack )
-    {
-      time_to_next_hit  = p -> main_hand_attack -> execute_event -> occurs();
-      time_to_next_hit -= sim -> current_time;
-      time_to_next_hit += execute_time();
-      p -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
-    // Offhand
-    if ( p -> off_hand_attack )
-    {
-      time_to_next_hit  = p -> off_hand_attack -> execute_event -> occurs();
-      time_to_next_hit -= sim -> current_time;
-      time_to_next_hit += execute_time();
-      p -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }*/
-  }
-
   virtual bool ready()
   {
     if ( ! warrior_attack_t::ready() )

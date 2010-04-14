@@ -1082,11 +1082,11 @@ void shaman_spell_t::schedule_execute()
 
   spell_t::schedule_execute();
 
-  if ( time_to_execute > 0 && ! p -> buffs_maelstrom_weapon -> check() )
+  /*if ( time_to_execute > 0 && ! p -> buffs_maelstrom_weapon -> check() )
   {
     if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
     if ( p ->  off_hand_attack ) p ->  off_hand_attack -> cancel();
-  }
+  }*/
 }
 
 // shaman_spell_t::assess_damage ============================================
@@ -3269,14 +3269,13 @@ void shaman_t::init_actions()
       action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
 
       if ( talents.stormstrike ) action_list_str += "/stormstrike";
       action_list_str += "/flame_shock,if=!ticking";
       action_list_str += "/earth_shock/magma_totem/fire_nova/lightning_shield";
       if ( talents.lava_lash ) action_list_str += "/lava_lash";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
     }
     else

@@ -20,7 +20,7 @@ actions+=/bloodlust,time_to_die<=60
 actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react
 actions+=/stormstrike
 actions+=/flame_shock,if=!ticking
 actions+=/earth_shock
@@ -29,7 +29,6 @@ actions+=/fire_nova
 actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/shamanistic_rage,tier10_2pc_melee=1
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
 actions+=/shamanistic_rage
 head=thralls_faceguard_of_triumph,heroic=1,stats=137agi_1176armor_172ap_80crit_86hit_80int_121sta,gems=chaotic_skyflare_20haste_16ap,enchant=50ap_20crit
 neck=charge_of_the_eredar,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20exp_4agi

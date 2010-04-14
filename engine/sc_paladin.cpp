@@ -1810,25 +1810,6 @@ struct exorcism_t : public paladin_spell_t
     p -> buffs_the_art_of_war -> expire();
   }
 
-  virtual void schedule_execute()
-  {
-    paladin_spell_t::schedule_execute();
-
-    paladin_t* p = player -> cast_paladin();
-
-    // While exorcism is casting, the auto_attack is paused
-    // So we simply reschedule the auto_attack by exorcism's casttime
-    double time_to_next_hit;
-    // Mainhand
-    if ( p -> main_hand_attack )
-    {
-      time_to_next_hit  = p -> main_hand_attack -> execute_event -> occurs();
-      time_to_next_hit -= sim -> current_time;
-      time_to_next_hit += execute_time();
-      p -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
-  }
-
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();

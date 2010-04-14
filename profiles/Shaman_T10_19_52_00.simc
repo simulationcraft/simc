@@ -20,7 +20,7 @@ actions+=/bloodlust,time_to_die<=60
 actions+=/fire_elemental_totem
 actions+=/spirit_wolf
 actions+=/speed_potion
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react
 actions+=/stormstrike
 actions+=/flame_shock,if=!ticking
 actions+=/earth_shock
@@ -29,7 +29,6 @@ actions+=/fire_nova
 actions+=/lightning_shield
 actions+=/lava_lash
 actions+=/shamanistic_rage,tier10_2pc_melee=1
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4
 actions+=/shamanistic_rage
 head=sanctified_frost_witchs_faceguard,heroic=1,stats=175agi_1253armor_212ap_114crit_80haste_96int_144sta,gems=relentless_earthsiege_20exp_16ap,enchant=50ap_20crit
 neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68arpen_120ap_60haste_102sta,gems=20hit

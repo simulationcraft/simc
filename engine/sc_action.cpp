@@ -873,6 +873,28 @@ void action_t::schedule_execute()
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
+  if ( special && execute_time() > 0 && ! proc )
+  {
+    // While an ability is casting, the auto_attack is paused
+    // So we simply reschedule the auto_attack by the ability's casttime
+    double time_to_next_hit;
+    // Mainhand
+    if ( player -> main_hand_attack )
+    {
+      time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
+      time_to_next_hit -= sim -> current_time;
+      time_to_next_hit += execute_time();
+      player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+    // Offhand
+    if ( player -> off_hand_attack )
+    {
+      time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
+      time_to_next_hit -= sim -> current_time;
+      time_to_next_hit += execute_time();
+      player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+  }
 }
 
 // action_t::schedule_tick =================================================
