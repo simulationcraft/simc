@@ -889,7 +889,7 @@ struct melee_t : public warrior_attack_t
     // If any of our Heroic Strike actions are "ready", then execute HS in place of the regular melee swing.
     action_t* active_heroic_strike = 0;
 
-    if ( weapon -> slot == SLOT_MAIN_HAND && ! proc )
+    if ( weapon -> slot == SLOT_MAIN_HAND && ! proc && ! special )
     {
       for( int i=0; i < p -> num_active_heroic_strikes; i++ )
       {
@@ -907,7 +907,7 @@ struct melee_t : public warrior_attack_t
       active_heroic_strike -> execute();
       if ( result_is_hit() )
       {
-	  trigger_unbridled_wrath( this );
+	trigger_unbridled_wrath( this );
       }
       schedule_execute();
     }

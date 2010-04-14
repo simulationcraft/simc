@@ -588,11 +588,13 @@ static void register_tiny_abom( item_t* item )
     int result;
     double resource_consumed, direct_dmg, resisted_dmg, blocked_dmg;
     double time_to_execute;
+    bool manifesting_anger;
 
     tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ),
         old_stats( p -> get_stats( "manifest_anger" ) ), first_stack_attack( NULL )
     {
       old_stats -> school = SCHOOL_PHYSICAL;
+      manifesting_anger = false;
     }
     virtual void reset()
     {
@@ -600,13 +602,12 @@ static void register_tiny_abom( item_t* item )
     }
     virtual void trigger( action_t* a )
     {
+      if ( manifesting_anger ) return;
       if ( ! a -> weapon ) return;
-      if ( a -> proc ) return;
+      if ( ! buff -> trigger() ) return;
 
-      // If this is the first stack, save the weapon which made the
-      // attack for use as the proc later.  If this was a proc from a
-      // spell, just use the main hand weapon.
-      if ( buff -> trigger() && buff -> stack() == 1 )
+      // If this is the first stack, save the weapon which made the attack for use as the proc later.
+      if ( buff -> stack() == 1 )
       {
         assert( first_stack_attack == NULL );
         if ( a -> weapon -> slot == SLOT_OFF_HAND )
@@ -647,11 +648,11 @@ static void register_tiny_abom( item_t* item )
         attack -> repeating = false;
         attack -> may_glance = false;
         attack -> special = true;
-        attack -> proc = true;
         attack -> base_multiplier *= 0.5;
+	manifesting_anger = true;
         attack -> execute();
+	manifesting_anger = false;
         attack -> base_multiplier /= 0.5;
-        attack -> proc = false;
         attack -> special = false;
         attack -> may_glance = true;
         attack -> repeating = true;
