@@ -1,9 +1,9 @@
 #!./simc 
 
 paladin=Paladin_T10_09_05_57_HA
-origin="http://profiler.wowhead.com/profile=20980773"
+origin="http://profiler.wowhead.com/profile=21176206"
 level=80
-race=draenei
+race=blood_elf
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=050400000000000000000000000500000000000000000000000005232251203331302133231331
 actions=flask,type=endless_rage
@@ -13,6 +13,7 @@ actions+=/auto_attack
 actions+=/seal_of_vengeance
 actions+=/snapshot_stats
 actions+=/hammer_of_justice
+actions+=/arcane_torrent
 actions+=/avenging_wrath,time<=60
 actions+=/avenging_wrath,if=buff.bloodlust.react
 actions+=/judgement
