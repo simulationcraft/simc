@@ -18,7 +18,8 @@ actions+=/aspect
 actions+=/rapid_fire,if=buff.bloodlust.react
 actions+=/kill_command
 actions+=/kill_shot
-actions+=/explosive_shot
+actions+=/explosive_shot,if=buff.lock_and_load.react
+actions+=/explosive_shot,if=!buff.lock_and_load.up
 actions+=/black_arrow
 actions+=/serpent_sting
 actions+=/aimed_shot

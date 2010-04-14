@@ -3717,7 +3717,15 @@ void hunter_t::init_actions()
       }
       action_list_str += "/kill_command";
       action_list_str += "/kill_shot";
-      if ( talents.explosive_shot ) action_list_str += "/explosive_shot";
+      if ( talents.explosive_shot && talents.lock_and_load > 0 )
+      {
+        action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
+        action_list_str += "/explosive_shot,if=!buff.lock_and_load.up";
+      }
+      else if ( talents.explosive_shot && talents.lock_and_load == 0 )
+      {
+        action_list_str += "/explosive_shot";
+      }
       if ( talents.black_arrow ) action_list_str += "/black_arrow";
       action_list_str += "/serpent_sting";
       if ( talents.aimed_shot )
@@ -3728,7 +3736,15 @@ void hunter_t::init_actions()
       {
         action_list_str += "/multi_shot";
       }
-      if ( ! talents.explosive_shot ) action_list_str += "/arcane_shot";
+      if ( ! talents.explosive_shot && talents.lock_and_load > 0 ) 
+      {
+        action_list_str += "/arcane_shot,if=buff.lock_and_load.react";
+        action_list_str += "/arcane_shot,if=!buff.lock_and_load.up";
+      }
+      else if ( ! talents.explosive_shot && talents.lock_and_load == 0 )
+      {
+        action_list_str += "/arcane_shot";
+      }
       action_list_str += "/steady_shot";
       break;
     }

@@ -907,7 +907,7 @@ struct melee_t : public warrior_attack_t
       active_heroic_strike -> execute();
       if ( result_is_hit() )
       {
-	trigger_unbridled_wrath( this );
+	  trigger_unbridled_wrath( this );
       }
       schedule_execute();
     }
@@ -1822,7 +1822,7 @@ struct slam_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    // While slam is casting, the auto_attack is paused
+    /*// While slam is casting, the auto_attack is paused
     // So we simply reschedule the auto_attack by slam's casttime
     double time_to_next_hit;
     // Mainhand
@@ -1840,7 +1840,7 @@ struct slam_t : public warrior_attack_t
       time_to_next_hit -= sim -> current_time;
       time_to_next_hit += execute_time();
       p -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
+    }*/
   }
 
   virtual bool ready()
