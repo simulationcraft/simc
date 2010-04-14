@@ -11,11 +11,10 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
-actions+=/unbreakable_armor,time>=10,if=cooldown.blood_tap.remains>=58
-actions+=/raise_dead,time>=15,time<=40
-actions+=/raise_dead,if=buff.bloodlust.react
+actions+=/unbreakable_armor,if=cooldown.blood_tap.remains>=58
+actions+=/raise_dead,time>=5
 actions+=/icy_touch,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/howling_blast,if=buff.rime.react&buff.killing_machine.react
@@ -23,8 +22,8 @@ actions+=/obliterate
 actions+=/blood_tap,time>=10,if=blood=0&frost=0&unholy=0&inactive_death=0
 actions+=/blood_strike,if=blood=2&death<=2
 actions+=/blood_strike,if=blood=1&death<=1
+actions+=/empower_rune_weapon,if=blood=0&unholy=0&death=0
 actions+=/frost_strike
-actions+=/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75
 actions+=/howling_blast,if=buff.rime.react
 head=koltiras_helmet_of_triumph,heroic=1,stats=2102armor_94crit_86exp_174sta_150str,gems=relentless_earthsiege_10haste_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,heroic=1,stats=57crit_49hit_97sta_89str,gems=10haste_10str_4str

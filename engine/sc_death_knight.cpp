@@ -4189,12 +4189,11 @@ void death_knight_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_BLOOD:
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
-      action_list_str += "/hysteria,time<=60";
+      action_list_str += "/hysteria,time>=5,time<=60";
       action_list_str += "/hysteria,if=buff.bloodlust.react";
-      action_list_str += "/raise_dead,time<=60";
-      action_list_str += "/raise_dead,if=buff.bloodlust.react";
+      action_list_str += "/raise_dead,time>=10";
       if ( talents.epidemic < 2 )
       {
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1&unholy_cooldown<=2";
@@ -4236,14 +4235,12 @@ void death_knight_t::init_actions()
       */
       // UA 'lags' in updating armor, so first ghoul should be a few
       // seconds after it, second ghoud then with bloodlust
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.unbreakable_armor )
-        action_list_str += "/unbreakable_armor,time>=10,if=cooldown.blood_tap.remains>=58"; //Forces Unbreakable Armor to only be used in combination with Blood Tap
+        action_list_str += "/unbreakable_armor,if=cooldown.blood_tap.remains>=58"; //Forces Unbreakable Armor to only be used in combination with Blood Tap
 
-      action_list_str += "/raise_dead,time>=15,time<=40";
-      action_list_str += "/raise_dead,if=buff.bloodlust.react";
-
+      action_list_str += "/raise_dead,time>=5";
       if ( glyphs.disease )
       {
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<=0.1";
@@ -4272,9 +4269,9 @@ void death_knight_t::init_actions()
       }
       action_list_str += "/blood_strike,if=blood=2&death<=2";
       action_list_str += "/blood_strike,if=blood=1&death<=1";
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0";
       if ( talents.frost_strike )
         action_list_str += "/frost_strike";
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75";
       if ( talents.howling_blast )
         action_list_str += "/howling_blast,if=buff.rime.react";
       break;
@@ -4285,11 +4282,11 @@ void death_knight_t::init_actions()
       if ( talents.bladed_armor > 0 )
       {
         action_list_str += "/indestructible_potion,if=!in_combat";
-        action_list_str += "/speed_potion,if=buff.bloodlust.react";
+        action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
       else
       {
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
       if ( glyphs.disease )
@@ -4321,7 +4318,7 @@ void death_knight_t::init_actions()
       }
       if ( talents.summon_gargoyle )
       {
-        action_list_str += "/summon_gargoyle,time<=20";
+        action_list_str += "/summon_gargoyle,time<=60";
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
       }
       action_list_str += "/empower_rune_weapon,if=blood=0&frost=0&unholy=0";

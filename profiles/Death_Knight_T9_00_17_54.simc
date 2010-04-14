@@ -13,14 +13,14 @@ actions+=/presence,choose=blood
 actions+=/snapshot_stats
 actions+=/bone_shield,if=!buff.bone_shield.up
 actions+=/raise_dead
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/blood_strike,if=!buff.desolation.up
 actions+=/scourge_strike
 actions+=/blood_strike
-actions+=/summon_gargoyle,time<=20
+actions+=/summon_gargoyle,time<=60
 actions+=/summon_gargoyle,if=buff.bloodlust.react
 actions+=/empower_rune_weapon,if=blood=0&frost=0&unholy=0
 actions+=/death_coil

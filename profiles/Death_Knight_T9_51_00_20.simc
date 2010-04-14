@@ -11,12 +11,11 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
-actions+=/hysteria,time<=60
+actions+=/hysteria,time>=5,time<=60
 actions+=/hysteria,if=buff.bloodlust.react
-actions+=/raise_dead,time<=60
-actions+=/raise_dead,if=buff.bloodlust.react
+actions+=/raise_dead,time>=10
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1&unholy_cooldown<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=0.1&dot.frost_fever.remains>=13
 actions+=/heart_strike

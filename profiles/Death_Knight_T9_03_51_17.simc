@@ -11,10 +11,9 @@ actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood
 actions+=/snapshot_stats
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
-actions+=/raise_dead,time>=15,time<=40
-actions+=/raise_dead,if=buff.bloodlust.react
+actions+=/raise_dead,time>=5
 actions+=/icy_touch,if=dot.frost_fever.remains<=0.1
 actions+=/plague_strike,if=dot.blood_plague.remains<=0.1
 actions+=/pestilence,if=dot.blood_plague.remains<=5|dot.frost_fever.remains<=5
@@ -24,8 +23,8 @@ actions+=/obliterate
 actions+=/blood_tap,if=blood=1&inactive_death=1
 actions+=/blood_strike,if=blood=2&death<=2
 actions+=/blood_strike,if=blood=1&death<=1
+actions+=/empower_rune_weapon,if=blood=0&unholy=0&death=0
 actions+=/frost_strike
-actions+=/empower_rune_weapon,if=blood=0&unholy=0&death=0&runic_power<75
 actions+=/howling_blast,if=buff.rime.react
 head=faceplate_of_thunderous_rampage,stats=2009armor_82arpen_74crit_155sta_131str,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
 neck=the_executioners_vice,heroic=1,stats=57crit_49hit_97sta_89str,gems=10crit_10str_4str
