@@ -635,13 +635,14 @@ void SimulationCraftWindow::createBestInSlotTab()
   bis_entry_t bisList[] = 
     {
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_51_00_20",      TAB_WOWHEAD, "18101892" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_17_54",      TAB_WOWHEAD, "20992958" },
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_53_18",      TAB_WOWHEAD, "18133139" },
       { DEATH_KNIGHT,  T9, "Death_Knight_T9_03_51_17",      TAB_WOWHEAD, "18133075" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "20837928" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20_GoD", TAB_WOWHEAD, "20837965" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_17_54",     TAB_WOWHEAD, "20994690" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_53_18",     TAB_WOWHEAD, "20987909" },
+      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_17_54",      TAB_WOWHEAD, "20992958" },
+      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "21203256" },
+      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20_GoD", TAB_WOWHEAD, "21203314" },
+      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_53_18",     TAB_WOWHEAD, "21203260" },
+      { DEATH_KNIGHT, T10, "Death_Knight_T10_14_00_57",     TAB_WOWHEAD, "21203277" },
+      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_17_54",     TAB_WOWHEAD, "21203280" },
 
       { DRUID,      T9, "Druid_T9_00_55_16",                TAB_WOWHEAD, "14717965" },
       { DRUID,      T9, "Druid_T9_00_55_16_M",              TAB_WOWHEAD, "14726081" },

@@ -21,14 +21,13 @@ wowhead=18133139 name=Death_Knight_T9_00_53_18       save=Death_Knight_T9_00_53_
 wowhead=18133075 name=Death_Knight_T9_03_51_17       save=Death_Knight_T9_03_51_17.simc
 
 
-# T10: simcraftdkt10
+# T10: simulationcraft
 
-wowhead=21149982 name=Death_Knight_T10_00_17_54      save=Death_Knight_T10_00_17_54.simc
-wowhead=21149986 name=Death_Knight_T10_00_53_18      save=Death_Knight_T10_00_53_18.simc
-wowhead=21149971 name=Death_Knight_T10_14_00_57      save=Death_Knight_T10_14_00_57.simc
-wowhead=21149976 name=Death_Knight_T10_51_00_20      save=Death_Knight_T10_51_00_20.simc
-wowhead=21149980 name=Death_Knight_T10_51_00_20_GoD  save=Death_Knight_T10_51_00_20_GoD.simc
-
+wowhead=21203280 name=Death_Knight_T10_00_17_54      save=Death_Knight_T10_00_17_54.simc
+wowhead=21203260 name=Death_Knight_T10_00_53_18      save=Death_Knight_T10_00_53_18.simc
+wowhead=21203277 name=Death_Knight_T10_14_00_57      save=Death_Knight_T10_14_00_57.simc
+wowhead=21203256 name=Death_Knight_T10_51_00_20      save=Death_Knight_T10_51_00_20.simc
+wowhead=21203314 name=Death_Knight_T10_51_00_20_GoD  save=Death_Knight_T10_51_00_20_GoD.simc
 
 
 
