@@ -3666,21 +3666,15 @@ void hunter_t::init_actions()
     case TREE_MARKSMANSHIP:
       action_list_str += "/aspect";
       action_list_str += "/serpent_sting";
-      if ( talents.rapid_killing == 0 ) 
-      {
-        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
-      }
-      else if ( talents.rapid_killing == 1 )
-      {
-        action_list_str += "/rapid_fire";
-      }
-      else
-      {
-        action_list_str += "/rapid_fire,time<=60";
-        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
-      }
+      action_list_str += "/rapid_fire";
       action_list_str += "/kill_command";
       if ( talents.silencing_shot ) action_list_str += "/silencing_shot";
+      if ( talents.chimera_shot )
+      {
+        action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
+        action_list_str += "/chimera_shot";
+      }
+      action_list_str += "/kill_shot";
       if ( talents.aimed_shot ) 
       {
         action_list_str += "/aimed_shot";
@@ -3689,14 +3683,7 @@ void hunter_t::init_actions()
       {
         action_list_str += "/multi_shot";
       }
-      if ( talents.chimera_shot )
-      {
-        action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
-        action_list_str += "/chimera_shot";
-      }
-      action_list_str += "/kill_shot";
       if ( ( talents.improved_arcane_shot > 0 ) || ! glyphs.steady_shot || ( initial_stats.armor_penetration_rating < 600 ) ) action_list_str += "/arcane_shot";
-      if ( talents.rapid_killing == 0 ) action_list_str += "/readiness,time<=60";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot";
       break;
