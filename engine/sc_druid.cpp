@@ -3766,13 +3766,13 @@ void druid_t::init_actions()
         action_list_str += "flask,type=endless_rage";
         action_list_str += "/food,type=hearty_rhino";
         action_list_str += "/cat_form";
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += "/maim";
         action_list_str += "/faerie_fire_feral,debuff_only=1";
         action_list_str += "/tigers_fury,energy<=30,if=!buff.berserk.up";
-        if ( talents.berserk )action_list_str += "/berserk_cat,energy>=80,energy<=90";
+        if ( talents.berserk )action_list_str += "/berserk_cat,energy>=80,energy<=90,if=!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&dot.rip.remains-buff.savage_roar.remains>=0&buff.savage_roar.remains<=8";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&buff.savage_roar.remains-dot.rip.remains<=3&buff.savage_roar.remains<=8";

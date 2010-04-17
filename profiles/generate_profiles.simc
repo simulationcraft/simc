@@ -44,13 +44,13 @@ wowhead=14717965 name=Druid_T9_00_55_16              save=Druid_T9_00_55_16.simc
 wowhead=14726081 name=Druid_T9_00_55_16_M            save=Druid_T9_00_55_16_M.simc
 
 
-# T10: simcraftdruidt10
+# T10: simulationcraft
 
-wowhead=20996475 name=Druid_T10_58_00_13             save=Druid_T10_58_00_13.simc   eclipse_cycle=lunar
+wowhead=21284122 name=Druid_T10_58_00_13             save=Druid_T10_58_00_13.simc   eclipse_cycle=lunar
 main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
 
-wowhead=20997682 name=Druid_T10_00_55_16             save=Druid_T10_00_55_16.simc
-wowhead=20997585 name=Druid_T10_00_55_16_M           save=Druid_T10_00_55_16_M.simc
+wowhead=21284121 name=Druid_T10_00_55_16             save=Druid_T10_00_55_16.simc
+wowhead=21284118 name=Druid_T10_00_55_16_M           save=Druid_T10_00_55_16_M.simc
 
 
 
@@ -68,13 +68,13 @@ wowhead=14649679 name=Hunter_T9_02_18_51             save=Hunter_T9_02_18_51.sim
 wowhead=14663160 name=Hunter_T9_53_14_04             save=Hunter_T9_53_14_04.simc
 
 
-# T10: schuntert8
+# T10: simulationcraft
 
-wowhead=21000437 name=Hunter_T10_53_14_04            save=Hunter_T10_53_14_04.simc
-wowhead=21156150 name=Hunter_T10_07_57_07            save=Hunter_T10_07_57_07.simc
-wowhead=21156134 name=Hunter_T10_07_57_07_HM         save=Hunter_T10_07_57_07_HM.simc
-wowhead=21157147 name=Hunter_T10_06_14_51            save=Hunter_T10_06_14_51.simc
-wowhead=21157167 name=Hunter_T10_03_15_53_HP         save=Hunter_T10_03_15_53_HP.simc
+wowhead=21284132 name=Hunter_T10_53_14_04            save=Hunter_T10_53_14_04.simc
+wowhead=21284133 name=Hunter_T10_07_57_07            save=Hunter_T10_07_57_07.simc
+wowhead=21284135 name=Hunter_T10_07_57_07_HM         save=Hunter_T10_07_57_07_HM.simc
+wowhead=21284137 name=Hunter_T10_06_14_51            save=Hunter_T10_06_14_51.simc
+wowhead=21284138 name=Hunter_T10_03_15_53_HP         save=Hunter_T10_03_15_53_HP.simc
 
 
 

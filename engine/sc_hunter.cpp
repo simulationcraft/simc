@@ -3590,7 +3590,7 @@ void hunter_t::init_actions()
     action_list_str += ( primary_tree() != TREE_SURVIVAL ) ? "/food,type=hearty_rhino" : "/food,type=blackened_dragonfin";
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura ) action_list_str += "/trueshot_aura";
-    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
@@ -3669,12 +3669,12 @@ void hunter_t::init_actions()
       action_list_str += "/rapid_fire";
       action_list_str += "/kill_command";
       if ( talents.silencing_shot ) action_list_str += "/silencing_shot";
+      action_list_str += "/kill_shot";
       if ( talents.chimera_shot )
       {
-        action_list_str += "/wait,sec=0.1,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
+        action_list_str += "/wait,sec=cooldown.chimera_shot.remains,if=cooldown.chimera_shot.remains>0&cooldown.chimera_shot.remains<0.25";
         action_list_str += "/chimera_shot";
       }
-      action_list_str += "/kill_shot";
       if ( talents.aimed_shot ) 
       {
         action_list_str += "/aimed_shot";
@@ -3689,19 +3689,7 @@ void hunter_t::init_actions()
       break;
     case TREE_SURVIVAL:
       action_list_str += "/aspect";
-      if ( talents.rapid_killing == 0 )
-      {
-        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
-      }
-      else if ( talents.rapid_killing == 1 )
-      {
-        action_list_str += "/rapid_fire";
-      }
-      else
-      {
-        action_list_str += "/rapid_fire,time<=60";
-        action_list_str += "/rapid_fire,if=buff.bloodlust.react";
-      }
+      action_list_str += "/rapid_fire";
       action_list_str += "/kill_command";
       action_list_str += "/kill_shot";
       if ( talents.explosive_shot && talents.lock_and_load > 0 )

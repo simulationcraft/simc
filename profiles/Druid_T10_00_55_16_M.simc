@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_T10_00_55_16_M
-origin="http://profiler.wowhead.com/profile=20997585"
+origin="http://profiler.wowhead.com/profile=21284118"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -10,13 +10,13 @@ glyphs=rip/savage_roar/shred/dash/unburdened_rebirth/the_wild
 actions=flask,type=endless_rage
 actions+=/food,type=hearty_rhino
 actions+=/cat_form
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/maim
 actions+=/faerie_fire_feral,debuff_only=1
 actions+=/tigers_fury,energy<=30,if=!buff.berserk.up
-actions+=/berserk_cat,energy>=80,energy<=90
+actions+=/berserk_cat,energy>=80,energy<=90,if=!buff.tigers_fury.up
 actions+=/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1
 actions+=/savage_roar,if=buff.combo_points.stack>=3&dot.rip.remains-buff.savage_roar.remains>=0&buff.savage_roar.remains<=8
 actions+=/savage_roar,if=buff.combo_points.stack>=3&buff.savage_roar.remains-dot.rip.remains<=3&buff.savage_roar.remains<=8
