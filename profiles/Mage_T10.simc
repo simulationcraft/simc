@@ -14,8 +14,15 @@ Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 # Uncomment below and comment out above to download profiles.
 
 #wowhead=21284296 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
+#main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+
 #wowhead=21284292 name=Mage_T10_18_00_53		 save=Mage_T10_18_00_53.simc
+#main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+
 #wowhead=21284285 name=Mage_T10_20_51_00		 save=Mage_T10_20_51_00.simc
+#main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=black_magic,weapon=sword_1.80speed_160min_447max
+
 #wowhead=21284284 name=Mage_T10_57_03_11		 save=Mage_T10_57_03_11.simc
+#main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=black_magic,weapon=sword_1.80speed_160min_447max
 
 #save_profiles=1

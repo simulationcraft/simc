@@ -87,8 +87,6 @@ struct druid_t : public player_t
 
   double equipped_weapon_dps;
 
-  std::string eclipse_cycle;
-
   struct talents_t
   {
     int  balance_of_power;
@@ -224,8 +222,6 @@ struct druid_t : public player_t
     bear_melee_attack = 0;
 
     equipped_weapon_dps = 0;
-
-    eclipse_cycle = "solar";
   }
 
   // Character Definition
@@ -3771,23 +3767,19 @@ void druid_t::init_actions()
         action_list_str += "/snapshot_stats";
         action_list_str += "/maim";
         action_list_str += "/faerie_fire_feral,debuff_only=1";
-        action_list_str += "/tigers_fury,energy<=30,if=!buff.berserk.up";
-        if ( talents.berserk )action_list_str += "/berserk_cat,energy>=80,energy<=90,if=!buff.tigers_fury.up";
+        action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
+        if ( talents.berserk )action_list_str += "/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
-        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&dot.rip.remains-buff.savage_roar.remains>=0&buff.savage_roar.remains<=8";
-        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&buff.savage_roar.remains-dot.rip.remains<=3&buff.savage_roar.remains<=8";
-        if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
-        action_list_str += "/rip,time_to_die>=6,if=buff.combo_points.stack>=5";
-        action_list_str += "/ferocious_bite,time_to_die<=6,if=buff.combo_points.stack>=5";
+        action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6";
+        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&target.time_to_die>=9&buff.savage_roar.remains<=8&dot.rip.remains-buff.savage_roar.remains>=-3";
+        action_list_str += "/ferocious_bite,if=target.time_to_die<=6&buff.combo_points.stack>=5";
+        action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
+        if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
         if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=1";
-        action_list_str += "/rake,time_to_die>=9";
-        action_list_str += "/shred,energy>=80";
-        action_list_str += "/shred,if=buff.omen_of_clarity.react";
-        action_list_str += "/shred,if=buff.combo_points.stack<=4&dot.rip.remains<=3";
-        action_list_str += "/shred,time_to_die<=9";
-        action_list_str += "/shred,if=buff.berserk.up";
-        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3";
+        action_list_str += "/rake,if=target.time_to_die>=9";
+        action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.mangle.remains>0&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
+        action_list_str += "/shred,if=target.time_to_die<=9";
         action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
       }
     }
@@ -3808,22 +3800,11 @@ void druid_t::init_actions()
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking&!eclipse";
       if ( talents.insect_swarm && ( glyphs.insect_swarm )) action_list_str += "/insect_swarm,if=!ticking&!eclipse";
-      if ( eclipse_cycle == "solar" )
-      {
-        action_list_str += "/starfire,if=trigger_solar";
-        action_list_str += use_str;
-        action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
-        action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
-        action_list_str += "/wrath";
-      }
-      else
-      {
-        action_list_str += "/wrath,if=trigger_lunar";
-        action_list_str += use_str;
-        action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
-        action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
-        action_list_str += "/starfire";
-      }
+      action_list_str += "/wrath,if=trigger_lunar";
+      action_list_str += use_str;
+      action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
+      action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
+      action_list_str += "/starfire";
     }
     action_list_default = 1;
   }
@@ -4170,7 +4151,6 @@ std::vector<option_t>& druid_t::get_options()
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { "eclipse_cycle",             OPT_STRING, &( eclipse_cycle                    ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
