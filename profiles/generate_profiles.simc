@@ -90,14 +90,12 @@ wowhead=14306481 name=Mage_T9_20_51_00               save=Mage_T9_20_51_00.simc
 wowhead=14306468 name=Mage_T9_57_03_11               save=Mage_T9_57_03_11.simc
 
 
-# T10: scmaget10
+# T10: simulationcraft
 
-wowhead=21162630 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
-
-wowhead=21150215 name=Mage_T10_18_00_53		     save=Mage_T10_18_00_53.simc
-wowhead=21150300 name=Mage_T10_20_51_00		     save=Mage_T10_20_51_00.simc
-wowhead=21150329 name=Mage_T10_57_03_11		     save=Mage_T10_57_03_11.simc
+wowhead=21284296 name=Mage_T10_00_53_18              save=Mage_T10_00_53_18.simc
+wowhead=21284292 name=Mage_T10_18_00_53		     save=Mage_T10_18_00_53.simc
+wowhead=21284285 name=Mage_T10_20_51_00		     save=Mage_T10_20_51_00.simc
+wowhead=21284284 name=Mage_T10_57_03_11		     save=Mage_T10_57_03_11.simc
 
 
 

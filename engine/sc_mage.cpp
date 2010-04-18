@@ -3345,20 +3345,20 @@ void mage_t::init_actions()
     if ( talents.arcane_power ) action_list_str += "/arcane_power";
     if ( talents.icy_veins    ) action_list_str += "/icy_veins";
     action_list_str += "/mirror_image";
-    if ( talents.presence_of_mind )
+    if ( talents.presence_of_mind && talents.pyroblast )
     {
-      action_list_str += "/presence_of_mind,";
-      action_list_str += ( talents.pyroblast ) ? "pyroblast" : "arcane_blast";
+      action_list_str += "/presence_of_mind,pyroblast,if=dps&!buff.arcane_blast.up";
     }
     if ( primary_tree() == TREE_ARCANE )
     {
       action_list_str += "/mana_gem";
-      action_list_str += "/mana_potion";
       action_list_str += "/evocation,if=!buff.arcane_blast.up";
       action_list_str += "/choose_rotation";
-      action_list_str += "/arcane_missiles,if=dpm&buff.missile_barrage.react";
-      action_list_str += "/arcane_missiles,if=dps&buff.missile_barrage.react&buff.arcane_blast.stack>3";
-      action_list_str += "/arcane_missiles,if=dps&buff.missile_barrage.react&buff.arcane_power.up";
+      action_list_str += "/arcane_missiles,if=buff.missile_barrage.react";
+      if ( talents.presence_of_mind && talents.pyroblast )
+      {
+        action_list_str += "/presence_of_mind,arcane_blast,if=dps";
+      }
       action_list_str += "/arcane_blast,if=dpm&buff.arcane_blast.stack<3";
       action_list_str += "/arcane_blast,if=dps";
       action_list_str += "/arcane_missiles";
