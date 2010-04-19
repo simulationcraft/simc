@@ -1,0 +1,24 @@
+#!simc
+
+Globals_T10.simc
+
+optimal_raid=1
+
+Paladin_T10_09_05_57_HP.simc
+Paladin_T10_09_05_57_HPA.simc
+Paladin_T10_09_05_57_NP.simc
+Paladin_T10_09_05_57_HA.simc
+Paladin_T10_09_05_57_HAA.simc
+Paladin_T10_05_11_55_HPH.simc
+
+# simulationcraft
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=21176231  name=Paladin_T10_09_05_57_HP       save=Paladin_T10_09_05_57_HP.simc
+#wowhead=21203347  name=Paladin_T10_09_05_57_HPA      save=Paladin_T10_09_05_57_HPA.simc
+#wowhead=21176233  name=Paladin_T10_09_05_57_NP       save=Paladin_T10_09_05_57_NP.simc
+#wowhead=21176206  name=Paladin_T10_09_05_57_HA       save=Paladin_T10_09_05_57_HA.simc
+#wowhead=21176225  name=Paladin_T10_09_05_57_HAA      save=Paladin_T10_09_05_57_HAA.simc
+#wowhead=21176420  name=Paladin_T10_05_11_55_HPH      save=Paladin_T10_05_11_55_HPH.simc
+
+#save_profiles=1

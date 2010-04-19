@@ -1,0 +1,14 @@
+#!simc
+
+Globals_T9.simc
+
+optimal_raid=1
+
+Paladin_T9_05_11_55.simc
+
+# scpaladint9
+# Uncomment below and comment out above to download profiles.
+
+#wowhead=16421920 name=Paladin_T9_05_11_55            save=Paladin_T9_05_11_55.simc
+
+#save_profiles=1
