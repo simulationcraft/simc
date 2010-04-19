@@ -25,7 +25,7 @@ actions+=/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4
 actions+=/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11
 actions+=/shred,extend_rip=1,if=dot.rip.remains<=4
 actions+=/rake,if=target.time_to_die>=9
-actions+=/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.mangle.remains>0&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)
+actions+=/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)
 actions+=/shred,if=target.time_to_die<=9
 actions+=/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2
 head=runetotems_headguard_of_triumph,heroic=1,stats=137agi_529armor_172ap_102crit_86exp_153sta,gems=relentless_earthsiege_10agi_10haste_8agi,enchant=50ap_20crit

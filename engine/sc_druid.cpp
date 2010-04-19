@@ -3778,7 +3778,7 @@ void druid_t::init_actions()
         if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
         if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=1";
         action_list_str += "/rake,if=target.time_to_die>=9";
-        action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.mangle.remains>0&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
+        action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
         action_list_str += "/shred,if=target.time_to_die<=9";
         action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
       }
