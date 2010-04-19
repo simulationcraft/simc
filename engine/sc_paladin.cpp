@@ -765,6 +765,9 @@ struct hammer_of_wrath_t : public paladin_attack_t
     };
     init_rank( ranks, 48806 );
 
+	weapon            = &( p -> main_hand_weapon );
+	weapon_multiplier	 *= 0.0;
+
     may_parry = false;
     may_dodge = false;
     may_block = false;
@@ -983,6 +986,9 @@ struct seal_of_justice_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     id = 20164;
   }
   virtual void execute() 
@@ -1014,6 +1020,9 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.32;
     base_attack_power_multiplier = 0.20;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     cooldown -> duration = 10 - p -> talents.improved_judgements;
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
@@ -1040,6 +1049,9 @@ struct seal_of_light_proc_t : public paladin_attack_t
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     id = 20165;
   }
 
@@ -1073,6 +1085,9 @@ struct seal_of_light_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.25;
     base_attack_power_multiplier = 0.16;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     cooldown -> duration = 10 - p -> talents.improved_judgements;
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
@@ -1102,6 +1117,9 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     base_spell_power_multiplier = 0.044;
     base_attack_power_multiplier = 0.022;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
 
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10;
@@ -1136,6 +1154,9 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.32;
     base_attack_power_multiplier = 0.20;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     cooldown -> duration = 10 - p -> talents.improved_judgements;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
@@ -1159,6 +1180,9 @@ struct seal_of_vengeance_dot_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
     base_cost   = 0;
+
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier *= 0.0;
 
     base_td = 1;
     num_ticks = 5;
@@ -1274,6 +1298,9 @@ struct seal_of_vengeance_judgement_t : public paladin_attack_t
                                p -> talents.seals_of_the_pure      * 0.03 +
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.22;
     base_attack_power_multiplier = 0.14;
@@ -1306,6 +1333,9 @@ struct seal_of_wisdom_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     id = 21066;
   }
 
@@ -1339,6 +1369,9 @@ struct seal_of_wisdom_judgement_t : public paladin_attack_t
     base_spell_power_multiplier = 0.25;
     base_attack_power_multiplier = 0.16;
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier = 0.0;
+	  
     cooldown -> duration = 10 - p -> talents.improved_judgements;
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
@@ -1772,6 +1805,9 @@ struct exorcism_t : public paladin_spell_t
     };
     init_rank( ranks, 48801 );
 
+	 weapon            = &( p -> main_hand_weapon );
+	 weapon_multiplier *= 0.0;
+	  
     may_crit = true;
     base_execute_time = 1.5;
 
