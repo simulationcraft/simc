@@ -352,7 +352,7 @@ struct paladin_attack_t : public attack_t
         case SEAL_OF_LIGHT:         p -> active_seal_of_light_proc         -> execute(); break;
         case SEAL_OF_RIGHTEOUSNESS: p -> active_seal_of_righteousness_proc -> execute(); break;
         case SEAL_OF_WISDOM:        p -> active_seal_of_wisdom_proc        -> execute(); break;
-        case SEAL_OF_VENGEANCE:     if ( p -> buffs_holy_vengeance         -> stack() == 5 ) p -> active_seal_of_vengeance_proc -> execute(); break;
+        case SEAL_OF_VENGEANCE:     if ( p -> buffs_holy_vengeance         -> stack() >= 1 ) p -> active_seal_of_vengeance_proc -> execute(); break;
         default:;
         }
       }
@@ -1245,6 +1245,12 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
 
     id = 31801;
+  }
+  virtual void player_buff()
+  {
+    paladin_t* p = player -> cast_paladin();
+    paladin_attack_t::player_buff();
+    player_multiplier *= p -> buffs_holy_vengeance -> stack() / 5;
   }
 };
 
