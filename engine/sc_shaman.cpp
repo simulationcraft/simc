@@ -1078,7 +1078,7 @@ void shaman_spell_t::execute()
 
 void shaman_spell_t::schedule_execute()
 {
-  shaman_t* p = player -> cast_shaman();
+  /* shaman_t* p = player -> cast_shaman(); */
 
   spell_t::schedule_execute();
 
