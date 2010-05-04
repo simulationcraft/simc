@@ -228,8 +228,9 @@ wowhead=18859247 name=Warlock_T9_00_56_15             save=Warlock_T9_00_56_15.s
 wowhead=20983156 name=Warlock_T10_56_00_15            save=Warlock_T10_56_00_15.simc
 wowhead=20850045 name=Warlock_T10_55_00_16            save=Warlock_T10_55_00_16.simc
 wowhead=20850049 name=Warlock_T10_00_13_58            save=Warlock_T10_00_13_58.simc
-wowhead=20983226 name=Warlock_T10_00_18_53            save=Warlock_T10_00_18_53.simc
+wowhead=20983226 name=Warlock_T10_00_18_53			  save=Warlock_T10_00_18_53.simc
 wowhead=20983242 name=Warlock_T10_00_56_15            save=Warlock_T10_00_56_15.simc
+wowhead=21345827 name=Warlock_T10_00_56_15_rDPS	      save=Warlock_T10_00_56_15_rDPS.simc
 
 
 

@@ -9,6 +9,8 @@ Warlock_T10_00_18_53.simc
 Warlock_T10_00_56_15.simc
 Warlock_T10_55_00_16.simc
 Warlock_T10_56_00_15.simc
+Warlock_T10_00_56_15_rDPS.simc
+
 
 # scwarlockt10
 # Uncomment below and comment out above to download profiles.
@@ -18,5 +20,6 @@ Warlock_T10_56_00_15.simc
 #wowhead=20850049 name=Warlock_T10_00_13_58    save=Warlock_T10_00_13_58.simc
 #wowhead=20983226 name=Warlock_T10_00_18_53    save=Warlock_T10_00_18_53.simc
 #wowhead=20983242 name=Warlock_T10_00_56_15    save=Warlock_T10_00_56_15.simc
+#wowhead=21345827 name=Warlock_T10_00_56_15_rDPS		save=Warlock_T10_00_56_15_rDPS.simc
 
 #save_profiles=1

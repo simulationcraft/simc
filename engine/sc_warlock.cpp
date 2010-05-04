@@ -3856,6 +3856,8 @@ void warlock_t::init_actions()
     action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
     action_list_str += ( talents.master_conjuror || talents.haunt ) ? "/spell_stone" : "/fire_stone";
     action_list_str += "/fel_armor/summon_pet";
+
+    // Choose Pet
     if ( summon_pet_str.empty() )
     {
       if ( talents.summon_felguard )
@@ -3869,10 +3871,14 @@ void warlock_t::init_actions()
     }
     action_list_str += "," + summon_pet_str;
     action_list_str += "/snapshot_stats";
+
+    // Refresh Life Tap Buff
     if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
     {
       action_list_str+="/" + tap_str + ",buff_refresh=1";
     }
+
+    // Usable Item
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -3882,6 +3888,8 @@ void warlock_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    // Race Skills
     if ( race == RACE_ORC )
     {
       action_list_str += "/blood_fury";
@@ -3890,59 +3898,94 @@ void warlock_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-    action_list_str += "/wild_magic_potion,bloodlust=1";
-    if ( talents.haunt || talents.unstable_affliction ) // 41+_xx_xx
+
+    // Choose Potion
+    if ( talents.haunt )
     {
-      if ( talents.haunt ) action_list_str += "/haunt";
-      action_list_str += "/corruption/curse_of_agony";
-      if ( talents.unstable_affliction ) action_list_str += "/unstable_affliction";
+    	action_list_str += "/wild_magic_potion,if=!in_combat";
+    	action_list_str += "/speed_potion,if=buff.bloodlust.react";
+    }
+    else
+    {
+    	action_list_str += "/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)";
+    }
+
+    // Affliction 41+_xx_xx
+    if ( talents.haunt || talents.unstable_affliction )
+    {
+      if ( talents.haunt ) action_list_str += "/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<4)";
+      action_list_str += "/corruption,if=!ticking";
+      if ( talents.unstable_affliction ) action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
+      if ( talents.haunt ) action_list_str += "/curse_of_agony,time_to_die>=20,if=!ticking";
       if ( talents.soul_siphon ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
     }
-    else if ( talents.chaos_bolt ) // 00_13_58
+
+    // Destruction 00_13_58
+    else if ( talents.chaos_bolt )
     {
       if ( talents.conflagrate ) action_list_str += "/conflagrate";
-      action_list_str += "/immolate";
+      action_list_str += "/immolate,time_to_die>=3,if=(dot.immolate.remains<cast_time)";
       action_list_str += "/chaos_bolt";
-      action_list_str += "/curse_of_doom,time_to_die>=90";
-      action_list_str += "/curse_of_agony,time_to_die>=28,moving=1";
+      action_list_str += "/curse_of_doom,time_to_die>=70";
+      action_list_str += "/curse_of_agony,moving=1,if=(!ticking)&!(dot.curse_of_doom.remains>0)";
     }
-    else if ( talents.metamorphosis ) // 00_56_15
+
+    // Demonology 00_56_15
+    else if ( talents.metamorphosis )
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/life_tap,trigger=14000,health_percentage>=35,metamorphosis=0";
+
       action_list_str += "/metamorphosis";
-      action_list_str += "/immolation";
-      action_list_str += "/corruption";
-      action_list_str += "/curse_of_doom,time_to_die>=90";
-      action_list_str += "/curse_of_agony,time_to_die>=28";
-      action_list_str += "/immolate";
-      if ( talents.decimation ) action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/incinerate,molten_core=1";
+      action_list_str += "/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react)|(buff.metamorphosis.remains<15)";
+      action_list_str += "/curse_of_doom,time_to_die>=70";
+      if ( talents.decimation ) action_list_str += "/soul_fire,if=(buff.decimation.react)&(buff.molten_core.react)";
+      action_list_str += "/corruption,time_to_die>=8,if=!ticking";
+      if ( talents.decimation ) action_list_str += "/soul_fire,if=buff.decimation.react";
+      action_list_str += "/incinerate,if=buff.molten_core.react";
+		  // Set Mana Buffer pre 35% with or without Glyph of Life Tap
+		  if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
+			  {
+			  action_list_str += "/life_tap,trigger=12000,health_percentage>=35,if=buff.metamorphosis.down";
+			  }
+		  else
+			  {
+			  action_list_str += "/life_tap,trigger=19000,health_percentage>=35,if=buff.metamorphosis.down";
+			  }
+	  action_list_str += "/curse_of_agony,moving=1,if=(!ticking)&!(dot.curse_of_doom.remains>0)";
     }
-    else if ( talents.summon_felguard && talents.emberstorm && talents.decimation ) // 00_41_30
+
+    // Hybrid 00_41_30
+    else if ( talents.summon_felguard && talents.emberstorm && talents.decimation )
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/corruption,time_to_die>=20/immolate,time_to_die>=15";
-      action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/curse_of_agony,time_to_die>=28";
+      action_list_str += "/corruption,time_to_die>=20,if=!ticking";
+      action_list_str += "/immolate,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/soul_fire,if=buff.decimation.react";
+      action_list_str += "/curse_of_agony,time_to_die>=20,if=!ticking";
     }
-    else if ( talents.decimation && talents.conflagrate ) // 00_40_31
+
+    // Hybrid 00_40_31
+    else if ( talents.decimation && talents.conflagrate )
     {
       if ( talents.demonic_empowerment ) action_list_str += "/demonic_empowerment";
-      action_list_str += "/corruption,time_to_die>=20/immolate,time_to_die>=15/conflagrate";
-      action_list_str += "/soul_fire,decimation=1";
-      action_list_str += "/curse_of_agony,time_to_die>=28";
+      action_list_str += "/corruption,time_to_die>=20,if=!ticking";
+      action_list_str += "/immolate,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/conflagrate";
+      action_list_str += "/soul_fire,if=buff.decimation.react";
+      action_list_str += "/curse_of_agony,time_to_die>=20,if=!ticking";
     }
+
     else // generic
     {
-      action_list_str += "/corruption/curse_of_agony/immolate";
+      action_list_str += "/corruption,if=!ticking/curse_of_agony,time_to_die>20,if=!ticking/immolate,if=(dot.immolate.remains<cast_time)";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     }
 
+    // Main Nuke
     action_list_str += talents.emberstorm ? "/incinerate" : "/shadow_bolt";
 
     // instants to use when moving if possible
-    action_list_str += "/" + tap_str + ",mana_percentage<=20,buff_refresh=1,moving=1";
     if ( talents.shadow_burn ) action_list_str += "/shadow_burn,moving=1";
     if ( talents.shadowfury  ) action_list_str += "/shadowfury,moving=1";
 
