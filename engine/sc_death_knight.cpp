@@ -4076,7 +4076,12 @@ void death_knight_t::init()
 
   if ( pet_t* ghoul = find_pet( "ghoul" ) )
   {
-    ghoul -> type = PLAYER_GUARDIAN;
+    if ( talents.master_of_ghouls )
+    {
+      ghoul -> type = PLAYER_PET;
+    } else {
+      ghoul -> type = PLAYER_GUARDIAN;
+    }
   }
 }
 
