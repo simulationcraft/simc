@@ -16,9 +16,10 @@ actions+=/indestructible_potion
 actions+=/bloodrage,rage<=65
 actions+=/heroic_strike,rage>=50
 actions+=/rend
-actions+=/overpower,if=buff.taste_for_blood.react
+actions+=/overpower,if=buff.taste_for_blood.remains<1.5
 actions+=/bladestorm
 actions+=/mortal_strike
+actions+=/overpower,if=buff.taste_for_blood.react
 actions+=/execute,health_percentage>=20,if=buff.sudden_death.react
 actions+=/execute,health_percentage<=20
 actions+=/slam
