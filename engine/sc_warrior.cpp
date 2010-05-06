@@ -2599,7 +2599,7 @@ void warrior_t::init_actions()
       action_list_str += "/bloodrage,rage<=65";
       action_list_str += "/heroic_strike,rage>=50";
       action_list_str += "/rend";
-      action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5"
+      action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/bladestorm";
       action_list_str += "/mortal_strike";
       action_list_str += "/overpower,if=buff.taste_for_blood.react";
