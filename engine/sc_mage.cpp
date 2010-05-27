@@ -2016,6 +2016,7 @@ struct pyroblast_t : public mage_spell_t
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     direct_power_mod += p -> talents.empowered_fire * 0.05;
+    tick_power_mod   += p -> talents.empowered_fire * 0.05;
     may_torment = true;
   }
 
