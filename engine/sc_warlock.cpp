@@ -583,7 +583,7 @@ struct imp_pet_t : public warlock_pet_t
     attribute_base[ ATTR_STRENGTH  ] = 297;
     attribute_base[ ATTR_AGILITY   ] =  79;
     attribute_base[ ATTR_STAMINA   ] = 118;
-    attribute_base[ ATTR_INTELLECT ] = 424;
+    attribute_base[ ATTR_INTELLECT ] = 369;
     attribute_base[ ATTR_SPIRIT    ] = 367;
 
     resource_base[ RESOURCE_HEALTH ] = 4011;
