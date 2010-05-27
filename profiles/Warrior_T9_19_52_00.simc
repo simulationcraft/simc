@@ -19,7 +19,7 @@ actions+=/death_wish
 actions+=/heroic_strike,rage>=25
 actions+=/whirlwind
 actions+=/bloodthirst
-actions+=/slam,bloodsurge=1
+actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
 actions+=/berserker_rage
 head=hellscreams_helmet_of_triumph,heroic=1,stats=2102armor_86crit_94hit_174sta_150str,gems=relentless_earthsiege_10agi_10int_10spi_10sta_10str_8str,enchant=50ap_20crit

@@ -37,14 +37,14 @@ finger2=memory_of_malygos,heroic=1,stats=60haste_78int_68spi_110sp_78sta,gems=10
 trinket1=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1206sp_30%_20dur_100cd
 trinket2=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_78int_110sp_78sta,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
 off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119sp_78sta
 ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58sp_44sta,gems=10haste_12sp_5sp
 # Gear Summary
 # gear_stamina=1432
 # gear_intellect=1417
 # gear_spirit=212
-# gear_spell_power=3425
+# gear_spell_power=3430
 # gear_hit_rating=289
 # gear_crit_rating=1094
 # gear_haste_rating=1253
@@ -53,4 +53,4 @@ ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58sp_44sta,gems=
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
 # back=frostbinders_shredded_cape,heroic=1,enchant=lightweave_embroidery
-# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160min_447max
+# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max

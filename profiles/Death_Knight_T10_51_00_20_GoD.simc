@@ -1,12 +1,12 @@
 #!./simc 
 
 death_knight=Death_Knight_T10_51_00_20_GoD
-origin="http://profiler.wowhead.com/profile=21149980"
+origin="http://profiler.wowhead.com/profile=21203314"
 level=80
 race=tauren
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=230502053000330323112300135100000000000000000000000000000230220305003
-glyphs=dancing_rune_weapon/disease/death_strike/horn_of_winter/pestilence/raise_dead
+glyphs=dancing_rune_weapon/death_strike/disease/horn_of_winter/pestilence/raise_dead
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=blood

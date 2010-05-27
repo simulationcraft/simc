@@ -41,12 +41,12 @@ finger2=band_of_the_bone_colossus,heroic=1,stats=102agi_120ap_65haste_62hit_102s
 trinket1=tiny_abomination_in_a_jar,heroic=1,stats=85hit
 trinket2=whispering_fanged_skull,heroic=1,stats=148crit,equip=onattackhit_1250ap_35%_15dur_45cd
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=20haste_4agi,enchant=23agi
-main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=34arpen,enchant=berserking,weapon=axe_2.60speed_481min_895max
+main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=34arpen_4agi,enchant=berserking,weapon=axe_2.60speed_481min_895max
 off_hand=scourgeborne_waraxe,heroic=1,stats=78agi_44arpen_88ap_52crit_78sta,gems=10agi_10haste_4agi,enchant=berserking,weapon=axe_1.50speed_263min_489max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=34arpen,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=34arpen_4agi,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 # Gear Summary
 # gear_strength=20
-# gear_agility=1913
+# gear_agility=1921
 # gear_stamina=1829
 # gear_intellect=20
 # gear_spirit=20
@@ -64,4 +64,4 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # trinket1=tiny_abomination_in_a_jar,heroic=1
 # main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max,enchant=berserking
 # off_hand=scourgeborne_waraxe,heroic=1,weapon=axe_1.50speed_263min_489max,enchant=berserking
-# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max

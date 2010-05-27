@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_T10_19_52_00_277
-origin="http://profiler.wowhead.com/profile=20969288"
+origin="http://profiler.wowhead.com/profile=21169162"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -37,11 +37,11 @@ trinket1=deathbringers_will,heroic=1,stats=167arpen
 trinket2=deaths_verdict,heroic=1,stats=288ap
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=10haste_10str_4agi,enchant=22agi
 main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20arpen_20arpen_20arpen_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
-off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=122crit_114exp_222sta_198str,gems=20arpen_20arpen_20arpen,enchant=berserking,weapon=sword2h_3.60speed_991min_1487max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20arpen,enchant=40crit,weapon=crossbow_3.00speed_782min_1071max
+off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=122crit_114exp_222sta_198str,gems=20arpen_20arpen_20arpen_8str,enchant=berserking,weapon=sword2h_3.60speed_991min_1487max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20arpen_4agi,enchant=40crit,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 # Gear Summary
-# gear_strength=1705
-# gear_agility=651
+# gear_strength=1713
+# gear_agility=655
 # gear_stamina=2255
 # gear_intellect=10
 # gear_spirit=10
@@ -59,4 +59,4 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # trinket2=deaths_verdict,heroic=1
 # main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking
 # off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,weapon=sword2h_3.60speed_991min_1487max,enchant=berserking
-# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max

@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_T10_55_08_08_277
-origin="http://profiler.wowhead.com/profile=20977076"
+origin="http://profiler.wowhead.com/profile=21169165"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -38,10 +38,10 @@ trinket1=deathbringers_will,heroic=1,stats=167arpen
 trinket2=deaths_verdict,heroic=1,stats=288ap
 back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20str_8ap,enchant=22agi
 main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20arpen_20arpen_20arpen_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20str,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20str_4agi,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 # Gear Summary
 # gear_strength=1732
-# gear_agility=512
+# gear_agility=516
 # gear_stamina=2024
 # gear_intellect=10
 # gear_spirit=10
@@ -57,4 +57,4 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # trinket1=deathbringers_will,heroic=1
 # trinket2=deaths_verdict,heroic=1
 # main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking
-# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max

@@ -44,12 +44,12 @@ finger2=band_of_the_bone_colossus,heroic=1,stats=102agi_120ap_65haste_62hit_102s
 trinket1=herkuml_war_token,stats=153haste,equip=onattackhit_17ap_20stack_10dur
 trinket2=tiny_abomination_in_a_jar,heroic=1,stats=85hit
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=20hit_4agi,enchant=23haste
-main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20exp,enchant=berserking,weapon=axe_2.60speed_481min_895max
-off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20exp,enchant=berserking,weapon=axe_2.60speed_481min_895max
+main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20exp_4agi,enchant=berserking,weapon=axe_2.60speed_481min_895max
+off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20exp_4agi,enchant=berserking,weapon=axe_2.60speed_481min_895max
 ranged=bizuris_totem_of_shattered_ice
 # Gear Summary
 # gear_strength=20
-# gear_agility=1788
+# gear_agility=1796
 # gear_stamina=1533
 # gear_intellect=646
 # gear_spirit=20

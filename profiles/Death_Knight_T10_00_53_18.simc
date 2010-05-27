@@ -1,7 +1,7 @@
 #!./simc 
 
 death_knight=Death_Knight_T10_00_53_18
-origin="http://profiler.wowhead.com/profile=21149986"
+origin="http://profiler.wowhead.com/profile=21203260"
 level=80
 race=tauren
 use_pre_potion=-1
@@ -39,12 +39,12 @@ finger2=ashen_band_of_endless_might,stats=59crit_59hit_107sta_99str,gems=10hit_1
 trinket1=deaths_choice,heroic=1,stats=288ap
 trinket2=deathbringers_will,heroic=1,stats=167arpen
 back=winding_sheet,heroic=1,stats=185armor_68crit_60haste_116sta_108str,gems=10hit_10str_4str,enchant=23haste
-main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_481min_895max
-off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen,enchant=rune_of_razorice,weapon=axe_2.60speed_481min_895max
+main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen_4agi,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_481min_895max
+off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_48haste_84sta,gems=20arpen_4agi,enchant=rune_of_razorice,weapon=axe_2.60speed_481min_895max
 ranged=sigil_of_the_hanged_man
 # Gear Summary
 # gear_strength=1806
-# gear_agility=209
+# gear_agility=217
 # gear_stamina=2006
 # gear_intellect=20
 # gear_spirit=20

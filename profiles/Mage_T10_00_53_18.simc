@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_T10_00_53_18
-origin="http://profiler.wowhead.com/profile=21162630"
+origin="http://profiler.wowhead.com/profile=21284296"
 level=80
 race=undead
 use_pre_potion=-1
@@ -38,7 +38,7 @@ finger2=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_78int_110sp_78sta,gem
 trinket1=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1206sp_30%_20dur_100cd
 trinket2=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_78int_110sp_78sta,gems=10haste_12sp_5sp,enchant=lightweave_embroidery
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
 off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119sp_78sta
 ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58sp_44sta,gems=10haste_12sp_5sp
 # Gear Summary
@@ -54,5 +54,5 @@ ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58sp_44sta,gems=
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
 # back=frostbinders_shredded_cape,heroic=1,enchant=lightweave_embroidery
-# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160min_447max
+# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
 armor_type=molten

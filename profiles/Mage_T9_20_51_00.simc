@@ -11,7 +11,7 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/arcane_brilliance
 actions+=/focus_magic
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/scorch,debuff=1

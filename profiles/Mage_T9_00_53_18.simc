@@ -10,7 +10,7 @@ glyphs=frostfire/living_bomb/molten_armor/slow_fall/arcane_intellect/fire_ward
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/arcane_brilliance
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/scorch,debuff=1

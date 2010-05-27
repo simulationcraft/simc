@@ -23,9 +23,12 @@ Mage_T10_18_00_53.simc	 focus_magic_target=Mage_T10_20_51_00
 Mage_T10_20_51_00.simc   focus_magic_target=Mage_T10_57_03_11
 Mage_T10_57_03_11.simc   focus_magic_target=Mage_T10_18_00_53
 
-Paladin_T10_05_11_55.simc
-Paladin_T10_09_05_57_H.simc
+Paladin_T10_09_05_57_HP.simc
+Paladin_T10_09_05_57_HPA.simc
+Paladin_T10_09_05_57_NP.simc
 Paladin_T10_09_05_57_HA.simc
+Paladin_T10_09_05_57_HAA.simc
+Paladin_T10_05_11_55_HPH.simc
 
 Priest_T10_13_00_58_264.simc
 Priest_T10_13_00_58_264_SWD.simc
@@ -46,7 +49,6 @@ Warlock_T10_00_56_15.simc
 Warlock_T10_00_56_15_rDPS.simc
 Warlock_T10_55_00_16.simc
 Warlock_T10_56_00_15.simc
-
 
 Warrior_T10_19_52_00_277.simc
 Warrior_T10_55_08_08_277.simc

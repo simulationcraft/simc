@@ -12,7 +12,7 @@ actions+=/food,type=fish_feast
 actions+=/water_elemental
 actions+=/arcane_brilliance
 actions+=/focus_magic
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/speed_potion
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/icy_veins

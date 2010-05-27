@@ -29,12 +29,12 @@ actions+=/curse_of_agony,moving=1,if=(!ticking)&!(dot.curse_of_doom.remains>0)
 actions+=/shadow_bolt
 actions+=/life_tap
 head=sanctified_dark_coven_hood,heroic=1,stats=300armor_114crit_106haste_139int_186sp_139sta,gems=chaotic_skyflare_10spi_12sp_9sp,enchant=30sp_20crit
-neck=bone_sentinels_amulet,heroic=1,stats=60haste_78int_68spi_110sp_78sta,gems=10spi_12sp_5sp
+neck=amulet_of_the_silent_eulogy,heroic=1,stats=68haste_60hit_78int_110sp_78sta,gems=10hit_12sp_5sp
 shoulders=sanctified_dark_coven_shoulderpads,heroic=1,stats=277armor_90crit_82haste_103int_150sp_103sta,gems=10hit_12sp_5sp,enchant=24sp_15crit
 chest=sanguine_silk_robes,heroic=1,stats=369armor_98haste_139int_122spi_186sp_139sta,gems=10spi_12sp_23sp_10hit_12sp_9sp,enchant=10str_10agi_10sta_10int_10spi
 waist=lingering_illness,heroic=1,stats=208armor_74crit_103int_90spi_140sp_103sta,gems=10hit_12sp_23sp_23sp_7sp
-legs=sanctified_dark_coven_leggings,heroic=1,stats=323armor_122crit_106hit_139int_195sp_139sta,gems=10spi_12sp_10hit_12sp_7sp,enchant=50sp_20spi
-feet=plague_scientists_boots,heroic=1,stats=254armor_74crit_90haste_103int_140sp_103sta,gems=10spi_12sp_23sp_7sp,enchant=12crit_12hit
+legs=sanctified_dark_coven_leggings,heroic=1,stats=323armor_122crit_106hit_139int_195sp_139sta,gems=23sp_23sp,enchant=50sp_20spi
+feet=plague_scientists_boots,heroic=1,stats=254armor_74crit_90haste_103int_140sp_103sta,gems=10spi_12sp_23sp_7sp,enchant=18spi
 wrists=death_surgeons_sleeves,heroic=1,stats=162armor_60crit_78int_68spi_110sp_78sta,gems=10spi_12sp_5sp,enchant=76sp
 hands=sanctified_dark_coven_gloves,heroic=1,stats=231armor_90crit_82hit_103int_150sp_103sta,gems=10spi_12sp_5sp,enchant=28sp
 finger1=ashen_band_of_endless_destruction,stats=64haste_51hit_73int_101sp_73sta,gems=10hit_12sp_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
@@ -42,7 +42,7 @@ finger2=memory_of_malygos,heroic=1,stats=60haste_78int_68spi_110sp_78sta,gems=10
 trinket1=muradins_spyglass,heroic=1,stats=152crit,equip=onspelldamage_20sp_10stack_10dur
 trinket2=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 back=greatcloak_of_the_turned_champion,heroic=1,stats=185armor_60haste_78int_68spi_110sp_78sta,gems=10spi_12sp_5sp,enchant=23haste
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
+main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
 off_hand=sundial_of_eternal_dusk,heroic=1,stats=68haste_78int_68spi_119sp_78sta
 ranged=nightmare_ender,heroic=1,stats=38crit_44int_30spi_58sp_44sta,gems=10hit_12sp_5sp
 # Gear Summary
@@ -50,13 +50,13 @@ ranged=nightmare_ender,heroic=1,stats=38crit_44int_30spi_58sp_44sta,gems=10hit_1
 # gear_agility=10
 # gear_stamina=1427
 # gear_intellect=1427
-# gear_spirit=692
-# gear_spell_power=3449
-# gear_hit_rating=321
-# gear_crit_rating=937
-# gear_haste_rating=952
+# gear_spirit=622
+# gear_spell_power=3469
+# gear_hit_rating=369
+# gear_crit_rating=925
+# gear_haste_rating=960
 # gear_armor=2309
 # meta_gem=chaotic_skyflare
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
-# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160min_447max
+# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max

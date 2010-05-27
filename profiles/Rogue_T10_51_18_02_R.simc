@@ -5,7 +5,7 @@ origin="http://profiler.wowhead.com/profile=21162335"
 level=80
 race=undead
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=0053230053501005201033310510050050050030000000000000000002
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=00532300535010052010333105100500500500300000000000000002
 glyphs=hunger_for_blood/mutilate/rupture
 actions=flask,type=endless_rage
 actions+=/food,type=mega_mammoth_meal
@@ -41,12 +41,12 @@ finger2=seal_of_many_mouths,heroic=1,stats=102agi_120ap_68crit_60exp_102sta,gems
 trinket1=herkuml_war_token,stats=153haste,equip=onattackhit_17ap_20stack_10dur
 trinket2=tiny_abomination_in_a_jar,heroic=1,stats=85hit
 back=shadowvault_slayers_cloak,heroic=1,stats=102agi_185armor_120ap_60crit_68haste_102sta,gems=20ap_10haste_4agi,enchant=23haste
-main_hand=heavens_fall_kryss_of_a_thousand_lies,heroic=1,stats=76agi_111ap_48crit_56haste_84sta,gems=20exp,enchant=berserking,weapon=dagger_1.80speed_381min_572max
+main_hand=heavens_fall_kryss_of_a_thousand_lies,heroic=1,stats=76agi_111ap_48crit_56haste_84sta,gems=20exp_4crit,enchant=berserking,weapon=dagger_1.80speed_381min_572max
 off_hand=lungbreaker,heroic=1,stats=78agi_44arpen_88ap_52crit_78sta,gems=20haste_4agi,enchant=berserking,weapon=dagger_1.40speed_245min_456max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20exp,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20exp_4agi,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 # Gear Summary
 # gear_strength=20
-# gear_agility=1828
+# gear_agility=1832
 # gear_stamina=1807
 # gear_intellect=20
 # gear_spirit=20
@@ -54,7 +54,7 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # gear_expertise_rating=216
 # gear_armor_penetration_rating=461
 # gear_hit_rating=410
-# gear_crit_rating=1105
+# gear_crit_rating=1109
 # gear_haste_rating=670
 # gear_armor=4149
 # meta_gem=relentless_earthsiege
@@ -64,4 +64,4 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # trinket2=tiny_abomination_in_a_jar,heroic=1
 # main_hand=heavens_fall_kryss_of_a_thousand_lies,heroic=1,weapon=dagger_1.80speed_381min_572max,enchant=berserking
 # off_hand=lungbreaker,heroic=1,weapon=dagger_1.40speed_245min_456max,enchant=berserking
-# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max

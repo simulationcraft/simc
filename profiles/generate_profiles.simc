@@ -5,9 +5,7 @@
 ##############################################################
 
 Globals_T10.simc
-
 optimal_raid=1
-
 
 
 ############################
@@ -20,9 +18,7 @@ wowhead=20992958 name=Death_Knight_T9_00_17_54       save=Death_Knight_T9_00_17_
 wowhead=18133139 name=Death_Knight_T9_00_53_18       save=Death_Knight_T9_00_53_18.simc
 wowhead=18133075 name=Death_Knight_T9_03_51_17       save=Death_Knight_T9_03_51_17.simc
 
-
 # T10: simulationcraft
-
 wowhead=21203280 name=Death_Knight_T10_00_17_54      save=Death_Knight_T10_00_17_54.simc
 wowhead=21203260 name=Death_Knight_T10_00_53_18      save=Death_Knight_T10_00_53_18.simc
 wowhead=21203277 name=Death_Knight_T10_14_00_57      save=Death_Knight_T10_14_00_57.simc
@@ -30,29 +26,19 @@ wowhead=21203256 name=Death_Knight_T10_51_00_20      save=Death_Knight_T10_51_00
 wowhead=21203314 name=Death_Knight_T10_51_00_20_GoD  save=Death_Knight_T10_51_00_20_GoD.simc
 
 
-
 ############################
 # Druids                   #
 ############################
 
 # T9: simcraftdruidt9
-
-override.mangle=0
-
 wowhead=14187592 name=Druid_T9_58_00_13              save=Druid_T9_58_00_13.simc
 wowhead=14717965 name=Druid_T9_00_55_16              save=Druid_T9_00_55_16.simc
 wowhead=14726081 name=Druid_T9_00_55_16_M            save=Druid_T9_00_55_16_M.simc
 
-
 # T10: simulationcraft
-
 wowhead=21284122 name=Druid_T10_58_00_13             save=Druid_T10_58_00_13.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
 wowhead=21284121 name=Druid_T10_00_55_16             save=Druid_T10_00_55_16.simc
 wowhead=21284118 name=Druid_T10_00_55_16_M           save=Druid_T10_00_55_16_M.simc
-
-
 
 
 ############################
@@ -60,16 +46,13 @@ wowhead=21284118 name=Druid_T10_00_55_16_M           save=Druid_T10_00_55_16_M.s
 ############################
 
 # T9: schuntert9
-
 wowhead=14189960 name=Hunter_T9_07_57_07             save=Hunter_T9_07_57_07.simc
 wowhead=14651857 name=Hunter_T9_07_57_07_HM          save=Hunter_T9_07_57_07_HM.simc
 wowhead=21156704 name=Hunter_T9_01_18_52_HP          save=Hunter_T9_01_18_52_HP.simc
 wowhead=14649679 name=Hunter_T9_02_18_51             save=Hunter_T9_02_18_51.simc
 wowhead=14663160 name=Hunter_T9_53_14_04             save=Hunter_T9_53_14_04.simc
 
-
 # T10: simulationcraft
-
 wowhead=21284132 name=Hunter_T10_53_14_04            save=Hunter_T10_53_14_04.simc
 wowhead=21284133 name=Hunter_T10_07_57_07            save=Hunter_T10_07_57_07.simc
 wowhead=21284135 name=Hunter_T10_07_57_07_HM         save=Hunter_T10_07_57_07_HM.simc
@@ -77,33 +60,21 @@ wowhead=21284137 name=Hunter_T10_06_14_51            save=Hunter_T10_06_14_51.si
 wowhead=21284138 name=Hunter_T10_03_15_53_HP         save=Hunter_T10_03_15_53_HP.simc
 
 
-
 ############################
 # Mages                    #
 ############################
 
 # T9: scmaget9
-
-wowhead=14306487 name=Mage_T9_00_53_18 		     save=Mage_T9_00_53_18.simc
+wowhead=14306487 name=Mage_T9_00_53_18              save=Mage_T9_00_53_18.simc
 wowhead=14306485 name=Mage_T9_18_00_53               save=Mage_T9_18_00_53.simc
 wowhead=14306481 name=Mage_T9_20_51_00               save=Mage_T9_20_51_00.simc
 wowhead=14306468 name=Mage_T9_57_03_11               save=Mage_T9_57_03_11.simc
 
-
 # T10: simulationcraft
-
-wowhead=21284296 name=Mage_T10_00_53_18          	 save=Mage_T10_00_53_18.simc
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
-
-wowhead=21284292 name=Mage_T10_18_00_53		 save=Mage_T10_18_00_53.simc
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=sword_1.80speed_160min_447max
-
-wowhead=21284285 name=Mage_T10_20_51_00		 save=Mage_T10_20_51_00.simc
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=black_magic,weapon=sword_1.80speed_160min_447max
-
-wowhead=21284284 name=Mage_T10_57_03_11		 save=Mage_T10_57_03_11.simc
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=black_magic,weapon=sword_1.80speed_160min_447max
-
+wowhead=21284296 name=Mage_T10_00_53_18               save=Mage_T10_00_53_18.simc
+wowhead=21284292 name=Mage_T10_18_00_53         save=Mage_T10_18_00_53.simc
+wowhead=21284285 name=Mage_T10_20_51_00         save=Mage_T10_20_51_00.simc
+wowhead=21284284 name=Mage_T10_57_03_11         save=Mage_T10_57_03_11.simc
 
 
 ############################
@@ -111,12 +82,9 @@ main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_81i
 ############################
 
 # T9: scpaladint9
-
 wowhead=16421920 name=Paladin_T9_05_11_55            save=Paladin_T9_05_11_55.simc
 
-
 # T10: simulationcraft
-
 wowhead=21176231  name=Paladin_T10_09_05_57_HP       save=Paladin_T10_09_05_57_HP.simc
 wowhead=21203347  name=Paladin_T10_09_05_57_HPA      save=Paladin_T10_09_05_57_HPA.simc
 wowhead=21176233  name=Paladin_T10_09_05_57_NP       save=Paladin_T10_09_05_57_NP.simc
@@ -130,38 +98,24 @@ wowhead=21176420  name=Paladin_T10_05_11_55_HPH      save=Paladin_T10_05_11_55_H
 #############################
 
 # T9: simcraftpriestt9
-
 wowhead=13043846 name=Priest_T9_13_00_58_232         save=Priest_T9_13_00_58_232.simc
-wowhead=13043846 name=Priest_T9_13_00_58_232_SWD     save=Priest_T9_13_00_58_232_SWD.simc	use_shadow_word_death=1
+wowhead=13043846 name=Priest_T9_13_00_58_232_SWD     save=Priest_T9_13_00_58_232_SWD.simc    use_shadow_word_death=1
 wowhead=13043847 name=Priest_T9_13_00_58_245         save=Priest_T9_13_00_58_245.simc
-wowhead=13043847 name=Priest_T9_13_00_58_245_SWD     save=Priest_T9_13_00_58_245_SWD.simc	use_shadow_word_death=1
+wowhead=13043847 name=Priest_T9_13_00_58_245_SWD     save=Priest_T9_13_00_58_245_SWD.simc    use_shadow_word_death=1
 wowhead=13043848 name=Priest_T9_13_00_58_258         save=Priest_T9_13_00_58_258.simc
-wowhead=13043848 name=Priest_T9_13_00_58_258_SWD     save=Priest_T9_13_00_58_258_SWD.simc	use_shadow_word_death=1
+wowhead=13043848 name=Priest_T9_13_00_58_258_SWD     save=Priest_T9_13_00_58_258_SWD.simc    use_shadow_word_death=1
 wowhead=21160579 name=Priest_T9_13_00_58_258_draenei save=Priest_T9_13_00_58_258_draenei.simc   
 wowhead=21160689 name=Priest_T9_13_00_58_258_troll   save=Priest_T9_13_00_58_258_troll.simc    
 
 # T10: scpriestt10
-
 wowhead=18052647 name=Priest_T10_13_00_58_264        save=Priest_T10_13_00_58_264.simc
-wowhead=18052647 name=Priest_T10_13_00_58_264_SWD    save=Priest_T10_13_00_58_264_SWD.simc	use_shadow_word_death=1
-
-wowhead=21160543 name=Priest_T10_13_00_58_277	     save=Priest_T10_13_00_58_277.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
-wowhead=21160543 name=Priest_T10_13_00_58_277_SWD    save=Priest_T10_13_00_58_277_SWD.simc	use_shadow_word_death=1
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
-
+wowhead=18052647 name=Priest_T10_13_00_58_264_SWD    save=Priest_T10_13_00_58_264_SWD.simc    use_shadow_word_death=1
+wowhead=21160543 name=Priest_T10_13_00_58_277         save=Priest_T10_13_00_58_277.simc
+wowhead=21160543 name=Priest_T10_13_00_58_277_SWD    save=Priest_T10_13_00_58_277_SWD.simc    use_shadow_word_death=1
 wowhead=21000736 name=Priest_T10_13_00_58_264_draenei save=Priest_T10_13_00_58_264_draenei.simc
-
 wowhead=21000778 name=Priest_T10_13_00_58_277_draenei save=Priest_T10_13_00_58_277_draenei.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
 wowhead=21000831 name=Priest_T10_13_00_58_264_troll   save=Priest_T10_13_00_58_264_troll.simc
-
 wowhead=21000835 name=Priest_T10_13_00_58_277_troll   save=Priest_T10_13_00_58_277_troll.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
 
 
 #############################
@@ -169,19 +123,15 @@ main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_
 #############################
 
 # T9: scroguet9
-
 wowhead=14562456   name=Rogue_T9_08_20_43             save=Rogue_T9_08_20_43.simc
 wowhead=20631652   name=Rogue_T9_20_51_00             save=Rogue_T9_20_51_00.simc
 wowhead=18612609   name=Rogue_T9_51_18_02             save=Rogue_T9_51_18_02.simc
 wowhead=21162157   name=Rogue_T9_51_18_02_R           save=Rogue_T9_51_18_02_R.simc
 
-
 # T10: scroguet9
-
 wowhead=21162773   name=Rogue_T10_20_51_00            save=Rogue_T10_20_51_00.simc
 wowhead=21162321   name=Rogue_T10_51_18_02            save=Rogue_T10_51_18_02.simc
 wowhead=21162335   name=Rogue_T10_51_18_02_R          save=Rogue_T10_51_18_02_R.simc
-
 
 
 #############################
@@ -189,25 +139,16 @@ wowhead=21162335   name=Rogue_T10_51_18_02_R          save=Rogue_T10_51_18_02_R.
 #############################
 
 # T9: simcraftshamant9
-
 wowhead=14635698 name=Shaman_T9_20_51_00_258          save=Shaman_T9_20_51_00_258.simc
 wowhead=14635667 name=Shaman_T9_16_55_00_258          save=Shaman_T9_16_55_00_258.simc
 wowhead=14636463 name=Shaman_T9_57_14_00_245          save=Shaman_T9_57_14_00_245.simc     
 wowhead=14636542 name=Shaman_T9_57_14_00_258          save=Shaman_T9_57_14_00_258.simc
 wowhead=14731192 name=Shaman_T9_57_14_00_258_ToW      save=Shaman_T9_57_14_00_258_ToW.simc
 
-
 # T10: simcraftshamant9
-
 wowhead=20837779 name=Shaman_T10_19_52_00             save=Shaman_T10_19_52_00.simc 
-   
 wowhead=20837754 name=Shaman_T10_57_14_00             save=Shaman_T10_57_14_00.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
 wowhead=20837752 name=Shaman_T10_57_14_00_ToW         save=Shaman_T10_57_14_00_ToW.simc
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_81int,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160min_447max
-
-
 
 
 #############################
@@ -215,24 +156,19 @@ main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_893sp_81sta_
 #############################
 
 # T9: scwarlockt9
-
 wowhead=13808359 name=Warlock_T9_00_13_58             save=Warlock_T9_00_13_58.simc
 wowhead=18859553 name=Warlock_T9_00_18_53             save=Warlock_T9_00_18_53.simc
 wowhead=15214160 name=Warlock_T9_55_00_16             save=Warlock_T9_55_00_16.simc
 wowhead=20850306 name=Warlock_T9_56_00_15             save=Warlock_T9_56_00_15.simc
 wowhead=18859247 name=Warlock_T9_00_56_15             save=Warlock_T9_00_56_15.simc
 
-
 # T10: scwarlockt10
-
 wowhead=20983156 name=Warlock_T10_56_00_15            save=Warlock_T10_56_00_15.simc
 wowhead=20850045 name=Warlock_T10_55_00_16            save=Warlock_T10_55_00_16.simc
 wowhead=20850049 name=Warlock_T10_00_13_58            save=Warlock_T10_00_13_58.simc
-wowhead=20983226 name=Warlock_T10_00_18_53			  save=Warlock_T10_00_18_53.simc
+wowhead=20983226 name=Warlock_T10_00_18_53              save=Warlock_T10_00_18_53.simc
 wowhead=20983242 name=Warlock_T10_00_56_15            save=Warlock_T10_00_56_15.simc
-wowhead=21345827 name=Warlock_T10_00_56_15_rDPS	      save=Warlock_T10_00_56_15_rDPS.simc
-
-
+wowhead=21345827 name=Warlock_T10_00_56_15_rDPS          save=Warlock_T10_00_56_15_rDPS.simc
 
 
 #############################
@@ -240,15 +176,12 @@ wowhead=21345827 name=Warlock_T10_00_56_15_rDPS	      save=Warlock_T10_00_56_15_
 #############################
 
 # T9: scwarriort9
-
 wowhead=13111680 name=Warrior_T9_54_17_00_A save=Warrior_T9_54_17_00_A.simc
 wowhead=13112036 name=Warrior_T9_54_17_00_S save=Warrior_T9_54_17_00_S.simc
 wowhead=13112110 name=Warrior_T9_54_17_00_M save=Warrior_T9_54_17_00_M.simc
 wowhead=13110966 name=Warrior_T9_19_52_00 save=Warrior_T9_19_52_00.simc
 
 # T10: scwarriort10
-
 wowhead=21169162 name=Warrior_T10_19_52_00_277    save=Warrior_T10_19_52_00_277.simc
 wowhead=21169165 name=Warrior_T10_55_08_08_277    save=Warrior_T10_55_08_08_277.simc
 wowhead=21169160 name=Warrior_T10_19_52_00_264    save=Warrior_T10_19_52_00_264.simc
-

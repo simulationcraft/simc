@@ -39,10 +39,10 @@ trinket1=deathbringers_will,heroic=1,stats=167arpen
 trinket2=deaths_choice,heroic=1,stats=288ap
 back=sylvanas_cunning,heroic=1,stats=97agi_182armor_57arpen_114ap_65crit_97sta,gems=20agi_8ap,enchant=22agi
 main_hand=oathbinder_charge_of_the_rangergeneral,heroic=1,stats=179agi_122arpen_228ap_114crit_195sta,gems=20agi_20agi_20agi,enchant=110ap,weapon=polearm_3.60speed_991min_1487max
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20agi,enchant=40crit,weapon=crossbow_3.00speed_782min_1071max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit_62sta,gems=20agi_4agi,enchant=40crit,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 # Gear Summary
 # gear_strength=20
-# gear_agility=2332
+# gear_agility=2336
 # gear_stamina=1602
 # gear_intellect=646
 # gear_spirit=20
@@ -58,5 +58,5 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33arpen_66ap_41crit
 # trinket1=deathbringers_will,heroic=1
 # trinket2=deaths_choice,heroic=1
 # main_hand=oathbinder_charge_of_the_rangergeneral,heroic=1,weapon=polearm_3.60speed_991min_1487max
-# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782min_1071max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_782.78997802734375min_1070.7899169921875max
 ammo_dps=91.50
