@@ -837,7 +837,7 @@ void player_t::init_resources( bool force )
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
           // ICC buff.
-          resource_initial[ i ] *= 1.15;
+          resource_initial[ i ] *= 1.20;
         }
       }
     }
@@ -1732,7 +1732,7 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
-      m *= 1.15;
+      m *= 1.20;
     }
 
     if ( school == SCHOOL_PHYSICAL )
