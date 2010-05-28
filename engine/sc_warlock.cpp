@@ -1519,6 +1519,7 @@ struct curse_of_doom_t : public warlock_spell_t
     num_ticks         = 1;
     tick_power_mod    = 2.0;
     base_cost        *= 1.0 - p -> talents.suppression * 0.02;
+    base_multiplier  *= 1.0 + ( p -> talents.shadow_mastery          * 0.03);
 
     if ( p -> talents.amplify_curse ) trigger_gcd = 1.0;
 
