@@ -3879,6 +3879,9 @@ void warlock_t::init_actions()
       action_list_str+="/" + tap_str + ",buff_refresh=1";
     }
 
+    // Trigger 5% spellcrit debuff
+    if ( talents.improved_shadow_bolt) action_list_str += "/shadow_bolt,isb_trigger=1";
+
     // Usable Item
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3918,6 +3921,7 @@ void warlock_t::init_actions()
       action_list_str += "/corruption,if=!ticking";
       if ( talents.unstable_affliction ) action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
       if ( talents.haunt ) action_list_str += "/curse_of_agony,time_to_die>=20,if=!ticking";
+
       if ( talents.soul_siphon ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
     }
 
