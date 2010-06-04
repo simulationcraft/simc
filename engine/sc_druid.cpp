@@ -149,7 +149,7 @@ struct druid_t : public player_t
     int  typhoon;
     int  vengeance;
     int  wrath_of_cenarius;
-    
+
     // Cataclysm
     int  fungal_growth;
     int  lunar_justice;
@@ -3495,7 +3495,7 @@ void druid_t::init_glyphs()
     else if ( n == "unburdened_rebirth"    ) ;
     else if ( n == "wild_growth"           ) ;
     else if ( n == "wrath"                 ) ;
-    else if ( ! sim -> parent ) 
+    else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
     }
@@ -3798,6 +3798,8 @@ void druid_t::init_actions()
       action_list_str += "/snapshot_stats";
       action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
       if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
+      action_list_str += "/moonfire,moving=1,if=!ticking";
+      action_list_str += "/insect_swarm,moving=1,if=!ticking";
       if ( talents.typhoon ) action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature )

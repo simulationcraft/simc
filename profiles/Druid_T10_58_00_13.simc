@@ -14,6 +14,8 @@ actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)
 actions+=/faerie_fire
+actions+=/moonfire,moving=1,if=!ticking
+actions+=/insect_swarm,moving=1,if=!ticking
 actions+=/typhoon,moving=1
 actions+=/innervate,trigger=-2000
 actions+=/treants,time>=5

@@ -14,6 +14,7 @@ actions+=/fel_armor
 actions+=/summon_pet,felhunter
 actions+=/snapshot_stats
 actions+=/life_tap,buff_refresh=1
+actions+=/shadow_bolt,isb_trigger=1
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
 actions+=/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<4)
