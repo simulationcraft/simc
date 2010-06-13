@@ -3586,7 +3586,7 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
 
   if ( buffs_life_tap_glyph -> up() )
   {
-    sp += spirit() * 0.20;
+	  sp += player_t::spirit() * 0.20;
   }
 
   if ( active_pet && talents.demonic_knowledge )
