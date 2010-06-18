@@ -544,7 +544,7 @@ static void register_shadowmourne( item_t* item )
     spell_t* spell;
     int slot;
 
-    shadowmourne_trigger_t( player_t* p, buff_t* b1, buff_t* b2, spell_t* sp, int s ) : 
+    shadowmourne_trigger_t( player_t* p, buff_t* b1, buff_t* b2, spell_t* sp, int s ) :
       action_callback_t( p -> sim, p ), buff_stacks( b1 ), buff_final( b2 ), spell( sp ), slot( s ) {}
     virtual void trigger( action_t* a )
     {
@@ -628,8 +628,8 @@ static void register_tiny_abom( item_t* item )
 
         // This is pretty much a hack to repeat a melee attack under a
         // different name with slightly different parameters.
-        // 
-        // Additionally, we need to restore the result of the 
+        //
+        // Additionally, we need to restore the result of the
         // attack that caused manifest_anger. Otherwise direct damage
         // callbacks that are triggered after manifest_anger has executed,
         // will use the results of the manifest_anger attack.
@@ -864,7 +864,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
                                         const std::string& name,
-                                        const bool         heroic, 
+                                        const bool         heroic,
                                         const std::string& id )
 {
   std::string e;
@@ -914,10 +914,12 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
   else if ( name == "whispering_fanged_skull"             ) e = ( heroic ? "OnAttackHit_1250AP_35%_15Dur_45Cd" : "OnAttackHit_1110AP_35%_15Dur_45Cd" );
+  else if ( name == "charred_twilight_scale"              ) e = ( heroic ? "OnSpellDamage_861SP_10%_15Dur_45Cd" : "OnSpellDamage_763SP_10%_15Dur_45Cd" );
+  else if ( name == "sharpened_twilight_scale"            ) e = ( heroic ? "OnAttackHit_1472AP_35%_15Dur_45Cd" : "OnAttackHit_1304AP_35%_15Dur_45Cd" );
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
-  
+
   // Discharge Procs
   else if ( name == "bandits_insignia"                    ) e = "OnAttackHit_1880Arcane_15%_45Cd";
   else if ( name == "extract_of_necromantic_power"        ) e = "OnSpellTickDamage_1050Shadow_10%_15Cd";
