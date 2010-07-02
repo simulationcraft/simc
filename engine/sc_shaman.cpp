@@ -3318,15 +3318,18 @@ void shaman_t::init_actions()
       }
       action_list_str += "/flame_shock,if=!ticking";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0";
-      action_list_str += "/fire_nova,if=target.adds>2";
       if ( ! talents.totem_of_wrath )
       {
 	    action_list_str += "/fire_elemental_totem";
 	    action_list_str += "/searing_totem";
       }
+      action_list_str += "/fire_nova,if=target.adds>3";
+      action_list_str += "/chain_lightning,if=target.adds>1";
+      action_list_str += "/fire_nova,if=target.adds>2";
       if ( ! ( set_bonus.tier9_4pc_caster() || set_bonus.tier10_2pc_caster() ) )
-          action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
+          action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)";
       action_list_str += "/lightning_bolt";
+      action_list_str += "/fire_nova,moving=1";
       if ( talents.thunderstorm ) action_list_str += "/thunderstorm";
     }
 
