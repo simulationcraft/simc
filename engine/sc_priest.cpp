@@ -235,6 +235,7 @@ struct priest_spell_t : public spell_t
   {
   }
 
+  virtual bool   apply_shadow_weaving() SC_CONST { return true; };
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
@@ -379,7 +380,8 @@ void priest_spell_t::execute()
   {
     if ( school == SCHOOL_SHADOW )
     {
-      p -> buffs_shadow_weaving -> trigger();
+      if ( apply_shadow_weaving() )
+        p -> buffs_shadow_weaving -> trigger();
     }
     if ( result == RESULT_CRIT )
     {
@@ -489,6 +491,11 @@ struct devouring_plague_burst_t : public priest_spell_t
     name_str = "devouring_plague_burst";
   }
 
+  virtual bool apply_shadow_weaving() SC_CONST
+  {
+    return false;
+  }
+
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
@@ -498,7 +505,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     {
       if ( result == RESULT_CRIT )
       {
-        p -> buffs_glyph_of_shadow -> trigger();
+        p -> buffs_glyph_of_shadow -> trigger();        
       }
     }
     update_stats( DMG_DIRECT );
