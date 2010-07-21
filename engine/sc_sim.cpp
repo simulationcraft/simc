@@ -1798,8 +1798,8 @@ int sim_t::main( int argc, char** argv )
 
   patch.decode(&arch, &version, &revision);
   util_t::fprintf( output_file,
-                   "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
-                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
+                   "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, vary_combat_length=%.3f, optimal_raid=%d, smooth_rng=%d )\n",
+                   arch, version, revision, iterations, vary_combat_length, max_time, optimal_raid, smooth_rng );
   fflush( output_file );
 
   if ( need_to_save_profiles( this ) )
