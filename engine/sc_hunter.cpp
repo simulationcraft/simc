@@ -364,36 +364,18 @@ struct hunter_pet_t : public pet_t
     {
       talents.call_of_the_wild = 1;
       talents.cobra_reflexes   = 2;
-	  talents.culling_the_herd = 3;
+	    talents.culling_the_herd = 3;
       talents.rabid            = 1;
       talents.spiders_bite     = 3;
       talents.spiked_collar    = 3;
 
       talents.shark_attack = ( o -> talents.beast_mastery ) ? 2 : 0;
       talents.wild_hunt    = ( o -> talents.beast_mastery ) ? 2 : 1;
-
-      if ( pet_type == PET_CAT )
-      {
-        action_list_str = "auto_attack/call_of_the_wild/rabid/rake/claw";
-      }
-      else if ( pet_type == PET_DEVILSAUR )
-      {
-        action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
-      }
-      else if ( pet_type == PET_RAPTOR )
-      {
-        action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
-      }
-      else if ( pet_type == PET_WOLF )
-      {
-        action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
-      }
-      else assert( 0 );
     }
     else if ( group() == PET_CUNNING )
     {
       talents.cobra_reflexes   = 2;
-	  talents.culling_the_herd = 3;
+	    talents.culling_the_herd = 3;
       talents.feeding_frenzy   = 2;
       talents.owls_focus       = 2;
       talents.roar_of_recovery = 1;
@@ -401,18 +383,13 @@ struct hunter_pet_t : public pet_t
       talents.wolverine_bite   = 1;
 
       talents.wild_hunt = ( o -> talents.beast_mastery ) ? 2 : 1;
-
-      if ( pet_type == PET_WIND_SERPENT )
-      {
-        action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
-      }
-      else assert( 0 );
     }
     else // TENACITY
     {
       assert( 0 );
     }
 
+    init_actions();
   }
 
   static bool supported( int family )
@@ -445,6 +422,58 @@ struct hunter_pet_t : public pet_t
   }
 
   virtual bool ooc_buffs() { return true; }
+
+  virtual void init_actions()
+  {
+    if ( group() == PET_FEROCITY )
+    {
+      if ( pet_type == PET_CAT )
+      {
+        action_list_str = "auto_attack";
+        if ( talents.call_of_the_wild ) action_list_str += "/call_of_the_wild";
+        if ( talents.rabid ) action_list_str += "/rabid";
+        action_list_str += "/rake/claw";
+
+      }
+      else if ( pet_type == PET_DEVILSAUR )
+      {
+        action_list_str = "auto_attack/monstrous_bite";
+        if ( talents.call_of_the_wild ) action_list_str += "/call_of_the_wild";
+        if ( talents.rabid ) action_list_str += "/rabid";
+        action_list_str += "/bite";
+      }
+      else if ( pet_type == PET_RAPTOR )
+      {
+        action_list_str = "auto_attack/savage_rend";
+        if ( talents.call_of_the_wild ) action_list_str += "/call_of_the_wild";
+        if ( talents.rabid ) action_list_str += "/rabid";
+        action_list_str += "/claw";
+      }
+      else if ( pet_type == PET_WOLF )
+      {
+        action_list_str = "auto_attack/furious_howl";
+        if ( talents.call_of_the_wild ) action_list_str += "/call_of_the_wild";
+        if ( talents.rabid ) action_list_str += "/rabid";
+        action_list_str += "/claw";
+      }
+      else assert( 0 );
+    }
+    else if ( group() == PET_CUNNING )
+    {
+      if ( pet_type == PET_WIND_SERPENT )
+      {
+        action_list_str = "auto_attack";
+        if ( talents.roar_of_recovery ) action_list_str += "/roar_of_recovery";
+        if ( talents.wolverine_bite ) action_list_str += "/wolverine_bite";
+        action_list_str += "/lightning_breath/bite";
+      }
+      else assert( 0 );
+    }
+    else // TENACITY
+    {
+      assert( 0 );
+    }
+  }
 
   virtual void init_base()
   {
@@ -610,23 +639,25 @@ struct hunter_pet_t : public pet_t
 		  {
 			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
 			{  2, 0, NULL                               , 0, 0 },
-			{  3, 0, NULL                               , 0, 0 },
+      {  3, 0, NULL                               , 0, 0 }, // Empty talent, but need for compatibility with wowarmory.
 			{  4, 0, NULL                               , 0, 0 },
-			{  5, 0, NULL                               , 1, 0 },
+			{  5, 0, NULL                               , 0, 0 },
 			{  6, 0, NULL                               , 1, 0 },
-			{  7, 3, &( talents.spiked_collar          ), 1, 0 },
-			{  8, 0, NULL                               , 1, 0 },
-			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
-			{ 10, 0, NULL                               , 2, 0 },
-			{ 11, 0, NULL                               , 2, 0 },
-			{ 12, 0, NULL                               , 3, 6 },
-			{ 13, 3, &( talents.spiders_bite           ), 3, 0 },
-			{ 14, 0, NULL                               , 3, 0 },
-			{ 15, 1, &( talents.rabid                  ), 4, 9 },
-			{ 16, 0, NULL                               , 4, 12 },
-			{ 17, 1, &( talents.call_of_the_wild       ), 4, 13 },
-			{ 18, 2, &( talents.shark_attack           ), 5, 0 },
-			{ 19, 2, &( talents.wild_hunt              ), 5, 17 },
+			{  7, 0, NULL                               , 1, 0 },
+			{  8, 3, &( talents.spiked_collar          ), 1, 0 },
+			{  9, 0, NULL                               , 1, 0 },
+      { 10, 0, NULL                               , 1, 0 }, // Empty talent, but need for compatibility with wowarmory.
+			{ 11, 3, &( talents.culling_the_herd       ), 2, 0 },
+			{ 12, 0, NULL                               , 2, 0 },
+			{ 13, 0, NULL                               , 2, 0 },
+			{ 14, 0, NULL                               , 3, 7 },
+			{ 15, 3, &( talents.spiders_bite           ), 3, 0 },
+			{ 16, 0, NULL                               , 3, 0 },
+			{ 17, 1, &( talents.rabid                  ), 4, 0 },
+			{ 18, 0, NULL                               , 4, 14 },
+			{ 19, 1, &( talents.call_of_the_wild       ), 4, 15 },
+			{ 20, 2, &( talents.shark_attack           ), 5, 0 },
+			{ 21, 2, &( talents.wild_hunt              ), 5, 19 },
 			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
@@ -635,26 +666,28 @@ struct hunter_pet_t : public pet_t
 		{
 		  talent_translation_t group_table[] =
 		  {
-			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
-			{  2, 0, NULL                               , 0, 0 },
-			{  3, 0, NULL                               , 0, 0 },
-			{  4, 0, NULL                               , 0, 0 },
-			{  5, 0, NULL                               , 1, 0 },
-			{  6, 0, NULL                               , 1, 2 },
-			{  7, 2, &( talents.owls_focus             ), 1, 0 },
-			{  8, 3, &( talents.spiked_collar          ), 1, 0 },
-			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
-			{ 10, 0, NULL                               , 2, 0 },
-			{ 11, 0, NULL                               , 2, 0 },
-			{ 12, 0, NULL                               , 3, 0 },
-			{ 13, 0, NULL                               , 3, 0 },
-			{ 14, 2, &( talents.feeding_frenzy         ), 3, 8 },
-			{ 15, 1, &( talents.wolverine_bite         ), 4, 9 },
-			{ 16, 1, &( talents.roar_of_recovery       ), 4, 0 },
-			{ 17, 0, NULL                               , 4, 0 },
-			{ 18, 0, NULL                               , 4, 0 },
-			{ 19, 2, &( talents.wild_hunt              ), 5, 15 },
-			{ 20, 0, NULL                               , 5, 18 },
+			{  1, 2, &( talents.cobra_reflexes         ), 0, 0  },
+			{  2, 0, NULL                               , 0, 0  },
+      {  3, 0, NULL                               , 0, 0  }, // Empty talent, but need for compatibility with wowarmory.
+			{  4, 0, NULL                               , 0, 0  },
+			{  5, 0, NULL                               , 0, 0  },
+			{  6, 0, NULL                               , 1, 0  },
+      {  7, 0, NULL                               , 0, 0  }, // Empty talent, but need for compatibility with wowarmory.
+			{  8, 0, NULL                               , 1, 2  },
+			{  9, 2, &( talents.owls_focus             ), 1, 0  },
+			{ 10, 3, &( talents.spiked_collar          ), 1, 0  },
+			{ 11, 3, &( talents.culling_the_herd       ), 2, 0  },
+			{ 12, 0, NULL                               , 2, 0  },
+			{ 13, 0, NULL                               , 2, 0  },
+			{ 14, 0, NULL                               , 3, 0  },
+			{ 15, 0, NULL                               , 3, 0  },
+			{ 16, 2, &( talents.feeding_frenzy         ), 3, 10 },
+			{ 17, 1, &( talents.wolverine_bite         ), 4, 11 },
+			{ 18, 1, &( talents.roar_of_recovery       ), 4, 0  },
+			{ 19, 0, NULL                               , 4, 0  },
+			{ 20, 0, NULL                               , 4, 0  },
+			{ 21, 2, &( talents.wild_hunt              ), 5, 17 },
+			{ 22, 0, NULL                               , 5, 20 },
 			{  0, 0, NULL                                } /// must have talent with index 0 here
 		  };
 		  translation_table = group_table;
@@ -3315,6 +3348,8 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
            talent_str != "" )
       {
         pet -> parse_talents_armory( talent_str );
+
+        pet -> init_actions();
       }
     }
   }
