@@ -3651,6 +3651,7 @@ void druid_t::init_items()
   else if ( idol == "idol_of_awakening"            ) ;
   else if ( idol == "idol_of_flaring_growth"       ) ;
   else if ( idol == "idol_of_lush_moss"            ) ;
+  else if ( idol == "idol_of_the_black_willow"     ) ;
   else if ( idol == "idol_of_the_flourishing_life" ) ;
   else if ( idol == "harolds_rejuvenating_broach"  ) ;
   else
@@ -3734,6 +3735,11 @@ void druid_t::init_actions()
     quiet = true;
     return;
   }
+  if ( primary_tree() == TREE_RESTORATION )
+  {
+    quiet = true;
+    return;
+  }
 
   if ( action_list_str.empty() )
   {
@@ -3791,7 +3797,7 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
       }
     }
-    else
+    else if ( primary_tree() == TREE_BALANCE )
     {
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";

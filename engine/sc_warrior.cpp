@@ -2359,6 +2359,7 @@ void warrior_t::init_glyphs()
     else if ( n == "enduring_victory" ) ;
     else if ( n == "hamstring"        ) ;
     else if ( n == "last_stand"       ) ;
+    else if ( n == "mocking_blow"     ) ;
     else if ( n == "shield_wall"      ) ;
     else if ( n == "sunder_armor"     ) ;
     else if ( n == "taunt"            ) ;

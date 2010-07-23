@@ -80,6 +80,7 @@ static enchant_data_t enchant_db[] =
   { "3790",  "Black Magic",                                               "black_magic"                    },
   { "3789",  "Berserking",                                                "berserking"                     },
   { "3788",  "Accuracy",                                                  "25Hit_25Crit"                   },
+  { "3761",  "+70 Shadow Resistance",                                     ""                               },
   { "3760",  "+60 Frost Resistance",                                      ""                               },
   { "3758",  "+76 Spell Power",                                           "76SP"                           },
   { "3757",  "+102 Stamina",                                              "102Sta"                         },

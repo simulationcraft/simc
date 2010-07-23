@@ -3137,6 +3137,7 @@ void shaman_t::init_items()
   else if ( totem == "totem_of_calming_tides"  ) ;
   else if ( totem == "totem_of_forest_growth"  ) ;
   else if ( totem == "totem_of_healing_rains"  ) ;
+  else if ( totem == "totem_of_the_surging_sea" ) ;
   else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
   else
   {
