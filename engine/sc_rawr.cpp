@@ -230,6 +230,7 @@ static const char* translate_glyph_name( player_t* p,
     case  3: return "hunger_for_blood";
     case  4: return "killing_spree";
     case  5: return "vigor";
+    case  6: return "fan_of_knives";
     case  7: return "expose_armor";
     case  8: return "sinister_strike";
     case  9: return "slice_and_dice";
