@@ -1226,8 +1226,9 @@ struct chain_lightning_t : public shaman_spell_t
                                int    dmg_type )
   {
     shaman_spell_t::assess_damage( amount, dmg_type );
+    shaman_t* p = player -> cast_shaman();
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
+    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 2 + p -> glyphs.chain_lightning ); i ++ )
     {
       amount *= 0.70;
       shaman_spell_t::additional_damage( amount, dmg_type );
@@ -1650,6 +1651,7 @@ struct fire_nova_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.elemental_fury * 0.20;
 
     if ( p -> glyphs.fire_nova ) cooldown -> duration -= 3.0;
+    cooldown -> duration -= p -> talents.improved_fire_nova * 2.0;
   }
 
   virtual bool ready()
@@ -3002,7 +3004,8 @@ void shaman_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if      ( n == "elemental_mastery"    ) glyphs.elemental_mastery = 1;
+    if      ( n == "chain_lightning"      ) glyphs.chain_lightning = 1;
+    else if ( n == "elemental_mastery"    ) glyphs.elemental_mastery = 1;
     else if ( n == "feral_spirit"         ) glyphs.feral_spirit = 1;
     else if ( n == "fire_elemental_totem" ) glyphs.fire_elemental_totem = 1;
     else if ( n == "fire_nova"            ) glyphs.fire_nova = 1;
