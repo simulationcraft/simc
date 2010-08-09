@@ -1102,6 +1102,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       p -> buffs_terror -> trigger();
       p -> buffs_corruptor -> trigger();
       p -> buffs_mutilation -> trigger();
+      action_callback_t::trigger( player -> spell_direct_result_callbacks[ RESULT_HIT ], this );
     }
   }
 };
@@ -1321,6 +1322,7 @@ struct shred_t : public druid_cat_attack_t
     {
       p -> buffs_mutilation -> trigger();
       trigger_infected_wounds( this );
+      action_callback_t::trigger( player -> spell_direct_result_callbacks[ RESULT_HIT ], this );
     }
   }
 
