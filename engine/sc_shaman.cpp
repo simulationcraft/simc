@@ -869,7 +869,7 @@ struct auto_attack_t : public shaman_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if( ! p -> primary_tree() == TREE_ENHANCEMENT ) return;
+      if( p -> primary_tree() != TREE_ENHANCEMENT ) return;
       p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
@@ -914,7 +914,7 @@ struct lava_lash_t : public shaman_attack_t
     };
     parse_options( options, options_str );
 
-    if ( ! p -> primary_tree() == TREE_ENHANCEMENT ) return;
+    if ( p -> primary_tree() != TREE_ENHANCEMENT ) return;
     weapon = &( player -> off_hand_weapon );
     if ( weapon -> type == WEAPON_NONE ) background = true; // Do not allow execution.
 
@@ -934,6 +934,7 @@ struct lava_lash_t : public shaman_attack_t
     p -> buffs_indomitability -> trigger();
     p -> buffs_quaking_earth -> trigger();
     trigger_static_shock( this );
+    // if ( p -> talents.improved_lava_lash ) consume_searing_flames_dot
   }
 
   virtual void player_buff()
@@ -1000,20 +1001,8 @@ struct primal_strike_t : public shaman_attack_t
     weapon = &( p -> main_hand_weapon );
     shaman_attack_t::execute();
 
-    if ( result_is_hit() )
-    {
-      p -> buffs_nature_vulnerability -> trigger();
-
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        weapon = &( p -> off_hand_weapon );
-        shaman_attack_t::execute();
-      }
-    }
-
     trigger_static_shock( this );
-    p -> buffs_dueling -> trigger();
-    p -> buffs_avalanche -> trigger();
+
   }
 
   virtual void consume_resource() {}
@@ -1726,11 +1715,11 @@ struct shamans_swiftness_t : public shaman_spell_t
   {
     if ( sub_cooldown )
       if ( sub_cooldown -> remains() > 0 )
-	    return false;
+	      return false;
 
     if ( sub_dot )
       if ( sub_dot -> remains() > 0 )
-	    return false;
+	      return false;
 
     return shaman_spell_t::ready();
   }
@@ -1821,7 +1810,7 @@ struct thunderstorm_t : public shaman_spell_t
       shaman_spell_t( "thunderstorm", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
-    if ( ! p -> primary_tree() == TREE_ELEMENTAL ) return;
+    if ( p -> primary_tree() != TREE_ELEMENTAL ) return;
     cooldown -> duration = 45.0;
     id = 51490;
   }
