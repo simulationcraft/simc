@@ -145,7 +145,8 @@ enum race_type
   // Target Races
   RACE_BEAST, RACE_DRAGONKIN, RACE_GIANT, RACE_HUMANOID, RACE_DEMON, RACE_ELEMENTAL,
   // Player Races
-  RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN,
+  RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN,
+  RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN,
   RACE_MAX
 };
 
@@ -951,6 +952,7 @@ struct sim_t
     int celerity;
     int crypt_fever;
     int curse_of_elements;
+    int demonic_pact;
     int devotion_aura;
     int divine_spirit;
     int earth_and_moon;
@@ -1013,6 +1015,7 @@ struct sim_t
     aura_t* arcane_empowerment;
     aura_t* battle_shout;
     aura_t* celerity;
+    aura_t* demonic_pact;
     aura_t* devotion_aura;
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
@@ -1649,7 +1652,7 @@ struct player_t
   virtual double diminished_parry()             SC_CONST;
 
   virtual double composite_attack_power_multiplier() SC_CONST;
-  virtual double composite_spell_power_multiplier() SC_CONST { return spell_power_multiplier; }
+  virtual double composite_spell_power_multiplier() SC_CONST;
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
 
   virtual double composite_player_multiplier( int school ) SC_CONST;

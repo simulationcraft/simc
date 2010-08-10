@@ -4242,6 +4242,8 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, int rac
 
 void player_t::warlock_init( sim_t* sim )
 {
+  sim -> auras.demonic_pact         = new aura_t( sim, "demonic_pact", 1 );
+
   for( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.demonic_pact = new buff_t( p, "demonic_pact", 1, 45.0 );
@@ -4256,6 +4258,8 @@ void player_t::warlock_init( sim_t* sim )
 
 void player_t::warlock_combat_begin( sim_t* sim )
 {
+  if ( sim -> overrides.demonic_pact ) sim -> auras.demonic_pact -> override();
+
   target_t* t = sim -> target;
   if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
   if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 13 );

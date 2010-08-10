@@ -1632,25 +1632,27 @@ double player_t::composite_spell_power( int school ) SC_CONST
   sp += spell_power_per_intellect * intellect();
   sp += spell_power_per_spirit    * spirit();
 
-  if ( type != PLAYER_GUARDIAN )
-  {
-    double best_buff = 0;
-    if ( sim -> auras.totem_of_wrath -> up() )
-    {
-      if ( best_buff < sim -> auras.totem_of_wrath -> current_value ) best_buff = sim -> auras.totem_of_wrath -> current_value;
-    }
-    if ( sim -> auras.flametongue_totem -> up() )
-    {
-      if ( best_buff < sim -> auras.flametongue_totem -> current_value ) best_buff = sim -> auras.flametongue_totem -> current_value;
-    }
-    if ( buffs.demonic_pact -> up() )
-    {
-      if ( best_buff < buffs.demonic_pact -> current_value ) best_buff = buffs.demonic_pact -> current_value;
-    }
-    sp += best_buff;
-  }
-
   return floor( sp );
+}
+
+// player_t::composite_spell_power_multiplier =============================
+
+double player_t::composite_spell_power_multiplier() SC_CONST
+{
+  double m = spell_power_multiplier;
+  /**/
+  if ( sim -> auras.demonic_pact -> check() )
+  {
+    m *= 1.10;
+  }
+  else
+  {
+     m *= 1.0 + sim -> auras.flametongue_totem -> value();
+  }
+  
+  // m *= 1.0 + sim -> auras.flametongue_totem -> value();
+
+  return m;
 }
 
 // player_t::composite_spell_crit ==========================================
