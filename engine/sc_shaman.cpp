@@ -2332,7 +2332,7 @@ struct mana_tide_totem_t : public shaman_spell_t
 
     harmful        = false;
     base_tick_time = 3.0;
-    num_ticks      = 4; // Not affected by Totemic Focus Duration Increase as of 12694
+    num_ticks      = 4 + ( p -> talents.totemic_focus ); // Each point adds a tick
     base_cost      = 320;
     trigger_gcd     = 1.0;
 
