@@ -1231,7 +1231,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_faerie_fire   = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
-  overrides.improved_moonkin_aura  = optimal_raid;
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
@@ -1520,7 +1519,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_faerie_fire",    OPT_BOOL,   &( overrides.improved_faerie_fire           ) },
       { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
-      { "override.improved_moonkin_aura",   OPT_BOOL,   &( overrides.improved_moonkin_aura          ) },
       { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
       { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },

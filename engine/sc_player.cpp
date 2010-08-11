@@ -1244,7 +1244,7 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
+    if ( sim -> auras.swift_retribution -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
@@ -1596,12 +1596,12 @@ double player_t::composite_spell_haste() SC_CONST
 
     if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
+    if ( sim -> auras.swift_retribution -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.03 );
     }
 
-    if ( sim -> auras.wrath_of_air -> check() )
+    if ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
@@ -1665,7 +1665,7 @@ double player_t::composite_spell_crit() SC_CONST
   {
     if ( buffs.focus_magic -> check() ) sc += 0.03;
 
-    if ( sim -> auras.elemental_oath -> up() || sim -> auras.moonkin -> check() )
+    if ( sim -> auras.elemental_oath -> up() )
     {
       sc += 0.05;
     }

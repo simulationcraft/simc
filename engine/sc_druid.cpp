@@ -101,6 +101,7 @@ struct druid_t : public player_t
     int  force_of_nature;
     int  fungal_growth;
     int  furor;
+    int  fury_of_stormrage;
     int  fury_swipes;
     int  gale_winds;
     int  genesis;
@@ -133,18 +134,7 @@ struct druid_t : public player_t
     int  typhoon;
     
     // TODO: talents to delete
-    int  celestial_focus;
-    int  dreamstate;
     int  eclipse;
-    int  feral_instinct;
-    int  ferocity;
-    int  fury_of_stormrage;
-    int  improved_faerie_fire;
-    int  improved_insect_swarm;
-    int  improved_mangle;
-    int  improved_mark_of_the_wild;
-    int  improved_moonfire;
-    int  improved_moonkin_form;
     int  insect_swarm;
     int  intensity;
     int  living_spirit;
@@ -1087,9 +1077,6 @@ struct mangle_cat_t : public druid_cat_attack_t
     adds_combo_points = true;
     may_crit          = true;
 
-    base_cost -= p -> talents.ferocity;
-    base_cost -= p -> talents.improved_mangle * 2;
-
     base_multiplier  *= 1.0 + ( p -> talents.savage_fury * 0.1 +
 				p -> glyphs.mangle       * 0.1 );
   }
@@ -1144,7 +1131,6 @@ struct rake_t : public druid_cat_attack_t
 
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
-    base_cost        -= p -> talents.ferocity;
     base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
   }
   virtual void tick()
@@ -1867,13 +1853,12 @@ struct mangle_bear_t : public druid_bear_attack_t
     weapon_multiplier *= 1.15;
 
     may_crit = true;
-    base_cost -= p -> talents.ferocity;
 
     base_multiplier *= 1.0 + ( p -> talents.savage_fury * 0.10 +
 			       p -> glyphs.mangle       * 0.10 );
 
     cooldown = p -> get_cooldown( "mangle_bear" );
-    cooldown -> duration = 6.0 - p -> talents.improved_mangle * 0.5;
+    cooldown -> duration = 6.0;
   }
 
   virtual void execute()
@@ -1925,7 +1910,6 @@ struct maul_t : public druid_bear_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
 
-    base_cost -= p -> talents.ferocity;
     base_multiplier *= 1.0 + p -> talents.savage_fury * 0.10;
 
     p -> active_mauls.push_back( this );
@@ -1966,7 +1950,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   swipe_bear_t( player_t* player, const std::string& options_str ) :
       druid_bear_attack_t( "swipe_bear", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
-    druid_t* p = player -> cast_druid();
+    // druid_t* p = player -> cast_druid();
 
     option_t options[] =
     {
@@ -1991,9 +1975,6 @@ struct swipe_bear_t : public druid_bear_attack_t
     weapon_multiplier = 0;
     direct_power_mod = 0.07;
     may_crit = true;
-    base_cost -= p -> talents.ferocity;
-
-    base_multiplier *= 1.0 + p -> talents.feral_instinct * 0.10;
   }
 
   virtual void assess_damage( double amount,
@@ -2057,7 +2038,6 @@ double druid_spell_t::haste() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   double h = spell_t::haste();
-  if ( p -> talents.celestial_focus ) h *= 1.0 / ( 1.0 + p -> talents.celestial_focus * 0.01 );
   if ( p -> buffs_natures_grace -> up() )
   {
     h *= 1.0 / ( 1.0 + 0.20 );
@@ -2152,13 +2132,9 @@ void druid_spell_t::player_buff()
 
 void druid_spell_t::target_debuff( int dmg_type )
 {
-  druid_t*  p = player -> cast_druid();
-  target_t* t = sim -> target;
+  //druid_t*  p = player -> cast_druid();
+  //target_t* t = sim -> target;
   spell_t::target_debuff( dmg_type );
-  if ( t -> debuffs.faerie_fire -> up() )
-  {
-    target_crit += p -> talents.improved_faerie_fire * 0.01;
-  }
 }
 
 // Auto Attack =============================================================
@@ -2286,6 +2262,7 @@ struct faerie_fire_t : public druid_spell_t
   faerie_fire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "faerie_fire", player, SCHOOL_NATURE, TREE_BALANCE )
   {
+    // TODO: convert to cata mechanic
     druid_t* p = player -> cast_druid();
 
     option_t options[] =
@@ -2305,25 +2282,12 @@ struct faerie_fire_t : public druid_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     t -> debuffs.faerie_fire -> trigger();
-    if ( p -> talents.improved_faerie_fire >= t -> debuffs.improved_faerie_fire -> current_value )
-    {
-      t -> debuffs.improved_faerie_fire -> trigger( 1, p -> talents.improved_faerie_fire );
-    }
   }
 
   virtual bool ready()
   {
-    druid_t*  p = player -> cast_druid();
-    target_t* t = sim -> target;
-
-    if ( t -> debuffs.faerie_fire -> up() )
-    {
-      if ( t -> debuffs.improved_faerie_fire -> current_value >= p -> talents.improved_faerie_fire )
-              return false;
-
-      if ( t -> debuffs.misery -> current_value > p -> talents.improved_faerie_fire )
-              return false;
-    }
+    // druid_t*  p = player -> cast_druid();
+    // target_t* t = sim -> target;
 
     return druid_spell_t::ready();
   }
@@ -2511,16 +2475,13 @@ struct moonfire_t : public druid_spell_t
     tick_may_crit     = ( p -> set_bonus.tier9_2pc_caster() != 0 );
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
-    base_crit = util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
 
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-                             util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) +
                              util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
 
-    double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-                             util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 ) );
+    double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) );
 
     if ( p -> glyphs.moonfire )
     {
@@ -2535,7 +2496,6 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    base_crit = util_t::talent_rank( p -> talents.improved_moonfire, 2, 0.05 );
     druid_spell_t::execute();
     base_crit = 0;
 
@@ -2721,17 +2681,10 @@ struct moonkin_form_t : public druid_spell_t
 
     sim -> auras.moonkin -> trigger();
 
-    if ( p -> talents.improved_moonkin_form )
-    {
-      sim -> auras.improved_moonkin -> trigger();
-    }
-
     if ( p -> talents.furor )
     {
       p -> attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + p -> talents.furor * 0.02;
     }
-
-    p -> spell_power_per_spirit += ( p -> talents.improved_moonkin_form * 0.10 );
 
     p -> armor_multiplier += 3.7;
   }
@@ -2865,11 +2818,6 @@ struct starfire_t : public druid_spell_t
     if( p -> buffs_eclipse_lunar -> up() )
     {
       player_crit += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
-    }
-
-    if ( p -> dots_moonfire -> ticking() )
-    {
-      player_crit += 0.01 * p -> talents.improved_insect_swarm;
     }
   }
 
@@ -3062,11 +3010,6 @@ struct wrath_t : public druid_spell_t
     }
 
     player_multiplier *= 1.0 + bonus;
-
-    if ( p -> dots_insect_swarm -> ticking() )
-    {
-      player_multiplier *= 1.0 + p -> talents.improved_insect_swarm * 0.01;
-    }
   }
 
   virtual bool ready()
@@ -3283,11 +3226,11 @@ struct mark_of_the_wild_t : public druid_spell_t
   mark_of_the_wild_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION ), bonus( 0 )
   {
-    druid_t* p = player -> cast_druid();
+    // TODO: Cata => +5% like BoK
+    // druid_t* p = player -> cast_druid();
 
     trigger_gcd = 0;
     bonus  = util_t::ability_rank( player -> level,  37.0,80, 14.0,70,  12.0,0 );
-    bonus *= 1.0 + p -> talents.improved_mark_of_the_wild * 0.20;
     id = 48469;
   }
 
@@ -3545,7 +3488,6 @@ void druid_t::init_base()
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute_multiplier_initial[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
-    attribute_multiplier_initial[ i ] *= 1.0 + 0.01 * talents.improved_mark_of_the_wild;
   }
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + 0.04 * talents.heart_of_the_wild;
@@ -3578,10 +3520,24 @@ void druid_t::init_base()
   health_per_stamina      = 10;
   mana_per_intellect      = 15;
   energy_regen_per_second = 10;
-
-  mana_regen_while_casting = util_t::talent_rank( talents.intensity,  3, 0.17, 0.33, 0.50 );
-
-  mp5_per_intellect = util_t::talent_rank( talents.dreamstate, 3, 0.04, 0.07, 0.10 );
+  
+  //  
+  
+  switch ( primary_tree() )
+  {
+  case TREE_BALANCE:
+    // Dreamstate for choosing balance
+    mp5_per_intellect = 0.10;
+    break;
+  case TREE_RESTORATION:
+    // Intensity for choosing resto
+    mana_regen_while_casting = 0.50;
+    break;
+  case TREE_FERAL:
+    break;
+  default:
+    break;
+  }
 
   base_gcd = 1.5;
 
@@ -3801,7 +3757,6 @@ void druid_t::init_actions()
       if ( talents.moonkin_form ) action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
-      if ( talents.improved_faerie_fire ) action_list_str += "/faerie_fire";
       if ( talents.typhoon ) action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature )
@@ -4093,25 +4048,15 @@ std::vector<option_t>& druid_t::get_options()
       { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
       { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
       { "brutal_impact",             OPT_INT,  &( talents.brutal_impact             ) },
-      { "celestial_focus",           OPT_INT,  &( talents.celestial_focus           ) },
-      { "dreamstate",                OPT_INT,  &( talents.dreamstate                ) },
       { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
       { "eclipse",                   OPT_INT,  &( talents.eclipse                   ) },
       { "feral_aggression",          OPT_INT,  &( talents.feral_aggression          ) },
-      { "feral_instinct",            OPT_INT,  &( talents.feral_instinct            ) },
       { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
-      { "ferocity",                  OPT_INT,  &( talents.ferocity                  ) },
       { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
       { "furor",                     OPT_INT,  &( talents.furor                     ) },
       { "gale_winds",                OPT_INT,  &( talents.gale_winds                ) },
       { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
       { "heart_of_the_wild",         OPT_INT,  &( talents.heart_of_the_wild         ) },
-      { "improved_faerie_fire",      OPT_INT,  &( talents.improved_faerie_fire      ) },
-      { "improved_insect_swarm",     OPT_INT,  &( talents.improved_insect_swarm     ) },
-      { "improved_mangle",           OPT_INT,  &( talents.improved_mangle           ) },
-      { "improved_mark_of_the_wild", OPT_INT,  &( talents.improved_mark_of_the_wild ) },
-      { "improved_moonfire",         OPT_INT,  &( talents.improved_moonfire         ) },
-      { "improved_moonkin_form",     OPT_INT,  &( talents.improved_moonkin_form     ) },
       { "infected_wounds",           OPT_INT,  &( talents.infected_wounds           ) },
       { "insect_swarm",              OPT_INT,  &( talents.insect_swarm              ) },
       { "intensity",                 OPT_INT,  &( talents.intensity                 ) },
@@ -4297,7 +4242,6 @@ void player_t::druid_init( sim_t* sim )
 {
   sim -> auras.leader_of_the_pack = new aura_t( sim, "leader_of_the_pack" );
   sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
-  sim -> auras.improved_moonkin   = new aura_t( sim, "improved_moonkin" );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -4308,7 +4252,6 @@ void player_t::druid_init( sim_t* sim )
   target_t* t = sim -> target;
   t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
   t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, 300.0 );
-  t -> debuffs.improved_faerie_fire = new debuff_t( sim, "improved_faerie_fire", 1, 300.0 );
   t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
   t -> debuffs.insect_swarm         = new debuff_t( sim, "insect_swarm",         1,  12.0 );
   t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
@@ -4320,7 +4263,6 @@ void player_t::druid_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.leader_of_the_pack     ) sim -> auras.leader_of_the_pack -> override();
   if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin            -> override();
-  if ( sim -> overrides.improved_moonkin_aura  ) sim -> auras.improved_moonkin   -> override();
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -4333,7 +4275,6 @@ void player_t::druid_combat_begin( sim_t* sim )
   target_t* t = sim -> target;
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
   if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override();
-  if ( sim -> overrides.improved_faerie_fire ) t -> debuffs.improved_faerie_fire -> override( 1, 3 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
   if ( sim -> overrides.insect_swarm         ) t -> debuffs.insect_swarm         -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
