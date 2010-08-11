@@ -118,6 +118,7 @@ struct druid_t : public player_t
     int  natural_reaction;
     int  natures_grace;
     int  natures_majesty;
+    int  natures_swiftness;
     int  nom_nom_nom;
     int  nurturing_instict;
     int  owlkin_frenzy;
@@ -135,18 +136,6 @@ struct druid_t : public player_t
     
     // TODO: talents to delete
     int  eclipse;
-    int  insect_swarm;
-    int  intensity;
-    int  living_spirit;
-    int  lunar_justice;
-    int  mangle;
-    int  moonfury;
-    int  natural_perfection;
-    int  naturalist;
-    int  natures_reach;
-    int  natures_splendor;
-    int  natures_swiftness;
-    int  omen_of_clarity;
     int  predatory_instincts;
     int  primal_gore;
     int  primal_precision;
@@ -800,11 +789,6 @@ void druid_cat_attack_t::player_buff()
 
   player_multiplier *= 1 + p -> buffs_savage_roar -> value();
 
-  if ( p -> talents.naturalist )
-  {
-    player_multiplier *= 1 + p -> talents.naturalist * 0.02;
-  }
-
   p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
   p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
 }
@@ -1050,7 +1034,6 @@ struct mangle_cat_t : public druid_cat_attack_t
       druid_cat_attack_t( "mangle_cat", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.mangle );
 
     // By default, do not overwrite Mangle
     max_mangle_expire = 0.001;
@@ -1581,10 +1564,7 @@ void druid_bear_attack_t::player_buff()
 {
   druid_t* p = player -> cast_druid();
   attack_t::player_buff();
-  if ( p -> talents.naturalist )
-  {
-    player_multiplier *= 1.0 + p -> talents.naturalist * 0.02;
-  }
+
   if ( p -> talents.master_shapeshifter )
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.02;
@@ -1831,7 +1811,6 @@ struct mangle_bear_t : public druid_bear_attack_t
       druid_bear_attack_t( "mangle_bear", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.mangle );
 
     option_t options[] =
     {
@@ -2371,7 +2350,6 @@ struct insect_swarm_t : public druid_spell_t
       druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.insect_swarm );
 
     option_t options[] =
     {
@@ -2390,7 +2368,7 @@ struct insect_swarm_t : public druid_spell_t
 
     base_execute_time = 0;
     base_tick_time    = 2.0;
-    num_ticks         = 6;
+    num_ticks         = 7;
     tick_power_mod    = 0.2;
 
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.genesis, 5, 0.01 ) +
@@ -2402,8 +2380,6 @@ struct insect_swarm_t : public druid_spell_t
       // Druid T8 Balance Relic -- Increases the spell power of your Insect Swarm by 374.
       base_spell_power += 374;
     }
-
-    if ( p -> talents.natures_splendor ) num_ticks++;
   }
 
   virtual void execute()
@@ -2468,7 +2444,7 @@ struct moonfire_t : public druid_spell_t
 
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 4;
+    num_ticks         = 5;
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
@@ -2478,10 +2454,9 @@ struct moonfire_t : public druid_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
-    double multiplier_td = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) +
-                             util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
+    double multiplier_td = ( util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
 
-    double multiplier_dd = ( util_t::talent_rank( p -> talents.moonfury,          3, 0.03, 0.06, 0.10 ) );
+    double multiplier_dd = 0.0;
 
     if ( p -> glyphs.moonfire )
     {
@@ -2501,9 +2476,8 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      num_ticks = 4;
+      num_ticks = 5;
       added_ticks = 0;
-      if ( p -> talents.natures_splendor     ) num_ticks++;
       if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
       p -> buffs_unseen_moon -> trigger();
@@ -2794,7 +2768,6 @@ struct starfire_t : public druid_spell_t
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
-    base_multiplier   *= 1.0 + util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.04 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
@@ -2915,10 +2888,9 @@ struct wrath_t : public druid_spell_t
   int eclipse_benefit;
   int eclipse_trigger;
   std::string prev_str;
-  double moonfury_bonus;
 
   wrath_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit( 0 ), eclipse_trigger( 0 ), moonfury_bonus( 0.0 )
+      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit( 0 ), eclipse_trigger( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2962,9 +2934,6 @@ struct wrath_t : public druid_spell_t
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
 
-    // The % bonus from eclipse and moonfury are additive, so have to sum them up in player_buff()
-    moonfury_bonus = util_t::talent_rank( p -> talents.moonfury, 3, 0.03, 0.06, 0.10 );
-
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
 
@@ -3001,15 +2970,10 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::player_buff();
 
-    // Eclipse and Moonfury being additive has to be handled here
-    double bonus = moonfury_bonus;
-
     if( p -> buffs_eclipse_solar -> up() )
     {
-      bonus += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
+      player_multiplier *= 1.0 + 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
     }
-
-    player_multiplier *= 1.0 + bonus;
   }
 
   virtual bool ready()
@@ -3483,8 +3447,6 @@ void druid_t::init_base()
   initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, DRUID, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DRUID, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
-  base_spell_crit += talents.natural_perfection * 0.01;
-
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute_multiplier_initial[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
@@ -3558,7 +3520,7 @@ void druid_t::init_buffs()
   buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, talents.omen_of_clarity * 3.5 / 60.0 );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
 
@@ -3717,11 +3679,11 @@ void druid_t::init_actions()
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
-        if ( talents.mangle )  action_list_str += "/mangle_bear,mangle<=0.5";
+        action_list_str += "/mangle_bear,mangle<=0.5";
         action_list_str += "/lacerate,lacerate<=6.9";           // This seems to be the sweet spot to prevent Lacerate falling off.
         if ( talents.berserk ) action_list_str+="/berserk_bear";
         action_list_str += use_str;
-        if ( talents.mangle )  action_list_str += "/mangle_bear";
+        action_list_str += "/mangle_bear";
         action_list_str += "/faerie_fire_feral";
         action_list_str += "/swipe_bear,berserk=0,lacerate_stack>=5";
       }
@@ -3744,7 +3706,7 @@ void druid_t::init_actions()
         action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
         if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
-        if ( talents.mangle ) action_list_str += "/mangle_cat,mangle<=1";
+        action_list_str += "/mangle_cat,mangle<=1";
         action_list_str += "/rake,if=target.time_to_die>=9";
         action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
         action_list_str += "/shred,if=target.time_to_die<=9";
@@ -3766,7 +3728,7 @@ void druid_t::init_actions()
       if ( talents.starfall ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking&!eclipse";
-      if ( talents.insect_swarm && ( glyphs.insect_swarm )) action_list_str += "/insect_swarm,if=!ticking&!eclipse";
+      action_list_str += "/insect_swarm,if=!ticking&!eclipse";
       action_list_str += "/wrath,if=trigger_lunar";
       action_list_str += use_str;
       action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
@@ -4058,26 +4020,16 @@ std::vector<option_t>& druid_t::get_options()
       { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
       { "heart_of_the_wild",         OPT_INT,  &( talents.heart_of_the_wild         ) },
       { "infected_wounds",           OPT_INT,  &( talents.infected_wounds           ) },
-      { "insect_swarm",              OPT_INT,  &( talents.insect_swarm              ) },
-      { "intensity",                 OPT_INT,  &( talents.intensity                 ) },
       { "king_of_the_jungle",        OPT_INT,  &( talents.king_of_the_jungle        ) },
       { "leader_of_the_pack",        OPT_INT,  &( talents.leader_of_the_pack        ) },
-      { "living_spirit",             OPT_INT,  &( talents.living_spirit             ) },
       { "lunar_guidance",            OPT_INT,  &( talents.lunar_guidance            ) },
-      { "mangle",                    OPT_INT,  &( talents.mangle                    ) },
       { "master_shapeshifter",       OPT_INT,  &( talents.master_shapeshifter       ) },
-      { "moonfury",                  OPT_INT,  &( talents.moonfury                  ) },
       { "moonglow",                  OPT_INT,  &( talents.moonglow                  ) },
       { "moonkin_form",              OPT_INT,  &( talents.moonkin_form              ) },
-      { "natural_perfection",        OPT_INT,  &( talents.natural_perfection        ) },
       { "natural_reaction",          OPT_INT,  &( talents.natural_reaction          ) },
-      { "naturalist",                OPT_INT,  &( talents.naturalist                ) },
       { "natures_grace",             OPT_INT,  &( talents.natures_grace             ) },
       { "natures_majesty",           OPT_INT,  &( talents.natures_majesty           ) },
-      { "natures_reach",             OPT_INT,  &( talents.natures_reach             ) },
-      { "natures_splendor",          OPT_INT,  &( talents.natures_splendor          ) },
       { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
-      { "omen_of_clarity",           OPT_INT,  &( talents.omen_of_clarity           ) },
       { "owlkin_frenzy",             OPT_INT,  &( talents.owlkin_frenzy             ) },
       { "predatory_instincts",       OPT_INT,  &( talents.predatory_instincts       ) },
       { "predatory_strikes",         OPT_INT,  &( talents.predatory_strikes         ) },
