@@ -17,6 +17,9 @@ struct druid_t : public player_t
   std::vector<action_t*> active_mauls;
   int num_active_mauls;
 
+  // Eclipse, same as the ingame bar
+  int eclipse_bar_value;
+
   // Buffs
   buff_t* buffs_berserk;
   buff_t* buffs_bear_form;
@@ -80,7 +83,7 @@ struct druid_t : public player_t
 
   // Random Number Generation
   rng_t* rng_primal_fury;
-
+  
   attack_t* cat_melee_attack;
   attack_t* bear_melee_attack;
 
@@ -136,7 +139,6 @@ struct druid_t : public player_t
     
     // TODO: talents to delete
     int  eclipse;
-    int  predatory_instincts;
     int  primal_gore;
     int  primal_precision;
     int  protector_of_the_pack;
@@ -145,7 +147,6 @@ struct druid_t : public player_t
     int  shredding_attacks;
     int  starsurge;
     int  survival_of_the_fittest;
-    int  vengeance;
     int  wrath_of_cenarius;
 
 
@@ -202,6 +203,8 @@ struct druid_t : public player_t
   druid_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, DRUID, name, race_type )
   {
     active_t10_4pc_caster_dot = 0;
+    
+    eclipse_bar_value = 0;
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
 
@@ -2452,7 +2455,7 @@ struct moonfire_t : public druid_spell_t
 
     base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
 
-    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
+    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.genesis,           5, 0.01 ) );
 
@@ -2770,7 +2773,7 @@ struct starfire_t : public druid_spell_t
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.04 );
-    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
+    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> idols.shooting_star )
     {
@@ -2932,7 +2935,7 @@ struct wrath_t : public druid_spell_t
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
-    base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
+    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
@@ -3019,44 +3022,6 @@ struct starfall_t : public druid_spell_t
   starfall_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
-    struct starfall_star_splash_t : public druid_spell_t
-    {
-      starfall_star_splash_t( player_t* player ) : druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
-      {
-        druid_t* p = player -> cast_druid();
-
-        static rank_t ranks[] =
-        {
-          { 80, 4, 101, 101, 0, 0 },
-          { 75, 3,  84,  85, 0, 0 },
-          { 70, 2,  57,  58, 0, 0 },
-          { 60, 1,  25,  26, 0, 0 },
-          {  0, 0,   0,   0, 0, 0 }
-        };
-
-        init_rank( ranks );
-        direct_power_mod  = 0.13;
-
-        may_crit          = true;
-        may_miss          = true;
-        may_resist        = true;
-        background        = true;
-        aoe               = true; // Prevents Moonkin Form mana gains.
-        dual              = true;
-
-        base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
-        base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
-        if ( p -> glyphs.focus ) base_multiplier *= 1.1;
-        id = 53190;
-      }
-      virtual void execute()
-      {
-        druid_spell_t::execute();
-        tick_dmg = direct_dmg;
-        update_stats( DMG_OVER_TIME );
-      }
-    };
-
     struct starfall_star_t : public druid_spell_t
     {
       action_t* starfall_star_splash;
@@ -3074,12 +3039,10 @@ struct starfall_t : public druid_spell_t
 
         base_dd_min = base_dd_max  = 0;
         base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
-        base_crit_bonus_multiplier *= 1.0 + util_t::talent_rank( p -> talents.vengeance, 5, 0.20 );
+        base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
         if ( p -> glyphs.focus )
           base_multiplier *= 1.2;
-
-        starfall_star_splash = new starfall_star_splash_t( p );
 
         id = 53195;
       }
@@ -3089,12 +3052,6 @@ struct starfall_t : public druid_spell_t
         druid_spell_t::execute();
         tick_dmg = direct_dmg;
         update_stats( DMG_OVER_TIME );
-
-        if ( result_is_hit() )
-        {
-          // FIXME! Just an assumption that the splash damage only occurs if the star did not miss. (
-          starfall_star_splash -> execute();
-        }
       }
     };
     druid_t* p = player -> cast_druid();
@@ -3141,6 +3098,42 @@ struct starfall_t : public druid_spell_t
     update_time( DMG_OVER_TIME );
   }
 };
+
+
+// Starsurge Spell ==========================================================
+
+struct starsurge_t : public druid_spell_t
+{
+  starsurge_t( player_t* player, const std::string& options_str ) :
+      druid_spell_t( "starsurge", player, SCHOOL_SPELLSTORM, TREE_BALANCE )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 86, 11, 1486, 1960, 0, 0.11 },
+      { 84, 10, 1486, 1960, 0, 0.11 },
+      { 83,  9, 1486, 1960, 0, 0.11 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks, 78674 );
+
+    base_execute_time    = 2.0;
+    direct_power_mod     = ( base_execute_time / 3.5 );
+    may_crit             = true;
+    cooldown -> duration = 15.0;
+
+    base_cost           *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
+  }
+};
+
+
 
 // Typhoon Spell ============================================================
 
@@ -3310,6 +3303,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "shred"             ) return new             shred_t( this, options_str );
   if ( name == "starfire"          ) return new          starfire_t( this, options_str );
   if ( name == "starfall"          ) return new          starfall_t( this, options_str );
+  if ( name == "starsurge"         ) return new         starsurge_t( this, options_str );
   if ( name == "stealth"           ) return new           stealth_t( this, options_str );
   if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
   if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
@@ -3749,6 +3743,7 @@ void druid_t::reset()
 {
   player_t::reset();
 
+  eclipse_bar_value = 0;
   base_gcd = 1.5;
 }
 
@@ -4031,7 +4026,6 @@ std::vector<option_t>& druid_t::get_options()
       { "natures_majesty",           OPT_INT,  &( talents.natures_majesty           ) },
       { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
       { "owlkin_frenzy",             OPT_INT,  &( talents.owlkin_frenzy             ) },
-      { "predatory_instincts",       OPT_INT,  &( talents.predatory_instincts       ) },
       { "predatory_strikes",         OPT_INT,  &( talents.predatory_strikes         ) },
       { "primal_fury",               OPT_INT,  &( talents.primal_fury               ) },
       { "primal_gore",               OPT_INT,  &( talents.primal_gore               ) },
@@ -4046,7 +4040,6 @@ std::vector<option_t>& druid_t::get_options()
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
-      { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
       { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
