@@ -221,7 +221,8 @@ enum school_type
 #define SCHOOL_SPELL_MASK  ( (1 << SCHOOL_ARCANE)    | (1 << SCHOOL_CHAOS)  | \
                              (1 << SCHOOL_FIRE)      | (1 << SCHOOL_FROST)  | \
                              (1 << SCHOOL_FROSTFIRE) | (1 << SCHOOL_HOLY)   | \
-                             (1 << SCHOOL_NATURE)    | (1 << SCHOOL_SHADOW) )
+                             (1 << SCHOOL_NATURE)    | (1 << SCHOOL_SHADOW) | \
+                             (1 << SCHOOL_SPELLSTORM) )
 #define SCHOOL_ALL_MASK    (-1)
 
 enum talent_tree_type

@@ -1626,6 +1626,11 @@ double player_t::composite_spell_power( int school ) SC_CONST
     sp = std::max( spell_power[ SCHOOL_FROST ],
                    spell_power[ SCHOOL_FIRE  ] );
   }
+  else if ( school == SCHOOL_SPELLSTORM )
+  {
+    sp = std::max( spell_power[ SCHOOL_NATURE ],
+                   spell_power[ SCHOOL_ARCANE ] );
+  }
 
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 

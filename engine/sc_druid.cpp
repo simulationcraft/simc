@@ -3139,6 +3139,20 @@ struct starsurge_t : public druid_spell_t
 
     base_cost           *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
   }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    // Even missed spells trigger it..
+    // but not Starsurge, blizzard and consistency :S
+    druid_t* p = player -> cast_druid();
+    if ( result_is_hit() )
+    {
+      // It always pushes towards the side the bar is on
+      int gain = 10 + 2 * p -> talents.lunar_guidance;
+      trigger_eclipse_energy_gain( this, gain * ( ( p -> eclipse_bar_value < 0 ) ? -1 : 1 ) );
+    }
+  }
 };
 
 

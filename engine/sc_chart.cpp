@@ -45,16 +45,17 @@ static const char* school_color( int type )
 {
   switch ( type )
   {
-  case SCHOOL_ARCANE:    return class_color( MAGE );
-  case SCHOOL_BLEED:     return "C55D54"; // Half way between DK "red" and Warrior "brown"
-  case SCHOOL_CHAOS:     return class_color( DEATH_KNIGHT );
-  case SCHOOL_FIRE:      return class_color( DEATH_KNIGHT );
-  case SCHOOL_FROST:     return class_color( SHAMAN );
-  case SCHOOL_FROSTFIRE: return class_color( SHAMAN );
-  case SCHOOL_HOLY:      return class_color( PRIEST );
-  case SCHOOL_NATURE:    return class_color( HUNTER );
-  case SCHOOL_PHYSICAL:  return class_color( WARRIOR );
-  case SCHOOL_SHADOW:    return class_color( WARLOCK );
+  case SCHOOL_ARCANE:     return class_color( MAGE );
+  case SCHOOL_BLEED:      return "C55D54"; // Half way between DK "red" and Warrior "brown"
+  case SCHOOL_CHAOS:      return class_color( DEATH_KNIGHT );
+  case SCHOOL_FIRE:       return class_color( DEATH_KNIGHT );
+  case SCHOOL_FROST:      return class_color( SHAMAN );
+  case SCHOOL_FROSTFIRE:  return class_color( SHAMAN );
+  case SCHOOL_HOLY:       return class_color( PRIEST );
+  case SCHOOL_NATURE:     return class_color( HUNTER );
+  case SCHOOL_PHYSICAL:   return class_color( WARRIOR );
+  case SCHOOL_SHADOW:     return class_color( WARLOCK );
+  case SCHOOL_SPELLSTORM: return "8AD0B1"; // Half way between Hunter "green" and Mage "blue" (spellstorm = arcane/nature damage)
   default: assert( 0 );
   }
   return 0;
