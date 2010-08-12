@@ -147,7 +147,6 @@ struct druid_t : public player_t
     int  shredding_attacks;
     int  starsurge;
     int  survival_of_the_fittest;
-    int  wrath_of_cenarius;
 
 
     bool is_tank_spec(void)
@@ -468,46 +467,6 @@ static void add_combo_point( druid_t* p )
   p -> buffs_combo_points -> trigger();
 }
 
-// may_trigger_lunar_eclipse ================================================
-
-static bool may_trigger_lunar_eclipse( druid_t* p )
-{
-  if ( p -> talents.eclipse == 0 )
-    return false;
-
-  // Did the player have enough time by now to realise he procced eclipse?
-  // If so, return false as we only want to cast to procc
-  if (  p -> buffs_eclipse_lunar -> may_react() )
-    return false;
-
-  // Not yet possible to trigger
-  if (  ! p -> buffs_eclipse_lunar -> check() )
-    if ( p -> sim -> current_time + 1.5 < p -> buffs_eclipse_lunar -> cooldown_ready )
-      return false;
-
-  return true;
-}
-
-// may_trigger_solar_eclipse ================================================
-
-static bool may_trigger_solar_eclipse( druid_t* p )
-{
-  if ( p -> talents.eclipse == 0 )
-    return false;
-
-  // Did the player have enough time by now to realise he procced eclipse?
-  // If so, return false as we only want to cast to procc
-  if ( p -> buffs_eclipse_solar -> may_react() )
-    return false;
-
-  // Not yet possible to trigger
-  if ( ! p -> buffs_eclipse_solar -> check() )
-    if ( p -> sim -> current_time + 3.0 < p -> buffs_eclipse_solar -> cooldown_ready )
-      return false;
-
-  return true;
-}
-
 // trigger_omen_of_clarity ==================================================
 
 static void trigger_omen_of_clarity( action_t* a )
@@ -546,9 +505,64 @@ static void trigger_earth_and_moon( spell_t* s )
 
   double value = util_t::talent_rank( p -> talents.earth_and_moon, 3, 4, 9, 13 );
 
-  if( value >= t -> debuffs.earth_and_moon -> current_value )
+  if ( value >= t -> debuffs.earth_and_moon -> current_value )
   {
     t -> debuffs.earth_and_moon -> trigger( 1, value );
+  }
+}
+
+// trigger_eclipse_energy_gain ==============================================
+
+static void trigger_eclipse_energy_gain( spell_t* s, int gain )
+{
+  // EVERY druid has the eclipse mechanic, regardless of chosen tree
+  // but only balance druid get an actual bonus from it (12% base + mastery)
+  
+  druid_t* p = s -> player -> cast_druid();
+    
+  if ( gain == 0 ) return;
+
+  int old_eclipse_bar_value = p -> eclipse_bar_value;
+  p -> eclipse_bar_value += gain;
+
+  if ( p -> eclipse_bar_value <= 0 ) 
+  {
+    // Solar auto-fades as soon as the bar reaches 0 again
+    if ( p -> buffs_eclipse_solar -> check() ) 
+      p -> buffs_eclipse_solar -> expire();
+
+    // Proc lunar if we are  at 100+ and it is not already up
+    if ( p -> eclipse_bar_value < -99 ) 
+    {
+      p -> eclipse_bar_value = -100;
+      if ( ! p -> buffs_eclipse_lunar -> check() ) 
+        p -> buffs_eclipse_lunar -> trigger();
+    }
+  }
+
+  if ( p -> eclipse_bar_value >= 0 ) 
+  {
+    // Lunar auto-fades as soon as the bar reaches 0 again
+    if ( p -> buffs_eclipse_lunar -> check() ) 
+      p -> buffs_eclipse_lunar -> expire();
+
+    // Proc solar if we are  at 100+ and it is not already up
+    if ( p -> eclipse_bar_value > 99 ) 
+    {
+      p -> eclipse_bar_value = 100;
+      if ( ! p -> buffs_eclipse_solar -> check() ) 
+        p -> buffs_eclipse_solar -> trigger();
+    }
+  }
+  
+  int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
+  if ( s -> sim -> log )
+  {
+    log_t::output( s -> sim, "%s gains %.0f (%.0f) %s from %s (%.0f)",
+                   p -> name(), actual_gain, gain,
+                   "Eclipse", s -> name(),
+                   p -> eclipse_bar_value );
+                   
   }
 }
 
@@ -777,7 +791,7 @@ void druid_cat_attack_t::execute()
     trigger_primal_precision( this );
   }
 
-  if( harmful ) p -> buffs_stealthed -> expire();
+  if ( harmful ) p -> buffs_stealthed -> expire();
 }
 
 // druid_cat_attack_t::player_buff =========================================
@@ -1221,7 +1235,7 @@ struct savage_roar_t : public druid_cat_attack_t
     harmful = false;
 
     buff_value = 0.30;
-    if( p -> glyphs.savage_roar ) buff_value += 0.03;
+    if ( p -> glyphs.savage_roar ) buff_value += 0.03;
   }
 
   virtual void execute()
@@ -1293,7 +1307,7 @@ struct shred_t : public druid_cat_attack_t
     {
       p -> dots_rip -> action -> extend_duration( 1 );
     }
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       p -> buffs_mutilation -> trigger();
       trigger_infected_wounds( this );
@@ -1785,7 +1799,7 @@ struct lacerate_t : public druid_bear_attack_t
   {
     druid_t* p = player -> cast_druid();
     druid_bear_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       p -> buffs_lacerate -> trigger();
       base_td_multiplier = p -> buffs_lacerate -> current_stack;
@@ -1900,7 +1914,7 @@ struct maul_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_bear_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_omen_of_clarity( this );
       trigger_infected_wounds( this );
@@ -2770,9 +2784,8 @@ struct starfire_t : public druid_spell_t
     may_crit          = true;
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
-    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
+    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.1 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
-    direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.04 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> idols.shooting_star )
@@ -2791,7 +2804,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
 
-    if( p -> buffs_eclipse_lunar -> up() )
+    if ( p -> buffs_eclipse_lunar -> up() )
     {
       player_crit += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
     }
@@ -2816,20 +2829,18 @@ struct starfire_t : public druid_spell_t
       if ( result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, direct_dmg, school );
-
-        if ( ! p -> buffs_eclipse_lunar -> check() )
-        {
-          if ( p -> buffs_eclipse_solar -> trigger() )
-            p -> buffs_eclipse_lunar -> cooldown_ready = sim -> current_time + 15;
-        }
       }
       if ( p -> glyphs.starfire )
       {
-        if( p -> dots_moonfire -> ticking() )
+        if ( p -> dots_moonfire -> ticking() )
           if ( p -> dots_moonfire -> action -> added_ticks < 3 )
             p -> dots_moonfire -> action -> extend_duration( 1 );
       }
     }
+    // Even missed spells trigger it!
+    trigger_eclipse_energy_gain( this, 20 );
+    if ( result == RESULT_CRIT && p -> talents.euphoria )
+      trigger_eclipse_energy_gain( this, 4 * p -> talents.euphoria );
   }
   virtual double execute_time() SC_CONST
   {
@@ -2866,10 +2877,6 @@ struct starfire_t : public druid_spell_t
       if ( p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
         return false;
     }
-
-    if ( eclipse_trigger )
-      if ( ! may_trigger_solar_eclipse( p ) )
-        return false;
 
     if ( ! prev_str.empty() )
     {
@@ -2932,9 +2939,8 @@ struct wrath_t : public druid_spell_t
     may_crit          = true;
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
-    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 5, 0.1 );
+    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.1 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
-    direct_power_mod  += util_t::talent_rank( p -> talents.wrath_of_cenarius, 5, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -2953,19 +2959,23 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( travel_result, travel_dmg );
-    if (travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
       if ( travel_result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
-        if( ! p -> buffs_eclipse_solar -> check() )
-        {
-          if ( p -> buffs_eclipse_lunar -> trigger() )
-            p -> buffs_eclipse_solar -> cooldown_ready = sim -> current_time + 15;
-        }
       }
       trigger_earth_and_moon( this );
     }
+
+    if ( travel_result == RESULT_CRIT && p -> talents.euphoria )
+      trigger_eclipse_energy_gain( this, -2 * p -> talents.euphoria );
+  }
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    // Even missed spells trigger it!
+    trigger_eclipse_energy_gain( this, -13 );
   }
 
   virtual void player_buff()
@@ -2973,7 +2983,7 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::player_buff();
 
-    if( p -> buffs_eclipse_solar -> up() )
+    if ( p -> buffs_eclipse_solar -> up() )
     {
       player_multiplier *= 1.0 + 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
     }
@@ -2995,10 +3005,6 @@ struct wrath_t : public druid_spell_t
       if ( p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
         return false;
     }
-
-    if ( eclipse_trigger )
-      if ( ! may_trigger_lunar_eclipse( p ) )
-        return false;
 
     if ( ! prev_str.empty() )
     {
@@ -3108,7 +3114,9 @@ struct starsurge_t : public druid_spell_t
       druid_spell_t( "starsurge", player, SCHOOL_SPELLSTORM, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-
+    
+    assert ( p -> primary_tree() == TREE_BALANCE );
+    
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -3508,8 +3516,8 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  15.0,  30.0, talents.eclipse / 5.0 );
-  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  15.0,  30.0, talents.eclipse / 3.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,   0.0,  45.0 );
+  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,   0.0,  45.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace / 3.0 );
@@ -3778,7 +3786,7 @@ void druid_t::regen( double periodicity )
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
   }
-  else if( resource_type == RESOURCE_MANA )
+  else if ( resource_type == RESOURCE_MANA )
   {
     resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
   }
@@ -3795,7 +3803,7 @@ void druid_t::regen( double periodicity )
 
 double druid_t::available() SC_CONST
 {
-  if( primary_resource() != RESOURCE_ENERGY ) return 0.1;
+  if ( primary_resource() != RESOURCE_ENERGY ) return 0.1;
 
   double energy = resource_current[ RESOURCE_ENERGY ];
 
@@ -3926,32 +3934,11 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
   {
     struct eclipse_expr_t : public action_expr_t
     {
-      buff_t* solar_eclipse;
-      buff_t* lunar_eclipse;
-      eclipse_expr_t( action_t* a, buff_t* s, buff_t* l ) : action_expr_t( a, "eclipse" ), solar_eclipse(s), lunar_eclipse(l) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = ( solar_eclipse -> may_react() || lunar_eclipse -> may_react() ) ? 1.0 : 0.0; return TOK_NUM; }
+      eclipse_expr_t( action_t* a) : action_expr_t( a, "eclipse", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> cast_druid() -> eclipse_bar_value; return TOK_NUM; }
     };
-    return new eclipse_expr_t( a, buff_t::find( this, "solar_eclipse" ), buff_t::find( this, "lunar_eclipse" ) );
+    return new eclipse_expr_t( a );
   }
-  else if ( name_str == "trigger_lunar" )
-  {
-    struct trigger_lunar_expr_t : public action_expr_t
-    {
-      trigger_lunar_expr_t( action_t* a ) : action_expr_t( a, "trigger_lunar" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = may_trigger_lunar_eclipse( action -> player -> cast_druid() ) ? 1.0 : 0.0; return TOK_NUM; }
-    };
-    return new trigger_lunar_expr_t( a );
-  }
-  else if ( name_str == "trigger_solar" )
-  {
-    struct trigger_solar_expr_t : public action_expr_t
-    {
-      trigger_solar_expr_t( action_t* a ) : action_expr_t( a, "trigger_solar" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = may_trigger_solar_eclipse( action -> player -> cast_druid() ) ? 1.0 : 0.0; return TOK_NUM; }
-    };
-    return new trigger_solar_expr_t( a );
-  }
-
   return player_t::create_expression( a, name_str );
 }
 
@@ -3959,7 +3946,7 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
 
 std::vector<talent_translation_t>& druid_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if (talent_list.empty())
   {
     talent_translation_t translation_table[][MAX_TALENT_TREES] =
     {
@@ -4040,7 +4027,6 @@ std::vector<option_t>& druid_t::get_options()
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
-      { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN, NULL }
