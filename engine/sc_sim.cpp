@@ -1256,7 +1256,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.swift_retribution      = optimal_raid;
   overrides.trauma                 = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
-  overrides.totem_of_wrath         = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
   overrides.windfury_totem         = optimal_raid;
@@ -1543,7 +1542,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
       { "override.swift_retribution",       OPT_BOOL,   &( overrides.swift_retribution              ) },
       { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
-      { "override.totem_of_wrath",          OPT_BOOL,   &( overrides.totem_of_wrath                 ) },
       { "override.trauma",                  OPT_BOOL,   &( overrides.trauma                         ) },
       { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
       { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },

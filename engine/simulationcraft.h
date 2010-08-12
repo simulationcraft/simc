@@ -997,7 +997,6 @@ struct sim_t
     int sunder_armor;
     int swift_retribution;
     int thunder_clap;
-    int totem_of_wrath;
     int trauma;
     int trueshot_aura;
     int unleashed_rage;
@@ -1029,7 +1028,6 @@ struct sim_t
     aura_t* sanctified_retribution;
     aura_t* strength_of_earth;
     aura_t* swift_retribution;
-    aura_t* totem_of_wrath;
     aura_t* trueshot;
     aura_t* unleashed_rage;
     aura_t* windfury_totem;
@@ -1907,7 +1905,6 @@ struct target_t
     debuff_t* slow;
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;
-    debuff_t* totem_of_wrath;
     debuff_t* trauma;
     debuff_t* vulnerable;
     debuff_t* winters_chill;
