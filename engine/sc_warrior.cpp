@@ -3099,7 +3099,7 @@ void player_t::warrior_combat_begin( sim_t* sim )
 
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_frenzy ) t -> debuffs.blood_frenzy -> override();
-  if ( sim -> overrides.sunder_armor ) t -> debuffs.sunder_armor -> override( 1, 0.20 );
+  if ( sim -> overrides.sunder_armor ) t -> debuffs.sunder_armor -> override( 3 );
   if ( sim -> overrides.thunder_clap ) t -> debuffs.thunder_clap -> override();
   if ( sim -> overrides.trauma       ) t -> debuffs.trauma       -> override();
 }

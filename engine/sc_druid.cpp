@@ -2314,7 +2314,7 @@ struct innervate_t : public druid_spell_t
 
     base_cost = 0.0;
     base_execute_time = 0;
-    cooldown -> duration  = 240;
+    cooldown -> duration  = 180;
 
     harmful   = false;
 
@@ -2339,11 +2339,15 @@ struct innervate_t : public druid_spell_t
     //
     // 3.2.0: The ManaPerSecond from Innervate is the same, but duration
     // and cooldown got halfed.
-
-    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_base[ RESOURCE_MANA ]* 4.5 / 20.0);
+    // 
+    // 4.0.0 (Cata): 180s cd
+    // Targets gets 33% of casting druids MAXMANA over 10 seconds
+    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * 0.33 / 10 );
 
     druid_t* p = player -> cast_druid();
-    p -> buffs_glyph_of_innervate -> trigger( 1, player -> resource_base[ RESOURCE_MANA ]* 0.9 / 20.0 );
+    
+    // TODO: Glyph will probably change sometime in the beta
+    p -> buffs_glyph_of_innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ]* 0.9 / 20.0 );
   }
 
   virtual bool ready()
@@ -4196,7 +4200,7 @@ void player_t::druid_init( sim_t* sim )
 
   target_t* t = sim -> target;
   t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
-  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          1, 300.0 );
+  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          3, 300.0 );
   t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
   t -> debuffs.insect_swarm         = new debuff_t( sim, "insect_swarm",         1,  12.0 );
   t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
@@ -4219,7 +4223,7 @@ void player_t::druid_combat_begin( sim_t* sim )
 
   target_t* t = sim -> target;
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
-  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override();
+  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
   if ( sim -> overrides.insect_swarm         ) t -> debuffs.insect_swarm         -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();

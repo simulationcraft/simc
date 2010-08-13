@@ -397,11 +397,10 @@ double action_t::armor() SC_CONST
   target_t* t = sim -> target;
 
   double adjusted_armor =  t -> base_armor();
-
-  adjusted_armor *= 1.0 - std::max( t -> debuffs.sunder_armor -> value(), 
-                                    t -> debuffs.expose_armor -> value() );
-
-  if( t -> debuffs.faerie_fire -> up() ) adjusted_armor *= 0.95;
+  double amor_reduction = std::max(  std::max( t -> debuffs.sunder_armor -> stack(), 
+                                               t -> debuffs.expose_armor -> stack() ) * 0.04,
+                                     t -> debuffs.expose_armor -> value() );
+  adjusted_armor *= 1.0 - amor_reduction;
 
   return adjusted_armor;
 }
