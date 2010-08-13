@@ -1023,6 +1023,8 @@ struct stormstrike_t : public shaman_attack_t
     };
     parse_options( options, options_str );
 
+    check_talent( p -> talents.stormstrike );
+
     may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
     cooldown -> duration = 8.0;
@@ -3341,7 +3343,7 @@ double shaman_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( talents.elemental_precision / 3 ) * spirit();
+  hit += ( talents.elemental_precision / 3 ) * spirit() / player_t::rating.spell_hit;
 
   return hit;
 }
@@ -3417,6 +3419,7 @@ void shaman_t::combat_begin()
   if ( ur >= sim -> auras.unleashed_rage -> current_value )
   {
     sim -> auras.unleashed_rage -> trigger( 1, ur );
+    
   }
 }
 
@@ -3435,8 +3438,8 @@ std::vector<talent_translation_t>& shaman_t::get_talent_list()
 {
   if(talent_list.empty())
   {
-          talent_translation_t translation_table[][MAX_TALENT_TREES] =
-        {
+    talent_translation_t translation_table[][MAX_TALENT_TREES] =
+  {
     { {  1, 3, &( talents.acuity                ) }, {  1, 2, &( talents.elemental_weapons         ) }, {  1, 0, NULL                                  } },
     { {  2, 2, &( talents.convection            ) }, {  2, 3, &( talents.focused_strikes           ) }, {  2, 0, NULL                                  } },
     { {  3, 3, &( talents.concussion            ) }, {  3, 3, &( talents.improved_shields          ) }, {  3, 0, NULL                                  } },
