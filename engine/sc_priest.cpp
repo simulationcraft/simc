@@ -343,9 +343,6 @@ static void trigger_misery( action_t* a )
   priest_t* p = a -> player -> cast_priest();
   target_t* t = p -> sim -> target;
 
-  if( t -> debuffs.improved_faerie_fire -> check() >= p -> talents.misery )
-    return;
-
   t -> debuffs.misery -> trigger( 1, p -> talents.misery, p -> talents.misery );
 }
 

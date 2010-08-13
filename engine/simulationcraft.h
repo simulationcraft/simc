@@ -972,7 +972,6 @@ struct sim_t
     int heroic_presence;
     int horn_of_winter;
     int hunters_mark;
-    int improved_faerie_fire;
     int improved_icy_talons;
     int improved_scorch;
     int improved_shadow_bolt;
@@ -1892,7 +1891,6 @@ struct target_t
     debuff_t* frost_fever;
     debuff_t* heart_of_the_crusader;
     debuff_t* hunters_mark;
-    debuff_t* improved_faerie_fire;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* infected_wounds;
