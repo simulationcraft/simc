@@ -820,7 +820,7 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_BLOCK_RATING: return "blockrtng";
   case STAT_BLOCK_VALUE: return "block";
 
-  case STAT_MASTERY_RATING: return "masteryrtng"; // ???
+  case STAT_MASTERY_RATING: return "mastrtng";
 
   case STAT_MAX: return "__all";
   }
