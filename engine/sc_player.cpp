@@ -4206,6 +4206,7 @@ std::vector<option_t>& player_t::get_options()
       { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
       { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
       { "gear_block_value",                     OPT_FLT,  &( gear.block_value                                 ) },
+      { "gear_mastery_rating",                  OPT_FLT,  &( gear.mastery_rating                              ) },
       // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
       { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
       { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
@@ -4222,6 +4223,7 @@ std::vector<option_t>& player_t::get_options()
       { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
       { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
       { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
+      { "enchant_mastery_rating",               OPT_FLT,  &( enchant.mastery_rating                           ) },
       { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
       { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
       { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
