@@ -360,6 +360,7 @@ enum stat_type
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
+  STAT_MASTERY_RATING,
   STAT_MAX
 };
 
@@ -734,6 +735,7 @@ struct gear_stats_t
   double parry_rating;
   double block_rating;
   double block_value;
+  double mastery_rating;
 
   gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
 
@@ -1184,9 +1186,10 @@ struct rating_t
   double attack_haste, attack_hit, attack_crit;
   double expertise, armor_penetration;
   double defense, dodge, parry, block;
+  double mastery;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
   void init( sim_t*, int level );
-  static double interpolate( int level, double val_60, double val_70, double val_80 );
+  static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
   static double get_attribute_base( sim_t*, int level, int class_type, int race, int stat_type );
 };
 
@@ -1353,6 +1356,8 @@ struct player_t
   double attribute_multiplier        [ ATTRIBUTE_MAX ];
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
   double attribute_buffed            [ ATTRIBUTE_MAX ];
+
+  double mastery;
 
   // Spell Mechanics
   double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
@@ -1620,6 +1625,8 @@ struct player_t
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
+
+  virtual double composite_mastery() SC_CONST { return mastery; }
 
   virtual double composite_attack_haste() SC_CONST;
   virtual double composite_attack_power() SC_CONST;

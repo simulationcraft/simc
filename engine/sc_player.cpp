@@ -259,6 +259,7 @@ player_t::player_t( sim_t*             s,
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
+    mastery( 8.0 ),
     // Spell Mechanics
     base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
@@ -2460,6 +2461,11 @@ void player_t::stat_gain( int    stat,
   case STAT_BLOCK_RATING: stats.block_rating += amount; block       += amount / rating.block; break;
   case STAT_BLOCK_VALUE:  stats.block_value  += amount; block_value += amount;                break;
 
+  case STAT_MASTERY_RATING:
+    stats.mastery_rating += amount;
+    mastery += amount / rating.mastery;
+    break;
+
   default: assert( 0 );
   }
 }
@@ -2522,6 +2528,11 @@ void player_t::stat_loss( int    stat,
 
   case STAT_BLOCK_RATING: stats.block_rating -= amount; block       -= amount / rating.block; break;
   case STAT_BLOCK_VALUE:  stats.block_value  -= amount; block_value -= amount;                break;
+
+  case STAT_MASTERY_RATING:
+    stats.mastery_rating -= amount;
+    mastery -= amount / rating.mastery;
+    break;
 
   default: assert( 0 );
   }

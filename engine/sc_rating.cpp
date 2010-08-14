@@ -314,6 +314,7 @@ static rating_t& rating_60( sim_t* sim )
     r.dodge             = 1380;
     r.parry             = 1380;
     r.block             =  500;
+    r.mastery           = 14;
   }
 
   return r;
@@ -339,6 +340,7 @@ static rating_t& rating_70( sim_t* sim )
     r.dodge             = 2176.153945;
     r.parry             = 2176.153945;
     r.block             = 788.4614944;
+    r.mastery           = 22.07692337;
   }
 
   return r;
@@ -364,6 +366,33 @@ static rating_t& rating_80( sim_t* sim )
     r.dodge             = 4525.018692;
     r.parry             = 4525.018692;
     r.block             = 1639.499474;
+    r.mastery           = 1.4/0.030500;
+  }
+
+  return r;
+}
+
+// rating_85 =================================================================
+
+static rating_t& rating_85( sim_t* sim )
+{
+  static rating_t r;
+
+  if ( r.spell_haste == 0 )
+  {
+    r.spell_haste       = 100.0/0.030500;
+    r.spell_hit         =  80.0/0.030500;
+    r.spell_crit        = 140.0/0.030500;
+    r.attack_haste      = 100.0/0.030500;
+    r.attack_hit        = 100.0/0.030500;
+    r.attack_crit       = 140.0/0.030500;
+    r.expertise         =  25.0/0.030500;
+    r.armor_penetration = 1399.572719;
+    r.defense           = 4.918498039;
+    r.dodge             = 4525.018692;
+    r.parry             = 4525.018692;
+    r.block             = 1639.499474;
+    r.mastery           = 1.4/0.030500;
   }
 
   return r;
@@ -378,6 +407,7 @@ void rating_t::init( sim_t* sim, int level )
   rating_t& r_60 = rating_60( sim );
   rating_t& r_70 = rating_70( sim );
   rating_t& r_80 = rating_80( sim );
+  rating_t& r_85 = rating_85( sim );
 
   spell_haste       = interpolate( level, r_60.spell_haste,       r_70.spell_haste,       r_80.spell_haste       );
   spell_hit         = interpolate( level, r_60.spell_hit,         r_70.spell_hit,         r_80.spell_hit         );
@@ -391,6 +421,7 @@ void rating_t::init( sim_t* sim, int level )
   dodge             = interpolate( level, r_60.dodge  ,           r_70.dodge,             r_80.dodge             );
   parry             = interpolate( level, r_60.parry,             r_70.parry,             r_80.parry             );
   block             = interpolate( level, r_60.block,             r_70.block,             r_80.block             );
+  mastery           = interpolate( level, r_60.mastery,           r_70.mastery,           r_80.mastery           );
 }
 
 // rating_t::interpolate ======================================================
@@ -398,8 +429,10 @@ void rating_t::init( sim_t* sim, int level )
 double rating_t::interpolate( int    level,
                               double val_60,
                               double val_70,
-                              double val_80 )
+                              double val_80,
+                              double val_85 )
 {
+  if ( val_85 < 0 ) val_85 = val_80; // TODO
   if ( level <= 60 )
   {
     return val_60;
@@ -408,9 +441,13 @@ double rating_t::interpolate( int    level,
   {
     return val_70;
   }
-  else if ( level >= 80 )
+  else if ( level == 80 )
   {
     return val_80;
+  }
+  else if ( level >= 85 )
+  {
+    return val_85;
   }
   else if ( level < 70 )
   {
@@ -418,11 +455,17 @@ double rating_t::interpolate( int    level,
     double adjust = ( level - 60 ) / 10.0;
     return val_60 + adjust * ( val_70 - val_60 );
   }
-  else // ( level < 80 )
+  else if ( level < 80 )
   {
     // Assume linear progression for now.
     double adjust = ( level - 70 ) / 10.0;
     return val_70 + adjust * ( val_80 - val_70 );
+  }
+  else // ( level < 85 )
+  {
+    // Assume linear progression for now.
+    double adjust = ( level - 80 ) / 5.0;
+    return val_80 + adjust * ( val_85 - val_80 );
   }
   assert( 0 );
   return 0;

@@ -221,6 +221,9 @@ struct paladin_t : public player_t
   virtual int       primary_tree() SC_CONST;
   virtual void      regen( double periodicity );
   virtual int       target_swing();
+
+  double            get_divine_bulwark() SC_CONST;
+  double            get_hand_of_light() SC_CONST;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -342,9 +345,14 @@ struct paladin_attack_t : public attack_t
     {
       player_multiplier *= 1.20;
     }
-    if ( school == SCHOOL_HOLY && p -> buffs_inquisition -> up() )
+    if ( school == SCHOOL_HOLY )
     {
-      player_multiplier *= 1.30;
+      if ( p -> buffs_inquisition -> up() )
+      {
+        player_multiplier *= 1.30;
+      }
+
+      player_multiplier *= p -> get_hand_of_light();
     }
   }
 
@@ -1339,9 +1347,13 @@ struct paladin_spell_t : public spell_t
     {
       player_multiplier *= 1.20;
     }
-    if ( school == SCHOOL_HOLY && p -> buffs_inquisition -> up() )
+    if ( school == SCHOOL_HOLY )
     {
-      player_multiplier *= 1.30;
+      if ( p -> buffs_inquisition -> up() )
+      {
+        player_multiplier *= 1.30;
+      }
+      player_multiplier *= p -> get_hand_of_light();
     }
   }
 
@@ -2349,8 +2361,8 @@ double paladin_t::composite_spell_power( int school ) SC_CONST
 double paladin_t::composite_tank_block() SC_CONST
 {
   double b = player_t::composite_tank_block();
-  // TODO
-  //if ( buffs_holy_shield -> up() ) b += 0.30;
+  if ( buffs_holy_shield -> up() ) b += 0.15;
+  b += get_divine_bulwark();
   return b;
 }
 
@@ -2505,6 +2517,26 @@ std::vector<option_t>& paladin_t::get_options()
     option_t::copy( options, paladin_options );
   }
   return options;
+}
+
+// paladin_t::get_divine_bulwark =============================================
+
+double paladin_t::get_divine_bulwark() SC_CONST
+{
+  if ( primary_tree() != TREE_PROTECTION ) return 0.0;
+
+  // block rating, 2% per point of mastery
+  return composite_mastery() * 0.02;
+}
+
+// paladin_t::get_hand_of_light ==============================================
+
+double paladin_t::get_hand_of_light() SC_CONST
+{
+  if ( primary_tree() != TREE_RETRIBUTION ) return 1.0;
+
+  // holy damage multiplier, 2.5% per point of mastery
+  return 1.0 + composite_mastery() * 0.025;
 }
 
 // ==========================================================================
