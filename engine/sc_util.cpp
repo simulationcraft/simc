@@ -1105,7 +1105,7 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   std::string day   = splits[ 1 ];
   std::string year  = splits[ 2 ];
 
-  for ( int i=0; month[ i ]; i++ ) month[ i ] = tolower( month[ i ] );
+  for ( int i=0; i < month.size(); i++ ) month[ i ] = tolower( month[ i ] );
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
