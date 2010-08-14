@@ -717,6 +717,8 @@ const char* util_t::stat_type_string( int stat )
   case STAT_BLOCK_RATING: return "block_rating";
   case STAT_BLOCK_VALUE:  return "block_value";
 
+  case STAT_MASTERY_RATING: return "mastery_rating";
+
   case STAT_MAX: return "all";
   }
   return "unknown";
@@ -768,6 +770,8 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_BLOCK_RATING: return "BlockR";
   case STAT_BLOCK_VALUE: return "BlockV";
 
+  case STAT_MASTERY_RATING: return "Mastery";
+
   case STAT_MAX: return "All";
   }
   return "unknown";
@@ -815,6 +819,8 @@ const char* util_t::stat_type_wowhead( int stat )
 
   case STAT_BLOCK_RATING: return "blockrtng";
   case STAT_BLOCK_VALUE: return "block";
+
+  case STAT_MASTERY_RATING: return "masteryrtng"; // ???
 
   case STAT_MAX: return "__all";
   }
