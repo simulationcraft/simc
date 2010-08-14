@@ -1843,7 +1843,7 @@ struct inquisition_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> buffs_inquisition -> duration = 10.0 * p -> buffs_holy_power -> stack() * (1.0 + 0.5 * p -> talents.inquiry_of_faith);
+    p -> buffs_inquisition -> duration = 4.0 * p -> buffs_holy_power -> stack() * (1.0 + 0.5 * p -> talents.inquiry_of_faith);
     p -> buffs_inquisition -> trigger();
     consume_and_gain_holy_power();
   }
