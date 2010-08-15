@@ -25,16 +25,13 @@ struct druid_t : public player_t
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
   buff_t* buffs_combo_points;
-  buff_t* buffs_corruptor;
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_enrage;
   buff_t* buffs_glyph_of_innervate;
   buff_t* buffs_lacerate;
-  buff_t* buffs_lunar_fury;
   buff_t* buffs_lunar_shower;
   buff_t* buffs_moonkin_form;
-  buff_t* buffs_mutilation;
   buff_t* buffs_natures_grace;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
@@ -42,11 +39,7 @@ struct druid_t : public player_t
   buff_t* buffs_stealthed;
   buff_t* buffs_t8_4pc_caster;
   buff_t* buffs_t10_2pc_caster;
-  buff_t* buffs_terror;
   buff_t* buffs_tigers_fury;
-  buff_t* buffs_unseen_moon;
-  buff_t* buffs_t10_feral_relic;
-  buff_t* buffs_t10_balance_relic;
 
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
@@ -181,25 +174,6 @@ struct druid_t : public player_t
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
-
-  struct idols_t
-  {
-    int corruptor;
-    int crying_moon;
-    int crying_wind;
-    int lunar_eclipse;
-    int lunar_fury;
-    int mutilation;
-    int raven_goddess;
-    int ravenous_beast;
-    int shooting_star;
-    int steadfast_renewal;
-    int terror;
-    int unseen_moon;
-    int worship;
-    idols_t() { memset( ( void* ) this, 0x0, sizeof( idols_t ) ); }
-  };
-  idols_t idols;
 
   druid_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, DRUID, name, race_type )
   {
@@ -1086,13 +1060,9 @@ struct mangle_cat_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
     if ( result_is_hit() )
     {
-      druid_t* p = player -> cast_druid();
       target_t* t = sim -> target;
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
-      p -> buffs_terror -> trigger();
-      p -> buffs_corruptor -> trigger();
-      p -> buffs_mutilation -> trigger();
     }
   }
 };
@@ -1135,10 +1105,8 @@ struct rake_t : public druid_cat_attack_t
   }
   virtual void tick()
   {
-    druid_t* p = player -> cast_druid();
     druid_cat_attack_t::tick();
     trigger_t8_2pc_melee( this );
-    p -> buffs_t10_feral_relic -> trigger();
   }
 };
 
@@ -1208,8 +1176,6 @@ struct rip_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     tick_power_mod = p -> buffs_combo_points -> stack() * 0.01;
     base_td_init   = p -> combo_point_rank( combo_point_dmg );
-    if ( p -> idols.worship )
-      base_td_init += p -> buffs_combo_points -> stack() * 21;
     druid_cat_attack_t::player_buff();
   }
 };
@@ -1295,8 +1261,6 @@ struct shred_t : public druid_cat_attack_t
 
     base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.02 );
 
-    if ( p -> idols.ravenous_beast )
-      base_dd_adder = 90;
   }
 
   virtual void execute()
@@ -1311,7 +1275,6 @@ struct shred_t : public druid_cat_attack_t
     }
     if ( result_is_hit() )
     {
-      p -> buffs_mutilation -> trigger();
       trigger_infected_wounds( this );
     }
   }
@@ -1869,9 +1832,6 @@ struct mangle_bear_t : public druid_bear_attack_t
       target_t* t = sim -> target;
       t -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
-      p -> buffs_terror -> trigger();
-      p -> buffs_corruptor -> trigger();
-      p -> buffs_mutilation -> trigger();
     }
   }
 };
@@ -2127,7 +2087,7 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
     // Moonfury: Arcane and Nature spell damage increased by 25%
     // One of the bonuses for choosing balance spec
-    if ( primary_tree() == TREE_BALANCE )
+    if ( p -> primary_tree() == TREE_BALANCE )
       player_multiplier *= 1.25;
 
   }
@@ -2407,11 +2367,6 @@ struct insect_swarm_t : public druid_spell_t
                              ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
                              ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
 
-    if ( p -> idols.crying_wind )
-    {
-      // Druid T8 Balance Relic -- Increases the spell power of your Insect Swarm by 374.
-      base_spell_power += 374;
-    }
   }
 
   virtual void execute()
@@ -2427,7 +2382,6 @@ struct insect_swarm_t : public druid_spell_t
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
     p -> buffs_t8_4pc_caster -> trigger();
-    p -> buffs_t10_balance_relic -> trigger();
   }
 
   virtual bool ready()
@@ -2514,7 +2468,6 @@ struct moonfire_t : public druid_spell_t
       added_ticks = 0;
       if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
-      p -> buffs_unseen_moon -> trigger();
     }
   }
   virtual double cost() SC_CONST
@@ -2538,13 +2491,6 @@ struct moonfire_t : public druid_spell_t
         return false;
 
     return true;
-  }
-  virtual void tick()
-  {
-    druid_t* p = player -> cast_druid();
-    druid_spell_t::tick();
-    p -> buffs_lunar_fury -> trigger();
-    p -> buffs_t10_balance_relic -> trigger();
   }
 };
 
@@ -2803,12 +2749,6 @@ struct starfire_t : public druid_spell_t
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
-    if ( p -> idols.shooting_star )
-    {
-      // Equip: Increases the damage dealt by Starfire by 165.
-      base_dd_min += 165;
-      base_dd_max += 165;
-    }
     if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.04;
@@ -2822,7 +2762,7 @@ struct starfire_t : public druid_spell_t
     if ( p -> buffs_eclipse_lunar -> up() )
     {
       // Eclipse increases wrath damage by 1.5% per mastery point
-      player_multiplier *= 1.0 + composite_mastery() * 0.015;
+      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
     }
   }
 
@@ -2942,12 +2882,6 @@ struct wrath_t : public druid_spell_t
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
 
-    if ( p -> idols.steadfast_renewal )
-    {
-      // Equip: Increases the damage dealt by Wrath by 70.
-      base_dd_min += 70;
-      base_dd_max += 70;
-    }
   }
 
   virtual void travel( int    travel_result,
@@ -2982,7 +2916,7 @@ struct wrath_t : public druid_spell_t
     if ( p -> buffs_eclipse_solar -> up() )
     {
       // Eclipse increases wrath damage by 1.5% per mastery point
-      player_multiplier *= 1.0 + composite_mastery() * 0.015;
+      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
     }
   }
 
@@ -3526,14 +3460,6 @@ void druid_t::init_buffs()
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
   
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_lunar_fury  = new stat_buff_t( this, "idol_lunary_fury",  STAT_CRIT_RATING, 200, 1, 12.0,     0, idols.lunar_fury * 0.70  );
-  buffs_mutilation  = new stat_buff_t( this, "idol_mutilation",   STAT_AGILITY,     200, 1, 16.0,     0, idols.mutilation * 0.70  );
-  buffs_corruptor   = new stat_buff_t( this, "idol_primal_wrath", STAT_AGILITY,     153, 1, 12.0,     0, idols.corruptor          ); // 100% chance!
-  buffs_terror      = new stat_buff_t( this, "idol_terror",       STAT_AGILITY,      65, 1, 10.0, 10.01, idols.terror * 0.85      );
-  buffs_unseen_moon = new stat_buff_t( this, "idol_unseen_moon",  STAT_SPELL_POWER, 140, 1, 10.0,     0, idols.unseen_moon * 0.50 );
-  // PTR Idols
-  buffs_t10_feral_relic   = new stat_buff_t( this, "idol_crying_moon",   STAT_AGILITY,     44, 5, 15.0, 0, idols.crying_moon   );
-  buffs_t10_balance_relic = new stat_buff_t( this, "idol_lunar_eclipse", STAT_CRIT_RATING, 44, 5, 15.0, 0, idols.lunar_eclipse );
 
   // simple
   buffs_bear_form    = new buff_t( this, "bear_form" );
@@ -3550,35 +3476,6 @@ void druid_t::init_items()
 {
   player_t::init_items();
 
-  std::string& idol = items[ SLOT_RANGED ].encoded_name_str;
-
-  if ( idol.empty() ) return;
-
-  if      ( idol == "idol_of_lunar_fury"         ) idols.lunar_fury = 1;
-  else if ( idol == "idol_of_steadfast_renewal"  ) idols.steadfast_renewal = 1;
-  else if ( idol == "idol_of_terror"             ) idols.terror = 1;
-  else if ( idol == "idol_of_the_corruptor"      ) idols.corruptor = 1;
-  else if ( idol == "idol_of_the_crying_wind"    ) idols.crying_wind = 1;
-  else if ( idol == "idol_of_mutilation"         ) idols.mutilation = 1;
-  else if ( idol == "idol_of_the_raven_goddess"  ) idols.raven_goddess = 1;
-  else if ( idol == "idol_of_the_ravenous_beast" ) idols.ravenous_beast = 1;
-  else if ( idol == "idol_of_the_shooting_star"  ) idols.shooting_star = 1;
-  else if ( idol == "idol_of_the_unseen_moon"    ) idols.unseen_moon = 1;
-  else if ( idol == "idol_of_worship"            ) idols.worship = 1;
-  else if ( idol == "idol_of_the_crying_moon"    ) idols.crying_moon = 1;
-  else if ( idol == "idol_of_the_lunar_eclipse"  ) idols.lunar_eclipse = 1;
-  // To prevent warnings....
-  else if ( idol == "idol_of_awakening"            ) ;
-  else if ( idol == "idol_of_flaring_growth"       ) ;
-  else if ( idol == "idol_of_lush_moss"            ) ;
-  else if ( idol == "idol_of_the_flourishing_life" ) ;
-  else if ( idol == "harolds_rejuvenating_broach"  ) ;
-  else
-  {
-    sim -> errorf( "Player %s has unknown idol %s", name(), idol.c_str() );
-  }
-
-  if ( idols.raven_goddess ) gear.add_stat( STAT_CRIT_RATING, 40 );
 }
 
 // druid_t::init_scaling ====================================================
@@ -4020,7 +3917,6 @@ std::vector<option_t>& druid_t::get_options()
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
       // @option_doc loc=player/druid/misc title="Misc"
-      { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
