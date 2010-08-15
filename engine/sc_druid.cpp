@@ -95,6 +95,7 @@ struct druid_t : public player_t
   {
     // Checked (current cata build: 12759)
     int  balance_of_power;
+    int  blessing_of_the_grove;
     int  euphoria;
     int  earth_and_moon;
     int  force_of_nature;
@@ -116,7 +117,6 @@ struct druid_t : public player_t
 
     // TODO: Recheck all talents below
     int  berserk;
-    int  blessing_of_the_grove;
     int  brutal_impact;
     int  endless_carnage;
     int  feral_aggression;
@@ -150,8 +150,6 @@ struct druid_t : public player_t
     int  savage_fury;
     int  sharpened_claws;
     int  shredding_attacks;
-    int  starsurge;
-    int  survival_of_the_fittest;
 
 
     bool is_tank_spec(void)
@@ -997,6 +995,7 @@ struct claw_t : public druid_cat_attack_t
     adds_combo_points = true;
     may_crit          = true;
     base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
+    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.02 );
   }
 };
 
@@ -1294,6 +1293,8 @@ struct shred_t : public druid_cat_attack_t
     adds_combo_points  = true;
     may_crit           = true;
     base_cost         -= 9 * p -> talents.shredding_attacks;
+
+    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.02 );
 
     if ( p -> idols.ravenous_beast )
       base_dd_adder = 90;
@@ -2483,8 +2484,7 @@ struct moonfire_t : public druid_spell_t
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.genesis, 3, 0.02 ) );
-
-    double multiplier_dd = 0.0;
+    double multiplier_dd = ( util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.03 ) );
 
     if ( p -> glyphs.moonfire )
     {
@@ -2587,7 +2587,7 @@ struct bear_form_t : public druid_spell_t
     p -> reset_gcd();
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness + 0.02 * p -> talents.natural_reaction;
-    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.survival_of_the_fittest );
+    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide );
 
     if ( p -> talents.leader_of_the_pack )
     {
@@ -3484,12 +3484,6 @@ void druid_t::init_base()
   initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, DRUID, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DRUID, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
-  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-  {
-    attribute_multiplier_initial[ i ] *= 1.0 + 0.02 * talents.survival_of_the_fittest;
-  }
-
-
   initial_spell_power_per_spirit = 0.0;
 
   base_attack_power = -20 + level * 2.0;
@@ -3880,7 +3874,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    multiplier *= 1.0 + talents.heart_of_the_wild * 0.02;
+    multiplier *= 1.0 + talents.heart_of_the_wild * 0.03;
   }
   else if ( buffs_bear_form -> check() )
   {
@@ -3938,8 +3932,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STAMINA )
     if ( buffs_bear_form -> check() )
-      if ( talents.heart_of_the_wild )
-        m *= 1.0 + 0.02 * talents.heart_of_the_wild;
+      m *= 1.0 + 0.03 * talents.heart_of_the_wild;
 
   return m;
 }
@@ -3952,11 +3945,8 @@ double druid_t::composite_tank_crit( int school ) SC_CONST
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    if ( buffs_bear_form -> check() )
-    {
-      c -= 0.02 * talents.survival_of_the_fittest;
-      if ( c < 0 ) c = 0;
-    }
+    c -= 0.02 * talents.thick_hide;
+    if ( c < 0 ) c = 0;
   }
 
   return c;
@@ -4058,8 +4048,7 @@ std::vector<option_t>& druid_t::get_options()
       { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
       { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
       { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
-      { "survival_instincts",        OPT_INT,  &( talents.survival_of_the_fittest   ) },
-      { "survival_of_the_fittest",   OPT_INT,  &( talents.survival_instincts        ) },
+      { "survival_instincts",        OPT_INT,  &( talents.survival_instincts        ) },
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
