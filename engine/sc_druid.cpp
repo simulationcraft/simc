@@ -2082,7 +2082,7 @@ void druid_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.04;
   }
-  if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
+  if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
     // Moonfury: Arcane and Nature spell damage increased by 25%
