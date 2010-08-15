@@ -22,8 +22,6 @@
 //   Implement by using consume resource on all of the actions similiar to fire nova or is there an easier way
 // Totemic Focus Duration Increase For the Following:
 //   Flametongue, Mana Spring, Strength of Earth, Windfury, Wrath of Air
-//
-//  Currently Enhancement hangs on something, Elemental is fine
 // ==========================================================================
 
 #include "simulationcraft.h"
@@ -59,20 +57,9 @@ struct shaman_t : public player_t
   // buff_t* buffs_totem_of_wrath_glyph;
   buff_t* buffs_water_shield;
 
-  // Buffs from Totems
-  buff_t* buffs_avalanche;
-  buff_t* buffs_dueling;
-  buff_t* buffs_electrifying_wind;  
-  buff_t* buffs_indomitability; 
-  buff_t* buffs_quaking_earth;  
-  buff_t* buffs_shattered_ice;
-  buff_t* buffs_stonebreaker;
-  buff_t* buffs_tundra;
-
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
   cooldown_t* cooldowns_lava_burst;
-  cooldown_t* cooldowns_unleash_elements;
   cooldown_t* cooldowns_windfury_weapon;
 
   // Gains
@@ -84,9 +71,6 @@ struct shaman_t : public player_t
   // Procs
   proc_t* procs_elemental_overload;
   proc_t* procs_windfury;
-
-  // Up-Times
-  uptime_t* uptimes_tundra;
 
   // Random Number Generators
   rng_t* rng_elemental_overload;
@@ -171,25 +155,6 @@ struct shaman_t : public player_t
   };
   glyphs_t glyphs;
 
-  struct totems_t
-  {
-    int dueling;
-    int hex;
-    int indomitability;
-    int dancing_flame;
-    int electrifying_wind;
-    int quaking_earth;
-    int splintering;
-    int stonebreaker;
-    int thunderfall;
-    int avalanche;
-    int shattered_ice;
-    int tundra;
-
-    totems_t() { memset( ( void* ) this, 0x0, sizeof( totems_t ) ); }
-  };
-  totems_t totems;
-
   shaman_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, SHAMAN, name, race_type )
   {
     // Active
@@ -200,7 +165,6 @@ struct shaman_t : public player_t
     // Cooldowns
     cooldowns_elemental_mastery = get_cooldown( "elemental_mastery" );
     cooldowns_lava_burst        = get_cooldown( "lava_burst"        );
-    cooldowns_unleash_elements  = get_cooldown( "unleash_elements"  );
     cooldowns_windfury_weapon   = get_cooldown( "windfury_weapon"   );
 
     // Weapon Enchants
@@ -213,7 +177,6 @@ struct shaman_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
-  virtual void      init_items();
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
@@ -593,7 +556,6 @@ static void trigger_windfury_weapon( attack_t* a )
       background  = true;
       trigger_gcd = 0;
       base_multiplier *= 1.0 + p -> talents.elemental_weapons * 0.20;
-      if ( p -> totems.splintering ) base_attack_power += 212;
       reset();
     }
     virtual void player_buff()
@@ -750,10 +712,10 @@ void shaman_attack_t::execute()
       p -> buffs_flurry -> trigger( 3 );
     }
 
+    stack_maelstrom_weapon( this );
     trigger_flametongue_weapon( this );
     trigger_primal_wisdom( this );
-    trigger_windfury_weapon( this );
-    stack_maelstrom_weapon( this );
+    trigger_windfury_weapon( this );    
   }
 }
 
@@ -931,8 +893,6 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_attack_t::execute();
-    p -> buffs_indomitability -> trigger();
-    p -> buffs_quaking_earth -> trigger();
     trigger_static_shock( this );
     // if ( p -> talents.improved_lava_lash ) consume_searing_flames_dot
   }
@@ -988,7 +948,6 @@ struct primal_strike_t : public shaman_attack_t
     may_crit  = true;
     cooldown -> duration = 8.0;
     base_dd_multiplier = p -> talents.focused_strikes * 0.15;
-
   }
 
   virtual void execute()
@@ -1002,7 +961,6 @@ struct primal_strike_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     trigger_static_shock( this );
-
   }
 
   virtual void consume_resource() {}
@@ -1032,12 +990,6 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
 
-    if ( p -> totems.dancing_flame )
-    {
-      base_dd_max += 155;
-      base_dd_min += 155;
-    }
-
     id = 17364;
   }
 
@@ -1063,8 +1015,6 @@ struct stormstrike_t : public shaman_attack_t
     }
 
     trigger_static_shock( this );
-    p -> buffs_dueling -> trigger();
-    p -> buffs_avalanche -> trigger();
   }
 
   virtual void consume_resource() {}
@@ -1289,8 +1239,6 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown -> duration  = 6.0;
     cooldown -> duration -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
 
-    if ( p -> totems.hex ) base_spell_power += 165;
-
     elemental_overload_stats = p -> get_stats( "elemental_overload" ); // Testing needed to see if this still suffers from the jump penalty
     elemental_overload_stats -> school = SCHOOL_NATURE;    
    }
@@ -1506,15 +1454,8 @@ struct lava_burst_t : public shaman_spell_t
       tick_power_mod = 0.0;
     }
 
-    if ( p -> totems.thunderfall )
-    {
-      base_dd_min += 215;
-      base_dd_max += 215;
-    }
-
     elemental_overload_stats = p -> get_stats( "elemental_overload" );
-    elemental_overload_stats -> school = SCHOOL_FIRE;    
-
+    elemental_overload_stats -> school = SCHOOL_FIRE;
   }
 
   virtual double total_td_multiplier() SC_CONST
@@ -1527,6 +1468,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     p -> buffs_elemental_mastery -> current_value = 0;
+    p -> buffs_maelstrom_weapon  -> expire();
 
     if ( result_is_hit() )
     {
@@ -1543,7 +1485,8 @@ struct lava_burst_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if ( p -> buffs_elemental_mastery -> value() ) return 0;
+    if ( p -> buffs_elemental_mastery -> value()      ) return 0;
+    if ( p -> buffs_maelstrom_weapon  -> stack() == 5 ) return 0;
     return t;
   }
 
@@ -1558,20 +1501,21 @@ struct lava_burst_t : public shaman_spell_t
   {
     if ( ! shaman_spell_t::ready() )
       return false;
+    shaman_t* p = player -> cast_shaman();
 
     if ( flame_shock )
     {
-      shaman_t* p = player -> cast_shaman();
-
       if ( ! p -> active_flame_shock )
         return false;
 
       double lvb_finish = sim -> current_time + execute_time();
       double fs_finish  = p -> active_flame_shock -> dot -> ready;
-
       if ( lvb_finish > fs_finish )
         return false;
     }
+
+    if ( maelstrom > 0 && maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
+      return false;
 
     return true;
   }
@@ -1611,8 +1555,8 @@ struct lightning_bolt_t : public shaman_spell_t
     may_crit             = true;
     direct_power_mod     = ( base_execute_time / 3.5 );
     base_execute_time   -= p -> primary_tree() == TREE_ELEMENTAL * 0.5;
-    base_cost_reduction += p -> talents.convection * 0.05;
-    base_multiplier     *= 1.0 + p -> talents.concussion * 0.02 + ( p -> glyphs.lightning_bolt != 0 ? 0.04 : 0.0 );
+    base_cost_reduction += p -> talents.convection               * 0.05;
+    base_multiplier     *= 1.0 + p -> talents.concussion * 0.02  + ( p -> glyphs.lightning_bolt != 0 ? 0.04 : 0.0 );
     base_hit            += p -> talents.elemental_precision      * 0.01;
     direct_power_mod    += p -> primary_tree() == TREE_ELEMENTAL * 0.20;
 
@@ -1620,8 +1564,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier     *= 1.05;
     if ( p -> set_bonus.tier7_2pc_caster() ) base_cost_reduction += 0.05;
-
-    if ( p -> totems.hex ) base_spell_power += 165;
 
     elemental_overload_stats = p -> get_stats( "elemental_overload" );
     elemental_overload_stats -> school = SCHOOL_NATURE;   
@@ -1641,21 +1583,20 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       trigger_elemental_overload( this, elemental_overload_stats );
+      trigger_telluric_currents( this );
       if ( result == RESULT_CRIT )
       {
         trigger_tier8_4pc_elemental( this );
-      }
-      trigger_telluric_currents( this );
+      }      
     }
-    p -> buffs_electrifying_wind -> trigger();
   }
 
   virtual double execute_time() SC_CONST
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-    if ( p -> buffs_elemental_mastery -> value() ) return 0;
-    if ( p -> buffs_maelstrom_weapon -> stack() == 5 ) return 0;
+    if ( p -> buffs_elemental_mastery -> value()      ) return 0;
+    if ( p -> buffs_maelstrom_weapon  -> stack() == 5 ) return 0;
     t *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
     return t;
   }
@@ -1735,6 +1676,9 @@ struct shamanistic_rage_t : public shaman_spell_t
       shaman_spell_t( "shamanistic_rage", player, SCHOOL_NATURE, TREE_ENHANCEMENT ),
       tier10_2pc( false )
   {
+    shaman_t* p = player -> cast_shaman();
+    check_talent( p -> talents.shamanistic_rage );
+
     option_t options[] =
     {
       { "tier10_2pc_melee", OPT_BOOL, &tier10_2pc },
@@ -1799,7 +1743,6 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     update_ready();
     player -> summon_pet( "spirit_wolf", 45.0 );
   }
-
 };
 
 // Thunderstorm Spell ==========================================================
@@ -1867,7 +1810,8 @@ struct earth_shock_t : public shaman_spell_t
     direct_power_mod  = 0.41;
     base_multiplier  *= 1.0 + p -> talents.concussion * 0.02 + p -> set_bonus.tier9_4pc_melee() * 0.25;
     base_hit         += p -> talents.elemental_precision * 0.01;
-    base_cost_reduction  += p -> talents.convection * 0.05;
+
+    base_cost_reduction        += p -> talents.convection * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
     cooldown = p -> get_cooldown( "shock" );
@@ -1879,14 +1823,6 @@ struct earth_shock_t : public shaman_spell_t
       trigger_gcd = 1.0;
       min_gcd     = 1.0;
     }
-  }
-
-  virtual void execute()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::execute();
-    p -> buffs_stonebreaker -> trigger();
-    p -> buffs_tundra       -> trigger();
   }
 
   virtual bool ready()
@@ -1930,7 +1866,6 @@ struct flame_shock_t : public shaman_spell_t
     base_execute_time = 0;
     base_tick_time    = 3.0;
     num_ticks         = 6;
-
     may_crit          = true;
     direct_power_mod  = 0.5*1.5/3.5;
     tick_power_mod    = 0.100;
@@ -1967,15 +1902,12 @@ struct flame_shock_t : public shaman_spell_t
 
   virtual void execute()
   {
-      
     shaman_t* p = player -> cast_shaman();
 
     num_ticks = ( p -> set_bonus.tier9_2pc_caster() ) ? 9 : 6;    
     added_ticks = 0;
     
     shaman_spell_t::execute();
-    p -> buffs_stonebreaker -> trigger();
-    p -> buffs_tundra       -> trigger();
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
@@ -2029,14 +1961,6 @@ struct frost_shock_t : public shaman_spell_t
       trigger_gcd = 1.0;
       min_gcd     = 1.0;
     }
-  }
-
-  virtual void execute()
-  {
-    shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::execute();
-    p -> buffs_stonebreaker -> trigger();
-    p -> buffs_tundra       -> trigger();
   }
 };
 
@@ -2334,7 +2258,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     base_tick_time = 3.0;
     num_ticks      = 4 + ( p -> talents.totemic_focus ); // Each point adds a tick
     base_cost      = 320;
-    trigger_gcd     = 1.0;
+    trigger_gcd    = 1.0;
 
     cooldown -> duration = 300.0;
 
@@ -2791,7 +2715,7 @@ struct lightning_shield_t : public shaman_spell_t
       background       = true;
       direct_power_mod = 0.33;
 
-      base_hit        += p -> talents.elemental_precision * 0.01;
+      base_hit        += p -> talents.elemental_precision    * 0.01;
       base_multiplier *= 1.0 + p -> talents.improved_shields * 0.05 + ( p -> set_bonus.tier7_2pc_melee() ? 0.10 : 0.00 );
 
       base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
@@ -2924,14 +2848,13 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options_str );
   if ( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
   if ( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );  
-  // if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
+  if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
-  // if ( name == "unleash_elements"        ) return new           unleash_elements( this, options_str );
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
@@ -3091,44 +3014,6 @@ void shaman_t::init_base()
   distance = ( primary_tree() == TREE_ENHANCEMENT ) ? 3 : 30;
 }
 
-// shaman_t::init_items =====================================================
-
-void shaman_t::init_items()
-{
-  player_t::init_items();
-
-  std::string& totem = items[ SLOT_RANGED ].encoded_name_str;
-
-  if ( totem.empty() ) return;
-
-  if      ( totem == "stonebreakers_totem"            ) totems.stonebreaker = 1;
-  else if ( totem == "totem_of_dueling"               ) totems.dueling = 1;
-  else if ( totem == "totem_of_electrifying_wind"     ) totems.electrifying_wind = 1;
-  else if ( totem == "totem_of_hex"                   ) totems.hex = 1;
-  else if ( totem == "totem_of_indomitability"        ) totems.indomitability = 1;
-  else if ( totem == "totem_of_splintering"           ) totems.splintering = 1;
-  else if ( totem == "totem_of_quaking_earth"         ) totems.quaking_earth = 1;
-  else if ( totem == "totem_of_the_dancing_flame"     ) totems.dancing_flame = 1;
-  else if ( totem == "totem_of_the_tundra"            ) totems.tundra = 1;
-  else if ( totem == "thunderfall_totem"              ) totems.thunderfall = 1;
-  else if ( totem == "totem_of_the_avalanche"         ) totems.avalanche = 1;
-  else if ( totem == "bizuris_totem_of_shattered_ice" ) totems.shattered_ice = 1;
-  else if ( totem.find( "totem_of_indomitability" ) != std::string::npos )
-  {
-    totems.indomitability = 1;
-  }
-  // To prevent warnings...
-  else if ( totem == "steamcallers_totem"      ) ;
-  else if ( totem == "totem_of_calming_tides"  ) ;
-  else if ( totem == "totem_of_forest_growth"  ) ;
-  else if ( totem == "totem_of_healing_rains"  ) ;
-  else if ( totem == "deadly_gladiators_totem_of_the_third_wind" ) ;
-  else
-  {
-    sim -> errorf( "Player %s has unknown totem %s", name(), totem.c_str() );
-  }
-}
-
 // shaman_t::init_scaling ====================================================
 
 void shaman_t::init_scaling()
@@ -3165,17 +3050,6 @@ void shaman_t::init_buffs()
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
   // buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
-
-  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-
-  buffs_avalanche         = new stat_buff_t( this, "avalanche",         STAT_ATTACK_POWER, 146, 3, 15.0,     0, totems.avalanche );
-  buffs_dueling           = new stat_buff_t( this, "dueling",           STAT_HASTE_RATING,  60, 1,  6.0, 10.01, totems.dueling );
-  buffs_electrifying_wind = new stat_buff_t( this, "electrifying_wind", STAT_HASTE_RATING, 200, 1, 12.0,  6.01, totems.electrifying_wind * 0.70 );
-  buffs_indomitability    = new stat_buff_t( this, "indomitability",    STAT_ATTACK_POWER, 120, 1, 10.0, 10.01, totems.indomitability );
-  buffs_quaking_earth     = new stat_buff_t( this, "quaking_earth",     STAT_ATTACK_POWER, 400, 1, 18.0,  9.01, totems.quaking_earth * 0.80 );
-  buffs_shattered_ice     = new stat_buff_t( this, "shattered_ice",     STAT_HASTE_RATING,  44, 5, 30.0,     0, totems.shattered_ice );
-  buffs_stonebreaker      = new stat_buff_t( this, "stonebreaker",      STAT_ATTACK_POWER, 110, 1, 10.0, 10.01, totems.stonebreaker );
-  buffs_tundra            = new stat_buff_t( this, "tundra",            STAT_ATTACK_POWER,  94, 1, 10.0, 10.01, totems.tundra );
 }
 
 // shaman_t::init_gains ======================================================
@@ -3514,8 +3388,6 @@ std::vector<option_t>& shaman_t::get_options()
       { "totemic_wrath",             OPT_INT,  &( talents.totemic_wrath             ) },
       { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
       { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
-      // @option_doc loc=player/druid/misc title="Misc"
-      { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
