@@ -100,6 +100,7 @@ struct druid_t : public player_t
     int  earth_and_moon;
     int  force_of_nature;
     int  fungal_growth;
+    int  furor;
     int  gale_winds;
     int  genesis;
     int  lunar_guidance;
@@ -122,7 +123,6 @@ struct druid_t : public player_t
     int  feral_aggression;
     int  feral_charge;
     int  feral_swiftness;
-    int  furor;
     int  fury_of_stormrage;
     int  fury_swipes;
     int  heart_of_the_wild;
@@ -143,7 +143,6 @@ struct druid_t : public player_t
     int  thick_hide;
     
     // TODO: talents to delete
-    int  eclipse;
     int  primal_gore;
     int  primal_precision;
     int  protector_of_the_pack;
@@ -2124,7 +2123,14 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter * 0.04;
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
+  {
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
+    // Moonfury: Arcane and Nature spell damage increased by 25%
+    // One of the bonuses for choosing balance spec
+    if ( primary_tree() == TREE_BALANCE )
+      player_multiplier *= 1.25;
+
+  }
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.02;
 }
@@ -2756,34 +2762,24 @@ struct druids_swiftness_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  int eclipse_benefit;
-  int eclipse_trigger;
   std::string prev_str;
   int extend_moonfire;
   int instant;
 
   starfire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
-      eclipse_benefit( 0 ), eclipse_trigger( 0 ), extend_moonfire( 0 ), instant( 0 )
+      extend_moonfire( 0 ), instant( 0 )
   {
     druid_t* p = player -> cast_druid();
 
-    std::string eclipse_str;
     option_t options[] =
     {
       { "extendmf", OPT_BOOL,   &extend_moonfire },
-      { "eclipse",  OPT_STRING, &eclipse_str     },
       { "prev",     OPT_STRING, &prev_str        },
       { "instant",  OPT_BOOL,   &instant         },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    if ( ! eclipse_str.empty() )
-    {
-      eclipse_benefit = ( eclipse_str == "benefit" );
-      eclipse_trigger = ( eclipse_str == "trigger" );
-    }
 
     // Starfire is leanred at level 78, but gains 5 damage per level
     // so the actual damage range at 80 is: 1038 to 1222
@@ -2825,7 +2821,8 @@ struct starfire_t : public druid_spell_t
 
     if ( p -> buffs_eclipse_lunar -> up() )
     {
-      player_crit += 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
+      // Eclipse increases wrath damage by 1.5% per mastery point
+      player_multiplier *= 1.0 + composite_mastery() * 0.015;
     }
   }
 
@@ -2887,16 +2884,6 @@ struct starfire_t : public druid_spell_t
       if ( p -> dots_moonfire -> action -> added_ticks > 2 ) return false;
     }
 
-    if ( eclipse_benefit )
-    {
-      if ( ! p -> buffs_eclipse_lunar -> may_react() )
-        return false;
-
-      // Don't cast starfire if eclipse will fade before the cast finished
-      if ( p -> buffs_eclipse_lunar -> remains_lt( execute_time() ) )
-        return false;
-    }
-
     if ( ! prev_str.empty() )
     {
       if ( ! p -> last_foreground_action )
@@ -2914,31 +2901,21 @@ struct starfire_t : public druid_spell_t
 
 struct wrath_t : public druid_spell_t
 {
-  int eclipse_benefit;
-  int eclipse_trigger;
   std::string prev_str;
 
   wrath_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE ), eclipse_benefit( 0 ), eclipse_trigger( 0 )
+      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
 
     travel_speed = 21.0;
 
-    std::string eclipse_str;
     option_t options[] =
     {
-      { "eclipse", OPT_STRING, &eclipse_str },
       { "prev",    OPT_STRING, &prev_str    },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    if ( ! eclipse_str.empty() )
-    {
-      eclipse_benefit = ( eclipse_str == "benefit" );
-      eclipse_trigger = ( eclipse_str == "trigger" );
-    }
 
     // Wrath is leanred at level 79, but gains 4 damage per level
     // so the actual damage range at 80 is: 557 to 627
@@ -3004,7 +2981,8 @@ struct wrath_t : public druid_spell_t
 
     if ( p -> buffs_eclipse_solar -> up() )
     {
-      player_multiplier *= 1.0 + 0.40 + p -> set_bonus.tier8_2pc_caster() * 0.07;
+      // Eclipse increases wrath damage by 1.5% per mastery point
+      player_multiplier *= 1.0 + composite_mastery() * 0.015;
     }
   }
 
@@ -3014,16 +2992,6 @@ struct wrath_t : public druid_spell_t
       return false;
 
     druid_t* p = player -> cast_druid();
-
-    if ( eclipse_benefit )
-    {
-      if ( ! p -> buffs_eclipse_solar -> may_react() )
-        return false;
-
-      // Don't cast wrath if eclipse will fade before the cast finished.
-      if ( p -> buffs_eclipse_solar -> remains_lt( execute_time() ) )
-        return false;
-    }
 
     if ( ! prev_str.empty() )
     {
@@ -4019,7 +3987,6 @@ std::vector<option_t>& druid_t::get_options()
       { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
       { "brutal_impact",             OPT_INT,  &( talents.brutal_impact             ) },
       { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
-      { "eclipse",                   OPT_INT,  &( talents.eclipse                   ) },
       { "feral_aggression",          OPT_INT,  &( talents.feral_aggression          ) },
       { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
       { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
