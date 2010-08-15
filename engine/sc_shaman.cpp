@@ -7,7 +7,6 @@
 // Todo for Cata
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
-// Mastery Implementation (NYI in the Beta)
 // Ability/Spell Rank scaling
 // Searing Flames Talent
 //  Details: base tick time of 3 seconds, 5 ticks, scales with haste, stacks 5x, duration refresh
@@ -83,14 +82,14 @@ struct shaman_t : public player_t
   gain_t* gains_water_shield;
 
   // Procs
-  proc_t* procs_lightning_overload;
+  proc_t* procs_elemental_overload;
   proc_t* procs_windfury;
 
   // Up-Times
   uptime_t* uptimes_tundra;
 
   // Random Number Generators
-  rng_t* rng_lightning_overload;
+  rng_t* rng_elemental_overload;
   rng_t* rng_primal_wisdom;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
@@ -497,6 +496,47 @@ struct fire_elemental_pet_t : public pet_t
   }
 };
 
+// trigger_elemental_overload ===============================================
+
+static void trigger_elemental_overload( spell_t* s,
+                                        stats_t* elemental_overload_stats )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  if ( p -> primary_tree() != TREE_ELEMENTAL ) return;
+
+  if ( s -> proc ) return;
+
+  double overload_chance = p -> composite_mastery() * 0.02;
+  
+  if ( p -> rng_elemental_overload -> roll( overload_chance ) )
+  {
+    p -> procs_elemental_overload -> occur();
+
+    double   cost             = s -> base_cost;
+    double   multiplier       = s -> base_multiplier;
+    double   direct_power_mod = s -> direct_power_mod;
+    stats_t* stats            = s -> stats;
+
+    s -> proc                 = true;
+    s -> pseudo_pet           = true; // Prevent Honor Among Thieves
+    s -> base_cost            = 0;
+    s -> base_multiplier     /= 1.0 / 0.75;
+    s -> direct_power_mod    += 0.20; // Reapplied here because Shamanism isn't affected by the *0.20.
+    s -> stats                = elemental_overload_stats;
+
+    s -> time_to_execute      = 0;
+    s -> execute();
+
+    s -> proc                 = false;
+    s -> pseudo_pet           = false;
+    s -> base_cost            = cost;
+    s -> base_multiplier      = multiplier;
+    s -> direct_power_mod     = direct_power_mod;
+    s -> stats                = stats;
+  }
+}
+
 // trigger_flametongue_weapon ===============================================
 
 static void trigger_flametongue_weapon( attack_t* a )
@@ -689,47 +729,7 @@ static void trigger_tier8_4pc_elemental( spell_t* s )
   p -> active_lightning_bolt_dot -> schedule_tick();
 }
 
-/* Mastery NYI
-// trigger_lightning_overload ===============================================
 
-static void trigger_lightning_overload( spell_t* s,
-                                        stats_t* lightning_overload_stats,
-                                        double   lightning_overload_chance )
-{
-  shaman_t* p = s -> player -> cast_shaman();
-
-  if ( lightning_overload_chance == 0 ) return;
-
-  if ( s -> proc ) return;
-
-  if ( p -> rng_lightning_overload -> roll( lightning_overload_chance ) )
-  {
-    p -> procs_lightning_overload -> occur();
-
-    double   cost             = s -> base_cost;
-    double   multiplier       = s -> base_multiplier;
-    double   direct_power_mod = s -> direct_power_mod;
-    stats_t* stats            = s -> stats;
-
-    s -> proc                 = true;
-    s -> pseudo_pet           = true; // Prevent Honor Among Thieves
-    s -> base_cost            = 0;
-    s -> base_multiplier     /= 2.0;
-    s -> direct_power_mod    += p -> primary_tree() == TREE_ELEMENTAL * 0.20; // Reapplied here because Shamanism isn't affected by the *0.20.
-    s -> stats                = lightning_overload_stats;
-
-    s -> time_to_execute      = 0;
-    s -> execute();
-
-    s -> proc                 = false;
-    s -> pseudo_pet           = false;
-    s -> base_cost            = cost;
-    s -> base_multiplier      = multiplier;
-    s -> direct_power_mod     = direct_power_mod;
-    s -> stats                = stats;
-  }
-}
-*/
 
 // =========================================================================
 // Shaman Attack
@@ -1016,14 +1016,13 @@ struct stormstrike_t : public shaman_attack_t
       shaman_attack_t( "stormstrike", player, SCHOOL_PHYSICAL, TREE_ENHANCEMENT )
   {
     shaman_t* p = player -> cast_shaman();
+    check_talent( p -> talents.stormstrike );
 
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
-    parse_options( options, options_str );
-
-    check_talent( p -> talents.stormstrike );
+    parse_options( options, options_str );    
 
     may_crit  = true;
     base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
@@ -1148,6 +1147,8 @@ void shaman_spell_t::player_buff()
   }
   if ( p -> buffs_elemental_mastery -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE ) )
       player_multiplier *= 1.15;
+  if ( p -> primary_tree() == TREE_ENHANCEMENT && ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE ) )
+      player_multiplier *= 1 + ( p -> composite_mastery() * 0.025 );
   if ( p -> buffs_tier10_2pc_melee -> up() )
     player_multiplier *= 1.12;
 }
@@ -1244,12 +1245,11 @@ struct chain_lightning_t : public shaman_spell_t
   int      conserve;
   double   max_lvb_cd;
   int      maelstrom;
-  stats_t* lightning_overload_stats;
-  double   lightning_overload_chance;
+  stats_t* elemental_overload_stats;
 
   chain_lightning_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "chain_lightning", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
-      clearcasting( 0 ), conserve( 0 ), max_lvb_cd( 0 ), maelstrom( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 )
+      clearcasting( 0 ), conserve( 0 ), max_lvb_cd( 0 ), maelstrom( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1291,12 +1291,9 @@ struct chain_lightning_t : public shaman_spell_t
 
     if ( p -> totems.hex ) base_spell_power += 165;
 
-    /* Masteries not yet implemented
-    lightning_overload_stats = p -> get_stats( "lightning_overload" );
-    lightning_overload_stats -> school = SCHOOL_NATURE;    
-    lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.11, 0.22, 0.33 ) / 3.0;
-    */
-  }
+    elemental_overload_stats = p -> get_stats( "elemental_overload" ); // Testing needed to see if this still suffers from the jump penalty
+    elemental_overload_stats -> school = SCHOOL_NATURE;    
+   }
 
   virtual void execute()
   {
@@ -1309,8 +1306,7 @@ struct chain_lightning_t : public shaman_spell_t
     p -> cooldowns_elemental_mastery -> ready -= p -> talents.feedback * 1.0;
     if ( result_is_hit() )
     {
-      // Mastery NYI
-      // trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
+      trigger_elemental_overload( this, elemental_overload_stats  );
     }
   }
 
@@ -1460,12 +1456,13 @@ struct fire_nova_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  int maelstrom;
-  int flame_shock;
+  int      flame_shock;
+  int      maelstrom;  
+  stats_t* elemental_overload_stats;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ),
-      maelstrom( 0 ), flame_shock( 0 )
+      maelstrom( 0 ), flame_shock( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1514,6 +1511,10 @@ struct lava_burst_t : public shaman_spell_t
       base_dd_min += 215;
       base_dd_max += 215;
     }
+
+    elemental_overload_stats = p -> get_stats( "elemental_overload" );
+    elemental_overload_stats -> school = SCHOOL_FIRE;    
+
   }
 
   virtual double total_td_multiplier() SC_CONST
@@ -1529,6 +1530,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit() )
     {
+      trigger_elemental_overload( this, elemental_overload_stats );
       if ( p -> set_bonus.tier9_4pc_caster() )
         base_td = direct_dmg * 0.1 / num_ticks;
 
@@ -1581,12 +1583,11 @@ struct lightning_bolt_t : public shaman_spell_t
 {
   int      maelstrom;
   int      ss_wait;
-  stats_t* lightning_overload_stats;
-  double   lightning_overload_chance;
+  stats_t* elemental_overload_stats;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
-      maelstrom( 0 ), ss_wait( 0 ), lightning_overload_stats( 0 ), lightning_overload_chance( 0 )
+      maelstrom( 0 ), ss_wait( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -1622,10 +1623,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( p -> totems.hex ) base_spell_power += 165;
 
-    // Mastery NYI
-    // lightning_overload_stats = p -> get_stats( "lightning_overload" );
-    // lightning_overload_stats -> school = SCHOOL_NATURE;   
-    // lightning_overload_chance = util_t::talent_rank( p -> talents.lightning_overload, 3, 0.11, 0.22, 0.33 );
+    elemental_overload_stats = p -> get_stats( "elemental_overload" );
+    elemental_overload_stats -> school = SCHOOL_NATURE;   
   }
 
   virtual void execute()
@@ -1641,8 +1640,7 @@ struct lightning_bolt_t : public shaman_spell_t
     p -> cooldowns_elemental_mastery -> ready -= p -> talents.feedback * 1.0;
     if ( result_is_hit() )
     {
-      // Mastery NYI
-      // trigger_lightning_overload( this, lightning_overload_stats, lightning_overload_chance );
+      trigger_elemental_overload( this, elemental_overload_stats );
       if ( result == RESULT_CRIT )
       {
         trigger_tier8_4pc_elemental( this );
@@ -2187,11 +2185,11 @@ struct magma_totem_t : public shaman_spell_t
 
     static rank_t ranks[] =
     {
-      { 85,  8, 200, 200, 0, 0.27 },
-      { 78,  7, 371, 371, 0, 0.27 },
-      { 73,  6, 314, 314, 0, 0.27 },
-      { 65,  5, 180, 180, 0, 0.27 },
-      { 56,  4, 131, 131, 0, 0.27 },
+      { 85,  8, 200, 200, 0, 0.18 },
+      { 78,  7, 371, 371, 0, 0.18 },
+      { 73,  6, 314, 314, 0, 0.18 },
+      { 65,  5, 180, 180, 0, 0.18 },
+      { 56,  4, 131, 131, 0, 0.18 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 8190 );
@@ -3198,7 +3196,7 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_lightning_overload = get_proc( "lightning_overload" );
+  procs_elemental_overload = get_proc( "elemental_overload" );
   procs_windfury           = get_proc( "windfury"           );
 }
 
@@ -3207,7 +3205,7 @@ void shaman_t::init_procs()
 void shaman_t::init_rng()
 {
   player_t::init_rng();
-  rng_lightning_overload   = get_rng( "lightning_overload"   );
+  rng_elemental_overload   = get_rng( "elemental_overload"   );
   rng_primal_wisdom        = get_rng( "primal_wisdom"        );
   rng_static_shock         = get_rng( "static_shock"         );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
@@ -3414,7 +3412,7 @@ void shaman_t::combat_begin()
 
   if ( talents.elemental_oath ) sim -> auras.elemental_oath -> trigger();
 
-  int ur = util_t::talent_rank( talents.unleashed_rage, 4, 7, 10 );
+  int ur = util_t::talent_rank( talents.unleashed_rage, 3, 4, 7, 10 );
 
   if ( ur >= sim -> auras.unleashed_rage -> current_value )
   {

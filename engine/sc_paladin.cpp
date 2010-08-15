@@ -685,7 +685,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_block = false;
 
     base_multiplier *= 1.0 + 0.10 * p -> talents.wrath_of_the_lightbringer;
-    base_crit       +=       0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       +=       0.10 * p -> talents.wrath_of_the_lightbringer
                            + 0.25 * p -> talents.sanctified_wrath;
 
     cooldown -> duration = 6;
@@ -906,7 +906,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light
                      + 0.10 * p -> talents.wrath_of_the_lightbringer;
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
@@ -971,7 +971,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light
                      + 0.10 * p -> talents.wrath_of_the_lightbringer;
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
@@ -1039,7 +1039,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light
                      + 0.10 * p -> talents.wrath_of_the_lightbringer;
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
@@ -1197,7 +1197,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light
                      + 0.10 * p -> talents.wrath_of_the_lightbringer;
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
