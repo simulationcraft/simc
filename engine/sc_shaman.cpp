@@ -12,9 +12,6 @@
 //  Details: base tick time of 3 seconds, 5 ticks, scales with haste, stacks 5x, duration refresh
 //  Looks a lot like Deadly Poison, but that code was way over my head :D
 // Improved Lava Lash Talent (Searing Flames portion)
-// Fire Nova not usable with Searing Totem
-//   Currently active_fire_totem handles all fire totems, 
-//   not sure if we can include type in that
 // Shamanistic Rage Mana Reduction
 //   Buff Affects: Chain Lightning, Earth Shock, Fire Elemental Totem, Fire Nova, Flame Shock, Frost Shock,
 //     Lava Burst, Lightning Bolt, Magma Totem, Searing Totem, Wind Shear,
@@ -1377,6 +1374,9 @@ struct fire_nova_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     if ( ! p -> active_fire_totem )
+      return false;
+
+    if ( p -> active_fire_totem-> name_str == "searing_totem" )
       return false;
 
     return shaman_spell_t::ready();
