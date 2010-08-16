@@ -1723,7 +1723,10 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
-  if ( buffs.blessing_of_kings -> check() ) m *= 1.10;
+  // MotW / BoK
+  // ... increasing Strength, Agility, Stamina, and Intellect by 5%
+  if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
+    if ( buffs.blessing_of_kings -> check() || buffs.mark_of_the_wild -> check() ) m *= 1.05;
   return m;
 }
 

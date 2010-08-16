@@ -2405,7 +2405,6 @@ struct moonfire_t : public druid_spell_t
 {
   double base_crit_tick, base_crit_direct;
   double base_cost_reduction;
-
   moonfire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
       base_crit_tick( 0 ), base_crit_direct( 0 ), base_cost_reduction( 0 )
@@ -2440,7 +2439,7 @@ struct moonfire_t : public druid_spell_t
     // Costreduction from moonglow and lunar shower is additive
     // up to 9%+90%=99%
     base_cost_reduction = util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
-
+    
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     double multiplier_td = ( util_t::talent_rank( p -> talents.genesis, 3, 0.02 ) );
@@ -2455,12 +2454,22 @@ struct moonfire_t : public druid_spell_t
     base_td_multiplier *= 1.0 + multiplier_td;
   }
 
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    druid_t* p = player -> cast_druid();
+    // +2/4/8% damage bonus only applies to direct damage
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower, 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
+  }
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
 
     druid_spell_t::execute();
-    base_crit = 0;
+    // +2/4/8% damage bonus only applies to direct damage
+    // Get rid of it for the ticks, hacky :<
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower, 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
+
 
     if ( result_is_hit() )
     {
@@ -3123,17 +3132,14 @@ struct typhoon_t : public druid_spell_t
 
 struct mark_of_the_wild_t : public druid_spell_t
 {
-  double bonus;
-
   mark_of_the_wild_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION ), bonus( 0 )
+      druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
     // TODO: Cata => +5% like BoK
     // druid_t* p = player -> cast_druid();
 
     trigger_gcd = 0;
-    bonus  = util_t::ability_rank( player -> level,  37.0,80, 14.0,70,  12.0,0 );
-    id = 48469;
+    id = 1126;
   }
 
   virtual void execute()
@@ -3144,15 +3150,14 @@ struct mark_of_the_wild_t : public druid_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-        p -> buffs.mark_of_the_wild -> trigger( 1, bonus );
-        p -> init_resources( true );
+        p -> buffs.mark_of_the_wild -> trigger();
       }
     }
   }
 
   virtual bool ready()
   {
-    return( player -> buffs.mark_of_the_wild -> current_value < bonus );
+    return ! player -> buffs.mark_of_the_wild -> check();
   }
 };
 
@@ -4064,8 +4069,8 @@ void player_t::druid_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.innervate        = new      buff_t( p, "innervate",                      1, 10.0 );
-    p -> buffs.mark_of_the_wild = new stat_buff_t( p, "mark_of_the_wild", STAT_MAX, 37, 1 );
+    p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
+    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", 1 );
   }
 
   target_t* t = sim -> target;
@@ -4087,7 +4092,7 @@ void player_t::druid_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override( 1, 37.0 * 1.20 );
+      if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override();
     }
   }
 
