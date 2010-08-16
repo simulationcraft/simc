@@ -361,90 +361,12 @@ bool http_t::download( std::string& result,
 // HTTP-DOWNLOAD FOR WINDOWS (MinGW Only)
 // ==========================================================================
 
-#include <windows.h>
-#include <wininet.h>
-#include <Winsock2.h>
-
-// http_t::download =========================================================
-
 bool http_t::download( std::string& result,
                        const std::string& url )
 {
-  static bool initialized = false;
-  if ( ! initialized )
-  {
-    WSADATA wsa_data;
-    WSAStartup( MAKEWORD( 2,2 ), &wsa_data );
-    initialized = true;
-  }
-
-  std::string host;
-  std::string path;
-  short port;
-
-  if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
-
-  struct hostent* h = gethostbyname( host.c_str() );
-  if ( ! h ) return false;
-
-  sockaddr_in a;
-  a.sin_family = AF_INET;
-  a.sin_addr = *( in_addr * )h->h_addr_list[0];
-  a.sin_port = htons( port );
-
-  uint32_t s;
-  s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
-  if ( s == 0xffffffffU ) return false;
-
-  int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
-  if ( r < 0 )
-  {
-    return false;
-  }
-
-  char buffer[2048];
-  sprintf( buffer, 
-	   "GET %s HTTP/1.0\r\n"
-	   "User-Agent: Firefox/3.0\r\n"
-	   "Accept: */*\r\n"
-	   "Host: %s\r\n"
-	   "Cookie: loginChecked=1\r\n"
-	   "Cookie: cookieLangId=en_US\r\n"
-	   "Connection: close\r\n"
-	   "\r\n", 
-	   path.c_str(), 
-	   host.c_str() );
-
-  r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
-  if ( r != ( int ) strlen( buffer ) )
-  {
-    return false;
-  }
-
-  result = "";
-
-  while ( 1 )
-  {
-    r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
-    if ( r > 0 )
-    {
-      buffer[ r ] = '\0';
-      result += buffer;
-    }
-    else break;
-  }
-
-  std::string::size_type pos = result.find( "\r\n\r\n" );
-  if ( pos == result.npos )
-  {
-    result.clear();
-    return false;
-  }
-
-  result.erase( result.begin(), result.begin() + pos + 4 );
-
-  return true;
+  return false;
 }
+
 
 #elif defined( _MSC_VER )
 

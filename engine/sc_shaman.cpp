@@ -876,13 +876,14 @@ struct lava_lash_t : public shaman_attack_t
     if ( p -> primary_tree() != TREE_ENHANCEMENT ) return;
     weapon = &( player -> off_hand_weapon );
     if ( weapon -> type == WEAPON_NONE ) background = true; // Do not allow execution.
-
-    base_dd_min = base_dd_max = 1.5;
+    
     may_crit    = true;
     base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.04;
     cooldown -> duration = 10;
-    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
+    weapon_multiplier *= 1.5;
 
+    if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
+   
     id = 60103;
   }
 
@@ -943,8 +944,11 @@ struct primal_strike_t : public shaman_attack_t
     init_rank( ranks, 73899 );
 
     may_crit  = true;
+
+    cooldown = p -> get_cooldown( "strike" );
     cooldown -> duration = 8.0;
-    base_dd_multiplier = p -> talents.focused_strikes * 0.15;
+
+    base_multiplier *= 1 + p -> talents.focused_strikes * 0.15;;
   }
 
   virtual void execute()
@@ -977,15 +981,18 @@ struct stormstrike_t : public shaman_attack_t
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
-    parse_options( options, options_str );    
+    parse_options( options, options_str );
 
-    may_crit  = true;
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    cooldown -> duration = 8.0;
-    base_dd_min = base_dd_max = 1.25;
-    base_dd_multiplier = p -> talents.focused_strikes * 0.15;
+    may_crit    = true;
+    base_cost   = p -> resource_base[ RESOURCE_MANA ] * 0.08;
+   
+    weapon_multiplier *= 1.25;
+    base_multiplier   *= 1 + p -> talents.focused_strikes * 0.15;
 
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
+
+    cooldown = p -> get_cooldown( "strike" );
+    cooldown -> duration = 8.0;
 
     id = 17364;
   }
@@ -1376,7 +1383,7 @@ struct fire_nova_t : public shaman_spell_t
     if ( ! p -> active_fire_totem )
       return false;
 
-    if ( p -> active_fire_totem-> name_str == "searing_totem" )
+    if ( p -> active_fire_totem -> name_str == "searing_totem" )
       return false;
 
     return shaman_spell_t::ready();
