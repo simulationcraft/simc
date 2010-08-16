@@ -8,10 +8,6 @@
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
 // Ability/Spell Rank scaling
-// Searing Flames Talent
-//  Details: base tick time of 3 seconds, 5 ticks, scales with haste, stacks 5x, duration refresh
-//  Looks a lot like Deadly Poison, but that code was way over my head :D
-// Improved Lava Lash Talent (Searing Flames portion)
 // Shamanistic Rage Mana Reduction
 //   Buff Affects: Chain Lightning, Earth Shock, Fire Elemental Totem, Fire Nova, Flame Shock, Frost Shock,
 //     Lava Burst, Lightning Bolt, Magma Totem, Searing Totem, Wind Shear,
@@ -38,6 +34,7 @@ struct shaman_t : public player_t
   action_t* active_flame_shock;
   action_t* active_lightning_charge;
   action_t* active_lightning_bolt_dot;
+  action_t* active_searing_flames_dot;
 
   // Buffs
   buff_t* buffs_elemental_devastation;
@@ -48,6 +45,7 @@ struct shaman_t : public player_t
   buff_t* buffs_maelstrom_weapon;
   buff_t* buffs_nature_vulnerability;
   buff_t* buffs_natures_swiftness;
+  buff_t* buffs_searing_flames;
   buff_t* buffs_shamanistic_rage;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
@@ -72,6 +70,7 @@ struct shaman_t : public player_t
   // Random Number Generators
   rng_t* rng_elemental_overload;
   rng_t* rng_primal_wisdom;
+  rng_t* rng_searing_flames;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
 
@@ -158,6 +157,7 @@ struct shaman_t : public player_t
     active_flame_shock        = 0;
     active_lightning_charge   = 0;
     active_lightning_bolt_dot = 0;
+    active_searing_flames_dot = 0;
 
     // Cooldowns
     cooldowns_elemental_mastery = get_cooldown( "elemental_mastery" );
@@ -181,6 +181,7 @@ struct shaman_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      interrupt();
+  virtual void      clear_debuffs();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
@@ -617,6 +618,74 @@ static void trigger_primal_wisdom ( attack_t* a )
   }
 }
 
+// trigger_searing_flames ===============================================
+
+// FIX ME: The debuff stacks fine, but the dot does 0 damage
+static void trigger_searing_flames( spell_t* s )
+{
+  double dmg = s -> direct_dmg;
+
+  shaman_t* p = s -> player -> cast_shaman();
+  
+  struct searing_flames_dot_t : public shaman_spell_t
+  {
+    searing_flames_dot_t( player_t* player, double base_dmg ) : 
+      shaman_spell_t( "searing_flames", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
+    {
+      trigger_gcd     = 0;
+      background      = true;
+      may_miss        = false;      
+      proc            = true;      
+      base_tick_time  = 3.0;
+      num_ticks       = 5;
+      base_dd_min = base_dd_max = base_dmg;
+    }
+    void player_buff() {}
+
+    virtual void execute()
+    {
+      shaman_t* p = player -> cast_shaman();
+      
+      p -> buffs_searing_flames -> trigger();
+
+      if ( sim -> log ) log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_searing_flames -> current_stack );
+
+      if ( ticking )
+        refresh_duration();
+      else
+        schedule_tick();
+    }
+
+    virtual double calculate_tick_damage()
+    {
+      shaman_t* p = player -> cast_shaman();
+      tick_dmg  = shaman_spell_t::calculate_tick_damage();
+      tick_dmg *= p -> buffs_searing_flames -> stack();
+      return tick_dmg;
+    }
+    
+    virtual void last_tick()
+    {
+      shaman_t* p = player -> cast_shaman();
+      shaman_spell_t::last_tick();
+      p -> buffs_searing_flames -> expire();
+    }
+
+    virtual int scale_ticks_with_haste() SC_CONST
+    {
+      return 1;
+    }
+  };
+
+  if ( ! p -> active_searing_flames_dot )
+  {
+    p -> active_searing_flames_dot = new searing_flames_dot_t ( p, dmg ) ;
+    p -> active_searing_flames_dot -> schedule_tick();
+  }
+
+  p -> active_searing_flames_dot -> execute();
+}
+
 // trigger_static_shock =============================================
 
 static void trigger_static_shock ( attack_t* a )
@@ -892,7 +961,8 @@ struct lava_lash_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
     shaman_attack_t::execute();
     trigger_static_shock( this );
-    // if ( p -> talents.improved_lava_lash ) consume_searing_flames_dot
+    p -> buffs_searing_flames -> expire();
+    p -> active_searing_flames_dot = 0; // FIX ME: Set to 0 or use reset()?
   }
 
   virtual void player_buff()
@@ -903,9 +973,8 @@ struct lava_lash_t : public shaman_attack_t
     {
       player_multiplier *= 1.40 + p -> glyphs.lava_lash * 0.10;
     }
-    player_multiplier *= 1 + ( p -> talents.improved_lava_lash * 0.15 );
-    // Searing Flames not coded yet....
-    // player_multiplier *= ( 0.10 * talents.improved_lava_lash ) * buff.searing_flames_dot -> stack();
+    player_multiplier *= 1 + ( p -> talents.improved_lava_lash * 0.15 ) +
+                             ( p -> talents.improved_lava_lash * 0.10 * p -> buffs_searing_flames -> stack() );
     }
 
   virtual bool ready()
@@ -2380,6 +2449,8 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void tick()
   {
+    shaman_t* p = player -> cast_shaman();
+
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
     target_debuff( DMG_DIRECT );
@@ -2393,6 +2464,8 @@ struct searing_totem_t : public shaman_spell_t
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
       }
+      if ( p -> rng_searing_flames -> roll ( p -> talents.searing_flames / 3 ) )
+        trigger_searing_flames( this );
     }
     else
     {
@@ -2831,6 +2904,13 @@ struct water_shield_t : public shaman_spell_t
 // Shaman Character Definition
 // ==========================================================================
 
+// shaman_t::clear_debuffs  =================================================
+
+void shaman_t::clear_debuffs()
+{
+  player_t::clear_debuffs();
+  buffs_searing_flames -> expire();
+}
 // shaman_t::create_action  =================================================
 
 action_t* shaman_t::create_action( const std::string& name,
@@ -3052,6 +3132,7 @@ void shaman_t::init_buffs()
   buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  1,  15.0 ); // Stormstrike Debuff
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
+  buffs_searing_flames        = new buff_t( this, "searing_flames",        5 );
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0, 0.0, talents.shamanistic_rage      );
   buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee() );
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
@@ -3088,6 +3169,7 @@ void shaman_t::init_rng()
   player_t::init_rng();
   rng_elemental_overload   = get_rng( "elemental_overload"   );
   rng_primal_wisdom        = get_rng( "primal_wisdom"        );
+  rng_searing_flames       = get_rng( "searing_flames"       );
   rng_static_shock         = get_rng( "static_shock"         );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
