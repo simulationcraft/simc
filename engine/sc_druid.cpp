@@ -2802,7 +2802,8 @@ struct starfire_t : public druid_spell_t
             p -> dots_moonfire -> action -> extend_duration( 1 );
       }
     }
-    // Even missed spells trigger it!
+    // Base eclipse gain from Starfire is OnCast (no need to hit!)
+    // Euphoria bonus gain is OnCrit
     trigger_eclipse_energy_gain( this, 20 );
     if ( result == RESULT_CRIT )
       trigger_eclipse_energy_gain( this, 4 * p -> talents.euphoria );
@@ -2903,13 +2904,15 @@ struct wrath_t : public druid_spell_t
       if ( travel_result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
+
+        // Base eclipse gain from Wrath is OnCast (no need to hit!)
+        // Euphoria bonus gain is OnCrit when the spell arrives at the target)
+        trigger_eclipse_energy_gain( this, -2 * p -> talents.euphoria );
       }
       trigger_earth_and_moon( this );
     }
-
-    if ( travel_result == RESULT_CRIT )
-      trigger_eclipse_energy_gain( this, -2 * p -> talents.euphoria );
   }
+
   virtual void execute()
   {
     druid_spell_t::execute();
@@ -3049,6 +3052,8 @@ struct starsurge_t : public druid_spell_t
     
     assert ( p -> primary_tree() == TREE_BALANCE );
     
+    travel_speed = 21.0;
+    
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -3071,20 +3076,22 @@ struct starsurge_t : public druid_spell_t
 
     base_cost           *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
   }
-
-  virtual void execute()
+  
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
   {
-    druid_spell_t::execute();
-    // Even missed spells trigger it..
-    // but not Starsurge, blizzard and consistency :S
     druid_t* p = player -> cast_druid();
-    if ( result_is_hit() )
+    druid_spell_t::travel( travel_result, travel_dmg );
+    // SF/Wrath even give eclipse on misses,
+    // but not Starsurge
+    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
-      // It always pushes towards the side the bar is on
+      // It always pushes towards the side the bar is on, positive if at zero
       int gain = 10 + 2 * p -> talents.lunar_guidance;
-      trigger_eclipse_energy_gain( this, gain * ( ( p -> eclipse_bar_value < 0 ) ? -1 : 1 ) );
+      if (  p -> eclipse_bar_value < 0 ) gain *= -1;
+      trigger_eclipse_energy_gain( this, gain );
     }
-  }
+  }  
 };
 
 
