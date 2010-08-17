@@ -3483,7 +3483,7 @@ void shaman_t::init_actions()
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
       action_list_str  = "flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
-      action_list_str += "/strength_of_earth_totem/windfury_totem";
+      action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
       action_list_str += "/wind_shear";
@@ -3509,11 +3509,11 @@ void shaman_t::init_actions()
       action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
-
+      action_list_str += "/lava_burst,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react&
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react&(dot.flame_shock.remains-cast_time)>=0";
       if ( talents.stormstrike ) action_list_str += "/stormstrike";
       action_list_str += "/flame_shock,if=!ticking";
-      action_list_str += "/earth_shock/magma_totem/fire_nova/lightning_shield";
+      action_list_str += "/earth_shock/searing_totem";
       if ( primary_tree() == TREE_ENHANCEMENT ) action_list_str += "/lava_lash";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
       if ( talents.shamanistic_rage ) action_list_str += "/shamanistic_rage";
@@ -3544,24 +3544,24 @@ void shaman_t::init_actions()
       }
       if ( set_bonus.tier9_2pc_caster() || set_bonus.tier10_2pc_caster() )
       {
-          action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
+        action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
       }
       else
       {
-          action_list_str += "/speed_potion";
+        action_list_str += "/speed_potion";
       }
       if ( talents.elemental_mastery )
       {
-          action_list_str += "/elemental_mastery,time_to_die<=17";
-          action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
+        action_list_str += "/elemental_mastery,time_to_die<=17";
+        action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
       }
       action_list_str += "/flame_shock,if=!ticking";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0";
-      action_list_str += "/fire_nova,if=target.adds>2";
-	  action_list_str += "/fire_elemental_totem";
-	  action_list_str += "/searing_totem";
+	    action_list_str += "/fire_elemental_totem";
+	    action_list_str += "/searing_totem";
+      action_list_str += "/chain_lightning,if=target.adds>1";
       if ( ! ( set_bonus.tier9_4pc_caster() || set_bonus.tier10_2pc_caster() ) )
-          action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
+        action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
       action_list_str += "/lightning_bolt";
       if ( primary_tree() == TREE_ELEMENTAL ) action_list_str += "/thunderstorm";
     }
