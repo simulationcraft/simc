@@ -8,13 +8,9 @@
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
 // Ability/Spell Rank scaling
-// Shamanistic Rage Mana Reduction
-//   Buff Affects: Chain Lightning, Earth Shock, Fire Elemental Totem, Fire Nova, Flame Shock, Frost Shock,
-//     Lava Burst, Lightning Bolt, Magma Totem, Searing Totem, Wind Shear,
-//     Earth Elemental Totem, Feral Spirit, Lava Lash, Stormstrike
-//   Implement by using consume resource on all of the actions similiar to fire nova or is there an easier way
-// Totemic Focus Duration Increase For the Following:
+// Totemic Focus Duration Increase For the Following: (How do check talents there?)
 //   Flametongue, Mana Spring, Strength of Earth, Windfury, Wrath of Air
+// Searing Flames Dot Damage
 // ==========================================================================
 
 #include "simulationcraft.h"
@@ -987,6 +983,15 @@ struct lava_lash_t : public shaman_attack_t
 
     return shaman_attack_t::ready();
   }
+    
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = attack_t::cost();
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    return c;
+  }
 };
 
 // Primal Strike Attack =======================================================
@@ -1034,6 +1039,16 @@ struct primal_strike_t : public shaman_attack_t
   }
 
   virtual void consume_resource() {}
+    
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = attack_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    return c;
+  }
 };
 
 // Stormstrike Attack =======================================================
@@ -1091,6 +1106,15 @@ struct stormstrike_t : public shaman_attack_t
   }
 
   virtual void consume_resource() {}
+
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = attack_t::cost();
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    return c;
+  }
 };
 
 // =========================================================================
@@ -1366,6 +1390,20 @@ struct chain_lightning_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
   virtual void assess_damage( double amount,
                                int    dmg_type )
   {
@@ -1461,8 +1499,11 @@ struct fire_nova_t : public shaman_spell_t
   // Fire Nova doesn't benefit from Elemental Focus
   double cost() SC_CONST
   {
+    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
     double cr = cost_reduction();
     c *= 1.0 - cr;
     if ( c < 0 ) c = 0;
@@ -1595,6 +1636,20 @@ struct lava_burst_t : public shaman_spell_t
 
     return true;
   }
+  
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -1692,6 +1747,20 @@ struct lightning_bolt_t : public shaman_spell_t
       return false;
 
     return true;
+  }
+  
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
   }
 };
 
@@ -1819,6 +1888,19 @@ struct spirit_wolf_spell_t : public shaman_spell_t
     update_ready();
     player -> summon_pet( "spirit_wolf", 45.0 );
   }
+  
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 };
 
 // Thunderstorm Spell ==========================================================
@@ -1913,6 +1995,20 @@ struct earth_shock_t : public shaman_spell_t
 
     return true;
   }
+
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 };
 
 // Flame Shock Spell =======================================================
@@ -1990,6 +2086,20 @@ struct flame_shock_t : public shaman_spell_t
   {
     return 1;
   }
+
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 };
 
 // Frost Shock Spell =======================================================
@@ -2038,6 +2148,20 @@ struct frost_shock_t : public shaman_spell_t
       min_gcd     = 1.0;
     }
   }
+
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 };
 
 // Wind Shear Spell ========================================================
@@ -2062,6 +2186,27 @@ struct wind_shear_t : public shaman_spell_t
     if ( ! sim -> target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
+
+  // does not benefit from elemental focus
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+  
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
+
 };
 
 // =========================================================================
@@ -2111,6 +2256,26 @@ struct fire_elemental_totem_t : public shaman_spell_t
   {
     shaman_spell_t::last_tick();
     player -> dismiss_pet( "fire_elemental" );
+  }
+
+  // doesn't benefit from elemental focus charges
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+    
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
   }
 };
 
@@ -2166,6 +2331,24 @@ struct flametongue_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+    
+  // does not benefit from elemental focus or shamanistic rage
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+  
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Magma Totem Spell =======================================================
@@ -2264,6 +2447,25 @@ struct magma_totem_t : public shaman_spell_t
       return false;
     return shaman_spell_t::ready();
   }
+    
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+  
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Mana Spring Totem Spell ================================================
@@ -2312,6 +2514,24 @@ struct mana_spring_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+
+  // doesn't benefit from elemental focus
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+  
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Mana Tide Totem Spell ==================================================
@@ -2481,6 +2701,26 @@ struct searing_totem_t : public shaman_spell_t
       return false;
     return shaman_spell_t::ready();
   }
+
+  // doesn't benefit from elemental focus
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_shamanistic_rage -> up() )
+      return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Strength of Earth Totem Spell ==============================================
@@ -2521,6 +2761,24 @@ struct strength_of_earth_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+
+  // doesn't benefit from elemental focus or shamanistic rage
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Windfury Totem Spell =====================================================
@@ -2567,6 +2825,24 @@ struct windfury_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+
+  // doesn't benefit from elemental focus or shamanistic rage
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // Wrath of Air Totem Spell =================================================
@@ -2609,6 +2885,24 @@ struct wrath_of_air_totem_t : public shaman_spell_t
   }
 
   virtual double gcd() SC_CONST { return player -> in_combat ? shaman_spell_t::gcd() : 0; }
+
+  // doesn't benefit from elemental focus or shamanistic rage
+  double cost() SC_CONST
+  {
+    shaman_t* p = player -> cast_shaman();
+    double c = spell_t::cost();
+    if ( c == 0 ) return 0;
+    double cr = cost_reduction();
+    c *= 1.0 - cr;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  // doesn't consume elemental focus charges
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+  }
 };
 
 // =========================================================================
@@ -3107,10 +3401,9 @@ void shaman_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_SPIRIT ] = 0;
-
   if ( primary_tree() == TREE_ENHANCEMENT )
   {
+    scales_with[ STAT_SPIRIT ] = 0;
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
   }
