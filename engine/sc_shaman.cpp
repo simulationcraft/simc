@@ -3509,8 +3509,8 @@ void shaman_t::init_actions()
       action_list_str += "/fire_elemental_totem";
       if ( talents.feral_spirit ) action_list_str += "/spirit_wolf";
       action_list_str += "/speed_potion";
-      action_list_str += "/lava_burst,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react&
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react&(dot.flame_shock.remains-cast_time)>=0";
+      action_list_str += "/lava_burst,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react&(dot.flame_shock.remains-cast_time)>=0";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
       if ( talents.stormstrike ) action_list_str += "/stormstrike";
       action_list_str += "/flame_shock,if=!ticking";
       action_list_str += "/earth_shock/searing_totem";
