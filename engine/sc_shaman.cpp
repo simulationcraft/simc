@@ -1527,14 +1527,14 @@ struct lava_burst_t : public shaman_spell_t
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ),
-      maelstrom( 0 ), flame_shock( 0 ), elemental_overload_stats( 0 )
+      flame_shock( 0 ), maelstrom( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "maelstrom",          OPT_INT,  &maelstrom          },
       { "flame_shock",        OPT_BOOL, &flame_shock        },
+      { "maelstrom",          OPT_INT,  &maelstrom          },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2335,7 +2335,6 @@ struct flametongue_totem_t : public shaman_spell_t
   // does not benefit from elemental focus or shamanistic rage
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
@@ -2518,7 +2517,6 @@ struct mana_spring_totem_t : public shaman_spell_t
   // doesn't benefit from elemental focus
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
@@ -2765,7 +2763,6 @@ struct strength_of_earth_totem_t : public shaman_spell_t
   // doesn't benefit from elemental focus or shamanistic rage
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
@@ -2829,7 +2826,6 @@ struct windfury_totem_t : public shaman_spell_t
   // doesn't benefit from elemental focus or shamanistic rage
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
@@ -2889,7 +2885,6 @@ struct wrath_of_air_totem_t : public shaman_spell_t
   // doesn't benefit from elemental focus or shamanistic rage
   double cost() SC_CONST
   {
-    shaman_t* p = player -> cast_shaman();
     double c = spell_t::cost();
     if ( c == 0 ) return 0;
     double cr = cost_reduction();
