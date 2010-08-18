@@ -62,41 +62,38 @@ struct priest_t : public player_t
 
   struct talents_t
   {
-    int  aspiration;
-    int  darkness;
+    int  aspiration; // complete: nothing changed
+    int  darkness; // complete: nothing changed
     int  dispersion;
-    int  divine_fury;
+    int  divine_fury; // complete: nothing changed
     int  focused_will;
-    int  improved_devouring_plague;
+    int  improved_devouring_plague;  // done: Changed burst to talent * 0.15.  open: periodic dmg multiplier
     int  improved_inner_fire;
     int  improved_mind_blast;
     int  improved_shadow_word_pain;
     int  meditation;
     int  mental_agility;
     int  mind_flay;
-    int  mind_melt;
+    int  mind_melt; // done: crit modifier deleted.  open: complete reprogramming of the talent
     int  pain_and_suffering;
     int  penance;
     int  power_infusion;
-    int  shadow_focus;
+    int  shadow_focus; // done: removed base mana cost reduction.  open: hit bonus still there, could be used in twisted_faith
     int  shadow_form;
     int  shadow_power;
     int  surge_of_light;
-    int  twin_disciplines;
+    int  twin_disciplines; // complete: changed value to 0.02
     int  twisted_faith;
     int  vampiric_embrace;
     int  vampiric_touch;
     int  veiled_shadows;
+    int  evangelism; // open: everything
+    int  archangel; // open: everything
+    int  chakra; // open: everything
+    int  state_of_mind; // open: everything
+    int  harnessed_shadows; // open: everything
+    int  shadowy_apparation; // open: everything
 
-    /*
-     * int evangelism
-     * int archangel
-     * int atonement
-     * int chakra
-     * int state_of_mind
-     * int harnessed_shadows
-     * int shadowy_apparation
-     */
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -163,7 +160,7 @@ struct priest_t : public player_t
     constants.shadow_form_value               = 0.15;
     constants.shadow_word_death_power_mod     = 0.429;
     constants.shadow_word_pain_power_mod      = 3.0 / 15.0 * 0.915;
-    constants.twin_disciplines_value          = 0.01;
+    constants.twin_disciplines_value          = 0.02;
     constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
@@ -333,11 +330,7 @@ struct shadow_fiend_pet_t : public pet_t
 
 double priest_spell_t::haste() SC_CONST
 {
-  priest_t* p = player -> cast_priest();
-
-  double h = spell_t::haste();
-
-  return h;
+  return spell_t::haste();
 }
 
 // priest_spell_t::execute ==================================================
@@ -361,7 +354,6 @@ void priest_spell_t::execute()
 
 void priest_spell_t::player_buff()
 {
-  priest_t* p = player -> cast_priest();
 
   spell_t::player_buff();
 
@@ -434,7 +426,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     background = true;
     may_crit   = true;
 
-    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.1;
+    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.15;
 
     direct_power_mod  = p -> constants.devouring_plague_power_mod;
 
@@ -503,7 +495,6 @@ struct devouring_plague_t : public priest_spell_t
                                 p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value +
                                 p -> set_bonus.tier8_2pc_caster()      * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
-    base_crit        += p -> talents.mind_melt * 0.03;
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> talents.improved_devouring_plague )
@@ -674,8 +665,6 @@ struct fortitude_t : public priest_spell_t
   fortitude_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "fortitude", player, SCHOOL_HOLY, TREE_DISCIPLINE ), bonus( 0 )
   {
-    priest_t* p = player -> cast_priest();
-
     trigger_gcd = 0;
 
     bonus = util_t::ability_rank( player -> level,  165.0,80,  79.0,70,  54.0,0 );
@@ -821,7 +810,6 @@ struct mind_blast_t : public priest_spell_t
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit         += p -> talents.shadow_focus * 0.01;
-    base_crit        += p -> talents.mind_melt * 0.02;
 
     base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
@@ -888,7 +876,6 @@ struct mind_flay_tick_t : public priest_spell_t
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
                                 p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
-    base_crit        += p -> talents.mind_melt * 0.02;
 
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
@@ -1087,7 +1074,6 @@ struct mind_nuke_t : public priest_spell_t
     direct_power_mod  = p -> constants.mind_nuke_power_mod;
     base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
                                 p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
-    base_crit        += p -> talents.mind_melt * 0.02;
 
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
@@ -1483,7 +1469,6 @@ struct shadow_word_pain_t : public priest_spell_t
                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
                                p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
     base_hit  += p -> talents.shadow_focus * 0.01;
-    base_crit += p -> talents.mind_melt * 0.03;
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
@@ -1500,7 +1485,6 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual bool ready()
   {
-    priest_t* p = player -> cast_priest();
 
     return priest_spell_t::ready();
   }
@@ -1675,7 +1659,6 @@ struct vampiric_touch_t : public priest_spell_t
     base_cost        = floor( base_cost );
     base_multiplier *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
     base_hit        += p -> talents.shadow_focus * 0.01;
-    base_crit       += p -> talents.mind_melt * 0.03;
     base_crit       += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
@@ -2217,22 +2200,22 @@ std::vector<talent_translation_t>& priest_t::get_talent_list()
     { {  1, 0, NULL                                       }, {  1, 0, NULL                              }, {  1, 3, &( talents.darkness )                  } },
     { {  2, 3, &( talents.twin_disciplines )              }, {  2, 0, NULL                              }, {  2, 2, &( talents.improved_shadow_word_pain ) } },
     { {  3, 3, &( talents.mental_agility )                }, {  3, 3, &( talents.divine_fury )          }, {  3, 2, &( talents.veiled_shadows )            } },
-    { {  4, 0, NULL /* Evangelism */                      }, {  4, 0, NULL                              }, {  4, 0, NULL                                   } },
-    { {  5, 0, NULL /* Archangel */                       }, {  5, 0, NULL                              }, {  5, 3, &( talents.improved_mind_blast )       } },
+    { {  4, 2, &( talents.evangelism )                    }, {  4, 0, NULL                              }, {  4, 0, NULL                                   } },
+    { {  5, 1, &( talents.archangel )                     }, {  5, 0, NULL                              }, {  5, 3, &( talents.improved_mind_blast )       } },
     { {  6, 3, &( talents.improved_inner_fire )           }, {  6, 0, NULL                              }, {  6, 2, &( talents.improved_devouring_plague ) } },
     { {  7, 0, NULL                                       }, {  7, 0, NULL                              }, {  7, 2, &( talents.twisted_faith )             } },
     { {  8, 0, NULL                                       }, {  8, 0, NULL                              }, {  8, 1, &( talents.shadow_form )               } },
     { {  9, 1, &( talents.power_infusion )                }, {  9, 2, &( talents.surge_of_light )       }, {  9, 0, NULL                                   } },
-    { { 10, 0, NULL /* Atonement */                       }, { 10, 0, NULL                              }, { 10, 0, NULL /* Harnessed Shadows */           } },
+    { { 10, 0, NULL                                       }, { 10, 0, NULL                              }, { 10, 2, &( talents.harnessed_shadows )         } },
     { { 11, 0, NULL                                       }, { 11, 0, NULL                              }, { 11, 0, NULL                                   } },
     { { 12, 0, NULL                                       }, { 12, 0, NULL                              }, { 12, 1, &( talents.vampiric_embrace )          } },
     { { 13, 0, NULL                                       }, { 13, 0, NULL                              }, { 13, 2, &( talents.mind_melt )                 } },
     { { 14, 2, &( talents.aspiration )                    }, { 14, 0, NULL                              }, { 14, 2, &( talents.pain_and_suffering )        } },
-    { { 15, 0, NULL                                       }, { 15, 0, NULL /* Chakra */                 }, { 15, 1, &( talents.vampiric_touch )            } },
+    { { 15, 0, NULL                                       }, { 15, 1, &( talents.chakra )               }, { 15, 1, &( talents.vampiric_touch )            } },
     { { 16, 0, NULL                                       }, { 16, 0, NULL                              }, { 16, 0, NULL                                   } },
     { { 17, 2, &( talents.focused_will )                  }, { 17, 0, NULL                              }, { 17, 0, NULL                                   } },
     { { 18, 0, NULL                                       }, { 18, 0, NULL                              }, { 18, 0, NULL                                   } },
-    { { 19, 0, NULL                                       }, { 19, 0, NULL /* State of Mind */          }, { 19, 0, NULL /* Shadowy Apparation */          } },
+    { { 19, 0, NULL                                       }, { 19, 2, &( talents.state_of_mind )        }, { 19, 3, &( talents.shadowy_apparation )        } },
     { { 20, 0, NULL                                       }, { 20, 0, NULL                              }, { 20, 1, &( talents.dispersion )                } },
     { {  0, 0, NULL                                       }, {  0, 0, NULL                              }, {  0, 0, NULL                                   } }
   };
@@ -2277,6 +2260,12 @@ std::vector<option_t>& priest_t::get_options()
       { "vampiric_embrace",                         OPT_INT,    &( talents.vampiric_embrace                   ) },
       { "vampiric_touch",                           OPT_INT,    &( talents.vampiric_touch                     ) },
       { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
+      { "evangelism",                               OPT_INT,    &( talents.evangelism                         ) },
+      { "archangel",                                OPT_INT,    &( talents.archangel                          ) },
+      { "chakra",                                   OPT_INT,    &( talents.chakra                             ) },
+      { "state_of_mind",                            OPT_INT,    &( talents.state_of_mind                      ) },
+      { "harnessed_shadows",                        OPT_INT,    &( talents.harnessed_shadows                  ) },
+      { "shadowy_apparation",                       OPT_INT,    &( talents.shadowy_apparation                 ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
       { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
       { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
@@ -2426,9 +2415,6 @@ void player_t::priest_init( sim_t* sim )
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
-
-  target_t* t = sim -> target;
-
 }
 
 // player_t::priest_combat_begin =============================================
@@ -2443,7 +2429,4 @@ void player_t::priest_combat_begin( sim_t* sim )
       if ( sim -> overrides.divine_spirit ) p -> buffs.divine_spirit -> override( 1, 80.0 );
     }
   }
-
-  target_t* t = sim -> target;
-
 }
