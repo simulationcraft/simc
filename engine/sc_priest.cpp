@@ -19,6 +19,7 @@ struct priest_t : public player_t
   buff_t* buffs_shadow_form;
   buff_t* buffs_surge_of_light;
   buff_t* buffs_vampiric_embrace;
+  buff_t* buffs_mind_melt;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -66,14 +67,14 @@ struct priest_t : public player_t
     int  darkness; // complete: nothing changed
     int  dispersion; // complete: nothing changed
     int  divine_fury; // complete: nothing changed
-    int  improved_devouring_plague;  // done: Changed burst to talent * 0.15.  open: periodic dmg multiplier
+    int  improved_devouring_plague;  // complete: Changed burst to talent * 0.15 and removed dmg multiplier
     int  improved_inner_fire; // complete: nothing changed
     int  improved_mind_blast; // complete: nothing changed
     int  improved_shadow_word_pain; // complete: nothing changed
     int  meditation; // should be implemented somewhere globaly
     int  mental_agility; // complete: nothing changed
     int  mind_flay;
-    int  mind_melt; // done: crit modifier deleted.  open: complete reprogramming of the talent
+    int  mind_melt; // complete: crit modifier deleted.  added buff_mind_melt and modified sw:death
     int  pain_and_suffering; // complete: changed to 0.3 probability
     int  penance;
     int  power_infusion;
@@ -117,7 +118,6 @@ struct priest_t : public player_t
   {
     double darkness_value;
     double devouring_plague_power_mod;
-    double improved_devouring_plague_value;
     double improved_shadow_word_pain_value;
     double mind_blast_power_mod;
     double mind_flay_power_mod;
@@ -151,7 +151,6 @@ struct priest_t : public player_t
 
     constants.darkness_value                  = 0.02;
     constants.devouring_plague_power_mod      = 3.0 / 15.0 * 0.925;
-    constants.improved_devouring_plague_value = 0.05;
     constants.improved_shadow_word_pain_value = 0.03;
     constants.mind_blast_power_mod            = 0.429;
     constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
@@ -430,8 +429,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     direct_power_mod  = p -> constants.devouring_plague_power_mod;
 
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
-                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
-                                p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value );
+                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
 
     base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
 
@@ -491,7 +489,6 @@ struct devouring_plague_t : public priest_spell_t
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
                                 p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
-                                p -> talents.improved_devouring_plague * p -> constants.improved_devouring_plague_value +
                                 p -> set_bonus.tier8_2pc_caster()      * 0.15 );
     base_hit         += p -> talents.shadow_focus * 0.01;
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
@@ -822,6 +819,7 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
+    player -> cast_priest() -> buffs_mind_melt -> expire();
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
@@ -835,6 +833,14 @@ struct mind_blast_t : public priest_spell_t
 	      p -> trigger_replenishment();
       }
     }
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+    double a = priest_spell_t::execute_time();
+    a *= 1 - (p -> buffs_mind_melt -> stack() * 0.5);
+    return a;
   }
 
   virtual void player_buff()
@@ -974,7 +980,7 @@ struct mind_flay_t : public priest_spell_t
         num_ticks = 2;
       }
     }
-
+	priest_spell_t::execute();
 
   }
 
@@ -1068,6 +1074,9 @@ struct mind_spike_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
+
+
+    	      p -> buffs_mind_melt  -> trigger( 1, 1.0 );
 
     // Not sure if the glyph works here
       if ( result == RESULT_CRIT )
@@ -1344,6 +1353,13 @@ struct shadow_word_death_t : public priest_spell_t
         player_multiplier *= 1.1;
       }
     }
+    if ( p -> talents.mind_melt )
+       {
+         if ( sim -> target -> health_percentage() <= 25 )
+         {
+           player_multiplier *= 1.3;
+         }
+       }
   }
 
   virtual bool ready()
@@ -1927,6 +1943,7 @@ void priest_t::init_buffs()
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                               );
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
+  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                                                );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
@@ -2214,7 +2231,6 @@ std::vector<option_t>& priest_t::get_options()
       // @option_doc loc=player/priest/coefficients title="Coefficients"
       { "const.darkness_value",                     OPT_FLT,    &( constants.darkness_value                   ) },
       { "const.devouring_plague_power_mod",         OPT_FLT,    &( constants.devouring_plague_power_mod       ) },
-      { "const.improved_devouring_plague_value",    OPT_FLT,    &( constants.improved_devouring_plague_value  ) },
       { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
       { "const.mind_blast_power_mod",               OPT_FLT,    &( constants.mind_blast_power_mod             ) },
       { "const.mind_flay_power_mod",                OPT_FLT,    &( constants.mind_flay_power_mod              ) },
