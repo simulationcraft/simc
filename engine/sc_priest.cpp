@@ -20,6 +20,7 @@ struct priest_t : public player_t
   buff_t* buffs_surge_of_light;
   buff_t* buffs_vampiric_embrace;
   buff_t* buffs_mind_melt;
+  buff_t* buffs_dark_evangelism;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -78,12 +79,10 @@ struct priest_t : public player_t
     int  pain_and_suffering; // complete: changed to 0.3 probability
     int  penance;
     int  power_infusion;
-    int  shadow_focus; // done: removed base mana cost reduction.  open: hit bonus still there, could be used in twisted_faith
     int  shadow_form; // open: needs to be redone completly
-    int  shadow_power;
     int  surge_of_light; // open: remove flash heal, add holy nova
     int  twin_disciplines; // complete: changed value to 0.02
-    int  twisted_faith; // open: needs to be redone completly
+    int  twisted_faith; // open: needs to be redone completly, should be done globaly, one function for the 2x1% hit, another for the 50%/100% spirit -> hit_rating. And only for shadow school.
     int  vampiric_embrace; // complete: nothing changed
     int  vampiric_touch; // complete: nothing changed
     int  veiled_shadows; // complete: nothing changed
@@ -220,6 +219,7 @@ struct priest_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
+  virtual void   target_debuff( int dmg_type );
   virtual void   assess_damage( double amount, int dmg_type );
 };
 
@@ -352,12 +352,29 @@ void priest_spell_t::execute()
 
 void priest_spell_t::player_buff()
 {
-
+	priest_t* p = player -> cast_priest();
   spell_t::player_buff();
+  if ( school == SCHOOL_SHADOW )
+  {
 
+  player_hit += p -> talents.twisted_faith * 0.01;
 
+  }
 }
 
+void priest_spell_t::target_debuff( int dmg_type )
+{
+	priest_t* p = player -> cast_priest();
+	spell_t::target_debuff( dmg_type );
+		  if ( school == SCHOOL_SHADOW )
+		    {
+			  if ( dmg_type == DMG_OVER_TIME )
+			    {
+				  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * 0.01;
+			    }
+
+		    }
+}
 // priest_spell_t::assess_damage =============================================
 
 void priest_spell_t::assess_damage( double amount,
@@ -433,7 +450,6 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
 
-    base_hit += p -> talents.shadow_focus * 0.01;
 
     // This helps log file and decouples the sooth RNG from the ticks.
     name_str = "devouring_plague_burst";
@@ -485,12 +501,10 @@ struct devouring_plague_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 8;
     tick_power_mod    = p -> constants.devouring_plague_power_mod;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) + p -> talents.shadow_focus * 0.02 );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
-                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
-                                p -> set_bonus.tier8_2pc_caster()      * 0.15 );
-    base_hit         += p -> talents.shadow_focus * 0.01;
+                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> talents.improved_devouring_plague )
@@ -801,18 +815,12 @@ struct mind_blast_t : public priest_spell_t
     may_crit          = true;
     direct_power_mod  = p -> constants.mind_blast_power_mod;
 
-    base_cost        *= 1.0 - ( p -> talents.shadow_focus * 0.02 +
-                                p -> set_bonus.tier7_2pc_caster() * 0.10 );
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
-    base_hit         += p -> talents.shadow_focus * 0.01;
-
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
 
     cooldown -> duration  = 8.0;
     cooldown -> duration -= p -> talents.improved_mind_blast * 0.5;
 
-    if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.10;
   }
 
   virtual void execute()
@@ -878,13 +886,8 @@ struct mind_flay_tick_t : public priest_spell_t
     may_crit          = true;
     direct_tick       = true;
     direct_power_mod  = p -> constants.mind_flay_power_mod;
-    base_hit         += p -> talents.shadow_focus * 0.01;
     base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
                                 p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
-
-    if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
-
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
   }
 
   virtual void execute()
@@ -960,9 +963,7 @@ struct mind_flay_t : public priest_spell_t
     }
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
-    base_cost *= 1.0 - ( p -> talents.shadow_focus * 0.02 );
     base_cost  = floor( base_cost );
-    base_hit  += p -> talents.shadow_focus * 0.01;
 
     mind_flay_tick = new mind_flay_tick_t( p );
 
@@ -973,6 +974,7 @@ struct mind_flay_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
+    p -> buffs_dark_evangelism  -> trigger( 1, 0.4 );
     if ( cut_for_mb )
     {
       if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
@@ -1060,7 +1062,6 @@ struct mind_spike_t : public priest_spell_t
     may_crit          = true;
 
     base_cost  = floor( base_cost );
-    base_hit  += p -> talents.shadow_focus * 0.01;
 
     direct_power_mod  = p -> constants.mind_spike_power_mod;
     base_multiplier  *= 1.0 + ( p -> talents.darkness         * p -> constants.darkness_value +
@@ -1074,11 +1075,8 @@ struct mind_spike_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
+      p -> buffs_mind_melt  -> trigger( 1, 1.0 );
 
-
-    	      p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-
-    // Not sure if the glyph works here
       if ( result == RESULT_CRIT )
       {
    	    p -> buffs_glyph_of_shadow -> trigger();
@@ -1316,16 +1314,11 @@ struct shadow_word_death_t : public priest_spell_t
     cooldown -> duration = 12.0;
 
     direct_power_mod  = p -> constants.shadow_word_death_power_mod;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
-                                p -> talents.shadow_focus * 0.02 );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
     base_multiplier  *= 1.0 + p -> talents.darkness         * p -> constants.darkness_value +
                               p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
-    base_hit         += p -> talents.shadow_focus * 0.01;
 
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 0.20;
-
-    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.1;
   }
 
   virtual void execute()
@@ -1418,13 +1411,11 @@ struct shadow_word_pain_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 6;
     tick_power_mod    = p -> constants.shadow_word_pain_power_mod;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
-                                p -> talents.shadow_focus    * 0.02 );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
 
     base_multiplier *= 1.0 + ( p -> talents.darkness                  * p -> constants.darkness_value +
                                p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
                                p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
-    base_hit  += p -> talents.shadow_focus * 0.01;
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
@@ -1611,10 +1602,8 @@ struct vampiric_touch_t : public priest_spell_t
     num_ticks         = 5;
     tick_power_mod    = p -> constants.vampiric_touch_power_mod;
 
-    base_cost       *= 1.0 - p -> talents.shadow_focus * 0.02;
     base_cost        = floor( base_cost );
     base_multiplier *= 1.0 + p -> talents.darkness * p -> constants.darkness_value;
-    base_hit        += p -> talents.shadow_focus * 0.01;
     base_crit       += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
@@ -1671,8 +1660,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     harmful = false;
     cooldown -> duration  = 300.0;
     cooldown -> duration -= 60.0 * p -> talents.veiled_shadows;
-    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) +
-                         p -> talents.shadow_focus * 0.02 );
+    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
     base_cost  = floor( base_cost );
   }
 
@@ -1944,6 +1932,7 @@ void priest_t::init_buffs()
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
   buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                                                );
+  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0,0,0.4                                             );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
@@ -2205,9 +2194,7 @@ std::vector<option_t>& priest_t::get_options()
       { "pain_and_suffering",                       OPT_INT,    &( talents.pain_and_suffering                 ) },
       { "penance",                                  OPT_INT,    &( talents.penance                            ) },
       { "power_infusion",                           OPT_INT,    &( talents.power_infusion                     ) },
-      { "shadow_focus",                             OPT_INT,    &( talents.shadow_focus                       ) },
       { "shadow_form",                              OPT_INT,    &( talents.shadow_form                        ) },
-      { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
       { "surge_of_light",                           OPT_INT,    &( talents.surge_of_light                     ) },
       { "twin_disciplines",                         OPT_INT,    &( talents.twin_disciplines                   ) },
       { "twisted_faith",                            OPT_INT,    &( talents.twisted_faith                      ) },
