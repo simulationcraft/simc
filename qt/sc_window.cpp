@@ -66,7 +66,6 @@ static OptionEntry* getDebuffOptions()
       { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                    },
       { "Spell Critical Strike",  "override.improved_scorch",       "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
-      { "Spell Hit",              "override.misery",                "Improved Faerie Fire\nMisery"                                     },
       { NULL, NULL, NULL }
     };
   return options;

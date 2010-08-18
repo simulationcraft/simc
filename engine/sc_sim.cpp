@@ -1241,7 +1241,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.mangle                 = optimal_raid;
   overrides.mark_of_the_wild       = optimal_raid;
   overrides.master_poisoner        = optimal_raid;
-  overrides.misery                 = optimal_raid;
   overrides.moonkin_aura           = optimal_raid;
   overrides.poisoned               = optimal_raid;
   overrides.rampage                = optimal_raid;
@@ -1527,7 +1526,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
       { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
       { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
-      { "override.misery",                  OPT_BOOL,   &( overrides.misery                         ) },
       { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
       { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
       { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },

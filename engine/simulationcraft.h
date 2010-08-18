@@ -986,7 +986,6 @@ struct sim_t
     int mangle;
     int mark_of_the_wild;
     int master_poisoner;
-    int misery;
     int moonkin_aura;
     int poisoned;
     int rampage;
@@ -1906,7 +1905,6 @@ struct target_t
     debuff_t* judgement_of_wisdom;
     debuff_t* judgements_of_the_just;
     debuff_t* mangle;
-    debuff_t* misery;
     debuff_t* scorpid_sting;
     debuff_t* slow;
     debuff_t* sunder_armor;
