@@ -21,6 +21,7 @@ struct priest_t : public player_t
   buff_t* buffs_vampiric_embrace;
   buff_t* buffs_mind_melt;
   buff_t* buffs_dark_evangelism;
+  buff_t* buffs_shadow_orb;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -68,7 +69,7 @@ struct priest_t : public player_t
     int  darkness; // complete: nothing changed
     int  dispersion; // complete: nothing changed
     int  divine_fury; // complete: nothing changed
-    int  improved_devouring_plague;  // complete: Changed burst to talent * 0.15 and removed dmg multiplier
+    int  improved_devouring_plague;  // complete: Changed burst to talent * 0.15 and removed dot dmg multiplier
     int  improved_inner_fire; // complete: nothing changed
     int  improved_mind_blast; // complete: nothing changed
     int  improved_shadow_word_pain; // complete: nothing changed
@@ -79,10 +80,10 @@ struct priest_t : public player_t
     int  pain_and_suffering; // complete: changed to 0.3 probability
     int  penance;
     int  power_infusion; // complete: nothing changed
-    int  shadow_form; // open: needs to be redone completly
+    int  shadow_form; // done: removed dot haste scaling, removed crit multiplier open: 5% haste aura
     int  surge_of_light; // open: remove flash heal, add holy nova
     int  twin_disciplines; // complete: changed value to 0.02
-    int  twisted_faith; // done: static 1%/2% hit, open: 50%/100% * spirit() -> hit_rating
+    int  twisted_faith; // done: removed old scaling, added static 1%/2% hit, open: constants.twisted_faith_dynamic_value * spirit() -> hit_rating
     int  vampiric_embrace; // complete: nothing changed
     int  vampiric_touch; // complete: nothing changed
     int  veiled_shadows; // complete: nothing changed
@@ -92,8 +93,8 @@ struct priest_t : public player_t
     int  state_of_mind; // open: everything
     int  harnessed_shadows; // open: everything
     int  shadowy_apparation; // open: everything
-    int  blackouts; // "Increases the critical strike damage of your shadow spells by 100%"
-    int  shadow_power; // "Spell damage increased by 25%"
+    int  blackouts; // done: talent function open: link with main talent tree
+    int  shadow_power; // done: talent function open: link with main talent tree
 
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
@@ -129,6 +130,13 @@ struct priest_t : public player_t
     double twin_disciplines_value;
     double vampiric_touch_power_mod;
     double shadow_power_value;
+    double dark_evangelism_value;
+    double twisted_faith_static_value;
+    double twisted_faith_dynamic_value;
+    double shadow_orb_proc_value;
+    double shadow_orb_damage_value;
+    double harnessed_shadows_value;
+
     constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
   };
   constants_t constants;
@@ -136,18 +144,13 @@ struct priest_t : public player_t
   bool   use_shadow_word_death;
   int    use_mind_blast;
   int    recast_mind_blast;
-  int    hasted_devouring_plague;
-  int    hasted_shadow_word_pain;
-  int    hasted_vampiric_touch;
 
   priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
   {
     use_shadow_word_death    = false;
     use_mind_blast           = 1;
     recast_mind_blast        = 0;
-    hasted_devouring_plague  = -1;
-    hasted_shadow_word_pain  = -1;
-    hasted_vampiric_touch    = -1;
+
 
     max_mana_cost = 0.0;
 
@@ -156,13 +159,19 @@ struct priest_t : public player_t
     constants.improved_shadow_word_pain_value = 0.03;
     constants.mind_blast_power_mod            = 0.429;
     constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
-    constants.mind_spike_power_mod            = 1.5 / 3.5; // Assumed
+    constants.mind_spike_power_mod            = 1.5 / 3.5;
     constants.shadow_form_value               = 0.15;
     constants.shadow_word_death_power_mod     = 0.429;
     constants.shadow_word_pain_power_mod      = 3.0 / 15.0 * 0.915;
     constants.twin_disciplines_value          = 0.02;
     constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
     constants.shadow_power_value			  = 0.15;
+    constants.dark_evangelism_value			  = 0.01;
+    constants.twisted_faith_static_value	  = 0.01;
+    constants.twisted_faith_dynamic_value	  = 0.5;
+    constants.shadow_orb_proc_value           = 0.1;
+    constants.shadow_orb_damage_value         = 0.2;
+    constants.harnessed_shadows_value         = 0.04;
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
     cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -363,9 +372,8 @@ void priest_spell_t::player_buff()
   if ( school == SCHOOL_SHADOW )
   {
 
-  player_hit += p -> talents.twisted_faith * 0.01;
+  player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 
-  //base_crit_bonus_multiplier *= 1.0 + p -> talents.blackouts * 1.0;
   }
 }
 
@@ -380,10 +388,10 @@ void priest_spell_t::target_debuff( int dmg_type )
 		    {
 			  if ( dmg_type == DMG_OVER_TIME )
 			    {
-				  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * 0.01;
+				  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
 			    }
 			  target_multiplier *= 1.0 + p -> talents.darkness                  * p -> constants.darkness_value;
-
+			  target_crit_bonus_multiplier *= 1.0 + p -> talents.blackouts * 1.0;
 		    }
 }
 // priest_spell_t::assess_damage =============================================
@@ -524,7 +532,6 @@ struct devouring_plague_t : public priest_spell_t
 
   virtual void execute()
   {
-    priest_t* p = player -> cast_priest();
     tick_may_crit = true;
     base_crit_bonus_multiplier = 1.0;
     priest_spell_t::execute();
@@ -820,6 +827,7 @@ struct mind_blast_t : public priest_spell_t
     base_execute_time = 1.5;
     may_crit          = true;
     direct_power_mod  = p -> constants.mind_blast_power_mod;
+    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
 
     base_cost         = floor( base_cost );
 
@@ -837,6 +845,10 @@ struct mind_blast_t : public priest_spell_t
     {
       p -> recast_mind_blast = 0;
       p -> buffs_devious_mind -> trigger();
+      p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+
+
+      player -> cast_priest() -> buffs_shadow_orb -> expire();
       if ( result == RESULT_CRIT )
       {
         p -> buffs_glyph_of_shadow -> trigger();
@@ -856,15 +868,7 @@ struct mind_blast_t : public priest_spell_t
     return a;
   }
 
-  virtual void player_buff()
-  {
-    priest_spell_t::player_buff();
-    priest_t* p = player -> cast_priest();
-    if ( p -> talents.twisted_faith )
-    {
-      if ( p -> dots_shadow_word_pain -> ticking() ) player_multiplier *= 1.0 + p -> talents.twisted_faith * 0.02;
-    }
-  }
+
 };
 
 // Mind Flay Spell ============================================================
@@ -914,12 +918,6 @@ struct mind_flay_tick_t : public priest_spell_t
    	    p -> buffs_glyph_of_shadow -> trigger();
       }
     }
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-    priest_spell_t::player_buff();
   }
 };
 
@@ -971,6 +969,11 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     p -> buffs_dark_evangelism  -> trigger( 1, 0.4 );
+    if ( result_is_hit() )
+    {
+        p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+
+    }
     if ( cut_for_mb )
     {
       if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
@@ -1061,6 +1064,7 @@ struct mind_spike_t : public priest_spell_t
 
     direct_power_mod  = p -> constants.mind_spike_power_mod;
     base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
+    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
 
   }
 
@@ -1071,7 +1075,7 @@ struct mind_spike_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-
+      player -> cast_priest() -> buffs_shadow_orb -> expire();
       if ( result == RESULT_CRIT )
       {
    	    p -> buffs_glyph_of_shadow -> trigger();
@@ -1416,20 +1420,18 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual void execute()
   {
-    priest_t* p = player -> cast_priest();
+	priest_t* p = player -> cast_priest();
     tick_may_crit = true;
     base_crit_bonus_multiplier = 1.0;
     priest_spell_t::execute();
+    if ( result_is_hit() )
+        {
+			p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+        }
 
   }
 
-  virtual bool ready()
-  {
-
-    return priest_spell_t::ready();
-  }
-
-  virtual void tick()
+virtual void tick()
   {
     priest_t* p = player -> cast_priest();
 
@@ -1440,12 +1442,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual int scale_ticks_with_haste() SC_CONST
   {
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> hasted_shadow_word_pain == 0 )
       return 0;
-
-    return ( ( p -> hasted_shadow_word_pain > 0 ) );
   }
 
   virtual void refresh_duration()
@@ -1866,7 +1863,6 @@ void priest_t::init_base()
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
 
-  initial_spell_power_per_spirit = ( talents.twisted_faith      * 0.04 );
 
   base_attack_power = -10;
 
@@ -1919,6 +1915,7 @@ void priest_t::init_buffs()
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
   buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                                                );
   buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0,0,0.4                                             );
+  buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                                                  );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
@@ -2218,9 +2215,6 @@ std::vector<option_t>& priest_t::get_options()
       // @option_doc loc=player/priest/misc title="Misc"
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
       { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
-      { "hasted_devouring_plague",                  OPT_INT,    &( hasted_devouring_plague                    ) },
-      { "hasted_shadow_word_pain",                  OPT_INT,    &( hasted_shadow_word_pain                    ) },
-      { "hasted_vampiric_touch",                    OPT_INT,    &( hasted_vampiric_touch                      ) },
       { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2241,8 +2235,7 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
   {
     std::string temp_str;
     if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
-    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) || ( hasted_devouring_plague != -1 ) ||
-         ( hasted_shadow_word_pain != -1 ) || ( hasted_vampiric_touch != -1 ) )
+    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) )
     {
       profile_str += "## Variables\n";
     }
@@ -2254,21 +2247,6 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
     { 
       temp_str = util_t::to_string( use_mind_blast );
       profile_str += "use_mind_blast=" + temp_str + "\n"; 
-    }
-    if ( hasted_devouring_plague != -1 ) 
-    { 
-      temp_str = util_t::to_string( hasted_devouring_plague );
-      profile_str += "hasted_devouring_plague=" + temp_str + "\n"; 
-    }
-    if ( hasted_shadow_word_pain != -1 ) 
-    { 
-      temp_str = util_t::to_string( hasted_shadow_word_pain );
-      profile_str += "hasted_shadow_word_pain=" + temp_str + "\n"; 
-    }
-    if ( hasted_vampiric_touch != -1 ) 
-    { 
-      temp_str = util_t::to_string( hasted_vampiric_touch );
-      profile_str += "hasted_vampiric_touch=" + temp_str + "\n"; 
     }
   }
 
