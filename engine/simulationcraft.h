@@ -1025,6 +1025,7 @@ struct sim_t
     aura_t* leader_of_the_pack;
     aura_t* mana_spring_totem;
     aura_t* moonkin;
+    aura_t* mind_quickening;
     aura_t* rampage;
     aura_t* sanctified_retribution;
     aura_t* strength_of_earth;

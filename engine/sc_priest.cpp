@@ -34,6 +34,9 @@ struct priest_t : public player_t
   dot_t* dots_devouring_plague;
   dot_t* dots_holy_fire;
 
+  // Debuffs
+  debuff_t* debuffs_mind_spike;
+
   // Gains
   gain_t* gains_devious_mind;
   gain_t* gains_dispersion;
@@ -75,17 +78,17 @@ struct priest_t : public player_t
     int  improved_inner_fire; //		complete: nothing changed
     int  improved_mind_blast; // 		complete: nothing changed
     int  improved_shadow_word_pain; // 	complete: nothing changed
-    int  meditation; // 				complete
+    int  meditation; // 				done: talent function
     int  mental_agility; // 														open: better implementation
     int  mind_flay;
     int  mind_melt; // 					complete: crit modifier deleted.  added buff_mind_melt and modified sw:death
     int  pain_and_suffering; // 		complete: changed to 0.3 probability
     int  penance;
     int  power_infusion; // 			complete: nothing changed
-    int  shadow_form; // 				done: removed dot haste, removed crit mult.	open: 5% haste aura
+    int  shadow_form; // 				complete
     int  surge_of_light; // 														open: remove flash heal, add holy nova
-    int  twin_disciplines; // 			complete: changed value to 0.02				open: better implementation
-    int  twisted_faith; // 				done: added static 1%/2% hit, 				open: constants.twisted_faith_dynamic_value * spirit() -> hit_rating
+    int  twin_disciplines; // 			complete
+    int  twisted_faith; // 				complete
     int  vampiric_embrace; // 			complete: nothing changed
     int  vampiric_touch; // 			complete: nothing changed
     int  veiled_shadows; // 			complete: nothing changed
@@ -123,6 +126,7 @@ struct priest_t : public player_t
   {
     double darkness_value;
     double devouring_plague_power_mod;
+    double devouring_plague_health_mod;
     double improved_shadow_word_pain_value;
     double mind_blast_power_mod;
     double mind_flay_power_mod;
@@ -141,6 +145,8 @@ struct priest_t : public player_t
     double harnessed_shadows_value;
     double dark_archangel_value;
     double archangel_mana_value;
+    double mind_spike_crit_value;
+    double pain_and_suffering_value;
 
     constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
   };
@@ -161,6 +167,7 @@ struct priest_t : public player_t
 
     constants.darkness_value                  = 0.02;
     constants.devouring_plague_power_mod      = 3.0 / 15.0 * 0.925;
+    constants.devouring_plague_health_mod	  = 0.15;
     constants.improved_shadow_word_pain_value = 0.03;
     constants.mind_blast_power_mod            = 0.429;
     constants.mind_flay_power_mod             = 1.0 / 3.5 * 0.9;
@@ -179,6 +186,8 @@ struct priest_t : public player_t
     constants.harnessed_shadows_value         = 0.04;
     constants.dark_archangel_value			  = 0.03;
     constants.archangel_mana_value			  = 0.03;
+    constants.mind_spike_crit_value			  = 0.3;
+    constants.pain_and_suffering_value		  = 0.3;
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
     cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -187,6 +196,7 @@ struct priest_t : public player_t
     dots_vampiric_touch   = get_dot( "vampiric_touch" );
     dots_devouring_plague = get_dot( "devouring_plague" );
     dots_holy_fire        = get_dot( "holy_fire" );
+
   }
 
   // Character Definition
@@ -578,7 +588,8 @@ struct devouring_plague_t : public priest_spell_t
   virtual void tick()
   {
     priest_spell_t::tick();
-    player -> resource_gain( RESOURCE_HEALTH, tick_dmg * 0.15 );
+    priest_t* p = player -> cast_priest();
+    player -> resource_gain( RESOURCE_HEALTH, tick_dmg * p -> constants.devouring_plague_health_mod );
   }
 
   virtual void target_debuff( int dmg_type )
@@ -866,6 +877,7 @@ struct mind_blast_t : public priest_spell_t
     direct_power_mod  = p -> constants.mind_blast_power_mod;
     base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
 
+
     base_cost         = floor( base_cost );
 
     cooldown -> duration  = 8.0;
@@ -873,12 +885,21 @@ struct mind_blast_t : public priest_spell_t
 
   }
 
+  virtual void target_debuff( int dmg_type)
+  {
+	  //target_t* t = sim -> target;
+	  //priest_t* p = player -> cast_priest();
+	  //if ( t -> debuffs.mind_spike -> up() ) target_crit_bonus_multiplier *= 1.0 + t -> debuffs_mind_spike -> stack() * p -> constants.mind_spike_crit_value;
+  }
+
   virtual void execute()
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
     player -> cast_priest() -> buffs_mind_melt -> expire();
-    if ( result_is_hit() )
+
+    //player -> cast_priest() -> debuffs_mind_spike -> expire();
+     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
       p -> buffs_devious_mind -> trigger();
@@ -944,7 +965,7 @@ struct mind_flay_tick_t : public priest_spell_t
     {
       if ( p -> dots_shadow_word_pain -> ticking() )
       {
-        if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * ( 0.3 ) ) )
+        if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * p -> constants.pain_and_suffering_value ) )
         {
           p -> dots_shadow_word_pain -> action -> refresh_duration();
         }
@@ -1109,6 +1130,8 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
+    p -> debuffs_mind_spike -> trigger( 1 , 1.0, 1.0 );
+
     if ( result_is_hit() )
     {
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
@@ -1145,7 +1168,7 @@ struct penance_tick_t : public priest_spell_t
   penance_tick_t( player_t* player ) :
       priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
-    priest_t* p = player -> cast_priest();
+
 
     static rank_t ranks[] =
     {
@@ -1301,7 +1324,7 @@ struct shadow_form_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_shadow_form -> trigger();
-    sim -> auras.moonkin -> trigger();
+    sim -> auras.mind_quickening -> trigger();
   }
 
   virtual bool ready()
@@ -1345,7 +1368,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     may_crit = true;
     base_execute_time = 0;
-    cooldown -> duration = 12.0;
+    cooldown -> duration = 10.0;
 
     direct_power_mod  = p -> constants.shadow_word_death_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
@@ -2416,20 +2439,22 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race
 
 void player_t::priest_init( sim_t* sim )
 {
-	  sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
+	  //sim -> auras.mind_quickening            = new aura_t( sim, "mind_quickening" );
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
+
+
 }
 
 // player_t::priest_combat_begin =============================================
 
 void player_t::priest_combat_begin( sim_t* sim )
 {
-	if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin            -> override();
+	//if ( sim -> overrides.mind_quickening_aura           ) sim -> auras.mind_quickening_aura            -> override();
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> ooc_buffs() )
