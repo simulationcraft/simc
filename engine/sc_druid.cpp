@@ -43,6 +43,7 @@ struct druid_t : public player_t
 
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
+  cooldown_t* cooldowns_fury_swipes;
 
   // DoTs
   dot_t* dots_rip;
@@ -66,6 +67,7 @@ struct druid_t : public player_t
 
   // Procs
   proc_t* procs_combo_points_wasted;
+  proc_t* procs_fury_swipes;
   proc_t* procs_parry_haste;
   proc_t* procs_primal_fury;
   proc_t* procs_tier8_2pc;
@@ -77,6 +79,7 @@ struct druid_t : public player_t
   uptime_t* uptimes_rake;
 
   // Random Number Generation
+  rng_t* rng_fury_swipes;
   rng_t* rng_primal_fury;
   
   attack_t* cat_melee_attack;
@@ -94,8 +97,10 @@ struct druid_t : public player_t
     int  force_of_nature;
     int  fungal_growth;
     int  furor;
+    int  fury_swipes;
     int  gale_winds;
     int  genesis;
+    int  heart_of_the_wild;
     int  lunar_guidance;
     int  lunar_shower;
     int  master_shapeshifter;
@@ -117,8 +122,6 @@ struct druid_t : public player_t
     int  feral_charge;
     int  feral_swiftness;
     int  fury_of_stormrage;
-    int  fury_swipes;
-    int  heart_of_the_wild;
     int  improved_feral_charge;
     int  infected_wounds;
     int  king_of_the_jungle;
@@ -182,6 +185,7 @@ struct druid_t : public player_t
     eclipse_bar_value = 0;
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
+    cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
 
     distance = 30;
 
@@ -455,6 +459,39 @@ static void trigger_omen_of_clarity( action_t* a )
   if ( p -> buffs_omen_of_clarity -> trigger() )
     p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
 
+}
+
+// trigger_fury_swipes ======================================================
+
+static void trigger_fury_swipes( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( a -> proc ) return;
+
+  if ( a -> result_is_miss() ) return;
+
+  if ( ! a -> weapon ) return;
+
+  if ( ! p -> talents.fury_swipes )
+    return;
+
+  if ( p -> cooldowns_fury_swipes -> remains() > 0 )
+    return;
+
+  if ( p -> rng_fury_swipes -> roll( 0.04 * p -> talents.fury_swipes ) )
+  {
+    if ( a -> sim -> log )
+      log_t::output( a -> sim, "%s gains one extra attack through %s",
+                     p -> name(), p -> procs_fury_swipes -> name() );
+
+    p -> procs_fury_swipes -> occur();
+    p -> cooldowns_fury_swipes -> start( 6.0 );
+
+    p -> main_hand_attack -> proc = true;
+    p -> main_hand_attack -> execute();
+    p -> main_hand_attack -> proc = false;
+  }
 }
 
 // trigger_infected_wounds ==================================================
@@ -895,6 +932,7 @@ struct cat_melee_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
     if ( result_is_hit() )
     {
+      trigger_fury_swipes( this );
       trigger_omen_of_clarity( this );
     }
   }
@@ -1654,10 +1692,12 @@ struct bear_melee_t : public druid_bear_attack_t
         }
       }
     }
-
+    
+    // TODO: Fury swipes and maul interaction?
     if ( active_maul )
     {
       active_maul -> execute();
+      trigger_fury_swipes( active_maul );
       schedule_execute();
     }
     else
@@ -1665,6 +1705,7 @@ struct bear_melee_t : public druid_bear_attack_t
       druid_bear_attack_t::execute();
       if ( result_is_hit() )
       {
+        trigger_fury_swipes( this );
         trigger_rage_gain( this );
         trigger_omen_of_clarity( this );
       }
@@ -3534,6 +3575,7 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   procs_combo_points_wasted = get_proc( "combo_points_wasted" );
+  procs_fury_swipes         = get_proc( "fury_swipes"         );
   procs_parry_haste         = get_proc( "parry_haste"         );
   procs_primal_fury         = get_proc( "primal_fury"         );
   procs_tier8_2pc           = get_proc( "tier8_2pc"           );
@@ -3557,6 +3599,7 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
+  rng_fury_swipes = get_rng( "fury_swipes" );
   rng_primal_fury = get_rng( "primal_fury" );
 }
 
@@ -3908,6 +3951,7 @@ std::vector<option_t>& druid_t::get_options()
       { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
       { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
       { "furor",                     OPT_INT,  &( talents.furor                     ) },
+      { "fury_swipes",               OPT_INT,  &( talents.fury_swipes               ) },
       { "gale_winds",                OPT_INT,  &( talents.gale_winds                ) },
       { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
       { "heart_of_the_wild",         OPT_INT,  &( talents.heart_of_the_wild         ) },
