@@ -1130,7 +1130,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-    p -> debuffs_mind_spike -> trigger( 1 , 1.0, 1.0 );
+    //p -> debuffs_mind_spike -> trigger( 1 , 1.0, 1.0 );
 
     if ( result_is_hit() )
     {
@@ -2439,7 +2439,7 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race
 
 void player_t::priest_init( sim_t* sim )
 {
-	  //sim -> auras.mind_quickening            = new aura_t( sim, "mind_quickening" );
+	  sim -> auras.mind_quickening            = new aura_t( sim, "mind_quickening" );
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
