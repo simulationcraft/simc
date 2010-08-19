@@ -61,10 +61,12 @@ struct shaman_t : public player_t
 
   // Procs
   proc_t* procs_elemental_overload;
+  proc_t* procs_lava_surge;
   proc_t* procs_windfury;
 
   // Random Number Generators
   rng_t* rng_elemental_overload;
+  rng_t* rng_lava_surge;
   rng_t* rng_primal_wisdom;
   rng_t* rng_searing_flames;
   rng_t* rng_static_shock;
@@ -2087,6 +2089,18 @@ struct flame_shock_t : public shaman_spell_t
     return 1;
   }
 
+  virtual void tick()
+  {
+    shaman_spell_t::tick();
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> rng_lava_surge -> roll ( p -> talents.lava_surge * 0.10 ) )
+    {
+      p -> procs_lava_surge -> occur();
+      p -> cooldowns_lava_burst -> reset();
+    }
+
+  }
+
   double cost() SC_CONST
   {
     shaman_t* p = player -> cast_shaman();
@@ -3447,6 +3461,7 @@ void shaman_t::init_procs()
   player_t::init_procs();
 
   procs_elemental_overload = get_proc( "elemental_overload" );
+  procs_lava_surge         = get_proc( "lava_surge"         );
   procs_windfury           = get_proc( "windfury"           );
 }
 
@@ -3456,6 +3471,7 @@ void shaman_t::init_rng()
 {
   player_t::init_rng();
   rng_elemental_overload   = get_rng( "elemental_overload"   );
+  rng_lava_surge           = get_rng( "lava_surge"           );
   rng_primal_wisdom        = get_rng( "primal_wisdom"        );
   rng_searing_flames       = get_rng( "searing_flames"       );
   rng_static_shock         = get_rng( "static_shock"         );

@@ -986,6 +986,7 @@ struct sim_t
     int mangle;
     int mark_of_the_wild;
     int master_poisoner;
+    int mind_quickening;
     int moonkin_aura;
     int poisoned;
     int rampage;

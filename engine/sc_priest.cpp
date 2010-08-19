@@ -2439,7 +2439,8 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race
 
 void player_t::priest_init( sim_t* sim )
 {
-	  sim -> auras.mind_quickening            = new aura_t( sim, "mind_quickening" );
+	sim -> auras.mind_quickening = new aura_t( sim, "mind_quickening", 1, 0.0 );
+  
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
@@ -2454,7 +2455,8 @@ void player_t::priest_init( sim_t* sim )
 
 void player_t::priest_combat_begin( sim_t* sim )
 {
-	//if ( sim -> overrides.mind_quickening_aura           ) sim -> auras.mind_quickening_aura            -> override();
+	if ( sim -> overrides.mind_quickening ) sim -> auras.mind_quickening -> override();
+  
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> ooc_buffs() )
