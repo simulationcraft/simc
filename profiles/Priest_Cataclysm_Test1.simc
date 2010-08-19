@@ -1,8 +1,8 @@
 #!./simc 
 
-priest=Cataclysm Shadow Test Profile
+priest=Cataclysm_Shadow_Test_Profile
 origin="http://profiler.wowhead.com/profile=21160543"
-level=85
+level=80
 race=night_elf
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -26,9 +26,13 @@ actions+=/shadow_word_pain,if=!ticking
 actions+=/vampiric_touch,if=!ticking
 actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
 actions+=/devouring_plague,if=!ticking
-actions+=/mind_blast,if=(use_mind_blast=1)&(spell_haste>0.60)
-actions+=/mind_blast,if=(use_mind_blast=2&recast_mind_blast=1)&(spell_haste>0.60)
-actions+=/shadow_word_death,mb_min_wait=0.3,mb_max_wait=1.2,if=(use_shadow_word_death>0)&(spell_haste>0.60)
+#actions+=/archangel
+actions+=/archangel,if=buff.dark_evangelism.stack>=5
+actions+=/mind_blast
+#actions+=/mind_blast,if=buff.shadow_orb.stack>=3
+#actions+=/mind_blast,if=buff.mind_melt.stack>=2
+#actions+=/mind_spike
+actions+=/shadow_word_death,health_percentage<=25
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion

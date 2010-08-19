@@ -56,6 +56,7 @@ static const char* school_color( int type )
   case SCHOOL_PHYSICAL:   return class_color( WARRIOR );
   case SCHOOL_SHADOW:     return class_color( WARLOCK );
   case SCHOOL_SPELLSTORM: return "8AD0B1"; // Half way between Hunter "green" and Mage "blue" (spellstorm = arcane/nature damage)
+  case SCHOOL_SHADOWFROST: return "000066"; // Shadowfrost???
   default: assert( 0 );
   }
   return 0;

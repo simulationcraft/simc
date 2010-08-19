@@ -55,6 +55,7 @@ static int school_id( int school )
   case SCHOOL_PHYSICAL:   return 0x01;
   case SCHOOL_SHADOW:     return 0x20;
   case SCHOOL_SPELLSTORM: return 0x48;
+  case SCHOOL_SHADOWFROST: return 0x30;
   default:                return 0x01;
   }
   return -1;

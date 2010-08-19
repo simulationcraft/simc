@@ -99,6 +99,7 @@ struct priest_t : public player_t
     int  shadow_power; //       		done: talent function 						open: link with main talent tree
 
 
+
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
@@ -208,7 +209,6 @@ struct priest_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual int       primary_tree() SC_CONST     { return talents.shadow_form ? TREE_SHADOW : talents.penance ? TREE_DISCIPLINE : TREE_HOLY; }
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
@@ -219,6 +219,24 @@ struct priest_t : public player_t
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
+
+  virtual int       primary_tree() SC_CONST
+		  {
+			  if ( level > 10 && level <= 69 )
+			  {
+				  if (talents.darkness || talents.improved_shadow_word_pain || talents.veiled_shadows) return TREE_SHADOW;
+				  else if (talents.divine_fury) return TREE_HOLY;
+				  else if (talents.twin_disciplines || talents.mental_agility) return TREE_DISCIPLINE;
+				  else return TREE_NONE;
+
+			  }
+			  else
+			  {
+				  return talents.shadow_form ? TREE_SHADOW : talents.power_infusion ? TREE_DISCIPLINE : TREE_HOLY;
+			  }
+
+		  }
+
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -374,13 +392,15 @@ void priest_spell_t::execute()
 void priest_spell_t::player_buff()
 {
 	priest_t* p = player -> cast_priest();
-  spell_t::player_buff();
+	 spell_t::player_buff();
   if ( school == SCHOOL_SHADOW )
   {
 
   player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
+  player_hit += p -> spirit() * ( p -> talents.twisted_faith / 2.0 ) / p -> rating.spell_hit;
 
   }
+
 }
 
 void priest_spell_t::target_debuff( int dmg_type )
@@ -1059,7 +1079,7 @@ struct mind_spike_t : public priest_spell_t
 {
 
   mind_spike_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "mind_spike", player, SCHOOL_SHADOW, TREE_SHADOW )
+      priest_spell_t( "mind_spike", player, SCHOOL_SHADOWFROST, TREE_SHADOW )
   {
     priest_t* p = player -> cast_priest();
 
@@ -1286,6 +1306,7 @@ struct shadow_form_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     p -> buffs_shadow_form -> trigger();
+    sim -> auras.moonkin -> trigger();
   }
 
   virtual bool ready()
@@ -1719,7 +1740,6 @@ struct archangel_t : public priest_spell_t
   {
 	priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-//  if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> talents.archangel )
     {
     	if ( p -> buffs_dark_evangelism -> up())
@@ -1771,6 +1791,7 @@ double priest_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   return m;
 }
+
 
 // priest_t::composite_spell_power =========================================
 
@@ -1943,6 +1964,8 @@ void priest_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+
 }
 
 // priest_t::init_gains ======================================================
@@ -2111,7 +2134,17 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-  mana_regen_while_casting = util_t::talent_rank( talents.meditation, 3, 0.17, 0.33, 0.50 );
+
+	// Seem's to be the new global value, but not sure
+	mana_regen_while_casting = 0.50;
+
+
+  if ( talents.meditation )
+  {
+
+	  mana_regen_while_casting += 0.50;
+
+  }
 
 
 
@@ -2390,6 +2423,7 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race
 
 void player_t::priest_init( sim_t* sim )
 {
+	  sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
@@ -2402,6 +2436,7 @@ void player_t::priest_init( sim_t* sim )
 
 void player_t::priest_combat_begin( sim_t* sim )
 {
+	if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin            -> override();
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> ooc_buffs() )

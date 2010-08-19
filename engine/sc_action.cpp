@@ -454,6 +454,11 @@ double action_t::resistance() SC_CONST
       resist_rating = std::min( t -> spell_resistance[ SCHOOL_ARCANE ],
                                 t -> spell_resistance[ SCHOOL_NATURE ] );
     }
+    else if ( school == SCHOOL_SHADOWFROST )
+        {
+          resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
+                                    t -> spell_resistance[ SCHOOL_FROST ] );
+        }
 
     resist_rating -= penetration;
     if ( resist_rating < 0 ) resist_rating = 0;

@@ -460,6 +460,7 @@ const char* util_t::school_type_string( int school )
   case SCHOOL_PHYSICAL:   return "physical";
   case SCHOOL_SHADOW:     return "shadow";
   case SCHOOL_SPELLSTORM: return "spellstorm";
+  case SCHOOL_SHADOWFROST: return "shadowfrost";
   case SCHOOL_DRAIN:      return "drain";
   }
   return "unknown";

@@ -212,7 +212,7 @@ enum school_type
   SCHOOL_NONE=0,
   SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST,
   SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW,
-  SCHOOL_SPELLSTORM,
+  SCHOOL_SPELLSTORM,SCHOOL_SHADOWFROST,
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
@@ -222,7 +222,7 @@ enum school_type
                              (1 << SCHOOL_FIRE)      | (1 << SCHOOL_FROST)  | \
                              (1 << SCHOOL_FROSTFIRE) | (1 << SCHOOL_HOLY)   | \
                              (1 << SCHOOL_NATURE)    | (1 << SCHOOL_SHADOW) | \
-                             (1 << SCHOOL_SPELLSTORM) )
+                             (1 << SCHOOL_SPELLSTORM)| (1 << SCHOOL_SHADOWFROST) )
 #define SCHOOL_ALL_MASK    (-1)
 
 enum talent_tree_type
