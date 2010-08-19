@@ -22,6 +22,7 @@ struct priest_t : public player_t
   buff_t* buffs_mind_melt;
   buff_t* buffs_dark_evangelism;
   buff_t* buffs_shadow_orb;
+  buff_t* buffs_dark_archangel;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -39,6 +40,7 @@ struct priest_t : public player_t
   gain_t* gains_glyph_of_shadow_word_pain;
   gain_t* gains_shadow_fiend;
   gain_t* gains_surge_of_light;
+  gain_t* gains_archangel;
 
   // Up-Times
 
@@ -65,36 +67,36 @@ struct priest_t : public player_t
 
   struct talents_t
   {
-    int  aspiration; // complete: nothing changed
-    int  darkness; // complete: nothing changed
-    int  dispersion; // complete: nothing changed
-    int  divine_fury; // complete: nothing changed
+    int  aspiration; // 				complete: nothing changed
+    int  darkness; // 					complete: nothing changed
+    int  dispersion; // 				complete: nothing changed
+    int  divine_fury; // 				complete: nothing changed
     int  improved_devouring_plague;  // complete: Changed burst to talent * 0.15 and removed dot dmg multiplier
-    int  improved_inner_fire; // complete: nothing changed
-    int  improved_mind_blast; // complete: nothing changed
-    int  improved_shadow_word_pain; // complete: nothing changed
-    int  meditation; // should be implemented somewhere globaly
-    int  mental_agility; // complete: nothing changed
+    int  improved_inner_fire; //		complete: nothing changed
+    int  improved_mind_blast; // 		complete: nothing changed
+    int  improved_shadow_word_pain; // 	complete: nothing changed
+    int  meditation; // 															should be implemented somewhere globaly
+    int  mental_agility; // 														open: better implementation
     int  mind_flay;
-    int  mind_melt; // complete: crit modifier deleted.  added buff_mind_melt and modified sw:death
-    int  pain_and_suffering; // complete: changed to 0.3 probability
+    int  mind_melt; // 					complete: crit modifier deleted.  added buff_mind_melt and modified sw:death
+    int  pain_and_suffering; // 		complete: changed to 0.3 probability
     int  penance;
-    int  power_infusion; // complete: nothing changed
-    int  shadow_form; // done: removed dot haste scaling, removed crit multiplier open: 5% haste aura
-    int  surge_of_light; // open: remove flash heal, add holy nova
-    int  twin_disciplines; // complete: changed value to 0.02
-    int  twisted_faith; // done: removed old scaling, added static 1%/2% hit, open: constants.twisted_faith_dynamic_value * spirit() -> hit_rating
-    int  vampiric_embrace; // complete: nothing changed
-    int  vampiric_touch; // complete: nothing changed
-    int  veiled_shadows; // complete: nothing changed
-    int  evangelism; // done: dark_evangelism open: holy
-    int  archangel; // open: everything
-    int  chakra; // open: everything
-    int  state_of_mind; // open: everything
-    int  harnessed_shadows; // open: everything
-    int  shadowy_apparation; // open: everything
-    int  blackouts; // done: talent function open: link with main talent tree
-    int  shadow_power; // done: talent function open: link with main talent tree
+    int  power_infusion; // 			complete: nothing changed
+    int  shadow_form; // 				done: removed dot haste, removed crit mult.	open: 5% haste aura
+    int  surge_of_light; // 														open: remove flash heal, add holy nova
+    int  twin_disciplines; // 			complete: changed value to 0.02				open: better implementation
+    int  twisted_faith; // 				done: added static 1%/2% hit, 				open: constants.twisted_faith_dynamic_value * spirit() -> hit_rating
+    int  vampiric_embrace; // 			complete: nothing changed
+    int  vampiric_touch; // 			complete: nothing changed
+    int  veiled_shadows; // 			complete: nothing changed
+    int  evangelism; // 				done: dark_evangelism 						open: holy
+    int  archangel; // 					done: shadow archangel                   	open: holy
+    int  chakra; // 																open: everything
+    int  state_of_mind; // 															open: everything
+    int  harnessed_shadows; //  		complete
+    int  shadowy_apparation; // 													open: everything
+    int  blackouts; //         	 		done: talent function  						open: link with main talent tree
+    int  shadow_power; //       		done: talent function 						open: link with main talent tree
 
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
@@ -136,6 +138,8 @@ struct priest_t : public player_t
     double shadow_orb_proc_value;
     double shadow_orb_damage_value;
     double harnessed_shadows_value;
+    double dark_archangel_value;
+    double archangel_mana_value;
 
     constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
   };
@@ -172,6 +176,8 @@ struct priest_t : public player_t
     constants.shadow_orb_proc_value           = 0.1;
     constants.shadow_orb_damage_value         = 0.2;
     constants.harnessed_shadows_value         = 0.04;
+    constants.dark_archangel_value			  = 0.03;
+    constants.archangel_mana_value			  = 0.03;
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
     cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -392,7 +398,18 @@ void priest_spell_t::target_debuff( int dmg_type )
 			    }
 			  target_multiplier *= 1.0 + p -> talents.darkness                  * p -> constants.darkness_value;
 			  target_crit_bonus_multiplier *= 1.0 + p -> talents.blackouts * 1.0;
+			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
 		    }
+		  if ( school == SCHOOL_FROST)
+		  {
+			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
+		  }
+
+		  // Testing for global "twin discipline", unfortunately it also doubles mind_flay damage
+		  /*if ( execute_time() == 0 && !(channeled) )
+		  {
+			  target_multiplier *= 2.0;
+		  }*/
 }
 // priest_spell_t::assess_damage =============================================
 
@@ -968,7 +985,7 @@ struct mind_flay_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> buffs_dark_evangelism  -> trigger( 1, 0.4 );
+
     if ( result_is_hit() )
     {
         p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
@@ -987,9 +1004,11 @@ struct mind_flay_t : public priest_spell_t
 
   virtual void tick()
   {
+	  priest_t* p = player -> cast_priest();
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     mind_flay_tick -> execute();
     update_time( DMG_OVER_TIME );
+    p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
   }
 
   virtual bool ready()
@@ -1673,6 +1692,59 @@ struct shadow_fiend_spell_t : public priest_spell_t
     return ( sim -> current_time > 15.0 );
   }
 };
+// Archangel Spell ======================================================
+
+struct archangel_t : public priest_spell_t
+{
+	archangel_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "archangel", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+  {
+    priest_t* p = player -> cast_priest();
+
+    check_talent( p -> talents.archangel );
+
+    static rank_t ranks[] =
+    {
+      { 1, 1, 0, 0, 0, 0.00 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    trigger_gcd = 0;
+    base_cost   = 0.0;
+    cooldown -> duration  = 15.0;
+  }
+
+  virtual void execute()
+  {
+	priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+//  if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( p -> talents.archangel )
+    {
+    	if ( p -> buffs_dark_evangelism -> up())
+    	{
+    		p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
+    		p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
+    		p -> buffs_dark_evangelism -> expire();
+    	}
+    }
+  }
+
+  virtual bool ready()
+   {
+	  priest_t* p = player -> cast_priest();
+
+	  if ( ! priest_spell_t::ready() )
+	       return false;
+	  if ( ! p -> buffs_dark_evangelism -> up() )
+       return false;
+
+	  return true;
+
+   }
+};
+
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -1753,6 +1825,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "shadow_fiend"      ) return new shadow_fiend_spell_t( this, options_str );
   if ( name == "vampiric_embrace"  ) return new vampiric_embrace_t  ( this, options_str );
   if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
+  if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1883,6 +1956,7 @@ void priest_t::init_gains()
   gains_glyph_of_shadow_word_pain = get_gain( "glyph_of_shadow_word_pain" );
   gains_shadow_fiend              = get_gain( "shadow_fiend" );
   gains_surge_of_light            = get_gain( "surge_of_light" );
+  gains_archangel                 = get_gain( "archangel" );
 }
 
 // priest_t::init_uptimes ====================================================
@@ -1908,15 +1982,16 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0, 0.0, glyphs.shadow                               );
-  buffs_inner_fire          = new buff_t( this, "inner_fire"                                                                     );
-  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                                               );
-  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                                                         );
-  buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                                                   );
-  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                                                );
-  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0,0,0.4                                             );
-  buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                                                  );
-  buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1 );
+  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0, 0.0, glyphs.shadow );
+  buffs_inner_fire          = new buff_t( this, "inner_fire"                                       );
+  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                 );
+  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                           );
+  buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                     );
+  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                  );
+  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0 ,0.4                     );
+  buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                     );
+  buffs_dark_archangel      = new buff_t( this, "dark_archangel",      5, 18.0                     );
+  buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_devious_mind = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc_caster() );
