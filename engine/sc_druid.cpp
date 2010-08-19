@@ -488,10 +488,9 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
 {
   // EVERY druid has the eclipse mechanic, regardless of chosen tree
   // but only balance druid get an actual bonus from it (12% base + mastery)
+  if ( gain == 0 ) return;
   
   druid_t* p = s -> player -> cast_druid();
-    
-  if ( gain == 0 ) return;
 
   int old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
@@ -499,43 +498,50 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   if ( p -> eclipse_bar_value <= 0 ) 
   {
     // Solar auto-fades as soon as the bar reaches 0 again
-    if ( p -> buffs_eclipse_solar -> check() ) 
-      p -> buffs_eclipse_solar -> expire();
+    p -> buffs_eclipse_solar -> expire();
 
-    // Proc lunar if we are  at 100+ and it is not already up
     if ( p -> eclipse_bar_value < -99 ) 
-    {
       p -> eclipse_bar_value = -100;
-      if ( ! p -> buffs_eclipse_lunar -> check() ) 
-        if ( p -> buffs_eclipse_lunar -> trigger() )
-          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talents.euphoria, p -> gains_euphoria );
-    }
   }
 
   if ( p -> eclipse_bar_value >= 0 ) 
   {
     // Lunar auto-fades as soon as the bar reaches 0 again
-    if ( p -> buffs_eclipse_lunar -> check() ) 
-      p -> buffs_eclipse_lunar -> expire();
+    p -> buffs_eclipse_lunar -> expire();
 
-    // Proc solar if we are  at 100+ and it is not already up
     if ( p -> eclipse_bar_value > 99 ) 
-    {
       p -> eclipse_bar_value = 100;
-      if ( ! p -> buffs_eclipse_solar -> check() ) 
-        if ( p -> buffs_eclipse_solar -> trigger() )
-          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talents.euphoria, p -> gains_euphoria );
-    }
   }
   
   int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
   if ( s -> sim -> log )
   {
-    log_t::output( s -> sim, "%s gains %.0f (%.0f) %s from %s (%.0f)",
+    log_t::output( s -> sim, "%s gains %d (%d) %s from %s (%d)",
                    p -> name(), actual_gain, gain,
                    "Eclipse", s -> name(),
                    p -> eclipse_bar_value );
-                   
+  }
+  
+  
+  // Eclipse proc:
+  // Procs when you reach 100 and only then, does not proc again once 
+  // when the buff fades and you are still at +/-100
+  // So the actual_gain needs to be non-zero for eclipse to proc
+  // and the buff can't be up already
+  if ( actual_gain != 0 )
+  {
+    if ( p -> eclipse_bar_value == 100 ) 
+    {
+      if ( ! p -> buffs_eclipse_solar -> check() ) 
+        if ( p -> buffs_eclipse_solar -> trigger() )
+          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talents.euphoria, p -> gains_euphoria );
+    }
+    else if ( p -> eclipse_bar_value == -100 ) 
+    {
+      if ( ! p -> buffs_eclipse_lunar -> check() ) 
+        if ( p -> buffs_eclipse_lunar -> trigger() )
+          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talents.euphoria, p -> gains_euphoria );
+    }
   }
 }
 
@@ -3062,7 +3068,7 @@ struct starsurge_t : public druid_spell_t
 
     static rank_t ranks[] =
     {
-      { 86, 11, 1486, 1960, 0, 0.11 },
+      { 85, 11, 1486, 1960, 0, 0.11 },
       { 84, 10, 1486, 1960, 0, 0.11 },
       { 83,  9, 1486, 1960, 0, 0.11 },
       { 0, 0, 0, 0, 0, 0 }
@@ -3457,8 +3463,8 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,   0.0,  45.0 );
-  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,   0.0,  45.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  45.0,  0.0 );
+  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0,  0.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower );
@@ -3894,8 +3900,10 @@ std::vector<option_t>& druid_t::get_options()
       // @option_doc loc=player/druid/talents title="Talents"
       { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
       { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
+      { "blessing_of_the_grove",     OPT_INT,  &( talents.blessing_of_the_grove     ) },
       { "brutal_impact",             OPT_INT,  &( talents.brutal_impact             ) },
       { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
+      { "euphoria",                  OPT_INT,  &( talents.euphoria                  ) },
       { "feral_aggression",          OPT_INT,  &( talents.feral_aggression          ) },
       { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
       { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
@@ -3907,6 +3915,7 @@ std::vector<option_t>& druid_t::get_options()
       { "king_of_the_jungle",        OPT_INT,  &( talents.king_of_the_jungle        ) },
       { "leader_of_the_pack",        OPT_INT,  &( talents.leader_of_the_pack        ) },
       { "lunar_guidance",            OPT_INT,  &( talents.lunar_guidance            ) },
+      { "lunar_shower",              OPT_INT,  &( talents.lunar_shower              ) },
       { "master_shapeshifter",       OPT_INT,  &( talents.master_shapeshifter       ) },
       { "moonglow",                  OPT_INT,  &( talents.moonglow                  ) },
       { "moonkin_form",              OPT_INT,  &( talents.moonkin_form              ) },
@@ -3924,7 +3933,9 @@ std::vector<option_t>& druid_t::get_options()
       { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
       { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
       { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
+      { "solar_beam",                OPT_INT,  &( talents.solar_beam                ) },
       { "survival_instincts",        OPT_INT,  &( talents.survival_instincts        ) },
+      { "starfall",                  OPT_INT,  &( talents.starfall                  ) },
       { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
       { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
       { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
