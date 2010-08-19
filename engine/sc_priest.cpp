@@ -75,7 +75,7 @@ struct priest_t : public player_t
     int  improved_inner_fire; //		complete: nothing changed
     int  improved_mind_blast; // 		complete: nothing changed
     int  improved_shadow_word_pain; // 	complete: nothing changed
-    int  meditation; // 															should be implemented somewhere globaly
+    int  meditation; // 				complete
     int  mental_agility; // 														open: better implementation
     int  mind_flay;
     int  mind_melt; // 					complete: crit modifier deleted.  added buff_mind_melt and modified sw:death
@@ -426,10 +426,11 @@ void priest_spell_t::target_debuff( int dmg_type )
 		  }
 
 		  // Testing for global "twin discipline", unfortunately it also doubles mind_flay damage
-		  /*if ( execute_time() == 0 && !(channeled) )
+		  if ( execute_time() == 0 && !(dual) )
 		  {
-			  target_multiplier *= 2.0;
-		  }*/
+			 target_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
+
+		  }
 }
 // priest_spell_t::assess_damage =============================================
 
@@ -558,7 +559,6 @@ struct devouring_plague_t : public priest_spell_t
     tick_power_mod    = p -> constants.devouring_plague_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
-    base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> talents.improved_devouring_plague )
@@ -932,7 +932,6 @@ struct mind_flay_tick_t : public priest_spell_t
     may_crit          = true;
     direct_tick       = true;
     direct_power_mod  = p -> constants.mind_flay_power_mod;
-    base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
   }
 
   virtual void execute()
@@ -1102,7 +1101,6 @@ struct mind_spike_t : public priest_spell_t
     base_cost  = floor( base_cost );
 
     direct_power_mod  = p -> constants.mind_spike_power_mod;
-    base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines * p -> constants.twin_disciplines_value );
     base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
 
   }
@@ -1163,10 +1161,7 @@ struct penance_tick_t : public priest_spell_t
     background  = true;
     may_crit    = true;
     direct_tick = true;
-
     direct_power_mod  = 0.8 / 3.5;
-
-    base_multiplier *= 1.0 + p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
 
   }
 
@@ -1355,7 +1350,6 @@ struct shadow_word_death_t : public priest_spell_t
     direct_power_mod  = p -> constants.shadow_word_death_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
-    base_multiplier  *= 1.0 + p -> talents.twin_disciplines * p -> constants.twin_disciplines_value;
 
   }
 
@@ -1451,8 +1445,7 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_power_mod    = p -> constants.shadow_word_pain_power_mod;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
 
-    base_multiplier *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value +
-                               p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
+    base_multiplier *= 1.0 + ( p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
