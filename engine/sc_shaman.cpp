@@ -8,7 +8,9 @@
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
 // Ability/Spell Rank scaling
-// Searing Flames Dot Damage
+// Verify Searing Flames Dot Damage
+// trigger_searing_flames eats the cpu
+// Mail Specialization -> 5% intel or agi bonus (waiting on sim changes to check armor type)
 // ==========================================================================
 
 #include "simulationcraft.h"
@@ -49,6 +51,8 @@ struct shaman_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
   cooldown_t* cooldowns_lava_burst;
+  cooldown_t* cooldowns_shock;
+  cooldown_t* cooldowns_strike;
   cooldown_t* cooldowns_windfury_weapon;
 
   // Gains
@@ -158,6 +162,8 @@ struct shaman_t : public player_t
     // Cooldowns
     cooldowns_elemental_mastery = get_cooldown( "elemental_mastery" );
     cooldowns_lava_burst        = get_cooldown( "lava_burst"        );
+    cooldowns_shock             = get_cooldown( "shock"             );
+    cooldowns_strike            = get_cooldown( "strike"            );
     cooldowns_windfury_weapon   = get_cooldown( "windfury_weapon"   );
 
     // Weapon Enchants
@@ -659,12 +665,37 @@ static void trigger_searing_flames( spell_t* s )
       tick_dmg *= p -> buffs_searing_flames -> stack();
       return tick_dmg;
     }
-    
+  
     virtual void last_tick()
     {
       shaman_t* p = player -> cast_shaman();
       shaman_spell_t::last_tick();
       p -> buffs_searing_flames -> expire();
+    }
+
+    virtual void tick()
+    {
+      shaman_t* p = player -> cast_shaman();
+
+      if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+      may_resist = false;
+      target_debuff( DMG_DIRECT );
+      calculate_result();
+      may_resist = true;
+      if ( result_is_hit() )
+      {
+        calculate_direct_damage();
+        if ( direct_dmg > 0 )
+        {
+          tick_dmg = direct_dmg;
+          assess_damage( tick_dmg, DMG_OVER_TIME );
+        }
+      }
+      else
+      {
+        if ( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      }
+      update_stats( DMG_OVER_TIME );
     }
 
     virtual int scale_ticks_with_haste() SC_CONST
@@ -1019,7 +1050,7 @@ struct primal_strike_t : public shaman_attack_t
 
     may_crit  = true;
 
-    cooldown = p -> get_cooldown( "strike" );
+    cooldown = p -> cooldowns_strike;
     cooldown -> duration = 8.0;
 
     base_multiplier *= 1 + p -> talents.focused_strikes * 0.15;;
@@ -1075,7 +1106,7 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.0 + 0.20;
 
-    cooldown = p -> get_cooldown( "strike" );
+    cooldown = p -> cooldowns_strike;
     cooldown -> duration = 8.0;
 
     id = 17364;
@@ -1972,7 +2003,7 @@ struct earth_shock_t : public shaman_spell_t
     base_cost_reduction        += p -> talents.convection * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
-    cooldown = p -> get_cooldown( "shock" );
+    cooldown = p -> cooldowns_shock;
     cooldown -> duration  = 6.0;
     cooldown -> duration -= p -> talents.reverberation  * 0.5;
 
@@ -2057,7 +2088,7 @@ struct flame_shock_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + ( p -> primary_tree() == TREE_ELEMENTAL +
                                           p -> glyphs.flame_shock * 0.60 );
 
-    cooldown = p -> get_cooldown( "shock" );
+    cooldown = p -> cooldowns_shock;
     cooldown -> duration  = 6.0;
     cooldown -> duration -= ( p -> talents.reverberation  * 0.5 );
 
@@ -2150,7 +2181,7 @@ struct frost_shock_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
-    cooldown = p -> get_cooldown( "shock" );
+    cooldown = p -> cooldowns_shock;
     cooldown -> duration  = 6.0;
     cooldown -> duration -= p -> talents.reverberation  * 0.5;
 
@@ -2697,9 +2728,9 @@ struct searing_totem_t : public shaman_spell_t
       {
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
+        if ( p -> rng_searing_flames -> roll ( p -> talents.searing_flames / 3 ) )
+          trigger_searing_flames( this );
       }
-      if ( p -> rng_searing_flames -> roll ( p -> talents.searing_flames / 3 ) )
-        trigger_searing_flames( this );
     }
     else
     {
