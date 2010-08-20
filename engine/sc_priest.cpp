@@ -25,6 +25,8 @@ struct priest_t : public player_t
   buff_t* buffs_shadow_orb;
   buff_t* buffs_dark_archangel;
   buff_t* buffs_holy_archangel;
+  buff_t* buffs_chakra_pre;
+  buff_t* buffs_chakra;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -98,8 +100,8 @@ struct priest_t : public player_t
     int  veiled_shadows; // 			complete: nothing changed
     int  evangelism; // 				complete
     int  archangel; // 					complete
-    int  chakra; // 																open: everything
-    int  state_of_mind; // 															open: everything
+    int  chakra; // 																open: trigger 60s cooldown on chakra_t just when smite_t hits, consuming buffs_chakra_pre
+    int  state_of_mind; // 															open: implement a function to increase the duration of a buff
     int  harnessed_shadows; //  		complete
     int  shadowy_apparation; // 													open: everything
     int  blackouts; //         	 		done: talent function  						open: link with main talent tree
@@ -431,21 +433,34 @@ void priest_spell_t::target_debuff( int dmg_type )
 	target_multiplier *= 1.0 + p -> talents.shadow_power * p -> constants.shadow_power_value;
 
 		  if ( school == SCHOOL_SHADOW )
-		    {
+		  {
 			  if ( dmg_type == DMG_OVER_TIME )
-			    {
-				  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
-			    }
+			  {
+			  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+			  }
+
 			  target_multiplier *= 1.0 + p -> talents.darkness                  * p -> constants.darkness_value;
 			  target_crit_bonus_multiplier *= 1.0 + p -> talents.blackouts * 1.0;
 			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
-		    }
+			  if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
+			  {
+			  target_multiplier *= 1.0 + 0.15;
+			  }
+		  }
 		  if ( school == SCHOOL_FROST)
 		  {
 			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
 		  }
 
-		  // Testing for global "twin discipline", unfortunately it also doubles mind_flay damage
+		  if ( school == SCHOOL_HOLY)
+		  {
+			  if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
+			  {
+			  target_multiplier *= 1.0 + 0.15;
+			  }
+		  }
+
+		  // Twin Discipline
 		  if ( execute_time() == 0 && !(dual) )
 		  {
 			 target_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
@@ -1570,9 +1585,25 @@ struct smite_t : public priest_spell_t
   virtual void execute()
   {
 	priest_t* p = player -> cast_priest();
+
     priest_spell_t::execute();
     player -> cast_priest() -> buffs_surge_of_light -> expire();
     p -> buffs_holy_evangelism  -> trigger( 1, 1.0, 1.0 );
+    if ( p -> buffs_chakra_pre -> up())
+    {
+    	p -> buffs_chakra -> trigger( 1 , 4, 1.0 );
+    	//p -> chakra_t -> cooldown -> reset();
+    	p -> buffs_chakra_pre -> expire();
+    }
+
+    // Talent State of Mind
+    if ( result_is_hit() )
+        {
+    	if ( p -> buffs_chakra -> up() && p -> talents.chakra)
+    	{
+    		// p -> buffs_chakra -> "add 4 seconds"
+    	}
+        }
   }
   virtual double execute_time() SC_CONST
   {
@@ -1810,6 +1841,45 @@ struct archangel_t : public priest_spell_t
    }
 };
 
+// Chakra_Pre Spell ======================================================
+
+struct chakra_t : public priest_spell_t
+{
+	chakra_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "chakra", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+    priest_t* p = player -> cast_priest();
+
+    check_talent( p -> talents.chakra );
+
+    static rank_t ranks[] =
+    {
+      { 1, 1, 0, 0, 0, 0.00 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    trigger_gcd = 0;
+    base_cost   = 0.0;
+    cooldown -> duration  = 60.0;
+  }
+
+  virtual void execute()
+  {
+	priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+    if ( p -> talents.chakra )
+    {
+
+    		p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
+
+
+    }
+  }
+
+
+};
+
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -1892,6 +1962,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_embrace"  ) return new vampiric_embrace_t  ( this, options_str );
   if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
   if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
+  if ( name == "chakra"            ) return new chakra_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2061,6 +2132,8 @@ void priest_t::init_buffs()
   buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                     );
   buffs_dark_archangel      = new buff_t( this, "dark_archangel",      5, 18.0                     );
   buffs_holy_archangel      = new buff_t( this, "holy_archangel",      5, 18.0                     );
+  buffs_chakra_pre          = new buff_t( this, "chakra_pre",          5                          );
+  buffs_chakra              = new buff_t( this, "chakra",              5, 30.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
