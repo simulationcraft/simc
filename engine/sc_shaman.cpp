@@ -8,8 +8,6 @@
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
 // Ability/Spell Rank scaling
-// Totemic Focus Duration Increase For the Following: (How do check talents there?)
-//   Flametongue, Mana Spring, Strength of Earth, Windfury, Wrath of Air
 // Searing Flames Dot Damage
 // ==========================================================================
 
@@ -2324,9 +2322,11 @@ struct flametongue_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
+    sim -> auras.flametongue_totem -> duration = 300 * ( 1 + p -> talents.totemic_focus * 0.20 );
     sim -> auras.flametongue_totem -> trigger( 1, bonus );
     *observer = this;
   }
@@ -2513,8 +2513,10 @@ struct mana_spring_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
+    sim -> auras.mana_spring_totem -> duration = 300 * ( 1 + p -> talents.totemic_focus * 0.20 );
     sim -> auras.mana_spring_totem -> trigger( 1, regen );
   }
 
@@ -2669,7 +2671,7 @@ struct searing_totem_t : public shaman_spell_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     if ( p -> talents.totemic_wrath )
-        sim -> auras.flametongue_totem -> trigger( 1, .10 );
+      sim -> auras.flametongue_totem -> trigger( 1, .10 );
     consume_resource();
     player_buff();
     schedule_tick();
@@ -2758,9 +2760,11 @@ struct strength_of_earth_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
+    sim -> auras.strength_of_earth -> duration = 300 * ( 1 + p -> talents.totemic_focus * 0.20 );
     sim -> auras.strength_of_earth -> trigger( 1, bonus );
   }
 
@@ -2821,9 +2825,11 @@ struct windfury_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
+    sim -> auras.windfury_totem -> duration = 300 * ( 1 + p -> talents.totemic_focus * 0.20 );
     sim -> auras.windfury_totem -> trigger( 1, bonus );
   }
 
@@ -2880,9 +2886,11 @@ struct wrath_of_air_totem_t : public shaman_spell_t
 
   virtual void execute()
   {
+    shaman_t* p = player -> cast_shaman();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
+    sim -> auras.wrath_of_air -> duration = 300 * ( 1 + p -> talents.totemic_focus * 0.20 );
     sim -> auras.wrath_of_air -> trigger();
   }
 
