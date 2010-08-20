@@ -2136,8 +2136,17 @@ void druid_spell_t::player_buff()
     // One of the bonuses for choosing balance spec
     if ( p -> primary_tree() == TREE_BALANCE )
       player_multiplier *= 1.25;
-
   }
+  // Both eclipse buffs need their own checks
+  // Eclipse increases wrath damage by 1.5% per mastery point
+  if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
+    if ( p -> buffs_eclipse_lunar -> up() )
+      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
+
+  if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
+    if ( p -> buffs_eclipse_solar -> up() )
+      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
+
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon * 0.02;
 }
@@ -2810,18 +2819,6 @@ struct starfire_t : public druid_spell_t
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.04;
   }
 
-  virtual void player_buff()
-  {
-    druid_spell_t::player_buff();
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buffs_eclipse_lunar -> up() )
-    {
-      // Eclipse increases wrath damage by 1.5% per mastery point
-      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
-    }
-  }
-
   virtual void schedule_execute()
   {
     druid_spell_t::schedule_execute();
@@ -2965,18 +2962,6 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::execute();
     // Even missed spells trigger it!
     trigger_eclipse_energy_gain( this, -13 );
-  }
-
-  virtual void player_buff()
-  {
-    druid_t* p = player -> cast_druid();
-    druid_spell_t::player_buff();
-
-    if ( p -> buffs_eclipse_solar -> up() )
-    {
-      // Eclipse increases wrath damage by 1.5% per mastery point
-      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
-    }
   }
 
   virtual bool ready()
