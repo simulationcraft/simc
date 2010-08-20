@@ -21,8 +21,10 @@ struct priest_t : public player_t
   buff_t* buffs_vampiric_embrace;
   buff_t* buffs_mind_melt;
   buff_t* buffs_dark_evangelism;
+  buff_t* buffs_holy_evangelism;
   buff_t* buffs_shadow_orb;
   buff_t* buffs_dark_archangel;
+  buff_t* buffs_holy_archangel;
 
   // Cooldowns
   cooldown_t* cooldowns_mind_blast;
@@ -68,6 +70,8 @@ struct priest_t : public player_t
 
   std::vector<player_t *> party_list;
 
+
+  // Stand: Cata Build 12759
   struct talents_t
   {
     int  aspiration; // 				complete: nothing changed
@@ -92,8 +96,8 @@ struct priest_t : public player_t
     int  vampiric_embrace; // 			complete: nothing changed
     int  vampiric_touch; // 			complete: nothing changed
     int  veiled_shadows; // 			complete: nothing changed
-    int  evangelism; // 				done: dark_evangelism 						open: holy
-    int  archangel; // 					done: shadow archangel                   	open: holy
+    int  evangelism; // 				complete
+    int  archangel; // 					complete
     int  chakra; // 																open: everything
     int  state_of_mind; // 															open: everything
     int  harnessed_shadows; //  		complete
@@ -138,12 +142,15 @@ struct priest_t : public player_t
     double vampiric_touch_power_mod;
     double shadow_power_value;
     double dark_evangelism_value;
+    double holy_evangelism_damage_value;
+    double holy_evangelism_mana_value;
     double twisted_faith_static_value;
     double twisted_faith_dynamic_value;
     double shadow_orb_proc_value;
     double shadow_orb_damage_value;
     double harnessed_shadows_value;
     double dark_archangel_value;
+    double holy_archangel_value;
     double archangel_mana_value;
     double mind_spike_crit_value;
     double pain_and_suffering_value;
@@ -179,12 +186,15 @@ struct priest_t : public player_t
     constants.vampiric_touch_power_mod        = 2.0 * 3.0 / 15.0;
     constants.shadow_power_value			  = 0.15;
     constants.dark_evangelism_value			  = 0.01;
+    constants.holy_evangelism_damage_value	  = 0.02;
+    constants.holy_evangelism_mana_value	  = 0.03;
     constants.twisted_faith_static_value	  = 0.01;
     constants.twisted_faith_dynamic_value	  = 0.5;
     constants.shadow_orb_proc_value           = 0.1;
     constants.shadow_orb_damage_value         = 0.2;
     constants.harnessed_shadows_value         = 0.04;
     constants.dark_archangel_value			  = 0.03;
+    constants.holy_archangel_value			  = 0.03;
     constants.archangel_mana_value			  = 0.03;
     constants.mind_spike_crit_value			  = 0.3;
     constants.pain_and_suffering_value		  = 0.3;
@@ -799,6 +809,10 @@ struct holy_fire_t : public priest_spell_t
 
     base_execute_time -= p -> talents.divine_fury * 0.01;
 
+    // Holy_Evangelism
+        target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+        base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+
   }
 };
 
@@ -1221,6 +1235,10 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
+    // Holy_Evangelism
+    target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+
     cooldown -> duration  = 12 - ( p -> glyphs.penance * 2 );
     cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
 
@@ -1543,13 +1561,18 @@ struct smite_t : public priest_spell_t
 
     base_execute_time -= p -> talents.divine_fury * 0.1;
 
+    // Holy_Evangelism
+    target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
 
   }
 
   virtual void execute()
   {
+	priest_t* p = player -> cast_priest();
     priest_spell_t::execute();
     player -> cast_priest() -> buffs_surge_of_light -> expire();
+    p -> buffs_holy_evangelism  -> trigger( 1, 1.0, 1.0 );
   }
   virtual double execute_time() SC_CONST
   {
@@ -1764,6 +1787,12 @@ struct archangel_t : public priest_spell_t
     		p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
     		p -> buffs_dark_evangelism -> expire();
     	}
+    	else if ( p -> buffs_holy_evangelism -> up())
+    	{
+    		p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
+    		p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
+    		p -> buffs_holy_evangelism -> expire();
+    	}
     }
   }
 
@@ -1773,7 +1802,7 @@ struct archangel_t : public priest_spell_t
 
 	  if ( ! priest_spell_t::ready() )
 	       return false;
-	  if ( ! p -> buffs_dark_evangelism -> up() )
+	  if ( ! p -> buffs_dark_evangelism -> up() && ! p -> buffs_holy_evangelism -> up() )
        return false;
 
 	  return true;
@@ -2027,9 +2056,11 @@ void priest_t::init_buffs()
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                           );
   buffs_surge_of_light      = new buff_t( this, "surge_of_light",      1, 10.0                     );
   buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                  );
-  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0 ,0.4                     );
+  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0 ,0.4             );
+  buffs_holy_evangelism     = new buff_t( this, "holy_evangelism",     5, 15.0, 0 ,1.0             );
   buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                     );
   buffs_dark_archangel      = new buff_t( this, "dark_archangel",      5, 18.0                     );
+  buffs_holy_archangel      = new buff_t( this, "holy_archangel",      5, 18.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
