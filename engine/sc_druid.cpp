@@ -2812,7 +2812,7 @@ struct starfire_t : public druid_spell_t
     };
     init_rank( ranks, 48465 );
 
-    base_execute_time = 3.0;
+    base_execute_time = 3.5;
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
@@ -2931,7 +2931,7 @@ struct wrath_t : public druid_spell_t
     };
     init_rank( ranks, 48461 );
 
-    base_execute_time = 2.0;
+    base_execute_time = 2.5;
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
