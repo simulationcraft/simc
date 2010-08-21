@@ -2136,6 +2136,9 @@ void druid_spell_t::player_buff()
     // One of the bonuses for choosing balance spec
     if ( p -> primary_tree() == TREE_BALANCE )
       player_multiplier *= 1.25;
+
+    if ( p -> buffs_moonkin_form -> check() )
+      player_multiplier *= 1.10;
   }
   // Both eclipse buffs need their own checks
   // Eclipse increases wrath damage by 1.5% per mastery point
@@ -2418,6 +2421,7 @@ struct insect_swarm_t : public druid_spell_t
     base_tick_time    = 2.0;
     num_ticks         = 7;
     tick_power_mod    = 0.2;
+    tick_may_crit     = true;
 
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.genesis, 3, 0.02 ) +
                              ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
@@ -2490,7 +2494,7 @@ struct moonfire_t : public druid_spell_t
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
-    tick_may_crit     = ( p -> set_bonus.tier9_2pc_caster() != 0 );
+    tick_may_crit     = true;
     
     // Costreduction from moonglow and lunar shower is additive
     // up to 9%+90%=99%
@@ -2810,7 +2814,7 @@ struct starfire_t : public druid_spell_t
     may_crit          = true;
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
-    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.1 );
+    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.15, 0.25, 0.5 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
@@ -2929,7 +2933,7 @@ struct wrath_t : public druid_spell_t
     may_crit          = true;
 
     base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
-    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.1 );
+    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.15, 0.25, 0.5 );
     base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
