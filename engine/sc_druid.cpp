@@ -89,7 +89,10 @@ struct druid_t : public player_t
 
   struct talents_t
   {
-    // Checked (current cata build: 12759)
+    // Checked, build 12803
+    // Moonkin Form now increases Nature and Arcane spell damage by 10%. Done
+    // Starlight Wrath now reduces cast time by 0.15/0.25/0.5 sec. (Up from 0.1/0.2/0.3 sec) Done
+    // Checked, build 12759
     int  balance_of_power;
     int  blessing_of_the_grove;
     int  euphoria;
@@ -3892,11 +3895,11 @@ std::vector<talent_translation_t>& druid_t::get_talent_list()
     talent_translation_t translation_table[][MAX_TALENT_TREES] =
     {
       { {  1, 3, &( talents.natures_grace         ) }, {  1, 2, &( talents.feral_swiftness         ) }, {  1, 2, &( talents.blessing_of_the_grove     ) } },
-      { {  2, 3, &( talents.starlight_wrath       ) }, {  2, 3, &( talents.heart_of_the_wild       ) }, {  2, 0, NULL                                   } },
-      { {  3, 2, &( talents.natures_majesty       ) }, {  3, 2, &( talents.predatory_strikes       ) }, {  3, 3, &( talents.furor                     ) } },
+      { {  2, 3, &( talents.starlight_wrath       ) }, {  2, 3, &( talents.furor                   ) }, {  2, 0, NULL                                   } },
+      { {  3, 2, &( talents.natures_majesty       ) }, {  3, 2, &( talents.predatory_strikes       ) }, {  3, 0, NULL                                   } },
       { {  4, 3, &( talents.genesis               ) }, {  4, 2, &( talents.infected_wounds         ) }, {  4, 0, NULL                                   } },
-      { {  5, 3, &( talents.moonglow              ) }, {  5, 3, &( talents.fury_swipes             ) }, {  5, 1, &( talents.master_shapeshifter       ) } },
-      { {  6, 2, &( talents.balance_of_power      ) }, {  6, 2, &( talents.primal_fury             ) }, {  0, 0, NULL                                   } },
+      { {  5, 3, &( talents.moonglow              ) }, {  5, 3, &( talents.fury_swipes             ) }, {  5, 0, NULL                                   } },
+      { {  6, 2, &( talents.balance_of_power      ) }, {  6, 2, &( talents.primal_fury             ) }, {  6, 1, &( talents.master_shapeshifter       ) } },
       { {  7, 3, &( talents.lunar_guidance        ) }, {  7, 2, &( talents.feral_aggression        ) }, {  0, 0, NULL                                   } },
       { {  8, 1, &( talents.moonkin_form          ) }, {  8, 3, &( talents.king_of_the_jungle      ) }, {  0, 0, NULL                                   } },
       { {  9, 1, &( talents.typhoon               ) }, {  9, 1, &( talents.feral_charge            ) }, {  0, 0, NULL                                   } },
