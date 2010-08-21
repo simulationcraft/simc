@@ -3555,6 +3555,8 @@ std::vector<option_t>& shaman_t::get_options()
       { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
       { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
       { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
+      // @option_doc loc=player/druid/misc title="Misc"
+ 	    { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
