@@ -57,6 +57,7 @@ struct shaman_t : public player_t
 
   // Gains
   gain_t* gains_primal_wisdom;
+  gain_t* gains_rolling_thunder;
   gain_t* gains_telluric_currents;
   gain_t* gains_thunderstorm;
   gain_t* gains_water_shield;
@@ -64,12 +65,14 @@ struct shaman_t : public player_t
   // Procs
   proc_t* procs_elemental_overload;
   proc_t* procs_lava_surge;
+  proc_t* procs_rolling_thunder;
   proc_t* procs_windfury;
 
   // Random Number Generators
   rng_t* rng_elemental_overload;
   rng_t* rng_lava_surge;
   rng_t* rng_primal_wisdom;
+  rng_t* rng_rolling_thunder;
   rng_t* rng_searing_flames;
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
@@ -90,13 +93,14 @@ struct shaman_t : public player_t
     int  elemental_oath;
     int  elemental_precision;
     int  feedback;
+    int  fulmination;
     int  improved_fire_nova;
     int  lava_flows;
     int  lava_surge;
     int  reverberation;
+    int  rolling_thunder;
     int  storm_earth_and_fire;
     int  totemic_wrath;
-    int  unrelenting_storm;
 
     // Enhancement
     int  elemental_weapons;
@@ -608,6 +612,19 @@ static void stack_maelstrom_weapon( attack_t* a )
     p -> buffs_tier10_4pc_melee -> trigger();
 }
 
+// trigger_fulmination ==============================================
+
+static void trigger_fulmination ( spell_t* s )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  if ( p -> talents.fulmination && p -> buffs_lightning_shield -> stack() )
+  {
+    p -> active_lightning_charge -> execute();
+    p -> buffs_lightning_shield  -> expire();
+  }
+}
+
 // trigger_primal_wisdom =============================================
 
 static void trigger_primal_wisdom ( attack_t* a )
@@ -620,9 +637,25 @@ static void trigger_primal_wisdom ( attack_t* a )
   }
 }
 
+// trigger_rolling_thunder ==============================================
+
+static void trigger_rolling_thunder ( spell_t* s )
+{
+  shaman_t* p = s -> player -> cast_shaman();
+
+  if ( p -> rng_rolling_thunder -> roll( p -> talents.rolling_thunder * 0.30 ) && p -> buffs_lightning_shield -> check() )
+  {
+    p -> resource_gain( RESOURCE_MANA, 0.01 * p -> resource_max[ RESOURCE_MANA ], p -> gains_rolling_thunder );
+    if ( p -> buffs_lightning_shield -> stack() < 9.0 )
+    {
+      p -> buffs_lightning_shield -> current_stack++; // increment() wasn't incrementing
+      p -> procs_rolling_thunder  -> occur();
+    }
+  }
+}
+
 // trigger_searing_flames ===============================================
 
-// FIX ME: The debuff stacks fine, but the dot does 0 damage
 static void trigger_searing_flames( spell_t* s )
 {
   double dmg = s -> direct_dmg;
@@ -1365,7 +1398,7 @@ struct chain_lightning_t : public shaman_spell_t
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
     cooldown -> duration  = 6.0;
-    cooldown -> duration -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 0.75, 1.5, 2.5 );
+    cooldown -> duration -= util_t::talent_rank( p -> talents.storm_earth_and_fire, 3, 1.0, 2.0, 3.0 );
 
     elemental_overload_stats = p -> get_stats( "elemental_overload" ); // Testing needed to see if this still suffers from the jump penalty
     elemental_overload_stats -> school = SCHOOL_NATURE;    
@@ -1383,6 +1416,7 @@ struct chain_lightning_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       trigger_elemental_overload( this, elemental_overload_stats  );
+      trigger_rolling_thunder( this );
     }
   }
 
@@ -1504,7 +1538,7 @@ struct fire_nova_t : public shaman_spell_t
     cooldown -> duration = 10.0;
 
     base_multiplier *= 1.0 + ( p -> talents.improved_fire_nova * 0.10 +
-			                   p -> talents.call_of_flame      * 0.10 );
+			                         p -> talents.call_of_flame      * 0.10 );
 
     base_hit += p -> talents.elemental_precision * 0.01;
 
@@ -1745,6 +1779,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       trigger_elemental_overload( this, elemental_overload_stats );
+      trigger_rolling_thunder( this );
       trigger_telluric_currents( this );
       if ( result == RESULT_CRIT )
       {
@@ -2011,6 +2046,16 @@ struct earth_shock_t : public shaman_spell_t
     {
       trigger_gcd = 1.0;
       min_gcd     = 1.0;
+    }
+  }
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+    shaman_spell_t::execute();
+
+    if ( result_is_hit() )
+    {
+      trigger_fulmination( this );
     }
   }
 
@@ -3004,7 +3049,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     bonus_power = util_t::ability_rank( p -> level,  211.0,80,  186.0,77,  157.0,72,  96.0,65,  45.0,0  );
 
-    bonus_power *= 1.0 + p -> talents.elemental_weapons * 0.15;
+    bonus_power *= 1.0 + p -> talents.elemental_weapons * 0.20;
 
     id = 58790;
   }
@@ -3146,6 +3191,17 @@ struct lightning_shield_t : public shaman_spell_t
 
       // Lightning Shield may actually be modeled as a pet given that it cannot proc Honor Among Thieves
       pseudo_pet = true;
+    }
+    virtual void player_buff()
+    {
+      shaman_t* p = player -> cast_shaman();
+      shaman_spell_t::player_buff();
+
+      if( p -> talents.fulmination )
+      {
+        player_multiplier *= p -> buffs_lightning_shield -> stack();
+      }
+
     }
   };
 
@@ -3425,8 +3481,6 @@ void shaman_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  mp5_per_intellect = util_t::talent_rank( talents.unrelenting_storm, 3, 0.04 );
-
   base_spell_crit  += talents.blessing_of_the_eternals * 0.02;
   base_spell_crit  += talents.acuity * 0.01;
   base_attack_crit += talents.acuity * 0.01;
@@ -3488,6 +3542,7 @@ void shaman_t::init_gains()
   player_t::init_gains();
 
   gains_primal_wisdom        = get_gain( "primal_wisdom"     );
+  gains_rolling_thunder      = get_gain( "rolling_thunder"   );
   gains_telluric_currents    = get_gain( "telluric_currents" );
   gains_thunderstorm         = get_gain( "thunderstorm"      );
   gains_water_shield         = get_gain( "water_shield"      );
@@ -3499,8 +3554,9 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_elemental_overload = get_proc( "elemental_overload" );
+  procs_elemental_overload = get_proc( "elemental_overload" );  
   procs_lava_surge         = get_proc( "lava_surge"         );
+  procs_rolling_thunder    = get_proc( "rolling_thunder"    );
   procs_windfury           = get_proc( "windfury"           );
 }
 
@@ -3512,8 +3568,9 @@ void shaman_t::init_rng()
   rng_elemental_overload   = get_rng( "elemental_overload"   );
   rng_lava_surge           = get_rng( "lava_surge"           );
   rng_primal_wisdom        = get_rng( "primal_wisdom"        );
+  rng_rolling_thunder      = get_rng( "rolling_thunder"      );
   rng_searing_flames       = get_rng( "searing_flames"       );
-  rng_static_shock         = get_rng( "static_shock"         );
+  rng_static_shock         = get_rng( "static_shock"         );  
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
@@ -3754,16 +3811,16 @@ std::vector<talent_translation_t>& shaman_t::get_talent_list()
     { {  8, 2, &( talents.improved_fire_nova    ) }, {  8, 3, &( talents.toughness                 ) }, {  8, 0, NULL                                  } },
     { {  9, 1, &( talents.elemental_focus       ) }, {  9, 1, &( talents.stormstrike               ) }, {  9, 1, &( talents.natures_swiftness        ) } },
     { { 10, 0, NULL                               }, { 10, 3, &( talents.static_shock              ) }, { 10, 0, NULL                                  } },
-    { { 11, 3, &( talents.unrelenting_storm     ) }, { 11, 0, NULL                                   }, { 11, 0, NULL                                  } },
+    { { 11, 2, &( talents.rolling_thunder       ) }, { 11, 0, NULL                                   }, { 11, 0, NULL                                  } },
     { { 12, 2, &( talents.elemental_oath        ) }, { 12, 2, &( talents.primal_wisdom             ) }, { 12, 2, &( talents.restorative_totems       ) } },
     { { 13, 3, &( talents.lava_flows            ) }, { 13, 3, &( talents.searing_flames            ) }, { 13, 2, &( talents.blessing_of_the_eternals ) } },
-    { { 14, 3, &( talents.storm_earth_and_fire  ) }, { 14, 2, &( talents.frozen_power              ) }, { 14, 0, NULL                                  } },
-    { { 15, 1, &( talents.elemental_mastery     ) }, { 15, 0, NULL                                   }, { 15, 0, NULL                                  } },
-    { { 16, 1, &( talents.totemic_wrath         ) }, { 16, 1, &( talents.shamanistic_rage          ) }, { 16, 1, &( talents.mana_tide_totem          ) } },
-    { { 17, 3, &( talents.feedback              ) }, { 17, 3, &( talents.unleashed_rage            ) }, { 17, 0, NULL                                  } },
-    { { 18, 2, &( talents.lava_surge            ) }, { 18, 3, &( talents.maelstrom_weapon          ) }, { 18, 0, NULL                                  } },
-    { { 19, 0, NULL                               }, { 19, 2, &( talents.improved_lava_lash        ) }, { 19, 2, &( talents.telluric_currents        ) } },
-    { {  0, 0, NULL                               }, { 20, 1, &( talents.feral_spirit              ) }, { 20, 0, NULL                                  } },
+    { { 14, 1, &( talents.totemic_wrath         ) }, { 14, 2, &( talents.frozen_power              ) }, { 14, 0, NULL                                  } },
+    { { 15, 1, &( talents.fulmination           ) }, { 15, 0, NULL                                   }, { 15, 0, NULL                                  } },
+    { { 16, 1, &( talents.elemental_mastery     ) }, { 16, 1, &( talents.shamanistic_rage          ) }, { 16, 1, &( talents.mana_tide_totem          ) } },
+    { { 17, 3, &( talents.storm_earth_and_fire  ) }, { 17, 3, &( talents.unleashed_rage            ) }, { 17, 0, NULL                                  } },
+    { { 18, 3, &( talents.feedback              ) }, { 18, 3, &( talents.maelstrom_weapon          ) }, { 18, 0, NULL                                  } },
+    { { 19, 1, &( talents.lava_surge            ) }, { 19, 2, &( talents.improved_lava_lash        ) }, { 19, 2, &( talents.telluric_currents        ) } },
+    { { 20, 0, NULL                               }, { 20, 1, &( talents.feral_spirit              ) }, { 20, 0, NULL                                  } },
   };
 
     util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
@@ -3798,6 +3855,7 @@ std::vector<option_t>& shaman_t::get_options()
       { "feedback",                  OPT_INT,  &( talents.feedback                  ) },
       { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
       { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
+      { "fulmination",               OPT_INT,  &( talents.fulmination               ) },
       { "improved_fire_nova",        OPT_INT,  &( talents.improved_fire_nova        ) },
       { "improved_lava_lash",        OPT_INT,  &( talents.improved_lava_lash        ) },
       { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
@@ -3809,6 +3867,7 @@ std::vector<option_t>& shaman_t::get_options()
       { "primal_wisdom",             OPT_INT,  &( talents.primal_wisdom             ) },
       { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
       { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
+      { "rolling_thunder",           OPT_INT,  &( talents.rolling_thunder           ) },
       { "searing_flames",            OPT_INT,  &( talents.searing_flames            ) },
       { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
       { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
@@ -3818,7 +3877,6 @@ std::vector<option_t>& shaman_t::get_options()
       { "toughness",                 OPT_INT,  &( talents.toughness                 ) },
       { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
       { "totemic_wrath",             OPT_INT,  &( talents.totemic_wrath             ) },
-      { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
       { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
