@@ -11,15 +11,14 @@
  * - removed surge_of_light
  * - changed talent tree
  * - added Talent Holy Concentration
- * - added Shadowy Apparation Proc
+ * - added Shadowy Apparation
+ * - finished Inner Will
  */
 
 /*
  * To do List:
  * Shadow:
  * - Mind Spike Debuff
- * - Talent Shadowy Apparation: Spell execution
- * - Talent Inner Will
  * Other:
  * - Talent Revelations
  * - Talent Twirling Light
@@ -173,6 +172,9 @@
 		double archangel_mana_value;
 		double mind_spike_crit_value;
 		double pain_and_suffering_value;
+		double holy_concentration_value;
+		double meditation_value;
+		double inner_will_value;
 
 		constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
 	  };
@@ -205,6 +207,8 @@
 		use_mind_blast           = 1;
 		recast_mind_blast        = 0;
 
+		distance	= 30;
+
 		max_mana_cost = 0.0;
 
 		power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
@@ -236,6 +240,9 @@
 		constants.archangel_mana_value			  = 0.03;
 		constants.mind_spike_crit_value			  = 0.30;
 		constants.pain_and_suffering_value		  = 0.30;
+		constants.holy_concentration_value		  = 0.10;
+		constants.meditation_value				  = 0.50;
+		constants.inner_will_value				  = 0.15;
 
 		cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
 		cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -559,14 +566,14 @@ struct shadowy_apparation_t : public priest_spell_t
   {
     static rank_t ranks[] =
     {
-      { 80, 1, 390, 400, 0, 0.0 }, // Dummy rank for level 80 characters.
+      { 80, 1, 390, 400, 0, 0.0 }, // estimated +-20 on cataclysm beta, 22082010
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
     background        = true;
-    proc			        = true;
+    proc			  = true;
     trigger_gcd       = 0;
-    travel_speed	    = 2.6;
+    travel_speed	  = 2.6; // estimated
     base_execute_time = 0;
     may_crit          = false;
     direct_power_mod  = 1.5 / 3.5;
@@ -660,7 +667,8 @@ struct devouring_plague_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 8;
     tick_power_mod    = p -> power_mod.devouring_plague;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
+								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
@@ -929,6 +937,7 @@ struct inner_fire_t : public priest_spell_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     
+    p -> buffs_inner_will		-> expire ();
     p -> buffs_inner_fire       -> start( 1, bonus_spell_power );
     p -> buffs_inner_fire_armor -> start( 1, bonus_armor       );
   }
@@ -961,7 +970,9 @@ struct inner_will_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_inner_will       -> start( 1 );
+    p -> buffs_inner_fire -> expire();
+    p -> buffs_inner_fire_armor -> expire();
+    p -> buffs_inner_will -> trigger();
   }
 
   virtual bool ready()
@@ -1222,7 +1233,7 @@ struct mind_spike_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 81, 1, 1082.81, 1144.05, 0, 0.17 },
+      { 80, 1, 1082.81, 1144.05, 0, 0.17 }, // should be lvl 81+
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -1489,7 +1500,8 @@ struct shadow_word_death_t : public priest_spell_t
     cooldown -> duration = 10.0;
 
     direct_power_mod  = p -> power_mod.shadow_word_death;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
+								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
 
   }
@@ -1578,8 +1590,9 @@ struct shadow_word_pain_t : public priest_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 6;
     tick_power_mod    = p -> power_mod.shadow_word_pain;
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
-
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
+								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+    base_cost         = floor( base_cost );
     base_multiplier *= 1.0 + ( p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
@@ -2065,7 +2078,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
   if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
   if ( name == "chakra"            ) return new chakra_t            ( this, options_str );
-
+  if ( name == "inner_will"        ) return new inner_will_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2366,17 +2379,14 @@ void priest_t::regen( double periodicity )
 	// Seem's to be the new global value, but not sure
 	mana_regen_while_casting = 0.50;
 
-
-  if ( talents.meditation )
-  {
-
-	  mana_regen_while_casting += 0.50;
-
-  }
-  if (talents.holy_concentration )
-  {
-	  mana_regen_while_casting += 0.10 * talents.holy_concentration;
-  }
+	if ( talents.meditation )
+		{
+			mana_regen_while_casting += constants.meditation_value;
+		}
+	if (talents.holy_concentration )
+		{
+			mana_regen_while_casting += talents.holy_concentration * constants.holy_concentration_value;
+		}
 
 
 
