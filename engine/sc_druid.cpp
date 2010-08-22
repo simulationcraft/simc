@@ -78,6 +78,7 @@ struct druid_t : public player_t
 
   // Random Number Generation
   rng_t* rng_fury_swipes;
+  rng_t* rng_nom_nom_nom;
   rng_t* rng_primal_fury;
   
   attack_t* cat_melee_attack;
@@ -113,6 +114,7 @@ struct druid_t : public player_t
     int  moonkin_form;
     int  natures_majesty;
     int  natures_grace;
+    int  nom_nom_nom;
     int  owlkin_frenzy;
     int  primal_fury;
     int  solar_beam;
@@ -130,7 +132,6 @@ struct druid_t : public player_t
     int  infected_wounds;
     int  natural_reaction;
     int  natures_swiftness;
-    int  nom_nom_nom;
     int  nurturing_instict;
     int  predatory_strikes;
     int  primal_madness;
@@ -1412,7 +1413,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 struct ferocious_bite_t : public druid_cat_attack_t
 {
   struct double_pair { double min, max; };
-  double excess_engery_mod, excess_energy;
+  double excess_energy;
   double_pair* combo_point_dmg;
 
   ferocious_bite_t( player_t* player, const std::string& options_str ) :
@@ -1445,10 +1446,6 @@ struct ferocious_bite_t : public druid_cat_attack_t
                           p -> level >= 72 ? dmg_72 :
                           p -> level >= 63 ? dmg_63 :
                           dmg_60 );
-    excess_engery_mod = ( p -> level >= 78 ? 9.4 :
-                          p -> level >= 72 ? 7.7 :
-                          p -> level >= 63 ? 3.4 :
-                          2.1 );  // Up to 30 additional energy is converted into damage
   }
 
   virtual void execute()
@@ -1459,29 +1456,27 @@ struct ferocious_bite_t : public druid_cat_attack_t
     base_dd_max = combo_point_dmg[ p -> buffs_combo_points -> current_stack - 1 ].max;
 
     direct_power_mod = 0.07 * p -> buffs_combo_points -> stack();
-
+    // consumes up to 35 additional energy to increase damage by up to 100%.
+    // Assume 100/35 = 2.857% per additional energy consumed
     excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
 
-    if ( excess_energy > 0 )
+    if ( excess_energy > 35 )
     {
-      // There will be energy left after the Ferocious Bite of which up to 30 will also be converted into damage.
-      // Additional damage AND additinal scaling from AP.
-      // druid_cat_attack_t::cost() takes care of OoC handling.
-
-      excess_energy     = ( excess_energy > 30 ? 30 : excess_energy );
-      direct_power_mod += excess_energy / 410.0;
-      base_dd_adder     = excess_engery_mod * excess_energy;
+      excess_energy     = 35;
     }
-    else
+    else if ( excess_energy < 0 )
     {
-      excess_energy = 0;
-      base_dd_adder = 0;
+      excess_energy     = 0;
     }
 
     druid_cat_attack_t::execute();
-    if ( excess_energy > 0 )
+
+    if ( result_is_hit() )
     {
-      direct_power_mod -= excess_energy / 410.0;
+      if ( p -> rng_nom_nom_nom -> roll( p -> talents.nom_nom_nom * 0.5 ) )
+      {
+        p -> dots_rip -> action -> refresh_duration();
+      }
     }
   }
 
@@ -1510,11 +1505,12 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     druid_cat_attack_t::player_buff();
 
+    player_multiplier *= 1.0 + excess_energy / 35.0;
+
     if ( sim -> target -> debuffs.bleeding -> check() )
     {
       player_crit += 0.25/3.0 * p -> talents.rend_and_tear;
     }
-
   }
 };
 
@@ -3559,6 +3555,7 @@ void druid_t::init_rng()
   player_t::init_rng();
 
   rng_fury_swipes = get_rng( "fury_swipes" );
+  rng_nom_nom_nom = get_rng( "nom_nom_nom" );
   rng_primal_fury = get_rng( "primal_fury" );
 }
 
