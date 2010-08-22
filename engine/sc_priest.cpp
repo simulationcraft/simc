@@ -9,9 +9,24 @@
  * Build 12803:
  * - changed darkness
  * - removed surge_of_light
- *
+ * - changed talent tree
+ * - added Talent Holy Concentration
+ * - added Shadowy Apparation Proc
  */
 
+/*
+ * To do List:
+ * Shadow:
+ * - Mind Spike Debuff
+ * - Talent Shadowy Apparation: Spell execution
+ * - Talent Inner Will
+ * Other:
+ * - Talent Revelations
+ * - Talent Twirling Light
+ * - Spell Holy Word: Chastice
+ * - Spell Chakra Cooldown
+ * - Talent State of Mind: implement function to increase/refresh duration of chakra by 4s
+ */
 
 #include "simulationcraft.h"
 
@@ -19,275 +34,277 @@
 // Priest
 // ==========================================================================
 
-struct priest_t : public player_t
-{
-  // Buffs
-  buff_t* buffs_devious_mind;
-  buff_t* buffs_glyph_of_shadow;
-  buff_t* buffs_inner_fire;
-  buff_t* buffs_inner_fire_armor;
-  buff_t* buffs_inner_will;
-  buff_t* buffs_shadow_form;
-  buff_t* buffs_vampiric_embrace;
-  buff_t* buffs_mind_melt;
-  buff_t* buffs_dark_evangelism;
-  buff_t* buffs_holy_evangelism;
-  buff_t* buffs_shadow_orb;
-  buff_t* buffs_dark_archangel;
-  buff_t* buffs_holy_archangel;
-  buff_t* buffs_chakra_pre;
-  buff_t* buffs_chakra;
-
-  // Cooldowns
-  cooldown_t* cooldowns_mind_blast;
-  cooldown_t* cooldowns_shadow_fiend;
-  cooldown_t* cooldowns_archangel;
-  cooldown_t* cooldowns_chakra;
-
-  // DoTs
-  dot_t* dots_shadow_word_pain;
-  dot_t* dots_vampiric_touch;
-  dot_t* dots_devouring_plague;
-  dot_t* dots_holy_fire;
-
-  // Debuffs
-  debuff_t* debuffs_mind_spike;
-
-  // Gains
-  gain_t* gains_devious_mind;
-  gain_t* gains_dispersion;
-  gain_t* gains_glyph_of_shadow_word_pain;
-  gain_t* gains_shadow_fiend;
-  gain_t* gains_archangel;
-
-  // Up-Times
-
-  // Random Number Generators
-  rng_t* rng_pain_and_suffering;
-
-  // Options
-  std::string power_infusion_target_str;
-
-  // Mana Resource Tracker
-  struct mana_resource_t
+  struct priest_t : public player_t
   {
-    double mana_gain;
-    double mana_loss;
+    // Buffs
+    buff_t* buffs_glyph_of_shadow;
+    buff_t* buffs_inner_fire;
+    buff_t* buffs_inner_fire_armor;
+    buff_t* buffs_inner_will;
+    buff_t* buffs_shadow_form;
+    buff_t* buffs_vampiric_embrace;
+    buff_t* buffs_mind_melt;
+    buff_t* buffs_dark_evangelism;
+    buff_t* buffs_holy_evangelism;
+    buff_t* buffs_shadow_orb;
+    buff_t* buffs_dark_archangel;
+    buff_t* buffs_holy_archangel;
+    buff_t* buffs_chakra_pre;
+    buff_t* buffs_chakra;
 
-    void reset() { memset( ( void* ) this, 0x00, sizeof( mana_resource_t ) ); }
-    mana_resource_t() { reset(); }
-  };
-  mana_resource_t mana_resource;
+    // Cooldowns
+    cooldown_t* cooldowns_mind_blast;
+    cooldown_t* cooldowns_shadow_fiend;
+    cooldown_t* cooldowns_archangel;
+    cooldown_t* cooldowns_chakra;
 
-  double max_mana_cost;
+    // DoTs
+    dot_t* dots_shadow_word_pain;
+    dot_t* dots_vampiric_touch;
+    dot_t* dots_devouring_plague;
+    dot_t* dots_holy_fire;
 
-  std::vector<player_t *> party_list;
+    // Gains
+    gain_t* gains_dispersion;
+    gain_t* gains_glyph_of_shadow_word_pain;
+    gain_t* gains_shadow_fiend;
+    gain_t* gains_archangel;
+
+    // Procs
+    proc_t* procs_shadowy_apparation;
+
+    // Special
+    spell_t* shadowy;
+
+    // Random Number Generators
+    rng_t* rng_pain_and_suffering;
+
+    // Options
+	std::string power_infusion_target_str;
+
+	// Mana Resource Tracker
+	struct mana_resource_t
+	  {
+		double mana_gain;
+		double mana_loss;
+		void reset() { memset( ( void* ) this, 0x00, sizeof( mana_resource_t ) ); }
+
+		mana_resource_t() { reset(); }
+	  };
+
+	mana_resource_t mana_resource;
+	double max_mana_cost;
+	std::vector<player_t *> party_list;
+
+	// Talents
+	struct talents_t
+	  {
+		int aspiration; // 					complete 12803
+		int darkness; // 					complete 12803
+		int dispersion; // 					complete 12803
+		int divine_fury; // 				complete 12803
+		int improved_devouring_plague;  // 	complete 12803
+		int improved_inner_fire; //
+		int improved_mind_blast; // 		complete 12803
+		int improved_shadow_word_pain; // 	complete 12803
+		int meditation; // 					done: talent function 12803
+		int mental_agility; // 															open: better implementation
+		int mind_flay;
+		int mind_melt; // 					complete 12803
+		int pain_and_suffering; // 			complete 12803
+		int penance;
+		int power_infusion; // 				complete 12803
+		int shadow_form; // 				complete 12803
+		int twin_disciplines; // 			complete 12803
+		int twisted_faith; // 				complete 12803
+		int vampiric_embrace; // 			complete 12803
+		int vampiric_touch; // 				complete 12803
+		int veiled_shadows; // 				complete 12803
+		int evangelism; // 					complete 12803
+		int archangel; // 					complete 12803
+		int chakra; // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+		int state_of_mind; // 															incomplete: implement a function to increase the duration of a buff
+		int harnessed_shadows; //  			complete 12803
+		int shadowy_apparation; // 														incomplete: everything
+		int blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
+		int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
+		int holy_concentration; //			complete 12803
+
+		talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
+	  };
+	talents_t talents;
+
+	// Glyphs
+	struct glyphs_t
+	  {
+		int dispersion;
+		int hymn_of_hope;
+		int inner_fire;
+		int mind_flay;
+		int penance;
+		int shadow;
+		int shadow_word_death;
+		int shadow_word_pain;
+		int smite;
+
+		glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+	  };
+	glyphs_t glyphs;
+
+	// Constants
+	struct constants_t
+	  {
+		double darkness_value;
+		double devouring_plague_health_mod;
+		double improved_shadow_word_pain_value;
+		double shadow_form_value;
+		double twin_disciplines_value;
+		double shadow_power_value;
+		double dark_evangelism_value;
+		double holy_evangelism_damage_value;
+		double holy_evangelism_mana_value;
+		double twisted_faith_static_value;
+		double twisted_faith_dynamic_value;
+		double shadow_orb_proc_value;
+		double shadow_orb_damage_value;
+		double harnessed_shadows_value;
+		double dark_archangel_value;
+		double holy_archangel_value;
+		double archangel_mana_value;
+		double mind_spike_crit_value;
+		double pain_and_suffering_value;
+
+		constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
+	  };
+	constants_t constants;
+
+	// Power Mods
+	struct power_mod_t
+      {
+		double devouring_plague;
+		double mind_blast;
+		double mind_flay;
+		double mind_spike;
+		double shadow_word_death;
+		double shadow_word_pain;
+		double vampiric_touch;
+		double holy_fire;
+		double smite;
+
+		power_mod_t() { memset( ( void * ) this, 0x0, sizeof( power_mod_t ) ); }
+      };
+	power_mod_t power_mod;
+
+	bool   use_shadow_word_death;
+	int    use_mind_blast;
+	int    recast_mind_blast;
+
+	priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
+	  {
+		use_shadow_word_death    = false;
+		use_mind_blast           = 1;
+		recast_mind_blast        = 0;
+
+		max_mana_cost = 0.0;
+
+		power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
+		power_mod.mind_blast                      = 1.5 / 3.5;
+		power_mod.mind_flay                       = 1.0 / 3.5 * 0.9;
+		power_mod.mind_spike                      = 1.5 / 3.5;
+		power_mod.shadow_word_death               = 1.5 / 3.5;
+		power_mod.shadow_word_pain                = 3.0 / 15.0 * 0.915;
+		power_mod.vampiric_touch                  = 2.0 * 3.0 / 15.0;
+		power_mod.holy_fire			              = 2.0 / 3.5;
+		power_mod.smite					          = 2.5 / 3.5;
+
+		constants.darkness_value                  = 0.01;
+		constants.devouring_plague_health_mod	  = 0.15;
+		constants.improved_shadow_word_pain_value = 0.03;
+		constants.shadow_form_value               = 0.15;
+		constants.twin_disciplines_value          = 0.02;
+		constants.shadow_power_value			  = 0.15;
+		constants.dark_evangelism_value			  = 0.01;
+		constants.holy_evangelism_damage_value	  = 0.02;
+		constants.holy_evangelism_mana_value	  = 0.03;
+		constants.twisted_faith_static_value	  = 0.01;
+		constants.twisted_faith_dynamic_value	  = 0.50;
+		constants.shadow_orb_proc_value           = 0.10;
+		constants.shadow_orb_damage_value         = 0.20;
+		constants.harnessed_shadows_value         = 0.04;
+		constants.dark_archangel_value			  = 0.03;
+		constants.holy_archangel_value			  = 0.03;
+		constants.archangel_mana_value			  = 0.03;
+		constants.mind_spike_crit_value			  = 0.30;
+		constants.pain_and_suffering_value		  = 0.30;
+
+		cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
+		cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
+		cooldowns_archangel    = get_cooldown( "archangel"   );
+		cooldowns_chakra       = get_cooldown( "chakra"   );
+
+		cooldowns_mind_blast -> duration 		  = 8.0;
+		cooldowns_shadow_fiend -> duration 		  = 300.0;
+		cooldowns_archangel -> duration 		  = 15.0;
+		cooldowns_chakra -> duration 			  = 60.0;
 
 
+		dots_shadow_word_pain = get_dot( "shadow_word_pain" );
+		dots_vampiric_touch   = get_dot( "vampiric_touch" );
+		dots_devouring_plague = get_dot( "devouring_plague" );
+		dots_holy_fire        = get_dot( "holy_fire" );
 
-  struct talents_t
-  {
-    int aspiration; // 					complete 12803
-    int darkness; // 					complete 12803
-    int dispersion; // 					complete 12803
-    int divine_fury; // 				complete 12803
-    int improved_devouring_plague;  // 	complete 12803
-    int improved_inner_fire; //
-    int improved_mind_blast; // 		complete 12803
-    int improved_shadow_word_pain; // 	complete 12803
-    int meditation; // 					done: talent function 12803
-    int mental_agility; // 															open: better implementation
-    int mind_flay;
-    int mind_melt; // 					complete 12803
-    int pain_and_suffering; // 			complete 12803
-    int penance;
-    int power_infusion; // 				complete 12803
-    int shadow_form; // 				complete 12803
-    int twin_disciplines; // 			complete 12803
-    int twisted_faith; // 				complete 12803
-    int vampiric_embrace; // 			complete 12803
-    int vampiric_touch; // 				complete 12803
-    int veiled_shadows; // 				complete 12803
-    int evangelism; // 					complete 12803
-    int archangel; // 					complete 12803
-    int chakra; // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
-    int state_of_mind; // 															incomplete: implement a function to increase the duration of a buff
-    int harnessed_shadows; //  			complete 12803
-    int shadowy_apparation; // 														incomplete: everything
-    int blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
-    int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
-    int holy_concentration; //			incomplete
+		shadowy         = NULL;
 
+	  }
 
-    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-  };
-  talents_t talents;
+	// Character Definition
+	virtual void      init_glyphs();
+	virtual void      init_race();
+	virtual void      init_base();
+	virtual void      init_gains();
+	virtual void      init_uptimes();
+	virtual void      init_rng();
+	virtual void      init_buffs();
+	virtual void      init_actions();
+	virtual void 	  init_procs();
+	virtual void      reset();
+	virtual void      init_party();
+	virtual std::vector<talent_translation_t>& get_talent_list();
+	virtual std::vector<option_t>& get_options();
+	virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+	virtual action_t* create_action( const std::string& name, const std::string& options );
+	virtual pet_t*    create_pet   ( const std::string& name );
+	virtual void      create_pets();
+	virtual int       decode_set( item_t& item );
+	virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+	virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+	virtual double    composite_armor() SC_CONST;
+	virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+	virtual double    composite_spell_power( int school ) SC_CONST;
+	virtual double    composite_player_multiplier( int school ) SC_CONST;
 
-  struct glyphs_t
-  {
-    int dispersion;
-    int hymn_of_hope;
-    int inner_fire;
-    int mind_flay;
-    int penance;
-    int shadow;
-    int shadow_word_death;
-    int shadow_word_pain;
-    int smite;
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
+	virtual void      regen( double periodicity );
+	virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
-  struct constants_t
-  {
-    double darkness_value;
-    double devouring_plague_health_mod;
-    double improved_shadow_word_pain_value;
-    double shadow_form_value;
-    double twin_disciplines_value;
-    double shadow_power_value;
-    double dark_evangelism_value;
-    double holy_evangelism_damage_value;
-    double holy_evangelism_mana_value;
-    double twisted_faith_static_value;
-    double twisted_faith_dynamic_value;
-    double shadow_orb_proc_value;
-    double shadow_orb_damage_value;
-    double harnessed_shadows_value;
-    double dark_archangel_value;
-    double holy_archangel_value;
-    double archangel_mana_value;
-    double mind_spike_crit_value;
-    double pain_and_suffering_value;
+	virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
+	virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
-    constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
-  };
-  constants_t constants;
+	virtual int       primary_tree() SC_CONST
+	  {
+	  if ( level > 10 && level <= 69 )
+	    {
+		  if (talents.darkness || talents.improved_shadow_word_pain || talents.veiled_shadows) return TREE_SHADOW;
+		  else if (talents.divine_fury) return TREE_HOLY;
+		  else if (talents.twin_disciplines || talents.mental_agility) return TREE_DISCIPLINE;
+		  else return TREE_NONE;
 
-  struct power_mod_t
-    {
-	  double devouring_plague;
-	  double mind_blast;
-	  double mind_flay;
-	  double mind_spike;
-	  double shadow_word_death;
-	  double shadow_word_pain;
-	  double vampiric_touch;
-	  double holy_fire;
-	  double smite;
+		}
+	  else
+		{
+		  return talents.shadow_form ? TREE_SHADOW : talents.power_infusion ? TREE_DISCIPLINE : TREE_HOLY;
+		}
 
-	  power_mod_t() { memset( ( void * ) this, 0x0, sizeof( power_mod_t ) ); }
-    };
-  power_mod_t power_mod;
-
-  bool   use_shadow_word_death;
-  int    use_mind_blast;
-  int    recast_mind_blast;
-
-  priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
-  {
-    use_shadow_word_death    = false;
-    use_mind_blast           = 1;
-    recast_mind_blast        = 0;
-
-
-    max_mana_cost = 0.0;
-
-    power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
-    power_mod.mind_blast                      = 1.5 / 3.5;
-    power_mod.mind_flay                       = 1.0 / 3.5 * 0.9;
-    power_mod.mind_spike                      = 1.5 / 3.5;
-    power_mod.shadow_word_death               = 1.5 / 3.5;
-    power_mod.shadow_word_pain                = 3.0 / 15.0 * 0.915;
-    power_mod.vampiric_touch                  = 2.0 * 3.0 / 15.0;
-    power_mod.holy_fire			              = 2.0 / 3.5;
-    power_mod.smite					          = 2.5 / 3.5;
-
-    constants.darkness_value                  = 0.01;
-    constants.devouring_plague_health_mod	  = 0.15;
-    constants.improved_shadow_word_pain_value = 0.03;
-    constants.shadow_form_value               = 0.15;
-    constants.twin_disciplines_value          = 0.02;
-    constants.shadow_power_value			  = 0.15;
-    constants.dark_evangelism_value			  = 0.01;
-    constants.holy_evangelism_damage_value	  = 0.02;
-    constants.holy_evangelism_mana_value	  = 0.03;
-    constants.twisted_faith_static_value	  = 0.01;
-    constants.twisted_faith_dynamic_value	  = 0.50;
-    constants.shadow_orb_proc_value           = 0.10;
-    constants.shadow_orb_damage_value         = 0.20;
-    constants.harnessed_shadows_value         = 0.04;
-    constants.dark_archangel_value			  = 0.03;
-    constants.holy_archangel_value			  = 0.03;
-    constants.archangel_mana_value			  = 0.03;
-    constants.mind_spike_crit_value			  = 0.30;
-    constants.pain_and_suffering_value		  = 0.30;
-
-    cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
-    cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
-    cooldowns_archangel    = get_cooldown( "archangel"   );
-    cooldowns_chakra       = get_cooldown( "chakra"   );
-
-    cooldowns_mind_blast -> duration 		  = 8.0;
-    cooldowns_shadow_fiend -> duration 		  = 300.0;
-    cooldowns_archangel -> duration 		  = 15.0;
-    cooldowns_chakra -> duration 			  = 60.0;
-
-
-    dots_shadow_word_pain = get_dot( "shadow_word_pain" );
-    dots_vampiric_touch   = get_dot( "vampiric_touch" );
-    dots_devouring_plague = get_dot( "devouring_plague" );
-    dots_holy_fire        = get_dot( "holy_fire" );
-
-  }
-
-  // Character Definition
-  virtual void      init_glyphs();
-  virtual void      init_race();
-  virtual void      init_base();
-  virtual void      init_gains();
-  virtual void      init_uptimes();
-  virtual void      init_rng();
-  virtual void      init_buffs();
-  virtual void      init_actions();
-  virtual void      reset();
-  virtual void      init_party();
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name );
-  virtual void      create_pets();
-  virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual double    composite_armor() SC_CONST;
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    composite_spell_power( int school ) SC_CONST;
-  virtual double    composite_player_multiplier( int school ) SC_CONST;
-
-  virtual void      regen( double periodicity );
-  virtual action_expr_t* create_expression( action_t*, const std::string& name );
-
-  virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
-  virtual double    resource_loss( int resource, double amount, action_t* action=0 );
-
-  virtual int       primary_tree() SC_CONST
-		  {
-			  if ( level > 10 && level <= 69 )
-			  {
-				  if (talents.darkness || talents.improved_shadow_word_pain || talents.veiled_shadows) return TREE_SHADOW;
-				  else if (talents.divine_fury) return TREE_HOLY;
-				  else if (talents.twin_disciplines || talents.mental_agility) return TREE_DISCIPLINE;
-				  else return TREE_NONE;
-
-			  }
-			  else
-			  {
-				  return talents.shadow_form ? TREE_SHADOW : talents.power_infusion ? TREE_DISCIPLINE : TREE_HOLY;
-			  }
-
-		  }
+	  }
 
 };
 
@@ -442,12 +459,12 @@ void priest_spell_t::execute()
 void priest_spell_t::player_buff()
 {
 	priest_t* p = player -> cast_priest();
-	 spell_t::player_buff();
-  if ( school == SCHOOL_SHADOW )
-  {
-  player_hit += p -> spirit() * ( p -> talents.twisted_faith / 2.0 ) / p -> rating.spell_hit;
-  }
-  player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
+	spell_t::player_buff();
+		if ( school == SCHOOL_SHADOW )
+			{
+				player_hit += p -> spirit() * ( p -> talents.twisted_faith / 2.0 ) / p -> rating.spell_hit;
+			}
+	player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 
 }
 
@@ -531,6 +548,43 @@ void priest_spell_t::assess_damage( double amount,
     }    
   }
 }
+
+
+// Shadowy Apparation Spell ============================================================
+
+struct shadowy_apparation_t : public priest_spell_t
+{
+	shadowy_apparation_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "shadowy_apparation", player, SCHOOL_SHADOW, TREE_SHADOW )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 80, 1, 390, 400, 0, 0.0 }, // Dummy rank for level 80 characters.
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    proc			  = true;
+    travel_speed	  = 2.6;
+    base_execute_time = 0;
+    may_crit          = false;
+    direct_power_mod  = 1.5 / 3.5;
+    base_cost         = 0.0;
+
+  }
+
+  virtual void execute()
+  {
+	  priest_spell_t::execute();
+
+  }
+};
 
 // Devouring Plague Spell ======================================================
 
@@ -924,7 +978,7 @@ struct inner_will_t : public priest_spell_t
   virtual bool ready()
   {
     priest_t* p = player -> cast_priest();
-    return ! p -> buffs_inner_fire -> check();
+    return ! p -> buffs_inner_will -> check();
   }
 };
 
@@ -971,24 +1025,16 @@ struct mind_blast_t : public priest_spell_t
 
   }
 
-  virtual void target_debuff( int dmg_type)
-  {
-	  //target_t* t = sim -> target;
-	  //priest_t* p = player -> cast_priest();
-	  //if ( t -> debuffs.mind_spike -> up() ) target_crit_bonus_multiplier *= 1.0 + t -> debuffs_mind_spike -> stack() * p -> constants.mind_spike_crit_value;
-  }
 
   virtual void execute()
   {
-    priest_spell_t::execute();
-    priest_t* p = player -> cast_priest();
-    player -> cast_priest() -> buffs_mind_melt -> expire();
+	  priest_t* p = player -> cast_priest();
+	  priest_spell_t::execute();
+	  player -> cast_priest() -> buffs_mind_melt -> expire();
 
-    //player -> cast_priest() -> debuffs_mind_spike -> expire();
      if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
-      p -> buffs_devious_mind -> trigger();
       p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
 
 
@@ -1070,19 +1116,16 @@ struct mind_flay_t : public priest_spell_t
 
   double mb_wait;
   int    swp_refresh;
-  int    devious_mind_priority; // This old T8 boni could be purged
   int    cut_for_mb;
 
   mind_flay_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), devious_mind_priority( 0 ),
-                                                                         cut_for_mb( 0 )
+      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.mind_flay );
 
     option_t options[] =
     {
-      { "devious_mind_priority", OPT_BOOL, &devious_mind_priority },
       { "cut_for_mb",            OPT_BOOL, &cut_for_mb            },
       { "mb_wait",               OPT_FLT,  &mb_wait               },
       { "swp_refresh",           OPT_BOOL, &swp_refresh           },
@@ -1166,13 +1209,6 @@ struct mind_flay_t : public priest_spell_t
         return false;
     }
 
-    // If this option is set, don't cast Mind Flay if we don't have the Tier8 4pc bonus up (only if the character has tier8_4pc=1)
-    if ( devious_mind_priority )
-    {
-      if ( p -> set_bonus.tier8_4pc_caster() && ! p -> buffs_devious_mind -> check() )
-        return false;
-    }
-
     return true;
   }
 };
@@ -1216,7 +1252,6 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-    //p -> debuffs_mind_spike -> trigger( 1 , 1.0, 1.0 );
 
     if ( result_is_hit() )
     {
@@ -1435,10 +1470,10 @@ struct shadow_word_death_t : public priest_spell_t
 {
   double mb_min_wait;
   double mb_max_wait;
-  int    devious_mind_filler;
+
 
   shadow_word_death_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_min_wait( 0 ), mb_max_wait( 0 ), devious_mind_filler( 0 )
+      priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_min_wait( 0 ), mb_max_wait( 0 )
   {
     priest_t* p = player -> cast_priest();
 
@@ -1446,7 +1481,6 @@ struct shadow_word_death_t : public priest_spell_t
     {
       { "mb_min_wait",         OPT_FLT,  &mb_min_wait         },
       { "mb_max_wait",         OPT_FLT,  &mb_max_wait         },
-      { "devious_mind_filler", OPT_BOOL, &devious_mind_filler },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1520,12 +1554,6 @@ struct shadow_word_death_t : public priest_spell_t
       if ( p -> cooldowns_mind_blast -> remains() > mb_max_wait )
         return false;
 
-    if ( devious_mind_filler )
-    {
-      if ( p -> buffs_devious_mind -> check() )
-        return false;
-    }
-
     return true;
   }
 };
@@ -1571,24 +1599,42 @@ struct shadow_word_pain_t : public priest_spell_t
 
   virtual void execute()
   {
-	priest_t* p = player -> cast_priest();
+
     tick_may_crit = true;
     base_crit_bonus_multiplier = 1.0;
     priest_spell_t::execute();
-    if ( result_is_hit() )
-        {
-			p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
-        }
+
+
+
 
   }
 
 virtual void tick()
   {
     priest_t* p = player -> cast_priest();
-
     priest_spell_t::tick();
+
+    // Glyph of SW:P
     if ( p -> glyphs.shadow_word_pain )
-      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
+    	{
+			p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
+    	}
+
+    // Shadowy Apparation
+    double h = p -> talents.shadowy_apparation * (0.02 + p -> buffs.moving -> up()* 0.2 );
+    if (  p -> sim -> roll( h ) )
+		{
+        	p -> procs_shadowy_apparation -> occur();
+        	//if ( ! p -> shadowy ) p -> shadowy = new shadowy_apparation_t( p, "" );
+        	//p -> shadowy -> execute();
+		}
+
+    // Shadow Orb
+    if ( result_is_hit() )
+        {
+      		p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+        }
+
   }
 
   virtual int scale_ticks_with_haste() SC_CONST
@@ -1653,19 +1699,19 @@ struct smite_t : public priest_spell_t
     if ( p -> buffs_chakra_pre -> up())
     {
     	p -> buffs_chakra -> trigger( 1 , 4, 1.0 );
-    	// This should reset the cooldown of the spell chakra_t to 60s, ideally
-    	p -> get_cooldown("chakra") -> duration = 60.0;
-    	p -> get_cooldown("chakra") -> reset();
+
+    	// Here the cooldown of chakra should be activated. or chakra could be executed
+
     	p -> buffs_chakra_pre -> expire();
     }
 
     // Talent State of Mind
     if ( result_is_hit() )
         {
-    	if ( p -> buffs_chakra -> up() && p -> talents.chakra)
-    	{
-    		// p -> buffs_chakra -> "add 4 seconds"
-    	}
+			if ( p -> buffs_chakra -> up() && p -> talents.chakra)
+			{
+				// p -> buffs_chakra -> "add 4 seconds"
+			}
         }
   }
 
@@ -1945,6 +1991,9 @@ struct chakra_t : public priest_spell_t
 };
 
 
+
+
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -2007,6 +2056,7 @@ double priest_t::composite_player_multiplier( int school ) SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "shadowy_apparation"  ) return new shadowy_apparation_t  ( this, options_str );
   if ( name == "devouring_plague"  ) return new devouring_plague_t  ( this, options_str );
   if ( name == "dispersion"        ) return new dispersion_t        ( this, options_str );
   if ( name == "divine_spirit"     ) return new divine_spirit_t     ( this, options_str );
@@ -2027,6 +2077,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
   if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
   if ( name == "chakra"            ) return new chakra_t            ( this, options_str );
+
 
   return player_t::create_action( name, options_str );
 }
@@ -2154,11 +2205,17 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_devious_mind              = get_gain( "devious_mind" );
   gains_dispersion                = get_gain( "dispersion" );
   gains_glyph_of_shadow_word_pain = get_gain( "glyph_of_shadow_word_pain" );
   gains_shadow_fiend              = get_gain( "shadow_fiend" );
   gains_archangel                 = get_gain( "archangel" );
+}
+
+void priest_t::init_procs()
+{
+  player_t::init_procs();
+
+  procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
 }
 
 // priest_t::init_uptimes ====================================================
@@ -2199,9 +2256,9 @@ void priest_t::init_buffs()
   buffs_chakra              = new buff_t( this, "chakra_buff",         1, 30.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
 
-  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_devious_mind = new stat_buff_t( this, "devious_mind", STAT_HASTE_RATING, 240, 1, 4.0,  0.0, set_bonus.tier8_4pc_caster() );
 }
+
+
 
 // priest_t::init_actions =====================================================
 
@@ -2327,6 +2384,10 @@ void priest_t::regen( double periodicity )
 
 	  mana_regen_while_casting += 0.50;
 
+  }
+  if (talents.holy_concentration )
+  {
+	  mana_regen_while_casting += 0.10 * talents.holy_concentration;
   }
 
 
