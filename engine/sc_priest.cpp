@@ -253,7 +253,7 @@
 		dots_devouring_plague = get_dot( "devouring_plague" );
 		dots_holy_fire        = get_dot( "holy_fire" );
 
-		shadowy         = NULL;
+		shadowy         = 0;
 
 	  }
 
@@ -554,35 +554,24 @@ void priest_spell_t::assess_damage( double amount,
 
 struct shadowy_apparation_t : public priest_spell_t
 {
-	shadowy_apparation_t( player_t* player, const std::string& options_str ) :
+	shadowy_apparation_t( player_t* player ) :
       priest_spell_t( "shadowy_apparation", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     static rank_t ranks[] =
     {
       { 80, 1, 390, 400, 0, 0.0 }, // Dummy rank for level 80 characters.
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
-
-    proc			  = true;
-    travel_speed	  = 2.6;
+    background        = true;
+    proc			        = true;
+    trigger_gcd       = 0;
+    travel_speed	    = 2.6;
     base_execute_time = 0;
     may_crit          = false;
     direct_power_mod  = 1.5 / 3.5;
     base_cost         = 0.0;
-
-  }
-
-  virtual void execute()
-  {
-	  priest_spell_t::execute();
-
+    reset();
   }
 };
 
@@ -1625,8 +1614,8 @@ virtual void tick()
     if (  p -> sim -> roll( h ) )
 		{
         	p -> procs_shadowy_apparation -> occur();
-        	//if ( ! p -> shadowy ) p -> shadowy = new shadowy_apparation_t( p, "" );
-        	//p -> shadowy -> execute();
+        	if ( ! p -> shadowy ) p -> shadowy = new shadowy_apparation_t( p );
+        	p -> shadowy -> execute();
 		}
 
     // Shadow Orb
@@ -2056,7 +2045,6 @@ double priest_t::composite_player_multiplier( int school ) SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "shadowy_apparation"  ) return new shadowy_apparation_t  ( this, options_str );
   if ( name == "devouring_plague"  ) return new devouring_plague_t  ( this, options_str );
   if ( name == "dispersion"        ) return new dispersion_t        ( this, options_str );
   if ( name == "divine_spirit"     ) return new divine_spirit_t     ( this, options_str );
