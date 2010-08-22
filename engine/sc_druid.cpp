@@ -14,9 +14,6 @@ struct druid_t : public player_t
   // Active
   action_t* active_t10_4pc_caster_dot;
 
-  std::vector<action_t*> active_mauls;
-  int num_active_mauls;
-
   // Eclipse, same as the ingame bar
   int eclipse_bar_value;
 
@@ -35,6 +32,7 @@ struct druid_t : public player_t
   buff_t* buffs_natures_grace;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
+  buff_t* buffs_pulverize;
   buff_t* buffs_savage_roar;
   buff_t* buffs_stealthed;
   buff_t* buffs_t8_4pc_caster;
@@ -95,8 +93,10 @@ struct druid_t : public player_t
     // Checked, build 12759
     int  balance_of_power;
     int  blessing_of_the_grove;
-    int  euphoria;
     int  earth_and_moon;
+    int  endless_carnage;
+    int  euphoria;
+    int  feral_aggression;
     int  force_of_nature;
     int  fungal_growth;
     int  furor;
@@ -104,6 +104,8 @@ struct druid_t : public player_t
     int  gale_winds;
     int  genesis;
     int  heart_of_the_wild;
+    int  king_of_the_jungle;
+    int  leader_of_the_pack;
     int  lunar_guidance;
     int  lunar_shower;
     int  master_shapeshifter;
@@ -112,6 +114,7 @@ struct druid_t : public player_t
     int  natures_majesty;
     int  natures_grace;
     int  owlkin_frenzy;
+    int  primal_fury;
     int  solar_beam;
     int  starfall;
     int  starlight_wrath;
@@ -120,21 +123,16 @@ struct druid_t : public player_t
     // TODO: Recheck all talents below
     int  berserk;
     int  brutal_impact;
-    int  endless_carnage;
-    int  feral_aggression;
     int  feral_charge;
     int  feral_swiftness;
     int  fury_of_stormrage;
     int  improved_feral_charge;
     int  infected_wounds;
-    int  king_of_the_jungle;
-    int  leader_of_the_pack;
     int  natural_reaction;
     int  natures_swiftness;
     int  nom_nom_nom;
     int  nurturing_instict;
     int  predatory_strikes;
-    int  primal_fury;
     int  primal_madness;
     int  pulverize;
     int  rend_and_tear;
@@ -145,7 +143,6 @@ struct druid_t : public player_t
     int  primal_gore;
     int  primal_precision;
     int  protector_of_the_pack;
-    int  savage_fury;
     int  sharpened_claws;
     int  shredding_attacks;
 
@@ -823,8 +820,6 @@ void druid_cat_attack_t::player_buff()
 
   player_dd_adder += p -> buffs_tigers_fury -> value();
 
-  player_multiplier *= 1 + p -> buffs_savage_roar -> value();
-
   p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
   p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
 }
@@ -923,6 +918,12 @@ struct cat_melee_t : public druid_cat_attack_t
     base_cost   = 0;
     may_crit    = true;
   }
+  virtual void player_buff()
+  {
+    druid_cat_attack_t::player_buff();
+    druid_t* p = player -> cast_druid();
+    player_multiplier *= 1 + p -> buffs_savage_roar -> value();
+  }
 
   virtual double execute_time() SC_CONST
   {
@@ -1014,7 +1015,6 @@ struct claw_t : public druid_cat_attack_t
     weapon = &( p -> main_hand_weapon );
     adds_combo_points = true;
     may_crit          = true;
-    base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
     base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.02 );
   }
 };
@@ -1098,8 +1098,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     adds_combo_points = true;
     may_crit          = true;
 
-    base_multiplier  *= 1.0 + ( p -> talents.savage_fury * 0.1 +
-				p -> glyphs.mangle       * 0.1 );
+    base_multiplier  *= 1.0 + p -> glyphs.mangle * 0.1;
   }
 
   virtual void execute()
@@ -1142,13 +1141,12 @@ struct rake_t : public druid_cat_attack_t
     adds_combo_points = true;
     may_crit          = true;
     base_tick_time    = 3.0;
-    num_ticks         = 3;
+    num_ticks         = 3 + p -> talents.endless_carnage;
     if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
     tick_may_crit = ( p -> set_bonus.tier10_4pc_melee() == 1 );
 
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
-    base_multiplier  *= 1.0 + p -> talents.savage_fury * 0.1;
   }
   virtual void tick()
   {
@@ -1247,7 +1245,7 @@ struct savage_roar_t : public druid_cat_attack_t
     id = 52610;
     harmful = false;
 
-    buff_value = 0.30;
+    buff_value = 0.50;
     if ( p -> glyphs.savage_roar ) buff_value += 0.03;
   }
 
@@ -1255,6 +1253,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
+    duration += 3.0 * p -> talents.endless_carnage;
     if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
 
     // execute clears CP, so has to be after calculation duration
@@ -1337,7 +1336,7 @@ struct shred_t : public druid_cat_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.04 * p -> talents.rend_and_tear;
+      player_multiplier *= 1 + 0.20/3.0 * p -> talents.rend_and_tear;
     }
 
   }
@@ -1435,7 +1434,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     base_cost = 35;
 
-    base_multiplier *= 1.0 + ( p -> talents.feral_aggression * 0.03 );
+    base_multiplier *= 1.0 + ( p -> talents.feral_aggression * 0.05 );
 
     static double_pair dmg_78[] = { { 410, 550 }, { 700, 840 }, { 990, 1130 }, { 1280, 1420 }, { 1570, 1710 } };
     static double_pair dmg_72[] = { { 334, 682 }, { 570, 682 }, { 806,  918 }, { 1042, 1154 }, { 1278, 1390 } };
@@ -1513,7 +1512,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( sim -> target -> debuffs.bleeding -> check() )
     {
-      player_crit += 0.05 * p -> talents.rend_and_tear;
+      player_crit += 0.25/3.0 * p -> talents.rend_and_tear;
     }
 
   }
@@ -1678,40 +1677,12 @@ struct bear_melee_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-
-    // If any of our Maul actions are "ready", then execute Maul in place of the regular melee swing.
-    action_t* active_maul = 0;
-
-    if ( ! proc )
+    druid_bear_attack_t::execute();
+    if ( result_is_hit() )
     {
-      for( int i=0; i < p -> num_active_mauls; i++ )
-      {
-        action_t* a = p -> active_mauls[ i ];
-        if ( a -> ready() )
-        {
-          active_maul = a;
-          break;
-        }
-      }
-    }
-    
-    // TODO: Fury swipes and maul interaction?
-    if ( active_maul )
-    {
-      active_maul -> execute();
-      trigger_fury_swipes( active_maul );
-      schedule_execute();
-    }
-    else
-    {
-      druid_bear_attack_t::execute();
-      if ( result_is_hit() )
-      {
-        trigger_fury_swipes( this );
-        trigger_rage_gain( this );
-        trigger_omen_of_clarity( this );
-      }
+      trigger_fury_swipes( this );
+      trigger_rage_gain( this );
+      trigger_omen_of_clarity( this );
     }
   }
 };
@@ -1865,8 +1836,7 @@ struct mangle_bear_t : public druid_bear_attack_t
 
     may_crit = true;
 
-    base_multiplier *= 1.0 + ( p -> talents.savage_fury * 0.10 +
-			       p -> glyphs.mangle       * 0.10 );
+    base_multiplier *= 1.0 + p -> glyphs.mangle * 0.10;
 
     cooldown = p -> get_cooldown( "mangle_bear" );
     cooldown -> duration = 6.0;
@@ -1911,16 +1881,12 @@ struct maul_t : public druid_bear_attack_t
     };
     init_rank( ranks );
 
-    background   = true;
     may_crit     = true;
-    trigger_gcd  = 0;
-
+    // TODO: scaling?
     weapon = &( p -> main_hand_weapon );
-    normalize_weapon_speed = false;
+    //normalize_weapon_speed = false;
 
-    base_multiplier *= 1.0 + p -> talents.savage_fury * 0.10;
-
-    p -> active_mauls.push_back( this );
+    cooldown -> duration = 3;
   }
 
   virtual void execute()
@@ -1944,7 +1910,7 @@ struct maul_t : public druid_bear_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.04 * p -> talents.rend_and_tear;
+      player_multiplier *= 1 + 0.20/3.0 * p -> talents.rend_and_tear;
     }
 
   }
@@ -2271,7 +2237,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     {
       update_ready();
     }
-    sim -> target -> debuffs.faerie_fire -> trigger();
+    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression );
   }
 
   virtual bool ready()
@@ -3499,11 +3465,12 @@ void druid_t::init_buffs()
   buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  45.0,  0.0 );
   buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0,  0.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
-  buffs_lacerate           = new buff_t( this, "lacerate"          , 5,  15.0 );
+  buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talents.natures_grace );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talents.endless_carnage );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
 
@@ -3689,7 +3656,6 @@ void druid_t::init_actions()
 
   player_t::init_actions();
 
-  num_active_mauls = ( int ) active_mauls.size();
 }
 
 // druid_t::reset ===========================================================
@@ -3966,7 +3932,6 @@ std::vector<option_t>& druid_t::get_options()
       { "primal_precision",          OPT_INT,  &( talents.primal_precision          ) },
       { "protector_of_the_pack",     OPT_INT,  &( talents.protector_of_the_pack     ) },
       { "rend_and_tear",             OPT_INT,  &( talents.rend_and_tear             ) },
-      { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
       { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
       { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
       { "solar_beam",                OPT_INT,  &( talents.solar_beam                ) },
