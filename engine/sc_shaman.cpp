@@ -617,12 +617,14 @@ static void stack_maelstrom_weapon( attack_t* a )
 static void trigger_fulmination ( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
+  
+  if ( p -> talents.fulmination == 0 ) return;
 
-  if ( p -> talents.fulmination && p -> buffs_lightning_shield -> stack() )
-  {
-    p -> active_lightning_charge -> execute();
-    p -> buffs_lightning_shield  -> expire();
-  }
+  int consuming_stacks = p -> buffs_lightning_shield -> stack() - 3;
+  if ( consuming_stacks <= 0 ) return;
+
+  p -> active_lightning_charge -> execute();
+  p -> buffs_lightning_shield  -> decrement( consuming_stacks );
 }
 
 // trigger_primal_wisdom =============================================
@@ -642,15 +644,12 @@ static void trigger_primal_wisdom ( attack_t* a )
 static void trigger_rolling_thunder ( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
-
+  
   if ( p -> rng_rolling_thunder -> roll( p -> talents.rolling_thunder * 0.30 ) && p -> buffs_lightning_shield -> check() )
   {
     p -> resource_gain( RESOURCE_MANA, 0.01 * p -> resource_max[ RESOURCE_MANA ], p -> gains_rolling_thunder );
-    if ( p -> buffs_lightning_shield -> stack() < 9.0 )
-    {
-      p -> buffs_lightning_shield -> current_stack++; // increment() wasn't incrementing
-      p -> procs_rolling_thunder  -> occur();
-    }
+    p -> buffs_lightning_shield -> trigger();
+    p -> procs_rolling_thunder  -> occur();
   }
 }
 
@@ -708,7 +707,7 @@ static void trigger_searing_flames( spell_t* s )
 
     virtual void tick()
     {
-      shaman_t* p = player -> cast_shaman();
+      // shaman_t* p = player -> cast_shaman();
 
       if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
       may_resist = false;
@@ -2050,7 +2049,7 @@ struct earth_shock_t : public shaman_spell_t
   }
   virtual void execute()
   {
-    shaman_t* p = player -> cast_shaman();
+    // shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
 
     if ( result_is_hit() )
@@ -3199,7 +3198,11 @@ struct lightning_shield_t : public shaman_spell_t
 
       if( p -> talents.fulmination )
       {
-        player_multiplier *= p -> buffs_lightning_shield -> stack();
+        // Don't use stack() here so we don't count the occurence twice
+        // together with trigger_fulmination()
+        int consuming_stack =  p -> buffs_lightning_shield -> current_stack - 3;
+        if ( consuming_stack > 0 )
+          player_multiplier *= consuming_stack;
       }
 
     }
@@ -3523,7 +3526,7 @@ void shaman_t::init_buffs()
   buffs_elemental_focus       = new buff_t( this, "elemental_focus",       2,  15.0, 0.0, talents.elemental_focus       );
   buffs_elemental_mastery     = new buff_t( this, "elemental_mastery",     1,  15.0, 0.0, talents.elemental_mastery     );
   buffs_flurry                = new buff_t( this, "flurry",                3,  15.0, 0.0, talents.flurry                );
-  buffs_lightning_shield      = new buff_t( this, "lightning_shield",      3 );
+  buffs_lightning_shield      = new buff_t( this, "lightning_shield",      9 );
   buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  1,  15.0 ); // Stormstrike Debuff
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
