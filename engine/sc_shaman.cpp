@@ -657,13 +657,9 @@ static void trigger_rolling_thunder ( spell_t* s )
 
 static void trigger_searing_flames( spell_t* s )
 {
-  double dmg = s -> direct_dmg;
-
-  shaman_t* p = s -> player -> cast_shaman();
-  
   struct searing_flames_dot_t : public shaman_spell_t
   {
-    searing_flames_dot_t( player_t* player, double base_dmg ) : 
+    searing_flames_dot_t( player_t* player ) : 
       shaman_spell_t( "searing_flames", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
     {
       trigger_gcd     = 0;
@@ -672,77 +668,39 @@ static void trigger_searing_flames( spell_t* s )
       proc            = true;      
       base_tick_time  = 3.0;
       num_ticks       = 5;
-      base_dd_min = base_dd_max = base_dmg;
+      dot_behavior    = DOT_REFRESH;
     }
     void player_buff() {}
+    void target_debuff( int dmg_type ) {}
 
-    virtual void execute()
-    {
-      shaman_t* p = player -> cast_shaman();
-      
-      p -> buffs_searing_flames -> trigger();
-
-      if ( sim -> log ) log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_searing_flames -> current_stack );
-
-      if ( ticking )
-        refresh_duration();
-      else
-        schedule_tick();
-    }
-
-    virtual double calculate_tick_damage()
-    {
-      shaman_t* p = player -> cast_shaman();
-      tick_dmg  = shaman_spell_t::calculate_tick_damage();
-      tick_dmg *= p -> buffs_searing_flames -> stack();
-      return tick_dmg;
-    }
-  
     virtual void last_tick()
     {
       shaman_t* p = player -> cast_shaman();
       shaman_spell_t::last_tick();
       p -> buffs_searing_flames -> expire();
     }
-
-    virtual void tick()
-    {
-      // shaman_t* p = player -> cast_shaman();
-
-      if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-      may_resist = false;
-      target_debuff( DMG_DIRECT );
-      calculate_result();
-      may_resist = true;
-      if ( result_is_hit() )
-      {
-        calculate_direct_damage();
-        if ( direct_dmg > 0 )
-        {
-          tick_dmg = direct_dmg;
-          assess_damage( tick_dmg, DMG_OVER_TIME );
-        }
-      }
-      else
-      {
-        if ( sim -> log ) log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      }
-      update_stats( DMG_OVER_TIME );
-    }
-
-    virtual int scale_ticks_with_haste() SC_CONST
-    {
-      return 1;
-    }
   };
 
-  if ( ! p -> active_searing_flames_dot )
-  {
-    p -> active_searing_flames_dot = new searing_flames_dot_t ( p, dmg ) ;
-    p -> active_searing_flames_dot -> schedule_tick();
-  }
+  shaman_t* p = s -> player -> cast_shaman();
+  
+  if ( ! p -> rng_searing_flames -> roll ( p -> talents.searing_flames / 3.0 ) ) return;
 
+  p -> buffs_searing_flames -> trigger();
+
+  if ( ! p -> active_searing_flames_dot ) 
+    p -> active_searing_flames_dot = new searing_flames_dot_t ( p );
+
+  // Searing flame dot treats all hits as.. HITS
+  double new_base_td = s -> direct_dmg /= 1.0 + s -> total_crit_bonus();
+
+  p -> active_searing_flames_dot -> base_td = new_base_td / 5.0 * p -> buffs_searing_flames -> stack();
   p -> active_searing_flames_dot -> execute();
+  /*
+  if ( p -> active_searing_flames_dot -> ticking )
+    p -> active_searing_flames_dot -> schedule_tick();
+  else
+    p -> active_searing_flames_dot -> refresh_duration();
+  /*/
 }
 
 // trigger_static_shock =============================================
@@ -1021,7 +979,8 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
     trigger_static_shock( this );
     p -> buffs_searing_flames -> expire();
-    p -> active_searing_flames_dot = 0; // FIX ME: Set to 0 or use reset()?
+    if ( p -> active_searing_flames_dot ) 
+      p -> active_searing_flames_dot -> cancel();
   }
 
   virtual void player_buff()
@@ -2758,7 +2717,7 @@ struct searing_totem_t : public shaman_spell_t
 
   virtual void tick()
   {
-    shaman_t* p = player -> cast_shaman();
+    //shaman_t* p = player -> cast_shaman();
 
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     may_resist = false;
@@ -2772,8 +2731,7 @@ struct searing_totem_t : public shaman_spell_t
       {
         tick_dmg = direct_dmg;
         assess_damage( tick_dmg, DMG_OVER_TIME );
-        if ( p -> rng_searing_flames -> roll ( p -> talents.searing_flames / 3 ) )
-          trigger_searing_flames( this );
+        trigger_searing_flames( this );
       }
     }
     else
@@ -3530,10 +3488,10 @@ void shaman_t::init_buffs()
   buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
   buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  1,  15.0 ); // Stormstrike Debuff
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
-  buffs_searing_flames        = new buff_t( this, "searing_flames",        5 );
+  buffs_searing_flames        = new buff_t( this, "searing_flames",        5,   0.0, 0.0, talents.searing_flames        , true ); // Only to track stack count, won't show up in reports
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0, 0.0, talents.shamanistic_rage      );
-  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee() );
-  buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15 ); //FIX ME - assuming no icd on this
+  buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee()  );
+  buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15                          ); //FIX ME - assuming no icd on this
   // buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
 }
