@@ -1143,11 +1143,13 @@ struct rake_t : public druid_cat_attack_t
     may_crit          = true;
     base_tick_time    = 3.0;
     num_ticks         = 3 + p -> talents.endless_carnage;
-    if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
-    tick_may_crit = ( p -> set_bonus.tier10_4pc_melee() == 1 );
-
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+
+    if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
+
   }
   virtual void tick()
   {
@@ -1181,6 +1183,8 @@ struct rip_t : public druid_cat_attack_t
     if ( p -> set_bonus.tier10_2pc_melee() )
       base_cost -= 10;
     base_tick_time        = 2.0;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
 
     num_ticks = 6 + ( p -> glyphs.rip * 2 ) + ( p -> set_bonus.tier7_2pc_melee() * 2 );
 
@@ -1195,7 +1199,6 @@ struct rip_t : public druid_cat_attack_t
                         p -> level >= 67 ? dmg_67 :
                         dmg_60 );
 
-    tick_may_crit = ( p -> talents.primal_gore != 0 );
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
@@ -2387,6 +2390,7 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks         = 6;
     tick_power_mod    = 0.2;
     tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
 
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talents.genesis, 3, 0.02 ) +
                              ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
@@ -2460,6 +2464,7 @@ struct moonfire_t : public druid_spell_t
     tick_power_mod    = 0.13;
     may_crit          = true;
     tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
     
     // Costreduction from moonglow and lunar shower is additive
     // up to 9%+90%=99%
