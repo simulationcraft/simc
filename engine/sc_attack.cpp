@@ -116,6 +116,23 @@ void attack_t::player_buff()
 	break;
       }
     }
+    else if ( p -> race == RACE_GOBLIN )
+    {
+      switch ( weapon -> type )
+      {
+      // Goblin Weapon Types
+      }
+      // GOBLIN BONI
+    }
+    else if ( p -> race == RACE_WORGEN )
+    {
+      switch ( weapon -> type )
+      {
+      // Worgen Weapon Types
+      }
+      // WORGEN BONI
+    }
+
   }
 
   if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||

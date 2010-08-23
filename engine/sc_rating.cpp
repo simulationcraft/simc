@@ -28,6 +28,8 @@ static const _stat_list_t race_stats[] =
   { RACE_TROLL,     { 21, 22, 20, 16, 21, 0.0 } },
   { RACE_BLOOD_ELF, { 17, 22, 20, 23, 18, 0.0 } },
   { RACE_DRAENEI,   { 21, 17, 20, 20, 22, 0.0 } },
+  { RACE_WORGEN,    { 17, 22, 20, 23, 18, 0.0 } }, // Add correct values for Worgen
+  { RACE_GOBLIN,    { 21, 17, 20, 20, 22, 0.0 } }, // Add correct values for Goblin
   { RACE_NONE, { 0 } }
 };
 

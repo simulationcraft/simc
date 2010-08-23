@@ -3379,6 +3379,7 @@ void druid_t::init_race()
   {
   case RACE_NIGHT_ELF:
   case RACE_TAUREN:
+  case RACE_WORGEN:
     break;
   default:
     race = RACE_NIGHT_ELF;

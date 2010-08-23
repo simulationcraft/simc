@@ -3734,6 +3734,8 @@ void warlock_t::init_race()
   case RACE_UNDEAD:
   case RACE_ORC:
   case RACE_BLOOD_ELF:
+  case RACE_WORGEN:
+  case RACE_GOBLIN:
     break;
   default:
     race = RACE_UNDEAD;

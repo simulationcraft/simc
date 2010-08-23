@@ -1639,7 +1639,7 @@ double player_t::composite_spell_power( int school ) SC_CONST
   }
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
-  sp += spell_power_per_intellect * intellect();
+  sp += spell_power_per_intellect * intellect() - 10; // The spellpower is always lower by 10, cata beta build 12803
   sp += spell_power_per_spirit    * spirit();
 
   return floor( sp );
@@ -2403,7 +2403,7 @@ int player_t::normalize_by() SC_CONST
     return sim -> normalized_stat; 
   }
 
-  return ( primary_role() == ROLE_SPELL ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER;
+  return ( primary_role() == ROLE_SPELL ) ? STAT_INTELLECT : STAT_ATTACK_POWER;
 }
 
 

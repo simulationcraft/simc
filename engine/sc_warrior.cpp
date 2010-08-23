@@ -2387,6 +2387,8 @@ void warrior_t::init_race()
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_TAUREN:
+  case RACE_WORGEN:
+  case RACE_GOBLIN:
     break;
   default:
     race = RACE_NIGHT_ELF;

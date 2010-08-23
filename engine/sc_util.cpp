@@ -180,6 +180,8 @@ const char* util_t::race_type_string( int type )
   case RACE_TAUREN:    return "tauren";
   case RACE_TROLL:     return "troll";
   case RACE_UNDEAD:    return "undead";
+  case RACE_GOBLIN:	   return "goblin";
+  case RACE_WORGEN:	   return "worgen";
   }
   return "unknown";
 }
@@ -907,6 +909,7 @@ int util_t::translate_race_id( int rid )
   case  8: return RACE_TROLL;
   case 10: return RACE_BLOOD_ELF;
   case 11: return RACE_DRAENEI;
+  // Find out Goblin and Worgen race id
   }
 
   return RACE_NONE;

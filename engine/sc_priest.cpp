@@ -2163,6 +2163,8 @@ void priest_t::init_race()
   case RACE_UNDEAD:
   case RACE_TROLL:
   case RACE_BLOOD_ELF:
+  case RACE_WORGEN:
+  case RACE_GOBLIN:
     break;
   default:
     race = RACE_NIGHT_ELF;
@@ -2193,6 +2195,7 @@ void priest_t::init_base()
   base_attack_power = -10;
 
   initial_attack_power_per_strength = 1.0;
+  initial_spell_power_per_intellect	= 1.0;
 
   health_per_stamina = 10;
   mana_per_intellect = 15;

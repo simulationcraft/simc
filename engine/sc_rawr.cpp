@@ -399,6 +399,8 @@ static int translate_rawr_race_str( const std::string& name )
   if ( ! name.compare( "Troll"    ) ) return RACE_TROLL;
   if ( ! name.compare( "BloodElf" ) ) return RACE_BLOOD_ELF;
   if ( ! name.compare( "Draenei"  ) ) return RACE_DRAENEI;
+  if ( ! name.compare( "Worgen"   ) ) return RACE_WORGEN;
+  if ( ! name.compare( "Goblin"   ) ) return RACE_GOBLIN;
 
   return RACE_NONE;
 }

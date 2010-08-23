@@ -1160,14 +1160,18 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   case RACE_NIGHT_ELF:
   case RACE_HUMAN: 
   case RACE_GNOME: 
-  case RACE_DWARF: 
+  case RACE_DWARF:
+  case RACE_WORGEN:
   case RACE_DRAENEI: s += "&amp;F=A"; break;
+
 
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_UNDEAD:
   case RACE_BLOOD_ELF:
+  case RACE_GOBLIN:
   case RACE_TAUREN: s += "&amp;F=H"; break;
+
   }
 
   for ( int i=0; i < STAT_MAX; i++ )
