@@ -355,12 +355,11 @@ enum stat_type
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_SPELL_POWER, STAT_SPELL_PENETRATION, STAT_MP5,
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
-  STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,
+  STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
-  STAT_MASTERY_RATING,
   STAT_MAX
 };
 
@@ -1357,7 +1356,7 @@ struct player_t
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
   double attribute_buffed            [ ATTRIBUTE_MAX ];
 
-  double mastery;
+  double mastery, initial_mastery, mastery_rating, buffed_mastery,initial_mastery_rating,base_mastery;
 
   // Spell Mechanics
   double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
@@ -1640,6 +1639,7 @@ struct player_t
   virtual double composite_spell_hit() SC_CONST;
   virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
   virtual double composite_mp5() SC_CONST;
+
 
   virtual double composite_armor()                 SC_CONST;
   virtual double composite_block_value()           SC_CONST;

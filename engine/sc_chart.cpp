@@ -91,6 +91,7 @@ static const char* stat_color( int type )
     case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
     case STAT_CRIT_RATING:              return class_color( PALADIN );
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
+    case STAT_MASTERY_RATING:           return class_color( SHAMAN ); // anyone got an idea?
     case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
     case STAT_ARMOR_PENETRATION_RATING: return class_text_color( ROGUE );
     case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );
@@ -1194,7 +1195,8 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
-    case STAT_ARMOR:                    name = "Arm";   break;
+    case STAT_MASTERY_RATING:           name = "mast"; break;
+    case STAT_ARMOR:                    name = "Arm";  break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
     case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
@@ -1352,6 +1354,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_ARMOR:                    name = "Armor";            break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;

@@ -182,6 +182,7 @@
 		double shadow_power_value;
 		double shadow_orb_proc_value;
 		double shadow_orb_damage_value;
+		double shadow_orb_mastery_value;
 		double harnessed_shadows_value;
 		double mind_spike_crit_value;
 		double pain_and_suffering_value;
@@ -255,6 +256,7 @@
 		constants.holy_concentration_value		  = 0.10;
 		constants.meditation_value				  = 0.50;
 		constants.inner_will_value				  = 0.15;
+		constants.shadow_orb_mastery_value		  = 0.025;
 
 		cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
 		cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -494,6 +496,7 @@ void priest_spell_t::target_debuff( int dmg_type )
 	spell_t::target_debuff( dmg_type );
 
 	target_multiplier *= 1.0 + p -> talents.shadow_power * p -> constants.shadow_power_value;
+
 
 		  if ( school == SCHOOL_SHADOW )
 		  {
@@ -995,7 +998,7 @@ struct mind_blast_t : public priest_spell_t
     base_execute_time = 1.5;
     may_crit          = true;
     direct_power_mod  = p -> power_mod.mind_blast;
-    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
+    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value;
 
     cooldown -> duration -= p -> talents.improved_mind_blast * 0.5;
 
@@ -1219,7 +1222,7 @@ struct mind_spike_t : public priest_spell_t
     base_cost  = floor( base_cost );
 
     direct_power_mod  = p -> power_mod.mind_spike;
-    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value;
+    base_multiplier  *= 1.0 + p -> buffs_shadow_orb -> stack() * p -> constants.shadow_orb_damage_value + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value;
 
   }
 

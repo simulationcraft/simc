@@ -155,6 +155,7 @@ void scaling_t::init_deltas()
 
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
   if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
+  if ( stats.mastery_rating == 0 ) stats.mastery_rating = smooth_scale_factors ?  75 :  150;
 
   if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 3000 : 6000;
 
@@ -406,6 +407,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
     { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
+    { "scale_mastery_rating",           OPT_FLT,    &( stats.mastery_rating                   ) },
     { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
     { "scale_weapon_speed",             OPT_FLT,    &( stats.weapon_speed                   ) },
     { "scale_offhand_weapon_dps",       OPT_FLT,    &( stats.weapon_offhand_dps             ) },

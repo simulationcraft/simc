@@ -259,7 +259,8 @@ player_t::player_t( sim_t*             s,
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
-    mastery( 8.0 ),
+    // Mastery
+    mastery( 0 ),initial_mastery ( 0 ),mastery_rating( 0 ),buffed_mastery ( 0 ),initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
     // Spell Mechanics
     base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
@@ -685,12 +686,17 @@ void player_t::init_core()
   initial_stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating + ( is_pet() ? 0 : sim -> enchant.  hit_rating );
   initial_stats. crit_rating = gear. crit_rating + enchant. crit_rating + ( is_pet() ? 0 : sim -> enchant. crit_rating );
   initial_stats.haste_rating = gear.haste_rating + enchant.haste_rating + ( is_pet() ? 0 : sim -> enchant.haste_rating );
+  initial_stats.mastery_rating = gear.mastery_rating + enchant.mastery_rating + ( is_pet() ? 0 : sim -> enchant.mastery_rating );
 
   if ( initial_stats.  hit_rating < 0 ) initial_stats.  hit_rating = 0;
   if ( initial_stats. crit_rating < 0 ) initial_stats. crit_rating = 0;
   if ( initial_stats.haste_rating < 0 ) initial_stats.haste_rating = 0;
+  if ( initial_stats.mastery_rating < 0 ) initial_stats.mastery_rating = 0;
 
-  initial_haste_rating = initial_stats.haste_rating;
+  initial_haste_rating 		= initial_stats.haste_rating;
+  initial_mastery_rating 		= initial_stats.mastery_rating;
+
+  initial_mastery	= base_mastery + initial_stats.mastery_rating / rating.mastery;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -726,6 +732,8 @@ void player_t::init_spell()
   initial_spell_crit = base_spell_crit + initial_stats.crit_rating / rating.spell_crit;
 
   initial_spell_penetration = base_spell_penetration + initial_stats.spell_penetration;
+
+
 
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
@@ -1084,9 +1092,10 @@ void player_t::init_scaling()
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
     scales_with[ STAT_ARMOR_PENETRATION_RATING ] = attack;
 
-    scales_with[ STAT_HIT_RATING   ] = 1;
-    scales_with[ STAT_CRIT_RATING  ] = 1;
-    scales_with[ STAT_HASTE_RATING ] = 1;
+    scales_with[ STAT_HIT_RATING   		] = 1;
+    scales_with[ STAT_CRIT_RATING  		] = 1;
+    scales_with[ STAT_HASTE_RATING 		] = 1;
+    scales_with[ STAT_MASTERY_RATING 	] = 1;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
@@ -1134,6 +1143,7 @@ void player_t::init_scaling()
         break;
 
       case STAT_HASTE_RATING: initial_haste_rating += v; break;
+      case STAT_MASTERY_RATING: initial_mastery_rating += v; break;
 
       case STAT_WEAPON_DPS:
         if ( main_hand_weapon.damage > 0 )
@@ -1207,6 +1217,7 @@ void player_t::init_scaling()
 
       case STAT_BLOCK_RATING: initial_block       += v; break;
       case STAT_BLOCK_VALUE:  initial_block_value += v; break;
+
 
       case STAT_MAX: break;
 
@@ -1617,6 +1628,7 @@ double player_t::composite_spell_haste() SC_CONST
   return h;
 }
 
+
 // player_t::composite_spell_power ========================================
 
 double player_t::composite_spell_power( int school ) SC_CONST
@@ -1986,6 +1998,8 @@ void player_t::reset()
   stats = initial_stats;
 
   haste_rating = initial_haste_rating;
+  mastery_rating = initial_mastery_rating;
+  mastery = initial_mastery;
   recalculate_haste();
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
@@ -3302,6 +3316,7 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
+    p -> buffed_mastery		 = p -> composite_mastery();
 
     p -> attribute_buffed[ ATTR_STRENGTH  ] = p -> strength();
     p -> attribute_buffed[ ATTR_AGILITY   ] = p -> agility();

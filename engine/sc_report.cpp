@@ -380,6 +380,7 @@ static void print_spell_stats( FILE* file, player_t* p )
                    100 * p -> buffed_spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
                    100 * p -> buffed_spell_penetration,  100 * p -> composite_spell_penetration(),  p -> stats.spell_penetration,
                    100 * ( 1 / p -> buffed_spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
+                   p -> buffed_mastery , p -> mastery, p -> stats.mastery_rating,
                    p -> buffed_mp5, p -> composite_mp5(), p -> stats.mp5 );
 }
 
@@ -1266,6 +1267,8 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating );
   util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
 
+  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", p -> buffed_mastery, p -> composite_mastery(), p -> stats.mastery_rating );
+
   util_t::fprintf( file, "</table> <br />\n" );
 
   if ( p -> sim -> scaling -> has_scale_factors() )
@@ -1749,6 +1752,8 @@ static void print_wiki_player( FILE* file, player_t* p )
   util_t::fprintf( file, "|| *Tank-Parry*  || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating );
   util_t::fprintf( file, "|| *Tank-Block*  || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating );
   util_t::fprintf( file, "|| *Tank-Crit*   || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
+
+  util_t::fprintf( file, "|| *Mastery*  || %.2f%% || %.2f%% || %.0f ||\n", p -> buffed_mastery, p -> composite_mastery(), p -> stats.mastery_rating );
 
   util_t::fprintf( file, "\n" );
 

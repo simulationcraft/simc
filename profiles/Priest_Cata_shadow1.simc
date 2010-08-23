@@ -1,8 +1,7 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=81
-target_level=87
+level=85
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -17,7 +16,6 @@ actions+=/inner_will
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/use_item,name=sanctified_crimson_acolyte_handwraps
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20
 actions+=/shadow_fiend
@@ -35,36 +33,15 @@ actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 
-
-
-head=sanctified_crimson_acolyte_cowl,heroic=1,stats=973armor_122crit_98haste_158int_261sta,gems=chaotic_skyflare_10spi_12int_9int,enchant=30int_20crit
-neck=blood_queens_crimson_choker,heroic=1,stats=65crit_60haste_78int_110int_78sta,gems=23int
-shoulders=sanctified_crimson_acolyte_mantle,heroic=1,stats=277armor_90crit_82haste_103int_150int_103sta,gems=10haste_12int_5int,enchant=24int_15crit
-chest=sanctified_crimson_acolyte_raiments,heroic=1,stats=369armor_114crit_114haste_139int_195int_139sta,gems=23int_10haste_12int_7int,enchant=15spi
-waist=crushing_coldwraith_belt,heroic=1,stats=208armor_74crit_90haste_103int_140int_103sta,gems=10spi_12int_39int_39int_7int
-legs=plaguebringers_stained_pants,heroic=1,stats=323armor_116haste_104hit_139int_185int_139sta,gems=23int_10spi_12int_10haste_12int_9int,enchant=50int_20spi
-feet=plague_scientists_boots,heroic=1,stats=254armor_74crit_90haste_103int_140int_103sta,gems=10spi_12int_39int_7int,enchant=15sta
-wrists=the_ladys_brittle_bracers,heroic=1,stats=162armor_73crit_52hit_78int_110int_78sta,gems=10haste_12int_5int,enchant=30int
-hands=sanctified_crimson_acolyte_handwraps,heroic=1,stats=231armor_90crit_82hit_103int_150int_103sta,gems=23int,enchant=hyperspeed_accelerators
-finger1=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_78int_110int_78sta,gems=23int
-finger2=ashen_band_of_endless_destruction,stats=64haste_51hit_73int_101int_73sta,gems=10haste_12int_5int,equip=onspellcasthit_285sp_10%_10dur_60cd
-trinket1=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
-trinket2=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1206sp_30%_20dur_100cd
-back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_78int_110int_78sta,gems=10haste_12int_5int,enchant=27int
-main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23int_5int,enchant=63int,weapon=mace_1.80speed_160min_447max
-off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119int_78sta
-ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58int_44sta,gems=10haste_12int_5int
 # Gear Summary
-# gear_stamina=1432
- gear_intellect=3017
-# gear_spirit=75
-# gear_spell_power=3436
-# gear_hit_rating=289
-# gear_crit_rating=1227
-# gear_haste_rating=1243
-# gear_armor=2309
-# meta_gem=chaotic_skyflare
-# tier10_2pc_caster=1
-# tier10_4pc_caster=1
-# hands=sanctified_crimson_acolyte_handwraps,heroic=1,enchant=hyperspeed_accelerators
-# main_hand=royal_scepter_of_terenas_ii,heroic=1,weapon=mace_1.80speed_160min_447max
+gear_stamina=1432
+gear_intellect=4000
+gear_spirit=300
+gear_spell_power=3436
+gear_hit_rating=289
+gear_crit_rating=1227
+gear_haste_rating=1243
+gear_mastery_rating=500
+gear_armor=2309
+meta_gem=chaotic_skyflare
+

@@ -502,12 +502,13 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
   stat_search( encoding_str, splits, STAT_ARMOR_PENETRATION_RATING, "armor penetration rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING, "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
+  stat_search( encoding_str, splits, STAT_HASTE_RATING, 	"haste rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,   	"ranged hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,   	"hit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"ranged critical strike" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"crit rating" );
+  stat_search( encoding_str, splits, STAT_MASTERY_RATING,	"mastery rating" );
 
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
   stat_search( encoding_str, splits, STAT_DEFENSE_RATING, "defense rating" );
