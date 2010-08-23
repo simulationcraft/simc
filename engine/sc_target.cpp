@@ -12,7 +12,7 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s ) :
-    sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 83 ),
+    sim( s ), name_str( "Fluffy Pillow" ), race( RACE_HUMANOID ), level( 88 ),
     initial_armor( -1 ), armor( 0 ), block_value( 100 ), 
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 ),

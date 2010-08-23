@@ -1,7 +1,8 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=84
+level=81
+target_level=87
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -12,7 +13,7 @@ glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/inner_fire
+actions+=/inner_will
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats

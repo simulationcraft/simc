@@ -1313,6 +1313,19 @@ void action_t::check_talent( int talent_rank )
   background = true; // prevent action from being executed
 }
 
+// action_t::check_min_level ===================================================
+
+void action_t::check_min_level( int action_level )
+{
+  if ( action_level < player -> level ) return;
+  else
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
+  }
+
+  background = true; // prevent action from being executed
+}
+
 // action_t::create_expression ==============================================
 
 action_expr_t* action_t::create_expression( const std::string& name_str )

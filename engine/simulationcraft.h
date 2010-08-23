@@ -2112,6 +2112,7 @@ struct action_t
   virtual void   reset();
   virtual void   cancel();
   virtual void   check_talent( int talent_rank );
+  virtual void   check_min_level( int level );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
   virtual double   miss_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }

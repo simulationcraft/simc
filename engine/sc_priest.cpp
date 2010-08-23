@@ -300,6 +300,7 @@
 	virtual double    composite_armor() SC_CONST;
 	virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
 	virtual double    composite_spell_power( int school ) SC_CONST;
+	virtual double    composite_spell_hit() SC_CONST;
 	virtual double    composite_player_multiplier( int school ) SC_CONST;
 
 	virtual void      regen( double periodicity );
@@ -481,9 +482,9 @@ void priest_spell_t::player_buff()
 	spell_t::player_buff();
 		if ( school == SCHOOL_SHADOW )
 			{
-				player_hit += p -> spirit() * ( p -> talents.twisted_faith / 2.0 ) / p -> rating.spell_hit;
+
+				player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 			}
-	player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 
 }
 
@@ -940,13 +941,9 @@ struct inner_will_t : public priest_spell_t
       priest_spell_t( "inner_will", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
 
-	static rank_t ranks[] =
-	 {
-	    { 83, 0, 0, 0, 0, 0 }, // Dummy rank for level 80 characters.
-	    { 0, 0, 0, 0, 0, 0 }
-	  };
-	init_rank( ranks );
+	check_min_level( 83 );
     trigger_gcd = 0;
+
 
   }
 
@@ -1207,17 +1204,11 @@ struct mind_spike_t : public priest_spell_t
   mind_spike_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "mind_spike", player, SCHOOL_SHADOWFROST, TREE_SHADOW )
   {
+	check_min_level( 81 );
     priest_t* p = player -> cast_priest();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     static rank_t ranks[] =
     {
-      { 80, 1, 1082.81, 1144.05, 0, 0.17 }, // should be lvl 81+
+      { 81, 1, 1082.81, 1144.05, 0, 0.17 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -1610,6 +1601,8 @@ virtual void tick()
     	}
 
     // Shadowy Apparation
+    if ( p -> talents.shadowy_apparation )
+    {
     double h = p -> talents.shadowy_apparation * (0.02 + p -> buffs.moving -> up()* 0.2 );
     if (  p -> sim -> roll( h ) )
 		{
@@ -1617,6 +1610,7 @@ virtual void tick()
         	if ( ! p -> shadowy ) p -> shadowy = new shadowy_apparation_t( p );
         	p -> shadowy -> execute();
 		}
+    }
 
     // Shadow Orb
     if ( result_is_hit() )
@@ -1823,7 +1817,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger( 0 )
   {
-    priest_t* p = player -> cast_priest();
+	check_min_level( 66 );
+	priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -1897,11 +1892,9 @@ struct archangel_t : public priest_spell_t
   {
 	priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-    if ( p -> talents.archangel )
-    {
-    	if ( p -> buffs_dark_evangelism -> up())
-    	{
-    		p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
+    if ( p -> buffs_dark_evangelism -> up())
+		{
+			p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
     		p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
     		p -> buffs_dark_evangelism -> expire();
     	}
@@ -1911,7 +1904,6 @@ struct archangel_t : public priest_spell_t
     		p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
     		p -> buffs_holy_evangelism -> expire();
     	}
-    }
   }
 
   virtual bool ready()
@@ -1959,13 +1951,10 @@ struct chakra_t : public priest_spell_t
 
   virtual void execute()
   {
-	  priest_spell_t::execute();
+	priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-    if ( p -> talents.chakra )
-    {
-    		p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
+    p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
 
-    }
   }
 
   virtual bool ready()
@@ -2029,6 +2018,16 @@ double priest_t::composite_spell_power( int school ) SC_CONST
   return floor( sp );
 }
 
+// priest_t::composite_spell_hit =============================================
+
+double priest_t::composite_spell_hit() SC_CONST
+{
+  double hit = player_t::composite_spell_hit();
+
+  hit += spirit() * ( talents.twisted_faith / 2.0 ) / rating.spell_hit;
+
+  return floor( hit * 10000.0 ) / 10000.0;
+}
 // priest_t::composite_player_multiplier =========================================
 
 double priest_t::composite_player_multiplier( int school ) SC_CONST
