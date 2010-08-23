@@ -958,7 +958,6 @@ struct sim_t
     int curse_of_elements;
     int demonic_pact;
     int devotion_aura;
-    int divine_spirit;
     int earth_and_moon;
     int ebon_plaguebringer;
     int elemental_oath;
@@ -1518,7 +1517,6 @@ struct player_t
     buff_t* bloodlust;
     buff_t* demonic_pact;
     buff_t* destruction_potion;
-    buff_t* divine_spirit;
     buff_t* focus_magic;
     buff_t* fortitude;
     buff_t* hellscreams_warsong;

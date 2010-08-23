@@ -1214,7 +1214,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.crypt_fever            = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
-  overrides.divine_spirit          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
   overrides.ebon_plaguebringer     = optimal_raid;
   overrides.elemental_oath         = optimal_raid;
@@ -1499,7 +1498,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.crypt_fever",             OPT_BOOL,   &( overrides.crypt_fever                    ) },
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
-      { "override.divine_spirit",           OPT_BOOL,   &( overrides.divine_spirit                  ) },
       { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
       { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
       { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },

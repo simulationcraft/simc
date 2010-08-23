@@ -12,7 +12,6 @@ glyphs=shadow_word_pain/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/use_item,name=sanctified_crimson_acolyte_handwraps

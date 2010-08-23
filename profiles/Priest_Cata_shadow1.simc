@@ -1,7 +1,7 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=80
+level=84
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -12,7 +12,6 @@ glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
@@ -37,7 +36,7 @@ actions+=/dispersion
 
 
 
-head=sanctified_crimson_acolyte_cowl,heroic=1,stats=300armor_122crit_98haste_139int_185int_139sta,gems=chaotic_skyflare_10spi_12int_9int,enchant=30int_20crit
+head=sanctified_crimson_acolyte_cowl,heroic=1,stats=973armor_122crit_98haste_158int_261sta,gems=chaotic_skyflare_10spi_12int_9int,enchant=30int_20crit
 neck=blood_queens_crimson_choker,heroic=1,stats=65crit_60haste_78int_110int_78sta,gems=23int
 shoulders=sanctified_crimson_acolyte_mantle,heroic=1,stats=277armor_90crit_82haste_103int_150int_103sta,gems=10haste_12int_5int,enchant=24int_15crit
 chest=sanctified_crimson_acolyte_raiments,heroic=1,stats=369armor_114crit_114haste_139int_195int_139sta,gems=23int_10haste_12int_7int,enchant=15spi
@@ -56,7 +55,7 @@ off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119int_78sta
 ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58int_44sta,gems=10haste_12int_5int
 # Gear Summary
 # gear_stamina=1432
-# gear_intellect=1417
+ gear_intellect=3017
 # gear_spirit=75
 # gear_spell_power=3436
 # gear_hit_rating=289

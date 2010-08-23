@@ -61,6 +61,7 @@ double spell_t::tick_time() SC_CONST
   return t;
 }
 
+
 // spell_t::player_buff ======================================================
 
 void spell_t::player_buff()

@@ -732,8 +732,9 @@ void player_t::init_spell()
   double base_60 = 0.006600;
   double base_70 = 0.005596;
   double base_80 = 0.003345;
+  double base_85 = 0.000836; // nonsense value, divided base_80 by 4 to account for enormous intellect
 
-  mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80 );
+  mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80, base_85 );
 }
 
 // player_t::init_attack ====================================================

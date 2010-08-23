@@ -98,36 +98,42 @@
 	// Talents
 	struct talents_t
 	  {
-		int aspiration; // 					complete 12803
-		int darkness; // 					complete 12803
-		int dispersion; // 					complete 12803
-		int divine_fury; // 				complete 12803
-		int improved_devouring_plague;  // 	complete 12803
-		int improved_inner_fire; //
-		int improved_mind_blast; // 		complete 12803
-		int improved_shadow_word_pain; // 	complete 12803
 		int meditation; // 					done: talent function 12803
+
+		// Discipline
+		int aspiration; // 					complete 12803
+		int improved_inner_fire; //
 		int mental_agility; // 															open: better implementation
-		int mind_flay;
-		int mind_melt; // 					complete 12803
 		int pain_and_suffering; // 			complete 12803
 		int penance;
 		int power_infusion; // 				complete 12803
-		int shadow_form; // 				complete 12803
 		int twin_disciplines; // 			complete 12803
-		int twisted_faith; // 				complete 12803
-		int vampiric_embrace; // 			complete 12803
-		int vampiric_touch; // 				complete 12803
-		int veiled_shadows; // 				complete 12803
 		int evangelism; // 					complete 12803
 		int archangel; // 					complete 12803
+
+		// Holy
+		int divine_fury; // 				complete 12803
 		int chakra; // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
 		int state_of_mind; // 															incomplete: implement a function to increase the duration of a buff
+		int holy_concentration; //			complete 12803
+
+		// Shadow
+		int darkness; // 					complete 12803
+		int improved_devouring_plague;  // 	complete 12803
+		int improved_mind_blast; // 		complete 12803
+		int mind_flay;
+		int mind_melt; // 					complete 12803
+		int dispersion; // 					complete 12803
+		int improved_shadow_word_pain; // 	complete 12803
+		int shadow_form; // 				complete 12803
+		int twisted_faith; // 				complete 12803
+		int veiled_shadows; // 				complete 12803
 		int harnessed_shadows; //  			complete 12803
-		int shadowy_apparation; // 														incomplete: everything
 		int blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
 		int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
-		int holy_concentration; //			complete 12803
+		int shadowy_apparation; // 														incomplete: everything
+		int vampiric_embrace; // 			complete 12803
+		int vampiric_touch; // 				complete 12803
 
 		talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
 	  };
@@ -153,28 +159,34 @@
 	// Constants
 	struct constants_t
 	  {
+		double meditation_value;
+
+		// Discipline
+		double twin_disciplines_value;
+		double dark_evangelism_value;
+		double holy_evangelism_damage_value;
+		double holy_evangelism_mana_value;
+		double dark_archangel_value;
+		double holy_archangel_value;
+		double archangel_mana_value;
+		double inner_will_value;
+
+		// Holy
+		double holy_concentration_value;
+
+		// Shadow
 		double darkness_value;
 		double devouring_plague_health_mod;
 		double improved_shadow_word_pain_value;
 		double shadow_form_value;
-		double twin_disciplines_value;
 		double shadow_power_value;
-		double dark_evangelism_value;
-		double holy_evangelism_damage_value;
-		double holy_evangelism_mana_value;
-		double twisted_faith_static_value;
-		double twisted_faith_dynamic_value;
 		double shadow_orb_proc_value;
 		double shadow_orb_damage_value;
 		double harnessed_shadows_value;
-		double dark_archangel_value;
-		double holy_archangel_value;
-		double archangel_mana_value;
 		double mind_spike_crit_value;
 		double pain_and_suffering_value;
-		double holy_concentration_value;
-		double meditation_value;
-		double inner_will_value;
+		double twisted_faith_static_value;
+		double twisted_faith_dynamic_value;
 
 		constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
 	  };
@@ -664,8 +676,11 @@ struct devouring_plague_t : public priest_spell_t
     init_rank( ranks, 48300 );
 
     base_execute_time = 0;
-    base_tick_time    = 3.0;
-    num_ticks         = 8;
+    // Testing new dot haste scaling
+    base_tick_time    = 3.0 * haste();
+    num_ticks         = int ( round ( 8 * haste() ) );
+    //base_tick_time    = 3.0;
+    //num_ticks         = 8;
     tick_power_mod    = p -> power_mod.devouring_plague;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
@@ -790,41 +805,6 @@ struct dispersion_t : public priest_spell_t
     if ( oom_time >= time_to_die ) return false;
 
     return ( max_mana - current_mana ) > p -> max_mana_cost;
-  }
-};
-
-// Divine Spirit Spell =====================================================
-
-struct divine_spirit_t : public priest_spell_t
-{
-  double bonus;
-
-  divine_spirit_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "divine_spirit", player, SCHOOL_HOLY, TREE_DISCIPLINE ), bonus( 0 )
-  {
-    trigger_gcd = 0;
-    bonus = util_t::ability_rank( player -> level,  80.0,80,  50.0,70,  40.0,0 );
-
-    id = 48073;
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> ooc_buffs() )
-      {
-        p -> buffs.divine_spirit -> trigger( 1, bonus );
-        p -> init_resources( true );
-      }
-    }
-  }
-
-  virtual bool ready()
-  {
-    return player -> buffs.divine_spirit -> current_value < bonus;
   }
 };
 
@@ -960,9 +940,13 @@ struct inner_will_t : public priest_spell_t
       priest_spell_t( "inner_will", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
 
+	static rank_t ranks[] =
+	 {
+	    { 83, 0, 0, 0, 0, 0 }, // Dummy rank for level 80 characters.
+	    { 0, 0, 0, 0, 0, 0 }
+	  };
+	init_rank( ranks );
     trigger_gcd = 0;
-
-
 
   }
 
@@ -1587,8 +1571,11 @@ struct shadow_word_pain_t : public priest_spell_t
     init_rank( ranks, 48125 );
 
     base_execute_time = 0;
-    base_tick_time    = 3.0;
-    num_ticks         = 6;
+    // Testing new dot haste scaling
+    base_tick_time    = 3.0 * haste();
+    num_ticks         = int ( round ( 6 * haste() ) );
+    //base_tick_time    = 3.0;
+    //num_ticks         = 6;
     tick_power_mod    = p -> power_mod.shadow_word_pain;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
@@ -1797,8 +1784,11 @@ struct vampiric_touch_t : public priest_spell_t
     init_rank( ranks, 48160 );
 
     base_execute_time = 1.5;
-    base_tick_time    = 3.0;
-    num_ticks         = 5;
+    // Testing new dot haste scaling
+    base_tick_time    = 3.0 * haste();
+    num_ticks         = int ( round ( 5 * haste() ) );
+    //base_tick_time    = 3.0;
+    //num_ticks         = 5;
     tick_power_mod    = p -> power_mod.vampiric_touch;
 
     base_cost        = floor( base_cost );
@@ -2060,7 +2050,6 @@ action_t* priest_t::create_action( const std::string& name,
 {
   if ( name == "devouring_plague"  ) return new devouring_plague_t  ( this, options_str );
   if ( name == "dispersion"        ) return new dispersion_t        ( this, options_str );
-  if ( name == "divine_spirit"     ) return new divine_spirit_t     ( this, options_str );
   if ( name == "fortitude"         ) return new fortitude_t         ( this, options_str );
   if ( name == "holy_fire"         ) return new holy_fire_t         ( this, options_str );
   if ( name == "inner_fire"        ) return new inner_fire_t        ( this, options_str );
@@ -2270,7 +2259,7 @@ void priest_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/divine_spirit/inner_fire";
+    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/inner_fire";
 
     if ( talents.shadow_form ) action_list_str += "/shadow_form";
 
@@ -2672,7 +2661,6 @@ void player_t::priest_init( sim_t* sim )
   
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.divine_spirit  = new stat_buff_t( p, "divine_spirit",   STAT_SPIRIT,   80.0, 1 );
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
@@ -2691,7 +2679,6 @@ void player_t::priest_combat_begin( sim_t* sim )
     if ( p -> ooc_buffs() )
     {
       if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, 165.0 * 1.30 );
-      if ( sim -> overrides.divine_spirit ) p -> buffs.divine_spirit -> override( 1, 80.0 );
     }
   }
 }

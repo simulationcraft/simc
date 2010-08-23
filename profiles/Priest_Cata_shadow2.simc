@@ -13,7 +13,6 @@ glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/divine_spirit
 actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
