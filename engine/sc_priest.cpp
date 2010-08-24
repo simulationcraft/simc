@@ -78,6 +78,9 @@
     // Random Number Generators
     rng_t* rng_pain_and_suffering;
 
+    // Up-Times
+    uptime_t* uptimes_mind_spike;
+
     // Options
 	std::string power_infusion_target_str;
 
@@ -131,7 +134,7 @@
 		int harnessed_shadows; //  			complete 12803
 		int blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
 		int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
-		int shadowy_apparation; // 														incomplete: everything
+		int shadowy_apparation; // 			done: talent function 12803
 		int vampiric_embrace; // 			complete 12803
 		int vampiric_touch; // 				complete 12803
 
@@ -220,7 +223,7 @@
 		use_mind_blast           = 1;
 		recast_mind_blast        = 0;
 
-		distance	= 30;
+		distance	= 36;
 
 		max_mana_cost = 0.0;
 
@@ -245,7 +248,7 @@
 		constants.holy_evangelism_mana_value	  = 0.03;
 		constants.twisted_faith_static_value	  = 0.01;
 		constants.twisted_faith_dynamic_value	  = 0.50;
-		constants.shadow_orb_proc_value           = 0.10;
+		constants.shadow_orb_proc_value           = 0.18;
 		constants.shadow_orb_damage_value         = 0.20;
 		constants.harnessed_shadows_value         = 0.04;
 		constants.dark_archangel_value			  = 0.03;
@@ -273,6 +276,8 @@
 		dots_vampiric_touch   = get_dot( "vampiric_touch" );
 		dots_devouring_plague = get_dot( "devouring_plague" );
 		dots_holy_fire        = get_dot( "holy_fire" );
+
+
 
 		shadowy         = 0;
 
@@ -497,7 +502,6 @@ void priest_spell_t::target_debuff( int dmg_type )
 
 	target_multiplier *= 1.0 + p -> talents.shadow_power * p -> constants.shadow_power_value;
 
-
 		  if ( school == SCHOOL_SHADOW )
 		  {
 			  if ( dmg_type == DMG_OVER_TIME )
@@ -543,13 +547,13 @@ void priest_spell_t::assess_damage( double amount,
   
   if ( p -> buffs_vampiric_embrace -> up() ) 
   {
-    p -> resource_gain( RESOURCE_HEALTH, amount * 0.15 * ( 1.0 ), p -> gains.vampiric_embrace );
+    p -> resource_gain( RESOURCE_HEALTH, amount * 0.25 * ( 1.0 ), p -> gains.vampiric_embrace );
 
     pet_t* r = p -> pet_list;
 
     while ( r )
     {
-      r -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 ), r -> gains.vampiric_embrace );
+      r -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), r -> gains.vampiric_embrace );
       r = r -> next_pet;
     }
 
@@ -559,13 +563,13 @@ void priest_spell_t::assess_damage( double amount,
     {
       player_t* q = p -> party_list[ i ];
       
-      q -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 ), q -> gains.vampiric_embrace );
+      q -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), q -> gains.vampiric_embrace );
     
       r = q -> pet_list;
 
       while ( r )
       {
-        r -> resource_gain( RESOURCE_HEALTH, amount * 0.03 * ( 1.0 ), r -> gains.vampiric_embrace );
+        r -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), r -> gains.vampiric_embrace );
         r = r -> next_pet;
       }
     }    
@@ -1015,7 +1019,7 @@ struct mind_blast_t : public priest_spell_t
 	  priest_t* p = player -> cast_priest();
 	  priest_spell_t::execute();
 	  player -> cast_priest() -> buffs_mind_melt -> expire();
-
+	  sim -> target -> debuffs.mind_spike -> expire();
      if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
@@ -1032,6 +1036,14 @@ struct mind_blast_t : public priest_spell_t
 	      p -> trigger_replenishment();
       }
     }
+  }
+
+  virtual void target_debuff( int dmg_type )
+  {
+
+	priest_t* p = player -> cast_priest();
+    priest_spell_t::target_debuff( dmg_type );
+    target_crit 		  += p -> constants.mind_spike_crit_value * sim -> target -> debuffs.mind_spike -> stack();
   }
 
   virtual double execute_time() SC_CONST
@@ -1230,11 +1242,16 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
+    target_t* t = sim -> target;
 
     if ( result_is_hit() )
     {
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
       player -> cast_priest() -> buffs_shadow_orb -> expire();
+
+
+      t -> debuffs.mind_spike -> trigger();
+
       if ( result == RESULT_CRIT )
       {
    	    p -> buffs_glyph_of_shadow -> trigger();
@@ -2218,6 +2235,9 @@ void priest_t::init_procs()
 void priest_t::init_uptimes()
 {
   player_t::init_uptimes();
+
+    uptimes_mind_spike       = get_uptime( "mind_spike" );
+
 }
 
 // priest_t::init_rng ========================================================
@@ -2666,7 +2686,8 @@ void player_t::priest_init( sim_t* sim )
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
-
+  target_t* t = sim -> target;
+  t -> debuffs.mind_spike       = new debuff_t( sim, "mind_spike",       3, 12.0 );
 
 }
 

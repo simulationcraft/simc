@@ -260,7 +260,7 @@ player_t::player_t( sim_t*             s,
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
     // Mastery
-    mastery( 0 ),initial_mastery ( 0 ),mastery_rating( 0 ),buffed_mastery ( 0 ),initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
+    mastery( 0 ), initial_mastery ( 0 ),buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
     // Spell Mechanics
     base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
@@ -694,8 +694,8 @@ void player_t::init_core()
   if ( initial_stats.mastery_rating < 0 ) initial_stats.mastery_rating = 0;
 
   initial_haste_rating 		= initial_stats.haste_rating;
-  initial_mastery_rating 		= initial_stats.mastery_rating;
 
+  initial_mastery_rating 		= initial_stats.mastery_rating;
   initial_mastery	= base_mastery + initial_stats.mastery_rating / rating.mastery;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
@@ -1279,6 +1279,11 @@ double player_t::composite_attack_haste() SC_CONST
     }
   }
 
+  if ( ( race == RACE_GOBLIN ) )
+    {
+      h *= 1.01;
+    }
+
   return h;
 }
 
@@ -1309,7 +1314,10 @@ double player_t::composite_attack_crit() SC_CONST
       ac += 0.05;
     }
   }
-
+  if ( ( race == RACE_WORGEN ) )
+    {
+      ac *= 1.01;
+    }
   return ac;
 }
 
@@ -1624,6 +1632,10 @@ double player_t::composite_spell_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
   }
+  if ( ( race == RACE_GOBLIN ) )
+      {
+        h *= 1.01;
+      }
 
   return h;
 }
@@ -1693,6 +1705,11 @@ double player_t::composite_spell_crit() SC_CONST
 
     if ( buffs.destruction_potion -> check() ) sc += 0.02;
   }
+
+  if ( ( race == RACE_WORGEN ) )
+    {
+      sc *= 1.01;
+    }
 
   return sc;
 }

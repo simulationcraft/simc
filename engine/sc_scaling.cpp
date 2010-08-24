@@ -407,7 +407,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
     { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
-    { "scale_mastery_rating",           OPT_FLT,    &( stats.mastery_rating                   ) },
+    { "scale_mastery_rating",           OPT_FLT,    &( stats.mastery_rating                 ) },
     { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
     { "scale_weapon_speed",             OPT_FLT,    &( stats.weapon_speed                   ) },
     { "scale_offhand_weapon_dps",       OPT_FLT,    &( stats.weapon_offhand_dps             ) },

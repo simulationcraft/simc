@@ -1921,6 +1921,7 @@ struct target_t
     debuff_t* savage_combat;
     debuff_t* expose_armor;
     debuff_t* hemorrhage;
+    debuff_t* mind_spike;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
     bool snared();
