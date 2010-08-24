@@ -60,7 +60,6 @@ struct druid_t : public player_t
   gain_t* gains_natural_reaction;
   gain_t* gains_omen_of_clarity;
   gain_t* gains_primal_fury;
-  gain_t* gains_primal_precision;
   gain_t* gains_tigers_fury;
 
   // Procs
@@ -94,6 +93,7 @@ struct druid_t : public player_t
     // Checked, build 12759
     int  balance_of_power;
     int  blessing_of_the_grove;
+    int  brutal_impact;
     int  earth_and_moon;
     int  endless_carnage;
     int  euphoria;
@@ -105,6 +105,7 @@ struct druid_t : public player_t
     int  gale_winds;
     int  genesis;
     int  heart_of_the_wild;
+    int  infected_wounds;
     int  king_of_the_jungle;
     int  leader_of_the_pack;
     int  lunar_guidance;
@@ -124,12 +125,10 @@ struct druid_t : public player_t
 
     // TODO: Recheck all talents below
     int  berserk;
-    int  brutal_impact;
     int  feral_charge;
     int  feral_swiftness;
     int  fury_of_stormrage;
     int  improved_feral_charge;
-    int  infected_wounds;
     int  natural_reaction;
     int  natures_swiftness;
     int  nurturing_instict;
@@ -140,14 +139,6 @@ struct druid_t : public player_t
     int  survival_instincts;
     int  thick_hide;
     
-    // TODO: talents to delete
-    int  primal_gore;
-    int  primal_precision;
-    int  protector_of_the_pack;
-    int  sharpened_claws;
-    int  shredding_attacks;
-
-
     bool is_tank_spec(void)
     {
         bool bear_essentials = thick_hide==3 && survival_instincts==1 && natural_reaction==2;
@@ -677,23 +668,6 @@ static void trigger_energy_refund( druid_cat_attack_t* a )
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
 }
 
-// trigger_primal_precision ================================================
-
-static void trigger_primal_precision( druid_cat_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> talents.primal_precision )
-    return;
-
-  if ( ! a -> requires_combo_points )
-    return;
-
-  double energy_restored = a -> resource_consumed * p -> talents.primal_precision * 0.40;
-
-  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_primal_precision );
-}
-
 // trigger_primal_fury =====================================================
 
 static void trigger_primal_fury( druid_bear_attack_t* a )
@@ -805,7 +779,6 @@ void druid_cat_attack_t::execute()
   else
   {
     trigger_energy_refund( this );
-    trigger_primal_precision( this );
   }
 
   if ( harmful ) p -> buffs_stealthed -> expire();
@@ -1005,10 +978,10 @@ struct claw_t : public druid_cat_attack_t
 
     static rank_t ranks[] =
     {
-      { 79, 8, 370, 370, 0, 45 },
-      { 73, 7, 300, 300, 0, 45 },
-      { 67, 6, 190, 190, 0, 45 },
-      { 58, 7, 115, 115, 0, 45 },
+      { 79, 8, 370, 370, 0, 40 },
+      { 73, 7, 300, 300, 0, 40 },
+      { 67, 6, 190, 190, 0, 40 },
+      { 58, 7, 115, 115, 0, 40 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48570 );
@@ -1085,10 +1058,10 @@ struct mangle_cat_t : public druid_cat_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 283, 283, 0, 45 },
-      { 75, 4, 239, 239, 0, 45 },
-      { 68, 3, 165, 165, 0, 45 },
-      { 58, 2, 128, 128, 0, 45 },
+      { 80, 5, 283, 283, 0, 35 },
+      { 75, 4, 239, 239, 0, 35 },
+      { 68, 3, 165, 165, 0, 35 },
+      { 58, 2, 128, 128, 0, 35 },
       {  0, 0,   0,   0, 0,  0 }
     };
     init_rank( ranks, 48566 );
@@ -1131,10 +1104,10 @@ struct rake_t : public druid_cat_attack_t
 
     static rank_t ranks[] =
     {
-      { 78, 7, 190, 190, 387, 40 },
-      { 72, 6, 150, 150, 321, 40 },
-      { 64, 5,  90,  90, 138, 40 },
-      { 54, 4,  64,  90,  99, 40 },
+      { 78, 7, 190, 190, 387, 35 },
+      { 72, 6, 150, 150, 321, 35 },
+      { 64, 5,  90,  90, 138, 35 },
+      { 54, 4,  64,  90,  99, 35 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48574 );
@@ -1292,11 +1265,11 @@ struct shred_t : public druid_cat_attack_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 296, 296, 0, 60 },
-      { 75, 8, 251, 251, 0, 60 },
-      { 70, 7, 180, 180, 0, 60 },
-      { 61, 6, 105, 105, 0, 60 },
-      { 54, 5,  80,  80, 0, 60 },
+      { 80, 9, 296, 296, 0, 40 },
+      { 75, 8, 251, 251, 0, 40 },
+      { 70, 7, 180, 180, 0, 40 },
+      { 61, 6, 105, 105, 0, 40 },
+      { 54, 5,  80,  80, 0, 40 },
       {  0, 0,   0,   0, 0,  0 }
     };
     init_rank( ranks, 48572 );
@@ -1307,7 +1280,6 @@ struct shred_t : public druid_cat_attack_t
     requires_position  = POSITION_BACK;
     adds_combo_points  = true;
     may_crit           = true;
-    base_cost         -= 9 * p -> talents.shredding_attacks;
 
     base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove, 2, 0.02 );
 
@@ -1772,9 +1744,8 @@ struct lacerate_t : public druid_bear_attack_t
     num_ticks = 5;
     base_tick_time = 3.0;
     direct_power_mod = 0.01;
-    tick_power_mod = 0.01;
-    tick_may_crit = ( p -> talents.primal_gore != 0 );
-    base_cost -= p -> talents.shredding_attacks;
+    tick_power_mod   = 0.01;
+    tick_may_crit    = true;
     dot_behavior = DOT_REFRESH;
 
     if ( p -> set_bonus.tier9_2pc_melee() ) base_td_multiplier *= 1.05;
@@ -1880,7 +1851,9 @@ struct maul_t : public druid_bear_attack_t
     };
     init_rank( ranks );
 
+    trigger_gcd  = 0;
     may_crit     = true;
+
     // TODO: scaling?
     weapon = &( p -> main_hand_weapon );
     //normalize_weapon_speed = false;
@@ -2432,11 +2405,10 @@ struct insect_swarm_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  double base_crit_tick, base_crit_direct;
   double base_cost_reduction;
   moonfire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
-      base_crit_tick( 0 ), base_crit_direct( 0 ), base_cost_reduction( 0 )
+      base_cost_reduction( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -3408,7 +3380,6 @@ void druid_t::init_base()
   initial_spell_power_per_spirit = 0.0;
 
   base_attack_power = -20 + level * 2.0;
-  base_attack_expertise = talents.primal_precision * 0.05;
 
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
@@ -3525,7 +3496,6 @@ void druid_t::init_gains()
   gains_natural_reaction   = get_gain( "natural_reaction"   );
   gains_omen_of_clarity    = get_gain( "omen_of_clarity"    );
   gains_primal_fury        = get_gain( "primal_fury"        );
-  gains_primal_precision   = get_gain( "primal_precision"   );
   gains_tigers_fury        = get_gain( "tigers_fury"        );
 }
 
@@ -3763,11 +3733,13 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
   {
     multiplier *= 1.0 + talents.heart_of_the_wild * 0.03;
   }
-  else if ( buffs_bear_form -> check() )
+  if ( primary_tree() == TREE_FERAL )
   {
-    multiplier *= 1.0 + 0.02 * talents.protector_of_the_pack;
+    // Aggression
+    // Increases your attack power by 25%.
+    multiplier *= 1.25;
+    
   }
-
   return multiplier;
 }
 
@@ -3779,12 +3751,7 @@ double druid_t::composite_attack_crit() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    c += 0.02 * talents.sharpened_claws;
     c += 0.04 * talents.master_shapeshifter;
-  }
-  else if ( buffs_bear_form -> check() )
-  {
-    c += 0.02 * talents.sharpened_claws;
   }
 
   return floor( c * 10000.0 ) / 10000.0;
@@ -3931,12 +3898,7 @@ std::vector<option_t>& druid_t::get_options()
       { "owlkin_frenzy",             OPT_INT,  &( talents.owlkin_frenzy             ) },
       { "predatory_strikes",         OPT_INT,  &( talents.predatory_strikes         ) },
       { "primal_fury",               OPT_INT,  &( talents.primal_fury               ) },
-      { "primal_gore",               OPT_INT,  &( talents.primal_gore               ) },
-      { "primal_precision",          OPT_INT,  &( talents.primal_precision          ) },
-      { "protector_of_the_pack",     OPT_INT,  &( talents.protector_of_the_pack     ) },
       { "rend_and_tear",             OPT_INT,  &( talents.rend_and_tear             ) },
-      { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
-      { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
       { "solar_beam",                OPT_INT,  &( talents.solar_beam                ) },
       { "survival_instincts",        OPT_INT,  &( talents.survival_instincts        ) },
       { "starfall",                  OPT_INT,  &( talents.starfall                  ) },
