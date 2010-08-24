@@ -2473,10 +2473,13 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      num_ticks = 5;
+      num_ticks = 4;
       added_ticks = 0;
       if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
+
+      // If moving trigger all 3 stacks, because it will stack up immediately
+      p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
     }
   }
   virtual double cost() SC_CONST
@@ -3064,7 +3067,7 @@ struct starsurge_t : public druid_spell_t
     {
       // It always pushes towards the side the bar is on, positive if at zero
       int gain = 10 + 2 * p -> talents.lunar_guidance;
-      if (  p -> eclipse_bar_value < 0 ) gain *= -1;
+      if (  p -> eclipse_bar_value < 0 ) gain = -gain;
       trigger_eclipse_energy_gain( this, gain );
     }
   }  
