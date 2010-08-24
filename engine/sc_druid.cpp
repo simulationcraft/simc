@@ -92,19 +92,24 @@ struct druid_t : public player_t
     // Starlight Wrath now reduces cast time by 0.15/0.25/0.5 sec. (Up from 0.1/0.2/0.3 sec) Done
     // Checked, build 12759
     int  balance_of_power;
+    int  berserk;
     int  blessing_of_the_grove;
-    int  brutal_impact;
+    int  brutal_impact; // NYI
     int  earth_and_moon;
     int  endless_carnage;
     int  euphoria;
     int  feral_aggression;
+    int  feral_charge; // NYI
+    int  feral_swiftness;
     int  force_of_nature;
     int  fungal_growth;
     int  furor;
+    int  fury_of_stormrage; // NYI
     int  fury_swipes;
     int  gale_winds;
     int  genesis;
     int  heart_of_the_wild;
+    int  improved_feral_charge; // Valid to run out->charge->ravage?
     int  infected_wounds;
     int  king_of_the_jungle;
     int  leader_of_the_pack;
@@ -113,32 +118,25 @@ struct druid_t : public player_t
     int  master_shapeshifter;
     int  moonglow;
     int  moonkin_form;
-    int  natures_majesty;
+    int  natural_reaction;
     int  natures_grace;
+    int  natures_majesty;
+    int  natures_swiftness;
     int  nom_nom_nom;
+    int  nurturing_instict; // NYI
     int  owlkin_frenzy;
+    int  predatory_strikes; // NYI
     int  primal_fury;
+    int  primal_madness; // NYI
+    int  pulverize; // NYI
+    int  rend_and_tear;
     int  solar_beam;
     int  starfall;
     int  starlight_wrath;
+    int  survival_instincts; // NYI
+    int  thick_hide; // How does the +10% and +33%@bear stack etc
     int  typhoon;
 
-    // TODO: Recheck all talents below
-    int  berserk;
-    int  feral_charge;
-    int  feral_swiftness;
-    int  fury_of_stormrage;
-    int  improved_feral_charge;
-    int  natural_reaction;
-    int  natures_swiftness;
-    int  nurturing_instict;
-    int  predatory_strikes;
-    int  primal_madness;
-    int  pulverize;
-    int  rend_and_tear;
-    int  survival_instincts;
-    int  thick_hide;
-    
     bool is_tank_spec(void)
     {
         bool bear_essentials = thick_hide==3 && survival_instincts==1 && natural_reaction==2;
@@ -946,9 +944,9 @@ struct berserk_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_berserk -> trigger();
     // Berserk cancels TF
     p -> buffs_tigers_fury -> expire();
+    p -> buffs_berserk -> trigger();
     update_ready();
   }
 
@@ -2549,7 +2547,7 @@ struct bear_form_t : public druid_spell_t
     p -> base_gcd = 1.0;
     p -> reset_gcd();
 
-    p -> dodge += 0.02 * p -> talents.feral_swiftness + 0.02 * p -> talents.natural_reaction;
+    p -> dodge += 0.02 * p -> talents.feral_swiftness + 0.03 * p -> talents.natural_reaction;
     p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide );
 
     if ( p -> talents.leader_of_the_pack )
