@@ -1508,6 +1508,8 @@ std::vector<option_t>& sim_t::get_options()
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
       { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
+      { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
+      { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
       { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
       { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
       { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },

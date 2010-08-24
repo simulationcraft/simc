@@ -1304,7 +1304,7 @@ double player_t::composite_attack_crit() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( sim -> auras.leader_of_the_pack -> check() || sim -> auras.rampage -> up() )
+    if ( sim -> auras.leader_of_the_pack -> check() || sim -> auras.honor_among_thieves -> up() || sim -> auras.rampage -> up() )
     {
       ac += 0.05;
     }

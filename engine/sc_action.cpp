@@ -320,15 +320,10 @@ void action_t::target_debuff( int dmg_type )
 
   if ( school == SCHOOL_BLEED )
   {
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() )
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up()  || t -> debuffs.hemorrhage -> up() )
     {
       target_multiplier *= 1.30;
     }
-  }
-
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    target_dd_adder += t -> debuffs.hemorrhage -> value();
   }
 
   // FIXME! HotC and MP are 1%/2%/3%

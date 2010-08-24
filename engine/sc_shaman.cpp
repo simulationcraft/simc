@@ -8,8 +8,6 @@
 // ==========================================================================
 // Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
 // Ability/Spell Rank scaling
-// Verify Searing Flames Dot Damage
-// trigger_searing_flames eats the cpu
 // Mail Specialization -> 5% intel or agi bonus (waiting on sim changes to check armor type)
 // ==========================================================================
 

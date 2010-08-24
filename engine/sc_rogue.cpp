@@ -9,6 +9,13 @@
 // Rogue
 // ==========================================================================
 
+// ==========================================================================
+// Todo for Cata
+// Talents
+// New Ability: Redirect
+// Ability Scaling
+// ==========================================================================
+
 enum poison_type_t { POISON_NONE=0, ANESTHETIC_POISON, DEADLY_POISON, INSTANT_POISON, WOUND_POISON };
 
 struct rogue_t : public player_t
@@ -108,67 +115,83 @@ struct rogue_t : public player_t
 
   struct talents_t
   {
+    // Assasination
+    int cold_blood;
+    int coup_de_grace;
+    int cut_to_the_chase;
+    int improved_expose_armor;
+    int lethality;    
+    int master_poisoner;
+    int murderous_intent;
+    int overkill;
+    int puncturing_wounds;
+    int ruthlessness;
+    int seal_fate;
+    int vendetta;
+    int venomous_wounds;
+    int vile_poisons;
+
+    // Combat
     int adrenaline_rush;
     int aggression;
-    int blade_flurry;
-    int blade_twisting;
+    int bandits_guile;
+    int combat_potency; 
+    int improved_sinister_strike;
+    int improved_slice_and_dice;
+    int killing_spree; 
+    int lightning_reflexes;
+    int revealing_strike;
+    int precision;
+    int restless_blades;
+    int savage_combat;
+
+    // Subtlety
     int blood_spatter;
+    int elusiveness;
+    int hemorrhage;
+    int honor_among_thieves;
+    int improved_ambush;
+    int initiative;
+    int opportunity;
+    int premeditation;
+    int preparation;
+    int relentless_strikes;
+    int sanguinary_vein;
+    int serrated_blades;
+    int shadow_dance;
+    int slaughter_from_the_shadows;
+    int waylay;
+
+    // Deprecated
+    int blade_flurry; // combat
+    int blade_twisting;    
     int close_quarters_combat;
-    int cold_blood;
-    int combat_potency;
-    int cut_to_the_chase;
     int deadliness;
     int dirty_deeds;
-    int dual_wield_specialization;
-    int elusiveness;
+    int dual_wield_specialization; // combat    
     int filthy_tricks;
     int find_weakness;
     int focused_attacks;
     int ghostly_strike;
-    int heightened_senses;
-    int hemorrhage;
-    int honor_among_thieves;
-    int hunger_for_blood;
-    int improved_ambush;
+    int heightened_senses;    
+    int hunger_for_blood;    
     int improved_eviscerate;
-    int improved_expose_armor;
-    int improved_poisons;
-    int improved_sinister_strike;
-    int improved_slice_and_dice;
-    int initiative;
-    int killing_spree;
-    int lethality;
-    int lightning_reflexes;
+    int improved_poisons; // Ass         
     int mace_specialization;
     int malice;
-    int master_of_subtlety;
-    int master_poisoner;
+    int master_of_subtlety; // sub
     int murder;
-    int mutilate;
-    int opportunity;
-    int overkill;
-    int precision;
-    int premeditation;
-    int preparation;
-    int prey_on_the_weak;
-    int puncturing_wounds;
-    int quick_recovery;
-    int relentless_strikes;
-    int ruthlessness;
-    int savage_combat;
-    int seal_fate;
-    int serrated_blades;
-    int shadow_dance;
-    int shadowstep;
-    int sinister_calling;
-    int slaughter_from_the_shadows;
+    int mutilate; // Ass        
+    int prey_on_the_weak;    
+    int quick_recovery;   
+    int shadowstep; // sub
+    int sinister_calling; // sub   
     int sleight_of_hand;
     int surprise_attacks;
     int sword_specialization;
     int turn_the_tables;
-    int vigor;
-    int vile_poisons;
-    int vitality;
+    int vigor;   
+    int vitality; // combat
     int weapon_expertise;
 
     // NYI
@@ -241,7 +264,6 @@ struct rogue_t : public player_t
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
-  virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1662,10 +1684,8 @@ struct ghostly_strike_t : public rogue_attack_t
 
 struct hemorrhage_t : public rogue_attack_t
 {
-  double damage_adder;
-
   hemorrhage_t( player_t* player, const std::string& options_str ) :
-      rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY ), damage_adder( 0 )
+      rogue_attack_t( "hemorrhage", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     rogue_t* p = player -> cast_rogue();
     check_talent( p -> talents.hemorrhage );
@@ -1693,11 +1713,7 @@ struct hemorrhage_t : public rogue_attack_t
     base_crit += p -> talents.turn_the_tables * 0.02;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality * 0.06;
 
-    damage_adder = util_t::ability_rank( p -> level,  75.0,80,  42.0,70,  29.0,0 );
-
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += .05;
-
-    if ( p -> glyphs.hemorrhage ) damage_adder *= 1.40;
 
     id = 48660;
   }
@@ -1708,11 +1724,7 @@ struct hemorrhage_t : public rogue_attack_t
     if ( result_is_hit() )
     {
       target_t* t = sim -> target;
-
-      if ( damage_adder >= t -> debuffs.hemorrhage -> current_value )
-      {
-        t -> debuffs.hemorrhage -> trigger( 10, damage_adder );
-      }
+      t -> debuffs.hemorrhage -> trigger();
     }
   }
 
@@ -2985,28 +2997,12 @@ double rogue_t::composite_attack_crit() SC_CONST
   return ac;
 }
 
-// rogue_t::composite_tank_miss ============================================
-
-double rogue_t::composite_tank_miss( int school ) SC_CONST
-{
-  double m = player_t::composite_tank_miss( school );
-
-  if ( school != SCHOOL_PHYSICAL )
-  {
-    m += talents.heightened_senses * 0.02;
-  }
-
-  if      ( m > 1.0 ) m = 1.0;
-  else if ( m < 0.0 ) m = 0.0;
-
-  return m;
-}
 
 // rogue_t::primary_tree ===================================================
 
 int rogue_t::primary_tree() SC_CONST
 {
-  if ( talents.mutilate ) return TREE_ASSASSINATION;
+  if ( talents.cold_blood ) return TREE_ASSASSINATION;
   if ( talents.adrenaline_rush || talents.killing_spree ) return TREE_COMBAT;
   if ( talents.honor_among_thieves ) return TREE_SUBTLETY;
 
@@ -3068,11 +3064,6 @@ void rogue_t::init_actions()
       bool rupture_less = ( ! talents.blood_spatter   &&
                             ! talents.serrated_blades &&
                             ! glyphs.rupture );
-      if ( talents.hunger_for_blood )
-      {
-        action_list_str += "/pool_energy,for_next=1";
-        action_list_str += "/hunger_for_blood,if=buff.hunger_for_blood.remains<2";
-      }
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<1";
       if ( ! talents.cut_to_the_chase )
       {
@@ -3187,7 +3178,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
-  if ( name == "hunger_for_blood"    ) return new hunger_for_blood_t   ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
@@ -3263,20 +3253,20 @@ void rogue_t::init_race()
   race = util_t::parse_race_type( race_str );
   switch ( race )
   {
-  case RACE_HUMAN:
-  case RACE_DWARF:
-  case RACE_NIGHT_ELF:
-  case RACE_GNOME:
-  case RACE_UNDEAD:
-  case RACE_ORC:
-  case RACE_TROLL:
-  case RACE_BLOOD_ELF:
-  case RACE_WORGEN:
-  case RACE_GOBLIN:
-    break;
-  default:
-    race = RACE_NIGHT_ELF;
-    race_str = util_t::race_type_string( race );
+    case RACE_BLOOD_ELF:
+    case RACE_DWARF:
+    case RACE_GOBLIN:
+    case RACE_GNOME:
+    case RACE_HUMAN:
+    case RACE_ORC:
+    case RACE_NIGHT_ELF:
+    case RACE_TROLL:
+    case RACE_WORGEN:
+    case RACE_UNDEAD:
+      break;
+    default:
+      race = RACE_NIGHT_ELF;
+      race_str = util_t::race_type_string( race );
   }
 
   player_t::init_race();
@@ -3308,11 +3298,16 @@ void rogue_t::init_base()
 
   base_attack_expertise = talents.weapon_expertise * 0.05;
 
-  resource_base[ RESOURCE_ENERGY ] = 100 + ( talents.vigor ? ( glyphs.vigor ? 20 : 10 ) : 0 );
+  resource_base[ RESOURCE_ENERGY ] = 100;
+  /* FIX ME
+  if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER 
+       && primary_tree = TREE_ASSASSINATION )
+       resource_base[ RESOURCE_ENERGY ] += 20;
+ */
 
   health_per_stamina       = 10;
   energy_regen_per_second  = 10;
-  energy_regen_per_second *= 1.0 + util_t::talent_rank( talents.vitality, 3, 0.08, 0.16, 0.25 );
+  energy_regen_per_second *= 1.0 + ( primary_tree() == TREE_COMBAT ? 0.25 : 0 );
 
   base_gcd = 1.0;
 }
@@ -3640,34 +3635,25 @@ std::vector<talent_translation_t>& rogue_t::get_talent_list()
   {
           talent_translation_t translation_table[][MAX_TALENT_TREES] =
           {
-    { {  1, 3, &( talents.improved_eviscerate   ) }, {  1, 0, NULL                                   }, {  1, 5, &( talents.relentless_strikes         ) } },
-    { {  2, 0, NULL                               }, {  2, 2, &( talents.improved_sinister_strike  ) }, {  2, 0, NULL                                    } },
-    { {  3, 5, &( talents.malice                ) }, {  3, 5, &( talents.dual_wield_specialization ) }, {  3, 2, &( talents.opportunity                ) } },
-    { {  4, 3, &( talents.ruthlessness          ) }, {  4, 2, &( talents.improved_slice_and_dice   ) }, {  4, 2, &( talents.sleight_of_hand            ) } },
-    { {  5, 2, &( talents.blood_spatter         ) }, {  5, 0, NULL                                   }, {  5, 0, NULL                                    } },
-    { {  6, 3, &( talents.puncturing_wounds     ) }, {  6, 5, &( talents.precision                 ) }, {  6, 0, NULL                                    } },
-    { {  7, 1, &( talents.vigor                 ) }, {  7, 0, NULL                                   }, {  7, 2, &( talents.elusiveness                ) } },
-    { {  8, 2, &( talents.improved_expose_armor ) }, {  8, 0, NULL                                   }, {  8, 1, &( talents.ghostly_strike             ) } },
-    { {  9, 5, &( talents.lethality             ) }, {  9, 5, &( talents.close_quarters_combat     ) }, {  9, 3, &( talents.serrated_blades            ) } },
-    { { 10, 3, &( talents.vile_poisons          ) }, { 10, 0, NULL                                   }, { 10, 3, &( talents.setup                      ) } },
-    { { 11, 5, &( talents.improved_poisons      ) }, { 11, 0, NULL                                   }, { 11, 3, &( talents.initiative                 ) } },
-    { { 12, 0, NULL                               }, { 12, 3, &( talents.lightning_reflexes        ) }, { 12, 2, &( talents.improved_ambush            ) } },
-    { { 13, 1, &( talents.cold_blood            ) }, { 13, 5, &( talents.aggression                ) }, { 13, 2, &( talents.heightened_senses          ) } },
-    { { 14, 0, NULL                               }, { 14, 5, &( talents.mace_specialization       ) }, { 14, 1, &( talents.preparation                ) } },
-    { { 15, 2, &( talents.quick_recovery        ) }, { 15, 1, &( talents.blade_flurry              ) }, { 15, 2, &( talents.dirty_deeds                ) } },
-    { { 16, 5, &( talents.seal_fate             ) }, { 16, 5, &( talents.sword_specialization      ) }, { 16, 1, &( talents.hemorrhage                 ) } },
-    { { 17, 2, &( talents.murder                ) }, { 17, 2, &( talents.weapon_expertise          ) }, { 17, 3, &( talents.master_of_subtlety         ) } },
-    { { 18, 0, NULL                               }, { 18, 2, &( talents.blade_twisting            ) }, { 18, 5, &( talents.deadliness                 ) } },
-    { { 19, 1, &( talents.overkill              ) }, { 19, 3, &( talents.vitality                  ) }, { 19, 0, NULL                                    } },
-    { { 20, 0, NULL                               }, { 20, 1, &( talents.adrenaline_rush           ) }, { 20, 1, &( talents.premeditation              ) } },
-    { { 21, 3, &( talents.focused_attacks       ) }, { 21, 0, NULL                                   }, { 21, 0, NULL                                    } },
-    { { 22, 3, &( talents.find_weakness         ) }, { 22, 0, NULL                                   }, { 22, 5, &( talents.sinister_calling           ) } },
-    { { 23, 3, &( talents.master_poisoner       ) }, { 23, 5, &( talents.combat_potency            ) }, { 23, 0, NULL                                    } },
-    { { 24, 1, &( talents.mutilate              ) }, { 24, 0, NULL                                   }, { 24, 3, &( talents.honor_among_thieves        ) } },
-    { { 25, 3, &( talents.turn_the_tables       ) }, { 25, 1, &( talents.surprise_attacks          ) }, { 25, 1, &( talents.shadowstep                 ) } },
-    { { 26, 5, &( talents.cut_to_the_chase      ) }, { 26, 2, &( talents.savage_combat             ) }, { 26, 2, &( talents.filthy_tricks              ) } },
-    { { 27, 1, &( talents.hunger_for_blood      ) }, { 27, 5, &( talents.prey_on_the_weak          ) }, { 27, 5, &( talents.slaughter_from_the_shadows ) } },
-    { {  0, 0, NULL                               }, { 28, 1, &( talents.killing_spree             ) }, { 28, 1, &( talents.shadow_dance               ) } },
+    { {  1, 0, NULL                               }, {  1, 0, NULL                                   }, {  1, 0, NULL                                    } },
+    { {  2, 3, &( talents.coup_de_grace         ) }, {  2, 3, &( talents.improved_sinister_strike  ) }, {  2, 3, &( talents.improved_ambush            ) } },
+    { {  3, 3, &( talents.lethality             ) }, {  3, 3, &( talents.precision                 ) }, {  3, 3, &( talents.relentless_strikes         ) } },
+    { {  4, 3, &( talents.ruthlessness          ) }, {  4, 2, &( talents.improved_slice_and_dice   ) }, {  4, 2, &( talents.elusiveness                ) } },
+    { {  5, 0, NULL                               }, {  5, 0, NULL                                   }, {  5, 2, &( talents.waylay                     ) } },
+    { {  6, 3, &( talents.puncturing_wounds     ) }, {  6, 3, &( talents.aggression                ) }, {  6, 3, &( talents.opportunity                ) } },
+    { {  7, 0, NULL                               }, {  7, 0, NULL                                   }, {  7, 2, &( talents.initiative                 ) } },
+    { {  8, 0, NULL                               }, {  8, 3, &( talents.lightning_reflexes        ) }, {  8, 1, &( talents.hemorrhage                 ) } },
+    { {  9, 1, &( talents.cold_blood            ) }, {  9, 1, &( talents.revealing_strike          ) }, {  9, 2, &( talents.blood_spatter              ) } },
+    { { 10, 3, &( talents.vile_poisons          ) }, { 10, 0, NULL                                   }, { 10, 0, NULL                                    } },
+    { { 11, 0, NULL                               }, { 11, 0, NULL                                   }, { 11, 3, &( talents.honor_among_thieves        ) } },
+    { { 12, 2, &( talents.seal_fate             ) }, { 12, 3, &( talents.combat_potency            ) }, { 12, 1, &( talents.premeditation              ) } },
+    { { 13, 2, &( talents.murderous_intent      ) }, { 13, 0, NULL                                   }, { 13, 0, NULL                                    } },
+    { { 14, 1, &( talents.overkill              ) }, { 14, 0, NULL                                   }, { 14, 0, NULL                                    } },
+    { { 15, 1, &( talents.master_poisoner       ) }, { 15, 1, &( talents.adrenaline_rush           ) }, { 15, 1, &( talents.preparation                ) } },
+    { { 16, 2, &( talents.improved_expose_armor ) }, { 16, 2, &( talents.savage_combat             ) }, { 16, 3, &( talents.sanguinary_vein            ) } },
+    { { 17, 3, &( talents.cut_to_the_chase      ) }, { 17, 3, &( talents.bandits_guile             ) }, { 17, 3, &( talents.slaughter_from_the_shadows ) } },
+    { { 18, 2, &( talents.venomous_wounds       ) }, { 18, 2, &( talents.restless_blades           ) }, { 18, 2, &( talents.serrated_blades            ) } },
+    { { 19, 1, &( talents.vendetta              ) }, { 19, 1, &( talents.killing_spree             ) }, { 19, 1, &( talents.shadow_dance               ) } },
     { {  0, 0, NULL                               }, {  0, 0, NULL                                   }, {  0, 0, NULL                                    } }
   };
 
@@ -3689,67 +3675,44 @@ std::vector<option_t>& rogue_t::get_options()
       // @option_doc loc=skip
       { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
       { "aggression",                 OPT_INT, &( talents.aggression                 ) },
-      { "blade_flurry",               OPT_INT, &( talents.blade_flurry               ) },
-      { "blade_twisting",             OPT_INT, &( talents.blade_twisting             ) },
+      { "bandits_guile",              OPT_INT, &( talents.bandits_guile              ) },
       { "blood_spatter",              OPT_INT, &( talents.blood_spatter              ) },
-      { "close_quarters_combat",      OPT_INT, &( talents.close_quarters_combat      ) },
       { "cold_blood",                 OPT_INT, &( talents.cold_blood                 ) },
       { "combat_potency",             OPT_INT, &( talents.combat_potency             ) },
+      { "coup_de_grace",              OPT_INT, &( talents.coup_de_grace              ) },
       { "cut_to_the_chase",           OPT_INT, &( talents.cut_to_the_chase           ) },
-      { "deadliness",                 OPT_INT, &( talents.deadliness                 ) },
-      { "dirty_deeds",                OPT_INT, &( talents.dirty_deeds                ) },
-      { "dual_wield_specialization",  OPT_INT, &( talents.dual_wield_specialization  ) },
       { "elusiveness",                OPT_INT, &( talents.elusiveness                ) },
-      { "filthy_tricks",              OPT_INT, &( talents.filthy_tricks              ) },
-      { "find_weakness",              OPT_INT, &( talents.find_weakness              ) },
-      { "focused_attacks",            OPT_INT, &( talents.focused_attacks            ) },
-      { "ghostly_strike",             OPT_INT, &( talents.ghostly_strike             ) },
       { "hemorrhage",                 OPT_INT, &( talents.hemorrhage                 ) },
       { "honor_among_thieves",        OPT_INT, &( talents.honor_among_thieves        ) },
-      { "hunger_for_blood",           OPT_INT, &( talents.hunger_for_blood           ) },
       { "improved_ambush",            OPT_INT, &( talents.improved_ambush            ) },
-      { "improved_eviscerate",        OPT_INT, &( talents.improved_eviscerate        ) },
       { "improved_expose_armor",      OPT_INT, &( talents.improved_expose_armor      ) },
-      { "improved_poisons",           OPT_INT, &( talents.improved_poisons           ) },
       { "improved_sinister_strike",   OPT_INT, &( talents.improved_sinister_strike   ) },
       { "improved_slice_and_dice",    OPT_INT, &( talents.improved_slice_and_dice    ) },
       { "initiative",                 OPT_INT, &( talents.initiative                 ) },
-      { "killing_spree",              OPT_INT, &( talents.killing_spree              ) },
-      { "heightened_senses",          OPT_INT, &( talents.heightened_senses          ) },
+      { "killing_spree",              OPT_INT, &( talents.killing_spree              ) },    
       { "lethality",                  OPT_INT, &( talents.lethality                  ) },
       { "lightning_reflexes",         OPT_INT, &( talents.lightning_reflexes         ) },
-      { "mace_specialization",        OPT_INT, &( talents.mace_specialization        ) },
-      { "malice",                     OPT_INT, &( talents.malice                     ) },
-      { "master_of_subtlety",         OPT_INT, &( talents.master_of_subtlety         ) },
       { "master_poisoner",            OPT_INT, &( talents.master_poisoner            ) },
-      { "murder",                     OPT_INT, &( talents.murder                     ) },
-      { "mutilate",                   OPT_INT, &( talents.mutilate                   ) },
+      { "murderous_intent",           OPT_INT, &( talents.murderous_intent           ) },
       { "opportunity",                OPT_INT, &( talents.opportunity                ) },
       { "overkill",                   OPT_INT, &( talents.overkill                   ) },
       { "precision",                  OPT_INT, &( talents.precision                  ) },
       { "premeditation",              OPT_INT, &( talents.premeditation              ) },
       { "preparation",                OPT_INT, &( talents.preparation                ) },
-      { "prey_on_the_weak",           OPT_INT, &( talents.prey_on_the_weak           ) },
       { "puncturing_wounds",          OPT_INT, &( talents.puncturing_wounds          ) },
-      { "quick_recovery",             OPT_INT, &( talents.quick_recovery             ) },
       { "relentless_strikes",         OPT_INT, &( talents.relentless_strikes         ) },
+      { "restless_blades",            OPT_INT, &( talents.restless_blades            ) },
+      { "revealing_strike",           OPT_INT, &( talents.revealing_strike           ) },
       { "ruthlessness",               OPT_INT, &( talents.ruthlessness               ) },
       { "savage_combat",              OPT_INT, &( talents.savage_combat              ) },
+      { "sanguinary_vein",            OPT_INT, &( talents.sanguinary_vein            ) },
       { "seal_fate",                  OPT_INT, &( talents.seal_fate                  ) },
-      { "serrated_blades",            OPT_INT, &( talents.serrated_blades            ) },
-      { "setup",                      OPT_INT, &( talents.setup                      ) },
       { "shadow_dance",               OPT_INT, &( talents.shadow_dance               ) },
-      { "shadowstep",                 OPT_INT, &( talents.shadowstep                 ) },
-      { "sinister_calling",           OPT_INT, &( talents.sinister_calling           ) },
       { "slaughter_from_the_shadows", OPT_INT, &( talents.slaughter_from_the_shadows ) },
-      { "sleight_of_hand",            OPT_INT, &( talents.sleight_of_hand            ) },
-      { "surprise_attacks",           OPT_INT, &( talents.surprise_attacks           ) },
-      { "sword_specialization",       OPT_INT, &( talents.sword_specialization       ) },
-      { "turn_the_tables",            OPT_INT, &( talents.turn_the_tables            ) },
-      { "vigor",                      OPT_INT, &( talents.vigor                      ) },
+      { "vendetta",                   OPT_INT, &( talents.vendetta                   ) },
+      { "venomous_wounds",            OPT_INT, &( talents.venomous_wounds            ) },
       { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
-      { "vitality",                   OPT_INT, &( talents.vitality                   ) },
-      { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
+      { "waylay",                     OPT_INT, &( talents.waylay                     ) },
       // @option_doc loc=player/rogue/misc title="Misc"
       { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str   ) },
       { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
@@ -3821,6 +3784,8 @@ player_t* player_t::create_rogue( sim_t* sim, const std::string& name, int race_
 
 void player_t::rogue_init( sim_t* sim )
 {
+  sim -> auras.honor_among_thieves = new aura_t( sim, "honor_among_thieves" );
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 15.0 );
@@ -3828,7 +3793,7 @@ void player_t::rogue_init( sim_t* sim )
 
   target_t* t = sim -> target;
   t -> debuffs.expose_armor    = new debuff_t( sim, "expose_armor",     1 );
-  t -> debuffs.hemorrhage      = new debuff_t( sim, "hemorrhage",      10, 15.0 );
+  t -> debuffs.hemorrhage      = new debuff_t( sim, "hemorrhage",       1, 60.0 );
   t -> debuffs.master_poisoner = new debuff_t( sim, "master_poisoner", -1 );
   t -> debuffs.poisoned        = new debuff_t( sim, "poisoned",        -1 );
   t -> debuffs.savage_combat   = new debuff_t( sim, "savage_combat",   -1 );
@@ -3838,8 +3803,11 @@ void player_t::rogue_init( sim_t* sim )
 
 void player_t::rogue_combat_begin( sim_t* sim )
 {
+  if( sim -> overrides.honor_among_thieves ) sim -> auras.honor_among_thieves -> override();
+
   target_t* t = sim -> target;
   if( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.2 );
+  if( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
   if( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
   if( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
   if( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();

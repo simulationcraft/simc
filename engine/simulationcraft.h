@@ -969,7 +969,9 @@ struct sim_t
     int frost_fever;
     int heart_of_the_crusader;
     int hellscreams_warsong;
+    int hemorrhage;
     int heroic_presence;
+    int honor_among_thieves;
     int horn_of_winter;
     int hunters_mark;
     int improved_icy_talons;
@@ -1019,6 +1021,7 @@ struct sim_t
     aura_t* elemental_oath;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
+    aura_t* honor_among_thieves;
     aura_t* horn_of_winter;
     aura_t* improved_icy_talons;
     aura_t* leader_of_the_pack;
