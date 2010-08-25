@@ -33,7 +33,6 @@ struct rogue_t : public player_t
   buff_t* buffs_cold_blood;
   buff_t* buffs_combo_points;
   buff_t* buffs_envenom;
-  buff_t* buffs_hunger_for_blood;
   buff_t* buffs_killing_spree;
   buff_t* buffs_master_of_subtlety;
   buff_t* buffs_overkill;
@@ -163,20 +162,16 @@ struct rogue_t : public player_t
     int waylay;
 
     // Deprecated
-    int blade_flurry; // combat
     int blade_twisting;    
     int close_quarters_combat;
     int deadliness;
     int dirty_deeds;
-    int dual_wield_specialization; // combat    
     int filthy_tricks;
     int find_weakness;
     int focused_attacks;
     int ghostly_strike;
     int heightened_senses;    
-    int hunger_for_blood;    
     int improved_eviscerate;
-    int improved_poisons; // Ass         
     int mace_specialization;
     int malice;
     int master_of_subtlety; // sub
@@ -184,14 +179,11 @@ struct rogue_t : public player_t
     int mutilate; // Ass        
     int prey_on_the_weak;    
     int quick_recovery;   
-    int shadowstep; // sub
     int sinister_calling; // sub   
     int sleight_of_hand;
     int surprise_attacks;
     int sword_specialization;
     int turn_the_tables;
-    int vigor;   
-    int vitality; // combat
     int weapon_expertise;
 
     // NYI
@@ -211,7 +203,6 @@ struct rogue_t : public player_t
     int feint;
     int ghostly_strike;
     int hemorrhage;
-    int hunger_for_blood;
     int killing_spree;
     int mutilate;
     int preparation;
@@ -876,21 +867,17 @@ void rogue_attack_t::player_buff()
         player_crit += p -> talents.close_quarters_combat * 0.01;
       }
     }
-    if ( p -> talents.dual_wield_specialization )
+    if ( p -> primary_tree() == TREE_COMBAT )
     {
       if ( weapon -> slot == SLOT_OFF_HAND )
       {
-        player_multiplier *= 1.0 + p -> talents.dual_wield_specialization * 0.10;
+        player_multiplier *= 1.0 + 0.50;
       }
     }
   }
   if ( p -> buffs_cold_blood -> check() )
   {
     player_crit += 1.0;
-  }
-  if ( p -> buffs_hunger_for_blood -> up() )
-  {
-    player_multiplier *= 1.05 + p -> glyphs.hunger_for_blood * 0.03;
   }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
@@ -901,7 +888,7 @@ void rogue_attack_t::player_buff()
 
   if ( special && p -> buffs_shadowstep -> check() )
   {
-    player_multiplier *= 1.20;
+    player_multiplier *= 1.30;
   }
   if ( p -> buffs_killing_spree -> up() )
   {
@@ -959,14 +946,6 @@ bool rogue_attack_t::ready()
       return false;
 
   double ct = sim -> current_time;
-
-  if ( min_hfb_expire > 0 )
-    if ( p -> buffs_hunger_for_blood -> remains_lt( min_hfb_expire ) )
-      return false;
-
-  if ( max_hfb_expire > 0 )
-    if ( p -> buffs_hunger_for_blood -> remains_gt( max_hfb_expire ) )
-      return false;
 
   if ( min_snd_expire > 0 )
     if ( p -> buffs_slice_and_dice -> remains_lt( min_snd_expire ) )
@@ -1042,10 +1021,18 @@ struct melee_t : public rogue_attack_t
       h *= 1.0 / ( 1.0 + util_t::talent_rank( p -> talents.lightning_reflexes, 3, 0.04, 0.07, 0.10 ) );
     }
 
-    if ( p -> buffs_blade_flurry   -> up() ) h *= 1.0 / ( 1.0 + 0.20 );
     if ( p -> buffs_slice_and_dice -> up() ) h *= 1.0 / ( 1.0 + 0.40 + ( p -> set_bonus.tier6_2pc_melee() ? 0.05 : 0.00 ) );
 
     return h;
+  }
+
+  virtual void player_buff()
+  {
+    rogue_attack_t::player_buff();
+
+    rogue_t* p = player -> cast_rogue();    
+    if ( p -> primary_tree() == TREE_ASSASSINATION )
+      player_multiplier *= 1.15;
   }
 
   virtual double execute_time() SC_CONST
@@ -1279,7 +1266,7 @@ struct blade_flurry_t : public rogue_attack_t
       rogue_attack_t( "blade_flurry", player, SCHOOL_PHYSICAL, TREE_COMBAT )
   {
     rogue_t* p = player -> cast_rogue();
-    check_talent( p -> talents.blade_flurry );
+    if( p -> primary_tree() != TREE_COMBAT ) return;
 
     option_t options[] =
     {
@@ -1287,8 +1274,7 @@ struct blade_flurry_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    base_cost = p -> glyphs.blade_flurry ? 0 : 25;
-    cooldown -> duration  = 120;
+    cooldown -> duration  = 30;
 
     id = 13877;
   }
@@ -1735,54 +1721,6 @@ struct hemorrhage_t : public rogue_attack_t
   }
 };
 
-// Hunger For Blood =========================================================
-
-struct hunger_for_blood_t : public rogue_attack_t
-{
-  double refresh_at;
-
-  hunger_for_blood_t( player_t* player, const std::string& options_str ) :
-      rogue_attack_t( "hunger_for_blood", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION ),
-      refresh_at( 5 )
-  {
-    rogue_t* p = player -> cast_rogue();
-    check_talent( p -> talents.hunger_for_blood );
-
-    option_t options[] =
-    {
-      { "refresh_at", OPT_FLT, &refresh_at },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    base_cost = 15.0;
-
-    id = 51662;
-  }
-
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_hunger_for_blood -> trigger();
-    consume_resource();
-  }
-
-  virtual bool ready()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    if ( ! sim -> target -> debuffs.bleeding -> check() )
-      return false;
-
-    if ( refresh_at > 0 )
-      if ( p -> buffs_hunger_for_blood -> remains_gt( refresh_at ) )
-        return false;
-
-    return rogue_attack_t::ready();
-  }
-};
-
 // Kick =====================================================================
 
 struct kick_t : public rogue_attack_t
@@ -1920,7 +1858,7 @@ struct mutilate_t : public rogue_attack_t
       rogue_attack_t( "mutilate", player, SCHOOL_PHYSICAL, TREE_ASSASSINATION )
   {
     rogue_t* p = player -> cast_rogue();
-    check_talent( p -> talents.mutilate );
+    if ( p -> primary_tree() != TREE_ASSASSINATION ) return;
 
     option_t options[] =
     {
@@ -1930,13 +1868,14 @@ struct mutilate_t : public rogue_attack_t
 
     static rank_t ranks[] =
     {
+      { 85, 7, 201, 201, 0, 60 },
       { 80, 6, 181, 181, 0, 60 },
       { 75, 5, 153, 153, 0, 60 },
       { 70, 4, 101, 101, 0, 60 },
       { 60, 3,  88,  88, 0, 60 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks, 48666 );
+    init_rank( ranks, 1329 );
 
     may_crit               = true;
     requires_weapon        = WEAPON_DAGGER;
@@ -2115,7 +2054,8 @@ struct shadowstep_t : public rogue_attack_t
       rogue_attack_t( "shadowstep", player, SCHOOL_PHYSICAL, TREE_SUBTLETY )
   {
     rogue_t* p = player -> cast_rogue();
-
+    if ( p -> primary_tree() != TREE_SUBTLETY ) return;
+    
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2123,8 +2063,8 @@ struct shadowstep_t : public rogue_attack_t
     parse_options( options, options_str );
 
     trigger_gcd = 0;
-    base_cost = 10;
-    cooldown -> duration = 30;
+    base_cost = 0;
+    cooldown -> duration = 20;
 
     cooldown -> duration -= p -> talents.filthy_tricks * 5;
     base_cost            -= p -> talents.filthy_tricks * 5;
@@ -2508,10 +2448,6 @@ void rogue_poison_t::player_buff()
 
   spell_t::player_buff();
 
-  if ( p -> buffs_hunger_for_blood -> up() )
-  {
-    player_multiplier *= 1.05 + p -> glyphs.hunger_for_blood * 0.03;
-  }
   if ( p -> buffs_master_of_subtlety -> check() )
   {
     player_multiplier *= 1.0 + p -> buffs_master_of_subtlety -> value();
@@ -2594,7 +2530,8 @@ struct deadly_poison_t : public rogue_poison_t
     if ( ! success )
     {
       double chance = 0.30;
-      chance += p -> talents.improved_poisons * 0.04;
+      if ( p -> primary_tree() == TREE_ASSASSINATION )
+        chance += 0.20;
       if ( p -> buffs_envenom -> up() )
       {
         chance += 0.15;
@@ -2700,7 +2637,7 @@ struct instant_poison_t : public rogue_poison_t
     else
     {
       double PPM = 8.57;
-      PPM *= 1.0 + ( p -> talents.improved_poisons * 0.10 ) + ( p -> buffs_envenom -> up() ? 0.75 : 0.00 );
+      PPM *= 1.0 + ( p -> primary_tree() == TREE_ASSASSINATION * 0.50 ) + ( p -> buffs_envenom -> up() ? 0.75 : 0.00 );
       chance = weapon -> proc_chance_on_swing( PPM );
       may_crit = true;
     }
@@ -3031,7 +2968,7 @@ void rogue_t::init_actions()
     std::string fast_hand = "off_hand";
     if( main_hand_weapon.swing_time <= off_hand_weapon.swing_time ) std::swap( slow_hand, fast_hand );
     action_list_str += "," + slow_hand + "=";
-    action_list_str += ( talents.improved_poisons > 2 ) ? "instant" : "wound";
+    action_list_str += "wound";
     action_list_str += "," + fast_hand + "=deadly";
     action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20";
     action_list_str += "/auto_attack";
@@ -3097,7 +3034,7 @@ void rogue_t::init_actions()
       {
         action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
       }
-      if ( talents.blade_flurry  )
+      if ( primary_tree() == TREE_COMBAT )
       {
         action_list_str += "/blade_flurry,if=target.adds_never&buff.slice_and_dice.remains>=5";
         action_list_str += "/blade_flurry,if=target.adds>0";
@@ -3138,10 +3075,6 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade";
       // CP conditionals track reaction time, so responding when you see CP=4 will often result in CP=5 finishers
       action_list_str += "/rupture,if=buff.combo_points.stack>=4";
-      if ( talents.improved_poisons )
-      {
-        action_list_str += "/envenom,if=buff.combo_points.stack>=4&buff.envenom.remains<1";
-      }
       action_list_str += "/eviscerate,if=buff.combo_points.stack>=4";
       action_list_str += talents.hemorrhage ? "/hemorrhage" : "/sinister_strike";
       action_list_str += ",if=buff.combo_points.stack<=2&energy>=80";
@@ -3218,7 +3151,6 @@ void rogue_t::init_glyphs()
     else if ( n == "feint"               ) glyphs.feint = 1;
     else if ( n == "ghostly_strike"      ) glyphs.ghostly_strike = 1;
     else if ( n == "hemorrhage"          ) glyphs.hemorrhage = 1;
-    else if ( n == "hunger_for_blood"    ) glyphs.hunger_for_blood = 1;
     else if ( n == "killing_spree"       ) glyphs.killing_spree = 1;
     else if ( n == "mutilate"            ) glyphs.mutilate = 1;
     else if ( n == "preparation"         ) glyphs.preparation = 1;
@@ -3411,7 +3343,6 @@ void rogue_t::init_buffs()
   buffs_combo_points       = new buff_t( this, "combo_points",       5        );
   buffs_deadly_proc        = new buff_t( this, "deadly_proc",        1        );
   buffs_envenom            = new buff_t( this, "envenom",            1,  6.0  );
-  buffs_hunger_for_blood   = new buff_t( this, "hunger_for_blood",   1, 60.0  );
   buffs_killing_spree      = new buff_t( this, "killing_spree",      1        );
   buffs_master_of_subtlety = new buff_t( this, "master_of_subtlety", 1,  6.0  );
   buffs_overkill           = new buff_t( this, "overkill",           1, 20.0  );
@@ -3608,6 +3539,11 @@ void rogue_t::regen( double periodicity )
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_overkill );
     }
+  }
+
+  if ( buffs_blade_flurry -> up() )
+  {
+    double energy_regen = periodicity / 1.20;
   }
 
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
