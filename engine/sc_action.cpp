@@ -1312,7 +1312,7 @@ void action_t::check_talent( int talent_rank )
 
 void action_t::check_min_level( int action_level )
 {
-  if ( action_level < player -> level ) return;
+  if ( action_level <= player -> level ) return;
   else
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );

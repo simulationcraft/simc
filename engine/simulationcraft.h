@@ -1359,7 +1359,7 @@ struct player_t
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
   double attribute_buffed            [ ATTRIBUTE_MAX ];
 
-  double mastery, initial_mastery, mastery_rating, buffed_mastery,initial_mastery_rating,base_mastery;
+  double mastery, initial_mastery, buffed_mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
   // Spell Mechanics
   double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
@@ -1921,7 +1921,6 @@ struct target_t
     debuff_t* savage_combat;
     debuff_t* expose_armor;
     debuff_t* hemorrhage;
-    debuff_t* mind_spike;
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
     bool snared();
