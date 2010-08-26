@@ -446,7 +446,7 @@ static rating_t& rating_85( sim_t* sim )
     r.dodge             = 4525.018692*2;
     r.parry             = 4525.018692*2;
     r.block             = 1639.499474*2;
-    r.mastery           = 200; //   r_82=93,
+    r.mastery           = 163; // took r_80 and r_82.mastery=93 (bluepost) as given
   }
 
   return r;

@@ -1,8 +1,8 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=83
-target_level=86
+level=80
+target_level=83
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -13,7 +13,7 @@ glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/inner_will
+actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
@@ -26,7 +26,7 @@ actions+=/vampiric_touch,if=!ticking
 actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
 actions+=/devouring_plague,if=!ticking
 actions+=/shadow_word_death,health_percentage<=34
-actions+=/mind_blast,if=buff.shadow_orb.stack>=3
+actions+=/mind_blast
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
@@ -39,7 +39,7 @@ gear_spell_power=1000
 gear_hit_rating=289
 gear_crit_rating=1227
 gear_haste_rating=1243
-gear_mastery_rating=500
+gear_mastery_rating=930
 gear_armor=2309
 meta_gem=chaotic_skyflare
 

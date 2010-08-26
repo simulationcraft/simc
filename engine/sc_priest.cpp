@@ -73,6 +73,8 @@
 
     // Uptimes
     uptime_t* uptimes_mind_spike[ 4 ];
+    uptime_t* uptimes_dark_evangelism[ 6 ];
+    uptime_t* uptimes_shadow_orb[ 4 ];
 
     // Procs
     proc_t* procs_shadowy_apparation;
@@ -261,7 +263,7 @@
 
 		// Shadow Core
 		constants.shadow_power_value			  = 0.15;
-		constants.shadow_orb_proc_value           = 0.18;
+		constants.shadow_orb_proc_value           = 0.10;
 		constants.shadow_orb_damage_value         = 0.20;
 		constants.shadow_orb_mastery_value		  = 0.025;
 
@@ -511,9 +513,17 @@ void priest_spell_t::player_buff()
 				player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 			}
 	    for ( int i=0; i < 4; i++ )
-	    {
-	      p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
-	    }
+			{
+				p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
+			}
+	    for ( int i=0; i < 6; i++ )
+	    	{
+				p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
+	    	}
+	    for ( int i=0; i < 4; i++ )
+			{
+				p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+			}
 
 }
 
@@ -772,6 +782,12 @@ struct dispersion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
+    option_t options[] =
+       {
+         { NULL, OPT_UNKNOWN, NULL }
+       };
+    parse_options( options, options_str );
+
     check_talent( p -> talents.dispersion );
 
     base_execute_time = 0.0;
@@ -973,8 +989,15 @@ struct inner_will_t : public priest_spell_t
       priest_spell_t( "inner_will", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
 	check_min_level( 83 );
-    trigger_gcd = 0;
     priest_t* p = player -> cast_priest();
+
+    option_t options[] =
+       {
+         { NULL, OPT_UNKNOWN, NULL }
+       };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
     base_cost  = 0.07 * p -> resource_base[ RESOURCE_MANA ];
   }
 
@@ -1037,11 +1060,9 @@ struct mind_blast_t : public priest_spell_t
 	  priest_spell_t::execute();
 	  player -> cast_priest() -> buffs_mind_melt -> expire();
 	  p -> buffs_mind_spike -> expire();
-     if ( result_is_hit() )
-    {
+	  if ( result_is_hit() )
+	  {
       p -> recast_mind_blast = 0;
-      p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value
-											+ p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
       p -> buffs_shadow_orb -> expire();
       if ( result == RESULT_CRIT )
       {
@@ -1166,7 +1187,7 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     if ( result_is_hit() )
     {
-        p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+        p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
 
     }
     if ( cut_for_mb )
@@ -1233,6 +1254,12 @@ struct mind_spike_t : public priest_spell_t
 	check_min_level( 81 );
     priest_t* p = player -> cast_priest();
 
+    option_t options[] =
+       {
+         { NULL, OPT_UNKNOWN, NULL }
+       };
+       parse_options( options, options_str );
+
     static rank_t ranks[] =
     {
       { 81, 1, 1082.81, 1144.05, 0, 0.17 },
@@ -1258,7 +1285,7 @@ struct mind_spike_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-      player -> cast_priest() -> buffs_shadow_orb -> expire();
+      p -> buffs_shadow_orb -> expire();
       p -> buffs_mind_spike -> trigger();
 
       if ( result == RESULT_CRIT )
@@ -1623,7 +1650,7 @@ struct shadow_word_pain_t : public priest_spell_t
     // Shadow Orb
     if ( result_is_hit() )
     {
-    	p -> buffs_shadow_orb  -> trigger( 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+    	p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
     }
   }
 
@@ -1882,6 +1909,12 @@ struct archangel_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     check_talent( p -> talents.archangel );
+
+    option_t options[] =
+        {
+          { NULL, OPT_UNKNOWN, NULL }
+        };
+    parse_options( options, options_str );
 
     static rank_t ranks[] =
     {
@@ -2218,6 +2251,18 @@ void priest_t::init_uptimes()
   uptimes_mind_spike[ 1 ]	= get_uptime( "mind_spike_1" );
   uptimes_mind_spike[ 2 ]	= get_uptime( "mind_spike_2" );
   uptimes_mind_spike[ 3 ]	= get_uptime( "mind_spike_3" );
+
+  uptimes_dark_evangelism[ 0 ]	= get_uptime( "dark_evangelism_0" );
+  uptimes_dark_evangelism[ 1 ]	= get_uptime( "dark_evangelism_1" );
+  uptimes_dark_evangelism[ 2 ]	= get_uptime( "dark_evangelism_2" );
+  uptimes_dark_evangelism[ 3 ]	= get_uptime( "dark_evangelism_3" );
+  uptimes_dark_evangelism[ 4 ]	= get_uptime( "dark_evangelism_4" );
+  uptimes_dark_evangelism[ 5 ]	= get_uptime( "dark_evangelism_5" );
+
+  uptimes_shadow_orb[ 0 ]	= get_uptime( "shadow_orb_0" );
+  uptimes_shadow_orb[ 1 ]	= get_uptime( "shadow_orb_1" );
+  uptimes_shadow_orb[ 2 ]	= get_uptime( "shadow_orb_2" );
+  uptimes_shadow_orb[ 3 ]	= get_uptime( "shadow_orb_3" );
 
 }
 
