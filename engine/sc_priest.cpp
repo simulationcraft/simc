@@ -234,15 +234,21 @@
 		max_mana_cost = 0.0;
 
 		// Power Mod
-		power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
+
 		power_mod.mind_blast                      = 1.5 / 3.5;
-		power_mod.mind_flay                       = 1.0 / 3.5 * 0.9;
+		power_mod.mind_flay                       = 0.36931;
 		power_mod.mind_spike                      = 1.5 / 3.5;
 		power_mod.shadow_word_death               = 1.5 / 3.5;
-		power_mod.shadow_word_pain                = 3.0 / 15.0 * 0.915;
-		power_mod.vampiric_touch                  = 2.0 * 3.0 / 15.0;
 		power_mod.holy_fire			              = 2.0 / 3.5;
 		power_mod.smite					          = 2.5 / 3.5;
+		// Dots
+		// power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
+		// power_mod.shadow_word_pain                = 3.0 / 15.0 * 0.915;
+		// power_mod.vampiric_touch                  = 2.0 * 3.0 / 15.0;
+		power_mod.devouring_plague				  = 0.2659187;
+		power_mod.shadow_word_pain				  = 0.228926;
+		power_mod.vampiric_touch				  = 0.575197;
+
 
 		// Constants
 		// Discipline/Holy
@@ -646,24 +652,10 @@ struct devouring_plague_burst_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    static rank_t ranks[] =
-    {
-      { 79, 9, 172, 172, 0, 0 },
-      { 73, 8, 143, 143, 0, 0 },
-      { 68, 7, 136, 136, 0, 0 },
-      { 60, 6, 113, 113, 0, 0 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 63675 );
-
-    // burst = 15% of total periodic damage from 8 ticks
-
     dual       = true;
     proc       = true;
     background = true;
     may_crit   = true;
-
-    base_multiplier *= 8.0 * p -> talents.improved_devouring_plague * 0.15;
 
     direct_power_mod  = p -> power_mod.devouring_plague;
 
@@ -710,18 +702,20 @@ struct devouring_plague_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 79, 9, 0, 0, 172, 0.25 },
-      { 73, 8, 0, 0, 143, 0.25 },
-      { 68, 7, 0, 0, 136, 0.25 },
-      { 60, 6, 0, 0, 113, 0.28 },
+      { 85, 85, 0, 0, 155, 0.25 },
+      { 84, 84, 0, 0, 152, 0.25 },
+      { 83, 83, 0, 0, 148, 0.25 },
+      { 82, 82, 0, 0, 145, 0.25 },
+      { 81, 81, 0, 0, 142, 0.25 },
+      { 80, 80, 0, 0, 139, 0.25 },
       { 0, 0, 0, 0, 0, 0 }
     };
-    init_rank( ranks, 48300 );
+    init_rank( ranks );
 
     base_execute_time = 0;
     // Testing new dot haste scaling
     base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( round ( 8 * haste() ) );
+    num_ticks         = int ( floor ( 8 * haste() + 0.5 ) );
     //base_tick_time    = 3.0;
     //num_ticks         = 8;
     tick_power_mod    = p -> power_mod.devouring_plague;
@@ -733,6 +727,8 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
+      devouring_plague_burst -> base_dd_min = 0.15 * base_dd_min;
+      devouring_plague_burst -> base_dd_max = 0.15 * base_dd_min;
     }
   }
 
@@ -1034,12 +1030,12 @@ struct mind_blast_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 14, 997, 1053, 0, 0.17 }, // Dummy rank for level 80 characters.
-      { 79, 13, 992, 1048, 0, 0.17 },
-      { 74, 12, 837,  883, 0, 0.17 },
-      { 69, 11, 708,  748, 0, 0.17 },
-      { 63, 10, 557,  587, 0, 0.19 },
-      { 58,  9, 503,  531, 0, 0.19 },
+      { 85, 85, 1028, 1086, 0, 0.17 },
+      { 84, 84, 1007, 1063, 0, 0.17 },
+      { 83, 83,  986, 1040, 0, 0.17 },
+      { 82, 82,  964, 1018, 0, 0.17 },
+      { 81, 81,  943,  995, 0, 0.17 },
+      { 80, 80,  921,  973, 0, 0.17 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48127 );
@@ -1104,10 +1100,12 @@ struct mind_flay_tick_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 9, 196, 196, 0, 0 },
-      { 74, 8, 164, 164, 0, 0 },
-      { 68, 7, 150, 150, 0, 0 },
-      { 60, 6, 121, 121, 0, 0 },
+      { 85, 85, 167, 167, 0, 0 },
+      { 84, 84, 164, 164, 0, 0 },
+      { 83, 83, 160, 160, 0, 0 },
+      { 82, 82, 157, 157, 0, 0 },
+      { 81, 81, 153, 153, 0, 0 },
+      { 80, 80, 150, 150, 0, 0 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 58381 );
@@ -1125,8 +1123,12 @@ struct mind_flay_tick_t : public priest_spell_t
     priest_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
+
     if ( result_is_hit() )
     {
+      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
+      p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+
       if ( p -> dots_shadow_word_pain -> ticking() )
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * p -> constants.pain_and_suffering_value ) )
@@ -1185,11 +1187,7 @@ struct mind_flay_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    if ( result_is_hit() )
-    {
-        p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
 
-    }
     if ( cut_for_mb )
     {
       if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
@@ -1203,11 +1201,11 @@ struct mind_flay_t : public priest_spell_t
 
   virtual void tick()
   {
-	priest_t* p = player -> cast_priest();
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+	if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     mind_flay_tick -> execute();
     update_time( DMG_OVER_TIME );
-    p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
+
+
   }
 
   virtual bool ready()
@@ -1262,7 +1260,11 @@ struct mind_spike_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 81, 1, 1082.81, 1144.05, 0, 0.17 },
+      { 85, 85, 1083, 1143, 0, 0.17 },
+      { 84, 84, 1061, 1119, 0, 0.17 },
+      { 83, 83, 1037, 1095, 0, 0.17 },
+      { 82, 82, 1015, 1071, 0, 0.17 },
+      { 81, 81,  992, 1048, 0, 0.17 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
@@ -1592,11 +1594,12 @@ struct shadow_word_pain_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 12, 0, 0, 230, 0.22 },
-      { 75, 11, 0, 0, 196, 0.22 },
-      { 70, 10, 0, 0, 186, 0.22  },
-      { 65,  9, 0, 0, 151, 0.25  },
-      { 58,  8, 0, 0, 128, 0.25  },
+      { 85, 85, 0, 0, 221, 0.22 },
+      { 84, 84, 0, 0, 216, 0.22 },
+      { 83, 83, 0, 0, 212, 0.22 },
+      { 82, 82, 0, 0, 207, 0.22 },
+      { 81, 81, 0, 0, 203, 0.22 },
+      { 80, 80, 0, 0, 198, 0.22 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48125 );
@@ -1604,7 +1607,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_execute_time = 0;
     // Testing new dot haste scaling
     base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( round ( 6 * haste() ) );
+    num_ticks         = int ( floor ( 6 * haste() + 0.5 ) );
     //base_tick_time    = 3.0;
     //num_ticks         = 6;
     tick_power_mod    = p -> power_mod.shadow_word_pain;
@@ -1801,10 +1804,12 @@ struct vampiric_touch_t : public priest_spell_t
 
     static rank_t ranks[] =
     {
-      { 80, 5, 0, 0, 170, 0.16 },
-      { 75, 4, 0, 0, 147, 0.16 },
-      { 70, 3, 0, 0, 130, 0.16  },
-      { 60, 2, 0, 0, 120, 0.18  },
+      { 85, 85, 0, 0, 109, 0.16 },
+      { 84, 84, 0, 0, 106, 0.16 },
+      { 83, 83, 0, 0, 104, 0.16 },
+      { 82, 82, 0, 0, 102, 0.16 },
+      { 81, 81, 0, 0, 100, 0.16 },
+      { 80, 80, 0, 0,  97, 0.16 },
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks, 48160 );
@@ -1812,7 +1817,7 @@ struct vampiric_touch_t : public priest_spell_t
     base_execute_time = 1.5;
     // Testing new dot haste scaling
     base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( round ( 5 * haste() ) );
+    num_ticks         = int ( floor ( 5 * haste() + 0.5 ) );
     //base_tick_time    = 3.0;
     //num_ticks         = 5;
     tick_power_mod    = p -> power_mod.vampiric_touch;
