@@ -71,6 +71,9 @@
     gain_t* gains_shadow_fiend;
     gain_t* gains_archangel;
 
+    // Uptimes
+    uptime_t* uptimes_mind_spike[ 4 ];
+
     // Procs
     proc_t* procs_shadowy_apparation;
 
@@ -507,6 +510,10 @@ void priest_spell_t::player_buff()
 
 				player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
 			}
+	    for ( int i=0; i < 4; i++ )
+	    {
+	      p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
+	    }
 
 }
 
@@ -2207,6 +2214,11 @@ void priest_t::init_uptimes()
 {
   player_t::init_uptimes();
 
+  uptimes_mind_spike[ 0 ]	= get_uptime( "mind_spike_0" );
+  uptimes_mind_spike[ 1 ]	= get_uptime( "mind_spike_1" );
+  uptimes_mind_spike[ 2 ]	= get_uptime( "mind_spike_2" );
+  uptimes_mind_spike[ 3 ]	= get_uptime( "mind_spike_3" );
+
 }
 
 // priest_t::init_rng ========================================================
@@ -2230,9 +2242,9 @@ void priest_t::init_buffs()
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                 );
   buffs_inner_will          = new buff_t( this, "inner_will"                                       );
   buffs_shadow_form         = new buff_t( this, "shadow_form",         1                           );
-  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0,0,1                  );
-  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0 ,0.4             );
-  buffs_holy_evangelism     = new buff_t( this, "holy_evangelism",     5, 15.0, 0 ,1.0             );
+  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0, 0,1                 );
+  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0, 0.4             );
+  buffs_holy_evangelism     = new buff_t( this, "holy_evangelism",     5, 15.0, 0, 1.0             );
   buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                     );
   buffs_dark_archangel      = new buff_t( this, "dark_archangel",      5, 18.0                     );
   buffs_holy_archangel      = new buff_t( this, "holy_archangel",      5, 18.0                     );

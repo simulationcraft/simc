@@ -1,7 +1,8 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=85
+level=83
+target_level=86
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231
@@ -19,16 +20,13 @@ actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20
 actions+=/shadow_fiend
-actions+=/shadow_word_pain,if=!ticking&buff.dark_evangelism.stack>=5
-actions+=/devouring_plague
+actions+=/archangel,if=buff.dark_evangelism.stack>=5
+actions+=/shadow_word_pain,if=!ticking
 actions+=/vampiric_touch,if=!ticking
 actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
-actions+=/archangel,if=buff.dark_evangelism.stack>=5
 actions+=/devouring_plague,if=!ticking
 actions+=/shadow_word_death,health_percentage<=34
-#actions+=/mind_blast
 actions+=/mind_blast,if=buff.shadow_orb.stack>=3
-#actions+=/mind_spike
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
@@ -37,7 +35,7 @@ actions+=/dispersion
 gear_stamina=1432
 gear_intellect=4000
 gear_spirit=300
-gear_spell_power=3436
+gear_spell_power=1000
 gear_hit_rating=289
 gear_crit_rating=1227
 gear_haste_rating=1243

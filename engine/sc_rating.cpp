@@ -427,6 +427,7 @@ static rating_t& rating_80( sim_t* sim )
 
 // rating_85 =================================================================
 // multiplied rating_80 by 2
+
 static rating_t& rating_85( sim_t* sim )
 {
   static rating_t r;
@@ -445,7 +446,7 @@ static rating_t& rating_85( sim_t* sim )
     r.dodge             = 4525.018692*2;
     r.parry             = 4525.018692*2;
     r.block             = 1639.499474*2;
-    r.mastery           = 1.4/0.030500*2;
+    r.mastery           = 200; //   r_82=93,
   }
 
   return r;
@@ -474,7 +475,7 @@ void rating_t::init( sim_t* sim, int level )
   dodge             = interpolate( level, r_60.dodge  ,           r_70.dodge,             r_80.dodge,				r_85.dodge             );
   parry             = interpolate( level, r_60.parry,             r_70.parry,             r_80.parry,				r_85.parry             );
   block             = interpolate( level, r_60.block,             r_70.block,             r_80.block,				r_85.block             );
-  mastery           = interpolate( level, r_60.mastery,           r_70.mastery,           r_80.mastery,				r_85.mastery           );
+  mastery           = interpolate( level, r_60.mastery,           r_70.mastery,           r_80.mastery, 			r_85.mastery           );
 }
 
 // rating_t::interpolate ======================================================
