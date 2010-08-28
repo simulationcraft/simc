@@ -253,51 +253,6 @@ struct hunter_t : public player_t
 // Hunter Pet
 // ==========================================================================
 
-enum pet_type_t
-{
-  PET_NONE=0,
-
-  PET_CARRION_BIRD,
-  PET_CAT,
-  PET_CORE_HOUND,
-  PET_DEVILSAUR,
-  PET_HYENA,
-  PET_MOTH,
-  PET_RAPTOR,
-  PET_SPIRIT_BEAST,
-  PET_TALLSTRIDER,
-  PET_WASP,
-  PET_WOLF,
-  PET_FEROCITY,
-
-  PET_BEAR,
-  PET_BOAR,
-  PET_CRAB,
-  PET_CROCOLISK,
-  PET_GORILLA,
-  PET_RHINO,
-  PET_SCORPID,
-  PET_TURTLE,
-  PET_WARP_STALKER,
-  PET_WORM,
-  PET_TENACITY,
-
-  PET_BAT,
-  PET_BIRD_OF_PREY,
-  PET_CHIMERA,
-  PET_DRAGONHAWK,
-  PET_NETHER_RAY,
-  PET_RAVAGER,
-  PET_SERPENT,
-  PET_SILITHID,
-  PET_SPIDER,
-  PET_SPOREBAT,
-  PET_WIND_SERPENT,
-  PET_CUNNING,
-
-  PET_MAX
-};
-
 struct hunter_pet_t : public pet_t
 {
   int pet_type;

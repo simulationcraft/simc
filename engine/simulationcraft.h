@@ -158,6 +158,51 @@ enum player_type
   PLAYER_MAX
 };
 
+enum pet_type_t
+{
+  PET_NONE=0,
+
+  PET_CARRION_BIRD,
+  PET_CAT,
+  PET_CORE_HOUND,
+  PET_DEVILSAUR,
+  PET_HYENA,
+  PET_MOTH,
+  PET_RAPTOR,
+  PET_SPIRIT_BEAST,
+  PET_TALLSTRIDER,
+  PET_WASP,
+  PET_WOLF,
+  PET_FEROCITY,
+
+  PET_BEAR,
+  PET_BOAR,
+  PET_CRAB,
+  PET_CROCOLISK,
+  PET_GORILLA,
+  PET_RHINO,
+  PET_SCORPID,
+  PET_TURTLE,
+  PET_WARP_STALKER,
+  PET_WORM,
+  PET_TENACITY,
+
+  PET_BAT,
+  PET_BIRD_OF_PREY,
+  PET_CHIMERA,
+  PET_DRAGONHAWK,
+  PET_NETHER_RAY,
+  PET_RAVAGER,
+  PET_SERPENT,
+  PET_SILITHID,
+  PET_SPIDER,
+  PET_SPOREBAT,
+  PET_WIND_SERPENT,
+  PET_CUNNING,
+
+  PET_MAX
+};
+
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
 enum dot_behavior_type { DOT_WAIT=0, DOT_CLIP, DOT_REFRESH };
@@ -174,6 +219,7 @@ enum resource_type
 {
   RESOURCE_NONE=0,
   RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC,
+  RESOURCE_RUNE, RESOURCE_HAPPINESS, RESOURCE_SOUL_SHARDS, RESOURCE_ECLIPSE,
   RESOURCE_MAX
 };
 
@@ -491,6 +537,75 @@ enum format_type
 #define FORMAT_CONVERT_MASK    ( (1<<FORMAT_CONVERT_HEX) | (1<<FORMAT_CONVERT_UTF8) )
 #define FORMAT_DEFAULT         ( FORMAT_ASCII_MASK )
 #define FORMAT_ALL_MASK        -1
+
+// Data Access ====================================================
+#ifndef MAX_LEVEL
+#define MAX_LEVEL (85)
+#endif
+
+#ifndef MAX_RANK
+#define MAX_RANK (3)
+#endif
+
+#ifndef NUM_SPELL_FLAGS
+#define NUM_SPELL_FLAGS (10)
+#endif
+
+#ifndef MAX_EFFECTS
+#define MAX_EFFECTS (3)
+#endif
+
+#ifndef MAX_TALENT_TABS
+#define MAX_TALENT_TABS (3)
+#endif
+
+#ifndef MAX_TALENTS
+#define MAX_TALENTS (100)
+#endif
+
+enum power_type
+{
+  POWER_MANA = 0,
+  POWER_RAGE = 1,
+  POWER_FOCUS = 2,
+  POWER_ENERGY = 3,
+  POWER_HAPPINESS = 4,
+  POWER_RUNE = 5,
+  POWER_RUNIC_POWER = 6, 
+  POWER_SOUL_SHARDS = 7,
+  POWER_ECLIPSE = 8,
+  POWER_HEALTH = 0xFFFFFFFE, // (or -2 if signed)
+  POWER_NONE = 0xFFFFFFFF // None.
+};
+
+enum rating_type {
+  RATING_DODGE = 0,
+  RATING_PARRY,
+  RATING_BLOCK,
+  RATING_MELEE_HIT,
+  RATING_RANGED_HIT,
+  RATING_SPELL_HIT,
+  RATING_MELEE_CRIT,
+  RATING_RANGED_CRIT,
+  RATING_SPELL_CRIT,
+  RATING_MELEE_HASTE,
+  RATING_RANGED_HASTE,
+  RATING_SPELL_HASTE,
+  RATING_EXPERTISE,
+  RATING_MASTERY,
+  RATING_MAX
+};
+
+struct stat_data_t {
+  double      strength;
+  double      agility;
+  double      stamina;
+  double      intellect;
+  double      spirit;
+  double      base_health;
+  double      base_resource;
+};
+
 
 // Options ====================================================================
 

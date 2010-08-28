@@ -270,7 +270,7 @@ struct coe_debuff_t : public debuff_t
 // Warlock Pet
 // ==========================================================================
 
-enum pet_type_t { PET_NONE=0,     PET_FELGUARD, PET_FELHUNTER, PET_IMP,
+enum warlock_pet_type_t { PET_NO_PET=0,     PET_FELGUARD, PET_FELHUNTER, PET_IMP,
                   PET_VOIDWALKER, PET_SUCCUBUS, PET_INFERNAL,  PET_DOOMGUARD
                 };
 
