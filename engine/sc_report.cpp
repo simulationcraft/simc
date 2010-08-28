@@ -265,7 +265,7 @@ static void print_buffs( FILE* file, player_t* p )
 
     if ( ! b -> constant )
     {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
+      util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh, 
 		       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
@@ -273,12 +273,6 @@ static void print_buffs( FILE* file, player_t* p )
 	  b -> benefit_pct < 100 )
       {
 	util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
-      }
-
-      if ( b -> trigger_pct > 0 && 
-	   b -> trigger_pct < 100 ) 
-      {
-	util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
       }
 
       util_t::fprintf( file, "\n" );
@@ -435,7 +429,7 @@ static void print_gains( FILE* file, player_t* p )
   {
     if ( g -> actual > 0 )
     {
-      util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
+      util_t::fprintf( file, "    %8.1f : %-*s", g -> actual, max_length, g -> name() );
       double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
       if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
       util_t::fprintf( file, "\n" );
@@ -947,10 +941,10 @@ static void print_html_action( FILE* file, stats_t* s )
 
   util_t::fprintf( file,
 		   " <tr>"
-		   " <td>%s</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.2fsec</td>"
-		   " <td>%.0f</td> <td>%.0f</td> <td>%.1f</td> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td>"
-		   " <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f%%</td>"
-		   " <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td>"
+		   " <td>%s</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
+		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
+		   " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
+		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100, 
 		   s -> num_executes, s -> frequency,
@@ -992,9 +986,9 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, 
 		   "<table class=\"player\">\n"
 		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> <th>ApM</th> </tr>\n"
-		   "  <tr> <td>%.0f</td> <td>%.1f%%</td> <td>%.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td> <td>%.1f</td>\n"
+		   "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td> <td>%.1f</td>\n"
 		   "</table><br />\n",
-		   p -> dps, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+		   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
 		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
 		   100.0 * p -> total_waiting / p -> total_seconds, 
 		   60.0 * p -> total_foreground_actions / p -> total_seconds  );
@@ -1159,7 +1153,7 @@ static void print_html_player( FILE* file, player_t* p )
     if ( b -> quiet || ! b -> start_count || b -> constant )
       continue;
 
-    util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n", 
+    util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
 		     b -> name(), b -> avg_start, b -> avg_refresh, 
 		     b -> avg_start_interval, b -> avg_trigger_interval, 
 		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
@@ -1181,7 +1175,7 @@ static void print_html_player( FILE* file, player_t* p )
   {
     if ( u -> percentage() > 0 ) 
     {
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f%%</td> </tr>\n", u -> name(), u -> percentage() );
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f%%</td> </tr>\n", u -> name(), u -> percentage() );
     }
   }
   util_t::fprintf( file, "</table> <br />\n" );
@@ -1191,7 +1185,7 @@ static void print_html_player( FILE* file, player_t* p )
   {
     if ( proc -> count > 0 )
     {
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1fsec</td> </tr>\n", proc -> name(), proc -> count, proc -> frequency );
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> </tr>\n", proc -> name(), proc -> count, proc -> frequency );
     }
   }
   util_t::fprintf( file, "</table> <br />\n" );
@@ -1202,7 +1196,7 @@ static void print_html_player( FILE* file, player_t* p )
     if ( g -> actual > 0 )
     {
       double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
     }
   }
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
@@ -1502,9 +1496,9 @@ static void print_wiki_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, 
 		   "|| *DPS*  || *Error* || *Range* || *DPR* || *RPS-Out* || *RPS-In* || *Resource* || *Waiting* || *ApM* ||\n"
-		   "|| *%.0f* || %.1f%%  || %.1f%%  || %.1f  || %.1f      || %.1f     || %s         || %.1f%%    || %.1f  ||\n"
+		   "|| *%.0f* || %.1f / %.1f%%  || %.1f / %.1f%%  || %.1f  || %.1f      || %.1f     || %s         || %.1f%%    || %.1f  ||\n"
 		   "\n",
-		   p -> dps, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+		   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
 		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
 		   100.0 * p -> total_waiting / p -> total_seconds, 
 		   60.0 * p -> total_foreground_actions / p -> total_seconds  );
@@ -1931,19 +1925,19 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 		     util_t::player_type_string( p -> type ),
 		     util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
-    util_t::fprintf( file, "  DPS: %.1f  Error=%.1f  Range=%.0f",
-                     p -> dps, p -> dps_error, ( p -> dps_max - p -> dps_min ) / 2.0 );
+    util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%",
+                     p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( p -> dps_max - p -> dps_min ) / 2.0 , ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps );
 
     if ( p -> rps_loss > 0 )
     {
-      util_t::fprintf( file, "  DPR=%.1f  RPS=%.1f/%.1f  (%s)",
+      util_t::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
                        p -> dpr, p -> rps_loss, p -> rps_gain,
-                       util_t::resource_type_string( p -> primary_resource() ) );
+                       util_t::resource_type_string( p -> primary_resource() ), 100.0 * p -> total_waiting / p -> total_seconds, 60.0 * p -> total_foreground_actions / p -> total_seconds  );
     }
 
     util_t::fprintf( file, "\n" );
     util_t::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
-
+    util_t::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
     print_core_stats   ( file, p );
     print_spell_stats  ( file, p );
     print_attack_stats ( file, p );

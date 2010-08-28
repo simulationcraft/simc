@@ -268,7 +268,7 @@
 		constants.holy_concentration_value		  = 0.10;
 
 		// Shadow Core
-		constants.shadow_power_value			  = 0.15;
+		constants.shadow_power_value			  = 0.25;
 		constants.shadow_orb_proc_value           = 0.10;
 		constants.shadow_orb_damage_value         = 0.20;
 		constants.shadow_orb_mastery_value		  = 0.025;
@@ -727,8 +727,8 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
-      devouring_plague_burst -> base_dd_min = 0.15 * base_dd_min;
-      devouring_plague_burst -> base_dd_max = 0.15 * base_dd_min;
+      devouring_plague_burst -> base_dd_min = 0.15 * tick_dmg;
+      devouring_plague_burst -> base_dd_max = 0.15 * tick_dmg;
     }
   }
 
