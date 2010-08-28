@@ -2465,7 +2465,8 @@ struct action_t
   int type;
   std::string name_str;
   player_t* player;
-  int id, school, resource, tree, result;
+  uint32_t id;
+  int school, resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero;
@@ -2523,9 +2524,11 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
+  virtual void	 	parse_data();
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
+
 
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST        { return 1.0;               }

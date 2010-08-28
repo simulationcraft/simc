@@ -233,6 +233,8 @@
 
 		max_mana_cost = 0.0;
 
+		sc_data_access_t q;
+		power_mod.mind_blast = q.effect_coeff( q.spell_effect_id (8092,1 ) );
 		// Power Mod
 
 		power_mod.mind_blast                      = 1.5 / 3.5;
@@ -656,8 +658,10 @@ struct devouring_plague_burst_t : public priest_spell_t
     proc       = true;
     background = true;
     may_crit   = true;
+    if (p -> talents.improved_devouring_plague == 1) id=63625;
+    if (p -> talents.improved_devouring_plague == 2) id=63626;
+    parse_data();
 
-    direct_power_mod  = p -> power_mod.devouring_plague;
 
     base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
 
@@ -700,25 +704,10 @@ struct devouring_plague_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 0, 0, 155, 0.25 },
-      { 84, 84, 0, 0, 152, 0.25 },
-      { 83, 83, 0, 0, 148, 0.25 },
-      { 82, 82, 0, 0, 145, 0.25 },
-      { 81, 81, 0, 0, 142, 0.25 },
-      { 80, 80, 0, 0, 139, 0.25 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
 
-    base_execute_time = 0;
-    // Testing new dot haste scaling
-    base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( floor ( 8 * haste() + 0.5 ) );
-    //base_tick_time    = 3.0;
-    //num_ticks         = 8;
-    tick_power_mod    = p -> power_mod.devouring_plague;
+    id = 2944;
+    parse_data();
+
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
@@ -727,8 +716,6 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
-      devouring_plague_burst -> base_dd_min = 0.15 * tick_dmg;
-      devouring_plague_burst -> base_dd_max = 0.15 * tick_dmg;
     }
   }
 
@@ -1020,33 +1007,20 @@ struct mind_blast_t : public priest_spell_t
   mind_blast_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "mind_blast", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> cast_priest();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 1028, 1086, 0, 0.17 },
-      { 84, 84, 1007, 1063, 0, 0.17 },
-      { 83, 83,  986, 1040, 0, 0.17 },
-      { 82, 82,  964, 1018, 0, 0.17 },
-      { 81, 81,  943,  995, 0, 0.17 },
-      { 80, 80,  921,  973, 0, 0.17 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48127 );
+    id				  = 8092;
+    parse_data();
 
-    base_execute_time = 1.5;
+    priest_t* p = player -> cast_priest();
     may_crit          = true;
-    direct_power_mod  = p -> power_mod.mind_blast;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
 								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
     cooldown -> duration -= p -> talents.improved_mind_blast * 0.5;
-    base_cost         = floor( base_cost );
   }
 
 

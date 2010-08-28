@@ -72,12 +72,45 @@ action_t::action_t( int         ty,
 
   for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
 
+
+
+
   cooldown = p -> get_cooldown( n );
   dot      = p -> get_dot     ( n );
 
   stats = p -> get_stats( n );
   stats -> school = school;
 }
+
+// action_t::parse_data ====================================================
+void action_t::parse_data()
+{
+
+	  sc_data_access_t ac;
+	  if (ac.spell_exists(id))
+	  {
+
+	  base_execute_time 			= ac.spell_cast_time ( id, player -> level );
+	  //cooldown 					= ac.spell_cooldown ( id );
+	  range 						= ac.spell_max_range ( id );
+	  travel_speed					= ac.spell_missile_speed ( id );
+	  base_cost						= floor ( ac.spell_cost( id ) );
+
+
+	  if (ac.effect_exists ( ac.spell_effect_id ( id, 1) ) )
+	  {
+	  direct_power_mod 				= ac.effect_coeff( ac.spell_effect_id (id,1 ) );
+	  tick_power_mod 				= ac.effect_coeff( ac.spell_effect_id (id,1 ) );
+	  base_td 						= ac.effect_average ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
+	  base_dd_min 					= ac.effect_min ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
+	  base_dd_max 					= ac.effect_max ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
+	  base_tick_time				= ac.effect_period ( ac.spell_effect_id (id,1 ) ) / haste();
+	  num_ticks						= int ( floor ( int ( ac.spell_duration ( id ) / ac.effect_period ( ac.spell_effect_id (id,1 ) ) ) * haste() + 0.5 ) );
+	  }
+
+	  }
+}
+
 
 // action_t::merge_options ==================================================
 
