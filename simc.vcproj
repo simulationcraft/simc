@@ -213,15 +213,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_data.h"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_data_access.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_data_access.h"
 			>
 		</File>
 		<File

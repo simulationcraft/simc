@@ -1,5 +1,4 @@
 #include "simulationcraft.h"
-#include "sc_data_access.h"
 
 static uint32_t get_class_id( const player_type c );
 

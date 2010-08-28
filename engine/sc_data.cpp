@@ -1,5 +1,4 @@
 #include "simulationcraft.h"
-#include "sc_data.h"
 
 sc_data_t::sc_data_t( sc_data_t* p )
 {

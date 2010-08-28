@@ -1,5 +1,4 @@
 #include "simulationcraft.h"
-#include "sc_data.h"
 
 #include "sc_scale_data.inc"
 #include "sc_talent_data.inc"
