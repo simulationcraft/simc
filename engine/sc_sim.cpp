@@ -728,9 +728,10 @@ bool sim_t::init()
 
   P400 = patch.after( 4, 0, 0 );
 
-  // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
-  if ( wheel_seconds     <= 0 ) wheel_seconds     = 600;
-  if ( wheel_granularity <= 0 ) wheel_granularity = 10;
+  // Timing wheel depth defaults to about 8.5 minutes with a granularity of 32 buckets per second.
+  // This makes wheel_size = 16K and it's fully used.
+  if ( wheel_seconds     <= 0 ) wheel_seconds     = 512; // 2^9
+  if ( wheel_granularity <= 0 ) wheel_granularity = 32; // 2^5
 
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 
@@ -740,9 +741,9 @@ bool sim_t::init()
   wheel_mask--;
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
-  if ( timing_wheel ) delete timing_wheel;
-  timing_wheel= new event_t*[wheel_size+1];
-  memset( timing_wheel,0,sizeof( event_t* )*( wheel_size+1 ) );
+  if ( timing_wheel ) delete [] timing_wheel;
+  timing_wheel= new event_t*[wheel_size];
+  memset( timing_wheel,0,sizeof( event_t* )*( wheel_size ) );
 
   total_seconds = 0;
 
