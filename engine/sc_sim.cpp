@@ -486,7 +486,7 @@ void sim_t::add_event( event_t* e,
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  uint32_t slice = ( ( uint32_t ) ( e -> time * wheel_granularity ) ) & wheel_mask;
+  uint32_t slice = (std::min<uint32_t>)( ( uint32_t ) ( e -> time * wheel_granularity ), wheel_size-1 );
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -732,6 +732,7 @@ bool sim_t::init()
   // This makes wheel_size = 16K and it's fully used.
   if ( wheel_seconds     <= 0 ) wheel_seconds     = 512; // 2^9
   if ( wheel_granularity <= 0 ) wheel_granularity = 32; // 2^5
+
 
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 
