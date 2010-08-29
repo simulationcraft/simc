@@ -866,6 +866,7 @@ static uint32_t get_class_id( const player_type c )
     case SHAMAN: return 7;
     case WARLOCK: return 9;
     case WARRIOR: return 1;
+    case PLAYER_PET: return 10; // Temporary assignment
     default: break;
   }
   return 0;
