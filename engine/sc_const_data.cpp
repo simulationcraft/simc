@@ -27,7 +27,7 @@ void sc_data_t::set_parent( sc_data_t* p )
     m_regen_spi.create_copy( ( double * ) __gt_regen_mpper_spt, MAX_LEVEL, sizeof( __gt_regen_mpper_spt ) / ( MAX_LEVEL * sizeof( double ) ) );
     m_octregen.create_copy( ( double * ) __gt_octregen_mp, MAX_LEVEL, sizeof( __gt_octregen_mp ) / ( MAX_LEVEL * sizeof( double ) ) );
     m_combat_ratings.create_copy( ( double * ) __gt_combat_ratings, MAX_LEVEL, sizeof( __gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
-    m_class_combat_rating_scalar.create_copy( ( double * ) __gt_octclass_combat_rating_scalar, RATING_MAX, sizeof( __gt_octclass_combat_rating_scalar ) / ( RATING_MAX * sizeof( double ) ) );
+    m_class_combat_rating_scalar.create_copy( ( double * ) __gt_octclass_combat_rating_scalar, 12, sizeof( __gt_octclass_combat_rating_scalar ) / ( 12 * sizeof( double ) ) );
     m_dodge_base.create_copy( ( double * ) __gt_chance_to_dodge_base, sizeof( __gt_chance_to_dodge_base ) / sizeof( double ) );
     m_dodge_scale.create_copy( ( double * ) __gt_dodge_per_agi, MAX_LEVEL, sizeof( __gt_dodge_per_agi ) / ( MAX_LEVEL * sizeof( double ) ) );
     m_base_mp5.create_copy( ( double * ) __gt_base_mp5, MAX_LEVEL, sizeof( __gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );
