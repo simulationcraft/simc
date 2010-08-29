@@ -3819,7 +3819,10 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "gargoyle", 30.0 );
+    // Examining logs show gargoyls take 4.5-5.5 seconds before they
+    // can begin casting, so rather than the tooltip's 30s duration,
+    // let's use 25s.
+    player -> summon_pet( "gargoyle", 25.0 );
   }
 };
 
