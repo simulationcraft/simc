@@ -973,7 +973,9 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-  rating.init( sim, level );
+	 if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
+	                   level,type );
+  rating.init( sim, level, type );
 }
 
 // player_t::init_buffs ====================================================

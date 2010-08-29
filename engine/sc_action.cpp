@@ -91,21 +91,21 @@ void action_t::parse_data()
 	  {
 
 	  base_execute_time 			= ac.spell_cast_time ( id, player -> level );
-	  //cooldown 					= ac.spell_cooldown ( id );
+	  //cooldown 						= ac.spell_cooldown ( id );
 	  range 						= ac.spell_max_range ( id );
 	  travel_speed					= ac.spell_missile_speed ( id );
 	  base_cost						= floor ( ac.spell_cost( id ) );
 
-
-	  if (ac.effect_exists ( ac.spell_effect_id ( id, 1) ) )
+	  int effect = ac.spell_effect_id ( id, 1 );
+	  if (ac.effect_exists ( effect ) )
 	  {
-	  direct_power_mod 				= ac.effect_coeff( ac.spell_effect_id (id,1 ) );
-	  tick_power_mod 				= ac.effect_coeff( ac.spell_effect_id (id,1 ) );
-	  base_td 						= ac.effect_average ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
-	  base_dd_min 					= ac.effect_min ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
-	  base_dd_max 					= ac.effect_max ( ac.spell_effect_id ( id, 1 ), player_type( player -> type ), player -> level );
-	  base_tick_time				= ac.effect_period ( ac.spell_effect_id (id,1 ) ) / haste();
-	  num_ticks						= int ( floor ( int ( ac.spell_duration ( id ) / ac.effect_period ( ac.spell_effect_id (id,1 ) ) ) * haste() + 0.5 ) );
+	  direct_power_mod 				= ac.effect_coeff( effect );
+	  tick_power_mod 				= ac.effect_coeff( effect );
+	  base_td 						= ac.effect_average ( effect, player_type( player -> type ), player -> level );
+	  base_dd_min 					= ac.effect_min ( effect, player_type( player -> type ), player -> level );
+	  base_dd_max 					= ac.effect_max ( effect, player_type( player -> type ), player -> level );
+	  base_tick_time				= ac.effect_period ( effect );
+	  num_ticks						= int ( ac.spell_duration ( id ) / ac.effect_period ( effect ) );
 	  }
 
 	  }

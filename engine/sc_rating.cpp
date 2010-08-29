@@ -347,142 +347,38 @@ static const _stat_list_t warrior_stats[] =
 }; 
 
 
-// rating_60 =================================================================
 
-static rating_t& rating_60( sim_t* sim )
-{
-  static rating_t r;
 
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 1000;
-    r.spell_hit         =  800;
-    r.spell_crit        = 1400;
-    r.attack_haste      = 1000;
-    r.attack_hit        = 1000;
-    r.attack_crit       = 1400;
-    r.expertise         =  250;
-    r.armor_penetration = 426.8292514;
-    r.defense           =  1.5;
-    r.dodge             = 1380;
-    r.parry             = 1380;
-    r.block             =  500;
-    r.mastery           = 14;
-  }
-
-  return r;
-}
-
-// rating_70 =================================================================
-
-static rating_t& rating_70( sim_t* sim )
-{
-  static rating_t r;
-
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 1576.923275;
-    r.spell_hit         = 1261.538506;
-    r.spell_crit        = 2207.692337;
-    r.attack_haste      = 1576.923275;
-    r.attack_hit        = 1576.923275;
-    r.attack_crit       = 2207.692337;
-    r.expertise         =  394.230819;
-    r.armor_penetration = 673.0768897;
-    r.defense           = 2.365385056;
-    r.dodge             = 2176.153945;
-    r.parry             = 2176.153945;
-    r.block             = 788.4614944;
-    r.mastery           = 22.07692337;
-  }
-
-  return r;
-}
-
-// rating_80 =================================================================
-
-static rating_t& rating_80( sim_t* sim )
-{
-  static rating_t r;
-
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 100.0/0.030500;
-    r.spell_hit         =  80.0/0.030500;
-    r.spell_crit        = 140.0/0.030500;
-    r.attack_haste      = 100.0/0.030500;
-    r.attack_hit        = 100.0/0.030500;
-    r.attack_crit       = 140.0/0.030500;
-    r.expertise         =  25.0/0.030500;
-    r.armor_penetration = 1399.572719;
-    r.defense           = 4.918498039;
-    r.dodge             = 4525.018692;
-    r.parry             = 4525.018692;
-    r.block             = 1639.499474;
-    r.mastery           = 1.4/0.030500;
-  }
-
-  return r;
-}
-
-// rating_85 =================================================================
-// e.g. attack_crit:
-// 80: 140.0 /0.0305 =  4590.163934
-// 81: 1404.0/0.2339 =  6002.565199 (r_80 * 1.307702)
-// 83: 764.0 /0.0735 = 10394.557823 (r_80 * 1.307702^3 is ~1.26% lower)
-// If it goes on like this up to lvl85:
-// 1.307702^5 = 3.824225, should be slightly to low -> ~x3.9
-// interpolate() uses linear regression so it will be off by quite a bit for 
-// for inbetween levels
-
-static rating_t& rating_85( sim_t* sim )
-{
-  static rating_t r;
-
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 100.0/0.030500*3.90;
-    r.spell_hit         =  80.0/0.030500*3.90;
-    r.spell_crit        = 140.0/0.030500*3.90;
-    r.attack_haste      = 100.0/0.030500*3.90;
-    r.attack_hit        = 100.0/0.030500*3.90;
-    r.attack_crit       = 140.0/0.030500*3.90;
-    r.expertise         =  25.0/0.030500*3.90;
-    r.armor_penetration = 1399.572719*3.90;
-    r.defense           = 4.918498039*3.90;
-    r.dodge             = 4525.018692*3.90;
-    r.parry             = 4525.018692*3.90;
-    r.block             = 1639.499474*3.90;
-    r.mastery           = 163; // took r_80 and r_82.mastery=93 (bluepost) as given
-  }
-
-  return r;
-}
 
 } // ANONYMOUS NAMESPACE =====================================================
 
 // rating_t::init ============================================================
 
-void rating_t::init( sim_t* sim, int level )
+void rating_t::init( sim_t* sim, int level, int type )
 {
-  rating_t& r_60 = rating_60( sim );
-  rating_t& r_70 = rating_70( sim );
-  rating_t& r_80 = rating_80( sim );
-  rating_t& r_85 = rating_85( sim );
+  if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%.f type=%.f",
+									 level, type );
 
-  spell_haste       = interpolate( level, r_60.spell_haste,       r_70.spell_haste,       r_80.spell_haste,       r_85.spell_haste       );
-  spell_hit         = interpolate( level, r_60.spell_hit,         r_70.spell_hit,         r_80.spell_hit,         r_85.spell_hit         );
-  spell_crit        = interpolate( level, r_60.spell_crit,        r_70.spell_crit,        r_80.spell_crit,        r_85.spell_crit        );
-  attack_haste      = interpolate( level, r_60.attack_haste,      r_70.attack_haste,      r_80.attack_haste,      r_85.attack_haste      );
-  attack_hit        = interpolate( level, r_60.attack_hit,        r_70.attack_hit,        r_80.attack_hit,        r_85.attack_hit        );
-  attack_crit       = interpolate( level, r_60.attack_crit,       r_70.attack_crit,       r_80.attack_crit,       r_85.attack_crit       );
-  expertise         = interpolate( level, r_60.expertise,         r_70.expertise,         r_80.expertise,         r_85.expertise         );
-  armor_penetration = interpolate( level, r_60.armor_penetration, r_70.armor_penetration, r_80.armor_penetration, r_85.armor_penetration );
-  defense           = interpolate( level, r_60.defense,           r_70.defense,           r_80.defense,           r_85.defense           );
-  dodge             = interpolate( level, r_60.dodge  ,           r_70.dodge,             r_80.dodge,             r_85.dodge             );
-  parry             = interpolate( level, r_60.parry,             r_70.parry,             r_80.parry,             r_85.parry             );
-  block             = interpolate( level, r_60.block,             r_70.block,             r_80.block,             r_85.block             );
-  mastery           = interpolate( level, r_60.mastery,           r_70.mastery,           r_80.mastery,           r_85.mastery           );
+  sc_data_access_t ac;
+
+  spell_haste       = ac.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
+  spell_hit         = ac.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
+  spell_crit        = ac.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
+  attack_haste      = ac.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
+  attack_hit        = ac.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
+  attack_crit       = ac.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
+  ranged_haste      = ac.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
+  ranged_hit        = ac.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
+  ranged_crit       = ac.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
+  expertise         = ac.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
+  armor_penetration = 1; // no data, and should be purged
+  defense           = 1; // not data
+  dodge             = ac.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
+  parry             = ac.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
+  block             = ac.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
+  mastery 			= ac.combat_ratings(player_type ( type ), RATING_MASTERY, 		level);
+
+
 }
 
 // rating_t::interpolate ======================================================

@@ -1636,11 +1636,12 @@ struct rating_t
 {
   double  spell_haste,  spell_hit,  spell_crit;
   double attack_haste, attack_hit, attack_crit;
+  double ranged_haste, ranged_hit,ranged_crit;
   double expertise, armor_penetration;
   double defense, dodge, parry, block;
   double mastery;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
-  void init( sim_t*, int level );
+  void init( sim_t*, int level, int type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
   static double get_attribute_base( sim_t*, int level, int class_type, int race, int stat_type );
 };
