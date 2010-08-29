@@ -486,7 +486,7 @@ void sim_t::add_event( event_t* e,
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  uint32_t slice = ( ( uint32_t ) ( e -> time * wheel_granularity ) ) & wheel_mask;
+  uint32_t slice = (std::min<uint32_t>)( ( uint32_t ) ( e -> time * wheel_granularity ), wheel_size-1 );
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -729,8 +729,8 @@ bool sim_t::init()
   P400 = patch.after( 4, 0, 0 );
 
   // Timing wheel depth defaults to 10 minutes with a granularity of 10 buckets per second.
-  if ( wheel_seconds     <= 0 ) wheel_seconds     = 600;
-  if ( wheel_granularity <= 0 ) wheel_granularity = 10;
+  if ( wheel_seconds     <= 0 ) wheel_seconds     = 512;
+  if ( wheel_granularity <= 0 ) wheel_granularity = 32;
 
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 
@@ -740,8 +740,8 @@ bool sim_t::init()
   wheel_mask--;
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
-  if ( timing_wheel ) delete timing_wheel;
-  timing_wheel= new event_t*[wheel_size+1];
+  if ( timing_wheel ) delete [] timing_wheel;
+  timing_wheel= new event_t*[wheel_size];
   memset( timing_wheel,0,sizeof( event_t* )*( wheel_size+1 ) );
 
   total_seconds = 0;
