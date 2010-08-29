@@ -3185,6 +3185,7 @@ void shaman_t::init_buffs()
   buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
   buffs_water_shield          = new buff_t( this, "water_shield",          1, 600.0 );
 
+
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
 
   buffs_avalanche         = new stat_buff_t( this, "avalanche",         STAT_ATTACK_POWER, 146, 3, 15.0,     0, totems.avalanche );

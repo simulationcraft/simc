@@ -486,7 +486,9 @@ void sim_t::add_event( event_t* e,
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  uint32_t slice = (std::min<uint32_t>)( ( uint32_t ) ( e -> time * wheel_granularity ), wheel_size-1 );
+  assert( delta_time <= wheel_seconds );
+
+  uint32_t slice = ( uint32_t ) ( e -> time * wheel_granularity ) & wheel_mask;
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -728,10 +730,10 @@ bool sim_t::init()
 
   P400 = patch.after( 4, 0, 0 );
 
-  // Timing wheel depth defaults to about 8.5 minutes with a granularity of 32 buckets per second.
-  // This makes wheel_size = 16K and it's fully used.
-  if ( wheel_seconds     <= 0 ) wheel_seconds     = 512; // 2^9
-  if ( wheel_granularity <= 0 ) wheel_granularity = 32; // 2^5
+  // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
+  // This makes wheel_size = 32K and it's fully used.
+  if ( wheel_seconds     <  600 ) wheel_seconds     = 1024; // 2^10  Min of 600 to ensure no wrap-around bugs with Water Shield
+  if ( wheel_granularity <=   0 ) wheel_granularity = 32; // 2^5
 
 
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
