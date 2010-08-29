@@ -201,6 +201,35 @@ enum pet_type_t
   PET_SPOREBAT,
   PET_WIND_SERPENT,
   PET_CUNNING,
+  PET_HUNTER,
+
+  PET_FELGUARD, 
+  PET_FELHUNTER, 
+  PET_IMP,
+  PET_VOIDWALKER, 
+  PET_SUCCUBUS, 
+  PET_INFERNAL,  
+  PET_DOOMGUARD,
+  PET_WARLOCK,
+
+  PET_GHOUL,
+  PET_BLOODWORMS,
+  PET_DANCING_RUNE_WEAPON,
+  PET_DEATH_KNIGHT,
+
+  PET_TREANTS,
+  PET_DRUID,
+
+  PET_WATER_ELEMENTAL,
+  PET_MAGE,
+
+  PET_SHADOWFIEND,
+  PET_PRIEST,
+
+  PET_SPIRIT_WOLF,
+  PET_FIRE_ELEMENTAL,
+  PET_EARTH_ELEMENTAL,
+  PET_SHAMAN,
 
   PET_MAX
 };
@@ -3462,17 +3491,29 @@ public:
 
 // Scaling methods
   virtual double        melee_crit_base( const player_type c ) SC_CONST;
+  virtual double        melee_crit_base( const pet_type_t c ) SC_CONST;
   virtual double        spell_crit_base( const player_type c ) SC_CONST;
+  virtual double        spell_crit_base( const pet_type_t c ) SC_CONST;
   virtual double        melee_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        melee_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        spell_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        spell_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        spi_regen( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        spi_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        oct_regen( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        oct_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        combat_ratings( const player_type c, const rating_type r, const uint32_t level ) SC_CONST;
+  virtual double        combat_ratings( const pet_type_t c, const rating_type r, const uint32_t level ) SC_CONST;
   virtual double        dodge_base( const player_type c ) SC_CONST;
+  virtual double        dodge_base( const pet_type_t c ) SC_CONST;
   virtual double        dodge_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        dodge_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        base_mp5( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        base_mp5( const pet_type_t c, const uint32_t level ) SC_CONST;
   virtual double        class_stats( const player_type c, const uint32_t level, const stat_type s ) SC_CONST;
+  virtual double        class_stats( const pet_type_t c, const uint32_t level, const stat_type s ) SC_CONST;
   virtual double        race_stats( const race_type r, const stat_type s ) SC_CONST;
+  virtual double        race_stats( const pet_type_t r, const stat_type s ) SC_CONST;
 
 private:
 };

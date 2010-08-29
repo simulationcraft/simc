@@ -12,6 +12,8 @@ static uint32_t get_pet_mask( const pet_type_t p );
 
 static uint32_t get_pet_id( const pet_type_t p );
 
+static player_type get_pet_class_type( const pet_type_t c );
+
 sc_data_access_t::sc_data_access_t( sc_data_t* p ) : sc_data_t( p )
 {
   
@@ -659,6 +661,11 @@ double sc_data_access_t::melee_crit_base( const player_type c ) SC_CONST
   return *v;
 }
 
+double sc_data_access_t::melee_crit_base( const pet_type_t c ) SC_CONST
+{
+  return melee_crit_base( get_pet_class_type( c ) );  
+}
+
 double sc_data_access_t::spell_crit_base( const player_type c ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -668,6 +675,11 @@ double sc_data_access_t::spell_crit_base( const player_type c ) SC_CONST
   double* v = m_spell_crit_base.ptr( cid );
 
   return *v;
+}
+
+double sc_data_access_t::spell_crit_base( const pet_type_t c ) SC_CONST
+{
+  return spell_crit_base( get_pet_class_type( c ) );
 }
 
 double sc_data_access_t::melee_crit_scale( const player_type c, const uint32_t level ) SC_CONST
@@ -681,6 +693,11 @@ double sc_data_access_t::melee_crit_scale( const player_type c, const uint32_t l
   return *v;
 }
 
+double sc_data_access_t::melee_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return melee_crit_scale( get_pet_class_type( c ), level );
+}
+
 double sc_data_access_t::spell_crit_scale( const player_type c, const uint32_t level ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -690,6 +707,11 @@ double sc_data_access_t::spell_crit_scale( const player_type c, const uint32_t l
   double* v = m_spell_crit_scale.ptr( level - 1, cid );
 
   return *v;
+}
+
+double sc_data_access_t::spell_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return spell_crit_scale( get_pet_class_type( c ), level );
 }
 
 // Result is the constant in the k*sqrt(int)*spi regen in terms of mana/second.
@@ -704,6 +726,11 @@ double sc_data_access_t::spi_regen( const player_type c, const uint32_t level ) 
   return *v;
 }
 
+double sc_data_access_t::spi_regen( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return spi_regen( get_pet_class_type( c ), level );
+}
+
 double sc_data_access_t::oct_regen( const player_type c, const uint32_t level ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -713,6 +740,11 @@ double sc_data_access_t::oct_regen( const player_type c, const uint32_t level ) 
   double* v = m_octregen.ptr( level - 1, cid );
 
   return *v;
+}
+
+double sc_data_access_t::oct_regen( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return oct_regen( get_pet_class_type( c ), level );
 }
 
 double sc_data_access_t::combat_ratings( const player_type c, const rating_type r, const uint32_t level ) SC_CONST
@@ -727,6 +759,11 @@ double sc_data_access_t::combat_ratings( const player_type c, const rating_type 
   return *v * *s;
 }
 
+double sc_data_access_t::combat_ratings( const pet_type_t c, const rating_type r, const uint32_t level ) SC_CONST
+{
+  return combat_ratings( get_pet_class_type( c ), r, level );
+}
+
 double sc_data_access_t::dodge_base( const player_type c ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -736,6 +773,11 @@ double sc_data_access_t::dodge_base( const player_type c ) SC_CONST
   double* v = m_dodge_base.ptr( cid );
 
   return *v;
+}
+
+double sc_data_access_t::dodge_base( const pet_type_t c ) SC_CONST
+{
+  return dodge_base( get_pet_class_type( c ) );
 }
 
 double sc_data_access_t::dodge_scale( const player_type c, const uint32_t level ) SC_CONST
@@ -761,6 +803,11 @@ double sc_data_access_t::dodge_scale( const player_type c, const uint32_t level 
   return res;
 }
 
+double sc_data_access_t::dodge_scale( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return dodge_scale( get_pet_class_type( c ), level );
+}
+
 double sc_data_access_t::base_mp5( const player_type c, const uint32_t level ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -784,13 +831,18 @@ double sc_data_access_t::base_mp5( const player_type c, const uint32_t level ) S
   return res;
 }
 
+double sc_data_access_t::base_mp5( const pet_type_t c, const uint32_t level ) SC_CONST
+{
+  return base_mp5( get_pet_class_type( c ), level );
+}
+
 double sc_data_access_t::class_stats( const player_type c, const uint32_t level, const stat_type s ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
   double res = 0.0;
   uint32_t l = level;
 
-  assert( ( cid != 0 ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   while ( l > 0 )
   {
@@ -823,11 +875,14 @@ double sc_data_access_t::class_stats( const player_type c, const uint32_t level,
   return res;
 }
 
+double sc_data_access_t::class_stats( const pet_type_t c, const uint32_t level, const stat_type s ) SC_CONST
+{
+  return class_stats( get_pet_class_type( c ), level, s );
+}
+
 double sc_data_access_t::race_stats( const race_type r, const stat_type s ) SC_CONST
 {
   uint32_t rid = get_race_id( r );
-
-  assert( ( rid != 0 ) );
 
   stat_data_t* v = m_race_stats.ptr( rid );
 
@@ -850,6 +905,11 @@ double sc_data_access_t::race_stats( const race_type r, const stat_type s ) SC_C
   return 0.0;
 }
 
+double sc_data_access_t::race_stats( const pet_type_t r, const stat_type s ) SC_CONST
+{
+  return race_stats( RACE_NONE, s );
+}
+
 /***************************** local functions *************************************/
 
 static uint32_t get_class_id( const player_type c )
@@ -866,10 +926,35 @@ static uint32_t get_class_id( const player_type c )
     case SHAMAN: return 7;
     case WARLOCK: return 9;
     case WARRIOR: return 1;
-    case PLAYER_PET: return 10; // Temporary assignment
+    case PLAYER_GUARDIAN: return 1; // Temporary assignment
+    case PLAYER_PET: return 1; // Temporary assignment
     default: break;
   }
   return 0;
+}
+
+static player_type get_pet_class_type( const pet_type_t c )
+{
+  player_type p = WARRIOR;
+
+  if ( c <= PET_HUNTER )
+  {
+    p = WARRIOR;
+  }
+  else if ( c == PET_GHOUL )
+  {
+    p = ROGUE;
+  }
+  else if ( c == PET_FELGUARD )
+  {
+    p = WARRIOR;
+  }
+  else if ( c <= PET_WARLOCK )
+  {
+    p = WARLOCK;
+  }
+
+  return p;
 }
 
 static uint32_t get_class_mask( const player_type c )
