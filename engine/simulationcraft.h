@@ -138,6 +138,8 @@ struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 struct xml_node_t;
+class  sc_data_t;
+class  sc_data_access_t;
 
 // Enumerations ==============================================================
 
