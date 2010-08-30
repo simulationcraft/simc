@@ -18,7 +18,7 @@
 
 struct hunter_pet_t;
 
-enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_VIPER, ASPECT_BEAST, ASPECT_MAX };
+enum { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
 struct hunter_t : public player_t
 {
@@ -35,14 +35,12 @@ struct hunter_t : public player_t
 
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
-  buff_t* buffs_aspect_of_the_viper;
   buff_t* buffs_beast_within;
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_cobra_strikes;
   buff_t* buffs_culling_the_herd;
   buff_t* buffs_expose_weakness;
   buff_t* buffs_furious_howl;
-  buff_t* buffs_improved_aspect_of_the_hawk;
   buff_t* buffs_improved_steady_shot;
   buff_t* buffs_lock_and_load;
   buff_t* buffs_master_tactician;
@@ -59,8 +57,6 @@ struct hunter_t : public player_t
   gain_t* gains_rapid_recuperation;
   gain_t* gains_roar_of_recovery;
   gain_t* gains_thrill_of_the_hunt;
-  gain_t* gains_viper_aspect_passive;
-  gain_t* gains_viper_aspect_shot;
 
   // Procs
   proc_t* procs_wild_quiver;
@@ -83,7 +79,6 @@ struct hunter_t : public player_t
   {
     int  animal_handler;
     int  aimed_shot;
-    int  aspect_mastery;
     int  barrage;
     int  beast_mastery;
     int  beast_within;
@@ -107,7 +102,6 @@ struct hunter_t : public player_t
     int  hunter_vs_wild;
     int  hunting_party;
     int  improved_arcane_shot;
-    int  improved_aspect_of_the_hawk;
     int  improved_barrage;
     int  improved_hunters_mark;
     int  improved_steady_shot;
@@ -158,7 +152,6 @@ struct hunter_t : public player_t
   {
     int  aimed_shot;
     int  arcane_shot;
-    int  aspect_of_the_viper;
     int  bestial_wrath;
     int  chimera_shot;
     int  explosive_shot;
@@ -221,7 +214,7 @@ struct hunter_t : public player_t
   virtual void      create_pets();
   virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_resource() SC_CONST { return RESOURCE_FOCUS; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual int       primary_tree() SC_CONST;
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
@@ -489,9 +482,6 @@ struct hunter_pet_t : public pet_t
 
     double mult = player_t::composite_attack_power_multiplier();
 
-    if ( o -> active_aspect == ASPECT_BEAST )
-      mult *= 1.10 + o -> glyphs.the_beast * 0.02;
-
     if ( buffs_rabid -> up() )
       mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
 
@@ -645,7 +635,7 @@ struct hunter_pet_t : public pet_t
 struct hunter_attack_t : public attack_t
 {
   hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_MANA, s, t, special )
+      attack_t( n, player, RESOURCE_FOCUS, s, t, special )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -695,7 +685,7 @@ struct hunter_attack_t : public attack_t
 struct hunter_spell_t : public spell_t
 {
   hunter_spell_t( const char* n, player_t* p, int s, int t ) :
-      spell_t( n, p, RESOURCE_MANA, s, t )
+      spell_t( n, p, RESOURCE_FOCUS, s, t )
   {}
 
   virtual double gcd() SC_CONST;
@@ -703,22 +693,6 @@ struct hunter_spell_t : public spell_t
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
-
-// trigger_aspect_of_the_viper ==============================================
-
-static void trigger_aspect_of_the_viper( attack_t* a )
-{
-  hunter_t* p = a -> player -> cast_hunter();
-
-  if ( p -> active_aspect != ASPECT_VIPER )
-    return;
-
-  double gain = p -> resource_max[ RESOURCE_MANA ] * p -> ranged_weapon.swing_time / 100.0;
-
-  if ( p -> glyphs.aspect_of_the_viper ) gain *= 1.10;
-
-  p -> resource_gain( RESOURCE_MANA, gain, p -> gains_viper_aspect_shot );
-}
 
 // trigger_go_for_the_throat ===============================================
 
@@ -729,7 +703,7 @@ static void trigger_go_for_the_throat( attack_t* a )
   if ( ! p -> talents.go_for_the_throat ) return;
   if ( ! p -> active_pet ) return;
 
-  double gain = p -> talents.go_for_the_throat * 25.0;
+  double gain = p -> talents.go_for_the_throat * 5.0;
 
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, p -> active_pet -> gains_go_for_the_throat );
 }
@@ -755,16 +729,17 @@ static void trigger_hunting_party( attack_t* a )
 
 static void trigger_invigoration( action_t* a )
 {
+  if ( a -> special ) return;
+
   hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
   hunter_t*     o = p -> owner -> cast_hunter();
 
   if ( ! o -> talents.invigoration )
     return;
 
-  if ( ! o -> rng_invigoration -> roll( o -> talents.invigoration * 0.50 ) )
-    return;
+  double gain = o -> talents.invigoration * 3.0;
 
-  o -> resource_gain( RESOURCE_MANA, 0.01 * o -> resource_max[ RESOURCE_MANA ], o -> gains_invigoration );
+  o -> resource_gain( RESOURCE_FOCUS, gain, o -> gains_invigoration );
 }
 
 // trigger_piercing_shots
@@ -829,10 +804,10 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
   if ( ! p -> talents.thrill_of_the_hunt )
     return;
 
-  if ( ! p -> rng_thrill_of_the_hunt -> roll( p -> talents.thrill_of_the_hunt / 3.0 ) )
-    return;
-
-  p -> resource_gain( RESOURCE_MANA, a -> resource_consumed * 0.40, p -> gains_thrill_of_the_hunt );
+  double gain = util_t::talent_rank(  p -> talents.thrill_of_the_hunt, 3, 0.10, 0.20, 0.40 );
+  gain *= a -> resource_consumed;
+  
+  p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
 }
 
 // trigger_wild_quiver ===============================================
@@ -979,7 +954,7 @@ struct hunter_pet_attack_t : public attack_t
       if ( result == RESULT_CRIT )
       {
         p -> buffs_frenzy -> trigger();
-        if ( special ) trigger_invigoration( this );
+        trigger_invigoration( this );
         p -> buffs_wolverine_bite -> trigger();
       }
     }
@@ -1306,13 +1281,7 @@ struct hunter_pet_spell_t : public spell_t
   {
     spell_t::execute();
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    if ( result_is_hit() )
-    {
-      if ( result == RESULT_CRIT )
-      {
-        trigger_invigoration( this );
-      }
-    }
+
     hunter_t* o = p -> owner -> cast_hunter();
     o -> buffs_cobra_strikes -> decrement();
     p -> buffs_kill_command -> decrement();
@@ -1592,7 +1561,6 @@ void hunter_attack_t::execute()
   hunter_t* p = player -> cast_hunter();
   if ( result_is_hit() )
   {
-    trigger_aspect_of_the_viper( this );
     p -> buffs_master_tactician -> trigger( 1, p -> talents.master_tactician * 0.02 );
     if ( p -> active_pet )
       p -> active_pet -> buffs_tier9_4pc -> trigger();
@@ -1601,7 +1569,6 @@ void hunter_attack_t::execute()
     {
       p -> buffs_expose_weakness -> trigger();
       trigger_go_for_the_throat( this );
-      trigger_thrill_of_the_hunt( this );
     }
   }
 }
@@ -1620,8 +1587,6 @@ double hunter_attack_t::execute_time() SC_CONST
   t *= 1.0 / p -> quiver_haste;
 
   t *= 1.0 / ( 1.0 + 0.04 * p -> talents.serpents_swiftness );
-
-  t *= 1.0 / ( 1.0 + p -> buffs_improved_aspect_of_the_hawk -> value() );
 
   return t;
 }
@@ -1643,8 +1608,6 @@ void hunter_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.marked_for_death * 0.01;
     }
   }
-
-  player_multiplier *=  1.0 + p -> buffs_aspect_of_the_viper -> value();
 
   if ( p -> talents.beast_within > 0 )
   {
@@ -1697,8 +1660,6 @@ struct ranged_t : public hunter_attack_t
     add_ammunition();
     add_scope();
 
-    iaoth_bonus = 0.03 * p -> talents.improved_aspect_of_the_hawk;
-    if ( p -> glyphs.the_hawk ) iaoth_bonus += 0.06;
   }
 
   virtual double execute_time() SC_CONST
@@ -1715,8 +1676,6 @@ struct ranged_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
       trigger_wild_quiver( this );
-      if ( p -> active_aspect == ASPECT_HAWK )
-        p -> buffs_improved_aspect_of_the_hawk -> trigger( 1, iaoth_bonus );
 
       p -> buffs_tier10_2pc -> trigger();
     }
@@ -1925,12 +1884,13 @@ struct arcane_shot_t : public hunter_attack_t
     {
       if ( p -> glyphs.arcane_shot && p -> active_sting() )
       {
-	p -> resource_gain( RESOURCE_MANA, 0.20 * resource_consumed, p -> gains_glyph_of_arcane_shot );
+        p -> resource_gain( RESOURCE_MANA, 0.20 * resource_consumed, p -> gains_glyph_of_arcane_shot );
       }
       if ( result == RESULT_CRIT )
       {
-	p -> buffs_cobra_strikes -> trigger( 2 );
-	trigger_hunting_party( this );
+        p -> buffs_cobra_strikes -> trigger( 2 );
+        trigger_hunting_party( this );
+        trigger_thrill_of_the_hunt( this );
       }
     }
     p -> buffs_lock_and_load -> decrement();
@@ -2690,26 +2650,18 @@ double hunter_spell_t::gcd() SC_CONST
 
 struct aspect_t : public hunter_spell_t
 {
-  int    beast_during_bw;
   int    hawk_always;
-  int    viper_start;
-  int    viper_stop;
   double hawk_bonus;
-  double viper_multiplier;
 
   aspect_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ),
-      beast_during_bw( 0 ), hawk_always( 0 ), viper_start( 5 ), viper_stop( 25 ),
-      hawk_bonus( 0 ), viper_multiplier( 0 )
+      hawk_always( 0 ), hawk_bonus( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
     {
-      { "beast_during_bw", OPT_BOOL, &beast_during_bw },
       { "hawk_always",     OPT_BOOL, &hawk_always },
-      { "viper_start",     OPT_INT,  &viper_start },
-      { "viper_stop",      OPT_INT,  &viper_stop  },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2719,13 +2671,7 @@ struct aspect_t : public hunter_spell_t
     trigger_gcd      = 0.0;
     harmful          = false;
     hawk_bonus       = util_t::ability_rank( p -> level, 300,80, 230,74, 155,68,  120,0 );
-    viper_multiplier = -0.50;
 
-    if ( p -> talents.aspect_mastery )
-    {
-      hawk_bonus       *= 1.30;
-      viper_multiplier += 0.10;
-    }
   }
 
   int choose_aspect()
@@ -2734,21 +2680,6 @@ struct aspect_t : public hunter_spell_t
 
     if ( hawk_always ) return ASPECT_HAWK;
 
-    double mana_pct = p -> resource_current[ RESOURCE_MANA ] * 100.0 / p -> resource_max[ RESOURCE_MANA ];
-
-    if ( p -> active_aspect != ASPECT_VIPER && mana_pct < viper_start )
-    {
-      return ASPECT_VIPER;
-    }
-    if ( p -> active_aspect == ASPECT_VIPER && mana_pct <= viper_stop )
-    {
-      return ASPECT_VIPER;
-    }
-    if ( beast_during_bw && p -> active_pet )
-    {
-      hunter_pet_t* pet = ( hunter_pet_t* ) p -> active_pet -> cast_pet();
-      if ( pet -> buffs_bestial_wrath -> check() ) return ASPECT_BEAST;
-    }
     return ASPECT_HAWK;
   }
 
@@ -2764,28 +2695,12 @@ struct aspect_t : public hunter_spell_t
       {
         if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Hawk", p -> name() );
         p -> active_aspect = ASPECT_HAWK;
-        p -> buffs_aspect_of_the_viper -> expire();
         p -> buffs_aspect_of_the_hawk -> trigger( 1, hawk_bonus );
-      }
-      else if ( aspect == ASPECT_VIPER )
-      {
-        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Viper", p -> name() );
-        p -> active_aspect = ASPECT_VIPER;
-        p -> buffs_aspect_of_the_hawk -> expire();
-        p -> buffs_aspect_of_the_viper -> trigger(1, viper_multiplier );
-      }
-      else if ( aspect == ASPECT_BEAST )
-      {
-        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Beast", p -> name() );
-        p -> active_aspect = ASPECT_BEAST;
-        p -> buffs_aspect_of_the_hawk -> expire();
-        p -> buffs_aspect_of_the_viper -> expire();
       }
       else
       {
         p -> active_aspect = ASPECT_NONE;
         p -> buffs_aspect_of_the_hawk -> expire();
-        p -> buffs_aspect_of_the_viper -> expire();
       }
     }
   }
@@ -2960,10 +2875,6 @@ struct rapid_fire_t : public hunter_spell_t
 
     if ( p -> buffs_rapid_fire -> check() )
       return false;
-
-    if ( viper )
-      if ( p -> active_aspect != ASPECT_VIPER )
-        return false;
 
     return hunter_spell_t::ready();
   }
@@ -3290,12 +3201,10 @@ void hunter_t::init_glyphs()
 
     if      ( n == "aimed_shot"                  ) glyphs.aimed_shot = 1;
     else if ( n == "arcane_shot"                 ) glyphs.arcane_shot = 1;
-    else if ( n == "aspect_of_the_viper"         ) glyphs.aspect_of_the_viper = 1;
     else if ( n == "bestial_wrath"               ) glyphs.bestial_wrath = 1;
     else if ( n == "chimera_shot"                ) glyphs.chimera_shot = 1;
     else if ( n == "explosive_shot"              ) glyphs.explosive_shot = 1;
     else if ( n == "hunters_mark"                ) glyphs.hunters_mark = 1;
-    else if ( n == "improved_aspect_of_the_hawk" ) glyphs.the_hawk = 1;
     else if ( n == "kill_shot"                   ) glyphs.kill_shot = 1;
     else if ( n == "multi_shot"                  ) glyphs.multi_shot = 1;
     else if ( n == "rapid_fire"                  ) glyphs.rapid_fire = 1;
@@ -3378,14 +3287,12 @@ void hunter_t::init_buffs()
   player_t::init_buffs();
 
   buffs_aspect_of_the_hawk          = new buff_t( this, "aspect_of_the_hawk",          1,  0.0 );
-  buffs_aspect_of_the_viper         = new buff_t( this, "aspect_of_the_viper",         1,  0.0 );
   buffs_beast_within                = new buff_t( this, "beast_within",                1, 10.0,  0.0, talents.beast_within );
   buffs_call_of_the_wild            = new buff_t( this, "call_of_the_wild",            1, 10.0 );
   buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               3, 10.0,  0.0, talents.cobra_strikes * 0.20 );
   buffs_culling_the_herd            = new buff_t( this, "culling_the_herd",            1, 10.0 );
   buffs_expose_weakness             = new buff_t( this, "expose_weakness",             1,  7.0,  0.0, talents.expose_weakness / 3.0 );
   buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
-  buffs_improved_aspect_of_the_hawk = new buff_t( this, "improved_aspect_of_the_hawk", 1, 10.0,  0.0, ( talents.improved_aspect_of_the_hawk ? 0.10 : 0.0 ) );
   buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1, 10.0,  0.0, talents.improved_steady_shot * 0.05 );
 //  buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * 0.02 );
   buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * (0.20/3.0) ); // EJ thread suggests the proc is rate is around 20%
@@ -3414,8 +3321,6 @@ void hunter_t::init_gains()
   gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
   gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
   gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
-  gains_viper_aspect_passive = get_gain( "viper_aspect_passive" );
-  gains_viper_aspect_shot    = get_gain( "viper_aspect_shot" );
 }
 
 // hunter_t::init_procs ======================================================
@@ -3744,10 +3649,6 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
 {
   double mult = player_t::composite_attack_power_multiplier();
 
-  if ( active_aspect == ASPECT_BEAST )
-  {
-    mult *= 1.10 + glyphs.the_beast * 0.02;
-  }
   if ( buffs_tier10_4pc -> up() )
   {
     mult *= 1.20;
@@ -3789,12 +3690,6 @@ void hunter_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs_aspect_of_the_viper -> check() )
-  {
-    double aspect_of_the_viper_regen = periodicity * 0.04 * resource_max[ RESOURCE_MANA ] / 3.0;
-
-    resource_gain( RESOURCE_MANA, aspect_of_the_viper_regen, gains_viper_aspect_passive );
-  }
   if ( buffs_rapid_fire -> check() && talents.rapid_recuperation )
   {
     double rr_regen = periodicity * 0.02 * talents.rapid_recuperation * resource_max[ RESOURCE_MANA ] / 3.0;
@@ -3824,14 +3719,14 @@ std::vector<talent_translation_t>& hunter_t::get_talent_list()
   {
 	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
 	  {
-    { {  1, 5, &( talents.improved_aspect_of_the_hawk ) }, {  1, 0, NULL                                      }, {  1, 5, &( talents.improved_tracking        ) } },
+    { {  1, 0, NULL                                     }, {  1, 0, NULL                                      }, {  1, 5, &( talents.improved_tracking        ) } },
     { {  2, 5, &( talents.endurance_training          ) }, {  2, 3, &( talents.focused_aim                  ) }, {  2, 0, NULL                                  } },
     { {  3, 2, &( talents.focused_fire                ) }, {  3, 5, &( talents.lethal_shots                 ) }, {  3, 2, &( talents.savage_strikes           ) } },
     { {  4, 0, NULL                                     }, {  4, 3, &( talents.careful_aim                  ) }, {  4, 0, NULL                                  } },
     { {  5, 3, &( talents.thick_hide                  ) }, {  5, 3, &( talents.improved_hunters_mark        ) }, {  5, 0, NULL                                  } },
     { {  6, 0, NULL                                     }, {  6, 5, &( talents.mortal_shots                 ) }, {  6, 3, &( talents.trap_mastery             ) } },
     { {  7, 0, NULL                                     }, {  7, 2, &( talents.go_for_the_throat            ) }, {  7, 2, &( talents.survival_instincts       ) } },
-    { {  8, 1, &( talents.aspect_mastery              ) }, {  8, 3, &( talents.improved_arcane_shot         ) }, {  8, 5, &( talents.survivalist              ) } },
+    { {  8, 0, NULL                                     }, {  8, 3, &( talents.improved_arcane_shot         ) }, {  8, 5, &( talents.survivalist              ) } },
     { {  9, 5, &( talents.unleashed_fury              ) }, {  9, 1, &( talents.aimed_shot                   ) }, {  9, 1, &( talents.scatter_shot             ) } },
     { { 10, 0, NULL                                     }, { 10, 2, &( talents.rapid_killing                ) }, { 10, 0, NULL                                  } },
     { { 11, 5, &( talents.ferocity                    ) }, { 11, 3, &( talents.improved_stings              ) }, { 11, 2, &( talents.survival_tactics         ) } },
@@ -3874,7 +3769,6 @@ std::vector<option_t>& hunter_t::get_options()
       // @option_doc loc=player/hunter/talents title="Talents"
       { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
       { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
-      { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
       { "barrage",                           OPT_INT, &( talents.barrage                      ) },
       { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
       { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
@@ -3898,7 +3792,6 @@ std::vector<option_t>& hunter_t::get_options()
       { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
       { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
       { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
-      { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
       { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
       { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
       { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
