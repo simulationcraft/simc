@@ -174,7 +174,7 @@ struct warlock_t : public player_t
 
   int hasted_corruption;
 
-  warlock_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, WARLOCK, name, race_type )
+  warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
   {
     distance = 30;
 
@@ -3745,17 +3745,7 @@ void warlock_t::init_race()
 
 void warlock_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_HEALTH );
-  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_MANA );
-  base_spell_crit                  = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_SPELL_CRIT );
-  base_attack_crit                 = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_MELEE_CRIT );
-  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, WARLOCK, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  player_t::init_base();
 
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talents.demonic_embrace * 0.03
                                                   + ( ( talents.demonic_embrace ) ? 0.01 : 0 );
@@ -4231,9 +4221,9 @@ int warlock_t::decode_set( item_t& item )
 
 // player_t::create_warlock ================================================
 
-player_t* player_t::create_warlock( sim_t* sim, const std::string& name, int race_type )
+player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type r )
 {
-  return new warlock_t( sim, name, race_type );
+  return new warlock_t( sim, name, r );
 }
 
 // player_t::warlock_init ===================================================

@@ -23,6 +23,7 @@ static const char* player_type_string( player_t* p )
   case SHAMAN:          return "Shaman";
   case WARLOCK:         return "Warlock";
   case WARRIOR:         return "Warrior";
+  default: break;
   }
   assert(0);
   return 0;

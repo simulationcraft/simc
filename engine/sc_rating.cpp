@@ -354,31 +354,27 @@ static const _stat_list_t warrior_stats[] =
 
 // rating_t::init ============================================================
 
-void rating_t::init( sim_t* sim, int level, int type )
+void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
 {
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%.f type=%.f",
 									 level, type );
 
-  sc_data_access_t ac;
-
-  spell_haste       = ac.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
-  spell_hit         = ac.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
-  spell_crit        = ac.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
-  attack_haste      = ac.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
-  attack_hit        = ac.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
-  attack_crit       = ac.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
-  ranged_haste      = ac.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
-  ranged_hit        = ac.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
-  ranged_crit       = ac.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
-  expertise         = ac.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
+  spell_haste       = pData.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
+  spell_hit         = pData.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
+  spell_crit        = pData.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
+  attack_haste      = pData.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
+  attack_hit        = pData.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
+  attack_crit       = pData.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
+  ranged_haste      = pData.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
+  ranged_hit        = pData.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
+  ranged_crit       = pData.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
+  expertise         = pData.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
   armor_penetration = 1; // no data
   defense           = 1; // no data
-  dodge             = ac.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
-  parry             = ac.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
-  block             = ac.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
-  mastery 			= ac.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
-
-
+  dodge             = pData.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
+  parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
+  block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
+  mastery           = pData.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
 }
 
 // rating_t::interpolate ======================================================
@@ -430,91 +426,29 @@ double rating_t::interpolate( int    level,
 
 // rating_t::get_attribute_base ================================================
 
-double rating_t::get_attribute_base( sim_t* sim, int level, int class_type, int race, int stat_type )
+double rating_t::get_attribute_base( sim_t* sim, sc_data_access_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type )
 {
-  double race_value             = 0.0;
-  double class_value            = 0.0;
-  double r                      = 0.0;
-  const _stat_list_t* stat_list = 0;
-
-  if ( level < 60 || level > 85 )
-  {
-    return 0.0;
-  }
-
-  if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
-  {
-    return 0.0;
-  }
-
-  switch ( class_type )
-  {
-  case DEATH_KNIGHT: stat_list = death_knight_stats; break;
-  case DRUID:        stat_list = druid_stats;        break;
-  case HUNTER:       stat_list = hunter_stats;       break;
-  case MAGE:         stat_list = mage_stats;         break;
-  case PALADIN:      stat_list = paladin_stats;      break;
-  case PRIEST:       stat_list = priest_stats;       break;
-  case ROGUE:        stat_list = rogue_stats;        break;
-  case SHAMAN:       stat_list = shaman_stats;       break;
-  case WARLOCK:      stat_list = warlock_stats;      break;
-  case WARRIOR:      stat_list = warrior_stats;      break;
-  default: assert(0);
-  };
-  
-
-  int i;
-
-  if ( ( stat_type >= BASE_STAT_STRENGTH ) && ( stat_type <= BASE_STAT_SPIRIT ) )
-  {
-    for ( i = 0; race_stats[ i ].id != 0; i++ )
-    {
-      if ( race == race_stats[ i ].id )
-      {
-        race_value = race_stats[ i ].stats[ stat_type ];
-        break;
-      }
-    }
-  }
-
-  for ( i = 0; stat_list[ i ].id != 0; i++ )
-  {
-    if ( level == stat_list[ i ].id )
-    {
-      class_value = stat_list[ i ].stats[ stat_type ];
-      break;
-    }
-  }
-
-  if ( ( stat_type == BASE_STAT_INTELLECT ) && ( race == RACE_GNOME ) )
-  {
-    class_value = floor( class_value * 1.05 );
-  }
-  else if ( race == RACE_TAUREN )
-  {
-    if ( stat_type == BASE_STAT_HEALTH )
-    {
-      class_value = floor( class_value * 1.05 );
-    }
-  }
-
-  r = race_value + class_value;
-
-  if ( ( stat_type == BASE_STAT_SPIRIT ) && ( race == RACE_HUMAN ) )
-  {
-    r = floor( r * 1.03 );
-  }
+  double res                       = 0.0;
 
   switch ( stat_type )
   {
-  case BASE_STAT_MELEE_CRIT_PER_AGI:
-  case BASE_STAT_SPELL_CRIT_PER_INT:
-  case BASE_STAT_DODGE_PER_AGI:
-  case BASE_STAT_MELEE_CRIT:
-  case BASE_STAT_SPELL_CRIT:
-    r /= 100.0;
-    break;
+  case BASE_STAT_STRENGTH:           res = pData.race_stats( race, STAT_STRENGTH ) + pData.class_stats( class_type, level, STAT_STRENGTH ); break;
+  case BASE_STAT_AGILITY:            res = pData.race_stats( race, STAT_AGILITY ) + pData.class_stats( class_type, level, STAT_AGILITY ); break;
+  case BASE_STAT_STAMINA:            res = pData.race_stats( race, STAT_STAMINA ) + pData.class_stats( class_type, level, STAT_STAMINA ); break;
+  case BASE_STAT_INTELLECT:          res = pData.race_stats( race, STAT_INTELLECT ) + pData.class_stats( class_type, level, STAT_INTELLECT ); break;
+  case BASE_STAT_SPIRIT:             res = pData.race_stats( race, STAT_SPIRIT ) + pData.class_stats( class_type, level, STAT_SPIRIT ); 
+                                     if ( race == RACE_HUMAN ) res *= 1.03; break;
+  case BASE_STAT_HEALTH:             res = pData.class_stats( class_type, level, STAT_HEALTH ); break;
+  case BASE_STAT_MANA:               res = pData.class_stats( class_type, level, STAT_MANA ); break;
+  case BASE_STAT_MELEE_CRIT_PER_AGI: res = pData.melee_crit_scale( class_type, level ); break;
+  case BASE_STAT_SPELL_CRIT_PER_INT: res = pData.spell_crit_scale( class_type, level ); break;
+  case BASE_STAT_DODGE_PER_AGI:      res = pData.dodge_scale( class_type, level ); break;
+  case BASE_STAT_MELEE_CRIT:         res = pData.melee_crit_base( class_type ); break;
+  case BASE_STAT_SPELL_CRIT:         res = pData.spell_crit_base( class_type ); break;
+  case BASE_STAT_MP5:                res = pData.base_mp5( class_type, level ); break;
+  case BASE_STAT_SPI_REGEN:          res = pData.spi_regen( class_type, level ); break;
+  default: break;
   }
 
-  return r;
+  return res;
 }

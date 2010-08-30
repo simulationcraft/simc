@@ -1172,7 +1172,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   case RACE_BLOOD_ELF:
   case RACE_GOBLIN:
   case RACE_TAUREN: s += "&amp;F=H"; break;
-
+  default: break;
   }
 
   for ( int i=0; i < STAT_MAX; i++ )

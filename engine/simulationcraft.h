@@ -246,7 +246,7 @@ enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA
                       BASE_STAT_HEALTH, BASE_STAT_MANA,
                       BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                       BASE_STAT_DODGE_PER_AGI,
-                      BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MAX };
+                      BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX };
 
 enum resource_type
 {
@@ -972,6 +972,359 @@ enum spell_attribute_t {
  SPELL_ATTR_EX9_UNK31, // 31
 };
 
+// Data access ================================================================
+
+template <typename T>
+class sc_array_t
+{
+public:
+  sc_array_t();
+  sc_array_t( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
+  ~sc_array_t();
+  sc_array_t( const T& copy );
+
+  bool create( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
+  bool create_copy( const T* p, const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
+  bool copy_array( const sc_array_t& copy );
+
+  uint32_t depth;
+  uint32_t rows;
+  uint32_t cols;
+
+  T& ref( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
+  T* ptr( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 ) SC_CONST;
+
+  void fill( T val );
+
+private:
+  T m_def;
+  T *m_data;
+  uint32_t m_dim;
+  uint32_t m_size;
+};
+
+template <typename T> sc_array_t<T>::sc_array_t()
+{
+  m_data = NULL;
+  depth = 0;
+  rows = 0;
+  cols = 0;
+  m_size = 0;
+  m_dim = 0;
+}
+
+template <typename T> sc_array_t<T>::sc_array_t( const uint32_t i, const uint32_t j, const uint32_t k )
+{
+  m_data = NULL;
+  depth = 0;
+  rows = 0;
+  cols = 0;
+  m_size = 0;
+  m_dim = 0;
+
+  create( i, j, k );
+}
+
+template <typename T> sc_array_t<T>::~sc_array_t()
+{
+  if ( m_data )
+    delete [] m_data;
+}
+
+template <typename T> sc_array_t<T>::sc_array_t( const T& copy )
+{
+  m_data = NULL;
+
+  copy_array( copy );
+}
+
+template <typename T> bool sc_array_t<T>::copy_array( const sc_array_t& copy )
+{
+  if ( m_data )
+  {
+    delete [] m_data;
+    m_data = NULL;
+  }
+  
+  if ( create( copy.cols, copy.rows, copy.depth ) )
+  {    
+    for ( uint32_t i = 0; i < m_size; i++ )
+    {
+      m_data[ i ] = copy.m_data[ i ];
+    }
+    return true;
+  }  
+  return false;
+}
+
+template <typename T> bool sc_array_t<T>::create( const uint32_t i, const uint32_t j, const uint32_t k )
+{
+  if ( m_data )
+  {
+    delete [] m_data;
+    m_data = NULL;
+    depth = 0;
+    rows = 0;
+    cols = 0;
+    m_size = 0;
+    m_dim = 0;
+  }
+  if ( i )
+  {
+    depth = k;
+    rows = j;
+    cols = i;
+
+    if ( j )
+    {
+      if ( k )
+      {
+        m_size = k * j * i;
+        m_dim = 3;
+      }
+      else
+      {
+        m_size = j * i;
+        m_dim = 2;
+      }
+    }
+    else
+    {
+      m_size = i;
+      m_dim = 1;
+    }
+    m_data = new T[ m_size ];
+
+    return true;
+  }
+
+  return false;
+}
+
+template <typename T> bool sc_array_t<T>::create_copy( const T* p, const uint32_t i, const uint32_t j, const uint32_t k )
+{
+  assert( p );
+
+  if ( !create( i, j, k ) )
+    return false;
+
+  for ( uint32_t i = 0; i < m_size; i++, p++ )
+  {
+    m_data[ i ] = *p;
+  }
+
+  return true;
+}
+
+template <typename T> inline T& sc_array_t<T>::ref( const uint32_t i, const uint32_t j, const uint32_t k )
+{
+  assert( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) );
+
+  if ( m_dim == 1 )
+    return m_data[ i ];
+  else if ( m_dim == 2 )
+    return m_data[ j * cols + i ];
+  else
+    return m_data[ ( k * rows + j ) * cols + i ];
+}
+
+template <typename T> inline T* sc_array_t<T>::ptr( const uint32_t i, const uint32_t j, const uint32_t k ) SC_CONST
+{
+  assert( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) );
+
+  if ( m_dim == 1 )
+    return m_data + i;
+  else if ( m_dim == 2 )
+    return m_data + j * cols + i;
+  else
+    return m_data + ( k * rows + j ) * cols + i;
+}
+
+template <typename T> inline void sc_array_t<T>::fill( const T val )
+{
+  assert( m_data );
+
+  for ( uint32_t i = 0; i < m_size; i++ )
+  {
+    m_data[ i ] = val;
+  }
+}
+
+// DBC access classes ========================================================
+
+class sc_data_t
+{
+public:
+  sc_data_t( sc_data_t* p = NULL );
+  sc_data_t( const sc_data_t& copy );
+
+  void set_parent( sc_data_t* p );
+  void reset( );
+
+  sc_array_t<spell_data_t>        m_spells;
+  sc_array_t<spelleffect_data_t>  m_effects;
+  sc_array_t<talent_data_t>       m_talents;
+  sc_array_t<double>              m_melee_crit_base;
+  sc_array_t<double>              m_spell_crit_base;
+  sc_array_t<double>              m_spell_scaling;
+  sc_array_t<double>              m_melee_crit_scale;
+  sc_array_t<double>              m_spell_crit_scale;
+  sc_array_t<double>              m_regen_spi;
+  sc_array_t<double>              m_octregen;
+  sc_array_t<double>              m_combat_ratings;
+  sc_array_t<double>              m_class_combat_rating_scalar;
+  sc_array_t<double>              m_dodge_base;
+  sc_array_t<double>              m_dodge_scale;
+  sc_array_t<double>              m_base_mp5;
+  sc_array_t<stat_data_t>         m_class_stats;
+  sc_array_t<stat_data_t>         m_race_stats;
+
+  spell_data_t**                  m_spells_index;
+  spelleffect_data_t**            m_effects_index;
+  talent_data_t**                 m_talents_index;
+  uint32_t                        m_spells_index_size;
+  uint32_t                        m_effects_index_size;
+  uint32_t                        m_talents_index_size;
+
+  sc_array_t<uint32_t>            m_talent_trees;
+  sc_array_t<uint32_t>            m_pet_talent_trees;
+
+  void                            create_index();
+private:
+  void                            m_copy( const sc_data_t& copy );
+  const sc_data_t*                m_parent;
+
+  void                            create_spell_index();
+  void                            create_effects_index();
+  void                            create_talents_index();
+
+  
+  void                            sort_talents( uint32_t* p, const uint32_t num );
+  int                             talent_compare( const void *vid1, const void *vid2 );
+};
+
+class sc_data_access_t : public sc_data_t
+{
+public:
+  sc_data_access_t( sc_data_t* p = NULL );
+  sc_data_access_t( const sc_data_t& copy );
+  virtual ~sc_data_access_t() { };
+
+  // Spell methods
+  virtual bool          spell_exists( const uint32_t spell_id ) SC_CONST;
+  virtual const char*   spell_name_str( const uint32_t spell_id ) SC_CONST;
+  virtual bool          spell_is_used( const uint32_t spell_id ) SC_CONST;
+  virtual void          spell_set_used( const uint32_t spell_id, const bool value );
+  virtual bool          spell_is_enabled( const uint32_t spell_id ) SC_CONST;
+  virtual void          spell_set_enabled( const uint32_t spell_id, const bool value );
+
+  virtual double        spell_missile_speed( const uint32_t spell_id ) SC_CONST;
+  virtual uint32_t      spell_school_mask( const uint32_t spell_id ) SC_CONST;
+  virtual resource_type spell_power_type( const uint32_t spell_id ) SC_CONST;
+  virtual bool          spell_is_class( const uint32_t spell_id, const player_type c ) SC_CONST;
+  virtual bool          spell_is_race( const uint32_t spell_id, const race_type r ) SC_CONST;
+  virtual bool          spell_is_level( const uint32_t spell_id, const uint32_t level ) SC_CONST;
+  virtual double        spell_min_range( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_max_range( const uint32_t spell_id ) SC_CONST;
+  virtual bool          spell_in_range( const uint32_t spell_id, const double range ) SC_CONST;
+  virtual double        spell_cooldown( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_gcd( const uint32_t spell_id ) SC_CONST;
+  virtual uint32_t      spell_category( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_duration( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_cost( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_rune_cost( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_runic_power_gain( const uint32_t spell_id ) SC_CONST;
+  virtual uint32_t      spell_max_stacks( const uint32_t spell_id ) SC_CONST;
+  virtual uint32_t      spell_initial_stacks( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_proc_chance( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_cast_time( const uint32_t spell_id, const uint32_t level ) SC_CONST;
+  virtual uint32_t      spell_effect_id( const uint32_t spell_id, const uint32_t effect_num ) SC_CONST;
+  virtual bool          spell_flags( const uint32_t spell_id, const spell_attribute_t f ) SC_CONST;
+
+  // Effect methods
+  virtual bool          effect_exists( const uint32_t effect_id ) SC_CONST;
+
+  virtual bool          effect_is_used( const uint32_t effect_id ) SC_CONST;
+  virtual void          effect_set_used( const uint32_t effect_id, const bool value );
+  virtual bool          effect_is_enabled( const uint32_t effect_id ) SC_CONST;
+  virtual void          effect_set_enabled( const uint32_t effect_id, const bool value );
+
+  virtual uint32_t      effect_spell_id( const uint32_t effect_id ) SC_CONST;
+  virtual uint32_t      effect_spell_effect_num( const uint32_t effect_id ) SC_CONST;
+  virtual uint32_t      effect_type( const uint32_t effect_id ) SC_CONST;
+  virtual uint32_t      effect_subtype( const uint32_t effect_id ) SC_CONST;
+  virtual int32_t       effect_base_value( const uint32_t effect_id ) SC_CONST;
+  virtual int32_t       effect_misc_value1( const uint32_t effect_id ) SC_CONST;
+  virtual int32_t       effect_misc_value2( const uint32_t effect_id ) SC_CONST;
+  virtual uint32_t      effect_trigger_spell_id( const uint32_t effect_id ) SC_CONST;
+
+  virtual double        effect_m_average( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_m_delta( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_m_unk( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_coeff( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_period( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_radius( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_radius_max( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_pp_combo_points( const uint32_t effect_id ) SC_CONST;
+
+  virtual double        effect_average( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        effect_delta( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        effect_unk( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
+
+  virtual double        effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
+  virtual double        effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
+
+
+// Talent methods
+  virtual bool          talent_exists( const uint32_t talent_id ) SC_CONST;
+  virtual const char*   talent_name_str( const uint32_t talent_id ) SC_CONST;
+  virtual bool          talent_is_used( const uint32_t talent_id ) SC_CONST;
+  virtual void          talent_set_used( const uint32_t talent_id, const bool value );
+  virtual bool          talent_is_enabled( const uint32_t talent_id ) SC_CONST;
+  virtual void          talent_set_enabled( const uint32_t talent_id, const bool value );
+  virtual uint32_t      talent_tab_page( const uint32_t talent_id );
+  virtual bool          talent_is_class( const uint32_t talent_id, const player_type c ) SC_CONST;
+  virtual bool          talent_is_pet( const uint32_t talent_id, const pet_type_t p ) SC_CONST;
+  virtual uint32_t      talent_depends_id( const uint32_t talent_id ) SC_CONST;
+  virtual uint32_t      talent_depends_rank( const uint32_t talent_id ) SC_CONST;
+  virtual uint32_t      talent_col( const uint32_t talent_id ) SC_CONST;
+  virtual uint32_t      talent_row( const uint32_t talent_id ) SC_CONST;
+  virtual uint32_t      talent_rank_spell_id( const uint32_t talent_id, const uint32_t rank ) SC_CONST;
+
+  virtual uint32_t      talent_max_rank( const uint32_t talent_id ) SC_CONST;
+
+  virtual uint32_t      talent_player_get_id_by_num( const player_type c, const uint32_t tab, const uint32_t num ) SC_CONST;
+  virtual uint32_t      talent_pet_get_id_by_num( const pet_type_t p, const uint32_t num ) SC_CONST;
+
+// Scaling methods
+  virtual double        melee_crit_base( const player_type c ) SC_CONST;
+  virtual double        melee_crit_base( const pet_type_t c ) SC_CONST;
+  virtual double        spell_crit_base( const player_type c ) SC_CONST;
+  virtual double        spell_crit_base( const pet_type_t c ) SC_CONST;
+  virtual double        melee_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        melee_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        spell_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        spell_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        spi_regen( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        spi_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        oct_regen( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        oct_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        combat_ratings( const player_type c, const rating_type r, const uint32_t level ) SC_CONST;
+  virtual double        combat_ratings( const pet_type_t c, const rating_type r, const uint32_t level ) SC_CONST;
+  virtual double        dodge_base( const player_type c ) SC_CONST;
+  virtual double        dodge_base( const pet_type_t c ) SC_CONST;
+  virtual double        dodge_scale( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        dodge_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        base_mp5( const player_type c, const uint32_t level ) SC_CONST;
+  virtual double        base_mp5( const pet_type_t c, const uint32_t level ) SC_CONST;
+  virtual double        class_stats( const player_type c, const uint32_t level, const stat_type s ) SC_CONST;
+  virtual double        class_stats( const pet_type_t c, const uint32_t level, const stat_type s ) SC_CONST;
+  virtual double        race_stats( const race_type r, const stat_type s ) SC_CONST;
+  virtual double        race_stats( const pet_type_t r, const stat_type s ) SC_CONST;
+
+private:
+};
+
 
 // Options ====================================================================
 
@@ -1065,27 +1418,27 @@ struct util_t
   static const char* talent_tree_string        ( int tree );
   static const char* weapon_type_string        ( int type );
 
-  static int parse_attribute_type     ( const std::string& name );
-  static int parse_dmg_type           ( const std::string& name );
-  static int parse_elixir_type        ( const std::string& name );
-  static int parse_flask_type         ( const std::string& name );
-  static int parse_food_type          ( const std::string& name );
-  static int parse_gem_type           ( const std::string& name );
-  static int parse_meta_gem_type      ( const std::string& name );
-  static int parse_player_type        ( const std::string& name );
-  static int parse_profession_type    ( const std::string& name );
-  static int parse_race_type          ( const std::string& name );
-  static int parse_resource_type      ( const std::string& name );
-  static int parse_result_type        ( const std::string& name );
-  static int parse_school_type        ( const std::string& name );
-  static int parse_slot_type          ( const std::string& name );
-  static int parse_stat_type          ( const std::string& name );
-  static int parse_talent_tree        ( const std::string& name );
-  static int parse_weapon_type        ( const std::string& name );
+  static int parse_attribute_type              ( const std::string& name );
+  static int parse_dmg_type                    ( const std::string& name );
+  static int parse_elixir_type                 ( const std::string& name );
+  static int parse_flask_type                  ( const std::string& name );
+  static int parse_food_type                   ( const std::string& name );
+  static int parse_gem_type                    ( const std::string& name );
+  static int parse_meta_gem_type               ( const std::string& name );
+  static player_type parse_player_type         ( const std::string& name );
+  static int parse_profession_type             ( const std::string& name );
+  static race_type parse_race_type             ( const std::string& name );
+  static int parse_resource_type               ( const std::string& name );
+  static int parse_result_type                 ( const std::string& name );
+  static int parse_school_type                 ( const std::string& name );
+  static int parse_slot_type                   ( const std::string& name );
+  static int parse_stat_type                   ( const std::string& name );
+  static int parse_talent_tree                 ( const std::string& name );
+  static int parse_weapon_type                 ( const std::string& name );
 
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
-  static int translate_race_id( int rid );
+  static race_type translate_race_id( int rid );
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
@@ -1397,6 +1750,10 @@ struct sim_t
   int         normalized_stat;
   std::string current_name, default_region_str, default_server_str;
 
+  // Data access
+  static sc_data_access_t  base_data;
+  sc_data_access_t         sim_data;
+
   // Default stat enchants
   gear_stats_t enchant;
 
@@ -1672,9 +2029,9 @@ struct rating_t
   double defense, dodge, parry, block;
   double mastery;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
-  void init( sim_t*, int level, int type );
+  void init( sim_t*, sc_data_access_t& pData, int level, int type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
-  static double get_attribute_base( sim_t*, int level, int class_type, int race, int stat_type );
+  static double get_attribute_base( sim_t*, sc_data_access_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type );
 };
 
 // Weapon ====================================================================
@@ -1807,12 +2164,17 @@ struct player_t
   std::string name_str, talents_str, glyphs_str, id_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
-  int         index, type, level, use_pre_potion, tank, party, member;
+  int         index;
+  player_type type;
+  int         level, use_pre_potion, tank, party, member;
   double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;
+
+  // Data access
+  sc_data_access_t player_data;
 
   // Option Parsing
   std::vector<option_t> options;
@@ -1826,7 +2188,7 @@ struct player_t
 
   // Race
   std::string race_str;
-  int race;
+  race_type race;
 
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;
@@ -2072,7 +2434,7 @@ struct player_t
   rngs_t rngs;
 
 
-  player_t( sim_t* sim, int type, const std::string& name, int race_type = RACE_NONE );
+  player_t( sim_t* sim, player_type type, const std::string& name, race_type race_type = RACE_NONE );
 
   virtual ~player_t();
 
@@ -2212,18 +2574,18 @@ struct player_t
 
   // Class-Specific Methods
 
-  static player_t* create( sim_t* sim, const std::string& type, const std::string& name, int race_type = RACE_NONE );
+  static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_type r = RACE_NONE );
 
-  static player_t * create_death_knight( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_druid       ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_hunter      ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_mage        ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_paladin     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_priest      ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_rogue       ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_shaman      ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_warlock     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
-  static player_t * create_warrior     ( sim_t* sim, const std::string& name, int race_type = RACE_NONE );
+  static player_t * create_death_knight( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_druid       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_hunter      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_mage        ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_paladin     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_priest      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_rogue       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_shaman      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_warlock     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_warrior     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
 
   // Raid-wide aura/buff/debuff maintenance
   static bool init        ( sim_t* sim );
@@ -2556,7 +2918,7 @@ struct action_t
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
 
-  virtual void	 	parse_data();
+  virtual void	 	parse_data( sc_data_access_t& pData );
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
@@ -3165,361 +3527,6 @@ struct js_t
   static js_node_t* create( sim_t* sim, FILE* input );
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
 };
-
-// Multi-dimensional arrays ==================================
-
-template <typename T>
-class sc_array_t
-{
-public:
-  sc_array_t();
-  sc_array_t( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
-  ~sc_array_t();
-  sc_array_t( const T& copy );
-
-  bool create( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
-  bool create_copy( const T* p, const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
-  bool copy_array( const sc_array_t& copy );
-
-  uint32_t depth;
-  uint32_t rows;
-  uint32_t cols;
-
-  T& ref( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
-  T* ptr( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 ) SC_CONST;
-
-  void fill( T val );
-
-private:
-  T m_def;
-  T *m_data;
-  uint32_t m_dim;
-  uint32_t m_size;
-};
-
-template <typename T> sc_array_t<T>::sc_array_t()
-{
-  m_data = NULL;
-  depth = 0;
-  rows = 0;
-  cols = 0;
-  m_size = 0;
-  m_dim = 0;
-}
-
-template <typename T> sc_array_t<T>::sc_array_t( const uint32_t i, const uint32_t j, const uint32_t k )
-{
-  m_data = NULL;
-  depth = 0;
-  rows = 0;
-  cols = 0;
-  m_size = 0;
-  m_dim = 0;
-
-  create( i, j, k );
-}
-
-template <typename T> sc_array_t<T>::~sc_array_t()
-{
-  if ( m_data )
-    delete [] m_data;
-}
-
-template <typename T> sc_array_t<T>::sc_array_t( const T& copy )
-{
-  m_data = NULL;
-
-  copy_array( copy );
-}
-
-template <typename T> bool sc_array_t<T>::copy_array( const sc_array_t& copy )
-{
-  if ( m_data )
-  {
-    delete [] m_data;
-    m_data = NULL;
-  }
-  
-  if ( create( copy.cols, copy.rows, copy.depth ) )
-  {    
-    for ( uint32_t i = 0; i < m_size; i++ )
-    {
-      m_data[ i ] = copy.m_data[ i ];
-    }
-    return true;
-  }  
-  return false;
-}
-
-template <typename T> bool sc_array_t<T>::create( const uint32_t i, const uint32_t j, const uint32_t k )
-{
-  if ( m_data )
-  {
-    delete [] m_data;
-    m_data = NULL;
-    depth = 0;
-    rows = 0;
-    cols = 0;
-    m_size = 0;
-    m_dim = 0;
-  }
-  if ( i )
-  {
-    depth = k;
-    rows = j;
-    cols = i;
-
-    if ( j )
-    {
-      if ( k )
-      {
-        m_size = k * j * i;
-        m_dim = 3;
-      }
-      else
-      {
-        m_size = j * i;
-        m_dim = 2;
-      }
-    }
-    else
-    {
-      m_size = i;
-      m_dim = 1;
-    }
-    m_data = new T[ m_size ];
-
-    return true;
-  }
-
-  return false;
-}
-
-template <typename T> bool sc_array_t<T>::create_copy( const T* p, const uint32_t i, const uint32_t j, const uint32_t k )
-{
-  assert( p );
-
-  if ( !create( i, j, k ) )
-    return false;
-
-  for ( uint32_t i = 0; i < m_size; i++, p++ )
-  {
-    m_data[ i ] = *p;
-  }
-
-  return true;
-}
-
-template <typename T> inline T& sc_array_t<T>::ref( const uint32_t i, const uint32_t j, const uint32_t k )
-{
-  assert( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) );
-
-  if ( m_dim == 1 )
-    return m_data[ i ];
-  else if ( m_dim == 2 )
-    return m_data[ j * cols + i ];
-  else
-    return m_data[ ( k * rows + j ) * cols + i ];
-}
-
-template <typename T> inline T* sc_array_t<T>::ptr( const uint32_t i, const uint32_t j, const uint32_t k ) SC_CONST
-{
-  assert( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) );
-
-  if ( m_dim == 1 )
-    return m_data + i;
-  else if ( m_dim == 2 )
-    return m_data + j * cols + i;
-  else
-    return m_data + ( k * rows + j ) * cols + i;
-}
-
-template <typename T> inline void sc_array_t<T>::fill( const T val )
-{
-  assert( m_data );
-
-  for ( uint32_t i = 0; i < m_size; i++ )
-  {
-    m_data[ i ] = val;
-  }
-}
-
-// DBC access classes ========================================================
-
-class sc_data_t
-{
-public:
-  sc_data_t( sc_data_t* p = NULL );
-  sc_data_t( const sc_data_t& copy );
-
-  void set_parent( sc_data_t* p );
-  void reset( );
-
-  sc_array_t<spell_data_t>        m_spells;
-  sc_array_t<spelleffect_data_t>  m_effects;
-  sc_array_t<talent_data_t>       m_talents;
-  sc_array_t<double>              m_melee_crit_base;
-  sc_array_t<double>              m_spell_crit_base;
-  sc_array_t<double>              m_spell_scaling;
-  sc_array_t<double>              m_melee_crit_scale;
-  sc_array_t<double>              m_spell_crit_scale;
-  sc_array_t<double>              m_regen_spi;
-  sc_array_t<double>              m_octregen;
-  sc_array_t<double>              m_combat_ratings;
-  sc_array_t<double>              m_class_combat_rating_scalar;
-  sc_array_t<double>              m_dodge_base;
-  sc_array_t<double>              m_dodge_scale;
-  sc_array_t<double>              m_base_mp5;
-  sc_array_t<stat_data_t>         m_class_stats;
-  sc_array_t<stat_data_t>         m_race_stats;
-
-  spell_data_t**                  m_spells_index;
-  spelleffect_data_t**            m_effects_index;
-  talent_data_t**                 m_talents_index;
-  uint32_t                        m_spells_index_size;
-  uint32_t                        m_effects_index_size;
-  uint32_t                        m_talents_index_size;
-
-  sc_array_t<uint32_t>            m_talent_trees;
-  sc_array_t<uint32_t>            m_pet_talent_trees;
-
-  void                            create_index();
-private:
-  void                            m_copy( const sc_data_t& copy );
-  const sc_data_t*                m_parent;
-
-  void                            create_spell_index();
-  void                            create_effects_index();
-  void                            create_talents_index();
-
-  
-  void                            sort_talents( uint32_t* p, const uint32_t num );
-  int                             talent_compare( const void *vid1, const void *vid2 );
-};
-
-
-class sc_data_access_t : public sc_data_t
-{
-public:
-  sc_data_access_t( sc_data_t* p = NULL );
-  sc_data_access_t( const sc_data_t& copy );
-  virtual ~sc_data_access_t() { };
-
-  // Spell methods
-  virtual bool          spell_exists( const uint32_t spell_id ) SC_CONST;
-  virtual const char*   spell_name_str( const uint32_t spell_id ) SC_CONST;
-  virtual bool          spell_is_used( const uint32_t spell_id ) SC_CONST;
-  virtual void          spell_set_used( const uint32_t spell_id, const bool value );
-  virtual bool          spell_is_enabled( const uint32_t spell_id ) SC_CONST;
-  virtual void          spell_set_enabled( const uint32_t spell_id, const bool value );
-
-  virtual double        spell_missile_speed( const uint32_t spell_id ) SC_CONST;
-  virtual uint32_t      spell_school_mask( const uint32_t spell_id ) SC_CONST;
-  virtual resource_type spell_power_type( const uint32_t spell_id ) SC_CONST;
-  virtual bool          spell_is_class( const uint32_t spell_id, const player_type c ) SC_CONST;
-  virtual bool          spell_is_race( const uint32_t spell_id, const race_type r ) SC_CONST;
-  virtual bool          spell_is_level( const uint32_t spell_id, const uint32_t level ) SC_CONST;
-  virtual double        spell_min_range( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_max_range( const uint32_t spell_id ) SC_CONST;
-  virtual bool          spell_in_range( const uint32_t spell_id, const double range ) SC_CONST;
-  virtual double        spell_cooldown( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_gcd( const uint32_t spell_id ) SC_CONST;
-  virtual uint32_t      spell_category( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_duration( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_cost( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_rune_cost( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_runic_power_gain( const uint32_t spell_id ) SC_CONST;
-  virtual uint32_t      spell_max_stacks( const uint32_t spell_id ) SC_CONST;
-  virtual uint32_t      spell_initial_stacks( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_proc_chance( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_cast_time( const uint32_t spell_id, const uint32_t level ) SC_CONST;
-  virtual uint32_t      spell_effect_id( const uint32_t spell_id, const uint32_t effect_num ) SC_CONST;
-  virtual bool          spell_flags( const uint32_t spell_id, const spell_attribute_t f ) SC_CONST;
-
-  // Effect methods
-  virtual bool          effect_exists( const uint32_t effect_id ) SC_CONST;
-
-  virtual bool          effect_is_used( const uint32_t effect_id ) SC_CONST;
-  virtual void          effect_set_used( const uint32_t effect_id, const bool value );
-  virtual bool          effect_is_enabled( const uint32_t effect_id ) SC_CONST;
-  virtual void          effect_set_enabled( const uint32_t effect_id, const bool value );
-
-  virtual uint32_t      effect_spell_id( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_spell_effect_num( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_type( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_subtype( const uint32_t effect_id ) SC_CONST;
-  virtual int32_t       effect_base_value( const uint32_t effect_id ) SC_CONST;
-  virtual int32_t       effect_misc_value1( const uint32_t effect_id ) SC_CONST;
-  virtual int32_t       effect_misc_value2( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_trigger_spell_id( const uint32_t effect_id ) SC_CONST;
-
-  virtual double        effect_m_average( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_m_delta( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_m_unk( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_coeff( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_period( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_radius( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_radius_max( const uint32_t effect_id ) SC_CONST;
-  virtual double        effect_pp_combo_points( const uint32_t effect_id ) SC_CONST;
-
-  virtual double        effect_average( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        effect_delta( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        effect_unk( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
-
-  virtual double        effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
-  virtual double        effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
-
-
-// Talent methods
-  virtual bool          talent_exists( const uint32_t talent_id ) SC_CONST;
-  virtual const char*   talent_name_str( const uint32_t talent_id ) SC_CONST;
-  virtual bool          talent_is_used( const uint32_t talent_id ) SC_CONST;
-  virtual void          talent_set_used( const uint32_t talent_id, const bool value );
-  virtual bool          talent_is_enabled( const uint32_t talent_id ) SC_CONST;
-  virtual void          talent_set_enabled( const uint32_t talent_id, const bool value );
-  virtual uint32_t      talent_tab_page( const uint32_t talent_id );
-  virtual bool          talent_is_class( const uint32_t talent_id, const player_type c ) SC_CONST;
-  virtual bool          talent_is_pet( const uint32_t talent_id, const pet_type_t p ) SC_CONST;
-  virtual uint32_t      talent_depends_id( const uint32_t talent_id ) SC_CONST;
-  virtual uint32_t      talent_depends_rank( const uint32_t talent_id ) SC_CONST;
-  virtual uint32_t      talent_col( const uint32_t talent_id ) SC_CONST;
-  virtual uint32_t      talent_row( const uint32_t talent_id ) SC_CONST;
-  virtual uint32_t      talent_rank_spell_id( const uint32_t talent_id, const uint32_t rank ) SC_CONST;
-
-  virtual uint32_t      talent_max_rank( const uint32_t talent_id ) SC_CONST;
-
-  virtual uint32_t      talent_player_get_id_by_num( const player_type c, const uint32_t tab, const uint32_t num ) SC_CONST;
-  virtual uint32_t      talent_pet_get_id_by_num( const pet_type_t p, const uint32_t num ) SC_CONST;
-
-// Scaling methods
-  virtual double        melee_crit_base( const player_type c ) SC_CONST;
-  virtual double        melee_crit_base( const pet_type_t c ) SC_CONST;
-  virtual double        spell_crit_base( const player_type c ) SC_CONST;
-  virtual double        spell_crit_base( const pet_type_t c ) SC_CONST;
-  virtual double        melee_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        melee_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        spell_crit_scale( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        spell_crit_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        spi_regen( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        spi_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        oct_regen( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        oct_regen( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        combat_ratings( const player_type c, const rating_type r, const uint32_t level ) SC_CONST;
-  virtual double        combat_ratings( const pet_type_t c, const rating_type r, const uint32_t level ) SC_CONST;
-  virtual double        dodge_base( const player_type c ) SC_CONST;
-  virtual double        dodge_base( const pet_type_t c ) SC_CONST;
-  virtual double        dodge_scale( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        dodge_scale( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        base_mp5( const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        base_mp5( const pet_type_t c, const uint32_t level ) SC_CONST;
-  virtual double        class_stats( const player_type c, const uint32_t level, const stat_type s ) SC_CONST;
-  virtual double        class_stats( const pet_type_t c, const uint32_t level, const stat_type s ) SC_CONST;
-  virtual double        race_stats( const race_type r, const stat_type s ) SC_CONST;
-  virtual double        race_stats( const pet_type_t r, const stat_type s ) SC_CONST;
-
-private:
-};
-
 
 #endif // __SIMULATIONCRAFT_H
 

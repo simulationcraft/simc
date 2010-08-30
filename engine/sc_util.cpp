@@ -188,11 +188,11 @@ const char* util_t::race_type_string( int type )
 
 // util_t::parse_race_type =================================================
 
-int util_t::parse_race_type( const std::string& name )
+race_type util_t::parse_race_type( const std::string& name )
 {
-  for ( int i=0; i < RACE_MAX; i++ )
+  for ( int i=(int) RACE_NONE; i < (int)RACE_MAX; i++ )
     if ( str_compare_ci( name, util_t::race_type_string( i ) ) )
-      return i;
+      return (race_type) i;
 
   return RACE_NONE;
 }
@@ -255,11 +255,11 @@ const char* util_t::player_type_string( int type )
 
 // util_t::parse_player_type ===============================================
 
-int util_t::parse_player_type( const std::string& name )
+player_type util_t::parse_player_type( const std::string& name )
 {
-  for ( int i=0; i < PLAYER_MAX; i++ )
+  for ( int i=(int) PLAYER_NONE; i < (int) PLAYER_MAX; i++ )
     if ( str_compare_ci( name, util_t::player_type_string( i ) ) )
-      return i;
+      return (player_type) i;
 
   return PLAYER_NONE;
 }
@@ -895,7 +895,7 @@ int util_t::translate_class_id( int cid )
 
 // util_t::translate_race_id ===============================================
 
-int util_t::translate_race_id( int rid )
+race_type util_t::translate_race_id( int rid )
 {
   switch ( rid )
   {

@@ -121,6 +121,8 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       // Goblin Weapon Types
+      case WEAPON_GUN:
+      default: break;
       }
       // GOBLIN BONI
     }
@@ -129,6 +131,8 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       // Worgen Weapon Types
+      case WEAPON_GUN:
+      default: break;
       }
       // WORGEN BONI
     }

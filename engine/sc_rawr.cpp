@@ -354,6 +354,7 @@ static const char* translate_glyph_name( player_t* p,
     case 33: return "command";
     default: return 0;
     }
+  default: break;
   }
 
   return 0;
@@ -387,7 +388,7 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
-static int translate_rawr_race_str( const std::string& name )
+static race_type translate_rawr_race_str( const std::string& name )
 {
   if ( ! name.compare( "Human"    ) ) return RACE_HUMAN;
   if ( ! name.compare( "Orc"      ) ) return RACE_ORC;
@@ -471,9 +472,9 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   if ( class_str == "deathknight" ) class_str = "death_knight";
 
-  int race_type = translate_rawr_race_str( race_str );
+  race_type r = translate_rawr_race_str( race_str );
 
-  player_t* p = player_t::create( sim, class_str, name_str, race_type );
+  player_t* p = player_t::create( sim, class_str, name_str, r );
   sim -> active_player = p;
   if ( ! p )
   {

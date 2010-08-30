@@ -302,6 +302,7 @@ static void register_deathbringers_will( item_t* item )
       case ROGUE:        stats =   rogue_stats; break;
       case SHAMAN:       stats =  shaman_stats; break;
       case WARRIOR:      stats = warrior_stats; break;
+      default: break;
       }
 
       if ( ! stats ) return;

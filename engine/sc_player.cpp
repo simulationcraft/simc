@@ -245,16 +245,18 @@ static bool parse_talent_url( sim_t* sim,
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s,
-                    int                t,
+                    player_type        t,
                     const std::string& n,
-                    int                r ) :
+                    race_type          r ) :
     sim( s ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
     next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( -1 ), tank( -1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
+    pet_list( 0 ), last_modified( 0 ), 
+    player_data( &( s->sim_data ) ),
+    race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
@@ -559,6 +561,24 @@ void player_t::init()
   init_stats();
 }
 
+// player_t::init_base =====================================================
+
+void player_t::init_base()
+{
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  base_mp5                         = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MP5 );
+}
+
 // player_t::init_items =====================================================
 
 void player_t::init_items()
@@ -737,12 +757,7 @@ void player_t::init_spell()
 
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
-  double base_60 = 0.006600;
-  double base_70 = 0.005596;
-  double base_80 = 0.003345;
-  double base_85 = 0.000836; // nonsense value, divided base_80 by 4 to account for enormous intellect
-
-  mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80, base_85 );
+  mana_regen_base = player_data.spi_regen( type, level ); 
 }
 
 // player_t::init_attack ====================================================
@@ -975,7 +990,7 @@ void player_t::init_rating()
 {
 	 if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
 	                   level,type );
-  rating.init( sim, level, type );
+  rating.init( sim, player_data, level, type );
 }
 
 // player_t::init_buffs ====================================================
@@ -1865,10 +1880,6 @@ double player_t::stamina() SC_CONST
 double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
-  if ( race == RACE_GNOME )
-  {
-    a += floor( ( a - attribute_base[ ATTR_INTELLECT ] ) * 0.05 );
-  }
   a *= composite_attribute_multiplier( ATTR_INTELLECT );
   return floor( a );
 }
@@ -4289,47 +4300,47 @@ std::vector<option_t>& player_t::get_options()
 player_t* player_t::create( sim_t*             sim,
                             const std::string& type,
                             const std::string& name,
-                            int race_type )
+                            race_type r )
 {
   if ( type == "death_knight" )
   {
-    return player_t::create_death_knight( sim, name, race_type );
+    return player_t::create_death_knight( sim, name, r );
   }
   else if ( type == "druid" )
   {
-    return player_t::create_druid( sim, name, race_type );
+    return player_t::create_druid( sim, name, r );
   }
   else if ( type == "hunter" )
   {
-    return player_t::create_hunter( sim, name, race_type );
+    return player_t::create_hunter( sim, name, r );
   }
   else if ( type == "mage" )
   {
-    return player_t::create_mage( sim, name, race_type );
+    return player_t::create_mage( sim, name, r );
   }
   else if ( type == "priest" )
   {
-    return player_t::create_priest( sim, name, race_type );
+    return player_t::create_priest( sim, name, r );
   }
   else if ( type == "paladin" )
   {
-    return player_t::create_paladin( sim, name, race_type );
+    return player_t::create_paladin( sim, name, r );
   }
   else if ( type == "rogue" )
   {
-    return player_t::create_rogue( sim, name, race_type );
+    return player_t::create_rogue( sim, name, r );
   }
   else if ( type == "shaman" )
   {
-    return player_t::create_shaman( sim, name, race_type );
+    return player_t::create_shaman( sim, name, r );
   }
   else if ( type == "warlock" )
   {
-    return player_t::create_warlock( sim, name, race_type );
+    return player_t::create_warlock( sim, name, r );
   }
   else if ( type == "warrior" )
   {
-    return player_t::create_warrior( sim, name, race_type );
+    return player_t::create_warrior( sim, name, r );
   }
   else if ( type == "pet" )
   {

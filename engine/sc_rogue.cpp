@@ -217,7 +217,7 @@ struct rogue_t : public player_t
   };
   glyphs_t glyphs;
 
-  rogue_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, ROGUE, name, race_type )
+  rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
   {
     // Active
     active_anesthetic_poison = 0;
@@ -3208,17 +3208,7 @@ void rogue_t::init_race()
 
 void rogue_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_HEALTH );
-  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_MANA );
-  base_spell_crit                  = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_SPELL_CRIT );
-  base_attack_crit                 = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_MELEE_CRIT );
-  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, ROGUE, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  player_t::init_base();
 
   attribute_multiplier_initial[ ATTR_AGILITY ] *= 1.0 + talents.sinister_calling * 0.03;
 
@@ -3520,6 +3510,11 @@ void rogue_t::clear_debuffs()
 
 void rogue_t::regen( double periodicity )
 {
+  if ( buffs_blade_flurry -> up() )
+  {
+    periodicity *= 0.80;
+  }
+
   player_t::regen( periodicity );
 
   if ( buffs_adrenaline_rush -> up() )
@@ -3539,11 +3534,6 @@ void rogue_t::regen( double periodicity )
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_overkill );
     }
-  }
-
-  if ( buffs_blade_flurry -> up() )
-  {
-    double energy_regen = periodicity / 1.20;
   }
 
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
@@ -3711,9 +3701,9 @@ int rogue_t::decode_set( item_t& item )
 
 // player_t::create_rogue  ==================================================
 
-player_t* player_t::create_rogue( sim_t* sim, const std::string& name, int race_type )
+player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type r )
 {
-  return new rogue_t( sim, name, race_type );
+  return new rogue_t( sim, name, r );
 }
 
 // player_t::rogue_init =====================================================

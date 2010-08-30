@@ -677,9 +677,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
     sim -> errorf( "Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  int race_type = util_t::translate_race_id( atoi( rid_str.c_str() ) );
+  race_type r = util_t::translate_race_id( atoi( rid_str.c_str() ) );
 
-  player_t* p = player_t::create( sim, type_str, name_str, race_type );
+  player_t* p = player_t::create( sim, type_str, name_str, r );
   sim -> active_player = p;
   if ( ! p )
   {

@@ -325,8 +325,8 @@ struct death_knight_t : public player_t
   };
   runes_t _runes;
 
-  death_knight_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) :
-      player_t( sim, DEATH_KNIGHT, name, race_type )
+  death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
+      player_t( sim, DEATH_KNIGHT, name, r )
   {
     // Active
     active_presence            = 0;
@@ -4122,14 +4122,7 @@ void death_knight_t::init_rng()
 
 void death_knight_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_HEALTH );
-  base_attack_crit                 = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, DEATH_KNIGHT, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  player_t::init_base();
 
   double str_mult = ( talents.veteran_of_the_third_war * 0.02 +
                       talents.abominations_might       * 0.01 +
@@ -4152,7 +4145,6 @@ void death_knight_t::init_base()
 
   resource_base[ RESOURCE_RUNIC ]  = 100 + talents.runic_power_mastery * 15;
 
-  health_per_stamina = 10;
   base_gcd = 1.5;
 }
 
@@ -4189,6 +4181,7 @@ void death_knight_t::init_actions()
     case RACE_ORC:       action_list_str += "/blood_fury,time>=10";     break;
     case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
     case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
+    default: break;
     }
 
     switch ( primary_tree() )
@@ -4932,9 +4925,9 @@ int death_knight_t::decode_set( item_t& item )
 
 // player_t implementations ============================================
 
-player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, int race_type )
+player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type r )
 {
-  return new death_knight_t( sim, name, race_type );
+  return new death_knight_t( sim, name, r );
 }
 
 // player_t::death_knight_init ==============================================

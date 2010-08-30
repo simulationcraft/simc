@@ -7,6 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+
 // POSIX-only signal handler ================================================
 
 #if SIGACTION
@@ -367,6 +368,8 @@ static bool parse_rawr( sim_t*             sim,
 // Simulator
 // ==========================================================================
 
+sc_data_access_t sim_t::base_data = sc_data_access_t( NULL );
+
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
@@ -385,6 +388,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
+    sim_data( &sim_t::base_data ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -745,7 +749,7 @@ bool sim_t::init()
   // The timing wheel represents an array of event lists: Each time slice has an event list.
   if ( timing_wheel ) delete [] timing_wheel;
   timing_wheel= new event_t*[wheel_size];
-  memset( timing_wheel,0,sizeof( event_t* )*( wheel_size+1 ) );
+  memset( timing_wheel,0,sizeof( event_t* )*wheel_size );
 
   total_seconds = 0;
 

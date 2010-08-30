@@ -223,7 +223,7 @@
 	int    use_mind_blast;
 	int    recast_mind_blast;
 
-	priest_t( sim_t* sim, const std::string& name, int race_type = RACE_NONE ) : player_t( sim, PRIEST, name, race_type )
+	priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
 	  {
 		use_shadow_word_death    = false;
 		use_mind_blast           = 1;
@@ -637,7 +637,6 @@ struct devouring_plague_burst_t : public priest_spell_t
     background = true;
     may_crit   = true;
 
-
     // doesn't seem to work on imp. dp
     //base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
 
@@ -682,7 +681,7 @@ struct devouring_plague_t : public priest_spell_t
 
 
     id = 2944;
-    parse_data();
+    parse_data( p -> player_data );
 
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
@@ -996,9 +995,11 @@ struct mind_blast_t : public priest_spell_t
     parse_options( options, options_str );
 
     id				  = 8092;
-    parse_data();
 
     priest_t* p = player -> cast_priest();
+
+    parse_data( p->player_data );
+
     may_crit          = true;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
 								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
@@ -1052,8 +1053,10 @@ struct mind_flay_tick_t : public priest_spell_t
   mind_flay_tick_t( player_t* player ) :
       priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
+    priest_t* p = player -> cast_priest();
+
     id = 15407;
-    parse_data();
+    parse_data( p -> player_data );
     base_cost=0;
     base_td=0;
     base_tick_time=0;
@@ -1206,7 +1209,7 @@ struct mind_spike_t : public priest_spell_t
        parse_options( options, options_str );
 
     id = 73510;
-    parse_data();
+    parse_data( p -> player_data );
 
     may_crit          = true;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
@@ -1437,7 +1440,7 @@ struct shadow_word_death_t : public priest_spell_t
     parse_options( options, options_str );
 
     id = 32379;
-    parse_data();
+    parse_data( p -> player_data );
 
     may_crit = true;
 
@@ -1517,7 +1520,7 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_options( options, options_str );
 
     id = 589;
-    parse_data();
+    parse_data( p -> player_data );
 
 
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
@@ -1759,7 +1762,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     id = 34914;
     effect_nr = 2;
-    parse_data();
+    parse_data( p -> player_data );
 
 
     base_crit       += p -> set_bonus.tier10_2pc_caster() * 0.05;
@@ -2098,26 +2101,15 @@ void priest_t::init_race()
 
 void priest_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_HEALTH );
-  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_MANA );
-  base_spell_crit                  = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_SPELL_CRIT );
-  base_attack_crit                 = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_MELEE_CRIT );
-  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, PRIEST, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  player_t::init_base();
 
   base_attack_power = -10;
 
   initial_attack_power_per_strength = 1.0;
-  initial_spell_power_per_intellect	= 1.0;
+  initial_spell_power_per_intellect = 1.0;
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
-
 }
 
 // priest_t::init_gains ======================================================
@@ -2312,6 +2304,8 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
+	mana_regen_while_casting = 0.00;
+
 	if ( talents.meditation )
 		{
 			mana_regen_while_casting += constants.meditation_value;
@@ -2587,9 +2581,9 @@ int priest_t::decode_set( item_t& item )
 
 // player_t::create_priest  =================================================
 
-player_t* player_t::create_priest( sim_t* sim, const std::string& name, int race_type )
+player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type r )
 {
-  return new priest_t( sim, name, race_type );
+  return new priest_t( sim, name, r );
 }
 
 // player_t::priest_init =====================================================
