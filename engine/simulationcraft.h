@@ -2498,7 +2498,7 @@ struct action_t
   std::string name_str;
   player_t* player;
   uint32_t id;
-  int school, resource, tree, result;
+  int effect_nr, school, resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero;

@@ -233,25 +233,6 @@
 
 		max_mana_cost = 0.0;
 
-		sc_data_access_t q;
-		power_mod.mind_blast = q.effect_coeff( q.spell_effect_id (8092,1 ) );
-		// Power Mod
-
-		power_mod.mind_blast                      = 1.5 / 3.5;
-		power_mod.mind_flay                       = 0.36931;
-		power_mod.mind_spike                      = 1.5 / 3.5;
-		power_mod.shadow_word_death               = 1.5 / 3.5;
-		power_mod.holy_fire			              = 2.0 / 3.5;
-		power_mod.smite					          = 2.5 / 3.5;
-		// Dots
-		// power_mod.devouring_plague                = 3.0 / 15.0 * 0.925;
-		// power_mod.shadow_word_pain                = 3.0 / 15.0 * 0.915;
-		// power_mod.vampiric_touch                  = 2.0 * 3.0 / 15.0;
-		power_mod.devouring_plague				  = 0.2659187;
-		power_mod.shadow_word_pain				  = 0.228926;
-		power_mod.vampiric_touch				  = 0.575197;
-
-
 		// Constants
 		// Discipline/Holy
 		constants.meditation_value				  = 0.50;
@@ -287,14 +268,12 @@
 		constants.mind_spike_crit_value			  = 0.30;
 		constants.devouring_plague_health_mod	  = 0.15;
 
-
-		cooldowns_mind_blast   = get_cooldown( "mind_blast"   );
+		cooldowns_mind_blast = get_cooldown( "mind_blast" );
 		cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
 		cooldowns_archangel    = get_cooldown( "archangel"   );
 		cooldowns_chakra       = get_cooldown( "chakra"   );
 
-		// Cooldowns
-		cooldowns_mind_blast -> duration 		  = 8.0;
+
 		cooldowns_shadow_fiend -> duration 		  = 300.0;
 		cooldowns_archangel -> duration 		  = 15.0;
 		cooldowns_chakra -> duration 			  = 60.0;
@@ -1070,25 +1049,13 @@ struct mind_flay_tick_t : public priest_spell_t
   mind_flay_tick_t( player_t* player ) :
       priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    priest_t* p = player -> cast_priest();
-
-    static rank_t ranks[] =
-    {
-      { 85, 85, 167, 167, 0, 0 },
-      { 84, 84, 164, 164, 0, 0 },
-      { 83, 83, 160, 160, 0, 0 },
-      { 82, 82, 157, 157, 0, 0 },
-      { 81, 81, 153, 153, 0, 0 },
-      { 80, 80, 150, 150, 0, 0 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 58381 );
+    id = 15407;
+    parse_data();
 
     dual              = true;
     background        = true;
     may_crit          = true;
     direct_tick       = true;
-    direct_power_mod  = p -> power_mod.mind_flay;
   }
 
   virtual void execute()
@@ -1164,7 +1131,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( cut_for_mb )
     {
-      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> get_cooldown("mind_blast") -> remains() <= ( 2 * base_tick_time * haste() ) )
       {
         num_ticks = 2;
       }
@@ -1232,23 +1199,10 @@ struct mind_spike_t : public priest_spell_t
        };
        parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 1083, 1143, 0, 0.17 },
-      { 84, 84, 1061, 1119, 0, 0.17 },
-      { 83, 83, 1037, 1095, 0, 0.17 },
-      { 82, 82, 1015, 1071, 0, 0.17 },
-      { 81, 81,  992, 1048, 0, 0.17 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
+    id = 73510;
+    parse_data();
 
-    base_execute_time = 1.5;
     may_crit          = true;
-
-    base_cost  = floor( base_cost );
-
-    direct_power_mod  = p -> power_mod.mind_spike;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
 								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
   }
@@ -1476,21 +1430,11 @@ struct shadow_word_death_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 4, 750, 870, 0, 0.12 },
-      { 75, 3, 639, 741, 0, 0.12 },
-      { 70, 2, 572, 664, 0, 0.12 },
-      { 62, 1, 450, 522, 0, 0.14 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48158 );
+    id = 32379;
+    parse_data();
 
     may_crit = true;
-    base_execute_time = 0;
-    cooldown -> duration = 10.0;
 
-    direct_power_mod  = p -> power_mod.shadow_word_death;
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
@@ -1566,25 +1510,10 @@ struct shadow_word_pain_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 0, 0, 221, 0.22 },
-      { 84, 84, 0, 0, 216, 0.22 },
-      { 83, 83, 0, 0, 212, 0.22 },
-      { 82, 82, 0, 0, 207, 0.22 },
-      { 81, 81, 0, 0, 203, 0.22 },
-      { 80, 80, 0, 0, 198, 0.22 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48125 );
+    id = 589;
+    parse_data();
 
-    base_execute_time = 0;
-    // Testing new dot haste scaling
-    base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( floor ( 6 * haste() + 0.5 ) );
-    //base_tick_time    = 3.0;
-    //num_ticks         = 6;
-    tick_power_mod    = p -> power_mod.shadow_word_pain;
+
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
@@ -1644,6 +1573,53 @@ struct shadow_word_pain_t : public priest_spell_t
   }
 };
 
+
+// Chakra_Pre Spell ======================================================
+
+struct chakra_t : public priest_spell_t
+{
+	chakra_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "chakra", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+
+	option_t options[] =
+	{
+		{ NULL, OPT_UNKNOWN, NULL }
+	};
+	parse_options( options, options_str );
+
+    priest_t* p = player -> cast_priest();
+    check_talent( p -> talents.chakra );
+
+    static rank_t ranks[] =
+    {
+      { 1, 1, 0, 0, 0, 0.00 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    trigger_gcd = 0;
+    base_cost   = 0.0;
+  }
+
+  virtual void execute()
+  {
+	priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+    p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
+  }
+
+  virtual bool ready()
+   {
+	  priest_t* p = player -> cast_priest();
+
+	  if ( p -> buffs_chakra_pre -> up() )
+       return false;
+
+	  return true;
+   }
+};
+
 // Smite Spell ================================================================
 
 struct smite_t : public priest_spell_t
@@ -1695,7 +1671,6 @@ struct smite_t : public priest_spell_t
     	p -> buffs_chakra -> trigger( 1 , 4, 1.0 );
 
     	// Here the cooldown of chakra should be activated. or chakra could be executed
-
     	p -> buffs_chakra_pre -> expire();
     }
 
@@ -1776,27 +1751,11 @@ struct vampiric_touch_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 0, 0, 109, 0.16 },
-      { 84, 84, 0, 0, 106, 0.16 },
-      { 83, 83, 0, 0, 104, 0.16 },
-      { 82, 82, 0, 0, 102, 0.16 },
-      { 81, 81, 0, 0, 100, 0.16 },
-      { 80, 80, 0, 0,  97, 0.16 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48160 );
+    id = 34914;
+    effect_nr = 2;
+    parse_data();
 
-    base_execute_time = 1.5;
-    // Testing new dot haste scaling
-    base_tick_time    = 3.0 * haste();
-    num_ticks         = int ( floor ( 5 * haste() + 0.5 ) );
-    //base_tick_time    = 3.0;
-    //num_ticks         = 5;
-    tick_power_mod    = p -> power_mod.vampiric_touch;
 
-    base_cost        = floor( base_cost );
     base_crit       += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier9_2pc_caster() ) num_ticks += 2;
@@ -1935,52 +1894,6 @@ struct archangel_t : public priest_spell_t
 
 	  return true;
 
-   }
-};
-
-// Chakra_Pre Spell ======================================================
-
-struct chakra_t : public priest_spell_t
-{
-	chakra_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "chakra", player, SCHOOL_HOLY, TREE_HOLY )
-  {
-
-	option_t options[] =
-	{
-		{ NULL, OPT_UNKNOWN, NULL }
-	};
-	parse_options( options, options_str );
-
-    priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.chakra );
-
-    static rank_t ranks[] =
-    {
-      { 1, 1, 0, 0, 0, 0.00 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    trigger_gcd = 0;
-    base_cost   = 0.0;
-  }
-
-  virtual void execute()
-  {
-	priest_spell_t::execute();
-    priest_t* p = player -> cast_priest();
-    p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
-  }
-
-  virtual bool ready()
-   {
-	  priest_t* p = player -> cast_priest();
-
-	  if ( p -> buffs_chakra_pre -> up() )
-       return false;
-
-	  return true;
    }
 };
 

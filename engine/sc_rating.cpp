@@ -371,8 +371,8 @@ void rating_t::init( sim_t* sim, int level, int type )
   ranged_hit        = ac.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
   ranged_crit       = ac.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
   expertise         = ac.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
-  armor_penetration = 1; // no data, and should be purged
-  defense           = 1; // not data
+  armor_penetration = 1; // no data
+  defense           = 1; // no data
   dodge             = ac.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
   parry             = ac.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
   block             = ac.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);

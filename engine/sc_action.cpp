@@ -18,7 +18,7 @@ action_t::action_t( int         ty,
                     int         s,
                     int         tr,
                     bool        sp ) :
-    sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
+    sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), effect_nr ( 1 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
     dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
@@ -83,7 +83,7 @@ action_t::action_t( int         ty,
 }
 
 // action_t::parse_data ====================================================
-void action_t::parse_data()
+void action_t::parse_data( )
 {
 
 	  sc_data_access_t ac;
@@ -91,12 +91,12 @@ void action_t::parse_data()
 	  {
 
 	  base_execute_time 			= ac.spell_cast_time ( id, player -> level );
-	  //cooldown 						= ac.spell_cooldown ( id );
+	  cooldown -> duration			= ac.spell_cooldown ( id );
 	  range 						= ac.spell_max_range ( id );
 	  travel_speed					= ac.spell_missile_speed ( id );
 	  base_cost						= floor ( ac.spell_cost( id ) );
 
-	  int effect = ac.spell_effect_id ( id, 1 );
+	  int effect = ac.spell_effect_id ( id, effect_nr );
 	  if (ac.effect_exists ( effect ) )
 	  {
 	  direct_power_mod 				= ac.effect_coeff( effect );
