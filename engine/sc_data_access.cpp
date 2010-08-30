@@ -850,12 +850,12 @@ double sc_data_access_t::class_stats( const player_type c, const uint32_t level,
 
     switch ( s )
     {
-    case STAT_STRENGTH: res = v->strength;
-    case STAT_AGILITY: res = v->agility;
-    case STAT_STAMINA: res = v->stamina;
-    case STAT_INTELLECT: res = v->intellect;
-    case STAT_SPIRIT: res = v->spirit;
-    case STAT_HEALTH: res = v->base_health;
+    case STAT_STRENGTH: res = v->strength; break;
+    case STAT_AGILITY: res = v->agility; break;
+    case STAT_STAMINA: res = v->stamina; break;
+    case STAT_INTELLECT: res = v->intellect; break;
+    case STAT_SPIRIT: res = v->spirit; break;
+    case STAT_HEALTH: res = v->base_health; break;
     case STAT_MANA:
     case STAT_RAGE:
     case STAT_ENERGY:
