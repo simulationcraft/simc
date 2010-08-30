@@ -632,17 +632,14 @@ struct devouring_plague_burst_t : public priest_spell_t
       priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     priest_t* p = player -> cast_priest();
-
     dual       = true;
     proc       = true;
     background = true;
     may_crit   = true;
-    if (p -> talents.improved_devouring_plague == 1) id=63625;
-    if (p -> talents.improved_devouring_plague == 2) id=63626;
-    parse_data();
 
 
-    base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
+    // doesn't seem to work on imp. dp
+    //base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
 
     base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
 
@@ -695,6 +692,7 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
+
     }
   }
 
@@ -703,7 +701,12 @@ struct devouring_plague_t : public priest_spell_t
     tick_may_crit = true;
     base_crit_bonus_multiplier = 1.0;
     priest_spell_t::execute();
-    if ( devouring_plague_burst ) devouring_plague_burst -> execute();
+    if ( devouring_plague_burst )
+    	{
+    	devouring_plague_burst -> base_dd_min	= 0.3 * (base_td + total_power() * tick_power_mod ) * num_ticks;
+    	devouring_plague_burst -> base_dd_max	= 0.3 * (base_td + total_power() * tick_power_mod ) * num_ticks;
+        devouring_plague_burst -> execute();
+    	}
   }
 
   virtual void tick()
@@ -1051,7 +1054,10 @@ struct mind_flay_tick_t : public priest_spell_t
   {
     id = 15407;
     parse_data();
-
+    base_cost=0;
+    base_td=0;
+    base_tick_time=0;
+    num_ticks=0;
     dual              = true;
     background        = true;
     may_crit          = true;
@@ -2306,10 +2312,6 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-
-	// Seem's to be the new global value, but not sure
-	mana_regen_while_casting = 0.50;
-
 	if ( talents.meditation )
 		{
 			mana_regen_while_casting += constants.meditation_value;

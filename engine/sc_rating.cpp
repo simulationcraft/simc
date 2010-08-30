@@ -376,7 +376,7 @@ void rating_t::init( sim_t* sim, int level, int type )
   dodge             = ac.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
   parry             = ac.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
   block             = ac.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
-  mastery 			= ac.combat_ratings(player_type ( type ), RATING_MASTERY, 		level);
+  mastery 			= ac.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
 
 
 }

@@ -592,7 +592,7 @@ static void print_scale_factors( FILE* file, sim_t* sim )
       util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
     }
 
-    if ( sim -> scaling -> scale_lag ) util_t::fprintf( file, "  Lag=%.*f", sim -> report_precision, p -> scaling_lag );
+    if ( sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f", sim -> report_precision, p -> scaling_lag );
 
     util_t::fprintf( file, "\n" );
   }
@@ -623,7 +623,10 @@ static void print_scale_factors( FILE* file, player_t* p )
   {
     util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
   }
+  if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f", p -> sim -> report_precision, p -> scaling_lag );
+
   util_t::fprintf( file, "\n" );
+
 
   std::string lootrank = p -> gear_weights_lootrank_link;
   std::string wowhead  = p -> gear_weights_wowhead_link;
@@ -1022,12 +1025,16 @@ static void print_html_player( FILE* file, player_t* p )
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
 	util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+
+    if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <th>ms Lag</th>" );
     util_t::fprintf( file, " </tr>\n" );
 
     util_t::fprintf( file, " <tr> <th>Scale Factors</th>" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
 	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+
+    if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling_lag );
     util_t::fprintf( file, " </tr>\n" );
 
     util_t::fprintf( file, " <tr> <th>Normalized</th>" );

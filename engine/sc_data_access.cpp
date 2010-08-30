@@ -756,7 +756,7 @@ double sc_data_access_t::combat_ratings( const player_type c, const rating_type 
   double* v = m_combat_ratings.ptr( level - 1, r );
   double* s = m_class_combat_rating_scalar.ptr( c, r );
 
-  return *v * *s;
+  return *v * *s * 100;
 }
 
 double sc_data_access_t::combat_ratings( const pet_type_t c, const rating_type r, const uint32_t level ) SC_CONST
