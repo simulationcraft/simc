@@ -94,7 +94,12 @@ void action_t::parse_data( )
 	  cooldown -> duration			= ac.spell_cooldown ( id );
 	  range 						= ac.spell_max_range ( id );
 	  travel_speed					= ac.spell_missile_speed ( id );
-	  base_cost						= floor ( ac.spell_cost( id ) );
+    
+    // For mana it returns the % of base mana, not the absolute cost
+	  if ( ac.spell_power_type( id ) == RESOURCE_MANA )
+	    base_cost = floor ( ac.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
+    else
+	    base_cost = ac.spell_cost( id );
 
 	  int effect = ac.spell_effect_id ( id, effect_nr );
 	  if (ac.effect_exists ( effect ) )
