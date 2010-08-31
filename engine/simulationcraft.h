@@ -3404,7 +3404,6 @@ struct talent_t
 	unsigned     id;          // Talent id
 	unsigned rank;
 	const char * name_str;        // Talent name
-
 	unsigned     dependance;  // Talent depends on this talent id
 	unsigned     depend_rank; // Requires this rank of depended talent
 	unsigned     col;         // Talent column
@@ -3413,9 +3412,10 @@ struct talent_t
 	unsigned     spell_id;    // Talent spell id
 
 
-	talent_t( player_t* p, unsigned talent_id, unsigned r );
+	talent_t( player_t* p, const char * name );
 	virtual ~talent_t() {}
-	virtual void get_talent_data( unsigned talent_id );
+	virtual void get_talent_id( );
+	virtual void get_talent_data( unsigned talent_id);
 	virtual void init();
 
 
