@@ -124,6 +124,7 @@ struct rank_t;
 struct rating_t;
 struct report_t;
 struct rng_t;
+struct talent_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -2460,6 +2461,7 @@ struct player_t
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();
+  virtual void init_talents();
   virtual void init_buffs();
   virtual void init_gains();
   virtual void init_procs();
@@ -3391,6 +3393,32 @@ struct rng_t
   virtual void   report( FILE* );
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
+};
+
+// Talent class
+
+struct talent_t
+{
+	sim_t* sim;
+	player_t* player;
+	unsigned     id;          // Talent id
+	unsigned rank;
+	const char * name_str;        // Talent name
+
+	unsigned     dependance;  // Talent depends on this talent id
+	unsigned     depend_rank; // Requires this rank of depended talent
+	unsigned     col;         // Talent column
+	unsigned     row;         // Talent row
+	unsigned	 max_rank;	  // Talent max rank
+	unsigned     spell_id;    // Talent spell id
+
+
+	talent_t( player_t* p, unsigned talent_id, unsigned r );
+	virtual ~talent_t() {}
+	virtual void get_talent_data( unsigned talent_id );
+	virtual void init();
+
+
 };
 
 // String utils =================================================================

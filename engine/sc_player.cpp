@@ -552,6 +552,7 @@ void player_t::init()
   init_professions();
   init_scaling();
   init_consumables();
+  init_talents();
   init_buffs();
   init_actions();
   init_gains();
@@ -991,6 +992,13 @@ void player_t::init_rating()
 	 if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
 	                   level,type );
   rating.init( sim, player_data, level, type );
+}
+
+// player_t::init_talents =================================================
+
+void player_t::init_talents()
+{
+
 }
 
 // player_t::init_buffs ====================================================

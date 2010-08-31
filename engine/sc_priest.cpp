@@ -53,6 +53,9 @@
     buff_t* buffs_chakra;
     buff_t* buffs_mind_spike;
 
+    // Talents
+    talent_t* talent_mind_melt;
+
     // Cooldowns
     cooldown_t* cooldowns_mind_blast;
     cooldown_t* cooldowns_shadow_fiend;
@@ -297,6 +300,7 @@
 	virtual void      init_gains();
 	virtual void      init_uptimes();
 	virtual void      init_rng();
+	virtual void	  init_talents();
 	virtual void      init_buffs();
 	virtual void      init_actions();
 	virtual void 	  init_procs();
@@ -1475,11 +1479,11 @@ struct shadow_word_death_t : public priest_spell_t
         player_multiplier *= 1.1;
       }
     }
-    if ( p -> talents.mind_melt )
+    if ( p -> talent_mind_melt -> rank )
        {
          if ( sim -> target -> health_percentage() <= 25 )
          {
-           player_multiplier *= 1.3;
+           player_multiplier *= 1.0 + p -> talent_mind_melt -> rank * 0.15;
          }
        }
   }
@@ -2163,6 +2167,15 @@ void priest_t::init_rng()
   player_t::init_rng();
 
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
+}
+
+// priest_t::init_talents
+void priest_t::init_talents()
+{
+	player_t::init_talents();
+
+	talent_mind_melt			= new talent_t( this, 9060, talents.mind_melt );
+
 }
 
 // priest_t::init_buffs ======================================================

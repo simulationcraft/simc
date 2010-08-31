@@ -100,6 +100,7 @@ SRC =\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
 	sc_stats.cpp		\
+	sc_talent.cpp		\
 	sc_target.cpp		\
 	sc_thread.cpp		\
 	sc_unique_gear.cpp	\
