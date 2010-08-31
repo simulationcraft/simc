@@ -345,6 +345,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_talent.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_sim.cpp"
 			>
 		</File>
