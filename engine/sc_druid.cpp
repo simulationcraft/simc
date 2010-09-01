@@ -87,10 +87,22 @@ struct druid_t : public player_t
 
   struct talents_t
   {
+    // Checked, build 12875
+    /* X: Done!
+    Balance
+      X Innervate now regenerate mana equal to 20% of the casting Druid's maximum mana pool, down from 33%.
+      X Lunar Shower now increases damage done by your Moonfire by 15/30/45% (Up from 2/4/8%)
+      X Moonglow now reduces the mana cost of all your damage and healing spells.
+      X Nature's Majesty now increases the critical strike chance with all spells.
+    Feral
+      * Thrash now has a 6 sec cooldown, up from 5 sec.
+      * Swipe (Bear) base damage increased by 33%.
+      * Swipe (Cat) now deals 215% weapon damage, up from 125%.
+      X Furor now increases your maximum mana by 5/10/15% instead of increasing your intellect by 2/4/6%.
+    Restoration
+      X Heart of the Wild no longer increases maximum mana by 5/10/15%, now increases Intellect by 2/4/6%.
+    */
     // Checked, build 12803
-    // Moonkin Form now increases Nature and Arcane spell damage by 10%. Done
-    // Starlight Wrath now reduces cast time by 0.15/0.25/0.5 sec. (Up from 0.1/0.2/0.3 sec) Done
-    // Checked, build 12759
     int  balance_of_power;
     int  berserk;
     int  blessing_of_the_grove;
@@ -1973,6 +1985,10 @@ double druid_spell_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
+  double c = spell_t::cost();
+  if ( resource == RESOURCE_MANA && p -> talents.moonglow)
+    c *= 1.0 - 0.03 * p -> talents.moonglow;
+
   return spell_t::cost();
 }
 
@@ -2311,12 +2327,11 @@ struct innervate_t : public druid_spell_t
     // 
     // 4.0.0 (Cata): 180s cd
     // Targets gets 33% of casting druids MAXMANA over 10 seconds
-    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * 0.33 / 10 );
+    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * 0.20 / 10 );
 
-    druid_t* p = player -> cast_druid();
-    
-    // TODO: Glyph will probably change sometime in the beta
-    p -> buffs_glyph_of_innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ]* 0.9 / 20.0 );
+    // FIXME: Glyph will probably change sometime in the beta
+    // druid_t* p = player -> cast_druid();
+    // p -> buffs_glyph_of_innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ]* 0.9 / 20.0 );
   }
 
   virtual bool ready()
@@ -2403,10 +2418,8 @@ struct insect_swarm_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  double base_cost_reduction;
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
-      base_cost_reduction( 0 )
+      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2438,7 +2451,6 @@ struct moonfire_t : public druid_spell_t
     
     // Costreduction from moonglow and lunar shower is additive
     // up to 9%+90%=99%
-    base_cost_reduction = util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
     
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
@@ -2459,7 +2471,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
     // +2/4/8% damage bonus only applies to direct damage
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower, 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower, 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
   }
   virtual void execute()
   {
@@ -2486,7 +2498,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     double c = druid_spell_t::cost();
-    c *= 1.0 - ( base_cost_reduction + 0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower );
+    c *= 1.0 - (0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower );
 
     if ( c < 0 ) c = 0;
     return c;
@@ -2756,9 +2768,7 @@ struct starfire_t : public druid_spell_t
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
-    base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.15, 0.25, 0.5 );
-    base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
@@ -2875,9 +2885,7 @@ struct wrath_t : public druid_spell_t
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
-    base_cost         *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath, 3, 0.15, 0.25, 0.5 );
-    base_crit         += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -2956,7 +2964,6 @@ struct starfall_t : public druid_spell_t
         dual             = true;
 
         base_dd_min = base_dd_max  = 0;
-        base_crit                  += util_t::talent_rank( p -> talents.natures_majesty, 2, 0.02 );
         base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
         if ( p -> glyphs.focus )
@@ -2989,8 +2996,6 @@ struct starfall_t : public druid_spell_t
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
-
-    base_cost *= 1.0 - util_t::talent_rank( p -> talents.moonglow,    3, 0.03 );
 
     num_ticks      = 10;
     base_tick_time = 1.0;
@@ -3052,8 +3057,6 @@ struct starsurge_t : public druid_spell_t
     direct_power_mod     = ( base_execute_time / 3.5 );
     may_crit             = true;
     cooldown -> duration = 15.0;
-
-    base_cost           *= 1.0 - util_t::talent_rank( p -> talents.moonglow, 3, 0.03 );
   }
   
   virtual void travel( int    travel_result,
@@ -3372,6 +3375,7 @@ void druid_t::init_base()
 
   base_attack_power = -20 + level * 2.0;
 
+  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild * 0.02;
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
 
@@ -3390,12 +3394,13 @@ void druid_t::init_base()
 
   resource_base[ RESOURCE_ENERGY ] = 100;
   resource_base[ RESOURCE_RAGE   ] = 100;
-
-  health_per_stamina      = 10;
   mana_per_intellect      = 15;
+  health_per_stamina      = 10;
   energy_regen_per_second = 10;
   
-  //  
+  // Furor: +5/10/15% max mana
+  resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor * 0.05;
+  mana_per_intellect             *= 1.0 + talents.furor * 0.05;
   
   switch ( primary_tree() )
   {
@@ -3765,7 +3770,7 @@ double druid_t::composite_spell_hit() SC_CONST
 double druid_t::composite_spell_crit() SC_CONST
 {
   double crit = player_t::composite_spell_crit();
-
+  crit += talents.natures_majesty * 0.02;
   return floor( crit * 10000.0 ) / 10000.0;
 }
 
@@ -3824,7 +3829,7 @@ std::vector<talent_translation_t>& druid_t::get_talent_list()
       { {  1, 3, &( talents.natures_grace         ) }, {  1, 2, &( talents.feral_swiftness         ) }, {  1, 2, &( talents.blessing_of_the_grove     ) } },
       { {  2, 3, &( talents.starlight_wrath       ) }, {  2, 3, &( talents.furor                   ) }, {  2, 0, NULL                                   } },
       { {  3, 2, &( talents.natures_majesty       ) }, {  3, 2, &( talents.predatory_strikes       ) }, {  3, 0, NULL                                   } },
-      { {  4, 3, &( talents.genesis               ) }, {  4, 2, &( talents.infected_wounds         ) }, {  4, 0, NULL                                   } },
+      { {  4, 3, &( talents.genesis               ) }, {  4, 2, &( talents.infected_wounds         ) }, {  4, 3, &( talents.heart_of_the_wild         ) } },
       { {  5, 3, &( talents.moonglow              ) }, {  5, 3, &( talents.fury_swipes             ) }, {  5, 0, NULL                                   } },
       { {  6, 2, &( talents.balance_of_power      ) }, {  6, 2, &( talents.primal_fury             ) }, {  6, 1, &( talents.master_shapeshifter       ) } },
       { {  7, 3, &( talents.lunar_guidance        ) }, {  7, 2, &( talents.feral_aggression        ) }, {  0, 0, NULL                                   } },
