@@ -566,6 +566,7 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
+  init_values();
 }
 
 // player_t::init_base =====================================================
@@ -1089,6 +1090,13 @@ void player_t::init_stats()
 
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
+}
+
+// player_t::init_values ====================================================
+
+void player_t::init_values()
+{
+
 }
 
 // player_t::init_scaling ==================================================

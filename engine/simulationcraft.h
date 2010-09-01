@@ -2488,6 +2488,7 @@ struct player_t
   virtual void init_uptimes();
   virtual void init_rng();
   virtual void init_stats();
+  virtual void init_values();
 
   virtual void reset();
   virtual void combat_begin();
@@ -3424,6 +3425,9 @@ struct talent_t
 
   talent_t( player_t* p, const char* name, const int32_t specify_tree = -1 );
 	virtual ~talent_t() {}
+
+  virtual uint32_t get_effect_id( const player_t* p, const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t get_spell_id( const player_t* p ) SC_CONST;
 private:
 	virtual uint32_t find_talent_id( const player_t* p, const char* name, const int32_t specify_tree = -1 );
 };
@@ -3437,6 +3441,8 @@ struct spell_ids_t
 
   spell_ids_t( const player_t* p, const char* name );
 	virtual ~spell_ids_t();
+
+  virtual uint32_t get_effect_id( const player_t* p, const uint32_t effect_num, const uint32_t spell_num = 1 ) SC_CONST;
 private:
 	virtual spell_data_t** find_spell_ids( const player_t* p, const char* name );
 };

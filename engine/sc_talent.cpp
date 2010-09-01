@@ -27,6 +27,36 @@ talent_t::talent_t( player_t* p, const char* name, const int32_t specify_tree ) 
   }
 }
 
+// talent_t::get_effect_id ===================================================
+
+uint32_t talent_t::get_effect_id( const player_t* p, const uint32_t effect_num ) SC_CONST
+{
+  assert( p && ( rank <= 3 ) && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
+  
+  if ( !rank || !data )
+    return 0;
+
+  uint32_t spell_id = p -> player_data.talent_rank_spell_id( data -> id, rank );
+
+  if ( !spell_id )
+    return 0;
+
+  return p -> player_data.spell_effect_id( spell_id, effect_num );
+}
+
+// talent_t::get_spell_id ===================================================
+
+uint32_t talent_t::get_spell_id( const player_t* p ) SC_CONST
+{
+  assert( p && p -> sim && ( rank <= 3 ) );
+  
+  if ( !rank || !data )
+    return 0;
+
+  return p -> player_data.talent_rank_spell_id( data -> id, rank );
+}
+
+
 // talent_t::find_talent_id ===================================================
 
 uint32_t talent_t::find_talent_id( const player_t* p, const char* name, const int32_t specify_tree )
@@ -72,6 +102,24 @@ spell_ids_t::spell_ids_t( const player_t* p, const char* name ) : data( NULL ), 
 spell_ids_t::~spell_ids_t()
 {
   if ( data ) delete [] data;
+}
+
+// spell_ids_t::get_effect_id ===================================================
+
+uint32_t spell_ids_t::get_effect_id( const player_t* p, const uint32_t effect_num, const uint32_t spell_num ) SC_CONST
+{
+  assert( p && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
+  
+  if ( !enabled || !data || !spell_num )
+    return 0;
+
+  for ( uint32_t i = 0; i < spell_num; i++ )
+  {
+    if ( !data[ i ] )
+      return 0;
+  }
+
+  return p -> player_data.spell_effect_id( data[ spell_num - 1 ] -> id, effect_num );
 }
 
 // spell_ids_t::find_spell_ids ===================================================

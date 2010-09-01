@@ -186,8 +186,9 @@
 		// Holy
 		double holy_concentration_value;
 
-		// Shadow
-		double shadow_power_value;
+    // Shadow
+    double shadow_power_damage_value;
+    double shadow_power_crit_value;
 		double shadow_orb_proc_value;
 		double shadow_orb_damage_value;
 		double shadow_orb_mastery_value;
@@ -228,68 +229,20 @@
 	int    use_mind_blast;
 	int    recast_mind_blast;
 
-	priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
-	  {
+  priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
+  {
 		use_shadow_word_death    = false;
 		use_mind_blast           = 1;
 		recast_mind_blast        = 0;
 
-		distance	= 36;
+		distance	= 40;
 
 		max_mana_cost = 0.0;
-
-		// Constants
-		// Discipline/Holy
-		constants.meditation_value				  = 0.50;
-
-		// Discipline
-		constants.twin_disciplines_value          = 0.02;
-		constants.dark_evangelism_value			  = 0.01;
-		constants.holy_evangelism_damage_value	  = 0.02;
-		constants.holy_evangelism_mana_value	  = 0.03;
-		constants.dark_archangel_value			  = 0.03;
-		constants.holy_archangel_value			  = 0.03;
-		constants.archangel_mana_value			  = 0.03;
-		constants.inner_will_value				  = 0.15;
-
-		// Holy
-		constants.holy_concentration_value		  = 0.10;
-
-		// Shadow Core
-		constants.shadow_power_value			  = 0.25;
-		constants.shadow_orb_proc_value           = 0.10;
-		constants.shadow_orb_damage_value         = 0.20;
-		constants.shadow_orb_mastery_value		  = 0.025;
-
-		// Shadow
-		constants.darkness_value                  = 0.01;
-		constants.improved_shadow_word_pain_value = 0.03;
-		constants.twisted_faith_static_value	  = 0.01;
-		constants.twisted_faith_dynamic_value	  = 0.50;
-		constants.shadow_form_value               = 0.15;
-		constants.harnessed_shadows_value         = 0.04;
-		constants.pain_and_suffering_value		  = 0.30;
-
-		constants.mind_spike_crit_value			  = 0.30;
-		constants.devouring_plague_health_mod	  = 0.15;
-
-		cooldowns_mind_blast = get_cooldown( "mind_blast" );
-		cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
-		cooldowns_archangel    = get_cooldown( "archangel"   );
-		cooldowns_chakra       = get_cooldown( "chakra"   );
-
-
-		cooldowns_shadow_fiend -> duration 		  = 300.0;
-		cooldowns_archangel -> duration 		  = 15.0;
-		cooldowns_chakra -> duration 			  = 60.0;
-
 
 		dots_shadow_word_pain = get_dot( "shadow_word_pain" );
 		dots_vampiric_touch   = get_dot( "vampiric_touch" );
 		dots_devouring_plague = get_dot( "devouring_plague" );
 		dots_holy_fire        = get_dot( "holy_fire" );
-
-
 
 		shadowy         = 0;
 
@@ -333,7 +286,11 @@
     talent_mind_flay = new spell_ids_t( this, "Mind Flay" );
     talent_meditation = new spell_ids_t( this, "Meditation" ); // 					done: talent function 12803
 
-	  }
+    cooldowns_mind_blast   = get_cooldown( "mind_blast" );
+    cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
+    cooldowns_archangel    = get_cooldown( "archangel"   );
+    cooldowns_chakra       = get_cooldown( "chakra"   );
+  }
 
 	// Character Definition
 	virtual void      init_glyphs();
@@ -346,6 +303,7 @@
 	virtual void      init_buffs();
 	virtual void      init_actions();
 	virtual void      init_procs();
+  virtual void      init_values();
 	virtual void      reset();
 	virtual void      init_party();
 	virtual std::vector<talent_translation_t>& get_talent_list();
@@ -530,14 +488,11 @@ struct shadow_fiend_pet_t : public pet_t
 
 double priest_spell_t::haste() SC_CONST
 {
-	priest_t* p = player -> cast_priest();
+  priest_t* p = player -> cast_priest();
 
-	  double h = spell_t::haste();
-	  if ( p -> talent_darkness -> rank )
-	  {
-	    h *= 1.0 / ( 1.0 + p -> talent_darkness -> rank * p -> constants.darkness_value );
-	  }
-	  return h;
+  double h = spell_t::haste();
+  h *= p -> constants.darkness_value;
+  return h;
 }
 
 
@@ -553,26 +508,24 @@ void priest_spell_t::execute()
 
 void priest_spell_t::player_buff()
 {
-	priest_t* p = player -> cast_priest();
-	spell_t::player_buff();
-		if ( school == SCHOOL_SHADOW )
-			{
-
-				player_hit += p -> talent_twisted_faith -> rank * p -> constants.twisted_faith_static_value;
-			}
-	    for ( int i=0; i < 4; i++ )
-			{
-				p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
-			}
-	    for ( int i=0; i < 6; i++ )
-	    	{
-				p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
-	    	}
-	    for ( int i=0; i < 4; i++ )
-			{
-				p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
-			}
-
+  priest_t* p = player -> cast_priest();
+  spell_t::player_buff();
+  if ( school == SCHOOL_SHADOW )
+  {
+    player_hit += p -> constants.twisted_faith_static_value;
+  }
+  for ( int i=0; i < 4; i++ )
+  {
+    p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
+  }
+  for ( int i=0; i < 6; i++ )
+  {
+    p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
+  }
+  for ( int i=0; i < 4; i++ )
+  {
+    p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+  }
 }
 
 // priest_spell_t::target_debuff ============================================
@@ -582,16 +535,16 @@ void priest_spell_t::target_debuff( int dmg_type )
 	priest_t* p = player -> cast_priest();
 	spell_t::target_debuff( dmg_type );
 
-	target_multiplier *= 1.0 + p -> talent_shadow_power -> enabled * p -> constants.shadow_power_value;
+	target_multiplier *= 1.0 + p -> constants.shadow_power_damage_value;
 
 		  if ( school == SCHOOL_SHADOW )
 		  {
 			  if ( dmg_type == DMG_OVER_TIME )
 			  {
-			  target_multiplier *=  1.0 + p -> talent_evangelism -> rank* p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+			  target_multiplier *=  1.0 + p -> talent_evangelism -> rank * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
 			  }
 
-			  target_crit_bonus_multiplier *= 1.0 + p -> talent_shadow_power -> enabled * 1.0;
+			  target_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
 			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
 			  if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
 			  {
@@ -611,12 +564,8 @@ void priest_spell_t::target_debuff( int dmg_type )
 			  }
 		  }
 
-		  // Twin Discipline
-		  if ( execute_time() == 0 && !(dual) )
-		  {
-			 target_multiplier  *= 1.0 + ( p -> talent_twin_disciplines -> rank * p -> constants.twin_disciplines_value );
-
-		  }
+      // Twin Discipline
+      target_multiplier  *= 1.0 + p -> constants.twin_disciplines_value;
 }
 
 // priest_spell_t::assess_damage =============================================
@@ -1063,7 +1012,7 @@ struct mind_blast_t : public priest_spell_t
 
     may_crit          = true;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
-								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+                        + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
     cooldown -> duration -= p -> talent_improved_mind_blast -> rank * 0.5;
   }
 
@@ -1138,11 +1087,11 @@ struct mind_flay_tick_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
-      p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talent_harnessed_shadows -> rank );
+      p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
       if ( p -> dots_shadow_word_pain -> ticking() )
       {
-        if ( p -> rng_pain_and_suffering -> roll( p -> talent_pain_and_suffering -> rank * p -> constants.pain_and_suffering_value ) )
+        if ( p -> rng_pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
         {
           p -> dots_shadow_word_pain -> action -> refresh_duration();
         }
@@ -1275,7 +1224,7 @@ struct mind_spike_t : public priest_spell_t
 
     may_crit          = true;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
-								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+                        + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
   }
 
   virtual void execute()
@@ -1593,7 +1542,7 @@ struct shadow_word_pain_t : public priest_spell_t
     base_cost        *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
-    base_multiplier *= 1.0 + ( p -> talent_improved_shadow_word_pain -> rank * p -> constants.improved_shadow_word_pain_value );
+    base_multiplier *= 1.0 + p -> constants.improved_shadow_word_pain_value ;
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
@@ -1632,7 +1581,7 @@ struct shadow_word_pain_t : public priest_spell_t
     // Shadow Orb
     if ( result_is_hit() )
     {
-    	p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talent_harnessed_shadows -> rank );
+    	p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
     }
   }
 
@@ -1881,7 +1830,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
     init_rank( ranks, 34433 );
 
     harmful = false;
-    cooldown -> duration -= 30.0 * p -> talent_veiled_shadows -> rank;
     base_cost *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 ) );
     base_cost  = floor( base_cost );
   }
@@ -2026,7 +1974,7 @@ double priest_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += spirit() * ( talent_twisted_faith -> rank / 2.0 ) / rating.spell_hit;
+  hit += ( spirit() * constants.twisted_faith_dynamic_value ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
@@ -2380,6 +2328,53 @@ void priest_t::init_party()
   }
 }
 
+// priest_t::init_values =====================================================
+
+void priest_t::init_values()
+{
+  player_t::init_values();
+
+  // Discipline/Holy
+  constants.meditation_value                = talent_meditation -> enabled ? player_data.effect_base_value( player_data.spell_effect_id( 85101, 1 ) ) / 100.0 : 0.0;
+
+  // Discipline
+  constants.twin_disciplines_value          = player_data.effect_base_value( talent_twin_disciplines -> get_effect_id( this, 1 ) ) / 100.0;
+
+  constants.dark_evangelism_value			  = 0.01;
+  constants.holy_evangelism_damage_value	  = 0.02;
+  constants.holy_evangelism_mana_value	  = 0.03;
+  constants.dark_archangel_value			  = 0.03;
+  constants.holy_archangel_value			  = 0.03;
+  constants.archangel_mana_value			  = 0.03;
+  constants.inner_will_value				  = 0.15;
+
+  // Holy
+  constants.holy_concentration_value        = player_data.effect_base_value( talent_holy_concentration -> get_effect_id( this, 1 ) ) / 100.0;
+
+  // Shadow Core
+  constants.shadow_power_damage_value       = player_data.effect_base_value( player_data.spell_effect_id( 87327, 1 ) ) / 100.0;
+  constants.shadow_power_crit_value         = player_data.effect_base_value( player_data.spell_effect_id( 87327, 2 ) ) / 100.0;
+  constants.shadow_orb_proc_value           = player_data.spell_proc_chance( 77486 );
+  constants.shadow_orb_damage_value         = player_data.effect_coeff( player_data.spell_effect_id( 77486, 1 ) ) / 12.5;
+  constants.shadow_orb_mastery_value        = player_data.effect_base_value( player_data.spell_effect_id( 77486, 2 ) ) / 10000.0;
+
+  // Shadow
+  constants.darkness_value                  = 1.0 / ( 1.0 + player_data.effect_base_value( talent_darkness    -> get_effect_id( this, 1 ) ) / 100.0 );
+  constants.improved_shadow_word_pain_value = player_data.effect_base_value( talent_improved_shadow_word_pain -> get_effect_id( this, 1 ) ) / 100.0;
+  constants.twisted_faith_static_value      = player_data.effect_base_value( talent_twisted_faith             -> get_effect_id( this, 2 ) ) / 100.0;  
+  constants.twisted_faith_dynamic_value     = player_data.effect_base_value( talent_twisted_faith             -> get_effect_id( this, 1 ) ) / 100.0;
+  constants.shadow_form_value               = player_data.effect_base_value( talent_shadow_form               -> get_effect_id( this, 2 ) ) / 100.0;
+  constants.harnessed_shadows_value         = player_data.effect_base_value( talent_harnessed_shadows         -> get_effect_id( this, 1 ) ) / 100.0;
+  constants.pain_and_suffering_value        = player_data.spell_proc_chance( talent_pain_and_suffering        -> get_spell_id ( this ) );
+  constants.mind_spike_crit_value           = player_data.effect_base_value( player_data.spell_effect_id( 73510, 2 ) ) / 100.0;
+  constants.devouring_plague_health_mod     = 0.15;
+
+  cooldowns_shadow_fiend -> duration        = 300.0 + player_data.effect_base_value( talent_veiled_shadows    -> get_effect_id( this, 2 ) ) / 1000.0;
+  cooldowns_archangel -> duration           = player_data.spell_cooldown( talent_archangel                    -> get_spell_id ( this ) );
+  cooldowns_chakra -> duration              = player_data.spell_cooldown( talent_chakra                       -> get_spell_id ( this ) );
+}
+
+
 // priest_t::reset ===========================================================
 
 void priest_t::reset()
@@ -2397,18 +2392,9 @@ void priest_t::reset()
 
 void priest_t::regen( double periodicity )
 {
-	mana_regen_while_casting = 0.00;
+  mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
 
-	if ( talent_meditation -> enabled )
-		{
-			mana_regen_while_casting += constants.meditation_value;
-		}
-	if (talent_holy_concentration -> rank )
-		{
-			mana_regen_while_casting += talent_holy_concentration -> rank * constants.holy_concentration_value;
-		}
-
-	player_t::regen( periodicity );
+  player_t::regen( periodicity );
 }
 
 
@@ -2543,18 +2529,6 @@ std::vector<option_t>& priest_t::get_options()
       { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
       { "glyph_shadow",                             OPT_BOOL,   &( glyphs.shadow                              ) },
       { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
-      // @option_doc loc=player/priest/constants title="Constants"
-      { "const.darkness_value",                     OPT_FLT,    &( constants.darkness_value                   ) },
-      { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
-      { "const.shadow_form_value",                  OPT_FLT,    &( constants.shadow_form_value                ) },
-      { "const.twin_disciplines_value",             OPT_FLT,    &( constants.twin_disciplines_value           ) },
-      // @option_doc loc=player/priest/coefficients title="Coefficients"
-      { "power_mod.mind_blast",                     OPT_FLT,    &( power_mod.mind_blast                       ) },
-      { "power_mod.mind_flay",                      OPT_FLT,    &( power_mod.mind_flay                        ) },
-      { "power_mod.mind_spike",                     OPT_FLT,    &( power_mod.mind_spike                       ) },
-      { "power_mod.shadow_word_death",              OPT_FLT,    &( power_mod.shadow_word_death                ) },
-      { "power_mod.shadow_word_pain",               OPT_FLT,    &( power_mod.shadow_word_pain                 ) },
-      { "power_mod.vampiric_touch",                 OPT_FLT,    &( power_mod.vampiric_touch                   ) },
       // @option_doc loc=player/priest/misc title="Misc"
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
       { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },

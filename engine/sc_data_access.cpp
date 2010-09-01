@@ -33,6 +33,9 @@ bool sc_data_access_t::spell_exists( const uint32_t spell_id ) SC_CONST
 
 const char* sc_data_access_t::spell_name_str( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return "";
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->name;
@@ -40,6 +43,9 @@ const char* sc_data_access_t::spell_name_str( const uint32_t spell_id ) SC_CONST
 
 bool sc_data_access_t::spell_is_used( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   assert( spell_exists( spell_id ) );
 
   return ( ( m_spells_index[ spell_id ]->flags & 0x01 ) == 0x01 );
@@ -56,6 +62,9 @@ void sc_data_access_t::spell_set_used( const uint32_t spell_id, const bool value
 
 bool sc_data_access_t::spell_is_enabled( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   assert( spell_exists( spell_id ) );
 
   return ( ( m_spells_index[ spell_id ]->flags & 0x02 ) == 0x02 );
@@ -72,6 +81,9 @@ void sc_data_access_t::spell_set_enabled( const uint32_t spell_id, const bool va
 
 double sc_data_access_t::spell_missile_speed( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->prj_speed;
@@ -79,6 +91,9 @@ double sc_data_access_t::spell_missile_speed( const uint32_t spell_id ) SC_CONST
 
 uint32_t sc_data_access_t::spell_school_mask( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->school;
@@ -86,6 +101,9 @@ uint32_t sc_data_access_t::spell_school_mask( const uint32_t spell_id ) SC_CONST
 
 resource_type sc_data_access_t::spell_power_type( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return RESOURCE_NONE;
+
   assert( spell_exists( spell_id ) );
 
   switch ( m_spells_index[ spell_id ]->power_type )
@@ -106,6 +124,9 @@ resource_type sc_data_access_t::spell_power_type( const uint32_t spell_id ) SC_C
 
 bool sc_data_access_t::spell_is_class( const uint32_t spell_id, const player_type c ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   uint32_t mask,mask2;
 
   assert( spell_exists( spell_id ) );
@@ -121,6 +142,9 @@ bool sc_data_access_t::spell_is_class( const uint32_t spell_id, const player_typ
 
 bool sc_data_access_t::spell_is_race( const uint32_t spell_id, const race_type r ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   uint32_t mask,mask2;
 
   assert( spell_exists( spell_id ) );
@@ -136,6 +160,9 @@ bool sc_data_access_t::spell_is_race( const uint32_t spell_id, const race_type r
 
 bool sc_data_access_t::spell_is_level( const uint32_t spell_id, const uint32_t level ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   assert( spell_exists( spell_id ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   return ( level >= m_spells_index[ spell_id ]->spell_level );
@@ -143,6 +170,9 @@ bool sc_data_access_t::spell_is_level( const uint32_t spell_id, const uint32_t l
 
 double sc_data_access_t::spell_min_range( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->min_range;
@@ -150,6 +180,9 @@ double sc_data_access_t::spell_min_range( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_max_range( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->max_range;
@@ -157,6 +190,9 @@ double sc_data_access_t::spell_max_range( const uint32_t spell_id ) SC_CONST
 
 bool sc_data_access_t::spell_in_range( const uint32_t spell_id, const double range ) SC_CONST
 {
+  if ( !spell_id )
+    return false;
+
   assert( spell_exists( spell_id ) );
 
   return ( ( range >= m_spells_index[ spell_id ]->min_range ) && ( range <= m_spells_index[ spell_id ]->max_range ) );
@@ -164,6 +200,9 @@ bool sc_data_access_t::spell_in_range( const uint32_t spell_id, const double ran
 
 double sc_data_access_t::spell_cooldown( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->cooldown / 1000.0;
@@ -171,6 +210,9 @@ double sc_data_access_t::spell_cooldown( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_gcd( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->gcd / 1000.0;
@@ -178,6 +220,9 @@ double sc_data_access_t::spell_gcd( const uint32_t spell_id ) SC_CONST
 
 uint32_t sc_data_access_t::spell_category( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->category;
@@ -185,6 +230,9 @@ uint32_t sc_data_access_t::spell_category( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_duration( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->duration / 1000.0;
@@ -192,6 +240,9 @@ double sc_data_access_t::spell_duration( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_cost( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   if ( m_spells_index[ spell_id ]->power_type == POWER_MANA )
@@ -205,6 +256,9 @@ double sc_data_access_t::spell_cost( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_rune_cost( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->rune_cost;
@@ -212,6 +266,9 @@ double sc_data_access_t::spell_rune_cost( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_runic_power_gain( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->runic_power_gain / 10.0;
@@ -219,6 +276,9 @@ double sc_data_access_t::spell_runic_power_gain( const uint32_t spell_id ) SC_CO
 
 uint32_t sc_data_access_t::spell_max_stacks( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->max_stack;
@@ -226,6 +286,9 @@ uint32_t sc_data_access_t::spell_max_stacks( const uint32_t spell_id ) SC_CONST
 
 uint32_t sc_data_access_t::spell_initial_stacks( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->proc_charges;
@@ -233,6 +296,9 @@ uint32_t sc_data_access_t::spell_initial_stacks( const uint32_t spell_id ) SC_CO
 
 double sc_data_access_t::spell_proc_chance( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->proc_chance / 100.0;
@@ -240,6 +306,9 @@ double sc_data_access_t::spell_proc_chance( const uint32_t spell_id ) SC_CONST
 
 double sc_data_access_t::spell_cast_time( const uint32_t spell_id, const uint32_t level ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   uint32_t min_cast, max_cast, div_cast;
@@ -256,6 +325,9 @@ double sc_data_access_t::spell_cast_time( const uint32_t spell_id, const uint32_
 
 uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, const uint32_t effect_num ) SC_CONST
 {
+  if ( !spell_id )
+    return 0;
+
   assert( spell_exists( spell_id ) && ( effect_num >= 1 ) && ( effect_num  <= MAX_EFFECTS ) );
 
   return m_spells_index[ spell_id ]->effect[ effect_num - 1 ];
@@ -263,6 +335,9 @@ uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, const uint3
 
 bool sc_data_access_t::spell_flags( const uint32_t spell_id, const spell_attribute_t f ) SC_CONST
 {
+  if ( !spell_id )
+    return 0.0;
+
   assert( spell_exists( spell_id ) );
 
   uint32_t index, bit, mask;
@@ -278,6 +353,9 @@ bool sc_data_access_t::spell_flags( const uint32_t spell_id, const spell_attribu
 
 const char* sc_data_access_t::spell_desc( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return "";
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->desc;
@@ -285,6 +363,9 @@ const char* sc_data_access_t::spell_desc( const uint32_t spell_id ) SC_CONST
 
 const char* sc_data_access_t::spell_tooltip( const uint32_t spell_id ) SC_CONST
 {
+  if ( !spell_id )
+    return "";
+
   assert( spell_exists( spell_id ) );
 
   return m_spells_index[ spell_id ]->tooltip;
@@ -299,6 +380,9 @@ bool sc_data_access_t::effect_exists( const uint32_t effect_id ) SC_CONST
 
 bool sc_data_access_t::effect_is_used( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return false;
+
   assert( effect_exists( effect_id ) );
 
   return ( ( m_effects_index[ effect_id ]->flags & 0x01 ) == 0x01 );
@@ -315,6 +399,9 @@ void sc_data_access_t::effect_set_used( const uint32_t effect_id, const bool val
 
 bool sc_data_access_t::effect_is_enabled( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return false;
+
   assert( effect_exists( effect_id ) );
 
   return ( ( m_effects_index[ effect_id ]->flags & 0x02 ) == 0x02 );
@@ -330,6 +417,9 @@ void sc_data_access_t::effect_set_enabled( const uint32_t effect_id, const bool 
 
 uint32_t sc_data_access_t::effect_spell_id( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->spell_id;
@@ -337,6 +427,9 @@ uint32_t sc_data_access_t::effect_spell_id( const uint32_t effect_id ) SC_CONST
 
 uint32_t sc_data_access_t::effect_spell_effect_num( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->index;
@@ -344,6 +437,9 @@ uint32_t sc_data_access_t::effect_spell_effect_num( const uint32_t effect_id ) S
 
 uint32_t sc_data_access_t::effect_type( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->type;
@@ -351,6 +447,9 @@ uint32_t sc_data_access_t::effect_type( const uint32_t effect_id ) SC_CONST
 
 uint32_t sc_data_access_t::effect_subtype( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->subtype;
@@ -358,6 +457,9 @@ uint32_t sc_data_access_t::effect_subtype( const uint32_t effect_id ) SC_CONST
 
 int32_t sc_data_access_t::effect_base_value( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->base_value;
@@ -365,6 +467,9 @@ int32_t sc_data_access_t::effect_base_value( const uint32_t effect_id ) SC_CONST
 
 int32_t sc_data_access_t::effect_misc_value1( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->misc_value;
@@ -372,6 +477,9 @@ int32_t sc_data_access_t::effect_misc_value1( const uint32_t effect_id ) SC_CONS
 
 int32_t sc_data_access_t::effect_misc_value2( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->misc_value_2;
@@ -379,6 +487,9 @@ int32_t sc_data_access_t::effect_misc_value2( const uint32_t effect_id ) SC_CONS
 
 uint32_t sc_data_access_t::effect_trigger_spell_id( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->trigger_spell;
@@ -386,6 +497,9 @@ uint32_t sc_data_access_t::effect_trigger_spell_id( const uint32_t effect_id ) S
 
 double sc_data_access_t::effect_m_average( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->m_avg;
@@ -393,6 +507,9 @@ double sc_data_access_t::effect_m_average( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_m_delta( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->m_delta;
@@ -400,6 +517,9 @@ double sc_data_access_t::effect_m_delta( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_m_unk( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->m_unk;
@@ -407,6 +527,9 @@ double sc_data_access_t::effect_m_unk( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_coeff( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->coeff;
@@ -414,6 +537,9 @@ double sc_data_access_t::effect_coeff( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_period( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->amplitude/1000;
@@ -421,6 +547,9 @@ double sc_data_access_t::effect_period( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_radius( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->radius;
@@ -428,6 +557,9 @@ double sc_data_access_t::effect_radius( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_radius_max( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->radius_max;
@@ -435,6 +567,9 @@ double sc_data_access_t::effect_radius_max( const uint32_t effect_id ) SC_CONST
 
 double sc_data_access_t::effect_pp_combo_points( const uint32_t effect_id ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) );
 
   return m_effects_index[ effect_id ]->pp_combo_points;
@@ -442,6 +577,9 @@ double sc_data_access_t::effect_pp_combo_points( const uint32_t effect_id ) SC_C
 
 double sc_data_access_t::effect_average( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
@@ -456,6 +594,9 @@ double sc_data_access_t::effect_average( const uint32_t effect_id, const player_
 
 double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
@@ -469,6 +610,9 @@ double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_ty
 
 double sc_data_access_t::effect_unk( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
@@ -482,6 +626,9 @@ double sc_data_access_t::effect_unk( const uint32_t effect_id, const player_type
 
 double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
@@ -495,6 +642,9 @@ double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type
 
 double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
+  if ( !effect_id )
+    return 0.0;
+
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
