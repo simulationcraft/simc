@@ -321,6 +321,20 @@ enum talent_tree_type
   TALENT_TREE_MAX
 };
 
+enum talent_tab_name
+{
+  DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
+  DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
+  HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
+  MAGE_ARCANE = 0,          MAGE_FIRE,           MAGE_FROST,          // MAGE
+  PALADIN_HOLY = 0,         PALADIN_PROTECTION,  PALADIN_RETRIBUTION, // PALADIN
+  PRIEST_DISCIPLINE = 0,    PRIEST_HOLY,         PRIEST_SHADOW,       // PRIEST
+  ROGUE_ASSASSINATION = 0,  ROGUE_COMBAT,        ROGUE_SUBTLETY,      // ROGUE
+  SHAMAN_ELEMENTAL = 0,     SHAMAN_ENHANCEMENT,  SHAMAN_RESTORATION,  // SHAMAN
+  WARLOCK_AFFLICTION = 0,   WARLOCK_DEMONOLOGY,  WARLOCK_DESTRUCTION, // WARLOCK
+  WARRIOR_ARMS = 0,         WARRIOR_FURY,        WARRIOR_PROTECTION,  // WARRIOR
+};
+
 enum weapon_type
 {
   WEAPON_NONE=0,
@@ -3399,26 +3413,26 @@ struct rng_t
 
 struct talent_t
 {
-	sim_t* sim;
-	player_t* player;
-	unsigned     id;          // Talent id
-	unsigned rank;
-	const char * name_str;        // Talent name
-	unsigned     dependance;  // Talent depends on this talent id
-	unsigned     depend_rank; // Requires this rank of depended talent
-	unsigned     col;         // Talent column
-	unsigned     row;         // Talent row
-	unsigned	 max_rank;	  // Talent max rank
-	unsigned     spell_id;    // Talent spell id
+  struct talent_data_t* data;
+  unsigned rank;
 
-
-	talent_t( player_t* p, const char * name );
+  talent_t( const player_t* p, const char* name, const int32_t specify_tree = -1 );
 	virtual ~talent_t() {}
-	virtual void get_talent_id( );
-	virtual void get_talent_data( unsigned talent_id);
-	virtual void init();
+private:
+	virtual uint32_t find_talent_id( const player_t* p, const char* name, const int32_t specify_tree = -1 );
+};
 
+// Spell id class
 
+struct spell_ids_t
+{
+  struct spell_data_t** data;
+  bool   enabled;
+
+  spell_ids_t( const player_t* p, const char* name );
+	virtual ~spell_ids_t();
+private:
+	virtual spell_data_t** find_spell_ids( const player_t* p, const char* name );
 };
 
 // String utils =================================================================

@@ -58,18 +58,15 @@
     buff_t* buffs_mind_spike;
 
     // Talents
-    talent_t* talent_meditation; // 					done: talent function 12803
 
 	// Discipline
-    talent_t* talent_aspiration; // 					complete 12803
+    talent_t* talent_archangel; // 					complete 12803
+    talent_t* talent_evangelism; // 					complete 12803
+    talent_t* talent_inner_focus; //      new: 12857
     talent_t* talent_improved_inner_fire; //
     talent_t* talent_mental_agility; // 															open: better implementation
-    talent_t* talent_pain_and_suffering; // 			complete 12803
-    talent_t* talent_penance;
     talent_t* talent_power_infusion; // 				complete 12803
     talent_t* talent_twin_disciplines; // 			complete 12803
-    talent_t* talent_evangelism; // 					complete 12803
-    talent_t* talent_archangel; // 					complete 12803
 
 	// Holy
     talent_t* talent_divine_fury; // 				complete 12803
@@ -81,20 +78,27 @@
     talent_t* talent_darkness; // 					complete 12803
     talent_t* talent_improved_devouring_plague;  // 	complete 12803
     talent_t* talent_improved_mind_blast; // 		complete 12803
-    talent_t* talent_mind_flay;
     talent_t* talent_mind_melt; // 					complete 12803
     talent_t* talent_dispersion; // 					complete 12803
     talent_t* talent_improved_shadow_word_pain; // 	complete 12803
+    talent_t* talent_pain_and_suffering; // 			complete 12803
+
     talent_t* talent_shadow_form; // 				complete 12803
     talent_t* talent_twisted_faith; // 				complete 12803
     talent_t* talent_veiled_shadows; // 				complete 12803
-    talent_t* talent_harnessed_shadows; //  			complete 12803
-    talent_t* talent_blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
-    talent_t* talent_shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
+    talent_t* talent_harnessed_shadows; //  			complete 12803  
     talent_t* talent_shadowy_apparation; // 			done: talent function 12803
     talent_t* talent_vampiric_embrace; // 			complete 12803
     talent_t* talent_vampiric_touch; // 				complete 12803
     talent_t* talent_sin_and_punishment;
+
+    // Talent Specializations
+    // Coded as talent_t for now but technically they're not.
+    spell_ids_t* talent_penance;
+    spell_ids_t* talent_chastise;     // incomplete
+    spell_ids_t* talent_shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
+    spell_ids_t* talent_mind_flay;
+    spell_ids_t* talent_meditation; // 					done: talent function 12803
 
     // Cooldowns
     cooldown_t* cooldowns_mind_blast;
@@ -151,10 +155,8 @@
 		int meditation; // 					done: talent function 12803
 
 		// Discipline
-		int aspiration; // 					complete 12803
 		int improved_inner_fire; //
 		int mental_agility; // 															open: better implementation
-		int pain_and_suffering; // 			complete 12803
 		int penance;
 		int power_infusion; // 				complete 12803
 		int twin_disciplines; // 			complete 12803
@@ -164,6 +166,7 @@
 		// Holy
 		int divine_fury; // 				complete 12803
 		int chakra; // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+    int chastine; //  incomplete
 		int state_of_mind; // 															incomplete: implement a function to increase the duration of a buff
 		int holy_concentration; //			complete 12803
 
@@ -179,11 +182,11 @@
 		int twisted_faith; // 				complete 12803
 		int veiled_shadows; // 				complete 12803
 		int harnessed_shadows; //  			complete 12803
-		int blackouts; //         	 		done: talent function 12803 				incomplete: link with main talent tree
 		int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
 		int shadowy_apparation; // 			done: talent function 12803
 		int vampiric_embrace; // 			complete 12803
 		int vampiric_touch; // 				complete 12803
+		int pain_and_suffering; // 			complete 12803
 		int sin_and_punishment;
 
 		talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
@@ -341,10 +344,10 @@
 	virtual void      init_gains();
 	virtual void      init_uptimes();
 	virtual void      init_rng();
-	virtual void	  init_talents();
+	virtual void      init_talents();
 	virtual void      init_buffs();
 	virtual void      init_actions();
-	virtual void 	  init_procs();
+	virtual void      init_procs();
 	virtual void      reset();
 	virtual void      init_party();
 	virtual std::vector<talent_translation_t>& get_talent_list();
@@ -575,7 +578,7 @@ void priest_spell_t::target_debuff( int dmg_type )
 			  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
 			  }
 
-			  target_crit_bonus_multiplier *= 1.0 + p -> talents.blackouts * 1.0;
+			  target_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 1.0;
 			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
 			  if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
 			  {
@@ -1349,7 +1352,6 @@ struct penance_t : public priest_spell_t
     base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
 
     cooldown -> duration  = 12 - ( p -> glyphs.penance * 2 );
-    cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
 
     penance_tick = new penance_tick_t( p );
 
@@ -1399,7 +1401,6 @@ struct power_infusion_t : public priest_spell_t
 
     trigger_gcd = 0;
     cooldown -> duration = 120.0;
-    cooldown -> duration *= 1.0 - p -> talents.aspiration * 0.10;
 
     id = 10060;
   }
@@ -2217,49 +2218,44 @@ void priest_t::init_talents()
 {
 	player_t::init_talents();
 
-	talent_mind_melt = new talent_t( this, "Mind Melt" );
-	talent_mind_melt -> get_talent_id();
-	talent_mind_melt -> get_talent_data( talent_mind_melt -> id );
-
-
-	/*talent_meditation = new talent_t( this, "Meditation" );
-
 	// Discipline
-	talent_aspiration = new talent_t( this );
-	talent_improved_inner_fire = new talent_t( this );
-	talent_mental_agility = new talent_t( this );
-	talent_pain_and_suffering = new talent_t( this );
-	talent_penance = new talent_t( this );
-	talent_power_infusion = new talent_t( this );
-	talent_twin_disciplines = new talent_t( this );
-	talent_evangelism = new talent_t( this );
-	talent_archangel = new talent_t( this );
+  talent_archangel = new talent_t( this, "Archangel" ); // 					complete 12803
+  talent_evangelism = new talent_t( this, "Evangelism" ); // 					complete 12803
+  talent_inner_focus = new talent_t( this, "Inner Focus" ); //      new: 12857
+  talent_improved_inner_fire = new talent_t( this, "Improved Inner Fire <TBR>" ); //
+  talent_mental_agility = new talent_t( this, "Mental Agility" ); // 															open: better implementation
+  talent_power_infusion = new talent_t( this, "Power Infusion" ); // 				complete 12803
+  talent_twin_disciplines = new talent_t( this, "Twin Disciplines" ); // 			complete 12803
 
 	// Holy
-	talent_divine_fury = new talent_t( this );
-	talent_chakra = new talent_t( this );
-	talent_state_of_mind = new talent_t( this );
-	talent_holy_concentration = new talent_t( this );
+  talent_divine_fury = new talent_t( this, "Divine Fury" ); // 				complete 12803
+  talent_chakra = new talent_t( this, "Chakra" ); // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+  talent_state_of_mind = new talent_t( this, "State of Mind" ); // 															incomplete: implement a function to increase the duration of a buff
+  talent_holy_concentration = new talent_t( this, "Holy Concentration" ); //			complete 12803
 
 	// Shadow
-	talent_darkness = new talent_t( this );
-	talent_improved_devouring_plague = new talent_t( this );
-	talent_improved_mind_blast = new talent_t( this );
-	talent_mind_flay = new talent_t( this );
-	talent_mind_melt = new talent_t( this );
-	talent_dispersion = new talent_t( this );
-	talent_improved_shadow_word_pain = new talent_t( this );
-	talent_shadow_form = new talent_t( this );
-	talent_twisted_faith = new talent_t( this );
-	talent_veiled_shadows = new talent_t( this );
-	talent_harnessed_shadows = new talent_t( this );
-	talent_blackouts = new talent_t( this );
-	talent_shadow_power = new talent_t( this );
-	talent_shadowy_apparation = new talent_t( this );
-	talent_vampiric_embrace = new talent_t( this );
-	talent_vampiric_touch = new talent_t( this );
-	talent_sin_and_punishment = new talent_t( this );
-*/
+  talent_darkness = new talent_t( this, "Darkness" ); // 					complete 12803
+  talent_improved_devouring_plague = new talent_t( this, "Improved Devouring Plague" );  // 	complete 12803
+  talent_improved_mind_blast = new talent_t( this, "Improved Mind Blast" ); // 		complete 12803
+  talent_mind_melt = new talent_t( this, "Mind Melt" ); // 					complete 12803
+  talent_dispersion = new talent_t( this, "Dispersion" ); // 					complete 12803
+  talent_improved_shadow_word_pain = new talent_t( this, "Improved Shadow Word: Pain" ); // 	complete 12803
+  talent_pain_and_suffering = new talent_t( this, "Pain and Suffering" ); // 			complete 12803
+
+  talent_shadow_form = new talent_t( this, "Shadowform" ); // 				complete 12803
+  talent_twisted_faith = new talent_t( this, "Twisted Faith" ); // 				complete 12803
+  talent_veiled_shadows = new talent_t( this, "Veiled Shadows" ); // 				complete 12803
+  talent_harnessed_shadows = new talent_t( this, "Harnessed Shadows" ); //  			complete 12803  
+  talent_shadowy_apparation = new talent_t( this, "Shadowy Apparition" ); // 			done: talent function 12803
+  talent_vampiric_embrace = new talent_t( this, "Vampiric Embrace" ); // 			complete 12803
+  talent_vampiric_touch = new talent_t( this, "Vampiric Touch" ); // 				complete 12803
+  talent_sin_and_punishment = new talent_t( this, "Sin and Punishment" );
+
+  talent_penance = new spell_ids_t( this, "Penance" );
+  talent_chastise = new spell_ids_t( this, "Holy Word: Chastise" );     // incomplete
+  talent_shadow_power = new spell_ids_t( this, "Shadow Power" ); //       			done: talent function 12803					incomplete: link with main talent tree
+  talent_mind_flay = new spell_ids_t( this, "Mind Flay" );
+  talent_meditation = new spell_ids_t( this, "Meditation" ); // 					done: talent function 12803
 }
 
 // priest_t::init_buffs ======================================================
@@ -2509,7 +2505,7 @@ std::vector<talent_translation_t>& priest_t::get_talent_list()
     { { 11, 0, NULL                                       }, { 11, 0, NULL                              }, { 11, 0, NULL                                   } },
     { { 12, 0, NULL                                       }, { 12, 0, NULL /* Twirling Light */         }, { 12, 1, &( talents.vampiric_embrace )          } },
     { { 13, 0, NULL                                       }, { 13, 0, NULL                              }, { 13, 2, &( talents.mind_melt )                 } },
-    { { 14, 2, &( talents.aspiration )                    }, { 14, 1, &( talents.chakra )               }, { 14, 2, &( talents.pain_and_suffering )        } },
+    { { 14, 2, NULL                                       }, { 14, 1, &( talents.chakra )               }, { 14, 2, &( talents.pain_and_suffering )        } },
     { { 15, 0, NULL                                       }, { 15, 0, NULL /* Revelations */            }, { 15, 1, &( talents.vampiric_touch )            } },
     { { 16, 0, NULL                                       }, { 16, 0, NULL                              }, { 16, 0, NULL                                   } },
     { { 17, 0, NULL                                       }, { 17, 0, NULL                              }, { 17, 0, NULL                                   } },
@@ -2534,7 +2530,6 @@ std::vector<option_t>& priest_t::get_options()
     option_t priest_options[] =
     {
       // @option_doc loc=player/priest/talents title="Talents"
-      { "aspiration",                               OPT_INT,    &( talents.aspiration                         ) },
       { "darkness",                                 OPT_INT,    &( talents.darkness                           ) },
       { "dispersion",                               OPT_INT,    &( talents.dispersion                         ) },
       { "divine_fury",                              OPT_INT,    &( talents.divine_fury                        ) },
@@ -2561,7 +2556,6 @@ std::vector<option_t>& priest_t::get_options()
       { "state_of_mind",                            OPT_INT,    &( talents.state_of_mind                      ) },
       { "harnessed_shadows",                        OPT_INT,    &( talents.harnessed_shadows                  ) },
       { "shadowy_apparation",                       OPT_INT,    &( talents.shadowy_apparation                 ) },
-      { "blackouts",                                OPT_INT,    &( talents.blackouts                          ) },
       { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
       { "holy_concentration",                       OPT_INT,    &( talents.holy_concentration                 ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"

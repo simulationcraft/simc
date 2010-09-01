@@ -345,10 +345,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talent.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_sim.cpp"
 			>
 		</File>
@@ -362,6 +358,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_stats.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent.cpp"
 			>
 		</File>
 		<File

@@ -11,58 +11,103 @@
 
 // talent_t::talent_t =======================================================
 
-talent_t::talent_t( player_t* p, const char * name ) :
-	sim( p -> sim ), player ( p ), id ( 0 ), rank ( 0 ), name_str( name ),
-    dependance ( 0 ), depend_rank ( 0 ),
-    col ( 0 ), row ( 0 ), max_rank ( 0 ), spell_id ( 0 )
-{}
-
-
-// talent_t::get_talent_id ============================================================
-
-void talent_t::get_talent_id ()
+talent_t::talent_t( const player_t* p, const char* name, const int32_t specify_tree ) : data( NULL ), rank( 0 )
 {
+  assert( p && name && p -> sim );
+  uint32_t id = find_talent_id( p, name, specify_tree );
+  if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing talent %s", name );
 
- int i = 0;
-    for ( unsigned j=0; j<3; j++)
+  if ( id != 0 )
+  {
+    data = p->player_data.m_talents_index[ id ];
+    if ( p -> sim -> debug ) log_t::output( p -> sim, "Talent %s initialized", name );
+  }
+}
+
+// talent_t::find_talent_id ===================================================
+
+uint32_t talent_t::find_talent_id( const player_t* p, const char* name, const int32_t specify_tree )
+{
+  uint32_t tab, talent_num, talent_id;
+
+  assert( p && name && name[0] && ( ( specify_tree < 0 ) || ( specify_tree < MAX_TALENT_TABS ) ) );
+
+  uint32_t min_tab = specify_tree >= 0 ? specify_tree : 0;
+  uint32_t max_tab = specify_tree >= 0 ? specify_tree + 1 : MAX_TALENT_TABS;
+
+  for ( tab = min_tab; tab < max_tab; tab++ )
+  {
+    talent_num = 0;
+    while ( ( talent_id = p->player_data.talent_player_get_id_by_num( p->type, tab, talent_num ) ) != 0 )
     {
-           while ( player -> player_data.talent_player_get_id_by_num( player -> type,j,i) != 0)
-           {
-
-        	   if ( !strcmp (player -> player_data.talent_name_str( player -> player_data.talent_player_get_id_by_num( player -> type, j, i ) ), name_str) )
-                   {
-
-                	   id = player -> player_data.talent_player_get_id_by_num( player -> type,j,i);
-                   }
-           i++;
-           }
-           i=0;
+      if ( !_stricmp( p->player_data.talent_name_str( talent_id ), name ) )
+      {
+        return talent_id;
+      }
+      talent_num++;
     }
+  }
+  return 0; 
 }
 
-// target_t::get_talent_data =============================================================
+// ==========================================================================
+// Spell and Talent Specialization
+// ==========================================================================
 
-void talent_t::get_talent_data( unsigned talent_id )
+// spell_ids_t::spell_ids_t =======================================================
+
+spell_ids_t::spell_ids_t( const player_t* p, const char* name ) : data( NULL ), enabled( false )
 {
-	name_str 	= player -> player_data.talent_name_str ( talent_id );
-	dependance	= player -> player_data.talent_depends_id ( talent_id );
-	depend_rank	= player -> player_data.talent_depends_rank	( talent_id );
-	col			= player -> player_data.talent_col ( talent_id );
-	row			= player -> player_data.talent_row ( talent_id );
-	max_rank	= player -> player_data.talent_max_rank ( talent_id );
-	if (rank!=0) spell_id	= player -> player_data.talent_rank_spell_id ( talent_id, rank );
+  assert( p && name && p -> sim );
+  
+  if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing spell %s", name );
 
-
+  data = find_spell_ids( p, name );
+  if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s%s initialized", name, data ? "":" NOT" );
 }
 
-
-
-// talent_t::init ============================================================
-
-void talent_t::init()
+spell_ids_t::~spell_ids_t()
 {
-	if ( sim -> debug ) log_t::output( sim, "Initializing talent %s", name_str );
+  if ( data ) delete [] data;
+}
 
+// spell_ids_t::find_spell_ids ===================================================
+
+spell_data_t** spell_ids_t::find_spell_ids( const player_t* p, const char* name )
+{
+  uint32_t spell_id;
+  spell_data_t** spell_ids = NULL;
+  uint32_t num_matches = 0;
+  uint32_t match_num = 0;
+
+  assert( p && name && name[0] );
+
+  for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
+  {
+    if ( !_stricmp( p -> player_data.m_spells_index[ spell_id ]->name, name ) )
+    {
+      num_matches++;
+    }
+  }
+
+  if ( !num_matches )
+    return NULL;
+
+  spell_ids = new spell_data_t*[ num_matches + 1 ];
+
+  memset( spell_ids, 0, ( num_matches + 1 ) * sizeof( spell_data_t * ) );
+
+  for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
+  {
+    if ( !_stricmp( p -> player_data.m_spells_index[ spell_id ]->name, name ) )
+    {
+      spell_ids[ match_num ] = p -> player_data.m_spells_index[ spell_id ];
+      match_num++;
+    }
+  }
+  spell_ids[ match_num ] = NULL;
+
+  return spell_ids; 
 }
 
 
