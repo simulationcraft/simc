@@ -377,7 +377,7 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
-  for ( int i=0; i < MAX_TALENT_SLOTS; i++ )
+  for ( int i=0; i < MAX_TALENT_RANK_SLOTS; i++ )
   {
     talent_list_rank[ i ] = 0;
   }
