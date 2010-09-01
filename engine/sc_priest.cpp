@@ -387,7 +387,6 @@
 		}
 
 	  }
-
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -2216,8 +2215,6 @@ void priest_t::init_rng()
 // priest_t::init_talents
 void priest_t::init_talents()
 {
-	player_t::init_talents();
-
 	// Discipline
   talent_archangel = new talent_t( this, "Archangel" ); // 					complete 12803
   talent_evangelism = new talent_t( this, "Evangelism" ); // 					complete 12803
@@ -2256,6 +2253,8 @@ void priest_t::init_talents()
   talent_shadow_power = new spell_ids_t( this, "Shadow Power" ); //       			done: talent function 12803					incomplete: link with main talent tree
   talent_mind_flay = new spell_ids_t( this, "Mind Flay" );
   talent_meditation = new spell_ids_t( this, "Meditation" ); // 					done: talent function 12803
+
+	player_t::init_talents();
 }
 
 // priest_t::init_buffs ======================================================

@@ -125,6 +125,7 @@ struct rating_t;
 struct report_t;
 struct rng_t;
 struct talent_t;
+struct spell_ids_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -1386,6 +1387,7 @@ struct option_t
 #define MAX_TALENT_TREES 3
 #define MAX_TALENT_COL 4
 #define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
+#define MAX_TALENT_RANK_SLOTS ( 60 )
 
 struct talent_translation_t
 {
@@ -2196,6 +2198,8 @@ struct player_t
 
   // Talent Parsing
   std::vector<talent_translation_t> talent_list;
+  int talent_list_rank[ MAX_TALENT_RANK_SLOTS ];
+  std::vector<talent_t *> talent_list2;
 
   // Profs
   std::string professions_str;
@@ -3416,7 +3420,7 @@ struct talent_t
   struct talent_data_t* data;
   unsigned rank;
 
-  talent_t( const player_t* p, const char* name, const int32_t specify_tree = -1 );
+  talent_t( player_t* p, const char* name, const int32_t specify_tree = -1 );
 	virtual ~talent_t() {}
 private:
 	virtual uint32_t find_talent_id( const player_t* p, const char* name, const int32_t specify_tree = -1 );

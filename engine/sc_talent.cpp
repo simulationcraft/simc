@@ -11,7 +11,7 @@
 
 // talent_t::talent_t =======================================================
 
-talent_t::talent_t( const player_t* p, const char* name, const int32_t specify_tree ) : data( NULL ), rank( 0 )
+talent_t::talent_t( player_t* p, const char* name, const int32_t specify_tree ) : data( NULL ), rank( 0 )
 {
   assert( p && name && p -> sim );
   uint32_t id = find_talent_id( p, name, specify_tree );
@@ -20,6 +20,9 @@ talent_t::talent_t( const player_t* p, const char* name, const int32_t specify_t
   if ( id != 0 )
   {
     data = p->player_data.m_talents_index[ id ];
+
+    p -> talent_list2.push_back( const_cast<talent_t *>( this ) );
+
     if ( p -> sim -> debug ) log_t::output( p -> sim, "Talent %s initialized", name );
   }
 }
@@ -84,7 +87,7 @@ spell_data_t** spell_ids_t::find_spell_ids( const player_t* p, const char* name 
 
   for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
   {
-    if ( !_stricmp( p -> player_data.m_spells_index[ spell_id ]->name, name ) )
+    if ( p -> player_data.spell_exists( spell_id ) && !_stricmp( p -> player_data.spell_name_str( spell_id ), name ) )
     {
       num_matches++;
     }
@@ -99,7 +102,7 @@ spell_data_t** spell_ids_t::find_spell_ids( const player_t* p, const char* name 
 
   for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
   {
-    if ( !_stricmp( p -> player_data.m_spells_index[ spell_id ]->name, name ) )
+    if ( p -> player_data.spell_exists( spell_id ) && !_stricmp( p -> player_data.spell_name_str( spell_id ), name ) )
     {
       spell_ids[ match_num ] = p -> player_data.m_spells_index[ spell_id ];
       match_num++;
