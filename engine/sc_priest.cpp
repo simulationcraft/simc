@@ -373,15 +373,32 @@
 	  {
 	  if ( level > 10 && level <= 69 )
 	    {
-		  if (talent_darkness -> rank || talent_improved_shadow_word_pain -> rank || talent_veiled_shadows -> rank ) return TREE_SHADOW;
-		  else if (talent_divine_fury -> rank ) return TREE_HOLY;
-		  else if (talent_twin_disciplines -> rank || talent_mental_agility -> rank ) return TREE_DISCIPLINE;
-		  else return TREE_NONE;
-
+		  if ( talent_tab_points[ PRIEST_SHADOW ] > 0 ) return TREE_SHADOW;
+      if ( talent_tab_points[ PRIEST_DISCIPLINE ] > 0 ) return TREE_DISCIPLINE;
+		  if ( talent_tab_points[ PRIEST_HOLY ] > 0 ) return TREE_HOLY;
+      return TREE_NONE;
 		}
 	  else
 		{
-		  return talent_shadow_form -> rank ? TREE_SHADOW : talent_power_infusion -> rank ? TREE_DISCIPLINE : TREE_HOLY;
+      if ( talent_tab_points[ PRIEST_SHADOW ] >= talent_tab_points[ PRIEST_DISCIPLINE ] ) 
+      {
+        if ( talent_tab_points[ PRIEST_SHADOW ] >= talent_tab_points[ PRIEST_HOLY ] )
+        {
+          return TREE_SHADOW;
+        }
+        else
+        {
+          return TREE_HOLY;
+        }
+      }
+      else if ( talent_tab_points[ PRIEST_HOLY ] >= talent_tab_points[ PRIEST_DISCIPLINE ] )
+      {
+        return TREE_HOLY;
+      }
+      else
+      {
+        return TREE_DISCIPLINE;
+      }
 		}
 
 	  }

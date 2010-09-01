@@ -377,6 +377,10 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
+  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    talent_tab_points[ i ] = 0;
+  }
   talent_list2.clear();
 }
 
@@ -3773,6 +3777,7 @@ bool player_t::parse_talent_trees( int talents[] )
           if ( rank > player_data.talent_max_rank( talent_id ) )
             rank = player_data.talent_max_rank( talent_id );
           talent_list2[ j ] -> rank = rank ;
+          talent_tab_points[ tab ] += rank;
         }
       }
     }   

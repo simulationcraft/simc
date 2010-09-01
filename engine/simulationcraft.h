@@ -2200,6 +2200,7 @@ struct player_t
 
   // Talent Parsing
   std::vector<talent_translation_t> talent_list;
+  uint32_t talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t *> talent_list2;
 
   // Profs
