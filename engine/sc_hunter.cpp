@@ -47,6 +47,7 @@ struct hunter_t : public player_t
   // Gains
   gain_t* gains_glyph_of_arcane_shot;
   gain_t* gains_invigoration;
+  gain_t* gains_fervor;
   gain_t* gains_rapid_recuperation;
   gain_t* gains_roar_of_recovery;
   gain_t* gains_thrill_of_the_hunt;
@@ -75,15 +76,14 @@ struct hunter_t : public player_t
     int  black_arrow;
     int  careful_aim;
     int  chimera_shot;
+    int  cobra_strikes;
+    int  efficiency;
+    int  ferocious_inspiration;
     
     // Talents that need to be checked
     int  bombardment;
-    int  cobra_strikes;
-    int  counterattack;
-    int  efficiency;
     int  entrapment;
     int  envenomation;
-    int  ferocious_inspiration;
     int  fervor;
     int  focus_fire;
     int  frenzy;
@@ -126,6 +126,7 @@ struct hunter_t : public player_t
     // Talents which are not implemented because the have no useful effect
     // e.g. Mirrored Blades
     int  concussive_barrage; // Shots daze target, no use in the sim
+    int  counterattack; // Melee attack
     int  crouching_tiger_hidden_chimera; // PVP, reactive to being attacked
     int  mirrored_blades; // PVP, reactive, reflects spells 
     int  pathfinding; // Increases movement speed
@@ -168,6 +169,7 @@ struct hunter_t : public player_t
 
     ranged_attack = 0;
     summon_pet_str = "wolf";
+    base_gcd = 1.0;
   }
 
   // Character Definition
@@ -231,7 +233,6 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_culling_the_herd;
   buff_t* buffs_frenzy;
   buff_t* buffs_furious_howl;
-  buff_t* buffs_kill_command;
   buff_t* buffs_monstrous_bite;
   buff_t* buffs_owls_focus;
   buff_t* buffs_rabid;
@@ -242,6 +243,7 @@ struct hunter_pet_t : public pet_t
 
   // Gains
   gain_t* gains_go_for_the_throat;
+  gain_t* gains_fervor;
 
   struct talents_t
   {
@@ -406,7 +408,6 @@ struct hunter_pet_t : public pet_t
     buffs_culling_the_herd  = new buff_t( this, "culling_the_herd",  1, 10.0, 0.0, talents.culling_the_herd );
     buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0, 0.0, o -> talents.frenzy );
     buffs_furious_howl      = new buff_t( this, "furious_howl",      1, 20.0 );
-    buffs_kill_command      = new buff_t( this, "kill_command",      3, 30.0 );
     buffs_monstrous_bite    = new buff_t( this, "monstrous_bite",    3, 12.0 );
     buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, talents.owls_focus * 0.15 );
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
@@ -420,6 +421,7 @@ struct hunter_pet_t : public pet_t
   {
     pet_t::init_gains();
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
+    gains_fervor            = get_gain( "fervor" );
   }
 
   virtual void init_uptimes()
@@ -900,10 +902,12 @@ struct hunter_pet_attack_t : public attack_t
     }
     if ( special )
     {
+      p -> buffs_owls_focus -> trigger();
+    }
+    else
+    {
       hunter_t* o = p -> owner -> cast_hunter();
       o -> buffs_cobra_strikes -> decrement();
-      p -> buffs_kill_command -> decrement();
-      p -> buffs_owls_focus -> trigger();
     }
   }
 
@@ -926,14 +930,9 @@ struct hunter_pet_attack_t : public attack_t
     if ( p -> sim -> target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
 
-    if ( special )
+    if ( ! special )
     {
       if ( o -> buffs_cobra_strikes -> up() ) player_crit += 1.0;
-
-      if ( p -> buffs_kill_command -> up() )
-      {
-        player_multiplier *= 1.0 + p -> buffs_kill_command -> stack() * 0.20;
-      }
     }
 
     if ( o -> buffs_tier10_2pc -> up() )
@@ -1221,8 +1220,6 @@ struct hunter_pet_spell_t : public spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     hunter_t* o = p -> owner -> cast_hunter();
-    o -> buffs_cobra_strikes -> decrement();
-    p -> buffs_kill_command -> decrement();
     p -> buffs_owls_focus -> trigger();
   }
 
@@ -1237,15 +1234,8 @@ struct hunter_pet_spell_t : public spell_t
 
     if ( p -> buffs_bestial_wrath -> up() ) player_multiplier *= 1.50;
 
-    if ( o -> buffs_cobra_strikes -> up() ) player_crit += 1.0;
-
     if ( p -> buffs_culling_the_herd -> up() )
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
-
-    if ( p -> buffs_kill_command -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_kill_command -> current_stack * 0.20;
-    }
 
     if ( p -> sim -> target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
@@ -1631,12 +1621,8 @@ struct aimed_shot_t : public hunter_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 10, 1, 408, 408, 0, 50 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 49050 );
+    id				  = 19434;
+    parse_data( p -> player_data );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1645,7 +1631,7 @@ struct aimed_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     // FIXME! #1 haste lowers cd!
     // FIXME! #2 stop autoattacking during cast!
-    cooldown -> duration = 3; 
+
     if ( p -> glyphs.aimed_shot )
     {
       cooldown -> duration -= 2;
@@ -1698,26 +1684,17 @@ struct arcane_shot_t : public hunter_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 79, 11, 492, 492, 0, 25 },
-      { 73, 10, 402, 402, 0, 25 },
-      { 69, 9,  273, 273, 0, 25 },
-      { 60, 8,  200, 200, 0, 25 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 49045 );
+    id				  = 3044;
+    parse_data( p -> player_data );
+    base_cost   -= p -> talents.efficiency;
 
     // To trigger ppm-based JoW
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0;
 
+
     may_crit = true;
-
-
-    direct_power_mod = 0.15;
-
   }
 
   virtual double cost() SC_CONST
@@ -1751,16 +1728,8 @@ struct black_arrow_t : public hunter_attack_t
 
     check_talent( p -> talents.black_arrow );
 
-    static rank_t ranks[] =
-    {
-      { 80, 6, 0, 0, 2765/5.0, 45 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 63672 );
-
-    base_tick_time   = 3.0;
-    num_ticks        = 5;
-    tick_power_mod   = 0.1 / 5.0;
+    id				  = 3674;
+    parse_data( p -> player_data );
 
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = 30 - p -> talents.resourcefulness * 2;
@@ -1799,25 +1768,21 @@ struct chimera_shot_t : public hunter_attack_t
     };
     parse_options( options, options_str );
 
+    id				  = 53209;
+    parse_data( p -> player_data );
+
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
     may_crit     = true;
-    base_dd_min = 1;
-    base_dd_max = 1;
-    base_cost   = 50 - p -> talents.efficiency * 2;
+    base_cost   -= p -> talents.efficiency * 2;
 
     normalize_weapon_speed = true;
-    weapon_multiplier      = 1.90;
-
-    cooldown -> duration = 10;
 
     if ( p -> glyphs.chimera_shot )
     {
       cooldown -> duration -= 1;
     }
-
-    id = 53209;
   }
 
 
@@ -1861,12 +1826,8 @@ struct cobra_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    static rank_t ranks[] =
-    {
-      { 77, 4, 252, 252, 0, 0 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 77767 );
+    id				  = 77767;
+    parse_data( p -> player_data );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1874,8 +1835,6 @@ struct cobra_shot_t : public hunter_attack_t
     normalize_weapon_damage = true;
     normalize_weapon_speed  = true;
     weapon_power_mod        = 0;
-    direct_power_mod        = 0.1;
-    base_execute_time       = 2.0;
 
     may_crit = true;
 
@@ -2391,6 +2350,43 @@ struct bestial_wrath_t : public hunter_spell_t
   }
 };
 
+// Fervor =============================================================
+
+struct fervor_t : public hunter_spell_t
+{
+  fervor_t( player_t* player, const std::string& options_str ) :
+      hunter_spell_t( "fervor", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+  {
+    hunter_t* p = player -> cast_hunter();
+    
+    check_talent( p -> talents.fervor );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    
+    id = 82726;
+    parse_data( p -> player_data );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> active_pet -> resource_gain( RESOURCE_FOCUS, 50, p -> active_pet -> gains_fervor );
+    p               -> resource_gain( RESOURCE_FOCUS, 50, p               -> gains_fervor );
+
+    p -> buffs_rapid_fire -> trigger( 1, ( p -> glyphs.rapid_fire ? 0.48 : 0.40 ) );
+
+    consume_resource();
+    update_ready();
+  }
+};
+
 // Hunter's Mark =========================================================
 
 struct hunters_mark_t : public hunter_spell_t
@@ -2435,6 +2431,7 @@ struct kill_command_t : public hunter_spell_t
   kill_command_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "kill_command", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
   {
+    // FIXME! Implement new kill command spell
     hunter_t* p = player -> cast_hunter();
 
     option_t options[] =
@@ -2448,16 +2445,16 @@ struct kill_command_t : public hunter_spell_t
 
     id = 34026;
   }
-
+  
   virtual void execute()
   {
-    hunter_t* p = player -> cast_hunter();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> active_pet -> buffs_kill_command -> trigger( 3 );
-    consume_resource();
-    update_ready();
+    /*
+    if ( result == RESULT_CRIT )
+    {
+      p -> buffs_cobra_strikes -> trigger( 2 );
+    }
+    */
   }
-
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
@@ -2883,7 +2880,7 @@ void hunter_t::init_buffs()
   buffs_aspect_of_the_hawk          = new buff_t( this, "aspect_of_the_hawk",          1,  0.0 );
   buffs_beast_within                = new buff_t( this, "beast_within",                1, 10.0,  0.0, talents.the_beast_within );
   buffs_call_of_the_wild            = new buff_t( this, "call_of_the_wild",            1, 10.0 );
-  buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               3, 10.0,  0.0, talents.cobra_strikes * 0.20 );
+  buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               2, 10.0,  0.0, talents.cobra_strikes * 0.20 );
   buffs_culling_the_herd            = new buff_t( this, "culling_the_herd",            1, 10.0 );
   buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
   buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1, 10.0,  0.0, talents.improved_steady_shot * 0.05 );
@@ -2908,6 +2905,7 @@ void hunter_t::init_gains()
   player_t::init_gains();
   gains_glyph_of_arcane_shot = get_gain( "glyph_of_arcane_shot" );
   gains_invigoration         = get_gain( "invigoration" );
+  gains_fervor               = get_gain( "fervor" );
   gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
   gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
   gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
@@ -3134,7 +3132,8 @@ void hunter_t::combat_begin()
 {
   player_t::combat_begin();
 
-  sim -> auras.ferocious_inspiration -> trigger( 1, talents.ferocious_inspiration, talents.ferocious_inspiration > 0 );
+  if ( talents.ferocious_inspiration )
+    sim -> auras.ferocious_inspiration -> trigger();
 }
 
 // hunter_t::reset ===========================================================
@@ -3423,7 +3422,7 @@ void player_t::hunter_init( sim_t* sim )
 void player_t::hunter_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
-  if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override( 1, 3 );
+  if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
 
   target_t* t = sim -> target;
   if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, 500 * 1.5 );

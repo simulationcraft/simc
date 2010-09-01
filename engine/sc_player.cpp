@@ -1829,33 +1829,10 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
       m *= 1.15;
     }
 
-    double ferocious_inspiration_value = 0.0;
-    double sanctified_retribution_value = 0.0;
-    double arcane_empowerment_value = 0.0;
-    double max_value = 0.0;
-
-    if ( sim -> auras.ferocious_inspiration -> up() )
+    if ( sim -> auras.ferocious_inspiration -> up() || sim -> auras.sanctified_retribution -> up() )
     {
-      ferocious_inspiration_value = sim -> auras.ferocious_inspiration -> value();
+      m *= 1.03;
     }
-
-    if ( sim -> auras.sanctified_retribution -> up() )
-    {
-      sanctified_retribution_value = 3;
-    }
-
-    if ( sim -> auras.arcane_empowerment -> up() )
-    {
-      arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
-    }
-
-    max_value = sanctified_retribution_value;
-    if ( ferocious_inspiration_value > max_value )
-      max_value = ferocious_inspiration_value;
-    if ( arcane_empowerment_value > max_value )
-      max_value = arcane_empowerment_value;
-
-    m *= 1.00 + 0.01 * max_value;
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
