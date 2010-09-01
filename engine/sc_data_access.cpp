@@ -276,6 +276,20 @@ bool sc_data_access_t::spell_flags( const uint32_t spell_id, const spell_attribu
   return ( ( m_spells_index[ spell_id ]->attributes[ index ] & mask ) == mask );
 }
 
+const char* sc_data_access_t::spell_desc( const uint32_t spell_id ) SC_CONST
+{
+  assert( spell_exists( spell_id ) );
+
+  return m_spells_index[ spell_id ]->desc;
+}
+
+const char* sc_data_access_t::spell_tooltip( const uint32_t spell_id ) SC_CONST
+{
+  assert( spell_exists( spell_id ) );
+
+  return m_spells_index[ spell_id ]->tooltip;
+}
+
 /************ Effects ******************/
 
 bool sc_data_access_t::effect_exists( const uint32_t effect_id ) SC_CONST

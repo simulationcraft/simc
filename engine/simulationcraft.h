@@ -1256,6 +1256,8 @@ public:
   virtual double        spell_cast_time( const uint32_t spell_id, const uint32_t level ) SC_CONST;
   virtual uint32_t      spell_effect_id( const uint32_t spell_id, const uint32_t effect_num ) SC_CONST;
   virtual bool          spell_flags( const uint32_t spell_id, const spell_attribute_t f ) SC_CONST;
+  virtual const char*   spell_desc( const uint32_t spell_id ) SC_CONST;
+  virtual const char*   spell_tooltip( const uint32_t spell_id ) SC_CONST;
 
   // Effect methods
   virtual bool          effect_exists( const uint32_t effect_id ) SC_CONST;

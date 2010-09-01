@@ -40,6 +40,8 @@ struct spell_data_t {
   unsigned     effect[3];          // Effect identifiers
   // Spell.dbc flags
   unsigned     attributes[10];     // Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  const char*  desc;               // Description
+  const char*  tooltip;            // Tooltip
 };
 
 // SpellEffect.dbc
