@@ -82,6 +82,7 @@
     talent_t* talent_dispersion; // 					complete 12803
     talent_t* talent_improved_shadow_word_pain; // 	complete 12803
     talent_t* talent_pain_and_suffering; // 			complete 12803
+    talent_t* talent_masochism; // new 12857
 
     talent_t* talent_shadow_form; // 				complete 12803
     talent_t* talent_twisted_faith; // 				complete 12803
@@ -117,6 +118,7 @@
     gain_t* gains_glyph_of_shadow_word_pain;
     gain_t* gains_shadow_fiend;
     gain_t* gains_archangel;
+    gain_t* gains_masochism;
 
     // Uptimes
     uptime_t* uptimes_mind_spike[ 4 ];
@@ -148,50 +150,6 @@
 	mana_resource_t mana_resource;
 	double max_mana_cost;
 	std::vector<player_t *> party_list;
-
-	// Talents
-	struct talents_t
-	  {
-		int meditation; // 					done: talent function 12803
-
-		// Discipline
-		int improved_inner_fire; //
-		int mental_agility; // 															open: better implementation
-		int penance;
-		int power_infusion; // 				complete 12803
-		int twin_disciplines; // 			complete 12803
-		int evangelism; // 					complete 12803
-		int archangel; // 					complete 12803
-
-		// Holy
-		int divine_fury; // 				complete 12803
-		int chakra; // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
-    int chastine; //  incomplete
-		int state_of_mind; // 															incomplete: implement a function to increase the duration of a buff
-		int holy_concentration; //			complete 12803
-
-		// Shadow
-		int darkness; // 					complete 12803
-		int improved_devouring_plague;  // 	complete 12803
-		int improved_mind_blast; // 		complete 12803
-		int mind_flay;
-		int mind_melt; // 					complete 12803
-		int dispersion; // 					complete 12803
-		int improved_shadow_word_pain; // 	complete 12803
-		int shadow_form; // 				complete 12803
-		int twisted_faith; // 				complete 12803
-		int veiled_shadows; // 				complete 12803
-		int harnessed_shadows; //  			complete 12803
-		int shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
-		int shadowy_apparation; // 			done: talent function 12803
-		int vampiric_embrace; // 			complete 12803
-		int vampiric_touch; // 				complete 12803
-		int pain_and_suffering; // 			complete 12803
-		int sin_and_punishment;
-
-		talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-	  };
-	talents_t talents;
 
 	// Glyphs
 	struct glyphs_t
@@ -335,6 +293,46 @@
 
 		shadowy         = 0;
 
+	  // Discipline
+    talent_archangel = new talent_t( this, "Archangel" ); // 					complete 12803
+    talent_evangelism = new talent_t( this, "Evangelism" ); // 					complete 12803
+    talent_inner_focus = new talent_t( this, "Inner Focus" ); //      new: 12857
+    talent_improved_inner_fire = new talent_t( this, "Improved Inner Fire <TBR>" ); //
+    talent_mental_agility = new talent_t( this, "Mental Agility" ); // 															open: better implementation
+    talent_power_infusion = new talent_t( this, "Power Infusion" ); // 				complete 12803
+    talent_twin_disciplines = new talent_t( this, "Twin Disciplines" ); // 			complete 12803
+
+	  // Holy
+    talent_divine_fury = new talent_t( this, "Divine Fury" ); // 				complete 12803
+    talent_chakra = new talent_t( this, "Chakra" ); // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+    talent_state_of_mind = new talent_t( this, "State of Mind" ); // 															incomplete: implement a function to increase the duration of a buff
+    talent_holy_concentration = new talent_t( this, "Holy Concentration" ); //			complete 12803
+
+	  // Shadow
+    talent_darkness = new talent_t( this, "Darkness" ); // 					complete 12803
+    talent_improved_devouring_plague = new talent_t( this, "Improved Devouring Plague" );  // 	complete 12803
+    talent_improved_mind_blast = new talent_t( this, "Improved Mind Blast" ); // 		complete 12803
+    talent_mind_melt = new talent_t( this, "Mind Melt" ); // 					complete 12803
+    talent_dispersion = new talent_t( this, "Dispersion" ); // 					complete 12803
+    talent_improved_shadow_word_pain = new talent_t( this, "Improved Shadow Word: Pain" ); // 	complete 12803
+    talent_pain_and_suffering = new talent_t( this, "Pain and Suffering" ); // 			complete 12803
+    talent_masochism = new talent_t( this, "Masochism" ); // new 12857
+
+    talent_shadow_form = new talent_t( this, "Shadowform" ); // 				complete 12803
+    talent_twisted_faith = new talent_t( this, "Twisted Faith" ); // 				complete 12803
+    talent_veiled_shadows = new talent_t( this, "Veiled Shadows" ); // 				complete 12803
+    talent_harnessed_shadows = new talent_t( this, "Harnessed Shadows" ); //  			complete 12803  
+    talent_shadowy_apparation = new talent_t( this, "Shadowy Apparition" ); // 			done: talent function 12803
+    talent_vampiric_embrace = new talent_t( this, "Vampiric Embrace" ); // 			complete 12803
+    talent_vampiric_touch = new talent_t( this, "Vampiric Touch" ); // 				complete 12803
+    talent_sin_and_punishment = new talent_t( this, "Sin and Punishment" );
+
+    talent_penance = new spell_ids_t( this, "Penance" );
+    talent_chastise = new spell_ids_t( this, "Holy Word: Chastise" );     // incomplete
+    talent_shadow_power = new spell_ids_t( this, "Shadow Power" ); //       			done: talent function 12803					incomplete: link with main talent tree
+    talent_mind_flay = new spell_ids_t( this, "Mind Flay" );
+    talent_meditation = new spell_ids_t( this, "Meditation" ); // 					done: talent function 12803
+
 	  }
 
 	// Character Definition
@@ -375,15 +373,15 @@
 	  {
 	  if ( level > 10 && level <= 69 )
 	    {
-		  if (talents.darkness || talents.improved_shadow_word_pain || talents.veiled_shadows) return TREE_SHADOW;
-		  else if (talents.divine_fury) return TREE_HOLY;
-		  else if (talents.twin_disciplines || talents.mental_agility) return TREE_DISCIPLINE;
+		  if (talent_darkness -> rank || talent_improved_shadow_word_pain -> rank || talent_veiled_shadows -> rank ) return TREE_SHADOW;
+		  else if (talent_divine_fury -> rank ) return TREE_HOLY;
+		  else if (talent_twin_disciplines -> rank || talent_mental_agility -> rank ) return TREE_DISCIPLINE;
 		  else return TREE_NONE;
 
 		}
 	  else
 		{
-		  return talents.shadow_form ? TREE_SHADOW : talents.power_infusion ? TREE_DISCIPLINE : TREE_HOLY;
+		  return talent_shadow_form -> rank ? TREE_SHADOW : talent_power_infusion -> rank ? TREE_DISCIPLINE : TREE_HOLY;
 		}
 
 	  }
@@ -442,7 +440,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::assess_damage( amount, dmg_type );
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.05, p -> gains_shadow_fiend );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.03, p -> gains_shadow_fiend );
     }
   };
 
@@ -518,12 +516,11 @@ double priest_spell_t::haste() SC_CONST
 	priest_t* p = player -> cast_priest();
 
 	  double h = spell_t::haste();
-	  if ( p -> talents.darkness )
+	  if ( p -> talent_darkness -> rank )
 	  {
-	    h *= 1.0 / ( 1.0 + p -> talents.darkness * p -> constants.darkness_value );
+	    h *= 1.0 / ( 1.0 + p -> talent_darkness -> rank * p -> constants.darkness_value );
 	  }
 	  return h;
-
 }
 
 
@@ -544,7 +541,7 @@ void priest_spell_t::player_buff()
 		if ( school == SCHOOL_SHADOW )
 			{
 
-				player_hit += p -> talents.twisted_faith * p -> constants.twisted_faith_static_value;
+				player_hit += p -> talent_twisted_faith -> rank * p -> constants.twisted_faith_static_value;
 			}
 	    for ( int i=0; i < 4; i++ )
 			{
@@ -568,16 +565,16 @@ void priest_spell_t::target_debuff( int dmg_type )
 	priest_t* p = player -> cast_priest();
 	spell_t::target_debuff( dmg_type );
 
-	target_multiplier *= 1.0 + p -> talents.shadow_power * p -> constants.shadow_power_value;
+	target_multiplier *= 1.0 + p -> talent_shadow_power -> enabled * p -> constants.shadow_power_value;
 
 		  if ( school == SCHOOL_SHADOW )
 		  {
 			  if ( dmg_type == DMG_OVER_TIME )
 			  {
-			  target_multiplier *=  1.0 + p -> talents.evangelism * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+			  target_multiplier *=  1.0 + p -> talent_evangelism -> rank* p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
 			  }
 
-			  target_crit_bonus_multiplier *= 1.0 + p -> talents.shadow_power * 1.0;
+			  target_crit_bonus_multiplier *= 1.0 + p -> talent_shadow_power -> enabled * 1.0;
 			  target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
 			  if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
 			  {
@@ -600,7 +597,7 @@ void priest_spell_t::target_debuff( int dmg_type )
 		  // Twin Discipline
 		  if ( execute_time() == 0 && !(dual) )
 		  {
-			 target_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
+			 target_multiplier  *= 1.0 + ( p -> talent_twin_disciplines -> rank * p -> constants.twin_disciplines_value );
 
 		  }
 }
@@ -730,12 +727,12 @@ struct devouring_plague_t : public priest_spell_t
     id = 2944;
     parse_data( p -> player_data );
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
-								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 )
+                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
-    if ( p -> talents.improved_devouring_plague )
+    if ( p -> talent_improved_devouring_plague -> rank )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
 
@@ -799,7 +796,7 @@ struct dispersion_t : public priest_spell_t
        };
     parse_options( options, options_str );
 
-    check_talent( p -> talents.dispersion );
+    check_talent( p -> talent_dispersion -> rank );
 
     base_execute_time = 0.0;
     base_tick_time    = 1.0;
@@ -850,7 +847,7 @@ struct dispersion_t : public priest_spell_t
 
     if ( oom_time >= time_to_die ) return false;
 
-    double sf_regen = 0.50 * max_mana;
+    double sf_regen = 0.30 * max_mana;
 
     consumption_rate -= sf_regen / sf_cooldown_duration;
 
@@ -938,11 +935,11 @@ struct holy_fire_t : public priest_spell_t
     tick_power_mod    = 0.1678 / 7;
     cooldown -> duration = 10;
 
-    base_execute_time -= p -> talents.divine_fury * 0.01;
+    base_execute_time -= p -> talent_divine_fury -> rank * 0.01;
 
     // Holy_Evangelism
-        target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-        base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+        target_multiplier *= 1.0 + ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+        base_cost		  *= 1.0 - ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
 
   }
 };
@@ -964,8 +961,8 @@ struct inner_fire_t : public priest_spell_t
     bonus_spell_power = util_t::ability_rank( player -> level,  120.0,77,  95.0,71,  0.0,0     );
     bonus_armor       = util_t::ability_rank( player -> level,  2440.0,77, 1800.0,71, 1580.0,0 );
 
-    bonus_spell_power *= 1.0 + p -> talents.improved_inner_fire * 0.15;
-    bonus_armor       *= 1.0 + p -> talents.improved_inner_fire * 0.15;
+    bonus_spell_power *= 1.0 + p -> talent_improved_inner_fire -> rank * 0.15;
+    bonus_armor       *= 1.0 + p -> talent_improved_inner_fire -> rank * 0.15;
     bonus_armor       *= 1.0 + p -> glyphs.inner_fire * 0.5;
 
     id = 48168;
@@ -1050,7 +1047,7 @@ struct mind_blast_t : public priest_spell_t
     may_crit          = true;
     base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
 								+ p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
-    cooldown -> duration -= p -> talents.improved_mind_blast * 0.5;
+    cooldown -> duration -= p -> talent_improved_mind_blast -> rank * 0.5;
   }
 
 
@@ -1124,11 +1121,11 @@ struct mind_flay_tick_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
-      p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+      p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talent_harnessed_shadows -> rank );
 
       if ( p -> dots_shadow_word_pain -> ticking() )
       {
-        if ( p -> rng_pain_and_suffering -> roll( p -> talents.pain_and_suffering * p -> constants.pain_and_suffering_value ) )
+        if ( p -> rng_pain_and_suffering -> roll( p -> talent_pain_and_suffering -> rank * p -> constants.pain_and_suffering_value ) )
         {
           p -> dots_shadow_word_pain -> action -> refresh_duration();
         }
@@ -1136,7 +1133,7 @@ struct mind_flay_tick_t : public priest_spell_t
       if ( result == RESULT_CRIT )
       {
    	    p -> buffs_glyph_of_shadow -> trigger();
-   	    p -> cooldowns_shadow_fiend -> ready -= 1.0 * p -> talents.sin_and_punishment;
+   	    p -> cooldowns_shadow_fiend -> ready -= 10.0 * p -> talent_sin_and_punishment -> rank;
       }
     }
   }
@@ -1154,7 +1151,7 @@ struct mind_flay_t : public priest_spell_t
       priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.mind_flay );
+    check_talent( p -> talent_mind_flay -> enabled );
 
     option_t options[] =
     {
@@ -1193,7 +1190,7 @@ struct mind_flay_t : public priest_spell_t
         num_ticks = 2;
       }
     }
-	priest_spell_t::execute();
+    priest_spell_t::execute();
 
   }
 
@@ -1217,7 +1214,7 @@ struct mind_flay_t : public priest_spell_t
     // This allows a action+=/mind_flay,swp_refresh to be added as a higher priority to ensure that SW:P doesn't fall off
     // Won't be necessary as part of a standard rotation, but if there's movement or other delays in casting it would have
     // it's uses.
-    if ( swp_refresh && ( p -> talents.pain_and_suffering > 0 ) )
+    if ( swp_refresh && ( p -> talent_pain_and_suffering -> rank > 0 ) )
     {
       if ( ! p -> dots_shadow_word_pain -> ticking() )
         return false;
@@ -1329,7 +1326,7 @@ struct penance_t : public priest_spell_t
       priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.penance );
+    check_talent( p -> talent_penance -> enabled );
 
     option_t options[] =
     {
@@ -1347,8 +1344,8 @@ struct penance_t : public priest_spell_t
     base_tick_time    = 1.0;
 
     // Holy_Evangelism
-    target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-    base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+    target_multiplier *= 1.0 + ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    base_cost		  *= 1.0 - ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
 
     cooldown -> duration  = 12 - ( p -> glyphs.penance * 2 );
 
@@ -1378,7 +1375,7 @@ struct power_infusion_t : public priest_spell_t
       priest_spell_t( "power_infusion", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.power_infusion );
+    check_talent( p -> talent_power_infusion -> rank );
 
     std::string target_str = p -> power_infusion_target_str;
     option_t options[] =
@@ -1443,7 +1440,7 @@ struct shadow_form_t : public priest_spell_t
       priest_spell_t( "shadow_form", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.shadow_form );
+    check_talent( p -> talent_shadow_form -> rank );
     trigger_gcd = 0;
 
     id = 15473;
@@ -1490,7 +1487,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     may_crit = true;
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
 
@@ -1502,7 +1499,14 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
-      p -> resource_loss( RESOURCE_HEALTH, direct_dmg * ( 1.0 - p -> talents.pain_and_suffering * 0.10 ) );
+      double health_loss = direct_dmg * ( 1.0 - p -> talent_pain_and_suffering -> rank * 0.10 );
+
+      p -> resource_loss( RESOURCE_HEALTH, health_loss );
+      if ( ( health_loss > 0.0 ) && p -> talent_masochism -> rank )
+      {
+        p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talent_masochism -> rank * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
+      }
+
       if ( result == RESULT_CRIT )
       {
         p -> buffs_glyph_of_shadow -> trigger();
@@ -1569,10 +1573,10 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_data( p -> player_data );
 
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 )
+    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 )
 								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
-    base_multiplier *= 1.0 + ( p -> talents.improved_shadow_word_pain * p -> constants.improved_shadow_word_pain_value );
+    base_multiplier *= 1.0 + ( p -> talent_improved_shadow_word_pain -> rank * p -> constants.improved_shadow_word_pain_value );
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
@@ -1597,9 +1601,9 @@ struct shadow_word_pain_t : public priest_spell_t
     	}
 
     // Shadowy Apparation
-    if ( p -> talents.shadowy_apparation )
+    if ( p -> talent_shadowy_apparation -> rank )
     {
-    	double h = p -> talents.shadowy_apparation * (0.02 + p -> buffs.moving -> up()* 0.2 );
+    	double h = p -> talent_shadowy_apparation -> rank * (0.02 + p -> buffs.moving -> up()* 0.2 );
     	if (  p -> sim -> roll( h ) )
     	{
     		p -> procs_shadowy_apparation -> occur();
@@ -1611,7 +1615,7 @@ struct shadow_word_pain_t : public priest_spell_t
     // Shadow Orb
     if ( result_is_hit() )
     {
-    	p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talents.harnessed_shadows );
+    	p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value * p -> talent_harnessed_shadows -> rank );
     }
   }
 
@@ -1644,7 +1648,7 @@ struct chakra_t : public priest_spell_t
 	parse_options( options, options_str );
 
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.chakra );
+    check_talent( p -> talent_chakra -> rank );
 
     static rank_t ranks[] =
     {
@@ -1707,11 +1711,11 @@ struct smite_t : public priest_spell_t
     direct_power_mod  = p -> power_mod.smite;
     may_crit          = true;
 
-    base_execute_time -= p -> talents.divine_fury * 0.1;
+    base_execute_time -= p -> talent_divine_fury -> rank * 0.1;
 
     // Holy_Evangelism
-    target_multiplier *= 1.0 + ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-    base_cost		  *= 1.0 - ( p -> talents.evangelism * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+    target_multiplier *= 1.0 + ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    base_cost		  *= 1.0 - ( p -> talent_evangelism -> rank * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
 
   }
 
@@ -1732,7 +1736,7 @@ struct smite_t : public priest_spell_t
     // Talent State of Mind
     if ( result_is_hit() )
         {
-			if ( p -> buffs_chakra -> up() && p -> talents.chakra)
+			if ( p -> buffs_chakra -> up() && p -> talent_chakra -> rank )
 			{
 				// p -> buffs_chakra -> "add 4 seconds"
 			}
@@ -1756,7 +1760,7 @@ struct vampiric_embrace_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    check_talent( p -> talents.vampiric_embrace );
+    check_talent( p -> talent_vampiric_embrace -> rank );
 
     static rank_t ranks[] =
     {
@@ -1773,7 +1777,7 @@ struct vampiric_embrace_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( p -> talents.vampiric_embrace )
+    if ( p -> talent_vampiric_embrace -> rank )
       p -> buffs_vampiric_embrace -> trigger();
   }
 
@@ -1784,7 +1788,7 @@ struct vampiric_embrace_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    return p -> talents.vampiric_embrace && ! p -> buffs_vampiric_embrace -> check();
+    return p -> talent_vampiric_embrace -> rank && ! p -> buffs_vampiric_embrace -> check();
   }
 
 };
@@ -1798,7 +1802,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    check_talent( p -> talents.vampiric_touch );
+    check_talent( p -> talent_vampiric_touch -> rank );
 
     option_t options[] =
     {
@@ -1860,8 +1864,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
     init_rank( ranks, 34433 );
 
     harmful = false;
-    cooldown -> duration -= 30.0 * p -> talents.veiled_shadows;
-    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility, 3, 0.04, 0.07, 0.10 ) );
+    cooldown -> duration -= 30.0 * p -> talent_veiled_shadows -> rank;
+    base_cost *= 1.0 - ( util_t::talent_rank( p -> talent_mental_agility -> rank, 3, 0.04, 0.07, 0.10 ) );
     base_cost  = floor( base_cost );
   }
 
@@ -1871,7 +1875,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
     consume_resource();
     update_ready();
     p -> summon_pet( "shadow_fiend", 15.1 );
-    priest_spell_t::execute();
   }
 
   virtual bool ready()
@@ -1902,7 +1905,7 @@ struct archangel_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    check_talent( p -> talents.archangel );
+    check_talent( p -> talent_archangel -> rank );
 
     option_t options[] =
         {
@@ -2006,7 +2009,7 @@ double priest_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += spirit() * ( talents.twisted_faith / 2.0 ) / rating.spell_hit;
+  hit += spirit() * ( talent_twisted_faith -> rank / 2.0 ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
@@ -2169,6 +2172,7 @@ void priest_t::init_gains()
   gains_glyph_of_shadow_word_pain = get_gain( "glyph_of_shadow_word_pain" );
   gains_shadow_fiend              = get_gain( "shadow_fiend" );
   gains_archangel                 = get_gain( "archangel" );
+  gains_masochism                 = get_gain( "masochism" );
 }
 
 void priest_t::init_procs()
@@ -2215,46 +2219,26 @@ void priest_t::init_rng()
 // priest_t::init_talents
 void priest_t::init_talents()
 {
-	// Discipline
-  talent_archangel = new talent_t( this, "Archangel" ); // 					complete 12803
-  talent_evangelism = new talent_t( this, "Evangelism" ); // 					complete 12803
-  talent_inner_focus = new talent_t( this, "Inner Focus" ); //      new: 12857
-  talent_improved_inner_fire = new talent_t( this, "Improved Inner Fire <TBR>" ); //
-  talent_mental_agility = new talent_t( this, "Mental Agility" ); // 															open: better implementation
-  talent_power_infusion = new talent_t( this, "Power Infusion" ); // 				complete 12803
-  talent_twin_disciplines = new talent_t( this, "Twin Disciplines" ); // 			complete 12803
+  player_t::init_talents();
 
-	// Holy
-  talent_divine_fury = new talent_t( this, "Divine Fury" ); // 				complete 12803
-  talent_chakra = new talent_t( this, "Chakra" ); // 						done: basic implementation 12759			incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
-  talent_state_of_mind = new talent_t( this, "State of Mind" ); // 															incomplete: implement a function to increase the duration of a buff
-  talent_holy_concentration = new talent_t( this, "Holy Concentration" ); //			complete 12803
-
-	// Shadow
-  talent_darkness = new talent_t( this, "Darkness" ); // 					complete 12803
-  talent_improved_devouring_plague = new talent_t( this, "Improved Devouring Plague" );  // 	complete 12803
-  talent_improved_mind_blast = new talent_t( this, "Improved Mind Blast" ); // 		complete 12803
-  talent_mind_melt = new talent_t( this, "Mind Melt" ); // 					complete 12803
-  talent_dispersion = new talent_t( this, "Dispersion" ); // 					complete 12803
-  talent_improved_shadow_word_pain = new talent_t( this, "Improved Shadow Word: Pain" ); // 	complete 12803
-  talent_pain_and_suffering = new talent_t( this, "Pain and Suffering" ); // 			complete 12803
-
-  talent_shadow_form = new talent_t( this, "Shadowform" ); // 				complete 12803
-  talent_twisted_faith = new talent_t( this, "Twisted Faith" ); // 				complete 12803
-  talent_veiled_shadows = new talent_t( this, "Veiled Shadows" ); // 				complete 12803
-  talent_harnessed_shadows = new talent_t( this, "Harnessed Shadows" ); //  			complete 12803  
-  talent_shadowy_apparation = new talent_t( this, "Shadowy Apparition" ); // 			done: talent function 12803
-  talent_vampiric_embrace = new talent_t( this, "Vampiric Embrace" ); // 			complete 12803
-  talent_vampiric_touch = new talent_t( this, "Vampiric Touch" ); // 				complete 12803
-  talent_sin_and_punishment = new talent_t( this, "Sin and Punishment" );
-
-  talent_penance = new spell_ids_t( this, "Penance" );
-  talent_chastise = new spell_ids_t( this, "Holy Word: Chastise" );     // incomplete
-  talent_shadow_power = new spell_ids_t( this, "Shadow Power" ); //       			done: talent function 12803					incomplete: link with main talent tree
-  talent_mind_flay = new spell_ids_t( this, "Mind Flay" );
-  talent_meditation = new spell_ids_t( this, "Meditation" ); // 					done: talent function 12803
-
-	player_t::init_talents();
+  switch( primary_tree() )
+  {
+  case TREE_SHADOW:
+    talent_mind_flay -> enabled = true;
+    talent_shadow_power -> enabled = true;
+    break;
+  case TREE_DISCIPLINE:
+    talent_penance -> enabled = true;
+    talent_meditation -> enabled = true;
+    break;
+  case TREE_HOLY:
+    talent_chastise -> enabled = true;
+    talent_meditation -> enabled = true;
+    break;
+  default:
+    assert( 0 );
+    break;
+  }
 }
 
 // priest_t::init_buffs ======================================================
@@ -2278,7 +2262,7 @@ void priest_t::init_buffs()
   buffs_chakra_pre          = new buff_t( this, "chakra_pre",          1                           );
   buffs_chakra              = new buff_t( this, "chakra_buff",         1, 30.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
-  buffs_mind_spike  	    = new buff_t( this, "mind_spike",    	   3, 12.0                     );
+  buffs_mind_spike          = new buff_t( this, "mind_spike",          3, 12.0                     );
 
 }
 
@@ -2290,9 +2274,9 @@ void priest_t::init_actions()
   {
     action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/inner_fire";
 
-    if ( talents.shadow_form ) action_list_str += "/shadow_form";
+    if ( talent_shadow_form -> rank ) action_list_str += "/shadow_form";
 
-    if ( talents.vampiric_embrace ) action_list_str += "/vampiric_embrace";
+    if ( talent_vampiric_embrace -> rank ) action_list_str += "/vampiric_embrace";
 
     action_list_str += "/snapshot_stats";
 
@@ -2311,24 +2295,24 @@ void priest_t::init_actions()
       action_list_str += "/wild_magic_potion,if=!in_combat";
       action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       action_list_str += "/shadow_fiend";
-      if ( talents.archangel ) action_list_str += "/archangel,if=buff.dark_evangelism.stack>=5";
+      if ( talent_archangel -> rank ) action_list_str += "/archangel,if=buff.dark_evangelism.stack>=5";
       action_list_str += "/shadow_word_pain,if=!ticking";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
-      if ( talents.vampiric_touch ) action_list_str += "/vampiric_touch,if=!ticking/vampiric_touch,if=dot.vampiric_touch.remains<cast_time";
+      if ( talent_vampiric_touch -> rank ) action_list_str += "/vampiric_touch,if=!ticking/vampiric_touch,if=dot.vampiric_touch.remains<cast_time";
       action_list_str += "/devouring_plague,if=!ticking";
       action_list_str += "/shadow_word_death,health_percentage<=34";
       action_list_str += "/mind_blast";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-      action_list_str += talents.mind_flay ? "/mind_flay" : "/smite";
+      action_list_str += talent_mind_flay -> enabled ? "/mind_flay" : "/smite";
       action_list_str += "/shadow_word_death,moving=1"; // when moving
-      if ( talents.dispersion ) action_list_str += "/dispersion";
+      if ( talent_dispersion -> rank ) action_list_str += "/dispersion";
       break;
     case TREE_DISCIPLINE:
       action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
       action_list_str += "/shadow_word_pain,if=!ticking";
-      if ( talents.power_infusion ) action_list_str += "/power_infusion";
+      if ( talent_power_infusion -> rank ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast/";
-      if ( talents.penance ) action_list_str += "/penance";
+      if ( talent_penance -> enabled ) action_list_str += "/penance";
       if ( race == RACE_TROLL ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/smite";
@@ -2338,7 +2322,7 @@ void priest_t::init_actions()
     default:
       action_list_str += "/mana_potion/shadow_fiend,trigger=10000";
       action_list_str += "/shadow_word_pain,if=!ticking";
-      if ( talents.power_infusion ) action_list_str += "/power_infusion";
+      if ( talent_power_infusion -> rank ) action_list_str += "/power_infusion";
       action_list_str += "/holy_fire/mind_blast";
       if ( race == RACE_TROLL     ) action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
@@ -2398,13 +2382,13 @@ void priest_t::regen( double periodicity )
 {
 	mana_regen_while_casting = 0.00;
 
-	if ( talents.meditation )
+	if ( talent_meditation -> enabled )
 		{
 			mana_regen_while_casting += constants.meditation_value;
 		}
-	if (talents.holy_concentration )
+	if (talent_holy_concentration -> rank )
 		{
-			mana_regen_while_casting += talents.holy_concentration * constants.holy_concentration_value;
+			mana_regen_while_casting += talent_holy_concentration -> rank * constants.holy_concentration_value;
 		}
 
 	player_t::regen( periodicity );
@@ -2487,36 +2471,9 @@ double priest_t::resource_loss( int       resource,
 
 std::vector<talent_translation_t>& priest_t::get_talent_list()
 {
-  if(talent_list.empty())
-  {
-	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
-	  {
-    { {  1, 0, NULL                                       }, {  1, 0, NULL                              }, {  1, 3, &( talents.darkness )                  } },
-    { {  2, 3, &( talents.twin_disciplines )              }, {  2, 0, NULL                              }, {  2, 2, &( talents.improved_shadow_word_pain ) } },
-    { {  3, 3, &( talents.mental_agility )                }, {  3, 3, &( talents.divine_fury )          }, {  3, 2, &( talents.veiled_shadows )            } },
-    { {  4, 2, &( talents.evangelism )                    }, {  4, 0, NULL                              }, {  4, 0, NULL                                   } },
-    { {  5, 1, &( talents.archangel )                     }, {  5, 0, NULL                              }, {  5, 3, &( talents.improved_mind_blast )       } },
-    { {  6, 3, &( talents.improved_inner_fire )           }, {  6, 0, NULL                              }, {  6, 2, &( talents.improved_devouring_plague ) } },
-    { {  7, 0, NULL                                       }, {  7, 0, NULL                              }, {  7, 2, &( talents.twisted_faith )             } },
-    { {  8, 0, NULL                                       }, {  8, 2, &( talents.holy_concentration )   }, {  8, 1, &( talents.shadow_form )               } },
-    { {  9, 1, &( talents.power_infusion )                }, {  9, 0, NULL                              }, {  9, 0, NULL                                   } },
-    { { 10, 0, NULL                                       }, { 10, 0, NULL                              }, { 10, 2, &( talents.harnessed_shadows )         } },
-    { { 11, 0, NULL                                       }, { 11, 0, NULL                              }, { 11, 0, NULL                                   } },
-    { { 12, 0, NULL                                       }, { 12, 0, NULL /* Twirling Light */         }, { 12, 1, &( talents.vampiric_embrace )          } },
-    { { 13, 0, NULL                                       }, { 13, 0, NULL                              }, { 13, 2, &( talents.mind_melt )                 } },
-    { { 14, 2, NULL                                       }, { 14, 1, &( talents.chakra )               }, { 14, 2, &( talents.pain_and_suffering )        } },
-    { { 15, 0, NULL                                       }, { 15, 0, NULL /* Revelations */            }, { 15, 1, &( talents.vampiric_touch )            } },
-    { { 16, 0, NULL                                       }, { 16, 0, NULL                              }, { 16, 0, NULL                                   } },
-    { { 17, 0, NULL                                       }, { 17, 0, NULL                              }, { 17, 0, NULL                                   } },
-    { { 18, 0, NULL                                       }, { 18, 2, &( talents.state_of_mind )        }, { 18, 2, &( talents.sin_and_punishment )       } },
-    { { 19, 0, NULL                                       }, { 19, 0, NULL                              }, { 19, 3, &( talents.shadowy_apparation )        } },
-    { { 20, 0, NULL                                       }, { 20, 0, NULL                              }, { 20, 1, &( talents.dispersion )                } },
-    { {  0, 0, NULL                                       }, {  0, 0, NULL                              }, {  0, 0, NULL                                   } }
-  };
-
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
-  }
-  return talent_list;}
+  talent_list.clear();
+  return talent_list;
+}
 
 // priest_t::get_options ===================================================
 
@@ -2529,34 +2486,38 @@ std::vector<option_t>& priest_t::get_options()
     option_t priest_options[] =
     {
       // @option_doc loc=player/priest/talents title="Talents"
-      { "darkness",                                 OPT_INT,    &( talents.darkness                           ) },
-      { "dispersion",                               OPT_INT,    &( talents.dispersion                         ) },
-      { "divine_fury",                              OPT_INT,    &( talents.divine_fury                        ) },
-      { "improved_devouring_plague",                OPT_INT,    &( talents.improved_devouring_plague          ) },
-      { "improved_inner_fire",                      OPT_INT,    &( talents.improved_inner_fire                ) },
-      { "improved_mind_blast",                      OPT_INT,    &( talents.improved_mind_blast                ) },
-      { "improved_shadow_word_pain",                OPT_INT,    &( talents.improved_shadow_word_pain          ) },
-      { "meditation",                               OPT_INT,    &( talents.meditation                         ) },
-      { "mental_agility",                           OPT_INT,    &( talents.mental_agility                     ) },
-      { "mind_flay",                                OPT_INT,    &( talents.mind_flay                          ) },
-      { "mind_melt",                                OPT_INT,    &( talents.mind_melt                          ) },
-      { "pain_and_suffering",                       OPT_INT,    &( talents.pain_and_suffering                 ) },
-      { "penance",                                  OPT_INT,    &( talents.penance                            ) },
-      { "power_infusion",                           OPT_INT,    &( talents.power_infusion                     ) },
-      { "shadow_form",                              OPT_INT,    &( talents.shadow_form                        ) },
-      { "twin_disciplines",                         OPT_INT,    &( talents.twin_disciplines                   ) },
-      { "twisted_faith",                            OPT_INT,    &( talents.twisted_faith                      ) },
-      { "vampiric_embrace",                         OPT_INT,    &( talents.vampiric_embrace                   ) },
-      { "vampiric_touch",                           OPT_INT,    &( talents.vampiric_touch                     ) },
-      { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
-      { "evangelism",                               OPT_INT,    &( talents.evangelism                         ) },
-      { "archangel",                                OPT_INT,    &( talents.archangel                          ) },
-      { "chakra",                                   OPT_INT,    &( talents.chakra                             ) },
-      { "state_of_mind",                            OPT_INT,    &( talents.state_of_mind                      ) },
-      { "harnessed_shadows",                        OPT_INT,    &( talents.harnessed_shadows                  ) },
-      { "shadowy_apparation",                       OPT_INT,    &( talents.shadowy_apparation                 ) },
-      { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
-      { "holy_concentration",                       OPT_INT,    &( talents.holy_concentration                 ) },
+      { "archangel",                                OPT_INT,    &( talent_archangel->rank                     ) },
+      { "chakra",                                   OPT_INT,    &( talent_chakra->rank                        ) },    
+      { "darkness",                                 OPT_INT,    &( talent_darkness->rank                      ) },
+      { "dispersion",                               OPT_INT,    &( talent_dispersion->rank                    ) },
+      { "divine_fury",                              OPT_INT,    &( talent_divine_fury->rank                   ) },
+      { "evangelism",                               OPT_INT,    &( talent_evangelism->rank                    ) },     
+      { "harnessed_shadows",                        OPT_INT,    &( talent_harnessed_shadows->rank             ) },
+      { "holy_concentration",                       OPT_INT,    &( talent_holy_concentration->rank            ) },
+      { "holy_word_chastise",                       OPT_INT,    &( talent_chastise->enabled                   ) },
+      { "improved_devouring_plague",                OPT_INT,    &( talent_improved_devouring_plague->rank     ) },
+      { "improved_inner_fire",                      OPT_INT,    &( talent_improved_inner_fire->rank           ) },
+      { "improved_mind_blast",                      OPT_INT,    &( talent_improved_mind_blast->rank           ) },
+      { "improved_shadow_word_pain",                OPT_INT,    &( talent_improved_shadow_word_pain->rank     ) },
+      { "inner_focus",                              OPT_INT,    &( talent_inner_focus->rank                   ) },
+      { "masochism",                                OPT_INT,    &( talent_masochism->rank                     ) },
+      { "meditation",                               OPT_INT,    &( talent_meditation->enabled                 ) },
+      { "mental_agility",                           OPT_INT,    &( talent_mental_agility->rank                ) },
+      { "mind_flay",                                OPT_INT,    &( talent_mind_flay->enabled                  ) },
+      { "mind_melt",                                OPT_INT,    &( talent_mind_melt->rank                     ) },
+      { "pain_and_suffering",                       OPT_INT,    &( talent_pain_and_suffering->rank            ) },
+      { "penance",                                  OPT_INT,    &( talent_penance->enabled                    ) },
+      { "power_infusion",                           OPT_INT,    &( talent_power_infusion->rank                ) },
+      { "shadow_form",                              OPT_INT,    &( talent_shadow_form->rank                   ) },
+      { "shadow_power",                             OPT_INT,    &( talent_shadow_power->enabled               ) },
+      { "shadowy_apparation",                       OPT_INT,    &( talent_shadowy_apparation->rank            ) },
+      { "sin_and_punishment",                       OPT_INT,    &( talent_sin_and_punishment->rank            ) },
+      { "state_of_mind",                            OPT_INT,    &( talent_state_of_mind->rank                 ) },
+      { "twin_disciplines",                         OPT_INT,    &( talent_twin_disciplines->rank              ) },
+      { "twisted_faith",                            OPT_INT,    &( talent_twisted_faith->rank                 ) },
+      { "vampiric_embrace",                         OPT_INT,    &( talent_vampiric_embrace->rank              ) },
+      { "vampiric_touch",                           OPT_INT,    &( talent_vampiric_touch->rank                ) },
+      { "veiled_shadows",                           OPT_INT,    &( talent_veiled_shadows->rank                ) },
       // @option_doc loc=player/priest/glyphs title="Glyphs"
       { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
       { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },

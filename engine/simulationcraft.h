@@ -2198,7 +2198,6 @@ struct player_t
 
   // Talent Parsing
   std::vector<talent_translation_t> talent_list;
-  int talent_list_rank[ MAX_TALENT_RANK_SLOTS ];
   std::vector<talent_t *> talent_list2;
 
   // Profs
@@ -3431,7 +3430,7 @@ private:
 struct spell_ids_t
 {
   struct spell_data_t** data;
-  bool   enabled;
+  int enabled;
 
   spell_ids_t( const player_t* p, const char* name );
 	virtual ~spell_ids_t();

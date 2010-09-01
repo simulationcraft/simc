@@ -377,12 +377,7 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
-  for ( int i=0; i < MAX_TALENT_RANK_SLOTS; i++ )
-  {
-    talent_list_rank[ i ] = 0;
-  }
   talent_list2.clear();
-
 }
 
 // player_t::~player_t =====================================================
@@ -1005,36 +1000,7 @@ void player_t::init_rating()
 
 void player_t::init_talents()
 {
-  uint32_t i, j = 0;
-  uint32_t tab = 0;
-  uint32_t num = 0;
-  uint32_t talent_id = 0;
-  uint32_t num_talents;
-  uint32_t rank;
 
-  num_talents = talent_list2.size();
-
-  for ( i = 0; i < MAX_TALENT_RANK_SLOTS; i++ )
-  {
-    tab = i / ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
-    num = i % ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
-
-    talent_id = player_data.talent_player_get_id_by_num( type, tab, num );
-
-    if ( talent_id != 0 )
-    {
-      for ( j = 0; j < num_talents; j++ )
-      {
-        if ( talent_list2[ j ] && talent_list2[ j ] -> data && talent_list2[ j ] -> data-> id == talent_id )
-        {
-          rank = ( talent_list_rank[ i ] >= 0 ) && ( talent_list_rank[ i ] <= 3 ) ? talent_list_rank[ i ] : 0 ;
-          if ( rank > player_data.talent_max_rank( talent_id ) )
-            rank = player_data.talent_max_rank( talent_id );
-          talent_list2[ j ] -> rank = ( talent_list_rank[ i ] >= 0 ) && ( talent_list_rank[ i ] <= 3 ) ? talent_list_rank[ i ] : 0 ;
-        }
-      }
-    }   
-  }
 }
 
 // player_t::init_buffs ====================================================
@@ -3781,7 +3747,36 @@ bool player_t::parse_talent_trees( int talents[] )
           *address = talents[i];
   }
 
-  memcpy( talent_list_rank, talents, sizeof( int ) * MAX_TALENT_RANK_SLOTS );
+  uint32_t i, j = 0;
+  uint32_t tab = 0;
+  uint32_t num = 0;
+  uint32_t talent_id = 0;
+  uint32_t num_talents;
+  uint32_t rank;
+
+  num_talents = talent_list2.size();
+
+  for ( i = 0; i < MAX_TALENT_RANK_SLOTS; i++ )
+  {
+    tab = i / ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
+    num = i % ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
+
+    talent_id = player_data.talent_player_get_id_by_num( type, tab, num );
+
+    if ( talent_id != 0 )
+    {
+      for ( j = 0; j < num_talents; j++ )
+      {
+        if ( talent_list2[ j ] && talent_list2[ j ] -> data && talent_list2[ j ] -> data-> id == talent_id )
+        {
+          rank = ( talents[ i ] >= 0 ) && ( talents[ i ] <= 3 ) ? talents[ i ] : 0 ;
+          if ( rank > player_data.talent_max_rank( talent_id ) )
+            rank = player_data.talent_max_rank( talent_id );
+          talent_list2[ j ] -> rank = rank ;
+        }
+      }
+    }   
+  }
 
   return true;
 }
