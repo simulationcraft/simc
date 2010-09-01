@@ -1,11 +1,11 @@
-// Base scaling data for classes, wow build 12803
+// Base scaling data for classes, wow build 12857
 static double __gt_chance_to_melee_crit_base[] = {
    0.000000000000000,    0.000000000000000,    0.006519999820739,   -0.015320000238717,   -0.002950000111014, 
    0.031764999032021,    0.000000000000000,    0.029219999909401,    0.034540001302958,    0.026219999417663, 
    0.000000000000000,    0.074754998087883, 
 };
 
-// Base scaling data for classes, wow build 12803
+// Base scaling data for classes, wow build 12857
 static double __gt_chance_to_spell_crit_base[] = {
    0.000000000000000,    0.000000000000000,    0.033355001360178,    0.036019999533892,    0.000000000000000, 
    0.012374999932945,    0.000000000000000,    0.022010000422597,    0.009074999950826,    0.017000000923872, 
@@ -13,7 +13,7 @@ static double __gt_chance_to_spell_crit_base[] = {
 };
 
 
-// Class based scaling multipliers for levels 1 - 85, wow build 12803
+// Class based scaling multipliers for levels 1 - 85, wow build 12857
 static double __gt_spell_scaling[][85] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -255,7 +255,7 @@ static double __gt_spell_scaling[][85] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 85, wow build 12803
+// Class based scaling multipliers for levels 1 - 85, wow build 12857
 static double __gt_chance_to_melee_crit[][85] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -497,7 +497,7 @@ static double __gt_chance_to_melee_crit[][85] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 85, wow build 12803
+// Class based scaling multipliers for levels 1 - 85, wow build 12857
 static double __gt_chance_to_spell_crit[][85] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -739,7 +739,7 @@ static double __gt_chance_to_spell_crit[][85] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 85, wow build 12803
+// Class based scaling multipliers for levels 1 - 85, wow build 12857
 static double __gt_regen_mpper_spt[][85] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -981,7 +981,7 @@ static double __gt_regen_mpper_spt[][85] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 85, wow build 12803
+// Class based scaling multipliers for levels 1 - 85, wow build 12857
 static double __gt_octregen_mp[][85] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1224,7 +1224,7 @@ static double __gt_octregen_mp[][85] = {
 };
 
 
-// Combat ratings for levels 1 - 85, wow build 12803 
+// Combat ratings for levels 1 - 85, wow build 12857 
 static double __gt_combat_ratings[][85] = {
   // Dodge rating multipliers
   {
@@ -1508,7 +1508,7 @@ static double __gt_combat_ratings[][85] = {
   },
 };
 
-// Combat Rating scalar multipliers for classes, wow build 12803
+// Combat Rating scalar multipliers for classes, wow build 12857
 static double __gt_octclass_combat_rating_scalar[][12] = {
   // Dodge rating class scalar multipliers
   { 
