@@ -128,23 +128,26 @@ struct shaman_t : public player_t
 
   struct glyphs_t
   {
-    int chain_lightning;
-    int elemental_mastery;
+    // Prime
     int feral_spirit;
     int fire_elemental_totem;
-    int fire_nova;
     int flame_shock;
     int flametongue_weapon;
-    int lava;
+    int lava_burst;
     int lava_lash;
     int lightning_bolt;
-    int lightning_shield;
-    int mana_tide;
-    int shocking;
     int stormstrike;
-    // int totem_of_wrath;
-    int thunderstorm;
+    int water_shield;
     int windfury_weapon;
+
+    // Major
+    int chain_lightning;
+    int shocking;
+    int thunder;
+
+    // Minor
+    int thunderstorm;
+   
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1030,9 +1033,10 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::player_buff();
     if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
     {
-      player_multiplier *= 1.40 + p -> glyphs.lava_lash * 0.10;
+      player_multiplier *= 1.40;
     }
     player_multiplier *= 1 + ( p -> talent_improved_lava_lash -> rank * 0.15 ) +
+                             ( p -> glyphs.lava_lash                  * 0.20 ) +
                              ( p -> talent_improved_lava_lash -> rank * 0.10 * p -> buffs_searing_flames -> stack() );
     }
 
@@ -1394,6 +1398,8 @@ struct chain_lightning_t : public shaman_spell_t
     base_multiplier     *= 1.0 + p -> talent_concussion -> rank * 0.02;
     base_hit            += p -> talent_elemental_precision -> rank * 0.01;
 
+    if ( p -> glyphs.chain_lightning ) base_multiplier *= 0.90;
+
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
     cooldown -> duration  = 6.0;
@@ -1474,7 +1480,7 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_spell_t::assess_damage( amount, dmg_type );
     shaman_t* p = player -> cast_shaman();
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 2 + p -> glyphs.chain_lightning ); i ++ )
+    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 2 + p -> glyphs.chain_lightning * 2 ); i ++ )
     {
       amount *= 0.70;
       shaman_spell_t::additional_damage( amount, dmg_type );
@@ -1492,7 +1498,7 @@ struct elemental_mastery_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_elemental_mastery -> rank );
     trigger_gcd = 0;
-    cooldown -> duration = p -> glyphs.elemental_mastery ? 150.0 : 180.0;
+    cooldown -> duration = 180.0;
 
     id = 16166;
   }
@@ -1543,7 +1549,6 @@ struct fire_nova_t : public shaman_spell_t
 
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
-    if ( p -> glyphs.fire_nova ) cooldown -> duration -= 3.0;
     cooldown -> duration -= p -> talent_improved_fire_nova -> rank * 2.0;
   }
 
@@ -1614,7 +1619,7 @@ struct lava_burst_t : public shaman_spell_t
     may_crit             = true;
     base_execute_time    = 2.0;
     direct_power_mod     = base_execute_time / 3.5;
-    direct_power_mod    += p -> glyphs.lava ? 0.10 : 0.00;
+    direct_power_mod    += p -> glyphs.lava_burst ? 0.10 : 0.00;
 
     base_cost_reduction += p -> talent_convection -> rank * 0.05;
     base_multiplier     *= 1.0 + p -> talent_concussion    -> rank * 0.03 + p -> talent_call_of_flame -> rank * 0.05;
@@ -1977,7 +1982,7 @@ struct thunderstorm_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     if ( p -> primary_tree() != TREE_ELEMENTAL ) return;
-    cooldown -> duration = 45.0;
+    cooldown -> duration = p -> glyphs.thunder ? 0.10 :45.0;
     id = 51490;
   }
 
@@ -2129,8 +2134,8 @@ struct flame_shock_t : public shaman_spell_t
     
     base_cost_reduction  += p -> talent_convection -> rank * 0.05;
     
-    base_crit_bonus_multiplier *= 1.0 + ( p -> primary_tree() == TREE_ELEMENTAL +
-                                          p -> glyphs.flame_shock * 0.60 );
+    base_crit_bonus_multiplier *= 1.0 + ( p -> primary_tree() == TREE_ELEMENTAL );
+    if ( p -> glyphs.flame_shock ) num_ticks = int( num_ticks * 1.50 );
 
     cooldown = p -> cooldowns_shock;
     cooldown -> duration  = 6.0;
@@ -2667,7 +2672,6 @@ struct mana_tide_totem_t : public shaman_spell_t
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
 
     double pct = 0.06;
-    if ( player -> cast_shaman() -> glyphs.mana_tide ) pct += 0.01;
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -3185,8 +3189,6 @@ struct lightning_shield_t : public shaman_spell_t
 
       base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
-      if ( p -> glyphs.lightning_shield ) base_multiplier *= 1.20;
-
       // Lightning Shield may actually be modeled as a pet given that it cannot proc Honor Among Thieves
       pseudo_pet = true;
     }
@@ -3268,6 +3270,8 @@ struct water_shield_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
+    shaman_t* p = player -> cast_shaman();
+
     static rank_t ranks[] =
     {
       { 76, 9, 0, 0, 0, 100 },
@@ -3279,6 +3283,8 @@ struct water_shield_t : public shaman_spell_t
     init_rank( ranks, 52127 );
 
     trigger_gcd = 0;
+
+    if ( p -> glyphs.water_shield ) base_cost *= 1.5;
   }
 
   virtual void execute()
@@ -3396,37 +3402,40 @@ void shaman_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     if      ( n == "chain_lightning"      ) glyphs.chain_lightning = 1;
-    else if ( n == "elemental_mastery"    ) glyphs.elemental_mastery = 1;
     else if ( n == "feral_spirit"         ) glyphs.feral_spirit = 1;
     else if ( n == "fire_elemental_totem" ) glyphs.fire_elemental_totem = 1;
-    else if ( n == "fire_nova"            ) glyphs.fire_nova = 1;
-    else if ( n == "fire_nova_totem"      ) glyphs.fire_nova = 1;
     else if ( n == "flame_shock"          ) glyphs.flame_shock = 1;
     else if ( n == "flametongue_weapon"   ) glyphs.flametongue_weapon = 1;
-    else if ( n == "lava"                 ) glyphs.lava = 1;
+    else if ( n == "lava_burst"                 ) glyphs.lava_burst = 1;
     else if ( n == "lava_lash"            ) glyphs.lava_lash = 1;
     else if ( n == "lightning_bolt"       ) glyphs.lightning_bolt = 1;
-    else if ( n == "lightning_shield"     ) glyphs.lightning_shield = 1;
-    else if ( n == "mana_tide"            ) glyphs.mana_tide = 1;
     else if ( n == "shocking"             ) glyphs.shocking = 1;
     else if ( n == "stormstrike"          ) glyphs.stormstrike = 1;
+    else if ( n == "thunder"              ) glyphs.thunder = 1;
     else if ( n == "thunderstorm"         ) glyphs.thunderstorm = 1;
-    // else if ( n == "totem_of_wrath"       ) glyphs.totem_of_wrath = 1;
+    else if ( n == "water_shield"         ) glyphs.water_shield = 1;
     else if ( n == "windfury_weapon"      ) glyphs.windfury_weapon = 1;
     // To prevent warnings....
+    else if ( n == "artic_wolf"           ) ;
     else if ( n == "astral_recall"        ) ;
     else if ( n == "chain_heal"           ) ;
     else if ( n == "earth_shield"         ) ;
+    else if ( n == "earthliving_weapon"   ) ;
+    else if ( n == "elemental_mastery"    ) ;
+    else if ( n == "fire_nova"            ) ;
+    else if ( n == "frost_shock"          ) ;
     else if ( n == "ghost_wolf"           ) ;
+    else if ( n == "grounding_totem"      ) ;
     else if ( n == "healing_stream_totem" ) ;
     else if ( n == "healing_wave"         ) ;
-    else if ( n == "lesser_healing_wave"  ) ;
+    else if ( n == "hex"                  ) ;
+    else if ( n == "lightning_shield"     ) ;
     else if ( n == "renewed_life"         ) ;
     else if ( n == "riptide"              ) ;
+    else if ( n == "shamanistic_rage"     ) ;
     else if ( n == "stoneclaw_totem"      ) ;
+    else if ( n == "totemic_recall"       ) ;
     else if ( n == "water_breathing"      ) ;
-    else if ( n == "water_mastery"        ) ;
-    else if ( n == "water_shield"         ) ;
     else if ( n == "water_walking"        ) ;
     else if ( ! sim -> parent ) 
     {
