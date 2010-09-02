@@ -11,10 +11,10 @@
 
 // talent_t::talent_t =======================================================
 
-talent_t::talent_t( player_t* p, const char* name, const int32_t specify_tree ) : data( NULL ), rank( 0 )
+talent_t::talent_t( player_t* player, const char* name, const int32_t specify_tree ) : data( NULL ), rank( 0 ), p( player )
 {
   assert( p && name && p -> sim );
-  uint32_t id = find_talent_id( p, name, specify_tree );
+  uint32_t id = find_talent_id( name, specify_tree );
   if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing talent %s", name );
 
   if ( id != 0 )
@@ -29,9 +29,9 @@ talent_t::talent_t( player_t* p, const char* name, const int32_t specify_tree ) 
 
 // talent_t::get_effect_id ===================================================
 
-uint32_t talent_t::get_effect_id( const player_t* p, const uint32_t effect_num ) SC_CONST
+uint32_t talent_t::get_effect_id( const uint32_t effect_num ) SC_CONST
 {
-  assert( p && ( rank <= 3 ) && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
+  assert( ( rank <= 3 ) && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
   
   if ( !rank || !data )
     return 0;
@@ -46,9 +46,9 @@ uint32_t talent_t::get_effect_id( const player_t* p, const uint32_t effect_num )
 
 // talent_t::get_spell_id ===================================================
 
-uint32_t talent_t::get_spell_id( const player_t* p ) SC_CONST
+uint32_t talent_t::get_spell_id( ) SC_CONST
 {
-  assert( p && p -> sim && ( rank <= 3 ) );
+  assert( p -> sim && ( rank <= 3 ) );
   
   if ( !rank || !data )
     return 0;
@@ -59,11 +59,11 @@ uint32_t talent_t::get_spell_id( const player_t* p ) SC_CONST
 
 // talent_t::find_talent_id ===================================================
 
-uint32_t talent_t::find_talent_id( const player_t* p, const char* name, const int32_t specify_tree )
+uint32_t talent_t::find_talent_id( const char* name, const int32_t specify_tree )
 {
   uint32_t tab, talent_num, talent_id;
 
-  assert( p && name && name[0] && ( ( specify_tree < 0 ) || ( specify_tree < MAX_TALENT_TABS ) ) );
+  assert( name && name[0] && ( ( specify_tree < 0 ) || ( specify_tree < MAX_TALENT_TABS ) ) );
 
   uint32_t min_tab = specify_tree >= 0 ? specify_tree : 0;
   uint32_t max_tab = specify_tree >= 0 ? specify_tree + 1 : MAX_TALENT_TABS;
@@ -73,7 +73,7 @@ uint32_t talent_t::find_talent_id( const player_t* p, const char* name, const in
     talent_num = 0;
     while ( ( talent_id = p->player_data.talent_player_get_id_by_num( p->type, tab, talent_num ) ) != 0 )
     {
-      if ( !_stricmp( p->player_data.talent_name_str( talent_id ), name ) )
+      if ( !_stricmp( p -> player_data.talent_name_str( talent_id ), name ) )
       {
         return talent_id;
       }
@@ -89,13 +89,13 @@ uint32_t talent_t::find_talent_id( const player_t* p, const char* name, const in
 
 // spell_ids_t::spell_ids_t =======================================================
 
-spell_ids_t::spell_ids_t( const player_t* p, const char* name ) : data( NULL ), enabled( false )
+spell_ids_t::spell_ids_t( player_t* player, const char* name ) : data( NULL ), enabled( false ), p( player )
 {
-  assert( p && name && p -> sim );
+  assert( name && p -> sim );
   
   if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing spell %s", name );
 
-  data = find_spell_ids( p, name );
+  data = find_spell_ids( name );
   if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s%s initialized", name, data ? "":" NOT" );
 }
 
@@ -106,9 +106,9 @@ spell_ids_t::~spell_ids_t()
 
 // spell_ids_t::get_effect_id ===================================================
 
-uint32_t spell_ids_t::get_effect_id( const player_t* p, const uint32_t effect_num, const uint32_t spell_num ) SC_CONST
+uint32_t spell_ids_t::get_effect_id( const uint32_t effect_num, const uint32_t spell_num ) SC_CONST
 {
-  assert( p && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
+  assert( ( effect_num >= 1 ) && ( effect_num <= 3 ) );
   
   if ( !enabled || !data || !spell_num )
     return 0;
@@ -124,14 +124,14 @@ uint32_t spell_ids_t::get_effect_id( const player_t* p, const uint32_t effect_nu
 
 // spell_ids_t::find_spell_ids ===================================================
 
-spell_data_t** spell_ids_t::find_spell_ids( const player_t* p, const char* name )
+spell_data_t** spell_ids_t::find_spell_ids( const char* name )
 {
   uint32_t spell_id;
   spell_data_t** spell_ids = NULL;
   uint32_t num_matches = 0;
   uint32_t match_num = 0;
 
-  assert( p && name && name[0] );
+  assert( name && name[0] );
 
   for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
   {

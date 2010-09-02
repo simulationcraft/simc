@@ -3422,14 +3422,15 @@ struct talent_t
 {
   struct talent_data_t* data;
   unsigned rank;
+  player_t* p;
 
   talent_t( player_t* p, const char* name, const int32_t specify_tree = -1 );
 	virtual ~talent_t() {}
 
-  virtual uint32_t get_effect_id( const player_t* p, const uint32_t effect_num ) SC_CONST;
-  virtual uint32_t get_spell_id( const player_t* p ) SC_CONST;
+  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t get_spell_id( ) SC_CONST;
 private:
-	virtual uint32_t find_talent_id( const player_t* p, const char* name, const int32_t specify_tree = -1 );
+	virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
 };
 
 // Spell id class
@@ -3438,13 +3439,14 @@ struct spell_ids_t
 {
   struct spell_data_t** data;
   int enabled;
+  player_t* p;
 
-  spell_ids_t( const player_t* p, const char* name );
+  spell_ids_t( player_t* p, const char* name );
 	virtual ~spell_ids_t();
 
-  virtual uint32_t get_effect_id( const player_t* p, const uint32_t effect_num, const uint32_t spell_num = 1 ) SC_CONST;
+  virtual uint32_t get_effect_id( const uint32_t effect_num, const uint32_t spell_num = 1 ) SC_CONST;
 private:
-	virtual spell_data_t** find_spell_ids( const player_t* p, const char* name );
+	virtual spell_data_t** find_spell_ids( const char* name );
 };
 
 // String utils =================================================================
