@@ -1,8 +1,8 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=80
-target_level=83
+level=83
+target_level=86
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=033211000000000000000000000000000000000032203221020122120231

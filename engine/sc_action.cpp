@@ -102,13 +102,20 @@ void action_t::parse_data( sc_data_access_t& pData )
 	  int effect = pData.spell_effect_id ( id, effect_nr );
 	  if (pData.effect_exists ( effect ) )
 	  {
-	  direct_power_mod 				= pData.effect_coeff( effect );
-	  tick_power_mod 				= pData.effect_coeff( effect );
-	  base_td 						= pData.effect_average ( effect, player_type( player -> type ), player -> level );
-	  base_dd_min 					= pData.effect_min ( effect, player_type( player -> type ), player -> level );
-	  base_dd_max 					= pData.effect_max ( effect, player_type( player -> type ), player -> level );
-	  base_tick_time				= pData.effect_period ( effect );
-	  num_ticks						= int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+		  if ( !pData.effect_period ( effect ) )
+		  {
+			  direct_power_mod 				= pData.effect_coeff( effect );
+			  base_dd_min 					= pData.effect_min ( effect, player_type( player -> type ), player -> level );
+			  base_dd_max 					= pData.effect_max ( effect, player_type( player -> type ), player -> level );
+		  }
+		  // Dot's
+		  else
+		  {
+			  tick_power_mod 				= pData.effect_coeff( effect );
+			  base_td 						= pData.effect_average ( effect, player_type( player -> type ), player -> level );
+			  base_tick_time				= pData.effect_period ( effect );
+			  num_ticks						= int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+		  }
 	  }
 
 	  }
