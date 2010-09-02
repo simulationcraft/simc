@@ -1171,10 +1171,10 @@ template <typename T> inline void sc_array_t<T>::fill( const T val )
 class sc_data_t
 {
 public:
-  sc_data_t( sc_data_t* p = NULL );
+  sc_data_t( sc_data_t* p, const bool ptr = false );
   sc_data_t( const sc_data_t& copy );
 
-  void set_parent( sc_data_t* p );
+  void set_parent( sc_data_t* p, const bool ptr = false );
   void reset( );
 
   sc_array_t<spell_data_t>        m_spells;
@@ -1222,7 +1222,7 @@ private:
 class sc_data_access_t : public sc_data_t
 {
 public:
-  sc_data_access_t( sc_data_t* p = NULL );
+  sc_data_access_t( sc_data_t* p, const bool ptr = false );
   sc_data_access_t( const sc_data_t& copy );
   virtual ~sc_data_access_t() { };
 
@@ -1771,6 +1771,7 @@ struct sim_t
 
   // Data access
   static sc_data_access_t  base_data;
+  static sc_data_access_t  ptr_data;
   sc_data_access_t         sim_data;
 
   // Default stat enchants

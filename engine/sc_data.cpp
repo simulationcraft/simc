@@ -1,11 +1,11 @@
 #include "simulationcraft.h"
 
-sc_data_t::sc_data_t( sc_data_t* p )
+sc_data_t::sc_data_t( sc_data_t* p, const bool ptr )
 {
   m_spells_index = NULL;
   m_effects_index = NULL;
   m_talents_index = NULL;
-  set_parent( p );
+  set_parent( p, ptr );
 }
 
 sc_data_t::sc_data_t( const sc_data_t& copy )

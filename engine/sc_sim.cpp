@@ -369,6 +369,7 @@ static bool parse_rawr( sim_t*             sim,
 // ==========================================================================
 
 sc_data_access_t sim_t::base_data = sc_data_access_t( NULL );
+sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 
 // sim_t::sim_t =============================================================
 
@@ -733,6 +734,12 @@ bool sim_t::init()
   }
 
   P400 = patch.after( 4, 0, 0 );
+
+  if ( P400 )
+  {
+    // TO-DO: Uncomment once we're working with PTR builds etc.
+    // sim_data.set_parent( &sim_t::ptr_data );
+  }
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.

@@ -14,7 +14,7 @@ static uint32_t get_pet_id( const pet_type_t p );
 
 static player_type get_pet_class_type( const pet_type_t c );
 
-sc_data_access_t::sc_data_access_t( sc_data_t* p ) : sc_data_t( p )
+sc_data_access_t::sc_data_access_t( sc_data_t* p, const bool ptr ) : sc_data_t( p, ptr )
 {
   
 }

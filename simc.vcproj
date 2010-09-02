@@ -241,6 +241,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_extra_data_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_gear_stats.cpp"
 			>
 		</File>
@@ -329,6 +333,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_scale_data_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_scaling.cpp"
 			>
 		</File>
@@ -357,6 +365,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_spell_data_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_stats.cpp"
 			>
 		</File>
@@ -366,6 +378,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_talent_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent_data_ptr.inc"
 			>
 		</File>
 		<File
