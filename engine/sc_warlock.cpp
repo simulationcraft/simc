@@ -205,7 +205,7 @@ struct warlock_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual dot_t*    get_dot( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -4073,7 +4073,7 @@ dot_t* warlock_t::get_dot( const std::string& name )
 
 std::vector<talent_translation_t>& warlock_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
           talent_translation_t translation_table[][MAX_TALENT_TREES] =
         {
@@ -4108,104 +4108,97 @@ std::vector<talent_translation_t>& warlock_t::get_talent_list()
     { {  0, 0, NULL                                 }, {  0, 0, NULL                                  }, {  0, 0, NULL                               } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;
+  return talent_translation_list;
 }
 
-// warlock_t::get_options ==================================================
+// warlock_t::create_options ===============================================
 
-std::vector<option_t>& warlock_t::get_options()
+void warlock_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t warlock_options[] =
   {
-    player_t::get_options();
+    { "aftermath",                OPT_INT,  &( talents.aftermath                ) },
+    { "amplify_curse",            OPT_INT,  &( talents.amplify_curse            ) },
+    { "backdraft",                OPT_INT,  &( talents.backdraft                ) },
+    { "backlash",                 OPT_INT,  &( talents.backlash                 ) },
+    { "bane",                     OPT_INT,  &( talents.bane                     ) },
+    { "cataclysm",                OPT_INT,  &( talents.cataclysm                ) },
+    { "chaos_bolt",               OPT_INT,  &( talents.chaos_bolt               ) },
+    { "conflagrate",              OPT_INT,  &( talents.conflagrate              ) },
+    { "contagion",                OPT_INT,  &( talents.contagion                ) },
+    { "dark_pact",                OPT_INT,  &( talents.dark_pact                ) },
+    { "deaths_embrace",           OPT_INT,  &( talents.deaths_embrace           ) },
+    { "decimation",               OPT_INT,  &( talents.decimation               ) },
+    { "demonic_aegis",            OPT_INT,  &( talents.demonic_aegis            ) },
+    { "demonic_brutality",        OPT_INT,  &( talents.demonic_brutality        ) },
+    { "demonic_embrace",          OPT_INT,  &( talents.demonic_embrace          ) },
+    { "demonic_empowerment",      OPT_INT,  &( talents.demonic_empowerment      ) },
+    { "demonic_knowledge",        OPT_INT,  &( talents.demonic_knowledge        ) },
+    { "demonic_pact",             OPT_INT,  &( talents.demonic_pact             ) },
+    { "demonic_power",            OPT_INT,  &( talents.demonic_power            ) },
+    { "demonic_tactics",          OPT_INT,  &( talents.demonic_tactics          ) },
+    { "destructive_reach",        OPT_INT,  &( talents.destructive_reach        ) },
+    { "devastation",              OPT_INT,  &( talents.devastation              ) },
+    { "emberstorm",               OPT_INT,  &( talents.emberstorm               ) },
+    { "empowered_corruption",     OPT_INT,  &( talents.empowered_corruption     ) },
+    { "empowered_imp",            OPT_INT,  &( talents.empowered_imp            ) },
+    { "eradication",              OPT_INT,  &( talents.eradication              ) },
+    { "everlasting_affliction",   OPT_INT,  &( talents.everlasting_affliction   ) },
+    { "fel_domination",           OPT_INT,  &( talents.fel_domination           ) },
+    { "fel_intellect",            OPT_INT,  &( talents.fel_intellect            ) },
+    { "fel_stamina",              OPT_INT,  &( talents.fel_stamina              ) },
+    { "fel_synergy",              OPT_INT,  &( talents.fel_synergy              ) },
+    { "fel_vitality",             OPT_INT,  &( talents.fel_vitality             ) },
+    { "fire_and_brimstone",       OPT_INT,  &( talents.fire_and_brimstone       ) },
+    { "haunt",                    OPT_INT,  &( talents.haunt                    ) },
+    { "improved_corruption",      OPT_INT,  &( talents.improved_corruption      ) },
+    { "improved_curse_of_agony",  OPT_INT,  &( talents.improved_curse_of_agony  ) },
+    { "improved_demonic_tactics", OPT_INT,  &( talents.improved_demonic_tactics ) },
+    { "improved_drain_soul",      OPT_INT,  &( talents.improved_drain_soul      ) },
+    { "improved_felhunter",       OPT_INT,  &( talents.improved_felhunter       ) },
+    { "improved_fire_bolt",       OPT_INT,  &( talents.improved_fire_bolt       ) },
+    { "improved_immolate",        OPT_INT,  &( talents.improved_immolate        ) },
+    { "improved_imp",             OPT_INT,  &( talents.improved_imp             ) },
+    { "improved_lash_of_pain",    OPT_INT,  &( talents.improved_lash_of_pain    ) },
+    { "improved_life_tap",        OPT_INT,  &( talents.improved_life_tap        ) },
+    { "improved_searing_pain",    OPT_INT,  &( talents.improved_searing_pain    ) },
+    { "improved_shadow_bolt",     OPT_INT,  &( talents.improved_shadow_bolt     ) },
+    { "improved_soul_leech",      OPT_INT,  &( talents.improved_soul_leech      ) },
+    { "improved_succubus",        OPT_INT,  &( talents.improved_succubus        ) },
+    { "improved_voidwalker",      OPT_INT,  &( talents.improved_voidwalker      ) },
+    { "malediction",              OPT_INT,  &( talents.malediction              ) },
+    { "mana_feed",                OPT_INT,  &( talents.mana_feed                ) },
+    { "master_conjuror",          OPT_INT,  &( talents.master_conjuror          ) },
+    { "master_demonologist",      OPT_INT,  &( talents.master_demonologist      ) },
+    { "master_summoner",          OPT_INT,  &( talents.master_summoner          ) },
+    { "metamorphosis",            OPT_INT,  &( talents.metamorphosis            ) },
+    { "molten_core",              OPT_INT,  &( talents.molten_core              ) },
+    { "nemesis",                  OPT_INT,  &( talents.nemesis                  ) },
+    { "nightfall",                OPT_INT,  &( talents.nightfall                ) },
+    { "pandemic",                 OPT_INT,  &( talents.pandemic                 ) },
+    { "pyroclasm",                OPT_INT,  &( talents.pyroclasm                ) },
+    { "ruin",                     OPT_INT,  &( talents.ruin                     ) },
+    { "shadow_and_flame",         OPT_INT,  &( talents.shadow_and_flame         ) },
+    { "shadow_burn",              OPT_INT,  &( talents.shadow_burn              ) },
+    { "shadow_mastery",           OPT_INT,  &( talents.shadow_mastery           ) },
+    { "siphon_life",              OPT_INT,  &( talents.siphon_life              ) },
+    { "soul_leech",               OPT_INT,  &( talents.soul_leech               ) },
+    { "soul_link",                OPT_INT,  &( talents.soul_link                ) },
+    { "soul_siphon",              OPT_INT,  &( talents.soul_siphon              ) },
+    { "summon_felguard",          OPT_INT,  &( talents.summon_felguard          ) },
+    { "suppression",              OPT_INT,  &( talents.suppression              ) },
+    { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
+    { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
+    { "summon_pet",               OPT_STRING, &( summon_pet_str                 ) },
+    { "hasted_corruption",        OPT_INT,  &( hasted_corruption                ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t warlock_options[] =
-    {
-      // @option_doc loc=player/warlock/talents title="Talents"
-      { "aftermath",                OPT_INT,  &( talents.aftermath                ) },
-      { "amplify_curse",            OPT_INT,  &( talents.amplify_curse            ) },
-      { "backdraft",                OPT_INT,  &( talents.backdraft                ) },
-      { "backlash",                 OPT_INT,  &( talents.backlash                 ) },
-      { "bane",                     OPT_INT,  &( talents.bane                     ) },
-      { "cataclysm",                OPT_INT,  &( talents.cataclysm                ) },
-      { "chaos_bolt",               OPT_INT,  &( talents.chaos_bolt               ) },
-      { "conflagrate",              OPT_INT,  &( talents.conflagrate              ) },
-      { "contagion",                OPT_INT,  &( talents.contagion                ) },
-      { "dark_pact",                OPT_INT,  &( talents.dark_pact                ) },
-      { "deaths_embrace",           OPT_INT,  &( talents.deaths_embrace           ) },
-      { "decimation",               OPT_INT,  &( talents.decimation               ) },
-      { "demonic_aegis",            OPT_INT,  &( talents.demonic_aegis            ) },
-      { "demonic_brutality",        OPT_INT,  &( talents.demonic_brutality        ) },
-      { "demonic_embrace",          OPT_INT,  &( talents.demonic_embrace          ) },
-      { "demonic_empowerment",      OPT_INT,  &( talents.demonic_empowerment      ) },
-      { "demonic_knowledge",        OPT_INT,  &( talents.demonic_knowledge        ) },
-      { "demonic_pact",             OPT_INT,  &( talents.demonic_pact             ) },
-      { "demonic_power",            OPT_INT,  &( talents.demonic_power            ) },
-      { "demonic_tactics",          OPT_INT,  &( talents.demonic_tactics          ) },
-      { "destructive_reach",        OPT_INT,  &( talents.destructive_reach        ) },
-      { "devastation",              OPT_INT,  &( talents.devastation              ) },
-      { "emberstorm",               OPT_INT,  &( talents.emberstorm               ) },
-      { "empowered_corruption",     OPT_INT,  &( talents.empowered_corruption     ) },
-      { "empowered_imp",            OPT_INT,  &( talents.empowered_imp            ) },
-      { "eradication",              OPT_INT,  &( talents.eradication              ) },
-      { "everlasting_affliction",   OPT_INT,  &( talents.everlasting_affliction   ) },
-      { "fel_domination",           OPT_INT,  &( talents.fel_domination           ) },
-      { "fel_intellect",            OPT_INT,  &( talents.fel_intellect            ) },
-      { "fel_stamina",              OPT_INT,  &( talents.fel_stamina              ) },
-      { "fel_synergy",              OPT_INT,  &( talents.fel_synergy              ) },
-      { "fel_vitality",             OPT_INT,  &( talents.fel_vitality             ) },
-      { "fire_and_brimstone",       OPT_INT,  &( talents.fire_and_brimstone       ) },
-      { "haunt",                    OPT_INT,  &( talents.haunt                    ) },
-      { "improved_corruption",      OPT_INT,  &( talents.improved_corruption      ) },
-      { "improved_curse_of_agony",  OPT_INT,  &( talents.improved_curse_of_agony  ) },
-      { "improved_demonic_tactics", OPT_INT,  &( talents.improved_demonic_tactics ) },
-      { "improved_drain_soul",      OPT_INT,  &( talents.improved_drain_soul      ) },
-      { "improved_felhunter",       OPT_INT,  &( talents.improved_felhunter       ) },
-      { "improved_fire_bolt",       OPT_INT,  &( talents.improved_fire_bolt       ) },
-      { "improved_immolate",        OPT_INT,  &( talents.improved_immolate        ) },
-      { "improved_imp",             OPT_INT,  &( talents.improved_imp             ) },
-      { "improved_lash_of_pain",    OPT_INT,  &( talents.improved_lash_of_pain    ) },
-      { "improved_life_tap",        OPT_INT,  &( talents.improved_life_tap        ) },
-      { "improved_searing_pain",    OPT_INT,  &( talents.improved_searing_pain    ) },
-      { "improved_shadow_bolt",     OPT_INT,  &( talents.improved_shadow_bolt     ) },
-      { "improved_soul_leech",      OPT_INT,  &( talents.improved_soul_leech      ) },
-      { "improved_succubus",        OPT_INT,  &( talents.improved_succubus        ) },
-      { "improved_voidwalker",      OPT_INT,  &( talents.improved_voidwalker      ) },
-      { "malediction",              OPT_INT,  &( talents.malediction              ) },
-      { "mana_feed",                OPT_INT,  &( talents.mana_feed                ) },
-      { "master_conjuror",          OPT_INT,  &( talents.master_conjuror          ) },
-      { "master_demonologist",      OPT_INT,  &( talents.master_demonologist      ) },
-      { "master_summoner",          OPT_INT,  &( talents.master_summoner          ) },
-      { "metamorphosis",            OPT_INT,  &( talents.metamorphosis            ) },
-      { "molten_core",              OPT_INT,  &( talents.molten_core              ) },
-      { "nemesis",                  OPT_INT,  &( talents.nemesis                  ) },
-      { "nightfall",                OPT_INT,  &( talents.nightfall                ) },
-      { "pandemic",                 OPT_INT,  &( talents.pandemic                 ) },
-      { "pyroclasm",                OPT_INT,  &( talents.pyroclasm                ) },
-      { "ruin",                     OPT_INT,  &( talents.ruin                     ) },
-      { "shadow_and_flame",         OPT_INT,  &( talents.shadow_and_flame         ) },
-      { "shadow_burn",              OPT_INT,  &( talents.shadow_burn              ) },
-      { "shadow_mastery",           OPT_INT,  &( talents.shadow_mastery           ) },
-      { "siphon_life",              OPT_INT,  &( talents.siphon_life              ) },
-      { "soul_leech",               OPT_INT,  &( talents.soul_leech               ) },
-      { "soul_link",                OPT_INT,  &( talents.soul_link                ) },
-      { "soul_siphon",              OPT_INT,  &( talents.soul_siphon              ) },
-      { "summon_felguard",          OPT_INT,  &( talents.summon_felguard          ) },
-      { "suppression",              OPT_INT,  &( talents.suppression              ) },
-      { "unholy_power",             OPT_INT,  &( talents.unholy_power             ) },
-      { "unstable_affliction",      OPT_INT,  &( talents.unstable_affliction      ) },
-      // @option_doc loc=player/warlock/misc title="Misc"
-      { "summon_pet",               OPT_STRING, &( summon_pet_str                 ) },
-      { "hasted_corruption",        OPT_INT,  &( hasted_corruption                ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, warlock_options );
-  }
-
-  return options;
+  option_t::copy( options, warlock_options );
 }
 
 // warlock_t::decode_set ===================================================

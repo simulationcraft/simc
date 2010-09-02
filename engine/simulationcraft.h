@@ -83,11 +83,11 @@ struct patch_t
     *version  = ( int ) m % 100; m /= 100;
     *arch     = ( int ) m % 100;
   }
-  patch_t() { mask = encode( 3, 3, 3 ); }
+  patch_t() { mask = encode( 3, 3, 5 ); }
 };
 
-#define SC_MAJOR_VERSION "333"
-#define SC_MINOR_VERSION "4"
+#define SC_MAJOR_VERSION "335"
+#define SC_MINOR_VERSION "1"
 
 // Forward Declarations ======================================================
 
@@ -106,6 +106,7 @@ struct dot_t;
 struct enchant_t;
 struct event_t;
 struct gain_t;
+struct glyph_t;
 struct hunter_t;
 struct item_t;
 struct js_node_t;
@@ -128,6 +129,7 @@ struct shaman_t;
 struct sim_t;
 struct spell_t;
 struct stats_t;
+struct talent_t;
 struct talent_translation_t;
 struct target_t;
 struct unique_gear_t;
@@ -518,6 +520,7 @@ struct option_t
   void save ( FILE* );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
+  static void add ( std::vector<option_t>&, const char* name, int type, void* address );
   static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
@@ -544,6 +547,42 @@ struct talent_translation_t
   int  req;
   int  tree;
   std::string name;
+};
+
+struct talent_t
+{
+  // eventually DBC pointer here and much of these variables disappear
+  int _tree;
+  int _ranks;
+  int _max_ranks;
+  std::string _name;
+  const char* name() { return _name.c_str(); }
+  int    tree()      { return _tree;      }
+  int    row()       { return -1;         }
+  int    col()       { return -1;         }
+  int    ranks()     { return _ranks;     }
+  int    max_ranks() { return _max_ranks; }
+  double rank_value( double increment );
+  double rank_value( double zero, double first, ... );
+  int    rank_value( int increment );
+  int    rank_value( int zero, int first, ... );
+  
+  talent_t() : _tree(-1) {}
+  talent_t( const char* n, int t, int mr ) : _name(n), _tree(t), _ranks(0), _max_ranks(mr) {}
+};
+
+struct glyph_t
+{
+  // eventually DBC pointer here and much of these variables disappear
+  int _active;
+  std::string _name;
+  const char* name() { return _name.c_str(); }
+  int    active() { return _active; }
+  int    value( int    on_value, int    off_value=0 ) { return _active ? on_value : off_value; }
+  double value( double on_value, double off_value=0 ) { return _active ? on_value : off_value; }
+
+  glyph_t() : _active(-1) {}
+  glyph_t( const char* n ) : _name(n), _active(0) {}
 };
 
 // Utilities =================================================================
@@ -1331,7 +1370,9 @@ struct player_t
   std::vector<option_t> options;
 
   // Talent Parsing
-  std::vector<talent_translation_t> talent_list;
+  std::vector<talent_translation_t> talent_translation_list;
+  std::vector<talent_t*> talent_list;
+  std::vector<glyph_t*> glyph_list;
 
   // Profs
   std::string professions_str;
@@ -1591,6 +1632,10 @@ struct player_t
   virtual const char* name() SC_CONST { return name_str.c_str(); }
   virtual const char* id();
 
+  virtual void create_talents();
+  virtual void create_glyphs();
+  virtual void create_options();
+
   virtual void init();
   virtual void init_glyphs() {}
   virtual void init_base() = 0;
@@ -1704,7 +1749,6 @@ struct player_t
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
-  virtual std::vector<option_t>& get_options();
   virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1811,6 +1855,9 @@ struct player_t
   bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
+
+  talent_t* get_talent( const char* name, int tree=TREE_NONE, int max_ranks=-1 );
+  glyph_t*  get_glyph ( const char* name );
 
   cooldown_t* find_cooldown( const std::string& name );
   dot_t*      find_dot     ( const std::string& name );

@@ -135,6 +135,21 @@ void option_t::save( FILE* file )
   }
 }
 
+// option_t::add ============================================================
+
+void option_t::add( std::vector<option_t>& opt_vector,
+		    const                  char* name,
+		    int                    type,
+		    void*                  address )
+{
+  int size = opt_vector.size();
+  opt_vector.resize( size+1 );
+
+  opt_vector[ size ].name    = name;
+  opt_vector[ size ].type    = type;
+  opt_vector[ size ].address = address;
+}
+
 // option_t::copy ===========================================================
 
 void option_t::copy( std::vector<option_t>& opt_vector,

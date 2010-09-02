@@ -243,7 +243,7 @@ struct rogue_t : public player_t
   virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_tank_miss( int school ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
@@ -3634,7 +3634,7 @@ double rogue_t::available() SC_CONST
 
 std::vector<talent_translation_t>& rogue_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
           talent_translation_t translation_table[][MAX_TALENT_TREES] =
           {
@@ -3669,95 +3669,88 @@ std::vector<talent_translation_t>& rogue_t::get_talent_list()
     { {  0, 0, NULL                               }, {  0, 0, NULL                                   }, {  0, 0, NULL                                    } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;
+  return talent_translation_list;
 }
 
-// rogue_t::get_options ================================================
+// rogue_t::create_options =============================================
 
-std::vector<option_t>& rogue_t::get_options()
+void rogue_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t rogue_options[] =
   {
-    player_t::get_options();
+    { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
+    { "aggression",                 OPT_INT, &( talents.aggression                 ) },
+    { "blade_flurry",               OPT_INT, &( talents.blade_flurry               ) },
+    { "blade_twisting",             OPT_INT, &( talents.blade_twisting             ) },
+    { "blood_spatter",              OPT_INT, &( talents.blood_spatter              ) },
+    { "close_quarters_combat",      OPT_INT, &( talents.close_quarters_combat      ) },
+    { "cold_blood",                 OPT_INT, &( talents.cold_blood                 ) },
+    { "combat_potency",             OPT_INT, &( talents.combat_potency             ) },
+    { "cut_to_the_chase",           OPT_INT, &( talents.cut_to_the_chase           ) },
+    { "deadliness",                 OPT_INT, &( talents.deadliness                 ) },
+    { "dirty_deeds",                OPT_INT, &( talents.dirty_deeds                ) },
+    { "dual_wield_specialization",  OPT_INT, &( talents.dual_wield_specialization  ) },
+    { "elusiveness",                OPT_INT, &( talents.elusiveness                ) },
+    { "filthy_tricks",              OPT_INT, &( talents.filthy_tricks              ) },
+    { "find_weakness",              OPT_INT, &( talents.find_weakness              ) },
+    { "focused_attacks",            OPT_INT, &( talents.focused_attacks            ) },
+    { "ghostly_strike",             OPT_INT, &( talents.ghostly_strike             ) },
+    { "hemorrhage",                 OPT_INT, &( talents.hemorrhage                 ) },
+    { "honor_among_thieves",        OPT_INT, &( talents.honor_among_thieves        ) },
+    { "hunger_for_blood",           OPT_INT, &( talents.hunger_for_blood           ) },
+    { "improved_ambush",            OPT_INT, &( talents.improved_ambush            ) },
+    { "improved_eviscerate",        OPT_INT, &( talents.improved_eviscerate        ) },
+    { "improved_expose_armor",      OPT_INT, &( talents.improved_expose_armor      ) },
+    { "improved_poisons",           OPT_INT, &( talents.improved_poisons           ) },
+    { "improved_sinister_strike",   OPT_INT, &( talents.improved_sinister_strike   ) },
+    { "improved_slice_and_dice",    OPT_INT, &( talents.improved_slice_and_dice    ) },
+    { "initiative",                 OPT_INT, &( talents.initiative                 ) },
+    { "killing_spree",              OPT_INT, &( talents.killing_spree              ) },
+    { "heightened_senses",          OPT_INT, &( talents.heightened_senses          ) },
+    { "lethality",                  OPT_INT, &( talents.lethality                  ) },
+    { "lightning_reflexes",         OPT_INT, &( talents.lightning_reflexes         ) },
+    { "mace_specialization",        OPT_INT, &( talents.mace_specialization        ) },
+    { "malice",                     OPT_INT, &( talents.malice                     ) },
+    { "master_of_subtlety",         OPT_INT, &( talents.master_of_subtlety         ) },
+    { "master_poisoner",            OPT_INT, &( talents.master_poisoner            ) },
+    { "murder",                     OPT_INT, &( talents.murder                     ) },
+    { "mutilate",                   OPT_INT, &( talents.mutilate                   ) },
+    { "opportunity",                OPT_INT, &( talents.opportunity                ) },
+    { "overkill",                   OPT_INT, &( talents.overkill                   ) },
+    { "precision",                  OPT_INT, &( talents.precision                  ) },
+    { "premeditation",              OPT_INT, &( talents.premeditation              ) },
+    { "preparation",                OPT_INT, &( talents.preparation                ) },
+    { "prey_on_the_weak",           OPT_INT, &( talents.prey_on_the_weak           ) },
+    { "puncturing_wounds",          OPT_INT, &( talents.puncturing_wounds          ) },
+    { "quick_recovery",             OPT_INT, &( talents.quick_recovery             ) },
+    { "relentless_strikes",         OPT_INT, &( talents.relentless_strikes         ) },
+    { "ruthlessness",               OPT_INT, &( talents.ruthlessness               ) },
+    { "savage_combat",              OPT_INT, &( talents.savage_combat              ) },
+    { "seal_fate",                  OPT_INT, &( talents.seal_fate                  ) },
+    { "serrated_blades",            OPT_INT, &( talents.serrated_blades            ) },
+    { "setup",                      OPT_INT, &( talents.setup                      ) },
+    { "shadow_dance",               OPT_INT, &( talents.shadow_dance               ) },
+    { "shadowstep",                 OPT_INT, &( talents.shadowstep                 ) },
+    { "sinister_calling",           OPT_INT, &( talents.sinister_calling           ) },
+    { "slaughter_from_the_shadows", OPT_INT, &( talents.slaughter_from_the_shadows ) },
+    { "sleight_of_hand",            OPT_INT, &( talents.sleight_of_hand            ) },
+    { "surprise_attacks",           OPT_INT, &( talents.surprise_attacks           ) },
+    { "sword_specialization",       OPT_INT, &( talents.sword_specialization       ) },
+    { "turn_the_tables",            OPT_INT, &( talents.turn_the_tables            ) },
+    { "vigor",                      OPT_INT, &( talents.vigor                      ) },
+    { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
+    { "vitality",                   OPT_INT, &( talents.vitality                   ) },
+    { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
+    { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str   ) },
+    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t rogue_options[] =
-    {
-      // @option_doc loc=skip
-      { "adrenaline_rush",            OPT_INT, &( talents.adrenaline_rush            ) },
-      { "aggression",                 OPT_INT, &( talents.aggression                 ) },
-      { "blade_flurry",               OPT_INT, &( talents.blade_flurry               ) },
-      { "blade_twisting",             OPT_INT, &( talents.blade_twisting             ) },
-      { "blood_spatter",              OPT_INT, &( talents.blood_spatter              ) },
-      { "close_quarters_combat",      OPT_INT, &( talents.close_quarters_combat      ) },
-      { "cold_blood",                 OPT_INT, &( talents.cold_blood                 ) },
-      { "combat_potency",             OPT_INT, &( talents.combat_potency             ) },
-      { "cut_to_the_chase",           OPT_INT, &( talents.cut_to_the_chase           ) },
-      { "deadliness",                 OPT_INT, &( talents.deadliness                 ) },
-      { "dirty_deeds",                OPT_INT, &( talents.dirty_deeds                ) },
-      { "dual_wield_specialization",  OPT_INT, &( talents.dual_wield_specialization  ) },
-      { "elusiveness",                OPT_INT, &( talents.elusiveness                ) },
-      { "filthy_tricks",              OPT_INT, &( talents.filthy_tricks              ) },
-      { "find_weakness",              OPT_INT, &( talents.find_weakness              ) },
-      { "focused_attacks",            OPT_INT, &( talents.focused_attacks            ) },
-      { "ghostly_strike",             OPT_INT, &( talents.ghostly_strike             ) },
-      { "hemorrhage",                 OPT_INT, &( talents.hemorrhage                 ) },
-      { "honor_among_thieves",        OPT_INT, &( talents.honor_among_thieves        ) },
-      { "hunger_for_blood",           OPT_INT, &( talents.hunger_for_blood           ) },
-      { "improved_ambush",            OPT_INT, &( talents.improved_ambush            ) },
-      { "improved_eviscerate",        OPT_INT, &( talents.improved_eviscerate        ) },
-      { "improved_expose_armor",      OPT_INT, &( talents.improved_expose_armor      ) },
-      { "improved_poisons",           OPT_INT, &( talents.improved_poisons           ) },
-      { "improved_sinister_strike",   OPT_INT, &( talents.improved_sinister_strike   ) },
-      { "improved_slice_and_dice",    OPT_INT, &( talents.improved_slice_and_dice    ) },
-      { "initiative",                 OPT_INT, &( talents.initiative                 ) },
-      { "killing_spree",              OPT_INT, &( talents.killing_spree              ) },
-      { "heightened_senses",          OPT_INT, &( talents.heightened_senses          ) },
-      { "lethality",                  OPT_INT, &( talents.lethality                  ) },
-      { "lightning_reflexes",         OPT_INT, &( talents.lightning_reflexes         ) },
-      { "mace_specialization",        OPT_INT, &( talents.mace_specialization        ) },
-      { "malice",                     OPT_INT, &( talents.malice                     ) },
-      { "master_of_subtlety",         OPT_INT, &( talents.master_of_subtlety         ) },
-      { "master_poisoner",            OPT_INT, &( talents.master_poisoner            ) },
-      { "murder",                     OPT_INT, &( talents.murder                     ) },
-      { "mutilate",                   OPT_INT, &( talents.mutilate                   ) },
-      { "opportunity",                OPT_INT, &( talents.opportunity                ) },
-      { "overkill",                   OPT_INT, &( talents.overkill                   ) },
-      { "precision",                  OPT_INT, &( talents.precision                  ) },
-      { "premeditation",              OPT_INT, &( talents.premeditation              ) },
-      { "preparation",                OPT_INT, &( talents.preparation                ) },
-      { "prey_on_the_weak",           OPT_INT, &( talents.prey_on_the_weak           ) },
-      { "puncturing_wounds",          OPT_INT, &( talents.puncturing_wounds          ) },
-      { "quick_recovery",             OPT_INT, &( talents.quick_recovery             ) },
-      { "relentless_strikes",         OPT_INT, &( talents.relentless_strikes         ) },
-      { "ruthlessness",               OPT_INT, &( talents.ruthlessness               ) },
-      { "savage_combat",              OPT_INT, &( talents.savage_combat              ) },
-      { "seal_fate",                  OPT_INT, &( talents.seal_fate                  ) },
-      { "serrated_blades",            OPT_INT, &( talents.serrated_blades            ) },
-      { "setup",                      OPT_INT, &( talents.setup                      ) },
-      { "shadow_dance",               OPT_INT, &( talents.shadow_dance               ) },
-      { "shadowstep",                 OPT_INT, &( talents.shadowstep                 ) },
-      { "sinister_calling",           OPT_INT, &( talents.sinister_calling           ) },
-      { "slaughter_from_the_shadows", OPT_INT, &( talents.slaughter_from_the_shadows ) },
-      { "sleight_of_hand",            OPT_INT, &( talents.sleight_of_hand            ) },
-      { "surprise_attacks",           OPT_INT, &( talents.surprise_attacks           ) },
-      { "sword_specialization",       OPT_INT, &( talents.sword_specialization       ) },
-      { "turn_the_tables",            OPT_INT, &( talents.turn_the_tables            ) },
-      { "vigor",                      OPT_INT, &( talents.vigor                      ) },
-      { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
-      { "vitality",                   OPT_INT, &( talents.vitality                   ) },
-      { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
-      // @option_doc loc=player/rogue/misc title="Misc"
-      { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str   ) },
-      { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, rogue_options );
-  }
-
-  return options;
+  option_t::copy( options, rogue_options );
 }
 
 // rogue_t::create_profile =================================================

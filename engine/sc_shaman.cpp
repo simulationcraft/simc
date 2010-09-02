@@ -207,7 +207,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual void      create_pets();
@@ -3452,7 +3452,7 @@ int shaman_t::primary_tree() SC_CONST
 
 std::vector<talent_translation_t>& shaman_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
           talent_translation_t translation_table[][MAX_TALENT_TREES] =
         {
@@ -3488,83 +3488,76 @@ std::vector<talent_translation_t>& shaman_t::get_talent_list()
     { {  0, 0, NULL                               }, {  0, 0, NULL                                   }, {  0, 0, NULL                                  } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;
+  return talent_translation_list;
 }
 
-// shaman_t::get_options ================================================
+// shaman_t::create_options =============================================
 
-std::vector<option_t>& shaman_t::get_options()
+void shaman_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t shaman_options[] =
   {
-    player_t::get_options();
+    { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
+    { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
+    { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
+    { "call_of_flame",             OPT_INT,  &( talents.call_of_flame             ) },
+    { "call_of_thunder",           OPT_INT,  &( talents.call_of_thunder           ) },
+    { "concussion",                OPT_INT,  &( talents.concussion                ) },
+    { "convection",                OPT_INT,  &( talents.convection                ) },
+    { "dual_wield",                OPT_INT,  &( talents.dual_wield                ) },
+    { "dual_wield_specialization", OPT_INT,  &( talents.dual_wield_specialization ) },
+    { "elemental_devastation",     OPT_INT,  &( talents.elemental_devastation     ) },
+    { "elemental_focus",           OPT_INT,  &( talents.elemental_focus           ) },
+    { "elemental_fury",            OPT_INT,  &( talents.elemental_fury            ) },
+    { "elemental_mastery",         OPT_INT,  &( talents.elemental_mastery         ) },
+    { "elemental_oath",            OPT_INT,  &( talents.elemental_oath            ) },
+    { "elemental_precision",       OPT_INT,  &( talents.elemental_precision       ) },
+    { "elemental_weapons",         OPT_INT,  &( talents.elemental_weapons         ) },
+    { "enhancing_totems",          OPT_INT,  &( talents.enhancing_totems          ) },
+    { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
+    { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
+    { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
+    { "improved_fire_nova",        OPT_INT,  &( talents.improved_fire_nova        ) },
+    { "improved_fire_nova_totem",  OPT_INT,  &( talents.improved_fire_nova        ) },
+    { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
+    { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
+    { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
+    { "lava_flows",                OPT_INT,  &( talents.lava_flows                ) },
+    { "lava_lash",                 OPT_INT,  &( talents.lava_lash                 ) },
+    { "lightning_mastery",         OPT_INT,  &( talents.lightning_mastery         ) },
+    { "lightning_overload",        OPT_INT,  &( talents.lightning_overload        ) },
+    { "maelstrom_weapon",          OPT_INT,  &( talents.maelstrom_weapon          ) },
+    { "mana_tide_totem",           OPT_INT,  &( talents.mana_tide_totem           ) },
+    { "mental_dexterity",          OPT_INT,  &( talents.mental_dexterity          ) },
+    { "mental_quickness",          OPT_INT,  &( talents.mental_quickness          ) },
+    { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
+    { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
+    { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
+    { "shamanism",                 OPT_INT,  &( talents.shamanism                 ) },
+    { "shamanistic_focus",         OPT_INT,  &( talents.shamanistic_focus         ) },
+    { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
+    { "spirit_weapons",            OPT_INT,  &( talents.spirit_weapons            ) },
+    { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
+    { "stormstrike",               OPT_INT,  &( talents.stormstrike               ) },
+    { "storm_earth_and_fire",      OPT_INT,  &( talents.storm_earth_and_fire      ) },
+    { "toughness",                 OPT_INT,  &( talents.toughness                 ) },
+    { "thundering_strikes",        OPT_INT,  &( talents.thundering_strikes        ) },
+    { "thunderstorm",              OPT_INT,  &( talents.thunderstorm              ) },
+    { "tidal_mastery",             OPT_INT,  &( talents.tidal_mastery             ) },
+    { "totem_of_wrath",            OPT_INT,  &( talents.totem_of_wrath            ) },
+    { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
+    { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
+    { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
+    { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
+    { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t shaman_options[] =
-    {
-      // @option_doc loc=player/shaman/talents title="Talents"
-      { "ancestral_knowledge",       OPT_INT,  &( talents.ancestral_knowledge       ) },
-      { "blessing_of_the_eternals",  OPT_INT,  &( talents.blessing_of_the_eternals  ) },
-      { "booming_echoes",            OPT_INT,  &( talents.booming_echoes            ) },
-      { "call_of_flame",             OPT_INT,  &( talents.call_of_flame             ) },
-      { "call_of_thunder",           OPT_INT,  &( talents.call_of_thunder           ) },
-      { "concussion",                OPT_INT,  &( talents.concussion                ) },
-      { "convection",                OPT_INT,  &( talents.convection                ) },
-      { "dual_wield",                OPT_INT,  &( talents.dual_wield                ) },
-      { "dual_wield_specialization", OPT_INT,  &( talents.dual_wield_specialization ) },
-      { "elemental_devastation",     OPT_INT,  &( talents.elemental_devastation     ) },
-      { "elemental_focus",           OPT_INT,  &( talents.elemental_focus           ) },
-      { "elemental_fury",            OPT_INT,  &( talents.elemental_fury            ) },
-      { "elemental_mastery",         OPT_INT,  &( talents.elemental_mastery         ) },
-      { "elemental_oath",            OPT_INT,  &( talents.elemental_oath            ) },
-      { "elemental_precision",       OPT_INT,  &( talents.elemental_precision       ) },
-      { "elemental_weapons",         OPT_INT,  &( talents.elemental_weapons         ) },
-      { "enhancing_totems",          OPT_INT,  &( talents.enhancing_totems          ) },
-      { "feral_spirit",              OPT_INT,  &( talents.feral_spirit              ) },
-      { "flurry",                    OPT_INT,  &( talents.flurry                    ) },
-      { "frozen_power",              OPT_INT,  &( talents.frozen_power              ) },
-      { "improved_fire_nova",        OPT_INT,  &( talents.improved_fire_nova        ) },
-      { "improved_fire_nova_totem",  OPT_INT,  &( talents.improved_fire_nova        ) },
-      { "improved_shields",          OPT_INT,  &( talents.improved_shields          ) },
-      { "improved_stormstrike",      OPT_INT,  &( talents.improved_stormstrike      ) },
-      { "improved_windfury_totem",   OPT_INT,  &( talents.improved_windfury_totem   ) },
-      { "lava_flows",                OPT_INT,  &( talents.lava_flows                ) },
-      { "lava_lash",                 OPT_INT,  &( talents.lava_lash                 ) },
-      { "lightning_mastery",         OPT_INT,  &( talents.lightning_mastery         ) },
-      { "lightning_overload",        OPT_INT,  &( talents.lightning_overload        ) },
-      { "maelstrom_weapon",          OPT_INT,  &( talents.maelstrom_weapon          ) },
-      { "mana_tide_totem",           OPT_INT,  &( talents.mana_tide_totem           ) },
-      { "mental_dexterity",          OPT_INT,  &( talents.mental_dexterity          ) },
-      { "mental_quickness",          OPT_INT,  &( talents.mental_quickness          ) },
-      { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
-      { "restorative_totems",        OPT_INT,  &( talents.restorative_totems        ) },
-      { "reverberation",             OPT_INT,  &( talents.reverberation             ) },
-      { "shamanism",                 OPT_INT,  &( talents.shamanism                 ) },
-      { "shamanistic_focus",         OPT_INT,  &( talents.shamanistic_focus         ) },
-      { "shamanistic_rage",          OPT_INT,  &( talents.shamanistic_rage          ) },
-      { "spirit_weapons",            OPT_INT,  &( talents.spirit_weapons            ) },
-      { "static_shock",              OPT_INT,  &( talents.static_shock              ) },
-      { "stormstrike",               OPT_INT,  &( talents.stormstrike               ) },
-      { "storm_earth_and_fire",      OPT_INT,  &( talents.storm_earth_and_fire      ) },
-      { "toughness",                 OPT_INT,  &( talents.toughness                 ) },
-      { "thundering_strikes",        OPT_INT,  &( talents.thundering_strikes        ) },
-      { "thunderstorm",              OPT_INT,  &( talents.thunderstorm              ) },
-      { "tidal_mastery",             OPT_INT,  &( talents.tidal_mastery             ) },
-      { "totem_of_wrath",            OPT_INT,  &( talents.totem_of_wrath            ) },
-      { "totemic_focus",             OPT_INT,  &( talents.totemic_focus             ) },
-      { "unrelenting_storm",         OPT_INT,  &( talents.unrelenting_storm         ) },
-      { "unleashed_rage",            OPT_INT,  &( talents.unleashed_rage            ) },
-      { "weapon_mastery",            OPT_INT,  &( talents.weapon_mastery            ) },
-      // @option_doc loc=player/druid/misc title="Misc"
- 	    { "totem",                     OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, shaman_options );
-  }
-
-  return options;
+  option_t::copy( options, shaman_options );
 }
 
 // shaman_t::decode_set ====================================================

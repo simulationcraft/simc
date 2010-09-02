@@ -372,6 +372,10 @@ player_t::player_t( sim_t*             s,
   ranged_weapon.slot = SLOT_RANGED;
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
+
+  create_talents();
+  create_glyphs();
+  create_options();
 }
 
 // player_t::~player_t =====================================================
@@ -408,6 +412,8 @@ player_t::~player_t()
     rng_list = r -> next;
     delete r;
   }
+  int size = talent_list.size();
+  for( int i=0; i < size; i++ ) delete talent_list[ i ];
 }
 
 // player_t::id ============================================================
@@ -3652,7 +3658,7 @@ void player_t::trigger_replenishment()
 
 std::vector<talent_translation_t>& player_t::get_talent_list()
 {
-        return talent_list;
+  return talent_translation_list;
 }
 
 // player_t::parse_talent_trees ===================================================
@@ -3743,9 +3749,9 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   unsigned int tree_size[ MAX_TALENT_TREES ] = {0};
   unsigned int tree_count[ MAX_TALENT_TREES ] = {0};
 
-  for (unsigned int i=0; i < talent_list.size(); i++ )
+  for (unsigned int i=0; i < talent_translation_list.size(); i++ )
   {
-    tree_size[ talent_list[i].tree ]++;
+    tree_size[ talent_translation_list[i].tree ]++;
   }
 
   unsigned int tree = 0;
@@ -3753,7 +3759,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   for ( unsigned int i=1; i < talent_string.length(); i++ )
   {
-    if ( (tree >= MAX_TALENT_TREES) || (count > talent_list.size()) )
+    if ( (tree >= MAX_TALENT_TREES) || (count > talent_translation_list.size()) )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string. Too many talents or trees specified.\n", name() );
       return false;
@@ -3802,7 +3808,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( sim -> debug )
   {
     std::string str_out = "";
-    for(unsigned int i=0; i < talent_list.size(); i++)
+    for(unsigned int i=0; i < talent_translation_list.size(); i++)
       str_out += (char)talents[i];
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
@@ -4074,154 +4080,194 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
   return true;
 }
 
-// player_t::get_options ====================================================
+// player_t::get_talent =====================================================
 
-std::vector<option_t>& player_t::get_options()
+talent_t* player_t::get_talent( const char* name, int tree, int max_ranks )
 {
-  if ( options.empty() )
-  {
-    option_t player_options[] =
-    {
-      // @option_doc loc=player/all/general title="General"
-      { "name",                                 OPT_STRING,   &( name_str                                     ) },
-      { "origin",                               OPT_STRING,   &( origin_str                                   ) },
-      { "id",                                   OPT_STRING,   &( id_str                                       ) },
-      { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                      },
-      { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
-      { "race",                                 OPT_STRING,   &( race_str                                     ) },
-      { "level",                                OPT_INT,      &( level                                        ) },
-      { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                               ) },
-      { "tank",                                 OPT_INT,      &( tank                                         ) },
-      { "skill",                                OPT_FLT,      &( initial_skill                                ) },
-      { "distance",                             OPT_FLT,      &( distance                                     ) },
-      { "professions",                          OPT_STRING,   &( professions_str                              ) },
-      { "actions",                              OPT_STRING,   &( action_list_str                              ) },
-      { "actions+",                             OPT_APPEND,   &( action_list_str                              ) },
-      { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
-      { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
-      { "save",                                 OPT_STRING,   &( save_str                                     ) },
-      { "save_gear",                            OPT_STRING,   &( save_gear_str                                ) },
-      { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
-      { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
-      { "comment",                              OPT_STRING,   &( comment_str                                  ) },
-      // @option_doc loc=player/all/items title="Items"
-      { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
-      { "items",                                OPT_STRING,   &( items_str                                    ) },
-      { "items+",                               OPT_APPEND,   &( items_str                                    ) },
-      { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str          ) },
-      { "neck",                                 OPT_STRING,   &( items[ SLOT_NECK      ].options_str          ) },
-      { "shoulders",                            OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
-      { "shirt",                                OPT_STRING,   &( items[ SLOT_SHIRT     ].options_str          ) },
-      { "chest",                                OPT_STRING,   &( items[ SLOT_CHEST     ].options_str          ) },
-      { "waist",                                OPT_STRING,   &( items[ SLOT_WAIST     ].options_str          ) },
-      { "legs",                                 OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
-      { "feet",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
-      { "wrists",                               OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
-      { "hands",                                OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
-      { "finger1",                              OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
-      { "finger2",                              OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
-      { "trinket1",                             OPT_STRING,   &( items[ SLOT_TRINKET_1 ].options_str          ) },
-      { "trinket2",                             OPT_STRING,   &( items[ SLOT_TRINKET_2 ].options_str          ) },
-      { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str          ) },
-      { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str          ) },
-      { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
-      { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
-      { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str          ) },
-      // @option_doc loc=player/all/items title="Items"
-      { "tier6_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_CASTER ]         ) },
-      { "tier6_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_CASTER ]         ) },
-      { "tier6_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_MELEE ]          ) },
-      { "tier6_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_MELEE ]          ) },
-      { "tier6_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_TANK ]           ) },
-      { "tier6_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_TANK ]           ) },
-      { "tier7_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_CASTER ]         ) },
-      { "tier7_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_CASTER ]         ) },
-      { "tier7_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_MELEE ]          ) },
-      { "tier7_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_MELEE ]          ) },
-      { "tier7_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_TANK ]           ) },
-      { "tier7_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_TANK ]           ) },
-      { "tier8_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_CASTER ]         ) },
-      { "tier8_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_CASTER ]         ) },
-      { "tier8_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_MELEE ]          ) },
-      { "tier8_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_MELEE ]          ) },
-      { "tier8_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_TANK ]           ) },
-      { "tier8_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_TANK ]           ) },
-      { "tier9_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_CASTER ]         ) },
-      { "tier9_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_CASTER ]         ) },
-      { "tier9_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_MELEE ]          ) },
-      { "tier9_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_MELEE ]          ) },
-      { "tier9_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_TANK ]           ) },
-      { "tier9_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_TANK ]           ) },
-      { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]        ) },
-      { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]        ) },
-      { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]         ) },
-      { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]         ) },
-      { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]          ) },
-      { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]          ) },
-      // @option_doc loc=skip
-      { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
-      { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
-      { "foot",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
-      { "wrist",                                OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
-      { "hand",                                 OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
-      { "ring1",                                OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
-      { "ring2",                                OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
-      // @option_doc loc=player/all/gear title="Gear Stats"
-      { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]                 ) },
-      { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]                 ) },
-      { "gear_stamina",                         OPT_FLT,  &( gear.attribute[ ATTR_STAMINA   ]                 ) },
-      { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]                 ) },
-      { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]                 ) },
-      { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                                 ) },
-      { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                         ) },
-      { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                                ) },
-      { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                            ) },
-      { "gear_armor_penetration_rating",        OPT_FLT,  &( gear.armor_penetration_rating                    ) },
-      { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                                ) },
-      { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                                  ) },
-      { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                                 ) },
-      { "gear_health",                          OPT_FLT,  &( gear.resource[ RESOURCE_HEALTH ]                 ) },
-      { "gear_mana",                            OPT_FLT,  &( gear.resource[ RESOURCE_MANA   ]                 ) },
-      { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]                 ) },
-      { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]                 ) },
-      { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]                 ) },
-      { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
-      { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
-      { "gear_block_value",                     OPT_FLT,  &( gear.block_value                                 ) },
-      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
-      { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
-      { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
-      { "enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
-      { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
-      { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
-      { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
-      { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
-      { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
-      { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
-      { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
-      { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
-      { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                              ) },
-      { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
-      { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
-      { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
-      { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
-      { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
-      { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
-      { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
-      { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
-      { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
-      // @option_doc loc=skip
-      { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
-      { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
-      { "flask",                                OPT_STRING, &( flask_str                                      ) },
-      { "food",                                 OPT_STRING, &( food_str                                       ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+  int size = talent_list.size();
 
-    option_t::copy( options, player_options );
+  for( int i=0; i < size; i++ )
+  {
+    talent_t* t = talent_list[ i ];
+    if( t -> _name == name ) return t;
   }
 
-  return options;
+  talent_t* t = new talent_t( name, tree, max_ranks );
+
+  option_t::add( options, name, OPT_INT, &( t -> _ranks ) );
+
+  return t;
+}
+
+// player_t::get_glyph ======================================================
+
+glyph_t* player_t::get_glyph( const char* name )
+{
+  int size = glyph_list.size();
+
+  for( int i=0; i < size; i++ )
+  {
+    glyph_t* g = glyph_list[ i ];
+    if( g -> _name == name ) return g;
+  }
+
+  glyph_t* g = new glyph_t( name );
+
+  option_t::add( options, name, OPT_BOOL, &( g -> _active ) );
+
+  return g;
+}
+
+// player_t::create_talents =================================================
+
+void player_t::create_talents()
+{
+  // fill in with DBC stuff here
+}
+
+// player_t::create_glyphs ==================================================
+
+void player_t::create_glyphs()
+{
+  // fill in with DBC stuff here
+}
+
+// player_t::create_options =================================================
+
+void player_t::create_options()
+{
+  option_t player_options[] =
+  {
+    { "name",                                 OPT_STRING,   &( name_str                                     ) },
+    { "origin",                               OPT_STRING,   &( origin_str                                   ) },
+    { "id",                                   OPT_STRING,   &( id_str                                       ) },
+    { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                      },
+    { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
+    { "race",                                 OPT_STRING,   &( race_str                                     ) },
+    { "level",                                OPT_INT,      &( level                                        ) },
+    { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                               ) },
+    { "tank",                                 OPT_INT,      &( tank                                         ) },
+    { "skill",                                OPT_FLT,      &( initial_skill                                ) },
+    { "distance",                             OPT_FLT,      &( distance                                     ) },
+    { "professions",                          OPT_STRING,   &( professions_str                              ) },
+    { "actions",                              OPT_STRING,   &( action_list_str                              ) },
+    { "actions+",                             OPT_APPEND,   &( action_list_str                              ) },
+    { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
+    { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
+    { "save",                                 OPT_STRING,   &( save_str                                     ) },
+    { "save_gear",                            OPT_STRING,   &( save_gear_str                                ) },
+    { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
+    { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
+    { "comment",                              OPT_STRING,   &( comment_str                                  ) },
+    { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
+    { "items",                                OPT_STRING,   &( items_str                                    ) },
+    { "items+",                               OPT_APPEND,   &( items_str                                    ) },
+    { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str          ) },
+    { "neck",                                 OPT_STRING,   &( items[ SLOT_NECK      ].options_str          ) },
+    { "shoulders",                            OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
+    { "shirt",                                OPT_STRING,   &( items[ SLOT_SHIRT     ].options_str          ) },
+    { "chest",                                OPT_STRING,   &( items[ SLOT_CHEST     ].options_str          ) },
+    { "waist",                                OPT_STRING,   &( items[ SLOT_WAIST     ].options_str          ) },
+    { "legs",                                 OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
+    { "feet",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
+    { "wrists",                               OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
+    { "hands",                                OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
+    { "finger1",                              OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
+    { "finger2",                              OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
+    { "trinket1",                             OPT_STRING,   &( items[ SLOT_TRINKET_1 ].options_str          ) },
+    { "trinket2",                             OPT_STRING,   &( items[ SLOT_TRINKET_2 ].options_str          ) },
+    { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str          ) },
+    { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str          ) },
+    { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
+    { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
+    { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str          ) },
+    { "tier6_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_CASTER ]         ) },
+    { "tier6_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_CASTER ]         ) },
+    { "tier6_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_MELEE ]          ) },
+    { "tier6_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_MELEE ]          ) },
+    { "tier6_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_TANK ]           ) },
+    { "tier6_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_TANK ]           ) },
+    { "tier7_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_CASTER ]         ) },
+    { "tier7_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_CASTER ]         ) },
+    { "tier7_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_MELEE ]          ) },
+    { "tier7_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_MELEE ]          ) },
+    { "tier7_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_TANK ]           ) },
+    { "tier7_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_TANK ]           ) },
+    { "tier8_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_CASTER ]         ) },
+    { "tier8_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_CASTER ]         ) },
+    { "tier8_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_MELEE ]          ) },
+    { "tier8_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_MELEE ]          ) },
+    { "tier8_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_TANK ]           ) },
+    { "tier8_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_TANK ]           ) },
+    { "tier9_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_CASTER ]         ) },
+    { "tier9_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_CASTER ]         ) },
+    { "tier9_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_MELEE ]          ) },
+    { "tier9_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_MELEE ]          ) },
+    { "tier9_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_TANK ]           ) },
+    { "tier9_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_TANK ]           ) },
+    { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]        ) },
+    { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]        ) },
+    { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]         ) },
+    { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]         ) },
+    { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]          ) },
+    { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]          ) },
+    { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
+    { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
+    { "foot",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
+    { "wrist",                                OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
+    { "hand",                                 OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
+    { "ring1",                                OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
+    { "ring2",                                OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
+    { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]                 ) },
+    { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]                 ) },
+    { "gear_stamina",                         OPT_FLT,  &( gear.attribute[ ATTR_STAMINA   ]                 ) },
+    { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]                 ) },
+    { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]                 ) },
+    { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                                 ) },
+    { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                         ) },
+    { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                                ) },
+    { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                            ) },
+    { "gear_armor_penetration_rating",        OPT_FLT,  &( gear.armor_penetration_rating                    ) },
+    { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                                ) },
+    { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                                  ) },
+    { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                                 ) },
+    { "gear_health",                          OPT_FLT,  &( gear.resource[ RESOURCE_HEALTH ]                 ) },
+    { "gear_mana",                            OPT_FLT,  &( gear.resource[ RESOURCE_MANA   ]                 ) },
+    { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]                 ) },
+    { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]                 ) },
+    { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]                 ) },
+    { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
+    { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
+    { "gear_block_value",                     OPT_FLT,  &( gear.block_value                                 ) },
+    { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
+    { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
+    { "enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
+    { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
+    { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
+    { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
+    { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
+    { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
+    { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
+    { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
+    { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
+    { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                              ) },
+    { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
+    { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
+    { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
+    { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
+    { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
+    { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
+    { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
+    { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
+    { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
+    { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
+    { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
+    { "flask",                                OPT_STRING, &( flask_str                                      ) },
+    { "food",                                 OPT_STRING, &( food_str                                       ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+
+  option_t::copy( options, player_options );
 }
 
 // player_t::create =========================================================

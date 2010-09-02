@@ -210,7 +210,7 @@ struct warrior_t : public player_t
   virtual void      regen( double periodicity );
   virtual double    resource_loss( int resurce, double amount, action_t* );
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
@@ -2884,7 +2884,7 @@ int warrior_t::target_swing()
 
 std::vector<talent_translation_t>& warrior_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
 	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
 	  {
@@ -2922,96 +2922,90 @@ std::vector<talent_translation_t>& warrior_t::get_talent_list()
     { {  0, 0, NULL                                         }, {  0, 0, NULL                                   }, {  0, 0, NULL                                        } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;
+  return talent_translation_list;
 }
 
-// warrior_t::get_options ================================================
+// warrior_t::create_options =============================================
 
-std::vector<option_t>& warrior_t::get_options()
+void warrior_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t warrior_options[] =
   {
-    player_t::get_options();
+    { "anticipation",                    OPT_INT, &( talents.anticipation                    ) },
+    { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
+    { "anger_management",                OPT_INT, &( talents.anger_management                ) },
+    { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
+    { "blood_frenzy",                    OPT_INT, &( talents.blood_frenzy                    ) },
+    { "bloodsurge",                      OPT_INT, &( talents.bloodsurge                      ) },
+    { "bloodthirst",                     OPT_INT, &( talents.bloodthirst                     ) },
+    { "booming_voice",                   OPT_INT, &( talents.booming_voice                   ) },
+    { "commanding_presence",             OPT_INT, &( talents.commanding_presence             ) },
+    { "concussion_blow",                 OPT_INT, &( talents.concussion_blow                 ) },
+    { "critical_block",                  OPT_INT, &( talents.critical_block                  ) },
+    { "cruelty",                         OPT_INT, &( talents.cruelty                         ) },
+    { "damage_shield",                   OPT_INT, &( talents.damage_shield                   ) },
+    { "death_wish",                      OPT_INT, &( talents.death_wish                      ) },
+    { "deep_wounds",                     OPT_INT, &( talents.deep_wounds                     ) },
+    { "deflection",                      OPT_INT, &( talents.deflection                      ) },
+    { "devastate",                       OPT_INT, &( talents.devastate                       ) },
+    { "dual_wield_specialization",       OPT_INT, &( talents.dual_wield_specialization       ) },
+    { "endless_rage",                    OPT_INT, &( talents.endless_rage                    ) },
+    { "enrage",                          OPT_INT, &( talents.enrage                          ) },
+    { "flurry",                          OPT_INT, &( talents.flurry                          ) },
+    { "focused_rage",                    OPT_INT, &( talents.focused_rage                    ) },
+    { "gag_order",                       OPT_INT, &( talents.gag_order                       ) },
+    { "impale",                          OPT_INT, &( talents.impale                          ) },
+    { "improved_berserker_rage",         OPT_INT, &( talents.improved_berserker_rage         ) },
+    { "improved_berserker_stance",       OPT_INT, &( talents.improved_berserker_stance       ) },
+    { "improved_bloodrage",              OPT_INT, &( talents.improved_bloodrage              ) },
+    { "improved_defensive_stance",       OPT_INT, &( talents.improved_defensive_stance       ) },
+    { "improved_execute",                OPT_INT, &( talents.improved_execute                ) },
+    { "improved_heroic_strike",          OPT_INT, &( talents.improved_heroic_strike          ) },
+    { "improved_mortal_strike",          OPT_INT, &( talents.improved_mortal_strike          ) },
+    { "improved_overpower",              OPT_INT, &( talents.improved_overpower              ) },
+    { "improved_rend",                   OPT_INT, &( talents.improved_rend                   ) },
+    { "improved_revenge",                OPT_INT, &( talents.improved_revenge                ) },
+    { "improved_slam",                   OPT_INT, &( talents.improved_slam                   ) },
+    { "improved_spell_reflection",       OPT_INT, &( talents.improved_spell_reflection       ) },
+    { "improved_thunderclap",            OPT_INT, &( talents.improved_thunderclap            ) },
+    { "improved_whirlwind",              OPT_INT, &( talents.improved_whirlwind              ) },
+    { "incite",                          OPT_INT, &( talents.incite                          ) },
+    { "intensify_rage",                  OPT_INT, &( talents.intensify_rage                  ) },
+    { "mace_specialization",             OPT_INT, &( talents.mace_specialization             ) },
+    { "mortal_strike",                   OPT_INT, &( talents.mortal_strike                   ) },
+    { "onhanded_weapon_specialization",  OPT_INT, &( talents.onhanded_weapon_specialization  ) },
+    { "poleaxe_specialization",          OPT_INT, &( talents.poleaxe_specialization          ) },
+    { "precision",                       OPT_INT, &( talents.precision                       ) },
+    { "puncture",                        OPT_INT, &( talents.puncture                        ) },
+    { "rampage",                         OPT_INT, &( talents.rampage                         ) },
+    { "shield_mastery",                  OPT_INT, &( talents.shield_mastery                  ) },
+    { "shield_specialization",           OPT_INT, &( talents.shield_specialization           ) },
+    { "shockwave",                       OPT_INT, &( talents.shockwave                       ) },
+    { "strength_of_arms",                OPT_INT, &( talents.strength_of_arms                ) },
+    { "sudden_death",                    OPT_INT, &( talents.sudden_death                    ) },
+    { "sword_and_board",                 OPT_INT, &( talents.sword_and_board                 ) },
+    { "sword_specialization",            OPT_INT, &( talents.sword_specialization            ) },
+    { "tactical_mastery",                OPT_INT, &( talents.tactical_mastery                ) },
+    { "taste_for_blood",                 OPT_INT, &( talents.taste_for_blood                 ) },
+    { "titans_grip",                     OPT_INT, &( talents.titans_grip                     ) },
+    { "toughness",                       OPT_INT, &( talents.toughness                       ) },
+    { "trauma",                          OPT_INT, &( talents.trauma                          ) },
+    { "twohanded_weapon_specialization", OPT_INT, &( talents.twohanded_weapon_specialization ) },
+    { "unbridled_wrath",                 OPT_INT, &( talents.unbridled_wrath                 ) },
+    { "unending_fury",                   OPT_INT, &( talents.unending_fury                   ) },
+    { "unrelenting_assault",             OPT_INT, &( talents.unrelenting_assault             ) },
+    { "vigilance",                       OPT_INT, &( talents.vigilance                       ) },
+    { "vitality",                        OPT_INT, &( talents.vitality                        ) },
+    { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
+    { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t warrior_options[] =
-    {
-      // @option_doc loc=player/warrior/talents title="Talents"
-      { "anticipation",                    OPT_INT, &( talents.anticipation                    ) },
-      { "armored_to_the_teeth",            OPT_INT, &( talents.armored_to_the_teeth            ) },
-      { "anger_management",                OPT_INT, &( talents.anger_management                ) },
-      { "bladestorm",                      OPT_INT, &( talents.bladestorm                      ) },
-      { "blood_frenzy",                    OPT_INT, &( talents.blood_frenzy                    ) },
-      { "bloodsurge",                      OPT_INT, &( talents.bloodsurge                      ) },
-      { "bloodthirst",                     OPT_INT, &( talents.bloodthirst                     ) },
-      { "booming_voice",                   OPT_INT, &( talents.booming_voice                   ) },
-      { "commanding_presence",             OPT_INT, &( talents.commanding_presence             ) },
-      { "concussion_blow",                 OPT_INT, &( talents.concussion_blow                 ) },
-      { "critical_block",                  OPT_INT, &( talents.critical_block                  ) },
-      { "cruelty",                         OPT_INT, &( talents.cruelty                         ) },
-      { "damage_shield",                   OPT_INT, &( talents.damage_shield                   ) },
-      { "death_wish",                      OPT_INT, &( talents.death_wish                      ) },
-      { "deep_wounds",                     OPT_INT, &( talents.deep_wounds                     ) },
-      { "deflection",                      OPT_INT, &( talents.deflection                      ) },
-      { "devastate",                       OPT_INT, &( talents.devastate                       ) },
-      { "dual_wield_specialization",       OPT_INT, &( talents.dual_wield_specialization       ) },
-      { "endless_rage",                    OPT_INT, &( talents.endless_rage                    ) },
-      { "enrage",                          OPT_INT, &( talents.enrage                          ) },
-      { "flurry",                          OPT_INT, &( talents.flurry                          ) },
-      { "focused_rage",                    OPT_INT, &( talents.focused_rage                    ) },
-      { "gag_order",                       OPT_INT, &( talents.gag_order                       ) },
-      { "impale",                          OPT_INT, &( talents.impale                          ) },
-      { "improved_berserker_rage",         OPT_INT, &( talents.improved_berserker_rage         ) },
-      { "improved_berserker_stance",       OPT_INT, &( talents.improved_berserker_stance       ) },
-      { "improved_bloodrage",              OPT_INT, &( talents.improved_bloodrage              ) },
-      { "improved_defensive_stance",       OPT_INT, &( talents.improved_defensive_stance       ) },
-      { "improved_execute",                OPT_INT, &( talents.improved_execute                ) },
-      { "improved_heroic_strike",          OPT_INT, &( talents.improved_heroic_strike          ) },
-      { "improved_mortal_strike",          OPT_INT, &( talents.improved_mortal_strike          ) },
-      { "improved_overpower",              OPT_INT, &( talents.improved_overpower              ) },
-      { "improved_rend",                   OPT_INT, &( talents.improved_rend                   ) },
-      { "improved_revenge",                OPT_INT, &( talents.improved_revenge                ) },
-      { "improved_slam",                   OPT_INT, &( talents.improved_slam                   ) },
-      { "improved_spell_reflection",       OPT_INT, &( talents.improved_spell_reflection       ) },
-      { "improved_thunderclap",            OPT_INT, &( talents.improved_thunderclap            ) },
-      { "improved_whirlwind",              OPT_INT, &( talents.improved_whirlwind              ) },
-      { "incite",                          OPT_INT, &( talents.incite                          ) },
-      { "intensify_rage",                  OPT_INT, &( talents.intensify_rage                  ) },
-      { "mace_specialization",             OPT_INT, &( talents.mace_specialization             ) },
-      { "mortal_strike",                   OPT_INT, &( talents.mortal_strike                   ) },
-      { "onhanded_weapon_specialization",  OPT_INT, &( talents.onhanded_weapon_specialization  ) },
-      { "poleaxe_specialization",          OPT_INT, &( talents.poleaxe_specialization          ) },
-      { "precision",                       OPT_INT, &( talents.precision                       ) },
-      { "puncture",                        OPT_INT, &( talents.puncture                        ) },
-      { "rampage",                         OPT_INT, &( talents.rampage                         ) },
-      { "shield_mastery",                  OPT_INT, &( talents.shield_mastery                  ) },
-      { "shield_specialization",           OPT_INT, &( talents.shield_specialization           ) },
-      { "shockwave",                       OPT_INT, &( talents.shockwave                       ) },
-      { "strength_of_arms",                OPT_INT, &( talents.strength_of_arms                ) },
-      { "sudden_death",                    OPT_INT, &( talents.sudden_death                    ) },
-      { "sword_and_board",                 OPT_INT, &( talents.sword_and_board                 ) },
-      { "sword_specialization",            OPT_INT, &( talents.sword_specialization            ) },
-      { "tactical_mastery",                OPT_INT, &( talents.tactical_mastery                ) },
-      { "taste_for_blood",                 OPT_INT, &( talents.taste_for_blood                 ) },
-      { "titans_grip",                     OPT_INT, &( talents.titans_grip                     ) },
-      { "toughness",                       OPT_INT, &( talents.toughness                       ) },
-      { "trauma",                          OPT_INT, &( talents.trauma                          ) },
-      { "twohanded_weapon_specialization", OPT_INT, &( talents.twohanded_weapon_specialization ) },
-      { "unbridled_wrath",                 OPT_INT, &( talents.unbridled_wrath                 ) },
-      { "unending_fury",                   OPT_INT, &( talents.unending_fury                   ) },
-      { "unrelenting_assault",             OPT_INT, &( talents.unrelenting_assault             ) },
-      { "vigilance",                       OPT_INT, &( talents.vigilance                       ) },
-      { "vitality",                        OPT_INT, &( talents.vitality                        ) },
-      { "weapon_mastery",                  OPT_INT, &( talents.weapon_mastery                  ) },
-      { "wrecking_crew",                   OPT_INT, &( talents.wrecking_crew                   ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, warrior_options );
-  }
-
-  return options;
+  option_t::copy( options, warrior_options );
 }
 
 // warrior_t::decode_set ===================================================

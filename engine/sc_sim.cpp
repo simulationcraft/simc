@@ -1441,11 +1441,10 @@ void sim_t::print_options()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
-    std::vector<option_t>& options = p -> get_options();
-    int num_options = ( int ) options.size();
+    int num_options = ( int ) p -> options.size();
 
     util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
-    for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
+    for ( int i=0; i < num_options; i++ ) p -> options[ i ].print( output_file );
   }
 
   util_t::fprintf( output_file, "\n" );
@@ -1655,7 +1654,7 @@ bool sim_t::parse_option( const std::string& name,
   if ( canceled ) return false;
 
   if ( active_player )
-    if ( option_t::parse( this, active_player -> get_options(), name, value ) )
+    if ( option_t::parse( this, active_player -> options, name, value ) )
       return true;
 
   return option_t::parse( this, get_options(), name, value );

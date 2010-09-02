@@ -200,7 +200,7 @@ struct priest_t : public player_t
   virtual void      reset();
   virtual void      init_party();
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -2351,7 +2351,7 @@ double priest_t::resource_loss( int       resource,
 
 std::vector<talent_translation_t>& priest_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
 	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
 	  {
@@ -2386,98 +2386,89 @@ std::vector<talent_translation_t>& priest_t::get_talent_list()
     { {  0, 0, NULL                                       }, {  0, 0, NULL                              }, {  0, 0, NULL                                   } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;}
+  return talent_translation_list;}
 
-// priest_t::get_options ===================================================
+// priest_t::create_options =================================================
 
-std::vector<option_t>& priest_t::get_options()
+void priest_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t priest_options[] =
   {
-    player_t::get_options();
+    { "aspiration",                               OPT_INT,    &( talents.aspiration                         ) },
+    { "darkness",                                 OPT_INT,    &( talents.darkness                           ) },
+    { "dispersion",                               OPT_INT,    &( talents.dispersion                         ) },
+    { "divine_fury",                              OPT_INT,    &( talents.divine_fury                        ) },
+    { "enlightenment",                            OPT_INT,    &( talents.enlightenment                      ) },
+    { "focused_mind",                             OPT_INT,    &( talents.focused_mind                       ) },
+    { "focused_power",                            OPT_INT,    &( talents.focused_power                      ) },
+    { "focused_will",                             OPT_INT,    &( talents.focused_will                       ) },
+    { "holy_specialization",                      OPT_INT,    &( talents.holy_specialization                ) },
+    { "improved_devouring_plague",                OPT_INT,    &( talents.improved_devouring_plague          ) },
+    { "improved_inner_fire",                      OPT_INT,    &( talents.improved_inner_fire                ) },
+    { "improved_mind_blast",                      OPT_INT,    &( talents.improved_mind_blast                ) },
+    { "improved_power_word_fortitude",            OPT_INT,    &( talents.improved_power_word_fortitude      ) },
+    { "improved_shadow_word_pain",                OPT_INT,    &( talents.improved_shadow_word_pain          ) },
+    { "improved_spirit_tap",                      OPT_INT,    &( talents.improved_spirit_tap                ) },
+    { "improved_vampiric_embrace",                OPT_INT,    &( talents.improved_vampiric_embrace          ) },
+    { "inner_focus",                              OPT_INT,    &( talents.inner_focus                        ) },
+    { "meditation",                               OPT_INT,    &( talents.meditation                         ) },
+    { "mental_agility",                           OPT_INT,    &( talents.mental_agility                     ) },
+    { "mental_strength",                          OPT_INT,    &( talents.mental_strength                    ) },
+    { "mind_flay",                                OPT_INT,    &( talents.mind_flay                          ) },
+    { "mind_melt",                                OPT_INT,    &( talents.mind_melt                          ) },
+    { "misery",                                   OPT_INT,    &( talents.misery                             ) },
+    { "pain_and_suffering",                       OPT_INT,    &( talents.pain_and_suffering                 ) },
+    { "penance",                                  OPT_INT,    &( talents.penance                            ) },
+    { "power_infusion",                           OPT_INT,    &( talents.power_infusion                     ) },
+    { "searing_light",                            OPT_INT,    &( talents.searing_light                      ) },
+    { "shadow_affinity",                          OPT_INT,    &( talents.shadow_affinity                    ) },
+    { "shadow_focus",                             OPT_INT,    &( talents.shadow_focus                       ) },
+    { "shadow_form",                              OPT_INT,    &( talents.shadow_form                        ) },
+    { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
+    { "shadow_weaving",                           OPT_INT,    &( talents.shadow_weaving                     ) },
+    { "spirit_of_redemption",                     OPT_INT,    &( talents.spirit_of_redemption               ) },
+    { "spiritual_guidance",                       OPT_INT,    &( talents.spiritual_guidance                 ) },
+    { "surge_of_light",                           OPT_INT,    &( talents.surge_of_light                     ) },
+    { "twin_disciplines",                         OPT_INT,    &( talents.twin_disciplines                   ) },
+    { "twisted_faith",                            OPT_INT,    &( talents.twisted_faith                      ) },
+    { "vampiric_embrace",                         OPT_INT,    &( talents.vampiric_embrace                   ) },
+    { "vampiric_touch",                           OPT_INT,    &( talents.vampiric_touch                     ) },
+    { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
+    { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
+    { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
+    { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
+    { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
+    { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
+    { "glyph_shadow",                             OPT_BOOL,   &( glyphs.shadow                              ) },
+    { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
+    { "const.darkness_value",                     OPT_FLT,    &( constants.darkness_value                   ) },
+    { "const.devouring_plague_power_mod",         OPT_FLT,    &( constants.devouring_plague_power_mod       ) },
+    { "const.improved_devouring_plague_value",    OPT_FLT,    &( constants.improved_devouring_plague_value  ) },
+    { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
+    { "const.mind_blast_power_mod",               OPT_FLT,    &( constants.mind_blast_power_mod             ) },
+    { "const.mind_flay_power_mod",                OPT_FLT,    &( constants.mind_flay_power_mod              ) },
+    { "const.mind_nuke_power_mod",                OPT_FLT,    &( constants.mind_nuke_power_mod              ) },
+    { "const.misery_power_mod",                   OPT_FLT,    &( constants.misery_power_mod                 ) },
+    { "const.shadow_form_value",                  OPT_FLT,    &( constants.shadow_form_value                ) },
+    { "const.shadow_weaving_value",               OPT_FLT,    &( constants.shadow_weaving_value             ) },
+    { "const.shadow_word_death_power_mod",        OPT_FLT,    &( constants.shadow_word_death_power_mod      ) },
+    { "const.shadow_word_pain_power_mod",         OPT_FLT,    &( constants.shadow_word_pain_power_mod       ) },
+    { "const.twin_disciplines_value",             OPT_FLT,    &( constants.twin_disciplines_value           ) },
+    { "const.vampiric_touch_power_mod",           OPT_FLT,    &( constants.vampiric_touch_power_mod         ) },
+    { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
+    { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
+    { "hasted_devouring_plague",                  OPT_INT,    &( hasted_devouring_plague                    ) },
+    { "hasted_shadow_word_pain",                  OPT_INT,    &( hasted_shadow_word_pain                    ) },
+    { "hasted_vampiric_touch",                    OPT_INT,    &( hasted_vampiric_touch                      ) },
+    { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t priest_options[] =
-    {
-      // @option_doc loc=player/priest/talents title="Talents"
-      { "aspiration",                               OPT_INT,    &( talents.aspiration                         ) },
-      { "darkness",                                 OPT_INT,    &( talents.darkness                           ) },
-      { "dispersion",                               OPT_INT,    &( talents.dispersion                         ) },
-      { "divine_fury",                              OPT_INT,    &( talents.divine_fury                        ) },
-      { "enlightenment",                            OPT_INT,    &( talents.enlightenment                      ) },
-      { "focused_mind",                             OPT_INT,    &( talents.focused_mind                       ) },
-      { "focused_power",                            OPT_INT,    &( talents.focused_power                      ) },
-      { "focused_will",                             OPT_INT,    &( talents.focused_will                       ) },
-      { "holy_specialization",                      OPT_INT,    &( talents.holy_specialization                ) },
-      { "improved_devouring_plague",                OPT_INT,    &( talents.improved_devouring_plague          ) },
-      { "improved_inner_fire",                      OPT_INT,    &( talents.improved_inner_fire                ) },
-      { "improved_mind_blast",                      OPT_INT,    &( talents.improved_mind_blast                ) },
-      { "improved_power_word_fortitude",            OPT_INT,    &( talents.improved_power_word_fortitude      ) },
-      { "improved_shadow_word_pain",                OPT_INT,    &( talents.improved_shadow_word_pain          ) },
-      { "improved_spirit_tap",                      OPT_INT,    &( talents.improved_spirit_tap                ) },
-      { "improved_vampiric_embrace",                OPT_INT,    &( talents.improved_vampiric_embrace          ) },
-      { "inner_focus",                              OPT_INT,    &( talents.inner_focus                        ) },
-      { "meditation",                               OPT_INT,    &( talents.meditation                         ) },
-      { "mental_agility",                           OPT_INT,    &( talents.mental_agility                     ) },
-      { "mental_strength",                          OPT_INT,    &( talents.mental_strength                    ) },
-      { "mind_flay",                                OPT_INT,    &( talents.mind_flay                          ) },
-      { "mind_melt",                                OPT_INT,    &( talents.mind_melt                          ) },
-      { "misery",                                   OPT_INT,    &( talents.misery                             ) },
-      { "pain_and_suffering",                       OPT_INT,    &( talents.pain_and_suffering                 ) },
-      { "penance",                                  OPT_INT,    &( talents.penance                            ) },
-      { "power_infusion",                           OPT_INT,    &( talents.power_infusion                     ) },
-      { "searing_light",                            OPT_INT,    &( talents.searing_light                      ) },
-      { "shadow_affinity",                          OPT_INT,    &( talents.shadow_affinity                    ) },
-      { "shadow_focus",                             OPT_INT,    &( talents.shadow_focus                       ) },
-      { "shadow_form",                              OPT_INT,    &( talents.shadow_form                        ) },
-      { "shadow_power",                             OPT_INT,    &( talents.shadow_power                       ) },
-      { "shadow_weaving",                           OPT_INT,    &( talents.shadow_weaving                     ) },
-      { "spirit_of_redemption",                     OPT_INT,    &( talents.spirit_of_redemption               ) },
-      { "spiritual_guidance",                       OPT_INT,    &( talents.spiritual_guidance                 ) },
-      { "surge_of_light",                           OPT_INT,    &( talents.surge_of_light                     ) },
-      { "twin_disciplines",                         OPT_INT,    &( talents.twin_disciplines                   ) },
-      { "twisted_faith",                            OPT_INT,    &( talents.twisted_faith                      ) },
-      { "vampiric_embrace",                         OPT_INT,    &( talents.vampiric_embrace                   ) },
-      { "vampiric_touch",                           OPT_INT,    &( talents.vampiric_touch                     ) },
-      { "veiled_shadows",                           OPT_INT,    &( talents.veiled_shadows                     ) },
-      // @option_doc loc=player/priest/glyphs title="Glyphs"
-      { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
-      { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
-      { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
-      { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
-      { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
-      { "glyph_shadow",                             OPT_BOOL,   &( glyphs.shadow                              ) },
-      { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
-      // @option_doc loc=player/priest/coefficients title="Coefficients"
-      { "const.darkness_value",                     OPT_FLT,    &( constants.darkness_value                   ) },
-      { "const.devouring_plague_power_mod",         OPT_FLT,    &( constants.devouring_plague_power_mod       ) },
-      { "const.improved_devouring_plague_value",    OPT_FLT,    &( constants.improved_devouring_plague_value  ) },
-      { "const.improved_shadow_word_pain_value",    OPT_FLT,    &( constants.improved_shadow_word_pain_value  ) },
-      { "const.mind_blast_power_mod",               OPT_FLT,    &( constants.mind_blast_power_mod             ) },
-      { "const.mind_flay_power_mod",                OPT_FLT,    &( constants.mind_flay_power_mod              ) },
-      { "const.mind_nuke_power_mod",                OPT_FLT,    &( constants.mind_nuke_power_mod              ) },
-      { "const.misery_power_mod",                   OPT_FLT,    &( constants.misery_power_mod                 ) },
-      { "const.shadow_form_value",                  OPT_FLT,    &( constants.shadow_form_value                ) },
-      { "const.shadow_weaving_value",               OPT_FLT,    &( constants.shadow_weaving_value             ) },
-      { "const.shadow_word_death_power_mod",        OPT_FLT,    &( constants.shadow_word_death_power_mod      ) },
-      { "const.shadow_word_pain_power_mod",         OPT_FLT,    &( constants.shadow_word_pain_power_mod       ) },
-      { "const.twin_disciplines_value",             OPT_FLT,    &( constants.twin_disciplines_value           ) },
-      { "const.vampiric_touch_power_mod",           OPT_FLT,    &( constants.vampiric_touch_power_mod         ) },
-      // @option_doc loc=player/priest/misc title="Misc"
-      { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
-      { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
-      { "hasted_devouring_plague",                  OPT_INT,    &( hasted_devouring_plague                    ) },
-      { "hasted_shadow_word_pain",                  OPT_INT,    &( hasted_shadow_word_pain                    ) },
-      { "hasted_vampiric_touch",                    OPT_INT,    &( hasted_vampiric_touch                      ) },
-      { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, priest_options );
-  }
-
-  return options;
+  option_t::copy( options, priest_options );
 }
 
 // priest_t::create_profile ===================================================

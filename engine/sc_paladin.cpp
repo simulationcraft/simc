@@ -223,7 +223,7 @@ struct paladin_t : public player_t
   virtual double    composite_block_value() SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -2588,7 +2588,7 @@ int paladin_t::target_swing()
 
 std::vector<talent_translation_t>& paladin_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
 	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
 	  {
@@ -2621,90 +2621,84 @@ std::vector<talent_translation_t>& paladin_t::get_talent_list()
     { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                    } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;}
+  return talent_translation_list;}
 
-// paladin_t::get_options ====================================================
+// paladin_t::create_options =================================================
 
-std::vector<option_t>& paladin_t::get_options()
+void paladin_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t paladin_options[] =
   {
-    player_t::get_options();
+    { "anticipation",                OPT_INT, &( talents.anticipation                ) },
+    { "ardent_defender",             OPT_INT, &( talents.ardent_defender             ) },
+    { "aura_mastery",                OPT_INT, &( talents.aura_mastery                ) },
+    { "avengers_shield",             OPT_INT, &( talents.avengers_shield             ) },
+    { "benediction;",                OPT_INT, &( talents.benediction                 ) },
+    { "blessed_life",                OPT_INT, &( talents.blessed_life                ) },
+    { "blessing_of_sanctuary",       OPT_INT, &( talents.blessing_of_sanctuary       ) },
+    { "combat_expertise",            OPT_INT, &( talents.combat_expertise            ) },
+    { "conviction",                  OPT_INT, &( talents.conviction                  ) },
+    { "crusade",                     OPT_INT, &( talents.crusade                     ) },
+    { "crusader_strike",             OPT_INT, &( talents.crusader_strike             ) },
+    { "deflection",                  OPT_INT, &( talents.deflection                  ) },
+    { "divine_favor",                OPT_INT, &( talents.divine_favor                ) },
+    { "divine_illumination",         OPT_INT, &( talents.divine_illumination         ) },
+    { "divine_intellect",            OPT_INT, &( talents.divine_intellect            ) },
+    { "divine_purpose",              OPT_INT, &( talents.divine_purpose              ) },
+    { "divine_storm",                OPT_INT, &( talents.divine_storm                ) },
+    { "divine_strength",             OPT_INT, &( talents.divine_strength             ) },
+    { "enlightened_judgements",      OPT_INT, &( talents.enlightened_judgements      ) },
+    { "eye_for_an_eye",              OPT_INT, &( talents.eye_for_an_eye              ) },
+    { "fanaticism",                  OPT_INT, &( talents.fanaticism                  ) },
+    { "guarded_by_the_light",        OPT_INT, &( talents.guarded_by_the_light        ) },
+    { "hammer_of_the_righteous",     OPT_INT, &( talents.hammer_of_the_righteous     ) },
+    { "healing_light",               OPT_INT, &( talents.healing_light               ) },
+    { "heart_of_the_crusader",       OPT_INT, &( talents.heart_of_the_crusader       ) },
+    { "holy_guidance",               OPT_INT, &( talents.holy_guidance               ) },
+    { "holy_power",                  OPT_INT, &( talents.holy_power                  ) },
+    { "holy_shield",                 OPT_INT, &( talents.holy_shield                 ) },
+    { "holy_shock",                  OPT_INT, &( talents.holy_shock                  ) },
+    { "improved_blessing_of_might",  OPT_INT, &( talents.improved_blessing_of_might  ) },
+    { "improved_blessing_of_wisdom", OPT_INT, &( talents.improved_blessing_of_wisdom ) },
+    { "improved_concentration_aura", OPT_INT, &( talents.improved_concentration_aura ) },
+    { "improved_devotion_aura",      OPT_INT, &( talents.improved_devotion_aura      ) },
+    { "improved_hammer_of_justice",  OPT_INT, &( talents.improved_hammer_of_justice  ) },
+    { "improved_judgements",         OPT_INT, &( talents.improved_judgements         ) },
+    { "improved_righteous_fury",     OPT_INT, &( talents.improved_righteous_fury     ) },
+    { "judgements_of_the_just",      OPT_INT, &( talents.judgements_of_the_just      ) },
+    { "judgements_of_the_pure",      OPT_INT, &( talents.judgements_of_the_pure      ) },
+    { "judgements_of_the_wise",      OPT_INT, &( talents.judgements_of_the_wise      ) },
+    { "one_handed_weapon_spec",      OPT_INT, &( talents.one_handed_weapon_spec      ) },
+    { "purifying_power",             OPT_INT, &( talents.purifying_power             ) },
+    { "reckoning",                   OPT_INT, &( talents.reckoning                   ) },
+    { "redoubt",                     OPT_INT, &( talents.redoubt                     ) },
+    { "righteous_vengeance",         OPT_INT, &( talents.righteous_vengeance         ) },
+    { "sacred_duty",                 OPT_INT, &( talents.sacred_duty                 ) },
+    { "sanctified_light",            OPT_INT, &( talents.sanctified_light            ) },
+    { "sanctified_retribution",      OPT_INT, &( talents.sanctified_retribution      ) },
+    { "sanctified_wrath",            OPT_INT, &( talents.sanctified_wrath            ) },
+    { "sanctity_of_battle",          OPT_INT, &( talents.sanctity_of_battle          ) },
+    { "seal_of_command",             OPT_INT, &( talents.seal_of_command             ) },
+    { "seals_of_the_pure",           OPT_INT, &( talents.seals_of_the_pure           ) },
+    { "sheath_of_light",             OPT_INT, &( talents.sheath_of_light             ) },
+    { "shield_of_the_templar",       OPT_INT, &( talents.shield_of_the_templar       ) },
+    { "spiritual_attunement",        OPT_INT, &( talents.spiritual_attunement        ) },
+    { "swift_retribution",           OPT_INT, &( talents.swift_retribution           ) },
+    { "the_art_of_war",              OPT_INT, &( talents.the_art_of_war              ) },
+    { "toughness",                   OPT_INT, &( talents.toughness                   ) },
+    { "touched_by_the_light",        OPT_INT, &( talents.touched_by_the_light        ) },
+    { "two_handed_weapon_spec",      OPT_INT, &( talents.two_handed_weapon_spec      ) },
+    { "vengeance",                   OPT_INT, &( talents.vengeance                   ) },
+    { "vindication",                 OPT_INT, &( talents.vindication                 ) },
+    { "tier10_2pc_procs_from_strikes", OPT_BOOL, &( tier10_2pc_procs_from_strikes    ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t paladin_options[] =
-    {
-      // @option_doc loc=player/paladin/talents title="Talents"
-      { "anticipation",                OPT_INT, &( talents.anticipation                ) },
-      { "ardent_defender",             OPT_INT, &( talents.ardent_defender             ) },
-      { "aura_mastery",                OPT_INT, &( talents.aura_mastery                ) },
-      { "avengers_shield",             OPT_INT, &( talents.avengers_shield             ) },
-      { "benediction;",                OPT_INT, &( talents.benediction                 ) },
-      { "blessed_life",                OPT_INT, &( talents.blessed_life                ) },
-      { "blessing_of_sanctuary",       OPT_INT, &( talents.blessing_of_sanctuary       ) },
-      { "combat_expertise",            OPT_INT, &( talents.combat_expertise            ) },
-      { "conviction",                  OPT_INT, &( talents.conviction                  ) },
-      { "crusade",                     OPT_INT, &( talents.crusade                     ) },
-      { "crusader_strike",             OPT_INT, &( talents.crusader_strike             ) },
-      { "deflection",                  OPT_INT, &( talents.deflection                  ) },
-      { "divine_favor",                OPT_INT, &( talents.divine_favor                ) },
-      { "divine_illumination",         OPT_INT, &( talents.divine_illumination         ) },
-      { "divine_intellect",            OPT_INT, &( talents.divine_intellect            ) },
-      { "divine_purpose",              OPT_INT, &( talents.divine_purpose              ) },
-      { "divine_storm",                OPT_INT, &( talents.divine_storm                ) },
-      { "divine_strength",             OPT_INT, &( talents.divine_strength             ) },
-      { "enlightened_judgements",      OPT_INT, &( talents.enlightened_judgements      ) },
-      { "eye_for_an_eye",              OPT_INT, &( talents.eye_for_an_eye              ) },
-      { "fanaticism",                  OPT_INT, &( talents.fanaticism                  ) },
-      { "guarded_by_the_light",        OPT_INT, &( talents.guarded_by_the_light        ) },
-      { "hammer_of_the_righteous",     OPT_INT, &( talents.hammer_of_the_righteous     ) },
-      { "healing_light",               OPT_INT, &( talents.healing_light               ) },
-      { "heart_of_the_crusader",       OPT_INT, &( talents.heart_of_the_crusader       ) },
-      { "holy_guidance",               OPT_INT, &( talents.holy_guidance               ) },
-      { "holy_power",                  OPT_INT, &( talents.holy_power                  ) },
-      { "holy_shield",                 OPT_INT, &( talents.holy_shield                 ) },
-      { "holy_shock",                  OPT_INT, &( talents.holy_shock                  ) },
-      { "improved_blessing_of_might",  OPT_INT, &( talents.improved_blessing_of_might  ) },
-      { "improved_blessing_of_wisdom", OPT_INT, &( talents.improved_blessing_of_wisdom ) },
-      { "improved_concentration_aura", OPT_INT, &( talents.improved_concentration_aura ) },
-      { "improved_devotion_aura",      OPT_INT, &( talents.improved_devotion_aura      ) },
-      { "improved_hammer_of_justice",  OPT_INT, &( talents.improved_hammer_of_justice  ) },
-      { "improved_judgements",         OPT_INT, &( talents.improved_judgements         ) },
-      { "improved_righteous_fury",     OPT_INT, &( talents.improved_righteous_fury     ) },
-      { "judgements_of_the_just",      OPT_INT, &( talents.judgements_of_the_just      ) },
-      { "judgements_of_the_pure",      OPT_INT, &( talents.judgements_of_the_pure      ) },
-      { "judgements_of_the_wise",      OPT_INT, &( talents.judgements_of_the_wise      ) },
-      { "one_handed_weapon_spec",      OPT_INT, &( talents.one_handed_weapon_spec      ) },
-      { "purifying_power",             OPT_INT, &( talents.purifying_power             ) },
-      { "reckoning",                   OPT_INT, &( talents.reckoning                   ) },
-      { "redoubt",                     OPT_INT, &( talents.redoubt                     ) },
-      { "righteous_vengeance",         OPT_INT, &( talents.righteous_vengeance         ) },
-      { "sacred_duty",                 OPT_INT, &( talents.sacred_duty                 ) },
-      { "sanctified_light",            OPT_INT, &( talents.sanctified_light            ) },
-      { "sanctified_retribution",      OPT_INT, &( talents.sanctified_retribution      ) },
-      { "sanctified_wrath",            OPT_INT, &( talents.sanctified_wrath            ) },
-      { "sanctity_of_battle",          OPT_INT, &( talents.sanctity_of_battle          ) },
-      { "seal_of_command",             OPT_INT, &( talents.seal_of_command             ) },
-      { "seals_of_the_pure",           OPT_INT, &( talents.seals_of_the_pure           ) },
-      { "sheath_of_light",             OPT_INT, &( talents.sheath_of_light             ) },
-      { "shield_of_the_templar",       OPT_INT, &( talents.shield_of_the_templar       ) },
-      { "spiritual_attunement",        OPT_INT, &( talents.spiritual_attunement        ) },
-      { "swift_retribution",           OPT_INT, &( talents.swift_retribution           ) },
-      { "the_art_of_war",              OPT_INT, &( talents.the_art_of_war              ) },
-      { "toughness",                   OPT_INT, &( talents.toughness                   ) },
-      { "touched_by_the_light",        OPT_INT, &( talents.touched_by_the_light        ) },
-      { "two_handed_weapon_spec",      OPT_INT, &( talents.two_handed_weapon_spec      ) },
-      { "vengeance",                   OPT_INT, &( talents.vengeance                   ) },
-      { "vindication",                 OPT_INT, &( talents.vindication                 ) },
-      // @option_doc loc=player/paladin/misc title="Misc"
-      { "tier10_2pc_procs_from_strikes", OPT_BOOL, &( tier10_2pc_procs_from_strikes    ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, paladin_options );
-  }
-  return options;
+  option_t::copy( options, paladin_options );
 }
 
 // ==========================================================================

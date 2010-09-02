@@ -214,7 +214,7 @@ struct hunter_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
@@ -598,39 +598,34 @@ struct hunter_pet_t : public pet_t
 
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
-  virtual std::vector<option_t>& get_options()
+  virtual void create_options()
   {
-    if ( options.empty() )
+    pet_t::create_options();
+
+    option_t hunter_pet_options[] =
     {
-      pet_t::get_options();
+      // Talents
+      { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
+      { "culling_the_herd", OPT_INT, &( talents.culling_the_herd ) },
+      { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
+      { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
+      { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
+      { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
+      { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
+      { "wild_hunt",        OPT_INT, &( talents.wild_hunt        ) },
+      { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
+      { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
+      { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
+      { "rabid",            OPT_INT, &( talents.rabid            ) },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
 
-      option_t hunter_pet_options[] =
-      {
-        // Talents
-        { "cobra_reflexes",   OPT_INT, &( talents.cobra_reflexes   ) },
-        { "culling_the_herd", OPT_INT, &( talents.culling_the_herd ) },
-        { "owls_focus",       OPT_INT, &( talents.owls_focus       ) },
-        { "shark_attack",     OPT_INT, &( talents.shark_attack     ) },
-        { "spiked_collar",    OPT_INT, &( talents.spiked_collar    ) },
-        { "feeding_frenzy",   OPT_INT, &( talents.feeding_frenzy   ) },
-        { "roar_of_recovery", OPT_INT, &( talents.roar_of_recovery ) },
-        { "wild_hunt",        OPT_INT, &( talents.wild_hunt        ) },
-        { "wolverine_bite",   OPT_INT, &( talents.wolverine_bite   ) },
-        { "spiders_bite",     OPT_INT, &( talents.spiders_bite     ) },
-        { "call_of_the_wild", OPT_INT, &( talents.call_of_the_wild ) },
-        { "rabid",            OPT_INT, &( talents.rabid            ) },
-        { NULL, OPT_UNKNOWN, NULL }
-      };
-
-      option_t::copy( options, hunter_pet_options );
-    }
-
-    return options;
+    option_t::copy( options, hunter_pet_options );
   }
 
   virtual std::vector<talent_translation_t>& get_talent_list()
   {
-	if(this->talent_list.empty())
+	if(this->talent_translation_list.empty())
 	{
 		talent_translation_t *translation_table;
 		if ( group() == PET_FEROCITY )
@@ -694,7 +689,7 @@ struct hunter_pet_t : public pet_t
 		}
 		else // TENACITY
 		{
-		  return talent_list;
+		  return talent_translation_list;
 		}
 
 		int count = 0;
@@ -703,14 +698,14 @@ struct hunter_pet_t : public pet_t
 		{
 			if(translation_table[i].index > 0)
 			{
-				talent_list.push_back(translation_table[i]);
-				talent_list[count].tree = 0;
-				talent_list[count].index = count+1;
+				talent_translation_list.push_back(translation_table[i]);
+				talent_translation_list[count].tree = 0;
+				talent_translation_list[count].index = count+1;
 				count++;
 			}
 		}
 	}
-    return talent_list;
+    return talent_translation_list;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -3909,7 +3904,7 @@ cooldown_t* hunter_t::get_cooldown( const std::string& name )
 
 std::vector<talent_translation_t>& hunter_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
 	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
 	  {
@@ -3944,98 +3939,91 @@ std::vector<talent_translation_t>& hunter_t::get_talent_list()
     { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                  } }
   };
 
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
   }
-  return talent_list;
+  return talent_translation_list;
 }
 
 
-// hunter_t::get_options ====================================================
+// hunter_t::create_options =================================================
 
-std::vector<option_t>& hunter_t::get_options()
+void hunter_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t hunter_options[] =
   {
-    player_t::get_options();
+    { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
+    { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
+    { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
+    { "barrage",                           OPT_INT, &( talents.barrage                      ) },
+    { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
+    { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
+    { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
+    { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
+    { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
+    { "catlike_reflexes",                  OPT_INT, &( talents.catlike_reflexes             ) },
+    { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
+    { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
+    { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
+    { "efficiency",                        OPT_INT, &( talents.efficiency                   ) },
+    { "endurance_training",                OPT_INT, &( talents.endurance_training           ) },
+    { "explosive_shot",                    OPT_INT, &( talents.explosive_shot               ) },
+    { "expose_weakness",                   OPT_INT, &( talents.expose_weakness              ) },
+    { "ferocious_inspiration",             OPT_INT, &( talents.ferocious_inspiration        ) },
+    { "ferocity",                          OPT_INT, &( talents.ferocity                     ) },
+    { "focused_aim",                       OPT_INT, &( talents.focused_aim                  ) },
+    { "focused_fire",                      OPT_INT, &( talents.focused_fire                 ) },
+    { "frenzy",                            OPT_INT, &( talents.frenzy                       ) },
+    { "go_for_the_throat",                 OPT_INT, &( talents.go_for_the_throat            ) },
+    { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
+    { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
+    { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
+    { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
+    { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
+    { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
+    { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
+    { "improved_stings",                   OPT_INT, &( talents.improved_stings              ) },
+    { "improved_tracking",                 OPT_INT, &( talents.improved_tracking            ) },
+    { "invigoration",                      OPT_INT, &( talents.invigoration                 ) },
+    { "killer_instinct",                   OPT_INT, &( talents.killer_instinct              ) },
+    { "kindred_spirits",                   OPT_INT, &( talents.kindred_spirits              ) },
+    { "lethal_shots",                      OPT_INT, &( talents.lethal_shots                 ) },
+    { "lightning_reflexes",                OPT_INT, &( talents.lightning_reflexes           ) },
+    { "lock_and_load",                     OPT_INT, &( talents.lock_and_load                ) },
+    { "longevity",                         OPT_INT, &( talents.longevity                    ) },
+    { "marked_for_death",                  OPT_INT, &( talents.marked_for_death             ) },
+    { "master_marksman",                   OPT_INT, &( talents.master_marksman              ) },
+    { "master_tactician",                  OPT_INT, &( talents.master_tactician             ) },
+    { "mortal_shots",                      OPT_INT, &( talents.mortal_shots                 ) },
+    { "noxious_stings",                    OPT_INT, &( talents.noxious_stings               ) },
+    { "piercing_shots",                    OPT_INT, &( talents.piercing_shots               ) },
+    { "ranged_weapon_specialization",      OPT_INT, &( talents.ranged_weapon_specialization ) },
+    { "rapid_killing",                     OPT_INT, &( talents.rapid_killing                ) },
+    { "rapid_recuperation",                OPT_INT, &( talents.rapid_recuperation           ) },
+    { "readiness",                         OPT_INT, &( talents.readiness                    ) },
+    { "resourcefulness",                   OPT_INT, &( talents.resourcefulness              ) },
+    { "savage_strikes",                    OPT_INT, &( talents.savage_strikes               ) },
+    { "scatter_shot",                      OPT_INT, &( talents.scatter_shot                 ) },
+    { "serpents_swiftness",                OPT_INT, &( talents.serpents_swiftness           ) },
+    { "silencing_shot",                    OPT_INT, &( talents.silencing_shot               ) },
+    { "sniper_training",                   OPT_INT, &( talents.sniper_training              ) },
+    { "survival_instincts",                OPT_INT, &( talents.survival_instincts           ) },
+    { "survival_tactics",                  OPT_INT, &( talents.survival_tactics             ) },
+    { "survivalist",                       OPT_INT, &( talents.survivalist                  ) },
+    { "thick_hide",                        OPT_INT, &( talents.thick_hide                   ) },
+    { "thrill_of_the_hunt",                OPT_INT, &( talents.thrill_of_the_hunt           ) },
+    { "tnt",                               OPT_INT, &( talents.tnt                          ) },
+    { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
+    { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
+    { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
+    { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
+    { "quiver_haste",                      OPT_DEPRECATED, NULL                               },
+    { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t hunter_options[] =
-    {
-      // @option_doc loc=player/hunter/talents title="Talents"
-      { "aimed_shot",                        OPT_INT, &( talents.aimed_shot                   ) },
-      { "animal_handler",                    OPT_INT, &( talents.animal_handler               ) },
-      { "aspect_mastery",                    OPT_INT, &( talents.aspect_mastery               ) },
-      { "barrage",                           OPT_INT, &( talents.barrage                      ) },
-      { "beast_mastery",                     OPT_INT, &( talents.beast_mastery                ) },
-      { "beast_within",                      OPT_INT, &( talents.beast_within                 ) },
-      { "bestial_discipline",                OPT_INT, &( talents.bestial_discipline           ) },
-      { "bestial_wrath",                     OPT_INT, &( talents.bestial_wrath                ) },
-      { "careful_aim",                       OPT_INT, &( talents.careful_aim                  ) },
-      { "catlike_reflexes",                  OPT_INT, &( talents.catlike_reflexes             ) },
-      { "chimera_shot",                      OPT_INT, &( talents.chimera_shot                 ) },
-      { "cobra_strikes",                     OPT_INT, &( talents.cobra_strikes                ) },
-      { "combat_experience",                 OPT_INT, &( talents.combat_experience            ) },
-      { "efficiency",                        OPT_INT, &( talents.efficiency                   ) },
-      { "endurance_training",                OPT_INT, &( talents.endurance_training           ) },
-      { "explosive_shot",                    OPT_INT, &( talents.explosive_shot               ) },
-      { "expose_weakness",                   OPT_INT, &( talents.expose_weakness              ) },
-      { "ferocious_inspiration",             OPT_INT, &( talents.ferocious_inspiration        ) },
-      { "ferocity",                          OPT_INT, &( talents.ferocity                     ) },
-      { "focused_aim",                       OPT_INT, &( talents.focused_aim                  ) },
-      { "focused_fire",                      OPT_INT, &( talents.focused_fire                 ) },
-      { "frenzy",                            OPT_INT, &( talents.frenzy                       ) },
-      { "go_for_the_throat",                 OPT_INT, &( talents.go_for_the_throat            ) },
-      { "hunter_vs_wild",                    OPT_INT, &( talents.hunter_vs_wild               ) },
-      { "hunting_party",                     OPT_INT, &( talents.hunting_party                ) },
-      { "improved_arcane_shot",              OPT_INT, &( talents.improved_arcane_shot         ) },
-      { "improved_aspect_of_the_hawk",       OPT_INT, &( talents.improved_aspect_of_the_hawk  ) },
-      { "improved_barrage",                  OPT_INT, &( talents.improved_barrage             ) },
-      { "improved_hunters_mark",             OPT_INT, &( talents.improved_hunters_mark        ) },
-      { "improved_steady_shot",              OPT_INT, &( talents.improved_steady_shot         ) },
-      { "improved_stings",                   OPT_INT, &( talents.improved_stings              ) },
-      { "improved_tracking",                 OPT_INT, &( talents.improved_tracking            ) },
-      { "invigoration",                      OPT_INT, &( talents.invigoration                 ) },
-      { "killer_instinct",                   OPT_INT, &( talents.killer_instinct              ) },
-      { "kindred_spirits",                   OPT_INT, &( talents.kindred_spirits              ) },
-      { "lethal_shots",                      OPT_INT, &( talents.lethal_shots                 ) },
-      { "lightning_reflexes",                OPT_INT, &( talents.lightning_reflexes           ) },
-      { "lock_and_load",                     OPT_INT, &( talents.lock_and_load                ) },
-      { "longevity",                         OPT_INT, &( talents.longevity                    ) },
-      { "marked_for_death",                  OPT_INT, &( talents.marked_for_death             ) },
-      { "master_marksman",                   OPT_INT, &( talents.master_marksman              ) },
-      { "master_tactician",                  OPT_INT, &( talents.master_tactician             ) },
-      { "mortal_shots",                      OPT_INT, &( talents.mortal_shots                 ) },
-      { "noxious_stings",                    OPT_INT, &( talents.noxious_stings               ) },
-      { "piercing_shots",                    OPT_INT, &( talents.piercing_shots               ) },
-      { "ranged_weapon_specialization",      OPT_INT, &( talents.ranged_weapon_specialization ) },
-      { "rapid_killing",                     OPT_INT, &( talents.rapid_killing                ) },
-      { "rapid_recuperation",                OPT_INT, &( talents.rapid_recuperation           ) },
-      { "readiness",                         OPT_INT, &( talents.readiness                    ) },
-      { "resourcefulness",                   OPT_INT, &( talents.resourcefulness              ) },
-      { "savage_strikes",                    OPT_INT, &( talents.savage_strikes               ) },
-      { "scatter_shot",                      OPT_INT, &( talents.scatter_shot                 ) },
-      { "serpents_swiftness",                OPT_INT, &( talents.serpents_swiftness           ) },
-      { "silencing_shot",                    OPT_INT, &( talents.silencing_shot               ) },
-      { "sniper_training",                   OPT_INT, &( talents.sniper_training              ) },
-      { "survival_instincts",                OPT_INT, &( talents.survival_instincts           ) },
-      { "survival_tactics",                  OPT_INT, &( talents.survival_tactics             ) },
-      { "survivalist",                       OPT_INT, &( talents.survivalist                  ) },
-      { "thick_hide",                        OPT_INT, &( talents.thick_hide                   ) },
-      { "thrill_of_the_hunt",                OPT_INT, &( talents.thrill_of_the_hunt           ) },
-      { "tnt",                               OPT_INT, &( talents.tnt                          ) },
-      { "trueshot_aura",                     OPT_INT, &( talents.trueshot_aura                ) },
-      { "unleashed_fury",                    OPT_INT, &( talents.unleashed_fury               ) },
-      { "wild_quiver",                       OPT_INT, &( talents.wild_quiver                  ) },
-      // @option_doc loc=player/hunter/misc title="Misc"
-      { "ammo_dps",                          OPT_FLT,    &( ammo_dps                          ) },
-      { "quiver_haste",                      OPT_DEPRECATED, NULL                               },
-      { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, hunter_options );
-  }
-
-  return options;
+  option_t::copy( options, hunter_options );
 }
 
 // hunter_t::create_profile =================================================

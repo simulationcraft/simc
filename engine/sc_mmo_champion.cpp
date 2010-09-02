@@ -566,11 +566,11 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
   std::vector<talent_translation_t> translations = player->get_talent_list();
 
   // need to have empty talent in the front of vector
-  std::vector<talent_translation_t> talent_list;
+  std::vector<talent_translation_t> talent_translation_list;
   talent_translation_t empty_talent = {0,0,0,0,0,0,0};
-  talent_list.push_back(empty_talent);
+  talent_translation_list.push_back(empty_talent);
   for(i=0;i<translations.size();i++)
-	talent_list.push_back(translations[i]);
+	talent_translation_list.push_back(translations[i]);
 
   char* src = (char*)talent_string.c_str();
 
@@ -586,13 +586,13 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
 
       // step 1: enable (consider) next row, if requirements met
 
-    for(i=1; i < talent_list.size();i++) {
-      if(visible[i] == 0 && trees[talent_list[i].tree] >= 5*talent_list[i].row && visible[talent_list[i].req] == 2 && talents[talent_list[i].req] == talent_list[talent_list[i].req].max) visible[i] = 1;
+    for(i=1; i < talent_translation_list.size();i++) {
+      if(visible[i] == 0 && trees[talent_translation_list[i].tree] >= 5*talent_translation_list[i].row && visible[talent_translation_list[i].req] == 2 && talents[talent_translation_list[i].req] == talent_translation_list[talent_translation_list[i].req].max) visible[i] = 1;
     }
 
       // step 2: step through each enabled node, convert
 
-	  for(i=1; i < talent_list.size();i++) {
+	  for(i=1; i < talent_translation_list.size();i++) {
 		  if(!numleft) break;
 
 		  if(visible[i] == 1) 
@@ -601,7 +601,7 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
 			visible[i] = 2;
 
 		  thismax = numleft;
-		  if(talent_list[i].max < thismax) thismax = talent_list[i].max;
+		  if(talent_translation_list[i].max < thismax) thismax = talent_translation_list[i].max;
 
 		  div1 = thismax+1;        // # choices
 		  mul2 = 1;                // prob of just this one
@@ -613,7 +613,7 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
 			}
 
 			talents[i] = mul1;
-			if(talents[i] > talent_list[i].max) {    // probably corrupt string or wrong version, we can't really continue decode
+			if(talents[i] > talent_translation_list[i].max) {    // probably corrupt string or wrong version, we can't really continue decode
 			  return 1;
 			}
 
@@ -629,7 +629,7 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
 			}
 
 			// update
-			trees[talent_list[i].tree] += talents[i];
+			trees[talent_translation_list[i].tree] += talents[i];
 			numleft -= talents[i];
 		  }
 	  }

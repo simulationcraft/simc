@@ -1403,7 +1403,7 @@ void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t
   result.melee_crit = a.melee_crit + b.melee_crit;
 }
 
-void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size )
+void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_translation_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size )
 {
   size_t count = 0;
 	int trees[ MAX_TALENT_TREES ];
@@ -1416,15 +1416,15 @@ void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_l
     {
 			if( translation_table[ i ][ j ].index > 0 )
 			{
-				talent_list.push_back( translation_table[ i ][ j ] );
-				talent_list[ count ].tree = j;
-				talent_list[ count ].name = "";
-				if( talent_list[ count ].req > 0 )
+				talent_translation_list.push_back( translation_table[ i ][ j ] );
+				talent_translation_list[ count ].tree = j;
+				talent_translation_list[ count ].name = "";
+				if( talent_translation_list[ count ].req > 0 )
 				{
 					for( size_t k = 0; k < j; k++ )
-						talent_list[ count ].req += trees[ k ];
+						talent_translation_list[ count ].req += trees[ k ];
 				}
-				talent_list[ count ].index = count+1;
+				talent_translation_list[ count ].index = count+1;
 				count++;
 				trees[ j ]++;
 			}

@@ -262,7 +262,7 @@ struct druid_t : public player_t
   virtual double    composite_tank_crit( int school ) SC_CONST;
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      create_pets();
@@ -4053,7 +4053,7 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
 
 std::vector<talent_translation_t>& druid_t::get_talent_list()
 {
-  if(talent_list.empty())
+  if(talent_translation_list.empty())
   {
     if(sim -> P400)
     {
@@ -4091,7 +4091,7 @@ std::vector<talent_translation_t>& druid_t::get_talent_list()
         { {  0, 0, NULL                               }, { 30, 1, &( talents.berserk                 ) }, {  0, 0, NULL                                   } },
         { {  0, 0, NULL                               }, {  0, 0, NULL                                 }, {  0, 0, NULL                                   } },
       };
-      util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+      util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
     }
     else
     {
@@ -4129,93 +4129,86 @@ std::vector<talent_translation_t>& druid_t::get_talent_list()
         { {  0, 0, NULL                               }, { 30, 1, &( talents.berserk                 ) }, {  0, 0, NULL                                   } },
         { {  0, 0, NULL                               }, {  0, 0, NULL                                 }, {  0, 0, NULL                                   } },
       };
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
+    util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
     }
   }
-  return talent_list;}
+  return talent_translation_list;}
 
-// druid_t::get_options ================================================
+// druid_t::create_options =============================================
 
-std::vector<option_t>& druid_t::get_options()
+void druid_t::create_options()
 {
-  if ( options.empty() )
+  player_t::create_options();
+
+  option_t druid_options[] =
   {
-    player_t::get_options();
+    { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
+    { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
+    { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
+    { "brutal_impact",             OPT_INT,  &( talents.brutal_impact             ) },
+    { "celestial_focus",           OPT_INT,  &( talents.celestial_focus           ) },
+    { "dreamstate",                OPT_INT,  &( talents.dreamstate                ) },
+    { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
+    { "eclipse",                   OPT_INT,  &( talents.eclipse                   ) },
+    { "feral_aggression",          OPT_INT,  &( talents.feral_aggression          ) },
+    { "feral_instinct",            OPT_INT,  &( talents.feral_instinct            ) },
+    { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
+    { "ferocity",                  OPT_INT,  &( talents.ferocity                  ) },
+    { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
+    { "furor",                     OPT_INT,  &( talents.furor                     ) },
+    { "gale_winds",                OPT_INT,  &( talents.gale_winds                ) },
+    { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
+    { "heart_of_the_wild",         OPT_INT,  &( talents.heart_of_the_wild         ) },
+    { "improved_faerie_fire",      OPT_INT,  &( talents.improved_faerie_fire      ) },
+    { "improved_insect_swarm",     OPT_INT,  &( talents.improved_insect_swarm     ) },
+    { "improved_mangle",           OPT_INT,  &( talents.improved_mangle           ) },
+    { "improved_mark_of_the_wild", OPT_INT,  &( talents.improved_mark_of_the_wild ) },
+    { "improved_moonfire",         OPT_INT,  &( talents.improved_moonfire         ) },
+    { "improved_moonkin_form",     OPT_INT,  &( talents.improved_moonkin_form     ) },
+    { "infected_wounds",           OPT_INT,  &( talents.infected_wounds           ) },
+    { "insect_swarm",              OPT_INT,  &( talents.insect_swarm              ) },
+    { "intensity",                 OPT_INT,  &( talents.intensity                 ) },
+    { "king_of_the_jungle",        OPT_INT,  &( talents.king_of_the_jungle        ) },
+    { "leader_of_the_pack",        OPT_INT,  &( talents.leader_of_the_pack        ) },
+    { "living_spirit",             OPT_INT,  &( talents.living_spirit             ) },
+    { "lunar_guidance",            OPT_INT,  &( talents.lunar_guidance            ) },
+    { "mangle",                    OPT_INT,  &( talents.mangle                    ) },
+    { "master_shapeshifter",       OPT_INT,  &( talents.master_shapeshifter       ) },
+    { "moonfury",                  OPT_INT,  &( talents.moonfury                  ) },
+    { "moonglow",                  OPT_INT,  &( talents.moonglow                  ) },
+    { "moonkin_form",              OPT_INT,  &( talents.moonkin_form              ) },
+    { "natural_perfection",        OPT_INT,  &( talents.natural_perfection        ) },
+    { "natural_reaction",          OPT_INT,  &( talents.natural_reaction          ) },
+    { "naturalist",                OPT_INT,  &( talents.naturalist                ) },
+    { "natures_grace",             OPT_INT,  &( talents.natures_grace             ) },
+    { "natures_majesty",           OPT_INT,  &( talents.natures_majesty           ) },
+    { "natures_reach",             OPT_INT,  &( talents.natures_reach             ) },
+    { "natures_splendor",          OPT_INT,  &( talents.natures_splendor          ) },
+    { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
+    { "omen_of_clarity",           OPT_INT,  &( talents.omen_of_clarity           ) },
+    { "owlkin_frenzy",             OPT_INT,  &( talents.owlkin_frenzy             ) },
+    { "predatory_instincts",       OPT_INT,  &( talents.predatory_instincts       ) },
+    { "predatory_strikes",         OPT_INT,  &( talents.predatory_strikes         ) },
+    { "primal_fury",               OPT_INT,  &( talents.primal_fury               ) },
+    { "primal_gore",               OPT_INT,  &( talents.primal_gore               ) },
+    { "primal_precision",          OPT_INT,  &( talents.primal_precision          ) },
+    { "protector_of_the_pack",     OPT_INT,  &( talents.protector_of_the_pack     ) },
+    { "rend_and_tear",             OPT_INT,  &( talents.rend_and_tear             ) },
+    { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
+    { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
+    { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
+    { "survival_instincts",        OPT_INT,  &( talents.survival_of_the_fittest   ) },
+    { "survival_of_the_fittest",   OPT_INT,  &( talents.survival_instincts        ) },
+    { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
+    { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
+    { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
+    { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
+    { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
+    { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t druid_options[] =
-    {
-      // @option_doc loc=player/druid/talents title="Talents"
-      { "balance_of_power",          OPT_INT,  &( talents.balance_of_power          ) },
-      { "berserk",                   OPT_INT,  &( talents.berserk                   ) },
-      { "brambles",                  OPT_INT,  &( talents.brambles                  ) },
-      { "brutal_impact",             OPT_INT,  &( talents.brutal_impact             ) },
-      { "celestial_focus",           OPT_INT,  &( talents.celestial_focus           ) },
-      { "dreamstate",                OPT_INT,  &( talents.dreamstate                ) },
-      { "earth_and_moon",            OPT_INT,  &( talents.earth_and_moon            ) },
-      { "eclipse",                   OPT_INT,  &( talents.eclipse                   ) },
-      { "feral_aggression",          OPT_INT,  &( talents.feral_aggression          ) },
-      { "feral_instinct",            OPT_INT,  &( talents.feral_instinct            ) },
-      { "feral_swiftness",           OPT_INT,  &( talents.feral_swiftness           ) },
-      { "ferocity",                  OPT_INT,  &( talents.ferocity                  ) },
-      { "force_of_nature",           OPT_INT,  &( talents.force_of_nature           ) },
-      { "furor",                     OPT_INT,  &( talents.furor                     ) },
-      { "gale_winds",                OPT_INT,  &( talents.gale_winds                ) },
-      { "genesis",                   OPT_INT,  &( talents.genesis                   ) },
-      { "heart_of_the_wild",         OPT_INT,  &( talents.heart_of_the_wild         ) },
-      { "improved_faerie_fire",      OPT_INT,  &( talents.improved_faerie_fire      ) },
-      { "improved_insect_swarm",     OPT_INT,  &( talents.improved_insect_swarm     ) },
-      { "improved_mangle",           OPT_INT,  &( talents.improved_mangle           ) },
-      { "improved_mark_of_the_wild", OPT_INT,  &( talents.improved_mark_of_the_wild ) },
-      { "improved_moonfire",         OPT_INT,  &( talents.improved_moonfire         ) },
-      { "improved_moonkin_form",     OPT_INT,  &( talents.improved_moonkin_form     ) },
-      { "infected_wounds",           OPT_INT,  &( talents.infected_wounds           ) },
-      { "insect_swarm",              OPT_INT,  &( talents.insect_swarm              ) },
-      { "intensity",                 OPT_INT,  &( talents.intensity                 ) },
-      { "king_of_the_jungle",        OPT_INT,  &( talents.king_of_the_jungle        ) },
-      { "leader_of_the_pack",        OPT_INT,  &( talents.leader_of_the_pack        ) },
-      { "living_spirit",             OPT_INT,  &( talents.living_spirit             ) },
-      { "lunar_guidance",            OPT_INT,  &( talents.lunar_guidance            ) },
-      { "mangle",                    OPT_INT,  &( talents.mangle                    ) },
-      { "master_shapeshifter",       OPT_INT,  &( talents.master_shapeshifter       ) },
-      { "moonfury",                  OPT_INT,  &( talents.moonfury                  ) },
-      { "moonglow",                  OPT_INT,  &( talents.moonglow                  ) },
-      { "moonkin_form",              OPT_INT,  &( talents.moonkin_form              ) },
-      { "natural_perfection",        OPT_INT,  &( talents.natural_perfection        ) },
-      { "natural_reaction",          OPT_INT,  &( talents.natural_reaction          ) },
-      { "naturalist",                OPT_INT,  &( talents.naturalist                ) },
-      { "natures_grace",             OPT_INT,  &( talents.natures_grace             ) },
-      { "natures_majesty",           OPT_INT,  &( talents.natures_majesty           ) },
-      { "natures_reach",             OPT_INT,  &( talents.natures_reach             ) },
-      { "natures_splendor",          OPT_INT,  &( talents.natures_splendor          ) },
-      { "natures_swiftness",         OPT_INT,  &( talents.natures_swiftness         ) },
-      { "omen_of_clarity",           OPT_INT,  &( talents.omen_of_clarity           ) },
-      { "owlkin_frenzy",             OPT_INT,  &( talents.owlkin_frenzy             ) },
-      { "predatory_instincts",       OPT_INT,  &( talents.predatory_instincts       ) },
-      { "predatory_strikes",         OPT_INT,  &( talents.predatory_strikes         ) },
-      { "primal_fury",               OPT_INT,  &( talents.primal_fury               ) },
-      { "primal_gore",               OPT_INT,  &( talents.primal_gore               ) },
-      { "primal_precision",          OPT_INT,  &( talents.primal_precision          ) },
-      { "protector_of_the_pack",     OPT_INT,  &( talents.protector_of_the_pack     ) },
-      { "rend_and_tear",             OPT_INT,  &( talents.rend_and_tear             ) },
-      { "savage_fury",               OPT_INT,  &( talents.savage_fury               ) },
-      { "sharpened_claws",           OPT_INT,  &( talents.sharpened_claws           ) },
-      { "shredding_attacks",         OPT_INT,  &( talents.shredding_attacks         ) },
-      { "survival_instincts",        OPT_INT,  &( talents.survival_of_the_fittest   ) },
-      { "survival_of_the_fittest",   OPT_INT,  &( talents.survival_instincts        ) },
-      { "starlight_wrath",           OPT_INT,  &( talents.starlight_wrath           ) },
-      { "thick_hide",                OPT_INT,  &( talents.thick_hide                ) },
-      { "typhoon",                   OPT_INT,  &( talents.typhoon                   ) },
-      { "vengeance",                 OPT_INT,  &( talents.vengeance                 ) },
-      { "wrath_of_cenarius",         OPT_INT,  &( talents.wrath_of_cenarius         ) },
-      // @option_doc loc=player/druid/misc title="Misc"
-      { "idol",                      OPT_STRING, &( items[ SLOT_RANGED ].options_str ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, druid_options );
-  }
-
-  return options;
+  option_t::copy( options, druid_options );
 }
 
 // druid_t::decode_set ======================================================
