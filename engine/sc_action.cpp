@@ -85,40 +85,41 @@ action_t::action_t( int         ty,
 // action_t::parse_data ====================================================
 void action_t::parse_data( sc_data_access_t& pData )
 {
-	  if ( pData.spell_exists(id) )
-	  {
-	  base_execute_time 			= pData.spell_cast_time ( id, player -> level );
-	  cooldown -> duration			= pData.spell_cooldown ( id );
-	  range 						= pData.spell_max_range ( id );
-	  travel_speed					= pData.spell_missile_speed ( id );
-	  base_cost						= floor ( pData.spell_cost( id ) );
+  if ( pData.spell_exists(id) )
+  {
+    base_execute_time    = pData.spell_cast_time ( id, player -> level );
+    cooldown -> duration = pData.spell_cooldown ( id );
+    range                = pData.spell_max_range ( id );
+    travel_speed         = pData.spell_missile_speed ( id );
+    base_cost            = floor ( pData.spell_cost( id ) );
+    trigger_gcd          = pData.spell_gcd ( id );
 
     // For mana it returns the % of base mana, not the absolute cost
-	  if ( pData.spell_power_type( id ) == RESOURCE_MANA )
-	    base_cost = floor ( pData.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
+    if ( pData.spell_power_type( id ) == RESOURCE_MANA )
+      base_cost = floor ( pData.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
     else
-	    base_cost = pData.spell_cost( id );
+      base_cost = pData.spell_cost( id );
 
-	  int effect = pData.spell_effect_id ( id, effect_nr );
-	  if (pData.effect_exists ( effect ) )
-	  {
-		  if ( !pData.effect_period ( effect ) )
-		  {
-			  direct_power_mod 				= pData.effect_coeff( effect );
-			  base_dd_min 					= pData.effect_min ( effect, player_type( player -> type ), player -> level );
-			  base_dd_max 					= pData.effect_max ( effect, player_type( player -> type ), player -> level );
-		  }
-		  // Dot's
-		  else
-		  {
-			  tick_power_mod 				= pData.effect_coeff( effect );
-			  base_td 						= pData.effect_average ( effect, player_type( player -> type ), player -> level );
-			  base_tick_time				= pData.effect_period ( effect );
-			  num_ticks						= int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
-		  }
-	  }
+    int effect = pData.spell_effect_id ( id, effect_nr );
+    if (pData.effect_exists ( effect ) )
+    {
+      if ( !pData.effect_period ( effect ) )
+      {
+        direct_power_mod = pData.effect_coeff( effect );
+        base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+        base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+      }
+      // Dot's
+      else
+      {
+        tick_power_mod   = pData.effect_coeff( effect );
+        base_td          = pData.effect_average ( effect, player_type( player -> type ), player -> level );
+        base_tick_time   = pData.effect_period ( effect );
+        num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+      }
+    }
 
-	  }
+  }
 }
 
 
