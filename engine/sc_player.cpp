@@ -1651,6 +1651,7 @@ double player_t::composite_spell_haste() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
+	if ( buffs.dark_intent -> check() ) h += 0.03;
     if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
     else if ( buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 

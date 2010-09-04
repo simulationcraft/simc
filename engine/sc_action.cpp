@@ -99,29 +99,60 @@ void action_t::parse_data( sc_data_access_t& pData )
       base_cost = floor ( pData.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
     else
       base_cost = pData.spell_cost( id );
-
-    int effect = pData.spell_effect_id ( id, effect_nr );
-    if (pData.effect_exists ( effect ) )
+    if (effect_nr != 0 )
     {
-      if ( !pData.effect_period ( effect ) )
-      {
-        direct_power_mod = pData.effect_coeff( effect );
-        base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-        base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
-      }
-      // Dot's
-      else
-      {
-        tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_average ( effect, player_type( player -> type ), player -> level );
-        base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
-      }
+    	int effect = pData.spell_effect_id ( id, effect_nr );
+    	if (pData.effect_exists ( effect ) )
+    	{
+    		// Direct Damage
+    		if ( !pData.effect_period ( effect ) )
+    		{
+    			direct_power_mod = pData.effect_coeff( effect );
+    			base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+    			base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+    		}
+    		// Dot
+    		else
+    		{
+    			tick_power_mod   = pData.effect_coeff( effect );
+    			base_td          = pData.effect_average ( effect, player_type( player -> type ), player -> level );
+    			base_tick_time   = pData.effect_period ( effect );
+    			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+    		}
+    	}
     }
-
   }
 }
 
+// action_t::parse_effect_data ==============================================
+void action_t::parse_effect_data( sc_data_access_t& pData )
+{
+  if ( pData.spell_exists(id) )
+  {
+    if (effect_nr != 0 )
+    {
+    	int effect = pData.spell_effect_id ( id, effect_nr );
+    	if (pData.effect_exists ( effect ) )
+    	{
+    		// Direct Damage
+    		if ( !pData.effect_period ( effect ) )
+    		{
+    			direct_power_mod = pData.effect_coeff( effect );
+    			base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+    			base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+    		}
+    		// Dot
+    		else
+    		{
+    			tick_power_mod   = pData.effect_coeff( effect );
+    			base_td          = pData.effect_average ( effect, player_type( player -> type ), player -> level );
+    			base_tick_time   = pData.effect_period ( effect );
+    			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+    		}
+    	}
+    }
+  }
+}
 
 // action_t::merge_options ==================================================
 

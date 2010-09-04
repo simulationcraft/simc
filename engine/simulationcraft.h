@@ -1831,6 +1831,7 @@ struct sim_t
     int ferocious_inspiration;
     int flametongue_totem;
     int focus_magic;
+    int dark_intent;
     int fortitude;
     int frost_fever;
     int heart_of_the_crusader;
@@ -2394,6 +2395,7 @@ struct player_t
     buff_t* demonic_pact;
     buff_t* destruction_potion;
     buff_t* focus_magic;
+    buff_t* dark_intent;
     buff_t* fortitude;
     buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
@@ -2951,6 +2953,7 @@ struct action_t
   virtual ~action_t() {}
 
   virtual void	 	parse_data( sc_data_access_t& pData );
+  virtual void		parse_effect_data( sc_data_access_t& pData );
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );

@@ -5,7 +5,8 @@ level=83
 target_level=86
 race=goblin
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=2000000000000000000320120000000000000332220130223310211
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=0000000000000000003300220000000000000332220130223310211
+empowered_imp=2
 glyphs=conflagrate/incinerate/immolate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -16,8 +17,11 @@ actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/conflagrate
 actions+=/immolate,time_to_die>=3,if=(dot.immolate.remains<cast_time)
+actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0
+actions+=/soul_fire,if=buff.empowered_imp.react
 actions+=/chaos_bolt
 actions+=/bane_of_doom,time_to_die>=70
+actions+=/fel_flame,if=dot.immolate.remains<=4
 actions+=/incinerate
 actions+=/life_tap
 

@@ -1519,6 +1519,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
       { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
       { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
+      { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
       { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
