@@ -740,7 +740,7 @@ bool sim_t::init()
     // TO-DO: Uncomment once we're working with PTR builds etc.
     // sim_data.set_parent( &sim_t::ptr_data );
   }
-
+ 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
   if ( wheel_seconds     <  600 ) wheel_seconds     = 1024; // 2^10  Min of 600 to ensure no wrap-around bugs with Water Shield

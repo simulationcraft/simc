@@ -38,6 +38,7 @@ void sc_data_t::m_copy( const sc_data_t& copy )
   m_combat_ratings.copy_array( copy.m_combat_ratings );
   m_class_combat_rating_scalar.copy_array( copy.m_class_combat_rating_scalar );
   m_dodge_base.copy_array( copy.m_dodge_base );
+  m_class_spells.copy_array( copy.m_class_spells );
   m_dodge_scale.copy_array( copy.m_dodge_scale );
   m_base_mp5.copy_array( copy.m_base_mp5 );
   m_class_stats.copy_array( copy.m_class_stats );

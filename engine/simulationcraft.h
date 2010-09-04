@@ -1189,6 +1189,7 @@ public:
   sc_array_t<double>              m_octregen;
   sc_array_t<double>              m_combat_ratings;
   sc_array_t<double>              m_class_combat_rating_scalar;
+  sc_array_t<uint32_t>            m_class_spells;
   sc_array_t<double>              m_dodge_base;
   sc_array_t<double>              m_dodge_scale;
   sc_array_t<double>              m_base_mp5;
@@ -1339,6 +1340,13 @@ public:
   virtual double        class_stats( const pet_type_t c, const uint32_t level, const stat_type s ) SC_CONST;
   virtual double        race_stats( const race_type r, const stat_type s ) SC_CONST;
   virtual double        race_stats( const pet_type_t r, const stat_type s ) SC_CONST;
+
+// Class spell methods
+  virtual uint32_t      find_class_spell( const player_type c, const char* name ) SC_CONST;
+
+// Misc methods
+  virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
+  virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
 
 private:
 };

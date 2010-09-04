@@ -201,6 +201,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_class_spells.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_class_spells_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_const_data.cpp"
 			>
 		</File>
