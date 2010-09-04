@@ -1076,7 +1076,6 @@ double sc_data_access_t::race_stats( const pet_type_t r, const stat_type s ) SC_
 uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-  uint32_t res = 0;
 
   assert( name && name[ 0 ] );
 
@@ -1094,7 +1093,6 @@ uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* na
 uint32_t sc_data_access_t::find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-  uint32_t res = 0;
 
   assert( name && name[ 0 ] && ( ( const uint32_t )( tab_name ) < 3 ) );
 
@@ -1112,7 +1110,6 @@ uint32_t sc_data_access_t::find_talent_spec_spell( const player_type c, const ta
 uint32_t sc_data_access_t::find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-  uint32_t res = 0;
 
   assert( name && name[ 0 ] );
 
@@ -1130,8 +1127,7 @@ uint32_t sc_data_access_t::find_racial_spell( const player_type c, const race_ty
 uint32_t sc_data_access_t::find_mastery_spell( const player_type c, const char* name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-  uint32_t res = 0;
-
+  
   assert( name && name[ 0 ] );
 
   uint32_t i = 0;
