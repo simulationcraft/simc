@@ -285,6 +285,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_mastery_spells.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_mastery_spells_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_mmo_champion.cpp"
 			>
 		</File>
@@ -390,6 +398,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_talent_data_ptr.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent_spec_spells.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent_spec_spells_ptr.inc"
 			>
 		</File>
 		<File

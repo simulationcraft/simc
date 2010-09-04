@@ -226,8 +226,8 @@ struct paladin_t : public player_t
     talents.zealotry         = new talent_t( this, "Zealotry" );
 
     // Can we extract this in some smart way? How? There are two entries called "Divine Plea", the second one is the glyph...
-    spells.divine_plea = 54428;
-    spells.exorcism    =   879;
+    spells.divine_plea = player_data.find_class_spell( PALADIN, "Divine Plea" );
+    spells.exorcism    = player_data.find_class_spell( PALADIN, "Exorcism" );
   }
 
   virtual void      init_race();
@@ -1559,10 +1559,8 @@ struct divine_favor_t : public paladin_spell_t
 
 struct divine_plea_t : public paladin_spell_t
 {
-  spell_ids_t spell;
-
   divine_plea_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "divine_plea", p ), spell(p, "Divine Plea")
+      paladin_spell_t( "divine_plea", p )
   {
     option_t options[] =
     {

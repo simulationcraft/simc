@@ -125,7 +125,6 @@ struct rating_t;
 struct report_t;
 struct rng_t;
 struct talent_t;
-struct spell_ids_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -1190,6 +1189,9 @@ public:
   sc_array_t<double>              m_combat_ratings;
   sc_array_t<double>              m_class_combat_rating_scalar;
   sc_array_t<uint32_t>            m_class_spells;
+  sc_array_t<uint32_t>            m_talent_spec_spells;
+  sc_array_t<uint32_t>            m_racial_spells;
+  sc_array_t<uint32_t>            m_mastery_spells;
   sc_array_t<double>              m_dodge_base;
   sc_array_t<double>              m_dodge_scale;
   sc_array_t<double>              m_base_mp5;
@@ -1343,6 +1345,9 @@ public:
 
 // Class spell methods
   virtual uint32_t      find_class_spell( const player_type c, const char* name ) SC_CONST;
+  virtual uint32_t      find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST;
+  virtual uint32_t      find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST;
+  virtual uint32_t      find_mastery_spell( const player_type c, const char* name ) SC_CONST;
 
 // Misc methods
   virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
@@ -3437,7 +3442,7 @@ struct talent_t
   player_t* p;
 
   talent_t( player_t* p, const char* name, const int32_t specify_tree = -1 );
-	virtual ~talent_t() {}
+  virtual ~talent_t() {}
 
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
   virtual uint32_t get_spell_id( ) SC_CONST;
@@ -3445,20 +3450,58 @@ private:
 	virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
 };
 
-// Spell id class
+// Spell ID class
 
-struct spell_ids_t
+struct spell_id_t
 {
-  struct spell_data_t** data;
-  int enabled;
+  uint32_t spell_id;
+  struct spell_data_t* data;
+  unsigned enabled;
   player_t* p;
 
-  spell_ids_t( player_t* p, const char* name );
-	virtual ~spell_ids_t();
+  spell_id_t( player_t* player, const char* name, const uint32_t id = 0 );
+  virtual ~spell_id_t() {}
 
-  virtual uint32_t get_effect_id( const uint32_t effect_num, const uint32_t spell_num = 1 ) SC_CONST;
+  virtual bool init( player_t* player, const char* name, const uint32_t id = 0 );
+
+  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
 private:
-	virtual spell_data_t** find_spell_ids( const char* name );
+};
+
+// Class Spell ID class
+
+struct class_spell_id_t : public spell_id_t
+{
+  class_spell_id_t( player_t* player, const char* name );
+  virtual ~class_spell_id_t() {}
+private:
+};
+
+// Talent Specialization ID class
+
+struct talent_spec_spell_id_t : public spell_id_t
+{
+  talent_spec_spell_id_t( player_t* player, const char* name, const talent_tab_name tree_name );
+  virtual ~talent_spec_spell_id_t() {}
+private:
+};
+
+// Racial Spell ID class
+
+struct racial_spell_id_t : public spell_id_t
+{
+  racial_spell_id_t( player_t* player, const char* name );
+  virtual ~racial_spell_id_t() {}
+private:
+};
+
+// Mastery Spell ID class
+
+struct mastery_spell_id_t : public spell_id_t
+{
+  mastery_spell_id_t( player_t* player, const char* name );
+  virtual ~mastery_spell_id_t() {}
+private:
 };
 
 // String utils =================================================================

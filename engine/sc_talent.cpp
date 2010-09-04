@@ -83,82 +83,121 @@ uint32_t talent_t::find_talent_id( const char* name, const int32_t specify_tree 
   return 0; 
 }
 
+
 // ==========================================================================
-// Spell and Talent Specialization
+// Spell ID
 // ==========================================================================
 
-// spell_ids_t::spell_ids_t =======================================================
+// spell_id_t::spell_id_t =======================================================
 
-spell_ids_t::spell_ids_t( player_t* player, const char* name ) : data( NULL ), enabled( false ), p( player )
+spell_id_t::spell_id_t( player_t* player, const char* name, const uint32_t id ) : 
+    spell_id( id ), data( NULL ), enabled( false ), p( player )
 {
-  assert( name && p -> sim );
-  
+  init( player, name, id );
+}
+
+bool spell_id_t::init( player_t* player, const char* name, const uint32_t id )
+{
+  assert( player && name && player -> sim );
+
+  spell_id = id;
+  data = NULL;
+  enabled = false;
+  p = player;
+
   if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing spell %s", name );
 
-  data = find_spell_ids( name );
-  if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s%s initialized", name, data ? "":" NOT" );
+  if ( spell_id && p -> player_data.spell_exists( spell_id ) )
+  {
+    data = p -> player_data.m_spells_index[ spell_id ];
+    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s initialized", name );
+  }
+  else
+  {
+    spell_id = 0;
+    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s NOT initialized", name );
+    return false;
+  }
+
+  return true;
 }
 
-spell_ids_t::~spell_ids_t()
-{
-  if ( data ) delete [] data;
-}
+// spell_id_t::get_effect_id ===================================================
 
-// spell_ids_t::get_effect_id ===================================================
-
-uint32_t spell_ids_t::get_effect_id( const uint32_t effect_num, const uint32_t spell_num ) SC_CONST
+uint32_t spell_id_t::get_effect_id( const uint32_t effect_num ) SC_CONST
 {
   assert( ( effect_num >= 1 ) && ( effect_num <= 3 ) );
   
-  if ( !enabled || !data || !spell_num )
+  if ( !enabled || !data )
     return 0;
 
-  for ( uint32_t i = 0; i < spell_num; i++ )
-  {
-    if ( !data[ i ] )
-      return 0;
-  }
-
-  return p -> player_data.spell_effect_id( data[ spell_num - 1 ] -> id, effect_num );
+  return p -> player_data.spell_effect_id( spell_id, effect_num );
 }
 
-// spell_ids_t::find_spell_ids ===================================================
 
-spell_data_t** spell_ids_t::find_spell_ids( const char* name )
+// ==========================================================================
+// Class Spell ID
+// ==========================================================================
+
+// class_spell_id_t::class_spell_id_t =======================================================
+
+class_spell_id_t::class_spell_id_t( player_t* player, const char* name ) : 
+    spell_id_t( player, name )
 {
-  uint32_t spell_id;
-  spell_data_t** spell_ids = NULL;
-  uint32_t num_matches = 0;
-  uint32_t match_num = 0;
-
-  assert( name && name[0] );
-
-  for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
+  if ( !spell_id )
   {
-    if ( p -> player_data.spell_exists( spell_id ) && !_stricmp( p -> player_data.spell_name_str( spell_id ), name ) )
-    {
-      num_matches++;
-    }
+    spell_id = p -> player_data.find_class_spell( p -> type, name );
   }
 
-  if ( !num_matches )
-    return NULL;
-
-  spell_ids = new spell_data_t*[ num_matches + 1 ];
-
-  memset( spell_ids, 0, ( num_matches + 1 ) * sizeof( spell_data_t * ) );
-
-  for ( spell_id = 0; spell_id < p -> player_data.m_spells_index_size; spell_id++ )
-  {
-    if ( p -> player_data.spell_exists( spell_id ) && !_stricmp( p -> player_data.spell_name_str( spell_id ), name ) )
-    {
-      spell_ids[ match_num ] = p -> player_data.m_spells_index[ spell_id ];
-      match_num++;
-    }
-  }
-  spell_ids[ match_num ] = NULL;
-
-  return spell_ids; 
+  init( p, name, spell_id );
 }
 
+// ==========================================================================
+// Talent Specialization Spell ID
+// ==========================================================================
+
+// talent_spec_spell_id_t::talent_spec_spell_id_t =======================================================
+
+talent_spec_spell_id_t::talent_spec_spell_id_t( player_t* player, const char* name, const talent_tab_name tree_name ) :
+    spell_id_t( player, name )
+{
+  assert( name && ( ( const uint32_t ) tree_name < 3 ) );
+
+  data = NULL;
+
+  spell_id = p -> player_data.find_talent_spec_spell( p -> type, tree_name, name );
+
+  init( p, name, spell_id );
+}
+
+// ==========================================================================
+// Racial Spell ID class
+// ==========================================================================
+
+racial_spell_id_t::racial_spell_id_t( player_t* player, const char* name ) :
+    spell_id_t( player, name )
+{
+  assert( name );
+
+  data = NULL;
+
+  spell_id = p -> player_data.find_racial_spell( p -> type, p -> race, name );
+
+  init( p, name, spell_id );
+}
+
+// ==========================================================================
+// Mastery Spell ID class
+// ==========================================================================
+
+mastery_spell_id_t::mastery_spell_id_t( player_t* player, const char* name ) :
+    spell_id_t( player, name )
+{
+  assert( name );
+
+  data = NULL;
+
+  spell_id = p -> player_data.find_mastery_spell( p -> type, name );
+  init( p, name, spell_id );
+}
 

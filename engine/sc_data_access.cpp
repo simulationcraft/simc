@@ -1091,6 +1091,60 @@ uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* na
   return 0;
 }
 
+uint32_t sc_data_access_t::find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  uint32_t res = 0;
+
+  assert( name && name[ 0 ] && ( ( const uint32_t )( tab_name ) < 3 ) );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+  while ( ( ( p = m_talent_spec_spells.ptr( i, tab_name, cid ) ) != NULL ) && *p )
+  {
+    if ( check_spell_name( *p, name ) )
+      return *p;
+    i++;
+  };
+  return 0;
+}
+
+uint32_t sc_data_access_t::find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  uint32_t res = 0;
+
+  assert( name && name[ 0 ] );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+  while ( ( ( p = m_class_spells.ptr( i, cid ) ) != NULL ) && *p )
+  {
+    if ( check_spell_name( *p, name ) )
+      return *p;
+    i++;
+  };
+  return 0;
+}
+
+uint32_t sc_data_access_t::find_mastery_spell( const player_type c, const char* name ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  uint32_t res = 0;
+
+  assert( name && name[ 0 ] );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+  while ( ( ( p = m_mastery_spells.ptr( i, cid ) ) != NULL ) && *p )
+  {
+    if ( check_spell_name( *p, name ) )
+      return *p;
+    i++;
+  };
+  return 0;
+}
+
 bool sc_data_access_t::check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST
 {
   assert( name && name[ 0 ] );

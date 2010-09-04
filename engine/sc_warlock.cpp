@@ -79,16 +79,16 @@ struct warlock_t : public player_t
 
   // Core
   // Affliction
-  spell_ids_t* talent_unstable_affliction;
-  spell_ids_t* talent_shadow_mastery;
-  spell_ids_t* talent_potent_afflictions;
+  talent_spec_spell_id_t* talent_unstable_affliction;
+  talent_spec_spell_id_t* talent_shadow_mastery;
+  talent_spec_spell_id_t* talent_potent_afflictions;
   // Demonology
-  spell_ids_t* talent_summon_felguard;
-  spell_ids_t* talent_master_demonologist;
+  talent_spec_spell_id_t* talent_summon_felguard;
+  talent_spec_spell_id_t* talent_master_demonologist;
   //Destruction
-  spell_ids_t* talent_conflagrate;
-  spell_ids_t* talent_cataclysm;
-  spell_ids_t* talent_fiery_apocalypse;
+  talent_spec_spell_id_t* talent_conflagrate;
+  talent_spec_spell_id_t* talent_cataclysm;
+  talent_spec_spell_id_t* talent_fiery_apocalypse;
 
 
   // Affliction
@@ -215,17 +215,16 @@ struct warlock_t : public player_t
 
     // Core
     // Affliction
-    talent_unstable_affliction 			= new spell_ids_t ( this, "Unstable Affliction" );
-    talent_shadow_mastery 				= new spell_ids_t ( this, "Shadow Mastery" );
-    talent_potent_afflictions 			= new spell_ids_t (this, "Potent Afflictions" );
+    talent_unstable_affliction = new talent_spec_spell_id_t ( this, "Unstable Affliction", WARLOCK_AFFLICTION );
+    talent_shadow_mastery = new talent_spec_spell_id_t ( this, "Shadow Mastery", WARLOCK_AFFLICTION );
+    talent_potent_afflictions = new talent_spec_spell_id_t (this, "Potent Afflictions", WARLOCK_AFFLICTION );
     // Demonology
-    talent_summon_felguard 				= new spell_ids_t ( this, "Summon Felguard" );
-    talent_master_demonologist 			= new spell_ids_t ( this, "Master Demonologist" );
+    talent_summon_felguard = new talent_spec_spell_id_t ( this, "Summon Felguard", WARLOCK_DEMONOLOGY );
+    talent_master_demonologist = new talent_spec_spell_id_t ( this, "Master Demonologist", WARLOCK_DEMONOLOGY );
     //Destruction
-    talent_conflagrate 					= new spell_ids_t ( this, "Conflagrate" );
-    talent_cataclysm 					= new spell_ids_t ( this, "Cataclysm" );
-    talent_fiery_apocalypse 			= new spell_ids_t ( this, "Fiery Apocalypse" );
-
+    talent_conflagrate = new talent_spec_spell_id_t ( this, "Conflagrate", WARLOCK_DESTRUCTION );
+    talent_cataclysm = new talent_spec_spell_id_t ( this, "Cataclysm", WARLOCK_DESTRUCTION );
+    talent_fiery_apocalypse = new talent_spec_spell_id_t ( this, "Fiery Apocalypse", WARLOCK_DESTRUCTION );
 
     // Affliction
     talent_doom_and_gloom 				= new talent_t ( this, "Doom and Gloom" );
