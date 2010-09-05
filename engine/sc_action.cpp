@@ -91,7 +91,6 @@ void action_t::parse_data( sc_data_access_t& pData )
     cooldown -> duration = pData.spell_cooldown ( id );
     range                = pData.spell_max_range ( id );
     travel_speed         = pData.spell_missile_speed ( id );
-    base_cost            = floor ( pData.spell_cost( id ) );
     trigger_gcd          = pData.spell_gcd ( id );
 
     // For mana it returns the % of base mana, not the absolute cost
