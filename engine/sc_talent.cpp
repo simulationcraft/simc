@@ -61,6 +61,8 @@ talent_t::talent_t( player_t* player, const char* t_name, const char* name, cons
 
     p -> talent_list2.push_back( const_cast<talent_t *>( this ) );
 
+    p -> player_data.talent_set_used( id, true );
+
     if ( p -> sim -> debug ) log_t::output( p -> sim, "Talent %s initialized", name );
   }
 
@@ -224,6 +226,27 @@ bool talent_t::ok()
   return ( ( rank > 0 ) && ( enabled ) );
 }
 
+uint32_t talent_t::max_rank() SC_CONST
+{
+  if ( !p || !data || !data->id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.talent_max_rank( data -> id );
+}
+
+uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
+{
+  if ( !p || !data || !data->id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.talent_rank_spell_id( data -> id, r );
+}
+
+
 // ==========================================================================
 // Spell ID
 // ==========================================================================
@@ -305,6 +328,8 @@ bool spell_id_t::init(  const char* s_name )
   {
     data = p -> player_data.m_spells_index[ spell_id ];
     if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s initialized", token_name.c_str() );
+
+    p -> player_data.spell_set_used( spell_id, true );
 
     push_back();
   }
@@ -433,6 +458,428 @@ void spell_id_t::add_options( player_t* p, std::vector<spell_id_t *> *spell_list
 
     i++;
   }
+}
+
+const char* spell_id_t::real_name() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return NULL;
+  }
+
+  return p -> player_data.spell_name_str( spell_id );
+}
+
+const std::string spell_id_t::token() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return NULL;
+  }
+
+  return token_name;
+}
+
+double spell_id_t::missile_speed() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_missile_speed( spell_id );
+}
+
+uint32_t spell_id_t::school_mask() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_school_mask( spell_id );
+}
+
+resource_type spell_id_t::power_type() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return RESOURCE_NONE;
+  }
+
+  return p -> player_data.spell_power_type( spell_id );
+}
+
+double spell_id_t::min_range() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_min_range( spell_id );
+}
+
+double spell_id_t::max_range() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_max_range( spell_id );
+}
+
+bool spell_id_t::in_range() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return false;
+  }
+
+  return p -> player_data.spell_in_range( spell_id, p -> distance );
+}
+
+double spell_id_t::cooldown() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_cooldown( spell_id );
+}
+
+double spell_id_t::gcd() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_gcd( spell_id );
+}
+
+uint32_t spell_id_t::category() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_category( spell_id );
+}
+
+double spell_id_t::duraton() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_duration( spell_id );
+}
+
+double spell_id_t::cost() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_cost( spell_id );
+}
+
+uint32_t spell_id_t::rune_cost() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_rune_cost( spell_id );
+}
+
+double spell_id_t::runic_power_gain() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_runic_power_gain( spell_id );
+}
+
+uint32_t spell_id_t::max_stacks() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_max_stacks( spell_id );
+}
+
+uint32_t spell_id_t::initial_stacks() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_initial_stacks( spell_id );
+}
+
+double spell_id_t::proc_chance() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_proc_chance( spell_id );
+}
+
+double spell_id_t::cast_time() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  return p -> player_data.spell_cast_time( spell_id, p -> level );
+}
+
+uint32_t spell_id_t::effect_id( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  return p -> player_data.spell_effect_id( spell_id, effect_num );
+}
+
+bool spell_id_t::flags( const spell_attribute_t f ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return false;
+  }
+
+  return p -> player_data.spell_flags( spell_id, f );
+}
+
+const char* spell_id_t::desc() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return NULL;
+  }
+
+  return p -> player_data.spell_desc( spell_id );
+}
+
+const char* spell_id_t::tooltip() SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return NULL;
+  }
+
+  return p -> player_data.spell_tooltip( spell_id );
+}
+
+uint32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_type( effect_id );
+}
+
+uint32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_subtype( effect_id );
+}
+
+int32_t spell_id_t::effect_base_value( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_base_value( effect_id );
+}
+
+int32_t spell_id_t::effect_misc_value1( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_misc_value1( effect_id );
+}
+
+int32_t spell_id_t::effect_misc_value2( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_misc_value2( effect_id );
+}
+
+uint32_t spell_id_t::effect_trigger_spell( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_trigger_spell_id( effect_id );
+}
+
+double spell_id_t::effect_average( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_average( effect_id, p -> type, p -> level );
+}
+
+double spell_id_t::effect_delta( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_delta( effect_id, p -> type, p -> level );
+}
+
+double spell_id_t::effect_unk( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_unk( effect_id, p -> type, p -> level );
+}
+
+double spell_id_t::effect_min( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_min( effect_id, p -> type, p -> level );
+}
+
+double spell_id_t::effect_max( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_max( effect_id, p -> type, p -> level );
+}
+
+double spell_id_t::effect_coeff( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_coeff( effect_id );
+}
+
+double spell_id_t::effect_period( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_period( effect_id );
+}
+
+double spell_id_t::effect_radius( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_radius( effect_id );
+}
+
+double spell_id_t::effect_radius_max( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_radius_max( effect_id );
+}
+
+double spell_id_t::effect_pp_combo_points( const uint32_t effect_num ) SC_CONST
+{
+  if ( !p || !data || !spell_id )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = p -> player_data.spell_effect_id( spell_id, effect_num );
+
+  return p -> player_data.effect_pp_combo_points( effect_id );
 }
 
 // ==========================================================================

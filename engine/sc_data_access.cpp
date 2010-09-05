@@ -254,10 +254,10 @@ double sc_data_access_t::spell_cost( const uint32_t spell_id ) SC_CONST
   return ( double ) m_spells_index[ spell_id ]->cost;
 }
 
-double sc_data_access_t::spell_rune_cost( const uint32_t spell_id ) SC_CONST
+uint32_t sc_data_access_t::spell_rune_cost( const uint32_t spell_id ) SC_CONST
 {
   if ( !spell_id )
-    return 0.0;
+    return 0;
 
   assert( spell_exists( spell_id ) );
 
@@ -540,7 +540,7 @@ double sc_data_access_t::effect_period( const uint32_t effect_id ) SC_CONST
 
   assert( effect_exists( effect_id ) );
 
-  return m_effects_index[ effect_id ]->amplitude/1000;
+  return m_effects_index[ effect_id ]->amplitude / 1000.0;
 }
 
 double sc_data_access_t::effect_radius( const uint32_t effect_id ) SC_CONST

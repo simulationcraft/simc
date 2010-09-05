@@ -2363,9 +2363,9 @@ void priest_t::init_values()
 
   // Discipline/Holy
   constants.meditation_value                = passive_spells.meditation_disc -> ok() ? 
-                                              player_data.effect_base_value( passive_spells.meditation_disc -> get_effect_id( 1 ) ) / 100.0 :
+                                                passive_spells.meditation_disc -> effect_base_value( 1 ) / 100.0 :
                                               passive_spells.meditation_holy -> ok() ? 
-                                                player_data.effect_base_value( passive_spells.meditation_holy -> get_effect_id( 1 ) ) / 100.0 :
+                                                passive_spells.meditation_holy -> effect_base_value( 1 ) / 100.0 :
                                                 0.0;
 
   // Discipline

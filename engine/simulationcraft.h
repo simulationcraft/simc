@@ -1258,7 +1258,7 @@ public:
   virtual uint32_t      spell_category( const uint32_t spell_id ) SC_CONST;
   virtual double        spell_duration( const uint32_t spell_id ) SC_CONST;
   virtual double        spell_cost( const uint32_t spell_id ) SC_CONST;
-  virtual double        spell_rune_cost( const uint32_t spell_id ) SC_CONST;
+  virtual uint32_t      spell_rune_cost( const uint32_t spell_id ) SC_CONST;
   virtual double        spell_runic_power_gain( const uint32_t spell_id ) SC_CONST;
   virtual uint32_t      spell_max_stacks( const uint32_t spell_id ) SC_CONST;
   virtual uint32_t      spell_initial_stacks( const uint32_t spell_id ) SC_CONST;
@@ -3475,6 +3475,10 @@ struct talent_t
   talent_t* find_talent_in_list( const uint32_t id );
 
   static void add_options( player_t* p, std::vector<option_t>& opt_vector );
+
+  virtual uint32_t max_rank() SC_CONST;
+  virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
+
 private:
   virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
 };
@@ -3519,6 +3523,48 @@ struct spell_id_t
   static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector );
 
   virtual void push_back() {};
+
+  // Access methods
+
+  virtual const char* real_name() SC_CONST;
+  virtual const std::string token() SC_CONST;
+  virtual double missile_speed() SC_CONST;
+  virtual uint32_t school_mask() SC_CONST;
+  virtual resource_type power_type() SC_CONST;
+  virtual double min_range() SC_CONST;
+  virtual double max_range() SC_CONST;
+  virtual bool in_range() SC_CONST;
+  virtual double cooldown() SC_CONST;
+  virtual double gcd() SC_CONST;
+  virtual uint32_t category() SC_CONST;
+  virtual double duraton() SC_CONST;
+  virtual double cost() SC_CONST;
+  virtual uint32_t rune_cost() SC_CONST;
+  virtual double runic_power_gain() SC_CONST;
+  virtual uint32_t max_stacks() SC_CONST;
+  virtual uint32_t initial_stacks() SC_CONST;
+  virtual double proc_chance() SC_CONST;
+  virtual double cast_time() SC_CONST;
+  virtual uint32_t effect_id( const uint32_t effect_num ) SC_CONST;
+  virtual bool flags( const spell_attribute_t f ) SC_CONST;
+  virtual const char* desc() SC_CONST;
+  virtual const char* tooltip() SC_CONST;
+  virtual uint32_t effect_type( const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t effect_subtype( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_base_value( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_misc_value1( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_misc_value2( const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t effect_trigger_spell( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_average( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_delta( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_unk( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_min( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_max( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_coeff( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_period( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_radius( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_radius_max( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_pp_combo_points( const uint32_t effect_num ) SC_CONST;
 private:
 };
 
