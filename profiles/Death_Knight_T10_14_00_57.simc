@@ -26,38 +26,36 @@ actions+=/summon_gargoyle,time<=60
 actions+=/summon_gargoyle,if=buff.bloodlust.react
 actions+=/empower_rune_weapon,if=blood=0&frost=0&unholy=0
 actions+=/death_coil
-head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=relentless_earthsiege_20str_8str,enchant=50ap_20crit
-neck=lanathels_chain_of_flagellation,heroic=1,stats=73arpen_52exp_116sta_108str,gems=20str
-shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_82arpen_90crit_155sta_147str,gems=20str_4str,enchant=40ap_15crit
-chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_106arpen_122crit_209sta_193str,gems=10hit_10str_10agi_10int_10spi_10sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
-waist=coldwraith_links,heroic=1,stats=1550armor_78arpen_85crit_155sta_139str,gems=20str_20str_20str
-legs=scourge_reavers_legplates,heroic=1,stats=2412armor_122crit_98haste_209sta_185str,gems=20str_20str_20str,enchant=75ap_22crit
-feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74arpen_90crit_155sta_139str,gems=20str_20str,enchant=12crit_12hit
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=34str_34str,enchant=50ap
-hands=sanctified_scourgelord_gauntlets,heroic=1,stats=1723armor_90crit_82hit_155sta_147str,gems=20hit_34str_4str,enchant=15str
+head=sanctified_scourgelord_helmet,heroic=1,stats=2239armor_106arpen_114crit_209sta_185str,gems=chaotic_skyflare_34str_8str,enchant=50ap_20crit
+neck=penumbra_pendant,heroic=1,stats=65arpen_73crit_124sta_116str,gems=34str
+shoulders=sanctified_scourgelord_shoulderplates,heroic=1,stats=2067armor_82arpen_90crit_155sta_147str,gems=34str_4str,enchant=40ap_15crit
+chest=sanctified_scourgelord_battleplate,heroic=1,stats=2756armor_106arpen_122crit_209sta_193str,gems=20str_15sta_10str_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,heroic=1,stats=1550armor_78arpen_85crit_155sta_139str,gems=10haste_10str_20str_20str_6str
+legs=scourge_reavers_legplates,heroic=1,stats=2412armor_122crit_98haste_209sta_185str,gems=10haste_10str_20str_10agi_10int_10spi_10sta_10str_8str,enchant=75ap_22crit
+feet=apocalypses_advance,heroic=1,stats=1939armor_97crit_81hit_165sta_165str,gems=20str_20str_6str,enchant=32ap
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10haste_10str_20str_4str,enchant=50ap
+hands=sanctified_scourgelord_gauntlets,heroic=1,stats=1723armor_90crit_82hit_155sta_147str,gems=10haste_10str_20str_4str,enchant=15str
 finger1=might_of_blight,heroic=1,stats=60arpen_68crit_116sta_108str,gems=20str
-finger2=ashen_band_of_endless_might,stats=59crit_59hit_107sta_99str,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+finger2=ashen_band_of_endless_might,stats=59crit_59hit_107sta_99str,gems=20str,equip=onattackhit_480ap_1ppm_10dur_60cd
 trinket1=deathbringers_will,heroic=1,stats=167arpen
-trinket2=deaths_choice,heroic=1,stats=288ap
+trinket2=sharpened_twilight_scale,heroic=1,stats=184arpen,equip=onattackhit_1472ap_35%_15dur_45cd
 back=winding_sheet,heroic=1,stats=185armor_68crit_60haste_116sta_108str,gems=20str,enchant=23haste
 main_hand=shadowmourne,stats=114arpen_114crit_198sta_223str,gems=20str_20str_20str_8str,enchant=berserking,weapon=axe2h_3.70speed_954min_1592max
 ranged=sigil_of_virulence
 # Gear Summary
-# gear_strength=2400
-# gear_agility=41
-# gear_stamina=2036
+# gear_strength=2444
+# gear_agility=20
+# gear_stamina=2069
 # gear_intellect=20
 # gear_spirit=20
-# gear_attack_power=503
-# gear_expertise_rating=52
-# gear_armor_penetration_rating=860
-# gear_hit_rating=243
-# gear_crit_rating=1169
-# gear_haste_rating=181
-# gear_armor=16033
-# meta_gem=relentless_earthsiege
+# gear_attack_power=247
+# gear_armor_penetration_rating=962
+# gear_hit_rating=282
+# gear_crit_rating=1248
+# gear_haste_rating=221
+# gear_armor=16077
+# meta_gem=chaotic_skyflare
 # tier10_2pc_melee=1
 # tier10_4pc_melee=1
 # trinket1=deathbringers_will,heroic=1
-# trinket2=deaths_choice,heroic=1
 # main_hand=shadowmourne,weapon=axe2h_3.70speed_954min_1592max,enchant=berserking

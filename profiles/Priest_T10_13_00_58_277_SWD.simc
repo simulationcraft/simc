@@ -15,7 +15,6 @@ actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
-actions+=/use_item,name=sanctified_crimson_acolyte_handwraps
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20
 actions+=/shadow_fiend
@@ -30,35 +29,35 @@ actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 head=sanctified_crimson_acolyte_cowl,heroic=1,stats=300armor_122crit_98haste_139int_185sp_139sta,gems=chaotic_skyflare_10spi_12sp_9sp,enchant=30sp_20crit
-neck=blood_queens_crimson_choker,heroic=1,stats=65crit_60haste_78int_110sp_78sta,gems=23sp
-shoulders=sanctified_crimson_acolyte_mantle,heroic=1,stats=277armor_90crit_82haste_103int_150sp_103sta,gems=10haste_12sp_5sp,enchant=24sp_15crit
+neck=amulet_of_the_silent_eulogy,heroic=1,stats=68haste_60hit_78int_110sp_78sta,gems=10crit_12sp_5sp
+shoulders=sanctified_crimson_acolyte_mantle,heroic=1,stats=277armor_90crit_82haste_103int_150sp_103sta,gems=10crit_12sp_5sp,enchant=24sp_15crit
 chest=sanctified_crimson_acolyte_raiments,heroic=1,stats=369armor_114crit_114haste_139int_195sp_139sta,gems=23sp_10haste_12sp_7sp,enchant=15spi
 waist=crushing_coldwraith_belt,heroic=1,stats=208armor_74crit_90haste_103int_140sp_103sta,gems=10spi_12sp_39sp_39sp_7sp
 legs=plaguebringers_stained_pants,heroic=1,stats=323armor_116haste_104hit_139int_185sp_139sta,gems=23sp_10spi_12sp_10haste_12sp_9sp,enchant=50sp_20spi
 feet=plague_scientists_boots,heroic=1,stats=254armor_74crit_90haste_103int_140sp_103sta,gems=10spi_12sp_39sp_7sp,enchant=15sta
-wrists=the_ladys_brittle_bracers,heroic=1,stats=162armor_73crit_52hit_78int_110sp_78sta,gems=10haste_12sp_5sp,enchant=30sp
-hands=sanctified_crimson_acolyte_handwraps,heroic=1,stats=231armor_90crit_82hit_103int_150sp_103sta,gems=23sp,enchant=hyperspeed_accelerators
+wrists=bracers_of_fiery_night,heroic=1,stats=165armor_65crit_73haste_83int_118sp_83sta,gems=23sp_5sp,enchant=30sp
+hands=sanctified_crimson_acolyte_handwraps,heroic=1,stats=231armor_90crit_82hit_103int_150sp_103sta,gems=23sp,enchant=28sp
 finger1=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_78int_110sp_78sta,gems=23sp
 finger2=ashen_band_of_endless_destruction,stats=64haste_51hit_73int_101sp_73sta,gems=10haste_12sp_5sp,equip=onspellcasthit_285sp_10%_10dur_60cd
 trinket1=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
 trinket2=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1206sp_30%_20dur_100cd
-back=frostbinders_shredded_cape,heroic=1,stats=185armor_68crit_60haste_78int_110sp_78sta,gems=10haste_12sp_5sp,enchant=27sp
+back=cloak_of_burning_dusk,heroic=1,stats=189armor_65crit_73haste_83int_118sp_83sta,gems=23sp_5sp,enchant=lightweave_embroidery
 main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_81int_893sp_81sta,gems=23sp_5sp,enchant=63sp,weapon=mace_1.80speed_160.56001281738281min_446.56002807617187max
 off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_78int_119sp_78sta
 ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_44int_58sp_44sta,gems=10haste_12sp_5sp
 # Gear Summary
-# gear_stamina=1432
-# gear_intellect=1417
-# gear_spirit=75
-# gear_spell_power=3436
-# gear_hit_rating=289
-# gear_crit_rating=1227
-# gear_haste_rating=1243
-# gear_armor=2309
+# gear_stamina=1442
+# gear_intellect=1427
+# gear_spirit=76
+# gear_spell_power=3469
+# gear_hit_rating=297
+# gear_crit_rating=1171
+# gear_haste_rating=1307
+# gear_armor=2316
 # meta_gem=chaotic_skyflare
 # tier10_2pc_caster=1
 # tier10_4pc_caster=1
-# hands=sanctified_crimson_acolyte_handwraps,heroic=1,enchant=hyperspeed_accelerators
+# back=cloak_of_burning_dusk,heroic=1,enchant=lightweave_embroidery
 # main_hand=royal_scepter_of_terenas_ii,heroic=1,weapon=mace_1.80speed_160.56001281738281min_446.56002807617187max
 ## Variables
 use_shadow_word_death=1

@@ -37,7 +37,7 @@ chest=sanctified_frost_witchs_chestguard,heroic=1,stats=183agi_1542armor_212ap_1
 waist=nerubar_stalkers_cord,heroic=1,stats=120agi_867armor_71arpen_181ap_74crit_71int_107sta,gems=20hit_20exp_20exp_6agi
 legs=sanctified_frost_witchs_warkilt,heroic=1,stats=183agi_1349armor_212ap_114crit_88hit_96int_144sta,gems=10exp_10hit_20hit_12ap,enchant=75ap_22crit
 feet=treads_of_the_wasteland,heroic=1,stats=128agi_1060armor_165ap_90crit_55hit_71int_107sta,gems=20haste_20haste_6agi,enchant=15sta
-wrists=umbrage_armbands,heroic=1,stats=311armor_113ap_73crit_73haste_109agi_109sta,gems=10exp_10hit,enchant=130ap
+wrists=umbrage_armbands,heroic=1,stats=109agi_311armor_113ap_73crit_73haste_109sta,gems=10exp_10hit_4agi,enchant=130ap
 hands=anubar_stalkers_gloves,heroic=1,stats=128agi_964armor_149ap_90crit_63haste_71int_107sta,gems=20hit_10exp_10hit_6agi,enchant=44ap
 finger1=ashen_band_of_endless_vengeance,stats=88agi_135ap_59crit_59hit_84sta,gems=20haste_4agi,equip=onattackhit_480ap_1ppm_10dur_60cd
 finger2=band_of_the_bone_colossus,heroic=1,stats=102agi_120ap_65haste_62hit_102sta,gems=20haste_4agi
@@ -49,7 +49,7 @@ off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_95ap_56crit_4
 ranged=bizuris_totem_of_shattered_ice
 # Gear Summary
 # gear_strength=20
-# gear_agility=1803
+# gear_agility=1807
 # gear_stamina=1562
 # gear_intellect=592
 # gear_spirit=20

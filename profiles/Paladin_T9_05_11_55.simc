@@ -23,7 +23,7 @@ actions+=/consecration,if=target.time_to_die>=6
 actions+=/hammer_of_wrath
 actions+=/exorcism,if=buff.the_art_of_war.react
 actions+=/divine_plea
-head=liadrins_helm_of_triumph,heroic=1,stats=2102armor_94crit_86haste_174sta_150str,gems=relentless_earthsiege_10crit_10str_8str,enchant=50ap_20crit
+head=liadrins_helm_of_triumph,stats=150str_174sta_94crit_86haste_2102armor,gems=relentless_earthsiege_10crit_10str,enchant=50ap_20crit
 neck=charge_of_the_eredar,heroic=1,stats=77agi_98ap_61crit_50haste_85sta,gems=20str_4agi
 shoulders=liadrins_shoulderplates_of_triumph,heroic=1,stats=1941armor_76crit_68hit_130sta_122str,gems=20str_4str,enchant=40ap_15crit
 chest=liadrins_battleplate_of_triumph,heroic=1,stats=2588armor_94arpen_94crit_174sta_158str,gems=20str_20str,enchant=10str_10agi_10sta_10int_10spi
@@ -40,7 +40,7 @@ back=garroshs_rage,heroic=1,stats=182armor_65crit_57hit_111sta_103str,gems=34str
 main_hand=dualblade_butcher,heroic=1,stats=94arpen_94crit_174sta_158str,gems=20str_10agi_10int_10spi_10sta_10str_6str,enchant=berserking,weapon=axe2h_3.60speed_811min_1217max
 ranged=libram_of_valiance
 # Gear Summary
-# gear_strength=1818
+# gear_strength=1810
 # gear_agility=221
 # gear_stamina=1694
 # gear_intellect=20

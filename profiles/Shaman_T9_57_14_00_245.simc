@@ -22,8 +22,11 @@ actions+=/elemental_mastery,time_to_die<=17
 actions+=/elemental_mastery,if=!buff.bloodlust.react
 actions+=/flame_shock,if=!ticking
 actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0
+actions+=/fire_nova,if=target.adds>3
+actions+=/chain_lightning,if=target.adds>1
 actions+=/fire_nova,if=target.adds>2
 actions+=/lightning_bolt
+actions+=/fire_nova,moving=1
 actions+=/thunderstorm
 head=thralls_helm_of_triumph,stats=1124armor_80crit_84haste_103int_131sp_103sta,gems=chaotic_skyflare_10haste_12sp_9sp,enchant=30sp_20crit
 neck=cry_of_the_valkyr,stats=58crit_38haste_58int_89sp_58sta
