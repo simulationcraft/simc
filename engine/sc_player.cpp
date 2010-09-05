@@ -382,6 +382,8 @@ player_t::player_t( sim_t*             s,
     talent_tab_points[ i ] = 0;
   }
   talent_list2.clear();
+  passive_spell_list.clear();
+  active_spell_list.clear();
 }
 
 // player_t::~player_t =====================================================
@@ -4361,10 +4363,8 @@ std::vector<option_t>& player_t::get_options()
     option_t::copy( options, player_options );
 
     talent_t::add_options              ( this, options );
-    class_spell_id_t::add_options      ( this, options );
-    talent_spec_spell_id_t::add_options( this, options );
-    racial_spell_id_t::add_options     ( this, options );
-    mastery_spell_id_t::add_options    ( this, options );
+    active_spell_t::add_options        ( this, options );
+    passive_spell_t::add_options       ( this, options );
   }
 
   return options;

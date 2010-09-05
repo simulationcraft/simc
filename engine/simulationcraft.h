@@ -126,10 +126,8 @@ struct report_t;
 struct rng_t;
 struct talent_t;
 struct spell_id_t;
-struct class_spell_id_t;
-struct talent_spec_spell_id_t;
-struct racial_spell_id_t;
-struct mastery_spell_id_t;
+struct active_spell_t;
+struct passive_spell_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -328,6 +326,7 @@ enum talent_tree_type
 
 enum talent_tab_name
 {
+  TALENT_TAB_NONE = 0,
   DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
   DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
   HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
@@ -2230,10 +2229,8 @@ struct player_t
   uint32_t talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t *> talent_list2;
 
-  std::vector<class_spell_id_t *> class_spell_list;
-  std::vector<racial_spell_id_t *> racial_spell_list;
-  std::vector<talent_spec_spell_id_t *> talent_spec_spell_list;
-  std::vector<mastery_spell_id_t *> mastery_spell_list;
+  std::vector<active_spell_t *> active_spell_list;
+  std::vector<passive_spell_t *> passive_spell_list;
 
   // Profs
   std::string professions_str;
@@ -3492,14 +3489,24 @@ struct spell_id_t
   player_t* p;
   bool forced_override;
   bool forced_value;
-  
+  std::string token_name;  
+  bool is_mastery;
+  bool req_tree;
+  talent_tab_name tab;
+  struct talent_t* req_talent;
 
-  std::string token_name;
 
-  spell_id_t( player_t* player, std::vector<spell_id_t *> *spell_list, const char* t_name, const char* name, const uint32_t id = 0 );
+
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id );
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+
   virtual ~spell_id_t() {}
 
-  virtual bool init( player_t* player, std::vector<spell_id_t *> *spell_list, const char* name, const uint32_t id = 0 );
+  virtual bool init( const char* s_name = NULL );
   virtual uint32_t id() { return ( enabled ? spell_id : 0 ); };
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
@@ -3508,7 +3515,49 @@ struct spell_id_t
 
   static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name );
   static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
+
+  static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector );
+
+  virtual void push_back() {};
 private:
+};
+
+// Active Spell ID class
+
+struct active_spell_t : public spell_id_t
+{
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id );
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+  virtual ~active_spell_t() {}
+
+  active_spell_t* find_spell_in_list( const char* t_name );
+  active_spell_t* find_spell_in_list( const uint32_t id );
+
+  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
+  virtual void push_back();
+};
+
+// Passive Spell ID class
+
+struct passive_spell_t : public spell_id_t
+{
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id );
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+  virtual ~passive_spell_t() {}
+
+  passive_spell_t* find_spell_in_list( const char* t_name );
+  passive_spell_t* find_spell_in_list( const uint32_t id );
+
+  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
+  virtual void push_back();
 };
 
 // Class Spell ID class

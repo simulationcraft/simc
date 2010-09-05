@@ -38,7 +38,7 @@
 // Priest
 // ==========================================================================
 
-  struct priest_t : public player_t
+struct priest_t : public player_t
   {
     // Buffs
     buff_t* buffs_glyph_of_shadow;
@@ -98,52 +98,48 @@
 
     talents_list_t talents;
 
-    struct talent_spec_spells_t
+    struct passive_spells_t
     {
-      talent_spec_spell_id_t* penance;
-      talent_spec_spell_id_t* chastise;     // incomplete
-      talent_spec_spell_id_t* shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
-      talent_spec_spell_id_t* mind_flay;
-      talent_spec_spell_id_t* meditation_holy; // 					done: talent function 12803
-      talent_spec_spell_id_t* meditation_disc; // 					done: talent function 12803
-      talent_spec_spell_id_t* enlightenment;
+      passive_spell_t* shadow_power; //       			done: talent function 12803					incomplete: link with main talent tree
+      passive_spell_t* meditation_holy; // 					done: talent function 12803
+      passive_spell_t* meditation_disc; // 					done: talent function 12803
+      passive_spell_t* enlightenment;
+      
+      passive_spell_t* shadow_orbs;
     };
 
-    talent_spec_spells_t talent_spec_spells;
+    passive_spells_t passive_spells;
 
-    struct mastery_spells_t
+    struct active_spells_t
     {
-      mastery_spell_id_t* shadow_orbs;
+      active_spell_t* mind_spike;
+      active_spell_t* shadow_fiend;
+      active_spell_t* inner_will;
+      active_spell_t* shadow_word_pain;
+      active_spell_t* mind_blast;
+      active_spell_t* devouring_plague;
+      active_spell_t* shadow_word_death;
+      active_spell_t* inner_fire;
+      active_spell_t* smite;
+      active_spell_t* holy_fire;
+      active_spell_t* power_word_fortitude;
+      active_spell_t* shadow_protection;
+
+      active_spell_t* shadow_form;
+      active_spell_t* vampiric_embrace;
+      active_spell_t* vampiric_touch;
+      active_spell_t* dispersion;
+      active_spell_t* power_infusion;
+      active_spell_t* inner_focus;
+      active_spell_t* chakra;
+      active_spell_t* archangel;
+
+      active_spell_t* penance;
+      active_spell_t* chastise;
+      active_spell_t* mind_flay;
     };
 
-    mastery_spells_t mastery_spells;
-
-    struct class_spells_t
-    {
-      class_spell_id_t* mind_spike;
-      class_spell_id_t* shadow_fiend;
-      class_spell_id_t* inner_will;
-      class_spell_id_t* shadow_word_pain;
-      class_spell_id_t* mind_blast;
-      class_spell_id_t* devouring_plague;
-      class_spell_id_t* shadow_word_death;
-      class_spell_id_t* inner_fire;
-      class_spell_id_t* smite;
-      class_spell_id_t* holy_fire;
-      class_spell_id_t* power_word_fortitude;
-      class_spell_id_t* shadow_protection;
-
-      class_spell_id_t* shadow_form;
-      class_spell_id_t* vampiric_embrace;
-      class_spell_id_t* vampiric_touch;
-      class_spell_id_t* dispersion;
-      class_spell_id_t* power_infusion;
-      class_spell_id_t* inner_focus;
-      class_spell_id_t* chakra;
-      class_spell_id_t* archangel;
-    };
-
-    class_spells_t class_spells;
+    active_spells_t active_spells;
 
     // Cooldowns
     cooldown_t* cooldowns_mind_blast;
@@ -326,37 +322,37 @@
     talents.paralysis                   = new talent_t( this, "paralysis", "Paralysis" );
     talents.phantasm                    = new talent_t( this, "phantasm", "Phantasm" );
 
-    talent_spec_spells.penance          = new talent_spec_spell_id_t( this, "penance", "Penance", PRIEST_DISCIPLINE );
-    talent_spec_spells.chastise         = new talent_spec_spell_id_t( this, "holy_word_chastise", "Holy Word: Chastise", PRIEST_HOLY );     // incomplete
-    talent_spec_spells.shadow_power     = new talent_spec_spell_id_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //       			done: talent function 12803					incomplete: link with main talent tree
-    talent_spec_spells.mind_flay        = new talent_spec_spell_id_t( this, "mind_flay", "Mind Flay", PRIEST_SHADOW );
-    talent_spec_spells.meditation_holy  = new talent_spec_spell_id_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); // 					done: talent function 12803
-    talent_spec_spells.meditation_disc  = new talent_spec_spell_id_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); // 					done: talent function 12803
-    talent_spec_spells.enlightenment    = new talent_spec_spell_id_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
+    passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //       			done: talent function 12803					incomplete: link with main talent tree
+    passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); // 					done: talent function 12803
+    passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); // 					done: talent function 12803
+    passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
 
-    mastery_spells.shadow_orbs          = new mastery_spell_id_t( this, "shadow_orbs", "Shadow Orbs", PRIEST_SHADOW );
+    passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs", PRIEST_SHADOW, true );
 
-    class_spells.mind_spike             = new class_spell_id_t( this, "mind_spike", "Mind Spike" );
-    class_spells.shadow_fiend           = new class_spell_id_t( this, "shadow_fiend", "Shadowfiend" );
-    class_spells.inner_will             = new class_spell_id_t( this, "inner_will", "Inner Will" );
-    class_spells.shadow_word_pain       = new class_spell_id_t( this, "shadow_word_pain", "Shadow Word: Pain" );
-    class_spells.mind_blast             = new class_spell_id_t( this, "mind_blast", "Mind Blast" );
-    class_spells.devouring_plague       = new class_spell_id_t( this, "devouring_plague", "Devouring Plague" );
-    class_spells.shadow_word_death      = new class_spell_id_t( this, "shadow_word_death", "Shadow Word: Death" );
-    class_spells.inner_fire             = new class_spell_id_t( this, "inner_fire", "Inner Fire" );
-    class_spells.smite                  = new class_spell_id_t( this, "smite", "Smite" );
-    class_spells.holy_fire              = new class_spell_id_t( this, "holy_fire", "Holy Fire" );
-    class_spells.power_word_fortitude   = new class_spell_id_t( this, "fortitude", "Power Word: Fortitude" );
-    class_spells.shadow_protection      = new class_spell_id_t( this, "shadow_protection", "Shadow Protection" );
+    active_spells.penance               = new active_spell_t( this, "penance", "Penance", PRIEST_DISCIPLINE );
+    active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise", PRIEST_HOLY );     // incomplete
+    active_spells.mind_flay             = new active_spell_t( this, "mind_flay", "Mind Flay", PRIEST_SHADOW );
+    active_spells.mind_spike            = new active_spell_t( this, "mind_spike", "Mind Spike" );
+    active_spells.shadow_fiend          = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
+    active_spells.inner_will            = new active_spell_t( this, "inner_will", "Inner Will" );
+    active_spells.shadow_word_pain      = new active_spell_t( this, "shadow_word_pain", "Shadow Word: Pain" );
+    active_spells.mind_blast            = new active_spell_t( this, "mind_blast", "Mind Blast" );
+    active_spells.devouring_plague      = new active_spell_t( this, "devouring_plague", "Devouring Plague" );
+    active_spells.shadow_word_death     = new active_spell_t( this, "shadow_word_death", "Shadow Word: Death" );
+    active_spells.inner_fire            = new active_spell_t( this, "inner_fire", "Inner Fire" );
+    active_spells.smite                 = new active_spell_t( this, "smite", "Smite" );
+    active_spells.holy_fire             = new active_spell_t( this, "holy_fire", "Holy Fire" );
+    active_spells.power_word_fortitude  = new active_spell_t( this, "fortitude", "Power Word: Fortitude" );
+    active_spells.shadow_protection     = new active_spell_t( this, "shadow_protection", "Shadow Protection" );
 
-    class_spells.shadow_form            = new class_spell_id_t( this, "shadow_form", "Shadowform", talents.shadow_form );
-    class_spells.vampiric_embrace       = new class_spell_id_t( this, "vampiric_embrace", "Vampiric Embrace", talents.vampiric_embrace );
-    class_spells.vampiric_touch         = new class_spell_id_t( this, "vampiric_touch", "Vampiric Touch", talents.vampiric_touch );
-    class_spells.dispersion             = new class_spell_id_t( this, "dispersion", "Dispersion", talents.dispersion );
-    class_spells.power_infusion         = new class_spell_id_t( this, "power_infusion", "Power Infusion", talents.power_infusion );
-    class_spells.inner_focus            = new class_spell_id_t( this, "inner_focus", "Inner Focus", talents.inner_focus );
-    class_spells.chakra                 = new class_spell_id_t( this, "chakra", "Chakra", talents.chakra );
-    class_spells.archangel              = new class_spell_id_t( this, "archangel", "Archangel", talents.archangel );
+    active_spells.shadow_form           = new active_spell_t( this, "shadow_form", "Shadowform", talents.shadow_form );
+    active_spells.vampiric_embrace      = new active_spell_t( this, "vampiric_embrace", "Vampiric Embrace", talents.vampiric_embrace );
+    active_spells.vampiric_touch        = new active_spell_t( this, "vampiric_touch", "Vampiric Touch", talents.vampiric_touch );
+    active_spells.dispersion            = new active_spell_t( this, "dispersion", "Dispersion", talents.dispersion );
+    active_spells.power_infusion        = new active_spell_t( this, "power_infusion", "Power Infusion", talents.power_infusion );
+    active_spells.inner_focus           = new active_spell_t( this, "inner_focus", "Inner Focus", talents.inner_focus );
+    active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
+    active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
 
     cooldowns_mind_blast   = get_cooldown( "mind_blast" );
     cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
@@ -1140,7 +1136,7 @@ struct mind_flay_t : public priest_spell_t
       priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talent_spec_spells.mind_flay -> enabled );
+    check_talent( p -> active_spells.mind_flay -> ok() );
 
     option_t options[] =
     {
@@ -1151,7 +1147,7 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    id = p -> talent_spec_spells.mind_flay -> id();
+    id = p -> active_spells.mind_flay -> id();
     parse_data( p -> player_data );
 
     channeled      = true;
@@ -1330,7 +1326,7 @@ struct penance_t : public priest_spell_t
       priest_spell_t( "penance", player, SCHOOL_HOLY, TREE_HOLY )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> talent_spec_spells.penance -> enabled );
+    check_talent( p -> active_spells.penance -> ok() );
 
     option_t options[] =
     {
@@ -2282,48 +2278,48 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-                                                    action_list_str += "/wild_magic_potion,if=!in_combat";
-                                                    action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
-      if ( class_spells.shadow_fiend -> ok() )      action_list_str += "/" + class_spells.shadow_fiend->token_name;
-      if ( talents.archangel -> ok() )              action_list_str += "/" + talents.archangel->token_name + ",if=buff.dark_evangelism.stack>=5";
-      if ( class_spells.shadow_word_pain -> ok() )  action_list_str += "/" + class_spells.shadow_word_pain->token_name + ",if=!ticking";
-      if ( race == RACE_TROLL )                     action_list_str += "/berserking";
-      if ( class_spells.vampiric_touch -> ok() )    action_list_str += "/" + class_spells.vampiric_touch->token_name + ",if=!ticking/" +
-                                                                             class_spells.vampiric_touch->token_name + ",if=dot." +
-                                                                             class_spells.vampiric_touch->token_name + ".remains<cast_time";
-      if ( class_spells.devouring_plague -> ok() )  action_list_str += "/" + class_spells.devouring_plague->token_name + ",if=!ticking";
-      if ( class_spells.shadow_word_death -> ok() ) action_list_str += "/" + class_spells.shadow_word_death->token_name;
-      if ( class_spells.mind_blast -> ok() )        action_list_str += "/" + class_spells.mind_blast->token_name;
-      if ( race == RACE_BLOOD_ELF )                 action_list_str += "/arcane_torrent";
-      if ( talent_spec_spells.mind_flay -> ok() )   action_list_str += "/" + talent_spec_spells.mind_flay->token_name;
-      else if ( class_spells.smite -> ok() )        action_list_str += "/" + class_spells.smite->token_name;
-      if ( class_spells.shadow_word_death -> ok() ) action_list_str += "/" + class_spells.shadow_word_death->token_name + ",moving=1"; // when moving
-      if ( class_spells.dispersion -> ok() )        action_list_str += "/" + class_spells.dispersion->token_name;
+                                                     action_list_str += "/wild_magic_potion,if=!in_combat";
+                                                     action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name;
+      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->token_name + ",if=buff.dark_evangelism.stack>=5";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
+      if ( race == RACE_TROLL )                      action_list_str += "/berserking";
+      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->token_name + ",if=!ticking/" +
+                                                                              active_spells.vampiric_touch->token_name + ",if=dot." +
+                                                                              active_spells.vampiric_touch->token_name + ".remains<cast_time";
+      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",if=!ticking";
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
+      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
+      if ( active_spells.mind_flay -> ok() )         action_list_str += "/" + active_spells.mind_flay->token_name;
+      else if ( active_spells.smite -> ok() )        action_list_str += "/" + active_spells.smite->token_name;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+      if ( active_spells.dispersion -> ok() )        action_list_str += "/" + active_spells.dispersion->token_name;
       break;
     case TREE_DISCIPLINE:
-                                                    action_list_str += "/mana_potion";
-      if ( class_spells.shadow_fiend -> ok() )      action_list_str += "/" + class_spells.shadow_fiend->token_name + ",trigger=10000";
-      if ( class_spells.shadow_word_pain -> ok() )  action_list_str += "/" + class_spells.shadow_word_pain->token_name + ",if=!ticking";
-      if ( class_spells.power_infusion -> ok() )    action_list_str += "/" + class_spells.power_infusion->token_name;
-      if ( class_spells.holy_fire -> ok() )         action_list_str += "/" + class_spells.holy_fire->token_name;
-      if ( class_spells.mind_blast -> ok() )        action_list_str += "/" + class_spells.mind_blast->token_name;
-      if ( talent_spec_spells.penance -> ok() )     action_list_str += "/" + talent_spec_spells.penance->token_name;
-      if ( race == RACE_TROLL )                     action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                 action_list_str += "/arcane_torrent";
-      if ( class_spells.smite -> ok() )             action_list_str += "/" + class_spells.smite->token_name;
-      if ( class_spells.shadow_word_death -> ok() ) action_list_str += "/" + class_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+                                                     action_list_str += "/mana_potion";
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name + ",trigger=10000";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
+      if ( active_spells.power_infusion -> ok() )    action_list_str += "/" + active_spells.power_infusion->token_name;
+      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->token_name;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
+      if ( active_spells.penance -> ok() )           action_list_str += "/" + active_spells.penance->token_name;
+      if ( race == RACE_TROLL )                      action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
+      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->token_name;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
       break;
     case TREE_HOLY:
     default:
       action_list_str += "/mana_potion";
-      if ( class_spells.shadow_fiend -> ok() )      action_list_str += "/" + class_spells.shadow_fiend->token_name + ",trigger=10000";
-      if ( class_spells.shadow_word_pain -> ok() )  action_list_str += "/" + class_spells.shadow_word_pain->token_name + ",if=!ticking";
-      if ( class_spells.holy_fire -> ok() )         action_list_str += "/" + class_spells.holy_fire->token_name;
-      if ( class_spells.mind_blast -> ok() )        action_list_str += "/" + class_spells.mind_blast->token_name;
-      if ( race == RACE_TROLL     )                 action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                 action_list_str += "/arcane_torrent";
-      if ( class_spells.smite -> ok() )             action_list_str += "/" + class_spells.smite->token_name;
-      if ( class_spells.shadow_word_death -> ok() ) action_list_str += "/" + class_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name + ",trigger=10000";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
+      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->token_name;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
+      if ( race == RACE_TROLL     )                  action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
+      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->token_name;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
       break;
     }
 
@@ -2366,10 +2362,10 @@ void priest_t::init_values()
   player_t::init_values();
 
   // Discipline/Holy
-  constants.meditation_value                = talent_spec_spells.meditation_disc -> enabled ? 
-                                              player_data.effect_base_value( talent_spec_spells.meditation_disc -> get_effect_id( 1 ) ) / 100.0 :
-                                              talent_spec_spells.meditation_holy -> enabled ? 
-                                                player_data.effect_base_value( talent_spec_spells.meditation_holy -> get_effect_id( 1 ) ) / 100.0 :
+  constants.meditation_value                = passive_spells.meditation_disc -> ok() ? 
+                                              player_data.effect_base_value( passive_spells.meditation_disc -> get_effect_id( 1 ) ) / 100.0 :
+                                              passive_spells.meditation_holy -> ok() ? 
+                                                player_data.effect_base_value( passive_spells.meditation_holy -> get_effect_id( 1 ) ) / 100.0 :
                                                 0.0;
 
   // Discipline
@@ -2387,11 +2383,11 @@ void priest_t::init_values()
   constants.holy_concentration_value        = player_data.effect_base_value( talents.holy_concentration -> get_effect_id( 1 ) ) / 100.0;
 
   // Shadow Core
-  constants.shadow_power_damage_value       = player_data.effect_base_value( talent_spec_spells.shadow_power -> get_effect_id( 1 ) ) / 100.0;
-  constants.shadow_power_crit_value         = player_data.effect_base_value( talent_spec_spells.shadow_power -> get_effect_id( 2 ) ) / 100.0;
-  constants.shadow_orb_proc_value           = player_data.spell_proc_chance( mastery_spells.shadow_orbs -> spell_id );
-  constants.shadow_orb_damage_value         = player_data.effect_coeff( mastery_spells.shadow_orbs -> get_effect_id( 1 ) ) / 12.5;
-  constants.shadow_orb_mastery_value        = player_data.effect_base_value( mastery_spells.shadow_orbs -> get_effect_id( 2 ) ) / 10000.0;
+  constants.shadow_power_damage_value       = player_data.effect_base_value( passive_spells.shadow_power -> get_effect_id( 1 ) ) / 100.0;
+  constants.shadow_power_crit_value         = player_data.effect_base_value( passive_spells.shadow_power -> get_effect_id( 2 ) ) / 100.0;
+  constants.shadow_orb_proc_value           = player_data.spell_proc_chance( passive_spells.shadow_orbs -> spell_id );
+  constants.shadow_orb_damage_value         = player_data.effect_coeff( passive_spells.shadow_orbs -> get_effect_id( 1 ) ) / 12.5;
+  constants.shadow_orb_mastery_value        = player_data.effect_base_value( passive_spells.shadow_orbs -> get_effect_id( 2 ) ) / 10000.0;
 
   // Shadow
   constants.darkness_value                  = 1.0 / ( 1.0 + player_data.effect_base_value( talents.darkness    -> get_effect_id( 1 ) ) / 100.0 );
@@ -2401,10 +2397,10 @@ void priest_t::init_values()
   constants.shadow_form_value               = player_data.effect_base_value( talents.shadow_form               -> get_effect_id( 2 ) ) / 100.0;
   constants.harnessed_shadows_value         = player_data.effect_base_value( talents.harnessed_shadows         -> get_effect_id( 1 ) ) / 100.0;
   constants.pain_and_suffering_value        = player_data.spell_proc_chance( talents.pain_and_suffering        -> get_spell_id ( ) );
-  constants.mind_spike_crit_value           = player_data.effect_base_value( class_spells.mind_spike           -> get_effect_id( 2 ) ) / 100.0;
+  constants.mind_spike_crit_value           = player_data.effect_base_value( active_spells.mind_spike          -> get_effect_id( 2 ) ) / 100.0;
   constants.devouring_plague_health_mod     = 0.15;
 
-  cooldowns_shadow_fiend -> duration        = player_data.spell_cooldown( class_spells.shadow_fiend            -> spell_id ) + 
+  cooldowns_shadow_fiend -> duration        = player_data.spell_cooldown( active_spells.shadow_fiend           -> spell_id ) + 
                                               player_data.effect_base_value( talents.veiled_shadows            -> get_effect_id( 2 ) ) / 1000.0;
 
   cooldowns_archangel -> duration           = player_data.spell_cooldown( talents.archangel                    -> get_spell_id ( ) );

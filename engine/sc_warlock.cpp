@@ -133,20 +133,20 @@ struct warlock_t : public player_t
 
   struct talent_spec_spells_t
   {
-    talent_spec_spell_id_t* unstable_affliction;
-    talent_spec_spell_id_t* shadow_mastery;
-    talent_spec_spell_id_t* summon_felguard;
-    talent_spec_spell_id_t* master_demonologist;
-    talent_spec_spell_id_t* conflagrate;
-    talent_spec_spell_id_t* cataclysm;
+    active_spell_t* unstable_affliction;
+    passive_spell_t* shadow_mastery;
+    active_spell_t* summon_felguard;
+    passive_spell_t* master_demonologist;
+    active_spell_t* conflagrate;
+    passive_spell_t* cataclysm;
   };
   talent_spec_spells_t talent_spec_spells;
 
   struct mastery_spells_t
   {
-    mastery_spell_id_t* potent_afflictions;
-    mastery_spell_id_t* master_demonologist;
-    mastery_spell_id_t* fiery_apocalypse;
+    passive_spell_t* potent_afflictions;
+    passive_spell_t* master_demonologist;
+    passive_spell_t* fiery_apocalypse;
   };
   mastery_spells_t mastery_spells;
 
@@ -231,18 +231,18 @@ struct warlock_t : public player_t
 
     // Core
     // Affliction
-    talent_spec_spells.unstable_affliction 	= new talent_spec_spell_id_t ( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
-    talent_spec_spells.shadow_mastery 		= new talent_spec_spell_id_t ( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
+    talent_spec_spells.unstable_affliction 	= new active_spell_t( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
+    talent_spec_spells.shadow_mastery 		= new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
     // Demonology
-    talent_spec_spells.summon_felguard 		= new talent_spec_spell_id_t ( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
-    talent_spec_spells.master_demonologist 	= new talent_spec_spell_id_t ( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY );
+    talent_spec_spells.summon_felguard 		= new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
+    talent_spec_spells.master_demonologist 	= new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY );
     //Destruction
-    talent_spec_spells.conflagrate 			= new talent_spec_spell_id_t ( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
-    talent_spec_spells.cataclysm 			= new talent_spec_spell_id_t ( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
+    talent_spec_spells.conflagrate 			= new active_spell_t( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
+    talent_spec_spells.cataclysm 			= new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
 
-    mastery_spells.fiery_apocalypse 		= new mastery_spell_id_t ( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION );
-    mastery_spells.potent_afflictions 		= new mastery_spell_id_t (this, "poten_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION );
-    mastery_spells.master_demonologist 		= new mastery_spell_id_t ( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY );
+    mastery_spells.fiery_apocalypse 		= new passive_spell_t( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION, true );
+    mastery_spells.potent_afflictions 		= new passive_spell_t(this, "poten_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
+    mastery_spells.master_demonologist 		= new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY, true );
 
     // Affliction
     talent_doom_and_gloom 				= new talent_t ( this, "doom_and_gloom", "Doom and Gloom" );

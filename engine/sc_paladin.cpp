@@ -70,25 +70,25 @@ struct paladin_t : public player_t
   rng_t* rng_tier10_2pc;
 
   struct spells_t {
-    spell_id_t* avengers_shield;
-    spell_id_t* avenging_wrath;
-    spell_id_t* consecration;
-    spell_id_t* crusader_strike;
-    spell_id_t* divine_favor;
-    spell_id_t* divine_plea;
-    spell_id_t* divine_storm;
-    spell_id_t* exorcism;
-    spell_id_t* guardian_of_ancient_kings;
-    spell_id_t* hammer_of_justice;
-    spell_id_t* hammer_of_the_righteous;
-    spell_id_t* hammer_of_wrath;
-    spell_id_t* holy_shock;
-    spell_id_t* holy_wrath;
-    spell_id_t* inquisition;
-    spell_id_t* judgement;
-    spell_id_t* shield_of_the_righteous;
-    spell_id_t* templars_verdict;
-    spell_id_t* zealotry;
+    active_spell_t* avengers_shield;
+    active_spell_t* avenging_wrath;
+    active_spell_t* consecration;
+    active_spell_t* crusader_strike;
+    active_spell_t* divine_favor;
+    active_spell_t* divine_plea;
+    active_spell_t* divine_storm;
+    active_spell_t* exorcism;
+    active_spell_t* guardian_of_ancient_kings;
+    active_spell_t* hammer_of_justice;
+    active_spell_t* hammer_of_the_righteous;
+    active_spell_t* hammer_of_wrath;
+    active_spell_t* holy_shock;
+    active_spell_t* holy_wrath;
+    active_spell_t* inquisition;
+    active_spell_t* judgement;
+    active_spell_t* shield_of_the_righteous;
+    active_spell_t* templars_verdict;
+    active_spell_t* zealotry;
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
@@ -241,25 +241,25 @@ struct paladin_t : public player_t
     talents.inquiry_of_faith = new talent_t( this, "inquiry_of_faith", "Inquiry of Faith" );
     talents.zealotry         = new talent_t( this, "zealotry", "Zealotry" );
 
-    spells.avengers_shield           = new talent_spec_spell_id_t( this, "avengers_shield", "Avenger's Shield", PALADIN_PROTECTION );
-    spells.avenging_wrath            = new class_spell_id_t( this, "avenging_wrath", "Avenging Wrath" );
-    spells.consecration              = new class_spell_id_t( this, "consecration", "Consecration" );
-    spells.crusader_strike           = new class_spell_id_t( this, "crusader_strike", "Crusader Strike" );
-    spells.divine_favor              = new class_spell_id_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
-    spells.divine_plea               = new class_spell_id_t( this, "divine_plea", "Divine Plea" );
-    spells.divine_storm              = new class_spell_id_t( this, "divine_storm", "Divine Storm", talents.divine_storm );
-    spells.exorcism                  = new class_spell_id_t( this, "exorcism", "Exorcism" );
-    spells.guardian_of_ancient_kings = new class_spell_id_t( this, "guardian_of_ancient_kings", "Guardian of Ancient Kings" );
-    spells.hammer_of_justice         = new class_spell_id_t( this, "hammer_of_justice", "Hammer of Justice" );
-    spells.hammer_of_the_righteous   = new class_spell_id_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
-    spells.hammer_of_wrath           = new class_spell_id_t( this, "hammer_of_wrath", "Hammer of Wrath" );
-    spells.holy_shock                = new talent_spec_spell_id_t( this, "holy_shock", "Holy Shock", PALADIN_HOLY );
-    spells.holy_wrath                = new class_spell_id_t( this, "holy_wrath", "Holy Wrath" );
-    spells.inquisition               = new class_spell_id_t( this, "inquisition", "Inquisition" );
-    spells.judgement                 = new class_spell_id_t( this, "judgement", "Judgement" );
-    spells.shield_of_the_righteous   = new class_spell_id_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
-    spells.templars_verdict          = new talent_spec_spell_id_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
-    spells.zealotry                  = new class_spell_id_t( this, "zealotry", "Zealotry", talents.zealotry );
+    spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield", PALADIN_PROTECTION );
+    spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
+    spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
+    spells.crusader_strike           = new active_spell_t( this, "crusader_strike", "Crusader Strike" );
+    spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
+    spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
+    spells.divine_storm              = new active_spell_t( this, "divine_storm", "Divine Storm", talents.divine_storm );
+    spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
+    spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", "Guardian of Ancient Kings" );
+    spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
+    spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
+    spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
+    spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock", PALADIN_HOLY );
+    spells.holy_wrath                = new active_spell_t( this, "holy_wrath", "Holy Wrath" );
+    spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
+    spells.judgement                 = new active_spell_t( this, "judgement", "Judgement" );
+    spells.shield_of_the_righteous   = new active_spell_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
+    spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
+    spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
   }
 
   virtual void      init_race();

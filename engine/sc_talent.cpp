@@ -5,6 +5,7 @@
 
 #include "simulationcraft.h"
 
+#if 0
 static talent_tab_name tree_to_tab_name( const player_type c, const talent_tree_type tree )
 {
   switch ( tree )
@@ -38,6 +39,7 @@ static talent_tab_name tree_to_tab_name( const player_type c, const talent_tree_
   default: return WARRIOR_ARMS;
   }
 }
+#endif
 
 // ==========================================================================
 // Talent
@@ -228,43 +230,96 @@ bool talent_t::ok()
 
 // spell_id_t::spell_id_t =======================================================
 
-spell_id_t::spell_id_t( player_t* player, std::vector<spell_id_t *> *spell_list,  const char* t_name, const char* name, const uint32_t id ) : 
-    spell_id( id ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value( false ),
-    token_name( t_name )
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id ) :
+    spell_id( id ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( false ), req_tree( false ), tab( TALENT_TAB_NONE ), req_talent( NULL )
 {
-  init( player, spell_list, name, id );
+  init( );
 }
 
-bool spell_id_t::init( player_t* player, std::vector<spell_id_t *> *spell_list, const char* name, const uint32_t id )
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
+    spell_id( id ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( false ), req_tree( false ), tab( TALENT_TAB_NONE ), req_talent( talent )
 {
-  assert( player && name && player -> sim );
+  init( );
+}
 
-  spell_id = id;
-  data = NULL;
-  enabled = false;
-  p = player;
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
+    spell_id( id ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( mastery ), req_tree( true ), tab( tree ), req_talent( NULL )
+{
+  init( );
+}
 
-  if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing spell %s", name );
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name ) :
+    spell_id( 0 ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( false ), req_tree( false ), tab( TALENT_TAB_NONE ), req_talent( NULL )
+{
+  init( s_name );
+}
+
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
+    spell_id( 0 ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( false ), req_tree( false ), tab( TALENT_TAB_NONE ), req_talent( talent )
+{
+  init( s_name );
+}
+
+spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
+    spell_id( 0 ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value ( false ),
+    token_name( t_name ), is_mastery( mastery ), req_tree( true ), tab( tree ), req_talent( NULL )
+{
+  init( s_name );
+}
+
+bool spell_id_t::init(  const char* s_name )
+{
+  assert( p && p -> sim );
+
+  if ( p -> sim -> debug ) log_t::output( p -> sim, "Initializing spell %s", token_name.c_str() );
+
+  if ( !spell_id )
+  {
+    if ( !s_name || !*s_name )
+      return false;
+
+    if ( is_mastery )
+    {
+      spell_id = p -> player_data.find_mastery_spell( p ->type, s_name );
+    }
+    else if ( req_tree )
+    {
+      spell_id = p -> player_data.find_talent_spec_spell( p -> type, tab, s_name );
+    }
+    else
+    {
+      spell_id = p -> player_data.find_class_spell( p -> type, s_name );
+      if ( !spell_id )
+      {
+        spell_id = p -> player_data.find_racial_spell( p -> type, p -> race, s_name );
+      }
+    }
+  }
 
   if ( spell_id && p -> player_data.spell_exists( spell_id ) )
   {
     data = p -> player_data.m_spells_index[ spell_id ];
-    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s initialized", name );
+    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s initialized", token_name.c_str() );
 
-    if ( spell_list )
-      spell_list->push_back( this );
+    push_back();
   }
   else
   {
     spell_id = 0;
-    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s NOT initialized", name );
+    if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s NOT initialized", token_name.c_str() );
     return false;
   }
 
   init_enabled( false, false );
 
-  return true;
+  return true;  
 }
+
 
 // spell_id_t::get_effect_id ===================================================
 
@@ -291,7 +346,17 @@ bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
   }
   else
   {
-    enabled = ( p -> player_data.spell_is_enabled( spell_id ) );
+    enabled = p -> player_data.spell_is_enabled( spell_id ) & ( p -> player_data.spell_is_level( spell_id, p -> level ) );
+    
+    if ( is_mastery )
+    {
+      if ( p -> level < 75 )
+        enabled = false;
+    }
+    else if ( !p -> player_data.spell_is_level( spell_id, p -> level ) )
+    {
+      enabled = false;
+    }
   }
   return true;
 }
@@ -334,84 +399,10 @@ spell_id_t* spell_id_t::find_spell_in_list( std::vector<spell_id_t *> *spell_lis
 
 bool spell_id_t::ok()
 {
+  bool res = enabled;
+
   if ( ! p )
     return false;
-
-  return enabled;
-}
-
-// ==========================================================================
-// Class Spell ID
-// ==========================================================================
-
-// class_spell_id_t::class_spell_id_t =======================================================
-
-class_spell_id_t::class_spell_id_t( player_t* player, const char* t_name, const char* name, talent_t* needs_talent ) : 
-    spell_id_t( player, NULL, t_name, name ), req_talent( needs_talent )
-{
-  if ( !spell_id )
-  {
-    spell_id = p -> player_data.find_class_spell( p -> type, name );
-  }
-
-  init( p, ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), name, spell_id );
-}
-
-bool class_spell_id_t::init_enabled( bool override_enabled, bool override_value )
-{
-  spell_id_t::init_enabled( override_enabled, override_value );
-
-  if ( !forced_override )
-  {
-    enabled = enabled & p -> player_data.spell_is_level( spell_id, p->level );
-  }
-  return true;
-}
-
-class_spell_id_t* class_spell_id_t::find_spell_in_list( const char* t_name )
-{
-  if ( !p )
-    return NULL;
-
-  return ( class_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), t_name );
-}
-
-class_spell_id_t* class_spell_id_t::find_spell_in_list( const uint32_t id )
-{
-  if ( !p )
-    return NULL;
-
-  return ( class_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), id );
-}
-
-void class_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
-{
-  if ( !p )
-    return;
-
-  option_t opt[ 2 ];
-  opt[ 1 ].name = NULL;
-  opt[ 1 ].type = OPT_UNKNOWN;
-  opt[ 1 ].address = NULL;
-  uint32_t i = 0;
-
-  while ( i < p -> class_spell_list.size() )
-  {
-    class_spell_id_t *t = p -> class_spell_list[ i ];
-
-    opt[ 0 ].name = t -> token_name.c_str();
-    opt[ 0 ].type = OPT_SPELL_ENABLED;
-    opt[ 0 ].address = t;
-
-    option_t::copy( opt_vector, opt );
-
-    i++;
-  }
-}
-
-bool class_spell_id_t::ok()
-{
-  bool res = spell_id_t::ok();
 
   if ( req_talent )
     res = res & req_talent -> ok();
@@ -419,54 +410,9 @@ bool class_spell_id_t::ok()
   return res;
 }
 
-// ==========================================================================
-// Talent Specialization Spell ID
-// ==========================================================================
-
-// talent_spec_spell_id_t::talent_spec_spell_id_t =======================================================
-
-talent_spec_spell_id_t::talent_spec_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name ) :
-    spell_id_t( player, NULL, t_name, name ), tab( tree_name )
+void spell_id_t::add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector )
 {
-  assert( name && ( ( const uint32_t ) tree_name < 3 ) );
-
-  data = NULL;
-
-  spell_id = p -> player_data.find_talent_spec_spell( p -> type, tree_name, name );
-
-  init( p, ( std::vector<spell_id_t *> * ) &( p -> talent_spec_spell_list ), name, spell_id );
-}
-
-bool talent_spec_spell_id_t::init_enabled( bool override_enabled, bool override_value )
-{
-  spell_id_t::init_enabled( override_enabled, override_value );
-
-  if ( !forced_override )
-  {
-    enabled = enabled & ( tab == tree_to_tab_name( p -> type, p -> primary_tree() ) );
-  }
-  return true;
-}
-
-talent_spec_spell_id_t* talent_spec_spell_id_t::find_spell_in_list( const char* t_name )
-{
-  if ( !p )
-    return NULL;
-
-  return ( talent_spec_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->talent_spec_spell_list ), t_name );
-}
-
-talent_spec_spell_id_t* talent_spec_spell_id_t::find_spell_in_list( const uint32_t id )
-{
-  if ( !p )
-    return NULL;
-
-  return ( talent_spec_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->talent_spec_spell_list ), id );
-}
-
-void talent_spec_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
-{
-  if ( !p )
+  if ( !p || !spell_list )
     return;
 
   option_t opt[ 2 ];
@@ -475,9 +421,9 @@ void talent_spec_spell_id_t::add_options( player_t* p, std::vector<option_t>& op
   opt[ 1 ].address = NULL;
   uint32_t i = 0;
 
-  while ( i < p -> talent_spec_spell_list.size() )
+  while ( i < spell_list->size() )
   {
-    talent_spec_spell_id_t *t = p -> talent_spec_spell_list[ i ];
+    spell_id_t *t = (*spell_list)[ i ];
 
     opt[ 0 ].name = t -> token_name.c_str();
     opt[ 0 ].type = OPT_SPELL_ENABLED;
@@ -490,137 +436,142 @@ void talent_spec_spell_id_t::add_options( player_t* p, std::vector<option_t>& op
 }
 
 // ==========================================================================
-// Racial Spell ID class
+// Active Spell ID
 // ==========================================================================
 
-racial_spell_id_t::racial_spell_id_t( player_t* player, const char* t_name, const char* name ) :
-    spell_id_t( player, NULL, t_name, name )
+
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id ) :
+  spell_id_t( player, t_name, id )
 {
-  assert( name );
 
-  data = NULL;
-
-  spell_id = p -> player_data.find_racial_spell( p -> type, p -> race, name );
-
-  init( p, ( std::vector<spell_id_t *> * ) &( player -> racial_spell_list ), name, spell_id );
 }
 
-bool racial_spell_id_t::init_enabled( bool override_enabled, bool override_value )
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
+  spell_id_t( player, t_name, id, talent )
 {
-  spell_id_t::init_enabled( override_enabled, override_value );
 
-  if ( !forced_override )
-  {
-    enabled = enabled & ( p -> player_data.spell_is_race( spell_id, p -> race ) );
-  }
-  return true;
 }
 
-racial_spell_id_t* racial_spell_id_t::find_spell_in_list( const char* t_name )
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
+  spell_id_t( player, t_name, id, tree, mastery )
+{
+
+}
+
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name ) :
+  spell_id_t( player, t_name, s_name )
+{
+
+}
+
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
+  spell_id_t( player, t_name, s_name, talent )
+{
+
+}
+
+active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
+  spell_id_t( player, t_name, s_name, tree, mastery )
+{
+
+}
+
+active_spell_t* active_spell_t::find_spell_in_list( const char* t_name )
 {
   if ( !p )
     return NULL;
 
-  return ( racial_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> racial_spell_list ), t_name );
+  return ( active_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> active_spell_list ), t_name );
 }
 
-racial_spell_id_t* racial_spell_id_t::find_spell_in_list( const uint32_t id )
+active_spell_t* active_spell_t::find_spell_in_list( const uint32_t id )
 {
   if ( !p )
     return NULL;
 
-  return ( racial_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> racial_spell_list ), id );
+  return ( active_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> active_spell_list ), id );
 }
 
-void racial_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+void active_spell_t::add_options( player_t* player, std::vector<option_t>& opt_vector )
 {
-  if ( !p )
+  if ( !player )
     return;
 
-  option_t opt[ 2 ];
-  opt[ 1 ].name = NULL;
-  opt[ 1 ].type = OPT_UNKNOWN;
-  opt[ 1 ].address = NULL;
-  uint32_t i = 0;
+  spell_id_t::add_options( player, ( std::vector<spell_id_t *> * ) &( player -> active_spell_list ), opt_vector );
+}
 
-  while ( i < p -> racial_spell_list.size() )
-  {
-    racial_spell_id_t *t = p -> racial_spell_list[ i ];
-
-    opt[ 0 ].name = t -> token_name.c_str();
-    opt[ 0 ].type = OPT_SPELL_ENABLED;
-    opt[ 0 ].address = t;
-
-    option_t::copy( opt_vector, opt );
-
-    i++;
-  }
+void active_spell_t::push_back()
+{
+  p -> active_spell_list.push_back( this );
 }
 
 // ==========================================================================
-// Mastery Spell ID class
+// Passive Spell ID
 // ==========================================================================
 
-mastery_spell_id_t::mastery_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name ) :
-    spell_id_t( player, NULL, t_name, name ), tab( tree_name )
+
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id ) :
+  spell_id_t( player, t_name, id )
 {
-  assert( name );
 
-  data = NULL;
-
-  spell_id = p -> player_data.find_mastery_spell( p -> type, name );
-  init( p, ( std::vector<spell_id_t *> * ) &( player -> mastery_spell_list ), name, spell_id );
 }
 
-bool mastery_spell_id_t::init_enabled( bool override_enabled, bool override_value )
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
+  spell_id_t( player, t_name, id, talent )
 {
-  spell_id_t::init_enabled( override_enabled, override_value );
 
-  if ( !forced_override )
-  {
-    enabled = enabled & ( p -> level >= 75 ) && ( tab == tree_to_tab_name( p -> type, p -> primary_tree() ) );
-  }
-  return true;
 }
 
-mastery_spell_id_t* mastery_spell_id_t::find_spell_in_list( const char* t_name )
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
+  spell_id_t( player, t_name, id, tree, mastery )
+{
+
+}
+
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name ) :
+  spell_id_t( player, t_name, s_name )
+{
+
+}
+
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
+  spell_id_t( player, t_name, s_name, talent )
+{
+
+}
+
+passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
+  spell_id_t( player, t_name, s_name, tree, mastery )
+{
+
+}
+
+passive_spell_t* passive_spell_t::find_spell_in_list( const char* t_name )
 {
   if ( !p )
     return NULL;
 
-  return ( mastery_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->mastery_spell_list ), t_name );
+  return ( passive_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> passive_spell_list ), t_name );
 }
 
-mastery_spell_id_t* mastery_spell_id_t::find_spell_in_list( const uint32_t id )
+passive_spell_t* passive_spell_t::find_spell_in_list( const uint32_t id )
 {
   if ( !p )
     return NULL;
 
-  return ( mastery_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->mastery_spell_list ), id );
+  return ( passive_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> passive_spell_list ), id );
 }
 
-void mastery_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+void passive_spell_t::add_options( player_t* player, std::vector<option_t>& opt_vector )
 {
-  if ( !p )
+  if ( !player )
     return;
 
-  option_t opt[ 2 ];
-  opt[ 1 ].name = NULL;
-  opt[ 1 ].type = OPT_UNKNOWN;
-  opt[ 1 ].address = NULL;
-  uint32_t i = 0;
+  spell_id_t::add_options( player, ( std::vector<spell_id_t *> * ) &( player -> passive_spell_list ), opt_vector );
+}
 
-  while ( i < p -> mastery_spell_list.size() )
-  {
-    mastery_spell_id_t *t = p -> mastery_spell_list[ i ];
-
-    opt[ 0 ].name = t -> token_name.c_str();
-    opt[ 0 ].type = OPT_SPELL_ENABLED;
-    opt[ 0 ].address = t;
-
-    option_t::copy( opt_vector, opt );
-
-    i++;
-  }
+void passive_spell_t::push_back()
+{
+  p -> passive_spell_list.push_back( this );
 }
 
