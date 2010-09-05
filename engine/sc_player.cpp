@@ -1429,11 +1429,6 @@ double player_t::composite_tank_miss( int school ) SC_CONST
     {
       m += 0.02;
     }
-
-    if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
-    {
-      m += 0.03;
-    }
   }
   else
   {

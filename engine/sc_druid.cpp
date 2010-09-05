@@ -567,18 +567,16 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   int old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
 
-  if ( p -> eclipse_bar_value <= 0 ) 
+  if ( p -> eclipse_bar_value < 0 ) 
   {
-    // Solar auto-fades as soon as the bar reaches 0 again
     p -> buffs_eclipse_solar -> expire();
 
     if ( p -> eclipse_bar_value < -99 ) 
       p -> eclipse_bar_value = -100;
   }
 
-  if ( p -> eclipse_bar_value >= 0 ) 
+  if ( p -> eclipse_bar_value > 0 ) 
   {
-    // Lunar auto-fades as soon as the bar reaches 0 again
     p -> buffs_eclipse_lunar -> expire();
 
     if ( p -> eclipse_bar_value > 99 ) 
@@ -596,23 +594,20 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   
   
   // Eclipse proc:
-  // Procs when you reach 100 and only then, does not proc again once 
-  // when the buff fades and you are still at +/-100
-  // So the actual_gain needs to be non-zero for eclipse to proc
-  // and the buff can't be up already
+  // Procs when you reach 100 and only then, you have to have an
+  // actual gain of eclipse energy (bar value)
+  // buffs themselves have a 30s cd before they proc again
   if ( actual_gain != 0 )
   {
     if ( p -> eclipse_bar_value == 100 ) 
     {
-      if ( ! p -> buffs_eclipse_solar -> check() ) 
-        if ( p -> buffs_eclipse_solar -> trigger() )
-          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
+      if ( p -> buffs_eclipse_solar -> trigger() )
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
-      if ( ! p -> buffs_eclipse_lunar -> check() ) 
-        if ( p -> buffs_eclipse_lunar -> trigger() )
-          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
+      if ( p -> buffs_eclipse_lunar -> trigger() )
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
     }
   }
 }
@@ -1019,15 +1014,8 @@ struct claw_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 79, 8, 370, 370, 0, 40 },
-      { 73, 7, 300, 300, 0, 40 },
-      { 67, 6, 190, 190, 0, 40 },
-      { 58, 7, 115, 115, 0, 40 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48570 );
+    id = 1082;
+    parse_data( p -> player_data );
 
     weapon = &( p -> main_hand_weapon );
     adds_combo_points = true;
@@ -2417,14 +2405,6 @@ struct insect_swarm_t : public druid_spell_t
 
   }
 
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
-    if ( ! p -> glyphs.insect_swarm )
-      p -> sim -> target -> debuffs.insect_swarm -> trigger();
-  }
-
   virtual void tick()
   {
     druid_spell_t::tick();
@@ -2824,10 +2804,12 @@ struct starfire_t : public druid_spell_t
     if ( result_is_hit() )
     {
       trigger_earth_and_moon( this );
+      trigger_eclipse_energy_gain( this, 20 );
 
       if ( result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, direct_dmg, school );
+        trigger_eclipse_energy_gain( this, 4 * p -> talent_euphoria -> rank );
       }
       if ( p -> glyphs.starfire )
       {
@@ -2836,12 +2818,8 @@ struct starfire_t : public druid_spell_t
             p -> dots_moonfire -> action -> extend_duration( 1 );
       }
     }
-    // Base eclipse gain from Starfire is OnCast (no need to hit!)
-    // Euphoria bonus gain is OnCrit
-    trigger_eclipse_energy_gain( this, 20 );
-    if ( result == RESULT_CRIT )
-      trigger_eclipse_energy_gain( this, 4 * p -> talent_euphoria -> rank );
   }
+
   virtual double execute_time() SC_CONST
   {
     druid_t* p = player -> cast_druid();
@@ -2850,6 +2828,7 @@ struct starfire_t : public druid_spell_t
 
     return druid_spell_t::execute_time();
   }
+
   virtual bool ready()
   {
     if ( ! druid_spell_t::ready() )
@@ -2931,25 +2910,17 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( travel_result, travel_dmg );
-    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    if ( result_is_hit() )
     {
+      trigger_eclipse_energy_gain( this, -13 );
       if ( travel_result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
 
-        // Base eclipse gain from Wrath is OnCast (no need to hit!)
-        // Euphoria bonus gain is OnCrit when the spell arrives at the target)
         trigger_eclipse_energy_gain( this, -2 * p -> talent_euphoria -> rank );
       }
       trigger_earth_and_moon( this );
     }
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-    // Even missed spells trigger it!
-    trigger_eclipse_energy_gain( this, -13 );
   }
 
   virtual bool ready()
@@ -3102,7 +3073,7 @@ struct starsurge_t : public druid_spell_t
     if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
       // It always pushes towards the side the bar is on, positive if at zero
-      int gain = 10 + 2 * p -> talent_lunar_guidance -> rank;
+      int gain = 10;
       if (  p -> eclipse_bar_value < 0 ) gain = -gain;
       trigger_eclipse_energy_gain( this, gain );
     }
@@ -3439,7 +3410,8 @@ void druid_t::init_base()
   {
   case TREE_BALANCE:
     // Dreamstate for choosing balance
-    mp5_per_intellect = 0.10;
+    // 12857 Dreamstate seems to be gone
+    // mp5_per_intellect = 0.10;
     break;
   case TREE_RESTORATION:
     // Intensity for choosing resto
@@ -3464,8 +3436,8 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  45.0,  0.0 );
-  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0,  0.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  45.0, 30.0 );
+  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0, 30.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank );
@@ -3988,9 +3960,6 @@ int druid_t::primary_resource() SC_CONST
 
 talent_tree_type druid_t::primary_tree() SC_CONST
 {
-  if ( talent_moonkin_form -> rank       ) return TREE_BALANCE;
-  if ( talent_leader_of_the_pack -> rank ) return TREE_FERAL;
-  return TREE_RESTORATION;
   if ( level > 9 && level <= 69 )
   {
 	  if ( talent_tab_points[ TREE_BALANCE     ] > 0 ) return TREE_BALANCE;
@@ -4077,7 +4046,6 @@ void player_t::druid_init( sim_t* sim )
   t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
   t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          3, 300.0 );
   t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
-  t -> debuffs.insect_swarm         = new debuff_t( sim, "insect_swarm",         1,  12.0 );
   t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
 }
 
@@ -4100,7 +4068,6 @@ void player_t::druid_combat_begin( sim_t* sim )
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
   if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
-  if ( sim -> overrides.insect_swarm         ) t -> debuffs.insect_swarm         -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
 }
 
