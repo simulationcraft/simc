@@ -67,7 +67,7 @@ bool sc_data_access_t::spell_is_enabled( const uint32_t spell_id ) SC_CONST
 
   assert( spell_exists( spell_id ) );
 
-  return ( ( m_spells_index[ spell_id ]->flags & 0x02 ) == 0x02 );
+  return ( ( m_spells_index[ spell_id ]->flags & 0x02 ) == 0x00 );
 }
 
 
@@ -76,7 +76,7 @@ void sc_data_access_t::spell_set_enabled( const uint32_t spell_id, const bool va
   assert( spell_exists( spell_id ) );
 
   m_spells_index[ spell_id ]->flags &= (uint32_t) ~( (uint32_t)0x02 ); 
-  m_spells_index[ spell_id ]->flags |= value ? 0x02 : 0x00;
+  m_spells_index[ spell_id ]->flags |= value ? 0x00 : 0x02;
 }
 
 double sc_data_access_t::spell_missile_speed( const uint32_t spell_id ) SC_CONST
@@ -687,7 +687,7 @@ bool sc_data_access_t::talent_is_enabled( const uint32_t talent_id ) SC_CONST
 {
   assert( talent_exists( talent_id ) );
 
-  return ( ( m_talents_index[ talent_id ]->flags & 0x02 ) == 0x02 );
+  return ( ( m_talents_index[ talent_id ]->flags & 0x02 ) == 0x00 );
 }
 
 void sc_data_access_t::talent_set_enabled( const uint32_t talent_id, const bool value )
@@ -695,7 +695,7 @@ void sc_data_access_t::talent_set_enabled( const uint32_t talent_id, const bool 
   assert( talent_exists( talent_id ) );
 
   m_talents_index[ talent_id ]->flags &= (uint32_t) ~( (uint32_t)0x02 ); 
-  m_talents_index[ talent_id ]->flags |= value ? 0x02 : 0x00;
+  m_talents_index[ talent_id ]->flags |= value ? 0x00 : 0x02;
 }
 
 uint32_t sc_data_access_t::talent_tab_page( const uint32_t talent_id )

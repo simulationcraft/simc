@@ -261,7 +261,7 @@ struct rogue_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
-  virtual int       primary_tree() SC_CONST;
+  virtual talent_tree_type       primary_tree() SC_CONST;
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   // Utilities
@@ -2937,7 +2937,7 @@ double rogue_t::composite_attack_crit() SC_CONST
 
 // rogue_t::primary_tree ===================================================
 
-int rogue_t::primary_tree() SC_CONST
+talent_tree_type rogue_t::primary_tree() SC_CONST
 {
   if ( talents.cold_blood ) return TREE_ASSASSINATION;
   if ( talents.adrenaline_rush || talents.killing_spree ) return TREE_COMBAT;

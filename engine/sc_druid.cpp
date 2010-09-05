@@ -188,51 +188,51 @@ struct druid_t : public player_t
 
     equipped_weapon_dps = 0;
     
-    talent_balance_of_power      = new talent_t( this, "Balance of Power" );
-    talent_berserk               = new talent_t( this, "Berserk" );
-    talent_blessing_of_the_grove = new talent_t( this, "Blessing of the Grove" );
-    talent_brutal_impact         = new talent_t( this, "Brutal Impact" );
-    talent_earth_and_moon        = new talent_t( this, "Earth and Moon" );
-    talent_endless_carnage       = new talent_t( this, "Endless Carnage" );
-    talent_euphoria              = new talent_t( this, "Euphoria" );
-    talent_feral_aggression      = new talent_t( this, "Feral Aggression" );
-    talent_feral_charge          = new talent_t( this, "Feral Charge" );
-    talent_feral_swiftness       = new talent_t( this, "Feral Swiftness" );
-    talent_force_of_nature       = new talent_t( this, "Force of Nature" );
-    talent_fungal_growth         = new talent_t( this, "Fungal Growth" );
-    talent_furor                 = new talent_t( this, "Furor" );
-    talent_fury_of_stormrage     = new talent_t( this, "Fury of Stormrage" );
-    talent_fury_swipes           = new talent_t( this, "Fury Swipes" );
-    talent_gale_winds            = new talent_t( this, "Gale Winds" );
-    talent_genesis               = new talent_t( this, "Genesis" );
-    talent_heart_of_the_wild     = new talent_t( this, "Heart of the Wild" );
-    talent_improved_feral_charge = new talent_t( this, "Improves Feral Charge" );
-    talent_infected_wounds       = new talent_t( this, "Infected Wounds" );
-    talent_king_of_the_jungle    = new talent_t( this, "King of the Jungle" );
-    talent_leader_of_the_pack    = new talent_t( this, "Leader of the Pack" );
-    talent_lunar_guidance        = new talent_t( this, "Lunar Guidance" );
-    talent_lunar_shower          = new talent_t( this, "Lunar Shower" );
-    talent_master_shapeshifter   = new talent_t( this, "Master Shapeshifter" );
-    talent_moonglow              = new talent_t( this, "Moonglow" );
-    talent_moonkin_form          = new talent_t( this, "Moonkin Form" );
-    talent_natural_reaction      = new talent_t( this, "Natural Reaction" );
-    talent_natures_grace         = new talent_t( this, "Natures Grace" );
-    talent_natures_majesty       = new talent_t( this, "Natures Majesty" );
-    talent_natures_swiftness     = new talent_t( this, "Natures Swiftness" );
-    talent_nom_nom_nom           = new talent_t( this, "Nom Nom Nom" );
-    talent_nurturing_instict     = new talent_t( this, "Nurturing Instinct" );
-    talent_owlkin_frenzy         = new talent_t( this, "Owlkin Frenzy" );
-    talent_predatory_strikes     = new talent_t( this, "Predatory Strikes" );
-    talent_primal_fury           = new talent_t( this, "Primal Fury" );
-    talent_primal_madness        = new talent_t( this, "Primal Madness" );
-    talent_pulverize             = new talent_t( this, "Pulverize" );
-    talent_rend_and_tear         = new talent_t( this, "Rend and Tear" );
-    talent_solar_beam            = new talent_t( this, "Solar Beam" );
-    talent_starfall              = new talent_t( this, "Starfall" );
-    talent_starlight_wrath       = new talent_t( this, "Starlight Wrath" );
-    talent_survival_instincts    = new talent_t( this, "Survival Instincts" );
-    talent_thick_hide            = new talent_t( this, "Thik Hide" );
-    talent_typhoon               = new talent_t( this, "Typhoon" );
+    talent_balance_of_power      = new talent_t( this, "balance_of_power", "Balance of Power" );
+    talent_berserk               = new talent_t( this, "berserk", "Berserk" );
+    talent_blessing_of_the_grove = new talent_t( this, "blessing_of_the_grove", "Blessing of the Grove" );
+    talent_brutal_impact         = new talent_t( this, "brutal_impact", "Brutal Impact" );
+    talent_earth_and_moon        = new talent_t( this, "earth_and_moon", "Earth and Moon" );
+    talent_endless_carnage       = new talent_t( this, "endless_carnage", "Endless Carnage" );
+    talent_euphoria              = new talent_t( this, "euphoria", "Euphoria" );
+    talent_feral_aggression      = new talent_t( this, "feral_aggression", "Feral Aggression" );
+    talent_feral_charge          = new talent_t( this, "feral_charge", "Feral Charge" );
+    talent_feral_swiftness       = new talent_t( this, "feral_swiftness", "Feral Swiftness" );
+    talent_force_of_nature       = new talent_t( this, "force_of_nature", "Force of Nature" );
+    talent_fungal_growth         = new talent_t( this, "fungal_growth", "Fungal Growth" );
+    talent_furor                 = new talent_t( this, "furor", "Furor" );
+    talent_fury_of_stormrage     = new talent_t( this, "fury_of_stormrage", "Fury of Stormrage" );
+    talent_fury_swipes           = new talent_t( this, "fury_swipes", "Fury Swipes" );
+    talent_gale_winds            = new talent_t( this, "gale_winds", "Gale Winds" );
+    talent_genesis               = new talent_t( this, "genesis", "Genesis" );
+    talent_heart_of_the_wild     = new talent_t( this, "heart_of_the_wild", "Heart of the Wild" );
+    talent_improved_feral_charge = new talent_t( this, "improved_feral_charge", "Improved Feral Charge" );
+    talent_infected_wounds       = new talent_t( this, "infected_wounds", "Infected Wounds" );
+    talent_king_of_the_jungle    = new talent_t( this, "king_of_the_jungle", "King of the Jungle" );
+    talent_leader_of_the_pack    = new talent_t( this, "leader_of_the_pack", "Leader of the Pack" );
+    talent_lunar_guidance        = new talent_t( this, "lunar_guidance", "Lunar Guidance" );
+    talent_lunar_shower          = new talent_t( this, "lunar_shower", "Lunar Shower" );
+    talent_master_shapeshifter   = new talent_t( this, "master_shapeshifter", "Master Shapeshifter" );
+    talent_moonglow              = new talent_t( this, "moonglow", "Moonglow" );
+    talent_moonkin_form          = new talent_t( this, "moonkin_form", "Moonkin Form" );
+    talent_natural_reaction      = new talent_t( this, "natural_reaction", "Natural Reaction" );
+    talent_natures_grace         = new talent_t( this, "natures_grace", "Natures Grace" );
+    talent_natures_majesty       = new talent_t( this, "natures_majesty", "Natures Majesty" );
+    talent_natures_swiftness     = new talent_t( this, "natures_swiftness", "Natures Swiftness" );
+    talent_nom_nom_nom           = new talent_t( this, "nom_nom_nom", "Nom Nom Nom" );
+    talent_nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
+    talent_owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
+    talent_predatory_strikes     = new talent_t( this, "predatory_strikes", "Predatory Strikes" );
+    talent_primal_fury           = new talent_t( this, "primal_fury", "Primal Fury" );
+    talent_primal_madness        = new talent_t( this, "primal_madness", "Primal Madness" );
+    talent_pulverize             = new talent_t( this, "pulverize", "Pulverize" );
+    talent_rend_and_tear         = new talent_t( this, "rend_and_tear", "Rend and Tear" );
+    talent_solar_beam            = new talent_t( this, "solar_beam", "Solar Beam" );
+    talent_starfall              = new talent_t( this, "starfall", "Starfall" );
+    talent_starlight_wrath       = new talent_t( this, "starlight_wrath", "Starlight Wrath" );
+    talent_survival_instincts    = new talent_t( this, "survival_instincts", "Survival Instincts" );
+    talent_thick_hide            = new talent_t( this, "thick_hide", "Thick Hide" );
+    talent_typhoon               = new talent_t( this, "typhoon", "Typhoon" );
   }
 
   // Character Definition
@@ -272,7 +272,7 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
-  virtual int       primary_tree() SC_CONST;
+  virtual talent_tree_type  primary_tree() SC_CONST;
   virtual int       target_swing();
 
   // Utilities
@@ -3986,7 +3986,7 @@ int druid_t::primary_resource() SC_CONST
 
 // druid_t::primary_tree ====================================================
 
-int druid_t::primary_tree() SC_CONST
+talent_tree_type druid_t::primary_tree() SC_CONST
 {
   if ( talent_moonkin_form -> rank       ) return TREE_BALANCE;
   if ( talent_leader_of_the_pack -> rank ) return TREE_FERAL;

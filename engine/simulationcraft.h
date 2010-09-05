@@ -1370,6 +1370,8 @@ enum option_type_t
   OPT_FLT,        // double
   OPT_LIST,       // std::vector<std::string>*
   OPT_FUNC,       // function pointer
+  OPT_TALENT_RANK, // talent rank
+  OPT_SPELL_ENABLED, // spell enabled
   OPT_DEPRECATED,
   OPT_UNKNOWN
 };
@@ -2498,6 +2500,7 @@ struct player_t
   virtual void init_rating();
   virtual void init_scaling();
   virtual void init_talents();
+  virtual void init_spells();
   virtual void init_buffs();
   virtual void init_gains();
   virtual void init_procs();
@@ -2564,7 +2567,7 @@ struct player_t
   virtual bool   resource_available( int resource, double cost ) SC_CONST;
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual int    primary_tree() SC_CONST     { return TALENT_TREE_MAX; }
+  virtual talent_tree_type primary_tree() SC_CONST     { return TALENT_TREE_MAX; }
   virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );
@@ -3440,14 +3443,21 @@ struct talent_t
   struct talent_data_t* data;
   unsigned rank;
   player_t* p;
+  bool enabled;
+  bool forced_override;
+  bool forced_value;
 
-  talent_t( player_t* p, const char* name, const int32_t specify_tree = -1 );
+  std::string token_name;
+
+  talent_t( player_t* p, const char* t_name, const char* name, const int32_t specify_tree = -1 );
   virtual ~talent_t() {}
 
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
   virtual uint32_t get_spell_id( ) SC_CONST;
+  virtual bool set_rank( uint32_t value );
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
 private:
-	virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
+  virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
 };
 
 // Spell ID class
@@ -3456,14 +3466,20 @@ struct spell_id_t
 {
   uint32_t spell_id;
   struct spell_data_t* data;
-  unsigned enabled;
+  bool enabled;
   player_t* p;
+  bool forced_override;
+  bool forced_value;
+  
 
-  spell_id_t( player_t* player, const char* name, const uint32_t id = 0 );
+  std::string token_name;
+
+  spell_id_t( player_t* player, const char* t_name, const char* name, const uint32_t id = 0 );
   virtual ~spell_id_t() {}
 
   virtual bool init( player_t* player, const char* name, const uint32_t id = 0 );
-
+  virtual uint32_t id() { return ( enabled ? spell_id : 0 ); };
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
 private:
 };
@@ -3472,8 +3488,9 @@ private:
 
 struct class_spell_id_t : public spell_id_t
 {
-  class_spell_id_t( player_t* player, const char* name );
+  class_spell_id_t( player_t* player, const char* t_name, const char* name );
   virtual ~class_spell_id_t() {}
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
 private:
 };
 
@@ -3481,8 +3498,11 @@ private:
 
 struct talent_spec_spell_id_t : public spell_id_t
 {
-  talent_spec_spell_id_t( player_t* player, const char* name, const talent_tab_name tree_name );
+  talent_spec_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name );
   virtual ~talent_spec_spell_id_t() {}
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+
+  talent_tab_name tab;
 private:
 };
 
@@ -3490,8 +3510,9 @@ private:
 
 struct racial_spell_id_t : public spell_id_t
 {
-  racial_spell_id_t( player_t* player, const char* name );
+  racial_spell_id_t( player_t* player, const char* t_name, const char* name );
   virtual ~racial_spell_id_t() {}
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
 private:
 };
 
@@ -3499,8 +3520,11 @@ private:
 
 struct mastery_spell_id_t : public spell_id_t
 {
-  mastery_spell_id_t( player_t* player, const char* name );
+  mastery_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name );
   virtual ~mastery_spell_id_t() {}
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+
+  talent_tab_name tab;
 private:
 };
 

@@ -559,6 +559,7 @@ void player_t::init()
   init_scaling();
   init_consumables();
   init_talents();
+  init_spells();
   init_buffs();
   init_actions();
   init_gains();
@@ -1007,6 +1008,14 @@ void player_t::init_talents()
 {
 
 }
+
+// player_t::init_talents =================================================
+
+void player_t::init_spells()
+{
+
+}
+
 
 // player_t::init_buffs ====================================================
 

@@ -201,7 +201,7 @@ struct hunter_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_FOCUS; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
-  virtual int       primary_tree() SC_CONST;
+  virtual talent_tree_type       primary_tree() SC_CONST;
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   // Event Tracking
@@ -3107,6 +3107,7 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot";
       action_list_str += "/steady_shot";
       break;
+    default: break;
     }
 
     action_list_default = 1;
@@ -3117,7 +3118,7 @@ void hunter_t::init_actions()
 
 // hunter_t::primary_tree() ==================================================
 
-int hunter_t::primary_tree() SC_CONST
+talent_tree_type hunter_t::primary_tree() SC_CONST
 {
   if ( talents.the_beast_within ) return TREE_BEAST_MASTERY;
   if ( talents.chimera_shot ) return TREE_MARKSMANSHIP;

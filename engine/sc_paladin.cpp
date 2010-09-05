@@ -209,21 +209,21 @@ struct paladin_t : public player_t
 
     tier10_2pc_procs_from_strikes     = false;
 
-    talents.judgements_of_the_pure = new talent_t( this, "Judgements of the Pure" );
+    talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
     
-    talents.seals_of_the_pure = new talent_t( this, "Seals of the Pure" );
+    talents.seals_of_the_pure = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
 
-    talents.crusade          = new talent_t( this, "Crusade" );
-    talents.rule_of_law      = new talent_t( this, "Rule of Law" );
-    talents.communion        = new talent_t( this, "Communion" );
-    talents.the_art_of_war   = new talent_t( this, "The Art of War" );
-    talents.divine_storm     = new talent_t( this, "Divine Storm" );
+    talents.crusade          = new talent_t( this, "crusade", "Crusade" );
+    talents.rule_of_law      = new talent_t( this, "rule_of_law", "Rule of Law" );
+    talents.communion        = new talent_t( this, "communion", "Communion" );
+    talents.the_art_of_war   = new talent_t( this, "the_art_of_war", "The Art of War" );
+    talents.divine_storm     = new talent_t( this, "divine_storm", "Divine Storm" );
     // talents.sanctity_of_battle = new talent_t( this, "Sanctity of Battle" );
-    talents.seals_of_command = new talent_t( this, "Seals of Command" );
-    talents.divine_purpose   = new talent_t( this, "Divine Purpose" );
-    talents.sanctified_wrath = new talent_t( this, "Sanctified Wrath" );
-    talents.inquiry_of_faith = new talent_t( this, "Inquiry of Faith" );
-    talents.zealotry         = new talent_t( this, "Zealotry" );
+    talents.seals_of_command = new talent_t( this, "seals_of_command", "Seals of Command" );
+    talents.divine_purpose   = new talent_t( this, "divine_purpose", "Divine Purpose" );
+    talents.sanctified_wrath = new talent_t( this, "sanctified_wrath", "Sanctified Wrath" );
+    talents.inquiry_of_faith = new talent_t( this, "inquiry_of_faith", "Inquiry of Faith" );
+    talents.zealotry         = new talent_t( this, "zealotry", "Zealotry" );
 
     // Can we extract this in some smart way? How? There are two entries called "Divine Plea", the second one is the glyph...
     spells.divine_plea = player_data.find_class_spell( PALADIN, "Divine Plea" );
@@ -251,7 +251,7 @@ struct paladin_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual int       primary_tree() SC_CONST;
+  virtual talent_tree_type       primary_tree() SC_CONST;
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -1985,6 +1985,7 @@ void paladin_t::init_base()
     attribute_multiplier_initial[ ATTR_STRENGTH  ] *= 1.05; // assume plate spec active
     base_spell_hit += 0.06;
     break;
+  default: break;
   }
 }
 
@@ -2331,6 +2332,7 @@ double paladin_t::composite_spell_power( int school ) SC_CONST
   case TREE_RETRIBUTION:
     sp += composite_attack_power_multiplier() * composite_attack_power() * 0.30;
     break;
+  default: break;
   }
   return sp;
 }
@@ -2347,7 +2349,7 @@ double paladin_t::composite_tank_block() SC_CONST
 
 // paladin_t::primary_tree ==================================================
 
-int paladin_t::primary_tree() SC_CONST
+talent_tree_type paladin_t::primary_tree() SC_CONST
 {
   if ( talents.divine_favor || talents.infusion_of_light || talents.enlightened_judgements ) return TREE_HOLY;
   if ( talents.hallowed_ground || talents.sanctuary || talents.hammer_of_the_righteous || talents.wrath_of_the_lightbringer ) return TREE_PROTECTION;

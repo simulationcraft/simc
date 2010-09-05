@@ -226,7 +226,7 @@ struct mage_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual int       primary_tree() SC_CONST;
+  virtual talent_tree_type       primary_tree() SC_CONST;
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
@@ -3400,7 +3400,7 @@ void mage_t::init_actions()
 
 // mage_t::primary_tree ====================================================
 
-int mage_t::primary_tree() SC_CONST
+talent_tree_type mage_t::primary_tree() SC_CONST
 {
   if ( talents.arcane_empowerment   ) return TREE_ARCANE;
   if ( talents.empowered_fire       ) return TREE_FIRE;

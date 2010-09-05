@@ -174,6 +174,10 @@ bool option_t::parse( sim_t*             sim,
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
     case OPT_FUNC: return ( ( option_function_t ) address )( sim, n, v );
+    case OPT_TALENT_RANK: 
+      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ) );
+    case OPT_SPELL_ENABLED: 
+      return ( ( struct spell_id_t *) address)->init_enabled( true, atoi( v.c_str() ) != 0 );
     case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );

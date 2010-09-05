@@ -215,69 +215,67 @@ struct warlock_t : public player_t
 
     // Core
     // Affliction
-    talent_unstable_affliction = new talent_spec_spell_id_t ( this, "Unstable Affliction", WARLOCK_AFFLICTION );
-    talent_shadow_mastery = new talent_spec_spell_id_t ( this, "Shadow Mastery", WARLOCK_AFFLICTION );
-    talent_potent_afflictions = new talent_spec_spell_id_t (this, "Potent Afflictions", WARLOCK_AFFLICTION );
+    talent_unstable_affliction = new talent_spec_spell_id_t ( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
+    talent_shadow_mastery = new talent_spec_spell_id_t ( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
+    talent_potent_afflictions = new talent_spec_spell_id_t (this, "poten_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION );
     // Demonology
-    talent_summon_felguard = new talent_spec_spell_id_t ( this, "Summon Felguard", WARLOCK_DEMONOLOGY );
-    talent_master_demonologist = new talent_spec_spell_id_t ( this, "Master Demonologist", WARLOCK_DEMONOLOGY );
+    talent_summon_felguard = new talent_spec_spell_id_t ( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
+    talent_master_demonologist = new talent_spec_spell_id_t ( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY );
     //Destruction
-    talent_conflagrate = new talent_spec_spell_id_t ( this, "Conflagrate", WARLOCK_DESTRUCTION );
-    talent_cataclysm = new talent_spec_spell_id_t ( this, "Cataclysm", WARLOCK_DESTRUCTION );
-    talent_fiery_apocalypse = new talent_spec_spell_id_t ( this, "Fiery Apocalypse", WARLOCK_DESTRUCTION );
+    talent_conflagrate = new talent_spec_spell_id_t ( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
+    talent_cataclysm = new talent_spec_spell_id_t ( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
+    talent_fiery_apocalypse = new talent_spec_spell_id_t ( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION );
 
     // Affliction
-    talent_doom_and_gloom 				= new talent_t ( this, "Doom and Gloom" );
-    talent_improved_life_tap 			= new talent_t ( this, "Improved Life Tap" );
-    talent_improved_corruption 			= new talent_t ( this, "Improved Corruption" );
-    talent_jinx 						= new talent_t ( this, "Jinx" );
-    talent_soul_siphon 					= new talent_t ( this, "Soul Siphon" );
-    talent_siphon_life 					= new talent_t ( this, "Siphon Life" );
-    talent_eradication 					= new talent_t ( this, "Eradication" );
-    talent_soul_swap 					= new talent_t ( this, "Soul Swap" );
-    talent_shadow_embrace 				= new talent_t ( this, "Shadow Embrace" );
-    talent_deaths_embrace 				= new talent_t ( this, "Death's Embrace" );
-    talent_nightfall 					= new talent_t ( this, "Nightfall" );
-    talent_soulburn_seed_of_corruption 	= new talent_t ( this, "Soulburn: Seed of Corruption" );
-    talent_everlasting_affliction 		= new talent_t ( this, "Everlasting Affliction" );
-    talent_pandemic 					= new talent_t ( this, "Pandemic" );
-    talent_haunt 						= new talent_t ( this, "Haunt" );
+    talent_doom_and_gloom 				= new talent_t ( this, "doom_and_gloom", "Doom and Gloom" );
+    talent_improved_life_tap 			= new talent_t ( this, "improved_life_tap", "Improved Life Tap" );
+    talent_improved_corruption 			= new talent_t ( this, "improved_corruption", "Improved Corruption" );
+    talent_jinx 						= new talent_t ( this, "jinx", "Jinx" );
+    talent_soul_siphon 					= new talent_t ( this, "soul_siphon", "Soul Siphon" );
+    talent_siphon_life 					= new talent_t ( this, "siphon_life", "Siphon Life" );
+    talent_eradication 					= new talent_t ( this, "eradication", "Eradication" );
+    talent_soul_swap 					= new talent_t ( this, "soul_swap", "Soul Swap" );
+    talent_shadow_embrace 				= new talent_t ( this, "shadow_embrace", "Shadow Embrace" );
+    talent_deaths_embrace 				= new talent_t ( this, "deaths_embrace", "Death's Embrace" );
+    talent_nightfall 					= new talent_t ( this, "nightfall", "Nightfall" );
+    talent_soulburn_seed_of_corruption 	= new talent_t ( this, "soulburn_seed_of_corruption", "Soulburn: Seed of Corruption" );
+    talent_everlasting_affliction 		= new talent_t ( this, "everlasting_affliction", "Everlasting Affliction" );
+    talent_pandemic 					= new talent_t ( this, "pandemic", "Pandemic" );
+    talent_haunt 						= new talent_t ( this, "haunt", "Haunt" );
 
     // Demonology
-    talent_demonic_embrace 				= new talent_t ( this, "Demonic Embrace" );
-    talent_dark_arts 					= new talent_t ( this, "Dark Arts" );
-    talent_mana_feed 					= new talent_t ( this, "Mana Feed" );
-    talent_demonic_aegis 				= new talent_t ( this, "Demonic Aegis" );
-    talent_impending_doom 				= new talent_t ( this, "Impending Doom" );
-    talent_demonic_empowerment 			= new talent_t ( this, "Demonic Empowerment" );
-    talent_molten_core 					= new talent_t ( this, "Molten Core" );
-    talent_hand_of_guldan 				= new talent_t ( this, "Hand of Gul'dan" );
-    talent_ancient_grimoire 			= new talent_t ( this, "Ancient Grimoire" );
-    talent_nemesis 						= new talent_t ( this, "Nemesis" );
-    talent_inferno 						= new talent_t ( this, "Inferno" );
-    talent_decimation 					= new talent_t ( this, "Decimation" );
-    talent_cremation 					= new talent_t ( this, "Cremation" );
-    talent_demonic_pact 				= new talent_t ( this, "Demonic Pact" );
-    talent_metamorphosis 				= new talent_t ( this, "Metamorphosis" );
+    talent_demonic_embrace 				= new talent_t ( this, "demonic_embrace", "Demonic Embrace" );
+    talent_dark_arts 					= new talent_t ( this, "dark_arts", "Dark Arts" );
+    talent_mana_feed 					= new talent_t ( this, "mana_feed", "Mana Feed" );
+    talent_demonic_aegis 				= new talent_t ( this, "demonic_aegis", "Demonic Aegis" );
+    talent_impending_doom 				= new talent_t ( this, "impending_doom", "Impending Doom" );
+    talent_demonic_empowerment 			= new talent_t ( this, "demonic_empowerment", "Demonic Empowerment" );
+    talent_molten_core 					= new talent_t ( this, "molten_core", "Molten Core" );
+    talent_hand_of_guldan 				= new talent_t ( this, "hand_of_guldan", "Hand of Gul'dan" );
+    talent_ancient_grimoire 			= new talent_t ( this, "ancient_grimoire", "Ancient Grimoire" );
+    talent_nemesis 						= new talent_t ( this, "nemesis", "Nemesis" );
+    talent_inferno 						= new talent_t ( this, "inferno", "Inferno" );
+    talent_decimation 					= new talent_t ( this, "decimation", "Decimation" );
+    talent_cremation 					= new talent_t ( this, "cremation", "Cremation" );
+    talent_demonic_pact 				= new talent_t ( this, "demonic_pact", "Demonic Pact" );
+    talent_metamorphosis 				= new talent_t ( this, "metamorphosis", "Metamorphosis" );
 
         // Destruction
-    talent_bane 						= new talent_t ( this, "Bane" );
-    talent_shadow_and_flame 			= new talent_t ( this, "Shadow and Flame" );
-    talent_improved_immolate 			= new talent_t ( this, "Improved Immolate" );
-    talent_improved_soul_fire 			= new talent_t ( this, "Improved Soul Fire" );
-    talent_emberstorm 					= new talent_t ( this, "Emberstorm" );
-    talent_improved_searing_pain 		= new talent_t ( this, "Improved Searing Pain" );
-    talent_backdraft 					= new talent_t ( this, "Backdraft" );
-    talent_shadowburn 					= new talent_t ( this, "Shadowburn" );
-    talent_burning_embers 				= new talent_t ( this, "Burning Embers" );
-    talent_soul_leech 					= new talent_t ( this, "Soul Leech" );
-    talent_fire_and_brimstone 			= new talent_t ( this, "Fire and Brimstone" );
-    talent_shadowfury 					= new talent_t ( this, "Shadowfury" );
-    talent_empowered_imp 				= new talent_t ( this, "Empowered Imp" );
-    talent_bane_of_havoc 				= new talent_t ( this, "Bane of Havoc" );
-    talent_chaos_bolt 					= new talent_t ( this, "Chaos Bolt" );
-
-
+    talent_bane 						= new talent_t ( this, "bane", "Bane" );
+    talent_shadow_and_flame 			= new talent_t ( this, "shadow_and_flame", "Shadow and Flame" );
+    talent_improved_immolate 			= new talent_t ( this, "improved_immolate", "Improved Immolate" );
+    talent_improved_soul_fire 			= new talent_t ( this, "improved_soul_fire", "Improved Soul Fire" );
+    talent_emberstorm 					= new talent_t ( this, "emberstorm", "Emberstorm" );
+    talent_improved_searing_pain 		= new talent_t ( this, "improved_searing_pain", "Improved Searing Pain" );
+    talent_backdraft 					= new talent_t ( this, "backdraft", "Backdraft" );
+    talent_shadowburn 					= new talent_t ( this, "shadowburn", "Shadowburn" );
+    talent_burning_embers 				= new talent_t ( this, "burning_embers", "Burning Embers" );
+    talent_soul_leech 					= new talent_t ( this, "soul_leech", "Soul Leech" );
+    talent_fire_and_brimstone 			= new talent_t ( this, "fire_and_brimstone", "Fire and Brimstone" );
+    talent_shadowfury 					= new talent_t ( this, "shadowfury", "Shadowfury" );
+    talent_empowered_imp 				= new talent_t ( this, "empowered_imp", "Empowered Imp" );
+    talent_bane_of_havoc 				= new talent_t ( this, "bane_of_havoc", "Bane of Havoc" );
+    talent_chaos_bolt 					= new talent_t ( this, "chaos_bolt", "Chaos Bolt" );
   }
 
   // Character Definition
@@ -301,7 +299,7 @@ struct warlock_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual int		primary_tree() SC_CONST;
+  virtual talent_tree_type primary_tree() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
   virtual double	composite_spell_haste() SC_CONST;
 
@@ -3617,7 +3615,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_ty
 
 // player_t::primary_tree ==================================================
 
-int warlock_t::primary_tree() SC_CONST
+talent_tree_type warlock_t::primary_tree() SC_CONST
 {
 	  if ( level > 10 && level <= 69 )
 	  {
