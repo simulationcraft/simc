@@ -154,6 +154,73 @@ uint32_t talent_t::find_talent_id( const char* name, const int32_t specify_tree 
   return 0; 
 }
 
+talent_t* talent_t::find_talent_in_list( const char* t_name )
+{
+  if ( !p )
+    return NULL;
+
+  uint32_t i = 0;
+  while ( i < p -> talent_list2.size() )
+  {
+    talent_t *t = p -> talent_list2[ 0 ];
+
+    if ( t && !_stricmp( t -> token_name.c_str(), t_name ) )
+      return t;
+
+    i++;
+  }
+  return NULL;
+}
+
+talent_t* talent_t::find_talent_in_list( const uint32_t id )
+{
+  if ( !p )
+    return NULL;
+
+  uint32_t i = 0;
+  while ( i < p -> talent_list2.size() )
+  {
+    talent_t *t = p -> talent_list2[ 0 ];
+
+    if ( t && t -> data && t -> data -> id == id )
+      return t;
+
+    i++;
+  }
+  return NULL;
+}
+
+void talent_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+{
+  if ( !p )
+    return;
+
+  option_t opt[ 2 ];
+  opt[ 1 ].name = NULL;
+  opt[ 1 ].type = OPT_UNKNOWN;
+  opt[ 1 ].address = NULL;
+  uint32_t i = 0;
+  while ( i < p -> talent_list2.size() )
+  {
+    talent_t *t = p -> talent_list2[ i ];
+
+    opt[ 0 ].name = t -> token_name.c_str();
+    opt[ 0 ].type = OPT_TALENT_RANK;
+    opt[ 0 ].address = t;
+
+    option_t::copy( opt_vector, opt );
+
+    i++;
+  }
+}
+
+bool talent_t::ok()
+{
+  if ( ! p )
+    return false;
+
+  return ( ( rank > 0 ) && ( enabled ) );
+}
 
 // ==========================================================================
 // Spell ID
@@ -161,14 +228,14 @@ uint32_t talent_t::find_talent_id( const char* name, const int32_t specify_tree 
 
 // spell_id_t::spell_id_t =======================================================
 
-spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* name, const uint32_t id ) : 
+spell_id_t::spell_id_t( player_t* player, std::vector<spell_id_t *> *spell_list,  const char* t_name, const char* name, const uint32_t id ) : 
     spell_id( id ), data( NULL ), enabled( false ), p( player ), forced_override( false ), forced_value( false ),
     token_name( t_name )
 {
-  init( player, name, id );
+  init( player, spell_list, name, id );
 }
 
-bool spell_id_t::init( player_t* player, const char* name, const uint32_t id )
+bool spell_id_t::init( player_t* player, std::vector<spell_id_t *> *spell_list, const char* name, const uint32_t id )
 {
   assert( player && name && player -> sim );
 
@@ -183,6 +250,9 @@ bool spell_id_t::init( player_t* player, const char* name, const uint32_t id )
   {
     data = p -> player_data.m_spells_index[ spell_id ];
     if ( p -> sim -> debug ) log_t::output( p -> sim, "Spell %s initialized", name );
+
+    if ( spell_list )
+      spell_list->push_back( this );
   }
   else
   {
@@ -226,6 +296,49 @@ bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
   return true;
 }
 
+spell_id_t* spell_id_t::find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name )
+{
+  if ( !spell_list )
+    return NULL;
+
+  uint32_t i = 0;
+  while ( i < spell_list->size() )
+  {
+    spell_id_t *p = (*spell_list)[ 0 ];
+
+    if ( p && !_stricmp( p->token_name.c_str(), t_name ) )
+      return p;
+
+    i++;
+  }
+  return NULL;
+}
+
+spell_id_t* spell_id_t::find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id )
+{
+  if ( !spell_list )
+    return NULL;
+
+  uint32_t i = 0;
+  while ( i < spell_list->size() )
+  {
+    spell_id_t *p = (*spell_list)[ 0 ];
+
+    if ( p && p -> spell_id == id )
+      return p;
+
+    i++;
+  }
+  return NULL;
+}
+
+bool spell_id_t::ok()
+{
+  if ( ! p )
+    return false;
+
+  return enabled;
+}
 
 // ==========================================================================
 // Class Spell ID
@@ -233,15 +346,15 @@ bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
 
 // class_spell_id_t::class_spell_id_t =======================================================
 
-class_spell_id_t::class_spell_id_t( player_t* player, const char* t_name, const char* name ) : 
-    spell_id_t( player, t_name, name )
+class_spell_id_t::class_spell_id_t( player_t* player, const char* t_name, const char* name, talent_t* needs_talent ) : 
+    spell_id_t( player, NULL, t_name, name ), req_talent( needs_talent )
 {
   if ( !spell_id )
   {
     spell_id = p -> player_data.find_class_spell( p -> type, name );
   }
 
-  init( p, name, spell_id );
+  init( p, ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), name, spell_id );
 }
 
 bool class_spell_id_t::init_enabled( bool override_enabled, bool override_value )
@@ -255,6 +368,57 @@ bool class_spell_id_t::init_enabled( bool override_enabled, bool override_value 
   return true;
 }
 
+class_spell_id_t* class_spell_id_t::find_spell_in_list( const char* t_name )
+{
+  if ( !p )
+    return NULL;
+
+  return ( class_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), t_name );
+}
+
+class_spell_id_t* class_spell_id_t::find_spell_in_list( const uint32_t id )
+{
+  if ( !p )
+    return NULL;
+
+  return ( class_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> class_spell_list ), id );
+}
+
+void class_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+{
+  if ( !p )
+    return;
+
+  option_t opt[ 2 ];
+  opt[ 1 ].name = NULL;
+  opt[ 1 ].type = OPT_UNKNOWN;
+  opt[ 1 ].address = NULL;
+  uint32_t i = 0;
+
+  while ( i < p -> class_spell_list.size() )
+  {
+    class_spell_id_t *t = p -> class_spell_list[ i ];
+
+    opt[ 0 ].name = t -> token_name.c_str();
+    opt[ 0 ].type = OPT_SPELL_ENABLED;
+    opt[ 0 ].address = t;
+
+    option_t::copy( opt_vector, opt );
+
+    i++;
+  }
+}
+
+bool class_spell_id_t::ok()
+{
+  bool res = spell_id_t::ok();
+
+  if ( req_talent )
+    res = res & req_talent -> ok();
+
+  return res;
+}
+
 // ==========================================================================
 // Talent Specialization Spell ID
 // ==========================================================================
@@ -262,7 +426,7 @@ bool class_spell_id_t::init_enabled( bool override_enabled, bool override_value 
 // talent_spec_spell_id_t::talent_spec_spell_id_t =======================================================
 
 talent_spec_spell_id_t::talent_spec_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name ) :
-    spell_id_t( player, t_name, name ), tab( tree_name )
+    spell_id_t( player, NULL, t_name, name ), tab( tree_name )
 {
   assert( name && ( ( const uint32_t ) tree_name < 3 ) );
 
@@ -270,7 +434,7 @@ talent_spec_spell_id_t::talent_spec_spell_id_t( player_t* player, const char* t_
 
   spell_id = p -> player_data.find_talent_spec_spell( p -> type, tree_name, name );
 
-  init( p, name, spell_id );
+  init( p, ( std::vector<spell_id_t *> * ) &( p -> talent_spec_spell_list ), name, spell_id );
 }
 
 bool talent_spec_spell_id_t::init_enabled( bool override_enabled, bool override_value )
@@ -284,12 +448,53 @@ bool talent_spec_spell_id_t::init_enabled( bool override_enabled, bool override_
   return true;
 }
 
+talent_spec_spell_id_t* talent_spec_spell_id_t::find_spell_in_list( const char* t_name )
+{
+  if ( !p )
+    return NULL;
+
+  return ( talent_spec_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->talent_spec_spell_list ), t_name );
+}
+
+talent_spec_spell_id_t* talent_spec_spell_id_t::find_spell_in_list( const uint32_t id )
+{
+  if ( !p )
+    return NULL;
+
+  return ( talent_spec_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->talent_spec_spell_list ), id );
+}
+
+void talent_spec_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+{
+  if ( !p )
+    return;
+
+  option_t opt[ 2 ];
+  opt[ 1 ].name = NULL;
+  opt[ 1 ].type = OPT_UNKNOWN;
+  opt[ 1 ].address = NULL;
+  uint32_t i = 0;
+
+  while ( i < p -> talent_spec_spell_list.size() )
+  {
+    talent_spec_spell_id_t *t = p -> talent_spec_spell_list[ i ];
+
+    opt[ 0 ].name = t -> token_name.c_str();
+    opt[ 0 ].type = OPT_SPELL_ENABLED;
+    opt[ 0 ].address = t;
+
+    option_t::copy( opt_vector, opt );
+
+    i++;
+  }
+}
+
 // ==========================================================================
 // Racial Spell ID class
 // ==========================================================================
 
 racial_spell_id_t::racial_spell_id_t( player_t* player, const char* t_name, const char* name ) :
-    spell_id_t( player, t_name, name )
+    spell_id_t( player, NULL, t_name, name )
 {
   assert( name );
 
@@ -297,7 +502,7 @@ racial_spell_id_t::racial_spell_id_t( player_t* player, const char* t_name, cons
 
   spell_id = p -> player_data.find_racial_spell( p -> type, p -> race, name );
 
-  init( p, name, spell_id );
+  init( p, ( std::vector<spell_id_t *> * ) &( player -> racial_spell_list ), name, spell_id );
 }
 
 bool racial_spell_id_t::init_enabled( bool override_enabled, bool override_value )
@@ -311,20 +516,60 @@ bool racial_spell_id_t::init_enabled( bool override_enabled, bool override_value
   return true;
 }
 
+racial_spell_id_t* racial_spell_id_t::find_spell_in_list( const char* t_name )
+{
+  if ( !p )
+    return NULL;
+
+  return ( racial_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> racial_spell_list ), t_name );
+}
+
+racial_spell_id_t* racial_spell_id_t::find_spell_in_list( const uint32_t id )
+{
+  if ( !p )
+    return NULL;
+
+  return ( racial_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p -> racial_spell_list ), id );
+}
+
+void racial_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+{
+  if ( !p )
+    return;
+
+  option_t opt[ 2 ];
+  opt[ 1 ].name = NULL;
+  opt[ 1 ].type = OPT_UNKNOWN;
+  opt[ 1 ].address = NULL;
+  uint32_t i = 0;
+
+  while ( i < p -> racial_spell_list.size() )
+  {
+    racial_spell_id_t *t = p -> racial_spell_list[ i ];
+
+    opt[ 0 ].name = t -> token_name.c_str();
+    opt[ 0 ].type = OPT_SPELL_ENABLED;
+    opt[ 0 ].address = t;
+
+    option_t::copy( opt_vector, opt );
+
+    i++;
+  }
+}
 
 // ==========================================================================
 // Mastery Spell ID class
 // ==========================================================================
 
 mastery_spell_id_t::mastery_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name ) :
-    spell_id_t( player, t_name, name ), tab( tree_name )
+    spell_id_t( player, NULL, t_name, name ), tab( tree_name )
 {
   assert( name );
 
   data = NULL;
 
   spell_id = p -> player_data.find_mastery_spell( p -> type, name );
-  init( p, name, spell_id );
+  init( p, ( std::vector<spell_id_t *> * ) &( player -> mastery_spell_list ), name, spell_id );
 }
 
 bool mastery_spell_id_t::init_enabled( bool override_enabled, bool override_value )
@@ -336,5 +581,46 @@ bool mastery_spell_id_t::init_enabled( bool override_enabled, bool override_valu
     enabled = enabled & ( p -> level >= 75 ) && ( tab == tree_to_tab_name( p -> type, p -> primary_tree() ) );
   }
   return true;
+}
+
+mastery_spell_id_t* mastery_spell_id_t::find_spell_in_list( const char* t_name )
+{
+  if ( !p )
+    return NULL;
+
+  return ( mastery_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->mastery_spell_list ), t_name );
+}
+
+mastery_spell_id_t* mastery_spell_id_t::find_spell_in_list( const uint32_t id )
+{
+  if ( !p )
+    return NULL;
+
+  return ( mastery_spell_id_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( p->mastery_spell_list ), id );
+}
+
+void mastery_spell_id_t::add_options( player_t* p, std::vector<option_t>& opt_vector )
+{
+  if ( !p )
+    return;
+
+  option_t opt[ 2 ];
+  opt[ 1 ].name = NULL;
+  opt[ 1 ].type = OPT_UNKNOWN;
+  opt[ 1 ].address = NULL;
+  uint32_t i = 0;
+
+  while ( i < p -> mastery_spell_list.size() )
+  {
+    mastery_spell_id_t *t = p -> mastery_spell_list[ i ];
+
+    opt[ 0 ].name = t -> token_name.c_str();
+    opt[ 0 ].type = OPT_SPELL_ENABLED;
+    opt[ 0 ].address = t;
+
+    option_t::copy( opt_vector, opt );
+
+    i++;
+  }
 }
 

@@ -3746,19 +3746,46 @@ bool player_t::parse_talent_trees( int talents[] )
           *address = talents[i];
   }
 
-  uint32_t i, j = 0;
+  uint32_t i = 0;
+  uint32_t j = 0;
   uint32_t tab = 0;
   uint32_t num = 0;
   uint32_t talent_id = 0;
   uint32_t num_talents;
   uint32_t rank;
+  uint32_t tab_sizes[ MAX_TALENT_TREES ];
+  uint32_t tab_start[ MAX_TALENT_TREES + 1 ];
 
   num_talents = talent_list2.size();
 
-  for ( i = 0; i < MAX_TALENT_RANK_SLOTS; i++ )
+  uint32_t list_size = 0;
+  
+  tab_start[ 0 ] = 0;
+
+
+  for ( uint32_t k = 0; k < MAX_TALENT_TREES; k ++ )
   {
-    tab = i / ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
-    num = i % ( MAX_TALENT_RANK_SLOTS / MAX_TALENT_TREES );
+    tab_sizes[ k ] = player_data.talent_player_get_num_talents( type, k );
+    list_size += tab_sizes[ k ];
+  }
+
+  tab_start[ MAX_TALENT_TREES ] = list_size;
+
+  for ( uint32_t k = 1; k < MAX_TALENT_TREES; k++ )
+  {
+    tab_start[ k ] = tab_start[ k - 1 ] + tab_sizes[ k - 1 ];
+  }
+
+  tab = 0;
+  num = 0;
+
+  for ( i = 0; i < list_size; i++, num++ )
+  {
+    if ( i >= tab_start[ tab + 1 ] )
+    {
+      tab++;
+      num = 0;
+    }
 
     talent_id = player_data.talent_player_get_id_by_num( type, tab, num );
 
@@ -3773,6 +3800,7 @@ bool player_t::parse_talent_trees( int talents[] )
             rank = player_data.talent_max_rank( talent_id );
           talent_list2[ j ] -> rank = rank ;
           talent_tab_points[ tab ] += rank;
+          break;
         }
       }
     }   
@@ -4331,6 +4359,12 @@ std::vector<option_t>& player_t::get_options()
     };
 
     option_t::copy( options, player_options );
+
+    talent_t::add_options              ( this, options );
+    class_spell_id_t::add_options      ( this, options );
+    talent_spec_spell_id_t::add_options( this, options );
+    racial_spell_id_t::add_options     ( this, options );
+    mastery_spell_id_t::add_options    ( this, options );
   }
 
   return options;

@@ -196,12 +196,6 @@ void sc_data_t::create_talents_index()
     if ( !p )
       continue;
 
-    if ( p->id == 11673 )
-    {
-      int a =1;
-      a++;
-    }
-
     if ( p->m_class != 0 )
     {
       for ( c = 1; c < max_classes; c++ )
@@ -235,7 +229,6 @@ void sc_data_t::create_talents_index()
     for ( uint32_t k = 0; k < MAX_TALENT_TABS; k++ )
     {
       sort_talents( v1[ j * MAX_TALENT_TABS + k ], MAX_TALENTS );
-//      qsort( v1[ j * MAX_TALENT_TABS + k ], MAX_TALENTS, sizeof( uint32_t ), &sc_data_t::talent_compare );
       for ( uint32_t l = 0; l < n[ j * MAX_TALENT_TABS + k ]; l++ )
       {
         uint32_t* q = m_talent_trees.ptr( l, k, j );
@@ -248,7 +241,6 @@ void sc_data_t::create_talents_index()
   for ( j = 0; j < 3; j++ )
   {
     sort_talents( v1[ ( j + max_classes ) * MAX_TALENT_TABS + 0 ], MAX_TALENTS );
-    // qsort( v1[ ( j + max_classes ) * MAX_TALENT_TABS + 0 ], MAX_TALENTS, sizeof( uint32_t ), &sc_data_t::talent_compare );
     for ( uint32_t l = 0; l < n[ ( j + max_classes ) * MAX_TALENT_TABS + 0 ]; l++ )
     {
       uint32_t* q = m_pet_talent_trees.ptr( l, j );

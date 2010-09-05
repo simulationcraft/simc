@@ -810,6 +810,45 @@ uint32_t sc_data_access_t::talent_pet_get_id_by_num( const pet_type_t p, const u
   return *q;
 }
 
+uint32_t sc_data_access_t::talent_player_get_num_talents( const player_type c, const uint32_t tab ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+
+  assert( ( cid != 0 ) && ( tab < MAX_TALENT_TABS ) );
+
+  uint32_t num = 0;
+  uint32_t* q = NULL;
+
+  while ( ( q = m_talent_trees.ptr( num, tab, cid ) ) != NULL )
+  {
+    if ( ! *q )
+    {
+      return num;
+    }
+    num++;
+  }
+
+  return num;
+}
+
+uint32_t sc_data_access_t::talent_pet_get_num_talents( const pet_type_t p ) SC_CONST
+{
+  uint32_t pid = get_pet_id( p );
+  uint32_t num = 0;
+  uint32_t* q = NULL;
+
+  assert( ( pid != 0 ) );
+
+
+  while ( ( q = m_pet_talent_trees.ptr( num, pid - 1 ) ) != NULL )
+  {
+    num++;
+  }
+
+  return num;
+}
+
+
 /**************************** Scale functions *****************/
 
 double sc_data_access_t::melee_crit_base( const player_type c ) SC_CONST

@@ -125,6 +125,11 @@ struct rating_t;
 struct report_t;
 struct rng_t;
 struct talent_t;
+struct spell_id_t;
+struct class_spell_id_t;
+struct talent_spec_spell_id_t;
+struct racial_spell_id_t;
+struct mastery_spell_id_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -1145,7 +1150,10 @@ template <typename T> inline T& sc_array_t<T>::ref( const uint32_t i, const uint
 
 template <typename T> inline T* sc_array_t<T>::ptr( const uint32_t i, const uint32_t j, const uint32_t k ) SC_CONST
 {
-  assert( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) );
+  if ( !( m_data && ( i < cols ) && m_dim && ( ( j < rows ) || ( m_dim < 2 ) ) && ( ( k < depth ) || ( m_dim < 3 ) ) ) )
+  {
+    return NULL;
+  }
 
   if ( m_dim == 1 )
     return m_data + i;
@@ -1316,6 +1324,8 @@ public:
 
   virtual uint32_t      talent_player_get_id_by_num( const player_type c, const uint32_t tab, const uint32_t num ) SC_CONST;
   virtual uint32_t      talent_pet_get_id_by_num( const pet_type_t p, const uint32_t num ) SC_CONST;
+  virtual uint32_t      talent_player_get_num_talents( const player_type c, const uint32_t tab ) SC_CONST;
+  virtual uint32_t      talent_pet_get_num_talents( const pet_type_t p ) SC_CONST;
 
 // Scaling methods
   virtual double        melee_crit_base( const player_type c ) SC_CONST;
@@ -1404,7 +1414,7 @@ struct option_t
 #define MAX_TALENT_TREES 3
 #define MAX_TALENT_COL 4
 #define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
-#define MAX_TALENT_RANK_SLOTS ( 60 )
+#define MAX_TALENT_RANK_SLOTS ( 90 )
 
 struct talent_translation_t
 {
@@ -2219,6 +2229,11 @@ struct player_t
   std::vector<talent_translation_t> talent_list;
   uint32_t talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t *> talent_list2;
+
+  std::vector<class_spell_id_t *> class_spell_list;
+  std::vector<racial_spell_id_t *> racial_spell_list;
+  std::vector<talent_spec_spell_id_t *> talent_spec_spell_list;
+  std::vector<mastery_spell_id_t *> mastery_spell_list;
 
   // Profs
   std::string professions_str;
@@ -3456,6 +3471,13 @@ struct talent_t
   virtual uint32_t get_spell_id( ) SC_CONST;
   virtual bool set_rank( uint32_t value );
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+
+  virtual bool ok();
+
+  talent_t* find_talent_in_list( const char* t_name );
+  talent_t* find_talent_in_list( const uint32_t id );
+
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
 private:
   virtual uint32_t find_talent_id( const char* name, const int32_t specify_tree = -1 );
 };
@@ -3474,13 +3496,18 @@ struct spell_id_t
 
   std::string token_name;
 
-  spell_id_t( player_t* player, const char* t_name, const char* name, const uint32_t id = 0 );
+  spell_id_t( player_t* player, std::vector<spell_id_t *> *spell_list, const char* t_name, const char* name, const uint32_t id = 0 );
   virtual ~spell_id_t() {}
 
-  virtual bool init( player_t* player, const char* name, const uint32_t id = 0 );
+  virtual bool init( player_t* player, std::vector<spell_id_t *> *spell_list, const char* name, const uint32_t id = 0 );
   virtual uint32_t id() { return ( enabled ? spell_id : 0 ); };
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
+
+  virtual bool ok();
+
+  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name );
+  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
 private:
 };
 
@@ -3488,9 +3515,15 @@ private:
 
 struct class_spell_id_t : public spell_id_t
 {
-  class_spell_id_t( player_t* player, const char* t_name, const char* name );
+  class_spell_id_t( player_t* player, const char* t_name, const char* name, talent_t* needs_talent = NULL );
   virtual ~class_spell_id_t() {}
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+  class_spell_id_t* find_spell_in_list( const char* t_name );
+  class_spell_id_t* find_spell_in_list( const uint32_t id );
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
+  virtual bool ok();
+
+  struct talent_t* req_talent;
 private:
 };
 
@@ -3501,8 +3534,10 @@ struct talent_spec_spell_id_t : public spell_id_t
   talent_spec_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name );
   virtual ~talent_spec_spell_id_t() {}
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
-
+  talent_spec_spell_id_t* find_spell_in_list( const char* t_name );
+  talent_spec_spell_id_t* find_spell_in_list( const uint32_t id );
   talent_tab_name tab;
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
 private:
 };
 
@@ -3513,6 +3548,9 @@ struct racial_spell_id_t : public spell_id_t
   racial_spell_id_t( player_t* player, const char* t_name, const char* name );
   virtual ~racial_spell_id_t() {}
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+  racial_spell_id_t* find_spell_in_list( const char* t_name );
+  racial_spell_id_t* find_spell_in_list( const uint32_t id );
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
 private:
 };
 
@@ -3523,6 +3561,9 @@ struct mastery_spell_id_t : public spell_id_t
   mastery_spell_id_t( player_t* player, const char* t_name, const char* name, const talent_tab_name tree_name );
   virtual ~mastery_spell_id_t() {}
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+  mastery_spell_id_t* find_spell_in_list( const char* t_name );
+  mastery_spell_id_t* find_spell_in_list( const uint32_t id );
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
 
   talent_tab_name tab;
 private:
