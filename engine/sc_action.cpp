@@ -254,7 +254,8 @@ rank_t* action_t::init_rank( rank_t* rank_list,
       base_dd_max  = rank -> dd_max;
       base_td_init = rank -> tick;
       base_cost    = rank -> cost;
-      id           = id_override ? id_override : 0; //FIXME! rank -> id;
+
+      if (id_override) id = id_override;
 
       return rank;
     }
