@@ -762,7 +762,10 @@ uint32_t sc_data_access_t::talent_row( const uint32_t talent_id ) SC_CONST
 
 uint32_t sc_data_access_t::talent_rank_spell_id( const uint32_t talent_id, const uint32_t rank ) SC_CONST
 {
-  assert( talent_exists( talent_id ) && ( rank > 0 ) && ( rank <= MAX_RANK ) );
+  assert( talent_exists( talent_id ) && ( rank >= 0 ) && ( rank <= MAX_RANK ) );
+
+  if ( rank == 0 )
+    return 0;
 
   return m_talents_index[ talent_id ]->rank_id[ rank - 1 ];
 }

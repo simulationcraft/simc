@@ -3790,12 +3790,12 @@ bool player_t::parse_talent_trees( int talents[] )
     {
       for ( j = 0; j < num_talents; j++ )
       {
-        if ( talent_list2[ j ] && talent_list2[ j ] -> data && talent_list2[ j ] -> data-> id == talent_id )
+        if ( talent_list2[ j ] && talent_list2[ j ] -> talent_t_data && talent_list2[ j ] -> talent_t_data-> id == talent_id )
         {
           rank = ( talents[ i ] >= 0 ) && ( talents[ i ] <= 3 ) ? talents[ i ] : 0 ;
           if ( rank > player_data.talent_max_rank( talent_id ) )
             rank = player_data.talent_max_rank( talent_id );
-          talent_list2[ j ] -> rank = rank ;
+          talent_list2[ j ] -> set_rank( rank );
           talent_tab_points[ tab ] += rank;
           break;
         }

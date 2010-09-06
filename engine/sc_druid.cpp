@@ -508,13 +508,13 @@ static void trigger_fury_swipes( action_t* a )
 
   if ( ! a -> weapon ) return;
 
-  if ( ! p -> talent_fury_swipes -> rank )
+  if ( ! p -> talent_fury_swipes -> rank() )
     return;
 
   if ( p -> cooldowns_fury_swipes -> remains() > 0 )
     return;
 
-  if ( p -> rng_fury_swipes -> roll( 0.04 * p -> talent_fury_swipes -> rank ) )
+  if ( p -> rng_fury_swipes -> roll( 0.04 * p -> talent_fury_swipes -> rank() ) )
   {
     if ( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
@@ -535,7 +535,7 @@ static void trigger_infected_wounds( action_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( p -> talent_infected_wounds -> rank )
+  if ( p -> talent_infected_wounds -> rank() )
   {
     p -> sim -> target -> debuffs.infected_wounds -> trigger();
   }
@@ -547,7 +547,7 @@ static void trigger_earth_and_moon( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  if ( p -> talent_earth_and_moon -> rank == 0 ) return;
+  if ( p -> talent_earth_and_moon -> rank() == 0 ) return;
 
   target_t* t = s -> sim -> target;
 
@@ -602,12 +602,12 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
     if ( p -> eclipse_bar_value == 100 ) 
     {
       if ( p -> buffs_eclipse_solar -> trigger() )
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
       if ( p -> buffs_eclipse_lunar -> trigger() )
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank , p -> gains_euphoria );
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
     }
   }
 }
@@ -679,13 +679,13 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( ! p -> talent_primal_fury -> rank )
+  if ( ! p -> talent_primal_fury -> rank() )
     return;
 
   if ( ! a -> adds_combo_points )
     return;
 
-  if ( p -> rng_primal_fury -> roll( p -> talent_primal_fury -> rank * 0.5 ) )
+  if ( p -> rng_primal_fury -> roll( p -> talent_primal_fury -> rank() * 0.5 ) )
   {
     add_combo_point( p );
     p -> procs_primal_fury -> occur();
@@ -712,10 +712,10 @@ static void trigger_primal_fury( druid_bear_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( ! p -> talent_primal_fury -> rank )
+  if ( ! p -> talent_primal_fury -> rank() )
     return;
 
-  if ( p -> rng_primal_fury -> roll( p -> talent_primal_fury -> rank * 0.5 ) )
+  if ( p -> rng_primal_fury -> roll( p -> talent_primal_fury -> rank() * 0.5 ) )
   {
     p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_primal_fury );
   }
@@ -965,7 +965,7 @@ struct berserk_cat_t : public druid_cat_attack_t
     tigers_fury( 0 )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_berserk -> rank );
+    check_talent( p -> talent_berserk -> rank() );
 
     option_t options[] =
     {
@@ -1020,7 +1020,7 @@ struct claw_t : public druid_cat_attack_t
     weapon = &( p -> main_hand_weapon );
     adds_combo_points = true;
     may_crit          = true;
-    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank, 2, 0.02 );
+    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank(), 2, 0.02 );
   }
 };
 
@@ -1146,7 +1146,7 @@ struct rake_t : public druid_cat_attack_t
     adds_combo_points = true;
     may_crit          = true;
     base_tick_time    = 3.0;
-    num_ticks         = 3 + p -> talent_endless_carnage -> rank;
+    num_ticks         = 3 + p -> talent_endless_carnage -> rank();
     direct_power_mod  = 0.01;
     tick_power_mod    = 0.06;
     tick_may_crit     = true;
@@ -1261,7 +1261,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
-    duration += 3.0 * p -> talent_endless_carnage -> rank;
+    duration += 3.0 * p -> talent_endless_carnage -> rank();
     if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
 
     // execute clears CP, so has to be after calculation duration
@@ -1312,7 +1312,7 @@ struct shred_t : public druid_cat_attack_t
     adds_combo_points  = true;
     may_crit           = true;
 
-    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank, 2, 0.02 );
+    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank(), 2, 0.02 );
 
   }
 
@@ -1343,7 +1343,7 @@ struct shred_t : public druid_cat_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.20/3.0 * p -> talent_rend_and_tear -> rank;
+      player_multiplier *= 1 + 0.20/3.0 * p -> talent_rend_and_tear -> rank();
     }
 
   }
@@ -1394,9 +1394,9 @@ struct tigers_fury_t : public druid_cat_attack_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( p -> talent_king_of_the_jungle -> rank )
+    if ( p -> talent_king_of_the_jungle -> rank() )
     {
-      p -> resource_gain( RESOURCE_ENERGY, p -> talent_king_of_the_jungle -> rank * 20, p -> gains_tigers_fury );
+      p -> resource_gain( RESOURCE_ENERGY, p -> talent_king_of_the_jungle -> rank() * 20, p -> gains_tigers_fury );
     }
 
     p -> buffs_tigers_fury -> trigger( 1, tiger_value );
@@ -1441,7 +1441,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     base_cost = 35;
 
-    base_multiplier *= 1.0 + ( p -> talent_feral_aggression -> rank * 0.05 );
+    base_multiplier *= 1.0 + ( p -> talent_feral_aggression -> rank() * 0.05 );
 
     static double_pair dmg_78[] = { { 410, 550 }, { 700, 840 }, { 990, 1130 }, { 1280, 1420 }, { 1570, 1710 } };
     static double_pair dmg_72[] = { { 334, 682 }, { 570, 682 }, { 806,  918 }, { 1042, 1154 }, { 1278, 1390 } };
@@ -1479,7 +1479,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> rng_nom_nom_nom -> roll( p -> talent_nom_nom_nom -> rank * 0.5 ) )
+      if ( p -> rng_nom_nom_nom -> roll( p -> talent_nom_nom_nom -> rank() * 0.5 ) )
       {
         p -> dots_rip -> action -> refresh_duration();
       }
@@ -1515,7 +1515,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( sim -> target -> debuffs.bleeding -> check() )
     {
-      player_crit += 0.25/3.0 * p -> talent_rend_and_tear -> rank;
+      player_crit += 0.25/3.0 * p -> talent_rend_and_tear -> rank();
     }
   }
 };
@@ -1595,13 +1595,13 @@ void druid_bear_attack_t::player_buff()
   druid_t* p = player -> cast_druid();
   attack_t::player_buff();
 
-  if ( p -> talent_master_shapeshifter -> rank )
+  if ( p -> talent_master_shapeshifter -> rank() )
   {
-    player_multiplier *= 1.0 + p -> talent_master_shapeshifter -> rank * 0.04;
+    player_multiplier *= 1.0 + p -> talent_master_shapeshifter -> rank() * 0.04;
   }
-  if ( p -> talent_king_of_the_jungle -> rank && p -> buffs_enrage -> up() )
+  if ( p -> talent_king_of_the_jungle -> rank() && p -> buffs_enrage -> up() )
   {
-    player_multiplier *= 1.0 + p -> talent_king_of_the_jungle -> rank * 0.05;
+    player_multiplier *= 1.0 + p -> talent_king_of_the_jungle -> rank() * 0.05;
   }
 }
 
@@ -1705,7 +1705,7 @@ struct bash_t : public druid_bear_attack_t
     parse_options( options, options_str );
 
     base_cost = 10;
-    cooldown -> duration  = 60 - p -> talent_brutal_impact -> rank * 15;
+    cooldown -> duration  = 60 - p -> talent_brutal_impact -> rank() * 15;
   }
 
   virtual bool ready()
@@ -1723,7 +1723,7 @@ struct berserk_bear_t : public druid_bear_attack_t
     druid_bear_attack_t( "berserk_bear", player )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_berserk -> rank );
+    check_talent( p -> talent_berserk -> rank() );
 
     option_t options[] =
     {
@@ -1913,7 +1913,7 @@ struct maul_t : public druid_bear_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.20/3.0 * p -> talent_rend_and_tear -> rank;
+      player_multiplier *= 1 + 0.20/3.0 * p -> talent_rend_and_tear -> rank();
     }
 
   }
@@ -2007,8 +2007,8 @@ double druid_spell_t::cost() SC_CONST
   druid_t* p = player -> cast_druid();
   if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   double c = spell_t::cost();
-  if ( resource == RESOURCE_MANA && p -> talent_moonglow -> rank )
-    c *= 1.0 - 0.03 * p -> talent_moonglow -> rank;
+  if ( resource == RESOURCE_MANA && p -> talent_moonglow -> rank() )
+    c *= 1.0 - 0.03 * p -> talent_moonglow -> rank();
 
   return spell_t::cost();
 }
@@ -2066,7 +2066,7 @@ void druid_spell_t::execute()
     }
     */
 
-    p -> buffs_natures_grace -> trigger( 1, p -> talent_natures_grace -> rank * 0.05 );
+    p -> buffs_natures_grace -> trigger( 1, p -> talent_natures_grace -> rank() * 0.05 );
   }
 
   if ( ! aoe )
@@ -2103,7 +2103,7 @@ void druid_spell_t::player_buff()
 
   if ( p -> buffs_moonkin_form -> check() )
   {
-    player_multiplier *= 1.0 + p -> talent_master_shapeshifter -> rank * 0.04;
+    player_multiplier *= 1.0 + p -> talent_master_shapeshifter -> rank() * 0.04;
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
@@ -2127,7 +2127,7 @@ void druid_spell_t::player_buff()
       player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
 
 
-  player_multiplier *= 1.0 + p -> talent_earth_and_moon -> rank * 0.02;
+  player_multiplier *= 1.0 + p -> talent_earth_and_moon -> rank() * 0.02;
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -2244,7 +2244,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     {
       update_ready();
     }
-    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talent_feral_aggression -> rank );
+    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talent_feral_aggression -> rank() );
   }
 
   virtual bool ready()
@@ -2399,7 +2399,7 @@ struct insect_swarm_t : public druid_spell_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
 
-    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talent_genesis -> rank, 3, 0.02 ) +
+    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talent_genesis -> rank(), 3, 0.02 ) +
                              ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
                              ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
 
@@ -2467,8 +2467,8 @@ struct moonfire_t : public druid_spell_t
     
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
-    double multiplier_td = ( util_t::talent_rank( p -> talent_genesis -> rank, 3, 0.02 ) );
-    double multiplier_dd = ( util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank, 2, 0.03 ) );
+    double multiplier_td = ( util_t::talent_rank( p -> talent_genesis -> rank(), 3, 0.02 ) );
+    double multiplier_dd = ( util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank(), 2, 0.03 ) );
 
     if ( p -> glyphs.moonfire )
     {
@@ -2484,7 +2484,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
     // +2/4/8% damage bonus only applies to direct damage
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank, 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
   }
   virtual void execute()
   {
@@ -2493,7 +2493,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
     // +2/4/8% damage bonus only applies to direct damage
     // Get rid of it for the ticks, hacky :<
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank, 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank(), 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
 
 
     if ( result_is_hit() )
@@ -2511,7 +2511,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     double c = druid_spell_t::cost();
-    c *= 1.0 - (0.10 * p -> buffs_lunar_shower -> stack() * p -> talent_lunar_shower -> rank );
+    c *= 1.0 - (0.10 * p -> buffs_lunar_shower -> stack() * p -> talent_lunar_shower -> rank() );
 
     if ( c < 0 ) c = 0;
     return c;
@@ -2575,10 +2575,10 @@ struct bear_form_t : public druid_spell_t
     p -> base_gcd = 1.0;
     p -> reset_gcd();
 
-    p -> dodge += 0.02 * p -> talent_feral_swiftness -> rank + 0.03 * p -> talent_natural_reaction -> rank;
-    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talent_thick_hide -> rank );
+    p -> dodge += 0.02 * p -> talent_feral_swiftness -> rank() + 0.03 * p -> talent_natural_reaction -> rank();
+    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talent_thick_hide -> rank() );
 
-    if ( p -> talent_leader_of_the_pack -> rank )
+    if ( p -> talent_leader_of_the_pack -> rank() )
     {
       sim -> auras.leader_of_the_pack -> trigger();
     }
@@ -2633,13 +2633,13 @@ struct cat_form_t : public druid_spell_t
     if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
 
-    p -> dodge += 0.02 * p -> talent_feral_swiftness -> rank;
+    p -> dodge += 0.02 * p -> talent_feral_swiftness -> rank();
 
     p -> buffs_cat_form -> start();
     p -> base_gcd = 1.0;
     p -> reset_gcd();
 
-    if ( p -> talent_leader_of_the_pack -> rank )
+    if ( p -> talent_leader_of_the_pack -> rank() )
     {
       sim -> auras.leader_of_the_pack -> trigger();
     }
@@ -2660,7 +2660,7 @@ struct moonkin_form_t : public druid_spell_t
       druid_spell_t( "moonkin_form", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_moonkin_form -> rank );
+    check_talent( p -> talent_moonkin_form -> rank() );
     trigger_gcd = 0;
     base_execute_time = 0;
     base_cost = 0;
@@ -2680,9 +2680,9 @@ struct moonkin_form_t : public druid_spell_t
 
     sim -> auras.moonkin -> trigger();
 
-    if ( p -> talent_furor -> rank )
+    if ( p -> talent_furor -> rank() )
     {
-      p -> attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + p -> talent_furor -> rank * 0.02;
+      p -> attribute_multiplier[ ATTR_INTELLECT ] *= 1.0 + p -> talent_furor -> rank() * 0.02;
     }
 
     p -> armor_multiplier += 2.2;
@@ -2707,7 +2707,7 @@ struct druids_swiftness_t : public druid_spell_t
     sub_cooldown(0), sub_dot(0)
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_natures_swiftness -> rank );
+    check_talent( p -> talent_natures_swiftness -> rank() );
     trigger_gcd = 0;
     cooldown -> duration = 180.0;
     if ( ! options_str.empty() )
@@ -2781,7 +2781,7 @@ struct starfire_t : public druid_spell_t
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
-    base_execute_time -= util_t::talent_rank( p -> talent_starlight_wrath -> rank, 3, 0.15, 0.25, 0.5 );
+    base_execute_time -= util_t::talent_rank( p -> talent_starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
@@ -2809,7 +2809,7 @@ struct starfire_t : public druid_spell_t
       if ( result == RESULT_CRIT )
       {
         trigger_t10_4pc_caster( player, direct_dmg, school );
-        trigger_eclipse_energy_gain( this, 4 * p -> talent_euphoria -> rank );
+        trigger_eclipse_energy_gain( this, 4 * p -> talent_euphoria -> rank() );
       }
       if ( p -> glyphs.starfire )
       {
@@ -2897,7 +2897,7 @@ struct wrath_t : public druid_spell_t
     direct_power_mod  = ( base_execute_time / 3.5 );
     may_crit          = true;
 
-    base_execute_time -= util_t::talent_rank( p -> talent_starlight_wrath -> rank, 3, 0.15, 0.25, 0.5 );
+    base_execute_time -= util_t::talent_rank( p -> talent_starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -2917,7 +2917,7 @@ struct wrath_t : public druid_spell_t
       {
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
 
-        trigger_eclipse_energy_gain( this, -2 * p -> talent_euphoria -> rank );
+        trigger_eclipse_energy_gain( this, -2 * p -> talent_euphoria -> rank() );
       }
       trigger_earth_and_moon( this );
     }
@@ -3090,7 +3090,7 @@ struct typhoon_t : public druid_spell_t
       druid_spell_t( "typhoon", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_typhoon -> rank );
+    check_talent( p -> talent_typhoon -> rank() );
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -3110,7 +3110,7 @@ struct typhoon_t : public druid_spell_t
 
     base_execute_time = 0;
     direct_power_mod  = 0.193;
-    base_multiplier *= 1.0 + 0.15 * p -> talent_gale_winds -> rank;
+    base_multiplier *= 1.0 + 0.15 * p -> talent_gale_winds -> rank();
     aoe = true;
 
     cooldown -> duration = 20;
@@ -3162,7 +3162,7 @@ struct treants_spell_t : public druid_spell_t
       druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talent_force_of_nature -> rank );
+    check_talent( p -> talent_force_of_nature -> rank() );
 
     option_t options[] =
     {
@@ -3379,7 +3379,7 @@ void druid_t::init_base()
 
   base_attack_power = -20 + level * 2.0;
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talent_heart_of_the_wild -> rank * 0.02;
+  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talent_heart_of_the_wild -> rank() * 0.02;
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
 
@@ -3387,7 +3387,7 @@ void druid_t::init_base()
   base_defense = level * 5;
   base_miss    = 0.05;
   base_dodge   = 0.0560970;
-  initial_armor_multiplier  = 1.0 + util_t::talent_rank( talent_thick_hide -> rank, 3, 0.04, 0.07, 0.10 );
+  initial_armor_multiplier  = 1.0 + util_t::talent_rank( talent_thick_hide -> rank(), 3, 0.04, 0.07, 0.10 );
   initial_dodge_per_agility = 0.0002090;
   initial_armor_per_agility = 2.0;
 
@@ -3403,8 +3403,8 @@ void druid_t::init_base()
   energy_regen_per_second = 10;
   
   // Furor: +5/10/15% max mana
-  resource_base[ RESOURCE_MANA ] *= 1.0 + talent_furor -> rank * 0.05;
-  mana_per_intellect             *= 1.0 + talent_furor -> rank * 0.05;
+  resource_base[ RESOURCE_MANA ] *= 1.0 + talent_furor -> rank() * 0.05;
+  mana_per_intellect             *= 1.0 + talent_furor -> rank() * 0.05;
   
   switch ( primary_tree() )
   {
@@ -3440,11 +3440,11 @@ void druid_t::init_buffs()
   buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0, 30.0 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
-  buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talent_natures_grace -> rank );
+  buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank() );
+  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talent_natures_grace -> rank() );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank() );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
 
@@ -3571,7 +3571,7 @@ void druid_t::init_actions()
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
         action_list_str += "/mangle_bear,mangle<=0.5";
         action_list_str += "/lacerate,lacerate<=6.9";           // This seems to be the sweet spot to prevent Lacerate falling off.
-        if ( talent_berserk -> rank ) action_list_str+="/berserk_bear";
+        if ( talent_berserk -> rank() ) action_list_str+="/berserk_bear";
         action_list_str += use_str;
         action_list_str += "/mangle_bear";
         action_list_str += "/faerie_fire_feral";
@@ -3588,7 +3588,7 @@ void druid_t::init_actions()
         action_list_str += "/maim";
         action_list_str += "/faerie_fire_feral,debuff_only=1";
         action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
-        if ( talent_berserk -> rank )action_list_str += "/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up";
+        if ( talent_berserk -> rank() )action_list_str += "/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&target.time_to_die>=9&buff.savage_roar.remains<=8&dot.rip.remains-buff.savage_roar.remains>=-3";
@@ -3606,16 +3606,16 @@ void druid_t::init_actions()
     else
     {
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
-      if ( talent_moonkin_form -> rank ) action_list_str += "/moonkin_form";
+      if ( talent_moonkin_form -> rank() ) action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
-      if ( talent_typhoon -> rank ) action_list_str += "/typhoon,moving=1";
+      if ( talent_typhoon -> rank() ) action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,trigger=-2000";
-      if ( talent_force_of_nature -> rank )
+      if ( talent_force_of_nature -> rank() )
       {
         action_list_str+="/treants,time>=5";
       }
-      if ( talent_starfall -> rank ) action_list_str+="/starfall,if=!eclipse";
+      if ( talent_starfall -> rank() ) action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking&!eclipse";
       action_list_str += "/insect_swarm,if=!ticking&!eclipse";
@@ -3710,10 +3710,10 @@ double druid_t::composite_attack_power() SC_CONST
   {
     double weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
 
-    if ( talent_predatory_strikes -> rank )
+    if ( talent_predatory_strikes -> rank() )
     {
-      ap += level * talent_predatory_strikes -> rank * 0.5;
-      weapon_ap *= 1 + util_t::talent_rank( talent_predatory_strikes -> rank, 3, 0.07, 0.14, 0.20 );
+      ap += level * talent_predatory_strikes -> rank() * 0.5;
+      weapon_ap *= 1 + util_t::talent_rank( talent_predatory_strikes -> rank(), 3, 0.07, 0.14, 0.20 );
     }
 
     ap += weapon_ap;
@@ -3732,7 +3732,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    multiplier *= 1.0 + talent_heart_of_the_wild -> rank * 0.03;
+    multiplier *= 1.0 + talent_heart_of_the_wild -> rank() * 0.03;
   }
   if ( primary_tree() == TREE_FERAL )
   {
@@ -3752,7 +3752,7 @@ double druid_t::composite_attack_crit() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    c += 0.04 * talent_master_shapeshifter -> rank;
+    c += 0.04 * talent_master_shapeshifter -> rank();
   }
 
   return floor( c * 10000.0 ) / 10000.0;
@@ -3764,8 +3764,8 @@ double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += talent_balance_of_power -> rank * 0.02;
-  hit += spirit() * ( talent_balance_of_power -> rank / 2.0 ) / rating.spell_hit;
+  hit += talent_balance_of_power -> rank() * 0.02;
+  hit += spirit() * ( talent_balance_of_power -> rank() / 2.0 ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
@@ -3775,7 +3775,7 @@ double druid_t::composite_spell_hit() SC_CONST
 double druid_t::composite_spell_crit() SC_CONST
 {
   double crit = player_t::composite_spell_crit();
-  crit += talent_natures_majesty -> rank * 0.02;
+  crit += talent_natures_majesty -> rank() * 0.02;
   return floor( crit * 10000.0 ) / 10000.0;
 }
 
@@ -3787,7 +3787,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STAMINA )
     if ( buffs_bear_form -> check() )
-      m *= 1.0 + 0.03 * talent_heart_of_the_wild -> rank;
+      m *= 1.0 + 0.03 * talent_heart_of_the_wild -> rank();
 
   return m;
 }
@@ -3800,7 +3800,7 @@ double druid_t::composite_tank_crit( int school ) SC_CONST
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    c -= 0.02 * talent_thick_hide -> rank;
+    c -= 0.02 * talent_thick_hide -> rank();
     if ( c < 0 ) c = 0;
   }
 
@@ -3842,42 +3842,6 @@ std::vector<option_t>& druid_t::get_options()
     option_t druid_options[] =
     {
       // @option_doc loc=player/druid/talents title="Talents"
-      { "balance_of_power",          OPT_INT,  &( talent_balance_of_power -> rank          ) },
-      { "berserk",                   OPT_INT,  &( talent_berserk -> rank                   ) },
-      { "blessing_of_the_grove",     OPT_INT,  &( talent_blessing_of_the_grove -> rank     ) },
-      { "brutal_impact",             OPT_INT,  &( talent_brutal_impact -> rank             ) },
-      { "earth_and_moon",            OPT_INT,  &( talent_earth_and_moon -> rank            ) },
-      { "euphoria",                  OPT_INT,  &( talent_euphoria -> rank                  ) },
-      { "feral_aggression",          OPT_INT,  &( talent_feral_aggression -> rank          ) },
-      { "feral_swiftness",           OPT_INT,  &( talent_feral_swiftness -> rank           ) },
-      { "force_of_nature",           OPT_INT,  &( talent_force_of_nature -> rank           ) },
-      { "furor",                     OPT_INT,  &( talent_furor -> rank                     ) },
-      { "fury_swipes",               OPT_INT,  &( talent_fury_swipes -> rank               ) },
-      { "gale_winds",                OPT_INT,  &( talent_gale_winds -> rank                ) },
-      { "genesis",                   OPT_INT,  &( talent_genesis -> rank                   ) },
-      { "heart_of_the_wild",         OPT_INT,  &( talent_heart_of_the_wild -> rank         ) },
-      { "infected_wounds",           OPT_INT,  &( talent_infected_wounds -> rank           ) },
-      { "king_of_the_jungle",        OPT_INT,  &( talent_king_of_the_jungle -> rank        ) },
-      { "leader_of_the_pack",        OPT_INT,  &( talent_leader_of_the_pack -> rank        ) },
-      { "lunar_guidance",            OPT_INT,  &( talent_lunar_guidance -> rank            ) },
-      { "lunar_shower",              OPT_INT,  &( talent_lunar_shower -> rank              ) },
-      { "master_shapeshifter",       OPT_INT,  &( talent_master_shapeshifter -> rank       ) },
-      { "moonglow",                  OPT_INT,  &( talent_moonglow -> rank                  ) },
-      { "moonkin_form",              OPT_INT,  &( talent_moonkin_form -> rank              ) },
-      { "natural_reaction",          OPT_INT,  &( talent_natural_reaction -> rank          ) },
-      { "natures_grace",             OPT_INT,  &( talent_natures_grace -> rank             ) },
-      { "natures_majesty",           OPT_INT,  &( talent_natures_majesty -> rank           ) },
-      { "natures_swiftness",         OPT_INT,  &( talent_natures_swiftness -> rank         ) },
-      { "owlkin_frenzy",             OPT_INT,  &( talent_owlkin_frenzy -> rank             ) },
-      { "predatory_strikes",         OPT_INT,  &( talent_predatory_strikes -> rank         ) },
-      { "primal_fury",               OPT_INT,  &( talent_primal_fury -> rank               ) },
-      { "rend_and_tear",             OPT_INT,  &( talent_rend_and_tear -> rank             ) },
-      { "solar_beam",                OPT_INT,  &( talent_solar_beam -> rank                ) },
-      { "survival_instincts",        OPT_INT,  &( talent_survival_instincts -> rank        ) },
-      { "starfall",                  OPT_INT,  &( talent_starfall -> rank                  ) },
-      { "starlight_wrath",           OPT_INT,  &( talent_starlight_wrath -> rank           ) },
-      { "thick_hide",                OPT_INT,  &( talent_thick_hide -> rank                ) },
-      { "typhoon",                   OPT_INT,  &( talent_typhoon -> rank                   ) },
       // @option_doc loc=player/druid/misc title="Misc"
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -3944,14 +3908,14 @@ int druid_t::decode_set( item_t& item )
 
 int druid_t::primary_role() SC_CONST
 {
-  return talent_moonkin_form -> rank ? ROLE_SPELL : ROLE_ATTACK;
+  return talent_moonkin_form -> rank() ? ROLE_SPELL : ROLE_ATTACK;
 }
 
 // druid_t::primary_resource ================================================
 
 int druid_t::primary_resource() SC_CONST
 {
-  if ( talent_moonkin_form -> rank ) return RESOURCE_MANA;
+  if ( talent_moonkin_form -> rank() ) return RESOURCE_MANA;
   if ( tank > 0 ) return RESOURCE_RAGE;
   return RESOURCE_ENERGY;
 }
@@ -3994,9 +3958,9 @@ int druid_t::target_swing()
   }
   if ( result == RESULT_DODGE )
   {
-    if ( talent_natural_reaction -> rank )
+    if ( talent_natural_reaction -> rank() )
     {
-      resource_gain( RESOURCE_RAGE, talent_natural_reaction -> rank, gains_natural_reaction );
+      resource_gain( RESOURCE_RAGE, talent_natural_reaction -> rank(), gains_natural_reaction );
     }
   }
   if ( result == RESULT_PARRY )
