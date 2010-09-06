@@ -763,8 +763,9 @@ struct devouring_plague_t : public priest_spell_t
     id = 2944;
     parse_data( p -> player_data );
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+    base_cost        *= 1.0 
+                        - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value ;
     base_cost         = floor( base_cost );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
@@ -1487,8 +1488,9 @@ struct shadow_word_death_t : public priest_spell_t
 
     may_crit = true;
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+    base_cost        *= 1.0 
+                          - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                          + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
     base_cost         = floor( base_cost );
 
   }
@@ -1573,8 +1575,9 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_data( p -> player_data );
 
 
-    base_cost        *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-								+ p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+    base_cost        *= 1.0 
+                        - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
     base_cost         = floor( base_cost );
     base_multiplier *= 1.0 + p -> constants.improved_shadow_word_pain_value ;
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
@@ -2362,14 +2365,12 @@ void priest_t::init_values()
   player_t::init_values();
 
   // Discipline/Holy
-  constants.meditation_value                = passive_spells.meditation_disc -> ok() ? 
-                                                passive_spells.meditation_disc -> effect_base_value( 1 ) / 100.0 :
-                                              passive_spells.meditation_holy -> ok() ? 
-                                                passive_spells.meditation_holy -> effect_base_value( 1 ) / 100.0 :
-                                                0.0;
+  constants.meditation_value                = passive_spells.meditation_disc    -> ok() ? 
+                                                passive_spells.meditation_disc  -> effect_base_value( 1 ) / 100.0 :
+                                                passive_spells.meditation_holy  -> effect_base_value( 1 ) / 100.0;
 
   // Discipline
-  constants.twin_disciplines_value          = player_data.effect_base_value( talents.twin_disciplines -> get_effect_id( 1 ) ) / 100.0;
+  constants.twin_disciplines_value          = talents.twin_disciplines          -> effect_base_value( 1 ) / 100.0;
 
   constants.dark_evangelism_value           = 0.01;
   constants.holy_evangelism_damage_value    = 0.02;
@@ -2377,34 +2378,34 @@ void priest_t::init_values()
   constants.dark_archangel_value            = 0.03;
   constants.holy_archangel_value            = 0.03;
   constants.archangel_mana_value            = 0.03;
-  constants.inner_will_value                = 0.15;
+  constants.inner_will_value                = active_spells.inner_will          -> effect_base_value( 1 ) / 100.0;
 
   // Holy
-  constants.holy_concentration_value        = player_data.effect_base_value( talents.holy_concentration -> get_effect_id( 1 ) ) / 100.0;
+  constants.holy_concentration_value        = talents.holy_concentration        -> effect_base_value( 1 ) / 100.0;
 
   // Shadow Core
-  constants.shadow_power_damage_value       = player_data.effect_base_value( passive_spells.shadow_power -> get_effect_id( 1 ) ) / 100.0;
-  constants.shadow_power_crit_value         = player_data.effect_base_value( passive_spells.shadow_power -> get_effect_id( 2 ) ) / 100.0;
-  constants.shadow_orb_proc_value           = player_data.spell_proc_chance( passive_spells.shadow_orbs -> id() );
-  constants.shadow_orb_damage_value         = player_data.effect_coeff( passive_spells.shadow_orbs -> get_effect_id( 1 ) ) / 12.5;
-  constants.shadow_orb_mastery_value        = player_data.effect_base_value( passive_spells.shadow_orbs -> get_effect_id( 2 ) ) / 10000.0;
+  constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
+  constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
+  constants.shadow_orb_proc_value           = passive_spells.shadow_orbs        -> proc_chance();
+  constants.shadow_orb_damage_value         = passive_spells.shadow_orbs        -> effect_coeff( 1 ) / 12.5;
+  constants.shadow_orb_mastery_value        = passive_spells.shadow_orbs        -> effect_base_value( 2 )/ 10000.0;
 
   // Shadow
-  constants.darkness_value                  = 1.0 / ( 1.0 + player_data.effect_base_value( talents.darkness    -> get_effect_id( 1 ) ) / 100.0 );
-  constants.improved_shadow_word_pain_value = player_data.effect_base_value( talents.improved_shadow_word_pain -> get_effect_id( 1 ) ) / 100.0;
-  constants.twisted_faith_static_value      = player_data.effect_base_value( talents.twisted_faith             -> get_effect_id( 2 ) ) / 100.0;  
-  constants.twisted_faith_dynamic_value     = player_data.effect_base_value( talents.twisted_faith             -> get_effect_id( 1 ) ) / 100.0;
-  constants.shadow_form_value               = player_data.effect_base_value( talents.shadow_form               -> get_effect_id( 2 ) ) / 100.0;
-  constants.harnessed_shadows_value         = player_data.effect_base_value( talents.harnessed_shadows         -> get_effect_id( 1 ) ) / 100.0;
-  constants.pain_and_suffering_value        = player_data.spell_proc_chance( talents.pain_and_suffering        -> get_spell_id ( ) );
-  constants.mind_spike_crit_value           = player_data.effect_base_value( active_spells.mind_spike          -> get_effect_id( 2 ) ) / 100.0;
+  constants.darkness_value                  = 1.0 / ( 1.0 + talents.darkness    -> effect_base_value( 1 ) / 100.0 );
+  constants.improved_shadow_word_pain_value = talents.improved_shadow_word_pain -> effect_base_value( 1 ) / 100.0;
+  constants.twisted_faith_static_value      = talents.twisted_faith             -> effect_base_value( 2 ) / 100.0;  
+  constants.twisted_faith_dynamic_value     = talents.twisted_faith             -> effect_base_value( 1 ) / 100.0;
+  constants.shadow_form_value               = talents.shadow_form               -> effect_base_value( 2 ) / 100.0;
+  constants.harnessed_shadows_value         = talents.harnessed_shadows         -> effect_base_value( 1 ) / 100.0;
+  constants.pain_and_suffering_value        = talents.pain_and_suffering        -> proc_chance();
+  constants.mind_spike_crit_value           = active_spells.mind_spike          -> effect_base_value( 2 ) / 100.0;
   constants.devouring_plague_health_mod     = 0.15;
 
-  cooldowns_shadow_fiend -> duration        = player_data.spell_cooldown( active_spells.shadow_fiend           -> id() ) + 
-                                              player_data.effect_base_value( talents.veiled_shadows            -> get_effect_id( 2 ) ) / 1000.0;
+  cooldowns_shadow_fiend -> duration        = active_spells.shadow_fiend        -> cooldown() + 
+                                              talents.veiled_shadows            -> effect_base_value( 2 ) / 1000.0;
 
-  cooldowns_archangel -> duration           = player_data.spell_cooldown( talents.archangel                    -> get_spell_id ( ) );
-  cooldowns_chakra -> duration              = player_data.spell_cooldown( talents.chakra                       -> get_spell_id ( ) );
+  cooldowns_archangel -> duration           = talents.archangel                 -> cooldown();
+  cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
 }
 
 

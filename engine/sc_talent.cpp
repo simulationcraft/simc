@@ -92,7 +92,7 @@ bool talent_t::ok() SC_CONST
   if ( ! p || !talent_t_data )
     return false;
 
-  return ( ( talent_t_rank > 0 ) && ( talent_t_enabled ) );
+  return ( ( talent_t_rank > 0 ) && spell_id_t::ok() && ( talent_t_enabled ) );
 }
 
 // talent_t::get_spell_id ===================================================
@@ -388,7 +388,11 @@ bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
   {
     spell_id_t_enabled = spell_id_t_forced_value;
   }
-  else if ( !spell_id_t_m_is_talent) 
+  else if ( spell_id_t_m_is_talent )
+  {
+    spell_id_t_enabled = p -> player_data.spell_is_enabled( spell_id_t_id );
+  }
+  else
   {
     spell_id_t_enabled = p -> player_data.spell_is_enabled( spell_id_t_id ) & 
                          ( p -> player_data.spell_is_level( spell_id_t_id, p -> level ) );
@@ -397,10 +401,6 @@ bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
     {
       if ( p -> level < 75 )
         spell_id_t_enabled = false;
-    }
-    else if ( !p -> player_data.spell_is_level( spell_id_t_id, p -> level ) )
-    {
-      spell_id_t_enabled = false;
     }
   }
   return true;
@@ -446,7 +446,7 @@ bool spell_id_t::ok() SC_CONST
 {
   bool res = spell_id_t_enabled;
 
-  if ( ! p )
+  if ( ! p || !spell_id_t_data || !spell_id_t_id )
     return false;
 
   if ( spell_id_t_req_talent )
@@ -502,7 +502,7 @@ const std::string spell_id_t::token() SC_CONST
 
 double spell_id_t::missile_speed() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -512,7 +512,7 @@ double spell_id_t::missile_speed() SC_CONST
 
 uint32_t spell_id_t::school_mask() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -522,7 +522,7 @@ uint32_t spell_id_t::school_mask() SC_CONST
 
 resource_type spell_id_t::power_type() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return RESOURCE_NONE;
   }
@@ -532,7 +532,7 @@ resource_type spell_id_t::power_type() SC_CONST
 
 double spell_id_t::min_range() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -542,7 +542,7 @@ double spell_id_t::min_range() SC_CONST
 
 double spell_id_t::max_range() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -552,7 +552,7 @@ double spell_id_t::max_range() SC_CONST
 
 bool spell_id_t::in_range() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return false;
   }
@@ -562,7 +562,7 @@ bool spell_id_t::in_range() SC_CONST
 
 double spell_id_t::cooldown() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -572,7 +572,7 @@ double spell_id_t::cooldown() SC_CONST
 
 double spell_id_t::gcd() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -582,7 +582,7 @@ double spell_id_t::gcd() SC_CONST
 
 uint32_t spell_id_t::category() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -592,7 +592,7 @@ uint32_t spell_id_t::category() SC_CONST
 
 double spell_id_t::duraton() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -602,7 +602,7 @@ double spell_id_t::duraton() SC_CONST
 
 double spell_id_t::cost() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -612,7 +612,7 @@ double spell_id_t::cost() SC_CONST
 
 uint32_t spell_id_t::rune_cost() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -622,7 +622,7 @@ uint32_t spell_id_t::rune_cost() SC_CONST
 
 double spell_id_t::runic_power_gain() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -632,7 +632,7 @@ double spell_id_t::runic_power_gain() SC_CONST
 
 uint32_t spell_id_t::max_stacks() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -642,7 +642,7 @@ uint32_t spell_id_t::max_stacks() SC_CONST
 
 uint32_t spell_id_t::initial_stacks() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -652,7 +652,7 @@ uint32_t spell_id_t::initial_stacks() SC_CONST
 
 double spell_id_t::proc_chance() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -662,7 +662,7 @@ double spell_id_t::proc_chance() SC_CONST
 
 double spell_id_t::cast_time() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0.0;
   }
@@ -672,7 +672,7 @@ double spell_id_t::cast_time() SC_CONST
 
 uint32_t spell_id_t::effect_id( const uint32_t effect_num ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -682,7 +682,7 @@ uint32_t spell_id_t::effect_id( const uint32_t effect_num ) SC_CONST
 
 bool spell_id_t::flags( const spell_attribute_t f ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return false;
   }
@@ -692,7 +692,7 @@ bool spell_id_t::flags( const spell_attribute_t f ) SC_CONST
 
 const char* spell_id_t::desc() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return NULL;
   }
@@ -702,7 +702,7 @@ const char* spell_id_t::desc() SC_CONST
 
 const char* spell_id_t::tooltip() SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return NULL;
   }
@@ -712,7 +712,7 @@ const char* spell_id_t::tooltip() SC_CONST
 
 uint32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -724,7 +724,7 @@ uint32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
 
 uint32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -736,7 +736,7 @@ uint32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
 
 int32_t spell_id_t::effect_base_value( const uint32_t effect_num ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
@@ -748,7 +748,7 @@ int32_t spell_id_t::effect_base_value( const uint32_t effect_num ) SC_CONST
 
 int32_t spell_id_t::effect_misc_value1( const uint32_t effect_num ) SC_CONST
 {
-  if ( !p || !spell_id_t_data || !spell_id_t_id )
+  if ( !ok() )
   {
     return 0;
   }
