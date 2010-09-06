@@ -201,14 +201,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_class_spells.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_class_spells_ptr.inc"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_const_data.cpp"
 			>
 		</File>
@@ -282,14 +274,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_main.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_mastery_spells.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_mastery_spells_ptr.inc"
 			>
 		</File>
 		<File
@@ -385,6 +369,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_spell_lists.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_lists_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_stats.cpp"
 			>
 		</File>
@@ -398,14 +390,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_talent_data_ptr.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_talent_spec_spells.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_talent_spec_spells_ptr.inc"
 			>
 		</File>
 		<File

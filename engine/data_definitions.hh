@@ -66,7 +66,7 @@ struct spelleffect_data_t {
   int         base_value;      // Effect value
   int         misc_value;      // Effect miscellaneous value
   int         misc_value_2;    // Effect miscellaneous value
-  unsigned    trigger_spell;   // Effect triggers this spell id
+  int         trigger_spell;   // Effect triggers this spell id
   double      pp_combo_points; // Effect points per combo points
 };
 

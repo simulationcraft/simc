@@ -3,18 +3,14 @@
 #include "sc_scale_data.inc"
 #include "sc_talent_data.inc"
 #include "sc_spell_data.inc"
+#include "sc_spell_lists.inc"
 #include "sc_extra_data.inc"
-#include "sc_class_spells.inc"
-#include "sc_talent_spec_spells.inc"
-#include "sc_mastery_spells.inc"
 
 #include "sc_scale_data_ptr.inc"
 #include "sc_talent_data_ptr.inc"
 #include "sc_spell_data_ptr.inc"
+#include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
-#include "sc_class_spells_ptr.inc"
-#include "sc_talent_spec_spells_ptr.inc"
-#include "sc_mastery_spells_ptr.inc"
 
 
 void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
@@ -45,7 +41,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, 110, sizeof( __ptr_class_ability_data ) / ( 110 * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __ptr_tree_specialization_data, 5, 3, sizeof( __ptr_tree_specialization_data ) / ( 5 * 3 * sizeof( uint32_t ) ) );
-      m_racial_spells.create_copy( ( uint32_t * ) __ptr_racial_spell_data, 10, 12, sizeof( __ptr_racial_spell_data ) / ( 10 * 12 * sizeof( uint32_t ) ) );
+      m_racial_spells.create_copy( ( uint32_t * ) __ptr_race_ability_data, 6, 12, sizeof( __ptr_race_ability_data ) / ( 6 * 12 * sizeof( uint32_t ) ) );
       m_mastery_spells.create_copy( ( uint32_t * ) __ptr_class_mastery_ability_data, 4, sizeof( __ptr_class_mastery_ability_data ) / ( 4 * sizeof( uint32_t ) ) );
 
       m_dodge_base.create_copy( ( double * ) __ptr_gt_chance_to_dodge_base, sizeof( __ptr_gt_chance_to_dodge_base ) / sizeof( double ) );
@@ -71,7 +67,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_class_spells.create_copy( ( uint32_t * ) __class_ability_data, 110, sizeof( __class_ability_data ) / ( 110 * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __tree_specialization_data, 5, 3, sizeof( __tree_specialization_data ) / ( 5 * 3 * sizeof( uint32_t ) ) );
-      m_racial_spells.create_copy( ( uint32_t * ) __racial_spell_data, 10, 12, sizeof( __racial_spell_data ) / ( 10 * 12 * sizeof( uint32_t ) ) );
+      m_racial_spells.create_copy( ( uint32_t * ) __race_ability_data, 6, 12, sizeof( __race_ability_data ) / ( 6 * 12 * sizeof( uint32_t ) ) );
       m_mastery_spells.create_copy( ( uint32_t * ) __class_mastery_ability_data, 4, sizeof( __class_mastery_ability_data ) / ( 4 * sizeof( uint32_t ) ) );
 
       m_dodge_base.create_copy( ( double * ) __gt_chance_to_dodge_base, sizeof( __gt_chance_to_dodge_base ) / sizeof( double ) );
