@@ -2411,7 +2411,6 @@ struct player_t
     buff_t* blood_fury_ap;
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
-    buff_t* demonic_pact;
     buff_t* destruction_potion;
     buff_t* focus_magic;
     buff_t* dark_intent;
