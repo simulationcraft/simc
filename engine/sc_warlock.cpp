@@ -262,7 +262,7 @@ struct warlock_t : public player_t
     talent_demonic_empowerment 			= new talent_t ( this, "demonic_empowerment", "Demonic Empowerment" );
     talent_molten_core 					= new talent_t ( this, "molten_core", "Molten Core" );
     talent_hand_of_guldan 				= new talent_t ( this, "hand_of_guldan", "Hand of Gul'dan" );
-    talent_aura_of_foreboding			= new talent_t ( this, "aura_of_foreboding", "Aura of Foreboding" );
+    talent_aura_of_foreboding			= new talent_t ( this, "aura_of_foreboding", "Aura of Foreboding <NYI>" );
     talent_ancient_grimoire 			= new talent_t ( this, "ancient_grimoire", "Ancient Grimoire" );
     talent_inferno 						= new talent_t ( this, "inferno", "Inferno" );
     talent_decimation 					= new talent_t ( this, "decimation", "Decimation" );
