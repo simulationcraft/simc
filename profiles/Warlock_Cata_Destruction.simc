@@ -1,8 +1,7 @@
 #!./simc 
 
 warlock=Warlock_Cata_Destruction
-level=83
-target_level=86
+level=85
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=0000000000000000003300220000000000000332220130223310211
@@ -15,24 +14,25 @@ actions+=/fel_armor
 actions+=/summon_pet,imp
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
+actions+=/demon_soul
 actions+=/conflagrate
 actions+=/immolate,time_to_die>=3,if=(dot.immolate.remains<cast_time)
 actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0
 actions+=/soul_fire,if=buff.empowered_imp.react
 actions+=/chaos_bolt
-actions+=/bane_of_doom,time_to_die>=70
+actions+=/bane_of_havoc,if=!ticking
 actions+=/fel_flame,if=dot.immolate.remains<=4
 actions+=/incinerate
 actions+=/life_tap
 
 # Gear Summary
-gear_stamina=1432
-gear_intellect=4000
-gear_spirit=300
-gear_spell_power=1000
-gear_hit_rating=289
-gear_crit_rating=1227
-gear_haste_rating=1243
-gear_mastery_rating=930
-gear_armor=2309
+gear_stamina=3000
+gear_intellect=7000
+gear_spirit=500
+gear_spell_power=2000
+gear_hit_rating=800
+gear_crit_rating=2000
+gear_haste_rating=2000
+gear_mastery_rating=1500
+gear_armor=4000
 meta_gem=chaotic_skyflare
