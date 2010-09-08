@@ -105,6 +105,7 @@ struct rogue_t : public player_t
   std::string critical_strike_intervals_str;
   std::string tricks_of_the_trade_target_str;
   player_t*   tricks_of_the_trade_target;
+  int use_rupture;
 
   struct talents_t
   {
@@ -220,6 +221,7 @@ struct rogue_t : public player_t
     critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
     tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
+    use_rupture = -1;
   }
 
   // Character Definition
@@ -3065,9 +3067,12 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      bool rupture_less = ( ! talents.blood_spatter   &&
-                            ! talents.serrated_blades &&
-                            ! glyphs.rupture );
+      if ( use_rupture = -1 )
+      {
+	use_rupture = ( ! talents.blood_spatter   &&
+			! talents.serrated_blades &&
+			! glyphs.rupture ) ? 0 : 1;
+      }
       if ( talents.hunger_for_blood )
       {
         action_list_str += "/pool_energy,for_next=1";
@@ -3079,7 +3084,7 @@ void rogue_t::init_actions()
         action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
         action_list_str += "/slice_and_dice,if=buff.combo_points.stack>=3&buff.slice_and_dice.remains<2";
       }
-      if ( ! rupture_less )
+      if ( use_rupture )
       {
         action_list_str += "/rupture,if=buff.combo_points.stack>=4&target.time_to_die>15&time>10&buff.slice_and_dice.remains>11";
       }
@@ -3093,12 +3098,14 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      bool rupture_less = (   false                       &&
-                            ! talents.blood_spatter       &&
-                            ! talents.serrated_blades     &&
-                              talents.improved_eviscerate &&
-                              talents.aggression          &&
-                            ! glyphs.rupture );
+      if( use_rupture == -1 )
+      {
+	use_rupture = (   talents.blood_spatter       &&
+			! talents.serrated_blades     &&
+			  talents.improved_eviscerate &&
+			  talents.aggression          &&
+			! glyphs.rupture ) ? 0 : 1;
+      }
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down&time<4";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2&buff.combo_points.stack>=3";
       action_list_str += "/tricks_of_the_trade";
@@ -3111,7 +3118,7 @@ void rogue_t::init_actions()
         action_list_str += "/blade_flurry,if=target.adds_never&buff.slice_and_dice.remains>=5";
         action_list_str += "/blade_flurry,if=target.adds>0";
       }
-      if ( ! rupture_less )
+      if ( use_rupture )
       {
         action_list_str += "/rupture,if=buff.combo_points.stack=5&target.time_to_die>10";
       }
@@ -3126,15 +3133,15 @@ void rogue_t::init_actions()
       }
       else
       {
-        if ( rupture_less )
-        {
-          action_list_str += "/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7";
-          action_list_str += "/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40";
-        }
-        else
+        if ( use_rupture )
         {
           action_list_str += "/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7&dot.rupture.remains>6";
           action_list_str += "/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>5";
+        }
+        else
+        {
+          action_list_str += "/eviscerate,if=buff.combo_points.stack=5&buff.slice_and_dice.remains>7";
+          action_list_str += "/eviscerate,if=buff.combo_points.stack>=4&buff.slice_and_dice.remains>4&energy>40";
         }
         action_list_str += "/eviscerate,if=buff.combo_points.stack=5&target.time_to_die<10";
         action_list_str += "/sinister_strike,if=buff.combo_points.stack<5";
@@ -3745,8 +3752,9 @@ void rogue_t::create_options()
     { "vile_poisons",               OPT_INT, &( talents.vile_poisons               ) },
     { "vitality",                   OPT_INT, &( talents.vitality                   ) },
     { "weapon_expertise",           OPT_INT, &( talents.weapon_expertise           ) },
+    { "use_rupture",                OPT_INT, &( use_rupture                        ) },
     { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str   ) },
-    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
+    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str  ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

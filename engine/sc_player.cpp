@@ -373,9 +373,9 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
+  create_options();
   create_talents();
   create_glyphs();
-  create_options();
 }
 
 // player_t::~player_t =====================================================
