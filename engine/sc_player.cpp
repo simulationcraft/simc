@@ -1708,6 +1708,11 @@ double player_t::composite_spell_power( int school ) SC_CONST
     sp = std::max( spell_power[ SCHOOL_SHADOW ],
                    spell_power[ SCHOOL_FROST ] );
   }
+  else if ( school == SCHOOL_SHADOWFLAME )
+  {
+    sp = std::max( spell_power[ SCHOOL_SHADOW ],
+                   spell_power[ SCHOOL_FIRE ] );
+  }
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
   sp += spell_power_per_intellect * intellect() - 10; // The spellpower is always lower by 10, cata beta build 12803

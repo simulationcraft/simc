@@ -1,13 +1,10 @@
 #!./simc
 priest=Cataclysm_Test_Profile:_shadow1
 origin="http://profiler.wowhead.com/profile=21160543"
-level=83
-target_level=86
+level=85
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0322100000000000000000000000000000000000322032210201222100231
-mind_flay=1
-shadow_power=1
 glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -24,21 +21,21 @@ actions+=/shadow_word_pain,if=!ticking
 actions+=/vampiric_touch,if=!ticking
 actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
 actions+=/devouring_plague,if=!ticking
-actions+=/shadow_word_death,health_percentage<=34
-actions+=/mind_blast
+actions+=/shadow_word_death
+actions+=/mind_blast,if=buff.mind_spike.stack>=1
+actions+=/mind_spike,if=buff.mind_spike.stack<=0
 actions+=/mind_flay
-actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 
 # Gear Summary
-gear_stamina=1432
-gear_intellect=4000
-gear_spirit=300
-gear_spell_power=1000
-gear_hit_rating=289
-gear_crit_rating=1227
-gear_haste_rating=1243
-gear_mastery_rating=930
-gear_armor=2309
+gear_stamina=3000
+gear_intellect=7000
+gear_spirit=500
+gear_spell_power=2000
+gear_hit_rating=800
+gear_crit_rating=2000
+gear_haste_rating=5000
+gear_mastery_rating=1500
+gear_armor=4000
 meta_gem=chaotic_skyflare
 

@@ -23,7 +23,7 @@ action_t::action_t( int         ty,
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), dot_behavior( DOT_WAIT ),
+    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), dot_behavior( DOT_WAIT ),
     min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
     weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
     base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
@@ -44,7 +44,7 @@ action_t::action_t( int         ty,
     resource_consumed( 0 ),
     direct_dmg( 0 ), tick_dmg( 0 ),
     resisted_dmg( 0 ), blocked_dmg( 0 ),
-    num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
+    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
     weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
     rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
     time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
@@ -529,6 +529,11 @@ double action_t::resistance() SC_CONST
           resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
                                     t -> spell_resistance[ SCHOOL_FROST ] );
         }
+    else if ( school == SCHOOL_SHADOWFLAME )
+            {
+              resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
+                                        t -> spell_resistance[ SCHOOL_FIRE ] );
+            }
 
     resist_rating -= penetration;
     if ( resist_rating < 0 ) resist_rating = 0;
@@ -773,12 +778,14 @@ void action_t::execute()
       if ( dot_behavior == DOT_REFRESH )
       {
         current_tick = 0;
+        number_ticks = hasted_num_ticks();
         if ( ! ticking ) schedule_tick();
       }
       else
       {
         if ( ticking ) cancel();
         snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
         schedule_tick();
       }
     }
@@ -807,7 +814,7 @@ void action_t::execute()
 
 void action_t::tick()
 {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, number_ticks );
 
   result = RESULT_HIT;
 
@@ -897,7 +904,7 @@ void action_t::assess_damage( double amount,
     {
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     current_tick, num_ticks,
+                     current_tick, number_ticks,
                      sim -> target -> name(), amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
@@ -1075,7 +1082,7 @@ void action_t::refresh_duration()
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
     // from the time of the next tick and add the time for the remaining ticks to that event.
 
-    double duration = tick_event -> time + tick_time() * ( num_ticks - 1 );
+    double duration = tick_event -> time + tick_time() * ( hasted_num_ticks() - 1 );
 
     dot -> start( this, duration );
   }
@@ -1087,7 +1094,7 @@ void action_t::refresh_duration()
 
 void action_t::extend_duration( int extra_ticks )
 {
-  num_ticks += extra_ticks;
+  number_ticks += extra_ticks;
   added_ticks += extra_ticks;
 
   if ( dot_behavior == DOT_WAIT )
@@ -1095,7 +1102,7 @@ void action_t::extend_duration( int extra_ticks )
     dot -> ready += tick_time() * extra_ticks;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, num_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, number_ticks );
 }
 
 // action_t::update_ready ====================================================
@@ -1114,7 +1121,7 @@ void action_t::update_ready()
     {
       assert( num_ticks && tick_event );
 
-      int remaining_ticks = num_ticks - current_tick;
+      int remaining_ticks = number_ticks - current_tick;
 
       double next_tick = tick_event -> occurs() - sim -> current_time;
 
@@ -1194,7 +1201,7 @@ bool action_t::ready()
 
   bool check_duration = true;
 
-  if ( ( scale_ticks_with_haste() > 0 ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
+  if ( ( scale_with_haste ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
   {
     check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
   }
@@ -1423,7 +1430,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticks_remain_expr_t : public action_expr_t
     {
       ticks_remain_expr_t( action_t* a ) : action_expr_t( a, "ticks_remain", TOK_NUM ) {}
-      virtual int evaluate() { action_t* a = action -> dot -> action; result_num = ( action -> dot -> ticking() ? ( a -> num_ticks - a -> current_tick ) : 0 ); return TOK_NUM; }
+      virtual int evaluate() { action_t* a = action -> dot -> action; result_num = ( action -> dot -> ticking() ? ( a -> number_ticks - a -> current_tick ) : 0 ); return TOK_NUM; }
     };
     return new ticks_remain_expr_t( this );
   }

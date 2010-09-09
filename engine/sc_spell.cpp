@@ -57,10 +57,24 @@ double spell_t::tick_time() SC_CONST
 {
   double t = base_tick_time;
   assert( snapshot_haste > 0.0 );
-  if ( channeled || ( scale_ticks_with_haste() > 0 ) ) t *= snapshot_haste;
+  if ( channeled || ( scale_with_haste ) ) t *= snapshot_haste;
   return t;
 }
 
+// spell_t::hasted_num_ticks =================================================
+
+int spell_t::hasted_num_ticks() SC_CONST
+{
+  double t = num_ticks;
+  int n = num_ticks;
+  assert ( snapshot_haste > 0.0 );
+  if ( scale_with_haste )
+	  {
+	  t *= 1.0 / snapshot_haste;
+	  n = int ( floor ( t + 0.5 ) );
+	  }
+  return n;
+}
 
 // spell_t::player_buff ======================================================
 

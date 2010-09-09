@@ -131,7 +131,7 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
   if ( sim -> debug )
     log_t::output( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
-                   player -> name(), a -> name(), a -> current_tick + 1, a -> num_ticks, time_to_tick );
+                   player -> name(), a -> name(), a -> current_tick + 1, a -> number_ticks, time_to_tick );
 
   sim -> add_event( this, time_to_tick );
 }
@@ -140,10 +140,10 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
 void action_tick_event_t::execute()
 {
-  if ( action -> current_tick >= action -> num_ticks )
+  if ( action -> current_tick >= action -> number_ticks )
   {
     sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
-		   player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
+		   player -> name(), action -> current_tick, action -> number_ticks, action -> name() );
     sim -> cancel();
   }
 
@@ -151,7 +151,7 @@ void action_tick_event_t::execute()
   action -> current_tick++;
 
   if ( action -> channeled &&
-       action -> current_tick == action -> num_ticks &&
+       action -> current_tick == action -> number_ticks &&
        player -> skill < 1.0 )
   {
     if ( sim -> roll( player -> skill ) ) action -> tick();
@@ -161,7 +161,7 @@ void action_tick_event_t::execute()
     action -> tick();
   }
 
-  if ( action -> current_tick == action -> num_ticks )
+  if ( action -> current_tick == action -> number_ticks )
   {
     action -> last_tick();
     action -> ticking = 0;

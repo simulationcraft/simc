@@ -2162,10 +2162,7 @@ struct flame_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
-  virtual int scale_ticks_with_haste() SC_CONST
-  {
-    return 1;
-  }
+
 
   virtual void tick()
   {

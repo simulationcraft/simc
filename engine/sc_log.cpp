@@ -44,19 +44,20 @@ static int school_id( int school )
 {
   switch ( school )
   {
-  case SCHOOL_ARCANE:     return 0x40;
-  case SCHOOL_BLEED:      return 0x01;
-  case SCHOOL_CHAOS:      return 0x02;
-  case SCHOOL_FIRE:       return 0x04;
-  case SCHOOL_FROST:      return 0x10;
-  case SCHOOL_FROSTFIRE:  return 0x14;
-  case SCHOOL_HOLY:       return 0x02;
-  case SCHOOL_NATURE:     return 0x08;
-  case SCHOOL_PHYSICAL:   return 0x01;
-  case SCHOOL_SHADOW:     return 0x20;
-  case SCHOOL_SPELLSTORM: return 0x48;
-  case SCHOOL_SHADOWFROST: return 0x30;
-  default:                return 0x01;
+  case SCHOOL_ARCANE:     	return 0x40;
+  case SCHOOL_BLEED:      	return 0x01;
+  case SCHOOL_CHAOS:      	return 0x02;
+  case SCHOOL_FIRE:       	return 0x04;
+  case SCHOOL_FROST:      	return 0x10;
+  case SCHOOL_FROSTFIRE:  	return 0x14;
+  case SCHOOL_HOLY:       	return 0x02;
+  case SCHOOL_NATURE:     	return 0x08;
+  case SCHOOL_PHYSICAL:   	return 0x01;
+  case SCHOOL_SHADOW:     	return 0x20;
+  case SCHOOL_SPELLSTORM: 	return 0x48;
+  case SCHOOL_SHADOWFROST: 	return 0x30;
+  case SCHOOL_SHADOWFLAME:	return 0x24;
+  default:                	return 0x01;
   }
   return -1;
 }

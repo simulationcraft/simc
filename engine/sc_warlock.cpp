@@ -16,7 +16,6 @@
  * - add soulburn effect to UA and Searing Pain
  * - add demon_soul imp effect
  * - reverse soul_shards consumption from 0->3 to 3->0
- * - fel flame "count" doesn't work in the report
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
  *
  */
@@ -1463,7 +1462,7 @@ struct bane_of_havoc_t : public warlock_spell_t
     parse_options( options, options_str );
     num_ticks=1;
     base_tick_time=300.0;
-
+    scale_with_haste = false;
   }
 
   virtual void execute()
@@ -1592,7 +1591,7 @@ struct burning_embers_t : public warlock_spell_t
     num_ticks=7;
     base_tick_time=1.0;
     base_td=base_dmg * 0.15 * p -> talent_burning_embers -> rank() / num_ticks;
-    double cap = 0.6 * p -> composite_spell_power(SCHOOL_FIRE) + p -> player_data.effect_misc_value2(86175);
+    double cap = 0.6 * p -> composite_spell_power(SCHOOL_FIRE) + 167;
     if (base_td > cap)
     	base_td=cap;
     reset();
@@ -2671,6 +2670,7 @@ struct fel_armor_t : public warlock_spell_t
     // Model the passive health tick.....
     base_tick_time = 5.0;
     num_ticks      = 1;
+    number_ticks   = 1;
 
     id = 47893;
   }
@@ -3080,7 +3080,7 @@ struct fel_flame_t : public warlock_spell_t
 {
 
 	fel_flame_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "fel_flame", player, SCHOOL_FIRE, TREE_DESTRUCTION )
+      warlock_spell_t( "fel_flame", player, SCHOOL_SHADOWFLAME, TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
 

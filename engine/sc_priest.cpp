@@ -808,12 +808,6 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::update_stats( type );
   }
 
-  virtual int scale_ticks_with_haste() SC_CONST
-  {
-
-      return 0;
-
-  }
 };
 
 // Dispersion Spell ============================================================
@@ -1622,11 +1616,6 @@ struct shadow_word_pain_t : public priest_spell_t
     }
   }
 
-  virtual int scale_ticks_with_haste() SC_CONST
-  {
-      return 0;
-  }
-
   virtual void refresh_duration()
   {
     num_ticks++;
@@ -1834,10 +1823,6 @@ struct vampiric_touch_t : public priest_spell_t
     }
   }
 
-  virtual int scale_ticks_with_haste() SC_CONST
-  {
-     return 0;
-  }
 };
 
 // Shadow Fiend Spell ========================================================

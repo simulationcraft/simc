@@ -295,7 +295,7 @@ enum school_type
   SCHOOL_NONE=0,
   SCHOOL_ARCANE,    SCHOOL_BLEED,  SCHOOL_CHAOS,  SCHOOL_FIRE,     SCHOOL_FROST,
   SCHOOL_FROSTFIRE, SCHOOL_HOLY,   SCHOOL_NATURE, SCHOOL_PHYSICAL, SCHOOL_SHADOW,
-  SCHOOL_SPELLSTORM,SCHOOL_SHADOWFROST,
+  SCHOOL_SPELLSTORM,SCHOOL_SHADOWFROST, SCHOOL_SHADOWFLAME,
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
@@ -305,7 +305,8 @@ enum school_type
                              (1 << SCHOOL_FIRE)      | (1 << SCHOOL_FROST)  | \
                              (1 << SCHOOL_FROSTFIRE) | (1 << SCHOOL_HOLY)   | \
                              (1 << SCHOOL_NATURE)    | (1 << SCHOOL_SHADOW) | \
-                             (1 << SCHOOL_SPELLSTORM)| (1 << SCHOOL_SHADOWFROST) )
+                             (1 << SCHOOL_SPELLSTORM)| (1 << SCHOOL_SHADOWFROST) | \
+							 (1 << SCHOOL_SHADOWFLAME) )
 #define SCHOOL_ALL_MASK    (-1)
 
 enum talent_tree_type
@@ -2916,7 +2917,7 @@ struct action_t
   int effect_nr, school, resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero;
+  bool tick_may_crit, tick_zero, scale_with_haste;
   int dot_behavior;
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
@@ -2938,7 +2939,7 @@ struct action_t
   double resource_consumed;
   double direct_dmg, tick_dmg;
   double resisted_dmg, blocked_dmg;
-  int num_ticks, current_tick, added_ticks;
+  int num_ticks, number_ticks, current_tick, added_ticks;
   int ticking;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -2983,7 +2984,7 @@ struct action_t
   virtual double gcd() SC_CONST          { return trigger_gcd;       }
   virtual double execute_time() SC_CONST { return base_execute_time; }
   virtual double tick_time() SC_CONST    { return base_tick_time;    }
-  virtual int    scale_ticks_with_haste() SC_CONST { return 0; }
+  virtual int	 hasted_num_ticks() SC_CONST    { return num_ticks;    }
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
@@ -3085,6 +3086,7 @@ struct spell_t : public action_t
   virtual double gcd() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual double tick_time() SC_CONST;
+  virtual int	 hasted_num_ticks() SC_CONST;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
   virtual void   calculate_result();
@@ -3160,7 +3162,7 @@ struct dot_t
   {
     if ( ! action ) return 0;
     if ( ! action -> ticking ) return 0;
-    return ( action -> num_ticks - action -> current_tick );
+    return ( action -> number_ticks - action -> current_tick );
   }
   virtual bool ticking() { return action && action -> ticking; }
   virtual const char* name() { return name_str.c_str(); }
