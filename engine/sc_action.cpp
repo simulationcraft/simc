@@ -23,7 +23,7 @@ action_t::action_t( int         ty,
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
     may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), dot_behavior( DOT_WAIT ),
+    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
     min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
     weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
     base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
@@ -1277,7 +1277,7 @@ bool action_t::ready()
       return false;
 
   if ( player -> buffs.moving -> check() )
-    if ( channeled || ( range == 0 ) || ( execute_time() > 0 ) )
+    if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
       return false;
 
   if ( P400 != -1 )

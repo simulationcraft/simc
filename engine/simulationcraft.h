@@ -2917,7 +2917,7 @@ struct action_t
   int effect_nr, school, resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero, scale_with_haste;
+  bool tick_may_crit, tick_zero, scale_with_haste, usable_moving;
   int dot_behavior;
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;

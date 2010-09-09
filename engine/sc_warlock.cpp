@@ -17,6 +17,7 @@
  * - add demon_soul imp effect
  * - reverse soul_shards consumption from 0->3 to 3->0
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
+ * - Summon Infernal Damage
  *
  */
 
@@ -1955,7 +1956,7 @@ struct drain_soul_t : public warlock_spell_t
         if ( action -> background ) continue;
         if ( action -> ready() )
         {
-          current_tick = num_ticks;
+          current_tick = number_ticks;
           break;
         }
       }
@@ -2624,7 +2625,7 @@ struct life_tap_t : public warlock_spell_t
     double life = p -> resource_max[ RESOURCE_HEALTH ] * 0.2;
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, life * 0.75, p -> gains_life_tap );
-    if ( p -> talent_mana_feed -> rank() ) p -> active_pet -> resource_gain( RESOURCE_MANA, life * 0.75 * 0.6 * p -> talent_mana_feed -> rank() );
+    if ( p -> talent_mana_feed -> rank() && p -> active_pet) p -> active_pet -> resource_gain( RESOURCE_MANA, life * 0.75 * 0.6 * p -> talent_mana_feed -> rank() );
     p -> buffs_life_tap_glyph -> trigger();
   }
 
@@ -2759,9 +2760,10 @@ struct summon_infernal_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
+    aoe = true;
     base_execute_time=1.5;
     base_cost  = 0.80 * p -> resource_base[ RESOURCE_MANA ];
-    base_dd_min=200;
+    base_dd_min=200; // Fix me
     base_dd_max=200;
     cooldown = p -> cooldowns_infernal_doomguard;
 
@@ -2774,7 +2776,7 @@ struct summon_infernal_t : public warlock_spell_t
 	if (p -> active_pet)
 		p -> active_pet -> dismiss();
 	warlock_spell_t::execute();
-    player -> summon_pet( "infernal", 60.0 );
+    player -> summon_pet( "infernal", 60.0 + 10.0 * p -> talent_ancient_grimoire -> rank() );
   }
 
   virtual bool ready()
@@ -2812,9 +2814,12 @@ struct summon_doomguard_t : public warlock_spell_t
 
   virtual void execute()
   {
+	warlock_t* p = player -> cast_warlock();
+	if (p -> active_pet)
+		p -> active_pet -> dismiss();
 	consume_resource();
 	update_ready();
-    player -> summon_pet( "doomguard", 45.0 );
+    player -> summon_pet( "doomguard", 45.0 + 10.0 * p -> talent_ancient_grimoire -> rank() );
   }
 
   virtual bool ready()
@@ -3253,6 +3258,7 @@ struct demon_soul_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
+    aoe = true;
     base_cost   = 0.15 * p -> resource_base[ RESOURCE_MANA ];
     trigger_gcd = 0;
 
@@ -3264,32 +3270,106 @@ struct demon_soul_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
+    assert ( p -> active_pet );
+
     if ( p -> active_pet -> pet_type == PET_IMP )
     {
-    	p -> buffs_demon_soul -> trigger( 1, 1.0, 1.0 );
-		p -> buffs_demon_soul -> duration = 30.0;
+    	p -> buffs_demon_soul -> trigger( 1, 1.0 );
+    	p -> buffs_demon_soul -> duration = 30.0;
     }
     if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
     {
-    	p -> buffs_demon_soul -> trigger( 1, 3.0, 1.0 );
-		p -> buffs_demon_soul -> duration = 20.0;
+    	p -> buffs_demon_soul -> trigger( 1, 3.0 );
+    	p -> buffs_demon_soul -> duration = 20.0;
     }
     if ( p -> active_pet -> pet_type == PET_FELHUNTER )
     {
-    	p -> buffs_demon_soul -> trigger( 1, 4.0, 1.0 );
-		p -> buffs_demon_soul -> duration = 20.0;
+    	p -> buffs_demon_soul -> trigger( 1, 4.0 );
+    	p -> buffs_demon_soul -> duration = 20.0;
     }
     if ( p -> active_pet -> pet_type == PET_FELGUARD )
     {
-    	p -> buffs_demon_soul -> trigger( 1, 5.0, 1.0 );
-		p -> buffs_demon_soul -> duration = 20.0;
+    	p -> buffs_demon_soul -> trigger( 1, 5.0 );
+    	p -> buffs_demon_soul -> duration = 20.0;
     }
+
+  }
+
+  virtual bool ready()
+  {
+	  warlock_t* p = player -> cast_warlock();
+	  if ( !p ->  active_pet)
+		  return false;
+	  return warlock_spell_t::ready();
   }
 };
 
+// Hellfire Spell ===========================================================
 
+struct hellfire_t : public warlock_spell_t
+{
+  int interrupt;
+
+  hellfire_t( player_t* player, const std::string& options_str ) :
+      warlock_spell_t( "Hellfire", player, SCHOOL_FIRE, TREE_DESTRUCTION ), interrupt( 0 )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+    {
+      { "interrupt",  OPT_BOOL, &interrupt },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    num_ticks		= int ( p -> player_data.spell_duration ( 1949 ) / p -> player_data.effect_period ( 589 ) );
+    base_tick_time 	= p -> player_data.effect_period ( 589 );
+    base_td 		= p -> player_data.effect_base_value ( 2059 );
+    tick_power_mod  = p -> player_data.effect_coeff( 2059 );
+    trigger_gcd     = p -> player_data.spell_gcd ( 1949 );
+
+    channeled         = true;
+    scale_with_haste  = false;
+    tick_may_crit	  = true;
+
+    if ( p -> talent_inferno -> rank() )
+    {
+    	usable_moving	  = true;
+    	range += 10.0;
+    }
+    base_multiplier *= 1.0 + p -> talent_cremation -> rank() * 0.15;
+
+
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+  }
+
+  virtual void tick()
+  {
+    warlock_spell_t::tick();
+
+    if ( interrupt && ( current_tick != num_ticks ) )
+    {
+      warlock_t* p = player -> cast_warlock();
+      // If any spell ahead of Hellfire in the action list is "ready", then cancel the Hellfire channel
+      for ( action_t* action = p -> action_list; action != this; action = action -> next )
+      {
+        if ( action -> background ) continue;
+        if ( action -> ready() )
+        {
+          current_tick = number_ticks;
+          break;
+        }
+      }
+    }
+  }
+
+};
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -3384,6 +3464,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "soulburn"         	 ) return new         	 soulburn_t( this, options_str );
   if ( name == "demon_soul"          ) return new          demon_soul_t( this, options_str );
   if ( name == "bane_of_havoc"       ) return new       bane_of_havoc_t( this, options_str );
+  if ( name == "hellfire"            ) return new       	 hellfire_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
