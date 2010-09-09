@@ -21,6 +21,14 @@ set_bonus_t::set_bonus_t()
   count[ SET_T9_4PC_CASTER  ] = count[ SET_T9_4PC_MELEE  ] = count[ SET_T9_4PC_TANK  ] = -1;
   count[ SET_T10_2PC_CASTER ] = count[ SET_T10_2PC_MELEE ] = count[ SET_T10_2PC_TANK ] = -1;
   count[ SET_T10_4PC_CASTER ] = count[ SET_T10_4PC_MELEE ] = count[ SET_T10_4PC_TANK ] = -1;
+  count[ SET_T11_2PC_CASTER ] = count[ SET_T11_2PC_MELEE ] = count[ SET_T11_2PC_TANK ] = -1;
+  count[ SET_T11_4PC_CASTER ] = count[ SET_T11_4PC_MELEE ] = count[ SET_T11_4PC_TANK ] = -1;
+  count[ SET_T12_2PC_CASTER ] = count[ SET_T12_2PC_MELEE ] = count[ SET_T12_2PC_TANK ] = -1;
+  count[ SET_T12_4PC_CASTER ] = count[ SET_T12_4PC_MELEE ] = count[ SET_T12_4PC_TANK ] = -1;
+  count[ SET_T13_2PC_CASTER ] = count[ SET_T13_2PC_MELEE ] = count[ SET_T13_2PC_TANK ] = -1;
+  count[ SET_T13_4PC_CASTER ] = count[ SET_T13_4PC_MELEE ] = count[ SET_T13_4PC_TANK ] = -1;
+  count[ SET_T14_2PC_CASTER ] = count[ SET_T14_2PC_MELEE ] = count[ SET_T14_2PC_TANK ] = -1;
+  count[ SET_T14_4PC_CASTER ] = count[ SET_T14_4PC_MELEE ] = count[ SET_T14_4PC_TANK ] = -1;
 }
 
 // set_bonus_t::tier6 =======================================================
@@ -92,6 +100,62 @@ int set_bonus_t::tier10_4pc_melee() SC_CONST { return ( count[ SET_T10_4PC_MELEE
 int set_bonus_t::tier10_2pc_tank() SC_CONST { return ( count[ SET_T10_2PC_TANK ] > 0 || ( count[ SET_T10_2PC_TANK ] < 0 && count[ SET_T10_TANK ] >= 2 ) ) ? 1 : 0; }
 
 int set_bonus_t::tier10_4pc_tank() SC_CONST { return ( count[ SET_T10_4PC_TANK ] > 0 || ( count[ SET_T10_4PC_TANK ] < 0 && count[ SET_T10_TANK ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier11 =======================================================
+
+int set_bonus_t::tier11_2pc_caster() SC_CONST { return ( count[ SET_T11_2PC_CASTER ] > 0 || ( count[ SET_T11_2PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_4pc_caster() SC_CONST { return ( count[ SET_T11_4PC_CASTER ] > 0 || ( count[ SET_T11_4PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_2pc_melee() SC_CONST { return ( count[ SET_T11_2PC_MELEE ] > 0 || ( count[ SET_T11_2PC_MELEE ] < 0 && count[ SET_T11_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_4pc_melee() SC_CONST { return ( count[ SET_T11_4PC_MELEE ] > 0 || ( count[ SET_T11_4PC_MELEE ] < 0 && count[ SET_T11_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_2pc_tank() SC_CONST { return ( count[ SET_T11_2PC_TANK ] > 0 || ( count[ SET_T11_2PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_4pc_tank() SC_CONST { return ( count[ SET_T11_4PC_TANK ] > 0 || ( count[ SET_T11_4PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier12 =======================================================
+
+int set_bonus_t::tier12_2pc_caster() SC_CONST { return ( count[ SET_T12_2PC_CASTER ] > 0 || ( count[ SET_T12_2PC_CASTER ] < 0 && count[ SET_T12_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_4pc_caster() SC_CONST { return ( count[ SET_T12_4PC_CASTER ] > 0 || ( count[ SET_T12_4PC_CASTER ] < 0 && count[ SET_T12_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_2pc_melee() SC_CONST { return ( count[ SET_T12_2PC_MELEE ] > 0 || ( count[ SET_T12_2PC_MELEE ] < 0 && count[ SET_T12_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_4pc_melee() SC_CONST { return ( count[ SET_T12_4PC_MELEE ] > 0 || ( count[ SET_T12_4PC_MELEE ] < 0 && count[ SET_T12_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_2pc_tank() SC_CONST { return ( count[ SET_T12_2PC_TANK ] > 0 || ( count[ SET_T12_2PC_TANK ] < 0 && count[ SET_T12_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_4pc_tank() SC_CONST { return ( count[ SET_T12_4PC_TANK ] > 0 || ( count[ SET_T12_4PC_TANK ] < 0 && count[ SET_T12_TANK ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier13 =======================================================
+
+int set_bonus_t::tier13_2pc_caster() SC_CONST { return ( count[ SET_T13_2PC_CASTER ] > 0 || ( count[ SET_T13_2PC_CASTER ] < 0 && count[ SET_T13_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_4pc_caster() SC_CONST { return ( count[ SET_T13_4PC_CASTER ] > 0 || ( count[ SET_T13_4PC_CASTER ] < 0 && count[ SET_T13_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_2pc_melee() SC_CONST { return ( count[ SET_T13_2PC_MELEE ] > 0 || ( count[ SET_T13_2PC_MELEE ] < 0 && count[ SET_T13_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_4pc_melee() SC_CONST { return ( count[ SET_T13_4PC_MELEE ] > 0 || ( count[ SET_T13_4PC_MELEE ] < 0 && count[ SET_T13_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_2pc_tank() SC_CONST { return ( count[ SET_T13_2PC_TANK ] > 0 || ( count[ SET_T13_2PC_TANK ] < 0 && count[ SET_T13_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_4pc_tank() SC_CONST { return ( count[ SET_T13_4PC_TANK ] > 0 || ( count[ SET_T13_4PC_TANK ] < 0 && count[ SET_T13_TANK ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier14 =======================================================
+
+int set_bonus_t::tier14_2pc_caster() SC_CONST { return ( count[ SET_T14_2PC_CASTER ] > 0 || ( count[ SET_T14_2PC_CASTER ] < 0 && count[ SET_T14_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_4pc_caster() SC_CONST { return ( count[ SET_T14_4PC_CASTER ] > 0 || ( count[ SET_T14_4PC_CASTER ] < 0 && count[ SET_T14_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_2pc_melee() SC_CONST { return ( count[ SET_T14_2PC_MELEE ] > 0 || ( count[ SET_T14_2PC_MELEE ] < 0 && count[ SET_T14_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_4pc_melee() SC_CONST { return ( count[ SET_T14_4PC_MELEE ] > 0 || ( count[ SET_T14_4PC_MELEE ] < 0 && count[ SET_T14_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_2pc_tank() SC_CONST { return ( count[ SET_T14_2PC_TANK ] > 0 || ( count[ SET_T14_2PC_TANK ] < 0 && count[ SET_T14_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_4pc_tank() SC_CONST { return ( count[ SET_T14_4PC_TANK ] > 0 || ( count[ SET_T14_4PC_TANK ] < 0 && count[ SET_T14_TANK ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::spellstrike =================================================
 

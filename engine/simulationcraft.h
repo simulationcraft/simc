@@ -393,6 +393,18 @@ enum set_type
   SET_T10_CASTER, SET_T10_2PC_CASTER, SET_T10_4PC_CASTER,
   SET_T10_MELEE,  SET_T10_2PC_MELEE,  SET_T10_4PC_MELEE,
   SET_T10_TANK,   SET_T10_2PC_TANK,   SET_T10_4PC_TANK,
+  SET_T11_CASTER, SET_T11_2PC_CASTER, SET_T11_4PC_CASTER,
+  SET_T11_MELEE,  SET_T11_2PC_MELEE,  SET_T11_4PC_MELEE,
+  SET_T11_TANK,   SET_T11_2PC_TANK,   SET_T11_4PC_TANK,
+  SET_T12_CASTER, SET_T12_2PC_CASTER, SET_T12_4PC_CASTER,
+  SET_T12_MELEE,  SET_T12_2PC_MELEE,  SET_T12_4PC_MELEE,
+  SET_T12_TANK,   SET_T12_2PC_TANK,   SET_T12_4PC_TANK,
+  SET_T13_CASTER, SET_T13_2PC_CASTER, SET_T13_4PC_CASTER,
+  SET_T13_MELEE,  SET_T13_2PC_MELEE,  SET_T13_4PC_MELEE,
+  SET_T13_TANK,   SET_T13_2PC_TANK,   SET_T13_4PC_TANK,
+  SET_T14_CASTER, SET_T14_2PC_CASTER, SET_T14_4PC_CASTER,
+  SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
+  SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
   SET_SPELLSTRIKE,
   SET_MAX
 };
@@ -2196,6 +2208,14 @@ struct set_bonus_t
   int tier9_4pc_caster() SC_CONST; int tier9_4pc_melee() SC_CONST; int tier9_4pc_tank() SC_CONST;
   int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST;
   int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST;
+  int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST;
+  int tier11_4pc_caster() SC_CONST; int tier11_4pc_melee() SC_CONST; int tier11_4pc_tank() SC_CONST;
+  int tier12_2pc_caster() SC_CONST; int tier12_2pc_melee() SC_CONST; int tier12_2pc_tank() SC_CONST;
+  int tier12_4pc_caster() SC_CONST; int tier12_4pc_melee() SC_CONST; int tier12_4pc_tank() SC_CONST;
+  int tier13_2pc_caster() SC_CONST; int tier13_2pc_melee() SC_CONST; int tier13_2pc_tank() SC_CONST;
+  int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST;
+  int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST;
+  int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST;
   int spellstrike() SC_CONST;
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
