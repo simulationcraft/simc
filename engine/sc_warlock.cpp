@@ -1417,11 +1417,13 @@ struct bane_of_doom_t : public warlock_spell_t
     id = 603;
     parse_data( p -> player_data );
 
-    tick_may_crit	  = true;
+    tick_may_crit = true;
+    scale_with_haste = false;
 
     if ( p -> talent_impending_doom -> rank() )
     {
     	base_tick_time -= 5.0 * p -> talent_impending_doom -> rank();
+    	num_ticks = int ( floor ( 60.0 / base_tick_time ) );
     }
     base_crit += p -> talent_doom_and_gloom -> rank() * 0.04;
   }
@@ -1829,6 +1831,7 @@ struct drain_life_t : public warlock_spell_t
     channeled         = true;
     binary            = true;
     tick_may_crit	  = true;
+    scale_with_haste = false;
 
   }
 
@@ -1910,6 +1913,7 @@ struct drain_soul_t : public warlock_spell_t
     parse_data( p -> player_data);
     channeled         = true;
     binary            = true;
+    scale_with_haste  = true; // informative
 
   }
 

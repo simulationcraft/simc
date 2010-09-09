@@ -1148,6 +1148,7 @@ struct mind_flay_t : public priest_spell_t
     channeled      = true;
     num_ticks      = 3;
     base_tick_time = 1.0;
+    scale_with_haste = false;
 
 
     if ( p -> set_bonus.tier10_4pc_caster() )
