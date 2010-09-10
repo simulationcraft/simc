@@ -471,12 +471,12 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
-      direct_power_mod = 0.379;
+      direct_power_mod = 0.51;  // Seems to be around that for level 80, but might be higher for higher levels.
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
       base_dd_multiplier = 1.15; // Shadowcrawl
-      base_dd_min = 177;
-      base_dd_max = 209;
+      base_dd_min = 175; // Level 80 values. Need to handle this better.
+      base_dd_max = 222; // Level 80 values.
       background = true;
       repeating  = true;
       may_dodge  = false;
@@ -499,36 +499,35 @@ struct shadow_fiend_pet_t : public pet_t
       pet_t( sim, owner, "shadow_fiend" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 100;
-    main_hand_weapon.max_dmg    = 100;
+    main_hand_weapon.min_dmg    = 1;
+    main_hand_weapon.max_dmg    = 1;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
     main_hand_weapon.school     = SCHOOL_SHADOW;
 
-    stamina_per_owner = 0.51;
-    intellect_per_owner = 0.30;
+    stamina_per_owner = 0.30;
+    intellect_per_owner = 0.50;
   }
   virtual void init_base()
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 153;
-    attribute_base[ ATTR_AGILITY   ] = 108;
-    attribute_base[ ATTR_STAMINA   ] = 280;
-    attribute_base[ ATTR_INTELLECT ] = 133;
-
-    base_attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
+    attribute_base[ ATTR_STRENGTH  ] = 0; // Unknown
+    attribute_base[ ATTR_AGILITY   ] = 0; // Unknown
+    attribute_base[ ATTR_STAMINA   ] = 0; // Unknown
+    attribute_base[ ATTR_INTELLECT ] = 0; // Unknown
+    resource_base[ RESOURCE_HEALTH ] = 6747; // Level 80
+    resource_base[ RESOURCE_MANA   ] = 7679; // Level 80
+    base_attack_power = 0;  // Unknown
+    base_attack_crit = 0.10;
+    initial_attack_power_per_strength = 0; // Unknown
 
     melee = new melee_t( this );
   }
   virtual double composite_spell_power( int school ) SC_CONST
-  {
+  {  
     priest_t* p = owner -> cast_priest();
-
     double sp = p -> composite_spell_power( school );
-    sp -= owner -> spirit() *   p -> spell_power_per_spirit;
-    sp -= owner -> spirit() * ( p -> buffs_glyph_of_shadow -> check() ? 0.3 : 0.0 );
     return sp;
   }
   virtual double composite_attack_hit() SC_CONST
@@ -746,6 +745,11 @@ struct devouring_plague_burst_t : public priest_spell_t
     update_stats( DMG_DIRECT );
   }
 
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
+  }
+
 };
 
 struct devouring_plague_t : public priest_spell_t
@@ -812,6 +816,10 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::update_stats( type );
   }
 
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
+  }
 };
 
 // Dispersion Spell ============================================================
@@ -1120,6 +1128,10 @@ struct mind_blast_t : public priest_spell_t
     return a;
   }
 
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
+  }
 
 };
 
@@ -1197,6 +1209,11 @@ struct mind_flay_t : public priest_spell_t
       {
          p -> buffs_glyph_of_shadow -> trigger();
          p -> cooldowns_shadow_fiend -> ready -= 10.0 * p -> talents.sin_and_punishment -> rank();
+         if ( p -> cooldowns_shadow_fiend -> ready < 0.0 )
+         {
+            int aa = 1;
+            aa++;
+         }
       }
     }
   }
@@ -1280,6 +1297,11 @@ struct mind_spike_t : public priest_spell_t
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
+  }
+
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
   }
 };
 
@@ -1625,6 +1647,11 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_spell_t::refresh_duration();
     num_ticks--;
   }
+
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
+  }
 };
 
 
@@ -1825,7 +1852,10 @@ struct vampiric_touch_t : public priest_spell_t
       p -> recast_mind_blast = 1;
     }
   }
-
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
+  }
 };
 
 // Shadow Fiend Spell ========================================================
@@ -1984,11 +2014,6 @@ double priest_t::composite_spell_power( int school ) SC_CONST
   double sp = player_t::composite_spell_power( school );
 
   sp += buffs_inner_fire -> value();
-
-  if ( buffs_glyph_of_shadow -> up() )
-  {
-    sp += spirit() * 0.3;
-  }
 
   return floor( sp );
 }

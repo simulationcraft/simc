@@ -1116,7 +1116,7 @@ void action_t::update_ready()
 
     cooldown -> start();
   }
-  if ( num_ticks && ( dot_behavior == DOT_WAIT ) )
+  if ( num_ticks && ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) ) )
   {
     if ( ticking && ! channeled )
     {
@@ -1207,7 +1207,7 @@ bool action_t::ready()
     check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
   }
 
-  if ( recast )
+  if ( recast || ( dot_behavior != DOT_WAIT ) )
   {
     check_duration = false;
   }
