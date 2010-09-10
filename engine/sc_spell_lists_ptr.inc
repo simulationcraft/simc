@@ -1,5 +1,7 @@
+#define PTR_CLASS_ABILITY_SIZE (115)
+
 // Class based active abilities, wow build 12942
-static unsigned __ptr_class_ability_data[][115] = {
+static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
   {
         0,
   },
@@ -395,7 +397,7 @@ static unsigned __ptr_class_ability_data[][115] = {
     55233, // Vampiric Blood
         0,
   },
-  // Class active abilities for Shaman, 56 abilities
+  // Class active abilities for Shaman, 55 abilities
   {
     76780, // Bind Elemental
      1064, // Chain Heal
@@ -447,7 +449,6 @@ static unsigned __ptr_class_ability_data[][115] = {
     87718, // Totem of Tranquil Mind
      8143, // Tremor Totem
     73680, // Unleash Elements
-      131, // Water Breathing
     52127, // Water Shield
     57994, // Wind Shear
      8512, // Windfury Totem
@@ -511,7 +512,7 @@ static unsigned __ptr_class_ability_data[][115] = {
     31707, // Waterbolt
         0,
   },
-  // Class active abilities for Warlock, 80 abilities
+  // Class active abilities for Warlock, 79 abilities
   {
     89766, // Axe Toss
       980, // Bane of Agony
@@ -590,7 +591,6 @@ static unsigned __ptr_class_ability_data[][115] = {
       712, // Summon Succubus
       697, // Summon Voidwalker
      3716, // Torment
-     5697, // Unending Breath
     30108, // Unstable Affliction
      6360, // Whiplash
         0,
@@ -675,8 +675,10 @@ static unsigned __ptr_class_ability_data[][115] = {
   },
 };
 
+#define PTR_TREE_SPECIALIZATION_SIZE (5)
+
 // Talent tree specialization abilities, wow build 12942
-static unsigned __ptr_tree_specialization_data[][3][5] = {
+static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
           0,
@@ -935,8 +937,10 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
   },
 };
 
+#define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
+
 // Class mastery abilities, wow build 12942
-static unsigned __ptr_class_mastery_ability_data[][4] = {
+static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
   },
@@ -1015,8 +1019,13 @@ static unsigned __ptr_class_mastery_ability_data[][4] = {
   },
 };
 
+#define PTR_RACE_ABILITY_SIZE (6)
+#ifndef CLASS_SIZE
+#define CLASS_SIZE (12)
+#endif
+
 // Racial abilities, wow build 12942
-static unsigned __ptr_race_ability_data[][12][6] = {
+static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
     {     0, },

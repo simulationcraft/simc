@@ -38,7 +38,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_octregen.create_copy( ( double * ) __ptr_gt_octregen_mp, MAX_LEVEL, sizeof( __ptr_gt_octregen_mp ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_combat_ratings.create_copy( ( double * ) __ptr_gt_combat_ratings, MAX_LEVEL, sizeof( __ptr_gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_combat_rating_scalar.create_copy( ( double * ) __ptr_gt_octclass_combat_rating_scalar, 12, sizeof( __ptr_gt_octclass_combat_rating_scalar ) / ( 12 * sizeof( double ) ) );
-      m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, 110, sizeof( __ptr_class_ability_data ) / ( 110 * sizeof( uint32_t ) ) );
+      m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, PTR_CLASS_ABILITY_SIZE, sizeof( __ptr_class_ability_data ) / ( PTR_CLASS_ABILITY_SIZE * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __ptr_tree_specialization_data, 5, 3, sizeof( __ptr_tree_specialization_data ) / ( 5 * 3 * sizeof( uint32_t ) ) );
       m_racial_spells.create_copy( ( uint32_t * ) __ptr_race_ability_data, 6, 12, sizeof( __ptr_race_ability_data ) / ( 6 * 12 * sizeof( uint32_t ) ) );
@@ -64,7 +64,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_octregen.create_copy( ( double * ) __gt_octregen_mp, MAX_LEVEL, sizeof( __gt_octregen_mp ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_combat_ratings.create_copy( ( double * ) __gt_combat_ratings, MAX_LEVEL, sizeof( __gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_combat_rating_scalar.create_copy( ( double * ) __gt_octclass_combat_rating_scalar, 12, sizeof( __gt_octclass_combat_rating_scalar ) / ( 12 * sizeof( double ) ) );
-      m_class_spells.create_copy( ( uint32_t * ) __class_ability_data, 110, sizeof( __class_ability_data ) / ( 110 * sizeof( uint32_t ) ) );
+      m_class_spells.create_copy( ( uint32_t * ) __class_ability_data, CLASS_ABILITY_SIZE, sizeof( __class_ability_data ) / ( CLASS_ABILITY_SIZE * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __tree_specialization_data, 5, 3, sizeof( __tree_specialization_data ) / ( 5 * 3 * sizeof( uint32_t ) ) );
       m_racial_spells.create_copy( ( uint32_t * ) __race_ability_data, 6, 12, sizeof( __race_ability_data ) / ( 6 * 12 * sizeof( uint32_t ) ) );

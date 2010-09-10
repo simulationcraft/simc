@@ -1428,6 +1428,8 @@ struct option_t
 #define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
 #define MAX_TALENT_RANK_SLOTS ( 90 )
 
+#define MAX_CLASS ( 12 )
+
 struct talent_translation_t
 {
   int  index;
