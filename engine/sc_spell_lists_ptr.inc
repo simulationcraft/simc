@@ -1,16 +1,15 @@
-// Class based active abilities, wow build 12857
-static unsigned __ptr_class_ability_data[][110] = {
+// Class based active abilities, wow build 12942
+static unsigned __ptr_class_ability_data[][115] = {
   {
         0,
   },
-  // Class active abilities for Warrior, 56 abilities
+  // Class active abilities for Warrior, 54 abilities
   {
      6673, // Battle Shout
      2457, // Battle Stance
     18499, // Berserker Rage
      2458, // Berserker Stance
     46924, // Bladestorm
-     2687, // Bloodrage
     23881, // Bloodthirst
      1161, // Challenging Shout
       100, // Charge
@@ -18,7 +17,6 @@ static unsigned __ptr_class_ability_data[][110] = {
     86346, // Colossus Smash
       469, // Commanding Shout
     12809, // Concussion Blow
-    85730, // Deadly Calm
     12292, // Death Wish
        71, // Defensive Stance
      1160, // Demoralizing Shout
@@ -123,9 +121,11 @@ static unsigned __ptr_class_ability_data[][110] = {
     85696, // Zealotry
         0,
   },
-  // Class active abilities for Hunter, 110 abilities
+  // Class active abilities for Hunter, 115 abilities
   {
     19434, // Aimed Shot
+    90355, // Ancient Hysteria
+    50433, // Ankle Crack
      3044, // Arcane Shot
      5118, // Aspect of the Cheetah
     82661, // Aspect of the Fox
@@ -133,7 +133,6 @@ static unsigned __ptr_class_ability_data[][110] = {
     13159, // Aspect of the Pack
     20043, // Aspect of the Wild
        75, // Auto Shot
-    50433, // Bad Attitude
      1462, // Beast Lore
     19574, // Bestial Wrath
     17253, // Bite
@@ -148,10 +147,13 @@ static unsigned __ptr_class_ability_data[][110] = {
     61685, // Charge
     53209, // Chimera Shot
     16827, // Claw
+    50541, // Clench
     77767, // Cobra Shot
      5116, // Concussive Shot
+    35387, // Corrosive Spit
     19306, // Counterattack
      1742, // Cower
+    50256, // Demoralizing Roar
     24423, // Demoralizing Screech
     19263, // Deterrence
      2641, // Dismiss Pet
@@ -159,19 +161,18 @@ static unsigned __ptr_class_ability_data[][110] = {
     50285, // Dust Cloud
     53301, // Explosive Shot
     13813, // Explosive Trap
-    34501, // Expose Weakness
     75447, // Ferocious Inspiration
     82726, // Fervor
     34889, // Fire Breath
      1543, // Flare
      1499, // Freezing Trap
-    13809, // Frost Trap
-    54644, // Froststorm Breath
+    54644, // Frost Breath
     24604, // Furious Howl
     35290, // Gore
      2649, // Growl
     55709, // Heart of the Phoenix
      1130, // Hunter's Mark
+    13809, // Ice Trap
     13797, // Immolation Trap
     53476, // Intervene
     19577, // Intimidation
@@ -186,9 +187,11 @@ static unsigned __ptr_class_ability_data[][110] = {
      2643, // Multi-Shot
     50479, // Nether Shock
     50245, // Pin
-    35387, // Poison Spit
+    90347, // Play
+    90328, // Prowl
     24450, // Prowl
     26090, // Pummel
+    90364, // Qiraji Fortitude
     59881, // Rake
      3045, // Rapid Fire
      2973, // Raptor Strike
@@ -197,28 +200,29 @@ static unsigned __ptr_class_ability_data[][110] = {
       982, // Revive Pet
     53517, // Roar of Recovery
     53480, // Roar of Sacrifice
-    50498, // Savage Rend
     19503, // Scatter Shot
-    24640, // Scorpid Poison
     50318, // Serenity Dust
      1978, // Serpent Sting
     34490, // Silencing Shot
     49966, // Smack
     34600, // Snake Trap
-    50541, // Snatch
+    91644, // Snatch
     50519, // Sonic Blast
-    61193, // Spirit Strike
+    90361, // Spirit Mend
     50274, // Spore Cloud
     57386, // Stampede
     56641, // Steady Shot
     56626, // Sting
-    50256, // Swipe
     52825, // Swoop
+    90314, // Tailspin
      1515, // Tame Beast
     53477, // Taunt
+    50498, // Tear Armor
     50271, // Tendon Rip
+    90309, // Terrifying Roar
     34471, // The Beast Within
     63900, // Thunderstomp
+    35346, // Time Warp
      1494, // Track Beasts
     19878, // Track Demons
     19879, // Track Dragonkin
@@ -229,7 +233,6 @@ static unsigned __ptr_class_ability_data[][110] = {
     19801, // Tranquilizing Shot
     77769, // Trap Launcher
     54706, // Venom Web Spray
-    35346, // Warp
      4167, // Web
     82654, // Widow Venom
      2974, // Wing Clip
@@ -279,7 +282,7 @@ static unsigned __ptr_class_ability_data[][110] = {
     79140, // Vendetta
         0,
   },
-  // Class active abilities for Priest, 52 abilities
+  // Class active abilities for Priest, 53 abilities
   {
     87151, // Archangel
     32546, // Binding Heal
@@ -322,6 +325,7 @@ static unsigned __ptr_class_ability_data[][110] = {
       596, // Prayer of Healing
     33076, // Prayer of Mending
     64044, // Psychic Horror
+     8122, // Psychic Scream
       139, // Renew
      9484, // Shackle Undead
     27683, // Shadow Protection
@@ -335,7 +339,7 @@ static unsigned __ptr_class_ability_data[][110] = {
     34914, // Vampiric Touch
         0,
   },
-  // Class active abilities for Death Knight, 44 abilities
+  // Class active abilities for Death Knight, 52 abilities
   {
     48707, // Anti-Magic Shell
     51052, // Anti-Magic Zone
@@ -347,24 +351,29 @@ static unsigned __ptr_class_ability_data[][110] = {
     49222, // Bone Shield
     45524, // Chains of Ice
     47468, // Claw
+    91776, // Claw
     49028, // Dancing Rune Weapon
     56222, // Dark Command
     77606, // Dark Simulacrum
+    63560, // Dark Transformation
     47541, // Death Coil
     49998, // Death Strike
     43265, // Death and Decay
     85948, // Festering Strike
     48266, // Frost Presence
-    63560, // Ghoul Frenzy
     47481, // Gnaw
+    91800, // Gnaw
     55050, // Heart Strike
     49184, // Howling Blast
+    91838, // Huddle
     47484, // Huddle
     49203, // Hungering Cold
     48792, // Icebound Fortitude
     45477, // Icy Touch
     47482, // Leap
+    91809, // Leap
     47528, // Mind Freeze
+    91797, // Monstrous Blow
     73975, // Necrotic Strike
     49020, // Obliterate
     77575, // Outbreak
@@ -372,12 +381,15 @@ static unsigned __ptr_class_ability_data[][110] = {
     50842, // Pestilence
     51271, // Pillar of Frost
     45462, // Plague Strike
+    91837, // Putrid Bulwark
     66217, // Rune Strike
     56815, // Rune Strike
     48982, // Rune Tap
     55090, // Scourge Strike
+    91802, // Shambling Rush
     47476, // Strangulate
     49206, // Summon Gargoyle
+    91778, // Sweeping Claws
     50536, // Unholy Blight
     48265, // Unholy Presence
     55233, // Vampiric Blood
@@ -409,11 +421,11 @@ static unsigned __ptr_class_ability_data[][110] = {
     77472, // Greater Healing Wave
      8177, // Grounding Totem
      5394, // Healing Stream Totem
+     8004, // Healing Surge
       331, // Healing Wave
     51514, // Hex
     51505, // Lava Burst
     60103, // Lava Lash
-     8004, // Lesser Healing Wave
       403, // Lightning Bolt
       324, // Lightning Shield
      8190, // Magma Totem
@@ -447,8 +459,8 @@ static unsigned __ptr_class_ability_data[][110] = {
   {
     44425, // Arcane Barrage
     30451, // Arcane Blast
+     1459, // Arcane Brilliance
      1449, // Arcane Explosion
-     1459, // Arcane Intellect
      5143, // Arcane Missiles
     12042, // Arcane Power
     11113, // Blast Wave
@@ -523,13 +535,13 @@ static unsigned __ptr_class_ability_data[][110] = {
     54785, // Demon Leap
     77801, // Demon Soul
     47193, // Demonic Empowerment
-    53646, // Demonic Pact
     88448, // Demonic Rebirth
     19505, // Devour Magic
       689, // Drain Life
      5138, // Drain Mana
      1120, // Drain Soul
      1098, // Enslave Demon
+     5782, // Fear
     28176, // Fel Armor
     77799, // Fel Flame
     54424, // Fel Intelligence
@@ -548,8 +560,8 @@ static unsigned __ptr_class_ability_data[][110] = {
      7870, // Lesser Invisibility
      1454, // Life Tap
     47241, // Metamorphosis
+    91711, // Nether Ward
     30151, // Pursuit
-    18093, // Pyroclasm
      5740, // Rain of Fire
      5676, // Searing Pain
      6358, // Seduction
@@ -663,7 +675,7 @@ static unsigned __ptr_class_ability_data[][110] = {
   },
 };
 
-// Talent tree specialization abilities, wow build 12857
+// Talent tree specialization abilities, wow build 12942
 static unsigned __ptr_tree_specialization_data[][3][5] = {
   {
     {
@@ -719,7 +731,7 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     },
     // Specialization abilities for Retribution tree
     {
-      31878, // Judgements of the Wise
+      89901, // Judgements of the Bold
       53503, // Sheath of Light
       85256, // Templar's Verdict
       20113, // Two-Handed Weapon Specialization
@@ -798,7 +810,7 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
   {
     // Specialization abilities for Blood tree
     {
-      50034, // Death Rune Mastery
+      50034, // Blood Rites
       55050, // Heart Strike
       84839, // Vengeance
       50029, // Veteran of the Third War
@@ -813,10 +825,10 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     },
     // Specialization abilities for Unholy tree
     {
-      49638, // Impurity
       52143, // Master of Ghouls
       56835, // Reaping
       55090, // Scourge Strike
+      91107, // Unholy Might
           0,
     },
   },
@@ -825,7 +837,6 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     // Specialization abilities for Elemental tree
     {
       60188, // Elemental Fury
-      29065, // Eye of the Storm
       62099, // Shamanism
       51490, // Thunderstorm
           0,
@@ -833,7 +844,6 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     // Specialization abilities for Enhancement tree
     {
       86629, // Dual Wield
-      30819, // Dual Wield Specialization
       60103, // Lava Lash
       30814, // Mental Quickness
           0,
@@ -841,7 +851,6 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     // Specialization abilities for Restoration tree
     {
         974, // Earth Shield
-      16232, // Healing Focus
       85101, // Meditation
       16213, // Purification
           0,
@@ -878,7 +887,7 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
     },
     // Specialization abilities for Demonology tree
     {
-      84740, // Master Demonologist
+      84740, // Demonic Knowledge
       30146, // Summon Felguard
           0,
     },
@@ -926,7 +935,7 @@ static unsigned __ptr_tree_specialization_data[][3][5] = {
   },
 };
 
-// Class mastery abilities, wow build 12857
+// Class mastery abilities, wow build 12942
 static unsigned __ptr_class_mastery_ability_data[][4] = {
   {
         0,
@@ -947,8 +956,8 @@ static unsigned __ptr_class_mastery_ability_data[][4] = {
   },
   // Class mastery abilities for Hunter
   {
+    76658, // Essence of the Viper
     76657, // Master of Beasts
-    76658, // One With Nature
     76659, // Wild Quiver
         0,
   },
@@ -1006,7 +1015,7 @@ static unsigned __ptr_class_mastery_ability_data[][4] = {
   },
 };
 
-// Racial abilities, wow build 12857
+// Racial abilities, wow build 12942
 static unsigned __ptr_race_ability_data[][12][6] = {
   {
     {     0, },
