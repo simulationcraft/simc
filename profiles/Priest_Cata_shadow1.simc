@@ -17,10 +17,9 @@ actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20
 actions+=/shadow_fiend
 actions+=/archangel,if=buff.dark_evangelism.stack>=5
-actions+=/shadow_word_pain,if=!ticking
-actions+=/vampiric_touch,if=!ticking
-actions+=/vampiric_touch,if=dot.vampiric_touch.remains<cast_time
-actions+=/devouring_plague,if=!ticking
+actions+=/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd
+actions+=/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time
+actions+=/devouring_plague,if=!ticking|dot.devouring_plauge.remains<gcd
 actions+=/shadow_word_death
 actions+=/mind_blast,if=buff.mind_spike.stack>=1
 actions+=/mind_spike,if=buff.mind_spike.stack<=0

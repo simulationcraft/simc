@@ -6,6 +6,9 @@
 /*
  * Log Cataclysm
  *
+ * Build 12942
+ * 
+ * 
  * Build 12857
  * - changed veiled shadows to 30s
  * - added sin and punishment
@@ -39,140 +42,141 @@
 // ==========================================================================
 
 struct priest_t : public player_t
+{
+  // Buffs
+  buff_t* buffs_glyph_of_shadow;
+  buff_t* buffs_inner_fire;
+  buff_t* buffs_inner_fire_armor;
+  buff_t* buffs_inner_will;
+  buff_t* buffs_shadow_form;
+  buff_t* buffs_vampiric_embrace;
+  buff_t* buffs_mind_melt;
+  buff_t* buffs_dark_evangelism;
+  buff_t* buffs_holy_evangelism;
+  buff_t* buffs_shadow_orb;
+  buff_t* buffs_dark_archangel;
+  buff_t* buffs_holy_archangel;
+  buff_t* buffs_chakra_pre;
+  buff_t* buffs_chakra;
+  buff_t* buffs_mind_spike;
+
+  // Talents
+
+  struct talents_list_t 
   {
-    // Buffs
-    buff_t* buffs_glyph_of_shadow;
-    buff_t* buffs_inner_fire;
-    buff_t* buffs_inner_fire_armor;
-    buff_t* buffs_inner_will;
-    buff_t* buffs_shadow_form;
-    buff_t* buffs_vampiric_embrace;
-    buff_t* buffs_mind_melt;
-    buff_t* buffs_dark_evangelism;
-    buff_t* buffs_holy_evangelism;
-    buff_t* buffs_shadow_orb;
-    buff_t* buffs_dark_archangel;
-    buff_t* buffs_holy_archangel;
-    buff_t* buffs_chakra_pre;
-    buff_t* buffs_chakra;
-    buff_t* buffs_mind_spike;
+    // Discipline
+    talent_t* archangel; //                   complete 12803
+    talent_t* evangelism; //                  complete 12803
+    talent_t* inner_focus; //                 new: 12857
+    talent_t* inner_sanctum; //               new: 12942
+    talent_t* mental_agility; //              open: better implementation
+    talent_t* power_infusion; //              complete 12803
+    talent_t* twin_disciplines; //            complete 12803
 
-    // Talents
+    // Holy
+    talent_t* divine_fury; //                 complete 12803
+    talent_t* chakra; //                      done: basic implementation 12759      incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+    talent_t* state_of_mind; //               incomplete: implement a function to increase the duration of a buff
+    talent_t* holy_concentration; //          complete 12803
 
-    struct talents_list_t {
-      // Discipline
-      talent_t* archangel; //                   complete 12803
-      talent_t* evangelism; //                  complete 12803
-      talent_t* inner_focus; //                 new: 12857
-      talent_t* improved_inner_fire; //
-      talent_t* mental_agility; //              open: better implementation
-      talent_t* power_infusion; //              complete 12803
-      talent_t* twin_disciplines; //            complete 12803
+    // Shadow
+    talent_t* darkness; //                    complete 12803
+    talent_t* improved_devouring_plague; //   complete 12803
+    talent_t* improved_mind_blast; //         complete 12803
+    talent_t* mind_melt; //                   complete 12803
+    talent_t* dispersion; //                  complete 12803
+    talent_t* improved_shadow_word_pain; //   complete 12803
+    talent_t* pain_and_suffering; //          complete 12803
+    talent_t* masochism; //                   new 12857
+    talent_t* shadow_form; //                 complete 12803
+    talent_t* twisted_faith; //               complete 12803
+    talent_t* veiled_shadows; //              complete 12803
+    talent_t* harnessed_shadows; //           complete 12803  
+    talent_t* shadowy_apparition; //          done: talent function 12803
+    talent_t* vampiric_embrace; //            complete 12803
+    talent_t* vampiric_touch; //              complete 12803
+    talent_t* sin_and_punishment;
+    talent_t* phantasm;
+    talent_t* paralysis;
+  };
 
-      // Holy
-      talent_t* divine_fury; //                 complete 12803
-      talent_t* chakra; //                      done: basic implementation 12759      incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
-      talent_t* state_of_mind; //               incomplete: implement a function to increase the duration of a buff
-      talent_t* holy_concentration; //          complete 12803
+  talents_list_t talents;
 
-      // Shadow
-      talent_t* darkness; //                    complete 12803
-      talent_t* improved_devouring_plague; //   complete 12803
-      talent_t* improved_mind_blast; //         complete 12803
-      talent_t* mind_melt; //                   complete 12803
-      talent_t* dispersion; //                  complete 12803
-      talent_t* improved_shadow_word_pain; //   complete 12803
-      talent_t* pain_and_suffering; //          complete 12803
-      talent_t* masochism; //                   new 12857
-      talent_t* shadow_form; //                 complete 12803
-      talent_t* twisted_faith; //               complete 12803
-      talent_t* veiled_shadows; //              complete 12803
-      talent_t* harnessed_shadows; //           complete 12803  
-      talent_t* shadowy_apparition; //          done: talent function 12803
-      talent_t* vampiric_embrace; //            complete 12803
-      talent_t* vampiric_touch; //              complete 12803
-      talent_t* sin_and_punishment;
-      talent_t* phantasm;
-      talent_t* paralysis;
-    };
+  struct passive_spells_t
+  {
+    passive_spell_t* shadow_power; //         done: talent function 12803          incomplete: link with main talent tree
+    passive_spell_t* meditation_holy; //      done: talent function 12803
+    passive_spell_t* meditation_disc; //      done: talent function 12803
+    passive_spell_t* enlightenment;
+    
+    passive_spell_t* shadow_orbs;
+  };
 
-    talents_list_t talents;
+  passive_spells_t passive_spells;
 
-    struct passive_spells_t
-    {
-      passive_spell_t* shadow_power; //         done: talent function 12803          incomplete: link with main talent tree
-      passive_spell_t* meditation_holy; //      done: talent function 12803
-      passive_spell_t* meditation_disc; //      done: talent function 12803
-      passive_spell_t* enlightenment;
-      
-      passive_spell_t* shadow_orbs;
-    };
+  struct active_spells_t
+  {
+    active_spell_t* mind_spike;
+    active_spell_t* shadow_fiend;
+    active_spell_t* inner_will;
+    active_spell_t* shadow_word_pain;
+    active_spell_t* mind_blast;
+    active_spell_t* devouring_plague;
+    active_spell_t* shadow_word_death;
+    active_spell_t* inner_fire;
+    active_spell_t* smite;
+    active_spell_t* holy_fire;
+    active_spell_t* power_word_fortitude;
+    active_spell_t* shadow_protection;
 
-    passive_spells_t passive_spells;
+    active_spell_t* shadow_form;
+    active_spell_t* vampiric_embrace;
+    active_spell_t* vampiric_touch;
+    active_spell_t* dispersion;
+    active_spell_t* power_infusion;
+    active_spell_t* inner_focus;
+    active_spell_t* chakra;
+    active_spell_t* archangel;
 
-    struct active_spells_t
-    {
-      active_spell_t* mind_spike;
-      active_spell_t* shadow_fiend;
-      active_spell_t* inner_will;
-      active_spell_t* shadow_word_pain;
-      active_spell_t* mind_blast;
-      active_spell_t* devouring_plague;
-      active_spell_t* shadow_word_death;
-      active_spell_t* inner_fire;
-      active_spell_t* smite;
-      active_spell_t* holy_fire;
-      active_spell_t* power_word_fortitude;
-      active_spell_t* shadow_protection;
+    active_spell_t* penance;
+    active_spell_t* chastise;
+    active_spell_t* mind_flay;
+  };
 
-      active_spell_t* shadow_form;
-      active_spell_t* vampiric_embrace;
-      active_spell_t* vampiric_touch;
-      active_spell_t* dispersion;
-      active_spell_t* power_infusion;
-      active_spell_t* inner_focus;
-      active_spell_t* chakra;
-      active_spell_t* archangel;
+  active_spells_t   active_spells;
 
-      active_spell_t* penance;
-      active_spell_t* chastise;
-      active_spell_t* mind_flay;
-    };
+  // Cooldowns
+  cooldown_t*       cooldowns_mind_blast;
+  cooldown_t*       cooldowns_shadow_fiend;
+  cooldown_t*       cooldowns_archangel;
+  cooldown_t*       cooldowns_chakra;
 
-    active_spells_t active_spells;
+  // DoTs
+  dot_t*            dots_shadow_word_pain;
+  dot_t*            dots_vampiric_touch;
+  dot_t*            dots_devouring_plague;
+  dot_t*            dots_holy_fire;
 
-    // Cooldowns
-    cooldown_t* cooldowns_mind_blast;
-    cooldown_t* cooldowns_shadow_fiend;
-    cooldown_t* cooldowns_archangel;
-    cooldown_t* cooldowns_chakra;
+  // Gains
+  gain_t* gains_dispersion;
+  gain_t* gains_glyph_of_shadow_word_pain;
+  gain_t* gains_shadow_fiend;
+  gain_t* gains_archangel;
+  gain_t* gains_masochism;
 
-    // DoTs
-    dot_t* dots_shadow_word_pain;
-    dot_t* dots_vampiric_touch;
-    dot_t* dots_devouring_plague;
-    dot_t* dots_holy_fire;
+  // Uptimes
+  uptime_t* uptimes_mind_spike[ 4 ];
+  uptime_t* uptimes_dark_evangelism[ 6 ];
+  uptime_t* uptimes_shadow_orb[ 4 ];
 
-    // Gains
-    gain_t* gains_dispersion;
-    gain_t* gains_glyph_of_shadow_word_pain;
-    gain_t* gains_shadow_fiend;
-    gain_t* gains_archangel;
-    gain_t* gains_masochism;
+  // Procs
+  proc_t* procs_shadowy_apparation;
 
-    // Uptimes
-    uptime_t* uptimes_mind_spike[ 4 ];
-    uptime_t* uptimes_dark_evangelism[ 6 ];
-    uptime_t* uptimes_shadow_orb[ 4 ];
+  // Special
+  spell_t* shadowy;
 
-    // Procs
-    proc_t* procs_shadowy_apparation;
-
-    // Special
-    spell_t* shadowy;
-
-    // Random Number Generators
-    rng_t* rng_pain_and_suffering;
+  // Random Number Generators
+  rng_t* rng_pain_and_suffering;
 
     // Options
   std::string power_infusion_target_str;
@@ -271,26 +275,26 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
-    use_shadow_word_death    = false;
-    use_mind_blast           = 1;
-    recast_mind_blast        = 0;
+    use_shadow_word_death               = false;
+    use_mind_blast                      = 1;
+    recast_mind_blast                   = 0;
 
-    distance  = 40;
+    distance                            = 40;
 
-    max_mana_cost = 0.0;
+    max_mana_cost                       = 0.0;
 
-    dots_shadow_word_pain = get_dot( "shadow_word_pain" );
-    dots_vampiric_touch   = get_dot( "vampiric_touch" );
-    dots_devouring_plague = get_dot( "devouring_plague" );
-    dots_holy_fire        = get_dot( "holy_fire" );
+    dots_shadow_word_pain               = get_dot( "shadow_word_pain" );
+    dots_vampiric_touch                 = get_dot( "vampiric_touch" );
+    dots_devouring_plague               = get_dot( "devouring_plague" );
+    dots_holy_fire                      = get_dot( "holy_fire" );
 
-    shadowy         = 0;
+    shadowy                             = 0;
 
     // Discipline
     talents.archangel                   = new talent_t( this, "archangel", "Archangel" ); //           complete 12803
     talents.evangelism                  = new talent_t( this, "evanelism", "Evangelism" ); //           complete 12803
     talents.inner_focus                 = new talent_t( this, "inner_focus", "Inner Focus" ); //      new: 12857
-    talents.improved_inner_fire         = new talent_t( this, "improved_inner_fire", "Improved Inner Fire <TBR>" ); //
+    talents.inner_sanctum               = new talent_t( this, "inner_sanctum", "Inner Sanctum" ); //
     talents.mental_agility              = new talent_t( this, "mental_agility", "Mental Agility" ); //                               open: better implementation
     talents.power_infusion              = new talent_t( this, "power_infusion", "Power Infusion" ); //         complete 12803
     talents.twin_disciplines            = new talent_t( this, "twin_disciplines", "Twin Disciplines" ); //       complete 12803
@@ -327,6 +331,7 @@ struct priest_t : public player_t
     passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); //           done: talent function 12803
     passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
 
+    // Shadow Mastery
     passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs", PRIEST_SHADOW, true );
 
     active_spells.penance               = new active_spell_t( this, "penance", "Penance", PRIEST_DISCIPLINE );
@@ -344,7 +349,6 @@ struct priest_t : public player_t
     active_spells.holy_fire             = new active_spell_t( this, "holy_fire", "Holy Fire" );
     active_spells.power_word_fortitude  = new active_spell_t( this, "fortitude", "Power Word: Fortitude" );
     active_spells.shadow_protection     = new active_spell_t( this, "shadow_protection", "Shadow Protection" );
-
     active_spells.shadow_form           = new active_spell_t( this, "shadow_form", "Shadowform", talents.shadow_form );
     active_spells.vampiric_embrace      = new active_spell_t( this, "vampiric_embrace", "Vampiric Embrace", talents.vampiric_embrace );
     active_spells.vampiric_touch        = new active_spell_t( this, "vampiric_touch", "Vampiric Touch", talents.vampiric_touch );
@@ -354,10 +358,10 @@ struct priest_t : public player_t
     active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
     active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
 
-    cooldowns_mind_blast   = get_cooldown( "mind_blast" );
-    cooldowns_shadow_fiend = get_cooldown( "shadow_fiend" );
-    cooldowns_archangel    = get_cooldown( "archangel"   );
-    cooldowns_chakra       = get_cooldown( "chakra"   );
+    cooldowns_mind_blast                = get_cooldown( "mind_blast" );
+    cooldowns_shadow_fiend              = get_cooldown( "shadow_fiend" );
+    cooldowns_archangel                 = get_cooldown( "archangel"   );
+    cooldowns_chakra                    = get_cooldown( "chakra"   );
   }
 
   // Character Definition
@@ -442,7 +446,8 @@ struct priest_spell_t : public spell_t
   priest_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
-    may_crit = true;
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
   }
 
   virtual double haste() SC_CONST;
@@ -991,8 +996,6 @@ struct inner_fire_t : public priest_spell_t
     bonus_spell_power = util_t::ability_rank( player -> level,  120.0,77,  95.0,71,  0.0,0     );
     bonus_armor       = util_t::ability_rank( player -> level,  2440.0,77, 1800.0,71, 1580.0,0 );
 
-    bonus_spell_power *= 1.0 + p -> talents.improved_inner_fire -> rank() * 0.15;
-    bonus_armor       *= 1.0 + p -> talents.improved_inner_fire -> rank() * 0.15;
     bonus_armor       *= 1.0 + p -> glyphs.inner_fire * 0.5;
 
     id = 48168;
