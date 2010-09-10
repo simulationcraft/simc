@@ -163,6 +163,7 @@ struct druid_t : public player_t
     int starfire;
     int starfall;
     int typhoon;
+    int wrath;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1196,7 +1197,9 @@ struct rip_t : public druid_cat_attack_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
 
-    num_ticks = 6 + ( p -> glyphs.rip * 2 ) + ( p -> set_bonus.tier7_2pc_melee() * 2 );
+    num_ticks = 8 + ( p -> set_bonus.tier7_2pc_melee() * 2 );
+    if ( p -> glyphs.rip )
+      base_multiplier *= 1.15;
 
     static double dmg_80[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
     static double dmg_71[] = { 30+67*1, 30+67*2, 30+67*3, 30+67*4, 30+67*5 };
@@ -1219,7 +1222,7 @@ struct rip_t : public druid_cat_attack_t
     if ( result_is_hit() )
     {
       added_ticks = 0;
-      num_ticks = 6 + ( p -> glyphs.rip * 2 ) + ( p -> set_bonus.tier7_2pc_melee() * 2 );
+      num_ticks = 8 + ( p -> set_bonus.tier7_2pc_melee() * 2 );
       update_ready();
     }
   }
@@ -2473,8 +2476,7 @@ struct moonfire_t : public druid_spell_t
 
     if ( p -> glyphs.moonfire )
     {
-      multiplier_dd -= 0.90;
-      multiplier_td += 0.75;
+      multiplier_td += 0.20;
     }
     base_dd_multiplier *= 1.0 + multiplier_dd;
     base_td_multiplier *= 1.0 + multiplier_td;
@@ -2908,6 +2910,13 @@ struct wrath_t : public druid_spell_t
 
   }
 
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    druid_t* p = player -> cast_druid();
+    if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
+      player_multiplier *= 1.10;
+  }
   virtual void travel( int    travel_result,
                        double travel_dmg )
   {
@@ -2957,7 +2966,6 @@ struct starfall_t : public druid_spell_t
   {
     struct starfall_star_t : public druid_spell_t
     {
-      action_t* starfall_star_splash;
       starfall_star_t( player_t* player ) : druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
       {
         druid_t* p = player -> cast_druid();
@@ -2974,7 +2982,7 @@ struct starfall_t : public druid_spell_t
         base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
         if ( p -> glyphs.focus )
-          base_multiplier *= 1.2;
+          base_multiplier *= 1.1;
 
         id = 53195;
       }
@@ -3322,6 +3330,7 @@ void druid_t::init_glyphs()
     else if ( n == "starfire"     ) glyphs.starfire = 1;
     else if ( n == "starfall"     ) glyphs.starfall = 1;
     else if ( n == "typhoon"      ) glyphs.typhoon = 1;
+    else if ( n == "wrath"        ) glyphs.wrath = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "aquatic_form"          ) ;
     else if ( n == "barkskin"              ) ;
@@ -3345,7 +3354,6 @@ void druid_t::init_glyphs()
     else if ( n == "thorns"                ) ;
     else if ( n == "unburdened_rebirth"    ) ;
     else if ( n == "wild_growth"           ) ;
-    else if ( n == "wrath"                 ) ;
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
