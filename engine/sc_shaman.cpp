@@ -37,13 +37,12 @@ struct shaman_t : public player_t
   buff_t* buffs_flurry;
   buff_t* buffs_lightning_shield;
   buff_t* buffs_maelstrom_weapon;
-  buff_t* buffs_nature_vulnerability;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_searing_flames;
   buff_t* buffs_shamanistic_rage;
+  buff_t* buffs_stormstrike;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
-  // buff_t* buffs_totem_of_wrath_glyph;
   buff_t* buffs_water_shield;
 
   // Cooldowns
@@ -92,7 +91,6 @@ struct shaman_t : public player_t
   talent_t* talent_lava_surge;
   talent_t* talent_reverberation;
   talent_t* talent_rolling_thunder;
-  talent_t* talent_storm_earth_and_fire;
   talent_t* talent_totemic_wrath;
 
   // Enhancement
@@ -115,10 +113,8 @@ struct shaman_t : public player_t
   talent_t* talent_unleashed_rage;
 
   // Restoration
-  talent_t* talent_blessing_of_the_eternals;
   talent_t* talent_mana_tide_totem;
   talent_t* talent_natures_swiftness;
-  talent_t* talent_restorative_totems;
   talent_t* talent_telluric_currents;
   talent_t* talent_totemic_focus;
 
@@ -185,7 +181,6 @@ struct shaman_t : public player_t
     talent_lava_surge               = new talent_t( this, "lava_surge", "Lava Surge" );
     talent_reverberation            = new talent_t( this, "reverberation", "Reverberation" );
     talent_rolling_thunder          = new talent_t( this, "rolling_thunder", "Rolling Thunder" );
-    talent_storm_earth_and_fire     = new talent_t( this, "storm_earth_and_fire", "Storm, Earth and Fire" );
     talent_totemic_wrath            = new talent_t( this, "totemic_wrath", "Totemic Wrath" );
 
     // Enhancement
@@ -207,10 +202,8 @@ struct shaman_t : public player_t
     talent_unleashed_rage           = new talent_t( this, "unleashed_rage", "Unleashed Rage" );
 
     // Restoration
-    talent_blessing_of_the_eternals = new talent_t( this, "blessing_of_the_eternals", "Blessing of the Eternals" );
     talent_mana_tide_totem          = new talent_t( this, "mana_tide_totem", "Mana Tide Totem" );
     talent_natures_swiftness        = new talent_t( this, "natures_swiftness", "Nature's Swiftness" );
-    talent_restorative_totems       = new talent_t( this, "restorative_totems", "Restorative Totems" );
     talent_telluric_currents        = new talent_t( this, "telluric_currents", "Telluric Currents" );
     talent_totemic_focus            = new talent_t( this, "totemic_focus", "Totemic Focus" );
 
@@ -563,7 +556,6 @@ static void trigger_flametongue_weapon( attack_t* a )
       proc         = true;
       may_crit     = true;
       trigger_gcd  = 0;
-      base_hit    += p -> talent_elemental_precision -> rank() * 0.01;
 
       reset();
     }
@@ -1160,7 +1152,7 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_nature_vulnerability -> trigger();
+      p -> buffs_stormstrike -> trigger();
 
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
       {
@@ -1243,10 +1235,6 @@ void shaman_spell_t::player_buff()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
-  if ( p -> buffs_nature_vulnerability -> up() && school == SCHOOL_NATURE )
-  {
-    player_multiplier *= 1.0 + ( p -> glyphs.stormstrike ? 0.28 : 0.20 );
-  }
   if ( p -> glyphs.flametongue_weapon )
   {
     if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE ||
@@ -1260,9 +1248,11 @@ void shaman_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talent_elemental_oath -> rank() * 0.05;
   }
   if ( p -> buffs_elemental_mastery -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE ) )
-      player_multiplier *= 1.15;
+    player_multiplier *= 1.15;
+  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
+    player_multiplier *= 1 + p -> talent_elemental_precision -> rank() * 0.01;
   if ( p -> primary_tree() == TREE_ENHANCEMENT && ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE ) )
-      player_multiplier *= 1 + ( p -> composite_mastery() * 0.025 );
+    player_multiplier *= 1 + ( p -> composite_mastery() * 0.025 );
   if ( p -> buffs_tier10_2pc_melee -> up() )
     player_multiplier *= 1.12;
 }
@@ -1396,14 +1386,12 @@ struct chain_lightning_t : public shaman_spell_t
     base_execute_time   -= p -> primary_tree() == TREE_ELEMENTAL * 0.5;
     base_cost_reduction += p -> talent_convection -> rank() * 0.05;
     base_multiplier     *= 1.0 + p -> talent_concussion -> rank() * 0.02;
-    base_hit            += p -> talent_elemental_precision -> rank() * 0.01;
 
     if ( p -> glyphs.chain_lightning ) base_multiplier *= 0.90;
 
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
-    cooldown -> duration  = 6.0;
-    cooldown -> duration -= util_t::talent_rank( p -> talent_storm_earth_and_fire -> rank(), 3, 1.0, 2.0, 3.0 );
+    cooldown -> duration  = 3.0;
 
     elemental_overload_stats = p -> get_stats( "elemental_overload" ); // Testing needed to see if this still suffers from the jump penalty
     elemental_overload_stats -> school = SCHOOL_NATURE;    
@@ -1433,6 +1421,13 @@ struct chain_lightning_t : public shaman_spell_t
     if ( p -> buffs_maelstrom_weapon -> stack() == 5 ) return 0;
     t *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
     return t;
+  }
+
+  virtual void player_buff()
+  {
+    shaman_spell_t::player_buff();
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_stormstrike -> up() ) player_crit += 0.25;
   }
 
   virtual bool ready()
@@ -1545,8 +1540,6 @@ struct fire_nova_t : public shaman_spell_t
     base_multiplier *= 1.0 + ( p -> talent_improved_fire_nova -> rank() * 0.10 +
 			                         p -> talent_call_of_flame      -> rank() * 0.10 );
 
-    base_hit += p -> talent_elemental_precision -> rank() * 0.01;
-
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
 
     cooldown -> duration -= p -> talent_improved_fire_nova -> rank() * 2.0;
@@ -1591,19 +1584,17 @@ struct fire_nova_t : public shaman_spell_t
 struct lava_burst_t : public shaman_spell_t
 {
   int      flame_shock;
-  int      maelstrom;  
   stats_t* elemental_overload_stats;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lava_burst", player, SCHOOL_FIRE, TREE_ELEMENTAL ),
-      flame_shock( 0 ), maelstrom( 0 ), elemental_overload_stats( 0 )
+      flame_shock( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
       { "flame_shock",        OPT_BOOL, &flame_shock        },
-      { "maelstrom",          OPT_INT,  &maelstrom          },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1623,7 +1614,6 @@ struct lava_burst_t : public shaman_spell_t
 
     base_cost_reduction += p -> talent_convection -> rank() * 0.05;
     base_multiplier     *= 1.0 + p -> talent_concussion    -> rank() * 0.03 + p -> talent_call_of_flame -> rank() * 0.05;
-    base_hit            += p -> talent_elemental_precision -> rank() * 0.01;
     direct_power_mod    += p -> primary_tree() == TREE_ELEMENTAL * 0.20;
 
     base_crit_bonus_multiplier *= 1.0 + ( util_t::talent_rank( p -> talent_lava_flows -> rank(), 3, 0.06, 0.12, 0.24 ) +
@@ -1654,7 +1644,6 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     p -> buffs_elemental_mastery -> current_value = 0;
-    p -> buffs_maelstrom_weapon  -> expire();
 
     if ( result_is_hit() )
     {
@@ -1672,7 +1661,6 @@ struct lava_burst_t : public shaman_spell_t
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_elemental_mastery -> value()      ) return 0;
-    if ( p -> buffs_maelstrom_weapon  -> stack() == 5 ) return 0;
     return t;
   }
 
@@ -1700,9 +1688,6 @@ struct lava_burst_t : public shaman_spell_t
         return false;
     }
 
-    if ( maelstrom > 0 && maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
-      return false;
-
     return true;
   }
   
@@ -1726,19 +1711,17 @@ struct lava_burst_t : public shaman_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   int      maelstrom;
-  int      ss_wait;
   stats_t* elemental_overload_stats;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lightning_bolt", player, SCHOOL_NATURE, TREE_ELEMENTAL ),
-      maelstrom( 0 ), ss_wait( 0 ), elemental_overload_stats( 0 )
+      maelstrom( 0 ), elemental_overload_stats( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
       { "maelstrom", OPT_INT,  &maelstrom  },
-      { "ss_wait",   OPT_BOOL, &ss_wait    },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1757,7 +1740,6 @@ struct lightning_bolt_t : public shaman_spell_t
     base_execute_time   -= p -> primary_tree() == TREE_ELEMENTAL    * 0.5;
     base_cost_reduction += p -> talent_convection          -> rank()  * 0.05;
     base_multiplier     *= 1.0 + p -> talent_concussion    -> rank()  * 0.02  + ( p -> glyphs.lightning_bolt != 0 ? 0.04 : 0.0 );
-    base_hit            += p -> talent_elemental_precision -> rank()  * 0.01;
     direct_power_mod    += p -> primary_tree() == TREE_ELEMENTAL    * 0.20;
 
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
@@ -1801,6 +1783,13 @@ struct lightning_bolt_t : public shaman_spell_t
     t *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
     return t;
   }
+  
+  virtual void player_buff()
+  {
+    shaman_spell_t::player_buff();
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_stormstrike -> up() ) player_crit += 0.25;
+  }
 
   virtual bool ready()
   {
@@ -1812,9 +1801,6 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( maelstrom > 0 )
       if( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
         return false;
-
-    if ( ss_wait && ! p -> buffs_nature_vulnerability -> check() )
-      return false;
 
     return true;
   }
@@ -2011,16 +1997,13 @@ struct thunderstorm_t : public shaman_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
-  int ss_wait;
-
   earth_shock_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL ), ss_wait( 0 )
+      shaman_spell_t( "earth_shock", player, SCHOOL_NATURE, TREE_ELEMENTAL )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "ss_wait", OPT_BOOL, &ss_wait },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2037,7 +2020,6 @@ struct earth_shock_t : public shaman_spell_t
     base_execute_time = 0;
     direct_power_mod  = 0.41;
     base_multiplier  *= 1.0 + p -> talent_concussion    -> rank() * 0.02 + p -> set_bonus.tier9_4pc_melee() * 0.25;
-    base_hit         += p -> talent_elemental_precision -> rank() * 0.01;
 
     base_cost_reduction        += p -> talent_convection -> rank() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
@@ -2063,14 +2045,18 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
+  virtual void player_buff()
+  {
+    shaman_spell_t::player_buff();
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> buffs_stormstrike -> up() ) player_crit += 0.25;
+  }
+
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
 
     if ( ! shaman_spell_t::ready() )
-      return false;
-
-    if ( ss_wait && ! p -> buffs_nature_vulnerability -> check() )
       return false;
 
     return true;
@@ -2122,14 +2108,12 @@ struct flame_shock_t : public shaman_spell_t
     direct_power_mod  = 0.5*1.5/3.5;
     tick_power_mod    = 0.100;
 
-    base_hit += p -> talent_elemental_precision -> rank() * 0.01;
-
     base_dd_multiplier *= 1.0 + ( p -> talent_concussion -> rank()   * 0.02 +
                                   p -> set_bonus.tier9_4pc_melee() * 0.25 );
 
     base_td_multiplier *= 1.0 + ( p -> talent_concussion -> rank()   * 0.02 +
                                   p -> set_bonus.tier9_4pc_melee() * 0.25 +
-                                  util_t::talent_rank( p -> talent_storm_earth_and_fire -> rank(), 3, 0.20 ) +
+                                  util_t::talent_rank( p -> talent_lava_flows -> rank(), 3, 0.20 ) +
                                   p -> set_bonus.tier8_2pc_caster() * 0.2 );
     
     base_cost_reduction  += p -> talent_convection -> rank() * 0.05;
@@ -2220,8 +2204,6 @@ struct frost_shock_t : public shaman_spell_t
 
     base_multiplier  *= 1.0 + ( p -> talent_concussion -> rank()   * 0.02 +
                                 p -> set_bonus.tier9_4pc_melee() * 0.25 );
-
-    base_hit += p -> talent_elemental_precision -> rank() * 0.01;
 
     base_cost_reduction  += p -> talent_convection -> rank() * 0.05;
 
@@ -2475,7 +2457,6 @@ struct magma_totem_t : public shaman_spell_t
     may_crit          = true;
     trigger_gcd       = 1.0;
     base_multiplier  *= 1.0 + p -> talent_call_of_flame -> rank() * 0.10;
-    base_hit         += p -> talent_elemental_precision -> rank() * 0.01;
 
     base_cost_reduction += p -> talent_totemic_focus -> rank() * 0.10;
 
@@ -2582,8 +2563,6 @@ struct mana_spring_totem_t : public shaman_spell_t
     base_cost_reduction += p -> talent_totemic_focus -> rank() * 0.10;
 
     regen = util_t::ability_rank( p -> level,  828.0,85, 91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
-
-    regen *= 1.0 + ( p -> talent_restorative_totems -> rank() * 0.10 );
 
     id = 5675;
   }
@@ -2724,7 +2703,6 @@ struct searing_totem_t : public shaman_spell_t
     may_crit          = true;
     trigger_gcd       = 1.0;
     base_multiplier  *= 1.0 + p -> talent_call_of_flame -> rank() * 0.10;
-    base_hit         += p -> talent_elemental_precision -> rank() * 0.01;
 
     base_cost_reduction += p -> talent_totemic_focus -> rank()    * 0.10;
 
@@ -3181,7 +3159,6 @@ struct lightning_shield_t : public shaman_spell_t
       background       = true;
       direct_power_mod = 0.33;
 
-      base_hit        += p -> talent_elemental_precision -> rank()    * 0.01;
       base_multiplier *= 1.0 + p -> talent_improved_shields -> rank() * 0.05 + ( p -> set_bonus.tier7_2pc_melee() ? 0.10 : 0.00 );
 
       base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
@@ -3203,6 +3180,7 @@ struct lightning_shield_t : public shaman_spell_t
           player_multiplier *= consuming_stack;
       }
 
+      if ( p -> buffs_stormstrike -> up() ) player_crit += 0.25;
     }
   };
 
@@ -3479,7 +3457,7 @@ void shaman_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  base_spell_crit  += talent_acuity -> rank() * 0.01 + talent_blessing_of_the_eternals -> rank() * 0.02;
+  base_spell_crit  += talent_acuity -> rank() * 0.01;
   base_attack_crit += talent_acuity -> rank() * 0.01;
 
   if ( set_bonus.tier6_2pc_caster() )
@@ -3522,10 +3500,10 @@ void shaman_t::init_buffs()
   buffs_flurry                = new buff_t( this, "flurry",                3,  15.0, 0.0, talent_flurry                -> rank() );
   buffs_lightning_shield      = new buff_t( this, "lightning_shield",      9 );
   buffs_maelstrom_weapon      = new buff_t( this, "maelstrom_weapon",      5,  30.0 );
-  buffs_nature_vulnerability  = new buff_t( this, "nature_vulnerability",  1,  15.0 ); // Stormstrike Debuff
   buffs_natures_swiftness     = new buff_t( this, "natures_swiftness" );
   buffs_searing_flames        = new buff_t( this, "searing_flames",        5,   0.0, 0.0, talent_searing_flames   -> rank()      , true ); // Only to track stack count, won't show up in reports
   buffs_shamanistic_rage      = new buff_t( this, "shamanistic_rage",      1,  15.0, 0.0, talent_shamanistic_rage -> rank()      );
+  buffs_stormstrike           = new buff_t( this, "stormstrike",           1,  15.0 );
   buffs_tier10_2pc_melee      = new buff_t( this, "tier10_2pc_melee",      1,  15.0, 0.0, set_bonus.tier10_2pc_melee()  );
   buffs_tier10_4pc_melee      = new buff_t( this, "tier10_4pc_melee",      1,  10.0, 0.0, 0.15                          ); //FIX ME - assuming no icd on this
   // buffs_totem_of_wrath_glyph  = new buff_t( this, "totem_of_wrath_glyph",  1, 300.0, 0.0, glyphs.totem_of_wrath );
