@@ -36,6 +36,7 @@ struct druid_t : public player_t
   buff_t* buffs_stealthed;
   buff_t* buffs_t8_4pc_caster;
   buff_t* buffs_t10_2pc_caster;
+  buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_tigers_fury;
 
   // Cooldowns
@@ -601,12 +602,18 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
     if ( p -> eclipse_bar_value == 100 ) 
     {
       if ( p -> buffs_eclipse_solar -> trigger() )
+      {
         p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
+        p -> buffs_t11_4pc_caster -> trigger( 3 );
+      }
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
       if ( p -> buffs_eclipse_lunar -> trigger() )
+      {
         p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
+        p -> buffs_t11_4pc_caster -> trigger( 3 );
+      }
     }
   }
 }
@@ -2051,9 +2058,11 @@ void druid_spell_t::schedule_execute()
 
 void druid_spell_t::execute()
 {
-  //druid_t* p = player -> cast_druid();
+  druid_t* p = player -> cast_druid();
 
   spell_t::execute();
+
+  if ( result == RESULT_CRIT ) p -> buffs_t11_4pc_caster -> decrement();
 
   if ( ! aoe )
   {
@@ -2116,6 +2125,9 @@ void druid_spell_t::player_buff()
 
 
   player_multiplier *= 1.0 + p -> talent_earth_and_moon -> rank() * 0.02;
+  
+  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
+
 }
 
 // druid_spell_t::target_debuff ============================================
@@ -2390,7 +2402,8 @@ struct insect_swarm_t : public druid_spell_t
     base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talent_genesis -> rank(), 3, 0.02 ) +
                              ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
                              ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
-
+    if ( p -> set_bonus.tier11_2pc_caster() )
+      base_crit += 0.05;
   }
 
   virtual void tick()
@@ -2465,6 +2478,8 @@ struct moonfire_t : public druid_spell_t
     }
     base_dd_multiplier *= 1.0 + multiplier_dd;
     base_td_multiplier *= 1.0 + multiplier_td;
+    if ( p -> set_bonus.tier11_2pc_caster() )
+      base_crit += 0.05;
   }
 
   virtual void player_buff()
@@ -3434,6 +3449,7 @@ void druid_t::init_buffs()
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank() );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
+  buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
 
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
