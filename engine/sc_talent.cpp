@@ -137,7 +137,11 @@ bool talent_t::talent_init_enabled( bool override_enabled, bool override_value )
   }
   else
   {
-    assert( talent_t_data );
+    if ( !talent_t_data )
+    {
+      p -> sim -> errorf( "Error: Unable to init talent \"%s\".\n", token_name.c_str() );
+      assert( 0 );
+    }
     talent_t_enabled = p -> player_data.talent_is_enabled( talent_t_data -> id );
   }
   return true;

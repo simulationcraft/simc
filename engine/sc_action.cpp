@@ -778,6 +778,7 @@ void action_t::execute()
       if ( dot_behavior == DOT_REFRESH )
       {
         current_tick = 0;
+        snapshot_haste = haste();
         number_ticks = hasted_num_ticks();
         if ( ! ticking ) schedule_tick();
       }
@@ -1076,7 +1077,7 @@ void action_t::refresh_duration()
     player_spell_power_multiplier = player -> composite_spell_power_multiplier();
   }
 
-  if ( dot_behavior == DOT_WAIT )
+  if ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) )
   {
     // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
@@ -1219,7 +1220,7 @@ bool action_t::ready()
     {
       double delta = remains - execute_time();
 
-      if ( delta > 3.0 )
+      if ( delta > tick_time() )
         return false;
 
       if ( delta > 0 && sim -> roll( player -> skill ) )
@@ -1449,6 +1450,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     {
       cast_time_expr_t( action_t* a ) : action_expr_t( a, "cast_time", TOK_NUM ) {}
       virtual int evaluate() { result_num = action -> execute_time(); return TOK_NUM; }
+    };
+    return new cast_time_expr_t( this );
+  }
+  if ( name_str == "gcd" )
+  {
+    struct cast_time_expr_t : public action_expr_t
+    {
+      cast_time_expr_t( action_t* a ) : action_expr_t( a, "gcd", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> gcd(); return TOK_NUM; }
     };
     return new cast_time_expr_t( this );
   }

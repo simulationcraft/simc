@@ -1327,12 +1327,13 @@ double player_t::composite_attack_haste() SC_CONST
       if ( buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
       if ( buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
     }
+    if ( ( race == RACE_GOBLIN ) )
+    {
+      h *= 1.0 / ( 1.0 + 0.01 );
+    }
   }
 
-  if ( ( race == RACE_GOBLIN ) )
-    {
-      h *= 1.01;
-    }
+
 
   return h;
 }
@@ -1657,7 +1658,7 @@ double player_t::composite_spell_haste() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-	if ( buffs.dark_intent -> check() ) h *= 1.0 / 1.03;
+    if ( buffs.dark_intent -> check() ) h *= 1.0 / 1.03;
     if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
     else if ( buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 
@@ -1677,11 +1678,11 @@ double player_t::composite_spell_haste() SC_CONST
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }
+    if ( ( race == RACE_GOBLIN ) )
+    {
+      h *= 1 / ( 1.0 + 0.01 );
+    }
   }
-  if ( ( race == RACE_GOBLIN ) )
-      {
-        h *= 1.01;
-      }
 
   return h;
 }

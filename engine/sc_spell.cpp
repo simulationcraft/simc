@@ -69,10 +69,10 @@ int spell_t::hasted_num_ticks() SC_CONST
   int n = num_ticks;
   assert ( snapshot_haste > 0.0 );
   if ( scale_with_haste )
-	  {
-	  t *= 1.0 / snapshot_haste;
-	  n = int ( floor ( t + 0.5 ) );
-	  }
+  {
+    t *= 1.0 / snapshot_haste;
+    n = int ( floor ( t + 0.5 ) );
+  }
   return n;
 }
 
