@@ -29,7 +29,6 @@ struct druid_t : public player_t
   buff_t* buffs_lacerate;
   buff_t* buffs_lunar_shower;
   buff_t* buffs_moonkin_form;
-  buff_t* buffs_natures_grace;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
   buff_t* buffs_pulverize;
@@ -2018,9 +2017,9 @@ double druid_spell_t::cost() SC_CONST
 double druid_spell_t::haste() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  double h = spell_t::haste();
+  double h =  spell_t::haste();
 
-  h *= 1.0 / ( 1.0 +  p -> buffs_natures_grace -> value() );
+  h *= 1.0 / ( 1.0 + 0.01 * p -> talent_natures_grace -> rank() );
 
   return h;
 }
@@ -2052,22 +2051,9 @@ void druid_spell_t::schedule_execute()
 
 void druid_spell_t::execute()
 {
-  druid_t* p = player -> cast_druid();
+  //druid_t* p = player -> cast_druid();
 
   spell_t::execute();
-
-  if ( result == RESULT_CRIT )
-  {
-    /*
-    // Gone for now in cataclysm
-    if ( p -> buffs_moonkin_form -> check() && ! aoe && ! proc )
-    {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02, p -> gains_moonkin_form );
-    }
-    */
-
-    p -> buffs_natures_grace -> trigger( 1, p -> talent_natures_grace -> rank() * 0.05 );
-  }
 
   if ( ! aoe )
   {
@@ -2107,6 +2093,8 @@ void druid_spell_t::player_buff()
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
+    player_multiplier *= 1.0 + 0.01 * p -> talent_balance_of_power -> rank();
+
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
     // Moonfury: Arcane and Nature spell damage increased by 25%
     // One of the bonuses for choosing balance spec
@@ -2493,7 +2481,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
     // +2/4/8% damage bonus only applies to direct damage
     // Get rid of it for the ticks, hacky :<
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank(), 3, 0.02, 0.04, 0.08 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
 
 
     if ( result_is_hit() )
@@ -3441,7 +3429,6 @@ void druid_t::init_buffs()
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank() );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,   3.0,     0, talent_natures_grace -> rank() );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank() );
@@ -3764,7 +3751,6 @@ double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += talent_balance_of_power -> rank() * 0.02;
   hit += spirit() * ( talent_balance_of_power -> rank() / 2.0 ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
@@ -3926,16 +3912,16 @@ talent_tree_type druid_t::primary_tree() SC_CONST
 {
   if ( level > 9 && level <= 69 )
   {
-	  if ( talent_tab_points[ TREE_BALANCE     ] > 0 ) return TREE_BALANCE;
+    if ( talent_tab_points[ TREE_BALANCE     ] > 0 ) return TREE_BALANCE;
     if ( talent_tab_points[ TREE_FERAL       ] > 0 ) return TREE_FERAL;
-	  if ( talent_tab_points[ TREE_RESTORATION ] > 0 ) return TREE_RESTORATION;
+    if ( talent_tab_points[ TREE_RESTORATION ] > 0 ) return TREE_RESTORATION;
     return TREE_NONE;
   }
   else
   {
-	  if ( talent_tab_points[ TREE_BALANCE     ] > 30 ) return TREE_BALANCE;
+    if ( talent_tab_points[ TREE_BALANCE     ] > 30 ) return TREE_BALANCE;
     if ( talent_tab_points[ TREE_FERAL       ] > 30 ) return TREE_FERAL;
-	  if ( talent_tab_points[ TREE_RESTORATION ] > 30 ) return TREE_RESTORATION;
+    if ( talent_tab_points[ TREE_RESTORATION ] > 30 ) return TREE_RESTORATION;
     return TREE_NONE;
   }
   return TREE_NONE;
