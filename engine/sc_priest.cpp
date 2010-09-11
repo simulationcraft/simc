@@ -583,10 +583,6 @@ void priest_spell_t::player_buff()
 {
   priest_t* p = player -> cast_priest();
   spell_t::player_buff();
-  if ( school == SCHOOL_SHADOW )
-  {
-    player_hit += p -> constants.twisted_faith_static_value;
-  }
   for ( int i=0; i < 4; i++ )
   {
     p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
@@ -598,6 +594,11 @@ void priest_spell_t::player_buff()
   for ( int i=0; i < 4; i++ )
   {
     p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+  }
+
+  if ( school == SCHOOL_SHADOW )
+  {
+    player_multiplier *= 1.0 + p -> constants.twisted_faith_static_value;
   }
 }
 
@@ -744,12 +745,6 @@ struct devouring_plague_burst_t : public priest_spell_t
     }
     update_stats( DMG_DIRECT );
   }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
-  }
-
 };
 
 struct devouring_plague_t : public priest_spell_t
@@ -814,11 +809,6 @@ struct devouring_plague_t : public priest_spell_t
   {
     if ( devouring_plague_burst && type == DMG_DIRECT ) return;
     priest_spell_t::update_stats( type );
-  }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
   }
 };
 
@@ -1127,12 +1117,6 @@ struct mind_blast_t : public priest_spell_t
     a *= 1 - (p -> buffs_mind_melt -> stack() * 0.5);
     return a;
   }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
-  }
-
 };
 
 struct mind_flay_t : public priest_spell_t
@@ -1297,11 +1281,6 @@ struct mind_spike_t : public priest_spell_t
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
-  }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
   }
 };
 
@@ -1647,11 +1626,6 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_spell_t::refresh_duration();
     num_ticks--;
   }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
-  }
 };
 
 
@@ -1851,10 +1825,6 @@ struct vampiric_touch_t : public priest_spell_t
     {
       p -> recast_mind_blast = 1;
     }
-  }
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
   }
 };
 
