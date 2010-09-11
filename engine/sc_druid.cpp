@@ -3774,8 +3774,8 @@ double druid_t::composite_attack_crit() SC_CONST
 double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
-
-  hit += spirit() * ( talent_balance_of_power -> rank() / 2.0 ) / rating.spell_hit;
+  // BoP does not convert base spirit into hit!
+  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] )* ( talent_balance_of_power -> rank() / 2.0 ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
