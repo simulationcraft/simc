@@ -436,6 +436,7 @@ struct priest_spell_t : public spell_t
 struct shadow_fiend_pet_t : public pet_t
 {
   buff_t*   buffs_shadowcrawl;
+  active_spell_t* shadowcrawl;
 
   struct shadowcrawl_t : public spell_t
   {
@@ -447,8 +448,8 @@ struct shadow_fiend_pet_t : public pet_t
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       priest_t*           o = p -> owner -> cast_priest();
 
-      id = 63619;
-      // parse_data ( o -> player_data );
+      id = p -> shadowcrawl -> id();
+      parse_data ( o -> player_data );
     }
       
     virtual void execute()
@@ -498,6 +499,13 @@ struct shadow_fiend_pet_t : public pet_t
       priest_t* p = player -> cast_pet() -> owner -> cast_priest();
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.03, p -> gains_shadow_fiend );
     }
+    void player_buff()
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      attack_t::player_buff();
+
+      player_multiplier *= 1.0 + p -> buffs_shadowcrawl -> value();
+    }
   };
 
   melee_t* melee;
@@ -516,6 +524,8 @@ struct shadow_fiend_pet_t : public pet_t
     intellect_per_owner = 0.50;
 
     action_list_str = "shadowcrawl/wait_until_ready";
+
+    shadowcrawl = new active_spell_t( this, "shadowcrawl", "Shadowcrawl", PRIEST, PRIEST );
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -543,7 +553,7 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void init_buffs()
   {
     pet_t::init_buffs();
-    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, 5.0, 6.0 );
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
   virtual double composite_spell_power( int school ) SC_CONST
   {  
@@ -558,17 +568,6 @@ struct shadow_fiend_pet_t : public pet_t
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0; 
-  }
-  virtual double composite_player_multiplier( int school ) SC_CONST
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( school == SCHOOL_SHADOW )
-    {
-      m *= 1.0 + buffs_shadowcrawl -> value();
-    }
-
-    return m;
   }
   virtual void dismiss()
   {
@@ -1756,7 +1755,7 @@ struct smite_t : public priest_spell_t
 
   virtual void execute()
   {
-  priest_t* p = player -> cast_priest();
+    priest_t* p = player -> cast_priest();
 
     priest_spell_t::execute();
     p -> buffs_holy_evangelism  -> trigger( 1, 1.0, 1.0 );
