@@ -653,7 +653,7 @@ double action_t::calculate_direct_damage()
 
   double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
 
-  if ( base_direct_dmg == 0 ) return 0;
+  if ( base_direct_dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
   
   direct_dmg  = base_direct_dmg + base_dd_adder + player_dd_adder + target_dd_adder;
   if ( weapon_multiplier > 0 )
