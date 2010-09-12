@@ -568,7 +568,7 @@ struct talent_t
   int    rank_value( int zero, int first, ... );
   
   talent_t() : _tree(-1) {}
-  talent_t( const char* n, int t, int mr ) : _name(n), _tree(t), _ranks(0), _max_ranks(mr) {}
+  talent_t( const char* n, int t, int mr ) : _tree(t), _ranks(0), _max_ranks(mr), _name(n) {}
 };
 
 struct glyph_t
@@ -582,7 +582,7 @@ struct glyph_t
   double value( double on_value, double off_value=0 ) { return _active ? on_value : off_value; }
 
   glyph_t() : _active(-1) {}
-  glyph_t( const char* n ) : _name(n), _active(0) {}
+  glyph_t( const char* n ) : _active(0), _name(n)  {}
 };
 
 // Utilities =================================================================
