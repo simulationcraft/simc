@@ -471,7 +471,7 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
-      direct_power_mod = 0.51;  // Seems to be around that for level 80, but might be higher for higher levels.
+      direct_power_mod = 0.511;  // Seems to be around that for level 80, but might be higher for higher levels.
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
       base_dd_multiplier = 1.15; // Shadowcrawl
