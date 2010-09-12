@@ -320,6 +320,8 @@ struct paladin_t : public player_t
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
 
+  bool              has_holy_power(int power_needed=1) SC_CONST;
+  int               holy_power_stacks() SC_CONST;
   double            get_divine_bulwark() SC_CONST;
   double            get_hand_of_light() SC_CONST;
 };
@@ -364,6 +366,16 @@ static void trigger_judgements_of_the_bold( action_t* a )
   if ( p -> primary_tree() == TREE_RETRIBUTION )
   {
     p -> buffs_judgements_of_the_bold -> trigger();
+  }
+}
+
+static void trigger_hand_of_light( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( a -> sim -> roll( p -> get_hand_of_light() ) )
+  {
+    p -> buffs_hand_of_light -> trigger();
   }
 }
 
@@ -450,8 +462,6 @@ struct paladin_attack_t : public attack_t
       {
         player_multiplier *= 1.30;
       }
-
-      // player_multiplier *= p -> get_hand_of_light();
     }
   }
 
@@ -459,7 +469,12 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
-      p -> buffs_holy_power -> expire();
+    {
+      if ( p -> buffs_hand_of_light -> up() )
+        p -> buffs_hand_of_light -> expire();
+      else
+        p -> buffs_holy_power -> expire();
+    }
     p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
 };
@@ -500,6 +515,8 @@ struct melee_t : public paladin_attack_t
       {
         p -> active_seal_of_truth_dot -> execute();
       }
+
+      trigger_hand_of_light( this );
     }
     if ( p -> buffs_reckoning -> up() )
     {
@@ -676,9 +693,10 @@ struct divine_storm_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     weapon_multiplier = 0.2;
-    if ( p -> buffs_holy_power -> up() )
+    int hp = p -> holy_power_stacks();
+    if ( hp > 0 )
     {
-      weapon_multiplier += util_t::talent_rank( p -> buffs_holy_power -> check(), 3, 0.22, 0.74, 1.50 );
+      weapon_multiplier += util_t::talent_rank( hp, 3, 0.22, 0.74, 1.50 );
     }
     paladin_attack_t::execute();
     if ( result_is_hit() )
@@ -869,7 +887,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     if ( p -> set_bonus.tier8_4pc_tank() ) p -> buffs_tier8_4pc_tank -> trigger();
-    direct_power_mod = util_t::talent_rank( p -> buffs_holy_power -> stack(), 3, 0.20, 0.60, 1.20 );
+    direct_power_mod = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.20, 0.60, 1.20 );
     paladin_attack_t::execute();
     if ( p -> talents.holy_shield )
       p -> buffs_holy_shield -> trigger();
@@ -879,7 +897,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     if ( p -> main_hand_weapon.group() == WEAPON_2H ) return false;
-    if ( p -> buffs_holy_power -> check() == 0 ) return false;
+    if ( ! p -> has_holy_power() ) return false;
     return paladin_attack_t::ready();
   }
 };
@@ -916,14 +934,14 @@ struct templars_verdict_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    weapon_multiplier = util_t::talent_rank( p -> buffs_holy_power -> stack(), 3, 0.30, 1.10, 2.25 );
+    weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 1.10, 2.25 );
     paladin_attack_t::execute();
   }
 
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( p -> buffs_holy_power -> check() == 0 ) return false;
+    if ( ! p -> has_holy_power() ) return false;
     return paladin_attack_t::ready();
   }
 };
@@ -1479,7 +1497,6 @@ struct paladin_spell_t : public spell_t
       {
         player_multiplier *= 1.30;
       }
-      player_multiplier *= p -> get_hand_of_light();
     }
   }
 
@@ -1497,7 +1514,12 @@ struct paladin_spell_t : public spell_t
   {
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
-      p -> buffs_holy_power -> expire();
+    {
+      if ( p -> buffs_hand_of_light -> up() )
+        p -> buffs_hand_of_light -> expire();
+      else
+        p -> buffs_holy_power -> expire();
+    }
     p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
 };
@@ -1903,7 +1925,7 @@ struct inquisition_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> buffs_inquisition -> duration = 4.0 * p -> buffs_holy_power -> stack() * (1.0 + 0.5 * p -> talents.inquiry_of_faith->rank());
+    p -> buffs_inquisition -> duration = 4.0 * p -> holy_power_stacks() * (1.0 + 0.5 * p -> talents.inquiry_of_faith->rank());
     p -> buffs_inquisition -> trigger();
     if ( p -> talents.holy_shield )
       p -> buffs_holy_shield -> trigger();
@@ -1913,7 +1935,7 @@ struct inquisition_t : public paladin_spell_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> buffs_holy_power -> check() == 0 )
+    if( ! p -> has_holy_power() )
       return false;
     return paladin_spell_t::ready();
   }
@@ -1950,7 +1972,7 @@ struct zealotry_t : public paladin_spell_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if( p -> buffs_holy_power -> check() != 3 )
+    if( ! p -> has_holy_power(3) )
       return false;
     return paladin_spell_t::ready();
   }
@@ -2639,6 +2661,25 @@ cooldown_t* paladin_t::get_cooldown( const std::string& name )
   return player_t::get_cooldown( name );
 }
 
+// paladin_t::has_holy_power() ===============================================
+
+bool paladin_t::has_holy_power(int power_needed) SC_CONST
+{
+  return buffs_hand_of_light -> check() || buffs_holy_power -> check() >= power_needed;
+}
+
+// paladin_t::holy_power_stacks() ============================================
+
+int paladin_t::holy_power_stacks() SC_CONST
+{
+  if ( buffs_hand_of_light -> up() )
+    return 3;
+  else if ( buffs_holy_power -> up() )
+    return buffs_holy_power -> check();
+  else
+    return 0;
+}
+
 // paladin_t::get_divine_bulwark =============================================
 
 double paladin_t::get_divine_bulwark() SC_CONST
@@ -2653,10 +2694,10 @@ double paladin_t::get_divine_bulwark() SC_CONST
 
 double paladin_t::get_hand_of_light() SC_CONST
 {
-  if ( primary_tree() != TREE_RETRIBUTION ) return 1.0;
+  if ( primary_tree() != TREE_RETRIBUTION ) return 0.0;
 
-  // holy damage multiplier, 2.5% per point of mastery
-  return 1.0 + composite_mastery() * 0.025;
+  // chance to proc buff, 1% per point of mastery
+  return composite_mastery() * 0.01;
 }
 
 // ==========================================================================
