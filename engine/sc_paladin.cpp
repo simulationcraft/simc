@@ -380,7 +380,6 @@ struct paladin_attack_t : public attack_t
       trigger_seal( false ), uses_holy_power(false), holy_power_chance(0.0)
   {
     may_crit = true;
-    base_dd_min = base_dd_max = 1;
     if ( p -> glyphs.sense_undead )
     {
       if ( sim -> target -> race == RACE_UNDEAD ) base_multiplier *= 1.01;
@@ -613,13 +612,10 @@ struct crusader_strike_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( result_is_hit() )
+    p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
+    if ( p -> tier10_2pc_procs_from_strikes && result_is_hit() )
     {
-      p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
-      if ( p -> tier10_2pc_procs_from_strikes )
-      {
-        trigger_tier10_2pc( this );
-      }
+      trigger_tier10_2pc( this );
     }
     if ( p -> librams.    deadly_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 120 );
     if ( p -> librams.   furious_gladiators_fortitude ) p -> buffs_libram_of_fortitude -> trigger( 1, 144 );
@@ -1229,6 +1225,8 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     {
       p -> buffs_censure -> trigger();
       player_buff(); // Re-calculate with the new stacks of Censure.
+      snapshot_haste = haste();
+      number_ticks = hasted_num_ticks();
       if ( ticking )
       {
         refresh_duration();
