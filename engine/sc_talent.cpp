@@ -594,7 +594,7 @@ uint32_t spell_id_t::category() SC_CONST
   return p -> player_data.spell_category( spell_id_t_id );
 }
 
-double spell_id_t::duraton() SC_CONST
+double spell_id_t::duration() SC_CONST
 {
   if ( !ok() )
   {

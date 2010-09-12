@@ -3525,7 +3525,7 @@ struct spell_id_t
   virtual double cooldown() SC_CONST;
   virtual double gcd() SC_CONST;
   virtual uint32_t category() SC_CONST;
-  virtual double duraton() SC_CONST;
+  virtual double duration() SC_CONST;
   virtual double cost() SC_CONST;
   virtual uint32_t rune_cost() SC_CONST;
   virtual double runic_power_gain() SC_CONST;
