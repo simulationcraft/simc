@@ -11,14 +11,31 @@
 
 // spell_t::spell_t ==========================================================
 
-spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
-    action_t( ACTION_SPELL, n, p, r, s, t, true )
+void spell_t::_init_spell_t()
 {
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
   base_crit_bonus = 0.5;
-  trigger_gcd = p -> base_gcd;
+  trigger_gcd = player -> base_gcd;
   min_gcd = 1.0;
+}
+
+spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
+    action_t( ACTION_SPELL, n, p, r, s, t, true )
+{
+  _init_spell_t();
+}
+
+spell_t::spell_t( const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t ) :
+    action_t( ACTION_SPELL, name, sname, p, ptype, stype, t, true )
+{
+  _init_spell_t();
+}
+
+spell_t::spell_t( const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t ) :
+    action_t( ACTION_SPELL, name, id, p, ptype, stype, t, true )
+{
+  _init_spell_t();
 }
 
 // spell_t::haste ============================================================

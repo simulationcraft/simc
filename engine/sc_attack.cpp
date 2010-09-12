@@ -11,9 +11,7 @@
 
 // attack_t::attack_t =======================================================
 
-attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
-    action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+void attack_t::_init_attack_t()
 {
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
@@ -35,10 +33,31 @@ attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tr
   base_attack_power_multiplier = 1.0;
   base_crit_bonus = 1.0;
 
-  trigger_gcd = p -> base_gcd;
+  trigger_gcd = player -> base_gcd;
   min_gcd = 1.0;
 
-  range = 0; // Prevent action from being scheduled when player_t::moving!=0
+  range = 0; // Prevent action from being scheduled when player_t::moving!=0  
+}
+
+attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
+    action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
+    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  _init_attack_t();
+}
+
+attack_t::attack_t( const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool special ) :
+    action_t( ACTION_ATTACK, name, sname, p, ptype, stype, t, special ),
+    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  _init_attack_t();
+}
+
+attack_t::attack_t( const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t, bool special ) :
+    action_t( ACTION_ATTACK, name, id, p, ptype, stype, t, special ),
+    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  _init_attack_t();
 }
 
 // attack_t::haste ==========================================================

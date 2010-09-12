@@ -546,7 +546,7 @@ struct avengers_shield_t : public paladin_attack_t
   avengers_shield_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "avengers_shield", p, SCHOOL_HOLY, TREE_PROTECTION )
   {
-    id = p->spells.avengers_shield->id();
+    id = p->spells.avengers_shield->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -586,7 +586,7 @@ struct crusader_strike_t : public paladin_attack_t
   crusader_strike_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "crusader_strike", p )
   {
-    id = p->spells.crusader_strike->id();
+    id = p->spells.crusader_strike->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -648,7 +648,7 @@ struct divine_storm_t : public paladin_attack_t
   {
     check_talent( p -> talents.divine_storm->rank() );
 
-    id = p->spells.divine_storm->id();
+    id = p->spells.divine_storm->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -698,7 +698,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   hammer_of_justice_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "hammer_of_justice", p, SCHOOL_HOLY )
   {
-    id = p->spells.hammer_of_justice->id();
+    id = p->spells.hammer_of_justice->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -727,7 +727,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
   {
     check_talent( p -> talents.hammer_of_the_righteous->rank() );
 
-    id = p->spells.hammer_of_the_righteous->id();
+    id = p->spells.hammer_of_the_righteous->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -769,7 +769,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY )
   {
-    id = p->spells.hammer_of_wrath->id();
+    id = p->spells.hammer_of_wrath->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -839,7 +839,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     check_talent( p->talents.shield_of_the_righteous->rank() );
 
-    id = p->spells.shield_of_the_righteous->id();
+    id = p->spells.shield_of_the_righteous->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -893,7 +893,7 @@ struct templars_verdict_t : public paladin_attack_t
   {
     assert( p -> primary_tree() == TREE_RETRIBUTION );
 
-    id = p->spells.templars_verdict->id();
+    id = p->spells.templars_verdict->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1356,7 +1356,7 @@ struct judgement_t : public paladin_attack_t
   judgement_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "judgement", p, SCHOOL_HOLY )
   {
-    id = p->spells.judgement->id();
+    id = p->spells.judgement->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1509,7 +1509,7 @@ struct avenging_wrath_t : public paladin_spell_t
   avenging_wrath_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "avenging_wrath", p )
   {
-    id = p->spells.avenging_wrath->id();
+    id = p->spells.avenging_wrath->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1583,7 +1583,7 @@ struct consecration_t : public paladin_spell_t
   consecration_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "consecration", p )
   {
-    id = p->spells.consecration->id();
+    id = p->spells.consecration->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1624,7 +1624,7 @@ struct divine_favor_t : public paladin_spell_t
   {
     check_talent( p -> talents.divine_favor->rank() );
 
-    id = p->spells.divine_favor->id();
+    id = p->spells.divine_favor->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1653,7 +1653,7 @@ struct divine_plea_t : public paladin_spell_t
   divine_plea_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "divine_plea", p )
   {
-    id = p->spells.divine_plea->id();
+    id = p->spells.divine_plea->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1690,7 +1690,7 @@ struct exorcism_t : public paladin_spell_t
   exorcism_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "exorcism", p ), art_of_war(0), undead_demon(0)
   {
-    id        = p -> spells.exorcism->id();
+    id        = p -> spells.exorcism->spell_id();
     effect_nr = 1;
     option_t options[] =
     {
@@ -1787,7 +1787,7 @@ struct holy_shock_t : public paladin_spell_t
   holy_shock_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "holy_shock", p )
   {
-    id = p->spells.holy_shock->id();
+    id = p->spells.holy_shock->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1845,7 +1845,7 @@ struct holy_wrath_t : public paladin_spell_t
   holy_wrath_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "holy_wrath", p )
   {
-    id = p->spells.holy_wrath->id();
+    id = p->spells.holy_wrath->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1885,7 +1885,7 @@ struct inquisition_t : public paladin_spell_t
   inquisition_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "inquisition", p )
   {
-    id = p->spells.inquisition->id();
+    id = p->spells.inquisition->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1926,7 +1926,7 @@ struct zealotry_t : public paladin_spell_t
   {
     check_talent( p -> talents.zealotry->rank() );
 
-    id = p->spells.zealotry->id();
+    id = p->spells.zealotry->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }

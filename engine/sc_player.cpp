@@ -2681,7 +2681,7 @@ void player_t::register_callbacks()
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( int                resource,
+void player_t::register_resource_gain_callback( int             resource,
                                                 action_callback_t* cb )
 {
   resource_gain_callbacks[ resource ].push_back( cb );
@@ -2689,7 +2689,7 @@ void player_t::register_resource_gain_callback( int                resource,
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( int                resource,
+void player_t::register_resource_loss_callback( int             resource,
                                                 action_callback_t* cb )
 {
   resource_loss_callbacks[ resource ].push_back( cb );
@@ -2697,12 +2697,12 @@ void player_t::register_resource_loss_callback( int                resource,
 
 // player_t::register_attack_result_callback ================================
 
-void player_t::register_attack_result_callback( int                mask,
+void player_t::register_attack_result_callback( int64_t             mask,
                                                 action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       attack_result_callbacks[ i ].push_back( cb );
     }
@@ -2711,12 +2711,12 @@ void player_t::register_attack_result_callback( int                mask,
 
 // player_t::register_spell_result_callback =================================
 
-void player_t::register_spell_result_callback( int                mask,
+void player_t::register_spell_result_callback( int64_t             mask,
                                                action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_result_callbacks[ i ].push_back( cb );
     }
@@ -2725,12 +2725,12 @@ void player_t::register_spell_result_callback( int                mask,
 
 // player_t::register_attack_direct_result_callback ================================
 
-void player_t::register_attack_direct_result_callback( int                mask,
+void player_t::register_attack_direct_result_callback( int64_t             mask,
                                                        action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       attack_direct_result_callbacks[ i ].push_back( cb );
     }
@@ -2739,12 +2739,12 @@ void player_t::register_attack_direct_result_callback( int                mask,
 
 // player_t::register_spell_direct_result_callback =================================
 
-void player_t::register_spell_direct_result_callback( int                mask,
+void player_t::register_spell_direct_result_callback( int64_t             mask,
                                                       action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_direct_result_callbacks[ i ].push_back( cb );
     }
@@ -2760,12 +2760,12 @@ void player_t::register_tick_callback( action_callback_t* cb )
 
 // player_t::register_tick_damage_callback ==================================
 
-void player_t::register_tick_damage_callback( int                mask,
+void player_t::register_tick_damage_callback( int64_t             mask,
                                               action_callback_t* cb )
 {
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       tick_damage_callbacks[ i ].push_back( cb );
     }
@@ -2774,12 +2774,12 @@ void player_t::register_tick_damage_callback( int                mask,
 
 // player_t::register_direct_damage_callback ================================
 
-void player_t::register_direct_damage_callback( int                mask,
+void player_t::register_direct_damage_callback( int64_t             mask,
                                                 action_callback_t* cb )
 {
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       direct_damage_callbacks[ i ].push_back( cb );
     }
@@ -2788,12 +2788,12 @@ void player_t::register_direct_damage_callback( int                mask,
 
 // player_t::register_spell_cast_result_callback =================================
 
-void player_t::register_spell_cast_result_callback( int                mask,
+void player_t::register_spell_cast_result_callback( int64_t             mask,
                                                     action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_cast_result_callbacks[ i ].push_back( cb );
     }

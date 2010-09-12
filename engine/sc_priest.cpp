@@ -421,6 +421,18 @@ struct priest_spell_t : public spell_t
     may_crit      = true;
     dot_behavior  = DOT_REFRESH;
   }
+  priest_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, sname, player, ptype, stype, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
+  priest_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, id, player, ptype, stype, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
 
   virtual double haste() SC_CONST;
   virtual void   execute();
@@ -443,13 +455,8 @@ struct shadow_fiend_pet_t : public pet_t
     double bonus_value;
 
     shadowcrawl_t( player_t* player ) :
-        spell_t( "shadowcrawl", player, RESOURCE_MANA, SCHOOL_SHADOW ), bonus_value( 0.15 )
+        spell_t( "shadowcrawl", "Shadowcrawl", player, PRIEST, PRIEST ), bonus_value( 0.15 )
     {
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
-      priest_t*           o = p -> owner -> cast_priest();
-
-      id = p -> shadowcrawl -> id();
-      parse_data ( o -> player_data );
     }
       
     virtual void execute()
@@ -1178,7 +1185,7 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    id = p -> active_spells.mind_flay -> id();
+    id = p -> active_spells.mind_flay -> spell_id();
     parse_data( p -> player_data );
 
     channeled      = true;

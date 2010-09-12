@@ -720,7 +720,7 @@ void unique_gear_t::init( player_t* p )
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( int                type,
-						      int                mask,
+						      int64_t            mask,
 						      const std::string& name,
 						      player_t*          player,
 						      int                stat,
@@ -781,7 +781,7 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( int                type,
-    int                mask,
+    int64_t            mask,
     const std::string& name,
     player_t*          player,
     int                max_stacks,

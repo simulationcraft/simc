@@ -11,6 +11,36 @@
 
 // action_t::action_t =======================================================
 
+void action_t::_init_action_t()
+{
+  if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
+
+  if ( ! player -> initialized )
+  {
+    sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
+    sim -> cancel();
+  }
+
+  action_t** last = &( player -> action_list );
+  while ( *last ) last = &( ( *last ) -> next );
+  *last = this;
+
+  for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
+
+
+
+
+  cooldown = player -> get_cooldown( name_str );
+  dot      = player -> get_dot     ( name_str );
+
+  stats = player -> get_stats( name_str );
+  stats -> school = school;
+
+  id = spell_id();
+
+  parse_data ( player -> player_data );
+}
+
 action_t::action_t( int         ty,
                     const char* n,
                     player_t*   p,
@@ -18,6 +48,7 @@ action_t::action_t( int         ty,
                     int         s,
                     int         tr,
                     bool        sp ) :
+    active_spell_t( p, n ),
     sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), effect_nr ( 1 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
     dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
@@ -58,29 +89,99 @@ action_t::action_t( int         ty,
     if_expr( NULL ),
     sync_action( 0 ), observer( 0 ), next( 0 )
 {
-  if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", p -> name(), name() );
-
-  if ( ! player -> initialized )
-  {
-    sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
-    sim -> cancel();
-  }
-
-  action_t** last = &( p -> action_list );
-  while ( *last ) last = &( ( *last ) -> next );
-  *last = this;
-
-  for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
-
-
-
-
-  cooldown = p -> get_cooldown( n );
-  dot      = p -> get_dot     ( n );
-
-  stats = p -> get_stats( n );
-  stats -> school = school;
+  _init_action_t();
 }
+
+action_t::action_t( int type, const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
+  active_spell_t( p, name, sname, ptype, stype ),
+    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
+    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
+    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
+    may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
+    may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
+    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
+    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
+    weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
+    base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
+    base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
+    base_dd_multiplier( 1 ), base_td_multiplier( 1 ),
+    base_multiplier( 1 ),   base_hit( 0 ),   base_crit( 0 ),   base_penetration( 0 ),
+    player_multiplier( 1 ), player_hit( 0 ), player_crit( 0 ), player_penetration( 0 ),
+    target_multiplier( 1 ), target_hit( 0 ), target_crit( 0 ), target_penetration( 0 ),
+    base_spell_power( 0 ),   base_attack_power( 0 ),
+    player_spell_power( 0 ), player_attack_power( 0 ),
+    target_spell_power( 0 ), target_attack_power( 0 ),
+    base_spell_power_multiplier( 0 ),   base_attack_power_multiplier( 0 ),
+    player_spell_power_multiplier( 1 ), player_attack_power_multiplier( 1 ),
+    base_crit_multiplier( 1 ),   base_crit_bonus_multiplier( 1 ),
+    player_crit_multiplier( 1 ), player_crit_bonus_multiplier( 1 ),
+    target_crit_multiplier( 1 ), target_crit_bonus_multiplier( 1 ),
+    base_dd_adder( 0 ), player_dd_adder( 0 ), target_dd_adder( 0 ),
+    resource_consumed( 0 ),
+    direct_dmg( 0 ), tick_dmg( 0 ),
+    resisted_dmg( 0 ), blocked_dmg( 0 ),
+    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
+    weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
+    rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
+    time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
+    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
+    min_current_time( 0 ), max_current_time( 0 ),
+    min_time_to_die( 0 ), max_time_to_die( 0 ),
+    min_health_percentage( 0 ), max_health_percentage( 0 ),
+    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    snapshot_haste( -1.0 ),
+    recast( false ),
+    if_expr( NULL ),
+    sync_action( 0 ), observer( 0 ), next( 0 )
+{
+  _init_action_t();
+}
+
+action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
+  active_spell_t( p, name, id, ptype, stype ),
+    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
+    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
+    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
+    may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
+    may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
+    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
+    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
+    weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
+    base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
+    base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
+    base_dd_multiplier( 1 ), base_td_multiplier( 1 ),
+    base_multiplier( 1 ),   base_hit( 0 ),   base_crit( 0 ),   base_penetration( 0 ),
+    player_multiplier( 1 ), player_hit( 0 ), player_crit( 0 ), player_penetration( 0 ),
+    target_multiplier( 1 ), target_hit( 0 ), target_crit( 0 ), target_penetration( 0 ),
+    base_spell_power( 0 ),   base_attack_power( 0 ),
+    player_spell_power( 0 ), player_attack_power( 0 ),
+    target_spell_power( 0 ), target_attack_power( 0 ),
+    base_spell_power_multiplier( 0 ),   base_attack_power_multiplier( 0 ),
+    player_spell_power_multiplier( 1 ), player_attack_power_multiplier( 1 ),
+    base_crit_multiplier( 1 ),   base_crit_bonus_multiplier( 1 ),
+    player_crit_multiplier( 1 ), player_crit_bonus_multiplier( 1 ),
+    target_crit_multiplier( 1 ), target_crit_bonus_multiplier( 1 ),
+    base_dd_adder( 0 ), player_dd_adder( 0 ), target_dd_adder( 0 ),
+    resource_consumed( 0 ),
+    direct_dmg( 0 ), tick_dmg( 0 ),
+    resisted_dmg( 0 ), blocked_dmg( 0 ),
+    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
+    weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
+    rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
+    time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
+    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
+    min_current_time( 0 ), max_current_time( 0 ),
+    min_time_to_die( 0 ), max_time_to_die( 0 ),
+    min_health_percentage( 0 ), max_health_percentage( 0 ),
+    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
+    snapshot_haste( -1.0 ),
+    recast( false ),
+    if_expr( NULL ),
+    sync_action( 0 ), observer( 0 ), next( 0 )
+{
+  _init_action_t();
+}
+
 
 // action_t::parse_data ====================================================
 void action_t::parse_data( sc_data_access_t& pData )
