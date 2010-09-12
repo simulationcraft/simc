@@ -2252,6 +2252,8 @@ struct player_t
   uint32_t talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t *> talent_list2;
 
+  talent_tree_type tree_type[ MAX_TALENT_TREES ];
+
   std::vector<active_spell_t *> active_spell_list;
   std::vector<passive_spell_t *> passive_spell_list;
 
@@ -2601,7 +2603,7 @@ struct player_t
   virtual bool   resource_available( int resource, double cost ) SC_CONST;
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual talent_tree_type primary_tree() SC_CONST     { return TALENT_TREE_MAX; }
+  virtual talent_tree_type primary_tree() SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );

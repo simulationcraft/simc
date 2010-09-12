@@ -219,6 +219,10 @@ struct rogue_t : public player_t
 
   rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
   {
+    tree_type[ ROGUE_ASSASSINATION ] = TREE_ASSASSINATION;
+    tree_type[ ROGUE_COMBAT        ] = TREE_COMBAT;
+    tree_type[ ROGUE_SUBTLETY      ] = TREE_SUBTLETY;
+
     // Active
     active_anesthetic_poison = 0;
     active_deadly_poison     = 0;

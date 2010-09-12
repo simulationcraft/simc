@@ -328,6 +328,10 @@ struct death_knight_t : public player_t
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
       player_t( sim, DEATH_KNIGHT, name, r )
   {
+    tree_type[ DEATH_KNIGHT_BLOOD  ] = TREE_BLOOD;
+    tree_type[ DEATH_KNIGHT_FROST  ] = TREE_FROST;
+    tree_type[ DEATH_KNIGHT_UNHOLY ] = TREE_UNHOLY;
+
     // Active
     active_presence            = 0;
     active_blood_caked_blade   = NULL;

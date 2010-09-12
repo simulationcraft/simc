@@ -160,6 +160,10 @@ struct hunter_t : public player_t
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
+    tree_type[ HUNTER_BEAST_MASTERY ] = TREE_BEAST_MASTERY;
+    tree_type[ HUNTER_MARKSMANSHIP  ] = TREE_MARKSMANSHIP;
+    tree_type[ HUNTER_SURVIVAL      ] = TREE_SURVIVAL;
+
     // Active
     active_pet             = 0;
     active_aspect          = ASPECT_NONE;

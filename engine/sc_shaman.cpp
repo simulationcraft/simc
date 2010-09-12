@@ -150,6 +150,10 @@ struct shaman_t : public player_t
 
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r )
   {
+    tree_type[ SHAMAN_ELEMENTAL   ] = TREE_ELEMENTAL;
+    tree_type[ SHAMAN_ENHANCEMENT ] = TREE_ENHANCEMENT;
+    tree_type[ SHAMAN_RESTORATION ] = TREE_RESTORATION;
+
     // Active
     active_flame_shock        = 0;
     active_lightning_charge   = 0;

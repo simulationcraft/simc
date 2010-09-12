@@ -170,6 +170,10 @@ struct druid_t : public player_t
 
   druid_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, DRUID, name, r )
   {
+    tree_type[ DRUID_BALANCE     ] = TREE_BALANCE;
+    tree_type[ DRUID_FERAL       ] = TREE_FERAL;
+    tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
+
     active_t10_4pc_caster_dot = 0;
     
     eclipse_bar_value = 0;

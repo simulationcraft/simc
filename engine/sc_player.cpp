@@ -380,6 +380,7 @@ player_t::player_t( sim_t*             s,
   for ( int i=0; i < MAX_TALENT_TREES; i++ )
   {
     talent_tab_points[ i ] = 0;
+    tree_type[ i ] = TREE_NONE;
   }
   talent_list2.clear();
   passive_spell_list.clear();
@@ -2449,6 +2450,40 @@ bool player_t::resource_available( int    resource,
   }
 
   return resource_current[ resource ] >= cost;
+}
+
+// player_t::primary_tree ===================================================
+talent_tree_type player_t::primary_tree() SC_CONST
+{
+  if ( level > 10 && level <= 69 )
+    {
+    if ( talent_tab_points[ 0 ] > 0 ) return tree_type[ 0 ];
+    if ( talent_tab_points[ 1 ] > 0 ) return tree_type[ 1 ];
+    if ( talent_tab_points[ 2 ] > 0 ) return tree_type[ 2 ];
+    return TREE_NONE;
+  }
+  else
+  {
+    if ( talent_tab_points[ 0 ] >= talent_tab_points[ 1 ] ) 
+    {
+      if ( talent_tab_points[ 0 ] >= talent_tab_points[ 2 ] )
+      {
+        return tree_type[ 0 ];
+      }
+      else
+      {
+        return tree_type[ 2 ];
+      }
+    }
+    else if ( talent_tab_points[ 2 ] >= talent_tab_points[ 1 ] )
+    {
+      return tree_type[ 2 ];
+    }
+    else
+    {
+      return tree_type[ 1 ];
+    }
+  }
 }
 
 // player_t::normalize_by ===================================================

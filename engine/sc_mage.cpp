@@ -194,6 +194,10 @@ struct mage_t : public player_t
 
   mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r )
   {
+    tree_type[ MAGE_ARCANE ] = TREE_ARCANE;
+    tree_type[ MAGE_FIRE   ] = TREE_FIRE;
+    tree_type[ MAGE_FROST  ] = TREE_FROST;
+
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;

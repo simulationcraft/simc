@@ -208,6 +208,10 @@ struct warlock_t : public player_t
 
   warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
   {
+    tree_type[ WARLOCK_AFFLICTION  ] = TREE_AFFLICTION;
+    tree_type[ WARLOCK_DEMONOLOGY  ] = TREE_DEMONOLOGY;
+    tree_type[ WARLOCK_DESTRUCTION ] = TREE_DESTRUCTION;
+
     distance = 40;
 
 

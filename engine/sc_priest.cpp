@@ -275,6 +275,10 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
+    tree_type[ PRIEST_DISCIPLINE ] = TREE_DISCIPLINE;
+    tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
+    tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
+
     use_shadow_word_death               = false;
     use_mind_blast                      = 1;
     recast_mind_blast                   = 0;
@@ -399,39 +403,6 @@ struct priest_t : public player_t
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
-
-  virtual talent_tree_type       primary_tree() SC_CONST
-  {
-    if ( level > 10 && level <= 69 )
-      {
-      if ( talent_tab_points[ PRIEST_SHADOW ] > 0 ) return TREE_SHADOW;
-      if ( talent_tab_points[ PRIEST_DISCIPLINE ] > 0 ) return TREE_DISCIPLINE;
-      if ( talent_tab_points[ PRIEST_HOLY ] > 0 ) return TREE_HOLY;
-      return TREE_NONE;
-    }
-    else
-    {
-      if ( talent_tab_points[ PRIEST_SHADOW ] >= talent_tab_points[ PRIEST_DISCIPLINE ] ) 
-      {
-        if ( talent_tab_points[ PRIEST_SHADOW ] >= talent_tab_points[ PRIEST_HOLY ] )
-        {
-          return TREE_SHADOW;
-        }
-        else
-        {
-          return TREE_HOLY;
-        }
-      }
-      else if ( talent_tab_points[ PRIEST_HOLY ] >= talent_tab_points[ PRIEST_DISCIPLINE ] )
-      {
-        return TREE_HOLY;
-      }
-      else
-      {
-        return TREE_DISCIPLINE;
-      }
-    }
-  }
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
