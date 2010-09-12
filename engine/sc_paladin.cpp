@@ -223,6 +223,8 @@ struct paladin_t : public player_t
 
   bool  tier10_2pc_procs_from_strikes;
 
+  talent_tree_type my_primary_tree;
+
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
   {
     tree_type[ PALADIN_HOLY        ] = TREE_HOLY;
@@ -311,9 +313,9 @@ struct paladin_t : public player_t
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual talent_tree_type       primary_tree() SC_CONST;
+  virtual int                primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int                primary_role() SC_CONST     { return ROLE_HYBRID; }
+  virtual talent_tree_type   primary_tree() SC_CONST     { return my_primary_tree; }
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -2337,6 +2339,7 @@ void paladin_t::init_buffs()
   buffs_zealotry               = new buff_t( this, "zealotry", 1, spells.zealotry->duration() );
   buffs_judgements_of_the_wise = new buff_t( this, "judgements_of_the_wise", 1, passives.judgements_of_the_wise->duration() );
   buffs_judgements_of_the_bold = new buff_t( this, "judgements_of_the_bold", 1, passives.judgements_of_the_bold->duration() );
+  buffs_hand_of_light          = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2427,6 +2430,24 @@ void paladin_t::init_talents()
   passives.vengeance->init_enabled();
   passives.hand_of_light->init_enabled();
   passives.judgements_of_the_bold->init_enabled();
+
+  int num_ranks[3] = { 0, 0, 0 };
+  for (size_t i = 0; i < talent_list2.size(); ++i)
+  {
+    unsigned page = talent_list2.at(i)->talent_t_data->tab_page;
+    assert(page < 3);
+    num_ranks[page] += talent_list2.at(i)->rank();
+  }
+
+  int min_ranks = level > 69 ? 11 : 1;
+  if (num_ranks[PALADIN_HOLY] >= min_ranks)
+    my_primary_tree = tree_type[PALADIN_HOLY];
+  else if (num_ranks[PALADIN_PROTECTION] >= min_ranks)
+    my_primary_tree = tree_type[PALADIN_PROTECTION];
+  else if (num_ranks[PALADIN_RETRIBUTION] >= min_ranks)
+    my_primary_tree = tree_type[PALADIN_RETRIBUTION];
+  else
+    my_primary_tree = TREE_NONE;
 }
 
 // paladin_t::composite_spell_power ==========================================
@@ -2455,15 +2476,6 @@ double paladin_t::composite_tank_block() SC_CONST
   if ( buffs_holy_shield -> up() ) b += 0.15;
   b += get_divine_bulwark();
   return b;
-}
-
-// paladin_t::primary_tree ==================================================
-
-talent_tree_type paladin_t::primary_tree() SC_CONST
-{
-  if ( talents.divine_favor->rank() || talents.infusion_of_light || talents.enlightened_judgements ) return TREE_HOLY;
-  if ( talents.hallowed_ground || talents.sanctuary || talents.hammer_of_the_righteous->rank() || talents.wrath_of_the_lightbringer ) return TREE_PROTECTION;
-  return TREE_RETRIBUTION;
 }
 
 // paladin_t::regen  ========================================================
