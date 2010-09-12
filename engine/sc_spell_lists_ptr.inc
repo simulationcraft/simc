@@ -284,7 +284,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     79140, // Vendetta
         0,
   },
-  // Class active abilities for Priest, 53 abilities
+  // Class active abilities for Priest, 54 abilities
   {
     87151, // Archangel
     32546, // Binding Heal
@@ -333,6 +333,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     27683, // Shadow Protection
     32379, // Shadow Word: Death
       589, // Shadow Word: Pain
+    63619, // Shadowcrawl
     34433, // Shadowfiend
     15473, // Shadowform
     15487, // Silence

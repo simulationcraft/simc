@@ -1,8 +1,8 @@
 #include "data_definitions.hh"
 
-#define PTR_SPELL_SIZE (3198)
+#define PTR_SPELL_SIZE (3199)
 
-// 3198 spells, wow build level 12942
+// 3199 spells, wow build level 12942
 static struct spell_data_t __ptr_spell_data[] = {
   { "Blizzard"                          ,    10, 0x00,  0.0, 0x10,  0, 0x080, 0x000,  52,     0.0,    35.0,       0, 1500,    0,      8000,  74, 0x000,   0,   0, 100,  0,     0,     0,  0, {     6,     7,     0 }, { 0x00010000, 0x1000008c, 0x00400000, 0x00000000, 0x00000000, 0x00002000, 0x00000000, 0x00000000, 0x00020000, 0x00000000 }, "Ice shards pelt the target area doing ${$42208m1*8*$<mult>} Frost damage over $10d.", "$42208s1 Frost damage every $42208t1 $lsecond:seconds;." },
   { "Power Word: Shield"                ,    17, 0x00,  0.0, 0x02,  0, 0x010, 0x000,   5,     0.0,    40.0,    3000, 1500,   56,     30000,  19, 0x000,   0,   0,   0,  0,     0,     0, 20, {    13,     0,     0 }, { 0x00050800, 0x00000000, 0x00280000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00001000, 0x00000000 }, "Draws on the soul of the friendly target to shield them, absorbing ${$m1+($SP*0.418)} damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage." },
@@ -2397,6 +2397,7 @@ static struct spell_data_t __ptr_spell_data[] = {
   { "Divine Touch"                      , 63542, 0x00,  0.0, 0x01,  0, 0x010, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57716,     0,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Your Renew will instantly heal the target for $s1% of the total periodic effect.", 0 },
   { "Dark Transformation"               , 63560, 0x00, 40.0, 0x20,  5, 0x020, 0x000,  26,     0.0,    60.0,       0, 1500,    0,     30000,   9, 0x004, 100,   0,   0,  0,     0,     0,  0, { 57741, 57742,     0 }, { 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000040, 0x00000000, 0x00000000, 0x00000000, 0x00002000, 0x00000000 }, "Consume 5 charges of Shadow Infusion on your Ghoul to transform it into a powerful undead monstrosity for $d.  The Ghoul's abilities are empowered and take on new functions while the transformation is active.", "Transformed into an undead monstrosity.\r\nDamage dealt increased by $s1%." },
   { "Soul Warding"                      , 63574, 0x00,  0.0, 0x01,  0, 0x010, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57761,     0,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Reduces the cooldown of your Power Word: Shield ability by $/1000;s1 sec.", 0 },
+  { "Shadowcrawl"                       , 63619, 0x00,  0.0, 0x40,  2, 0x010, 0x000,   1,     0.0,    30.0,    6000, 1500,    0,      5000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57790, 57791,     0 }, { 0x20010010, 0x04000200, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Crawls through the shadows to the target enemy, and increases damage done by the Shadowfiend by $s2% for $d.", "Damage increased by $s2%." },
   { "Improved Devouring Plague"         , 63625, 0x00,  0.0, 0x01,  0, 0x010, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57798,     0,     0 }, { 0x000001c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Your Devouring Plague instantly deals damage equal to $s1% of its total periodic effect.", 0 },
   { "Improved Devouring Plague"         , 63626, 0x00,  0.0, 0x01,  0, 0x010, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57800,     0,     0 }, { 0x000001c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Your Devouring Plague instantly deals damage equal to $s1% of its total periodic effect.", 0 },
   { "Divinity"                          , 63646, 0x00,  0.0, 0x01,  0, 0x002, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 57833, 57834,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Increases all healing done by you and all healing effects on you by $s1%.", 0 },
@@ -3204,9 +3205,9 @@ static struct spell_data_t __ptr_spell_data[] = {
   { "Shout Rage Bonus"                  , 92049, 0x00,  0.0, 0x01,  0, 0x001, 0x000,   0,     0.0,     0.0,       0,    0,    0,      6000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 95922, 95929,     0 }, { 0x08000180, 0x10000020, 0x00000000, 0x00000000, 0x00000080, 0x00040008, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
 };
 
-#define __PTR_SPELLEFFECT_SIZE (4668)
+#define __PTR_SPELLEFFECT_SIZE (4670)
 
-// 4668 effects, wow build level 12942
+// 4670 effects, wow build level 12942
 static struct spelleffect_data_t __ptr_spelleffect_data[] = {
   {     6, 0x00,    10, 0,   27,    4,  0.0000000000,  0.0000000000,  0.0000000000,  0.1190000027,     0,     8.0,     0.0,      25,       0,       0,     0,   0.0 },
   {     7, 0x00,    10, 1,    6,   23,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  1000,     0.0,     0.0,       0,       0,       0, 42208,   0.0 },
@@ -6540,6 +6541,8 @@ static struct spelleffect_data_t __ptr_spelleffect_data[] = {
   { 57741, 0x00, 63560, 0,    6,   79,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,     100,     127,       0,     0,   0.0 },
   { 57742, 0x00, 63560, 1,    6,   56,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,   31411,       0,     0,   0.0 },
   { 57761, 0x00, 63574, 0,    6,  107,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,   -1000,      11,       0,     0,   0.0 },
+  { 57790, 0x00, 63619, 0,   64,    0,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0, 35779,   0.0 },
+  { 57791, 0x00, 63619, 1,    6,   79,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,      15,     127,       0,     0,   0.0 },
   { 57798, 0x00, 63625, 0,    6,    4,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,      15,      27,       0,     0,   0.0 },
   { 57800, 0x00, 63626, 0,    6,    4,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,      30,      27,       0,     0,   0.0 },
   { 57833, 0x00, 63646, 0,    6,  118,  0.0000000000,  0.0000000000,  0.0000000000,  1.0000000000,     0,     0.0,     0.0,       2,     127,       0,     0,   0.0 },
