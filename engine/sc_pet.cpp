@@ -120,11 +120,11 @@ void pet_t::summon( double duration )
     {
       expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
       {
-	sim -> add_event( this, duration );
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	player -> cast_pet() -> dismiss();
+        player -> cast_pet() -> dismiss();
       }
     };
     new ( sim ) expiration_t( sim, this, duration );

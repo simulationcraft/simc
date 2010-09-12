@@ -59,6 +59,7 @@ struct priest_t : public player_t
   buff_t* buffs_chakra_pre;
   buff_t* buffs_chakra;
   buff_t* buffs_mind_spike;
+  buff_t* buffs_shadowfiend;
 
   // Talents
 
@@ -434,6 +435,41 @@ struct priest_spell_t : public spell_t
 
 struct shadow_fiend_pet_t : public pet_t
 {
+  buff_t*   buffs_shadowcrawl;
+
+  struct shadowcrawl_t : public spell_t
+  {
+    double bonus_value;
+
+    shadowcrawl_t( player_t* player ) :
+        spell_t( "shadowcrawl", player, RESOURCE_MANA, SCHOOL_SHADOW ), bonus_value( 0.15 )
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      priest_t*           o = p -> owner -> cast_priest();
+
+      id = 63619;
+      // parse_data ( o -> player_data );
+    }
+      
+    virtual void execute()
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+
+      spell_t::execute();
+
+      p -> buffs_shadowcrawl -> start( 1, bonus_value );
+    }
+    virtual bool ready()
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+
+      if ( p -> buffs_shadowcrawl -> check() )
+        return false;
+
+      return spell_t::ready();
+    }
+  };
+
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) :
@@ -445,12 +481,12 @@ struct shadow_fiend_pet_t : public pet_t
       direct_power_mod = 0.511;  // Seems to be around that for level 80, but might be higher for higher levels.
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
-      base_dd_multiplier = 1.15; // Shadowcrawl
+      base_dd_multiplier = 1.0; // Shadowcrawl
       base_dd_min = 175; // Level 80 values. Need to handle this better.
       base_dd_max = 222; // Level 80 values.
       background = true;
       repeating  = true;
-      may_dodge  = false;
+      may_dodge  = true;
       may_miss   = false;
       may_parry  = false;
       may_crit   = true;
@@ -478,6 +514,15 @@ struct shadow_fiend_pet_t : public pet_t
 
     stamina_per_owner = 0.30;
     intellect_per_owner = 0.50;
+
+    action_list_str = "shadowcrawl/wait_until_ready";
+  }
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "shadowcrawl" ) return new shadowcrawl_t( this );
+
+    return pet_t::create_action( name, options_str );
   }
   virtual void init_base()
   {
@@ -490,10 +535,15 @@ struct shadow_fiend_pet_t : public pet_t
     resource_base[ RESOURCE_HEALTH ] = 6747; // Level 80
     resource_base[ RESOURCE_MANA   ] = 7679; // Level 80
     base_attack_power = 0;  // Unknown
-    base_attack_crit = 0.10;
+    base_attack_crit = 0.10; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
 
     melee = new melee_t( this );
+  }
+  virtual void init_buffs()
+  {
+    pet_t::init_buffs();
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, 5.0, 6.0 );
   }
   virtual double composite_spell_power( int school ) SC_CONST
   {  
@@ -507,7 +557,26 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
+    return owner -> composite_spell_hit() * 26.0 / 17.0; 
+  }
+  virtual double composite_player_multiplier( int school ) SC_CONST
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( school == SCHOOL_SHADOW )
+    {
+      m *= 1.0 + buffs_shadowcrawl -> value();
+    }
+
+    return m;
+  }
+  virtual void dismiss()
+  {
+    priest_t* p = owner -> cast_priest();
+
+    pet_t::dismiss();
+  
+    p -> buffs_shadowfiend -> expire();
   }
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
@@ -521,7 +590,6 @@ struct shadow_fiend_pet_t : public pet_t
     melee -> cancel();
   }
 };
-
 
 
 // ==========================================================================
@@ -1808,8 +1876,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "shadow_fiend", player, SCHOOL_SHADOW, TREE_SHADOW ), trigger( 0 )
   {
-  check_min_level( 66 );
-  priest_t* p = player -> cast_priest();
+    check_min_level( 66 );
+    priest_t* p = player -> cast_priest();
 
     option_t options[] =
     {
@@ -1835,9 +1903,10 @@ struct shadow_fiend_spell_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     consume_resource();
     update_ready();
+    
+    p -> buffs_shadowfiend -> start();
     p -> summon_pet( "shadow_fiend", 15.1 );
   }
-
   virtual bool ready()
   {
     if ( ! priest_spell_t::ready() )
@@ -2206,7 +2275,7 @@ void priest_t::init_buffs()
   buffs_chakra              = new buff_t( this, "chakra_buff",         1, 30.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
   buffs_mind_spike          = new buff_t( this, "mind_spike",          3, 12.0                     );
-
+  buffs_shadowfiend         = new buff_t( this, "shadowfiend", 1 );
 }
 
 // priest_t::init_actions =====================================================

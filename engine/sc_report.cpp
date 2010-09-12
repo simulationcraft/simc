@@ -259,6 +259,18 @@ static void print_buffs( FILE* file, player_t* p )
     }
   }
 
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
+    {
+      if ( ! b -> quiet && b -> start_count && ! b -> constant )
+      {
+        int length = ( int ) strlen( b -> name() );
+        if ( length > max_length ) max_length = length;
+      }
+    }
+  }
+
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count )
@@ -268,15 +280,39 @@ static void print_buffs( FILE* file, player_t* p )
     {
       util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh, 
-		       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
       if( b -> benefit_pct > 0 &&
-	  b -> benefit_pct < 100 )
+          b -> benefit_pct < 100 )
       {
-	util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
+        util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
       }
 
       util_t::fprintf( file, "\n" );
+    }
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
+    {
+      if ( b -> quiet || ! b -> start_count )
+        continue;
+
+      if ( ! b -> constant )
+      {
+        util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
+                         max_length, b -> name(), b -> avg_start, b -> avg_refresh, 
+                         b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+
+        if( b -> benefit_pct > 0 &&
+            b -> benefit_pct < 100 )
+        {
+          util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
+        }
+
+        util_t::fprintf( file, "\n" );
+      }
     }
   }
 }
