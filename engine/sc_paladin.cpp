@@ -1274,7 +1274,7 @@ struct seal_of_vengeance_proc_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= p -> buffs_holy_vengeance -> stack() / 5;
+    player_multiplier *= p -> buffs_holy_vengeance -> stack() * 0.2;
   }
 };
 
