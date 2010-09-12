@@ -1290,7 +1290,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     trigger_gcd = 0;
 
     weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.16;
+    weapon_multiplier = 0.18;
 
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.03 + 
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
@@ -1303,7 +1303,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= p -> buffs_censure -> stack() / 5;
+    player_multiplier *= p -> buffs_censure -> stack() * 0.2;
   }
   virtual void execute()
   {
