@@ -961,7 +961,7 @@ double sc_data_access_t::combat_ratings( const player_type c, const rating_type 
   assert( ( cid != 0 ) && ( r >= 0 ) && ( r < RATING_MAX ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   double* v = m_combat_ratings.ptr( level - 1, r );
-  double* s = m_class_combat_rating_scalar.ptr( c, r );
+  double* s = m_class_combat_rating_scalar.ptr( cid, r );
 
   return *v * *s * 100;
 }
