@@ -39,6 +39,12 @@ void attack_t::_init_attack_t()
   range = 0; // Prevent action from being scheduled when player_t::moving!=0  
 }
 
+attack_t::attack_t( const active_spell_t& s, const player_type ptype, const player_type stype, int t, bool special ) :
+    action_t( ACTION_ATTACK, s, ptype, stype, t, special )
+{
+  _init_attack_t();
+}
+
 attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
     action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
     base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )

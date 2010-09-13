@@ -20,6 +20,12 @@ void spell_t::_init_spell_t()
   min_gcd = 1.0;
 }
 
+spell_t::spell_t( const active_spell_t& s, const player_type ptype, const player_type stype, int t ) :
+  action_t( ACTION_SPELL, s, ptype, stype, t, true )
+{
+  _init_spell_t();
+}
+
 spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
     action_t( ACTION_SPELL, n, p, r, s, t, true )
 {

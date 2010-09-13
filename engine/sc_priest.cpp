@@ -421,6 +421,12 @@ struct priest_spell_t : public spell_t
     may_crit      = true;
     dot_behavior  = DOT_REFRESH;
   }
+  priest_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( s, ptype, stype, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
   priest_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, sname, player, ptype, stype, t )
   {
@@ -449,14 +455,13 @@ struct shadow_fiend_pet_t : public pet_t
 {
   buff_t*   buffs_shadowcrawl;
   active_spell_t* shadowcrawl;
-
+  passive_spell_t* mana_leech;
+  
   struct shadowcrawl_t : public spell_t
   {
-    double bonus_value;
-
     shadowcrawl_t( player_t* player ) :
-        spell_t( "shadowcrawl", "Shadowcrawl", player, PRIEST, PRIEST ), bonus_value( 0.15 )
-    {
+        spell_t( *( ( ( shadow_fiend_pet_t* ) ( player -> cast_pet() ) ) -> shadowcrawl ) )
+    {   
     }
       
     virtual void execute()
@@ -465,16 +470,7 @@ struct shadow_fiend_pet_t : public pet_t
 
       spell_t::execute();
 
-      p -> buffs_shadowcrawl -> start( 1, bonus_value );
-    }
-    virtual bool ready()
-    {
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
-
-      if ( p -> buffs_shadowcrawl -> check() )
-        return false;
-
-      return spell_t::ready();
+      p -> buffs_shadowcrawl -> start( 1, p->shadowcrawl->effect_base_value( 2 ) / 100.0 );
     }
   };
 
@@ -489,7 +485,6 @@ struct shadow_fiend_pet_t : public pet_t
       direct_power_mod = 0.511;  // Seems to be around that for level 80, but might be higher for higher levels.
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
-      base_dd_multiplier = 1.0; // Shadowcrawl
       base_dd_min = 175; // Level 80 values. Need to handle this better.
       base_dd_max = 222; // Level 80 values.
       background = true;
@@ -502,9 +497,14 @@ struct shadow_fiend_pet_t : public pet_t
     }
     void assess_damage( double amount, int dmg_type )
     {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      priest_t* o = p -> owner -> cast_priest();
+
       attack_t::assess_damage( amount, dmg_type );
-      priest_t* p = player -> cast_pet() -> owner -> cast_priest();
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.03, p -> gains_shadow_fiend );
+      
+      o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] * 
+                          p -> mana_leech -> effect_base_value( 1 ) / 100.0, 
+                          o -> gains_shadow_fiend );
     }
     void player_buff()
     {
@@ -518,21 +518,19 @@ struct shadow_fiend_pet_t : public pet_t
   melee_t* melee;
 
   shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "shadow_fiend" ), melee( 0 )
+      pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 1;
-    main_hand_weapon.max_dmg    = 1;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
     main_hand_weapon.school     = SCHOOL_SHADOW;
 
-    stamina_per_owner = 0.30;
-    intellect_per_owner = 0.50;
+    stamina_per_owner           = 0.30;
+    intellect_per_owner         = 0.50;
 
-    action_list_str = "shadowcrawl/wait_until_ready";
+    action_list_str             = "shadowcrawl/wait_until_ready";
 
-    shadowcrawl = new active_spell_t( this, "shadowcrawl", "Shadowcrawl", PRIEST, PRIEST );
+    shadowcrawl                 = new active_spell_t ( this, "shadowcrawl", "Shadowcrawl", PRIEST, PRIEST );
+    mana_leech                  = new passive_spell_t( this, "mana_leech", 34650 );
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -545,14 +543,14 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 0; // Unknown
-    attribute_base[ ATTR_AGILITY   ] = 0; // Unknown
-    attribute_base[ ATTR_STAMINA   ] = 0; // Unknown
-    attribute_base[ ATTR_INTELLECT ] = 0; // Unknown
-    resource_base[ RESOURCE_HEALTH ] = 6747; // Level 80
-    resource_base[ RESOURCE_MANA   ] = 7679; // Level 80
-    base_attack_power = 0;  // Unknown
-    base_attack_crit = 0.10; // Needs more testing
+    attribute_base[ ATTR_STRENGTH  ]  = 0; // Unknown
+    attribute_base[ ATTR_AGILITY   ]  = 0; // Unknown
+    attribute_base[ ATTR_STAMINA   ]  = 0; // Unknown
+    attribute_base[ ATTR_INTELLECT ]  = 0; // Unknown
+    resource_base[ RESOURCE_HEALTH ]  = 6747; // Level 80
+    resource_base[ RESOURCE_MANA   ]  = 7679; // Level 80
+    base_attack_power                 = 0;  // Unknown
+    base_attack_crit                  = 0.10; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
 
     melee = new melee_t( this );
@@ -560,7 +558,7 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void init_buffs()
   {
     pet_t::init_buffs();
-    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl->duration() );
   }
   virtual double composite_spell_power( int school ) SC_CONST
   {  

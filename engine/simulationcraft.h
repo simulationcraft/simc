@@ -2968,7 +2968,8 @@ struct spell_id_t
   struct talent_t* spell_id_t_req_talent;
   bool spell_id_t_m_is_talent;
 
-  spell_id_t( player_t* player, const char* t_name );
+  spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  spell_id_t( player_t* player = NULL, const char* t_name = NULL );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
@@ -3051,6 +3052,7 @@ struct talent_t : spell_id_t
   bool talent_t_forced_value;
 
   talent_t( player_t* p, const char* t_name, const char* name );
+  talent_t( const talent_t& copy );
   virtual ~talent_t() {}
   virtual uint32_t id() { return ( pp && talent_t_data ) ? talent_t_data->id : 0; };
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
@@ -3076,7 +3078,8 @@ private:
 
 struct active_spell_t : public spell_id_t
 {
-  active_spell_t( player_t* player, const char* t_name );
+  active_spell_t( const active_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  active_spell_t( player_t* player = NULL, const char* t_name = NULL );
   active_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
   active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
@@ -3084,6 +3087,7 @@ struct active_spell_t : public spell_id_t
   active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
   active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
   virtual ~active_spell_t() {}
+  
 
   active_spell_t* find_spell_in_list( const char* t_name );
   active_spell_t* find_spell_in_list( const uint32_t id );
@@ -3096,7 +3100,8 @@ struct active_spell_t : public spell_id_t
 
 struct passive_spell_t : public spell_id_t
 {
-  passive_spell_t( player_t* player, const char* t_name );
+  passive_spell_t( const passive_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  passive_spell_t( player_t* player = NULL, const char* t_name = NULL );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
@@ -3178,6 +3183,7 @@ struct action_t : public active_spell_t
   action_t* next;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
+  action_t( int type, const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const char* sname, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
   virtual ~action_t() {}
@@ -3264,6 +3270,7 @@ struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
 
+  attack_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE, bool special=false );
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
@@ -3293,6 +3300,7 @@ struct attack_t : public action_t
 
 struct spell_t : public action_t
 {
+  spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE );
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );

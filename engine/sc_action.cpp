@@ -13,6 +13,130 @@
 
 void action_t::_init_action_t()
 {
+  sim                            = pp->sim;
+  name_str                       = token_name;
+  player                         = pp;
+  id                             = 0;
+  effect_nr                      = 1;
+  result                         = RESULT_NONE;
+  dual                           = false;
+  binary                         = false;
+  channeled                      = false;
+  background                     = false;
+  sequence                       = false;
+  direct_tick                    = false;
+  repeating                      = false;
+  aoe                            = false;
+  harmful                        = true;
+  proc                           = false;
+  pseudo_pet                     = false;
+  auto_cast                      = false;
+  may_miss                       = false;
+  may_resist                     = false;
+  may_dodge                      = false;
+  may_parry                      = false;
+  may_glance                     = false;
+  may_block                      = false;
+  may_crush                      = false;
+  may_crit                       = false;
+  tick_may_crit                  = false;
+  tick_zero                      = false;
+  scale_with_haste               = true;
+  usable_moving                  = false;
+  dot_behavior                   = DOT_WAIT;
+  min_gcd                        = 0.0;
+  trigger_gcd                    = 0.0;
+  range                          = -1.0;
+  weapon_power_mod               = 1.0/14.0;
+  direct_power_mod               = 0.0;
+  tick_power_mod                 = 0.0;
+  base_execute_time              = 0.0;
+  base_tick_time                 = 0.0;
+  base_cost                      = 0.0;
+  base_dd_min                    = 0.0;
+  base_dd_max                    = 0.0;
+  base_td                        = 0.0;
+  base_td_init                   = 0.0;
+  base_dd_multiplier             = 1.0;
+  base_td_multiplier             = 1.0;
+  base_dd_multiplier             = 1.0;
+  base_multiplier                = 1.0;
+  base_hit                       = 0.0;
+  base_crit                      = 0.0;
+  base_penetration               = 0.0;
+  player_multiplier              = 1.0;
+  player_hit                     = 0.0;
+  player_crit                    = 0.0;
+  player_penetration             = 0.0;
+  target_multiplier              = 1.0;
+  target_hit                     = 0.0;
+  target_crit                    = 0.0;
+  target_penetration             = 0.0;
+  base_spell_power               = 0.0;
+  base_attack_power              = 0.0;
+  player_spell_power             = 0.0;
+  player_attack_power            = 0.0;
+  target_spell_power             = 0.0;
+  target_attack_power            = 0.0;
+  base_spell_power_multiplier    = 0.0;
+  base_attack_power_multiplier   = 0.0;
+  player_spell_power_multiplier  = 1.0;
+  player_attack_power_multiplier = 1.0;
+  base_crit_multiplier           = 1.0;
+  base_crit_bonus_multiplier     = 1.0;
+  player_crit_multiplier         = 1.0;
+  player_crit_bonus_multiplier   = 1.0;
+  target_crit_multiplier         = 1.0;
+  target_crit_bonus_multiplier   = 1.0;
+  base_dd_adder                  = 0.0;
+  player_dd_adder                = 0.0;
+  target_dd_adder                = 0.0;
+  resource_consumed              = 0.0;
+  direct_dmg                     = 0.0;
+  tick_dmg                       = 0.0;
+  resisted_dmg                   = 0.0;
+  blocked_dmg                    = 0.0;
+  num_ticks                      = 0;
+  number_ticks                   = 0;
+  current_tick                   = 0;
+  added_ticks                    = 0;
+  ticking                        = 0;
+  weapon                         = NULL;
+  weapon_multiplier              = 1.0;
+  normalize_weapon_damage        = false;
+  normalize_weapon_speed         = false;
+  rng_travel                     = NULL;
+  stats                          = NULL;
+  execute_event                  = NULL;
+  tick_event                     = NULL;
+  time_to_execute                = 0.0;
+  time_to_tick                   = 0.0;
+  time_to_travel                 = 0.0;
+  travel_speed                   = 0.0;
+  rank_index                     = -1;
+  bloodlust_active               = 0;
+  max_haste                      = 0.0;
+  haste_gain_percentage          = 0.0;
+  min_current_time               = 0.0;
+  max_current_time               = 0.0;
+  min_time_to_die                = 0.0;
+  max_time_to_die                = 0.0;
+  min_health_percentage          = 0.0;
+  max_health_percentage          = 0.0;
+  P400                           = -1;
+  moving                         = -1;
+  vulnerable                     = 0;
+  invulnerable                   = 0;
+  wait_on_ready                  = -1;
+  snapshot_haste                 = -1;
+  recast                         = false;
+  if_expr_str                    = "";
+  if_expr                        = NULL;
+  sync_str                       = "";
+  sync_action                    = NULL;
+  observer                       = NULL;
+  next                           = NULL;
+ 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
   if ( ! player -> initialized )
@@ -26,8 +150,6 @@ void action_t::_init_action_t()
   *last = this;
 
   for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
-
-
 
 
   cooldown = player -> get_cooldown( name_str );
@@ -48,136 +170,37 @@ action_t::action_t( int         ty,
                     int         s,
                     int         tr,
                     bool        sp ) :
-    active_spell_t( p, n ),
-    sim( p->sim ), type( ty ), name_str( n ), player( p ), id( 0 ), effect_nr ( 1 ), school( s ), resource( r ), tree( tr ), result( RESULT_NONE ),
-    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
-    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
-    may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
-    may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
-    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
-    weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
-    base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
-    base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
-    base_dd_multiplier( 1 ), base_td_multiplier( 1 ),
-    base_multiplier( 1 ),   base_hit( 0 ),   base_crit( 0 ),   base_penetration( 0 ),
-    player_multiplier( 1 ), player_hit( 0 ), player_crit( 0 ), player_penetration( 0 ),
-    target_multiplier( 1 ), target_hit( 0 ), target_crit( 0 ), target_penetration( 0 ),
-    base_spell_power( 0 ),   base_attack_power( 0 ),
-    player_spell_power( 0 ), player_attack_power( 0 ),
-    target_spell_power( 0 ), target_attack_power( 0 ),
-    base_spell_power_multiplier( 0 ),   base_attack_power_multiplier( 0 ),
-    player_spell_power_multiplier( 1 ), player_attack_power_multiplier( 1 ),
-    base_crit_multiplier( 1 ),   base_crit_bonus_multiplier( 1 ),
-    player_crit_multiplier( 1 ), player_crit_bonus_multiplier( 1 ),
-    target_crit_multiplier( 1 ), target_crit_bonus_multiplier( 1 ),
-    base_dd_adder( 0 ), player_dd_adder( 0 ), target_dd_adder( 0 ),
-    resource_consumed( 0 ),
-    direct_dmg( 0 ), tick_dmg( 0 ),
-    resisted_dmg( 0 ), blocked_dmg( 0 ),
-    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
-    rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
-    time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
-    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
-    min_current_time( 0 ), max_current_time( 0 ),
-    min_time_to_die( 0 ), max_time_to_die( 0 ),
-    min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
-    snapshot_haste( -1.0 ),
-    recast( false ),
-    if_expr( NULL ),
-    sync_action( 0 ), observer( 0 ), next( 0 )
+  active_spell_t( p, n ),
+  sim( pp->sim ), type( ty ), name_str( token_name ), 
+  player( pp ), school( s ), resource( r ), 
+  tree( tr ), special( sp )
 {
   _init_action_t();
 }
 
-action_t::action_t( int type, const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
+action_t::action_t( int ty, const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
   active_spell_t( p, name, sname, ptype, stype ),
-    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( get_school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
-    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
-    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
-    may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
-    may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
-    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
-    weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
-    base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
-    base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
-    base_dd_multiplier( 1 ), base_td_multiplier( 1 ),
-    base_multiplier( 1 ),   base_hit( 0 ),   base_crit( 0 ),   base_penetration( 0 ),
-    player_multiplier( 1 ), player_hit( 0 ), player_crit( 0 ), player_penetration( 0 ),
-    target_multiplier( 1 ), target_hit( 0 ), target_crit( 0 ), target_penetration( 0 ),
-    base_spell_power( 0 ),   base_attack_power( 0 ),
-    player_spell_power( 0 ), player_attack_power( 0 ),
-    target_spell_power( 0 ), target_attack_power( 0 ),
-    base_spell_power_multiplier( 0 ),   base_attack_power_multiplier( 0 ),
-    player_spell_power_multiplier( 1 ), player_attack_power_multiplier( 1 ),
-    base_crit_multiplier( 1 ),   base_crit_bonus_multiplier( 1 ),
-    player_crit_multiplier( 1 ), player_crit_bonus_multiplier( 1 ),
-    target_crit_multiplier( 1 ), target_crit_bonus_multiplier( 1 ),
-    base_dd_adder( 0 ), player_dd_adder( 0 ), target_dd_adder( 0 ),
-    resource_consumed( 0 ),
-    direct_dmg( 0 ), tick_dmg( 0 ),
-    resisted_dmg( 0 ), blocked_dmg( 0 ),
-    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
-    rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
-    time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
-    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
-    min_current_time( 0 ), max_current_time( 0 ),
-    min_time_to_die( 0 ), max_time_to_die( 0 ),
-    min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
-    snapshot_haste( -1.0 ),
-    recast( false ),
-    if_expr( NULL ),
-    sync_action( 0 ), observer( 0 ), next( 0 )
+  sim( pp->sim ), type( ty ), name_str( token_name ), 
+  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  tree( t ), special( sp )
+{
+  _init_action_t();
+}
+
+action_t::action_t( int ty, const active_spell_t& s, const player_type ptype, const player_type stype, int t, bool sp ) :
+  active_spell_t( s, ptype, stype ), 
+  sim( pp->sim ), type( ty ), name_str( token_name ), 
+  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  tree( t ), special( sp )
 {
   _init_action_t();
 }
 
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
   active_spell_t( p, name, id, ptype, stype ),
-    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( get_school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
-    dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
-    repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
-    may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
-    may_glance( false ), may_block( false ), may_crush( false ), may_crit( false ),
-    tick_may_crit( false ), tick_zero( false ), scale_with_haste( true ), usable_moving( false ), dot_behavior( DOT_WAIT ),
-    min_gcd( 0 ), trigger_gcd( 0 ), range( -1 ),
-    weapon_power_mod( 1.0/14 ), direct_power_mod( 0 ), tick_power_mod( 0 ),
-    base_execute_time( 0 ), base_tick_time( 0 ), base_cost( 0 ),
-    base_dd_min( 0 ), base_dd_max( 0 ), base_td( 0 ), base_td_init( 0 ),
-    base_dd_multiplier( 1 ), base_td_multiplier( 1 ),
-    base_multiplier( 1 ),   base_hit( 0 ),   base_crit( 0 ),   base_penetration( 0 ),
-    player_multiplier( 1 ), player_hit( 0 ), player_crit( 0 ), player_penetration( 0 ),
-    target_multiplier( 1 ), target_hit( 0 ), target_crit( 0 ), target_penetration( 0 ),
-    base_spell_power( 0 ),   base_attack_power( 0 ),
-    player_spell_power( 0 ), player_attack_power( 0 ),
-    target_spell_power( 0 ), target_attack_power( 0 ),
-    base_spell_power_multiplier( 0 ),   base_attack_power_multiplier( 0 ),
-    player_spell_power_multiplier( 1 ), player_attack_power_multiplier( 1 ),
-    base_crit_multiplier( 1 ),   base_crit_bonus_multiplier( 1 ),
-    player_crit_multiplier( 1 ), player_crit_bonus_multiplier( 1 ),
-    target_crit_multiplier( 1 ), target_crit_bonus_multiplier( 1 ),
-    base_dd_adder( 0 ), player_dd_adder( 0 ), target_dd_adder( 0 ),
-    resource_consumed( 0 ),
-    direct_dmg( 0 ), tick_dmg( 0 ),
-    resisted_dmg( 0 ), blocked_dmg( 0 ),
-    num_ticks( 0 ), number_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    weapon( 0 ), weapon_multiplier( 1 ), normalize_weapon_damage( false ), normalize_weapon_speed( false ),
-    rng_travel( 0 ), stats( 0 ), execute_event( 0 ), tick_event( 0 ),
-    time_to_execute( 0 ), time_to_tick( 0 ), time_to_travel( 0 ), travel_speed( 0 ),
-    rank_index( -1 ), bloodlust_active( 0 ), max_haste( 0 ), haste_gain_percentage( 0.0 ),
-    min_current_time( 0 ), max_current_time( 0 ),
-    min_time_to_die( 0 ), max_time_to_die( 0 ),
-    min_health_percentage( 0 ), max_health_percentage( 0 ),
-    P400( -1 ), moving( -1 ), vulnerable( 0 ), invulnerable( 0 ), wait_on_ready( -1 ), 
-    snapshot_haste( -1.0 ),
-    recast( false ),
-    if_expr( NULL ),
-    sync_action( 0 ), observer( 0 ), next( 0 )
+  sim( pp->sim ), type( type ), name_str( token_name ), 
+  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  tree( t ), special( sp )
 {
   _init_action_t();
 }

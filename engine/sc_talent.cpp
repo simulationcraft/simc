@@ -70,6 +70,17 @@ talent_t::talent_t( player_t* player, const char* t_name, const char* name ) :
   talent_init_enabled( false, false );
 }
 
+talent_t::talent_t( const talent_t& copy ) :
+  spell_id_t( copy ), talent_t_data( copy.talent_t_data ), talent_t_rank( copy.talent_t_rank ),
+  talent_t_enabled( copy.talent_t_enabled ), talent_t_forced_override( copy.talent_t_forced_override ), 
+  talent_t_forced_value( copy.talent_t_forced_value )
+{
+// Not sure if I should push back or not yet.
+/*
+  pp -> talent_list2.push_back( const_cast<talent_t *>( this ) );
+*/
+}
+
 // talent_t::get_effect_id ===================================================
 
 uint32_t talent_t::get_effect_id( const uint32_t effect_num ) SC_CONST
@@ -232,9 +243,13 @@ uint32_t talent_t::rank() SC_CONST
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
     spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
     spell_list_type( PLAYER_NONE ), scaling_type( PLAYER_NONE ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
+    spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false )
 {
+  if ( !t_name )
+    token_name = "";
+  else
+    token_name = t_name;
   // Dummy constructor for old-style
 }
 
@@ -305,6 +320,19 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_m_is_talent( false )
 {
   init( s_name );
+}
+
+spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const player_type stype ) :
+    spell_id_t_id( copy.spell_id_t_id ), spell_id_t_data( copy.spell_id_t_data ), spell_id_t_enabled( copy.spell_id_t_enabled ),
+    pp( copy.pp ), spell_list_type( copy.spell_list_type ), scaling_type( copy.scaling_type ), 
+    spell_id_t_forced_override( copy.spell_id_t_forced_override ), spell_id_t_forced_value( copy.spell_id_t_forced_value ),
+    token_name( copy.token_name ), spell_id_t_is_mastery( copy.spell_id_t_is_mastery ), spell_id_t_req_tree( copy.spell_id_t_req_tree ),
+    spell_id_t_tab( copy.spell_id_t_tab ), spell_id_t_req_talent( copy.spell_id_t_req_talent ), spell_id_t_m_is_talent( copy.spell_id_t_m_is_talent )
+{
+  if ( ptype != PLAYER_NONE )
+    spell_list_type = ptype;
+  if ( stype != PLAYER_NONE )
+    scaling_type = stype;
 }
 
 bool spell_id_t::init( const uint32_t id )
@@ -1064,6 +1092,12 @@ active_spell_t::active_spell_t( player_t* player, const char* t_name, const char
 
 }
 
+active_spell_t::active_spell_t( const active_spell_t& copy, const player_type ptype, const player_type stype ) :
+  spell_id_t( copy, ptype, stype )
+{
+
+}
+
 active_spell_t* active_spell_t::find_spell_in_list( const char* t_name )
 {
   if ( !pp )
@@ -1135,6 +1169,12 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const ch
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
   spell_id_t( player, t_name, s_name, tree, mastery )
+{
+
+}
+
+passive_spell_t::passive_spell_t( const passive_spell_t& copy, const player_type ptype, const player_type stype ) :
+  spell_id_t( copy, ptype, stype )
 {
 
 }
