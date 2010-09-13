@@ -3001,7 +3001,7 @@ struct spell_id_t
   virtual const std::string token() SC_CONST;
   virtual double missile_speed() SC_CONST;
   virtual uint32_t school_mask() SC_CONST;
-  virtual school_type school_type() SC_CONST;
+  virtual school_type get_school_type() SC_CONST;
   virtual resource_type power_type() SC_CONST;
   virtual double min_range() SC_CONST;
   virtual double max_range() SC_CONST;

@@ -94,7 +94,7 @@ action_t::action_t( int         ty,
 
 action_t::action_t( int type, const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
   active_spell_t( p, name, sname, ptype, stype ),
-    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
+    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( get_school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
     dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),
@@ -139,7 +139,7 @@ action_t::action_t( int type, const char* name, const char* sname, player_t* p, 
 
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
   active_spell_t( p, name, id, ptype, stype ),
-    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
+    sim( p->sim ), type( type ), name_str( name ), player( p ), id( 0 ), effect_nr ( 1 ), school( get_school_type() ), resource( power_type() ), tree( t ), result( RESULT_NONE ),
     dual( false ), special( sp ), binary( false ), channeled( false ), background( false ), sequence( false ), direct_tick( false ),
     repeating( false ), aoe( false ), harmful( true ), proc( false ), pseudo_pet( false ), auto_cast( false ),
     may_miss( false ), may_resist( false ), may_dodge( false ), may_parry( false ),

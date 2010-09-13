@@ -626,7 +626,7 @@ school_type spell_id_t::get_school_type( uint32_t mask )
   }
 }
 
-school_type spell_id_t::school_type() SC_CONST
+school_type spell_id_t::get_school_type() SC_CONST
 {
   if ( !ok() )
   {
