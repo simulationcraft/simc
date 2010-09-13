@@ -262,7 +262,7 @@ player_t::player_t( sim_t*             s,
     spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
     attack_haste( 1.0 ), buffed_attack_haste( 0 ),
     // Mastery
-    mastery( 0 ), initial_mastery ( 0 ),buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
+    mastery( 0 ), buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
     // Spell Mechanics
     base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
@@ -728,7 +728,6 @@ void player_t::init_core()
   initial_haste_rating 		= initial_stats.haste_rating;
 
   initial_mastery_rating 		= initial_stats.mastery_rating;
-  initial_mastery	= base_mastery + initial_stats.mastery_rating / rating.mastery;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -1141,12 +1140,12 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
-    scales_with[ STAT_ARMOR_PENETRATION_RATING ] = attack;
+    scales_with[ STAT_ARMOR_PENETRATION_RATING ] = 0; // Stat removed in Cataclysm
 
     scales_with[ STAT_HIT_RATING   		] = 1;
     scales_with[ STAT_CRIT_RATING  		] = 1;
     scales_with[ STAT_HASTE_RATING 		] = 1;
-    scales_with[ STAT_MASTERY_RATING 	] = 1;
+    scales_with[ STAT_MASTERY_RATING 	        ] = 1;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
@@ -2042,7 +2041,7 @@ void player_t::reset()
 
   haste_rating = initial_haste_rating;
   mastery_rating = initial_mastery_rating;
-  mastery = initial_mastery;
+  mastery = base_mastery + mastery_rating / rating.mastery;
   recalculate_haste();
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )

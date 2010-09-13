@@ -2298,7 +2298,7 @@ struct player_t
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
   double attribute_buffed            [ ATTRIBUTE_MAX ];
 
-  double mastery, initial_mastery, buffed_mastery, mastery_rating, initial_mastery_rating,base_mastery;
+  double mastery, buffed_mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
   // Spell Mechanics
   double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
