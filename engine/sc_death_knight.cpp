@@ -23,46 +23,62 @@ const char *rune_symbols = "!bfu!!";
 #define RUNE_TYPE_MASK     3
 #define RUNE_SLOT_MAX      6
 
-#define RUNE_GRACE_PERIOD   2.0
 #define RUNIC_POWER_REFUND  0.9
 
 #define GET_BLOOD_RUNE_COUNT(x)  (((x&0x01) + ((x&0x02)>>1))    )
 #define GET_FROST_RUNE_COUNT(x)  (((x&0x08) + ((x&0x10)>>1)) >>3)
 #define GET_UNHOLY_RUNE_COUNT(x) (((x&0x40) + ((x&0x80)>>1)) >>6)
 
+enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
+
 struct dk_rune_t
 {
-  double cooldown_ready;
-  int    type;
+  int        type;
+  rune_state state;
+  double     cooldown_time;
+  dk_rune_t* paired_rune;
 
-  dk_rune_t() : cooldown_ready( 0 ), type( RUNE_TYPE_NONE ) {}
+  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), cooldown_time( 0.0 ), paired_rune( NULL ) {}
 
-  bool is_death(                     ) SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0;  }
-  bool is_ready( double current_time ) SC_CONST { return cooldown_ready <= current_time; }
-  int  get_type(                     ) SC_CONST { return type & RUNE_TYPE_MASK;          }
+  bool is_death() SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0; }
+  bool is_ready( double t ) SC_CONST { return t >= cooldown_time; }
+  int  get_type() SC_CONST { return type & RUNE_TYPE_MASK; }
 
-  void consume( double current_time, double cooldown, bool convert )
+  rune_state get_rune_state( sim_t* sim )
   {
-    assert ( current_time >= cooldown_ready );
-    // First use triggers full cd, after that it is like this:
-    // How does ImpUP interact?
-    // Rune used instantly when it comes back: 10s cd
-    // Rune used 1s after it comes back:        9s cd
-    // Rune used 2s after it comes back:        8s cd
-    // Rune used >2s after it comes back:       8s cd
-    if ( cooldown_ready == -1 ) // First use
-      cooldown_ready = current_time + cooldown;
-    else if ( cooldown_ready + RUNE_GRACE_PERIOD > current_time ) // 10s - 8s cd
-      cooldown_ready = cooldown_ready + cooldown;
-    else // >2s rune came back
-      cooldown_ready = current_time + cooldown - RUNE_GRACE_PERIOD;
-    type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
+    if ( sim -> current_time >= cooldown_time )
+      return STATE_FULL;
+    else
+      return STATE_DEPLETED;
   }
 
-  void reset()    { cooldown_ready = -1; type  = type & RUNE_TYPE_MASK;                               }
-  double time_til_ready( double current_time )
+  void consume( sim_t* sim, player_t* p, bool convert )
   {
-    return std::max( 0.0, cooldown_ready - current_time );
+    assert ( get_rune_state( sim ) == STATE_FULL );
+
+    type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 ) ;
+    double cooldown = 10.0 / ( 1 + p -> composite_attack_haste() ); // TODO: include unholy presence
+    if ( paired_rune->get_rune_state( sim ) == STATE_FULL )
+    {
+      cooldown_time = sim->current_time + cooldown;
+    }
+    else
+    {
+      cooldown_time = paired_rune->cooldown_time + cooldown;
+    }
+  }
+
+  void fill_rune( player_t* p )
+  {
+    cooldown_time = 0.0;
+    double cooldown = 10.0 / ( 1 + p -> composite_attack_haste() ); // TODO: include unholy presence
+    paired_rune -> cooldown_time = std::min( p -> sim->current_time + cooldown, paired_rune-> cooldown_time );
+  }
+
+  void reset()
+  {
+    cooldown_time = 0.0;
+    type = type & RUNE_TYPE_MASK;
   }
 
 };
@@ -320,7 +336,15 @@ struct death_knight_t : public player_t
   {
     dk_rune_t slot[RUNE_SLOT_MAX];
 
-    runes_t()    { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 ); }
+    runes_t()
+    {
+      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+      {
+        slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 );
+        slot[i].paired_rune = &( slot[i ^ 1] ); // xor!
+      }
+
+    }
     void reset() { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset();                           }
   };
   runes_t _runes;
@@ -1430,27 +1454,6 @@ struct death_knight_spell_t : public spell_t
 // Local Utility Functions
 // ==========================================================================
 
-// Rune cooldown
-static double get_rune_cooldown( player_t* player, const rune_type type )
-{
-  death_knight_t* p = player -> cast_death_knight();
-  double t = p -> sim -> current_time;
-  double ret = 20.0;
-
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    if ( p -> _runes.slot[i].get_type() == type ||
-         ( type == RUNE_TYPE_DEATH && p -> _runes.slot[i].is_death() ) )
-    {
-      ret = std::min( ret, p -> _runes.slot[i].time_til_ready( t ) );
-    }
-  }
-
-  assert ( ret >= 0.0 );
-
-  return ret;
-}
-
 // Count Runes ==============================================================
 static int count_runes( player_t* player )
 {
@@ -1489,7 +1492,6 @@ static int count_death_runes( death_knight_t* p, bool inactive )
 static void consume_runes( player_t* player, const bool* use, bool convert_runes = false )
 {
   death_knight_t* p = player -> cast_death_knight();
-  double t = p -> sim -> current_time;
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
@@ -1498,15 +1500,10 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
       // Show the consumed type of the rune
       // Not the type it is after consumption
       int consumed_type = p -> _runes.slot[i].type;
-      double cooldown = 10.0;
-      if ( p -> active_presence == PRESENCE_UNHOLY )
-      {
-        cooldown -= 0.5 * p -> talents.improved_unholy_presence;
-      }
-      p -> _runes.slot[i].consume( t, cooldown, convert_runes );
+      p -> _runes.slot[i].consume( p->sim, player, convert_runes );
 
       if ( p -> sim -> log )
-        log_t::output( p -> sim, "%s consumes rune #%d, type %d, %.2f", p -> name(), i, consumed_type, p -> _runes.slot[i].cooldown_ready );
+        log_t::output( p -> sim, "%s consumes rune #%d, type %d", p -> name(), i, consumed_type );
     }
   }
 
@@ -2354,7 +2351,7 @@ struct blood_tap_t : public death_knight_spell_t
       dk_rune_t& r = p -> _runes.slot[i];
       if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready( t ) )
       {
-        r.cooldown_ready = 0;
+        r.fill_rune( p );
         rune_was_refreshed = true;
         break;
       }
@@ -2368,7 +2365,7 @@ struct blood_tap_t : public death_knight_spell_t
         dk_rune_t& r = p -> _runes.slot[i];
         if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready( t ) )
         {
-          r.cooldown_ready = 0;
+          r.fill_rune( p );
           rune_was_refreshed = true;
           break;
         }
@@ -2803,7 +2800,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
-      r.cooldown_ready = 0;
+      r.fill_rune( p );
     }
     p -> resource_gain( RESOURCE_RUNIC, 25, p -> gains_rune_abilities );
   }
@@ -3987,34 +3984,6 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
       }
     };
     return new death_expr_t( a, name_str );
-  }
-
-  struct cooldown_expr_t : public action_expr_t
-  {
-    rune_type type;
-    cooldown_expr_t( action_t* a, const char* name, rune_type type_in ) :
-      action_expr_t( a, name ), type( type_in ) { result_type = TOK_NUM; }
-    virtual int evaluate()
-    {
-      result_num = get_rune_cooldown( action -> player, type ); return TOK_NUM;
-    }
-  };
-
-  if ( name_str == "blood_cooldown" )
-  {
-    return new cooldown_expr_t( a, "blood", RUNE_TYPE_BLOOD );
-  }
-  if ( name_str == "unholy_cooldown" )
-  {
-    return new cooldown_expr_t( a, "unholy", RUNE_TYPE_UNHOLY );
-  }
-  if ( name_str == "frost_cooldown" )
-  {
-    return new cooldown_expr_t( a, "frost", RUNE_TYPE_FROST );
-  }
-  if ( name_str == "death_cooldown" )
-  {
-    return new cooldown_expr_t( a, "death", RUNE_TYPE_DEATH );
   }
 
   return player_t::create_expression( a, name_str );
