@@ -326,7 +326,7 @@ struct death_knight_t : public player_t
   runes_t _runes;
 
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
-      player_t( sim, DEATH_KNIGHT, name, r )
+    player_t( sim, DEATH_KNIGHT, name, r )
   {
     tree_type[ DEATH_KNIGHT_BLOOD  ] = TREE_BLOOD;
     tree_type[ DEATH_KNIGHT_FROST  ] = TREE_FROST;
@@ -431,7 +431,7 @@ struct bloodworms_pet_t : public pet_t
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) :
-        attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -459,7 +459,7 @@ struct bloodworms_pet_t : public pet_t
   melee_t* melee;
 
   bloodworms_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "bloodworms", true /*guardian*/ ), spawn_count( 3 )
+    pet_t( sim, owner, "bloodworms", true /*guardian*/ ), spawn_count( 3 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
@@ -525,7 +525,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_blood_boil_t : public spell_t
   {
     drw_blood_boil_t( player_t* player ) :
-        spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+      spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -563,7 +563,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_blood_plague_t : public spell_t
   {
     drw_blood_plague_t( player_t* player ) :
-        spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -599,7 +599,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_death_coil_t : public spell_t
   {
     drw_death_coil_t( player_t* player ) :
-        spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+      spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -632,7 +632,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     bool proc_sd;
     bool roll_sd;
     drw_blood_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
-        attack_t( "blood_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+      attack_t( "blood_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -705,7 +705,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_death_strike_t : public attack_t
   {
     drw_death_strike_t( player_t* player ) :
-        attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+      attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -734,7 +734,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_frost_fever_t : public spell_t
   {
     drw_frost_fever_t( player_t* player ) :
-        spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+      spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -769,7 +769,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     bool proc_sd;
     bool roll_sd;
     drw_heart_strike_t( player_t* player, bool sd = false, bool sd_miss = false ) :
-        attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+      attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -841,7 +841,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_icy_touch_t : public spell_t
   {
     drw_icy_touch_t( player_t* player ) :
-        spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_BLOOD )
+      spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_BLOOD )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -882,7 +882,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_obliterate_t : public attack_t
   {
     drw_obliterate_t( player_t* player ) :
-        attack_t( "obliterate", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+      attack_t( "obliterate", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -930,7 +930,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_pestilence_t : public spell_t
   {
     drw_pestilence_t( player_t* player ) :
-        spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+      spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
     {
       trigger_gcd = 0;
     }
@@ -957,7 +957,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_plague_strike_t : public attack_t
   {
     drw_plague_strike_t( player_t* player ) :
-        attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+      attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
     {
       background  = true;
       trigger_gcd = 0;
@@ -999,7 +999,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_melee_t : public attack_t
   {
     drw_melee_t( player_t* player ) :
-        attack_t( "drw_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      attack_t( "drw_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       pet_t* p = player -> cast_pet();
       weapon = &( p -> owner -> main_hand_weapon );
@@ -1038,14 +1038,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
   attack_t* drw_melee;
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "dancing_rune_weapon", true ),
-      hysteria( 1 ), snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
-      haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
-      drw_death_coil( 0 ), drw_blood_strike( 0 ), drw_blood_strike_sd( 0 ),
-      drw_blood_strike_sd_roll( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
-      drw_heart_strike( 0 ), drw_heart_strike_sd( 0 ), drw_heart_strike_sd_roll( 0 ),
-      drw_icy_touch( 0 ), drw_obliterate( 0 ), drw_pestilence( 0 ), drw_plague_strike( 0 ),
-      drw_melee( 0 )
+    pet_t( sim, owner, "dancing_rune_weapon", true ),
+    hysteria( 1 ), snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
+    haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
+    drw_death_coil( 0 ), drw_blood_strike( 0 ), drw_blood_strike_sd( 0 ),
+    drw_blood_strike_sd_roll( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
+    drw_heart_strike( 0 ), drw_heart_strike_sd( 0 ), drw_heart_strike_sd_roll( 0 ),
+    drw_icy_touch( 0 ), drw_obliterate( 0 ), drw_pestilence( 0 ), drw_plague_strike( 0 ),
+    drw_melee( 0 )
   {
     dots_drw_blood_plague  = get_dot( "blood_plague" );
     dots_drw_frost_fever   = get_dot( "frost_fever" );
@@ -1121,7 +1121,7 @@ struct gargoyle_pet_t : public pet_t
   struct gargoyle_strike_t : public spell_t
   {
     gargoyle_strike_t( player_t* player ) :
-        spell_t( "gargoyle_strike", player, RESOURCE_NONE, SCHOOL_NATURE )
+      spell_t( "gargoyle_strike", player, RESOURCE_NONE, SCHOOL_NATURE )
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
@@ -1143,8 +1143,8 @@ struct gargoyle_pet_t : public pet_t
   double haste_snapshot, power_snapshot;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
-      power_snapshot( 0.0 )
+    pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
+    power_snapshot( 0.0 )
   {
   }
 
@@ -1180,7 +1180,7 @@ struct gargoyle_pet_t : public pet_t
 struct ghoul_pet_t : public pet_t
 {
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "ghoul" )
+    pet_t( sim, owner, "ghoul" )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
@@ -1224,7 +1224,7 @@ struct ghoul_pet_t : public pet_t
     double a = attribute[ ATTR_STRENGTH ];
     if ( o -> talents.master_of_ghouls )
       a += std::max( sim -> auras.strength_of_earth -> value(),
-                     sim -> auras.horn_of_winter -> value() );
+      sim -> auras.horn_of_winter -> value() );
 
     double strength_scaling = 0.7; // % of str ghould gets from the DK
     strength_scaling *= 1.0 + o -> talents.ravenous_dead * .2; // The talent affects the 70% => 70% * 1.6 => 112%
@@ -1265,7 +1265,7 @@ struct ghoul_pet_t : public pet_t
 struct ghoul_pet_attack_t : public attack_t
 {
   ghoul_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_ENERGY, int sc=SCHOOL_PHYSICAL, bool special=true ) :
-      attack_t( n, player, r, sc, TREE_UNHOLY, special )
+    attack_t( n, player, r, sc, TREE_UNHOLY, special )
   {
     weapon = &( player -> main_hand_weapon );
     may_crit = true;
@@ -1278,7 +1278,7 @@ struct ghoul_pet_attack_t : public attack_t
 struct ghoul_pet_melee_t : public ghoul_pet_attack_t
 {
   ghoul_pet_melee_t( player_t* player ) :
-      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
+    ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
   {
     base_execute_time = weapon -> swing_time;
     base_dd_min       = base_dd_max = 1;
@@ -1293,7 +1293,7 @@ struct ghoul_pet_melee_t : public ghoul_pet_attack_t
 struct ghoul_pet_auto_attack_t : public ghoul_pet_attack_t
 {
   ghoul_pet_auto_attack_t( player_t* player ) :
-      ghoul_pet_attack_t( "auto_attack", player )
+    ghoul_pet_attack_t( "auto_attack", player )
   {
     ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
 
@@ -1317,7 +1317,7 @@ struct ghoul_pet_auto_attack_t : public ghoul_pet_attack_t
 struct ghoul_pet_claw_t : public ghoul_pet_attack_t
 {
   ghoul_pet_claw_t( player_t* player ) :
-      ghoul_pet_attack_t( "claw", player )
+    ghoul_pet_attack_t( "claw", player )
   {
     ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
 
@@ -1358,10 +1358,10 @@ struct death_knight_attack_t : public attack_t
   bool   additive_factors;
 
   death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_RUNIC, s, t ),
-      requires_weapon( true ),
-      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
-      additive_factors( false )
+    attack_t( n, player, RESOURCE_RUNIC, s, t ),
+    requires_weapon( true ),
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+    additive_factors( false )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1394,8 +1394,8 @@ struct death_knight_spell_t : public spell_t
   bool   use[RUNE_SLOT_MAX];
 
   death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
-      spell_t( n, player, RESOURCE_RUNIC, s, t ),
-      cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
+    spell_t( n, player, RESOURCE_RUNIC, s, t ),
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
   {
     death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1605,7 +1605,7 @@ static void trigger_blood_caked_blade( action_t* a )
     struct bcb_t : public death_knight_attack_t
     {
       bcb_t( player_t* player ) :
-          death_knight_attack_t( "blood_caked_blade", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+        death_knight_attack_t( "blood_caked_blade", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
       {
         may_crit       = false;
         background     = true;
@@ -1687,7 +1687,7 @@ static void trigger_necrosis( action_t* a )
   struct necrosis_t : public death_knight_spell_t
   {
     necrosis_t( player_t* player ) :
-        death_knight_spell_t( "necrosis", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      death_knight_spell_t( "necrosis", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       may_crit       = false;
       may_miss       = false;
@@ -1718,7 +1718,7 @@ static void trigger_wandering_plague( action_t* a, double disease_damage )
   struct wandering_plague_t : public death_knight_spell_t
   {
     wandering_plague_t( player_t* player ) :
-        death_knight_spell_t( "wandering_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      death_knight_spell_t( "wandering_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       may_crit       = false;
       may_miss       = false;
@@ -1765,7 +1765,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   struct unholy_blight_t : public death_knight_spell_t
   {
     unholy_blight_t( player_t* player ) :
-        death_knight_spell_t( "unholy_blight", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      death_knight_spell_t( "unholy_blight", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       base_tick_time = 2.0;
       num_ticks = 5;
@@ -2083,7 +2083,7 @@ struct melee_t : public death_knight_attack_t
 {
   int sync_weapons;
   melee_t( const char* name, player_t* player, int sw ) :
-      death_knight_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
+    death_knight_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2136,7 +2136,7 @@ struct auto_attack_t : public death_knight_attack_t
   int sync_weapons;
 
   auto_attack_t( player_t* player, const std::string& options_str ) :
-      death_knight_attack_t( "auto_attack", player ), sync_weapons( 0 )
+    death_knight_attack_t( "auto_attack", player ), sync_weapons( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2187,7 +2187,7 @@ struct auto_attack_t : public death_knight_attack_t
 struct blood_boil_t : public death_knight_spell_t
 {
   blood_boil_t( player_t* player, const std::string& options_str, bool sudden_doom = false ) :
-      death_knight_spell_t( "blood_boil", player, SCHOOL_SHADOW, TREE_BLOOD )
+    death_knight_spell_t( "blood_boil", player, SCHOOL_SHADOW, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -2231,7 +2231,7 @@ struct blood_boil_t : public death_knight_spell_t
 struct blood_plague_t : public death_knight_spell_t
 {
   blood_plague_t( player_t* player ) :
-      death_knight_spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    death_knight_spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2319,7 +2319,7 @@ struct blood_plague_t : public death_knight_spell_t
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "blood_tap", player, SCHOOL_NONE, TREE_BLOOD )
+    death_knight_spell_t( "blood_tap", player, SCHOOL_NONE, TREE_BLOOD )
   {
     option_t options[] =
     {
@@ -2395,7 +2395,7 @@ struct blood_tap_t : public death_knight_spell_t
 struct bone_shield_t : public death_knight_spell_t
 {
   bone_shield_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "bone_shield", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    death_knight_spell_t( "bone_shield", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     option_t options[] =
     {
@@ -2459,7 +2459,7 @@ struct bone_shield_t : public death_knight_spell_t
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   dancing_rune_weapon_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NONE, TREE_BLOOD )
+    death_knight_spell_t( "dancing_rune_weapon", player, SCHOOL_NONE, TREE_BLOOD )
   {
     option_t options[] =
     {
@@ -2494,7 +2494,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   death_coil_t( player_t* player, const std::string& options_str, bool sudden_doom = false ) :
-      death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    death_knight_spell_t( "death_coil", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -2569,7 +2569,7 @@ static bool trigger_sudden_doom( action_t* a )
 struct blood_strike_t : public death_knight_attack_t
 {
   blood_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+    death_knight_attack_t( "blood_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2661,7 +2661,7 @@ struct blood_strike_t : public death_knight_attack_t
 struct death_strike_t : public death_knight_attack_t
 {
   death_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+    death_knight_attack_t( "death_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2750,7 +2750,7 @@ struct death_strike_t : public death_knight_attack_t
 struct deathchill_t : public death_knight_spell_t
 {
   deathchill_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "deathchill", player, SCHOOL_NONE, TREE_FROST )
+    death_knight_spell_t( "deathchill", player, SCHOOL_NONE, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2781,7 +2781,7 @@ struct deathchill_t : public death_knight_spell_t
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "empower_rune_weapon", player, SCHOOL_NONE, TREE_FROST )
+    death_knight_spell_t( "empower_rune_weapon", player, SCHOOL_NONE, TREE_FROST )
   {
     option_t options[] =
     {
@@ -2813,7 +2813,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 struct frost_fever_t : public death_knight_spell_t
 {
   frost_fever_t( player_t* player ) :
-      death_knight_spell_t( "frost_fever", player, SCHOOL_FROST, TREE_FROST )
+    death_knight_spell_t( "frost_fever", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2900,7 +2900,7 @@ struct frost_fever_t : public death_knight_spell_t
 struct frost_strike_t : public death_knight_attack_t
 {
   frost_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
+    death_knight_attack_t( "frost_strike", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2973,7 +2973,7 @@ struct frost_strike_t : public death_knight_attack_t
 struct heart_strike_t : public death_knight_attack_t
 {
   heart_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "heart_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+    death_knight_attack_t( "heart_strike", player, SCHOOL_PHYSICAL, TREE_BLOOD )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.heart_strike );
@@ -3047,7 +3047,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   double bonus;
 
   horn_of_winter_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST )
+    death_knight_spell_t( "horn_of_winter", player, SCHOOL_NONE, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3082,7 +3082,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "howling_blast", player, SCHOOL_FROST, TREE_FROST )
+    death_knight_spell_t( "howling_blast", player, SCHOOL_FROST, TREE_FROST )
   {
 
     death_knight_t* p = player -> cast_death_knight();
@@ -3187,7 +3187,7 @@ struct hysteria_t : public action_t
   player_t* hysteria_target;
 
   hysteria_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD ), hysteria_target( 0 )
+    action_t( ACTION_OTHER, "hysteria", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD ), hysteria_target( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.hysteria );
@@ -3231,7 +3231,7 @@ struct hysteria_t : public action_t
 struct icy_touch_t : public death_knight_spell_t
 {
   icy_touch_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST )
+    death_knight_spell_t( "icy_touch", player, SCHOOL_FROST, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -3306,7 +3306,7 @@ struct icy_touch_t : public death_knight_spell_t
 struct obliterate_t : public death_knight_attack_t
 {
   obliterate_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "obliterate", player, SCHOOL_PHYSICAL, TREE_FROST )
+    death_knight_attack_t( "obliterate", player, SCHOOL_PHYSICAL, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3421,7 +3421,7 @@ struct obliterate_t : public death_knight_attack_t
 struct pestilence_t : public death_knight_spell_t
 {
   pestilence_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+    death_knight_spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -3466,7 +3466,7 @@ struct pestilence_t : public death_knight_spell_t
 struct plague_strike_t : public death_knight_attack_t
 {
   plague_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "plague_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+    death_knight_attack_t( "plague_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -3538,7 +3538,7 @@ struct presence_t : public death_knight_spell_t
 {
   int switch_to_presence;
   presence_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "presence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+    death_knight_spell_t( "presence", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     std::string presence_str;
     option_t options[] =
@@ -3627,7 +3627,7 @@ struct presence_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY )
+    death_knight_spell_t( "raise_dead", player, SCHOOL_NONE, TREE_UNHOLY )
   {
     option_t options[] =
     {
@@ -3663,7 +3663,7 @@ struct raise_dead_t : public death_knight_spell_t
 struct rune_tap_t : public death_knight_spell_t
 {
   rune_tap_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "rune_tap", player, SCHOOL_NONE, TREE_BLOOD )
+    death_knight_spell_t( "rune_tap", player, SCHOOL_NONE, TREE_BLOOD )
   {
     option_t options[] =
     {
@@ -3728,7 +3728,7 @@ struct scourge_strike_t : public death_knight_attack_t
     }
   };
   scourge_strike_t( player_t* player, const std::string& options_str  ) :
-      death_knight_attack_t( "scourge_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
+    death_knight_attack_t( "scourge_strike", player, SCHOOL_PHYSICAL, TREE_UNHOLY )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.scourge_strike );
@@ -3802,7 +3802,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 {
 
   summon_gargoyle_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "summon_gargoyle", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    death_knight_spell_t( "summon_gargoyle", player, SCHOOL_SHADOW, TREE_UNHOLY )
   {
     option_t options[] =
     {
@@ -3832,7 +3832,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 struct unbreakable_armor_t : public death_knight_spell_t
 {
   unbreakable_armor_t( player_t* player, const std::string& options_str ) :
-      death_knight_spell_t( "unbreakable_armor", player, SCHOOL_NONE, TREE_FROST )
+    death_knight_spell_t( "unbreakable_armor", player, SCHOOL_NONE, TREE_FROST )
   {
     death_knight_t* p = player -> cast_death_knight();
     option_t options[] =
@@ -3993,7 +3993,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   {
     rune_type type;
     cooldown_expr_t( action_t* a, const char* name, rune_type type_in ) :
-        action_expr_t( a, name ), type( type_in ) { result_type = TOK_NUM; }
+      action_expr_t( a, name ), type( type_in ) { result_type = TOK_NUM; }
     virtual int evaluate()
     {
       result_num = get_rune_cooldown( action -> player, type ); return TOK_NUM;
@@ -4083,7 +4083,9 @@ void death_knight_t::init()
     if ( talents.master_of_ghouls )
     {
       ghoul -> type = PLAYER_PET;
-    } else {
+    }
+    else
+    {
       ghoul -> type = PLAYER_GUARDIAN;
     }
   }
@@ -4530,7 +4532,7 @@ void death_knight_t::init_buffs()
   struct bloodworms_buff_t : public buff_t
   {
     bloodworms_buff_t( death_knight_t* p ) :
-        buff_t( p, "bloodworms", 1, 19.99, 20.01, p -> talents.bloodworms * 0.03 ) {}
+      buff_t( p, "bloodworms", 1, 19.99, 20.01, p -> talents.bloodworms * 0.03 ) {}
     virtual void start( int stacks, double value )
     {
       buff_t::start( stacks, value );
