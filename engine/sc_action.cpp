@@ -1226,6 +1226,22 @@ void action_t::extend_duration( int extra_ticks )
   {
     dot -> ready += tick_time() * extra_ticks;
   }
+  if ( dot_behavior == DOT_REFRESH )
+  {
+
+	  // Not sure which stats are exactly updated when extending a dot. Power surely is
+	   if ( base_attack_power_multiplier > 0 )
+	   {
+	     player_attack_power            = player -> composite_attack_power();
+	     player_attack_power_multiplier = player -> composite_attack_power_multiplier();
+	   }
+	   if ( base_spell_power_multiplier > 0 )
+	   {
+	     player_spell_power            = player -> composite_spell_power( school );
+	     player_spell_power_multiplier = player -> composite_spell_power_multiplier();
+	   }
+    dot -> ready += tick_time() * extra_ticks;
+  }
 
   if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, number_ticks );
 }

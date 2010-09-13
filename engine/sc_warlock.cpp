@@ -10,7 +10,6 @@
  * To Do:
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
- * - Burning Embers
  * - Dark Intent: Add Callback Action on the Dark Intent Target
  * - Dark Intent: Change Callbacks to dot-crit result.
  * - add soulburn effect to UA and Searing Pain
@@ -18,6 +17,9 @@
  * - reverse soul_shards consumption from 0->3 to 3->0
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
  * - Summon Infernal Damage
+ * - Change Conflagrate if necessary
+ * - Figure out by which pet spells proc mana feed
+ * - Bane of Agony and haste scaling looks strange
  *
  */
 
@@ -135,7 +137,7 @@ struct warlock_t : public player_t
     active_spell_t* unstable_affliction;
     passive_spell_t* shadow_mastery;
     active_spell_t* summon_felguard;
-    passive_spell_t* master_demonologist;
+    passive_spell_t* demonic_knowledge;
     active_spell_t* conflagrate;
     passive_spell_t* cataclysm;
   };
@@ -162,6 +164,7 @@ struct warlock_t : public player_t
   gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_soul_leech;
+  gain_t* gains_mana_feed;
 
   // Procs
   proc_t* procs_empowered_imp;
@@ -173,6 +176,7 @@ struct warlock_t : public player_t
   rng_t* rng_pandemic;
   rng_t* rng_cremation;
   rng_t* rng_impending_doom;
+  rng_t* rng_siphon_life;
 
   // Custom Parameters
   std::string summon_pet_str;
@@ -245,7 +249,7 @@ struct warlock_t : public player_t
     talent_spec_spells.shadow_mastery 		= new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
     // Demonology
     talent_spec_spells.summon_felguard 		= new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
-    talent_spec_spells.master_demonologist 	= new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY );
+    talent_spec_spells.demonic_knowledge 	= new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
     //Destruction
     talent_spec_spells.conflagrate 			= new active_spell_t( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
     talent_spec_spells.cataclysm 			= new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
@@ -371,23 +375,6 @@ struct warlock_t : public player_t
 };
 
 // ==========================================================================
-// Curse of Elements
-// ==========================================================================
-
-struct coe_debuff_t : public debuff_t
-{
-  coe_debuff_t( sim_t* s ) : debuff_t( s, "curse_of_elements", 1, 300.0 ) {}
-  virtual void expire()
-  {
-    if( player ) 
-    {
-      player = 0;
-    }
-    debuff_t::expire();
-  }
-};
-
-// ==========================================================================
 // Warlock Pet
 // ==========================================================================
 
@@ -483,7 +470,7 @@ struct warlock_pet_t : public pet_t
     }
     if ( o -> mastery_spells.master_demonologist -> ok() && o -> buffs_metamorphosis -> up())
     {
-    	a -> base_multiplier *= 1.0 + o -> mastery_spells.master_demonologist -> ok() * ( 0.13 + o -> composite_mastery() * 0.015 );
+    	a -> base_multiplier *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * 0.015 );
     }
   }
 
@@ -500,7 +487,125 @@ struct warlock_pet_t : public pet_t
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+
+
+
+
 };
+
+
+
+
+namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// ==========================================================================
+// Warlock Spell
+// ==========================================================================
+
+struct warlock_spell_t : public spell_t
+{
+
+
+  warlock_spell_t( const char* n, player_t* player, int s, int t ) :
+      spell_t( n, player, RESOURCE_MANA, s, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
+
+  // Overridden Methods
+  virtual double haste() SC_CONST;
+  virtual double   calculate_tick_damage();
+  virtual void   player_buff();
+  virtual void   target_debuff( int dmg_type );
+  virtual void   execute();
+  virtual void   tick();
+  virtual void   parse_options( option_t*, const std::string& );
+  virtual bool   ready();
+
+
+  // trigger_impending_doom ===================================================
+
+  static void trigger_impending_doom ( spell_t* s )
+  {
+  	warlock_t* p = s -> player -> cast_warlock();
+  	if ( p -> talent_impending_doom -> rank() )
+  	{
+  		if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() * 0.05 ) )
+  		{
+  			p -> procs_impending_doom -> occur();
+  			if ( p -> cooldowns_metamorphosis -> remains() > 6.0 )
+  				p -> cooldowns_metamorphosis -> ready -= 6.0;
+  		}
+  	}
+  }
+
+  // trigger_soul_leech =======================================================
+
+  static void trigger_soul_leech( spell_t* s )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+
+    if ( p -> talent_soul_leech -> rank() )
+    {
+      if ( p -> rng_soul_leech -> roll( p -> talent_soul_leech -> rank() ) )
+      {
+        p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.01, p ->gains_soul_leech );
+        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01, p -> gains_soul_leech );
+
+        p -> trigger_replenishment();
+
+      }
+    }
+  }
+
+
+  // trigger_decimation ======================================================
+
+  static void trigger_decimation( warlock_spell_t* s,
+                                  int result )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+    if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
+    if ( s -> sim -> target -> health_percentage() > 35  ) return;
+    p -> buffs_decimation -> trigger();
+  }
+
+
+  // trigger_deaths_embrace ===================================================
+
+  static int trigger_deaths_embrace( spell_t* s )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+
+    if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
+
+    if ( s -> sim -> target -> health_percentage() < 25 )
+    {
+      return p -> talent_deaths_embrace -> rank() * 4;
+    }
+
+    return 0;
+  }
+
+  // trigger_everlasting_affliction ===========================================
+
+  static void trigger_everlasting_affliction( spell_t* s )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+
+    if ( ! p -> talent_everlasting_affliction -> rank() ) return;
+
+    if ( ! p -> dots_corruption -> ticking() ) return;
+
+    if ( p -> rng_everlasting_affliction -> roll( util_t::talent_rank( p -> talent_everlasting_affliction -> rank(), 3, 0.33, 0.66, 1.00 ) ) )
+    {
+      p -> dots_corruption -> action -> refresh_duration();
+    }
+  }
+};
+
+
 
 // ==========================================================================
 // Warlock Pet Melee
@@ -576,6 +681,22 @@ struct warlock_pet_attack_t : public attack_t
 
 };
 
+// trigger_mana_feed =======================================================
+
+static void trigger_mana_feed( action_t* s )
+{
+	pet_t* a = ( pet_t* ) s -> player -> cast_pet();
+  warlock_t* p = a -> owner -> cast_warlock();
+  if ( p -> talent_mana_feed -> rank() )
+  {
+    if ( s -> result == RESULT_CRIT )
+    {
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01, p -> gains_mana_feed );
+
+    }
+  }
+}
+
 // ==========================================================================
 // Warlock Pet Spell
 // ==========================================================================
@@ -613,7 +734,7 @@ struct imp_pet_t : public warlock_pet_t
   struct fire_bolt_t : public warlock_pet_spell_t
   {
     fire_bolt_t( player_t* player ):
-        warlock_pet_spell_t( "fire_bolt", player, RESOURCE_MANA, SCHOOL_FIRE )
+        warlock_pet_spell_t( "Imp: Fire Bolt", player, RESOURCE_MANA, SCHOOL_FIRE )
     {
       imp_pet_t* p = ( imp_pet_t* ) player -> cast_pet();
       warlock_t* o = p -> owner -> cast_warlock();
@@ -621,15 +742,10 @@ struct imp_pet_t : public warlock_pet_t
       id = 3110;
       parse_data ( o -> player_data);
 
-
       may_crit          = true;
-
       min_gcd           = 1.0;
-
-
       base_multiplier *= 1.0 + ( o -> talent_empowered_imp -> rank() * 0.10 +
                                  o -> glyphs.imp            * 0.20 );
-
     }
     virtual void execute();
     virtual void player_buff()
@@ -684,20 +800,16 @@ struct felguard_pet_t : public warlock_pet_t
   struct cleave_t : public warlock_pet_attack_t
   {
     cleave_t( player_t* player ) :
-        warlock_pet_attack_t( "Felguard Cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+        warlock_pet_attack_t( "Felguard: Cleave", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
+      warlock_t*      o = p -> owner -> cast_warlock();
 
-      static rank_t ranks[] =
-      {
-        { 76, 4, 124, 124, 0, 0.1 },
-        { 68, 3,  78,  78, 0, 0.1 },
-        { 0, 0, 0, 0, 0, 0 }
-      };
-      init_rank( ranks, 47994 );
+      id = 89751;
+      parse_data( p -> player_data );
 
       weapon   = &( p -> main_hand_weapon );
-      cooldown -> duration = 6.0;
+      base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
     }
     virtual void player_buff()
     {
@@ -705,15 +817,20 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
 
       warlock_pet_attack_t::player_buff();
-      player_attack_power *= 1.0 + o -> buffs_demonic_frenzy -> stack() * ( 0.05  + 0.01 * o -> talent_dark_arts -> rank() );
+      player_attack_power *= 1.0 + o -> buffs_demonic_frenzy -> stack() * 0.05;
       if ( o -> glyphs.felguard ) player_attack_power *= 1.20;
+    }
+    virtual void execute()
+    {
+    	warlock_pet_attack_t::execute();
+    	trigger_mana_feed ( this );
     }
   };
 
   struct melee_t : public warlock_pet_melee_t
   {
     melee_t( player_t* player ) :
-        warlock_pet_melee_t( player, "Felguard Melee" )
+        warlock_pet_melee_t( player, "Felguard: Melee" )
     {}
     virtual double execute_time() SC_CONST
     {
@@ -786,7 +903,7 @@ struct felhunter_pet_t : public warlock_pet_t
   struct shadow_bite_t : public warlock_pet_attack_t
   {
     shadow_bite_t( player_t* player ) :
-        warlock_pet_attack_t( "shadow_bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
+        warlock_pet_attack_t( "Felhunter: Shadow Bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
@@ -804,10 +921,11 @@ struct felhunter_pet_t : public warlock_pet_t
       base_crit_bonus = 0.5;
       base_crit_bonus_multiplier = 2.0;
     }
-      
+
     virtual void execute()
     {
-      warlock_pet_attack_t::execute();
+    	warlock_pet_attack_t::execute();
+    	trigger_mana_feed ( this );
     }
 
     virtual void player_buff()
@@ -858,7 +976,7 @@ struct felhunter_pet_t : public warlock_pet_t
     base_mp5 = 11.22;
 
     base_attack_crit = 0.0327;
- 
+
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
 
@@ -880,7 +998,7 @@ struct succubus_pet_t : public warlock_pet_t
   struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_spell_t( "lash_of_pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
+        warlock_pet_spell_t( "Succubus: Lash of Pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       id = 7814;
@@ -932,7 +1050,7 @@ struct infernal_pet_t : public warlock_pet_t
   struct infernal_immolation_t : public warlock_pet_spell_t
   {
     infernal_immolation_t( player_t* player ) :
-        warlock_pet_spell_t( "Infernal Immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
+        warlock_pet_spell_t( "Infernal: Immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
     {
       base_dd_min = base_dd_max = 40;
       direct_power_mod  = 0.2;
@@ -1003,6 +1121,33 @@ struct infernal_pet_t : public warlock_pet_t
 
 struct doomguard_pet_t : public warlock_pet_t
 {
+
+	struct war_stomp_t : public warlock_pet_attack_t
+	{
+
+		war_stomp_t( player_t* player ) :
+	        warlock_pet_attack_t( "Doomguard: War Stomp", player, RESOURCE_MANA, SCHOOL_SHADOW )
+	    {
+	      felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
+	      warlock_t*       o = p -> owner -> cast_warlock();
+
+	      id = 19482;
+	      parse_data ( o -> player_data);
+
+	      may_crit          = true;
+
+	      base_crit_bonus = 0.5;
+	      base_crit_bonus_multiplier = 2.0;
+	    }
+
+	    virtual void execute()
+	    {
+	      warlock_pet_attack_t::execute();
+	    }
+
+
+	  };
+
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   {
@@ -1033,115 +1178,20 @@ struct doomguard_pet_t : public warlock_pet_t
   }
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
-// ==========================================================================
-// Warlock Spell
-// ==========================================================================
-
-struct warlock_spell_t : public spell_t
-{
-
-
-  warlock_spell_t( const char* n, player_t* player, int s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t )
-  { }
-
-  // Overridden Methods
-  virtual double haste() SC_CONST;
-  virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
-  virtual void   execute();
-  virtual void   tick();
-  virtual void   parse_options( option_t*, const std::string& );
-  virtual bool   ready();
-};
-
-// trigger_impending_doom ===================================================
-
-static void trigger_impending_doom ( spell_t* s )
-{
-	warlock_t* p = s -> player -> cast_warlock();
-	if ( p -> talent_impending_doom -> rank() )
-	{
-		if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() * 0.05 ) )
-		{
-			p -> procs_impending_doom -> occur();
-			if ( p -> cooldowns_metamorphosis -> remains() > 6.0 )
-				p -> cooldowns_metamorphosis -> ready -= 6.0;
-		}
-	}
-}
-
-// trigger_soul_leech =======================================================
-
-static void trigger_soul_leech( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if ( p -> talent_soul_leech -> rank() )
-  {
-    if ( p -> rng_soul_leech -> roll( p -> talent_soul_leech -> rank() ) )
-    {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.01, p ->gains_soul_leech );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01, p -> gains_soul_leech );
-
-      p -> trigger_replenishment();
-
-    }
-  }
-}
-
-
-// trigger_decimation ======================================================
-
-static void trigger_decimation( warlock_spell_t* s,
-                                int result )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-  if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-  if ( s -> sim -> target -> health_percentage() > 35  ) return;
-  p -> buffs_decimation -> trigger();
-}
-
-
-// trigger_deaths_embrace ===================================================
-
-static int trigger_deaths_embrace( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
-
-  if ( s -> sim -> target -> health_percentage() < 25 )
-  {
-    return p -> talent_deaths_embrace -> rank() * 4;
-  }
-
-  return 0;
-}
-
-// trigger_everlasting_affliction ===========================================
-
-static void trigger_everlasting_affliction( spell_t* s )
-{
-  warlock_t* p = s -> player -> cast_warlock();
-
-  if ( ! p -> talent_everlasting_affliction -> rank() ) return;
-
-  if ( ! p -> dots_corruption -> ticking() ) return;
-
-  if ( p -> rng_everlasting_affliction -> roll( util_t::talent_rank( p -> talent_everlasting_affliction -> rank(), 3, 0.33, 0.66, 1.00 ) ) )
-  {
-    p -> dots_corruption -> action -> refresh_duration();
-  }
-}
 
 
 
 // ==========================================================================
 // Warlock Spell
 // ==========================================================================
+
+// warlock_spell_t::calculate_tick_damage ====================================
+
+double warlock_spell_t::calculate_tick_damage()
+{
+  tick_dmg = spell_t::calculate_tick_damage();
+  return tick_dmg;
+}
 
 // warlock_spell_t::haste ===================================================
 
@@ -1186,7 +1236,7 @@ void warlock_spell_t::player_buff()
   if ( p -> buffs_metamorphosis -> up() )
   {
     player_multiplier *= 1.20;
-    player_multiplier *= 1.0 + p -> mastery_spells.master_demonologist -> ok() * ( 0.13 + p -> composite_mastery() * 0.015 );
+    player_multiplier *= 1.0 + ( p -> mastery_spells.master_demonologist -> ok() * p -> composite_mastery() * 0.015 );
 
   }
 
@@ -1223,12 +1273,12 @@ void warlock_spell_t::target_debuff( int dmg_type )
   if ( school == SCHOOL_FIRE )
   {
 	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.cataclysm -> ok() * 0.25 );
-	  if ( p -> mastery_spells.fiery_apocalypse -> ok() ) target_multiplier *= 1.0 +  p -> mastery_spells.fiery_apocalypse -> ok() * ( 0.11  + p -> composite_mastery() * 0.0125 );
-	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.master_demonologist -> ok() * 0.15 );
+	  if ( p -> mastery_spells.fiery_apocalypse -> ok() )target_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * 0.0125 );
+	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.demonic_knowledge -> ok() * 0.25 );
   }
   if ( school == SCHOOL_SHADOW )
   {
-	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.master_demonologist -> ok() * 0.15 );
+	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.demonic_knowledge -> ok() * 0.25 );
 	  target_multiplier	*= 1.0 + ( p -> talent_spec_spells.shadow_mastery -> ok() * 0.25 );
   }
 
@@ -1240,7 +1290,7 @@ void warlock_spell_t::target_debuff( int dmg_type )
     {
       if ( p -> mastery_spells.potent_afflictions -> ok() )
       {
-    	  target_multiplier *= 1.0 + ( p -> mastery_spells.potent_afflictions -> ok() * 0.14 ) + (  p -> composite_mastery()  * 0.0163 );
+    	  target_multiplier *= 1.0 + ( p -> mastery_spells.potent_afflictions -> ok() *  p -> composite_mastery()  * 0.0163 );
       }
       if ( p -> talent_shadow_embrace -> rank() )
       {
@@ -1309,10 +1359,29 @@ void warlock_spell_t::parse_options( option_t*          options,
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
+// warlock_spell_t::ready ====================================================
+
 bool warlock_spell_t::ready()
 {
 	return spell_t::ready();
 }
+
+
+// Curse of Elements Debuff ==================================================
+
+struct coe_debuff_t : public debuff_t
+{
+  coe_debuff_t( sim_t* s ) : debuff_t( s, "curse_of_elements", 1, 300.0 ) {}
+  virtual void expire()
+  {
+    if( player )
+    {
+      player = 0;
+    }
+    debuff_t::expire();
+  }
+};
+
 // Curse of Elements Spell ===================================================
 
 struct curse_of_elements_t : public warlock_spell_t
@@ -1320,6 +1389,7 @@ struct curse_of_elements_t : public warlock_spell_t
   curse_of_elements_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "curse_of_elements", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
+	warlock_t* p = player -> cast_warlock();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1334,6 +1404,7 @@ struct curse_of_elements_t : public warlock_spell_t
     };
     init_rank( ranks, 47865 );
 
+    trigger_gcd -= 0.25 * p -> talent_pandemic -> rank();
   }
 
   virtual void execute()
@@ -1376,6 +1447,8 @@ struct bane_of_agony_t : public warlock_spell_t
 
     id = 980;
     parse_data( p -> player_data );
+    base_td /= 12.0;
+
 
     base_crit += p -> talent_doom_and_gloom -> rank() * 0.04;
     tick_may_crit	  = true;
@@ -1383,8 +1456,9 @@ struct bane_of_agony_t : public warlock_spell_t
     {
       num_ticks += 2;
       // after patch 3.0.8, the added ticks are double the base damage
-      base_td_init = ( base_td_init * 12 + base_td_init * 4 ) / 14;
+      base_td = ( base_td * 12 + base_td * 4 ) / 14;
     }
+    trigger_gcd -= 0.25 * p -> talent_pandemic -> rank();
 
   }
 
@@ -1424,6 +1498,7 @@ struct bane_of_doom_t : public warlock_spell_t
 
     tick_may_crit = true;
     scale_with_haste = false;
+    trigger_gcd -= 0.25 * p -> talent_pandemic -> rank();
 
     if ( p -> talent_impending_doom -> rank() )
     {
@@ -1461,15 +1536,17 @@ struct bane_of_havoc_t : public warlock_spell_t
   bane_of_havoc_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "Bane of Havoc", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
-
+	warlock_t* p = player -> cast_warlock();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    scale_with_haste = false;
     num_ticks=1;
     base_tick_time=300.0;
-    scale_with_haste = false;
+    trigger_gcd -= 0.25 * p -> talent_pandemic -> rank();
+
   }
 
   virtual void execute()
@@ -1551,9 +1628,8 @@ struct shadow_bolt_t : public warlock_spell_t
     trigger_impending_doom( this );
     if ( result_is_hit() )
     {
+      p -> buffs_molten_core -> trigger(3);
       target_t*  t = sim -> target;
-
-
       p -> buffs_shadow_embrace -> trigger();
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> rank() / 5.0 );
       trigger_soul_leech( this );
@@ -1591,32 +1667,60 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct burning_embers_t : public warlock_spell_t
 {
-	burning_embers_t( player_t* player, double base_dmg ) :
+
+	burning_embers_t( player_t* player ) :
       warlock_spell_t( "burning_embers", player, SCHOOL_FIRE, TREE_DESTRUCTION )
   {
-	warlock_t* p = player -> cast_warlock();
+	tick_may_crit= false;
+	scale_with_haste = false;
     num_ticks=7;
     base_tick_time=1.0;
-    base_td=base_dmg * 0.15 * p -> talent_burning_embers -> rank() / num_ticks;
-    double cap = 0.6 * p -> composite_spell_power(SCHOOL_FIRE) + 167;
-    if (base_td > cap)
-    	base_td=cap;
     reset();
   }
 
+  virtual void execute()
+  {
+	  warlock_spell_t::execute();
+  }
+  virtual double calculate_tick_damage()
+  {
+	warlock_t* p = player -> cast_warlock();
+	double cap;
+	double a;
+	cap = 1.0 * p -> composite_spell_power( SCHOOL_FIRE ) + p -> player_data.effect_misc_value2( p -> player_data.spell_effect_id( 85112, 1) );
+	a=base_td * p -> talent_burning_embers -> rank() * 0.15 + tick_dmg;
+	if ( a > cap)
+		tick_dmg=cap;
+	else
+		tick_dmg=a;
+
+	return tick_dmg;
+  }
 };
 
 // Trigger Burning Embers =========================================================
 static void trigger_burning_embers ( spell_t* s )
 {
-	warlock_t* p = s -> player -> cast_warlock();
-	if ( p -> spells_burning_embers )
+	warlock_t* p;
+	if ( s -> player -> type == WARLOCK)
 	{
-			p -> spells_burning_embers -> execute();
+	p = s -> player -> cast_warlock();
 	}
 	else
 	{
-		p -> spells_burning_embers = new burning_embers_t( p, s -> direct_dmg );
+	      pet_t* a = ( pet_t* ) s -> player -> cast_pet();
+	      p = a -> owner -> cast_warlock();
+	}
+
+	if ( p -> spells_burning_embers )
+	{
+      p -> spells_burning_embers -> base_td = s -> direct_dmg ;
+	  p -> spells_burning_embers -> execute();
+	}
+	else
+	{
+		p -> spells_burning_embers = new burning_embers_t( p );
+		p -> spells_burning_embers -> base_td = s -> direct_dmg ;
 		p -> spells_burning_embers -> execute();
 	}
 }
@@ -1810,8 +1914,7 @@ struct corruption_t : public warlock_spell_t
     p -> buffs_eradication -> trigger();
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talent_nightfall -> rank() * 0.02 );
     p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> glyphs.corruption * 0.04 );
-    p -> buffs_molten_core -> trigger(3);
-    p -> resource_gain( RESOURCE_HEALTH, tick_dmg * util_t::talent_rank( p -> talent_siphon_life -> rank(), 23, 0.4, 0.6 ) );
+    //if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> rank() * 0.25 ) )p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.01 );
   }
 
 };
@@ -2031,6 +2134,18 @@ struct unstable_affliction_t : public warlock_spell_t
 
 
   }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      warlock_t* p = player -> cast_warlock();
+      if ( p -> dots_immolate -> ticking() )
+        p -> dots_immolate -> action -> cancel();
+    }
+  }
+
   virtual void tick()
   {
     warlock_spell_t::tick();
@@ -2144,6 +2259,7 @@ struct immolate_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+
     if ( conflagrate_lag > 0 )
     {
       double travel_ready = sim -> current_time + conflagrate_lag;
@@ -2152,10 +2268,19 @@ struct immolate_t : public warlock_spell_t
     	  conflagrate_cooldown -> ready = travel_ready;
       }
     }
+
     if ( immolate_burst )
     {
       immolate_burst -> execute();
     }
+
+    if ( result_is_hit() )
+    {
+      warlock_t* p = player -> cast_warlock();
+      if ( p -> dots_unstable_affliction -> ticking() )
+        p -> dots_unstable_affliction -> action -> cancel();
+    }
+
   }
 
 
@@ -2286,8 +2411,8 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if      (   p -> dots_immolate -> ticking() && ! p -> dots_shadowflame -> ticking() ) dot_spell = p -> dots_immolate -> action;
-    else if ( ! p -> dots_immolate -> ticking() &&   p -> dots_shadowflame -> ticking() ) dot_spell = p -> dots_shadowflame -> action;
+    if      (   p -> dots_immolate -> action && ! p -> dots_shadowflame -> action ) dot_spell = p -> dots_immolate -> action;
+    else if ( ! p -> dots_immolate -> action &&   p -> dots_shadowflame -> action ) dot_spell = p -> dots_shadowflame -> action;
     else if ( sim -> rng -> roll( 0.50 ) )                          dot_spell = p -> dots_immolate -> action;
     else                                                            dot_spell = p -> dots_shadowflame -> action;
 
@@ -2363,7 +2488,6 @@ struct incinerate_burst_immolate_t : public warlock_spell_t
 	  {
 		  warlock_t* p = player -> cast_warlock();
 
-	    proc       = true;
 	    background = true;
 	    may_crit   = true;
 
@@ -2395,8 +2519,6 @@ struct incinerate_t : public warlock_spell_t
       incinerate_burst_immolate( 0 )
   {
     warlock_t* p = player -> cast_warlock();
-
-    travel_speed = 21.0; // set before options to allow override
 
     option_t options[] =
     {
@@ -2452,10 +2574,10 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  double haste() SC_CONST
+  virtual double execute_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
-    double h = warlock_spell_t::haste();
+    double h = warlock_spell_t::execute_time();
     if ( p -> buffs_molten_core -> up() )
     {
       h *= 1.0 - p -> talent_molten_core -> rank() * 0.10;
@@ -3115,7 +3237,10 @@ struct fel_flame_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
-      if ( p -> dots_immolate -> ticking() )p -> dots_immolate -> action -> extend_duration( 2 );
+      if ( p -> dots_immolate -> ticking() )
+      {
+        p -> dots_immolate -> action -> extend_duration( 2 );
+      }
       if ( p -> dots_unstable_affliction -> ticking() )p -> dots_unstable_affliction -> action -> extend_duration( 2 );
     }
   }
@@ -3224,7 +3349,6 @@ struct soulburn_t : public warlock_spell_t
     harmful = false;
     base_cost   = 0;
     trigger_gcd = 0;
-
     cooldown -> duration = 45.0;
 
   }
@@ -3232,9 +3356,7 @@ struct soulburn_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
-    p -> buffs_soulburn -> start();
+    p -> buffs_soulburn -> trigger();
     p -> buffs_soul_shards -> increment();
     warlock_spell_t::execute();
   }
@@ -3375,27 +3497,22 @@ struct hellfire_t : public warlock_spell_t
 
 };
 
-} // ANONYMOUS NAMESPACE ====================================================
 
+
+} // ANONYMOUS NAMESPACE ====================================================
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
 void imp_pet_t::fire_bolt_t::execute()
 {
-	  warlock_pet_spell_t::execute();
-	    	  warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
-	    	  if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
+  warlock_pet_spell_t::execute();
+  warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
+  if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
+  trigger_burning_embers ( this );
+  trigger_mana_feed ( this);
 
-	    		if ( o -> spells_burning_embers )
-	    		{
-	    				o -> spells_burning_embers -> execute();
-	    		}
-	    		else
-	    		{
-	    			o -> spells_burning_embers = new burning_embers_t( o, direct_dmg );
-	    			o -> spells_burning_embers -> execute();
-	    		}
 }
+
 // ==========================================================================
 // Warlock Character Definition
 // ==========================================================================
@@ -3619,7 +3736,7 @@ void warlock_t::init_buffs()
   buffs_haunted             = new buff_t( this, "haunted",             1, 12.0, 0.0, talent_haunt -> rank() );
   buffs_life_tap_glyph      = new buff_t( this, "life_tap_glyph",      1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis       = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talent_metamorphosis -> rank() );
-  buffs_molten_core         = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.04 );
+  buffs_molten_core         = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.05 );
   buffs_shadow_embrace      = new buff_t( this, "shadow_embrace",      3, 12.0, 0.0, talent_shadow_embrace -> rank() );
   buffs_shadow_trance       = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talent_nightfall -> rank() );
   buffs_tier10_4pc_caster   = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
@@ -3646,6 +3763,7 @@ void warlock_t::init_gains()
   gains_felhunter  = get_gain( "felhunter"  );
   gains_life_tap   = get_gain( "life_tap"   );
   gains_soul_leech = get_gain( "soul_leech" );
+  gains_mana_feed  = get_gain( "mana_feed"  );
 }
 
 // warlock_t::init_uptimes ====================================================
@@ -3675,6 +3793,7 @@ void warlock_t::init_rng()
   rng_pandemic				 = get_rng( "pandemic" 				 );
   rng_cremation				 = get_rng( "cremation"				 );
   rng_impending_doom		 = get_rng( "impending_doom" 		 );
+  rng_siphon_life            = get_rng( "siphon_life"            );
 }
 
 // warlock_t::init_talents ====================================================
