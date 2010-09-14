@@ -6,7 +6,8 @@
 // ==========================================================================
 // Todo for Cata
 // ==========================================================================
-// Unleash Elements Ability ( Currently broken on Beta -- they may be changing it again )
+// Spirit Walker's Grace Ability
+// Unleash Elements Ability
 // Ability/Spell Rank scaling
 // Mail Specialization -> 5% intel or agi bonus (waiting on sim changes to check armor type)
 // ==========================================================================
@@ -735,12 +736,6 @@ static void trigger_searing_flames( spell_t* s )
 
   p -> active_searing_flames_dot -> base_td = new_base_td / 5.0 * p -> buffs_searing_flames -> stack();
   p -> active_searing_flames_dot -> execute();
-  /*
-  if ( p -> active_searing_flames_dot -> ticking )
-    p -> active_searing_flames_dot -> schedule_tick();
-  else
-    p -> active_searing_flames_dot -> refresh_duration();
-  /*/
 }
 
 // trigger_static_shock =============================================
@@ -1612,7 +1607,7 @@ struct lava_burst_t : public shaman_spell_t
     init_rank( ranks, 51505 );
 
     may_crit             = true;
-    base_execute_time    = 2.0;
+    base_execute_time    = 2.0 - p -> primary_tree() == TREE_ELEMENTAL * 0.50;
     direct_power_mod     = base_execute_time / 3.5;
     direct_power_mod    += p -> glyphs.lava_burst ? 0.10 : 0.00;
 
@@ -3683,7 +3678,7 @@ double shaman_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( talent_elemental_precision -> rank() / 3 ) * spirit() / player_t::rating.spell_hit;
+  hit += ( talent_elemental_precision -> rank() / 3 ) * ( spirit() - attribute_base[ ATTR_SPIRIT] ) / rating.spell_hit;
 
   return hit;
 }
