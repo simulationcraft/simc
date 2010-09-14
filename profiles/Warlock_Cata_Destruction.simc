@@ -8,7 +8,6 @@ talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=210000000000000000032
 glyphs=conflagrate/incinerate/immolate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
-actions+=/fire_stone
 actions+=/fel_armor
 actions+=/dark_intent
 actions+=/snapshot_stats
@@ -16,8 +15,8 @@ actions+=/summon_pet,imp
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/soulburn
 actions+=/demon_soul
-actions+=/bane_of_havoc,if=!ticking|dot.bane_of_havoc.remains<gcd
-actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<(cast_time+gcd)
+actions+=/bane_of_havoc,if=!ticking
+actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time
 actions+=/conflagrate
 actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up
 actions+=/soul_fire,if=buff.empowered_imp.react

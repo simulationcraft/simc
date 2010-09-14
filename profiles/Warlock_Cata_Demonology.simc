@@ -7,7 +7,6 @@ talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000332
 glyphs=felguard/quick_decay/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
-actions+=/spell_stone
 actions+=/fel_armor
 actions+=/dark_intent
 actions+=/summon_pet,felguard

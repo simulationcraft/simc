@@ -1180,10 +1180,11 @@ struct mind_flay_t : public priest_spell_t
     id = p -> active_spells.mind_flay -> spell_id();
     parse_data( p -> player_data );
 
-    channeled      = true;
-    num_ticks      = 3;
-    base_tick_time = 1.0;
+    channeled        = true;
+    num_ticks        = 3;
+    base_tick_time   = 1.0;
     scale_with_haste = false;
+    tick_may_crit    = true;
 
 
     if ( p -> set_bonus.tier10_4pc_caster() )

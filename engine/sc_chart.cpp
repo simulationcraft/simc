@@ -92,7 +92,7 @@ static const char* stat_color( int type )
     case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
     case STAT_CRIT_RATING:              return class_color( PALADIN );
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
-    case STAT_MASTERY_RATING:           return class_color( SHAMAN ); // anyone got an idea?
+    case STAT_MASTERY_RATING:           return class_text_color( ROGUE );
     case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
     case STAT_ARMOR_PENETRATION_RATING: return class_text_color( ROGUE );
     case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );

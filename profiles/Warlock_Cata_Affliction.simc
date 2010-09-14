@@ -8,7 +8,6 @@ talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223222003013321321000
 glyphs=quick_decay/haunt/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
-actions+=/spell_stone
 actions+=/fel_armor
 actions+=/dark_intent
 actions+=/summon_pet,felhunter

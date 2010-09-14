@@ -19,7 +19,7 @@ actions+=/shadow_fiend
 actions+=/archangel,if=buff.dark_evangelism.stack>=5
 actions+=/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd
 actions+=/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time
-actions+=/devouring_plague,if=!ticking|dot.devouring_plauge.remains<gcd
+actions+=/devouring_plague,if=!ticking|dot.devouring_plague.remains<gcd
 actions+=/shadow_word_death
 actions+=/mind_blast,if=buff.mind_spike.stack>=1
 actions+=/mind_spike,if=buff.mind_spike.stack<=0
@@ -33,7 +33,7 @@ gear_spirit=500
 gear_spell_power=2000
 gear_hit_rating=800
 gear_crit_rating=2000
-gear_haste_rating=5000
+gear_haste_rating=2000
 gear_mastery_rating=1500
 gear_armor=4000
 meta_gem=chaotic_skyflare
