@@ -1016,10 +1016,8 @@ struct seal_of_justice_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-	 weapon            = &( p -> main_hand_weapon );
-	 weapon_multiplier = 0.0;
-	  
-    id = 20164;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
   }
   virtual void execute() 
   {
@@ -1045,12 +1043,13 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
 
+    base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
-    base_spell_power_multiplier = 0.32;
-    base_attack_power_multiplier = 0.20;
+    base_spell_power_multiplier = 0.25;
+    base_attack_power_multiplier = 0.16;
 
-	weapon            = &( p -> main_hand_weapon );
-	weapon_multiplier = 0.0;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 	  
     cooldown -> duration = 8;
 
@@ -1078,10 +1077,8 @@ struct seal_of_insight_proc_t : public paladin_attack_t
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
 
-	weapon            = &( p -> main_hand_weapon );
-	weapon_multiplier = 0.0;
-	  
-    id = 20165;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
   }
 
   virtual void execute()
@@ -1110,12 +1107,13 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
 
+    base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.25;
     base_attack_power_multiplier = 0.16;
 
-	weapon            = &( p -> main_hand_weapon );
-	weapon_multiplier = 0.0;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 	  
     cooldown -> duration = 8;
 
@@ -1128,7 +1126,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
 // Seal of Righteousness ====================================================
 
-// TODO: damage, seals of command on multi targets
+// TODO: seals of command on multi targets
 struct seal_of_righteousness_proc_t : public paladin_attack_t
 {
   seal_of_righteousness_proc_t( paladin_t* p ) :
@@ -1138,24 +1136,22 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-    base_multiplier *= p -> main_hand_weapon.swing_time;
+    base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.05 + 
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
     direct_power_mod = 1.0;
-    base_spell_power_multiplier = 0.044;
-    base_attack_power_multiplier = 0.022;
+    base_attack_power_multiplier = 0.011;
+    base_spell_power_multiplier = 2 * base_attack_power_multiplier;
 
-	 weapon            = &( p -> main_hand_weapon );
-	 weapon_multiplier = 0.0;
-	  
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
+
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
 
     if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10;
 
     if ( p -> librams.divine_purpose ) base_spell_power += 94;
-
-    id = 21084;
   }
 };
 
@@ -1178,13 +1174,14 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
                              + 0.10 * p -> talents.wrath_of_the_lightbringer );
 
+    base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
     base_spell_power_multiplier = 0.32;
     base_attack_power_multiplier = 0.20;
 
-	 weapon            = &( p -> main_hand_weapon );
-	 weapon_multiplier = 0.0;
-	  
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
+
     cooldown -> duration = 8;
 
     if ( p -> set_bonus.tier7_4pc_melee() ) cooldown -> duration--;
@@ -1209,8 +1206,8 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     trigger_gcd = 0;
     base_cost   = 0;
 
-	weapon            = &( p -> main_hand_weapon );
-	weapon_multiplier *= 0.0;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier *= 0.0;
 
     base_td = 1;
     num_ticks = 5;
@@ -1296,8 +1293,6 @@ struct seal_of_truth_proc_t : public paladin_attack_t
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
-
-    id = 31801;
   }
   virtual void player_buff()
   {
@@ -1772,6 +1767,11 @@ struct exorcism_t : public paladin_spell_t
     {
       player_crit += 1.0;
     }
+  }
+
+  virtual double total_power() SC_CONST
+  {
+    return (std::max)(total_spell_power(), total_attack_power());
   }
 
   virtual void execute()
