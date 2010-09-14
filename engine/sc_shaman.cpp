@@ -1607,10 +1607,11 @@ struct lava_burst_t : public shaman_spell_t
     init_rank( ranks, 51505 );
 
     may_crit             = true;
-    base_execute_time    = 2.0 - p -> primary_tree() == TREE_ELEMENTAL * 0.50;
+    base_execute_time    = 2.0;
     direct_power_mod     = base_execute_time / 3.5;
     direct_power_mod    += p -> glyphs.lava_burst ? 0.10 : 0.00;
 
+    base_execute_time   -= p -> primary_tree() == TREE_ELEMENTAL * 0.50;
     base_cost_reduction += p -> talent_convection -> rank() * 0.05;
     base_multiplier     *= 1.0 + p -> talent_concussion    -> rank() * 0.03 + p -> talent_call_of_flame -> rank() * 0.05;
     direct_power_mod    += p -> primary_tree() == TREE_ELEMENTAL * 0.20;
