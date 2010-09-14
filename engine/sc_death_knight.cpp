@@ -161,17 +161,18 @@ struct death_knight_t : public player_t
   // Passive abilities
   struct passives_t
   {
-    passive_spell_t* heart_strike;
-    passive_spell_t* vengeance;
-    passive_spell_t* veteran_of_the_third_war;
+    passive_spell_t* blood_of_the_north;
     passive_spell_t* blood_rites;
     passive_spell_t* frost_strike;
+    passive_spell_t* heart_strike;
     passive_spell_t* icy_talons;
-    passive_spell_t* blood_of_the_north;
-    passive_spell_t* scourge_strike;
     passive_spell_t* master_of_ghouls;
     passive_spell_t* reaping;
+    passive_spell_t* runic_empowerment;
+    passive_spell_t* scourge_strike;
     passive_spell_t* unholy_might;
+    passive_spell_t* vengeance;
+    passive_spell_t* veteran_of_the_third_war;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
   };
   passives_t passives;
@@ -282,6 +283,14 @@ struct death_knight_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct constants_t
+  {
+    double runic_empowerment_proc_chance;
+
+    constants_t() { memset( ( void* ) this, 0x0, sizeof( constants_t ) ); }
+  };
+  constants_t constants;
+
   // Sigils
   struct sigils_t
   {
@@ -353,17 +362,18 @@ struct death_knight_t : public player_t
     blood_plague        = NULL;
     frost_fever         = NULL;
 
-    passives.heart_strike              = new passive_spell_t( this, "heart_strike", "Heart Strike", DEATH_KNIGHT_BLOOD );
-    passives.vengeance                 = new passive_spell_t( this, "vengeance", "Vengeance", DEATH_KNIGHT_BLOOD );
-    passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
+    passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
     passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites", DEATH_KNIGHT_BLOOD );
     passives.frost_strike              = new passive_spell_t( this, "frost_strike", "Frost Strike", DEATH_KNIGHT_FROST );
+    passives.heart_strike              = new passive_spell_t( this, "heart_strike", "Heart Strike", DEATH_KNIGHT_BLOOD );
     passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons", DEATH_KNIGHT_FROST );
-    passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
-    passives.scourge_strike            = new passive_spell_t( this, "scourge_strike", "Scourge Strke", DEATH_KNIGHT_UNHOLY );
     passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls", DEATH_KNIGHT_UNHOLY );
     passives.reaping                   = new passive_spell_t( this, "reaping", "Reaping", DEATH_KNIGHT_UNHOLY );
+    passives.runic_empowerment         = new passive_spell_t( this, "runic_empowerment", 81229 );
+    passives.scourge_strike            = new passive_spell_t( this, "scourge_strike", "Scourge Strke", DEATH_KNIGHT_UNHOLY );
     passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might", DEATH_KNIGHT_UNHOLY );
+    passives.vengeance                 = new passive_spell_t( this, "vengeance", "Vengeance", DEATH_KNIGHT_BLOOD );
+    passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
 
     cooldowns_howling_blast = get_cooldown( "howling_blast" );
   }
@@ -384,6 +394,7 @@ struct death_knight_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_items();
   virtual void      init_rating();
+  virtual void      init_values();
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
@@ -402,7 +413,7 @@ struct death_knight_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
-  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual void      trigger_runic_empowerment();
 
   // Death Knight Specific helperfunctions
   int  diseases()
@@ -2348,6 +2359,9 @@ struct death_coil_t : public death_knight_spell_t
       p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
 
     if ( result_is_hit() ) trigger_unholy_blight( this, direct_dmg );
+
+    if ( p -> sim -> roll( p -> constants.runic_empowerment_proc_chance ) )
+      p -> trigger_runic_empowerment();
   }
 
   bool ready()
@@ -2694,6 +2708,8 @@ struct frost_strike_t : public death_knight_attack_t
         death_knight_attack_t::execute();
       }
     p -> buffs_killing_machine -> expire();
+    if ( p -> sim -> roll( p -> constants.runic_empowerment_proc_chance ) )
+      p -> trigger_runic_empowerment();
   }
 
   virtual void player_buff()
@@ -4223,6 +4239,13 @@ void death_knight_t::init_rating()
   rating.attack_haste *= 1.0 / 1.30;
 }
 
+void death_knight_t::init_values()
+{
+  player_t::init_values();
+
+  constants.runic_empowerment_proc_chance = passives.runic_empowerment->proc_chance();
+}
+
 void death_knight_t::reset()
 {
   player_t::reset();
@@ -4460,6 +4483,40 @@ int death_knight_t::decode_set( item_t& item )
   }
 
   return SET_NONE;
+}
+
+void death_knight_t::trigger_runic_empowerment()
+{
+  double now = sim -> current_time;
+
+  bool fully_depleted_runes[RUNE_SLOT_MAX / 2];
+  for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
+  {
+    fully_depleted_runes[i] = false;
+    if ( !_runes.slot[i].is_ready( now ) && !_runes.slot[i+1].is_ready( now ) )
+      fully_depleted_runes[i] = true;
+  }
+
+  // Use a fair algorithm to pick whichever rune to regen.
+  int rune_to_regen = -1;
+  for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
+  {
+    if ( sim -> roll( 1.0 / static_cast<double>( i + 1 ) ) )
+    {
+      rune_to_regen = i;
+    }
+  }
+
+  if ( rune_to_regen >= 0 )
+  {
+    if ( _runes.slot[rune_to_regen].cooldown_time < _runes.slot[rune_to_regen + 1].cooldown_time )
+    {
+      ++rune_to_regen;
+    }
+    _runes.slot[rune_to_regen].fill_rune( this );
+    if ( sim -> log )
+      log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
+  }
 }
 
 // player_t implementations ============================================
