@@ -1869,7 +1869,6 @@ struct sim_t
     int bloodlust;
     int bloodlust_early;
     int celerity;
-    int crypt_fever;
     int curse_of_elements;
     int demonic_pact;
     int devotion_aura;
@@ -2832,7 +2831,6 @@ struct target_t
     debuff_t* bleeding;
     debuff_t* blood_frenzy;
     debuff_t* casting;
-    debuff_t* crypt_fever;
     debuff_t* blood_plague;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;

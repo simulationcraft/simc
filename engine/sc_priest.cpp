@@ -842,12 +842,6 @@ struct devouring_plague_t : public priest_spell_t
     player -> resource_gain( RESOURCE_HEALTH, tick_dmg * p -> constants.devouring_plague_health_mod );
   }
 
-  virtual void target_debuff( int dmg_type )
-  {
-    priest_spell_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + sim -> target -> debuffs.crypt_fever -> value() * 0.01;
-  }
-
   virtual void update_stats( int type )
   {
     if ( devouring_plague_burst && type == DMG_DIRECT ) return;

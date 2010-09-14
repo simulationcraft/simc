@@ -1225,7 +1225,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blood_frenzy           = optimal_raid;
   overrides.blood_plague           = optimal_raid;
   overrides.bloodlust              = optimal_raid;
-  overrides.crypt_fever            = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
@@ -1508,7 +1507,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
-      { "override.crypt_fever",             OPT_BOOL,   &( overrides.crypt_fever                    ) },
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
       { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },

@@ -1830,13 +1830,6 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
       m *= 1.15;
     }
 
-    if ( school == SCHOOL_PHYSICAL )
-    {
-      if ( buffs.hysteria -> up() )
-      {
-        m *= 1.2;
-      }
-    }
     if ( buffs.tricks_of_the_trade -> up() )
     {
       m *= 1.15;
