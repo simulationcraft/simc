@@ -10,8 +10,6 @@
  * To Do:
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
- * - Dark Intent: Add Callback Action on the Dark Intent Target
- * - Dark Intent: Change Callbacks to dot-crit result.
  * - add soulburn effect to UA and Searing Pain
  * - add demon_soul imp effect
  * - reverse soul_shards consumption from 0->3 to 3->0
@@ -172,6 +170,8 @@ struct warlock_t : public player_t
   passive_spell_t* shadow_mastery;
   passive_spell_t* demonic_knowledge;
   passive_spell_t* cataclysm;
+
+  passive_spell_t* doom_and_gloom;
   };
   passive_spells_t passive_spells;
 
@@ -282,6 +282,8 @@ struct warlock_t : public player_t
 
     spells_burning_embers					= 0;
 
+    // active_spells =============================================================================================
+
     // Core
     active_spells.unstable_affliction   = new active_spell_t( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
     active_spells.summon_felguard       = new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
@@ -316,9 +318,15 @@ struct warlock_t : public player_t
     active_spells.shadowflame           = new active_spell_t( this, "shadowflame", "Shadowflame" );
     active_spells.fel_flame             = new active_spell_t( this, "fel_flame", "Fel Flame" );
 
+    // passive_spells =======================================================================================
+
+    // Core
     passive_spells.shadow_mastery 		  = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
     passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
     passive_spells.cataclysm 			      = new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
+
+    //Affliction
+    passive_spells.doom_and_gloom       = new passive_spell_t(this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
 
     mastery_spells.fiery_apocalypse 		= new passive_spell_t( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION, true );
     mastery_spells.potent_afflictions   = new passive_spell_t(this, "potent_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
@@ -403,7 +411,6 @@ struct warlock_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual talent_tree_type primary_tree() SC_CONST;
   virtual double    composite_spell_power( int school ) SC_CONST;
-  virtual double	  composite_spell_haste() SC_CONST;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -1533,7 +1540,7 @@ struct bane_of_agony_t : public warlock_spell_t
 
     base_td /= 12.0;
 
-    base_crit += p -> talent_doom_and_gloom -> rank() * 0.04;
+    base_crit += p -> talent_doom_and_gloom -> rank() * p -> passive_spells.doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     tick_may_crit	  = true;
     if ( p -> glyphs.bane_of_agony )
     {
@@ -1591,7 +1598,7 @@ struct bane_of_doom_t : public warlock_spell_t
     	base_tick_time -= 5.0 * p -> talent_impending_doom -> rank();
     	num_ticks = int ( floor ( base_tick_time_init / base_tick_time ) );
     }
-    base_crit += p -> talent_doom_and_gloom -> rank() * 0.04;
+    base_crit += p -> talent_doom_and_gloom -> rank() * p -> passive_spells.doom_and_gloom -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -3234,18 +3241,13 @@ struct fel_flame_t : public warlock_spell_t
 {
 
 	fel_flame_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "fel_flame", player, SCHOOL_SHADOWFLAME, TREE_DESTRUCTION )
+	  warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.fel_flame ) )
   {
-    warlock_t* p = player -> cast_warlock();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    id = 77799;
-    parse_data ( p -> player_data);
 
     may_crit           = true;
   }
@@ -3289,8 +3291,7 @@ struct dark_intent_t : public warlock_spell_t
 
     if ( target_str.empty() )
     {
-      // If no target specified, assume 100% up-time by forcing "buffs.dark_intent_feedback = 1"
-    	dark_intent_target = p;
+      dark_intent_target = p;
     }
     else
     {
@@ -3302,21 +3303,6 @@ struct dark_intent_t : public warlock_spell_t
 
     trigger_gcd = 0;
 
-    struct dark_intent_feedback_callback_t : public action_callback_t
-    {
-    	dark_intent_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
-
-      virtual void trigger( action_t* a )
-      {
-        listener -> cast_warlock() -> buffs_dark_intent_feedback -> trigger();
-      }
-    };
-
-    dark_intent_cb = new dark_intent_feedback_callback_t( p );
-    dark_intent_cb -> active = false;
-    dark_intent_target -> register_spell_result_callback( RESULT_CRIT_MASK, dark_intent_cb );
-
-    id = 54646;
   }
 
   virtual void execute()
@@ -3326,15 +3312,18 @@ struct dark_intent_t : public warlock_spell_t
     if ( dark_intent_target == p )
     {
       if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Dark Intent", p -> name() );
-      p -> buffs_dark_intent_feedback -> override();
+      p -> buffs.dark_intent_feedback -> override(3);
+      p -> buffs.dark_intent -> override(1);
     }
     else
     {
+      warlock_t* p = player -> cast_warlock();
       if ( sim -> log ) log_t::output( sim, "%s grants %s Dark Intent", p -> name(), dark_intent_target -> name() );
       dark_intent_target -> buffs.dark_intent -> trigger();
-      dark_intent_cb -> active = true;
-      warlock_t* p = player -> cast_warlock();
+      dark_intent_target -> dark_intent_cb -> active = true;
+
       p -> buffs.dark_intent -> trigger();
+      p -> dark_intent_cb -> active = true;
 
     }
   }
@@ -3345,7 +3334,7 @@ struct dark_intent_t : public warlock_spell_t
 
     if ( dark_intent_target == p )
     {
-      return ! p -> buffs_dark_intent_feedback -> check();
+      return ! p -> buffs.dark_intent_feedback -> check();
     }
     else
     {
@@ -3553,16 +3542,6 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
   return sp;
 }
 
-// warlock_t::composite_spell_haste ========================================
-
-double warlock_t::composite_spell_haste() SC_CONST
-{
-  double h = player_t::composite_spell_haste();
-  if ( buffs_dark_intent_feedback -> up() )
-	  h /= ( 1.0 + 0.03 );
-
-  return h;
-}
 
 // warlock_t::create_action =================================================
 
@@ -3758,7 +3737,6 @@ void warlock_t::init_buffs()
   buffs_tier10_4pc_caster     = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
   buffs_hand_of_guldan		    = new buff_t( this, "hand_of_guldan",	     1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire	  = new buff_t( this, "improved_soul_fire",  1, 15.0, 0.0, (talent_improved_soul_fire -> rank() > 0) );
-  buffs_dark_intent_feedback  = new buff_t( this, "dark_intent_feedback",3, 7.0 );
   buffs_soulburn			        = new buff_t( this, "soulburn",            1, 15.0 );
   buffs_demon_soul			      = new buff_t( this, "demon_soul",          1,30.0 );
   buffs_soul_shards			      = new buff_t( this, "soul_shards",         3 );

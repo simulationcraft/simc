@@ -44,6 +44,18 @@ struct judgement_of_wisdom_callback_t : public action_callback_t
   }
 };
 
+// dark_intent_callback ==================================================
+
+struct dark_intent_callback_t : public action_callback_t
+{
+  dark_intent_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+
+  virtual void trigger( action_t* a )
+  {
+    listener -> buffs.dark_intent_feedback -> trigger();
+  }
+};
+
 // has_foreground_actions ================================================
 
 static bool has_foreground_actions( player_t* p )
@@ -1029,6 +1041,9 @@ void player_t::init_buffs()
   buffs.stoneform            = new buff_t( this, "stoneform",           1,  8.0 );
   buffs.hellscreams_warsong  = new buff_t( this, "hellscreams_warsong", 1       );
   buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
+  buffs.dark_intent          = new buff_t( this, "dark_intent",         1       );
+  buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
+
 
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  -1 );
@@ -2669,6 +2684,9 @@ void player_t::register_callbacks()
     register_attack_direct_result_callback( RESULT_HIT_MASK, cb );
     register_spell_direct_result_callback ( RESULT_HIT_MASK, cb );
   }
+  dark_intent_cb = new dark_intent_callback_t( this );
+  dark_intent_cb -> active = false;
+  register_spell_result_callback ( RESULT_CRIT_MASK, dark_intent_cb );
 }
 
 // player_t::register_resource_gain_callback ================================

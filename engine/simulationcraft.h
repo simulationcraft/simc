@@ -2366,6 +2366,9 @@ struct player_t
   // Replenishment
   std::vector<player_t*> replenishment_targets;
 
+  // Callbacks
+  action_callback_t* dark_intent_cb;
+
   // Consumables
   std::string flask_str, elixirs_str, food_str;
   int elixir_guardian;
@@ -2473,6 +2476,7 @@ struct player_t
     buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* strength_of_wrynn;
+    buff_t* dark_intent_feedback;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* wild_magic_potion_sp;

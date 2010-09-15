@@ -499,6 +499,10 @@ void action_t::target_debuff( int dmg_type )
   player_t* p = player;
   target_t* t = sim -> target;
 
+  if ( dmg_type == DMG_OVER_TIME && p -> buffs.dark_intent_feedback -> up() )
+  {
+    target_multiplier *= 1.0 + 0.03 * p -> buffs.dark_intent_feedback -> stack();
+  }
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
