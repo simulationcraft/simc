@@ -11,7 +11,6 @@
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
  * - add soulburn effect to UA and Searing Pain
- * - add demon_soul imp effect
  * - reverse soul_shards consumption from 0->3 to 3->0
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
  * - Summon Infernal Damage
@@ -141,6 +140,8 @@ struct warlock_t : public player_t
     active_spell_t* death_coil;
     active_spell_t* curse_of_elements;
     active_spell_t* dark_intent;
+    active_spell_t* seed_of_corruption;
+    active_spell_t* seed_of_corruption_aoe;
 
     // Demonology
     active_spell_t* soulburn;
@@ -261,7 +262,7 @@ struct warlock_t : public player_t
     distance = 40;
 
 
-    active_pet                 				= 0;
+    active_pet                 	= 0;
 
     dots_corruption 						= get_dot( "corruption" );
     dots_unstable_affliction 		= get_dot( "unstable_affliction" );
@@ -298,6 +299,8 @@ struct warlock_t : public player_t
     active_spells.death_coil            = new active_spell_t( this, "death_coil", "Death Coil" );
     active_spells.curse_of_elements     = new active_spell_t( this, "curse_of_elements", "Curse of Elements" );
     active_spells.dark_intent           = new active_spell_t( this, "dark_intent", "Dark Intent" );
+    active_spells.seed_of_corruption    = new active_spell_t( this, "seed_of_corruption", "Seed of Corruption" );
+    active_spells.seed_of_corruption_aoe= new active_spell_t( this, "seed_of_corruption_aoe", 27285);
 
     // Demonology
     active_spells.soulburn              = new active_spell_t( this, "soulburn", "Soulburn" );
@@ -390,7 +393,6 @@ struct warlock_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
-  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -419,15 +421,15 @@ struct warlock_t : public player_t
   int affliction_effects()
   {
     int effects = 0;
-    if ( dots_curse_of_elements -> ticking()        ) effects++;
-    if ( dots_bane_of_agony -> ticking() 			) effects++;
-    if ( dots_bane_of_doom -> ticking() 			) effects++;
-    if ( dots_corruption -> ticking()               ) effects++;
-    if ( dots_drain_life -> ticking()              	) effects++;
-    if ( dots_drain_soul -> ticking()              	) effects++;
-    if ( dots_unstable_affliction -> ticking()      ) effects++;
-    if ( buffs_haunted        -> check()			) effects++;
-    if ( buffs_shadow_embrace -> check()			) effects++;
+    if ( dots_curse_of_elements -> ticking()    ) effects++;
+    if ( dots_bane_of_agony -> ticking() 			  ) effects++;
+    if ( dots_bane_of_doom -> ticking() 			  ) effects++;
+    if ( dots_corruption -> ticking()           ) effects++;
+    if ( dots_drain_life -> ticking()           ) effects++;
+    if ( dots_drain_soul -> ticking()           ) effects++;
+    if ( dots_unstable_affliction -> ticking()  ) effects++;
+    if ( buffs_haunted        -> check()			  ) effects++;
+    if ( buffs_shadow_embrace -> check()			  ) effects++;
     return effects;
   }
   int active_dots()
@@ -1376,6 +1378,12 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
   spell_t::target_debuff( dmg_type );
 
+  if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && tree == TREE_DESTRUCTION )
+  {
+    target_crit += 0.20 * p -> buffs_demon_soul -> stack();
+
+  }
+
   if ( p -> buffs_bane_of_havoc -> up() )
 	  target_multiplier *= 1.15;
 
@@ -1423,11 +1431,14 @@ void warlock_spell_t::execute()
 {
   warlock_t* p = player -> cast_warlock();
 
-  if ( time_to_execute > 0 && tree == TREE_DESTRUCTION )
+  if ( p -> buffs_backdraft -> up() && time_to_execute > 0 && tree == TREE_DESTRUCTION )
   {
     p -> buffs_backdraft -> decrement();
   }
-
+  if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && tree == TREE_DESTRUCTION )
+  {
+    p -> buffs_demon_soul -> decrement();
+  }
   spell_t::execute();
 
 }
@@ -3273,11 +3284,10 @@ struct fel_flame_t : public warlock_spell_t
 struct dark_intent_t : public warlock_spell_t
 {
   player_t*          dark_intent_target;
-  action_callback_t* dark_intent_cb;
 
   dark_intent_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "dark_intent", player, SCHOOL_SHADOW, TREE_AFFLICTION ),
-    dark_intent_target(0), dark_intent_cb(0)
+    dark_intent_target(0)
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3410,23 +3420,23 @@ struct demon_soul_t : public warlock_spell_t
 
     if ( p -> active_pet -> pet_type == PET_IMP )
     {
-    	p -> buffs_demon_soul -> trigger( 1, 1.0 );
-    	p -> buffs_demon_soul -> duration = 30.0;
+      p -> buffs_demon_soul -> duration = 30.0;
+    	p -> buffs_demon_soul -> trigger( 3, 1.0 );
     }
     if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
     {
+      p -> buffs_demon_soul -> duration = 20.0;
     	p -> buffs_demon_soul -> trigger( 1, 3.0 );
-    	p -> buffs_demon_soul -> duration = 20.0;
     }
     if ( p -> active_pet -> pet_type == PET_FELHUNTER )
     {
+      p -> buffs_demon_soul -> duration = 20.0;
     	p -> buffs_demon_soul -> trigger( 1, 4.0 );
-    	p -> buffs_demon_soul -> duration = 20.0;
     }
     if ( p -> active_pet -> pet_type == PET_FELGUARD )
     {
+      p -> buffs_demon_soul -> duration = 20.0;
     	p -> buffs_demon_soul -> trigger( 1, 5.0 );
-    	p -> buffs_demon_soul -> duration = 20.0;
     }
 
   }
@@ -3505,8 +3515,84 @@ struct hellfire_t : public warlock_spell_t
   }
 
 };
+// Seed of Corruption AOE Spell ======================================================
+
+struct seed_of_corruption_aoe_t : public warlock_spell_t
+{
 
 
+  seed_of_corruption_aoe_t( player_t* player ) :
+    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.seed_of_corruption_aoe ) )
+
+    {
+      proc       = true;
+      background = true;
+      may_crit   = true;
+      aoe        = true;
+
+      name_str = "Seed of Corruption Explosion";
+    }
+    virtual void execute()
+    {
+      warlock_spell_t::execute();
+      update_stats( DMG_DIRECT );
+      warlock_t* p = player -> cast_warlock();
+      if ( p -> buffs_soulburn -> up() )
+      {
+        // Trigger Multiple Corruptions
+        p -> buffs_soulburn -> decrement();
+      }
+    }
+};
+// Seed of Corruption Spell ===========================================================
+
+struct seed_of_corruption_t : public warlock_spell_t
+{
+  spell_t* seed_of_corruption_aoe;
+  double dot_damage_done;
+
+  seed_of_corruption_t( player_t* player, const std::string& options_str ) :
+    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.seed_of_corruption ) )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+
+
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::execute();
+    target_t* t = sim -> target;
+    dot_damage_done = t -> total_dmg;
+    if ( p -> dots_corruption -> ticking() )
+    {
+      p -> dots_corruption -> action -> cancel();
+    }
+
+  }
+
+  virtual void tick()
+  {
+    warlock_spell_t::tick();
+    target_t* t = sim -> target;
+    if ( t -> total_dmg - dot_damage_done > player -> player_data.effect_misc_value2( 16911 ) )
+    {
+      dot_damage_done=0.0;
+      seed_of_corruption_aoe -> execute();
+      spell_t::cancel();
+    }
+  }
+
+};
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -3575,13 +3661,14 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "summon_infernal"     ) return new     summon_infernal_t( this, options_str );
   if ( name == "summon_doomguard"    ) return new    summon_doomguard_t( this, options_str );
   if ( name == "unstable_affliction" ) return new unstable_affliction_t( this, options_str );
-  if ( name == "hand_of_guldan" 	 ) return new      hand_of_guldan_t( this, options_str );
-  if ( name == "fel_flame" 	 		 ) return new           fel_flame_t( this, options_str );
+  if ( name == "hand_of_guldan" 	   ) return new      hand_of_guldan_t( this, options_str );
+  if ( name == "fel_flame" 	 		     ) return new           fel_flame_t( this, options_str );
   if ( name == "dark_intent"         ) return new         dark_intent_t( this, options_str );
   if ( name == "soulburn"         	 ) return new         	 soulburn_t( this, options_str );
   if ( name == "demon_soul"          ) return new          demon_soul_t( this, options_str );
   if ( name == "bane_of_havoc"       ) return new       bane_of_havoc_t( this, options_str );
-  if ( name == "hellfire"            ) return new       	 hellfire_t( this, options_str );
+  if ( name == "hellfire"            ) return new       	   hellfire_t( this, options_str );
+  if ( name == "seed_of_corruption"  ) return new  seed_of_corruption_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3708,14 +3795,6 @@ void warlock_t::init_base()
 
 }
 
-// warlock_t::init_scaling ===================================================
-
-void warlock_t::init_scaling()
-{
-  player_t::init_scaling();
-
-}
-
 // warlock_t::init_buffs =====================================================
 
 void warlock_t::init_buffs()
@@ -3738,12 +3817,12 @@ void warlock_t::init_buffs()
   buffs_hand_of_guldan		    = new buff_t( this, "hand_of_guldan",	     1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire	  = new buff_t( this, "improved_soul_fire",  1, 15.0, 0.0, (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn			        = new buff_t( this, "soulburn",            1, 15.0 );
-  buffs_demon_soul			      = new buff_t( this, "demon_soul",          1,30.0 );
+  buffs_demon_soul			      = new buff_t( this, "demon_soul",          3,30.0 );
   buffs_soul_shards			      = new buff_t( this, "soul_shards",         3 );
   buffs_bane_of_havoc         = new buff_t( this, "Bane of Havoc",       1, 300.0 );
 
-  buffs_tier7_2pc_caster = new      buff_t( this, "tier7_2pc_caster",                   1, 10.0, 0.0, set_bonus.tier7_2pc_caster() * 0.15 );
-  buffs_tier7_4pc_caster = new stat_buff_t( this, "tier7_4pc_caster", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc_caster() );
+  buffs_tier7_2pc_caster      = new      buff_t( this, "tier7_2pc_caster",                   1, 10.0, 0.0, set_bonus.tier7_2pc_caster() * 0.15 );
+  buffs_tier7_4pc_caster      = new stat_buff_t( this, "tier7_4pc_caster", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc_caster() );
 
 
 }
@@ -3774,7 +3853,7 @@ void warlock_t::init_procs()
 {
   player_t::init_procs();
   procs_impending_doom   = get_proc( "impending_doom" );
-  procs_empowered_imp  = get_proc( "empowered_imp"  );
+  procs_empowered_imp    = get_proc( "empowered_imp"  );
 }
 
 // warlock_t::init_rng =======================================================
@@ -3783,12 +3862,12 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_soul_leech             = get_rng( "soul_leech"             );
-  rng_everlasting_affliction = get_rng( "everlasting_affliction" );
-  rng_pandemic				 = get_rng( "pandemic" 				 );
-  rng_cremation				 = get_rng( "cremation"				 );
-  rng_impending_doom		 = get_rng( "impending_doom" 		 );
-  rng_siphon_life            = get_rng( "siphon_life"            );
+  rng_soul_leech              = get_rng( "soul_leech"             );
+  rng_everlasting_affliction  = get_rng( "everlasting_affliction" );
+  rng_pandemic				        = get_rng( "pandemic" 				 );
+  rng_cremation				        = get_rng( "cremation"				 );
+  rng_impending_doom		      = get_rng( "impending_doom" 		 );
+  rng_siphon_life             = get_rng( "siphon_life"            );
 }
 
 // warlock_t::init_talents ====================================================
@@ -3953,20 +4032,14 @@ void warlock_t::reset()
 
   // Active
   active_pet                 = 0;
-
-
 }
 
 // warlock_t::create_expression =================================================
 
 action_expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 {
-
-
   return player_t::create_expression( a, name_str );
 }
-
-
 
 // warlock_t::get_talent_trees =============================================
 
@@ -3986,8 +4059,6 @@ std::vector<option_t>& warlock_t::get_options()
 
     option_t warlock_options[] =
     {
-
-
       // @option_doc loc=player/warlock/misc title="Misc"
       { "summon_pet",               OPT_STRING, &( summon_pet_str                 		 ) },
       { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str           	 ) },
@@ -4075,14 +4146,7 @@ talent_tree_type warlock_t::primary_tree() SC_CONST
 
 void player_t::warlock_init( sim_t* sim )
 {
-
-
   sim -> auras.demonic_pact         = new aura_t( sim, "demonic_pact", 1 );
-
-  for( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    p -> buffs.dark_intent  = new buff_t( p, "dark_intent", 1 );
-  }
 
   target_t* t = sim -> target;
   t -> debuffs.improved_shadow_bolt = new     debuff_t( sim, "improved_shadow_bolt", 1, 30.0 );
@@ -4093,14 +4157,6 @@ void player_t::warlock_init( sim_t* sim )
 
 void player_t::warlock_combat_begin( sim_t* sim )
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-	  if ( p -> ooc_buffs() )
-	  {
-		  if ( sim -> overrides.dark_intent       ) p -> buffs.dark_intent       -> override();
-	  }
-  }
-
   if ( sim -> overrides.demonic_pact ) sim -> auras.demonic_pact -> override();
 
   target_t* t = sim -> target;
