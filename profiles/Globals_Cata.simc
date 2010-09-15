@@ -73,9 +73,6 @@ override.judgement_of_wisdom=1
 override.sanctified_retribution=1
 override.swift_retribution=1
 
-# Support for Death Knights does not yet exist.
-override.crypt_fever=1
-
 # Default stat modifications applying to all players.
 default_enchant_strength=0
 default_enchant_agility=0

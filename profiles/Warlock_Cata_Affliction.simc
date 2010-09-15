@@ -9,7 +9,7 @@ glyphs=quick_decay/haunt/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
-actions+=/dark_intent
+actions+=/dark_intent,target=Priest_Cata_Shadow1
 actions+=/summon_pet,felhunter
 actions+=/snapshot_stats
 actions+=/curse_of_elements,health_percentage<=25
