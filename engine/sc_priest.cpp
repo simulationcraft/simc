@@ -379,9 +379,9 @@ struct priest_t : public player_t
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_buffs();
+  virtual void      init_values();
   virtual void      init_actions();
   virtual void      init_procs();
-  virtual void      init_values();
   virtual void      reset();
   virtual void      init_party();
   virtual std::vector<talent_translation_t>& get_talent_list();
