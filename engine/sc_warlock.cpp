@@ -129,10 +129,12 @@ struct warlock_t : public player_t
 
   struct active_spells_t
   {
+    // Core
     active_spell_t* unstable_affliction;
     active_spell_t* summon_felguard;
     active_spell_t* conflagrate;
 
+    // Affliction
     active_spell_t* bane_of_agony;
     active_spell_t* bane_of_doom;
     active_spell_t* corruption;
@@ -141,6 +143,25 @@ struct warlock_t : public player_t
     active_spell_t* death_coil;
     active_spell_t* curse_of_elements;
     active_spell_t* dark_intent;
+
+    // Demonology
+    active_spell_t* soulburn;
+    active_spell_t* summon_infernal;
+    active_spell_t* summon_doomguard;
+    active_spell_t* immolation;
+    active_spell_t* fel_armor;
+    active_spell_t* demon_soul;
+
+    // Destruction
+    active_spell_t* shadow_bolt;
+    active_spell_t* immolate;
+    active_spell_t* searing_pain;
+    active_spell_t* rain_of_fire;
+    active_spell_t* hellfire;
+    active_spell_t* soul_fire;
+    active_spell_t* incinerate;
+    active_spell_t* shadowflame;
+    active_spell_t* fel_flame;
 
   };
   active_spells_t active_spells;
@@ -261,12 +282,12 @@ struct warlock_t : public player_t
 
     spells_burning_embers					= 0;
 
-
-
-
+    // Core
     active_spells.unstable_affliction   = new active_spell_t( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
     active_spells.summon_felguard       = new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
     active_spells.conflagrate           = new active_spell_t( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
+
+    // Affliction
     active_spells.bane_of_agony         = new active_spell_t( this, "bane_of_agony", "Bane of Agony" );
     active_spells.bane_of_doom          = new active_spell_t( this, "bane_of_doom", "Bane of Doom" );
     active_spells.corruption            = new active_spell_t( this, "corruption", "Corruption" );
@@ -275,6 +296,25 @@ struct warlock_t : public player_t
     active_spells.death_coil            = new active_spell_t( this, "death_coil", "Death Coil" );
     active_spells.curse_of_elements     = new active_spell_t( this, "curse_of_elements", "Curse of Elements" );
     active_spells.dark_intent           = new active_spell_t( this, "dark_intent", "Dark Intent" );
+
+    // Demonology
+    active_spells.soulburn              = new active_spell_t( this, "soulburn", "Soulburn" );
+    active_spells.summon_infernal       = new active_spell_t( this, "summon_infernal", "Summon Infernal" );
+    active_spells.summon_doomguard      = new active_spell_t( this, "summon_doomguard", "Summon Doomguard" );
+    active_spells.immolation            = new active_spell_t( this, "immolation", "Immolation" );
+    active_spells.fel_armor             = new active_spell_t( this, "fel_armor", "Fel Armor" );
+    active_spells.demon_soul            = new active_spell_t( this, "demon_soul", "Demon Soul" );
+
+    // Destruction
+    active_spells.shadow_bolt           = new active_spell_t( this, "shadow_bolt", "Shadow Bolt" );
+    active_spells.immolate              = new active_spell_t( this, "immolate", "Immolate" );
+    active_spells.searing_pain          = new active_spell_t( this, "searing_pain", "Searing Pain" );
+    active_spells.rain_of_fire          = new active_spell_t( this, "rain_of_fire", "Rain of Fire" );
+    active_spells.hellfire              = new active_spell_t( this, "hellfire", "Hellfire" );
+    active_spells.soul_fire             = new active_spell_t( this, "soul_fire", "Soul Fire" );
+    active_spells.incinerate            = new active_spell_t( this, "incinerate", "Incinerate" );
+    active_spells.shadowflame           = new active_spell_t( this, "shadowflame", "Shadowflame" );
+    active_spells.fel_flame             = new active_spell_t( this, "fel_flame", "Fel Flame" );
 
     passive_spells.shadow_mastery 		  = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
     passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
@@ -536,6 +576,24 @@ struct warlock_spell_t : public spell_t
 
   warlock_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
+  warlock_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( s, ptype, stype, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
+  warlock_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, sname, player, ptype, stype, t )
+  {
+    may_crit      = true;
+    dot_behavior  = DOT_REFRESH;
+  }
+  warlock_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, id, player, ptype, stype, t )
   {
     may_crit      = true;
     dot_behavior  = DOT_REFRESH;
@@ -1460,10 +1518,10 @@ struct curse_of_elements_t : public warlock_spell_t
 
 // Bane of Agony Spell ===========================================================
 
-struct bane_of_agony_t : public spell_t
+struct bane_of_agony_t : public warlock_spell_t
 {
   bane_of_agony_t( player_t* player, const std::string& options_str ) :
-    spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.bane_of_agony ) )
+    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.bane_of_agony ) )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -1473,10 +1531,7 @@ struct bane_of_agony_t : public spell_t
     };
     parse_options( options, options_str );
 
-    id = p -> active_spells.bane_of_agony -> spell_id();
-    parse_data( p -> player_data );
     base_td /= 12.0;
-
 
     base_crit += p -> talent_doom_and_gloom -> rank() * 0.04;
     tick_may_crit	  = true;
@@ -1493,7 +1548,7 @@ struct bane_of_agony_t : public spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    spell_t::execute();
+    warlock_spell_t::execute();
     if ( result_is_hit() )
     	{
         if ( p -> dots_bane_of_doom -> ticking() )
