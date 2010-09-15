@@ -127,17 +127,33 @@ struct warlock_t : public player_t
   talent_t* talent_chaos_bolt; // done
 
 
-
-  struct talent_spec_spells_t
+  struct active_spells_t
   {
     active_spell_t* unstable_affliction;
-    passive_spell_t* shadow_mastery;
     active_spell_t* summon_felguard;
-    passive_spell_t* demonic_knowledge;
     active_spell_t* conflagrate;
-    passive_spell_t* cataclysm;
+
+    active_spell_t* bane_of_agony;
+    active_spell_t* bane_of_doom;
+    active_spell_t* corruption;
+    active_spell_t* drain_life;
+    active_spell_t* drain_soul;
+    active_spell_t* death_coil;
+    active_spell_t* curse_of_elements;
+    active_spell_t* dark_intent;
+
   };
-  talent_spec_spells_t talent_spec_spells;
+  active_spells_t active_spells;
+
+
+  struct passive_spells_t
+  {
+  passive_spell_t* shadow_mastery;
+  passive_spell_t* demonic_knowledge;
+  passive_spell_t* cataclysm;
+  };
+  passive_spells_t passive_spells;
+
 
   struct mastery_spells_t
   {
@@ -245,22 +261,28 @@ struct warlock_t : public player_t
 
     spells_burning_embers					= 0;
 
-    // Talents
 
-    // Core
-    // Affliction
-    talent_spec_spells.unstable_affliction 	= new active_spell_t( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
-    talent_spec_spells.shadow_mastery 		  = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
-    // Demonology
-    talent_spec_spells.summon_felguard      = new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
-    talent_spec_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
-    //Destruction
-    talent_spec_spells.conflagrate 			    = new active_spell_t( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
-    talent_spec_spells.cataclysm 			      = new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
 
-    mastery_spells.fiery_apocalypse 		    = new passive_spell_t( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION, true );
-    mastery_spells.potent_afflictions 		  = new passive_spell_t(this, "potent_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
-    mastery_spells.master_demonologist 		  = new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY, true );
+
+    active_spells.unstable_affliction   = new active_spell_t( this, "unstable_affliction", "Unstable Affliction", WARLOCK_AFFLICTION );
+    active_spells.summon_felguard       = new active_spell_t( this, "summon_felguard", "Summon Felguard", WARLOCK_DEMONOLOGY );
+    active_spells.conflagrate           = new active_spell_t( this, "conflagrate", "Conflagrate", WARLOCK_DESTRUCTION );
+    active_spells.bane_of_agony         = new active_spell_t( this, "bane_of_agony", "Bane of Agony" );
+    active_spells.bane_of_doom          = new active_spell_t( this, "bane_of_doom", "Bane of Doom" );
+    active_spells.corruption            = new active_spell_t( this, "corruption", "Corruption" );
+    active_spells.drain_life            = new active_spell_t( this, "drain_life", "Drain Life" );
+    active_spells.drain_soul            = new active_spell_t( this, "drain_soul", "Drain Soul" );
+    active_spells.death_coil            = new active_spell_t( this, "death_coil", "Death Coil" );
+    active_spells.curse_of_elements     = new active_spell_t( this, "curse_of_elements", "Curse of Elements" );
+    active_spells.dark_intent           = new active_spell_t( this, "dark_intent", "Dark Intent" );
+
+    passive_spells.shadow_mastery 		  = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
+    passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
+    passive_spells.cataclysm 			      = new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
+
+    mastery_spells.fiery_apocalypse 		= new passive_spell_t( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION, true );
+    mastery_spells.potent_afflictions   = new passive_spell_t(this, "potent_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
+    mastery_spells.master_demonologist 	= new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY, true );
 
     // Affliction
     talent_doom_and_gloom 				      = new talent_t ( this, "doom_and_gloom", "Doom and Gloom" );
@@ -1294,14 +1316,14 @@ void warlock_spell_t::target_debuff( int dmg_type )
 
   if ( school == SCHOOL_FIRE )
   {
-	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.cataclysm -> ok() * 0.25 );
+	  target_multiplier *= 1.0 + ( p -> passive_spells.cataclysm -> ok() * 0.25 );
 	  if ( p -> mastery_spells.fiery_apocalypse -> ok() )target_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * 0.0125 );
-	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.demonic_knowledge -> ok() * 0.25 );
+	  target_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.25 );
   }
   if ( school == SCHOOL_SHADOW )
   {
-	  target_multiplier *= 1.0 + ( p -> talent_spec_spells.demonic_knowledge -> ok() * 0.25 );
-	  target_multiplier	*= 1.0 + ( p -> talent_spec_spells.shadow_mastery -> ok() * 0.25 );
+	  target_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.25 );
+	  target_multiplier	*= 1.0 + ( p -> passive_spells.shadow_mastery -> ok() * 0.25 );
   }
 
 
@@ -1438,10 +1460,10 @@ struct curse_of_elements_t : public warlock_spell_t
 
 // Bane of Agony Spell ===========================================================
 
-struct bane_of_agony_t : public warlock_spell_t
+struct bane_of_agony_t : public spell_t
 {
   bane_of_agony_t( player_t* player, const std::string& options_str ) :
-      warlock_spell_t( "bane_of_agony", player, SCHOOL_SHADOW, TREE_AFFLICTION )
+    spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.bane_of_agony ) )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -1451,7 +1473,7 @@ struct bane_of_agony_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    id = 980;
+    id = p -> active_spells.bane_of_agony -> spell_id();
     parse_data( p -> player_data );
     base_td /= 12.0;
 
@@ -1471,7 +1493,7 @@ struct bane_of_agony_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::execute();
+    spell_t::execute();
     if ( result_is_hit() )
     	{
         if ( p -> dots_bane_of_doom -> ticking() )
@@ -1501,7 +1523,7 @@ struct bane_of_doom_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    id = 603;
+    id = p -> active_spells.bane_of_doom -> spell_id();
     parse_data( p -> player_data );
 
     tick_may_crit = true;
@@ -1804,7 +1826,7 @@ struct death_coil_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    id = 6789;
+    id = p -> active_spells.death_coil -> spell_id();
     parse_data( p -> player_data );
 
     may_crit          = true;
@@ -2142,7 +2164,7 @@ struct unstable_affliction_t : public warlock_spell_t
       warlock_spell_t( "unstable_affliction", player, SCHOOL_SHADOW, TREE_AFFLICTION )
   {
     warlock_t* p = player -> cast_warlock();
-    check_talent( p -> talent_spec_spells.unstable_affliction -> ok() );
+    check_talent( p -> active_spells.unstable_affliction -> ok() );
 
     option_t options[] =
     {
@@ -2363,7 +2385,7 @@ struct conflagrate_t : public warlock_spell_t
     ticks_lost( 0 ), dot_spell( 0 ), immolate_multiplier( 1.0 ), shadowflame_multiplier( 1.0 )
   {
     warlock_t* p = player -> cast_warlock();
-    check_talent( p -> talent_spec_spells.conflagrate -> ok() );
+    check_talent( p -> active_spells.conflagrate -> ok() );
 
     option_t options[] =
     {
@@ -3820,14 +3842,14 @@ void warlock_t::init_actions()
 
       if ( talent_haunt -> rank() ) action_list_str += "/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<4)";
       action_list_str += "/corruption,if=!ticking";
-      if ( talent_spec_spells.unstable_affliction -> ok() ) action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
+      if ( active_spells.unstable_affliction -> ok() ) action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
       action_list_str += "/bane_of_agony,time_to_die>=20,if=!ticking";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
-      if ( talent_spec_spells.unstable_affliction -> ok() ) action_list_str +="/fel_flame,if=dot.unstable_affliction.remains<=4";
+      if ( active_spells.unstable_affliction -> ok() ) action_list_str +="/fel_flame,if=dot.unstable_affliction.remains<=4";
       action_list_str += "/drain_life";
 
     case TREE_DESTRUCTION:
-      if ( talent_spec_spells.conflagrate -> ok() ) action_list_str += "/conflagrate";
+      if ( active_spells.conflagrate -> ok() ) action_list_str += "/conflagrate";
       action_list_str += "/immolate,time_to_die>=3,if=(dot.immolate.remains<cast_time)";
       action_list_str += "/chaos_bolt";
       action_list_str += "/bane_of_doom,time_to_die>=70";
