@@ -1,8 +1,8 @@
 #include "data_definitions.hh"
 
-#define PTR_SPELL_SIZE (3199)
+#define PTR_SPELL_SIZE (3200)
 
-// 3199 spells, wow build level 12942
+// 3200 spells, wow build level 12942
 static struct spell_data_t __ptr_spell_data[] = {
   { "Blizzard"                          ,    10, 0x00,  0.0, 0x10,  0, 0x080, 0x000,  52,     0.0,    35.0,       0, 1500,    0,      8000,  74, 0x000,   0,   0, 100,  0,     0,     0,  0, {     6,     7,     0 }, { 0x00010000, 0x1000008c, 0x00400000, 0x00000000, 0x00000000, 0x00002000, 0x00000000, 0x00000000, 0x00020000, 0x00000000 }, "Ice shards pelt the target area doing ${$42208m1*8*$<mult>} Frost damage over $10d.", "$42208s1 Frost damage every $42208t1 $lsecond:seconds;." },
   { "Power Word: Shield"                ,    17, 0x00,  0.0, 0x02,  0, 0x010, 0x000,   5,     0.0,    40.0,    3000, 1500,   56,     30000,  19, 0x000,   0,   0,   0,  0,     0,     0, 20, {    13,     0,     0 }, { 0x00050800, 0x00000000, 0x00280000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00001000, 0x00000000 }, "Draws on the soul of the friendly target to shield them, absorbing ${$m1+($SP*0.418)} damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage." },
@@ -1765,6 +1765,7 @@ static struct spell_data_t __ptr_spell_data[] = {
   { "Bloodthirsty"                      , 54131, 0x00,  0.0, 0x01,  0, 0x004, 0x000,   0,     0.0,     0.0,       0,    0,    0,      5000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 46839, 46840,     0 }, { 0x00000000, 0x00000400, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Your pet's attacks have a chance to increase its happiness by 10% and heal 5% of its total health.", "Increasing happiness by 2% and health by 1% per sec." },
   { "Infusion of Light"                 , 54149, 0x00,  0.0, 0x02,  0, 0x002, 0x000,   0,     0.0,     0.0,       0,    0,    0,     15000,   0, 0x000,   0,   0, 100,  1,     0,     0,  0, { 46860,     0,     0 }, { 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000040, 0x00000000, 0x00000000, 0x00000000 }, "Your Holy Shock critical hits reduce the cast time of your next Holy Light by ${$54149m1/-1000}.1 sec.", "Reduces the cast time of your next Holy Light by ${$54149m1/-1000}.1 sec." },
   { "Judgements of the Pure"            , 54151, 0x00,  0.0, 0x01,  0, 0x002, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0, 100,  0,     0,     0,  0, { 46862,     0,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x04000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Your Judgement increases your casting and melee haste by $53657s1% for $53657d.", 0 },
+  { "Judgement"                         , 54158, 0x00,  0.0, 0x02,  0, 0x002, 0x000,  28,     0.0,    10.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 46875,     0,     0 }, { 0x00250000, 0x00000000, 0x00100000, 0x00040200, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Unleashes the energy of a Seal spell upon an enemy.  Refer to individual Seals for Judgement effect.", 0 },
   { "Rapid Recuperation Effect"         , 54227, 0x00,  0.0, 0x01,  0, 0x004, 0x000,   0,     0.0,     0.0,       0,    0,    0,     15000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 46963,     0,     0 }, { 0x00040090, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, "Restoring $58883s1 focus every $t1 sec." },
   { "Backdraft"                         , 54274, 0x00,  0.0, 0x01,  0, 0x100, 0x000,   0,     0.0,     0.0,       0,    0,    0,     15000,   0, 0x000,   0,   0, 100,  3,     0,     0,  0, { 47018,     0,     0 }, { 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "When you cast Conflagrate, the cast time of your next three Shadow Bolt, Incinerate and Chaos Bolt spells is reduced by $54274s1%. Lasts $54274d.", "Reduced cast time for your Shadow Bolt, Incinerate and Chaos Bolt by $s1%." },
   { "Backdraft"                         , 54276, 0x00,  0.0, 0x01,  0, 0x100, 0x000,   0,     0.0,     0.0,       0,    0,    0,     15000,   0, 0x000,   0,   0, 100,  3,     0,     0,  0, { 47020,     0,     0 }, { 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "When you cast Conflagrate, the cast time of your next three Shadow Bolt, Incinerate and Chaos Bolt spells is reduced by $54276s1%. Lasts $54276d.", "Reduced cast time for your Shadow Bolt, Incinerate and Chaos Bolt by $s1%." },
@@ -3205,9 +3206,9 @@ static struct spell_data_t __ptr_spell_data[] = {
   { "Shout Rage Bonus"                  , 92049, 0x00,  0.0, 0x01,  0, 0x001, 0x000,   0,     0.0,     0.0,       0,    0,    0,      6000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 95922, 95929,     0 }, { 0x08000180, 0x10000020, 0x00000000, 0x00000000, 0x00000080, 0x00040008, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
 };
 
-#define __PTR_SPELLEFFECT_SIZE (4670)
+#define __PTR_SPELLEFFECT_SIZE (4671)
 
-// 4670 effects, wow build level 12942
+// 4671 effects, wow build level 12942
 static struct spelleffect_data_t __ptr_spelleffect_data[] = {
   {     6, 0x00,    10, 0,   27,    4,  0.0000000000,  0.0000000000,  0.0000000000,  0.1190000027,     0,     8.0,     0.0,      25,       0,       0,     0,   0.0 },
   {     7, 0x00,    10, 1,    6,   23,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  1000,     0.0,     0.0,       0,       0,       0, 42208,   0.0 },
@@ -5760,6 +5761,7 @@ static struct spelleffect_data_t __ptr_spelleffect_data[] = {
   { 46840, 0x00, 54131, 1,    6,   20,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  1000,     0.0,     0.0,       1,       0,       0,     0,   0.0 },
   { 46860, 0x00, 54149, 0,    6,  107,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,   -1500,      10,       0,     0,   0.0 },
   { 46862, 0x00, 54151, 0,    6,   42,  0.0000000000,  0.0000000000,  0.0000000000,  1.0000000000,     0,     0.0,     0.0,       0,       7,       0, 53657,   0.0 },
+  { 46875, 0x00, 54158, 0,    2,    0,  0.0000000000,  0.0000000000,  0.0000000000,  0.2500000000,     0,     0.0,     0.0,       1,       0,       0,     0,   0.0 },
   { 46963, 0x00, 54227, 0,    6,   24,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  3000,     0.0,     0.0,      12,       2,       0,     0,   0.0 },
   { 47018, 0x00, 54274, 0,    6,  108,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,     -10,      10,       0,     0,   0.0 },
   { 47020, 0x00, 54276, 0,    6,  108,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,     -20,      10,       0,     0,   0.0 },

@@ -63,7 +63,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
      1680, // Whirlwind
         0,
   },
-  // Class active abilities for Paladin, 56 abilities
+  // Class active abilities for Paladin, 54 abilities
   {
     31850, // Ardent Defender
     31935, // Avenger's Shield
@@ -99,8 +99,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
       635, // Holy Light
     64891, // Holy Mending
     82327, // Holy Radiance
-    25912, // Holy Shock
-    25914, // Holy Shock
     20473, // Holy Shock
      2812, // Holy Wrath
     84963, // Inquisition
@@ -342,7 +340,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     34914, // Vampiric Touch
         0,
   },
-  // Class active abilities for Death Knight, 52 abilities
+  // Class active abilities for Death Knight, 51 abilities
   {
     48707, // Anti-Magic Shell
     51052, // Anti-Magic Zone
@@ -385,7 +383,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     51271, // Pillar of Frost
     45462, // Plague Strike
     91837, // Putrid Bulwark
-    66217, // Rune Strike
     56815, // Rune Strike
     48982, // Rune Tap
     55090, // Scourge Strike
