@@ -564,6 +564,7 @@ struct avengers_shield_t : public paladin_attack_t
       paladin_attack_t( "avengers_shield", p, SCHOOL_HOLY, TREE_PROTECTION )
   {
     id = p->spells.avengers_shield->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -604,6 +605,7 @@ struct crusader_strike_t : public paladin_attack_t
       paladin_attack_t( "crusader_strike", p )
   {
     id = p->spells.crusader_strike->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -666,6 +668,7 @@ struct divine_storm_t : public paladin_attack_t
     check_talent( p -> talents.divine_storm->rank() );
 
     id = p->spells.divine_storm->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -717,6 +720,7 @@ struct hammer_of_justice_t : public paladin_attack_t
       paladin_attack_t( "hammer_of_justice", p, SCHOOL_HOLY )
   {
     id = p->spells.hammer_of_justice->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -746,6 +750,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     check_talent( p -> talents.hammer_of_the_righteous->rank() );
 
     id = p->spells.hammer_of_the_righteous->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -788,6 +793,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
       paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY )
   {
     id = p->spells.hammer_of_wrath->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -858,6 +864,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     check_talent( p->talents.shield_of_the_righteous->rank() );
 
     id = p->spells.shield_of_the_righteous->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -912,6 +919,7 @@ struct templars_verdict_t : public paladin_attack_t
     assert( p -> primary_tree() == TREE_RETRIBUTION );
 
     id = p->spells.templars_verdict->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1370,6 +1378,7 @@ struct judgement_t : public paladin_attack_t
       paladin_attack_t( "judgement", p, SCHOOL_HOLY )
   {
     id = p->spells.judgement->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1527,16 +1536,16 @@ struct avenging_wrath_t : public paladin_spell_t
       paladin_spell_t( "avenging_wrath", p )
   {
     id = p->spells.avenging_wrath->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0;
+    parse_data(p->player_data);
     harmful = false;
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    cooldown -> duration = 180 - 30 * p -> talents.sanctified_wrath->rank();
+    cooldown -> duration -= 20 * p -> talents.sanctified_wrath->rank();
   }
 
   virtual void execute()
@@ -1601,6 +1610,7 @@ struct consecration_t : public paladin_spell_t
       paladin_spell_t( "consecration", p )
   {
     id = p->spells.consecration->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1642,6 +1652,7 @@ struct divine_favor_t : public paladin_spell_t
     check_talent( p -> talents.divine_favor->rank() );
 
     id = p->spells.divine_favor->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1671,6 +1682,7 @@ struct divine_plea_t : public paladin_spell_t
       paladin_spell_t( "divine_plea", p )
   {
     id = p->spells.divine_plea->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1803,36 +1815,32 @@ struct exorcism_t : public paladin_spell_t
 
 // Holy Shock ==============================================================
 
-// TODO
+// TODO: fix the fugly hack
 struct holy_shock_t : public paladin_spell_t
 {
   holy_shock_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "holy_shock", p )
   {
     id = p->spells.holy_shock->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 7, 1296, 1402, 0, 0.18 },
-      { 75, 6, 1043, 1129, 0, 0.18 },
-      { 70, 5,  904,  978, 0, 0.18 },
-      { 64, 4,  693,  749, 0, 0.21 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
+    parse_data(p->player_data);
+    // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
+    // to do damage is 25912
+    id = 25912;
+    effect_nr = 1;
+    parse_effect_data(p->player_data);
+    id = p->spells.holy_shock->spell_id();
+    effect_nr = 0;
 
-    may_crit         = true;
-    direct_power_mod = 1.5/3.5;
     base_multiplier *= 1.0 + p -> talents.healing_light * 0.10
                            + p -> talents.crusade->rank() * 0.10; // TODO how do they stack?
     base_crit       += 1.0 + p -> talents.rule_of_law->rank() * 0.05;
-
-    cooldown -> duration = 6;
 
     if ( p -> glyphs.holy_shock ) cooldown -> duration -= 1.0;
   }
@@ -1861,40 +1869,26 @@ struct holy_shock_t : public paladin_spell_t
 
 // Holy Wrath ==============================================================
 
-// TODO
 struct holy_wrath_t : public paladin_spell_t
 {
   holy_wrath_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "holy_wrath", p )
   {
     id = p->spells.holy_wrath->spell_id();
+    effect_nr = 1;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 5, 1058, 1242, 0, 0.20 }, // Dummy rank.
-      { 78, 5, 1050, 1234, 0, 0.20 },
-      { 72, 4,  857, 1007, 0, 0.20 },
-      { 69, 3,  777,  913, 0, 0.20 },
-      { 60, 2,  551,  649, 0, 0.24 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
+    parse_data(p->player_data);
 
-    aoe = true;
+    // aoe = true; FIXME disabled until we have meteor support
     may_crit = true;
 
-    cooldown -> duration = 15;
-    
     holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
 
-    direct_power_mod = 1.0;
-    base_spell_power_multiplier = 0.07;
-    base_attack_power_multiplier = 0.07;
     base_multiplier *= 1.0 + 0.10 * p -> talents.wrath_of_the_lightbringer;
     base_crit       +=       0.10 * p -> talents.wrath_of_the_lightbringer;
 
@@ -1908,6 +1902,7 @@ struct inquisition_t : public paladin_spell_t
       paladin_spell_t( "inquisition", p )
   {
     id = p->spells.inquisition->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1949,6 +1944,7 @@ struct zealotry_t : public paladin_spell_t
     check_talent( p -> talents.zealotry->rank() );
 
     id = p->spells.zealotry->spell_id();
+    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
