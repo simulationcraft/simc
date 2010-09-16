@@ -372,10 +372,6 @@ player_t::player_t( sim_t*             s,
   ranged_weapon.slot = SLOT_RANGED;
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
-
-  create_options();
-  create_talents();
-  create_glyphs();
 }
 
 // player_t::~player_t =====================================================
@@ -4277,50 +4273,58 @@ player_t* player_t::create( sim_t*             sim,
                             const std::string& name,
                             int race_type )
 {
+  player_t *player;
   if ( type == "death_knight" )
   {
-    return player_t::create_death_knight( sim, name, race_type );
+    player = player_t::create_death_knight( sim, name, race_type );
   }
   else if ( type == "druid" )
   {
-    return player_t::create_druid( sim, name, race_type );
+    player = player_t::create_druid( sim, name, race_type );
   }
   else if ( type == "hunter" )
   {
-    return player_t::create_hunter( sim, name, race_type );
+    player = player_t::create_hunter( sim, name, race_type );
   }
   else if ( type == "mage" )
   {
-    return player_t::create_mage( sim, name, race_type );
+    player = player_t::create_mage( sim, name, race_type );
   }
   else if ( type == "priest" )
   {
-    return player_t::create_priest( sim, name, race_type );
+    player = player_t::create_priest( sim, name, race_type );
   }
   else if ( type == "paladin" )
   {
-    return player_t::create_paladin( sim, name, race_type );
+    player = player_t::create_paladin( sim, name, race_type );
   }
   else if ( type == "rogue" )
   {
-    return player_t::create_rogue( sim, name, race_type );
+    player = player_t::create_rogue( sim, name, race_type );
   }
   else if ( type == "shaman" )
   {
-    return player_t::create_shaman( sim, name, race_type );
+    player = player_t::create_shaman( sim, name, race_type );
   }
   else if ( type == "warlock" )
   {
-    return player_t::create_warlock( sim, name, race_type );
+    player = player_t::create_warlock( sim, name, race_type );
   }
   else if ( type == "warrior" )
   {
-    return player_t::create_warrior( sim, name, race_type );
+    player = player_t::create_warrior( sim, name, race_type );
   }
   else if ( type == "pet" )
   {
-    return sim -> active_player -> create_pet( name );
+    player = sim -> active_player -> create_pet( name );
   }
-  return 0;
+  else
+  {
+    return 0;
+  }
+  player->create_options();
+  player->create_talents();
+  player->create_glyphs();
+  return player;
 }
 
