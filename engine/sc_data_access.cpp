@@ -433,7 +433,7 @@ uint32_t sc_data_access_t::effect_spell_effect_num( const uint32_t effect_id ) S
   return m_effects_index[ effect_id ]->index;
 }
 
-uint32_t sc_data_access_t::effect_type( const uint32_t effect_id ) SC_CONST
+int32_t sc_data_access_t::effect_type( const uint32_t effect_id ) SC_CONST
 {
   if ( !effect_id )
     return 0;
@@ -443,7 +443,7 @@ uint32_t sc_data_access_t::effect_type( const uint32_t effect_id ) SC_CONST
   return m_effects_index[ effect_id ]->type;
 }
 
-uint32_t sc_data_access_t::effect_subtype( const uint32_t effect_id ) SC_CONST
+int32_t sc_data_access_t::effect_subtype( const uint32_t effect_id ) SC_CONST
 {
   if ( !effect_id )
     return 0;

@@ -1311,8 +1311,8 @@ public:
 
   virtual uint32_t      effect_spell_id( const uint32_t effect_id ) SC_CONST;
   virtual uint32_t      effect_spell_effect_num( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_type( const uint32_t effect_id ) SC_CONST;
-  virtual uint32_t      effect_subtype( const uint32_t effect_id ) SC_CONST;
+  virtual int32_t       effect_type( const uint32_t effect_id ) SC_CONST;
+  virtual int32_t       effect_subtype( const uint32_t effect_id ) SC_CONST;
   virtual int32_t       effect_base_value( const uint32_t effect_id ) SC_CONST;
   virtual int32_t       effect_misc_value1( const uint32_t effect_id ) SC_CONST;
   virtual int32_t       effect_misc_value2( const uint32_t effect_id ) SC_CONST;

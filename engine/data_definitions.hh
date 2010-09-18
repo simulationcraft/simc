@@ -50,8 +50,8 @@ struct spelleffect_data_t {
   unsigned    flags;           // Unused for now, 0x00 for all
   unsigned    spell_id;        // Spell this effect belongs to
   unsigned    index;           // Effect index for the spell
-  unsigned    type;            // Effect type
-  unsigned    subtype;         // Effect su-type
+  int         type;            // Effect type
+  int         subtype;         // Effect sub-type
   // SpellScaling.dbc
   double      m_avg;           // Effect average spell scaling multiplier
   double      m_delta;         // Effect delta spell scaling multiplier
