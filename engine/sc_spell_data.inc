@@ -1,8 +1,8 @@
 #include "data_definitions.hh"
 
-#define SPELL_SIZE (3200)
+#define SPELL_SIZE (3201)
 
-// 3200 spells, wow build level 12942
+// 3201 spells, wow build level 12942
 static struct spell_data_t __spell_data[] = {
   { "Blizzard"                          ,    10, 0x00,  0.0, 0x10,  0, 0x080, 0x000,  52,     0.0,    35.0,       0, 1500,    0,      8000,  74, 0x000,   0,   0, 100,  0,     0,     0,  0, {     6,     7,     0 }, { 0x00010000, 0x1000008c, 0x00400000, 0x00000000, 0x00000000, 0x00002000, 0x00000000, 0x00000000, 0x00020000, 0x00000000 }, "Ice shards pelt the target area doing ${$42208m1*8*$<mult>} Frost damage over $10d.", "$42208s1 Frost damage every $42208t1 $lsecond:seconds;." },
   { "Power Word: Shield"                ,    17, 0x00,  0.0, 0x02,  0, 0x010, 0x000,   5,     0.0,    40.0,    3000, 1500,   56,     30000,  19, 0x000,   0,   0,   0,  0,     0,     0, 20, {    13,     0,     0 }, { 0x00050800, 0x00000000, 0x00280000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00001000, 0x00000000 }, "Draws on the soul of the friendly target to shield them, absorbing ${$m1+($SP*0.418)} damage.  Lasts $d.  While the shield holds, spellcasting will not be interrupted by damage.  Once shielded, the target cannot be shielded again for $6788d.", "Absorbs $w1 damage." },
@@ -2956,6 +2956,7 @@ static struct spell_data_t __spell_data[] = {
   { "Guarded by the Light"              , 85639, 0x00,  0.0, 0x01,  0, 0x002, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0, 100,  0,     0,     0,  0, { 86930,     0,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Increases your Word of Glory by $s1% when used to heal yourself. Any overhealing will create a protective shield equal to the amount of overhealing that lasts for $88063d.", 0 },
   { "Guarded by the Light"              , 85646, 0x00,  0.0, 0x01,  0, 0x002, 0x000,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0, 100,  0,     0,     0,  0, { 86939,     0,     0 }, { 0x000001d0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Increases your Word of Glory by $s1% when used to heal yourself. Any overhealing will create a protective shield equal to the amount of overhealing that lasts for $88063d.", 0 },
   { "Word of Glory"                     , 85673, 0x00,  0.0, 0x02,  9, 0x002, 0x000,   9,     0.0,    40.0,       0, 1500,    0,         0,   1, 0x000,   0,   0,   0,  0,     0,     0, 20, { 86977,     0,     0 }, { 0x00010000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x01000000, 0x00000000 }, "Consumes all Holy Power to heal a friendly target for $s1 per charge of Holy Power.", 0 },
+  { "Doom Bolt"                         , 85692, 0x00, 20.0, 0x20,  0, 0x100, 0x000,   1,     0.0,    30.0,       0, 1500,    0,         0,   0, 0x000,   0,   0,   0,  0,  1700,  3000, 20, { 87009,     0,     0 }, { 0x00010000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.", 0 },
   { "Zealotry"                          , 85696, 0x00,  0.0, 0x02,  9, 0x002, 0x000,   1,     0.0,     0.0,  120000, 1500,    0,     20000,   3, 0x000,   0,   0,   0,  0,     0,     0,  0, { 87014,     0,     0 }, { 0x00050000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00002000, 0x00000000 }, "Your Crusader Strike generates 3 charges of Holy Power per strike for the next $d.", "Crusader Strike generates 3 charges of Holy Power." },
   { "Deadly Calm"                       , 85730, 0x00,  0.0, 0x01,  3, 0x001, 0x000,   0,     0.0,     0.0,  120000,    0,    0,     10000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 87061,     0,     0 }, { 0x00010010, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00002000, 0x00000000 }, "For the next $d, none of your abilities cost rage, but you continue to generate rage. Cannot be used during Inner Rage.", "Abilities cost no rage." },
   { "Meat Cleaver"                      , 85738, 0x00,  0.0, 0x01,  0, 0x001, 0x000,   0,     0.0,     0.0,       0,    0,    0,     10000,   0, 0x000,   0,   0, 100,  1,     0,     0,  0, { 87072,     0,     0 }, { 0x00000010, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, "Increases the damage done by your Cleave and Whirlwind abilities by $s1%.", "Increases the damage done by your next Cleave or Whirlwind by $s1%." },
@@ -3206,9 +3207,9 @@ static struct spell_data_t __spell_data[] = {
   { "Shout Rage Bonus"                  , 92049, 0x00,  0.0, 0x01,  0, 0x001, 0x000,   0,     0.0,     0.0,       0,    0,    0,      6000,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 95922, 95929,     0 }, { 0x08000180, 0x10000020, 0x00000000, 0x00000000, 0x00000080, 0x00040008, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
 };
 
-#define __SPELLEFFECT_SIZE (4671)
+#define __SPELLEFFECT_SIZE (4672)
 
-// 4671 effects, wow build level 12942
+// 4672 effects, wow build level 12942
 static struct spelleffect_data_t __spelleffect_data[] = {
   {     6, 0x00,    10, 0,   27,    4,  0.0000000000,  0.0000000000,  0.0000000000,  0.1190000027,     0,     8.0,     0.0,      25,       0,       0,     0,   0.0 },
   {     7, 0x00,    10, 1,    6,   23,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  1000,     0.0,     0.0,       0,       0,       0, 42208,   0.0 },
@@ -7362,6 +7363,7 @@ static struct spelleffect_data_t __spelleffect_data[] = {
   { 86939, 0x00, 85646, 0,    6,  108,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,      60,       0,       0,     0,   0.0 },
   { 86942, 0x00,  1122, 2,    6,  226,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,  2000,    10.0,     0.0,       0,       0,       0,     0,   0.0 },
   { 86977, 0x00, 85673, 0,   10,    0,  1.5939999819,  0.1080000028,  0.0000000000,  0.1609999985,     0,     0.0,     0.0,      49,       0,       0,     0,   0.0 },
+  { 87009, 0x00, 85692, 0,    2,    0,  0.7039999962,  0.1099999994,  0.0000000000,  0.8569999933,     0,     0.0,     0.0,      11,       0,       0,     0,   0.0 },
   { 87014, 0x00, 85696, 0,    6,  107,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       2,      23,       0,     0,   0.0 },
   { 87026, 0x00, 12311, 1,    6,  107,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,  -15000,      11,       0,     0,   0.0 },
   { 87027, 0x00, 12958, 1,    6,  107,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,  -30000,      11,       0,     0,   0.0 },

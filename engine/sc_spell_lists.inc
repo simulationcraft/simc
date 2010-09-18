@@ -510,7 +510,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_SIZE] = {
     31707, // Waterbolt
         0,
   },
-  // Class active abilities for Warlock, 79 abilities
+  // Class active abilities for Warlock, 80 abilities
   {
     89766, // Axe Toss
       980, // Bane of Agony
@@ -536,6 +536,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_SIZE] = {
     47193, // Demonic Empowerment
     88448, // Demonic Rebirth
     19505, // Devour Magic
+    85692, // Doom Bolt
       689, // Drain Life
      5138, // Drain Mana
      1120, // Drain Soul
