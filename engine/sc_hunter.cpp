@@ -79,6 +79,7 @@ struct hunter_t : public player_t
     int  cobra_strikes;
     int  efficiency;
     int  ferocious_inspiration;
+    int  go_for_the_throat;
     
     // Talents that need to be checked
     int  bombardment;
@@ -87,7 +88,6 @@ struct hunter_t : public player_t
     int  fervor;
     int  focus_fire;
     int  frenzy;
-    int  go_for_the_throat;
     int  hunter_vs_wild;
     int  hunting_party;
     int  improved_kill_command;
@@ -1642,15 +1642,6 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual double cost() SC_CONST
-  {
-    // hunter_t* p = player -> cast_hunter();
-    double c = hunter_attack_t::cost();
-    // FIXME! master marksman, if up return 0
-    // if ( p -> buffs_improved_steady_shot -> check() ) c *= 0.80;
-    return c;
-  }
-
   virtual void player_buff()
   {
     hunter_t* p = player -> cast_hunter();
@@ -1754,11 +1745,10 @@ struct black_arrow_t : public hunter_attack_t
 struct chimera_shot_t : public hunter_attack_t
 {
   int active_sting;
-  int improved_steady_shot;
 
   chimera_shot_t( player_t* player, const std::string& options_str ) :
       hunter_attack_t( "chimera_shot", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ),
-      active_sting( 1 ), improved_steady_shot( 0 )
+      active_sting( 1 )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -1767,7 +1757,6 @@ struct chimera_shot_t : public hunter_attack_t
     option_t options[] =
     {
       { "active_sting",         OPT_BOOL, &active_sting         },
-      { "improved_steady_shot", OPT_BOOL, &improved_steady_shot },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2404,7 +2393,7 @@ struct hunters_mark_t : public hunter_spell_t
 
     base_cost = 0;
 
-    ap_bonus = util_t::ability_rank( p -> level,  4500,85, 3000,84, 1500,83, 1200,82, 1000,81, 500,76,  110,0 );
+    ap_bonus = util_t::ability_rank( p -> level,  1772,85, 1600,84, 1500,83, 1200,82, 1000,81, 500,76,  110,0 );
 
     ap_bonus *= 1.0 +  ( p -> glyphs.hunters_mark ? 0.20 : 0 );
 
@@ -2887,7 +2876,7 @@ void hunter_t::init_buffs()
   buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               2, 10.0,  0.0, talents.cobra_strikes * 0.20 );
   buffs_culling_the_herd            = new buff_t( this, "culling_the_herd",            1, 10.0 );
   buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
-  buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1, 10.0,  0.0, talents.improved_steady_shot * 0.05 );
+  buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1,  8.0,  0.0, talents.improved_steady_shot );
   buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.lock_and_load * (0.20/3.0) ); // EJ thread suggests the proc is rate is around 20%
 
   buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
