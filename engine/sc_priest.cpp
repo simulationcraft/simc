@@ -456,6 +456,9 @@ struct shadow_fiend_pet_t : public pet_t
   buff_t*   buffs_shadowcrawl;
   active_spell_t* shadowcrawl;
   passive_spell_t* mana_leech;
+  bool bad_swing;
+  double bad_spell_power;
+  bool extra_tick;
   
   struct shadowcrawl_t : public spell_t
   {
@@ -470,7 +473,7 @@ struct shadow_fiend_pet_t : public pet_t
 
       spell_t::execute();
 
-      p -> buffs_shadowcrawl -> start( 1, p->shadowcrawl->effect_base_value( 2 ) / 100.0 );
+      p -> buffs_shadowcrawl -> start( 1, p -> shadowcrawl -> effect_base_value( 2 ) / 100.0 );
     }
   };
 
@@ -485,15 +488,15 @@ struct shadow_fiend_pet_t : public pet_t
       direct_power_mod = 0.511;  // Seems to be around that for level 80, but might be higher for higher levels.
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
-      base_dd_min = 175; // Level 80 values. Need to handle this better.
-      base_dd_max = 222; // Level 80 values.
+      base_dd_min = util_t::ability_rank( player -> level,  223.0,85,  197.0,82,  175.0,80,  1.0,0 );
+      base_dd_max = util_t::ability_rank( player -> level,  273.0,85,  245.0,82,  222.0,80,  2.0,0 );
       background = true;
       repeating  = true;
       may_dodge  = true;
       may_miss   = false;
-      may_parry  = false;
+      may_parry  = false; // Technically it can be parried on the first swing or if the rear isn't reachable
       may_crit   = true;
-      may_block  = true;
+      may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
     }
     void assess_damage( double amount, int dmg_type )
     {
@@ -510,7 +513,8 @@ struct shadow_fiend_pet_t : public pet_t
     {
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       attack_t::player_buff();
-
+      if ( p -> bad_swing )
+        p -> bad_swing = false;
       player_multiplier *= 1.0 + p -> buffs_shadowcrawl -> value();
     }
   };
@@ -518,7 +522,8 @@ struct shadow_fiend_pet_t : public pet_t
   melee_t* melee;
 
   shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ), melee( 0 )
+      pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ), 
+      bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.5;
@@ -526,6 +531,8 @@ struct shadow_fiend_pet_t : public pet_t
 
     stamina_per_owner           = 0.30;
     intellect_per_owner         = 0.50;
+
+    bad_spell_power = util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 );
 
     action_list_str             = "shadowcrawl/wait_until_ready";
 
@@ -547,10 +554,10 @@ struct shadow_fiend_pet_t : public pet_t
     attribute_base[ ATTR_AGILITY   ]  = 0; // Unknown
     attribute_base[ ATTR_STAMINA   ]  = 0; // Unknown
     attribute_base[ ATTR_INTELLECT ]  = 0; // Unknown
-    resource_base[ RESOURCE_HEALTH ]  = 6747; // Level 80
-    resource_base[ RESOURCE_MANA   ]  = 7679; // Level 80
+    resource_base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
+    resource_base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
     base_attack_power                 = 0;  // Unknown
-    base_attack_crit                  = 0.10; // Needs more testing
+    base_attack_crit                  = 0.07; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
 
     melee = new melee_t( this );
@@ -563,7 +570,11 @@ struct shadow_fiend_pet_t : public pet_t
   virtual double composite_spell_power( int school ) SC_CONST
   {  
     priest_t* p = owner -> cast_priest();
-    double sp = p -> composite_spell_power( school );
+    double sp;
+    if ( bad_swing )
+      sp = bad_spell_power;
+    else
+      sp = p -> composite_spell_power( school );
     return sp;
   }
   virtual double composite_attack_hit() SC_CONST
@@ -573,6 +584,28 @@ struct shadow_fiend_pet_t : public pet_t
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0; 
+  }
+  virtual double composite_attack_crit() SC_CONST
+  {
+    double c = pet_t::composite_attack_crit();
+
+    c += owner -> composite_spell_crit(); // Needs confirming that it benefits from ALL owner crit.
+
+    return c;
+  }
+  virtual void summon( double duration )
+  {
+    // Simulate "Bad" swings
+    if ( owner -> sim -> roll( 0.3 ) )
+    {
+      bad_swing = true;
+    }
+    // Simulate extra tick
+    if ( owner -> sim -> roll( 1 - 0.5 ) )
+    {
+      duration -= 0.1;
+    }
+    pet_t::summon( duration );
   }
   virtual void dismiss()
   {
@@ -1904,7 +1937,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
     update_ready();
     
     p -> buffs_shadowfiend -> start();
-    p -> summon_pet( "shadow_fiend", 15.1 );
+
+    p -> summon_pet( "shadow_fiend", 15.0 );
   }
   virtual bool ready()
   {
