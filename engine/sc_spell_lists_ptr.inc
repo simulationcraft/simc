@@ -1,11 +1,11 @@
-#define PTR_CLASS_ABILITY_SIZE (115)
+#define PTR_CLASS_ABILITY_SIZE (119)
 
-// Class based active abilities, wow build 12942
+// Class based active abilities, wow build 12984
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
   {
         0,
   },
-  // Class active abilities for Warrior, 54 abilities
+  // Class active abilities for Warrior, 55 abilities
   {
      6673, // Battle Shout
      2457, // Battle Stance
@@ -31,6 +31,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
      6544, // Heroic Leap
        78, // Heroic Strike
     57755, // Heroic Throw
+     1134, // Inner Rage
     20252, // Intercept
      3411, // Intervene
      5246, // Intimidating Shout
@@ -121,7 +122,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     85696, // Zealotry
         0,
   },
-  // Class active abilities for Hunter, 115 abilities
+  // Class active abilities for Hunter, 119 abilities
   {
     19434, // Aimed Shot
     90355, // Ancient Hysteria
@@ -167,10 +168,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
      1543, // Flare
      1499, // Freezing Trap
     54644, // Frost Breath
+    92380, // Froststorm Breath
     24604, // Furious Howl
     35290, // Gore
      2649, // Growl
     55709, // Heart of the Phoenix
+    93434, // Horn Toss
      1130, // Hunter's Mark
     13809, // Ice Trap
     13797, // Immolation Trap
@@ -188,16 +191,16 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     50479, // Nether Shock
     50245, // Pin
     90347, // Play
-    90328, // Prowl
     24450, // Prowl
     26090, // Pummel
     90364, // Qiraji Fortitude
-    59881, // Rake
      3045, // Rapid Fire
      2973, // Raptor Strike
     50518, // Ravage
     23989, // Readiness
+    94019, // Rest
       982, // Revive Pet
+    93435, // Roar of Courage
     53517, // Roar of Recovery
     53480, // Roar of Sacrifice
     19503, // Scatter Shot
@@ -209,6 +212,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     91644, // Snatch
     50519, // Sonic Blast
     90361, // Spirit Mend
+    90328, // Spirit Walk
     50274, // Spore Cloud
     57386, // Stampede
     56641, // Steady Shot
@@ -232,6 +236,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     19884, // Track Undead
     19801, // Tranquilizing Shot
     77769, // Trap Launcher
+    94022, // Trick
     54706, // Venom Web Spray
      4167, // Web
     82654, // Widow Venom
@@ -282,7 +287,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     79140, // Vendetta
         0,
   },
-  // Class active abilities for Priest, 54 abilities
+  // Class active abilities for Priest, 55 abilities
   {
     87151, // Archangel
     32546, // Binding Heal
@@ -307,6 +312,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
       588, // Inner Fire
     89485, // Inner Focus
     73413, // Inner Will
+    73325, // Leap of Faith
      1706, // Levitate
       724, // Lightwell
      8129, // Mana Burn
@@ -340,13 +346,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     34914, // Vampiric Touch
         0,
   },
-  // Class active abilities for Death Knight, 51 abilities
+  // Class active abilities for Death Knight, 49 abilities
   {
     48707, // Anti-Magic Shell
     51052, // Anti-Magic Zone
     42650, // Army of the Dead
     48721, // Blood Boil
-    48263, // Blood Presence
     45902, // Blood Strike
     45529, // Blood Tap
     49222, // Bone Shield
@@ -358,10 +363,10 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     77606, // Dark Simulacrum
     63560, // Dark Transformation
     47541, // Death Coil
+    47632, // Death Coil
     49998, // Death Strike
     43265, // Death and Decay
     85948, // Festering Strike
-    48266, // Frost Presence
     47481, // Gnaw
     91800, // Gnaw
     55050, // Heart Strike
@@ -391,7 +396,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     49206, // Summon Gargoyle
     91778, // Sweeping Claws
     50536, // Unholy Blight
-    48265, // Unholy Presence
     55233, // Vampiric Blood
         0,
   },
@@ -454,7 +458,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
      3738, // Wrath of Air Totem
         0,
   },
-  // Class active abilities for Mage, 52 abilities
+  // Class active abilities for Mage, 53 abilities
   {
     44425, // Arcane Barrage
     30451, // Arcane Blast
@@ -501,6 +505,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     55342, // Mirror Image
     30482, // Molten Armor
     12043, // Presence of Mind
+    92315, // Pyroblast
     11366, // Pyroblast
       475, // Remove Curse
      2948, // Scorch
@@ -510,7 +515,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     31707, // Waterbolt
         0,
   },
-  // Class active abilities for Warlock, 80 abilities
+  // Class active abilities for Warlock, 81 abilities
   {
     89766, // Axe Toss
       980, // Bane of Agony
@@ -538,6 +543,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     19505, // Devour Magic
     85692, // Doom Bolt
       689, // Drain Life
+    89420, // Drain Life
      5138, // Drain Mana
      1120, // Drain Soul
      1098, // Enslave Demon
@@ -545,7 +551,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     28176, // Fel Armor
     77799, // Fel Flame
     54424, // Fel Intelligence
-    89751, // Felstorm <NNF>
+    89751, // Felstorm
      3110, // Firebolt
     89792, // Flee
     71521, // Hand of Gul'dan
@@ -597,7 +603,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
   {
         0,
   },
-  // Class active abilities for Druid, 71 abilities
+  // Class active abilities for Druid, 72 abilities
   {
      1066, // Aquatic Form
     22812, // Barkskin
@@ -654,6 +660,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     48505, // Starfall
      2912, // Starfire
     78674, // Starsurge
+    93402, // Sunfire
     61336, // Survival Instincts
     40120, // Swift Flight Form
     18562, // Swiftmend
@@ -667,16 +674,16 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_SIZE] = {
     33891, // Tree of Life
     50516, // Typhoon
     48438, // Wild Growth
-    77765, // Wild Mushroom
-    77766, // Wild Mushroom: Detonate
+    88747, // Wild Mushroom
+    88751, // Wild Mushroom: Detonate
      5176, // Wrath
         0,
   },
 };
 
-#define PTR_TREE_SPECIALIZATION_SIZE (5)
+#define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 12942
+// Talent tree specialization abilities, wow build 12984
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -709,7 +716,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     {
       29144, // Sentinel
       23922, // Shield Slam
-      84839, // Vengeance
+      93098, // Vengeance
           0,
     },
   },
@@ -728,7 +735,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
       31878, // Judgements of the Wise
       53592, // Touched by the Light
       84839, // Vengeance
-          0,
     },
     // Specialization abilities for Retribution tree
     {
@@ -736,7 +742,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
       53503, // Sheath of Light
       85256, // Templar's Verdict
       20113, // Two-Handed Weapon Specialization
-          0,
     },
   },
   // Talent Tree specialization abilities for Hunter
@@ -813,9 +818,8 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     {
       50034, // Blood Rites
       55050, // Heart Strike
-      84839, // Vengeance
+      93099, // Vengeance
       50029, // Veteran of the Third War
-          0,
     },
     // Specialization abilities for Frost tree
     {
@@ -830,7 +834,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
       56835, // Reaping
       55090, // Scourge Strike
       91107, // Unholy Might
-          0,
     },
   },
   // Talent Tree specialization abilities for Shaman
@@ -847,7 +850,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
       86629, // Dual Wield
       60103, // Lava Lash
       30814, // Mental Quickness
-          0,
+      51522, // Primal Wisdom
     },
     // Specialization abilities for Restoration tree
     {
@@ -923,7 +926,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
       84735, // Aggression
       87335, // Feral Instinct
       33917, // Mangle
-      87793, // Shapeshifter
       84840, // Vengeance
     },
     // Specialization abilities for Restoration tree
@@ -938,7 +940,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 12942
+// Class mastery abilities, wow build 12984
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1023,7 +1025,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 12942
+// Racial abilities, wow build 12984
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1221,6 +1223,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
       20592, // Arcane Resistance
       20589, // Escape Artist
       20591, // Expansive Mind
+      92680, // Shortblade Specialization
           0,
     },
     {     0, },
@@ -1529,23 +1532,78 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   },
   // Racial abilities for Worgen
   {
-    // Generic racial abilities
+    {     0, },
+    // Racial abilities for Warrior class
     {
       68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Hunter class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Rogue class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Shaman class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Mage class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Warlock class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Druid class
+    {
+      68976, // Aberration
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
   },
   {
     {     0, },
