@@ -116,13 +116,13 @@ struct paladin_t : public player_t
     talent_t* judgements_of_the_pure;
     int aura_mastery;
     int beacon_of_light;
+    talent_t* blazing_light;
     int blessed_life;
     int clarity_of_purpose;
     int denounce;
     talent_t* divine_favor;
     int divinity;
     int enlightened_judgements;
-    int healing_light;
     int improved_concentration_aura;
     int infusion_of_light;
     int last_word;
@@ -245,6 +245,7 @@ struct paladin_t : public player_t
     // Holy
     talents.arbiter_of_the_light   = new talent_t( this, "arbiter_of_the_light", "Arbiter of the Light" );
     talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
+    talents.blazing_light          = new talent_t( this, "blazing_light", "Blazing Light" );
     talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
     // Prot
     talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
@@ -602,6 +603,7 @@ struct avengers_shield_t : public paladin_attack_t
 
 struct crusader_strike_t : public paladin_attack_t
 {
+  double base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "crusader_strike", p )
   {
@@ -619,10 +621,11 @@ struct crusader_strike_t : public paladin_attack_t
     normalize_weapon_speed = true;
 
     parse_data(p->player_data);
+    base_cooldown = cooldown->duration;
 
-    base_crit       +=       0.05 * p -> talents.rule_of_law->rank();
-    base_multiplier *= 1.0 + 0.10 * p -> talents.crusade->rank()
-                           + 0.30 * p -> talents.wrath_of_the_lightbringer->rank(); // TODO how do they stack?
+    base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
+    base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(1)
+                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1); // TODO how do they stack?
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
 
@@ -649,12 +652,10 @@ struct crusader_strike_t : public paladin_attack_t
   virtual void update_ready()
   {
     paladin_t* p = player->cast_paladin();
-    double base_cooldown = p->player_data.spell_cooldown(id);
     if ( p->talents.sanctity_of_battle->rank() > 0 )
     {
-      base_cooldown *= haste();
+      cooldown->duration = base_cooldown * haste();
     }
-    cooldown->duration = base_cooldown;
 
     paladin_attack_t::update_ready();
   }
@@ -936,8 +937,8 @@ struct templars_verdict_t : public paladin_attack_t
     weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
-    base_multiplier *= 1 + 0.10 * p -> talents.crusade->rank();
+    base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
+    base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2);
   }
 
   virtual void execute()
@@ -970,7 +971,7 @@ struct seals_of_command_proc_t : public paladin_attack_t
     trigger_gcd = 0;
 
     weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.07;
+    weapon_multiplier = 0.01 * p->talents.seals_of_command->effect_base_value(1);
   }
 };
 
@@ -1047,9 +1048,9 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
-    base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
+    base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
+    base_multiplier *= 1.0 + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1)
+                           + 0.10 * p->set_bonus.tier10_4pc_melee();
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1110,9 +1111,9 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
-    base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
+    base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
+    base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
+                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1);
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1176,9 +1177,9 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
-    base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
+    base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
+    base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
+                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1);
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1338,9 +1339,9 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
-    base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
+    base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
+    base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
+                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1);
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
@@ -1479,7 +1480,7 @@ struct paladin_spell_t : public spell_t
   {
     paladin_t* p = player -> cast_paladin();
     double h = spell_t::haste();
-    if ( p -> buffs_judgements_of_the_pure -> check() )
+    if ( p -> buffs_judgements_of_the_pure -> up() )
     {
       h *= 1.0 / ( 1.0 + p -> talents.judgements_of_the_pure->rank() * 0.03 );
     }
@@ -1546,7 +1547,7 @@ struct avenging_wrath_t : public paladin_spell_t
 
     parse_data(p->player_data);
     harmful = false;
-    cooldown -> duration -= 20 * p -> talents.sanctified_wrath->rank();
+    cooldown -> duration -= p -> talents.sanctified_wrath->effect_base_value(2);
   }
 
   virtual void execute()
@@ -1735,6 +1736,8 @@ struct exorcism_t : public paladin_spell_t
     weapon            = &p->main_hand_weapon;
     weapon_multiplier *= 0.0;
 
+    base_multiplier *= 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
+
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 	  
     may_crit = true;
@@ -1839,9 +1842,9 @@ struct holy_shock_t : public paladin_spell_t
     id = p->spells.holy_shock->spell_id();
     effect_nr = 0;
 
-    base_multiplier *= 1.0 + p -> talents.healing_light * 0.10
-                           + p -> talents.crusade->rank() * 0.10; // TODO how do they stack?
-    base_crit       += 1.0 + p -> talents.rule_of_law->rank() * 0.05;
+    base_multiplier *= 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1)
+                           + 0.01 * p->talents.crusade->effect_base_value(1); // TODO how do they stack?
+    base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
 
     if ( p -> glyphs.holy_shock ) cooldown -> duration -= 1.0;
   }
@@ -1853,17 +1856,6 @@ struct holy_shock_t : public paladin_spell_t
     if (result_is_hit())
     {
       p -> buffs_holy_power -> trigger();
-    }
-    p -> buffs_divine_favor -> expire();
-  }
-
-  virtual void player_buff()
-  {
-    paladin_t* p = player -> cast_paladin();
-    paladin_spell_t::player_buff();
-    if ( p -> buffs_divine_favor -> up() ) 
-    {
-      player_crit += 1.0;
     }
   }
 };
@@ -1890,7 +1882,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 
-    base_crit       +=  0.15 * p -> talents.wrath_of_the_lightbringer->rank();
+    base_crit += 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(2);
 
     if ( p -> librams.wracking ) base_spell_power += 120;
   }
@@ -1898,6 +1890,7 @@ struct holy_wrath_t : public paladin_spell_t
 
 struct inquisition_t : public paladin_spell_t
 {
+  double base_duration;
   inquisition_t( paladin_t* p, const std::string& options_str ) :
       paladin_spell_t( "inquisition", p )
   {
@@ -1913,6 +1906,7 @@ struct inquisition_t : public paladin_spell_t
     harmful = false;
     holy_power_chance = p->talents.divine_purpose->proc_chance();
     parse_data(p->player_data);
+    base_duration = p->player_data.spell_duration(id) * (1.0 + 0.01 * p->talents.inquiry_of_faith->effect_base_value(2));
   }
 
   virtual void execute()
@@ -1920,7 +1914,7 @@ struct inquisition_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> buffs_inquisition -> duration = 4.0 * p -> holy_power_stacks() * (1.0 + 0.5 * p -> talents.inquiry_of_faith->rank());
+    p -> buffs_inquisition -> duration = base_duration * p -> holy_power_stacks();
     p -> buffs_inquisition -> trigger();
     if ( p -> talents.holy_shield )
       p -> buffs_holy_shield -> trigger();
@@ -2603,6 +2597,7 @@ std::vector<option_t>& paladin_t::get_options()
       { "arbiter_of_the_light",        OPT_TALENT_RANK,    talents.arbiter_of_the_light          },
       { "ardent_defender",             OPT_INT,         &( talents.ardent_defender             ) },
       { "aura_mastery",                OPT_INT,         &( talents.aura_mastery                ) },
+      { "blazing_light",               OPT_TALENT_RANK,    talents.blazing_light                 },
       { "blessed_life",                OPT_INT,         &( talents.blessed_life                ) },
       { "communion",                   OPT_TALENT_RANK,    talents.communion                     },
       { "crusade",                     OPT_TALENT_RANK,    talents.crusade                       },
@@ -2614,7 +2609,6 @@ std::vector<option_t>& paladin_t::get_options()
       { "eye_for_an_eye",              OPT_INT,         &( talents.eye_for_an_eye              ) },
       { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
       { "hammer_of_the_righteous",     OPT_TALENT_RANK,    talents.hammer_of_the_righteous       },
-      { "healing_light",               OPT_INT,         &( talents.healing_light               ) },
       { "holy_shield",                 OPT_INT,         &( talents.holy_shield                 ) },
       { "improved_concentration_aura", OPT_INT,         &( talents.improved_concentration_aura ) },
       { "improved_crusader_strike",    OPT_INT,         &( talents.improved_crusader_strike    ) },
