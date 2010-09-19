@@ -266,7 +266,7 @@ player_t::player_t( sim_t*             s,
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), 
+    pet_list( 0 ), last_modified( 0 ), bugs( true ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -4290,6 +4290,7 @@ std::vector<option_t>& player_t::get_options()
       { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
       { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
       { "comment",                              OPT_STRING,   &( comment_str                                  ) },
+      { "bugs",                                 OPT_BOOL,     &( bugs                                         ) },
       // @option_doc loc=player/all/items title="Items"
       { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
       { "items",                                OPT_STRING,   &( items_str                                    ) },

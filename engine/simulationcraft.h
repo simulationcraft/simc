@@ -2261,6 +2261,7 @@ struct player_t
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;
+  int         bugs;
 
   // Data access
   sc_data_access_t player_data;

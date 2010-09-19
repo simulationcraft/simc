@@ -596,12 +596,12 @@ struct shadow_fiend_pet_t : public pet_t
   virtual void summon( double duration )
   {
     // Simulate "Bad" swings
-    if ( owner -> sim -> roll( 0.3 ) )
+    if ( owner -> bugs && owner -> sim -> roll( 0.3 ) )
     {
       bad_swing = true;
     }
     // Simulate extra tick
-    if ( owner -> sim -> roll( 1 - 0.5 ) )
+    if ( !bugs || !owner -> sim -> roll( 0.5 ) )
     {
       duration -= 0.1;
     }
