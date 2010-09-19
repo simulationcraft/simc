@@ -150,7 +150,7 @@ struct paladin_t : public player_t
     int shield_of_the_templar;
     int toughness;
     int vindication;
-    int wrath_of_the_lightbringer;
+    talent_t* wrath_of_the_lightbringer;
     // ret
     talent_t* crusade;
     talent_t* rule_of_law;
@@ -247,9 +247,10 @@ struct paladin_t : public player_t
     talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
     talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
     // Prot
-    talents.seals_of_the_pure       = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
-    talents.hammer_of_the_righteous = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
-    talents.shield_of_the_righteous = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
+    talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
+    talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
+    talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
+    talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
     // Ret
     talents.crusade            = new talent_t( this, "crusade", "Crusade" );
     talents.rule_of_law        = new talent_t( this, "rule_of_law", "Rule of Law" );
@@ -620,7 +621,8 @@ struct crusader_strike_t : public paladin_attack_t
     parse_data(p->player_data);
 
     base_crit       +=       0.05 * p -> talents.rule_of_law->rank();
-    base_multiplier *= 1.0 + 0.10 * p -> talents.crusade->rank();
+    base_multiplier *= 1.0 + 0.10 * p -> talents.crusade->rank()
+                           + 0.30 * p -> talents.wrath_of_the_lightbringer->rank(); // TODO how do they stack?
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
 
@@ -677,7 +679,7 @@ struct divine_storm_t : public paladin_attack_t
 
     trigger_seal = true; // ???
     uses_holy_power = true;
-    holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
 
     weapon                 = &( p -> main_hand_weapon );
     weapon_multiplier     *= 0.20;
@@ -820,9 +822,8 @@ struct hammer_of_wrath_t : public paladin_attack_t
     
     base_cooldown = cooldown->duration;
 
-    base_multiplier *= 1.0 + 0.10 * p -> talents.wrath_of_the_lightbringer;
-    base_crit       +=       0.10 * p -> talents.wrath_of_the_lightbringer
-                           + 0.25 * p -> talents.sanctified_wrath->rank();
+    base_crit += 0.15 * p -> talents.wrath_of_the_lightbringer->rank()
+               + 0.25 * p -> talents.sanctified_wrath->rank();
 
     direct_power_mod = 1.0;
     base_spell_power_multiplier  = 0.15;
@@ -930,7 +931,7 @@ struct templars_verdict_t : public paladin_attack_t
 
     trigger_seal = true;
     uses_holy_power = true;
-    holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
 
     weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
@@ -1046,10 +1047,9 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank()
-                     + 0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.10 * p -> talents.wrath_of_the_lightbringer );
+                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1110,10 +1110,9 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank()
-                     + 0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.10 * p -> talents.wrath_of_the_lightbringer );
+                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1177,10 +1176,9 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank()
-                     + 0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.10 * p -> talents.wrath_of_the_lightbringer );
+                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
 
     base_dd_min = base_dd_max = 1;
     direct_power_mod = 1.0;
@@ -1249,7 +1247,11 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_censure -> trigger();
-      player_buff(); // Re-calculate with the new stacks of Censure.
+      player_buff();
+
+      // Since this is an attack_t, no haste scaling is done. Current beta haste scaling for censure is
+      // really weird (it scales with haste you have when applying the DoT, but it never updates when
+      // your haste changes), waiting to see if this changes before modeling it.
       snapshot_haste = haste();
       number_ticks = hasted_num_ticks();
       if ( ticking )
@@ -1336,10 +1338,9 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
 
-    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank()
-                     + 0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       += 0.06 * p -> talents.arbiter_of_the_light->rank();
     base_multiplier *= 1.0 + ( 0.10 * p -> set_bonus.tier10_4pc_melee()
-                             + 0.10 * p -> talents.wrath_of_the_lightbringer );
+                             + 0.30 * p -> talents.wrath_of_the_lightbringer->rank() );
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
@@ -1385,7 +1386,7 @@ struct judgement_t : public paladin_attack_t
     };
     parse_options( options, options_str );
 
-    holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
 
     seal_of_justice       = new seal_of_justice_judgement_t      ( p );
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
@@ -1734,7 +1735,7 @@ struct exorcism_t : public paladin_spell_t
     weapon            = &p->main_hand_weapon;
     weapon_multiplier *= 0.0;
 
-    holy_power_chance = 0.20 * p->talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
 	  
     may_crit = true;
 
@@ -1887,10 +1888,9 @@ struct holy_wrath_t : public paladin_spell_t
     // aoe = true; FIXME disabled until we have meteor support
     may_crit = true;
 
-    holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
 
-    base_multiplier *= 1.0 + 0.10 * p -> talents.wrath_of_the_lightbringer;
-    base_crit       +=       0.10 * p -> talents.wrath_of_the_lightbringer;
+    base_crit       +=  0.15 * p -> talents.wrath_of_the_lightbringer->rank();
 
     if ( p -> librams.wracking ) base_spell_power += 120;
   }
@@ -1911,7 +1911,7 @@ struct inquisition_t : public paladin_spell_t
 
     uses_holy_power = true;
     harmful = false;
-    holy_power_chance = 0.20 * p -> talents.divine_purpose->rank();
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
     parse_data(p->player_data);
   }
 
@@ -2637,6 +2637,7 @@ std::vector<option_t>& paladin_t::get_options()
       { "toughness",                   OPT_INT,         &( talents.toughness                   ) },
       { "vindication",                 OPT_INT,         &( talents.vindication                 ) },
       { "zealotry",                    OPT_TALENT_RANK,    talents.zealotry                      },
+      { "wrath_of_the_lightbringer",   OPT_TALENT_RANK,    talents.wrath_of_the_lightbringer     },
       // @option_doc loc=player/paladin/misc title="Misc"
       { "tier10_2pc_procs_from_strikes", OPT_BOOL, &( tier10_2pc_procs_from_strikes    ) },
       { NULL, OPT_UNKNOWN, NULL }
@@ -2657,14 +2658,14 @@ cooldown_t* paladin_t::get_cooldown( const std::string& name )
   return player_t::get_cooldown( name );
 }
 
-// paladin_t::has_holy_power() ===============================================
+// paladin_t::has_holy_power =================================================
 
 bool paladin_t::has_holy_power(int power_needed) SC_CONST
 {
   return buffs_hand_of_light -> check() || buffs_holy_power -> check() >= power_needed;
 }
 
-// paladin_t::holy_power_stacks() ============================================
+// paladin_t::holy_power_stacks ==============================================
 
 int paladin_t::holy_power_stacks() SC_CONST
 {
