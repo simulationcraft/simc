@@ -2376,12 +2376,14 @@ struct innervate_t : public druid_spell_t
     consume_resource();
     update_ready();
 
-    // 4.0.0 (Cata): 180s cd
+    // 20% over 10s base
+    double gain = 0.20;
+    
     // Targets gets 33% of casting druids MAXMANA over 10 seconds
     // Dreamstate: +10/30% of total mana if target == self
-    double gain = 0.33;
+    // BUGGED: increases only by half of the value stated!
     if ( innervate_target == player && p -> talent_dreamstate -> rank() )
-      gain += p -> talent_dreamstate -> rank() * 0.20 - 0.10;
+      gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
     innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * gain / 10.0);
   }
 
