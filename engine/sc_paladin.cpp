@@ -405,6 +405,8 @@ struct paladin_attack_t : public attack_t
     {
       base_multiplier *= 1.1;
     }
+
+    base_multiplier *= 1.0 + 0.01 * p->talents.communion->effect_base_value(3);
   }
 
   virtual double haste() SC_CONST
@@ -1474,6 +1476,8 @@ struct paladin_spell_t : public spell_t
     {
       if ( sim -> target -> race == RACE_UNDEAD ) base_multiplier *= 1.01;
     }
+
+    base_multiplier *= 1.0 + 0.01 * p->talents.communion->effect_base_value(3);
   }
 
   virtual double haste() SC_CONST
