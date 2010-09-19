@@ -49,7 +49,6 @@ struct warlock_t : public player_t
   buff_t* buffs_eradication;
   buff_t* buffs_fel_armor;
   buff_t* buffs_haunted;
-  buff_t* buffs_life_tap_glyph;
   buff_t* buffs_shadow_embrace;
   buff_t* buffs_metamorphosis;
   buff_t* buffs_molten_core;
@@ -232,25 +231,27 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
+
+    // Prime
+    int life_tap;
+    int shadow_bolt;
+
+    // Major
     int chaos_bolt;
     int conflagrate;
     int corruption;
     int bane_of_agony;
     int felguard;
-    int felhunter;
     int haunt;
     int immolate;
     int imp;
     int incinerate;
-    int life_tap;
     int metamorphosis;
-    int searing_pain;
-    int shadow_bolt;
-    int shadow_burn;
-    int siphon_life;
-    int unstable_affliction;
     int quick_decay;
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+    int shadowburn;
+    int unstable_affliction;
+
+
   };
   glyphs_t glyphs;
 
@@ -968,9 +969,9 @@ struct felguard_pet_t : public warlock_pet_t
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-
+      if ( o -> glyphs.felguard ) player_multiplier *= 1.05;
       warlock_pet_attack_t::player_buff();
-      if ( o -> glyphs.felguard ) player_attack_power *= 1.20;
+
     }
   };
 
@@ -1211,6 +1212,7 @@ struct succubus_pet_t : public warlock_pet_t
       parse_data ( o -> player_data);
 
       may_crit          = true;
+      base_multiplier *= 1.0 + ( o -> glyphs.quick_decay ? 0.25 : 0.00 );
     }
   };
 
@@ -1351,15 +1353,11 @@ struct infernal_pet_t : public warlock_pet_t
 
   virtual void summon( double duration=0 )
   {
-    warlock_t* o = owner -> cast_warlock();
-
     warlock_pet_t::summon( duration );
   }
 
   virtual void dismiss()
   {
-    warlock_t* o = owner -> cast_warlock();
-
     warlock_pet_t::dismiss();
   }
 };
@@ -1832,7 +1830,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     may_crit          = true;
     base_execute_time -= p -> talent_bane -> rank() * 0.1;
-    base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt * 0.10 );
+    base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt * 0.11 );
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> rank() * p -> constants.shadow_and_flame );
   }
 
@@ -2064,11 +2062,11 @@ struct shadowburn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> glyphs.shadow_burn )
+    if ( p -> glyphs.shadowburn )
     {
-      if ( sim -> target -> health_percentage() < 35 )
+      if ( sim -> target -> health_percentage() < 25 )
       {
-        player_crit += 0.20;
+        cooldown -> reset();
       }
     }
   }
@@ -2807,8 +2805,6 @@ struct searing_pain_t : public warlock_spell_t
   searing_pain_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.searing_pain ) )
   {
-    warlock_t* p = player -> cast_warlock();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2816,14 +2812,12 @@ struct searing_pain_t : public warlock_spell_t
     parse_options( options, options_str );
 
     may_crit          = true;
-
-    base_crit_bonus_multiplier *= 1.0 + ( p -> glyphs.searing_pain * 0.20 );
   }
 
   virtual void execute()
   {
-	warlock_t* p = player -> cast_warlock();
-	if ( sim -> target -> health_percentage() <= 50 && p -> talent_improved_searing_pain -> rank() )
+    warlock_t* p = player -> cast_warlock();
+    if ( sim -> target -> health_percentage() <= 50 && p -> talent_improved_searing_pain -> rank() )
 		{
 			base_crit += p -> talent_improved_searing_pain -> rank() * 0.20;
 		}
@@ -2927,19 +2921,17 @@ struct soul_fire_t : public warlock_spell_t
 
 struct life_tap_t : public warlock_spell_t
 {
-  int    buff_refresh;
-  double trigger;
+ double trigger;
   double max_mana_pct;
 
   life_tap_t( player_t* player, const std::string& options_str ) :
       warlock_spell_t( "life_tap", player, SCHOOL_SHADOW, TREE_AFFLICTION ),
-      buff_refresh(0), trigger(0), max_mana_pct(0)
+      trigger(0), max_mana_pct(0)
   {
     id = 57946;
-
+    warlock_t* p = player -> cast_warlock();
     option_t options[] =
     {
-      { "buff_refresh",     OPT_BOOL, &buff_refresh     },
       { "mana_percentage<", OPT_FLT,  &max_mana_pct     },
       { "trigger",          OPT_FLT,  &trigger          },
       { NULL, OPT_UNKNOWN, NULL }
@@ -2947,6 +2939,9 @@ struct life_tap_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
+
+    if ( p -> glyphs.life_tap )
+      trigger_gcd -= 0.5;
 
   }
 
@@ -2958,8 +2953,10 @@ struct life_tap_t : public warlock_spell_t
     double life = p -> resource_max[ RESOURCE_HEALTH ] * 0.15;
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, life * 1.20, p -> gains_life_tap );
-    if ( p -> talent_mana_feed -> rank() && p -> active_pet) p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> constants.mana_feed * p -> talent_mana_feed -> rank(), p -> active_pet -> gains_mana_feed );
-    p -> buffs_life_tap_glyph -> trigger();
+    if ( p -> talent_mana_feed -> rank() && p -> active_pet)
+    {
+      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> constants.mana_feed * p -> talent_mana_feed -> rank(), p -> active_pet -> gains_mana_feed );
+    }
   }
 
   virtual bool ready()
@@ -2969,16 +2966,6 @@ struct life_tap_t : public warlock_spell_t
     if (  max_mana_pct > 0 ) 
       if( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
         return false;
-
-    if ( buff_refresh )
-    {
-      if( ! p -> glyphs.life_tap )
-        return false;
-
-      if ( p -> buffs_life_tap_glyph -> check() )
-        return false;
-    }
-
 
     if ( trigger > 0 )
       if ( p -> resource_current[ RESOURCE_MANA ] > trigger )
@@ -3721,11 +3708,6 @@ double warlock_t::composite_spell_power( int school ) SC_CONST
 
   sp += buffs_fel_armor -> value();
 
-  if ( buffs_life_tap_glyph -> up() )
-  {
-    sp += spirit() * 0.20;
-  }
-
 
   return sp;
 }
@@ -3823,17 +3805,16 @@ void warlock_t::init_glyphs()
     else if ( n == "corruption"          ) glyphs.corruption = 1;
     else if ( n == "bane_of_agony"       ) glyphs.bane_of_agony = 1;
     else if ( n == "felguard"            ) glyphs.felguard = 1;
-    else if ( n == "felhunter"           ) glyphs.felhunter = 1;
+    else if ( n == "felhunter"           );
     else if ( n == "haunt"               ) glyphs.haunt = 1;
     else if ( n == "immolate"            ) glyphs.immolate = 1;
     else if ( n == "imp"                 ) glyphs.imp = 1;
     else if ( n == "incinerate"          ) glyphs.incinerate = 1;
     else if ( n == "life_tap"            ) glyphs.life_tap = 1;
     else if ( n == "metamorphosis"       ) glyphs.metamorphosis = 1;
-    else if ( n == "searing_pain"        ) glyphs.searing_pain = 1;
+    else if ( n == "searing_pain"        );
     else if ( n == "shadow_bolt"         ) glyphs.shadow_bolt = 1;
-    else if ( n == "shadow_burn"         ) glyphs.shadow_burn = 1;
-    else if ( n == "siphon_life"         ) glyphs.siphon_life = 1;
+    else if ( n == "shadow_burn"         ) glyphs.shadowburn = 1;
     else if ( n == "unstable_affliction" ) glyphs.unstable_affliction = 1;
     else if ( n == "quick_decay"         ) glyphs.quick_decay = 1;
     // minor glyphs, to prevent 'not-found' warning
@@ -3910,7 +3891,6 @@ void warlock_t::init_buffs()
   buffs_eradication           = new buff_t( this, "eradication",         1, 10.0, 0.0, talent_eradication -> rank() ? 0.06 : 0.00 );
   buffs_fel_armor             = new buff_t( this, "fel_armor"     );
   buffs_haunted               = new buff_t( this, "haunted",             1, 12.0, 0.0, talent_haunt -> rank() );
-  buffs_life_tap_glyph        = new buff_t( this, "life_tap_glyph",      1, 40.0, 0.0, glyphs.life_tap );
   buffs_metamorphosis         = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talent_metamorphosis -> rank() );
   buffs_molten_core           = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.05 );
   buffs_shadow_embrace        = new buff_t( this, "shadow_embrace",      3, 12.0, 0.0, talent_shadow_embrace -> rank() );
@@ -4012,11 +3992,7 @@ void warlock_t::init_actions()
     action_list_str += "," + summon_pet_str;
     action_list_str += "/snapshot_stats";
 
-    // Refresh Life Tap Buff
-    if( glyphs.life_tap )
-    {
-      action_list_str+="/" + tap_str + ",buff_refresh=1";
-    }
+
 
     // Usable Item
     int num_items = ( int ) items.size();

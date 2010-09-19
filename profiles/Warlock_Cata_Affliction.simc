@@ -5,7 +5,7 @@ level=85
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=2232220030133213210000000000000000000332
-glyphs=quick_decay/haunt/life_tap
+glyphs=bane_of_agony/haunt/life_tap/unstable_affliction
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
@@ -14,7 +14,6 @@ actions+=/summon_pet,felhunter
 actions+=/snapshot_stats
 actions+=/curse_of_elements,health_percentage<=25
 actions+=/soulburn
-actions+=/life_tap,buff_refresh=1
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
 actions+=/demon_soul,health_percentage<=25
@@ -23,7 +22,7 @@ actions+=/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gc
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)
 actions+=/drain_soul,health_percentage<=25,interrupt=1
-actions+=/fel_flame,if=dot.unstable_affliction.remains<=5
+#actions+=/fel_flame,if=dot.unstable_affliction.remains<=5
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/drain_life
 actions+=/life_tap

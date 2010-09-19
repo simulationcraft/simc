@@ -4,14 +4,13 @@ warlock=Warlock_Cata_Demonology
 level=85
 race=goblin
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000332220031031221221133202
-glyphs=felguard/quick_decay/life_tap
+glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
 actions+=/dark_intent
 actions+=/summon_pet,felguard
 actions+=/snapshot_stats
-actions+=/life_tap,buff_refresh=1
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/demon_soul,if=buff.metamorphosis.react
 actions+=/summon_infernal,if=buff.metamorphosis.react
@@ -22,7 +21,7 @@ actions+=/hand_of_guldan
 actions+=/immolation
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/soulburn
-#actions+=/soul_fire,if=buff.decimation.react
+actions+=/soul_fire,if=buff.decimation.react
 actions+=/incinerate
 actions+=/hellfire,interrupt=1
 actions+=/life_tap

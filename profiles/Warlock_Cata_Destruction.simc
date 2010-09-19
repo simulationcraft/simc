@@ -5,7 +5,7 @@ level=85
 race=goblin
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=21000000000000000003202000000000000003322222302200310211
-glyphs=conflagrate/incinerate/immolate
+glyphs=life_tap/conflagrate/incinerate/immolate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
@@ -21,7 +21,7 @@ actions+=/conflagrate
 actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up
 actions+=/soul_fire,if=buff.empowered_imp.react
 actions+=/chaos_bolt
-actions+=/fel_flame,if=dot.immolate.remains<=5
+#actions+=/fel_flame,if=dot.immolate.remains<=5
 actions+=/incinerate
 actions+=/life_tap
 
