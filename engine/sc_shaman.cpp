@@ -4,11 +4,12 @@
 // ==========================================================================
 
 // ==========================================================================
-// Todo for Cata
+// TODO
 // ==========================================================================
 // Spirit Walker's Grace Ability
 // Unleash Elements Ability
 // Ability/Spell Rank scaling
+// Maelstrom's mana reduction (what is it?)
 // Mail Specialization -> 5% intel or agi bonus (waiting on sim changes to check armor type)
 // ==========================================================================
 
@@ -105,7 +106,6 @@ struct shaman_t : public player_t
   talent_t* talent_improved_lava_lash;
   talent_t* talent_improved_shields;
   talent_t* talent_maelstrom_weapon;
-  talent_t* talent_primal_wisdom;
   talent_t* talent_searing_flames;
   talent_t* talent_shamanistic_rage;
   talent_t* talent_static_shock;
@@ -198,7 +198,6 @@ struct shaman_t : public player_t
     talent_improved_lava_lash       = new talent_t( this, "improved_lava_lash", "Improved Lava Lash" );
     talent_improved_shields         = new talent_t( this, "improved_shields", "Improved Shields" );    
     talent_maelstrom_weapon         = new talent_t( this, "maelstrom_weapon", "Maelstrom Weapon" );
-    talent_primal_wisdom            = new talent_t( this, "primal_wisdom", "Primal Wisdom" );
     talent_searing_flames           = new talent_t( this, "searing_flames", "Searing Flames" );
     talent_shamanistic_rage         = new talent_t( this, "shamanistic_rage", "Shamanistic Rage" );
     talent_static_shock             = new talent_t( this, "static_shock", "Static Shock" );
@@ -674,7 +673,7 @@ static void trigger_primal_wisdom ( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
-  if ( p -> rng_primal_wisdom -> roll( p -> talent_primal_wisdom -> rank() * 0.20 ) )
+  if ( p -> rng_primal_wisdom -> roll( p -> primary_tree() == TREE_ENHANCEMENT * 0.40 ) )
   {
     p -> resource_gain( RESOURCE_MANA, 0.05 * p -> resource_base[ RESOURCE_MANA ], p -> gains_primal_wisdom );
   }
@@ -2697,7 +2696,7 @@ struct searing_totem_t : public shaman_spell_t
     init_rank( ranks, 3599 );
 
     base_execute_time = 0;
-    base_tick_time    = 2.5;
+    base_tick_time    = 1.64;
     direct_power_mod  = base_tick_time / 15.0;
     num_ticks         = int ( ( 1 + p -> talent_totemic_focus -> rank() * 0.20 ) * 24 );
     may_crit          = true;
@@ -3024,7 +3023,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     }
     trigger_gcd = 0;
 
-    bonus_power = util_t::ability_rank( p -> level,  211.0,80,  186.0,77,  157.0,72,  96.0,65,  45.0,0  );
+    bonus_power = util_t::ability_rank( p -> level,  750.0,85, 211.0,80,  186.0,77,  157.0,72,  96.0,65,  45.0,0  );
 
     bonus_power *= 1.0 + p -> talent_elemental_weapons -> rank() * 0.20;
 
@@ -3103,7 +3102,7 @@ struct windfury_weapon_t : public shaman_spell_t
     }
     trigger_gcd = 0;
 
-    bonus_power = util_t::ability_rank( p -> level,  1250.0,80,  1090.0,76,  835.0,71,  445.0,0  );
+    bonus_power = util_t::ability_rank( p -> level,  4430.0,85, 1250.0,80,  1090.0,76,  835.0,71,  445.0,0  );
 
     id = 8232;
   }
@@ -3162,10 +3161,8 @@ struct lightning_shield_t : public shaman_spell_t
       base_multiplier *= 1.0 + p -> talent_improved_shields -> rank() * 0.05 + ( p -> set_bonus.tier7_2pc_melee() ? 0.10 : 0.00 );
 
       base_crit_bonus_multiplier *= 1.0 + p -> primary_tree() == TREE_ELEMENTAL;
-
-      // Lightning Shield may actually be modeled as a pet given that it cannot proc Honor Among Thieves
-      pseudo_pet = true;
     }
+
     virtual void player_buff()
     {
       shaman_t* p = player -> cast_shaman();
@@ -3448,7 +3445,7 @@ void shaman_t::init_base()
   player_t::init_base();
 
   attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + talent_toughness -> rank() * 0.02;
-  base_attack_expertise = talent_unleashed_rage -> rank() * 0.03;
+  base_attack_expertise = talent_unleashed_rage -> rank() * 0.04;
 
   base_attack_power = ( level * 2 ) - 20;
   initial_attack_power_per_strength = 1.0;
@@ -3750,7 +3747,7 @@ void shaman_t::combat_begin()
 
   if ( talent_elemental_oath -> rank() ) sim -> auras.elemental_oath -> trigger();
 
-  int ur = util_t::talent_rank( talent_unleashed_rage -> rank(), 3, 4, 7, 10 );
+  int ur = util_t::talent_rank( talent_unleashed_rage -> rank(), 2, 5, 10 );
 
   if ( ur >= sim -> auras.unleashed_rage -> current_value )
   {
