@@ -681,10 +681,10 @@ struct warlock_spell_t : public spell_t
 
   // trigger_decimation ======================================================
 
-  static void trigger_decimation( warlock_spell_t* s)
+  static void trigger_decimation( warlock_spell_t* s, int result)
   {
     warlock_t* p = s -> player -> cast_warlock();
-    if ( ( s -> result !=  RESULT_HIT ) && ( s -> result != RESULT_CRIT ) ) return;
+    if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
     if ( s -> sim -> target -> health_percentage() > 35  ) return;
     p -> buffs_decimation -> trigger();
   }
@@ -879,7 +879,11 @@ struct imp_pet_t : public warlock_pet_t
       may_crit          = true;
       base_multiplier *= 1.0 + ( o -> glyphs.imp            * 0.20 );
     }
-    virtual void execute();
+    virtual void execute()
+    {
+      warlock_pet_spell_t::execute();
+    }
+    virtual void travel( int travel_result, double travel_dmg);
 
   };
 
@@ -1868,11 +1872,11 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void travel()
+  virtual void travel( int travel_result, double travel_dmg)
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::travel();
-    trigger_decimation( this );
+    warlock_spell_t::travel(travel_result, travel_dmg);
+    trigger_decimation( this, travel_result );
     if ( result_is_hit() )
       p -> buffs_shadow_embrace -> trigger();
   }
@@ -1931,7 +1935,7 @@ struct burning_embers_t : public warlock_spell_t
 };
 
 // Trigger Burning Embers =========================================================
-static void trigger_burning_embers ( spell_t* s )
+static void trigger_burning_embers ( spell_t* s, double dmg )
 {
 	warlock_t* p;
 	if ( s -> player -> type == WARLOCK)
@@ -1948,13 +1952,13 @@ static void trigger_burning_embers ( spell_t* s )
 	{
 	  if ( p -> spells_burning_embers )
 	  {
-      p -> spells_burning_embers -> base_td = s -> direct_dmg ;
+      p -> spells_burning_embers -> base_td = dmg ;
       p -> spells_burning_embers -> execute();
 	  }
 	  else
 	  {
 	    p -> spells_burning_embers = new burning_embers_t( p );
-	    p -> spells_burning_embers -> base_td = s -> direct_dmg ;
+	    p -> spells_burning_embers -> base_td = dmg ;
 	    p -> spells_burning_embers -> execute();
 	  }
 	}
@@ -2400,9 +2404,9 @@ struct haunt_t : public warlock_spell_t
 
   }
 
-  virtual void travel()
+  virtual void travel( int travel_result, double travel_dmg)
   {
-    warlock_spell_t::travel();
+    warlock_spell_t::travel(travel_result, travel_dmg);
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
@@ -2770,10 +2774,10 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::schedule_travel();
   }
 
-  virtual void travel()
+  virtual void travel( int travel_result, double travel_dmg)
   {
-    warlock_spell_t::travel();
-    trigger_decimation( this );
+    warlock_spell_t::travel( travel_result, travel_dmg);
+    trigger_decimation( this, travel_result );
   }
 
   virtual void player_buff()
@@ -2855,23 +2859,13 @@ struct soul_fire_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    if ( result_is_hit() )
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> buffs_empowered_imp -> up() ) p -> buffs_empowered_imp -> expire();
+    if ( p -> buffs_soulburn -> up() )
     {
-      warlock_t* p = player -> cast_warlock();
-      trigger_soul_leech( this );
-      trigger_burning_embers( this );
-      if ( p -> buffs_empowered_imp -> up() ) p -> buffs_empowered_imp -> expire();
-      if ( ( sim -> target -> health_percentage() >= 80 ) && ( p -> cooldowns_improved_soul_fire -> remains() <=0 ) )
-		  {
-			  p -> buffs_improved_soul_fire -> trigger();
-			  p -> cooldowns_improved_soul_fire -> start();
-		  }
-      if ( p -> buffs_soulburn -> up() )
-      {
-      	p -> buffs_soulburn -> expire();
-      }
-
+      p -> buffs_soulburn -> expire();
     }
+
   }
 
   virtual double execute_time() SC_CONST
@@ -2895,10 +2889,24 @@ struct soul_fire_t : public warlock_spell_t
   }
 
 
-  virtual void travel()
+  virtual void travel( int travel_result, double travel_dmg)
   {
-    warlock_spell_t::travel();
-    trigger_decimation( this );
+    warlock_spell_t::travel( travel_result, travel_dmg);
+    trigger_decimation( this, travel_result );
+    if ( result_is_hit() )
+        {
+          warlock_t* p = player -> cast_warlock();
+          trigger_soul_leech( this );
+          trigger_burning_embers( this, travel_dmg );
+
+          if ( ( sim -> target -> health_percentage() >= 80 ) && ( p -> cooldowns_improved_soul_fire -> remains() <=0 ) )
+          {
+            p -> buffs_improved_soul_fire -> trigger();
+            p -> cooldowns_improved_soul_fire -> start();
+          }
+
+
+        }
   }
 
   virtual void player_buff()
@@ -3687,12 +3695,12 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
-void imp_pet_t::firebolt_t::execute()
+void imp_pet_t::firebolt_t::travel( int travel_result, double travel_dmg)
 {
-  warlock_pet_spell_t::execute();
+  warlock_pet_spell_t::travel( travel_result, travel_dmg);
   warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
   if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
-  trigger_burning_embers ( this );
+  trigger_burning_embers ( this, travel_dmg );
   trigger_mana_feed ( this);
 }
 

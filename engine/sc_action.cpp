@@ -897,7 +897,21 @@ void action_t::execute()
 
 
 
-  schedule_travel();
+  if ( result_is_hit() )
+  {
+    calculate_direct_damage();
+
+    schedule_travel();
+  }
+  else
+  {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      log_t::miss_event( this );
+    }
+  }
+
 
   update_ready();
 
@@ -962,44 +976,30 @@ void action_t::last_tick()
 
 // action_t::travel ==========================================================
 
-void action_t::travel()
+void action_t::travel( int travel_result, double travel_dmg=0 )
 {
-
-
-  if ( result_is_hit() )
+  if ( direct_dmg > 0 )
   {
-    calculate_direct_damage();
-
-    if ( direct_dmg > 0 )
+    assess_damage( travel_dmg, DMG_DIRECT );
+  }
+  if ( num_ticks > 0 )
+  {
+    if ( dot_behavior == DOT_REFRESH )
     {
-      assess_damage( direct_dmg, DMG_DIRECT );
+      current_tick = 0;
+      snapshot_haste = haste();
+      number_ticks = hasted_num_ticks();
+      if ( ! ticking ) schedule_tick();
     }
-    if ( num_ticks > 0 )
+    else
     {
-      if ( dot_behavior == DOT_REFRESH )
-      {
-        current_tick = 0;
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        if ( ! ticking ) schedule_tick();
-      }
-      else
-      {
-        if ( ticking ) cancel();
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        schedule_tick();
-      }
+      if ( ticking ) cancel();
+      snapshot_haste = haste();
+      number_ticks = hasted_num_ticks();
+      schedule_tick();
     }
   }
-  else
-  {
-    if ( sim -> log )
-    {
-      log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      log_t::miss_event( this );
-    }
-  }
+
   if ( ! dual ) update_stats( DMG_DIRECT );
 }
 
@@ -1148,7 +1148,7 @@ void action_t::schedule_travel()
   time_to_travel = travel_time();
 
   if ( time_to_travel == 0 )
-    travel();
+    travel(result,direct_dmg);
   else
   {
 
