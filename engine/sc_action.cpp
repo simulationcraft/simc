@@ -893,46 +893,13 @@ void action_t::execute()
 
   consume_resource();
 
-  if ( result_is_hit() )
-  {
-    calculate_direct_damage();
 
-    if ( direct_dmg > 0 )
-    {
-      assess_damage( direct_dmg, DMG_DIRECT );
-    }
-    if ( num_ticks > 0 )
-    {
-      if ( dot_behavior == DOT_REFRESH )
-      {
-        current_tick = 0;
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        if ( ! ticking ) schedule_tick();
-      }
-      else
-      {
-        if ( ticking ) cancel();
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        schedule_tick();
-      }
-    }
-  }
-  else
-  {
-    if ( sim -> log )
-    {
-      log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
-      log_t::miss_event( this );
-    }
-  }
 
-  update_ready();
 
-  if ( ! dual ) update_stats( DMG_DIRECT );
 
   schedule_travel();
+
+  update_ready();
 
   if ( repeating && ! proc ) schedule_execute();
 
@@ -995,15 +962,45 @@ void action_t::last_tick()
 
 // action_t::travel ==========================================================
 
-void action_t::travel( int    travel_result,
-                       double travel_dmg )
+void action_t::travel()
 {
-  if ( sim -> log )
-    log_t::output( sim, "%s from %s arrives on target (%s for %.0f)",
-                   name(), player -> name(),
-                   util_t::result_type_string( travel_result ), travel_dmg );
 
-  // FIXME! Damage still applied at execute().  This is just a place to model travel-time effects.
+
+  if ( result_is_hit() )
+  {
+    calculate_direct_damage();
+
+    if ( direct_dmg > 0 )
+    {
+      assess_damage( direct_dmg, DMG_DIRECT );
+    }
+    if ( num_ticks > 0 )
+    {
+      if ( dot_behavior == DOT_REFRESH )
+      {
+        current_tick = 0;
+        snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
+        if ( ! ticking ) schedule_tick();
+      }
+      else
+      {
+        if ( ticking ) cancel();
+        snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
+        schedule_tick();
+      }
+    }
+  }
+  else
+  {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      log_t::miss_event( this );
+    }
+  }
+  if ( ! dual ) update_stats( DMG_DIRECT );
 }
 
 // action_t::assess_damage ==================================================
@@ -1150,14 +1147,18 @@ void action_t::schedule_travel()
 {
   time_to_travel = travel_time();
 
-  if ( time_to_travel == 0 ) return;
+  if ( time_to_travel == 0 )
+    travel();
+  else
+  {
 
   if ( sim -> log )
   {
-    log_t::output( sim, "%s schedules travel for %s", player -> name(), name() );
+    log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
   }
 
   new ( sim ) action_travel_event_t( sim, this, time_to_travel );
+  }
 }
 
 // action_t::reschedule_execute ============================================

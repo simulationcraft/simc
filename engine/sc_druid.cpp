@@ -2994,16 +2994,15 @@ struct wrath_t : public druid_spell_t
     if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
       player_multiplier *= 1.10;
   }
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::travel( travel_result, travel_dmg );
+    druid_spell_t::travel();
     if ( result_is_hit() )
     {
-      if ( travel_result == RESULT_CRIT )
+      if ( result == RESULT_CRIT )
       {
-        trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
+        trigger_t10_4pc_caster( player, direct_dmg, SCHOOL_NATURE );
       }
       trigger_earth_and_moon( this );
 
@@ -3161,14 +3160,13 @@ struct starsurge_t : public druid_spell_t
     cooldown -> duration = 15.0;
   }
   
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::travel( travel_result, travel_dmg );
+    druid_spell_t::travel();
     // SF/Wrath even give eclipse on misses,
     // but not Starsurge
-    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    if ( result == RESULT_CRIT || result == RESULT_HIT )
     {
       // It always pushes towards the side the bar is on, positive if at zero
       int gain = 15;

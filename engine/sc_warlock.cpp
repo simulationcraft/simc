@@ -681,11 +681,10 @@ struct warlock_spell_t : public spell_t
 
   // trigger_decimation ======================================================
 
-  static void trigger_decimation( warlock_spell_t* s,
-                                  int result )
+  static void trigger_decimation( warlock_spell_t* s)
   {
     warlock_t* p = s -> player -> cast_warlock();
-    if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
+    if ( ( s -> result !=  RESULT_HIT ) && ( s -> result != RESULT_CRIT ) ) return;
     if ( s -> sim -> target -> health_percentage() > 35  ) return;
     p -> buffs_decimation -> trigger();
   }
@@ -1830,7 +1829,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     may_crit          = true;
     base_execute_time -= p -> talent_bane -> rank() * 0.1;
-    base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt * 0.11 );
+    base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt * 0.15 );
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> rank() * p -> constants.shadow_and_flame );
   }
 
@@ -1863,18 +1862,19 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       p -> buffs_molten_core -> trigger(3);
       target_t*  t = sim -> target;
-      p -> buffs_shadow_embrace -> trigger();
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> rank() / 5.0 );
       trigger_soul_leech( this );
       trigger_everlasting_affliction( this );
     }
   }
 
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
-    warlock_spell_t::travel( travel_result, travel_dmg );
-    trigger_decimation( this, travel_result );
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::travel();
+    trigger_decimation( this );
+    if ( result_is_hit() )
+      p -> buffs_shadow_embrace -> trigger();
   }
 
   virtual bool ready()
@@ -2397,6 +2397,12 @@ struct haunt_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+
+  }
+
+  virtual void travel()
+  {
+    warlock_spell_t::travel();
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
@@ -2764,11 +2770,10 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::schedule_travel();
   }
 
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
-    warlock_spell_t::travel( travel_result, travel_dmg );
-    trigger_decimation( this, travel_result );
+    warlock_spell_t::travel();
+    trigger_decimation( this );
   }
 
   virtual void player_buff()
@@ -2890,18 +2895,10 @@ struct soul_fire_t : public warlock_spell_t
   }
 
 
-  virtual void schedule_travel()
+  virtual void travel()
   {
-    warlock_spell_t::schedule_travel();
-
-  }
-
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
-  {
-    warlock_spell_t::travel( travel_result, travel_dmg );
-
-    trigger_decimation( this, travel_result );
+    warlock_spell_t::travel();
+    trigger_decimation( this );
   }
 
   virtual void player_buff()
@@ -3050,7 +3047,10 @@ struct summon_pet_t : public warlock_spell_t
     if (p -> sim -> current_time == 0)
       trigger_gcd=0;
     else if ( p -> buffs_soulburn -> up() )
+    {
       base_execute_time = 0.0;
+      trigger_gcd = 0.0;
+    }
     else
       base_execute_time = 6.0 - p -> talent_master_summoner -> rank() * 0.5;
       player -> summon_pet( pet_name.c_str() );

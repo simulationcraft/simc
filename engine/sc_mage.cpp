@@ -418,7 +418,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   execute();
-  virtual void   travel( int travel_result, double travel_dmg );
+  virtual void   travel();
   virtual void   consume_resource();
   virtual void   player_buff();
 };
@@ -1169,14 +1169,13 @@ void mage_spell_t::execute()
 
 // mage_spell_t::travel ====================================================
 
-void mage_spell_t::travel( int    travel_result,
-			   double travel_dmg )
+void mage_spell_t::travel()
 {
-  spell_t::travel( travel_result, travel_dmg );
+  spell_t::travel();
 
-  if ( travel_result == RESULT_CRIT )
+  if ( result == RESULT_CRIT )
   {
-    trigger_ignite( this, travel_dmg );
+    trigger_ignite( this, direct_dmg );
   }
 }
 
@@ -2362,11 +2361,10 @@ struct frost_bolt_t : public mage_spell_t
     }
   }
 
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
     mage_t* p = player -> cast_mage();
-    mage_spell_t::travel( travel_result, travel_dmg );
+    mage_spell_t::travel();
     if ( ! p -> fof_on_cast ) trigger_fingers_of_frost( this );
   }
 
@@ -2643,11 +2641,10 @@ struct frostfire_bolt_t : public mage_spell_t
     consume_brain_freeze( this );
   }
 
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
+  virtual void travel()
   {
     mage_t* p = player -> cast_mage();
-    mage_spell_t::travel( travel_result, travel_dmg );
+    mage_spell_t::travel();
     if ( ! p -> fof_on_cast ) trigger_fingers_of_frost( this );
   }
   virtual bool ready()

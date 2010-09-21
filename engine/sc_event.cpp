@@ -187,8 +187,6 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
     event_t( sim, a -> player ), action( a )
 {
   name   = "Action Travel";
-  result = a -> result;
-  damage = a -> direct_dmg;
 
   if ( sim -> debug )
     log_t::output( sim, "New Action Travel Event: %s %s %.2f",
@@ -201,7 +199,7 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
 
 void action_travel_event_t::execute()
 {
-  action -> travel( result, damage );
+  action -> travel( );
 }
 
 // ===========================================================================

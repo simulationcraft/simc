@@ -3223,7 +3223,7 @@ struct action_t : public active_spell_t
   virtual void   execute();
   virtual void   tick();
   virtual void   last_tick();
-  virtual void   travel( int result, double dmg );
+  virtual void   travel();
   virtual void   assess_damage( double amount, int dmg_type );
   virtual void   additional_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
