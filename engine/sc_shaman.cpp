@@ -217,7 +217,6 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_rating();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -3349,15 +3348,6 @@ void shaman_t::create_pets()
 {
   create_pet( "spirit_wolf" );
   create_pet( "fire_elemental" );
-}
-
-// shaman_t::init_rating ======================================================
-
-void shaman_t::init_rating()
-{
-  player_t::init_rating();
-
-  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // shaman_t::init_glyphs ======================================================
