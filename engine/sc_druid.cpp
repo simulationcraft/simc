@@ -2380,10 +2380,13 @@ struct innervate_t : public druid_spell_t
     double gain = 0.20;
     
     // Targets gets 33% of casting druids MAXMANA over 10 seconds
-    // Dreamstate: +10/30% of total mana if target == self
-    // BUGGED: increases only by half of the value stated!
-    if ( innervate_target == player && p -> talent_dreamstate -> rank() )
-      gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
+    // Dreamstate: +10%/30% of total mana if target == self
+    // BUGGED: increases only by 0%/15% instead of 10%/30%
+    if ( innervate_target == player && p -> talent_dreamstate -> rank() == 2)
+    {
+      gain += 0.15;
+      //gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
+    }
     innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * gain / 10.0);
   }
 
@@ -2428,6 +2431,7 @@ struct insect_swarm_t : public druid_spell_t
     base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
+    num_ticks        += p -> talent_genesis -> rank();
     tick_power_mod    = 0.2;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
@@ -2503,8 +2507,9 @@ struct moonfire_t : public druid_spell_t
     init_rank( ranks, 48463 );
 
     base_execute_time = 0;
-    base_tick_time    = 3.0;
-    num_ticks         = 4;
+    base_tick_time    = 2.0;
+    num_ticks         = 6;
+    num_ticks        += p -> talent_genesis -> rank();
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
@@ -2879,14 +2884,21 @@ struct starfire_t : public druid_spell_t
           if ( p -> dots_moonfire -> action -> added_ticks < 3 )
             p -> dots_moonfire -> action -> extend_duration( 1 );
       }
-      int gain = 20;
-      if ( ! p -> buffs_eclipse_solar -> check()
-        && ! p -> buffs_eclipse_lunar -> check()
-        && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+      // If Solar is up SF won't give you eclipse energy
+      // This is probably to force druid to oscillate
+      if ( ! p -> buffs_eclipse_solar -> check() )
       {
-        gain *= 2;
+        // effect#2 of starfire spell => 92680
+        // 92680 -> base_value == 20
+
+        int gain = 20;
+        if ( ! p -> buffs_eclipse_lunar -> check() 
+          && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+        {
+          gain *= 2;
+        }
+        trigger_eclipse_energy_gain( this, gain );
       }
-      trigger_eclipse_energy_gain( this, gain );
     }
   }
 
@@ -2982,7 +2994,8 @@ struct wrath_t : public druid_spell_t
     if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
       player_multiplier *= 1.10;
   }
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( travel_result, travel_dmg );
@@ -2993,14 +3006,19 @@ struct wrath_t : public druid_spell_t
         trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
       }
       trigger_earth_and_moon( this );
-      int gain = -13;
-      if ( ! p -> buffs_eclipse_solar -> check()
-        && ! p -> buffs_eclipse_lunar -> check()
-        && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+
+      if ( ! p -> buffs_eclipse_lunar -> check() )
       {
-        gain *= 2;
+        // effect#2 of wrath spell => 92679
+        // 92679 -> base_value == 13
+        int gain = -13; 
+        if ( ! p -> buffs_eclipse_solar -> check() 
+          && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+        {
+          gain *= 2;
+        }
+        trigger_eclipse_energy_gain( this, gain );
       }
-      trigger_eclipse_energy_gain( this, gain );
     }
   }
 
@@ -3143,7 +3161,8 @@ struct starsurge_t : public druid_spell_t
     cooldown -> duration = 15.0;
   }
   
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( travel_result, travel_dmg );
@@ -3531,8 +3550,8 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
-  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1,  45.0, 30.0 );
-  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1,  45.0, 30.0 );
+  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1 );
+  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank() );
