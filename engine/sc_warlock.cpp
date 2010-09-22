@@ -485,13 +485,67 @@ struct warlock_pet_t : public pet_t
 
   gain_t* gains_mana_feed;
 
+  struct _stat_list_t {
+    int id;
+    double stats[ BASE_STAT_MAX ];
+  };
+
+
+
+
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
-      pet_t( sim, owner, pet_name ), pet_type( pt ), 
+      pet_t( sim, owner, pet_name ), pet_type( pt ),
       damage_modifier( 1.0 ), melee( 0 )
   {
     gains_mana_feed = get_gain("mana_feed");
 
+  }
+
+
+
+  double get_attribute_base( int level, int stat_type, const _stat_list_t pet_stats[] )
+  {
+    double class_value            = 0.0;
+    double r                      = 0.0;
+    const _stat_list_t* stat_list = 0;
+
+    if ( !(level == 80 || level == 85 ) )
+    {
+      return 0.0;
+    }
+
+    if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
+    {
+      return 0.0;
+    }
+    stat_list = pet_stats;
+
+    int i;
+
+    for ( i = 0; stat_list[ i ].id != 0; i++ )
+    {
+      if ( level == stat_list[ i ].id )
+      {
+        class_value = stat_list[ i ].stats[ stat_type ];
+        break;
+      }
+    }
+
+    r = class_value;
+
+    switch ( stat_type )
+    {
+    case BASE_STAT_MELEE_CRIT_PER_AGI:
+    case BASE_STAT_SPELL_CRIT_PER_INT:
+    case BASE_STAT_DODGE_PER_AGI:
+    case BASE_STAT_MELEE_CRIT:
+    case BASE_STAT_SPELL_CRIT:
+      r /= 100.0;
+      break;
+    }
+
+    return r;
   }
 
   virtual bool ooc_buffs() { return true; }
@@ -500,26 +554,27 @@ struct warlock_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 314;
-    attribute_base[ ATTR_AGILITY   ] =  90;
-    attribute_base[ ATTR_STAMINA   ] = 328;
-    attribute_base[ ATTR_INTELLECT ] = 150;
-    attribute_base[ ATTR_SPIRIT    ] = 209;
+    static const _stat_list_t pet_stats[]=
+    {
+              // str, agi,  sta, int, spi,   hp,  mana, crit/agi, crit/int, dodge/agi, m_crit, s_crit, mp5, spi_reg
+        { 80, {  314,  90,  328, 150, 209,    0,     0,  0.01923,  0.0000,  0.000000,  3.2800,  0.92,  -55 } },
+        { 85, {  453, 883,  353, 159, 225, 5395, 16703,      0.0,  0.0000,       0.0,     0.0,  0.0000, -55 } },
+        { 0, { 0 } }
+    };
 
+    attribute_base[ ATTR_STRENGTH  ] = get_attribute_base( level, BASE_STAT_STRENGTH, pet_stats );
+    attribute_base[ ATTR_AGILITY   ] = get_attribute_base( level, BASE_STAT_AGILITY, pet_stats );
+    attribute_base[ ATTR_STAMINA   ] = get_attribute_base( level, BASE_STAT_STAMINA, pet_stats );
+    attribute_base[ ATTR_INTELLECT ] = get_attribute_base( level, BASE_STAT_INTELLECT, pet_stats );
+    attribute_base[ ATTR_SPIRIT    ] = get_attribute_base( level, BASE_STAT_SPIRIT, pet_stats );
 
-    base_attack_crit = 0.0328;
-    base_spell_crit  = 0.0092;
     
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = 0.01 / 52.0;
     initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
 
     health_per_stamina = 10;
     mana_per_intellect = 10.8;
     mp5_per_intellect  = 2.0 / 3.0;
-
-    base_mp5 = -55;
-
 
   }
 
