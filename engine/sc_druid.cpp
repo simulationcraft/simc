@@ -2156,12 +2156,11 @@ void druid_spell_t::player_buff()
   // Eclipse increases wrath damage by 1.5% per mastery point
   if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_lunar -> up() )
-      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
+      player_multiplier *= 1.25 + p -> composite_mastery() * 0.015;
 
   if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_solar -> up() )
-      player_multiplier *= 1.0 + p -> composite_mastery() * 0.015;
-
+      player_multiplier *= 1.25 + p -> composite_mastery() * 0.015;
 
   player_multiplier *= 1.0 + p -> talent_earth_and_moon -> rank() * 0.02;
   
