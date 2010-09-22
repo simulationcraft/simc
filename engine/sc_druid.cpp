@@ -281,7 +281,6 @@ struct druid_t : public player_t
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_uptimes();
-  virtual void      init_rating();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
@@ -3396,15 +3395,6 @@ pet_t* druid_t::create_pet( const std::string& pet_name )
 void druid_t::create_pets()
 {
   create_pet( "treants" );
-}
-
-// druid_t::init_rating =====================================================
-
-void druid_t::init_rating()
-{
-  player_t::init_rating();
-
-  rating.attack_haste *= 1.0 / 1.30;
 }
 
 // druid_t::init_glyphs =====================================================
