@@ -80,7 +80,7 @@ struct druid_t : public player_t
   // Random Number Generation
   rng_t* rng_euphoria;
   rng_t* rng_fury_swipes;
-  rng_t* rng_feast_of_flesh;
+  rng_t* rng_blood_in_the_water;
   rng_t* rng_primal_fury;
   
   attack_t* cat_melee_attack;
@@ -133,7 +133,7 @@ struct druid_t : public player_t
   talent_t* talent_endless_carnage;
   talent_t* talent_euphoria;
   talent_t* talent_dreamstate;
-  talent_t* talent_feast_of_flesh;
+  talent_t* talent_blood_in_the_water;
   talent_t* talent_feral_aggression;
   talent_t* talent_feral_charge; // NYI
   talent_t* talent_feral_swiftness;
@@ -223,12 +223,12 @@ struct druid_t : public player_t
     talent_balance_of_power      = new talent_t( this, "balance_of_power", "Balance of Power" );
     talent_berserk               = new talent_t( this, "berserk", "Berserk" );
     talent_blessing_of_the_grove = new talent_t( this, "blessing_of_the_grove", "Blessing of the Grove" );
+    talent_blood_in_the_water    = new talent_t( this, "blood_in_the_water", "Blood in the Water" );
     talent_brutal_impact         = new talent_t( this, "brutal_impact", "Brutal Impact" );
     talent_earth_and_moon        = new talent_t( this, "earth_and_moon", "Earth and Moon" );
     talent_endless_carnage       = new talent_t( this, "endless_carnage", "Endless Carnage" );
     talent_euphoria              = new talent_t( this, "euphoria", "Euphoria" );
     talent_dreamstate            = new talent_t( this, "dreamstate", "Dreamstate" );               
-    talent_feast_of_flesh        = new talent_t( this, "feast_of_flesh", "Feast of Flesh" );
     talent_feral_aggression      = new talent_t( this, "feral_aggression", "Feral Aggression" );
     talent_feral_charge          = new talent_t( this, "feral_charge", "Feral Charge" );
     talent_feral_swiftness       = new talent_t( this, "feral_swiftness", "Feral Swiftness" );
@@ -1524,7 +1524,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> rng_feast_of_flesh -> roll( p -> talent_feast_of_flesh -> rank() * 0.5 ) )
+      if ( p -> rng_blood_in_the_water -> roll( p -> talent_blood_in_the_water -> rank() * 0.5 ) )
       {
         p -> dots_rip -> action -> refresh_duration();
       }
@@ -3638,7 +3638,7 @@ void druid_t::init_rng()
 
   rng_euphoria        = get_rng( "euphoria"       );
   rng_fury_swipes     = get_rng( "fury_swipes"    );
-  rng_feast_of_flesh  = get_rng( "feast_of_flesh" );
+  rng_blood_in_the_water  = get_rng( "blood_in_the_water" );
   rng_primal_fury     = get_rng( "primal_fury"    );
 }
 
