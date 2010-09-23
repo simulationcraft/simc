@@ -29,7 +29,7 @@ struct druid_t : public player_t
   buff_t* buffs_lacerate;
   buff_t* buffs_lunar_shower;
   buff_t* buffs_moonkin_form;
-  buff_t* buffs_natures_grace;
+  buff_t* buffs_natures_torment;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
   buff_t* buffs_pulverize;
@@ -145,7 +145,7 @@ struct druid_t : public player_t
   talent_t* talent_gale_winds;
   talent_t* talent_genesis;
   talent_t* talent_heart_of_the_wild;
-  talent_t* talent_improved_feral_charge; // Valid to run out->charge->ravage?
+  talent_t* talent_stampede; // Valid to run out->charge->ravage?
   talent_t* talent_infected_wounds;
   talent_t* talent_king_of_the_jungle;
   talent_t* talent_leader_of_the_pack;
@@ -154,7 +154,7 @@ struct druid_t : public player_t
   talent_t* talent_moonglow;
   talent_t* talent_moonkin_form;
   talent_t* talent_natural_reaction;
-  talent_t* talent_natures_grace;
+  talent_t* talent_natures_torment;
   talent_t* talent_natures_majesty;
   talent_t* talent_natures_swiftness;
   talent_t* talent_nurturing_instict; // NYI
@@ -240,7 +240,6 @@ struct druid_t : public player_t
     talent_gale_winds            = new talent_t( this, "gale_winds", "Gale Winds" );
     talent_genesis               = new talent_t( this, "genesis", "Genesis" );
     talent_heart_of_the_wild     = new talent_t( this, "heart_of_the_wild", "Heart of the Wild" );
-    talent_improved_feral_charge = new talent_t( this, "improved_feral_charge", "Improved Feral Charge" );
     talent_infected_wounds       = new talent_t( this, "infected_wounds", "Infected Wounds" );
     talent_king_of_the_jungle    = new talent_t( this, "king_of_the_jungle", "King of the Jungle" );
     talent_leader_of_the_pack    = new talent_t( this, "leader_of_the_pack", "Leader of the Pack" );
@@ -249,9 +248,9 @@ struct druid_t : public player_t
     talent_moonglow              = new talent_t( this, "moonglow", "Moonglow" );
     talent_moonkin_form          = new talent_t( this, "moonkin_form", "Moonkin Form" );
     talent_natural_reaction      = new talent_t( this, "natural_reaction", "Natural Reaction" );
-    talent_natures_grace         = new talent_t( this, "natures_grace", "Natures Grace" );
-    talent_natures_majesty       = new talent_t( this, "natures_majesty", "Natures Majesty" );
-    talent_natures_swiftness     = new talent_t( this, "natures_swiftness", "Natures Swiftness" ); 
+    talent_natures_majesty       = new talent_t( this, "natures_majesty", "Nature's Majesty" );
+    talent_natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
+    talent_natures_torment       = new talent_t( this, "natures_torment", "Nature's Torment" );
     talent_nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
     talent_overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
     talent_owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
@@ -262,6 +261,7 @@ struct druid_t : public player_t
     talent_rend_and_tear         = new talent_t( this, "rend_and_tear", "Rend and Tear" );
     talent_shooting_stars        = new talent_t( this, "shooting_stars", "Shooting Stars" );
     talent_solar_beam            = new talent_t( this, "solar_beam", "Solar Beam" );
+    talent_stampede              = new talent_t( this, "stampede", "Stampede" );
     talent_starfall              = new talent_t( this, "starfall", "Starfall" );
     talent_starlight_wrath       = new talent_t( this, "starlight_wrath", "Starlight Wrath" );
     talent_sunfire               = new talent_t( this, "sunfire", "Sunfire" );
@@ -640,7 +640,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
       {
         p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
         p -> buffs_t11_4pc_caster -> trigger( 3 );
-        p -> buffs_natures_grace -> reset_cooldown();
+        p -> buffs_natures_torment -> reset_cooldown();
       }
     }
     else if ( p -> eclipse_bar_value == -100 ) 
@@ -649,7 +649,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
       {
         p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
         p -> buffs_t11_4pc_caster -> trigger( 3 );
-        p -> buffs_natures_grace -> reset_cooldown();
+        p -> buffs_natures_torment -> reset_cooldown();
       }
     }
   }
@@ -2065,7 +2065,7 @@ double druid_spell_t::haste() SC_CONST
   druid_t* p = player -> cast_druid();
   double h =  spell_t::haste();
 
-  h *= 1.0 / ( 1.0 +  p -> buffs_natures_grace -> value() );
+  h *= 1.0 / ( 1.0 +  p -> buffs_natures_torment -> value() );
 
   return h;
 }
@@ -2472,7 +2472,7 @@ struct insect_swarm_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     if ( result_is_hit() )
     {
-      p -> buffs_natures_grace -> trigger( 1, p -> talent_natures_grace -> rank() * 0.05 );
+      p -> buffs_natures_torment -> trigger( 1, p -> talent_natures_torment -> rank() * 0.05 );
     }
   }
 };
@@ -2571,7 +2571,7 @@ struct moonfire_t : public druid_spell_t
 
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
-      p -> buffs_natures_grace -> trigger( 1, p -> talent_natures_grace -> rank() * 0.05 );
+      p -> buffs_natures_torment -> trigger( 1, p -> talent_natures_torment -> rank() * 0.05 );
     }
   }
   virtual double cost() SC_CONST
@@ -3544,7 +3544,7 @@ void druid_t::init_buffs()
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talent_lunar_shower -> rank() );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talent_natures_grace -> rank() );
+  buffs_natures_torment      = new buff_t( this, "natures_torment"     , 1,  15.0,  60.0, talent_natures_torment -> rank() );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank() );
