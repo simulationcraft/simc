@@ -1708,7 +1708,7 @@ struct curse_of_elements_t : public warlock_spell_t
       target_t*  t = sim -> target;
       warlock_t* p = player -> cast_warlock();
       t -> debuffs.curse_of_elements -> expire();
-      t -> debuffs.curse_of_elements -> trigger( 1, 13 );
+      t -> debuffs.curse_of_elements -> trigger( 1, 8 );
       t -> debuffs.curse_of_elements -> player = p;
     }
   }
@@ -4291,6 +4291,6 @@ void player_t::warlock_combat_begin( sim_t* sim )
 
   target_t* t = sim -> target;
   if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
-  if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 13 );
+  if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 8 );
 }
 
