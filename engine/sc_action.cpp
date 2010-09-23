@@ -163,13 +163,13 @@ void action_t::_init_action_t()
   parse_data ( player -> player_data );
 }
 
-action_t::action_t( int         ty,
-                    const char* n,
-                    player_t*   p,
-                    int         r,
-                    int         s,
-                    int         tr,
-                    bool        sp ) :
+action_t::action_t( int               ty,
+                    const char*       n,
+                    player_t*         p,
+                    int               r,
+                    const school_type s,
+                    int               tr,
+                    bool              sp ) :
   active_spell_t( p, n ),
   sim( pp->sim ), type( ty ), name_str( token_name ), 
   player( pp ), school( s ), resource( r ), 
@@ -238,7 +238,8 @@ void action_t::parse_data( sc_data_access_t& pData )
     		else
     		{
     			tick_power_mod   = pData.effect_coeff( effect );
-    			base_td          = pData.effect_base_value ( effect );
+    			//base_td          = pData.effect_base_value ( effect );
+          base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
     			base_tick_time   = pData.effect_period ( effect );
     			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
     		}
@@ -533,7 +534,8 @@ void action_t::target_debuff( int dmg_type )
   if ( t -> debuffs.heart_of_the_crusader -> up() ||
        t -> debuffs.master_poisoner       -> up() )
   {
-    target_crit += 0.03;
+    // No longer does this.
+//    target_crit += 0.03;
   }
 
   if ( base_attack_power_multiplier > 0 )
@@ -750,6 +752,8 @@ double action_t::calculate_tick_damage()
   tick_dmg  = base_td + total_power() * tick_power_mod;
   tick_dmg *= total_td_multiplier();
 
+  modify_tick_damage();
+
   double init_tick_dmg = tick_dmg;
 
   if ( result == RESULT_CRIT )
@@ -796,7 +800,10 @@ double action_t::calculate_direct_damage()
       direct_dmg *= 0.5;
   }
   direct_dmg += direct_power_mod * total_power();
+  direct_dmg  = ceil( direct_dmg ); // Needs verifying. Seems okay for SW: Death
   direct_dmg *= total_dd_multiplier();
+
+  modify_direct_damage();
 
   double init_direct_dmg = direct_dmg;
 
@@ -893,15 +900,9 @@ void action_t::execute()
 
   consume_resource();
 
-
-
-
-
   if ( result_is_hit() )
   {
     calculate_direct_damage();
-
-    schedule_travel();
   }
   else
   {
@@ -912,6 +913,7 @@ void action_t::execute()
     }
   }
 
+  schedule_travel();
 
   update_ready();
 
@@ -1148,16 +1150,15 @@ void action_t::schedule_travel()
   time_to_travel = travel_time();
 
   if ( time_to_travel == 0 )
-    travel(result,direct_dmg);
+    travel( result, direct_dmg );
   else
   {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
+    }
 
-  if ( sim -> log )
-  {
-    log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
-  }
-
-  new ( sim ) action_travel_event_t( sim, this, time_to_travel );
+    new ( sim ) action_travel_event_t( sim, this, time_to_travel );
   }
 }
 

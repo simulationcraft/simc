@@ -469,15 +469,16 @@ bool item_t::decode_special( special_effect_t& effect,
   {
     token_t& t = tokens[ i ];
     int s;
+    school_type sc;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       effect.stat = s;
       effect.amount = t.value;
     }
-    else if ( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( sc = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
-      effect.school = s;
+      effect.school = sc;
       effect.amount = t.value;
     }
     else if ( t.name == "stacks" || t.name == "stack" )
@@ -760,7 +761,8 @@ bool item_t::decode_weapon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int type, school;
+    int type;
+    school_type school;
 
     if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {

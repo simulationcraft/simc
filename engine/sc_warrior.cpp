@@ -207,7 +207,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_block_value() SC_CONST;
-  virtual double    composite_tank_miss( int school ) SC_CONST;
+  virtual double    composite_tank_miss( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
@@ -250,7 +250,7 @@ struct warrior_attack_t : public attack_t
   double min_rage, max_rage;
   int stancemask;
 
-  warrior_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
+  warrior_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, special ),
       min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
@@ -1932,7 +1932,7 @@ struct warrior_spell_t : public spell_t
 {
   double min_rage, max_rage;
   int stancemask;
-  warrior_spell_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
+  warrior_spell_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
       spell_t( n, player, RESOURCE_RAGE, s, t ),
       min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
@@ -2279,7 +2279,7 @@ struct stance_t : public warrior_spell_t
 
 // warrior_t::composite_tank_miss ==========================================
 
-double warrior_t::composite_tank_miss( int school ) SC_CONST
+double warrior_t::composite_tank_miss( const school_type school ) SC_CONST
 {
   double m = player_t::composite_tank_miss( school );
 

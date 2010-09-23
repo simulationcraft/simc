@@ -45,7 +45,7 @@ attack_t::attack_t( const active_spell_t& s, const player_type ptype, const play
   _init_attack_t();
 }
 
-attack_t::attack_t( const char* n, player_t* p, int resource, int school, int tree, bool special ) :
+attack_t::attack_t( const char* n, player_t* p, int resource, const school_type school, int tree, bool special ) :
     action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
     base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {

@@ -372,7 +372,7 @@ struct mage_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual talent_tree_type primary_tree() SC_CONST;
   virtual double    composite_armor() SC_CONST;
-  virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
 
   // Event Tracking
@@ -398,7 +398,7 @@ struct mage_spell_t : public spell_t
   int max_ab_stack;
   bool spell_impact;
 
-  mage_spell_t( const char* n, player_t* player, int s, int t ) :
+  mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
       may_torment( false ),
       dps_rotation( 0 ),
@@ -3556,7 +3556,7 @@ double mage_t::composite_armor() SC_CONST
 
 // mage_t::composite_spell_power ===========================================
 
-double mage_t::composite_spell_power( int school ) SC_CONST
+double mage_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -3814,7 +3814,7 @@ void player_t::mage_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_INTELLECT, 60.0, 1 );
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, 5401, 1 );
     p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
   }
 

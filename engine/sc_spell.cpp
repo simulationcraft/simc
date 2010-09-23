@@ -26,7 +26,7 @@ spell_t::spell_t( const active_spell_t& s, const player_type ptype, const player
   _init_spell_t();
 }
 
-spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
+spell_t::spell_t( const char* n, player_t* p, int r, const school_type s, int t ) :
     action_t( ACTION_SPELL, n, p, r, s, t, true )
 {
   _init_spell_t();

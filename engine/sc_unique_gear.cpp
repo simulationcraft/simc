@@ -84,7 +84,7 @@ struct discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, int school, double min, double max, double pc, double cd, int rng_type=RNG_DEFAULT ) :
+  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, const school_type school, double min, double max, double pc, double cd, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ), cooldown( cd ), cooldown_ready( 0 )
   {
@@ -92,7 +92,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double min, double max, int s ) :
+      discharge_spell_t( const char* n, player_t* p, double min, double max, const school_type s ) :
           spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
@@ -785,7 +785,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
     const std::string& name,
     player_t*          player,
     int                max_stacks,
-    int                school,
+    const school_type  school,
     double             min_dmg,
     double             max_dmg,
     double             proc_chance,
@@ -894,6 +894,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "flare_of_the_heavens"                ) e = "OnSpellCast_850SP_10%_10Dur_45Cd";
   else if ( name == "forge_ember"                         ) e = "OnSpellCastHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";
+  else if ( name == "gale_of_shadows"                     ) e = "OnSpellTickDamage_15SP_20Stack_15Dur";
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612ArPen_15%_10Dur_45Cd";
   else if ( name == "herkuml_war_token"                   ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul"     ) e = "OnSpellCast_20SP_10Stack_10Dur";
@@ -909,6 +910,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "quagmirrans_eye"                     ) e = "OnSpellCast_320Haste_10%_6Dur_45Cd";
   else if ( name == "sextant_of_unstable_currents"        ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
+  else if ( name == "stump_of_time"                       ) e = "OnSpellCast_1926SP_10%_15Dur_45Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellCastHit_132SP_5%_10Dur";
 
@@ -934,10 +936,10 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
-  else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
-  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_400Mana_35%_60Cd";
-  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_400AP_25%_60Cd";
+  else if ( name == "lightweave"                          ) e = "OnSpellCast_590SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
+  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_590SP_35%_15Dur_60Cd";
+  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_35%_60Cd";
+  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_800AP_25%_60Cd";
 
   // DK Runeforges
   else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";

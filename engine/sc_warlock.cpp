@@ -438,7 +438,7 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual talent_tree_type primary_tree() SC_CONST;
-  virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_power( const school_type school ) SC_CONST;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -661,7 +661,7 @@ struct warlock_spell_t : public spell_t
 {
 
 
-  warlock_spell_t( const char* n, player_t* player, int s, int t ) :
+  warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
     may_crit      = true;
@@ -826,7 +826,7 @@ struct warlock_pet_melee_t : public attack_t
 
 struct warlock_pet_attack_t : public attack_t
 {
-  warlock_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_MANA, int s=SCHOOL_PHYSICAL ) :
+  warlock_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_MANA, const school_type s=SCHOOL_PHYSICAL ) :
       attack_t( n, player, r, s, TREE_NONE, true )
   {
     special    = true;
@@ -877,7 +877,7 @@ static void trigger_mana_feed( action_t* s )
 struct warlock_pet_spell_t : public spell_t
 {
 
-  warlock_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_MANA, int s=SCHOOL_SHADOW ) :
+  warlock_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_MANA, const school_type s=SCHOOL_SHADOW ) :
       spell_t( n, player, r, s )
   {
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
@@ -3765,7 +3765,7 @@ void imp_pet_t::firebolt_t::travel( int travel_result, double travel_dmg)
 
 // warlock_t::composite_spell_power =========================================
 
-double warlock_t::composite_spell_power( int school ) SC_CONST
+double warlock_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 

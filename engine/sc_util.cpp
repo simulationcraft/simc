@@ -343,6 +343,7 @@ const char* util_t::meta_gem_type_string( int type )
   case META_BRACING_EARTHSTORM:      return "bracing_earthstorm";
   case META_CHAOTIC_SKYFIRE:         return "chaotic_skyfire";
   case META_CHAOTIC_SKYFLARE:        return "chaotic_skyflare";
+  case META_EMBER_SHADOWSPIRIT:      return "ember_shadowspirit";
   case META_EMBER_SKYFLARE:          return "ember_skyflare";
   case META_ENIGMATIC_SKYFLARE:      return "enigmatic_skyflare";
   case META_ENIGMATIC_STARFLARE:     return "enigmatic_starflare";
@@ -471,11 +472,11 @@ const char* util_t::school_type_string( int school )
 
 // util_t::parse_school_type ===============================================
 
-int util_t::parse_school_type( const std::string& name )
+school_type util_t::parse_school_type( const std::string& name )
 {
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int i=SCHOOL_NONE; i < SCHOOL_MAX; i++ )
     if ( str_compare_ci( name, util_t::school_type_string( i ) ) )
-      return i;
+      return ( school_type )( i );
 
   return SCHOOL_NONE;
 }

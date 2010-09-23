@@ -297,7 +297,7 @@ struct druid_t : public player_t
   virtual double    composite_block_value() SC_CONST { return 0; }
   virtual double    composite_tank_parry() SC_CONST { return 0; }
   virtual double    composite_tank_block() SC_CONST { return 0; }
-  virtual double    composite_tank_crit( int school ) SC_CONST;
+  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -349,7 +349,7 @@ struct druid_cat_attack_t : public attack_t
   double min_rip_expire, max_rip_expire;
   double min_rake_expire, max_rake_expire;
 
-  druid_cat_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_cat_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
       requires_stealth( 0 ),
       requires_position( POSITION_NONE ),
@@ -387,7 +387,7 @@ struct druid_bear_attack_t : public attack_t
   double min_lacerate_expire, max_lacerate_expire;
   int    min_lacerate_stack, max_lacerate_stack;
 
-  druid_bear_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, true ),
       berserk( 0 ),
       min_rage( 0 ), max_rage( 0 ),
@@ -412,7 +412,7 @@ struct druid_bear_attack_t : public attack_t
 struct druid_spell_t : public spell_t
 {
   int skip_on_eclipse;
-  druid_spell_t( const char* n, player_t* p, int s, int t ) :
+  druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) {}
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
@@ -2210,7 +2210,7 @@ struct enrage_t : public druid_spell_t
   double max_rage;
 
   enrage_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "enrage", player, RESOURCE_NONE, TREE_FERAL )
+    druid_spell_t( "enrage", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     option_t options[] =
     {
@@ -3899,7 +3899,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit( int school ) SC_CONST
+double druid_t::composite_tank_crit( const school_type school ) SC_CONST
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -4134,7 +4134,7 @@ void player_t::druid_combat_begin( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 13 );
+  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
   if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();

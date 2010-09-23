@@ -302,7 +302,7 @@ struct rogue_attack_t : public attack_t
   double min_rup_expire, max_rup_expire;
   double min_env_expire, max_env_expire;
 
-  rogue_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  rogue_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
       requires_weapon( WEAPON_NONE ),
       requires_position( POSITION_NONE ),

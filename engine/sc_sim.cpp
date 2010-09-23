@@ -1245,7 +1245,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
-  overrides.judgement_of_wisdom    = optimal_raid;
+  overrides.judgement_of_wisdom    = 0;
   overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
   overrides.mana_spring_totem      = optimal_raid;

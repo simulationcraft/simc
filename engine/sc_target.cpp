@@ -42,7 +42,7 @@ const char* target_t::id()
 // target_t::assess_damage ==================================================
 
 void target_t::assess_damage( double amount,
-                              int    school,
+                              const school_type school,
                               int    dmg_type )
 {
   total_dmg += amount;

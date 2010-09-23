@@ -46,6 +46,7 @@
 #include <string>
 #include <queue>
 #include <vector>
+#include <list>
 #include <map>
 #include <algorithm>
 #include <assert.h>
@@ -346,7 +347,7 @@ enum talent_tree_type
 
 enum talent_tab_name
 {
-  TALENT_TAB_NONE = 0,
+  TALENT_TAB_NONE = -1,
   DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
   DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
   HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
@@ -446,6 +447,7 @@ enum meta_gem_type
   META_BRACING_EARTHSTORM,
   META_CHAOTIC_SKYFIRE,
   META_CHAOTIC_SKYFLARE,
+  META_EMBER_SHADOWSPIRIT,
   META_EMBER_SKYFLARE,
   META_ENIGMATIC_SKYFLARE,
   META_ENIGMATIC_STARFLARE,
@@ -1507,7 +1509,7 @@ struct util_t
   static race_type parse_race_type             ( const std::string& name );
   static int parse_resource_type               ( const std::string& name );
   static int parse_result_type                 ( const std::string& name );
-  static int parse_school_type                 ( const std::string& name );
+  static school_type parse_school_type         ( const std::string& name );
   static int parse_slot_type                   ( const std::string& name );
   static int parse_stat_type                   ( const std::string& name );
   static int parse_talent_tree                 ( const std::string& name );
@@ -2118,7 +2120,8 @@ struct rating_t
 
 struct weapon_t
 {
-  int    type, school;
+  int    type;
+  school_type school;
   double damage, dps;
   double min_dmg, max_dmg;
   double swing_time;
@@ -2130,7 +2133,7 @@ struct weapon_t
   double normalized_weapon_speed() SC_CONST;
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) SC_CONST;
 
-  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, int s=SCHOOL_PHYSICAL ) :
+  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, school_type s=SCHOOL_PHYSICAL ) :
       type(t), school(s), damage(d), min_dmg(d), max_dmg(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0) { }
 };
 
@@ -2182,11 +2185,13 @@ struct item_t
     std::string name_str, trigger_str;
     int trigger_type;
     int64_t trigger_mask;
-    int stat, school, max_stacks;
+    int stat;
+    school_type school;
+    int max_stacks;
     double amount, proc_chance, duration, cooldown, tick;
     bool reverse;
     special_effect_t() :
-        trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( 0 ),
+        trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
@@ -2262,6 +2267,8 @@ struct player_t
   pet_t*      pet_list;
   int64_t     last_modified;
   int         bugs;
+  int         pri_tree;
+  int         invert_spirit_scaling;
 
   // Data access
   sc_data_access_t player_data;
@@ -2476,6 +2483,7 @@ struct player_t
     buff_t* power_infusion;
     buff_t* hysteria;
     buff_t* replenishment;
+    buff_t* self_movement;
     buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* strength_of_wrynn;
@@ -2585,7 +2593,7 @@ struct player_t
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
   virtual double composite_spell_haste() SC_CONST;
-  virtual double composite_spell_power( int school ) SC_CONST;
+  virtual double composite_spell_power( const school_type school ) SC_CONST;
   virtual double composite_spell_crit() SC_CONST;
   virtual double composite_spell_hit() SC_CONST;
   virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
@@ -2595,13 +2603,13 @@ struct player_t
   virtual double composite_armor()                 SC_CONST;
   virtual double composite_block_value()           SC_CONST;
   virtual double composite_defense()               SC_CONST { return defense; }
-  virtual double composite_tank_miss( int school ) SC_CONST;
+  virtual double composite_tank_miss( const school_type school ) SC_CONST;
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;
   virtual double composite_tank_block()            SC_CONST;
-  virtual double composite_tank_crit( int school ) SC_CONST;
+  virtual double composite_tank_crit( const school_type school ) SC_CONST;
 
-  virtual double diminished_miss( int school )  SC_CONST;
+  virtual double diminished_miss( const school_type school )  SC_CONST;
   virtual double diminished_dodge()             SC_CONST;
   virtual double diminished_parry()             SC_CONST;
 
@@ -2609,7 +2617,7 @@ struct player_t
   virtual double composite_spell_power_multiplier() SC_CONST;
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
 
-  virtual double composite_player_multiplier( int school ) SC_CONST;
+  virtual double composite_player_multiplier( const school_type school ) SC_CONST;
 
   virtual double strength() SC_CONST;
   virtual double agility() SC_CONST;
@@ -2630,6 +2638,7 @@ struct player_t
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual talent_tree_type primary_tree() SC_CONST;
+  virtual talent_tab_name primary_tab() SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );
@@ -2881,7 +2890,7 @@ struct target_t
   void reset();
   void combat_begin();
   void combat_end();
-  void assess_damage( double amount, int school, int type );
+  void assess_damage( double amount, const school_type school, int type );
   void recalculate_health();
   double time_to_die() SC_CONST;
   double health_percentage() SC_CONST;
@@ -2901,7 +2910,7 @@ struct stats_t
   sim_t* sim;
   player_t* player;
   stats_t* next;
-  int school;
+  school_type school;
   bool channeled;
   bool analyzed;
   bool initialized;
@@ -2996,8 +3005,9 @@ struct spell_id_t
   static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
 
   static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector, int opt_type = OPT_SPELL_ENABLED );
-  static uint32_t get_school_mask( school_type s );
-  static school_type get_school_type( uint32_t mask );
+  static uint32_t get_school_mask( const school_type s );
+  static school_type get_school_type( const uint32_t mask );
+  static bool is_school( const school_type s, const school_type s2 );
 
   virtual void push_back() {};
 
@@ -3132,7 +3142,9 @@ struct action_t : public active_spell_t
   std::string name_str;
   player_t* player;
   uint32_t id;
-  int effect_nr, school, resource, tree, result;
+  int effect_nr;
+  school_type school;
+  int resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, scale_with_haste, usable_moving;
@@ -3187,7 +3199,7 @@ struct action_t : public active_spell_t
   action_t** observer;
   action_t* next;
 
-  action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
+  action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const char* sname, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
@@ -3217,6 +3229,8 @@ struct action_t : public active_spell_t
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();
+  virtual void   modify_direct_damage() { };
+  virtual void   modify_tick_damage() { };
   virtual double armor() SC_CONST;
   virtual double resistance() SC_CONST;
   virtual void   consume_resource();
@@ -3276,7 +3290,7 @@ struct attack_t : public action_t
   double base_expertise, player_expertise, target_expertise;
 
   attack_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE, bool special=false );
-  attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
+  attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
   virtual ~attack_t() {}
@@ -3306,7 +3320,7 @@ struct attack_t : public action_t
 struct spell_t : public action_t
 {
   spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE );
-  spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, int s=SCHOOL_PHYSICAL, int t=TREE_NONE );
+  spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );
   virtual ~spell_t() {}
@@ -3488,7 +3502,7 @@ struct unique_gear_t
                                                 double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
-                                                     int max_stacks, int school, double min_dmg, double max_dmg,
+                                                     int max_stacks, const school_type school, double min_dmg, double max_dmg,
                                                      double proc_chance, double cooldown,
                                                      int rng_type=RNG_DEFAULT );
 

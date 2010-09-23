@@ -231,7 +231,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -255,7 +255,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct shaman_attack_t : public attack_t
 {
-  shaman_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  shaman_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_MANA, s, t, special )
   {
     base_dd_min = base_dd_max = 1;
@@ -276,7 +276,7 @@ struct shaman_spell_t : public spell_t
 {
   double base_cost_reduction;
 
-  shaman_spell_t( const char* n, player_t* p, int s, int t ) :
+  shaman_spell_t( const char* n, player_t* p, const school_type s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 )
   {
 
@@ -486,7 +486,7 @@ struct fire_elemental_pet_t : public pet_t
     return owner -> composite_attack_power_multiplier() * owner -> composite_attack_power();
   }
 
-  virtual double composite_spell_power( int school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     return owner -> composite_spell_power_multiplier() * owner -> composite_spell_power( school );
   }
@@ -2560,7 +2560,7 @@ struct mana_spring_totem_t : public shaman_spell_t
 
     base_cost_reduction += p -> talent_totemic_focus -> rank() * 0.10;
 
-    regen = util_t::ability_rank( p -> level,  828.0,85, 91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
+    regen = util_t::ability_rank( p -> level,  326.0,85, 91.0,80,  82.0,76,  73.0,71,  41.0,65,  31.0,0 );
 
     id = 5675;
   }
@@ -3687,7 +3687,7 @@ double shaman_t::composite_attack_power_multiplier() SC_CONST
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( int school ) SC_CONST
+double shaman_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -3896,7 +3896,7 @@ void player_t::shaman_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.elemental_oath    ) sim -> auras.elemental_oath    -> override();
   if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 0.10 );
-  if ( sim -> overrides.mana_spring_totem ) sim -> auras.mana_spring_totem -> override( 1, 828.0 );
+  if ( sim -> overrides.mana_spring_totem ) sim -> auras.mana_spring_totem -> override( 1, 326.0 );
   if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 1395.0 );
   if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 10.0 );
   if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.20 );

@@ -266,7 +266,7 @@ player_t::player_t( sim_t*             s,
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), bugs( true ),
+    pet_list( 0 ), last_modified( 0 ), bugs( true ), pri_tree( -1 ), invert_spirit_scaling( 0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -670,6 +670,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if ( meta_gem == META_BRACING_EARTHSTORM      ) item_stats.spell_power += 14;
   else if ( meta_gem == META_CHAOTIC_SKYFIRE         ) item_stats.crit_rating += 12;
   else if ( meta_gem == META_CHAOTIC_SKYFLARE        ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_EMBER_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
   else if ( meta_gem == META_EMBER_SKYFLARE          ) item_stats.spell_power += 25;
   else if ( meta_gem == META_ENIGMATIC_SKYFLARE      ) item_stats.crit_rating += 21;
   else if ( meta_gem == META_ENIGMATIC_STARFLARE     ) item_stats.crit_rating += 17;
@@ -701,9 +702,13 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   {
     initial_armor_multiplier *= 1.02;
   }
+  else if ( meta_gem == META_EMBER_SHADOWSPIRIT )
+  {
+    mana_per_intellect *= 1.02;
+  }
   else if ( meta_gem == META_EMBER_SKYFLARE )
   {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
+    mana_per_intellect *= 1.02;
   }
   else if ( meta_gem == META_BEAMING_EARTHSIEGE )
   {
@@ -877,7 +882,14 @@ void player_t::init_resources( bool force )
     {
       resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
 
-      if ( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
+      if ( i == RESOURCE_MANA ) 
+      {
+        if ( meta_gem == META_EMBER_SHADOWSPIRIT )
+        {
+          resource_initial[ i ] *= 1.02;
+        }
+        resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
+      }
       if ( i == RESOURCE_HEALTH ) 
       {
         resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
@@ -1027,7 +1039,7 @@ void player_t::init_talents()
 
 void player_t::init_spells()
 {
-
+  pri_tree = primary_tab();
 }
 
 
@@ -1048,6 +1060,8 @@ void player_t::init_buffs()
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  -1 );
   buffs.stunned = new buff_t( this, "stunned", -1 );
+
+  buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
@@ -1422,7 +1436,7 @@ double player_t::composite_armor() SC_CONST
 
 // player_t::composite_tank_miss ===========================================
 
-double player_t::composite_tank_miss( int school ) SC_CONST
+double player_t::composite_tank_miss( const school_type school ) SC_CONST
 {
   double m = 0;
 
@@ -1567,7 +1581,7 @@ double player_t::composite_block_value() SC_CONST
 
 // player_t::composite_tank_crit ==========================================
 
-double player_t::composite_tank_crit( int school ) SC_CONST
+double player_t::composite_tank_crit( const school_type school ) SC_CONST
 {
   double c = 0;
 
@@ -1599,7 +1613,7 @@ double player_t::composite_tank_crit( int school ) SC_CONST
 
 // player_t::diminished_miss =========================================
 
-double player_t::diminished_miss( int school ) SC_CONST
+double player_t::diminished_miss( const school_type school ) SC_CONST
 {
   if ( diminished_kfactor == 0 || diminished_miss_capi == 0 ) return 0;
 
@@ -1705,7 +1719,7 @@ double player_t::composite_spell_haste() SC_CONST
 
 // player_t::composite_spell_power ========================================
 
-double player_t::composite_spell_power( int school ) SC_CONST
+double player_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = spell_power[ school ];
 
@@ -1833,7 +1847,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // player_t::composite_player_multiplier ================================
 
-double player_t::composite_player_multiplier( int school ) SC_CONST
+double player_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
   double m = 1.0;
 
@@ -1944,13 +1958,6 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  bool is_alliance =
-    (race == RACE_NIGHT_ELF) ||
-    (race == RACE_GNOME)     ||
-    (race == RACE_DWARF)     ||
-    (race == RACE_HUMAN)     ||
-    (race == RACE_DRAENEI);
-
   if ( sim -> overrides.strength_of_wrynn )
   {
     buffs.strength_of_wrynn -> trigger();
@@ -1960,25 +1967,9 @@ void player_t::combat_begin()
     buffs.hellscreams_warsong -> trigger();
   }
 
-  if ( sim -> overrides.heroic_presence && is_alliance )
+  if ( race == RACE_DRAENEI )
   {
     buffs.heroic_presence -> trigger();
-  }
-  else if ( race == RACE_DRAENEI )
-  {
-    buffs.heroic_presence -> trigger();
-
-    if ( party != 0 )
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> party == party &&
-            p -> type != PLAYER_GUARDIAN )
-        {
-          p -> buffs.heroic_presence -> trigger();
-        }
-      }
-    }
   }
 
   if ( sim -> overrides.replenishment ) buffs.replenishment -> override();
@@ -2326,7 +2317,7 @@ void player_t::regen( double periodicity )
 
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
 
-      if ( recent_cast() && mana_regen_while_casting < 1.0 )
+      if ( mana_regen_while_casting < 1.0 )
       {
         spirit_regen *= mana_regen_while_casting;
       }
@@ -2341,7 +2332,7 @@ void player_t::regen( double periodicity )
 
       if ( buffs.replenishment -> up() )
       {
-        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0020 / 1.0;
+        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
 
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }
@@ -2351,7 +2342,7 @@ void player_t::regen( double periodicity )
 
       if ( ms > bow )
       {
-        double mana_spring_regen = periodicity * ms / 2.0;
+        double mana_spring_regen = periodicity * ms / 5.0;
 
         resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
       }
@@ -2459,15 +2450,15 @@ bool player_t::resource_available( int    resource,
   return resource_current[ resource ] >= cost;
 }
 
-// player_t::primary_tree ===================================================
-talent_tree_type player_t::primary_tree() SC_CONST
+// player_t::primary_tab ===================================================
+talent_tab_name player_t::primary_tab() SC_CONST
 {
   if ( level > 10 && level <= 69 )
-    {
-    if ( talent_tab_points[ 0 ] > 0 ) return tree_type[ 0 ];
-    if ( talent_tab_points[ 1 ] > 0 ) return tree_type[ 1 ];
-    if ( talent_tab_points[ 2 ] > 0 ) return tree_type[ 2 ];
-    return TREE_NONE;
+  {
+    if ( talent_tab_points[ 0 ] > 0 ) return ( talent_tab_name ) 0;
+    if ( talent_tab_points[ 1 ] > 0 ) return ( talent_tab_name ) 1;
+    if ( talent_tab_points[ 2 ] > 0 ) return ( talent_tab_name ) 2;
+    return TALENT_TAB_NONE;
   }
   else
   {
@@ -2475,22 +2466,33 @@ talent_tree_type player_t::primary_tree() SC_CONST
     {
       if ( talent_tab_points[ 0 ] >= talent_tab_points[ 2 ] )
       {
-        return tree_type[ 0 ];
+        return ( talent_tab_name ) 0;
       }
       else
       {
-        return tree_type[ 2 ];
+        return ( talent_tab_name ) 2;
       }
     }
     else if ( talent_tab_points[ 2 ] >= talent_tab_points[ 1 ] )
     {
-      return tree_type[ 2 ];
+      return ( talent_tab_name ) 2;
     }
     else
     {
-      return tree_type[ 1 ];
+      return ( talent_tab_name ) 1;
     }
   }
+}
+
+// player_t::primary_tree ===================================================
+talent_tree_type player_t::primary_tree() SC_CONST
+{
+  talent_tab_name t = primary_tab();
+
+  if ( t == TALENT_TAB_NONE )
+    return TREE_NONE;
+
+  return tree_type[ t ];
 }
 
 // player_t::normalize_by ===================================================
@@ -3101,6 +3103,80 @@ int player_t::target_swing()
   return RESULT_HIT;
 }
 
+// Chosen Movement Actions
+
+struct start_moving_t : public action_t
+{
+  start_moving_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "start_moving", player )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+
+    cooldown -> duration = 0.5;
+    harmful = false;
+  }
+
+  virtual void execute()
+  {   
+    player -> buffs.self_movement -> trigger();
+    player -> buffs.moving -> increment();
+
+    if ( sim -> log ) log_t::output( sim, "%s starts moving.", player -> name() );
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> buffs.self_movement -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+struct stop_moving_t : public action_t
+{
+  stop_moving_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "stop_moving", player )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+
+    cooldown -> duration = 0.5; 
+    harmful = false;
+  }
+
+  virtual void execute()
+  {    
+    player -> buffs.self_movement -> expire();
+    player -> buffs.moving -> decrement();
+
+    if ( sim -> log ) log_t::output( sim, "%s stops moving.", player -> name() );
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> buffs.self_movement -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 // ===== Racial Abilities ==================================================
 
 // Arcane Torrent ==========================================================
@@ -3617,7 +3693,7 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-        discharge_spell_t( const char* n, player_t* p, double a, int s ) :
+        discharge_spell_t( const char* n, player_t* p, double a, const school_type s ) :
             spell_t( n, p, RESOURCE_NONE, s )
         {
           trigger_gcd = 0;
@@ -3738,7 +3814,9 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
   if ( name == "sequence"         ) return new         sequence_t( this, options_str );
   if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
+  if ( name == "start_moving"     ) return new     start_moving_t( this, options_str );
   if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
+  if ( name == "stop_moving"      ) return new      stop_moving_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );

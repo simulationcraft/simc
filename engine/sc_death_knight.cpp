@@ -400,7 +400,7 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_player_multiplier( int school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual int       target_swing();
@@ -579,7 +579,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_blood_plague_t : public spell_t
   {
     drw_blood_plague_t( player_t* player ) :
-      spell_t( "blood_plague", player, SCHOOL_SHADOW, TREE_UNHOLY )
+      spell_t( "blood_plague", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -926,7 +926,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_pestilence_t : public spell_t
   {
     drw_pestilence_t( player_t* player ) :
-      spell_t( "pestilence", player, SCHOOL_PHYSICAL, TREE_BLOOD )
+      spell_t( "pestilence", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
     {
       trigger_gcd = 0;
     }
@@ -1077,7 +1077,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
-  virtual double composite_player_multiplier( int school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school ) SC_CONST
   {
     double m = player_t::composite_player_multiplier( school );
     return m;
@@ -1253,7 +1253,7 @@ struct ghoul_pet_t : public pet_t
 
 struct ghoul_pet_attack_t : public attack_t
 {
-  ghoul_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_ENERGY, int sc=SCHOOL_PHYSICAL, bool special=true ) :
+  ghoul_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_ENERGY, const school_type sc=SCHOOL_PHYSICAL, bool special=true ) :
     attack_t( n, player, r, sc, TREE_UNHOLY, special )
   {
     weapon = &( player -> main_hand_weapon );
@@ -1346,7 +1346,7 @@ struct death_knight_attack_t : public attack_t
   bool   use[RUNE_SLOT_MAX];
   bool   additive_factors;
 
-  death_knight_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  death_knight_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_RUNIC, s, t ),
     requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
@@ -1381,7 +1381,7 @@ struct death_knight_spell_t : public spell_t
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
 
-  death_knight_spell_t( const char* n, player_t* player, int s, int t ) :
+  death_knight_spell_t( const char* n, player_t* player, const school_type s, int t ) :
     spell_t( n, player, RESOURCE_RUNIC, s, t ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
   {
@@ -4308,7 +4308,7 @@ double death_knight_t::composite_spell_hit() SC_CONST
   return hit;
 }
 
-double death_knight_t::composite_player_multiplier( int school ) SC_CONST
+double death_knight_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school );
   // Factor flat multipliers here so they effect procs, grenades, etc.
@@ -4551,5 +4551,5 @@ void player_t::death_knight_combat_begin( sim_t* sim )
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_plague       ) t -> debuffs.blood_plague       -> override();
   if ( sim -> overrides.frost_fever        ) t -> debuffs.frost_fever        -> override();
-  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1, 13 );
+  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1, 8 );
 }

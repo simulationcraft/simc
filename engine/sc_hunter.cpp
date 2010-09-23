@@ -612,7 +612,7 @@ struct hunter_pet_t : public pet_t
 
 struct hunter_attack_t : public attack_t
 {
-  hunter_attack_t( const char* n, player_t* player, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  hunter_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_FOCUS, s, t, special )
   {
     hunter_t* p = player -> cast_hunter();
@@ -645,7 +645,7 @@ struct hunter_attack_t : public attack_t
 
 struct hunter_spell_t : public spell_t
 {
-  hunter_spell_t( const char* n, player_t* p, int s, int t ) :
+  hunter_spell_t( const char* n, player_t* p, const school_type s, int t ) :
       spell_t( n, p, RESOURCE_FOCUS, s, t )
   {}
 
@@ -831,7 +831,7 @@ static void check_pet_type( action_t* a, int pet_type )
 
 struct hunter_pet_attack_t : public attack_t
 {
-  hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int sc=SCHOOL_PHYSICAL, bool special=true ) :
+  hunter_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, const school_type sc=SCHOOL_PHYSICAL, bool special=true ) :
       attack_t( n, player, r, sc, TREE_BEAST_MASTERY, special )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
@@ -1189,7 +1189,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 
 struct hunter_pet_spell_t : public spell_t
 {
-  hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, int s=SCHOOL_PHYSICAL ) :
+  hunter_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_FOCUS, const school_type s=SCHOOL_PHYSICAL ) :
       spell_t( n, player, r, s )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();

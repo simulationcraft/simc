@@ -503,6 +503,11 @@ bool spell_id_t::ok() SC_CONST
   if ( spell_id_t_req_talent )
     res = res & spell_id_t_req_talent -> ok();
 
+  if ( spell_id_t_req_tree )
+  {
+    res = res & ( spell_id_t_tab == pp -> pri_tree );
+  }
+
   return res;
 }
 
@@ -571,7 +576,7 @@ uint32_t spell_id_t::school_mask() SC_CONST
   return pp -> player_data.spell_school_mask( spell_id_t_id );
 }
 
-uint32_t get_school_mask( school_type s )
+uint32_t spell_id_t::get_school_mask( const school_type s )
 {
   switch ( s )
   {
@@ -613,7 +618,12 @@ uint32_t get_school_mask( school_type s )
   return 0x00;
 }
 
-school_type spell_id_t::get_school_type( uint32_t mask )
+bool spell_id_t::is_school( const school_type s, const school_type s2 )
+{
+  return ( get_school_mask( s ) & get_school_mask( s2 ) ) != 0;
+}
+
+school_type spell_id_t::get_school_type( const uint32_t mask )
 {
   switch ( mask )
   {

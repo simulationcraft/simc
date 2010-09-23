@@ -44,7 +44,6 @@
 struct priest_t : public player_t
 {
   // Buffs
-  buff_t* buffs_glyph_of_shadow;
   buff_t* buffs_inner_fire;
   buff_t* buffs_inner_fire_armor;
   buff_t* buffs_inner_will;
@@ -60,6 +59,7 @@ struct priest_t : public player_t
   buff_t* buffs_chakra;
   buff_t* buffs_mind_spike;
   buff_t* buffs_shadowfiend;
+  buff_t* buffs_spirit_tap;
 
   // Talents
 
@@ -111,6 +111,8 @@ struct priest_t : public player_t
     passive_spell_t* enlightenment;
     
     passive_spell_t* shadow_orbs;
+    passive_spell_t* dark_evangelism_1;
+    passive_spell_t* dark_evangelism_2;
   };
 
   passive_spells_t passive_spells;
@@ -138,7 +140,8 @@ struct priest_t : public player_t
     active_spell_t* inner_focus;
     active_spell_t* chakra;
     active_spell_t* archangel;
-
+    active_spell_t* dark_archangel;
+ 
     active_spell_t* penance;
     active_spell_t* chastise;
     active_spell_t* mind_flay;
@@ -150,6 +153,7 @@ struct priest_t : public player_t
   cooldown_t*       cooldowns_mind_blast;
   cooldown_t*       cooldowns_shadow_fiend;
   cooldown_t*       cooldowns_archangel;
+  cooldown_t*       cooldowns_dark_archangel;
   cooldown_t*       cooldowns_chakra;
 
   // DoTs
@@ -160,7 +164,6 @@ struct priest_t : public player_t
 
   // Gains
   gain_t* gains_dispersion;
-  gain_t* gains_glyph_of_shadow_word_pain;
   gain_t* gains_shadow_fiend;
   gain_t* gains_archangel;
   gain_t* gains_masochism;
@@ -174,7 +177,8 @@ struct priest_t : public player_t
   proc_t* procs_shadowy_apparation;
 
   // Special
-  spell_t* shadowy;
+  std::queue<spell_t* > shadowy_apparition_free_list;
+  std::list<spell_t* >  shadowy_apparition_active_list;
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
@@ -200,11 +204,12 @@ struct priest_t : public player_t
   struct glyphs_t
   {
     int dispersion;
-    int hymn_of_hope;
+    int divine_accuracy;
+    int holy_nova;
     int inner_fire;
     int mind_flay;
     int penance;
-    int shadow;
+    int spirit_tap;
     int shadow_word_death;
     int shadow_word_pain;
     int smite;
@@ -223,10 +228,13 @@ struct priest_t : public player_t
     double dark_evangelism_value;
     double holy_evangelism_damage_value;
     double holy_evangelism_mana_value;
-    double dark_archangel_value;
+    double dark_archangel_damage_value;
+    double dark_archangel_mana_value;
     double holy_archangel_value;
     double archangel_mana_value;
     double inner_will_value;
+    double inner_fire_spellpower_value;
+    double inner_fire_armor_mult;
 
     // Holy
     double holy_concentration_value;
@@ -270,9 +278,11 @@ struct priest_t : public player_t
   };
   power_mod_t power_mod;
 
+  bool   mysticism;
   bool   use_shadow_word_death;
   int    use_mind_blast;
   int    recast_mind_blast;
+  bool   was_sub_25;
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
@@ -280,9 +290,11 @@ struct priest_t : public player_t
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
 
+    mysticism                           = true;
     use_shadow_word_death               = false;
     use_mind_blast                      = 1;
     recast_mind_blast                   = 0;
+    was_sub_25                          = false;
 
     distance                            = 40;
 
@@ -293,11 +305,9 @@ struct priest_t : public player_t
     dots_devouring_plague               = get_dot( "devouring_plague" );
     dots_holy_fire                      = get_dot( "holy_fire" );
 
-    shadowy                             = 0;
-
     // Discipline
     talents.archangel                   = new talent_t( this, "archangel", "Archangel" ); //           complete 12803
-    talents.evangelism                  = new talent_t( this, "evanelism", "Evangelism" ); //           complete 12803
+    talents.evangelism                  = new talent_t( this, "evangelism", "Evangelism" ); //           complete 12803
     talents.inner_focus                 = new talent_t( this, "inner_focus", "Inner Focus" ); //      new: 12857
     talents.inner_sanctum               = new talent_t( this, "inner_sanctum", "Inner Sanctum" ); //
     talents.mental_agility              = new talent_t( this, "mental_agility", "Mental Agility" ); //                               open: better implementation
@@ -331,6 +341,9 @@ struct priest_t : public player_t
     talents.paralysis                   = new talent_t( this, "paralysis", "Paralysis" );
     talents.phantasm                    = new talent_t( this, "phantasm", "Phantasm" );
 
+    passive_spells.dark_evangelism_1    = new passive_spell_t( this, "dark_evangelism_1", 87117 );
+    passive_spells.dark_evangelism_2    = new passive_spell_t( this, "dark_evangelism_2", 87118 );
+
     passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //             done: talent function 12803          incomplete: link with main talent tree
     passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); //           done: talent function 12803
     passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); //           done: talent function 12803
@@ -362,10 +375,12 @@ struct priest_t : public player_t
     active_spells.inner_focus           = new active_spell_t( this, "inner_focus", "Inner Focus", talents.inner_focus );
     active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
     active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
+    active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
 
     cooldowns_mind_blast                = get_cooldown( "mind_blast" );
     cooldowns_shadow_fiend              = get_cooldown( "shadow_fiend" );
     cooldowns_archangel                 = get_cooldown( "archangel"   );
+    cooldowns_dark_archangel            = get_cooldown( "dark_archangel" );
     cooldowns_chakra                    = get_cooldown( "chakra"   );
   }
 
@@ -382,6 +397,7 @@ struct priest_t : public player_t
   virtual void      init_values();
   virtual void      init_actions();
   virtual void      init_procs();
+  virtual void      init_scaling();
   virtual void      reset();
   virtual void      init_party();
   virtual std::vector<talent_translation_t>& get_talent_list();
@@ -395,9 +411,9 @@ struct priest_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_player_multiplier( int school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
 
   virtual void      regen( double periodicity );
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -415,36 +431,46 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 struct priest_spell_t : public spell_t
 {
-  priest_spell_t( const char* n, player_t* player, int s, int t ) :
+  priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
-    may_crit      = true;
-    dot_behavior  = DOT_REFRESH;
+    may_crit          = true;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
   }
   priest_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( s, ptype, stype, t )
   {
-    may_crit      = true;
-    dot_behavior  = DOT_REFRESH;
+    may_crit          = true;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
   }
   priest_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, sname, player, ptype, stype, t )
   {
-    may_crit      = true;
-    dot_behavior  = DOT_REFRESH;
+    may_crit          = true;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
   }
   priest_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, id, player, ptype, stype, t )
   {
-    may_crit      = true;
-    dot_behavior  = DOT_REFRESH;
+    may_crit          = true;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
   }
 
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
   virtual void   assess_damage( double amount, int dmg_type );
+
+  static void    trigger_shadowy_apparition( player_t* player );
+  static void    add_more_shadowy_apparitions( player_t* player );
 };
 
 // ==========================================================================
@@ -567,7 +593,7 @@ struct shadow_fiend_pet_t : public pet_t
     pet_t::init_buffs();
     buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl->duration() );
   }
-  virtual double composite_spell_power( int school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) SC_CONST
   {  
     priest_t* p = owner -> cast_priest();
     double sp;
@@ -644,8 +670,6 @@ double priest_spell_t::haste() SC_CONST
   return h;
 }
 
-
-
 // priest_spell_t::execute ==================================================
 
 void priest_spell_t::execute()
@@ -659,6 +683,9 @@ void priest_spell_t::player_buff()
 {
   priest_t* p = player -> cast_priest();
   spell_t::player_buff();
+
+  player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
+
   for ( int i=0; i < 4; i++ )
   {
     p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
@@ -671,51 +698,6 @@ void priest_spell_t::player_buff()
   {
     p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
   }
-
-  if ( school == SCHOOL_SHADOW )
-  {
-    player_multiplier *= 1.0 + p -> constants.twisted_faith_static_value;
-  }
-}
-
-// priest_spell_t::target_debuff ============================================
-
-void priest_spell_t::target_debuff( int dmg_type )
-{
-  priest_t* p = player -> cast_priest();
-  spell_t::target_debuff( dmg_type );
-
-  target_multiplier *= 1.0 + p -> constants.shadow_power_damage_value;
-
-      if ( school == SCHOOL_SHADOW )
-      {
-        if ( dmg_type == DMG_OVER_TIME )
-        {
-        target_multiplier *=  1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
-        }
-
-        target_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
-        target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
-        if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
-        {
-        target_multiplier *= 1.0 + 0.15;
-        }
-      }
-      if ( school == SCHOOL_FROST)
-      {
-        target_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_value;
-      }
-
-      if ( school == SCHOOL_HOLY)
-      {
-        if ( p -> buffs_chakra -> value() == 4 && p -> buffs_chakra -> up())
-        {
-        target_multiplier *= 1.0 + 0.15;
-        }
-      }
-
-      // Twin Discipline
-      target_multiplier  *= 1.0 + p -> constants.twin_disciplines_value;
 }
 
 // priest_spell_t::assess_damage =============================================
@@ -729,13 +711,14 @@ void priest_spell_t::assess_damage( double amount,
   
   if ( p -> buffs_vampiric_embrace -> up() ) 
   {
-    p -> resource_gain( RESOURCE_HEALTH, amount * 0.25 * ( 1.0 ), p -> gains.vampiric_embrace );
+    double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
+    p -> resource_gain( RESOURCE_HEALTH, a * 0.15, p -> gains.vampiric_embrace );
 
     pet_t* r = p -> pet_list;
 
     while ( r )
     {
-      r -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), r -> gains.vampiric_embrace );
+      r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
       r = r -> next_pet;
     }
 
@@ -745,13 +728,13 @@ void priest_spell_t::assess_damage( double amount,
     {
       player_t* q = p -> party_list[ i ];
       
-      q -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), q -> gains.vampiric_embrace );
+      q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
     
       r = q -> pet_list;
 
       while ( r )
       {
-        r -> resource_gain( RESOURCE_HEALTH, amount * 0.05 * ( 1.0 ), r -> gains.vampiric_embrace );
+        r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
         r = r -> next_pet;
       }
     }    
@@ -760,51 +743,29 @@ void priest_spell_t::assess_damage( double amount,
 
 // Shadowy Apparation Spell ============================================================
 
-struct shadowy_apparation_t : public priest_spell_t
+struct shadowy_apparition_t : public priest_spell_t
 {
-  shadowy_apparation_t( player_t* player ) :
+  shadowy_apparition_t( player_t* player ) :
       priest_spell_t( "shadowy_apparition", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     static rank_t ranks[] =
     {
+      { 85, 2, 399, 422, 0, 0.0 },
       { 80, 1, 390, 400, 0, 0.0 }, // estimated +-20 on cataclysm beta, 22082010
       { 0, 0, 0, 0, 0, 0 }
     };
     init_rank( ranks );
 
     background        = true;
-    proc        = true;
+    proc              = true;
     trigger_gcd       = 0;
-    travel_speed    = 2.6; // estimated
+    travel_speed      = 2.6; // estimated
     base_execute_time = 0;
-    may_crit          = false;
+    may_crit          = true;
     direct_power_mod  = 1.5 / 3.5;
     base_cost         = 0.0;
+    base_crit         = 0.01 +  player -> set_bonus.tier11_4pc_caster() * 0.3;
     reset();
-  }
-};
-
-// Devouring Plague Spell ======================================================
-
-struct devouring_plague_burst_t : public priest_spell_t
-{
-  devouring_plague_burst_t( player_t* player ) :
-      priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
-  {
-    priest_t* p = player -> cast_priest();
-    dual       = true;
-    proc       = true;
-    background = true;
-    may_crit   = true;
-
-    // doesn't seem to work on imp. dp
-    //base_multiplier  *= 1.0 + ( p -> talents.twin_disciplines          * p -> constants.twin_disciplines_value );
-
-    base_multiplier  *= 1.0 +   p -> set_bonus.tier8_2pc_caster()      * 0.15; // Applies multiplicatively with the Burst dmg, but additively on the ticks.
-
-
-    // This helps log file and decouples the sooth RNG from the ticks.
-    name_str = "devouring_plague_burst";
   }
 
   virtual void execute()
@@ -812,20 +773,136 @@ struct devouring_plague_burst_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::execute();
-    if ( result_is_hit() )
+
+    if ( !result_is_hit() )
     {
-      if ( result == RESULT_CRIT )
-      {
-        p -> buffs_glyph_of_shadow -> trigger();
-      }
+      // Cleanup. Re-add to free list.    
+      p -> shadowy_apparition_active_list.remove( this );
+      p -> shadowy_apparition_free_list.push( this );
     }
+  }
+
+  virtual void travel( int result, double dmg )
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::travel( result, dmg );
+
+    // Cleanup. Re-add to free list.
+    p -> shadowy_apparition_active_list.remove( this );
+    p -> shadowy_apparition_free_list.push( this );
+  }
+
+  virtual void player_buff()
+  {
+    priest_spell_t::player_buff();
+  
+    player_crit_bonus_multiplier = 1.0;
+    player_multiplier = 1.0;
+    player_crit = 0.0;
+  }
+};
+
+void priest_spell_t::trigger_shadowy_apparition( player_t* player )
+{
+  priest_t* p = player -> cast_priest();
+
+  if ( p -> talents.shadowy_apparition -> rank() )
+  {
+    double h = p -> talents.shadowy_apparition -> rank() * ( p -> buffs.moving -> up() ? 0.2 : 0.04 );
+    if (  p -> sim -> roll( h ) )
+    {
+      add_more_shadowy_apparitions( p );
+
+      spell_t* s = p -> shadowy_apparition_free_list.front();
+      
+      p -> shadowy_apparition_free_list.pop();
+
+      p ->shadowy_apparition_active_list.push_back( s );
+
+      p -> procs_shadowy_apparation -> occur();
+
+      s -> execute();
+    }
+  }    
+}
+
+void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
+{
+  priest_t* p = player -> cast_priest();
+
+  spell_t* s = NULL;
+  if ( ! p -> shadowy_apparition_free_list.size() )
+  {
+     for ( uint32_t i = 0; i < 50; i++ )
+     {
+       s = new shadowy_apparition_t( p );
+       p -> shadowy_apparition_free_list.push( s );
+     }
+  }
+}
+
+
+// Devouring Plague Spell ======================================================
+
+struct devouring_plague_burst_t : public priest_spell_t
+{
+  double dot_nt;
+
+  devouring_plague_burst_t( player_t* player ) :
+      priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW ), dot_nt( 8.0 )
+  {
+    dual       = true;
+    proc       = true;
+    background = true;
+    may_crit   = true;
+
+    // This helps log file and decouples the sooth RNG from the ticks.
+    name_str = "devouring_plague_burst";
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
     update_stats( DMG_DIRECT );
   }
+
+  virtual void modify_direct_damage()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::modify_direct_damage();
+
+    if ( p -> bugs )
+    {
+      direct_dmg /= dot_nt;
+      direct_dmg = floor( direct_dmg ) + 0.5;
+      direct_dmg *= dot_nt;
+    }
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+    double m = 1.0;
+
+    priest_spell_t::player_buff();
+
+    m += p -> set_bonus.tier8_2pc_caster() * 0.15;
+
+    if ( ! p -> bugs )
+    {
+      m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    }
+
+    player_multiplier *= m;
+  } 
 };
 
 struct devouring_plague_t : public priest_spell_t
 {
-  spell_t* devouring_plague_burst;
+  devouring_plague_burst_t* devouring_plague_burst;
 
   devouring_plague_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW ), devouring_plague_burst( 0 )
@@ -838,13 +915,13 @@ struct devouring_plague_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-
-    id = 2944;
+    
+    id = p -> active_spells.devouring_plague -> spell_id();
     parse_data( p -> player_data );
 
     base_cost        *= 1.0 
-                        - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value ;
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
     base_crit        += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
@@ -857,15 +934,32 @@ struct devouring_plague_t : public priest_spell_t
 
   virtual void execute()
   {
-    tick_may_crit = true;
-    base_crit_bonus_multiplier = 1.0;
+    priest_t* p = player -> cast_priest();
+
     priest_spell_t::execute();
     if ( devouring_plague_burst )
-      {
-      devouring_plague_burst -> base_dd_min  = 0.3 * (base_td + total_power() * tick_power_mod ) * num_ticks;
-      devouring_plague_burst -> base_dd_max  = 0.3 * (base_td + total_power() * tick_power_mod ) * num_ticks;
-        devouring_plague_burst -> execute();
-      }
+    {
+      int n = num_ticks;
+
+      if ( p -> bugs )
+        n = 8;
+
+      double t = ( p -> talents.improved_devouring_plague -> rank() * 0.15 ) * ( base_td + total_power() * tick_power_mod );
+
+      devouring_plague_burst -> base_dd_min  = t * n;
+      devouring_plague_burst -> base_dd_max  = t * n;
+      devouring_plague_burst -> dot_nt       = n;
+      devouring_plague_burst -> execute();
+    }
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::player_buff();
+    
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
   }
 
   virtual void tick()
@@ -992,8 +1086,8 @@ struct fortitude_t : public priest_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-  p -> buffs.fortitude -> trigger( 1, bonus );
-  p -> init_resources( true );
+        p -> buffs.fortitude -> trigger( 1, bonus );
+        p -> init_resources( true );
       }
     }
   }
@@ -1051,20 +1145,10 @@ struct holy_fire_t : public priest_spell_t
 
 struct inner_fire_t : public priest_spell_t
 {
-  double bonus_spell_power;
-  double bonus_armor;
-
   inner_fire_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "inner_fire", player, SCHOOL_HOLY, TREE_DISCIPLINE ), bonus_spell_power( 0 ), bonus_armor( 0 )
+      priest_spell_t( "inner_fire", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
-    priest_t* p = player -> cast_priest();
-
     trigger_gcd = 0;
-
-    bonus_spell_power = util_t::ability_rank( player -> level,  120.0,77,  95.0,71,  0.0,0     );
-    bonus_armor       = util_t::ability_rank( player -> level,  2440.0,77, 1800.0,71, 1580.0,0 );
-
-    bonus_armor       *= 1.0 + p -> glyphs.inner_fire * 0.5;
 
     id = 48168;
   }
@@ -1075,9 +1159,9 @@ struct inner_fire_t : public priest_spell_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     
-    p -> buffs_inner_will    -> expire ();
-    p -> buffs_inner_fire       -> start( 1, bonus_spell_power );
-    p -> buffs_inner_fire_armor -> start( 1, bonus_armor       );
+    p -> buffs_inner_will       -> expire ();
+    p -> buffs_inner_fire       -> start( 1, p -> constants.inner_fire_spellpower_value );
+    p -> buffs_inner_fire_armor -> start( 1, p -> constants.inner_fire_armor_mult * ( 1.0 + p -> glyphs.inner_fire * 0.5 ) );
   }
 
   virtual bool ready()
@@ -1092,8 +1176,6 @@ struct inner_fire_t : public priest_spell_t
 
 struct inner_will_t : public priest_spell_t
 {
-
-
   inner_will_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "inner_will", player, SCHOOL_HOLY, TREE_DISCIPLINE )
   {
@@ -1146,8 +1228,7 @@ struct mind_blast_t : public priest_spell_t
     parse_data( p->player_data );
 
     may_crit          = true;
-    base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
-                        + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+
     cooldown -> duration -= p -> talents.improved_mind_blast -> rank() * 0.5;
   }
 
@@ -1162,10 +1243,6 @@ struct mind_blast_t : public priest_spell_t
     {
       p -> recast_mind_blast = 0;
       p -> buffs_shadow_orb -> expire();
-      if ( result == RESULT_CRIT )
-      {
-        p -> buffs_glyph_of_shadow -> trigger();
-      }
       if ( p -> dots_vampiric_touch -> ticking() )
       {
         p -> trigger_replenishment();
@@ -1173,9 +1250,20 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+
+    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+  }
+
   virtual void target_debuff( int dmg_type )
   {
-  priest_t* p = player -> cast_priest();
+    priest_t* p = player -> cast_priest();
     priest_spell_t::target_debuff( dmg_type );
     target_crit       += p -> constants.mind_spike_crit_value * p -> buffs_mind_spike -> stack();
   }
@@ -1184,7 +1272,7 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     double a = priest_spell_t::execute_time();
-    a *= 1 - (p -> buffs_mind_melt -> stack() * 0.5);
+    a *= 1 - (p -> buffs_mind_melt -> stack() * ( p -> talents.mind_melt -> rank() * 0.25 ) );
     return a;
   }
 };
@@ -1217,8 +1305,6 @@ struct mind_flay_t : public priest_spell_t
     num_ticks        = 3;
     base_tick_time   = 1.0;
     scale_with_haste = false;
-    tick_may_crit    = true;
-
 
     if ( p -> set_bonus.tier10_4pc_caster() )
     {
@@ -1226,7 +1312,10 @@ struct mind_flay_t : public priest_spell_t
     }
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
+    base_cost  *= 1.0 - p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
     base_cost  = floor( base_cost );
+
+    base_crit += player -> set_bonus.tier11_2pc_caster() * 0.05;
   }
 
   virtual void execute()
@@ -1244,13 +1333,38 @@ struct mind_flay_t : public priest_spell_t
 
   }
 
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+    double m = 1.0;
+
+    priest_spell_t::player_buff();
+
+    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+
+    player_multiplier *= m;
+
+    if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking() )
+    {
+      if ( p -> bugs && p -> talents.twisted_faith -> rank() )
+      {
+        player_multiplier *= 1.0 + 0.10 + 0.02 * p -> talents.twisted_faith -> rank();
+      }
+      else
+      {
+        player_multiplier *= 1.0 + 0.10;    
+      }
+    }
+  }
+
   virtual void tick()
   {
     priest_t* p = player -> cast_priest();
     priest_spell_t::tick();
     if ( result_is_hit() )
     {
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, 0.4 );
+      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 0.4 : 0.0 );
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
       if ( p -> dots_shadow_word_pain -> ticking() )
@@ -1262,13 +1376,7 @@ struct mind_flay_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
-         p -> buffs_glyph_of_shadow -> trigger();
          p -> cooldowns_shadow_fiend -> ready -= 10.0 * p -> talents.sin_and_punishment -> rank();
-         if ( p -> cooldowns_shadow_fiend -> ready < 0.0 )
-         {
-            int aa = 1;
-            aa++;
-         }
       }
     }
   }
@@ -1327,31 +1435,28 @@ struct mind_spike_t : public priest_spell_t
     parse_data( p -> player_data );
 
     may_crit          = true;
-    base_multiplier  *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> constants.shadow_orb_damage_value
-                        + p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
   }
 
-  virtual void execute()
+  virtual void travel( int result, double dmg )
   {
-    priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
 
-    if ( result_is_hit() )
-    {
-      p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-      p -> buffs_shadow_orb -> expire();
-      p -> buffs_mind_spike -> trigger();
+    priest_spell_t::travel( result, dmg );
 
-      if ( result == RESULT_CRIT )
-      {
-         p -> buffs_glyph_of_shadow -> trigger();
-      }
-    }
+    p -> buffs_mind_melt  -> trigger( 1, 1.0 );
+    p -> buffs_shadow_orb -> expire();
+    p -> buffs_mind_spike -> trigger();
   }
 
   virtual void player_buff()
   {
+    priest_t* p = player -> cast_priest();
+
     priest_spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+
+    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
   }
 };
 
@@ -1423,10 +1528,7 @@ struct penance_t : public priest_spell_t
 
     id = 53007;
   }
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-  }
+
   virtual void tick()
   {
   if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
@@ -1538,7 +1640,6 @@ struct shadow_word_death_t : public priest_spell_t
   double mb_min_wait;
   double mb_max_wait;
 
-
   shadow_word_death_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "shadow_word_death", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_min_wait( 0 ), mb_max_wait( 0 )
   {
@@ -1552,14 +1653,14 @@ struct shadow_word_death_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    id = 32379;
+    id = p -> active_spells.shadow_word_death -> spell_id();
     parse_data( p -> player_data );
 
     may_crit = true;
 
     base_cost        *= 1.0 
-                          - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                          + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
+                          - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                              + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
 
   }
@@ -1567,42 +1668,52 @@ struct shadow_word_death_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
+
+    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() <= 25 );
+
     priest_spell_t::execute();
-    if ( result_is_hit() )
+
+    if ( result_is_hit() && p -> was_sub_25 && ( sim -> target -> health_percentage() > 0 ) )
     {
-      double health_loss = direct_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.10 );
+      // Tested to confirm that it won't reset if it Misses.
+      cooldown -> reset();
+    }
+  }
 
-      p -> resource_loss( RESOURCE_HEALTH, health_loss );
-      if ( ( health_loss > 0.0 ) && p -> talents.masochism -> rank() )
-      {
-        p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talents.masochism -> rank() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
-      }
+  virtual void travel( int result, double dmg )
+  {
+    priest_t* p = player -> cast_priest();
 
-      if ( result == RESULT_CRIT )
-      {
-        p -> buffs_glyph_of_shadow -> trigger();
-      }
+    priest_spell_t::travel( result, dmg );
+
+    double health_loss = dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
+
+    p -> resource_loss( RESOURCE_HEALTH, health_loss );
+    if ( ( health_loss > 0.0 ) && p -> talents.masochism -> rank() )
+    {
+      p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talents.masochism -> rank() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
     }
   }
 
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
+
     priest_spell_t::player_buff();
-    if ( p -> glyphs.shadow_word_death )
+
+    double m = 1.0;
+
+    if ( p -> bugs && p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() < 35 ) )
     {
-      if ( sim -> target -> health_percentage() < 35 )
-      {
-        player_multiplier *= 1.1;
-      }
+      m += 0.1;
     }
-    if ( p -> talents.mind_melt -> rank() )
-       {
-         if ( sim -> target -> health_percentage() <= 25 )
-         {
-           player_multiplier *= 1.0 + p -> talents.mind_melt -> rank() * 0.15;
-         }
-       }
+    if ( p -> talents.mind_melt -> rank() && ( sim -> target -> health_percentage() <= 25 ) )
+    {
+      m += p -> talents.mind_melt -> rank() * 0.15;
+    }
+    player_multiplier *= m;
+
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
   }
 
   virtual bool ready()
@@ -1610,7 +1721,9 @@ struct shadow_word_death_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( ! priest_spell_t::ready() )
+    {
       return false;
+    }
 
     if ( mb_min_wait )
       if ( p -> cooldowns_mind_blast -> remains() < mb_min_wait )
@@ -1645,20 +1758,27 @@ struct shadow_word_pain_t : public priest_spell_t
 
 
     base_cost        *= 1.0 
-                        - util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                        + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
+                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
     base_cost         = floor( base_cost );
-    base_multiplier *= 1.0 + p -> constants.improved_shadow_word_pain_value ;
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
 
     if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
   }
 
-  virtual void execute()
+  virtual void player_buff()
   {
-    tick_may_crit = true;
-    base_crit_bonus_multiplier = 1.0;
-    priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::player_buff();
+
+    double m = 1.0;
+
+    m += p -> constants.improved_shadow_word_pain_value;
+    m += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
+    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+
+    player_multiplier *= m;
   }
 
   virtual void tick()
@@ -1666,23 +1786,8 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     priest_spell_t::tick();
 
-    // Glyph of SW:P
-    if ( p -> glyphs.shadow_word_pain )
-      {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.01, p -> gains_glyph_of_shadow_word_pain );
-      }
-
     // Shadowy Apparation
-    if ( p -> talents.shadowy_apparition -> rank() )
-    {
-      double h = p -> talents.shadowy_apparition -> rank() * (0.02 + p -> buffs.moving -> up()* 0.2 );
-      if (  p -> sim -> roll( h ) )
-      {
-        p -> procs_shadowy_apparation -> occur();
-        if ( ! p -> shadowy ) p -> shadowy = new shadowy_apparation_t( p );
-        p -> shadowy -> execute();
-      }
-    }
+    trigger_shadowy_apparition( p );
 
     // Shadow Orb
     if ( result_is_hit() )
@@ -1730,7 +1835,7 @@ struct chakra_t : public priest_spell_t
 
   virtual void execute()
   {
-  priest_spell_t::execute();
+    priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
     p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
   }
@@ -1783,7 +1888,7 @@ struct smite_t : public priest_spell_t
     // Holy_Evangelism
     target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
     base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
-
+    base_hit       += p -> glyphs.divine_accuracy ? 0.18 : 0.0;
   }
 
   virtual void execute()
@@ -1890,12 +1995,20 @@ struct vampiric_touch_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    tick_may_crit = true;
     priest_spell_t::execute();
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 1;
     }
+  }
+
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
   }
 };
 
@@ -1989,20 +2102,15 @@ struct archangel_t : public priest_spell_t
 
   virtual void execute()
   {
-  priest_spell_t::execute();
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_dark_evangelism -> up())
+    if ( p -> buffs_holy_evangelism -> up())
     {
-      p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
-        p -> buffs_dark_evangelism -> expire();
-      }
-    else if ( p -> buffs_holy_evangelism -> up())
-      {
-        p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
-        p -> buffs_holy_evangelism -> expire();
-      }
+      p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
+      p -> buffs_holy_evangelism -> expire();
+    }
+    consume_resource();
+    update_ready();
   }
 
   virtual bool ready()
@@ -2011,7 +2119,7 @@ struct archangel_t : public priest_spell_t
 
     if ( ! priest_spell_t::ready() )
          return false;
-    if ( ! p -> buffs_dark_evangelism -> up() && ! p -> buffs_holy_evangelism -> up() )
+    if ( ! p -> buffs_holy_evangelism -> up() )
        return false;
 
     return true;
@@ -2019,6 +2127,59 @@ struct archangel_t : public priest_spell_t
    }
 };
 
+// Archangel Spell ======================================================
+
+struct dark_archangel_t : public priest_spell_t
+{
+  dark_archangel_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "dark_archangel", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+  {
+    priest_t* p = player -> cast_priest();
+
+    check_talent( p -> talents.archangel -> rank() );
+
+    option_t options[] =
+        {
+          { NULL, OPT_UNKNOWN, NULL }
+        };
+    parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 1, 1, 0, 0, 0, 0.00 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
+
+    trigger_gcd = 0;
+    base_cost   = 0.0;
+  }
+
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+    if ( p -> buffs_dark_evangelism -> up())
+    {
+      p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
+      p -> buffs_dark_evangelism -> expire();
+    }
+    consume_resource();
+    update_ready();
+  }
+
+  virtual bool ready()
+   {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! priest_spell_t::ready() )
+         return false;
+    if ( ! p -> buffs_dark_evangelism -> up() )
+       return false;
+
+    return true;
+   }
+};
 
 
 
@@ -2035,7 +2196,7 @@ double priest_t::composite_armor() SC_CONST
 {
   double a = player_t::composite_armor();
 
-  a += buffs_inner_fire_armor -> value();
+  a *= 1.0 + buffs_inner_fire_armor -> value();
 
   return floor( a );
 }
@@ -2046,13 +2207,16 @@ double priest_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
+  if ( ( attr == STAT_INTELLECT ) && mysticism )
+    m *= 1.05;
+
   return m;
 }
 
 
 // priest_t::composite_spell_power =========================================
 
-double priest_t::composite_spell_power( int school ) SC_CONST
+double priest_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -2067,19 +2231,33 @@ double priest_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( spirit() * constants.twisted_faith_dynamic_value ) / rating.spell_hit;
+  hit += ( ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * constants.twisted_faith_dynamic_value ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
 // priest_t::composite_player_multiplier =========================================
 
-double priest_t::composite_player_multiplier( int school ) SC_CONST
+double priest_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( school == SCHOOL_SHADOW )
+  if ( spell_id_t::is_school( school, SCHOOL_SHADOW ) )
   {
     m *= 1.0 + buffs_shadow_form -> check() * constants.shadow_form_value;
+    m *= 1.0 + constants.twisted_faith_static_value;
+  }
+  if ( spell_id_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
+  {
+    m *= 1.0 + constants.twin_disciplines_value;
+
+    if ( buffs_chakra -> value() == 4 && buffs_chakra -> up())
+    {
+      m *= 1.0 + 0.15;
+    }
+  }
+  if ( spell_id_t::is_school( school, SCHOOL_MAGIC ) )
+  {
+    m *= 1.0 + constants.shadow_power_damage_value;
   }
 
   return m;
@@ -2108,6 +2286,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_embrace"  ) return new vampiric_embrace_t  ( this, options_str );
   if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
   if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
+  if ( name == "dark_archangel"    ) return new dark_archangel_t    ( this, options_str );
   if ( name == "chakra"            ) return new chakra_t            ( this, options_str );
   if ( name == "inner_will"        ) return new inner_will_t        ( this, options_str );
 
@@ -2148,31 +2327,39 @@ void priest_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     if      ( n == "dispersion"        ) glyphs.dispersion = 1;
-    else if ( n == "hymn_of_hope"      ) glyphs.hymn_of_hope = 1;
+    else if ( n == "divine_accuracy"   ) glyphs.divine_accuracy = 1;
+    else if ( n == "holy_nova"         ) glyphs.holy_nova = 1;
     else if ( n == "inner_fire"        ) glyphs.inner_fire = 1;
     else if ( n == "mind_flay"         ) glyphs.mind_flay = 1;
     else if ( n == "penance"           ) glyphs.penance = 1;
-    else if ( n == "shadow"            ) glyphs.shadow = 1;
     else if ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
     else if ( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
+    else if ( n == "spirit_tap"        ) glyphs.spirit_tap = 1;
     else if ( n == "smite"             ) glyphs.smite = 1;
     // Just to prevent warnings....
-    else if ( n == "circle_of_healing" ) ;
-    else if ( n == "dispel_magic"      ) ;
-    else if ( n == "fading"            ) ;
-    else if ( n == "flash_heal"        ) ;
-    else if ( n == "fortitude"         ) ;
-    else if ( n == "guardian_spirit"   ) ;
-    else if ( n == "levitate"          ) ;
-    else if ( n == "mind_sear"         ) ;
-    else if ( n == "pain_suppression"  ) ;
-    else if ( n == "power_word_shield" ) ;
-    else if ( n == "prayer_of_healing" ) ;
-    else if ( n == "psychic_scream"    ) ;
-    else if ( n == "renew"             ) ;
-    else if ( n == "shackle_undead"    ) ;
-    else if ( n == "shadow_protection" ) ;
-    else if ( n == "shadowfiend"       ) ;
+    else if ( n == "circle_of_healing"    ) ;
+    else if ( n == "dispel_magic"         ) ;
+    else if ( n == "fade"                 ) ;
+    else if ( n == "fading"               ) ;
+    else if ( n == "fear_ward"            ) ;
+    else if ( n == "flash_heal"           ) ;
+    else if ( n == "fortitude"            ) ;
+    else if ( n == "guardian_spirit"      ) ;
+    else if ( n == "levitate"             ) ;
+    else if ( n == "lightwell"            ) ;
+    else if ( n == "mass_dispel"          ) ;
+    else if ( n == "pain_suppression"     ) ;
+    else if ( n == "power_word_barrier"   ) ;
+    else if ( n == "power_word_shield"    ) ;
+    else if ( n == "prayer_of_healing"    ) ;
+    else if ( n == "psychic_horror"       ) ;
+    else if ( n == "psychic_scream"       ) ;
+    else if ( n == "renew"                ) ;
+    else if ( n == "scourge_imprisonment" ) ;
+    else if ( n == "shackle_undead"       ) ;
+    else if ( n == "shadow_protection"    ) ;
+    else if ( n == "shadowfiend"          ) ;
+    else if ( n == "spirit_of_redemption" );
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -2227,7 +2414,6 @@ void priest_t::init_gains()
   player_t::init_gains();
 
   gains_dispersion                = get_gain( "dispersion" );
-  gains_glyph_of_shadow_word_pain = get_gain( "glyph_of_shadow_word_pain" );
   gains_shadow_fiend              = get_gain( "shadow_fiend" );
   gains_archangel                 = get_gain( "archangel" );
   gains_masochism                 = get_gain( "masochism" );
@@ -2238,6 +2424,23 @@ void priest_t::init_procs()
   player_t::init_procs();
 
   procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
+}
+
+// priest_t::init_scaling ====================================================
+
+void priest_t::init_scaling()
+{
+  
+  player_t::init_scaling();
+
+  // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
+  if ( ( primary_tree() == TREE_SHADOW ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+  {   
+    double v = sim -> scaling -> scale_value;
+    invert_spirit_scaling = 1;
+    attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+  }
+
 }
 
 // priest_t::init_uptimes ====================================================
@@ -2278,6 +2481,18 @@ void priest_t::init_rng()
 void priest_t::init_talents()
 {
   player_t::init_talents();
+
+  switch ( primary_tree() )
+  {
+  case TREE_DISCIPLINE:
+    break;
+  case TREE_HOLY:
+    break;
+  case TREE_SHADOW:
+    break;
+  default:
+    break;
+  }
 }
 
 // priest_t::init_talents
@@ -2293,7 +2508,6 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_glyph_of_shadow     = new buff_t( this, "glyph_of_shadow",     1, 10.0, 0.0, glyphs.shadow );
   buffs_inner_fire          = new buff_t( this, "inner_fire"                                       );
   buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                 );
   buffs_inner_will          = new buff_t( this, "inner_will"                                       );
@@ -2308,6 +2522,7 @@ void priest_t::init_buffs()
   buffs_chakra              = new buff_t( this, "chakra_buff",         1, 30.0                     );
   buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
   buffs_mind_spike          = new buff_t( this, "mind_spike",          3, 12.0                     );
+  buffs_spirit_tap          = new buff_t( this, "spirit_tap",          1, 12.0                     );
   buffs_shadowfiend         = new buff_t( this, "shadowfiend", 1 );
 }
 
@@ -2340,19 +2555,28 @@ void priest_t::init_actions()
                                                      action_list_str += "/wild_magic_potion,if=!in_combat";
                                                      action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name;
-      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->token_name + ",if=buff.dark_evangelism.stack>=5";
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking|dot." +
+                                                                              active_spells.shadow_word_pain->token_name + ".remains<gcd+0.5";
+      if ( active_spells.mind_flay -> ok() &&
+           active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.mind_flay->token_name + ",if=dot." +
+                                                                              active_spells.shadow_word_pain->token_name + ".remains<cast_time";
       if ( race == RACE_TROLL )                      action_list_str += "/berserking";
-      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->token_name + ",if=!ticking/" +
-                                                                              active_spells.vampiric_touch->token_name + ",if=dot." +
-                                                                              active_spells.vampiric_touch->token_name + ".remains<cast_time";
-      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",if=!ticking";
+      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->token_name + ",if=!ticking|dot." +
+                                                                              active_spells.vampiric_touch->token_name + ".remains<cast_time+0.5";
+      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",if=!ticking|dot." +
+                                                                              active_spells.devouring_plague->token_name + ".remains<gcd+0.5";
+
+      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->token_name + ",if=buff.dark_evangelism.stack>=5";
+       if ( active_spells.vampiric_touch -> ok() )   action_list_str += "&dot." + active_spells.vampiric_touch->token_name + ".remains>5";
+       if ( active_spells.devouring_plague -> ok() ) action_list_str += "&dot." + active_spells.devouring_plague->token_name + ".remains>5";
+
+
+
       if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name;
       if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
       if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
       if ( active_spells.mind_flay -> ok() )         action_list_str += "/" + active_spells.mind_flay->token_name;
-      else if ( active_spells.smite -> ok() )        action_list_str += "/" + active_spells.smite->token_name;
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",moving=1";
       if ( active_spells.dispersion -> ok() )        action_list_str += "/" + active_spells.dispersion->token_name;
       break;
     case TREE_DISCIPLINE:
@@ -2428,13 +2652,30 @@ void priest_t::init_values()
   // Discipline
   constants.twin_disciplines_value          = talents.twin_disciplines          -> effect_base_value( 1 ) / 100.0;
 
-  constants.dark_evangelism_value           = 0.01;
+  switch ( talents.evangelism -> rank() )
+  {
+  case 1: constants.dark_evangelism_value   = passive_spells.dark_evangelism_1  -> effect_base_value( 1 ) / 100.0; ; break;
+  case 2: constants.dark_evangelism_value   = passive_spells.dark_evangelism_2  -> effect_base_value( 1 ) / 100.0; break;
+  default: constants.dark_evangelism_value  = 0.0; break;
+  }
   constants.holy_evangelism_damage_value    = 0.02;
   constants.holy_evangelism_mana_value      = 0.03;
-  constants.dark_archangel_value            = 0.03;
+  if ( ! bugs )
+  {
+    constants.dark_archangel_damage_value   = active_spells.dark_archangel      -> effect_base_value( 1 ) / 100.0;
+    constants.dark_archangel_mana_value     = active_spells.dark_archangel      -> effect_base_value( 3 ) / 100.0;
+  }
+  else
+  {
+    constants.dark_archangel_damage_value   = 0.02;
+    constants.dark_archangel_mana_value     = 0.03;
+  }
   constants.holy_archangel_value            = 0.03;
   constants.archangel_mana_value            = 0.03;
   constants.inner_will_value                = active_spells.inner_will          -> effect_base_value( 1 ) / 100.0;
+  
+  constants.inner_fire_spellpower_value     = util_t::ability_rank( level, 425,85,  360,83,  324,82,  120,80, 0,0 );
+  constants.inner_fire_armor_mult           = active_spells.inner_fire          -> effect_base_value( 1 ) / 100.0;
 
   // Holy
   constants.holy_concentration_value        = talents.holy_concentration        -> effect_base_value( 1 ) / 100.0;
@@ -2462,6 +2703,9 @@ void priest_t::init_values()
 
   cooldowns_archangel -> duration           = talents.archangel                 -> cooldown();
   cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
+  cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
+
+  
 }
 
 
@@ -2471,7 +2715,20 @@ void priest_t::reset()
 {
   player_t::reset();
 
+  while ( shadowy_apparition_active_list.size() )
+  {
+    spell_t* s = shadowy_apparition_active_list.front();
+
+    shadowy_apparition_active_list.pop_front();
+
+    shadowy_apparition_free_list.push( s );
+  }
+
+  priest_spell_t::add_more_shadowy_apparitions( this );
+
   recast_mind_blast = 0;
+
+  was_sub_25 = false;
 
   mana_resource.reset();
 
@@ -2550,7 +2807,20 @@ double priest_t::resource_loss( int       resource,
                                 double    amount,
                                 action_t* action )
 {
+  if ( resource == RESOURCE_HEALTH )
+  {
+    if ( buffs_shadow_form -> check() )
+    {
+      amount *= 0.85;
+    }
+    if ( talents.inner_sanctum -> rank() )
+    {
+      amount *= 1.0 - talents.inner_sanctum -> rank() * 0.02;
+    }
+  }
+
   double actual_amount = player_t::resource_loss( resource, amount, action );
+
 
   if ( resource == RESOURCE_MANA )
   {
@@ -2579,14 +2849,18 @@ std::vector<option_t>& priest_t::get_options()
     option_t priest_options[] =
     {
       // @option_doc loc=player/priest/glyphs title="Glyphs"
-      { "glyph_hymn_of_hope",                       OPT_BOOL,   &( glyphs.hymn_of_hope                        ) },
+      { "glyph_dispersion",                         OPT_BOOL,   &( glyphs.dispersion                          ) },
+      { "glyph_divine_accuracy",                    OPT_BOOL,   &( glyphs.divine_accuracy                     ) },
+      { "glyph_holy_nova",                          OPT_BOOL,   &( glyphs.holy_nova                           ) },
+      { "glyph_inner_fire",                         OPT_BOOL,   &( glyphs.inner_fire                          ) },
       { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
       { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
       { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
       { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
-      { "glyph_shadow",                             OPT_BOOL,   &( glyphs.shadow                              ) },
+      { "glyph_spirit_tap",                         OPT_BOOL,   &( glyphs.spirit_tap                          ) },
       { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
       // @option_doc loc=player/priest/misc title="Misc"
+      { "mysticism",                                OPT_BOOL,   &( mysticism                                  ) },
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
       { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
       { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },

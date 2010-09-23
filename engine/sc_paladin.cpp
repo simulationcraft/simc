@@ -309,7 +309,7 @@ struct paladin_t : public player_t
   virtual void      init_rating();
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    composite_spell_power( int school ) SC_CONST;
+  virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -391,7 +391,7 @@ struct paladin_attack_t : public attack_t
   bool uses_holy_power;
   double holy_power_chance;
 
-  paladin_attack_t( const char* n, paladin_t* p, int s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, p, RESOURCE_MANA, s, t, special ),
       trigger_seal( false ), uses_holy_power(false), holy_power_chance(0.0)
   {
@@ -1469,7 +1469,7 @@ struct paladin_spell_t : public spell_t
   bool uses_holy_power;
   double holy_power_chance;
 
-  paladin_spell_t( const char* n, paladin_t* p, int s=SCHOOL_HOLY, int t=TREE_NONE ) :
+  paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), uses_holy_power(false), holy_power_chance(0.0)
   {
     if ( p -> glyphs.sense_undead )
@@ -2468,7 +2468,7 @@ void paladin_t::init_talents()
 
 // paladin_t::composite_spell_power ==========================================
 
-double paladin_t::composite_spell_power( int school ) SC_CONST
+double paladin_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
   switch ( primary_tree() )

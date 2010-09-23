@@ -131,36 +131,39 @@ double scaling_t::progress( std::string& phase )
 
 void scaling_t::init_deltas()
 {
+  if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = smooth_scale_factors ? 150 : 300;
+
   for ( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 75 : 150;
+    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 150 : 300;
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 75 : 150;
 
-  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  75 :  150;
-  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  75 :  150;
+  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 150 : 300;
+
+  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  150 :  300;
+  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  150 :  300;
 
   if ( stats.expertise_rating == 0 ) 
   {
-    stats.expertise_rating =  smooth_scale_factors ? -50 : -100;
+    stats.expertise_rating =  smooth_scale_factors ? -100 : -200;
     if ( positive_scale_delta ) stats.expertise_rating *= -1;
   }
 
   if ( stats.hit_rating == 0 ) 
   {
-    stats.hit_rating = smooth_scale_factors ? -50 : -100;
+    stats.hit_rating = smooth_scale_factors ? -150 : -300;
     if ( positive_scale_delta ) stats.hit_rating *= -1;
   }
 
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
-  if ( stats.mastery_rating == 0 ) stats.mastery_rating = smooth_scale_factors ?  75 :  150;
+  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  150 :  300;
+  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  150 :  300;
+  if ( stats.mastery_rating == 0 ) stats.mastery_rating = smooth_scale_factors ?  150 :  300;
 
-  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 3000 : 6000;
+  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 6000 : 12000;
 
-  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = smooth_scale_factors ? 25 : 50;
-  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = smooth_scale_factors ? 25 : 50;
+  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = smooth_scale_factors ? 50 : 100;
+  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = smooth_scale_factors ? 50 : 100;
 
   if( sim -> weapon_speed_scale_factors )
   {
@@ -248,6 +251,9 @@ void scaling_t::analyze_stats()
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
       double divisor = scale_delta;
+
+      if ( delta_p -> invert_spirit_scaling )
+        divisor = -divisor;
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
