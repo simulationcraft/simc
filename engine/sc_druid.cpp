@@ -15,7 +15,7 @@ struct druid_t : public player_t
   action_t* active_t10_4pc_caster_dot;
 
   // Eclipse, same as the ingame bar
-  int eclipse_bar_value;
+  double eclipse_bar_value;
 
   // Buffs
   buff_t* buffs_berserk;
@@ -413,7 +413,10 @@ struct druid_spell_t : public spell_t
 {
   int skip_on_eclipse;
   druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-      spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) {}
+      spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) 
+      {
+        scale_with_haste = false;
+      }
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   execute();
@@ -591,7 +594,7 @@ static void trigger_earth_and_moon( spell_t* s )
 
 // trigger_eclipse_energy_gain ==============================================
 
-static void trigger_eclipse_energy_gain( spell_t* s, int gain )
+static void trigger_eclipse_energy_gain( spell_t* s, double gain )
 {
   // EVERY druid has the eclipse mechanic, regardless of chosen tree
   // but only balance druid get an actual bonus from it (12% base + mastery)
@@ -599,14 +602,14 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   
   druid_t* p = s -> player -> cast_druid();
 
-  int old_eclipse_bar_value = p -> eclipse_bar_value;
+  double old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
 
   if ( p -> eclipse_bar_value < 0 ) 
   {
     p -> buffs_eclipse_solar -> expire();
 
-    if ( p -> eclipse_bar_value < -99 ) 
+    if ( p -> eclipse_bar_value < -100 ) 
       p -> eclipse_bar_value = -100;
   }
 
@@ -614,14 +617,14 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   {
     p -> buffs_eclipse_lunar -> expire();
 
-    if ( p -> eclipse_bar_value > 99 ) 
+    if ( p -> eclipse_bar_value > 100 ) 
       p -> eclipse_bar_value = 100;
   }
   
-  int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
+  double actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
   if ( s -> sim -> log )
   {
-    log_t::output( s -> sim, "%s gains %d (%d) %s from %s (%d)",
+    log_t::output( s -> sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
                    p -> name(), actual_gain, gain,
                    "Eclipse", s -> name(),
                    p -> eclipse_bar_value );
@@ -2889,7 +2892,7 @@ struct starfire_t : public druid_spell_t
         // effect#2 of starfire spell => 92680
         // 92680 -> base_value == 20
 
-        int gain = 20;
+        double gain = 20;
         if ( ! p -> buffs_eclipse_lunar -> check() 
           && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
         {
@@ -3009,7 +3012,8 @@ struct wrath_t : public druid_spell_t
       {
         // effect#2 of wrath spell => 92679
         // 92679 -> base_value == 13
-        int gain = -13; 
+        // It actualy is 13.3333, SF and W have the exact same eclipse gain per second
+        double gain = -(40.0/3.0); 
         if ( ! p -> buffs_eclipse_solar -> check() 
           && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
         {
@@ -3169,7 +3173,7 @@ struct starsurge_t : public druid_spell_t
     if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
       // It always pushes towards the side the bar is on, positive if at zero
-      int gain = 15;
+      double gain = 15;
       if (  p -> eclipse_bar_value < 0 ) gain = -gain;
       trigger_eclipse_energy_gain( this, gain );
     }
@@ -3781,7 +3785,7 @@ void druid_t::regen( double periodicity )
   }
   else if ( resource_type == RESOURCE_MANA )
   {
-    resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
+    //resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
   }
   else if ( resource_type == RESOURCE_RAGE )
   {
@@ -4013,7 +4017,16 @@ int druid_t::decode_set( item_t& item )
 
 int druid_t::primary_role() SC_CONST
 {
-  return talent_moonkin_form -> rank() ? ROLE_SPELL : ROLE_ATTACK;
+  switch ( primary_tree() )
+  {
+  case TREE_BALANCE:     
+  case TREE_RESTORATION:
+    return ROLE_SPELL;
+  case TREE_FERAL:
+    return ROLE_ATTACK;
+  default:
+    return ROLE_NONE;
+  }
 }
 
 // druid_t::primary_resource ================================================
