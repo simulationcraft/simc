@@ -372,6 +372,13 @@ enum weapon_type
   WEAPON_MAX
 };
 
+enum glyph_type
+{
+  GLYPH_MAJOR,
+  GLYPH_MINOR,
+  GLYPH_PRIME
+};
+
 enum slot_type   // these enum values match armory settings
 {
   SLOT_NONE      = -1,
@@ -1235,6 +1242,7 @@ public:
   sc_array_t<uint32_t>            m_talent_spec_spells;
   sc_array_t<uint32_t>            m_racial_spells;
   sc_array_t<uint32_t>            m_mastery_spells;
+  sc_array_t<uint32_t>            m_glyph_spells;
   sc_array_t<double>              m_dodge_base;
   sc_array_t<double>              m_dodge_scale;
   sc_array_t<double>              m_base_mp5;
@@ -1395,6 +1403,8 @@ public:
   virtual uint32_t      find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST;
   virtual uint32_t      find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST;
   virtual uint32_t      find_mastery_spell( const player_type c, const char* name ) SC_CONST;
+  virtual uint32_t      find_glyph_spell( const player_type c, const char* name ) SC_CONST;
+  virtual uint32_t      find_glyph_spell( const player_type c, const glyph_type type, uint32_t num ) SC_CONST;
 
 // Misc methods
   virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
@@ -2990,6 +3000,7 @@ struct spell_id_t
 
   spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   spell_id_t( player_t* player = NULL, const char* t_name = NULL );
+  spell_id_t( player_t* player, const bool run_init, const char* t_name );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
@@ -3123,6 +3134,7 @@ struct passive_spell_t : public spell_id_t
 {
   passive_spell_t( const passive_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   passive_spell_t( player_t* player = NULL, const char* t_name = NULL );
+  passive_spell_t( player_t* player, const bool run_init, const char* t_name );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );

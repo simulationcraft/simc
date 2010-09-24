@@ -1250,6 +1250,42 @@ uint32_t sc_data_access_t::find_mastery_spell( const player_type c, const char* 
   return 0;
 }
 
+uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const char* name ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  
+  assert( name && name[ 0 ] );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+  for ( uint32_t j = 0; j < m_glyph_spells.rows; j++ )
+  {
+    i = 0;
+    while ( ( ( p = m_glyph_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+    {
+      if ( check_spell_name( *p, name ) )
+        return *p;
+      i++;
+    };
+  }
+  return 0;
+}
+
+uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const glyph_type type, uint32_t num ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  
+  uint32_t* p = NULL;
+
+  p = m_glyph_spells.ptr( num, type, cid );
+
+  if ( !p )
+    return 0;
+
+  return *p;
+}
+
+
 bool sc_data_access_t::check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST
 {
   assert( name && name[ 0 ] );

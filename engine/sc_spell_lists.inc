@@ -552,7 +552,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       52127, // Water Shield
           0,
     },
+    // Pet tree, 3 abilities
     {
+      57984, // Fire Blast
+      12470, // Fire Nova
+      13376, // Fire Shield
           0,
     },
   },
@@ -1763,6 +1767,514 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
     {     0, },
+  },
+};
+
+#define GLYPH_ABILITIES_SIZE (18)
+
+// Glyph spells for classes, wow build 12984
+static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
+  {
+    {
+          0,
+    },
+    {
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Glyph spells for Warrior
+  {
+    // Major Glyphs (13 spells)
+    {
+      58366, // Glyph of Cleaving
+      58357, // Glyph of Heroic Throw
+      58377, // Glyph of Intervene
+      58097, // Glyph of Long Charge
+      58355, // Glyph of Rapid Charge
+      58356, // Glyph of Resonating Power
+      63329, // Glyph of Shield Wall
+      63325, // Glyph of Shockwave
+      63328, // Glyph of Spell Reflection
+      58387, // Glyph of Sunder Armor
+      58384, // Glyph of Sweeping Strikes
+      58098, // Glyph of Thunder Clap
+      58382, // Glyph of Victory Rush
+          0,
+    },
+    // Minor Glyphs (8 spells)
+    {
+      58095, // Glyph of Battle
+      58096, // Glyph of Berserker Rage
+      58369, // Glyph of Bloody Healing
+      68164, // Glyph of Command
+      58099, // Glyph of Demoralizing Shout
+      58104, // Glyph of Enduring Victory
+      63326, // Glyph of Furious Sundering
+      63327, // Glyph of Intimidating Shout
+          0,
+    },
+    // Prime Glyphs (9 spells)
+    {
+      63324, // Glyph of Bladestorm
+      58367, // Glyph of Bloodthirst
+      58388, // Glyph of Devastate
+      58368, // Glyph of Mortal Strike
+      58386, // Glyph of Overpower
+      58370, // Glyph of Raging Blow
+      58364, // Glyph of Revenge
+      58375, // Glyph of Shield Slam
+      58385, // Glyph of Slam
+          0,
+    },
+  },
+  // Glyph spells for Paladin
+  {
+    // Major Glyphs (17 spells)
+    {
+      63218, // Glyph of Beacon of Light
+      54935, // Glyph of Cleansing
+      54928, // Glyph of Consecration
+      56414, // Glyph of Dazing Shield
+      63223, // Glyph of Divine Plea
+      54924, // Glyph of Divine Protection
+      54939, // Glyph of Divinity
+      54930, // Glyph of Focused Shield
+      54923, // Glyph of Hammer of Justice
+      54926, // Glyph of Hammer of Wrath
+      56420, // Glyph of Holy Wrath
+      54940, // Glyph of Light of Dawn
+      54925, // Glyph of Rebuke
+      63225, // Glyph of Salvation
+      54931, // Glyph of Turn Evil
+      54938, // Glyph of the Ascetic Crusader
+      93466, // Glyph of the Long Word
+          0,
+    },
+    // Minor Glyphs (7 spells)
+    {
+      57937, // Glyph of Blessing of Kings
+      57958, // Glyph of Blessing of Might
+      57979, // Glyph of Insight
+      57954, // Glyph of Justice
+      57955, // Glyph of Lay on Hands
+      89401, // Glyph of Righteousness
+      57947, // Glyph of Truth
+          0,
+    },
+    // Prime Glyphs (11 spells)
+    {
+      54927, // Glyph of Crusader Strike
+      54937, // Glyph of Divine Favor
+      54934, // Glyph of Exorcism
+      63219, // Glyph of Hammer of the Righteous
+      63224, // Glyph of Holy Shock
+      54922, // Glyph of Judgement
+      54943, // Glyph of Seal of Insight
+      56416, // Glyph of Seal of Truth
+      63222, // Glyph of Shield of the Righteous
+      63220, // Glyph of Templar's Verdict
+      54936, // Glyph of Word of Glory
+          0,
+    },
+  },
+  // Glyph spells for Hunter
+  {
+    // Major Glyphs (16 spells)
+    {
+      56830, // Bestial Wrath
+      56851, // Concussive Shot
+      56850, // Deterrence
+      56844, // Disengage
+      56845, // Freezing Trap
+      56847, // Ice Trap
+      56846, // Immolation Trap
+      63068, // Master's Call
+      56833, // Mending
+      56829, // Misdirection
+      63086, // Raptor Strike
+      63069, // Scatter Shot
+      56836, // Silencing Shot
+      56849, // Snake Trap
+      56857, // Trap Launcher
+      56848, // Wyvern Sting
+          0,
+    },
+    // Minor Glyphs (5 spells)
+    {
+      57904, // Aspect of the Pack
+      57903, // Feign Death
+      57870, // Mend Pet
+      57866, // Revive Pet
+      57902, // Scare Beast
+          0,
+    },
+    // Prime Glyphs (10 spells)
+    {
+      56824, // Aimed Shot
+      56841, // Arcane Shot
+      63065, // Chimera Shot
+      56856, // Dazzled Prey
+      63066, // Explosive Shot
+      56842, // Kill Command
+      63067, // Kill Shot
+      56828, // Rapid Fire
+      56832, // Serpent Sting
+      56826, // Steady Shot
+          0,
+    },
+  },
+  // Glyph spells for Rogue
+  {
+    // Major Glyphs (18 spells)
+    {
+      56813, // Glyph of Ambush
+      56818, // Glyph of Blade Flurry
+      91299, // Glyph of Blind
+      63269, // Glyph of Cloak of Shadows
+      56820, // Glyph of Crippling Poison
+      56806, // Glyph of Deadly Throw
+      56799, // Glyph of Evasion
+      56803, // Glyph of Expose Armor
+      63254, // Glyph of Fan of Knives
+      56804, // Glyph of Feint
+      56812, // Glyph of Garrote
+      56809, // Glyph of Gouge
+      56805, // Glyph of Kick
+      56819, // Glyph of Preparation
+      56798, // Glyph of Sap
+      56811, // Glyph of Sprint
+      63256, // Glyph of Tricks of the Trade
+      89758, // Glyph of Vanish
+    },
+    // Minor Glyphs (6 spells)
+    {
+      58039, // Glyph of Blurred Speed
+      58032, // Glyph of Distract
+      58027, // Glyph of Pick Lock
+      58017, // Glyph of Pick Pocket
+      58038, // Glyph of Poisons
+      58033, // Glyph of Safe Fall
+          0,
+    },
+    // Prime Glyphs (12 spells)
+    {
+      56808, // Glyph of Adrenaline Rush
+      56800, // Glyph of Backstab
+      56802, // Glyph of Eviscerate
+      56807, // Glyph of Hemorrhage
+      63252, // Glyph of Killing Spree
+      63268, // Glyph of Mutilate
+      56814, // Glyph of Revealing Strike
+      56801, // Glyph of Rupture
+      63253, // Glyph of Shadow Dance
+      56821, // Glyph of Sinister Strike
+      56810, // Glyph of Slice and Dice
+      63249, // Glyph of Vendetta
+          0,
+    },
+  },
+  // Glyph spells for Priest
+  {
+    // Major Glyphs (15 spells)
+    {
+      55675, // Glyph of Circle of Healing
+      55677, // Glyph of Dispel Magic
+      63246, // Glyph of Divine Accuracy
+      55684, // Glyph of Fade
+      55678, // Glyph of Fear Ward
+      55683, // Glyph of Holy Nova
+      55686, // Glyph of Inner Fire
+      55691, // Glyph of Mass Dispel
+      63248, // Glyph of Pain Suppression
+      55688, // Glyph of Psychic Horror
+      55676, // Glyph of Psychic Scream
+      55690, // Glyph of Scourge Imprisonment
+      55692, // Glyph of Smite
+      63237, // Glyph of Spirit Tap
+      55685, // Glyph of Spirit of Redemption
+          0,
+    },
+    // Minor Glyphs (6 spells)
+    {
+      57985, // Glyph of Fading
+      58009, // Glyph of Fortitude
+      57987, // Glyph of Levitate
+      57986, // Glyph of Shackle Undead
+      58015, // Glyph of Shadow Protection
+      58228, // Glyph of Shadowfiend
+          0,
+    },
+    // Prime Glyphs (12 spells)
+    {
+      63229, // Glyph of Dispersion
+      55679, // Glyph of Flash Heal
+      63231, // Glyph of Guardian Spirit
+      55673, // Glyph of Lightwell
+      55687, // Glyph of Mind Flay
+      63235, // Glyph of Penance
+      55689, // Glyph of Power Word: Barrier
+      55672, // Glyph of Power Word: Shield
+      55680, // Glyph of Prayer of Healing
+      55674, // Glyph of Renew
+      55682, // Glyph of Shadow Word: Death
+      55681, // Glyph of Shadow Word: Pain
+          0,
+    },
+  },
+  // Glyph spells for Death Knight
+  {
+    // Major Glyphs (12 spells)
+    {
+      58623, // Glyph of Anti-Magic Shell
+      59332, // Glyph of Blood Boil
+      58673, // Glyph of Bone Shield
+      58620, // Glyph of Chains of Ice
+      63330, // Glyph of Dancing Rune Weapon
+      62259, // Glyph of Death Grip
+      63331, // Glyph of Hungering Cold
+      58657, // Glyph of Pestilence
+      58635, // Glyph of Pillar of Frost
+      59327, // Glyph of Rune Tap
+      58618, // Glyph of Strangulate
+      58676, // Glyph of Vampiric Blood
+          0,
+    },
+    // Minor Glyphs (6 spells)
+    {
+      58640, // Glyph of Blood Tap
+      58677, // Glyph of Death's Embrace
+      58680, // Glyph of Horn of Winter
+      59307, // Glyph of Path of Frost
+      60200, // Glyph of Raise Ally
+      59309, // Glyph of Resilient Grip
+          0,
+    },
+    // Prime Glyphs (11 spells)
+    {
+      63333, // Glyph of Death Coil
+      59336, // Glyph of Death Strike
+      58629, // Glyph of Death and Decay
+      58647, // Glyph of Frost Strike
+      58616, // Glyph of Heart Strike
+      63335, // Glyph of Howling Blast
+      58631, // Glyph of Icy Touch
+      58671, // Glyph of Obliterate
+      58686, // Glyph of Raise Dead
+      58669, // Glyph of Rune Strike
+      58642, // Glyph of Scourge Strike
+          0,
+    },
+  },
+  // Glyph spells for Shaman
+  {
+    // Major Glyphs (15 spells)
+    {
+      55437, // Glyph of Chain Heal
+      55449, // Glyph of Chain Lightning
+      55452, // Glyph of Elemental Mastery
+      55450, // Glyph of Fire Nova
+      55443, // Glyph of Frost Shock
+      59289, // Glyph of Ghost Wolf
+      55441, // Glyph of Grounding Totem
+      55456, // Glyph of Healing Stream Totem
+      55440, // Glyph of Healing Wave
+      63291, // Glyph of Hex
+      55448, // Glyph of Lightning Shield
+      63280, // Glyph of Shamanistic Rage
+      63298, // Glyph of Stoneclaw Totem
+      63270, // Glyph of Thunder
+      55438, // Glyph of Totemic Recall
+          0,
+    },
+    // Minor Glyphs (6 spells)
+    {
+      58058, // Glyph of Astral Recall
+      58059, // Glyph of Renewed Life
+      62132, // Glyph of Thunderstorm
+      89646, // Glyph of Water Breathing
+      58057, // Glyph of Water Walking
+      58135, // Glyph of the Arctic Wolf
+          0,
+    },
+    // Prime Glyphs (14 spells)
+    {
+      63279, // Glyph of Earth Shield
+      55439, // Glyph of Earthliving Weapon
+      63271, // Glyph of Feral Spirit
+      55455, // Glyph of Fire Elemental Totem
+      55447, // Glyph of Flame Shock
+      55451, // Glyph of Flametongue Weapon
+      55454, // Glyph of Lava Burst
+      55444, // Glyph of Lava Lash
+      55453, // Glyph of Lightning Bolt
+      63273, // Glyph of Riptide
+      55442, // Glyph of Shocking
+      55446, // Glyph of Stormstrike
+      55436, // Glyph of Water Shield
+      55445, // Glyph of Windfury Weapon
+          0,
+    },
+  },
+  // Glyph spells for Mage
+  {
+    // Major Glyphs (13 spells)
+    {
+      56381, // Glyph of Arcane Power
+      62126, // Glyph of Blast Wave
+      56365, // Glyph of Blink
+      56373, // Glyph of Dragon's Breath
+      56380, // Glyph of Evocation
+      56376, // Glyph of Frost Nova
+      63095, // Glyph of Ice Barrier
+      56372, // Glyph of Ice Block
+      56374, // Glyph of Icy Veins
+      56366, // Glyph of Invisibility
+      70937, // Glyph of Mana Shield
+      56375, // Glyph of Polymorph
+      63091, // Glyph of Slow
+          0,
+    },
+    // Minor Glyphs (6 spells)
+    {
+      57924, // Glyph of Arcane Intellect
+      57928, // Glyph of Conjuring
+      63093, // Glyph of Mirror Image
+      57925, // Glyph of Slow Fall
+      57927, // Glyph of the Monkey
+      52648, // Glyph of the Penguin
+          0,
+    },
+    // Prime Glyphs (13 spells)
+    {
+      63092, // Glyph of Arcane Barrage
+      62210, // Glyph of Arcane Blast
+      56363, // Glyph of Arcane Missiles
+      56364, // Glyph of Cone of Cold
+      63090, // Glyph of Deep Freeze
+      56368, // Glyph of Fireball
+      56370, // Glyph of Frostbolt
+      61205, // Glyph of Frostfire
+      56377, // Glyph of Ice Lance
+      89926, // Glyph of Living Bomb
+      56383, // Glyph of Mage Armor
+      56382, // Glyph of Molten Armor
+      56384, // Glyph of Pyroblast
+          0,
+    },
+  },
+  // Glyph spells for Warlock
+  {
+    // Major Glyphs (14 spells)
+    {
+      56232, // Glyph of Death Coil
+      63309, // Glyph of Demonic Circle
+      56244, // Glyph of Fear
+      56249, // Glyph of Felhunter
+      56224, // Glyph of Healthstone
+      56217, // Glyph of Howl of Terror
+      63320, // Glyph of Life Tap
+      56250, // Glyph of Seduction
+      56240, // Glyph of Shadow Bolt
+      63310, // Glyph of Shadowflame
+      63312, // Glyph of Soul Link
+      56226, // Glyph of Soul Swap
+      56231, // Glyph of Soulstone
+      56247, // Glyph of Voidwalker
+          0,
+    },
+    // Minor Glyphs (7 spells)
+    {
+      58080, // Curse of Exhaustion
+      58107, // Enslave Demon
+      58081, // Eye of Kilrogg
+      58070, // Glyph of Drain Soul
+      56238, // Glyph of Health Funnel
+      58079, // Glyph of Unending Breath
+      58094, // Ritual of Souls
+          0,
+    },
+    // Prime Glyphs (13 spells)
+    {
+      56241, // Glyph of Bane of Agony
+      63304, // Glyph of Chaos Bolt
+      56235, // Glyph of Conflagrate
+      56218, // Glyph of Corruption
+      56246, // Glyph of Felguard
+      63302, // Glyph of Haunt
+      56228, // Glyph of Immolate
+      56248, // Glyph of Imp
+      56242, // Glyph of Incinerate
+      70947, // Glyph of Lash of Pain
+      63303, // Glyph of Metamorphosis
+      56229, // Glyph of Shadowburn
+      56233, // Glyph of Unstable Affliction
+          0,
+    },
+  },
+  {
+    {
+          0,
+    },
+    {
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Glyph spells for Druid
+  {
+    // Major Glyphs (16 spells)
+    {
+      63057, // Glyph of Barkskin
+      67598, // Glyph of Claw
+      54760, // Glyph of Entangling Roots
+      62080, // Glyph of Focus
+      54810, // Glyph of Frenzied Regeneration
+      54825, // Glyph of Healing Touch
+      54831, // Glyph of Hurricane
+      54832, // Glyph of Innervate
+      54811, // Glyph of Maul
+      63056, // Glyph of Monsoon
+      54821, // Glyph of Rake
+      54733, // Glyph of Rebirth
+      54812, // Glyph of Solar Beam
+      54828, // Glyph of Starfall
+      57862, // Glyph of Thorns
+      62970, // Glyph of Wild Growth
+          0,
+    },
+    // Minor Glyphs (6 spells)
+    {
+      57856, // Glyph of Aquatic Form
+      57858, // Glyph of Challenging Roar
+      59219, // Glyph of Dash
+      57855, // Glyph of Mark of the Wild
+      62135, // Glyph of Typhoon
+      57857, // Glyph of Unburdened Rebirth
+          0,
+    },
+    // Prime Glyphs (14 spells)
+    {
+      62969, // Glyph of Berserk
+      54830, // Glyph of Insect Swarm
+      54826, // Glyph of Lifebloom
+      54813, // Glyph of Mangle
+      54829, // Glyph of Moonfire
+      54743, // Glyph of Regrowth
+      54754, // Glyph of Rejuvenation
+      54818, // Glyph of Rip
+      63055, // Glyph of Savage Roar
+      54815, // Glyph of Shred
+      54845, // Glyph of Starfire
+      62971, // Glyph of Starsurge
+      54824, // Glyph of Swiftmend
+      54756, // Glyph of Wrath
+          0,
+    },
   },
 };
 

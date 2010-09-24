@@ -253,6 +253,17 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   // Dummy constructor for old-style
 }
 
+spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_name ) :
+    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
+    spell_list_type( pp -> type ), scaling_type( pp -> type ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
+    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
+    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
+{
+  if ( run_init )
+    init( t_name );
+}
+
+
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype, const player_type stype ) :
     spell_id_t_id( id ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
     spell_list_type( ptype ), scaling_type( stype ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
@@ -395,13 +406,17 @@ bool spell_id_t::init( const char* s_name )
     else
     {
       spell_id_t_id = pp -> player_data.find_class_spell( spell_list_type, s_name );
+      if ( spell_id_t_id )
+      {
+        spell_id_t_tree = pp -> player_data.find_class_spell_tree( spell_list_type, s_name );
+      }
       if ( !spell_id_t_id )
       {
         spell_id_t_id = pp -> player_data.find_racial_spell( spell_list_type, pp -> race, s_name );
       }
-      else
+      if ( !spell_id_t_id )
       {
-        spell_id_t_tree = pp -> player_data.find_class_spell_tree( spell_list_type, s_name );
+        spell_id_t_id = pp -> player_data.find_glyph_spell( spell_list_type, s_name );
       }
     }
   }
@@ -1161,6 +1176,12 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name ) :
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, id, ptype, stype )
+{
+
+}
+
+passive_spell_t::passive_spell_t( player_t* player, const bool run_init, const char* t_name ) :
+  spell_id_t( player, run_init, t_name )
 {
 
 }
