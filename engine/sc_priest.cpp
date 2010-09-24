@@ -2497,7 +2497,7 @@ void priest_t::init_talents()
   }
 }
 
-// priest_t::init_talents
+// priest_t::init_spells
 void priest_t::init_spells()
 {
   player_t::init_spells();
