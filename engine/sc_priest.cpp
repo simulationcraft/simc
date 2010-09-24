@@ -2430,11 +2430,10 @@ void priest_t::init_procs()
 
 void priest_t::init_scaling()
 {
-  
   player_t::init_scaling();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
-  if ( ( primary_tree() == TREE_SHADOW ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+  if ( ( talents.twisted_faith -> rank() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
   {   
     double v = sim -> scaling -> scale_value;
     invert_spirit_scaling = 1;
@@ -2654,7 +2653,7 @@ void priest_t::init_values()
 
   switch ( talents.evangelism -> rank() )
   {
-  case 1: constants.dark_evangelism_value   = passive_spells.dark_evangelism_1  -> effect_base_value( 1 ) / 100.0; ; break;
+  case 1: constants.dark_evangelism_value   = passive_spells.dark_evangelism_1  -> effect_base_value( 1 ) / 100.0; break;
   case 2: constants.dark_evangelism_value   = passive_spells.dark_evangelism_2  -> effect_base_value( 1 ) / 100.0; break;
   default: constants.dark_evangelism_value  = 0.0; break;
   }

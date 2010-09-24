@@ -571,10 +571,10 @@ void player_t::init()
   init_unique_gear();
   init_enchant();
   init_professions();
-  init_scaling();
   init_consumables();
   init_talents();
   init_spells(); 
+  init_scaling();
   init_buffs();
   init_actions();
   init_gains();
