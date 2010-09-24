@@ -311,7 +311,7 @@ player_t::player_t( sim_t*             s,
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
     base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
     armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
-    armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
+    armor_per_agility( 0 ), initial_armor_per_agility( 0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
     diminished_miss_capi( 0 ), diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
     // Attacks

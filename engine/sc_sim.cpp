@@ -930,6 +930,38 @@ void sim_t::analyze()
       }
     }
 
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      pet -> timeline_dmg.clear();
+      pet -> timeline_dps.clear();
+
+      pet -> timeline_dmg.insert( pet -> timeline_dmg.begin(), max_buckets, 0 );
+      pet -> timeline_dps.insert( pet -> timeline_dps.begin(), max_buckets, 0 );
+    }
+
+    for ( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+
+      for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+      {
+        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+      }
+    }
+
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for ( int i=0; i < num_stats; i++ )
+      {
+        stats_t* s = stats_list[ i ];
+
+        for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+        {
+          pet -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+        }
+      }
+    }
+
     for ( int i=0; i < max_buckets; i++ )
     {
       double window_dmg  = p -> timeline_dmg[ i ];
@@ -947,6 +979,28 @@ void sim_t::analyze()
       }
 
       p -> timeline_dps[ i ] = window_dmg / window_size;
+    }
+
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      for ( int i=0; i < max_buckets; i++ )
+      {
+        double window_dmg  = pet -> timeline_dmg[ i ];
+        int    window_size = 1;
+
+        for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
+        {
+          window_dmg += pet -> timeline_dmg[ i-j ];
+          window_size++;
+        }
+        for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
+        {
+          window_dmg += pet -> timeline_dmg[ i+j ];
+          window_size++;
+        }
+
+        pet -> timeline_dps[ i ] = window_dmg / window_size;
+      }
     }
 
     assert( p -> iteration_dps.size() >= ( size_t ) iterations );
@@ -982,6 +1036,43 @@ void sim_t::analyze()
         p -> distribution_dps[ index ]++;
       }
     }
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      assert( pet -> iteration_dps.size() >= ( size_t ) iterations );
+
+      pet -> dps_min = 0;
+      pet -> dps_max = 0;
+      pet -> dps_std_dev = 0;
+      for ( int i=0; i < iterations; i++ )
+      {
+        double i_dps = pet -> iteration_dps[ i ];
+        if ( pet -> dps_min == 0 || pet -> dps_min > i_dps ) pet -> dps_min = i_dps;
+        if ( pet -> dps_max == 0 || pet -> dps_max < i_dps ) pet -> dps_max = i_dps;
+        double delta = i_dps - pet -> dps;
+        pet -> dps_std_dev += delta * delta;
+      }
+      pet -> dps_std_dev /= iterations;
+      pet -> dps_std_dev = sqrt( pet -> dps_std_dev );
+      pet -> dps_error = 2.0 * pet -> dps_std_dev / sqrt( ( float ) iterations );
+
+      if ( ( pet -> dps_max - pet -> dps_min ) > 0 )
+      {
+        int num_buckets = 50;
+        double min = pet -> dps_min - 1;
+        double max = pet -> dps_max + 1;
+        double range = max - min;
+
+        pet -> distribution_dps.insert( pet -> distribution_dps.begin(), num_buckets, 0 );
+
+        for ( int i=0; i < iterations; i++ )
+        {
+          double i_dps = pet -> iteration_dps[ i ];
+          int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
+          pet -> distribution_dps[ index ]++;
+        }
+      }
+    }
+
   }
 
   int num_timelines = iteration_timeline.size();
@@ -1025,6 +1116,16 @@ void sim_t::analyze()
     chart_t::timeline_resource( p -> timeline_resource_chart, p );
     chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
+
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      chart_t::action_dpet      ( pet -> action_dpet_chart,       pet );
+      chart_t::action_dmg       ( pet -> action_dmg_chart,        pet );
+      chart_t::gains            ( pet -> gains_chart,             pet );
+      chart_t::timeline_resource( pet -> timeline_resource_chart, pet );
+      chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
+      chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
+    }
   }
 }
 

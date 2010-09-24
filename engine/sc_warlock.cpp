@@ -571,10 +571,14 @@ struct warlock_pet_t : public pet_t
     initial_attack_power_per_strength = 1.0;
     base_attack_power = -20;
 
-    intellect_per_owner = 0;
+    stamina_per_owner = 0.6496; // level invariant, tested
+    intellect_per_owner = 0; // removed in cata
 
+    health_per_stamina = 10.0;
     mana_per_intellect = 10.8;
-    mp5_per_intellect  = 2.0 / 3.0;
+
+
+    mp5_per_intellect  = 2.0 / 3.0; // untested!
 
   }
 
@@ -962,8 +966,9 @@ struct imp_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 4011;
     resource_base[ RESOURCE_MANA   ] = 1175;
 
-    health_per_stamina = 10.0;
-    mana_per_intellect = 4.8;
+
+    mana_per_intellect = 14.28;
+
     mp5_per_intellect  = 5.0 / 6.0;
 
   }
@@ -3891,7 +3896,7 @@ void warlock_t::init_base()
   attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + util_t::talent_rank( talent_demonic_embrace -> rank(), 3, 0.04, 0.07, 0.10 );
 
   base_attack_power = -10;
-  initial_attack_power_per_strength = 1.0;
+  initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
   health_per_stamina = 10;
