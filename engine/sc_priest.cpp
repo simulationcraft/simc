@@ -560,7 +560,7 @@ struct shadow_fiend_pet_t : public pet_t
 
     bad_spell_power = util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 );
 
-    action_list_str             = "shadowcrawl/wait_until_ready";
+    action_list_str             = "/snapshot_stats/shadowcrawl/wait_until_ready";
 
     shadowcrawl                 = new active_spell_t ( this, "shadowcrawl", "Shadowcrawl", PRIEST, PRIEST );
     mana_leech                  = new passive_spell_t( this, "mana_leech", 34650 );

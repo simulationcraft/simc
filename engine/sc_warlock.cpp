@@ -1143,30 +1143,27 @@ struct felguard_pet_t : public warlock_pet_t
 
 struct felhunter_pet_t : public warlock_pet_t
 {
+  active_spell_t* shadow_bite;
+
   // TODO: Need to add fel intelligence on the warlock while felhunter is out
   // This is +48 int / + 64 spi at rank 5, plus 5%/10% if talented in the affliction tree
   // These do NOT stack with Prayer of Spirit, or with Arcane Intellect/Arcane Brilliance
-  struct shadow_bite_t : public warlock_pet_attack_t
+  struct shadow_bite_t : public warlock_pet_spell_t
   {
     shadow_bite_t( player_t* player ) :
-        warlock_pet_attack_t( "Felhunter: Shadow Bite", player, RESOURCE_MANA, SCHOOL_SHADOW )
+      warlock_pet_spell_t( *( ( ( felhunter_pet_t* ) ( player -> cast_pet() ) ) -> shadow_bite ) )
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
-
-      id = 54049;
-      parse_data ( o -> player_data);
-
-
       may_crit          = true;
-
       target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
+      direct_power_mod = 0.5 * 0.614; // very strange hardcoded values in the shadow bite tooltip
 
     }
 
     virtual void execute()
     {
-    	warlock_pet_attack_t::execute();
+    	warlock_pet_spell_t::execute();
     	trigger_mana_feed ( this );
     }
 
@@ -1174,7 +1171,7 @@ struct felhunter_pet_t : public warlock_pet_t
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-      warlock_pet_attack_t::player_buff();
+      warlock_pet_spell_t::player_buff();
       player_multiplier *= 1.0 + o -> active_dots() * 0.15;
     }
   };
@@ -1188,6 +1185,8 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
+    shadow_bite = new active_spell_t( this, "Felhunter: Shadow Bite", 54049, WARLOCK, WARLOCK );
+
 //    damage_modifier = 0.8;
 
     action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
@@ -1197,7 +1196,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t::init_base();
 
     resource_base[ RESOURCE_HEALTH ] = 4788;
-    resource_base[ RESOURCE_MANA   ] = 1559;
+    resource_base[ RESOURCE_MANA   ] = 18559;
 
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
@@ -1222,6 +1221,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
 
     o -> active_pet = this;
+    sim -> auras.fel_intelligence -> trigger();
     if ( o -> talent_demonic_pact -> rank() )
       sim -> auras.demonic_pact -> trigger();
     warlock_pet_t::summon( duration );
@@ -1232,6 +1232,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
     warlock_pet_t::dismiss();
     o -> active_pet = 0;
+    sim -> auras.fel_intelligence -> expire();
     if ( o -> talent_demonic_pact -> rank() )
       sim -> auras.demonic_pact -> expire();
   }
@@ -4240,6 +4241,7 @@ talent_tree_type warlock_t::primary_tree() SC_CONST
 void player_t::warlock_init( sim_t* sim )
 {
   sim -> auras.demonic_pact         = new aura_t( sim, "demonic_pact", 1 );
+  sim -> auras.fel_intelligence     = new aura_t( sim, "Fel Intelligence", 1 );
 
   target_t* t = sim -> target;
   t -> debuffs.improved_shadow_bolt = new     debuff_t( sim, "improved_shadow_bolt", 1, 30.0 );

@@ -1970,6 +1970,7 @@ struct sim_t
     aura_t* unleashed_rage;
     aura_t* windfury_totem;
     aura_t* wrath_of_air;
+    aura_t* fel_intelligence;
     auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
   };
   auras_t auras;
@@ -2032,6 +2033,7 @@ struct sim_t
   event_t*  next_event();
   void      reset();
   bool      init();
+  void      analyze_player( player_t* p );
   void      analyze();
   void      merge( sim_t& other_sim );
   void      merge();

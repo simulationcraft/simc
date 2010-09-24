@@ -30,7 +30,7 @@ struct sim_signal_handler_t
     }
     else if( signal == SIGINT )
     {
-      if( global_sim ) 
+      if( global_sim )
       {
 	if( global_sim -> canceled ) exit(0);
 	global_sim -> cancel();
@@ -397,7 +397,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    path_str( "." ), output_file( stdout ), log_file( 0 ), 
+    path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
     report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index )
 {
@@ -603,9 +603,9 @@ void sim_t::combat( int iteration )
       delete e;
       break;
     }
-    if ( target -> initial_health != 0 ) 
+    if ( target -> initial_health != 0 )
     {
-      if (  target -> current_health <= 0 ) 
+      if (  target -> current_health <= 0 )
       {
 	target -> recalculate_health();
 	if ( debug ) log_t::output( this, "Target has died, ending simulation" );
@@ -740,7 +740,7 @@ bool sim_t::init()
     // TO-DO: Uncomment once we're working with PTR builds etc.
     // sim_data.set_parent( &sim_t::ptr_data );
   }
- 
+
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
   if ( wheel_seconds     <  600 ) wheel_seconds     = 1024; // 2^10  Min of 600 to ensure no wrap-around bugs with Water Shield
@@ -801,6 +801,188 @@ struct compare_name
   }
 };
 
+void sim_t::analyze_player( player_t* p )
+{
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+    b -> analyze();
+
+
+  p -> total_dmg = 0;
+  p -> total_seconds /= iterations;
+  p -> total_waiting /= iterations;
+  p -> total_foreground_actions /= iterations;
+
+  std::vector<stats_t*> stats_list;
+
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  {
+    stats_list.push_back( s );
+  }
+
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      stats_list.push_back( s );
+    }
+  }
+
+
+
+  int num_stats = ( int ) stats_list.size();
+    for ( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+
+      s -> analyze();
+      p -> total_dmg += s -> total_dmg;
+    }
+
+    p -> dps = p -> total_dmg / p -> total_seconds;
+
+
+  if ( p -> total_seconds == 0 ) return;
+
+
+  for ( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+
+    s -> portion_dmg = s -> total_dmg / p -> total_dmg;
+    s -> portion_dps = s -> portion_dmg * p -> dps;
+  }
+
+  if ( !p -> quiet)
+  {
+    players_by_rank.push_back( p );
+    players_by_name.push_back( p );
+  }
+
+  // Avoid double-counting of pet damage
+  if ( ! p -> is_pet() ) total_dmg += p -> total_dmg;
+
+  int max_buckets = ( int ) p -> total_seconds;
+
+  // make the pet graphs the same length as owner's
+  if ( p -> is_pet() )
+  {
+    player_t* o = dynamic_cast<pet_t*>(p)->owner;
+    max_buckets = ( int ) o -> total_seconds;
+  }
+
+  int num_buckets = ( int ) p -> timeline_resource.size();
+
+  if ( num_buckets > max_buckets ) p -> timeline_resource.resize( max_buckets );
+
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    p -> timeline_resource[ i ] /= iterations;
+  }
+
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    p -> resource_lost  [ i ] /= iterations;
+    p -> resource_gained[ i ] /= iterations;
+  }
+
+  p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
+  p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
+  p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
+
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    g -> analyze( this );
+
+  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+    proc -> analyze( this );
+
+
+  p -> timeline_dmg.clear();
+  p -> timeline_dps.clear();
+
+  p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
+  p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
+
+  for ( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+
+    for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+    {
+      p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+    }
+  }
+
+
+
+  for ( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
+
+    for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+    {
+      p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+    }
+  }
+
+
+
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    double window_dmg  = p -> timeline_dmg[ i ];
+    int    window_size = 1;
+
+    for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
+    {
+      window_dmg += p -> timeline_dmg[ i-j ];
+      window_size++;
+    }
+    for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
+    {
+      window_dmg += p -> timeline_dmg[ i+j ];
+      window_size++;
+    }
+
+    p -> timeline_dps[ i ] = window_dmg / window_size;
+  }
+
+
+
+  assert( p -> iteration_dps.size() >= ( size_t ) iterations );
+
+  p -> dps_min = 0;
+  p -> dps_max = 0;
+  p -> dps_std_dev = 0;
+  for ( int i=0; i < iterations; i++ )
+  {
+    double i_dps = p -> iteration_dps[ i ];
+    if ( p -> dps_min == 0 || p -> dps_min > i_dps ) p -> dps_min = i_dps;
+    if ( p -> dps_max == 0 || p -> dps_max < i_dps ) p -> dps_max = i_dps;
+    double delta = i_dps - p -> dps;
+    p -> dps_std_dev += delta * delta;
+  }
+  p -> dps_std_dev /= iterations;
+  p -> dps_std_dev = sqrt( p -> dps_std_dev );
+  p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
+
+  if ( ( p -> dps_max - p -> dps_min ) > 0 )
+  {
+    int num_buckets = 50;
+    double min = p -> dps_min - 1;
+    double max = p -> dps_max + 1;
+    double range = max - min;
+
+    p -> distribution_dps.insert( p -> distribution_dps.begin(), num_buckets, 0 );
+
+    for ( int i=0; i < iterations; i++ )
+    {
+      double i_dps = p -> iteration_dps[ i ];
+      int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
+      p -> distribution_dps[ index ]++;
+    }
+  }
+
+}
 void sim_t::analyze()
 {
   if ( total_seconds == 0 ) return;
@@ -815,265 +997,9 @@ void sim_t::analyze()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
-    for ( buff_t* b = p -> buff_list; b; b = b -> next )
-      b -> analyze();
-
-    p -> total_dmg = 0;
-    p -> total_seconds /= iterations;
-    p -> total_waiting /= iterations;
-    p -> total_foreground_actions /= iterations;
+    analyze_player( p );
   }
 
-  for ( player_t* p = player_list; p; p = p -> next )
-  {
-    std::vector<stats_t*> stats_list;
-
-    for ( stats_t* s = p -> stats_list; s; s = s -> next )
-    {
-      stats_list.push_back( s );
-    }
-
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for ( stats_t* s = pet -> stats_list; s; s = s -> next )
-      {
-        stats_list.push_back( s );
-      }
-    }
-
-    int num_stats = ( int ) stats_list.size();
-
-    for ( int i=0; i < num_stats; i++ )
-    {
-      stats_t* s = stats_list[ i ];
-
-      s -> analyze();
-      p -> total_dmg += s -> total_dmg;
-    }
-
-    p -> dps = p -> total_dmg / p -> total_seconds;
-
-    if ( p -> quiet ) continue;
-
-    for ( int i=0; i < num_stats; i++ )
-    {
-      stats_t* s = stats_list[ i ];
-
-      s -> portion_dmg = s -> total_dmg / p -> total_dmg;
-      s -> portion_dps = s -> portion_dmg * p -> dps;
-    }
-
-    players_by_rank.push_back( p );
-    players_by_name.push_back( p );
-
-    // Avoid double-counting of pet damage
-    if ( ! p -> is_pet() ) total_dmg += p -> total_dmg;
-
-    int max_buckets = ( int ) p -> total_seconds;
-    int num_buckets = ( int ) p -> timeline_resource.size();
-
-    if ( num_buckets > max_buckets ) p -> timeline_resource.resize( max_buckets );
-
-    for ( int i=0; i < max_buckets; i++ )
-    {
-      p -> timeline_resource[ i ] /= iterations;
-    }
-
-    for ( int i=0; i < RESOURCE_MAX; i++ )
-    {
-      p -> resource_lost  [ i ] /= iterations;
-      p -> resource_gained[ i ] /= iterations;
-    }
-
-    for ( pet_t *pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for ( int i=0; i < RESOURCE_MAX; i++ )
-      {
-        pet -> resource_lost  [ i ] /= iterations;
-        pet -> resource_gained[ i ] /= iterations;
-      }
-    }
-
-    p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
-
-    p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
-    p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
-
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
-      g -> analyze( this );
-
-    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
-      proc -> analyze( this );
-
-    for ( pet_t *pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
-        g -> analyze( this );
-
-      for ( proc_t* proc = pet -> proc_list; proc; proc = proc -> next )
-        proc -> analyze( this );
-    }
-
-    p -> timeline_dmg.clear();
-    p -> timeline_dps.clear();
-
-    p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
-    p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
-
-    for ( int i=0; i < num_stats; i++ )
-    {
-      stats_t* s = stats_list[ i ];
-
-      for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
-      {
-        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
-      }
-    }
-
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      pet -> timeline_dmg.clear();
-      pet -> timeline_dps.clear();
-
-      pet -> timeline_dmg.insert( pet -> timeline_dmg.begin(), max_buckets, 0 );
-      pet -> timeline_dps.insert( pet -> timeline_dps.begin(), max_buckets, 0 );
-    }
-
-    for ( int i=0; i < num_stats; i++ )
-    {
-      stats_t* s = stats_list[ i ];
-
-      for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
-      {
-        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
-      }
-    }
-
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for ( int i=0; i < num_stats; i++ )
-      {
-        stats_t* s = stats_list[ i ];
-
-        for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
-        {
-          pet -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
-        }
-      }
-    }
-
-    for ( int i=0; i < max_buckets; i++ )
-    {
-      double window_dmg  = p -> timeline_dmg[ i ];
-      int    window_size = 1;
-
-      for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
-      {
-        window_dmg += p -> timeline_dmg[ i-j ];
-        window_size++;
-      }
-      for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
-      {
-        window_dmg += p -> timeline_dmg[ i+j ];
-        window_size++;
-      }
-
-      p -> timeline_dps[ i ] = window_dmg / window_size;
-    }
-
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      for ( int i=0; i < max_buckets; i++ )
-      {
-        double window_dmg  = pet -> timeline_dmg[ i ];
-        int    window_size = 1;
-
-        for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
-        {
-          window_dmg += pet -> timeline_dmg[ i-j ];
-          window_size++;
-        }
-        for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
-        {
-          window_dmg += pet -> timeline_dmg[ i+j ];
-          window_size++;
-        }
-
-        pet -> timeline_dps[ i ] = window_dmg / window_size;
-      }
-    }
-
-    assert( p -> iteration_dps.size() >= ( size_t ) iterations );
-
-    p -> dps_min = 0;
-    p -> dps_max = 0;
-    p -> dps_std_dev = 0;
-    for ( int i=0; i < iterations; i++ )
-    {
-      double i_dps = p -> iteration_dps[ i ];
-      if ( p -> dps_min == 0 || p -> dps_min > i_dps ) p -> dps_min = i_dps;
-      if ( p -> dps_max == 0 || p -> dps_max < i_dps ) p -> dps_max = i_dps;
-      double delta = i_dps - p -> dps;
-      p -> dps_std_dev += delta * delta;
-    }
-    p -> dps_std_dev /= iterations;
-    p -> dps_std_dev = sqrt( p -> dps_std_dev );
-    p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
-
-    if ( ( p -> dps_max - p -> dps_min ) > 0 )
-    {
-      int num_buckets = 50;
-      double min = p -> dps_min - 1;
-      double max = p -> dps_max + 1;
-      double range = max - min;
-
-      p -> distribution_dps.insert( p -> distribution_dps.begin(), num_buckets, 0 );
-
-      for ( int i=0; i < iterations; i++ )
-      {
-        double i_dps = p -> iteration_dps[ i ];
-        int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
-        p -> distribution_dps[ index ]++;
-      }
-    }
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      assert( pet -> iteration_dps.size() >= ( size_t ) iterations );
-
-      pet -> dps_min = 0;
-      pet -> dps_max = 0;
-      pet -> dps_std_dev = 0;
-      for ( int i=0; i < iterations; i++ )
-      {
-        double i_dps = pet -> iteration_dps[ i ];
-        if ( pet -> dps_min == 0 || pet -> dps_min > i_dps ) pet -> dps_min = i_dps;
-        if ( pet -> dps_max == 0 || pet -> dps_max < i_dps ) pet -> dps_max = i_dps;
-        double delta = i_dps - pet -> dps;
-        pet -> dps_std_dev += delta * delta;
-      }
-      pet -> dps_std_dev /= iterations;
-      pet -> dps_std_dev = sqrt( pet -> dps_std_dev );
-      pet -> dps_error = 2.0 * pet -> dps_std_dev / sqrt( ( float ) iterations );
-
-      if ( ( pet -> dps_max - pet -> dps_min ) > 0 )
-      {
-        int num_buckets = 50;
-        double min = pet -> dps_min - 1;
-        double max = pet -> dps_max + 1;
-        double range = max - min;
-
-        pet -> distribution_dps.insert( pet -> distribution_dps.begin(), num_buckets, 0 );
-
-        for ( int i=0; i < iterations; i++ )
-        {
-          double i_dps = pet -> iteration_dps[ i ];
-          int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
-          pet -> distribution_dps[ index ]++;
-        }
-      }
-    }
-
-  }
 
   int num_timelines = iteration_timeline.size();
   if ( num_timelines > 2 )
@@ -1108,6 +1034,15 @@ void sim_t::analyze()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
+   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      chart_t::action_dpet      ( pet -> action_dpet_chart,       pet );
+      chart_t::action_dmg       ( pet -> action_dmg_chart,        pet );
+      chart_t::gains            ( pet -> gains_chart,             pet );
+      chart_t::timeline_resource( pet -> timeline_resource_chart, pet );
+      chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
+      chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
+    }
     if ( p -> quiet ) continue;
 
     chart_t::action_dpet      ( p -> action_dpet_chart,       p );
@@ -1117,15 +1052,7 @@ void sim_t::analyze()
     chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
 
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    {
-      chart_t::action_dpet      ( pet -> action_dpet_chart,       pet );
-      chart_t::action_dmg       ( pet -> action_dmg_chart,        pet );
-      chart_t::gains            ( pet -> gains_chart,             pet );
-      chart_t::timeline_resource( pet -> timeline_resource_chart, pet );
-      chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
-      chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
-    }
+
   }
 }
 
@@ -1140,7 +1067,7 @@ bool sim_t::iterate()
 
   for ( int i=0; i < iterations; i++ )
   {
-    if ( canceled ) 
+    if ( canceled )
     {
       iterations = current_iteration + 1;
       break;
@@ -1154,7 +1081,7 @@ bool sim_t::iterate()
     combat( i );
   }
   if ( report_progress ) util_t::fprintf( stdout, "\n" );
-  
+
   reset();
 
   return true;
@@ -1389,10 +1316,10 @@ void sim_t::aura_loss( const char* aura_name , int aura_id )
 
 // sim_t::time_to_think =====================================================
 
-bool sim_t::time_to_think( double proc_time ) 
+bool sim_t::time_to_think( double proc_time )
 {
   if ( proc_time == 0 ) return false;
-  if ( proc_time < 0 ) return true; 
+  if ( proc_time < 0 ) return true;
   return current_time - proc_time > reaction_time;
 }
 
@@ -1513,12 +1440,12 @@ action_expr_t* sim_t::create_expression( action_t* a,
       {
 	struct target_adds_never_expr_t : public action_expr_t
         {
-	  target_adds_never_expr_t( action_t* a ) : action_expr_t( a, "target_adds_never", TOK_NUM ) 
+	  target_adds_never_expr_t( action_t* a ) : action_expr_t( a, "target_adds_never", TOK_NUM )
 	  {
 	    bool adds = a -> sim -> target -> initial_adds_nearby > 0;
 	    int num_events = ( int ) a -> sim -> raid_events.size();
 	    for ( int i=0; i < num_events; i++ )
-	      if ( a -> sim -> raid_events[ i ] -> name_str == "adds" ) 
+	      if ( a -> sim -> raid_events[ i ] -> name_str == "adds" )
 		adds = true;
 	    result_num = adds ? 0.0 : 1.0;
 	  }
@@ -1827,7 +1754,7 @@ void sim_t::cancel()
 {
   if( canceled ) return;
 
-  if( current_iteration >= 0 ) 
+  if( current_iteration >= 0 )
   {
     errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration+1, thread_index );
   }
@@ -1851,7 +1778,7 @@ void sim_t::cancel()
 
 double sim_t::progress( std::string& phase )
 {
-  if ( canceled ) 
+  if ( canceled )
   {
     phase = "Canceled";
     return 1.0;
@@ -1861,7 +1788,7 @@ double sim_t::progress( std::string& phase )
   {
     return plot -> progress( phase );
   }
-  else if ( scaling -> calculate_scale_factors && 
+  else if ( scaling -> calculate_scale_factors &&
 	    scaling -> num_scaling_stats > 0 )
   {
     return scaling -> progress( phase );
