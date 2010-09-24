@@ -2560,14 +2560,14 @@ struct moonfire_t : public druid_spell_t
       school = ( p -> buffs_eclipse_solar -> check() ? SCHOOL_NATURE : SCHOOL_ARCANE );
     
     druid_spell_t::execute();
-    // +2/4/8% damage bonus only applies to direct damage
+    // Damage bonus only applies to direct damage
     // Get rid of it for the ticks, hacky :<
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talent_lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
 
 
     if ( result_is_hit() )
     {
-      num_ticks = 4;
+      num_ticks   = 6 + p -> talent_genesis -> rank();
       added_ticks = 0;
       if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
