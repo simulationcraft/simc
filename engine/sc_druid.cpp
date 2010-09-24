@@ -1309,7 +1309,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
-    duration += 3.0 * p -> talent_endless_carnage -> rank();
+    duration += 4.0 * p -> talent_endless_carnage -> rank();
     if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
 
     // execute clears CP, so has to be after calculation duration
@@ -3179,9 +3179,9 @@ struct starsurge_t : public druid_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void schedule_execute()
   {
-    druid_spell_t::execute();
+    druid_spell_t::schedule_execute();
     druid_t* p = player -> cast_druid();
     p -> buffs_shooting_stars -> expire();
   }
@@ -3551,7 +3551,7 @@ void druid_t::init_buffs()
   buffs_natures_torment      = new buff_t( this, "natures_torment"     , 1,  15.0,  60.0, talent_natures_torment -> rank() );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 3.0 * talent_endless_carnage -> rank() );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 4.0 * talent_endless_carnage -> rank() );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talent_shooting_stars -> rank() * 0.02 );
   buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
