@@ -2088,10 +2088,13 @@ void report_t::print_html( sim_t* sim )
   for ( int i=0; i < num_players; i++ )
   {
     print_html_player( file, sim -> players_by_name[ i ] );
-    for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+    if ( sim -> report_pets_separately )
     {
-      if ( pet -> total_seconds > 0 )
+      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      {
+        if ( pet -> total_seconds > 0 )
           print_html_player( file, pet );
+      }
     }
   }
 

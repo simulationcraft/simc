@@ -1998,6 +1998,7 @@ struct sim_t
   int current_throttle;
   int debug_exp;
   int report_precision;
+  bool report_pets_separately;
 
   // Multi-Threading
   int threads;
