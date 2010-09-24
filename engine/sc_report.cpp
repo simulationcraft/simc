@@ -1004,6 +1004,52 @@ static void print_html_action( FILE* file, stats_t* s )
 		   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
 }
 
+
+// print_html_stats ============================================================
+
+static void print_html_stats (FILE* file, player_t* a )
+{
+  if ( a -> total_seconds > 0 )
+  {
+  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>%s</th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr>\n", a -> name() );
+
+  util_t::fprintf( file, " <tr> <th>Strength</th>  <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_STRENGTH  ], a -> strength(),  a -> stats.attribute[ ATTR_STRENGTH  ] );
+  util_t::fprintf( file, " <tr> <th>Agility</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_AGILITY   ], a -> agility(),   a -> stats.attribute[ ATTR_AGILITY   ] );
+  util_t::fprintf( file, " <tr> <th>Stamina</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_STAMINA   ], a -> stamina(),   a -> stats.attribute[ ATTR_STAMINA   ] );
+  util_t::fprintf( file, " <tr> <th>Intellect</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_INTELLECT ], a -> intellect(), a -> stats.attribute[ ATTR_INTELLECT ] );
+  util_t::fprintf( file, " <tr> <th>Spirit</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_SPIRIT    ], a -> spirit(),    a -> stats.attribute[ ATTR_SPIRIT    ] );
+  util_t::fprintf( file, " <tr> <th>Health</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> resource_buffed[ RESOURCE_HEALTH ], a -> resource_max[ RESOURCE_HEALTH ], 0.0 );
+  util_t::fprintf( file, " <tr> <th>Mana</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> resource_buffed[ RESOURCE_MANA   ], a -> resource_max[ RESOURCE_MANA   ], 0.0 );
+
+  util_t::fprintf( file, " <tr> <th>Spell Power</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_spell_power, a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(), a -> stats.spell_power );
+  util_t::fprintf( file, " <tr> <th>Spell Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_spell_hit,          100 * a -> composite_spell_hit(),          a -> stats.hit_rating  );
+  util_t::fprintf( file, " <tr> <th>Spell Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_spell_crit,         100 * a -> composite_spell_crit(),         a -> stats.crit_rating );
+  util_t::fprintf( file, " <tr> <th>Spell Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / a -> buffed_spell_haste - 1 ), 100 * ( 1 / a -> spell_haste - 1 ), a -> stats.haste_rating );
+  util_t::fprintf( file, " <tr> <th>Spell Penetration</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     100 * a -> buffed_spell_penetration,  100 * a -> composite_spell_penetration(),  a -> stats.spell_penetration );
+  util_t::fprintf( file, " <tr> <th>Mana Per 5</th>        <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_mp5, a -> composite_mp5(), a -> stats.mp5 );
+
+  util_t::fprintf( file, " <tr> <th>Attack Power</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_attack_power, a -> composite_attack_power() * a -> composite_attack_power_multiplier(), a -> stats.attack_power );
+  util_t::fprintf( file, " <tr> <th>Melee Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_hit,         100 * a -> composite_attack_hit(),         a -> stats.hit_rating );
+  util_t::fprintf( file, " <tr> <th>Melee Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_crit,        100 * a -> composite_attack_crit(),        a -> stats.crit_rating );
+  util_t::fprintf( file, " <tr> <th>Melee Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / a -> buffed_attack_haste - 1 ), 100 * ( 1 / a -> attack_haste - 1 ), a -> stats.haste_rating );
+  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_expertise,   100 * a -> composite_attack_expertise(),   a -> stats.expertise_rating );
+  util_t::fprintf( file, " <tr> <th>Armor Penetration</th> <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_penetration, 100 * a -> composite_attack_penetration(), a -> stats.armor_penetration_rating );
+
+  util_t::fprintf( file, " <tr> <th>Armor</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_armor,       a -> composite_armor(), ( a -> stats.armor + a -> stats.bonus_armor ) );
+  util_t::fprintf( file, " <tr> <th>Block Value</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_block_value, a -> composite_block_value(), a -> stats.block_value );
+  util_t::fprintf( file, " <tr> <th>Defense</th>     <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_defense,     a -> composite_defense(), a -> stats.defense_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Miss</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_miss,  100 * ( a -> composite_tank_miss( SCHOOL_PHYSICAL ) - a -> diminished_miss( SCHOOL_PHYSICAL ) ), 0.0  );
+  util_t::fprintf( file, " <tr> <th>Tank-Dodge</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_dodge, 100 * ( a -> composite_tank_dodge() - a -> diminished_dodge() ), a -> stats.dodge_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Parry</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_parry, 100 * ( a -> composite_tank_parry() - a -> diminished_parry() ), a -> stats.parry_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_block, 100 * a -> composite_tank_block(), a -> stats.block_rating );
+  util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_crit,  100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
+
+  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", a -> buffed_mastery, a -> composite_mastery(), a -> stats.mastery_rating );
+
+  util_t::fprintf( file, "</table> <br />\n" );
+  }
+}
+
 // print_html_player =========================================================
 
 static void print_html_player( FILE* file, player_t* p )
@@ -1272,43 +1318,20 @@ static void print_html_player( FILE* file, player_t* p )
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <tr> <th>Stat</th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr>\n" );
+  //
 
-  util_t::fprintf( file, " <tr> <th>Strength</th>  <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ] );
-  util_t::fprintf( file, " <tr> <th>Agility</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ] );
-  util_t::fprintf( file, " <tr> <th>Stamina</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ] );
-  util_t::fprintf( file, " <tr> <th>Intellect</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ] );
-  util_t::fprintf( file, " <tr> <th>Spirit</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> attribute_buffed[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ] );
-  util_t::fprintf( file, " <tr> <th>Health</th>    <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> resource_buffed[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_HEALTH ], 0.0 );
-  util_t::fprintf( file, " <tr> <th>Mana</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", p -> resource_buffed[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ], 0.0 );
+      print_html_stats( file, p );
 
-  util_t::fprintf( file, " <tr> <th>Spell Power</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power );
-  util_t::fprintf( file, " <tr> <th>Spell Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating  );
-  util_t::fprintf( file, " <tr> <th>Spell Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating );
-  util_t::fprintf( file, " <tr> <th>Spell Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / p -> buffed_spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating );
-  util_t::fprintf( file, " <tr> <th>Spell Penetration</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     100 * p -> buffed_spell_penetration,  100 * p -> composite_spell_penetration(),  p -> stats.spell_penetration );
-  util_t::fprintf( file, " <tr> <th>Mana Per 5</th>        <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_mp5, p -> composite_mp5(), p -> stats.mp5 );
 
-  util_t::fprintf( file, " <tr> <th>Attack Power</th>      <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power );
-  util_t::fprintf( file, " <tr> <th>Melee Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating );
-  util_t::fprintf( file, " <tr> <th>Melee Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating );
-  util_t::fprintf( file, " <tr> <th>Melee Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ), p -> stats.haste_rating );
-  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating );
-  util_t::fprintf( file, " <tr> <th>Armor Penetration</th> <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_attack_penetration, 100 * p -> composite_attack_penetration(), p -> stats.armor_penetration_rating );
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
 
-  util_t::fprintf( file, " <tr> <th>Armor</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ) );
-  util_t::fprintf( file, " <tr> <th>Block Value</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value );
-  util_t::fprintf( file, " <tr> <th>Defense</th>     <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     p -> buffed_defense,     p -> composite_defense(), p -> stats.defense_rating );
-  util_t::fprintf( file, " <tr> <th>Tank-Miss</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL ) ), 0.0  );
-  util_t::fprintf( file, " <tr> <th>Tank-Dodge</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating );
-  util_t::fprintf( file, " <tr> <th>Tank-Parry</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating );
-  util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating );
-  util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
+        print_html_stats( file, pet );
 
-  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", p -> buffed_mastery, p -> composite_mastery(), p -> stats.mastery_rating );
 
+  }
   util_t::fprintf( file, "</table> <br />\n" );
-
+//
   if ( p -> sim -> scaling -> has_scale_factors() )
   {
     util_t::fprintf( file, "<table class=\"player\">\n" );

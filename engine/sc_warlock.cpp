@@ -510,7 +510,7 @@ struct warlock_pet_t : public pet_t
     double r                      = 0.0;
     const _stat_list_t* stat_list = 0;
 
-    if ( !(level == 80 || level == 85 ) )
+    if ( (level < 80 || level > 85 ) )
     {
       return 0.0;
     }
@@ -534,17 +534,6 @@ struct warlock_pet_t : public pet_t
 
     r = class_value;
 
-    switch ( stat_type )
-    {
-    case BASE_STAT_MELEE_CRIT_PER_AGI:
-    case BASE_STAT_SPELL_CRIT_PER_INT:
-    case BASE_STAT_DODGE_PER_AGI:
-    case BASE_STAT_MELEE_CRIT:
-    case BASE_STAT_SPELL_CRIT:
-      r /= 100.0;
-      break;
-    }
-
     return r;
   }
 
@@ -556,23 +545,34 @@ struct warlock_pet_t : public pet_t
 
     static const _stat_list_t pet_stats[]=
     {
-              // str, agi,  sta, int, spi,   hp,  mana, crit/agi, crit/int, dodge/agi, m_crit, s_crit, mp5, spi_reg
-        { 80, {  314,  90,  328, 150, 209,    0,     0,  0.01923,  0.0000,  0.000000,  3.2800,  0.92,  -55 } },
-        { 85, {  453, 883,  353, 159, 225, 5395, 16703,      0.0,  0.0000,       0.0,     0.0,  0.0000, -55 } },
-        { 0, { 0 } }
+            // str, agi,  sta, int, spi
+      { 80, {  314,  90,  328, 150, 209 } },
+      { 81, {  345, 297,  333, 151, 212 } },
+      { 82, {  345, 297,  333, 151, 212 } },
+      { 83, {  345, 297,  333, 151, 212 } },
+      { 84, {  345, 297,  333, 151, 212 } },
+      { 85, {  453, 883,  353, 159, 225 } },
+      { 0, { 0 } }
     };
 
-    attribute_base[ ATTR_STRENGTH  ] = get_attribute_base( level, BASE_STAT_STRENGTH, pet_stats );
-    attribute_base[ ATTR_AGILITY   ] = get_attribute_base( level, BASE_STAT_AGILITY, pet_stats );
-    attribute_base[ ATTR_STAMINA   ] = get_attribute_base( level, BASE_STAT_STAMINA, pet_stats );
-    attribute_base[ ATTR_INTELLECT ] = get_attribute_base( level, BASE_STAT_INTELLECT, pet_stats );
-    attribute_base[ ATTR_SPIRIT    ] = get_attribute_base( level, BASE_STAT_SPIRIT, pet_stats );
+    attribute_base[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_stats );
+    attribute_base[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_stats );
+    attribute_base[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_stats );
+    attribute_base[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_stats );
+    attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_stats );
 
-    
-    initial_attack_power_per_strength = 2.0;
+    base_attack_crit                  = 0.0328;
+    base_spell_crit                   = 0.0092;
+
+    initial_attack_crit_per_agility   = 0.01 / 52.0;
+
     initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
 
-    health_per_stamina = 10;
+    initial_attack_power_per_strength = 1.0;
+    base_attack_power = -20;
+
+    intellect_per_owner = 0;
+
     mana_per_intellect = 10.8;
     mp5_per_intellect  = 2.0 / 3.0;
 
@@ -629,7 +629,19 @@ struct warlock_pet_t : public pet_t
     }
   }
 
+  virtual double composite_spell_power( const school_type school ) SC_CONST
+  {
+    double sp = pet_t::composite_spell_power( school );
+    sp += owner -> composite_spell_power( school ) * 0.455;
+    return floor( sp );
+  }
 
+  virtual double composite_attack_power() SC_CONST
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * 0.90;
+    return ap;
+  }
 
   virtual double composite_attack_hit() SC_CONST
   {
@@ -901,18 +913,7 @@ struct warlock_pet_spell_t : public spell_t
   {
     spell_t::tick();
   }
-  virtual void player_buff()
-  {
-    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
-    spell_t::player_buff();
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.10;
-    }
-    player_spell_power += 0.15 * o -> composite_spell_power( SCHOOL_MAX );
 
-  }
 };
 
 // ==========================================================================
@@ -933,6 +934,7 @@ struct imp_pet_t : public warlock_pet_t
 
       may_crit          = true;
       base_multiplier *= 1.0 + ( o -> glyphs.imp            * 0.20 );
+
     }
     virtual void execute()
     {
@@ -947,7 +949,7 @@ struct imp_pet_t : public warlock_pet_t
   {
     firebolt = new active_spell_t( this, "firebolt", "Firebolt", WARLOCK, WARLOCK );
 
-    action_list_str = "firebolt";
+    action_list_str = "/snapshot_stats/firebolt";
   }
 
 
@@ -956,20 +958,14 @@ struct imp_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 297;
-    attribute_base[ ATTR_AGILITY   ] =  79;
-    attribute_base[ ATTR_STAMINA   ] = 118;
-    attribute_base[ ATTR_INTELLECT ] = 424;
-    attribute_base[ ATTR_SPIRIT    ] = 367;
 
     resource_base[ RESOURCE_HEALTH ] = 4011;
     resource_base[ RESOURCE_MANA   ] = 1175;
 
-    health_per_stamina = 2;
+    health_per_stamina = 10.0;
     mana_per_intellect = 4.8;
     mp5_per_intellect  = 5.0 / 6.0;
 
-    base_mp5 = -257;
   }
 
 
@@ -1096,7 +1092,7 @@ struct felguard_pet_t : public warlock_pet_t
     damage_modifier = 1.05;
 
     //action_list_str += "/felstorm";
-    action_list_str += "/legion_strike/wait_until_ready";
+    action_list_str += "/snapshot_stats/legion_strike/wait_until_ready";
   }
   virtual void init_base()
   {
@@ -1105,7 +1101,6 @@ struct felguard_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 1627;
     resource_base[ RESOURCE_MANA   ] = 3331;
 
-    base_attack_power = -20;
 
     melee = new melee_t( this );
   }
@@ -1157,15 +1152,11 @@ struct felhunter_pet_t : public warlock_pet_t
       id = 54049;
       parse_data ( o -> player_data);
 
-      base_spell_power_multiplier = 1.0;
-      base_attack_power_multiplier = 0.0;
 
       may_crit          = true;
 
       target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
 
-      base_crit_bonus = 0.5;
-      base_crit_bonus_multiplier = 2.0;
     }
 
     virtual void execute()
@@ -1179,7 +1170,6 @@ struct felhunter_pet_t : public warlock_pet_t
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_attack_t::player_buff();
-      player_spell_power += 0.15 * player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_MAX );
       player_multiplier *= 1.0 + o -> active_dots() * 0.15;
     }
   };
@@ -1195,25 +1185,14 @@ struct felhunter_pet_t : public warlock_pet_t
 
 //    damage_modifier = 0.8;
 
-    action_list_str = "shadow_bite/wait_until_ready";
+    action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    base_attack_power = -20;
-
     resource_base[ RESOURCE_HEALTH ] = 4788;
     resource_base[ RESOURCE_MANA   ] = 1559;
-
-    attribute_base[ ATTR_STRENGTH  ] = 314;
-    attribute_base[ ATTR_AGILITY   ] = 90;
-    attribute_base[ ATTR_STAMINA   ] = 328;
-    attribute_base[ ATTR_INTELLECT ] = 150;
-    attribute_base[ ATTR_SPIRIT    ] = 209;
-
-    base_attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
 
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
@@ -1221,7 +1200,6 @@ struct felhunter_pet_t : public warlock_pet_t
 
     base_mp5 = 11.22;
 
-    base_attack_crit = 0.0327;
 
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
@@ -1285,13 +1263,11 @@ struct succubus_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    action_list_str = "lash_of_pain/wait_until_ready";
+    action_list_str = "/snapshot_stats/lash_of_pain/wait_until_ready";
   }
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
-    base_attack_power = -20;
 
     resource_base[ RESOURCE_HEALTH ] = 1468;
     resource_base[ RESOURCE_MANA   ] = 1559;
@@ -1356,14 +1332,6 @@ struct infernal_pet_t : public warlock_pet_t
       return 2.0;
     }
 
-    virtual void player_buff()
-    {
-      // immolation uses the master's spell power, not the infernal's
-      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-      warlock_t* o = p -> owner -> cast_warlock();
-      warlock_pet_spell_t::player_buff();
-      player_spell_power = o -> composite_spell_power( school );
-    }
 
   };
 
@@ -1386,16 +1354,9 @@ struct infernal_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 331;
-    attribute_base[ ATTR_AGILITY   ] = 113;
-    attribute_base[ ATTR_STAMINA   ] = 361;
-    attribute_base[ ATTR_INTELLECT ] =  65;
-    attribute_base[ ATTR_SPIRIT    ] = 109;
-
     resource_base[ RESOURCE_HEALTH ] = 20300;
     resource_base[ RESOURCE_MANA   ] = 0;
 
-    base_attack_power = -20;
 
     melee      = new   warlock_pet_melee_t( this, "Infernal Melee" );
     immolation = new infernal_immolation_t( this );
@@ -1435,8 +1396,6 @@ struct doomguard_pet_t : public warlock_pet_t
 	    warlock_pet_spell_t( *( ( ( doomguard_pet_t* ) ( player -> cast_pet() ) ) -> doom_bolt ) )
 	    {
 	      may_crit          = true;
-	      base_crit_bonus = 0.5;
-	      base_crit_bonus_multiplier = 2.0;
 	    }
 
 	    virtual void execute()
@@ -1461,9 +1420,8 @@ struct doomguard_pet_t : public warlock_pet_t
     resource_base[ RESOURCE_HEALTH ] = 18000;
     resource_base[ RESOURCE_MANA   ] = 3000;
 
-    base_attack_power = -20;
 
-    action_list_str = "doom_bolt";
+    action_list_str = "/snapshot_stats/doom_bolt";
   }
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
