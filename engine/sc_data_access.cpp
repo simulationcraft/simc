@@ -2,6 +2,8 @@
 
 static uint32_t get_class_id( const player_type c );
 
+static player_type get_class_type( const int c );
+
 static uint32_t get_class_mask( const player_type c );
 
 static uint32_t get_race_id( const race_type r );
@@ -167,6 +169,19 @@ bool sc_data_access_t::spell_is_level( const uint32_t spell_id, const uint32_t l
 
   return ( level >= m_spells_index[ spell_id ]->spell_level );
 }
+
+player_type sc_data_access_t::spell_scaling_class( uint32_t spell_id ) SC_CONST
+{
+  if ( !spell_id )
+    return PLAYER_NONE;
+
+  assert( spell_exists( spell_id ) );
+
+  int c = m_spells_index[ spell_id ] -> scaling_type;
+
+  return get_class_type( c );
+}
+
 
 double sc_data_access_t::spell_min_range( const uint32_t spell_id ) SC_CONST
 {
@@ -585,9 +600,10 @@ double sc_data_access_t::effect_average( const uint32_t effect_id, const player_
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   uint32_t c_id = get_class_id( c );
+
   double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( ( c_id != 0 ) && ( p_scale_ref != NULL ) );
+  assert( p_scale_ref != NULL );
 
   return effect_m_average( effect_id ) * *p_scale_ref;
 
@@ -604,7 +620,7 @@ double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_ty
   uint32_t c_id = get_class_id( c );
   double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( ( c_id != 0 ) && ( p_scale_ref != NULL ) );
+  assert( p_scale_ref != NULL );
 
   return effect_m_average( effect_id ) * effect_m_delta( effect_id ) * *p_scale_ref;
 }
@@ -620,7 +636,7 @@ double sc_data_access_t::effect_unk( const uint32_t effect_id, const player_type
   uint32_t c_id = get_class_id( c );
   double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( ( c_id != 0 ) && ( p_scale_ref != NULL ) );
+  assert( p_scale_ref != NULL );
 
   return effect_m_unk( effect_id ) * *p_scale_ref;
 }
@@ -1121,21 +1137,66 @@ double sc_data_access_t::race_stats( const pet_type_t r, const stat_type s ) SC_
 }
 
 
-uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* name ) SC_CONST
+uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* name, const int32_t tree ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
+
+  uint32_t s = m_class_spells.rows;
+
+  assert( name && name[ 0 ] && ( tree < ( int32_t ) s ) && ( tree >= -1 ) );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+
+  if ( tree < 0 )
+  {
+    for ( uint32_t j = 0; j < s; j++ )
+    {
+      i = 0;
+      while ( ( ( p = m_class_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+      {
+        if ( check_spell_name( *p, name ) )
+          return *p;
+        i++;
+      };
+    }
+  }
+  else
+  {
+    while ( ( ( p = m_class_spells.ptr( i, tree, cid ) ) != NULL ) && *p )
+    {
+      if ( check_spell_name( *p, name ) )
+        return *p;
+      i++;
+    };
+  }
+
+  return 0;
+}
+
+int sc_data_access_t::find_class_spell_tree( const player_type c, const char* name ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+
+  uint32_t s = m_class_spells.rows;
 
   assert( name && name[ 0 ] );
 
   uint32_t i = 0;
   uint32_t* p = NULL;
-  while ( ( ( p = m_class_spells.ptr( i, cid ) ) != NULL ) && *p )
+
+  for ( uint32_t j = 0; j < s; j++ )
   {
-    if ( check_spell_name( *p, name ) )
-      return *p;
-    i++;
-  };
-  return 0;
+    i = 0;
+    while ( ( ( p = m_class_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+    {
+      if ( check_spell_name( *p, name ) )
+        return j;
+      i++;
+    };
+  }
+
+  return -1;
 }
 
 uint32_t sc_data_access_t::find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST
@@ -1217,6 +1278,7 @@ static uint32_t get_class_id( const player_type c )
 {
   switch ( c )
   {
+    case PLAYER_SPECIAL_SCALE: return 12;
     case DEATH_KNIGHT: return 6;
     case DRUID: return 11;
     case HUNTER: return 3;
@@ -1232,6 +1294,26 @@ static uint32_t get_class_id( const player_type c )
     default: break;
   }
   return 0;
+}
+
+static player_type get_class_type( const int c )
+{
+  switch ( c )
+  {
+    case -1: return PLAYER_SPECIAL_SCALE;
+    case 1:  return WARRIOR;
+    case 2:  return PALADIN;
+    case 3:  return HUNTER;
+    case 4:  return ROGUE;
+    case 5:  return PRIEST;
+    case 6:  return DEATH_KNIGHT;
+    case 7:  return SHAMAN;
+    case 8:  return MAGE;
+    case 9:  return WARLOCK;
+    case 11: return DRUID;
+    default: break;
+  }
+  return PLAYER_NONE;
 }
 
 static player_type get_pet_class_type( const pet_type_t c )

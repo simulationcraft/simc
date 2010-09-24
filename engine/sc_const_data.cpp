@@ -38,7 +38,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_octregen.create_copy( ( double * ) __ptr_gt_octregen_mp, MAX_LEVEL, sizeof( __ptr_gt_octregen_mp ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_combat_ratings.create_copy( ( double * ) __ptr_gt_combat_ratings, MAX_LEVEL, sizeof( __ptr_gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_combat_rating_scalar.create_copy( ( double * ) __ptr_gt_octclass_combat_rating_scalar, CLASS_SIZE, sizeof( __ptr_gt_octclass_combat_rating_scalar ) / ( CLASS_SIZE * sizeof( double ) ) );
-      m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, PTR_CLASS_ABILITY_SIZE, sizeof( __ptr_class_ability_data ) / ( PTR_CLASS_ABILITY_SIZE * sizeof( uint32_t ) ) );
+      m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, PTR_CLASS_ABILITY_SIZE, PTR_CLASS_ABILITY_TREE_SIZE, sizeof( __ptr_class_ability_data ) / ( PTR_CLASS_ABILITY_SIZE * PTR_CLASS_ABILITY_TREE_SIZE * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __ptr_tree_specialization_data, TREE_SPECIALIZATION_SIZE, MAX_TALENT_TABS, sizeof( __ptr_tree_specialization_data ) / ( TREE_SPECIALIZATION_SIZE * MAX_TALENT_TABS * sizeof( uint32_t ) ) );
       m_racial_spells.create_copy( ( uint32_t * ) __ptr_race_ability_data, RACE_ABILITY_SIZE, CLASS_SIZE, sizeof( __ptr_race_ability_data ) / ( RACE_ABILITY_SIZE * CLASS_SIZE * sizeof( uint32_t ) ) );
@@ -64,7 +64,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_octregen.create_copy( ( double * ) __gt_octregen_mp, MAX_LEVEL, sizeof( __gt_octregen_mp ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_combat_ratings.create_copy( ( double * ) __gt_combat_ratings, MAX_LEVEL, sizeof( __gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_combat_rating_scalar.create_copy( ( double * ) __gt_octclass_combat_rating_scalar, CLASS_SIZE, sizeof( __gt_octclass_combat_rating_scalar ) / ( CLASS_SIZE * sizeof( double ) ) );
-      m_class_spells.create_copy( ( uint32_t * ) __class_ability_data, CLASS_ABILITY_SIZE, sizeof( __class_ability_data ) / ( CLASS_ABILITY_SIZE * sizeof( uint32_t ) ) );
+      m_class_spells.create_copy( ( uint32_t * ) __class_ability_data, CLASS_ABILITY_SIZE, CLASS_ABILITY_TREE_SIZE, sizeof( __class_ability_data ) / ( CLASS_ABILITY_SIZE * CLASS_ABILITY_TREE_SIZE * sizeof( uint32_t ) ) );
 
       m_talent_spec_spells.create_copy( ( uint32_t * ) __tree_specialization_data, TREE_SPECIALIZATION_SIZE, MAX_TALENT_TABS, sizeof( __tree_specialization_data ) / ( TREE_SPECIALIZATION_SIZE * MAX_TALENT_TABS * sizeof( uint32_t ) ) );
       m_racial_spells.create_copy( ( uint32_t * ) __race_ability_data, RACE_ABILITY_SIZE, CLASS_SIZE, sizeof( __race_ability_data ) / ( RACE_ABILITY_SIZE * CLASS_SIZE * sizeof( uint32_t ) ) );

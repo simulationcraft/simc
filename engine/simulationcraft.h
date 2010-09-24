@@ -161,6 +161,7 @@ enum race_type
 
 enum player_type
 {
+  PLAYER_SPECIAL_SCALE=-1,
   PLAYER_NONE=0,
   DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
@@ -348,6 +349,7 @@ enum talent_tree_type
 enum talent_tab_name
 {
   TALENT_TAB_NONE = -1,
+  TALENT_PET_TAB = 3,
   DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
   DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
   HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
@@ -1284,6 +1286,7 @@ public:
   virtual bool          spell_is_class( const uint32_t spell_id, const player_type c ) SC_CONST;
   virtual bool          spell_is_race( const uint32_t spell_id, const race_type r ) SC_CONST;
   virtual bool          spell_is_level( const uint32_t spell_id, const uint32_t level ) SC_CONST;
+  virtual player_type   spell_scaling_class( uint32_t spell_id ) SC_CONST;
   virtual double        spell_min_range( const uint32_t spell_id ) SC_CONST;
   virtual double        spell_max_range( const uint32_t spell_id ) SC_CONST;
   virtual bool          spell_in_range( const uint32_t spell_id, const double range ) SC_CONST;
@@ -1387,7 +1390,8 @@ public:
   virtual double        race_stats( const pet_type_t r, const stat_type s ) SC_CONST;
 
 // Class spell methods
-  virtual uint32_t      find_class_spell( const player_type c, const char* name ) SC_CONST;
+  virtual uint32_t      find_class_spell( const player_type c, const char* name, const int32_t tree = -1 ) SC_CONST;
+  virtual int           find_class_spell_tree( const player_type c, const char* name ) SC_CONST;
   virtual uint32_t      find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST;
   virtual uint32_t      find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST;
   virtual uint32_t      find_mastery_spell( const player_type c, const char* name ) SC_CONST;
@@ -2981,6 +2985,7 @@ struct spell_id_t
   talent_tab_name spell_id_t_tab;
   struct talent_t* spell_id_t_req_talent;
   bool spell_id_t_m_is_talent;
+  int spell_id_t_tree;
 
   spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   spell_id_t( player_t* player = NULL, const char* t_name = NULL );
@@ -2994,7 +2999,7 @@ struct spell_id_t
   virtual ~spell_id_t() {}
 
   virtual bool init( const char* s_name = NULL );
-  virtual bool init( const uint32_t id );
+  virtual bool init( const uint32_t id, int t = -1 );
   virtual uint32_t spell_id() { return ( pp && spell_id_t_data ) ? spell_id_t_id : 0; };
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;

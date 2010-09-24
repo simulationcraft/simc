@@ -244,7 +244,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
     spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
     spell_list_type( PLAYER_NONE ), scaling_type( PLAYER_NONE ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false )
+    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   if ( !t_name )
     token_name = "";
@@ -257,7 +257,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_id( id ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
     spell_list_type( ptype ), scaling_type( stype ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false )
+    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
@@ -272,7 +272,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_list_type( pp -> type ), scaling_type( pp -> type ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ),
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
-    spell_id_t_m_is_talent( false )
+    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   init( );
 }
@@ -282,7 +282,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_list_type( pp -> type ), scaling_type( pp -> type ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( mastery ), spell_id_t_req_tree( true ), 
     spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( false )
+    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   init( );
 }
@@ -292,7 +292,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_list_type( ptype ), scaling_type( stype ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( is_talent )
+    spell_id_t_m_is_talent( is_talent ), spell_id_t_tree( -1 )
 {
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
@@ -307,7 +307,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_list_type( pp -> type ), scaling_type( pp -> type ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ),
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
-    spell_id_t_m_is_talent( false )
+    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   init( s_name );
 }
@@ -317,7 +317,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_list_type( pp -> type ), scaling_type( pp -> type ), spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
     token_name( t_name ), spell_id_t_is_mastery( mastery ), spell_id_t_req_tree( true ), 
     spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( false )
+    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   init( s_name );
 }
@@ -327,7 +327,8 @@ spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const p
     pp( copy.pp ), spell_list_type( copy.spell_list_type ), scaling_type( copy.scaling_type ), 
     spell_id_t_forced_override( copy.spell_id_t_forced_override ), spell_id_t_forced_value( copy.spell_id_t_forced_value ),
     token_name( copy.token_name ), spell_id_t_is_mastery( copy.spell_id_t_is_mastery ), spell_id_t_req_tree( copy.spell_id_t_req_tree ),
-    spell_id_t_tab( copy.spell_id_t_tab ), spell_id_t_req_talent( copy.spell_id_t_req_talent ), spell_id_t_m_is_talent( copy.spell_id_t_m_is_talent )
+    spell_id_t_tab( copy.spell_id_t_tab ), spell_id_t_req_talent( copy.spell_id_t_req_talent ), spell_id_t_m_is_talent( copy.spell_id_t_m_is_talent ),
+    spell_id_t_tree( copy.spell_id_t_tree )
 {
   if ( ptype != PLAYER_NONE )
     spell_list_type = ptype;
@@ -335,7 +336,7 @@ spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const p
     scaling_type = stype;
 }
 
-bool spell_id_t::init( const uint32_t id )
+bool spell_id_t::init( const uint32_t id, int t )
 {
   assert( pp && pp -> sim );
 
@@ -343,6 +344,13 @@ bool spell_id_t::init( const uint32_t id )
 
   spell_id_t_id = id;
   spell_id_t_data = NULL;
+
+  if ( t < -1 )
+    t = -1;
+  if ( t > 3 )
+    t = 3;
+
+  spell_id_t_tree = t;
 
   if ( spell_id_t_id && pp -> player_data.spell_exists( spell_id_t_id ) )
   {
@@ -390,6 +398,10 @@ bool spell_id_t::init( const char* s_name )
       if ( !spell_id_t_id )
       {
         spell_id_t_id = pp -> player_data.find_racial_spell( spell_list_type, pp -> race, s_name );
+      }
+      else
+      {
+        spell_id_t_tree = pp -> player_data.find_class_spell_tree( spell_list_type, s_name );
       }
     }
   }

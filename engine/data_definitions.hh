@@ -11,6 +11,7 @@ struct spell_data_t {
   int          power_type;         // Resource type
   unsigned     class_mask;         // Class mask for spell
   unsigned     race_mask;          // Racial mask for the spell
+  int          scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array
   // SpellLevels.dbc
   unsigned     spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   // SpellRange.dbc
@@ -35,13 +36,13 @@ struct spell_data_t {
   // SpellScaling.dbc
   int          cast_min;           // Minimum casting time in milliseconds
   int          cast_max;           // Maximum casting time in milliseconds
-  int          cast_div;           // A divisor used in the formula for casting time scaling (20 aways?)
+  int          cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
   // SpellEffect.dbc
   unsigned     effect[3];          // Effect identifiers
   // Spell.dbc flags
   unsigned     attributes[10];     // Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  const char*  desc;               // Description
-  const char*  tooltip;            // Tooltip
+  const char * desc;               // Spell.dbc description stringblock
+  const char * tooltip;            // Spell.dbc tooltip stringblock
 };
 
 // SpellEffect.dbc

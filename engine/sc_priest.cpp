@@ -2038,6 +2038,10 @@ struct shadow_fiend_spell_t : public priest_spell_t
     };
     init_rank( ranks, 34433 );
 
+    id = 34433;
+
+    parse_data( p -> player_data );
+
     harmful = false;
     base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost  = floor( base_cost );
@@ -2046,7 +2050,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    consume_resource();
     update_ready();
     
     p -> buffs_shadowfiend -> start();
@@ -2068,7 +2071,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     if ( trigger > 0 ) return ( max_mana - current_mana ) >= trigger;
 
-    return ( sim -> current_time > 15.0 );
+    return true;
   }
 };
 
