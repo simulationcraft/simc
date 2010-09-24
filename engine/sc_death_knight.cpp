@@ -4546,7 +4546,7 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.abominations_might  ) sim -> auras.abominations_might  -> override();
   if ( sim -> overrides.horn_of_winter      ) sim -> auras.horn_of_winter      -> override( 1, 155 );
-  if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.20 );
+  if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_plague       ) t -> debuffs.blood_plague       -> override();

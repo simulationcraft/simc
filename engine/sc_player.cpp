@@ -1336,20 +1336,7 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
-    if ( sim -> auras.swift_retribution -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
-    if ( position != POSITION_RANGED )
-    {
-      h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
-    }
-
-    if ( sim -> auras.celerity -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
+    h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
 
     if ( type != PLAYER_PET )
     {
