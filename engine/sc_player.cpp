@@ -1063,11 +1063,12 @@ void player_t::init_buffs()
 
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
-  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+  // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
   buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 120.0, 120.0 );
+  buffs.mana_tide_totem        = new stat_buff_t( this, "mana_tide_totem",        STAT_SPIRIT,       attribute_buffed[ ATTR_SPIRIT ], 1, 12.0 );
   buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
@@ -1086,7 +1087,6 @@ void player_t::init_gains()
   gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
-  gains.mana_tide              = get_gain( "mana_tide" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.replenishment          = get_gain( "replenishment" );
   gains.restore_mana           = get_gain( "restore_mana" );

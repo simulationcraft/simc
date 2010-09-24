@@ -1931,7 +1931,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
     trigger_gcd = 0;
     base_cost  = p -> resource_max[ RESOURCE_MANA ] * 0.12;
-    cooldown -> duration = 180.0;
+    cooldown -> duration = 120.0;
 
     id = 51533;
   }
@@ -1940,7 +1940,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "spirit_wolf", 45.0 );
+    player -> summon_pet( "spirit_wolf", 30.0 );
   }
   
   double cost() SC_CONST
@@ -2624,7 +2624,7 @@ struct mana_tide_totem_t : public shaman_spell_t
     base_cost      = 320;
     trigger_gcd    = 1.0;
 
-    cooldown -> duration = 300.0;
+    cooldown -> duration = 180.0;
 
     dot = p -> get_dot( "water_totem" );
 
@@ -2637,23 +2637,16 @@ struct mana_tide_totem_t : public shaman_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-    schedule_tick();
-    update_ready();
-  }
-
-  virtual void tick()
-  {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-
-    double pct = 0.06;
-
+    
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> party == player -> party )
       {
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * pct, p -> gains.mana_tide );
+        p -> buffs.mana_tide_totem -> trigger();
       }
     }
+
+    update_ready();
   }
 
   virtual bool ready()
@@ -2869,7 +2862,7 @@ struct windfury_totem_t : public shaman_spell_t
 
     base_cost_reduction += p -> talent_totemic_focus -> rank() * 0.10;
 
-    bonus = 0.20;
+    bonus = 0.10;
 
     id = 8512;
   }
@@ -3907,6 +3900,6 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.mana_spring_totem ) sim -> auras.mana_spring_totem -> override( 1, 326.0 );
   if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 1395.0 );
   if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 10.0 );
-  if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.20 );
+  if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.10 );
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.20 );
 }
