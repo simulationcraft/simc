@@ -218,6 +218,7 @@ enum pet_type_t
   PET_SUCCUBUS, 
   PET_INFERNAL,  
   PET_DOOMGUARD,
+  PET_EBON_IMP,
   PET_WARLOCK,
 
   PET_GHOUL,
