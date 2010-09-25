@@ -2383,12 +2383,16 @@ struct innervate_t : public druid_spell_t
     // Targets gets 33% of casting druids MAXMANA over 10 seconds
     // Dreamstate: +10%/30% of total mana if target == self
     // BUGGED: increases only by 0%/15% instead of 10%/30%
-    if ( innervate_target == player && p -> talent_dreamstate -> rank() == 2)
+    if ( innervate_target == player )
     {
-      gain += 0.15;
-      //gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
+      gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
     }
-    innervate_target -> buffs.innervate -> trigger( 1, player -> resource_max[ RESOURCE_MANA ] * gain / 10.0);
+    else
+    {
+      // Either Dreamstate increases innervate OR you get glyph of innervate
+      p -> buffs_glyph_of_innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 20.0 );
+    }
+    innervate_target -> buffs.innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 10.0);
   }
 
   virtual bool ready()
@@ -3783,9 +3787,10 @@ void druid_t::regen( double periodicity )
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
   }
-  else if ( resource_type == RESOURCE_MANA )
+  else if ( resource_type == RESOURCE_MANA)
   {
-    //resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
+    if ( buffs_glyph_of_innervate -> check() )
+      resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
   }
   else if ( resource_type == RESOURCE_RAGE )
   {

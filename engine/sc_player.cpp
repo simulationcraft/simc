@@ -2297,9 +2297,9 @@ void player_t::regen( double periodicity )
     }
     else if ( resource_type == RESOURCE_MANA )
     {
-      if( buffs.innervate -> up() )
+      if( buffs.innervate -> check() )
       {
-        resource_gain( RESOURCE_MANA, buffs.innervate -> current_value * periodicity, gains.innervate );
+        resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
       }
 
       double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
