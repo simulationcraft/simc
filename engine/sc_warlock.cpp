@@ -781,14 +781,10 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> talent_soul_leech -> rank() )
     {
-      if ( p -> rng_soul_leech -> roll( p -> talent_soul_leech -> rank() ) )
-      {
-        p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.05, p ->gains_soul_leech );
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.05, p -> gains_soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.02 * p -> talent_soul_leech -> rank(), p ->gains_soul_leech );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talent_soul_leech -> rank(), p -> gains_soul_leech );
 
-        p -> trigger_replenishment();
-
-      }
+      p -> trigger_replenishment();
     }
   }
 
