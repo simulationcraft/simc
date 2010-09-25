@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (58)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 12984
+// Class based active abilities, wow build 13033
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -608,7 +608,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          10, // Blizzard
       11958, // Cold Snap
         120, // Cone of Cold
-      82676, // Curtain of Frost
       44572, // Deep Freeze
        7302, // Frost Armor
         122, // Frost Nova
@@ -617,6 +616,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       45438, // Ice Block
       30455, // Ice Lance
       12472, // Icy Veins
+      82676, // Ring of Frost
       31687, // Summon Water Elemental
           0,
     },
@@ -832,7 +832,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 12984
+// Talent tree specialization abilities, wow build 13033
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1089,7 +1089,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 12984
+// Class mastery abilities, wow build 13033
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1162,9 +1162,9 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   },
   // Class mastery abilities for Druid
   {
-    77495, // Deep Healing
     77493, // Razor Claws
     77494, // Savage Defender
+    77495, // Symbiosis
     77492, // Total Eclipse
   },
 };
@@ -1174,7 +1174,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 12984
+// Racial abilities, wow build 13033
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1310,17 +1310,41 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       58984, // Shadowmeld
           0,
     },
+    // Racial abilities for Warrior class
+    {
+      21009, // Elusiveness
+          0,
+    },
+    {     0, },
+    // Racial abilities for Hunter class
+    {
+      21009, // Elusiveness
+          0,
+    },
+    // Racial abilities for Rogue class
+    {
+      21009, // Elusiveness
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      21009, // Elusiveness
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      21009, // Elusiveness
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Druid class
+    {
+      21009, // Elusiveness
+          0,
+    },
   },
   // Racial abilities for Undead
   {
@@ -1450,7 +1474,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     },
     // Racial abilities for Hunter class
     {
-      28730, // Arcane Torrent
+      80483, // Arcane Torrent
           0,
     },
     // Racial abilities for Rogue class
@@ -1685,6 +1709,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Warrior class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1692,6 +1717,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Paladin class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1699,6 +1725,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Hunter class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1706,6 +1733,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Rogue class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1713,6 +1741,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Priest class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1720,6 +1749,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Death Knight class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1727,6 +1757,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Shaman class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1734,6 +1765,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Mage class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1741,6 +1773,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Warlock class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1749,6 +1782,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Druid class
     {
       68976, // Aberration
+      94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
           0,
@@ -1772,7 +1806,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 12984
+// Glyph spells for classes, wow build 13033
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1787,12 +1821,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warrior
   {
-    // Major Glyphs (13 spells)
+    // Major Glyphs (14 spells)
     {
       58366, // Glyph of Cleaving
       58357, // Glyph of Heroic Throw
       58377, // Glyph of Intervene
       58097, // Glyph of Long Charge
+      58372, // Glyph of Piercing Howl
       58355, // Glyph of Rapid Charge
       58356, // Glyph of Resonating Power
       63329, // Glyph of Shield Wall
@@ -1884,45 +1919,45 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     // Major Glyphs (16 spells)
     {
-      56830, // Bestial Wrath
-      56851, // Concussive Shot
-      56850, // Deterrence
-      56844, // Disengage
-      56845, // Freezing Trap
-      56847, // Ice Trap
-      56846, // Immolation Trap
-      63068, // Master's Call
-      56833, // Mending
-      56829, // Misdirection
-      63086, // Raptor Strike
-      63069, // Scatter Shot
-      56836, // Silencing Shot
-      56849, // Snake Trap
-      56857, // Trap Launcher
-      56848, // Wyvern Sting
+      56830, // Glyph of Bestial Wrath
+      56851, // Glyph of Concussive Shot
+      56850, // Glyph of Deterrence
+      56844, // Glyph of Disengage
+      56845, // Glyph of Freezing Trap
+      56847, // Glyph of Ice Trap
+      56846, // Glyph of Immolation Trap
+      63068, // Glyph of Master's Call
+      56833, // Glyph of Mending
+      56829, // Glyph of Misdirection
+      63086, // Glyph of Raptor Strike
+      63069, // Glyph of Scatter Shot
+      56836, // Glyph of Silencing Shot
+      56849, // Glyph of Snake Trap
+      56857, // Glyph of Trap Launcher
+      56848, // Glyph of Wyvern Sting
           0,
     },
     // Minor Glyphs (5 spells)
     {
-      57904, // Aspect of the Pack
-      57903, // Feign Death
-      57870, // Mend Pet
-      57866, // Revive Pet
-      57902, // Scare Beast
+      57904, // Glyph of Aspect of the Pack
+      57903, // Glyph of Feign Death
+      57870, // Glyph of Mend Pet
+      57866, // Glyph of Revive Pet
+      57902, // Glyph of Scare Beast
           0,
     },
     // Prime Glyphs (10 spells)
     {
-      56824, // Aimed Shot
-      56841, // Arcane Shot
-      63065, // Chimera Shot
-      56856, // Dazzled Prey
-      63066, // Explosive Shot
-      56842, // Kill Command
-      63067, // Kill Shot
-      56828, // Rapid Fire
-      56832, // Serpent Sting
-      56826, // Steady Shot
+      56824, // Glyph of Aimed Shot
+      56841, // Glyph of Arcane Shot
+      63065, // Glyph of Chimera Shot
+      56856, // Glyph of Dazzled Prey
+      63066, // Glyph of Explosive Shot
+      56842, // Glyph of Kill Command
+      63067, // Glyph of Kill Shot
+      56828, // Glyph of Rapid Fire
+      56832, // Glyph of Serpent Sting
+      56826, // Glyph of Steady Shot
           0,
     },
   },

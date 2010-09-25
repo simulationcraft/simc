@@ -5,7 +5,7 @@ level=81
 target_level=84
 race=goblin
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=0322100000000000000000000000000000000000322032210201222100231
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=03221000000000000000000000000000000000000322032210201222100231
 mind_flay=1
 shadow_power=1
 glyphs=shadow_word_death/mind_flay/shadow/fortitude/fading/levitate
