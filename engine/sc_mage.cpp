@@ -1009,7 +1009,7 @@ static void trigger_replenishment( spell_t* s )
 }
 
 // trigger_incanters_absorption ====================================================
-
+/* Not used currently
 static void trigger_incanters_absorption( mage_t* p,
                                           double damage )
 {
@@ -1031,6 +1031,7 @@ static void trigger_incanters_absorption( mage_t* p,
 
   buff -> trigger( 1, bonus_spell_power );
 }
+*/
 
 // target_is_frozen ========================================================
 

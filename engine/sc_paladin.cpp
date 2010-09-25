@@ -422,7 +422,6 @@ struct paladin_attack_t : public attack_t
 
   virtual void execute()
   {
-    paladin_t* p = player -> cast_paladin();
     attack_t::execute();
     if ( result_is_hit() )
     {
@@ -1512,7 +1511,6 @@ struct paladin_spell_t : public spell_t
 
   virtual void execute()
   {
-    paladin_t* p = player -> cast_paladin();
     spell_t::execute();
     if ( result_is_hit() )
     {

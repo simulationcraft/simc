@@ -507,10 +507,13 @@ void action_t::target_debuff( int dmg_type )
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
-    if ( t -> debuffs.blood_frenzy  -> up() ||
-         t -> debuffs.savage_combat -> up() )
+    if ( t -> debuffs.savage_combat -> up() )
     {
       target_multiplier *= 1.04;
+    }
+    else if ( t -> debuffs.blood_frenzy_physical -> value() )
+    {
+      target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_physical -> value() * 0.01;
     }
   }
   else
@@ -524,9 +527,13 @@ void action_t::target_debuff( int dmg_type )
 
   if ( school == SCHOOL_BLEED )
   {
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up()  || t -> debuffs.hemorrhage -> up() )
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() )
     {
       target_multiplier *= 1.30;
+    }
+    else if ( t -> debuffs.blood_frenzy_bleed -> value() )
+    {
+      target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_bleed -> value() * 0.01;
     }
   }
 

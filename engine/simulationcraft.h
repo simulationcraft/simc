@@ -1883,7 +1883,8 @@ struct sim_t
     int blessing_of_kings;
     int blessing_of_might;
     int blessing_of_wisdom;
-    int blood_frenzy;
+    int blood_frenzy_bleed;
+    int blood_frenzy_physical;
     int blood_plague;
     int bloodlust;
     int bloodlust_early;
@@ -1934,7 +1935,6 @@ struct sim_t
     int sunder_armor;
     int swift_retribution;
     int thunder_clap;
-    int trauma;
     int trueshot_aura;
     int unleashed_rage;
     int windfury_totem;
@@ -2864,7 +2864,8 @@ struct target_t
   struct debuffs_t
   {
     debuff_t* bleeding;
-    debuff_t* blood_frenzy;
+    debuff_t* blood_frenzy_bleed;
+    debuff_t* blood_frenzy_physical;
     debuff_t* casting;
     debuff_t* blood_plague;
     debuff_t* curse_of_elements;
@@ -2887,7 +2888,6 @@ struct target_t
     debuff_t* slow;
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;
-    debuff_t* trauma;
     debuff_t* vulnerable;
     debuff_t* winters_chill;
     debuff_t* winters_grasp;

@@ -1250,7 +1250,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blessing_of_kings      = optimal_raid;
   overrides.blessing_of_might      = optimal_raid;
   overrides.blessing_of_wisdom     = optimal_raid;
-  overrides.blood_frenzy           = optimal_raid;
+  overrides.blood_frenzy_bleed     = optimal_raid;
+  overrides.blood_frenzy_physical  = optimal_raid;
   overrides.blood_plague           = optimal_raid;
   overrides.bloodlust              = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
@@ -1291,7 +1292,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.strength_of_wrynn      = 0;
   overrides.sunder_armor           = optimal_raid;
   overrides.swift_retribution      = optimal_raid;
-  overrides.trauma                 = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
@@ -1530,7 +1530,8 @@ std::vector<option_t>& sim_t::get_options()
       { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
       { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
       { "override.blessing_of_wisdom",      OPT_BOOL,   &( overrides.blessing_of_wisdom             ) },
-      { "override.blood_frenzy",            OPT_BOOL,   &( overrides.blood_frenzy                   ) },
+      { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
+      { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
       { "override.blood_plague",            OPT_BOOL,   &( overrides.blood_plague                   ) },
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
@@ -1577,7 +1578,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
       { "override.swift_retribution",       OPT_BOOL,   &( overrides.swift_retribution              ) },
       { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
-      { "override.trauma",                  OPT_BOOL,   &( overrides.trauma                         ) },
       { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
       { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
       { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },

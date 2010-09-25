@@ -727,7 +727,7 @@ static void trigger_piercing_shots( action_t* a )
     void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() )
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() )
       {
         target_multiplier = 1.30;
       }
@@ -1222,8 +1222,6 @@ struct hunter_pet_spell_t : public spell_t
   {
     spell_t::execute();
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-
-    hunter_t* o = p -> owner -> cast_hunter();
     p -> buffs_owls_focus -> trigger();
   }
 
@@ -1837,8 +1835,6 @@ struct cobra_shot_t : public hunter_attack_t
     hunter_attack_t::execute();
     if ( result_is_hit() )
     {
-      hunter_t* p = player -> cast_hunter();
-
       trigger_hunting_party( this );
       if ( result == RESULT_CRIT )
       {

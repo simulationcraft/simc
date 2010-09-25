@@ -1389,7 +1389,7 @@ struct shred_t : public druid_cat_attack_t
 
     druid_cat_attack_t::player_buff();
 
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() ) player_multiplier *= 1.30;
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() ) player_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> check() )
     {
@@ -1959,7 +1959,7 @@ struct maul_t : public druid_bear_attack_t
 
     druid_bear_attack_t::player_buff();
 
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.trauma -> up() ) player_multiplier *= 1.30;
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() ) player_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> check() )
     {

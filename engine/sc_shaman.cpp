@@ -553,8 +553,6 @@ static void trigger_flametongue_weapon( attack_t* a )
     flametongue_weapon_spell_t( player_t* player ) :
         shaman_spell_t( "flametongue", player, SCHOOL_FIRE, TREE_ENHANCEMENT )
     {
-      shaman_t* p = player -> cast_shaman();
-
       background   = true;
       proc         = true;
       may_crit     = true;
@@ -2048,16 +2046,6 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t::player_buff();
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_stormstrike -> up() ) player_crit += 0.25;
-  }
-
-  virtual bool ready()
-  {
-    shaman_t* p = player -> cast_shaman();
-
-    if ( ! shaman_spell_t::ready() )
-      return false;
-
-    return true;
   }
 
   double cost() SC_CONST
