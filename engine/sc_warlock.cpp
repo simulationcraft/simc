@@ -703,7 +703,19 @@ struct warlock_pet_t : public pet_t
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
 
+  virtual double composite_spell_haste() SC_CONST
+  {
+    double h = player_t::composite_spell_haste();
+    h *= owner -> composite_spell_haste();
+    return h;
+  }
 
+  virtual double composite_attack_haste() SC_CONST
+  {
+    double h = player_t::composite_attack_haste();
+    h *= owner -> composite_spell_haste();
+    return h;
+  }
 
 
 };
@@ -1049,6 +1061,7 @@ struct imp_pet_t : public warlock_pet_t
 
 struct felguard_pet_t : public warlock_pet_t
 {
+
   struct legion_strike_t : public warlock_pet_attack_t
   {
     legion_strike_t( player_t* player ) :
@@ -1074,27 +1087,58 @@ struct felguard_pet_t : public warlock_pet_t
     }
   };
 
+  struct felstorm_tick_t : public warlock_pet_attack_t
+  {
+    felstorm_tick_t( player_t* player ) :
+        warlock_pet_attack_t( "Felguard: Felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+    {
+      felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
+      base_dd_min=base_dd_max=p -> player_data.effect_misc_value1( p -> player_data.spell_effect_id( 89753, 1) );
+      direct_power_mod = 0.33;
+      dual        = true;
+      background  = true;
+      may_crit    = true;
+      aoe         = true;
+      direct_tick = true;
+
+      weapon   = &( p -> main_hand_weapon );
+    }
+
+    virtual void execute()
+    {
+      warlock_pet_attack_t::execute();
+      tick_dmg = direct_dmg;
+      update_stats( DMG_OVER_TIME );
+    }
+  };
+
   struct felstorm_t : public warlock_pet_attack_t
     {
+    attack_t* felstorm_tick;
     felstorm_t( player_t* player ) :
           warlock_pet_attack_t( "Felguard: Felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
       {
         felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
-        warlock_t*      o = p -> owner -> cast_warlock();
+        aoe       = true;
+        harmful   = false;
+        channeled      = true;
+        tick_zero      = true;
+        id=89751;
+        parse_data( player -> player_data );
 
-        id = 89751;
-        parse_data( o -> player_data );
-        id = 89753;
-        parse_effect_data ( o -> player_data );
-        aoe = true;
-        weapon   = &( p -> main_hand_weapon );
+
+        felstorm_tick = new felstorm_tick_t( p );
       }
 
-      virtual void execute()
-      {
-        warlock_pet_attack_t::execute();
-        trigger_mana_feed ( this, result );
-      }
+    virtual void tick()
+     {
+       if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+
+       felstorm_tick -> weapon = &( player -> main_hand_weapon );
+       felstorm_tick -> execute();
+
+       update_time( DMG_OVER_TIME );
+     }
     };
 
   struct melee_t : public warlock_pet_melee_t
@@ -1136,8 +1180,7 @@ struct felguard_pet_t : public warlock_pet_t
 
     damage_modifier = 1.05;
 
-    //action_list_str += "/felstorm";
-    action_list_str += "/snapshot_stats/legion_strike/wait_until_ready";
+    action_list_str += "/snapshot_stats/felstorm/legion_strike/wait_until_ready";
   }
   virtual void init_base()
   {
@@ -3122,7 +3165,7 @@ struct fel_armor_t : public warlock_spell_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    p -> buffs_fel_armor -> start( 1, bonus_spell_power );
+    p -> buffs_fel_armor -> trigger( 1, bonus_spell_power );
 
     schedule_tick();
   }
@@ -3357,7 +3400,7 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> buffs_metamorphosis -> start();
+    p -> buffs_metamorphosis -> trigger();
   }
 };
 

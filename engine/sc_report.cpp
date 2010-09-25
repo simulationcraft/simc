@@ -853,7 +853,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
       util_t::fprintf( file, "<ul>\n" );
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
-        if ( pet -> total_seconds > 0 )
+        if ( pet -> summoned )
           util_t::fprintf( file, " <li> <a href=\"#%s\"> %s </a> </li>\n", pet -> name(), pet -> name() );
       }
       util_t::fprintf( file, "</ul>\n" );
@@ -2107,7 +2107,7 @@ void report_t::print_html( sim_t* sim )
     {
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
-        if ( pet -> total_seconds > 0 )
+        if ( pet -> summoned )
           print_html_player( file, pet );
       }
     }

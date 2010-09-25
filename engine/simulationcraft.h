@@ -2818,6 +2818,7 @@ struct pet_t : public player_t
   double stamina_per_owner;
   double intellect_per_owner;
   double summon_time;
+  bool summoned;
 
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
 

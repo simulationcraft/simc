@@ -15,7 +15,7 @@ pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
               bool               g ) :
-    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 )
+    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false )
 {
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
@@ -114,6 +114,7 @@ void pet_t::summon( double duration )
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;
+  summoned=true;
 
   if( duration > 0 )
   {
