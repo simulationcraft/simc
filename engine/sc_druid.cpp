@@ -559,7 +559,7 @@ static void trigger_fury_swipes( action_t* a )
                      p -> name(), p -> procs_fury_swipes -> name() );
 
     p -> procs_fury_swipes -> occur();
-    p -> cooldowns_fury_swipes -> start( 6.0 );
+    p -> cooldowns_fury_swipes -> start( 3.0 );
 
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> execute();
@@ -590,6 +590,16 @@ static void trigger_earth_and_moon( spell_t* s )
   target_t* t = s -> sim -> target;
 
   t -> debuffs.earth_and_moon -> trigger( 1, 8 );
+}
+
+// trigger_eclipse_proc ====================================================
+
+static void trigger_eclipse_proc( druid_t* p )
+{
+  // All extra procs when eclipse pops
+  p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01 * p -> talent_euphoria -> effect_base_value( 3 ) , p -> gains_euphoria );
+  p -> buffs_t11_4pc_caster -> trigger( 3 );
+  p -> buffs_natures_torment -> reset_cooldown();
 }
 
 // trigger_eclipse_energy_gain ==============================================
@@ -640,20 +650,12 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
     if ( p -> eclipse_bar_value == 100 ) 
     {
       if ( p -> buffs_eclipse_solar -> trigger() )
-      {
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
-        p -> buffs_t11_4pc_caster -> trigger( 3 );
-        p -> buffs_natures_torment -> reset_cooldown();
-      }
+        trigger_eclipse_proc( p );
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
       if ( p -> buffs_eclipse_lunar -> trigger() )
-      {
-        p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.06 * p -> talent_euphoria -> rank() , p -> gains_euphoria );
-        p -> buffs_t11_4pc_caster -> trigger( 3 );
-        p -> buffs_natures_torment -> reset_cooldown();
-      }
+        trigger_eclipse_proc( p );
     }
   }
 }
@@ -2144,7 +2146,7 @@ void druid_spell_t::player_buff()
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
-    player_multiplier *= 1.0 + 0.01 * p -> talent_balance_of_power -> rank();
+    player_multiplier *= 1.0 + 0.01 * p -> talent_balance_of_power -> effect_base_value( 1 );
 
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
     // Moonfury: Arcane and Nature spell damage increased by 25%
@@ -2385,7 +2387,7 @@ struct innervate_t : public druid_spell_t
     // BUGGED: increases only by 0%/15% instead of 10%/30%
     if ( innervate_target == player )
     {
-      gain += (0.01/2.0) * p -> talent_dreamstate -> effect_base_value(1);
+      gain += 0.01 * p -> talent_dreamstate -> effect_base_value( 1 );
     }
     else
     {
@@ -2436,14 +2438,15 @@ struct insect_swarm_t : public druid_spell_t
     base_execute_time = 0;
     base_tick_time    = 2.0;
     num_ticks         = 6;
-    num_ticks        += p -> talent_genesis -> rank();
+    // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
+    num_ticks        += (int) ( p -> talent_genesis -> effect_base_value( 3 ) / 2000.0 ); 
     tick_power_mod    = 0.2;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
 
-    base_multiplier *= 1.0 + ( util_t::talent_rank( p -> talent_genesis -> rank(), 3, 0.02 ) +
-                             ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
-                             ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 ) );
+    base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
+                             ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 );
+
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
     
@@ -2489,8 +2492,9 @@ struct insect_swarm_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
+  int start_num_ticks;
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE )
+      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), start_num_ticks( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2513,8 +2517,10 @@ struct moonfire_t : public druid_spell_t
 
     base_execute_time = 0;
     base_tick_time    = 2.0;
-    num_ticks         = 6;
-    num_ticks        += p -> talent_genesis -> rank();
+    start_num_ticks   = 6;
+    // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
+    start_num_ticks  += (int) ( p -> talent_genesis -> effect_base_value( 3 ) / 2000.0 );
+    num_ticks         = start_num_ticks;
     direct_power_mod  = 0.15;
     tick_power_mod    = 0.13;
     may_crit          = true;
@@ -2526,15 +2532,9 @@ struct moonfire_t : public druid_spell_t
     
     base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
 
-    double multiplier_td = ( util_t::talent_rank( p -> talent_genesis -> rank(), 3, 0.02 ) );
-    double multiplier_dd = ( util_t::talent_rank( p -> talent_blessing_of_the_grove -> rank(), 2, 0.03 ) );
+    base_dd_multiplier *= 1.0 + p -> talent_blessing_of_the_grove -> effect_base_value( 2 ) * 0.01;
+    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
-    if ( p -> glyphs.moonfire )
-    {
-      multiplier_td += 0.20;
-    }
-    base_dd_multiplier *= 1.0 + multiplier_dd;
-    base_td_multiplier *= 1.0 + multiplier_td;
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
@@ -2571,7 +2571,7 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      num_ticks   = 6 + p -> talent_genesis -> rank();
+      num_ticks   = start_num_ticks;
       added_ticks = 0;
       if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
       update_ready();
@@ -2898,7 +2898,7 @@ struct starfire_t : public druid_spell_t
 
         double gain = 20;
         if ( ! p -> buffs_eclipse_lunar -> check() 
-          && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+          && p -> rng_euphoria -> roll( 0.01 * p -> talent_euphoria -> effect_base_value( 1 ) ) )
         {
           gain *= 2;
         }
@@ -3019,7 +3019,7 @@ struct wrath_t : public druid_spell_t
         // It actualy is 13.3333, SF and W have the exact same eclipse gain per second
         double gain = -(40.0/3.0); 
         if ( ! p -> buffs_eclipse_solar -> check() 
-          && p -> rng_euphoria -> roll( 0.12 * p -> talent_euphoria -> rank() ) )
+          && p -> rng_euphoria -> roll( 0.01 * p -> talent_euphoria -> effect_base_value( 1 ) ) )
         {
           gain *= 2;
         }
@@ -3490,7 +3490,7 @@ void druid_t::init_base()
 
   base_attack_power = -20 + level * 2.0;
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talent_heart_of_the_wild -> rank() * 0.02;
+  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talent_heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
 
@@ -3514,8 +3514,8 @@ void druid_t::init_base()
   energy_regen_per_second = 10;
   
   // Furor: +5/10/15% max mana
-  resource_base[ RESOURCE_MANA ] *= 1.0 + talent_furor -> rank() * 0.05;
-  mana_per_intellect             *= 1.0 + talent_furor -> rank() * 0.05;
+  resource_base[ RESOURCE_MANA ] *= 1.0 + talent_furor -> effect_base_value( 2 ) * 0.01;
+  mana_per_intellect             *= 1.0 + talent_furor -> effect_base_value( 2 ) * 0.01;
   
   switch ( primary_tree() )
   {
@@ -3847,7 +3847,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    multiplier *= 1.0 + talent_heart_of_the_wild -> rank() * 0.03;
+    multiplier *= 1.0 + talent_heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
   }
   if ( primary_tree() == TREE_FERAL )
   {
@@ -3879,7 +3879,7 @@ double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] )* ( talent_balance_of_power -> rank() / 2.0 ) / rating.spell_hit;
+  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * ( 0.01 * talent_balance_of_power -> effect_base_value( 2 ) ) / rating.spell_hit;
 
   return floor( hit * 10000.0 ) / 10000.0;
 }
@@ -3901,7 +3901,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STAMINA )
     if ( buffs_bear_form -> check() )
-      m *= 1.0 + 0.03 * talent_heart_of_the_wild -> rank();
+      m *= 1.0 + talent_heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
 
   return m;
 }
