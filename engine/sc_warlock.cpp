@@ -16,6 +16,7 @@
  * - Change Conflagrate if necessary
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
+ * - Verify that impending doom immediately resets metamorphosis cooldown when it procs while the cooldown has less than 15 seconds left
  *
  */
 
@@ -767,8 +768,10 @@ struct warlock_spell_t : public spell_t
       if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() * 0.05 ) )
       {
         p -> procs_impending_doom -> occur();
-        if ( p -> cooldowns_metamorphosis -> remains() > 6.0 )
-          p -> cooldowns_metamorphosis -> ready -= 6.0;
+        if ( p -> cooldowns_metamorphosis -> remains() > 15.0 )
+          p -> cooldowns_metamorphosis -> ready -= 15.0;
+		else
+		  p -> cooldowns_metamorphosis -> reset();
       }
     }
   }
@@ -795,7 +798,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = s -> player -> cast_warlock();
     if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-    if ( s -> sim -> target -> health_percentage() > 35  ) return;
+    if ( s -> sim -> target -> health_percentage() > 25  ) return;
     p -> buffs_decimation -> trigger();
   }
 
@@ -3231,7 +3234,7 @@ struct summon_infernal_t : public warlock_spell_t
     if ( infernal_awakening )
       infernal_awakening -> execute();
     p -> cooldowns_doomguard -> start();
-    player -> summon_pet( "infernal", 60.0 + 10.0 * p -> talent_ancient_grimoire -> rank() );
+    player -> summon_pet( "infernal", 45.0 + 10.0 * p -> talent_ancient_grimoire -> rank() );
 
   }
 
