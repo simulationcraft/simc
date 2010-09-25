@@ -3439,7 +3439,8 @@ struct dark_intent_t : public warlock_spell_t
     {
       if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Dark Intent", p -> name() );
       p -> buffs.dark_intent_feedback -> override(3);
-      p -> buffs.dark_intent -> override(1);
+      if (p -> buffs.dark_intent -> check()) p -> buffs.dark_intent -> expire();
+	  p -> buffs.dark_intent -> override(1);
     }
     else
     {
