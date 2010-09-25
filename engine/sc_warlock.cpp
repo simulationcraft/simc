@@ -2040,7 +2040,7 @@ struct burning_embers_t : public warlock_spell_t
     double cap;
     double a;
     
-	cap = ( 1.0 + 0.0715 * p -> talent_burning_embers -> rank() ) * p -> composite_spell_power( SCHOOL_MAX )
+	cap = ( 0.0715 * p -> talent_burning_embers -> rank() ) * p -> composite_spell_power( SCHOOL_MAX )
 	      + p -> player_data.effect_misc_value2( p -> player_data.spell_effect_id( 85112, 1) );
     a = base_td * p -> talent_burning_embers -> rank() * 0.15 + tick_dmg;
     
