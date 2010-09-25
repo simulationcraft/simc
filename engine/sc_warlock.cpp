@@ -601,8 +601,8 @@ struct warlock_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_stats );
     attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_stats );
 
-    base_attack_crit                  = 0.0328;
-    base_spell_crit                   = 0.0092;
+    base_attack_crit                  = 0.0328; // level invariant
+    base_spell_crit                   = 0.0092; // level invariant
 
     initial_attack_crit_per_agility   = 0.01 / 52.0;
 

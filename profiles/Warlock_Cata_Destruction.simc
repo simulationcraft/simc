@@ -16,12 +16,13 @@ actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/soulburn
 actions+=/demon_soul
 actions+=/bane_of_havoc,if=!ticking
-actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time
+actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time&!ticking
 actions+=/conflagrate
 actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up
 actions+=/soul_fire,if=buff.empowered_imp.react
 actions+=/chaos_bolt
 #actions+=/fel_flame,if=dot.immolate.remains<=5
+actions+=/summon_doomguard,time>=100
 actions+=/incinerate
 actions+=/life_tap
 
