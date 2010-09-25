@@ -2036,17 +2036,20 @@ struct burning_embers_t : public warlock_spell_t
   }
   virtual double calculate_tick_damage()
   {
-  warlock_t* p = player -> cast_warlock();
-  double cap;
-  double a;
-  cap = 1.0 * p -> composite_spell_power( SCHOOL_MAX ) + p -> player_data.effect_misc_value2( p -> player_data.spell_effect_id( 85112, 1) );
-  a=base_td * p -> talent_burning_embers -> rank() * 0.15 + tick_dmg;
-  if ( a > cap)
-    tick_dmg=cap;
-  else
-    tick_dmg=a;
+    warlock_t* p = player -> cast_warlock();
+    double cap;
+    double a;
+    
+	cap = ( 1.0 + 0.0715 * p -> talent_burning_embers -> rank() ) * p -> composite_spell_power( SCHOOL_MAX )
+	      + p -> player_data.effect_misc_value2( p -> player_data.spell_effect_id( 85112, 1) );
+    a = base_td * p -> talent_burning_embers -> rank() * 0.15 + tick_dmg;
+    
+	if ( a > cap)
+      tick_dmg = cap;
+    else
+      tick_dmg = a;
 
-  return tick_dmg;
+    return tick_dmg;
   }
 };
 
