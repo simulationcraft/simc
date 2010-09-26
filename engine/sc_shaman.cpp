@@ -2142,9 +2142,7 @@ struct flame_shock_t : public shaman_spell_t
     
     shaman_spell_t::execute();
   }
-
-
-
+  
   virtual void tick()
   {
     shaman_spell_t::tick();
@@ -2154,7 +2152,6 @@ struct flame_shock_t : public shaman_spell_t
       p -> procs_lava_surge -> occur();
       p -> cooldowns_lava_burst -> reset();
     }
-
   }
 
   double cost() SC_CONST

@@ -714,6 +714,7 @@ void warrior_attack_t::execute()
 
   warrior_t* p = player -> cast_warrior();
   p -> buffs_tier7_4pc_melee -> expire();
+  p -> buffs_battle_trance   -> expire();
 
   if ( result_is_hit() )
   {
@@ -996,14 +997,11 @@ struct bladestorm_tick_t : public warrior_attack_t
   bladestorm_tick_t( player_t* player ) :
       warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
   {
-    warrior_t* p = player -> cast_warrior();
     dual        = true;
     background  = true;
     may_crit    = true;
     aoe         = true;
     direct_tick = true;
-    id          = 50622;
-    parse_data( p -> player_data );
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1870,17 +1868,6 @@ struct shockwave_t : public warrior_attack_t
     if ( p -> glyphs.shockwave ) cooldown -> duration -= 3;
   }
 
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    warrior_attack_t::assess_damage( amount, dmg_type );
-
-    // Assume it hits all nearby targets
-    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
-    {
-      warrior_attack_t::additional_damage( amount, dmg_type );
-    }
-  }
-
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -2028,17 +2015,6 @@ struct thunder_clap_t : public warrior_attack_t
     base_cost        -= p -> glyphs.resonating_power  * 5.0;
   }
 
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    warrior_attack_t::assess_damage( amount, dmg_type );
-
-    // Assume it hits all nearby targets
-    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
-    {
-      warrior_attack_t::additional_damage( amount, dmg_type );
-    }
-  }
-
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -2072,17 +2048,6 @@ struct whirlwind_t : public warrior_attack_t
     weapon_multiplier = 0.50;
 
     stancemask = STANCE_BERSERKER;
-  }
-
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    warrior_attack_t::assess_damage( amount, dmg_type );
-
-    // Assume it hits all nearby targets
-    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
-    {
-      warrior_attack_t::additional_damage( amount, dmg_type );
-    }
   }
 
   virtual void consume_resource() { }
@@ -2278,7 +2243,6 @@ struct battle_shout_t : public warrior_spell_t
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
-  // FIXME: Add in Ready Conditionals
 };
 
 // Berserker Rage ==========================================================
@@ -2405,21 +2369,21 @@ struct inner_rage_t : public warrior_spell_t
 
     id = 1134;
     parse_data( p -> player_data );
+    cooldown -> duration = 15.0; // Fake this so we're not spammed by events
   }
 
   virtual void execute()
   {
-    warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );    
-    p -> buffs_deadly_calm -> trigger();  
+    p -> buffs_inner_rage -> trigger();  
     update_ready();
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> resource_current[ RESOURCE_RAGE ] < 75 )
+    if ( p -> resource_current[ RESOURCE_RAGE ] < 75.0 )
       return false;
 
     return warrior_spell_t::ready();
@@ -2917,26 +2881,34 @@ void warrior_t::init_actions()
     }
     if ( primary_tree() == TREE_ARMS )
     {
-      action_list_str += "/heroic_strike,rage>=50";
+      if ( talents.sweeping_strikes ) action_list_str += "/sweeping_strikes,if=target.adds>0";
+      if ( talents.deadly_calm ) action_list_str += "/deadly_calm,rage<10";
+      action_list_str += "/inner_rage,rage>=90";
+      action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
+      action_list_str += "/cleave,rage>=75,if=target.adds>0";
       action_list_str += "/rend";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/bladestorm";
       action_list_str += "/mortal_strike";
+      action_list_str += "/colossus_smash";
       action_list_str += "/overpower,if=buff.taste_for_blood.react";
-      action_list_str += "/execute,health_percentage>=20,if=buff.sudden_death.react";
       action_list_str += "/execute,health_percentage<=20";
       action_list_str += "/slam";
+      action_list_str += "/battle_shout";
     }
     else if ( primary_tree() == TREE_FURY )
     {
       action_list_str += "/recklessness";
       action_list_str += "/death_wish";
-      action_list_str += "/heroic_strike,rage>=25";
-      action_list_str += "/whirlwind";
+      action_list_str += "/inner_rage,rage>=90";
+      action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
+      action_list_str += "/cleave,rage>=75,if=target.adds>0";
+      action_list_str += "/whirlwind,if=target.adds>0";
+      action_list_str += "/raging_blow";
       action_list_str += "/bloodthirst";
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute";
-      action_list_str += "/berserker_rage";
+      action_list_str += "/battle_shout";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
