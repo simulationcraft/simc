@@ -994,12 +994,14 @@ struct bladestorm_tick_t : public warrior_attack_t
   bladestorm_tick_t( player_t* player ) :
       warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
   {
-    base_dd_min = base_dd_max = 1;
+    warrior_t* p = player -> cast_warrior();
     dual        = true;
     background  = true;
     may_crit    = true;
     aoe         = true;
     direct_tick = true;
+    id          = 50622;
+    parse_data( p -> player_data );
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1007,7 +1009,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     warrior_attack_t::assess_damage( amount, dmg_type );
 
     // Assume it hits all nearby targets
-    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
+    for ( int i=0; i < sim -> target -> adds_nearby && i < 4; i ++ )
     {
       warrior_attack_t::additional_damage( amount, dmg_type );
     }
