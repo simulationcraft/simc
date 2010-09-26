@@ -31,7 +31,6 @@ struct warrior_t : public player_t
   buff_t* buffs_executioner_talent;
   buff_t* buffs_flurry;
   buff_t* buffs_hold_the_line;
-  buff_t* buffs_improved_defensive_stance;
   buff_t* buffs_incite;
   buff_t* buffs_inner_rage;
   buff_t* buffs_lambs_to_the_slaughter;
@@ -52,7 +51,6 @@ struct warrior_t : public player_t
   buff_t* buffs_tier8_2pc_melee;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
-  buff_t* buffs_glyph_of_revenge;
 
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
@@ -65,13 +63,13 @@ struct warrior_t : public player_t
   gain_t* gains_anger_management;
   gain_t* gains_avoided_attacks;
   gain_t* gains_battle_shout;
+  gain_t* gains_berserker_rage;
   gain_t* gains_blood_frenzy;
   gain_t* gains_incoming_damage;
   gain_t* gains_mh_attack;
   gain_t* gains_oh_attack;
   gain_t* gains_shield_specialization;
   gain_t* gains_sudden_death;
-  gain_t* gains_unbridled_wrath;
 
   // Procs
   proc_t* procs_deferred_deep_wounds;
@@ -84,12 +82,11 @@ struct warrior_t : public player_t
   // Random Number Generation
   rng_t* rng_blood_frenzy;
   rng_t* rng_executioner_talent;
-  rng_t* rng_improved_defensive_stance;
   rng_t* rng_impending_victory;
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
-  rng_t* rng_tier10_4pc_melee;
   rng_t* rng_wrecking_crew;
+  rng_t* rng_tier10_4pc_melee;  
 
   // Up-Times
   uptime_t* uptimes_rage_cap;
@@ -139,12 +136,12 @@ struct warrior_t : public player_t
     talent_t* impending_victory;
     talent_t* improved_revenge;
     talent_t* incite;
-    talent_t* toughness;
-    talent_t* thunderstruck;
     talent_t* shockwave;
     talent_t* shield_mastery;
     talent_t* shield_specialization;
     talent_t* sword_and_board;
+    talent_t* toughness;
+    talent_t* thunderstruck;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -159,8 +156,6 @@ struct warrior_t : public player_t
     int cleaving;
     int devastate;
     int enduring_victory;
-    int furious_sundering;
-    int heroic_throw;
     int mortal_strike;
     int overpower;
     int raging_blow;
@@ -170,6 +165,7 @@ struct warrior_t : public player_t
     int shockwave;
     int slam;
     int sweeping_strikes;
+
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -233,12 +229,12 @@ struct warrior_t : public player_t
     talents.impending_victory       = new talent_t( this, "impending_victory", "Impending Victory" );
     talents.improved_revenge        = new talent_t( this, "improved_revenge", "Improved Revenge" );
     talents.incite                  = new talent_t( this, "incite", "Incite" );
-    talents.toughness               = new talent_t( this, "toughness", "Toughness" );
-    talents.thunderstruck           = new talent_t( this, "thunderstruck", "Thunderstruck" );
     talents.shockwave               = new talent_t( this, "shockwave", "Shockwave" );
     talents.shield_mastery          = new talent_t( this, "shield_mastery", "Shield Mastery" );
     talents.shield_specialization   = new talent_t( this, "shield_specialization", "Shield Specialization" );
-    talents.sword_and_board         = new talent_t( this, "sword_and_board", "Sword and Board" );    
+    talents.sword_and_board         = new talent_t( this, "sword_and_board", "Sword and Board" );
+    talents.toughness               = new talent_t( this, "toughness", "Toughness" );
+    talents.thunderstruck           = new talent_t( this, "thunderstruck", "Thunderstruck" );
   }
 
   // Character Definition
@@ -668,13 +664,6 @@ void warrior_attack_t::execute()
   {
     p -> buffs_overpower -> trigger();
   }
-  else if ( result == RESULT_PARRY )
-  {
-    if ( p -> glyphs.overpower )
-    {
-      p -> buffs_overpower -> trigger();
-    }
-  }
 
   trigger_strikes_of_opportunity( this );
 }
@@ -724,6 +713,10 @@ void warrior_attack_t::player_buff()
   {
     player_multiplier *= 1.10;
     if ( player -> set_bonus.tier9_2pc_melee() ) player_crit += 0.02;
+  }
+  else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
+  {
+    player_multiplier *= 0.95;
   }
 
   player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
@@ -1031,8 +1024,9 @@ struct bloodthirst_t : public warrior_attack_t
     id = 23881;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
+    weapon             = &( p -> main_hand_weapon );
+    weapon_multiplier  = 0;
+    player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
     
     may_crit   = true;
     base_crit += 0.05 * p -> talents.cruelty -> rank();
@@ -1080,9 +1074,12 @@ struct cleave_t : public warrior_attack_t
   virtual void assess_damage( double amount, int dmg_type )
   {
     warrior_attack_t::assess_damage( amount, dmg_type );
+    warrior_t* p = player -> cast_warrior();
 
-    if ( sim -> target -> adds_nearby > 0 )
+    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 1 + p -> glyphs.cleaving ); i ++ )
+    {
       warrior_attack_t::additional_damage( amount, dmg_type );
+    }
   }
 
   virtual void execute()
@@ -1182,7 +1179,8 @@ struct devastate_t : public warrior_attack_t
     weapon_multiplier = 1.50;
 
     may_crit   = true;
-    base_crit += p -> talents.sword_and_board -> rank() * 0.05;
+    base_crit += p -> talents.sword_and_board -> rank() * 0.05
+               + p -> glyphs.devastate                  * 0.05;
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_crit += 0.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
@@ -1447,6 +1445,7 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
     base_crit += p -> talents.taste_for_blood -> rank() * 0.20;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
+    player_multiplier          *= 1.0 + p -> glyphs.overpower         * 0.10;
 
     stancemask = STANCE_BATTLE;    
   }
@@ -1538,6 +1537,7 @@ struct raging_blow_t : public warrior_attack_t
 
     weapon      = &( p -> main_hand_weapon );
     may_crit   = true;
+    base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
   }
 
@@ -1851,6 +1851,7 @@ struct slam_t : public warrior_attack_t
     normalize_weapon_speed = false;
 
     may_crit = true;
+    base_crit += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
     base_execute_time -= p -> talents.improved_slam -> rank() * 0.5;
     base_multiplier   *= 1 + p -> set_bonus.tier7_2pc_melee()     * 0.10
@@ -2200,6 +2201,11 @@ struct battle_shout_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
+    
+    if ( ! sim -> overrides.battle_shout )
+      sim -> auras.battle_shout -> duration = 120 + p -> glyphs.battle * 120;
+    sim -> auras.battle_shout -> trigger( 1, 1395 );
+
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
   // FIXME: Add in Ready Conditionals
@@ -2225,6 +2231,14 @@ struct berserker_rage_t : public warrior_spell_t
 
     harmful = false;
     cooldown -> duration *= ( 1.0 - 0.10 * p -> talents.intensify_rage -> rank() );
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> glyphs.berserker_rage )
+      p -> resource_gain( RESOURCE_RAGE, 5, p -> gains_berserker_rage );
   }
 };
 
@@ -2722,6 +2736,7 @@ void warrior_t::init_buffs()
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> rank() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> rank() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
+  buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );
   buffs_rude_interruption         = new buff_t( this, "rude_interruption",         1, 15.0 * talents.rude_interruption ->rank() );
   buffs_shield_block              = new buff_t( this, "shield_block",              1, 10.0 );
   buffs_sudden_death              = new buff_t( this, "sudden_death",              2, 10.0,   0, talents.sudden_death -> rank() * 0.03 );
@@ -2747,13 +2762,13 @@ void warrior_t::init_gains()
   gains_anger_management       = get_gain( "anger_management"      );
   gains_avoided_attacks        = get_gain( "avoided_attacks"       );
   gains_battle_shout           = get_gain( "battle_shout"          );
+  gains_berserker_rage         = get_gain( "berserker_rage"        );
   gains_blood_frenzy           = get_gain( "blood_frenzy"          );
   gains_incoming_damage        = get_gain( "incoming_damage"       );
   gains_mh_attack              = get_gain( "mh_attack"             );
   gains_oh_attack              = get_gain( "oh_attack"             );
   gains_shield_specialization  = get_gain( "shield_specialization" );
   gains_sudden_death           = get_gain( "sudden_death"          );
-  gains_unbridled_wrath        = get_gain( "unbridled_wrath"       );
 }
 
 // warrior_t::init_procs =======================================================
@@ -3141,7 +3156,7 @@ void player_t::warrior_init( sim_t* sim )
 
 void player_t::warrior_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.battle_shout ) sim -> auras.battle_shout -> override( 1, 548 );
+  if ( sim -> overrides.battle_shout ) sim -> auras.battle_shout -> override( 1, 1395 );
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   target_t* t = sim -> target;
