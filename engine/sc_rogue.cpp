@@ -1516,7 +1516,7 @@ struct expose_armor_t : public rogue_attack_t
       if( t -> debuffs.expose_armor -> remains_lt( duration ) )
       {
         t -> debuffs.expose_armor -> duration = duration;
-        t -> debuffs.expose_armor -> trigger( 1, 0.2 );
+        t -> debuffs.expose_armor -> trigger( 1, 0.12 );
       }
     }
   };
@@ -3736,7 +3736,7 @@ void player_t::rogue_combat_begin( sim_t* sim )
   if( sim -> overrides.honor_among_thieves ) sim -> auras.honor_among_thieves -> override();
 
   target_t* t = sim -> target;
-  if( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.2 );
+  if( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
   if( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
   if( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
   if( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
