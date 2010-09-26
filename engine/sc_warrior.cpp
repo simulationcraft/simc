@@ -3160,8 +3160,8 @@ void player_t::warrior_combat_begin( sim_t* sim )
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 30 );
-  if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override(  4 );
+  if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
+  if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
   if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override(  3 );
   if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
 }
