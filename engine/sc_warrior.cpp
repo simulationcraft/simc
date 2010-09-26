@@ -513,7 +513,6 @@ static void trigger_deep_wounds( action_t* a )
 
 static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
 {
-  // FIXME: 4.0 mechanics
   // Basic Formula:      http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=1
   // Blue Clarification: http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
 
@@ -943,6 +942,18 @@ struct bladestorm_tick_t : public warrior_attack_t
     aoe         = true;
     direct_tick = true;
   }
+
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+
+    // Assume it hits all nearby targets
+    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
+    {
+      warrior_attack_t::additional_damage( amount, dmg_type );
+    }
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1066,13 +1077,19 @@ struct cleave_t : public warrior_attack_t
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> rank() * 0.03;
   }
 
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+
+    if ( sim -> target -> adds_nearby > 0 )
+      warrior_attack_t::additional_damage( amount, dmg_type );
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();    
     p -> buffs_meat_cleaver -> trigger();
-
-    // FIXME: Add AoE support
   }
 
   virtual void player_buff()
@@ -1387,9 +1404,9 @@ struct mortal_strike_t : public warrior_attack_t
     p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_lambs_to_the_slaughter -> trigger();
     p -> buffs_battle_trance -> trigger();
-    if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> rank() / 3.0 ) )
+    if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> rank() / 2.0 ) )
     {
-      double value = util_t::talent_rank( p -> talents.wrecking_crew -> rank(), 3, 3, 6, 10 ) * 0.01;
+      double value = p -> talents.wrecking_crew -> rank() * 0.05;
       p -> buffs_wrecking_crew -> trigger( 1, value );
     }
   }
@@ -1940,6 +1957,17 @@ struct thunder_clap_t : public warrior_attack_t
     base_cost        -= p -> glyphs.resonating_power  * 5.0;
   }
 
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+
+    // Assume it hits all nearby targets
+    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
+    {
+      warrior_attack_t::additional_damage( amount, dmg_type );
+    }
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1968,10 +1996,22 @@ struct whirlwind_t : public warrior_attack_t
     id = 1680;
     parse_data( p -> player_data );
 
-    aoe      = true;
-    may_crit = true;
+    aoe               = true;
+    may_crit          = true;
+    weapon_multiplier = 0.50;
 
     stancemask = STANCE_BERSERKER;
+  }
+
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+
+    // Assume it hits all nearby targets
+    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
+    {
+      warrior_attack_t::additional_damage( amount, dmg_type );
+    }
   }
 
   virtual void consume_resource() { }
@@ -1993,8 +2033,6 @@ struct whirlwind_t : public warrior_attack_t
     p -> buffs_meat_cleaver -> trigger();
 
     warrior_attack_t::consume_resource();
-
-    // FIXME: Add AoE support
   }
 
   virtual void player_buff()
