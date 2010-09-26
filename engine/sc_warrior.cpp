@@ -14,11 +14,11 @@ enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 struct warrior_t : public player_t
 {
   // Active
-  action_t* active_damage_shield;
   action_t* active_deep_wounds;
   int       active_stance;
 
   // Buffs
+  buff_t* buffs_bastion_of_defense;
   buff_t* buffs_battle_stance;
   buff_t* buffs_battle_trance;
   buff_t* buffs_berserker_stance;
@@ -30,6 +30,7 @@ struct warrior_t : public player_t
   buff_t* buffs_enrage;
   buff_t* buffs_executioner_talent;
   buff_t* buffs_flurry;
+  buff_t* buffs_hold_the_line;
   buff_t* buffs_improved_defensive_stance;
   buff_t* buffs_incite;
   buff_t* buffs_inner_rage;
@@ -84,7 +85,7 @@ struct warrior_t : public player_t
   rng_t* rng_blood_frenzy;
   rng_t* rng_executioner_talent;
   rng_t* rng_improved_defensive_stance;
-  rng_t* rng_shield_specialization;
+  rng_t* rng_impending_victory;
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
   rng_t* rng_tier10_4pc_melee;
@@ -130,9 +131,11 @@ struct warrior_t : public player_t
     talent_t* titans_grip;
 
     // Prot
+    talent_t* bastion_of_defense;
     talent_t* concussion_blow;
     talent_t* devastate;
     talent_t* heavy_repercussions;
+    talent_t* hold_the_line;
     talent_t* impending_victory;
     talent_t* improved_revenge;
     talent_t* incite;
@@ -178,7 +181,6 @@ struct warrior_t : public player_t
     tree_type[ WARRIOR_PROTECTION ] = TREE_FURY;
 
     // Active
-    active_damage_shield = 0;
     active_deep_wounds   = 0;
     active_stance        = STANCE_BATTLE;
 
@@ -223,9 +225,11 @@ struct warrior_t : public player_t
     talents.titans_grip             = new talent_t( this, "titans_grip", "Titan's Grip" );
 
     // Prot
+    talents.bastion_of_defense      = new talent_t( this, "bastion_of_defense", "Bastion of Defense" );
     talents.concussion_blow         = new talent_t( this, "concussion_blow", "Concussion Blow" );
     talents.devastate               = new talent_t( this, "devastate", "Devastate" );
     talents.heavy_repercussions     = new talent_t( this, "heavy_repercussions", "Heavy Repercussions" );
+    talents.hold_the_line           = new talent_t( this, "hold_the_line", "Hold the Line" );
     talents.impending_victory       = new talent_t( this, "impending_victory", "Impending Victory" );
     talents.improved_revenge        = new talent_t( this, "improved_revenge", "Improved Revenge" );
     talents.incite                  = new talent_t( this, "incite", "Incite" );
@@ -251,6 +255,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -758,6 +763,12 @@ void warrior_attack_t::player_buff()
   if ( p -> talents.rampage -> rank() )
     player_crit += 0.02;
 
+  if ( p -> buffs_hold_the_line -> check() )
+    player_crit += 0.10;
+
+  if ( p -> buffs_bastion_of_defense -> check() )
+    player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
                    name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
@@ -1057,7 +1068,8 @@ struct cleave_t : public warrior_attack_t
 
     aoe              = true;
     may_crit         = true;
-    base_multiplier *= 1.0 + p -> talents.war_academy -> rank() * 0.05;
+    base_multiplier *= 1.0 + p -> talents.war_academy   -> rank() * 0.05;
+    base_multiplier *= 1.0 + p -> talents.thunderstruck -> rank() * 0.03;
   }
 
   virtual void execute()
@@ -1168,7 +1180,15 @@ struct devastate_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+    warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() ) trigger_sword_and_board( this );
+
+    if ( sim -> target -> health_percentage() <= 20 )
+    {
+      if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> rank() * 0.25 ) )
+        p -> buffs_victory_rush -> trigger();
+    }      
   }
 };
 
@@ -1279,13 +1299,8 @@ struct execute_t : public warrior_attack_t
     if ( ! warrior_attack_t::ready() )
       return false;
 
-    warrior_t* p = player -> cast_warrior();
-
-    if ( ! p -> buffs_sudden_death -> check() )
-    {
-      if ( sim -> target -> health_percentage() > 20 )
-        return false;
-    }
+    if ( sim -> target -> health_percentage() > 20 )
+      return false;
 
     return true;
   }
@@ -1617,6 +1632,18 @@ struct revenge_t : public warrior_attack_t
     stancemask = STANCE_DEFENSE;
   }
 
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+    warrior_t* p = player -> cast_warrior();
+
+    if ( p -> talents.improved_revenge -> rank() )
+    {
+      amount *= p -> talents.improved_revenge -> rank() * 0.50;
+      warrior_attack_t::additional_damage( amount, dmg_type );
+    }
+  }
+
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1695,6 +1722,17 @@ struct shield_slam_t : public warrior_attack_t
 			                       0.10 * p -> set_bonus.tier7_2pc_tank() );
   }
 
+  virtual void player_buff()
+  {
+    warrior_attack_t::player_buff();
+
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> buffs_shield_block -> check() )
+    {
+      player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> rank() * 0.50;
+    }
+  }
+
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1711,16 +1749,6 @@ struct shield_slam_t : public warrior_attack_t
     return c;
   }
 
-  virtual void player_buff()
-  {
-    warrior_attack_t::player_buff();
-
-    warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_shield_block -> check() )
-    {
-      player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> rank() * 0.50;
-    }
-  }
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1731,7 +1759,6 @@ struct shield_slam_t : public warrior_attack_t
 
     return warrior_attack_t::ready();
   }
-
 };
 
 // Shockwave ===============================================================
@@ -1761,7 +1788,18 @@ struct shockwave_t : public warrior_attack_t
     may_block = false;
     if ( p -> glyphs.shockwave ) cooldown -> duration -= 3;
   }
-  
+
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    warrior_attack_t::assess_damage( amount, dmg_type );
+
+    // Assume it hits all nearby targets
+    for ( int i=0; i < sim -> target -> adds_nearby; i ++ )
+    {
+      warrior_attack_t::additional_damage( amount, dmg_type );
+    }
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1903,7 +1941,7 @@ struct thunder_clap_t : public warrior_attack_t
     may_parry = false;
     may_block = false;
 
-    base_multiplier  *= 1 + p -> talents.thunderstruck -> rank() * 0.3;
+    base_multiplier  *= 1.0 + p -> talents.thunderstruck -> rank() * 0.03;
     base_crit        += p -> talents.incite -> rank() * 0.05;
     base_cost        -= p -> glyphs.resonating_power  * 5.0;
   }
@@ -2604,7 +2642,7 @@ void warrior_t::init_base()
   diminished_dodge_capi = 1.0 / 0.88129021;
   diminished_parry_capi = 1.0 / 0.47003525;
 
-  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + primary_tree() == TREE_PROTECTION * 0.12;
+  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + primary_tree() == TREE_PROTECTION * 0.15;
 
   health_per_stamina = 10;
 
@@ -2633,6 +2671,7 @@ void warrior_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
+  buffs_bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, 12.0,   0, talents.bastion_of_defense -> rank() * 0.10 );
   buffs_battle_stance             = new buff_t( this, "battle_stance"    );
   buffs_battle_trance             = new buff_t( this, "battle_trance",             1, 15.0,   0, talents.battle_trance -> rank() * 0.05 );
   buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
@@ -2644,7 +2683,8 @@ void warrior_t::init_buffs()
   buffs_enrage                    = new buff_t( this, "enrage",                    1,  9.0,   0, talents.enrage -> rank() * 0.04 );
   buffs_executioner_talent        = new buff_t( this, "executioner_talent",        5,  9.0 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry -> rank() );
-  buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 6.0, talents.incite -> rank() * 0.05 );
+  buffs_hold_the_line             = new buff_t( this, "hold_the_line",             1,  5.0 * talents.hold_the_line -> rank() ); 
+  buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 6.0, talents.incite -> rank() / 3.0 );
   buffs_inner_rage                = new buff_t( this, "inner_rage",                1, 15.0 );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> rank() );
@@ -2715,7 +2755,7 @@ void warrior_t::init_rng()
 
   rng_blood_frenzy              = get_rng( "blood_frenzy"              );
   rng_executioner_talent        = get_rng( "executioner_talent"        );
-  rng_shield_specialization     = get_rng( "shield_specialization"     );
+  rng_impending_victory         = get_rng( "impending_victory"         );
   rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng_sudden_death              = get_rng( "sudden_death"              );
   rng_tier10_4pc_melee          = get_rng( "tier10_4pc_melee"          );
@@ -2827,7 +2867,7 @@ void warrior_t::reset()
   deep_wounds_delay_event = 0;
 }
 
-// warrior_t::interrupt ======================================================
+// warrior_t::interrupt ====================================================
 
 void warrior_t::interrupt()
 {
@@ -2839,7 +2879,7 @@ void warrior_t::interrupt()
   if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
-// warrior_t::composite_attack_power_multiplier =========================================
+// warrior_t::composite_attack_power_multiplier ============================
 
 double warrior_t::composite_attack_power_multiplier() SC_CONST
 {
@@ -2862,7 +2902,17 @@ double warrior_t::composite_attack_hit() SC_CONST
   return ah;
 }
 
-// warrior_t::regen ==========================================================
+// warrior_t::composite_tank_block =========================================
+
+double warrior_t::composite_tank_block() SC_CONST
+{
+  double b = player_t::composite_tank_block();
+  if ( buffs_shield_block -> check() )
+    b = 1.0;
+  return b;
+}
+
+// warrior_t::regen ========================================================
 
 void warrior_t::regen( double periodicity )
 {
@@ -2918,20 +2968,23 @@ int warrior_t::target_swing()
   {
     resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
   }
-  if ( result == RESULT_BLOCK ||
-       result == RESULT_DODGE ||
-       result == RESULT_PARRY )
+  if ( result == RESULT_BLOCK )
   {
     if ( talents.shield_specialization -> rank() )
     {
-      if ( rng_shield_specialization -> roll( 0.20 * talents.shield_specialization -> rank() ) )
-      {
-	      resource_gain( RESOURCE_RAGE, 5.0, gains_shield_specialization );
-      }
+      resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gains_shield_specialization );
     }
+  }
+  if ( result == RESULT_BLOCK || 
+       result == RESULT_DODGE ||
+       result == RESULT_PARRY )
+  {
+       buffs_bastion_of_defense -> trigger();
   }
   if ( result == RESULT_PARRY )
   {
+    buffs_hold_the_line -> trigger();
+
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
       double swing_time = main_hand_attack -> time_to_execute;
