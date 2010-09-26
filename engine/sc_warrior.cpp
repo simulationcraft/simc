@@ -208,8 +208,8 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARRIOR, name, r )
   {
     tree_type[ WARRIOR_ARMS       ] = TREE_ARMS;
-    tree_type[ WARRIOR_FURY       ] = TREE_PROTECTION;
-    tree_type[ WARRIOR_PROTECTION ] = TREE_FURY;
+    tree_type[ WARRIOR_FURY       ] = TREE_FURY;
+    tree_type[ WARRIOR_PROTECTION ] = TREE_PROTECTION;
 
     // Active
     active_deep_wounds   = 0;
@@ -1082,7 +1082,12 @@ struct bloodthirst_t : public warrior_attack_t
       warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    check_talent( p -> primary_tree() == TREE_FURY );
+    if ( ! ( p -> primary_tree() == TREE_FURY ) )
+    {
+      sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n", player -> name(), name() );
+      return;
+    }
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
