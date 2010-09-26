@@ -17,6 +17,41 @@ struct warrior_t : public player_t
   action_t* active_deep_wounds;
   int       active_stance;
 
+  // Active Spells
+   struct active_spells_t
+  {
+    active_spell_t* battle_shout;
+    active_spell_t* berserker_rage;
+    active_spell_t* bladestorm;
+    active_spell_t* bloodthirst;
+    active_spell_t* cleave;
+    active_spell_t* colossus_smash;
+    active_spell_t* concussion_blow;
+    active_spell_t* deadly_calm;
+    active_spell_t* death_wish;
+    active_spell_t* devastate;
+    active_spell_t* execute;
+    active_spell_t* heroic_strike;
+    active_spell_t* inner_rage;
+    active_spell_t* mortal_strike;
+    active_spell_t* overpower;
+    active_spell_t* pummel;
+    active_spell_t* raging_blow;
+    active_spell_t* recklessness;
+    active_spell_t* rend;
+    active_spell_t* revenge;
+    active_spell_t* shield_bash;
+    active_spell_t* shield_block;
+    active_spell_t* shield_slam;
+    active_spell_t* shockwave;
+    active_spell_t* slam;
+    active_spell_t* sweeping_strikes;
+    active_spell_t* thunder_clap;
+    active_spell_t* victory_rush;
+    active_spell_t* whirlwind;
+  };
+  active_spells_t   active_spells;
+
   // Buffs
   buff_t* buffs_bastion_of_defense;
   buff_t* buffs_battle_stance;
@@ -179,6 +214,37 @@ struct warrior_t : public player_t
     // Active
     active_deep_wounds   = 0;
     active_stance        = STANCE_BATTLE;
+
+    // Active Spells
+    active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout", WARRIOR_FURY );
+    active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage", WARRIOR_FURY );
+    active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm", WARRIOR_ARMS );
+    active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst", WARRIOR_FURY );
+    active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave", WARRIOR_FURY );
+    active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash", WARRIOR_ARMS );
+    active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow", WARRIOR_PROTECTION );
+    active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm", WARRIOR_ARMS );
+    active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish", WARRIOR_FURY );
+    active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate", WARRIOR_PROTECTION );
+    active_spells.execute           = new active_spell_t( this, "execute", "Execute", WARRIOR_FURY );
+    active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike", WARRIOR_ARMS );
+    active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage", WARRIOR_FURY );
+    active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike", WARRIOR_ARMS );
+    active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower", WARRIOR_ARMS );
+    active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel", WARRIOR_FURY );
+    active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow", WARRIOR_FURY );
+    active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness", WARRIOR_FURY );
+    active_spells.rend              = new active_spell_t( this, "rend", "Rend", WARRIOR_ARMS );
+    active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge", WARRIOR_PROTECTION );
+    active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash", WARRIOR_PROTECTION );
+    active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block", WARRIOR_PROTECTION );
+    active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam", WARRIOR_PROTECTION );
+    active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave", WARRIOR_PROTECTION );
+    active_spells.slam              = new active_spell_t( this, "slam", "Slam", WARRIOR_FURY );
+    active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes", WARRIOR_ARMS );
+    active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap", WARRIOR_ARMS );
+    active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush", WARRIOR_FURY );
+    active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind", WARRIOR_FURY );
 
     // Cooldowns
     cooldowns_colossus_smash        = get_cooldown( "colossus_smash"      );
@@ -610,7 +676,7 @@ void warrior_attack_t::assess_damage( double amount,
 double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
-  double c = attack_t::cost();
+  double c = attack_t::cost() / 10; // Currently sc_spell_data has all costs * 10
   if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
   if ( p -> buffs_deadly_calm   -> check() )          c  = 0;
