@@ -9,7 +9,6 @@
 // Spirit Walker's Grace Ability
 // Unleash Elements Ability
 // Ability/Spell Rank scaling
-// Maelstrom's mana reduction (what is it?)
 // Mail Specialization -> 5% intel or agi bonus (waiting on sim changes to check armor type)
 // ==========================================================================
 
@@ -1460,6 +1459,10 @@ struct chain_lightning_t : public shaman_spell_t
     double cr = cost_reduction();
     if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
     c *= 1.0 - cr;
+    if ( p -> buffs_maelstrom_weapon -> check() )
+    {
+      c *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
+    }
     if ( c < 0 ) c = 0;
     return c;
   }
@@ -1697,6 +1700,10 @@ struct lava_burst_t : public shaman_spell_t
     double cr = cost_reduction();
     if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
     c *= 1.0 - cr;
+    if ( p -> buffs_maelstrom_weapon -> check() )
+    {
+      c *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
+    }
     if ( c < 0 ) c = 0;
     return c;
   }
@@ -1811,6 +1818,10 @@ struct lightning_bolt_t : public shaman_spell_t
     double cr = cost_reduction();
     if ( p -> buffs_elemental_focus -> check() ) cr += 0.40;
     c *= 1.0 - cr;
+    if ( p -> buffs_maelstrom_weapon -> check() )
+    {
+      c *= 1.0 - p -> buffs_maelstrom_weapon -> stack() * 0.20;
+    }
     if ( c < 0 ) c = 0;
     return c;
   }
