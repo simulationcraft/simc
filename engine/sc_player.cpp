@@ -1363,8 +1363,6 @@ double player_t::composite_attack_power() SC_CONST
   ap += floor( attack_power_per_strength * strength() );
   ap += floor( attack_power_per_agility  * agility() );
 
-  ap += std::max( buffs.blessing_of_might -> value(), sim -> auras.battle_shout -> value() );
-
   return ap;
 }
 
@@ -1808,7 +1806,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
-  if ( sim -> auras.abominations_might -> up() || sim -> auras.trueshot -> up() )
+  if ( sim -> auras.abominations_might -> up() || sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
   {
     m *= 1.10;
   }
@@ -1870,8 +1868,9 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  a += std::max( sim -> auras.strength_of_earth -> value(),
-                 sim -> auras.horn_of_winter -> value() );
+  a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                           sim -> auras.horn_of_winter -> value() ),
+                           sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
   return floor( a );
 }
@@ -1881,8 +1880,9 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  a += std::max( sim -> auras.strength_of_earth -> value(),
-                 sim -> auras.horn_of_winter -> value() );
+  a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                           sim -> auras.horn_of_winter -> value() ),
+                           sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_AGILITY );
   return floor( a );
 }
