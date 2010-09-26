@@ -520,17 +520,11 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   warrior_t* p = a -> player -> cast_warrior();
   weapon_t*  w = a -> weapon;
 
-  double hit_factor = 3.5;
-  if ( a -> result == RESULT_CRIT ) hit_factor *= 2.0;
-  if ( w -> slot == SLOT_OFF_HAND ) hit_factor /= 2.0;
-
-  double rage_from_damage = 7.5 * a -> direct_dmg / rage_conversion_value;
-  double rage_from_hit    = w -> swing_time * hit_factor;
-
-  double rage_gain_avg = ( rage_from_damage + rage_from_hit ) / 2.0;
-  double rage_gain_max = 15 * a -> direct_dmg / rage_conversion_value;
-
-  double rage_gain = std::min( rage_gain_avg, rage_gain_max );
+  double rage_factor = 6.5;
+  if ( a -> result == RESULT_CRIT ) rage_factor *= 2.0;
+  if ( w -> slot == SLOT_OFF_HAND ) rage_factor /= 2.0;
+  
+  double rage_gain = rage_factor * w -> swing_time;
 
   if ( p -> primary_tree() == TREE_ARMS ) rage_gain *= 1.25;
 
