@@ -4126,7 +4126,7 @@ void player_t::druid_init( sim_t* sim )
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
-    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", 1 );
+    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
   }
 
   target_t* t = sim -> target;

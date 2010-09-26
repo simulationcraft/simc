@@ -2712,9 +2712,9 @@ void player_t::paladin_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.blessing_of_kings  = new buff_t( p, "blessing_of_kings",  1 );
-    p -> buffs.blessing_of_might  = new buff_t( p, "blessing_of_might",  1 );
-    p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", 1 );
+    p -> buffs.blessing_of_kings  = new buff_t( p, "blessing_of_kings",  !p -> is_pet() );
+    p -> buffs.blessing_of_might  = new buff_t( p, "blessing_of_might",  !p -> is_pet() );
+    p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", !p -> is_pet() );
   }
 
   target_t* t = sim -> target;

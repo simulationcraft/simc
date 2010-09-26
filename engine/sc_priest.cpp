@@ -3004,7 +3004,7 @@ void player_t::priest_init( sim_t* sim )
   
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, 1 );
+    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, !p -> is_pet() );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
 

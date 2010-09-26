@@ -373,7 +373,7 @@ void buff_t::bump( int    stacks,
 void buff_t::override( int    stacks,
                        double value )
 {
-  assert( max_stack != 0 );
+  if( max_stack == 0 ) return;
   assert( current_stack == 0 );
   duration = 0;
   start( stacks, value );

@@ -1001,6 +1001,7 @@ struct imp_pet_t : public warlock_pet_t
     virtual void travel( int travel_result, double travel_dmg);
   };
 
+
   imp_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "imp", PET_IMP )
   {
@@ -1009,23 +1010,15 @@ struct imp_pet_t : public warlock_pet_t
     action_list_str = "/snapshot_stats/firebolt";
   }
 
-
-
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-
     resource_base[ RESOURCE_HEALTH ] = 4011;
     resource_base[ RESOURCE_MANA   ] = 1175;
-
-
     mana_per_intellect = 14.28;
-
     mp5_per_intellect  = 5.0 / 6.0;
-
   }
-
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -1077,6 +1070,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
+      if ( o -> glyphs.felguard )base_multiplier *= 1.05;
     }
     virtual void player_buff()
     {
@@ -1146,27 +1140,7 @@ struct felguard_pet_t : public warlock_pet_t
     melee_t( player_t* player ) :
         warlock_pet_melee_t( player, "Felguard: Melee" )
     {}
-    virtual double execute_time() SC_CONST
-    {
-      warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
-      double t = attack_t::execute_time();
-      if ( o -> buffs_demonic_empowerment -> up() ) t *= 1.0 / 1.20;
-      return t;
-    }
 
-    virtual void player_buff()
-    {
-      felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
-      warlock_t*      o = p -> owner -> cast_warlock();
-
-      warlock_pet_melee_t::player_buff();
-
-      if ( o -> glyphs.felguard ) player_attack_power *= 1.20;
-    }
-    virtual void assess_damage( double amount, int dmg_type )
-    {
-      attack_t::assess_damage( amount, dmg_type );
-    }
   };
 
   felguard_pet_t( sim_t* sim, player_t* owner ) :
@@ -1182,6 +1156,7 @@ struct felguard_pet_t : public warlock_pet_t
 
     action_list_str += "/snapshot_stats/felstorm/legion_strike/wait_until_ready";
   }
+
   virtual void init_base()
   {
     warlock_pet_t::init_base();
@@ -1192,11 +1167,12 @@ struct felguard_pet_t : public warlock_pet_t
 
     melee = new melee_t( this );
   }
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "legion_strike"   ) return new legion_strike_t( this );
-    if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "felstorm"        ) return new      felstorm_t( this );
 
     return player_t::create_action( name, options_str );
   }
@@ -1229,8 +1205,6 @@ struct felhunter_pet_t : public warlock_pet_t
   active_spell_t* shadow_bite;
 
   // TODO: Need to add fel intelligence on the warlock while felhunter is out
-  // This is +48 int / + 64 spi at rank 5, plus 5%/10% if talented in the affliction tree
-  // These do NOT stack with Prayer of Spirit, or with Arcane Intellect/Arcane Brilliance
   struct shadow_bite_t : public warlock_pet_spell_t
   {
     shadow_bite_t( player_t* player ) :
@@ -1247,7 +1221,6 @@ struct felhunter_pet_t : public warlock_pet_t
     virtual void execute()
     {
       warlock_pet_spell_t::execute();
-
     }
 
     virtual void player_buff()
@@ -1274,8 +1247,6 @@ struct felhunter_pet_t : public warlock_pet_t
     main_hand_weapon.swing_time = 2.0;
 
     shadow_bite = new active_spell_t( this, "Felhunter: Shadow Bite", 54049, WARLOCK, WARLOCK );
-
-//    damage_modifier = 0.8;
 
     action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
   }
@@ -1417,7 +1388,6 @@ struct infernal_pet_t : public warlock_pet_t
       base_dd_min = base_dd_max = p -> player_data.effect_base_value ( 11232 );
       direct_power_mod  = 0.2;
       range = p -> player_data.effect_radius ( 11232 );
-
     }
 
     virtual double execute_time() SC_CONST
@@ -1466,15 +1436,6 @@ struct infernal_pet_t : public warlock_pet_t
   virtual double composite_attack_hit() SC_CONST { return 0; }
   virtual double composite_spell_hit()  SC_CONST { return 0; }
 
-  virtual void summon( double duration=0 )
-  {
-    warlock_pet_t::summon( duration );
-  }
-
-  virtual void dismiss()
-  {
-    warlock_pet_t::dismiss();
-  }
 };
 
 // ==========================================================================
