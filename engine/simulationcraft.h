@@ -3388,17 +3388,20 @@ struct cooldown_t
   double duration;
   double ready;
   cooldown_t* next;
-  cooldown_t() : sim(0) {}
   cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
-  virtual ~cooldown_t() {}
-  virtual void reset() { ready=-1; }
-  virtual void start( double override=-1 )
+  void reset() { ready=-1; }
+  void start( double override=-1 )
   {
     if ( override >= 0 ) duration = override;
     if ( duration > 0 ) ready = sim -> current_time + duration;
   }
-  virtual double remains() { double diff = ready - sim -> current_time; if ( diff < 0 ) diff = 0; return diff;}
-  virtual const char* name() { return name_str.c_str(); }
+  double remains()
+  {
+    double diff = ready - sim -> current_time;
+    if ( diff < 0 ) diff = 0;
+    return diff;
+  }
+  const char* name() { return name_str.c_str(); }
 };
 
 // DoT =======================================================================
