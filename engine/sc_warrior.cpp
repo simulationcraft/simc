@@ -765,11 +765,12 @@ void warrior_attack_t::player_buff()
     {
       player_multiplier *= 1.0 + 0.25;
     }
-    if ( weapon -> group() == WEAPON_2H )
+    if ( weapon -> group() == WEAPON_2H && p -> primary_tree() == TREE_ARMS)
     {
-      player_multiplier *= 1.0 + p -> primary_tree() == TREE_ARMS * 0.10;
+      player_multiplier *= 1.10;
     }
   }
+
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
     player_multiplier *= 1.05;
@@ -784,11 +785,11 @@ void warrior_attack_t::player_buff()
   {
     player_multiplier *= 0.95;
   }
-
+  
   player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
   player_multiplier *= 1.0 + p -> buffs_enrage        -> value();
   player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
-
+  
   if ( p -> talents.single_minded_fury -> rank() && p -> dual_wield() )
   {
     if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H ||
@@ -824,6 +825,7 @@ void warrior_attack_t::player_buff()
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
                    name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
+  
 }
 
 // warrior_attack_t::ready() ================================================
@@ -3158,13 +3160,13 @@ int warrior_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_melee = ( strstr( s, "helmet"         ) ||
+  bool is_melee = ( strstr( s, "helmet"   ) ||
 		    strstr( s, "shoulderplates" ) ||
 		    strstr( s, "battleplate"    ) ||
 		    strstr( s, "legplates"      ) ||
 		    strstr( s, "gauntlets"      ) );
 
-  bool is_tank = ( strstr( s, "greathelm"   ) ||
+  bool is_tank = ( strstr( s, "greathelm" ) ||
 		   strstr( s, "pauldrons"   ) ||
 		   strstr( s, "breastplate" ) ||
 		   strstr( s, "legguards"   ) ||
