@@ -546,7 +546,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
 
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( ! p -> primary_tree() == TREE_ARMS )
+  if ( ! ( p -> primary_tree() == TREE_ARMS ) )
     return;
   
   // FIXME: Does this have a cooldown like Sword Spec did?
@@ -2376,7 +2376,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "bladestorm"       ) return new bladestorm_t      ( this, options_str );
   if ( name == "bloodthirst"      ) return new bloodthirst_t     ( this, options_str );
   if ( name == "cleave"           ) return new cleave_t          ( this, options_str );
-  if ( name == "colossus_smash"   ) return new colossus_smash    ( this, options_str );
+  if ( name == "colossus_smash"   ) return new colossus_smash_t  ( this, options_str );
   if ( name == "concussion_blow"  ) return new concussion_blow_t ( this, options_str );
   if ( name == "deadly_calm"      ) return new deadly_calm_t     ( this, options_str );
   if ( name == "death_wish"       ) return new death_wish_t      ( this, options_str );
