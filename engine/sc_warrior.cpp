@@ -28,6 +28,7 @@ struct warrior_t : public player_t
   buff_t* buffs_death_wish;
   buff_t* buffs_defensive_stance;
   buff_t* buffs_enrage;
+  buff_t* buffs_executioner_talent;
   buff_t* buffs_flurry;
   buff_t* buffs_improved_defensive_stance;
   buff_t* buffs_incite;
@@ -50,7 +51,6 @@ struct warrior_t : public player_t
   buff_t* buffs_tier8_2pc_melee;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
-  buff_t* buffs_glyph_of_blocking;
   buff_t* buffs_glyph_of_revenge;
 
   // Cooldowns
@@ -82,12 +82,12 @@ struct warrior_t : public player_t
 
   // Random Number Generation
   rng_t* rng_blood_frenzy;
+  rng_t* rng_executioner_talent;
   rng_t* rng_improved_defensive_stance;
   rng_t* rng_shield_specialization;
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
   rng_t* rng_tier10_4pc_melee;
-  rng_t* rng_unbridled_wrath;
   rng_t* rng_wrecking_crew;
 
   // Up-Times
@@ -619,8 +619,9 @@ double warrior_attack_t::cost() SC_CONST
   double c = attack_t::cost();
   if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
-  if ( p -> buffs_deadly_calm -> check() ) c  = 0;
-  if ( p -> buffs_inner_rage  -> check() ) c *= 1.50;
+  if ( p -> buffs_deadly_calm   -> check() )          c  = 0;
+  if ( p -> buffs_inner_rage    -> check() )          c *= 1.50;
+  if ( p -> buffs_battle_trance -> check() && c > 5 ) c  = 0;
   return c;
 }
 // warrior_attack_t::consume_resource ========================================
@@ -727,9 +728,9 @@ void warrior_attack_t::player_buff()
     if ( player -> set_bonus.tier9_2pc_melee() ) player_crit += 0.02;
   }
 
-  player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
-  player_multiplier *= 1.0 + std::max( p -> buffs_enrage        -> value(),
-				                               p -> buffs_wrecking_crew -> value() );
+  player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
+  player_multiplier *= 1.0 + p -> buffs_enrage        -> value();
+  player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
 
   if ( p -> talents.single_minded_fury -> rank() && p -> dual_wield() )
   {
@@ -750,6 +751,12 @@ void warrior_attack_t::player_buff()
 
   if ( p -> buffs_inner_rage -> check() )
     player_multiplier *= 1.15;
+
+  if ( p -> buffs_rude_interruption -> check() )
+    player_multiplier *= 1.05;
+
+  if ( p -> talents.rampage -> rank() )
+    player_crit += 0.02;
 
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
@@ -820,6 +827,10 @@ struct melee_t : public warrior_attack_t
     {
       h *= 1.0 / ( 1.0 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 ) );
     }
+    if ( p -> buffs_executioner_talent -> up() )
+    {
+      h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() * 0.05 );
+    }
     return h;
   }
 
@@ -843,6 +854,13 @@ struct melee_t : public warrior_attack_t
     if ( result_is_hit() )
     {
 	    trigger_rage_gain( this, rage_conversion_value );
+
+      double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
+      if ( p -> primary_tree() == TREE_FURY )
+      {
+        enrage_value *= p -> composite_mastery() * 0.0313;
+      }
+      p -> buffs_enrage -> trigger( 1, enrage_value);
     }
   }
 };
@@ -884,14 +902,14 @@ struct auto_attack_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     p -> main_hand_attack -> schedule_execute();
-    if ( result == RESULT_HIT && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
+    if ( result_is_hit() && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
     {
       p -> resource_gain( RESOURCE_RAGE, 20, p -> gains_blood_frenzy );
     }
     if ( p -> off_hand_attack )
     {
       p -> off_hand_attack -> schedule_execute();
-      if ( result == RESULT_HIT  && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
+      if ( result_is_hit()  && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
       {
         p -> resource_gain( RESOURCE_RAGE, 20, p -> gains_blood_frenzy );
       }
@@ -999,10 +1017,9 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    base_dd_min = base_dd_max = 1;
-
-    may_crit = true;
+    
+    may_crit   = true;
+    base_crit += 0.05 * p -> talents.cruelty -> rank();
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
@@ -1068,7 +1085,7 @@ struct cleave_t : public warrior_attack_t
 struct colossus_smash_t : public warrior_attack_t
 {
   colossus_smash_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "colossus_smash",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "colossus_smash",  player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
     check_min_level( 81 );
@@ -1083,7 +1100,8 @@ struct colossus_smash_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    may_crit = true;
+    may_crit   = true;
+    stancemask = STANCE_BERSERKER | STANCE_BATTLE;
   }
 
   virtual void execute()
@@ -1240,6 +1258,10 @@ struct execute_t : public warrior_attack_t
     p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_sudden_death -> decrement();
     p -> buffs_tier10_4pc_melee -> decrement();
+    if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> rank() / 2 ) )
+    {
+      p -> buffs_executioner_talent -> trigger();
+    }
   }
 
   virtual void player_buff()
@@ -1342,7 +1364,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
-
+    base_crit                  += 0.05 * p -> talents.cruelty -> rank();
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
 
     weapon_multiplier = 1;
@@ -1355,6 +1377,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_lambs_to_the_slaughter -> trigger();
+    p -> buffs_battle_trance -> trigger();
     if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> rank() / 3.0 ) )
     {
       double value = util_t::talent_rank( p -> talents.wrecking_crew -> rank(), 3, 3, 6, 10 ) * 0.01;
@@ -1464,6 +1487,64 @@ struct pummel_t : public warrior_attack_t
   virtual bool ready()
   {
     if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    return warrior_attack_t::ready();
+  }
+};
+
+// Raging Blow =============================================================
+
+struct raging_blow_t : public warrior_attack_t
+{
+  raging_blow_t( player_t* player, const std::string& options_str ) :
+      warrior_attack_t( "raging_blow",  player, SCHOOL_PHYSICAL, TREE_FURY )
+  {
+    warrior_t* p = player -> cast_warrior();
+    check_talent( p -> talents.raging_blow -> rank() );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    id = 85288;
+    parse_data( p -> player_data );
+
+    weapon      = &( p -> main_hand_weapon );
+    may_crit   = true;
+    stancemask = STANCE_BERSERKER;
+  }
+
+  virtual void execute()
+  {
+    attack_t::consume_resource();
+
+    weapon = &( player -> main_hand_weapon );
+    warrior_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      weapon = &( player -> off_hand_weapon );
+      warrior_attack_t::execute();
+    }
+  }
+
+  virtual void player_buff()
+  {
+    warrior_attack_t::player_buff();
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> primary_tree() == TREE_FURY )
+    {
+      player_multiplier *= 1.0 + p -> composite_mastery() * 0.0313;
+    }
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+    if ( ! ( p -> buffs_death_wish -> check() || p -> buffs_enrage -> check() ) )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1609,8 +1690,8 @@ struct shield_slam_t : public warrior_attack_t
 
     may_crit = true;
 
+    base_crit       += 0.05 * p -> talents.cruelty -> rank();
     base_multiplier *= 1 + ( 0.10 * p -> glyphs.shield_slam        +
-                             0.05 * p -> talents.cruelty -> rank() +
 			                       0.10 * p -> set_bonus.tier7_2pc_tank() );
   }
 
@@ -1619,7 +1700,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
     p -> buffs_sword_and_board -> expire();
-    p -> buffs_glyph_of_blocking -> trigger();
+    p -> buffs_battle_trance -> trigger();
   }
 
   virtual double cost() SC_CONST
@@ -1775,8 +1856,6 @@ struct slam_t : public warrior_attack_t
       warrior_attack_t::execute();
     }
 
-    p -> buffs_meat_cleaver -> trigger();
-
     warrior_attack_t::consume_resource();
   }
 
@@ -1902,7 +1981,7 @@ struct whirlwind_t : public warrior_attack_t
 struct victory_rush_t : public warrior_attack_t
 {
   victory_rush_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "victory_rush",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "victory_rush",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
@@ -2029,6 +2108,8 @@ void warrior_spell_t::parse_options( option_t*          options,
 
 struct battle_shout_t : public warrior_spell_t
 {
+  double rage_gain;
+
   float refresh_early;
   int   shout_base_bonus;
   battle_shout_t( player_t* player, const std::string& options_str ) :
@@ -2040,13 +2121,16 @@ struct battle_shout_t : public warrior_spell_t
 
     id = 6673;
     parse_data( p -> player_data );
+
+    rage_gain = 20 + p -> talents.booming_voice -> rank() * 5.0;
+    cooldown -> duration -= p -> talents.booming_voice -> rank() * 15.0;
   }
   
   virtual void execute()
   {
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> resource_gain( RESOURCE_RAGE, 20 , p -> gains_battle_shout );
+    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
   // FIXME: Add in Ready Conditionals
 };
@@ -2117,10 +2201,13 @@ struct deadly_calm_t : public warrior_spell_t
 
 struct death_wish_t : public warrior_spell_t
 {
+  double enrage_bonus;
+
   death_wish_t( player_t* player, const std::string& options_str ) :
       warrior_spell_t( "death_wish", player )
   {
     warrior_t* p = player -> cast_warrior();
+    check_talent( p -> talents.death_wish -> rank() );
 
     option_t options[] =
     {
@@ -2131,15 +2218,18 @@ struct death_wish_t : public warrior_spell_t
     id = 12292;
     parse_data( p -> player_data );
 
-    harmful     = false;
+    harmful = false;
     cooldown -> duration *= ( 1.0 - 0.10 * p -> talents.intensify_rage -> rank() );
+    enrage_bonus = 0.20;
+    if ( p -> primary_tree() == TREE_FURY )
+      enrage_bonus *= p -> composite_mastery() * 0.0313; 
   }
 
   virtual void execute()
   {
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_death_wish -> trigger( 1, 0.20 );
+    p -> buffs_death_wish -> trigger( 1, enrage_bonus );
   }
 };
 
@@ -2387,6 +2477,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "mortal_strike"    ) return new mortal_strike_t   ( this, options_str );
   if ( name == "overpower"        ) return new overpower_t       ( this, options_str );
   if ( name == "pummel"           ) return new pummel_t          ( this, options_str );
+  if ( name == "raging_blow"      ) return new raging_blow_t     ( this, options_str );
   if ( name == "recklessness"     ) return new recklessness_t    ( this, options_str );
   if ( name == "rend"             ) return new rend_t            ( this, options_str );
   if ( name == "revenge"          ) return new revenge_t         ( this, options_str );
@@ -2543,13 +2634,15 @@ void warrior_t::init_buffs()
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_battle_stance             = new buff_t( this, "battle_stance"    );
+  buffs_battle_trance             = new buff_t( this, "battle_trance",             1, 15.0,   0, talents.battle_trance -> rank() * 0.05 );
   buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
-  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, util_t::talent_rank( talents.bloodsurge -> rank(), 3, 0.07, 0.13, 0.20 ) );
+  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, talents.bloodsurge -> rank() * 0.10 );
   buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
   buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, 10.0 );
-  buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0,   0, talents.death_wish -> rank() );
+  buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0 );
   buffs_defensive_stance          = new buff_t( this, "defensive_stance" );
-  buffs_enrage                    = new buff_t( this, "enrage",                    1, 12.0,   0, talents.enrage -> rank() ? 0.30 : 0.00 );
+  buffs_enrage                    = new buff_t( this, "enrage",                    1,  9.0,   0, talents.enrage -> rank() * 0.04 );
+  buffs_executioner_talent        = new buff_t( this, "executioner_talent",        5,  9.0 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry -> rank() );
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 6.0, talents.incite -> rank() * 0.05 );
   buffs_inner_rage                = new buff_t( this, "inner_rage",                1, 15.0 );
@@ -2557,6 +2650,7 @@ void warrior_t::init_buffs()
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> rank() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> rank() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
+  buffs_rude_interruption         = new buff_t( this, "rude_interruption",         1, 15.0 * talents.rude_interruption ->rank() );
   buffs_shield_block              = new buff_t( this, "shield_block",              1, 10.0 );
   buffs_sudden_death              = new buff_t( this, "sudden_death",              2, 10.0,   0, talents.sudden_death -> rank() * 0.03 );
   buffs_sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, 10.0 );
@@ -2620,6 +2714,7 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rng_blood_frenzy              = get_rng( "blood_frenzy"              );
+  rng_executioner_talent        = get_rng( "executioner_talent"        );
   rng_shield_specialization     = get_rng( "shield_specialization"     );
   rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng_sudden_death              = get_rng( "sudden_death"              );
@@ -2822,7 +2917,6 @@ int warrior_t::target_swing()
        result == RESULT_BLOCK  )
   {
     resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
-    buffs_enrage -> trigger( 1, 0.02 * talents.enrage -> rank() );
   }
   if ( result == RESULT_BLOCK ||
        result == RESULT_DODGE ||
