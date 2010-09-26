@@ -284,11 +284,15 @@ struct priest_t : public player_t
   int    recast_mind_blast;
   bool   was_sub_25;
 
+  int bbb;
+
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
     tree_type[ PRIEST_DISCIPLINE ] = TREE_DISCIPLINE;
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
+
+    bbb = 0;
 
     mysticism                           = true;
     use_shadow_word_death               = false;
@@ -621,6 +625,8 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual void summon( double duration )
   {
+    priest_t* p = owner -> cast_priest();
+
     // Simulate "Bad" swings
     if ( owner -> bugs && owner -> sim -> roll( 0.3 ) )
     {
@@ -631,7 +637,14 @@ struct shadow_fiend_pet_t : public pet_t
     {
       duration -= 0.1;
     }
+    if ( p -> buffs_shadowfiend->current_stack != 0 )
+    {
+      dismiss();
+    }
+
     pet_t::summon( duration );
+
+    p -> buffs_shadowfiend -> start();
   }
   virtual void dismiss()
   {
@@ -686,18 +699,22 @@ void priest_spell_t::player_buff()
 
   player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
 
+#if 0
   for ( int i=0; i < 4; i++ )
   {
     p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
   }
+#endif
   for ( int i=0; i < 6; i++ )
   {
     p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
   }
+#if 0
   for ( int i=0; i < 4; i++ )
   {
     p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
   }
+#endif
 }
 
 // priest_spell_t::assess_damage =============================================
@@ -1237,12 +1254,21 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     priest_spell_t::execute();
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
+    }
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+    }
     player -> cast_priest() -> buffs_mind_melt -> expire();
     p -> buffs_mind_spike -> expire();
+    p -> buffs_shadow_orb -> expire();
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
-      p -> buffs_shadow_orb -> expire();
       if ( p -> dots_vampiric_touch -> ticking() )
       {
         p -> trigger_replenishment();
@@ -1376,7 +1402,13 @@ struct mind_flay_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
-         p -> cooldowns_shadow_fiend -> ready -= 10.0 * p -> talents.sin_and_punishment -> rank();
+         p -> cooldowns_shadow_fiend -> ready -= 1.0 * p -> talents.sin_and_punishment -> effect_base_value( 2 );
+
+         p->bbb++;
+      }
+      else
+      {
+        p->bbb = 0;
       }
     }
   }
@@ -1442,6 +1474,11 @@ struct mind_spike_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::travel( result, dmg );
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+    }
 
     p -> buffs_mind_melt  -> trigger( 1, 1.0 );
     p -> buffs_shadow_orb -> expire();
@@ -2052,8 +2089,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     update_ready();
     
-    p -> buffs_shadowfiend -> start();
-
     p -> summon_pet( "shadow_fiend", 15.0 );
   }
   virtual bool ready()
