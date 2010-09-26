@@ -1224,6 +1224,8 @@ public:
   sc_data_t( sc_data_t* p, const bool ptr = false );
   sc_data_t( const sc_data_t& copy );
 
+  virtual ~sc_data_t();
+
   void set_parent( sc_data_t* p, const bool ptr = false );
   void reset( );
 
@@ -1807,7 +1809,7 @@ struct action_expr_t
   action_expr_t( action_t* a, const std::string& n, int t=TOK_UNKNOWN ) : action(a), name_str(n), result_type(t), result_num(0) {}
   action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action(a), name_str(n) { result_type = TOK_NUM; result_num = constant_value; }
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action(a), name_str(n) { result_type = TOK_STR; result_str = constant_value; }
-  virtual ~action_expr_t() { };
+  virtual ~action_expr_t() { name_str.clear(); result_str.clear(); };
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
 
@@ -2412,6 +2414,8 @@ struct player_t
   bool      action_queued;
 
   // Callbacks
+  std::vector<action_callback_t*> all_callbacks;
+
   std::vector<action_callback_t*> resource_gain_callbacks       [ RESOURCE_MAX ];
   std::vector<action_callback_t*> resource_loss_callbacks       [ RESOURCE_MAX ];
   std::vector<action_callback_t*> attack_result_callbacks       [ RESULT_MAX ];
@@ -3225,7 +3229,7 @@ struct action_t : public active_spell_t
   action_t( int type, const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const char* sname, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE, int t=TREE_NONE, bool special=false );
-  virtual ~action_t() {}
+  virtual ~action_t();
 
   virtual void _init_action_t();
 
@@ -3315,7 +3319,6 @@ struct attack_t : public action_t
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE, bool special=false );
-  virtual ~attack_t() {}
   virtual void _init_attack_t();
 
   // Attack Overrides
@@ -3345,7 +3348,6 @@ struct spell_t : public action_t
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE );
-  virtual ~spell_t() {}
   virtual void _init_spell_t();
 
   // Spell Overrides
@@ -3445,7 +3447,13 @@ struct action_callback_t
   sim_t* sim;
   player_t* listener;
   bool active;
-  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active( true ) {}
+  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active( true ) 
+  {
+    if ( l )
+    {
+      l -> all_callbacks.push_back( this );
+    }
+  }
   virtual ~action_callback_t() {}
   virtual void trigger( action_t* ) = 0;
   virtual void reset() {}
@@ -3733,6 +3741,7 @@ std::string proper_option_name( const std::string& full_name );
 struct thread_t
 {
   static void init();
+  static void de_init();
   static void launch( sim_t* );
   static void wait( sim_t* );
   static void mutex_init( void*& mutex );

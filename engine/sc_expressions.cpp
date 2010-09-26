@@ -377,9 +377,10 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
 // build_expression_tree =====================================================
 
 static action_expr_t* build_expression_tree( action_t* action,
-					     std::vector<token_t>& tokens )
+                                             std::vector<token_t>& tokens )
 {
   std::vector<action_expr_t*> stack;
+  action_expr_t* res = 0;
 
   int num_tokens = tokens.size();
   for( int i=0; i < num_tokens; i++ )
@@ -395,33 +396,48 @@ static action_expr_t* build_expression_tree( action_t* action,
       action_expr_t* e = action -> create_expression( t.label );
       if ( ! e ) 
       {
-	action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n", 
-				 action -> player -> name(), action -> name(), t.label.c_str() );
-	return 0;
-	e = new action_expr_t( action, t.label, t.label );
+        action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n", 
+        action -> player -> name(), action -> name(), t.label.c_str() );
+        goto exit_label;
       }
       stack.push_back( e );
     }
     else if ( is_unary( t.type ) ) 
     {
-      if ( stack.size() < 1 ) return 0;
+      if ( stack.size() < 1 ) 
+        goto exit_label;
       action_expr_t* input = stack.back(); stack.pop_back();
-      if ( ! input ) return 0;
+      if ( ! input ) 
+        goto exit_label;
       stack.push_back( new expr_unary_t( action, t.label, t.type, input ) );
     }
     else if ( is_binary( t.type ) )
     {
-      if ( stack.size() < 2 ) return 0;
+      if ( stack.size() < 2 )
+        goto exit_label;
       action_expr_t* right = stack.back(); stack.pop_back();
       action_expr_t* left  = stack.back(); stack.pop_back();
-      if ( ! left || ! right ) return 0;
+      if ( ! left || ! right ) 
+        goto exit_label;
       stack.push_back( new expr_binary_t( action, t.label, t.type, left, right ) );
     }
   }
 
-  if ( stack.size() != 1 ) return 0;
+  if ( stack.size() != 1 ) 
+  {
+    goto exit_label;
+  }
 
-  return stack.back();
+  res = stack.back();
+  stack.pop_back();
+exit_label:
+  while ( stack.size() )
+  {
+    action_expr_t* s = stack.back();
+    stack.pop_back();
+    delete s;
+  }
+  return res;
 }
 
 // action_expr_t::parse ======================================================

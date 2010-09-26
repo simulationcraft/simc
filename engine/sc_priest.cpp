@@ -637,10 +637,8 @@ struct shadow_fiend_pet_t : public pet_t
     {
       duration -= 0.1;
     }
-    if ( p -> buffs_shadowfiend->current_stack != 0 )
-    {
-      dismiss();
-    }
+
+    dismiss();
 
     pet_t::summon( duration );
 
@@ -2087,9 +2085,10 @@ struct shadow_fiend_spell_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    update_ready();
     
     p -> summon_pet( "shadow_fiend", 15.0 );
+
+    update_ready();
   }
   virtual bool ready()
   {

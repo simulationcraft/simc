@@ -205,6 +205,11 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
   _init_action_t();
 }
 
+action_t::~action_t()
+{
+  if ( if_expr )
+    delete if_expr;
+}
 
 // action_t::parse_data ====================================================
 void action_t::parse_data( sc_data_access_t& pData )

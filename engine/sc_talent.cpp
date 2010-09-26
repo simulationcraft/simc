@@ -369,8 +369,6 @@ bool spell_id_t::init( const uint32_t id, int t )
     if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s initialized", token_name.c_str() );
 
     pp -> player_data.spell_set_used( spell_id_t_id, true );
-
-    push_back();
   }
   else if ( !spell_id_t_m_is_talent )
   {
@@ -1090,49 +1088,49 @@ double spell_id_t::effect_pp_combo_points( const uint32_t effect_num ) SC_CONST
 active_spell_t::active_spell_t( player_t* player, const char* t_name ) :
   spell_id_t( player, t_name )
 {
-
+  
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, id, ptype, stype )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
   spell_id_t( player, t_name, id, tree, mastery )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, s_name, false, ptype, stype )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
   spell_id_t( player, t_name, s_name, tree, mastery )
 {
-
+  push_back();
 }
 
 active_spell_t::active_spell_t( const active_spell_t& copy, const player_type ptype, const player_type stype ) :
   spell_id_t( copy, ptype, stype )
 {
-
+  
 }
 
 active_spell_t* active_spell_t::find_spell_in_list( const char* t_name )
@@ -1161,7 +1159,8 @@ void active_spell_t::add_options( player_t* player, std::vector<option_t>& opt_v
 
 void active_spell_t::push_back()
 {
-  pp -> active_spell_list.push_back( this );
+  if ( pp && spell_id_t_id )
+    pp -> active_spell_list.push_back( this );
 }
 
 // ==========================================================================
@@ -1171,49 +1170,49 @@ void active_spell_t::push_back()
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name ) :
   spell_id_t( player, t_name )
 {
-
+  
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, id, ptype, stype )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const bool run_init, const char* t_name ) :
   spell_id_t( player, run_init, t_name )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
   spell_id_t( player, t_name, id, tree, mastery )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, s_name, false, ptype, stype )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
   spell_id_t( player, t_name, s_name, tree, mastery )
 {
-
+  push_back();
 }
 
 passive_spell_t::passive_spell_t( const passive_spell_t& copy, const player_type ptype, const player_type stype ) :
@@ -1248,6 +1247,7 @@ void passive_spell_t::add_options( player_t* player, std::vector<option_t>& opt_
 
 void passive_spell_t::push_back()
 {
-  pp -> passive_spell_list.push_back( this );
+  if ( pp && spell_id_t_id )
+    pp -> passive_spell_list.push_back( this );
 }
 

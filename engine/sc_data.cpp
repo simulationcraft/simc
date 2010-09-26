@@ -18,6 +18,16 @@ sc_data_t::sc_data_t( const sc_data_t& copy )
   create_index();
 }
 
+sc_data_t::~sc_data_t()
+{
+  if ( m_spells_index )
+    delete [] m_spells_index;
+  if ( m_effects_index )
+    delete [] m_effects_index;
+  if ( m_talents_index )
+    delete [] m_talents_index;
+}
+
 void sc_data_t::reset( )
 {
   set_parent( (sc_data_t *) m_parent );

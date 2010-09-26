@@ -462,10 +462,17 @@ sim_t::~sim_t()
     delete r;
   }
 
-  if ( rng     ) delete rng;
-  if ( target  ) delete target;
-  if ( scaling ) delete scaling;
-  if ( plot    ) delete plot;
+  while ( buff_t* b = buff_list )
+  {
+    buff_list = b -> next;
+    delete b;
+  }
+
+  if ( rng     )           delete rng;
+  if ( deterministic_rng ) delete deterministic_rng;
+  if ( target  )           delete target;
+  if ( scaling )           delete scaling;
+  if ( plot    )           delete plot;
 
   int num_events = ( int ) raid_events.size();
   for ( int i=0; i < num_events; i++ )
@@ -1866,6 +1873,8 @@ int sim_t::main( int argc, char** argv )
   http_t::cache_save();
 
   sim_signal_handler_t::init( 0 );
+
+  thread_t::de_init();
 
   return 0;
 }

@@ -19,6 +19,10 @@ static bool thread_initialized = false;
 
 void thread_t::init() {}
 
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init() {}
+
 // thread_t::launch =========================================================
 
 void thread_t::launch( sim_t* sim )
@@ -68,6 +72,14 @@ void thread_t::init()
 {
   InitializeCriticalSection( &global_mutex );
   thread_initialized = true;
+}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  DeleteCriticalSection( &global_mutex );
+  thread_initialized = false;
 }
 
 // thread_t::launch =========================================================
@@ -149,6 +161,14 @@ void thread_t::init()
   thread_initialized = true;
 }
 
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  DeleteCriticalSection( &global_mutex );
+  thread_initialized = false;
+}
+
 // thread_t::launch =========================================================
 
 void thread_t::launch( sim_t* sim )
@@ -225,6 +245,13 @@ void thread_t::init()
 {
   pthread_mutex_init( &global_mutex, NULL );
   thread_initialized = true;
+}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  thread_initialized = false;
 }
 
 // thread_t::launch =========================================================

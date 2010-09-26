@@ -433,6 +433,70 @@ player_t::~player_t()
     rng_list = r -> next;
     delete r;
   }
+
+  while ( dot_t* d = dot_list )
+  {   
+    dot_list = d -> next;
+    delete d;
+  }
+
+  while ( buff_t* d = buff_list )
+  {
+    buff_list = d -> next;
+    delete d;
+  }
+
+  while ( cooldown_t* d = cooldown_list )
+  {
+    cooldown_list = d -> next;
+    delete d;
+  }
+
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    resource_gain_callbacks[ i ].clear();
+    resource_loss_callbacks[ i ].clear();
+  }
+  for ( int i=0; i < RESULT_MAX; i++ )
+  {
+    attack_result_callbacks[ i ].clear();
+    spell_result_callbacks[ i ].clear();
+    attack_direct_result_callbacks[ i ].clear();
+    spell_direct_result_callbacks[ i ].clear();
+    spell_cast_result_callbacks[ i ].clear();
+  }
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    tick_damage_callbacks[ i ].clear();
+    direct_damage_callbacks[ i ].clear();
+  }
+  tick_callbacks.clear();
+
+  while ( all_callbacks.size() )
+  {
+    action_callback_t* a = all_callbacks.back();
+    all_callbacks.pop_back();
+    delete a;
+  }
+
+  while ( passive_spell_list.size() )
+  {
+    passive_spell_t* s = passive_spell_list.back();
+    passive_spell_list.pop_back();
+    delete s;
+  }
+  while ( active_spell_list.size() )
+  {
+    active_spell_t* s = active_spell_list.back();
+    active_spell_list.pop_back();
+    delete s;
+  }
+  while ( talent_list2.size() )
+  {
+    talent_t* s = talent_list2.back();
+    talent_list2.pop_back();
+    delete s;
+  }
 }
 
 // player_t::id ============================================================
