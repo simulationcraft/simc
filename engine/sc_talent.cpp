@@ -262,6 +262,7 @@ spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_nam
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   if ( run_init )
     init( t_name );
 }
@@ -274,6 +275,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
   if ( scaling_type    == PLAYER_NONE )
@@ -290,6 +292,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   init( );
 }
 
@@ -301,6 +304,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   init( );
 }
 
@@ -312,6 +316,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_m_is_talent( is_talent ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
   if ( scaling_type    == PLAYER_NONE )
@@ -328,6 +333,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   init( s_name );
 }
 
@@ -339,6 +345,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
   memset(effects, 0, sizeof(effects));
+  single = 0;
   init( s_name );
 }
 
@@ -468,6 +475,29 @@ bool spell_id_t::init( const char* s_name )
     if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
     return false;
   }
+
+  uint32_t n_effects = 0;
+  
+  // Map effects, figure out if this is a single-effect spell
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ( effects[ i ] = pp -> player_data.m_effects_index[ get_effect_id( i + 1 ) ] ) )
+      n_effects++;
+  }
+  
+  if ( n_effects == 1 )
+  {
+    for ( int i = 0; i < MAX_EFFECTS; i++ )
+    {
+      if ( ! effects[ i ] )
+        continue;
+        
+      single = effects[ i ];
+      break;
+    }
+  }
+  else
+    single = 0;
 
   init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
 
