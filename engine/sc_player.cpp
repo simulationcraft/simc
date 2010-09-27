@@ -1437,15 +1437,18 @@ double player_t::composite_attack_crit() SC_CONST
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( sim -> auras.leader_of_the_pack -> check() || sim -> auras.honor_among_thieves -> up() || sim -> auras.rampage -> up() )
+    if ( sim -> auras.leader_of_the_pack -> check() 
+      || sim -> auras.honor_among_thieves -> check() 
+      || sim -> auras.elemental_oath -> check()
+      || sim -> auras.rampage -> check() )
     {
       ac += 0.05;
     }
   }
-  if ( ( race == RACE_WORGEN ) )
-    {
-      ac *= 1.01;
-    }
+  if ( race == RACE_WORGEN )
+  {
+    ac += 0.01;
+  }
   return ac;
 }
 
@@ -1827,7 +1830,10 @@ double player_t::composite_spell_crit() SC_CONST
   {
     if ( buffs.focus_magic -> check() ) sc += 0.03;
 
-    if ( sim -> auras.elemental_oath -> up() )
+    if ( sim -> auras.leader_of_the_pack -> check() 
+      || sim -> auras.honor_among_thieves -> check() 
+      || sim -> auras.elemental_oath -> check()
+      || sim -> auras.rampage -> check() )
     {
       sc += 0.05;
     }
