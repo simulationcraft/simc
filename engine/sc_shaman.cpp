@@ -1417,8 +1417,7 @@ struct lava_lash_t : public shaman_attack_t
     wf_cd_only( 0 ), flametongue_bonus( 0 ), glyph_bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    if ( p -> primary_tree() != TREE_ENHANCEMENT )
-      return;
+    check_spec( TREE_ENHANCEMENT );
 
     option_t options[] =
     {
@@ -2377,7 +2376,7 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_spell_t( "thunderstorm", player, 51490 ), bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-    if ( p -> primary_tree() != TREE_ELEMENTAL ) return;
+    check_spec(  TREE_ELEMENTAL );
 
     cooldown -> duration += p -> glyphs.thunder * p -> player_data.spell_base_value( 63270, E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 1000.0;
     bonus                 = p -> player_data.spell_base_value( id, E_ENERGIZE_PCT ) / 100.0;

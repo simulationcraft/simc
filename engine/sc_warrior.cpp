@@ -331,12 +331,12 @@ struct warrior_t : public player_t
   virtual int       target_swing();
 };
 
-namespace   // ANONYMOUS NAMESPACE =========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
 {
 
-// =========================================================================
+// ==========================================================================
 // Warrior Attack
-// =========================================================================
+// ==========================================================================
 
 struct warrior_attack_t : public attack_t
 {
@@ -592,7 +592,7 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   p -> resource_gain( RESOURCE_RAGE, rage_gain, w -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
 }
 
-// trigger_strikes_of_opportunity =============================================
+// trigger_strikes_of_opportunity ===========================================
 
 static void trigger_strikes_of_opportunity( attack_t* a )
 {
@@ -652,11 +652,11 @@ static void trigger_sword_and_board( attack_t* a )
   }
 }
 
-// =========================================================================
+// ==========================================================================
 // Warrior Attacks
-// =========================================================================
+// ==========================================================================
 
-// warrior_attack_t::assess_damage ===========================================
+// warrior_attack_t::assess_damage ==========================================
 
 void warrior_attack_t::assess_damage( double amount,
                                     int    dmg_type )
@@ -671,7 +671,7 @@ void warrior_attack_t::assess_damage( double amount,
   }
 }
 
-// warrior_attack_t::cost ====================================================
+// warrior_attack_t::cost ===================================================
 
 double warrior_attack_t::cost() SC_CONST
 {
@@ -684,7 +684,7 @@ double warrior_attack_t::cost() SC_CONST
   if ( p -> buffs_battle_trance -> check() && c > 5 ) c  = 0;
   return c;
 }
-// warrior_attack_t::consume_resource ========================================
+// warrior_attack_t::consume_resource =======================================
 
 void warrior_attack_t::consume_resource()
 {
@@ -706,7 +706,7 @@ void warrior_attack_t::consume_resource()
   }
 }
 
-// warrior_attack_t::execute =================================================
+// warrior_attack_t::execute ================================================
 
 void warrior_attack_t::execute()
 {
@@ -735,7 +735,7 @@ void warrior_attack_t::execute()
   trigger_strikes_of_opportunity( this );
 }
 
-// warrior_attack_t::parse_options =========================================
+// warrior_attack_t::parse_options ==========================================
 
 void warrior_attack_t::parse_options( option_t*          options,
                                       const std::string& options_str )
@@ -853,7 +853,7 @@ bool warrior_attack_t::ready()
   return true;
 }
 
-// Melee Attack ============================================================
+// Melee Attack =============================================================
 
 struct melee_t : public warrior_attack_t
 {
@@ -931,7 +931,7 @@ struct melee_t : public warrior_attack_t
   }
 };
 
-// Auto Attack =============================================================
+// Auto Attack ==============================================================
 
 struct auto_attack_t : public warrior_attack_t
 {
@@ -990,7 +990,7 @@ struct auto_attack_t : public warrior_attack_t
   }
 };
 
-// Bladestorm ==============================================================
+// Bladestorm ===============================================================
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
@@ -1074,7 +1074,7 @@ struct bladestorm_t : public warrior_attack_t
   virtual double haste() SC_CONST { return 1.0; }
 };
 
-// Bloodthirst =============================================================
+// Bloodthirst ==============================================================
 
 struct bloodthirst_t : public warrior_attack_t
 {
@@ -1115,7 +1115,7 @@ struct bloodthirst_t : public warrior_attack_t
   }
 };
 
-// Cleave ==================================================================
+// Cleave ===================================================================
 
 struct cleave_t : public warrior_attack_t
 {
@@ -1173,7 +1173,7 @@ struct cleave_t : public warrior_attack_t
   }
 };
 
-// Colossus Smash ==========================================================
+// Colossus Smash ===========================================================
 
 struct colossus_smash_t : public warrior_attack_t
 {
@@ -1206,7 +1206,7 @@ struct colossus_smash_t : public warrior_attack_t
   }
 };
 
-// Concussion Blow ===============================================================
+// Concussion Blow ==========================================================
 
 struct concussion_blow_t : public warrior_attack_t
 {
@@ -1231,7 +1231,7 @@ struct concussion_blow_t : public warrior_attack_t
   }
 };
 
-// Devastate ===============================================================
+// Devastate ================================================================
 
 struct devastate_t : public warrior_attack_t
 {
@@ -1287,7 +1287,7 @@ struct devastate_t : public warrior_attack_t
   }
 };
 
-// Execute ===================================================================
+// Execute ==================================================================
 
 struct execute_t : public warrior_attack_t
 {
@@ -1399,7 +1399,7 @@ struct execute_t : public warrior_attack_t
   }
 };
 
-// Heroic Strike ===========================================================
+// Heroic Strike ============================================================
 
 struct heroic_strike_t : public warrior_attack_t
 {
@@ -1452,7 +1452,7 @@ struct heroic_strike_t : public warrior_attack_t
   }
 };
 
-// Mortal Strike =============================================================
+// Mortal Strike ============================================================
 
 struct mortal_strike_t : public warrior_attack_t
 {
@@ -1517,7 +1517,7 @@ struct mortal_strike_t : public warrior_attack_t
   }
 };
 
-// Overpower =================================================================
+// Overpower ================================================================
 
 struct overpower_t : public warrior_attack_t
 {
@@ -1583,7 +1583,7 @@ struct overpower_t : public warrior_attack_t
   }
 };
 
-// Pummel ==================================================================
+// Pummel ===================================================================
 
 struct pummel_t : public warrior_attack_t
 {
@@ -1613,7 +1613,7 @@ struct pummel_t : public warrior_attack_t
   }
 };
 
-// Raging Blow =============================================================
+// Raging Blow ==============================================================
 
 struct raging_blow_t : public warrior_attack_t
 {
@@ -1673,7 +1673,7 @@ struct raging_blow_t : public warrior_attack_t
   }
 };
 
-// Rend ======================================================================
+// Rend =====================================================================
 
 struct rend_t : public warrior_attack_t
 {
@@ -1726,7 +1726,7 @@ struct rend_t : public warrior_attack_t
   }
 };
 
-// Revenge ===============================================================
+// Revenge ==================================================================
 
 struct revenge_t : public warrior_attack_t
 {
@@ -1793,7 +1793,7 @@ struct revenge_t : public warrior_attack_t
   }
 };
 
-// Shield Bash =============================================================
+// Shield Bash ==============================================================
 
 struct shield_bash_t : public warrior_attack_t
 {
@@ -1823,7 +1823,7 @@ struct shield_bash_t : public warrior_attack_t
   }
 };
 
-// Shield Slam ===============================================================
+// Shield Slam ==============================================================
 
 struct shield_slam_t : public warrior_attack_t
 {
@@ -1905,7 +1905,7 @@ struct shield_slam_t : public warrior_attack_t
   }
 };
 
-// Shockwave ===============================================================
+// Shockwave ================================================================
 
 struct shockwave_t : public warrior_attack_t
 {
@@ -1948,7 +1948,7 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
-// Slam ====================================================================
+// Slam =====================================================================
 
 struct slam_t : public warrior_attack_t
 {
@@ -2060,7 +2060,7 @@ struct slam_t : public warrior_attack_t
   }
 };
 
-// Thunder Clap ===============================================================
+// Thunder Clap =============================================================
 
 struct thunder_clap_t : public warrior_attack_t
 {
@@ -2111,7 +2111,7 @@ struct thunder_clap_t : public warrior_attack_t
   }
 };
 
-// Whirlwind ===============================================================
+// Whirlwind ================================================================
 
 struct whirlwind_t : public warrior_attack_t
 {
@@ -2169,7 +2169,7 @@ struct whirlwind_t : public warrior_attack_t
   }
 };
 
-// Victory Rush ===============================================================
+// Victory Rush =============================================================
 
 struct victory_rush_t : public warrior_attack_t
 {
@@ -2202,9 +2202,9 @@ struct victory_rush_t : public warrior_attack_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Warrior Spells
-// =========================================================================
+// ==========================================================================
 
 struct warrior_spell_t : public spell_t
 {
@@ -2223,7 +2223,7 @@ struct warrior_spell_t : public spell_t
   virtual bool   ready();
 };
 
-// warrior_spell_t::execute ==================================================
+// warrior_spell_t::execute =================================================
 
 void warrior_spell_t::execute()
 {
@@ -2237,7 +2237,7 @@ void warrior_spell_t::execute()
   update_ready();
 }
 
-// warrior_spell_t::cost =====================================================
+// warrior_spell_t::cost ====================================================
 
 double warrior_spell_t::cost() SC_CONST
 {
@@ -2248,7 +2248,7 @@ double warrior_spell_t::cost() SC_CONST
   return c;
 }
 
-// warrior_spell_t::gcd ======================================================
+// warrior_spell_t::gcd =====================================================
 
 double warrior_spell_t::gcd() SC_CONST
 {
@@ -2256,7 +2256,7 @@ double warrior_spell_t::gcd() SC_CONST
   return trigger_gcd;
 }
 
-// warrior_spell_t::ready() ==================================================
+// warrior_spell_t::ready() =================================================
 
 bool warrior_spell_t::ready()
 {
@@ -2297,7 +2297,7 @@ void warrior_spell_t::parse_options( option_t*          options,
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
-// Battle Shout ============================================================
+// Battle Shout =============================================================
 
 struct battle_shout_t : public warrior_spell_t
 {
@@ -2332,7 +2332,7 @@ struct battle_shout_t : public warrior_spell_t
   }
 };
 
-// Berserker Rage ==========================================================
+// Berserker Rage ===========================================================
 
 struct berserker_rage_t : public warrior_spell_t
 {
@@ -2363,7 +2363,7 @@ struct berserker_rage_t : public warrior_spell_t
   }
 };
 
-// Deadly Calm =============================================================
+// Deadly Calm ==============================================================
 
 struct deadly_calm_t : public warrior_spell_t
 {
@@ -2402,7 +2402,7 @@ struct deadly_calm_t : public warrior_spell_t
   }
 };
 
-// Death Wish ==============================================================
+// Death Wish ===============================================================
 
 struct death_wish_t : public warrior_spell_t
 {
@@ -2438,7 +2438,7 @@ struct death_wish_t : public warrior_spell_t
   }
 };
 
-// Inner Rage ==============================================================
+// Inner Rage ===============================================================
 
 struct inner_rage_t : public warrior_spell_t
 {
@@ -2477,7 +2477,7 @@ struct inner_rage_t : public warrior_spell_t
   }
 };
 
-// Recklessness ============================================================
+// Recklessness =============================================================
 
 struct recklessness_t : public warrior_spell_t
 {
@@ -2508,7 +2508,7 @@ struct recklessness_t : public warrior_spell_t
   }
 };
 
-// Shield Block ============================================================
+// Shield Block =============================================================
 
 struct shield_block_t : public warrior_spell_t
 {
@@ -2537,7 +2537,7 @@ struct shield_block_t : public warrior_spell_t
   }
 };
 
-// Stance ==================================================================
+// Stance ===================================================================
 
 struct stance_t : public warrior_spell_t
 {
@@ -2620,7 +2620,7 @@ struct stance_t : public warrior_spell_t
   }
 };
 
-// Sweeping Strikes =============================================================
+// Sweeping Strikes =========================================================
 
 struct sweeping_strikes_t : public warrior_spell_t
 {
@@ -2654,13 +2654,13 @@ struct sweeping_strikes_t : public warrior_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
-// =========================================================================
+// ==========================================================================
 // Warrior Character Definition
-// =========================================================================
+// ==========================================================================
 
-// warrior_t::create_action  =================================================
+// warrior_t::create_action  ================================================
 
 action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
@@ -2700,7 +2700,7 @@ action_t* warrior_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// warrior_t::init_glyphs =====================================================
+// warrior_t::init_glyphs ===================================================
 
 void warrior_t::init_glyphs()
 {
@@ -2750,7 +2750,7 @@ void warrior_t::init_glyphs()
   }
 }
 
-// warrior_t::init_race ======================================================
+// warrior_t::init_race =====================================================
 
 void warrior_t::init_race()
 {
@@ -2777,7 +2777,7 @@ void warrior_t::init_race()
   player_t::init_race();
 }
 
-// warrior_t::init_base ========================================================
+// warrior_t::init_base =====================================================
 
 void warrior_t::init_base()
 {
@@ -2818,7 +2818,7 @@ void warrior_t::init_base()
   if ( tank == -1 && primary_tree() == TREE_PROTECTION ) tank = 1;
 }
 
-// warrior_t::init_scaling ====================================================
+// warrior_t::init_scaling ==================================================
 
 void warrior_t::init_scaling()
 {
@@ -2831,7 +2831,7 @@ void warrior_t::init_scaling()
   }
 }
 
-// warrior_t::init_buffs ======================================================
+// warrior_t::init_buffs ====================================================
 
 void warrior_t::init_buffs()
 {
@@ -2874,7 +2874,7 @@ void warrior_t::init_buffs()
   buffs_tier8_2pc_melee = new stat_buff_t( this, "tier8_2pc_melee", STAT_HASTE_RATING, 150, 1, 5.0, 0, set_bonus.tier8_2pc_melee() * 0.40 );
 }
 
-// warrior_t::init_gains =======================================================
+// warrior_t::init_gains ====================================================
 
 void warrior_t::init_gains()
 {
@@ -2892,7 +2892,7 @@ void warrior_t::init_gains()
   gains_sudden_death           = get_gain( "sudden_death"          );
 }
 
-// warrior_t::init_procs =======================================================
+// warrior_t::init_procs ====================================================
 
 void warrior_t::init_procs()
 {
@@ -2906,7 +2906,7 @@ void warrior_t::init_procs()
   procs_sudden_death            = get_proc( "sudden_death"           );
 }
 
-// warrior_t::init_uptimes =====================================================
+// warrior_t::init_uptimes ==================================================
 
 void warrior_t::init_uptimes()
 {
@@ -2915,7 +2915,7 @@ void warrior_t::init_uptimes()
   uptimes_rage_cap = get_uptime( "rage_cap" );
 }
 
-// warrior_t::init_rng =========================================================
+// warrior_t::init_rng ======================================================
 
 void warrior_t::init_rng()
 {
@@ -2930,7 +2930,7 @@ void warrior_t::init_rng()
   rng_wrecking_crew             = get_rng( "wrecking_crew"             );
 }
 
-// warrior_t::init_actions =====================================================
+// warrior_t::init_actions ==================================================
 
 void warrior_t::init_actions()
 {
@@ -3017,7 +3017,7 @@ void warrior_t::init_actions()
   player_t::init_actions();
 }
 
-// warrior_t::combat_begin =====================================================
+// warrior_t::combat_begin ==================================================
 
 void warrior_t::combat_begin()
 {
@@ -3034,7 +3034,7 @@ void warrior_t::combat_begin()
   if (  talents.rampage -> rank() ) sim -> auras.rampage -> trigger();
 }
 
-// warrior_t::reset ===========================================================
+// warrior_t::reset =========================================================
 
 void warrior_t::reset()
 {
@@ -3043,7 +3043,7 @@ void warrior_t::reset()
   deep_wounds_delay_event = 0;
 }
 
-// warrior_t::interrupt ====================================================
+// warrior_t::interrupt =====================================================
 
 void warrior_t::interrupt()
 {
@@ -3055,7 +3055,7 @@ void warrior_t::interrupt()
   if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
-// warrior_t::composite_attack_power_multiplier ============================
+// warrior_t::composite_attack_power_multiplier =============================
 
 double warrior_t::composite_attack_power_multiplier() SC_CONST
 {
@@ -3066,7 +3066,7 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
   return mult;
 }
 
-// warrior_t::composite_attack_hit ===========================================
+// warrior_t::composite_attack_hit ==========================================
 
 double warrior_t::composite_attack_hit() SC_CONST
 {
@@ -3078,7 +3078,7 @@ double warrior_t::composite_attack_hit() SC_CONST
   return ah;
 }
 
-// warrior_t::composite_tank_block =========================================
+// warrior_t::composite_tank_block ==========================================
 
 double warrior_t::composite_tank_block() SC_CONST
 {
@@ -3088,7 +3088,7 @@ double warrior_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// warrior_t::regen ========================================================
+// warrior_t::regen =========================================================
 
 void warrior_t::regen( double periodicity )
 {
@@ -3103,7 +3103,7 @@ void warrior_t::regen( double periodicity )
                               resource_max    [ RESOURCE_RAGE] );
 }
 
-// warrior_t::resource_loss ================================================
+// warrior_t::resource_loss =================================================
 
 double warrior_t::resource_loss( int       resource,
                                  double    amount,
@@ -3184,7 +3184,7 @@ std::vector<talent_translation_t>& warrior_t::get_talent_list()
   return talent_list;
 }
 
-// warrior_t::get_options ================================================
+// warrior_t::get_options ===================================================
 
 std::vector<option_t>& warrior_t::get_options()
 {
@@ -3204,7 +3204,7 @@ std::vector<option_t>& warrior_t::get_options()
   return options;
 }
 
-// warrior_t::decode_set ===================================================
+// warrior_t::decode_set ====================================================
 
 int warrior_t::decode_set( item_t& item )
 {
@@ -3260,14 +3260,14 @@ int warrior_t::decode_set( item_t& item )
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_warrior ===============================================
+// player_t::create_warrior =================================================
 
 player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type r )
 {
   return new warrior_t( sim, name, r );
 }
 
-// warrior_init ===================================================
+// warrior_init =============================================================
 
 void player_t::warrior_init( sim_t* sim )
 {
