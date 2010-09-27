@@ -1291,11 +1291,8 @@ struct devastate_t : public warrior_attack_t
 
 struct execute_t : public warrior_attack_t
 {
-  double excess_rage_mod, excess_rage;
   execute_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY ),
-      excess_rage_mod( 0 ),
-      excess_rage( 0 )
+      warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
     option_t options[] =
@@ -1312,6 +1309,8 @@ struct execute_t : public warrior_attack_t
     may_crit          = true;
     base_dd_min       = 10;
     base_dd_max       = 10;
+    
+    // Handling of additional scaling for additional consumed rage is handled in player_buff()
     direct_power_mod  = 0.25;
 
     // Execute consumes rage no matter if it missed or not
@@ -1331,15 +1330,9 @@ struct execute_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    resource_consumed = cost();
-
-    double max_consumed = 0;
-    max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 );
-
-    double excess_rage = max_consumed - resource_consumed;
-
-    resource_consumed = max_consumed;
-
+    // Consumes base_cost + 20
+    resource_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + cost() );
+    
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", player -> name(),
                      resource_consumed, util_t::resource_type_string( resource ), name() );
@@ -1347,11 +1340,6 @@ struct execute_t : public warrior_attack_t
     player -> resource_loss( resource, resource_consumed );
 
     stats -> consume_resource( resource_consumed );
-
-    if ( excess_rage > 0 )
-    {
-      direct_dmg += ( excess_rage * p -> composite_attack_power() * 0.50 ) - 1; // FIXME: This isn't the correct way to do this
-    }
 
     if ( p -> talents.sudden_death -> rank() )
     {
@@ -1382,6 +1370,17 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
+
+    // player_buff happens before consume_resource
+    // so be we can savely check here how much excess rage we will spend
+    double base_consumed = cost();
+    double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + base_consumed );
+    
+    // Rage cost is done, convert the excessrage to damage
+    // up to 50% AP for up to 20
+    // 2.5%*AP ~ 1 excess_rage
+    player_dd_adder = 0.025 * ( max_consumed - base_consumed ) * p -> composite_attack_power() -1;
+
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
       player_multiplier *= 1.0 + p -> talents.lambs_to_the_slaughter -> rank() * 0.10;
