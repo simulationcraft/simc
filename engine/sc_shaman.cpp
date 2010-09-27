@@ -2699,7 +2699,11 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
 
     if ( p -> talent_totemic_wrath -> rank() )
+    {
+      if ( sim -> overrides.flametongue_totem == 0 )
+        sim -> auras.flametongue_totem -> duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
+    }
 
     p -> summon_pet( "fire_elemental" );
   }
@@ -2738,7 +2742,9 @@ struct flametongue_totem_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    sim -> auras.flametongue_totem -> duration = totem_duration;
+    if ( sim -> overrides.flametongue_totem == 0 )
+      sim -> auras.flametongue_totem -> duration = totem_duration;
+
     sim -> auras.flametongue_totem -> trigger( 1, totem_bonus );
   }
 
@@ -2814,7 +2820,8 @@ struct magma_totem_t : public shaman_totem_t
     
     if ( p -> talent_totemic_wrath -> rank() )
     {
-      sim -> auras.flametongue_totem -> duration = totem_duration;
+      if ( sim -> overrides.flametongue_totem == 0 )
+        sim -> auras.flametongue_totem -> duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
     }
       
@@ -2953,7 +2960,8 @@ struct searing_totem_t : public shaman_totem_t
     
     if ( p -> talent_totemic_wrath -> rank() )
     {
-      sim -> auras.flametongue_totem -> duration = totem_duration;
+      if ( sim -> overrides.flametongue_totem == 0 )
+        sim -> auras.flametongue_totem -> duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
     }
       
