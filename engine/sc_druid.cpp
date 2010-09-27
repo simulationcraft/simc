@@ -887,7 +887,7 @@ void druid_cat_attack_t::player_buff()
 
   attack_t::player_buff();
 
-  player_dd_adder += p -> buffs_tigers_fury -> value();
+  player_multiplier *= 1.0 + p -> buffs_tigers_fury -> value();
 
   p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
   p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
@@ -1327,8 +1327,6 @@ struct shred_t : public druid_cat_attack_t
     adds_combo_points  = true;
     may_crit           = true;
 
-    base_multiplier  *= 1.0 + util_t::talent_rank( p -> talents.blessing_of_the_grove -> rank(), 2, 0.02 );
-
   }
 
   virtual void execute()
@@ -1358,7 +1356,7 @@ struct shred_t : public druid_cat_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.20/3.0 * p -> talents.rend_and_tear -> rank();
+      player_multiplier *= 1 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
     }
 
   }
@@ -1385,7 +1383,6 @@ struct shred_t : public druid_cat_attack_t
 
 struct tigers_fury_t : public druid_cat_attack_t
 {
-  double tiger_value;
   tigers_fury_t( player_t* player, const std::string& options_str ) :
       druid_cat_attack_t( "tigers_fury", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
@@ -1397,10 +1394,11 @@ struct tigers_fury_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
+    id = 5217;
+
+
     cooldown -> duration    = 30.0 - 3.0 * p -> set_bonus.tier7_4pc_melee();
     trigger_gcd = 0;
-    tiger_value = util_t::ability_rank( p -> level,  80.0,79, 60.0,71,  40.0,0 );
-    id = 50213;
   }
 
   virtual void execute()
@@ -1411,10 +1409,10 @@ struct tigers_fury_t : public druid_cat_attack_t
 
     if ( p -> talents.king_of_the_jungle -> rank() )
     {
-      p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> rank() * 20, p -> gains_tigers_fury );
+      p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
     }
 
-    p -> buffs_tigers_fury -> trigger( 1, tiger_value );
+    p -> buffs_tigers_fury -> trigger( 1, 0.88 );
     update_ready();
   }
 
@@ -1530,7 +1528,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( sim -> target -> debuffs.bleeding -> check() )
     {
-      player_crit += 0.25/3.0 * p -> talents.rend_and_tear -> rank();
+      player_crit += 0.01 * p -> talents.rend_and_tear -> effect_base_value( 2 );
     }
   }
 };
