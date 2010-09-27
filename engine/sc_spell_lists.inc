@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (58)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13033
+// Class based active abilities, wow build 13066
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -422,7 +422,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // Blood tree, 14 abilities
+    // Blood tree, 13 abilities
     {
       48721, // Blood Boil
       48263, // Blood Presence
@@ -437,7 +437,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       50842, // Pestilence
       48982, // Rune Tap
       47476, // Strangulate
-      55233, // Vampiric Blood
           0,
     },
     // Frost tree, 12 abilities
@@ -832,7 +831,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13033
+// Talent tree specialization abilities, wow build 13066
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -925,8 +924,8 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     },
     // Specialization abilities for Combat tree
     {
+      13852, // Ambidexterity
       13877, // Blade Flurry
-      13852, // Dual Wield Specialization
       61329, // Vitality
           0,
     },
@@ -1089,7 +1088,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13033
+// Class mastery abilities, wow build 13066
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1174,7 +1173,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13033
+// Racial abilities, wow build 13066
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1806,7 +1805,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13033
+// Glyph spells for classes, wow build 13066
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1821,10 +1820,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warrior
   {
-    // Major Glyphs (14 spells)
+    // Major Glyphs (16 spells)
     {
       58366, // Glyph of Cleaving
+      94374, // Glyph of Death Wish
       58357, // Glyph of Heroic Throw
+      94372, // Glyph of Intercept
       58377, // Glyph of Intervene
       58097, // Glyph of Long Charge
       58372, // Glyph of Piercing Howl
@@ -2105,11 +2106,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (15 spells)
+    // Major Glyphs (16 spells)
     {
       55437, // Glyph of Chain Heal
       55449, // Glyph of Chain Lightning
       55452, // Glyph of Elemental Mastery
+      94388, // Glyph of Feral Charge
       55450, // Glyph of Fire Nova
       55443, // Glyph of Frost Shock
       59289, // Glyph of Ghost Wolf
@@ -2174,7 +2176,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     },
     // Minor Glyphs (6 spells)
     {
-      57924, // Glyph of Arcane Intellect
+      57924, // Glyph of Arcane Brilliance
       57928, // Glyph of Conjuring
       63093, // Glyph of Mirror Image
       57925, // Glyph of Slow Fall
@@ -2222,13 +2224,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     },
     // Minor Glyphs (7 spells)
     {
-      58080, // Curse of Exhaustion
-      58107, // Enslave Demon
-      58081, // Eye of Kilrogg
+      58080, // Glyph of Curse of Exhaustion
       58070, // Glyph of Drain Soul
+      58107, // Glyph of Enslave Demon
+      58081, // Glyph of Eye of Kilrogg
       56238, // Glyph of Health Funnel
+      58094, // Glyph of Ritual of Souls
       58079, // Glyph of Unending Breath
-      58094, // Ritual of Souls
           0,
     },
     // Prime Glyphs (13 spells)
@@ -2262,11 +2264,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (16 spells)
+    // Major Glyphs (17 spells)
     {
       63057, // Glyph of Barkskin
-      67598, // Glyph of Claw
       54760, // Glyph of Entangling Roots
+      94386, // Glyph of Faerie Fire
+      67598, // Glyph of Ferocious Bite
       62080, // Glyph of Focus
       54810, // Glyph of Frenzied Regeneration
       54825, // Glyph of Healing Touch
@@ -2292,10 +2295,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       57857, // Glyph of Unburdened Rebirth
           0,
     },
-    // Prime Glyphs (14 spells)
+    // Prime Glyphs (16 spells)
     {
       62969, // Glyph of Berserk
       54830, // Glyph of Insect Swarm
+      94382, // Glyph of Lacerate
       54826, // Glyph of Lifebloom
       54813, // Glyph of Mangle
       54829, // Glyph of Moonfire
@@ -2307,6 +2311,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54845, // Glyph of Starfire
       62971, // Glyph of Starsurge
       54824, // Glyph of Swiftmend
+      94390, // Glyph of Tiger's Fury
       54756, // Glyph of Wrath
           0,
     },

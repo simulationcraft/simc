@@ -591,6 +591,26 @@ double sc_data_access_t::effect_pp_combo_points( const uint32_t effect_id ) SC_C
   return m_effects_index[ effect_id ]->pp_combo_points;
 }
 
+double sc_data_access_t::effect_real_ppl( const uint32_t effect_id ) SC_CONST
+{
+  if ( !effect_id )
+    return 0.0;
+
+  assert( effect_exists( effect_id ) );
+
+  return m_effects_index[ effect_id ]->real_ppl;
+}
+
+int sc_data_access_t::effect_die_sides( const uint32_t effect_id ) SC_CONST
+{
+  if ( !effect_id )
+    return 0;
+
+  assert( effect_exists( effect_id ) );
+
+  return m_effects_index[ effect_id ]->die_sides;
+}
+
 double sc_data_access_t::effect_average( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
   if ( !effect_id )
@@ -672,6 +692,75 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
 
   return avg + ( delta / 2 );
 }
+
+/*************** Effect type based searching of spell id *************************/
+
+uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type ) SC_CONST
+{
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+  
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! m_spells_index[ spell_id ] -> effect[ i ] || ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
+      continue;
+
+    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
+      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type )
+      return m_spells_index[ spell_id ] -> effect[ i ];
+  }
+
+  return 0;
+}
+
+uint32_t sc_data_access_t::spell_trigger_spell_id( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type ) SC_CONST
+{
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+  
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! m_spells_index[ spell_id ] -> effect[ i ] || 
+      ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
+      continue;
+      
+    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
+      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type )
+      return m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> trigger_spell;
+  }
+
+  return 0;
+}
+
+int32_t sc_data_access_t::spell_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+  
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! m_spells_index[ spell_id ] -> effect[ i ] || 
+      ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
+      continue;
+      
+    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
+      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type &&
+      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> misc_value == misc_value )
+      return m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> base_value;
+  }
+
+  return 0;
+}
+
+
+
+
 
 /*************** Talent functions ***********************/
 

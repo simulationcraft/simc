@@ -69,6 +69,8 @@ struct spelleffect_data_t {
   int         misc_value_2;    // Effect miscellaneous value
   int         trigger_spell;   // Effect triggers this spell id
   double      pp_combo_points; // Effect points per combo points
+  double      real_ppl;        // Effect real points per level
+  int         die_sides;       // Effect damage range
 };
 
 struct talent_data_t {

@@ -251,6 +251,8 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   else
     token_name = t_name;
   // Dummy constructor for old-style
+  memset(effects, 0, sizeof(effects));
+  single = 0;
 }
 
 spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_name ) :
@@ -259,6 +261,7 @@ spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_nam
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   if ( run_init )
     init( t_name );
 }
@@ -270,6 +273,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
   if ( scaling_type    == PLAYER_NONE )
@@ -285,6 +289,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   init( );
 }
 
@@ -295,6 +300,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   init( );
 }
 
@@ -305,6 +311,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ),
     spell_id_t_m_is_talent( is_talent ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   if ( spell_list_type == PLAYER_NONE )
     spell_list_type     = pp -> type;
   if ( scaling_type    == PLAYER_NONE )
@@ -320,6 +327,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   init( s_name );
 }
 
@@ -330,6 +338,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
     spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
 {
+  memset(effects, 0, sizeof(effects));
   init( s_name );
 }
 
@@ -341,6 +350,8 @@ spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const p
     spell_id_t_tab( copy.spell_id_t_tab ), spell_id_t_req_talent( copy.spell_id_t_req_talent ), spell_id_t_m_is_talent( copy.spell_id_t_m_is_talent ),
     spell_id_t_tree( copy.spell_id_t_tree )
 {
+  memcpy(effects,copy.effects,sizeof(effects));
+  single = copy.single;
   if ( ptype != PLAYER_NONE )
     spell_list_type = ptype;
   if ( stype != PLAYER_NONE )
@@ -376,6 +387,29 @@ bool spell_id_t::init( const uint32_t id, int t )
     if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
     return false;
   }
+
+  uint32_t n_effects = 0;
+  
+  // Map effects, figure out if this is a single-effect spell
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ( effects[ i ] = pp -> player_data.m_effects_index[ get_effect_id( i + 1 ) ] ) )
+      n_effects++;
+  }
+  
+  if ( n_effects == 1 )
+  {
+    for ( int i = 0; i < MAX_EFFECTS; i++ )
+    {
+      if ( ! effects[ i ] )
+        continue;
+        
+      single = effects[ i ];
+      break;
+    }
+  }
+  else
+    single = 0;
 
   init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
 
@@ -889,7 +923,7 @@ const char* spell_id_t::tooltip() SC_CONST
   return pp -> player_data.spell_tooltip( spell_id_t_id );
 }
 
-uint32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
 {
   if ( !ok() )
   {
@@ -901,7 +935,7 @@ uint32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
   return pp -> player_data.effect_type( effect_id );
 }
 
-uint32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
 {
   if ( !ok() )
   {
@@ -1079,6 +1113,96 @@ double spell_id_t::effect_pp_combo_points( const uint32_t effect_num ) SC_CONST
   uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
 
   return pp -> player_data.effect_pp_combo_points( effect_id );
+}
+
+double spell_id_t::effect_real_ppl( const uint32_t effect_num ) SC_CONST
+{
+  if ( !ok() )
+  {
+    return 0.0;
+  }
+
+  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+
+  return pp -> player_data.effect_real_ppl( effect_id );
+}
+
+int spell_id_t::effect_die_sides( const uint32_t effect_num ) SC_CONST
+{
+  if ( !ok() )
+  {
+    return 0;
+  }
+
+  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+
+  return pp -> player_data.effect_die_sides( effect_id );
+}
+
+int32_t spell_id_t::base_value() SC_CONST
+{
+  if ( single ) return single -> base_value;
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! effects[ i ] )
+      continue;
+
+    return effects[ i ] -> base_value;
+  }
+  
+  return 0;
+}
+
+int32_t spell_id_t::base_value( effect_type_t type ) SC_CONST
+{
+  if ( single ) return single -> base_value;
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! effects[ i ] )
+      continue;
+
+    if ( effects[ i ] -> type == type )
+      return effects[ i ] -> base_value;
+  }
+  
+  return 0;
+}
+
+int32_t spell_id_t::base_value( effect_type_t type, effect_subtype_t stype ) SC_CONST
+{
+  if ( single ) return single -> base_value;
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! effects[ i ] )
+      continue;
+
+    if ( effects[ i ] -> type == type && 
+       ( effects[ i ] -> subtype == stype ) )
+      return effects[ i ] -> base_value;
+  }
+  
+  return 0;
+}
+
+int32_t spell_id_t::base_value( effect_type_t type, effect_subtype_t stype, int misc_value ) SC_CONST
+{
+  if ( single ) return single -> base_value;
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! effects[ i ] )
+      continue;
+
+    if ( effects[ i ] -> type == type && 
+       ( effects[ i ] -> subtype == stype ) && 
+       ( effects[ i ] -> misc_value == misc_value ) )
+      return effects[ i ] -> base_value;
+  }
+  
+  return 0;
 }
 
 // ==========================================================================
