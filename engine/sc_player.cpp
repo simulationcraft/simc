@@ -1890,6 +1890,8 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
   // ... increasing Strength, Agility, Stamina, and Intellect by 5%
   if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
     if ( buffs.blessing_of_kings -> check() || buffs.mark_of_the_wild -> check() ) m *= 1.05;
+  if ( attr = ATTR_SPIRIT ) 
+    if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
   return m;
 }
 
