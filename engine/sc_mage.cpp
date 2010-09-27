@@ -3815,7 +3815,7 @@ void player_t::mage_init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, 5401, 1 );
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, 5401, !p -> is_pet()  );
     p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
   }
 

@@ -994,14 +994,14 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
     {
       current_tick = 0;
       snapshot_haste = haste();
-      number_ticks = hasted_num_ticks();
+      number_ticks = hasted_num_ticks() ? hasted_num_ticks() : 0;
       if ( ! ticking ) schedule_tick();
     }
     else
     {
       if ( ticking ) cancel();
       snapshot_haste = haste();
-      number_ticks = hasted_num_ticks();
+      number_ticks = hasted_num_ticks() ? hasted_num_ticks() : 0;
       schedule_tick();
     }
   }
@@ -1217,7 +1217,7 @@ void action_t::refresh_duration()
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
     // from the time of the next tick and add the time for the remaining ticks to that event.
 
-    double duration = tick_event -> time + tick_time() * ( hasted_num_ticks() - 1 );
+    double duration = tick_event -> time + tick_time() * ( hasted_num_ticks() ? hasted_num_ticks() : 0 - 1 );
 
     dot -> start( this, duration );
   }

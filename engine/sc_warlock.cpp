@@ -17,6 +17,7 @@
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
  * - Verify that impending doom immediately resets metamorphosis cooldown when it procs while the cooldown has less than 15 seconds left
+ * - Execute felguard:felstorm by player, not the pet
  *
  */
 
@@ -710,6 +711,7 @@ struct warlock_pet_t : public pet_t
     return h;
   }
 
+  // tested for special attacks and melee hit felguard/felhunter
   virtual double composite_attack_haste() SC_CONST
   {
     double h = player_t::composite_attack_haste();
