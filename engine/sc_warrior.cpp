@@ -1085,6 +1085,7 @@ struct bloodthirst_t : public warrior_attack_t
     if ( ! ( p -> primary_tree() == TREE_FURY ) )
     {
       sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n", player -> name(), name() );
+      background = true;
       return;
     }
 
@@ -1100,12 +1101,13 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
     player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
-    
-    may_crit   = true;
-    base_crit += 0.05 * p -> talents.cruelty -> rank();
+    direct_power_mod   = 0.50;    
+    may_crit           = true;
+    base_crit         += 0.05 * p -> talents.cruelty -> rank();
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1142,6 +1144,9 @@ struct cleave_t : public warrior_attack_t
     may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy   -> rank() * 0.05;
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> rank() * 0.03;
+    direct_power_mod = 0.45;
+    base_dd_min      = 6;
+    base_dd_max      = 6;
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1191,10 +1196,11 @@ struct colossus_smash_t : public warrior_attack_t
     id = 86346;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-
-    may_crit   = true;
-    stancemask = STANCE_BERSERKER | STANCE_BATTLE;
+    weapon      = &( p -> main_hand_weapon );
+    may_crit    = true;
+    base_dd_min = 120;
+    base_dd_max = 120;
+    stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
 
   virtual void execute()
@@ -1223,10 +1229,10 @@ struct concussion_blow_t : public warrior_attack_t
     id = 12809;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    may_crit = true;
+    direct_power_mod  = 0.038;
+    may_crit          = true;
   }
 };
 
@@ -1244,6 +1250,18 @@ struct devastate_t : public warrior_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 85, 85, 336, 336, 0, 15 },
+      { 84, 84, 329, 329, 0, 15 },
+      { 83, 83, 322, 322, 0, 15 },
+      { 82, 82, 316, 316, 0, 15 },
+      { 81, 81, 309, 309, 0, 15 },
+      { 80, 80, 302, 302, 0, 15 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
 
     id = 20243;
     parse_data( p -> player_data );
@@ -1294,16 +1312,12 @@ struct execute_t : public warrior_attack_t
     id = 5308;
     parse_data( p -> player_data );
 
-    // FIXME: Level 85
-    excess_rage_mod   = ( p -> level >= 80 ? 38 :
-                          p -> level >= 73 ? 30 :
-                          p -> level >= 70 ? 21 :
-                          p -> level >= 65 ? 18 :
-                          15 );
-
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     may_crit          = true;
+    base_dd_min       = 10;
+    base_dd_max       = 10;
+    direct_power_mod  = 0.25;
 
     // Execute consumes rage no matter if it missed or not
     aoe = true;
@@ -1325,7 +1339,7 @@ struct execute_t : public warrior_attack_t
     resource_consumed = cost();
 
     double max_consumed = 0;
-    max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 30.0 );
+    max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 );
 
     double excess_rage = max_consumed - resource_consumed;
 
@@ -1339,7 +1353,10 @@ struct execute_t : public warrior_attack_t
 
     stats -> consume_resource( resource_consumed );
 
-    base_dd_adder = ( excess_rage > 0 ) ? excess_rage_mod * excess_rage : 0.0;
+    if ( excess_rage > 0 )
+    {
+      direct_dmg += ( excess_rage * p -> composite_attack_power() * 0.50 ) - 1; // FIXME: This isn't the correct way to do this
+    }
 
     if ( p -> talents.sudden_death -> rank() )
     {
@@ -1348,7 +1365,7 @@ struct execute_t : public warrior_attack_t
 
       if ( current_rage < sudden_death_rage )
       {
-        p -> resource_gain( RESOURCE_RAGE, sudden_death_rage - current_rage, p -> gains_sudden_death );
+        p -> resource_gain( RESOURCE_RAGE, sudden_death_rage - current_rage, p -> gains_sudden_death ); // FIXME: Do we keep up to 10 or always at least 10?
       }
     }
   }
@@ -1409,8 +1426,10 @@ struct heroic_strike_t : public warrior_attack_t
     may_crit         = true;
     base_crit       += p -> talents.incite -> rank() * 0.05;
     base_multiplier *= 1.0 + p -> talents.war_academy -> rank() * 0.05;
-
-    weapon = &( p -> main_hand_weapon );
+    base_dd_min      = 8;
+    base_dd_max      = 8;
+    direct_power_mod = 0.6;
+    weapon           = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
 
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
@@ -1454,18 +1473,29 @@ struct mortal_strike_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    static rank_t ranks[] =
+    {
+      { 85, 85, 423, 423, 0, 30 },
+      { 84, 84, 414, 414, 0, 30 },
+      { 83, 83, 406, 406, 0, 30 },
+      { 82, 82, 397, 397, 0, 30 },
+      { 81, 81, 388, 388, 0, 30 },
+      { 80, 80, 380, 380, 0, 30 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
+
     id = 12294;
     parse_data( p -> player_data );
 
-    may_crit = true;
-
+    weapon_multiplier           = 1;
+    weapon                      = &( p -> main_hand_weapon );
+    may_crit                    = true;
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
     base_crit                  += 0.05 * p -> talents.cruelty -> rank();
-    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
 
-    weapon_multiplier = 1;
-    weapon = &( p -> main_hand_weapon );
+    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;   
   }
 
   virtual void execute()
@@ -1608,7 +1638,7 @@ struct raging_blow_t : public warrior_attack_t
     id = 85288;
     parse_data( p -> player_data );
 
-    weapon      = &( p -> main_hand_weapon );
+    weapon     = &( p -> main_hand_weapon );
     may_crit   = true;
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
@@ -1617,11 +1647,12 @@ struct raging_blow_t : public warrior_attack_t
   virtual void execute()
   {
     attack_t::consume_resource();
+    warrior_t* p = player -> cast_warrior();
 
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( player -> off_hand_weapon );
       warrior_attack_t::execute();
@@ -1661,6 +1692,18 @@ struct rend_t : public warrior_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    static rank_t ranks[] =
+    {
+      { 85, 85, 0, 0, 84, 10 },
+      { 84, 84, 0, 0, 83, 10 },
+      { 83, 83, 0, 0, 81, 10 },
+      { 82, 82, 0, 0, 79, 10 },
+      { 81, 81, 0, 0, 77, 10 },
+      { 80, 80, 0, 0, 76, 10 },
+      { 0, 0, 0, 0, 0, 0 }
+    };
+    init_rank( ranks );
 
     id = 47465;
     parse_data( p -> player_data );
@@ -1703,15 +1746,27 @@ struct revenge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    static rank_t ranks[] =
+    {
+      { 85, 85, 1619, 1977, 0, 5 },
+      { 84, 84, 1585, 1937, 0, 5 },
+      { 83, 83, 1552, 1896, 0, 5 },
+      { 82, 82, 1519, 1855, 0, 5 },
+      { 81, 81, 1486, 1816, 0, 5 },
+      { 80, 80, 1454, 1776, 0, 5 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
+
     id = 6572;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    may_crit         = true;
-    base_multiplier *= 1 + p -> talents.improved_revenge -> rank() * 0.3;
-    base_multiplier *= 1 + p -> glyphs.revenge * 0.1;
+    direct_power_mod  = 0.31;
+    may_crit          = true;
+    base_multiplier  *= 1 + p -> talents.improved_revenge -> rank() * 0.3;
+    base_multiplier  *= 1 + p -> glyphs.revenge * 0.1;
 
     stancemask = STANCE_DEFENSE;
   }
@@ -1793,17 +1848,28 @@ struct shield_slam_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    static rank_t ranks[] =
+    {
+      { 85, 85, 826, 868, 0, 20 },
+      { 84, 84, 810, 850, 0, 20 },
+      { 83, 83, 792, 832, 0, 20 },
+      { 82, 82, 776, 814, 0, 20 },
+      { 81, 81, 759, 797, 0, 20 },
+      { 80, 80, 752, 780, 0, 20 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
+
     id = 23922;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    may_crit = true;
-
-    base_crit       += 0.05 * p -> talents.cruelty -> rank();
-    base_multiplier *= 1 + ( 0.10 * p -> glyphs.shield_slam        +
-			                       0.10 * p -> set_bonus.tier7_2pc_tank() );
+    direct_power_mod  = 0; // FIXME: What is this?
+    may_crit          = true;
+    base_crit        += 0.05 * p -> talents.cruelty -> rank();
+    base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam        +
+			                           0.10 * p -> set_bonus.tier7_2pc_tank() );
   }
 
   virtual void player_buff()
@@ -1863,13 +1929,13 @@ struct shockwave_t : public warrior_attack_t
     id = 46968;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    may_crit  = true;
-    may_dodge = false;
-    may_parry = false;
-    may_block = false;
+    direct_power_mod  = 0.75;
+    may_crit          = true;
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
     if ( p -> glyphs.shockwave ) cooldown -> duration -= 3;
   }
 
@@ -1906,19 +1972,30 @@ struct slam_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    id = 47475;
+    static rank_t ranks[] =
+    {
+      { 85, 85, 277, 277, 0, 15 },
+      { 84, 84, 272, 272, 0, 15 },
+      { 83, 83, 266, 266, 0, 15 },
+      { 82, 82, 261, 261, 0, 15 },
+      { 81, 81, 255, 255, 0, 15 },
+      { 80, 80, 250, 250, 0, 15 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
+
+    id = 1464;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-    normalize_weapon_speed = false;
-
-    may_crit = true;
-    base_crit += p -> glyphs.slam * 0.05;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
-    base_execute_time -= p -> talents.improved_slam -> rank() * 0.5;
-    base_multiplier   *= 1 + p -> set_bonus.tier7_2pc_melee()     * 0.10
-                           + p -> talents.improved_slam -> rank() * 0.10
-                           + p -> talents.war_academy   -> rank() * 0.05;    
+    weapon                      = &( p -> main_hand_weapon );
+    normalize_weapon_speed      = false;
+    may_crit                    = true;
+    base_crit                  += p -> glyphs.slam * 0.05;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> rank() * 0.10;
+    base_execute_time          -= p -> talents.improved_slam     -> rank() * 0.50;
+    base_multiplier            *= 1 + p -> set_bonus.tier7_2pc_melee()     * 0.10
+                                    + p -> talents.improved_slam -> rank() * 0.10
+                                    + p -> talents.war_academy   -> rank() * 0.05;    
 
     if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
@@ -2003,18 +2080,30 @@ struct thunder_clap_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    static rank_t ranks[] =
+    {
+      { 85, 85, 201, 201, 0, 20 },
+      { 84, 84, 197, 197, 0, 20 },
+      { 83, 83, 193, 193, 0, 20 },
+      { 82, 82, 189, 189, 0, 20 },
+      { 81, 81, 185, 185, 0, 20 },
+      { 80, 80, 181, 181, 0, 20 },
+      { 0, 0, 0, 0, 0, 0 },
+    };
+    init_rank( ranks );
+
     id = 6343;
     parse_data( p -> player_data );
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    aoe       = true;
-    may_crit  = true;
-    may_dodge = false;
-    may_parry = false;
-    may_block = false;
-
+    aoe               = true;
+    may_crit          = true;
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
+    direct_power_mod  = 0.12; // FIXME: Is this correct?
     base_multiplier  *= 1.0 + p -> talents.thunderstruck -> rank() * 0.03;
     base_crit        += p -> talents.incite -> rank() * 0.05;
     base_cost        -= p -> glyphs.resonating_power  * 5.0;
@@ -2051,8 +2140,7 @@ struct whirlwind_t : public warrior_attack_t
     aoe               = true;
     may_crit          = true;
     weapon_multiplier = 0.50;
-
-    stancemask = STANCE_BERSERKER;
+    stancemask        = STANCE_BERSERKER;
   }
 
   virtual void consume_resource() { }
@@ -2104,9 +2192,9 @@ struct victory_rush_t : public warrior_attack_t
     id = 34428;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-
-    may_crit   = true;
+    weapon           = &( p -> main_hand_weapon );
+    direct_power_mod = 0.45;
+    may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> rank() * 0.05;
   }
 
