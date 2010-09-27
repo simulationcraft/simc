@@ -542,14 +542,6 @@ void action_t::target_debuff( int dmg_type )
     }
   }
 
-  // FIXME! HotC and MP are 1%/2%/3%
-  if ( t -> debuffs.heart_of_the_crusader -> up() ||
-       t -> debuffs.master_poisoner       -> up() )
-  {
-    // No longer does this.
-//    target_crit += 0.03;
-  }
-
   if ( base_attack_power_multiplier > 0 )
   {
     if ( p -> position == POSITION_RANGED )
@@ -611,7 +603,7 @@ double action_t::armor() SC_CONST
   double adjusted_armor =  t -> base_armor();
   double amor_reduction = std::max(  std::max( t -> debuffs.sunder_armor -> stack(), 
                                                t -> debuffs.expose_armor -> stack() ) * 0.04,
-                                     t -> debuffs.expose_armor -> value() );
+                                               t -> debuffs.expose_armor -> value() );
   adjusted_armor *= 1.0 - amor_reduction;
 
   return adjusted_armor;
@@ -1544,6 +1536,19 @@ void action_t::check_talent( int talent_rank )
   else
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
+  }
+
+  background = true; // prevent action from being executed
+}
+
+// action_t::check_spec =====================================================
+
+void action_t::check_spec( int necessary_spec )
+{
+  if ( player -> primary_tree() != necessary_spec )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n", 
+                   player -> name(), name(), util_t::talent_tree_string( necessary_spec ) );
   }
 
   background = true; // prevent action from being executed

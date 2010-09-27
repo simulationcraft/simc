@@ -3280,6 +3280,7 @@ struct action_t : public active_spell_t
   virtual void   reset();
   virtual void   cancel();
   virtual void   check_talent( int talent_rank );
+  virtual void   check_spec( int necessary_spec );
   virtual void   check_min_level( int level );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 

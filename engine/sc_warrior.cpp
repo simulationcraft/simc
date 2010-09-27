@@ -1082,7 +1082,7 @@ struct bloodthirst_t : public warrior_attack_t
       warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    check_talent( p -> primary_tree() == TREE_FURY );
+    check_spec( TREE_FURY );
 
     option_t options[] =
     {
@@ -1461,7 +1461,7 @@ struct mortal_strike_t : public warrior_attack_t
       warrior_attack_t( "mortal_strike",  player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
-    check_talent( p -> primary_tree() == TREE_ARMS );
+    check_spec( TREE_ARMS );
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1834,7 +1834,7 @@ struct shield_slam_t : public warrior_attack_t
       sword_and_board( 0 )
   {
     warrior_t* p = player -> cast_warrior();
-    check_talent( p -> primary_tree() == TREE_PROTECTION );
+    check_spec( TREE_PROTECTION );
 
     option_t options[] =
     {
