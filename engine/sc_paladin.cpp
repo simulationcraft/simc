@@ -113,66 +113,67 @@ struct paladin_t : public player_t
   {
     // holy
     talent_t* arbiter_of_the_light;
+    int protector_of_the_innocent;
     talent_t* judgements_of_the_pure;
-    int aura_mastery;
-    int beacon_of_light;
-    talent_t* blazing_light;
-    int blessed_life;
     int clarity_of_purpose;
+    int last_word;
+    talent_t* blazing_light;
     int denounce;
     talent_t* divine_favor;
-    int divinity;
-    int enlightened_judgements;
-    int improved_concentration_aura;
     int infusion_of_light;
-    int last_word;
-    int light_of_dawn;
-    int sacred_cleansing;
+    int daybreak;
+    int enlightened_judgements;
+    int beacon_of_light;
     int speed_of_light;
+    int sacred_cleansing;
+    int conviction;
+    int aura_mastery;
+    int paragon_of_virtue;
     int tower_of_radiance;
+    int blessed_life;
+    int light_of_dawn;
     // prot
+    int divinity;
     talent_t* seals_of_the_pure;
-    int ardent_defender;
-    int divine_guardian;
-    int grand_crusader;
-    int guarded_by_the_light;
-    int guardians_favor;
-    int hallowed_ground;
-    talent_t* hammer_of_the_righteous;
-    int holy_shield;
-    int improved_hammer_of_justice;
+    int eternal_glory;
     int judgements_of_the_just;
-    int protector_of_the_innocent;
-    int reckoning;
-    int sacred_duty;
-    int sanctuary;
-    talent_t* shield_of_the_righteous;
-    int shield_of_the_templar;
     int toughness;
-    int vindication;
+    int improved_hammer_of_justice;
+    int hallowed_ground;
+    int sanctuary;
+    talent_t* hammer_of_the_righteous;
     talent_t* wrath_of_the_lightbringer;
+    int reckoning;
+    talent_t* shield_of_the_righteous;
+    int grand_crusader;
+    int divine_guardian;
+    int vindication;
+    int holy_shield;
+    int guarded_by_the_light;
+    int sacred_duty;
+    int shield_of_the_templar;
+    int ardent_defender;
     // ret
+    int eye_for_an_eye;
     talent_t* crusade;
+    int improved_judgement;
+    int guardians_favor;
     talent_t* rule_of_law;
+    int pursuit_of_justice;
     talent_t* communion; // damage aura NYI
     talent_t* the_art_of_war;
+    int long_arm_of_the_law;
     talent_t* divine_storm;
+    int rebuke;
     talent_t* sanctity_of_battle;
     talent_t* seals_of_command;
-    talent_t* divine_purpose;
     talent_t* sanctified_wrath;
-    talent_t* inquiry_of_faith;
-    talent_t* zealotry;
-    int acts_of_sacrifice;
-    int eternal_glory;
-    int eye_for_an_eye;
-    int improved_crusader_strike;
-    int improved_judgement;
-    int long_arm_of_the_law;
-    int pursuit_of_justice;
-    int rebuke;
-    int repentance;
     int selfless_healer;
+    int repentance;
+    talent_t* divine_purpose;
+    talent_t* inquiry_of_faith;
+    int acts_of_sacrifice;
+    talent_t* zealotry;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -180,21 +181,20 @@ struct paladin_t : public player_t
 
   struct glyphs_t
   {
-    int avengers_shield;
-    int avenging_wrath;
-    int consecration;
+    // prime
     int crusader_strike;
-    int exorcism;
-    int hammer_of_wrath;
+    int exorcism; // FIXME: currently implemented as x1.2
     int holy_shock;
-    int holy_wrath;
     int judgement;
-    int seal_of_command;
-    int seal_of_righteousness;
+    int hammer_of_the_righteous;
     int seal_of_truth;
-    int sense_undead;
-    int shield_of_righteousness;
-    int the_wise;
+    int shield_of_the_righteous;
+    int templars_verdict;
+    // major
+    int ascetic_crusader;
+    int focused_shield;
+    int hammer_of_wrath;
+    // minor
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -222,8 +222,6 @@ struct paladin_t : public player_t
   librams_t librams;
 
   bool  tier10_2pc_procs_from_strikes;
-
-  talent_tree_type my_primary_tree;
 
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
   {
@@ -317,7 +315,7 @@ struct paladin_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int                primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int                primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual talent_tree_type   primary_tree() SC_CONST     { return my_primary_tree; }
+  virtual talent_tab_name    primary_tab() SC_CONST;
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -396,11 +394,6 @@ struct paladin_attack_t : public attack_t
       trigger_seal( false ), uses_holy_power(false), holy_power_chance(0.0)
   {
     may_crit = true;
-    if ( p -> glyphs.sense_undead )
-    {
-      if ( sim -> target -> race == RACE_UNDEAD ) base_multiplier *= 1.01;
-    }
-
     if ( p -> primary_tree() == TREE_RETRIBUTION && p -> main_hand_weapon.group() == WEAPON_2H )
     {
       base_multiplier *= 1.1;
@@ -451,10 +444,10 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     attack_t::player_buff();
-    //if ( p -> active_seal == SEAL_OF_TRUTH && p -> glyphs.seal_of_truth )
-    //{
-    //  player_expertise += 0.10; ??
-    //}
+    if ( p -> active_seal == SEAL_OF_TRUTH && p -> glyphs.seal_of_truth )
+    {
+      player_expertise += 0.10;
+    }
     if ( p -> buffs_avenging_wrath -> up() ) 
     {
       player_multiplier *= 1.20;
@@ -596,7 +589,7 @@ struct avengers_shield_t : public paladin_attack_t
     base_spell_power_multiplier  = 0.15;
     base_attack_power_multiplier = 0.15;
 
-    if ( p -> glyphs.avengers_shield ) base_multiplier *= 2.0;
+    if ( p -> glyphs.focused_shield ) base_multiplier *= 1.30;
   }
 };
 
@@ -618,21 +611,23 @@ struct crusader_strike_t : public paladin_attack_t
 
     trigger_seal = true;
 
-    weapon                 = &( p -> main_hand_weapon );
-    normalize_weapon_speed = true;
-
     parse_data(p->player_data);
     base_cooldown = cooldown->duration;
+
+    weapon                 = &( p -> main_hand_weapon );
+    weapon_multiplier      = 0.01 * p->spells.crusader_strike->effect_base_value(2);
+    normalize_weapon_speed = true;
 
     base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
     base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(1)
                            + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1); // TODO how do they stack?
 
-    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
+    if (p->set_bonus.tier8_4pc_melee()) base_crit += 0.10;
 
-    if ( p -> glyphs.crusader_strike ) base_cost *= 0.80;
+    if (p->glyphs.ascetic_crusader) base_cost *= 0.70;
+    if (p->glyphs.crusader_strike)  base_crit += 0.05;
 
-    if ( p -> librams.radiance ) base_dd_adder += 79;
+    if (p->librams.radiance) base_dd_adder += 79;
   }
 
   virtual void execute()
@@ -770,6 +765,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
     if ( p -> set_bonus.tier7_2pc_tank() ) base_multiplier *= 1.10;
     if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
+    if ( p -> glyphs.hammer_of_the_righteous ) base_multiplier *= 1.10;
   }
 
   virtual void execute()
@@ -836,16 +832,6 @@ struct hammer_of_wrath_t : public paladin_attack_t
     if ( p -> glyphs.hammer_of_wrath ) base_cost = 0;
   }
 
-  virtual void update_ready()
-  {
-    paladin_t* p = player -> cast_paladin();
-    if ( p -> glyphs.avenging_wrath )
-    {
-      cooldown->duration = p -> buffs_avenging_wrath -> check() ? base_cooldown*0.5 : base_cooldown;
-    }
-    paladin_attack_t::update_ready();
-  }
-
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
@@ -884,7 +870,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
 
     uses_holy_power = true;
 
-    if ( p -> glyphs.shield_of_righteousness ) base_cost *= 0.20;
+    if ( p -> glyphs.shield_of_the_righteous ) base_multiplier *= 1.10;
 
     if ( p -> librams.venture_co_protection )
     {
@@ -940,12 +926,14 @@ struct templars_verdict_t : public paladin_attack_t
 
     base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2);
+
+    if (p->glyphs.templars_verdict) base_multiplier *= 1.15;
   }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 1.10, 2.25 );
+    weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 0.90, 2.25 );
     paladin_attack_t::execute();
   }
 
@@ -1146,7 +1134,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     trigger_gcd = 0;
 
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.05 + 
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 + 
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
     direct_power_mod = 1.0;
@@ -1157,8 +1145,6 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     weapon_multiplier = 0.0;
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
-
-    if ( p -> glyphs.seal_of_righteousness ) base_multiplier *= 1.10;
 
     if ( p -> librams.divine_purpose ) base_spell_power += 94;
   }
@@ -1207,7 +1193,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 struct seal_of_truth_dot_t : public paladin_attack_t
 {
   seal_of_truth_dot_t( paladin_t* p ) :
-    paladin_attack_t( "seal_of_truth_dot", p, SCHOOL_HOLY )
+    paladin_attack_t( "censure", p, SCHOOL_HOLY )
   {
     background  = true;
     proc        = true;
@@ -1215,7 +1201,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     base_cost   = 0;
 
     weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier *= 0.0;
+    weapon_multiplier = 0.0;
 
     base_td = 1;
     num_ticks = 5;
@@ -1225,12 +1211,11 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     base_spell_power_multiplier = 0.013;
     base_attack_power_multiplier = 0.025;
 
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.05 +
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 +
                                p -> talents.inquiry_of_faith->rank()  * 0.10 +
-                               p -> set_bonus.tier10_4pc_melee()   * 0.10 );
+                               p -> set_bonus.tier10_4pc_melee()      * 0.10 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
-
   }
 
   virtual void player_buff()
@@ -1301,7 +1286,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.18;
 
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.03 + 
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 + 
                                p -> set_bonus.tier10_4pc_melee()   * 0.10 );
 
     if ( p -> set_bonus.tier8_2pc_tank() ) base_multiplier *= 1.10;
@@ -1471,11 +1456,6 @@ struct paladin_spell_t : public spell_t
   paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), uses_holy_power(false), holy_power_chance(0.0)
   {
-    if ( p -> glyphs.sense_undead )
-    {
-      if ( sim -> target -> race == RACE_UNDEAD ) base_multiplier *= 1.01;
-    }
-
     base_multiplier *= 1.0 + 0.01 * p->talents.communion->effect_base_value(3);
   }
 
@@ -1627,11 +1607,11 @@ struct consecration_t : public paladin_spell_t
     base_tick_time = 1;
     cooldown -> duration = 30;
 
-    if ( p -> glyphs.consecration )
-    {
-      num_ticks += 2;
-      cooldown -> duration += 2;
-    }
+    //if ( p -> glyphs.consecration ) should be +20%
+    //{
+    //  num_ticks += 2;
+    //  cooldown -> duration += 2;
+    //}
 
     consecration_tick = new consecration_tick_t( p );
   }
@@ -1750,7 +1730,7 @@ struct exorcism_t : public paladin_spell_t
 
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.10;
 
-    if ( p -> glyphs.exorcism ) base_multiplier *= 1.20;
+    if ( p -> glyphs.exorcism ) base_multiplier *= 1.20; // FIXME the 20% should be a DoT
 
     if ( p -> librams.wracking ) base_spell_power += 120;
   }
@@ -1758,10 +1738,8 @@ struct exorcism_t : public paladin_spell_t
   virtual double cost() SC_CONST
   {
     paladin_t* p = player->cast_paladin();
-    double c = paladin_spell_t::cost();
-    if ( p->buffs_the_art_of_war->up() )
-      c *= 0.4;
-    return c;
+    if ( p->buffs_the_art_of_war->up() ) return 0.0;
+    return paladin_spell_t::cost();
   }
 
   virtual double execute_time() SC_CONST
@@ -1777,7 +1755,7 @@ struct exorcism_t : public paladin_spell_t
     paladin_t* p = player->cast_paladin();
     if ( p->buffs_the_art_of_war->up() )
     {
-      player_multiplier *= 1.60;
+      player_multiplier *= 2.0;
     }
     int target_race = sim -> target -> race;
     if ( target_race == RACE_UNDEAD ||
@@ -1848,7 +1826,7 @@ struct holy_shock_t : public paladin_spell_t
                            + 0.01 * p->talents.crusade->effect_base_value(1); // TODO how do they stack?
     base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
 
-    if ( p -> glyphs.holy_shock ) cooldown -> duration -= 1.0;
+    if ( p -> glyphs.holy_shock ) base_crit += 0.05;
   }
 
   virtual void execute()
@@ -1887,6 +1865,12 @@ struct holy_wrath_t : public paladin_spell_t
     base_crit += 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(2);
 
     if ( p -> librams.wracking ) base_spell_power += 120;
+  }
+
+  virtual bool ready()
+  {
+    paladin_t* p = player -> cast_paladin();
+    return paladin_spell_t::ready();
   }
 };
 
@@ -2003,7 +1987,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "seal_of_truth"           ) return new paladin_seal_t( this, "seal_of_truth",         SEAL_OF_TRUTH,         options_str );
 
   if ( name == "inquisition"             ) return new inquisition_t( this, options_str );
-  if ( name == "zealotry"                ) return new inquisition_t( this, options_str );
+  if ( name == "zealotry"                ) return new zealotry_t( this, options_str );
   if ( name == "templars_verdict"        ) return new templars_verdict_t( this, options_str );
 
 //if ( name == "aura_mastery"            ) return new aura_mastery_t           ( this, options_str );
@@ -2149,42 +2133,46 @@ void paladin_t::init_glyphs()
 
   for ( int i=0; i < num_glyphs; i++ )
   {
-    std::string& n = glyph_names[ i ];
+    const std::string& n = glyph_names[ i ];
 
-    if      ( n == "avengers_shield"         ) glyphs.avengers_shield = 1;
-    else if ( n == "avenging_wrath"          ) glyphs.avenging_wrath = 1;
-    else if ( n == "consecration"            ) glyphs.consecration = 1;
-    else if ( n == "crusader_strike"         ) glyphs.crusader_strike = 1;
+    // prime glyphs
+    if      ( n == "crusader_strike"         ) glyphs.crusader_strike = 1;
+    else if ( n == "divine_favor"            ) ;
     else if ( n == "exorcism"                ) glyphs.exorcism = 1;
-    else if ( n == "hammer_of_wrath"         ) glyphs.hammer_of_wrath = 1;
     else if ( n == "holy_shock"              ) glyphs.holy_shock = 1;
-    else if ( n == "holy_wrath"              ) glyphs.holy_wrath = 1;
     else if ( n == "judgement"               ) glyphs.judgement = 1;
-    else if ( n == "seal_of_command"         ) glyphs.seal_of_command = 1;
-    else if ( n == "seal_of_righteousness"   ) glyphs.seal_of_righteousness = 1;
-    else if ( n == "seal_of_truth"       ) glyphs.seal_of_truth = 1;
-    else if ( n == "sense_undead"            ) glyphs.sense_undead = 1;
-    else if ( n == "shield_of_righteousness" ) glyphs.shield_of_righteousness = 1;
-    else if ( n == "the_wise"                ) glyphs.the_wise = 1;
+    else if ( n == "hammer_of_the_righteous" ) glyphs.hammer_of_the_righteous = 1;
+    else if ( n == "seal_of_insight"         ) ;
+    else if ( n == "seal_of_truth"           ) glyphs.seal_of_truth = 1;
+    else if ( n == "shield_of_the_righteous" ) glyphs.shield_of_the_righteous = 1;
+    else if ( n == "templars_verdict"        ) glyphs.templars_verdict = 1;
+    else if ( n == "word_of_glory"           ) ;
+    // major glyphs
+    else if ( n == "ascetic_crusader"        ) glyphs.ascetic_crusader = 1;
     else if ( n == "beacon_of_light"         ) ;
+    else if ( n == "cleansing"               ) ;
+    else if ( n == "consecration"            ) ;
+    else if ( n == "dazing_shield"           ) ;
+    else if ( n == "divine_plea"             ) ;
+    else if ( n == "divine_protection"       ) ;
+    else if ( n == "divinity"                ) ;
+    else if ( n == "focused_shield"          ) glyphs.focused_shield = 1;
+    else if ( n == "hammer_of_justice"       ) ;
+    else if ( n == "hammer_of_wrath"         ) glyphs.hammer_of_wrath = 1;
+    else if ( n == "hand_of_salvation"       ) ;
+    else if ( n == "holy_wrath"              ) ;
+    else if ( n == "light_of_dawn"           ) ;
+    else if ( n == "long_word"               ) ;
+    else if ( n == "rebuke"                  ) ;
+    else if ( n == "turn_evil"               ) ;
+    // minor glyphs
     else if ( n == "blessing_of_kings"       ) ;
     else if ( n == "blessing_of_might"       ) ;
-    else if ( n == "blessing_of_wisdom"      ) ;
-    else if ( n == "cleansing"               ) ;
-    else if ( n == "divine_plea"             ) ;
-    else if ( n == "divine_storm"            ) ;
-    else if ( n == "divinity"                ) ;
-    else if ( n == "flash_of_light"          ) ;
-    else if ( n == "hammer_of_justice"       ) ;
-    else if ( n == "hammer_of_the_righteous" ) ;
-    else if ( n == "holy_light"              ) ;
+    else if ( n == "insight"                 ) ;
+    else if ( n == "justice"                 ) ;
     else if ( n == "lay_on_hands"            ) ;
-    else if ( n == "righteous_defense"       ) ;
-    else if ( n == "salvation"               ) ;
-    else if ( n == "seal_of_insight"           ) ;
-    else if ( n == "seal_of_wisdom"          ) ;
-    else if ( n == "spiritual_attunement"    ) ;
-    else if ( n == "turn_evil"               ) ;
+    else if ( n == "righteousness"           ) ;
+    else if ( n == "truth"                   ) ;
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -2377,8 +2365,7 @@ void paladin_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60/auto_attack";
-    if ( glyphs.seal_of_righteousness ) action_list_str += "/seal_of_righteousness";
-    else                                action_list_str += "/seal_of_truth";
+    action_list_str += "/seal_of_truth";
     action_list_str += "/snapshot_stats";
     action_list_str += "/hammer_of_justice";
     if ( talents.holy_shield && tank > 0 ) action_list_str += "/holy_shield";
@@ -2445,6 +2432,12 @@ void paladin_t::init_talents()
   passives.hand_of_light->init_enabled();
   passives.judgements_of_the_bold->init_enabled();
 
+}
+
+// paladin_t::primary_tab ====================================================
+
+talent_tab_name paladin_t::primary_tab() SC_CONST
+{
   int num_ranks[3] = { 0, 0, 0 };
   for (size_t i = 0; i < talent_list2.size(); ++i)
   {
@@ -2455,13 +2448,13 @@ void paladin_t::init_talents()
 
   int min_ranks = level > 69 ? 11 : 1;
   if (num_ranks[PALADIN_HOLY] >= min_ranks)
-    my_primary_tree = tree_type[PALADIN_HOLY];
+    return PALADIN_HOLY;
   else if (num_ranks[PALADIN_PROTECTION] >= min_ranks)
-    my_primary_tree = tree_type[PALADIN_PROTECTION];
+    return PALADIN_PROTECTION;
   else if (num_ranks[PALADIN_RETRIBUTION] >= min_ranks)
-    my_primary_tree = tree_type[PALADIN_RETRIBUTION];
+    return PALADIN_RETRIBUTION;
   else
-    my_primary_tree = TREE_NONE;
+    return TALENT_TAB_NONE;
 }
 
 // paladin_t::composite_spell_power ==========================================
@@ -2612,8 +2605,6 @@ std::vector<option_t>& paladin_t::get_options()
       { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
       { "hammer_of_the_righteous",     OPT_TALENT_RANK,    talents.hammer_of_the_righteous       },
       { "holy_shield",                 OPT_INT,         &( talents.holy_shield                 ) },
-      { "improved_concentration_aura", OPT_INT,         &( talents.improved_concentration_aura ) },
-      { "improved_crusader_strike",    OPT_INT,         &( talents.improved_crusader_strike    ) },
       { "improved_hammer_of_justice",  OPT_INT,         &( talents.improved_hammer_of_justice  ) },
       { "improved_judgement",          OPT_INT,         &( talents.improved_judgement          ) },
       { "inquiry_of_faith",            OPT_TALENT_RANK,    talents.inquiry_of_faith              },
