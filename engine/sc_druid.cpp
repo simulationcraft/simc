@@ -261,7 +261,7 @@ struct druid_t : public player_t
     talents.natural_reaction      = new talent_t( this, "natural_reaction", "Natural Reaction" );
     talents.natures_majesty       = new talent_t( this, "natures_majesty", "Nature's Majesty" );
     talents.natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
-    talents.natures_grace       = new talent_t( this, "natures_grace", "Nature's Gracet" );
+    talents.natures_grace         = new talent_t( this, "natures_grace", "Nature's Grace" );
     talents.nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
     talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
     talents.owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
@@ -425,9 +425,7 @@ struct druid_spell_t : public spell_t
   int skip_on_eclipse;
   druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) 
-      {
-        scale_with_haste = false;
-      }
+      { }
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   execute();
@@ -655,7 +653,6 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
   // Eclipse proc:
   // Procs when you reach 100 and only then, you have to have an
   // actual gain of eclipse energy (bar value)
-  // buffs themselves have a 30s cd before they proc again
   if ( actual_gain != 0 )
   {
     if ( p -> eclipse_bar_value == 100 ) 
@@ -701,16 +698,17 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   {
     t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
     {
-      may_miss        = false;
-      may_resist      = false;
-      background      = true;
-      proc            = true;
-      trigger_gcd     = 0;
-      base_cost       = 0;
-      base_multiplier = 1.0;
-      tick_power_mod  = 0;
-      base_tick_time  = 2.0;
-      num_ticks       = 2;
+      may_miss         = false;
+      may_resist       = false;
+      background       = true;
+      proc             = true;
+      trigger_gcd      = 0;
+      base_cost        = 0;
+      base_multiplier  = 1.0;
+      tick_power_mod   = 0;
+      base_tick_time   = 2.0;
+      num_ticks        = 2;
+      scale_with_haste = false;
     }
     void player_buff() {}
     void target_debuff( int dmg_type ) {}
@@ -2919,8 +2917,6 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    travel_speed = 21.0;
-
     option_t options[] =
     {
       { "prev",    OPT_STRING, &prev_str    },
@@ -2928,11 +2924,8 @@ struct wrath_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    // Wrath is leanred at level 79, but gains 4 damage per level
-    // so the actual damage range at 80 is: 557 to 627
     id = 5176;
     parse_data( p -> player_data );
-
 
     may_crit          = true;
     
@@ -3125,13 +3118,17 @@ struct starsurge_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( travel_result, travel_dmg );
-    // SF/Wrath even give eclipse on misses,
-    // but not Starsurge
+
     if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
-      // It always pushes towards the side the bar is on, positive if at zero
+      // Positive vs negative eclipse energy gain
+      // Eclipse Up: Yes | No |
+      // Solar Side:  -     +
+      // Lunar Side:  +     -
+      // Start with +, if lunar down, but solar up OR lunar down, but on lunar side => switch to -
       double gain = 15;
-      if (  p -> eclipse_bar_value < 0 ) gain = -gain;
+      if ( ! p -> buffs_eclipse_lunar -> check() 
+        && ( p -> buffs_eclipse_solar -> check() || p -> eclipse_bar_value < 0 ) ) gain = -gain;
       trigger_eclipse_energy_gain( this, gain );
     }
   }
@@ -3966,6 +3963,11 @@ int druid_t::decode_set( item_t& item )
   {
     if ( is_caster ) return SET_T10_CASTER;
     if ( is_melee  ) return SET_T10_MELEE;
+  }
+  if ( strstr( s, "stormrider" ) )
+  {
+    if ( is_caster ) return SET_T11_CASTER;
+    if ( is_melee  ) return SET_T11_MELEE;
   }
 
   return SET_NONE;
