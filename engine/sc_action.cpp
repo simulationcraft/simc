@@ -1549,9 +1549,9 @@ void action_t::check_spec( int necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n", 
                    player -> name(), name(), util_t::talent_tree_string( necessary_spec ) );
-  }
 
-  background = true; // prevent action from being executed
+   background = true; // prevent action from being executed
+  }
 }
 
 // action_t::check_min_level ===================================================
