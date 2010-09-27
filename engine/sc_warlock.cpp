@@ -479,7 +479,6 @@ struct warlock_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual talent_tree_type primary_tree() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
 
   // Event Tracking
@@ -4301,42 +4300,6 @@ int warlock_t::decode_set( item_t& item )
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type r )
 {
   return new warlock_t( sim, name, r );
-}
-
-// player_t::primary_tree ==================================================
-
-talent_tree_type warlock_t::primary_tree() SC_CONST
-{
-    if ( level > 10 && level <= 69 )
-    {
-      if ( talent_tab_points[ WARLOCK_AFFLICTION ] > 0 ) return TREE_AFFLICTION;
-      if ( talent_tab_points[ WARLOCK_DEMONOLOGY ] > 0 ) return TREE_DEMONOLOGY;
-      if ( talent_tab_points[ WARLOCK_DESTRUCTION ] > 0 ) return TREE_DESTRUCTION;
-      return TREE_NONE;
-    }
-    else
-    {
-      if ( talent_tab_points[ WARLOCK_DESTRUCTION ] >= talent_tab_points[ WARLOCK_AFFLICTION ] )
-      {
-        if ( talent_tab_points[ WARLOCK_DESTRUCTION ] >= talent_tab_points[ WARLOCK_DEMONOLOGY ] )
-        {
-          return TREE_DESTRUCTION;
-        }
-        else
-        {
-          return TREE_DEMONOLOGY;
-        }
-      }
-      else if ( talent_tab_points[ WARLOCK_DEMONOLOGY ] >= talent_tab_points[ WARLOCK_AFFLICTION ] )
-      {
-        return TREE_DEMONOLOGY;
-      }
-      else
-      {
-        return TREE_AFFLICTION;
-      }
-    }
-
 }
 
 // player_t::warlock_init ===================================================
