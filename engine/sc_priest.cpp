@@ -943,7 +943,6 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague -> rank() )
     {
       devouring_plague_burst = new devouring_plague_burst_t( p );
-
     }
   }
 
@@ -954,16 +953,11 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::execute();
     if ( devouring_plague_burst )
     {
-      int n = num_ticks;
-
-      if ( p -> bugs )
-        n = 8;
-
       double t = ( p -> talents.improved_devouring_plague -> rank() * 0.15 ) * ( base_td + total_power() * tick_power_mod );
 
-      devouring_plague_burst -> base_dd_min  = t * n;
-      devouring_plague_burst -> base_dd_max  = t * n;
-      devouring_plague_burst -> dot_nt       = n;
+      devouring_plague_burst -> base_dd_min  = t * num_ticks;
+      devouring_plague_burst -> base_dd_max  = t * num_ticks;
+      devouring_plague_burst -> dot_nt       = num_ticks;
       devouring_plague_burst -> execute();
     }
   }
