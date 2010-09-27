@@ -1082,12 +1082,7 @@ struct bloodthirst_t : public warrior_attack_t
       warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! ( p -> primary_tree() == TREE_FURY ) )
-    {
-      sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n", player -> name(), name() );
-      background = true;
-      return;
-    }
+    check_talent( p -> primary_tree() == TREE_FURY );
 
     option_t options[] =
     {
