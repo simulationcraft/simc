@@ -402,7 +402,6 @@ struct shaman_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talent_stormstrike -> rank() ? ROLE_HYBRID : ROLE_SPELL; }
-  virtual talent_tree_type       primary_tree() SC_CONST;
   virtual void      combat_begin();
 
   // Event Tracking
@@ -3913,46 +3912,6 @@ void shaman_t::combat_begin()
   }
 }
 
-// shaman_t::primary_tree =================================================
-
-talent_tree_type shaman_t::primary_tree() SC_CONST
-{
-  if ( level > 10 && level <= 69 )
-  {
-    if ( talent_tab_points[ SHAMAN_ELEMENTAL   ] > 0 ) return TREE_ELEMENTAL;
-    if ( talent_tab_points[ SHAMAN_ENHANCEMENT ] > 0 ) return TREE_ENHANCEMENT;
-    if ( talent_tab_points[ SHAMAN_RESTORATION ] > 0 ) return TREE_RESTORATION;
-    return TREE_NONE;
-  }
-  else
-  {
-    if ( talent_tab_points[ SHAMAN_ELEMENTAL ] == 0 && 
-         talent_tab_points[ SHAMAN_ENHANCEMENT ] == 0 &&
-         talent_tab_points[ SHAMAN_RESTORATION ] == 0 )
-         return TREE_NONE;
-         
-    if ( talent_tab_points[ SHAMAN_ELEMENTAL ] >= talent_tab_points[ SHAMAN_ENHANCEMENT ] ) 
-    {
-      if ( talent_tab_points[ SHAMAN_ELEMENTAL ] >= talent_tab_points[ SHAMAN_RESTORATION ] )
-      {
-        return TREE_ELEMENTAL;
-      }
-      else
-      {
-        return TREE_RESTORATION;
-      }
-    }
-    else if ( talent_tab_points[ SHAMAN_RESTORATION ] >= talent_tab_points[ SHAMAN_ENHANCEMENT ] )
-    {
-      return TREE_RESTORATION;
-    }
-    else
-    {
-      return TREE_ENHANCEMENT;
-    }
-  }
-}
-
 // shaman_t::get_talent_trees ==============================================
 
 std::vector<talent_translation_t>& shaman_t::get_talent_list()
@@ -4028,6 +3987,11 @@ int shaman_t::decode_set( item_t& item )
   {
     if ( is_caster ) return SET_T10_CASTER;
     if ( is_melee  ) return SET_T10_MELEE;
+  }
+  if ( strstr( s, "raging_elements" ) )
+  {
+    if ( is_caster ) return SET_T11_CASTER;
+    if ( is_melee  ) return SET_T11_MELEE;
   }
 
   return SET_NONE;
