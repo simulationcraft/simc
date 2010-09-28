@@ -180,6 +180,8 @@ void stats_t::analyze()
   num_executes /= num_iterations;
   num_ticks    /= num_iterations;
 
+  rpe = resource_consumed /= num_executes;
+
   frequency = num_intervals ? total_intervals / num_intervals : 0;
 
   total_execute_time /= num_iterations;

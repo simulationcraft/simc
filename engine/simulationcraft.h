@@ -3441,7 +3441,7 @@ struct stats_t
   double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;
-  double dps, portion_dps, dpe, dpet, dpr;
+  double dps, portion_dps, dpe, dpet, dpr, rpe;
   double total_intervals, num_intervals;
   double last_execute;
 
@@ -3754,8 +3754,7 @@ struct action_t : public active_spell_t
   virtual double gcd() SC_CONST          { return trigger_gcd;       }
   virtual double execute_time() SC_CONST { return base_execute_time; }
   virtual double tick_time() SC_CONST    { return base_tick_time;    }
-  virtual double hasted_num_ticks() SC_CONST { return num_ticks;     }
-  virtual int    hasted_num_ticks() SC_CONST    { return num_ticks;    }
+  virtual int    hasted_num_ticks() SC_CONST { return num_ticks;     }
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );

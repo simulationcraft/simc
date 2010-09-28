@@ -451,6 +451,7 @@ static void trigger_deep_wounds( action_t* a )
       weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
       base_tick_time = 1.0;
       num_ticks = 6;
+      number_ticks = num_ticks;
       reset(); // required since construction occurs after player_t::init()
 
       id = 12834;

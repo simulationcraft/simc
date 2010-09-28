@@ -992,13 +992,13 @@ static void print_html_action( FILE* file, stats_t* s )
   util_t::fprintf( file,
 		   " <tr>"
 		   " <td>%s</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
-		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
+		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
 		   " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
 		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
 		   " </tr>\n",
 		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
 		   s -> num_executes, s -> frequency,
-		   s -> dpe, s -> dpet, s -> dpr,
+		   s -> dpe, s -> dpet, s -> dpr, s -> rpe,
 		   s -> execute_results[ RESULT_HIT  ].avg_dmg,
 		   s -> execute_results[ RESULT_CRIT ].avg_dmg,
 		   s -> execute_results[ RESULT_CRIT ].max_dmg,
@@ -1217,7 +1217,7 @@ static void print_html_player( FILE* file, player_t* p )
 		   "<table class=\"player\">\n"
 		   " <tr>"
 		   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
-		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
+		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th> RPE </th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
 		   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
 		   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
 		   " </tr>\n" );

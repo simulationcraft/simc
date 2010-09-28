@@ -2521,6 +2521,7 @@ struct deadly_poison_t : public rogue_poison_t
     base_tick_time = 3.0;
     tick_power_mod = 0.12 / num_ticks * 0.9; // * 0.9 for the 10% Hot-Fix nerf on Jan 7th. 2010.
     base_td_init   = util_t::ability_rank( p -> level,  296,80,  244,76,  204,70,  160,62,  96,0  ) / num_ticks;
+    number_ticks   = num_ticks;
 
     id = 57972;
   }
