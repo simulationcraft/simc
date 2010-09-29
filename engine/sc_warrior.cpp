@@ -1706,8 +1706,9 @@ struct rend_t : public warrior_attack_t
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = false;
     normalize_weapon_speed = false;
-
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    num_ticks              = 5;
+    base_tick_time         = 3.0;
+    stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
   }
 
   virtual void tick()
