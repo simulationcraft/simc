@@ -2281,6 +2281,19 @@ struct debuff_t : public buff_t
 
 typedef struct buff_t aura_t;
 
+struct new_buff_t : public buff_t
+{
+  int                       default_stack_charge;
+  const spelleffect_data_t* e_data[MAX_EFFECTS];
+  const spelleffect_data_t* single;
+  
+  new_buff_t( player_t*, const std::string&, uint32_t, 
+    double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
+
+  virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
+  virtual double base_value( effect_subtype_t stype = A_NONE, effect_type_t type = E_APPLY_AURA, int misc_value = 0 );
+};
+
 // Expressions =================================================================
 
 enum token_type_t {
