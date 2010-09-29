@@ -2291,7 +2291,7 @@ struct new_buff_t : public buff_t
     double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
 
   virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
-  virtual double base_value( effect_subtype_t stype = A_NONE, effect_type_t type = E_APPLY_AURA, int misc_value = 0 );
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE ) SC_CONST; 
 };
 
 // Expressions =================================================================

@@ -830,23 +830,20 @@ bool new_buff_t::trigger( int stacks, double value, double chance)
     return buff_t::trigger( stacks, value, chance );
 }
 
-double new_buff_t::base_value( effect_subtype_t stype, effect_type_t type, int misc_value )
+double new_buff_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
 {
-  // Atomic shortcut for singular buffs, which should be quite a few
-  if ( single ) return single -> base_value;
-  
+  if ( single )
+    return sc_data_access_t::fmt_value( single -> base_value, (effect_type_t) single -> type, (effect_subtype_t) single -> subtype );
+
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
     if ( ! e_data[ i ] )
       continue;
-   
-    // log_t::output( sim, "effect=%d id=%d type=%d sub_type=%d base_value=%d",
-    //  e_data[ i ] -> index, e_data[ i ] -> id, e_data[ i ] -> type, e_data[ i ] -> subtype, e_data[ i ] -> base_value );
-      
-    if ( e_data[ i ] -> type == type && 
-      ( ! stype || e_data[ i ] -> subtype == stype ) && 
-      ( ! misc_value || e_data[ i ] -> misc_value == misc_value ) )
-      return e_data[ i ] -> base_value;
+
+    if ( ( type == E_MAX || e_data[ i ] -> type == type ) && 
+         ( sub_type == A_MAX || e_data[ i ] -> subtype == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || e_data[ i ] -> misc_value == misc_value ) )
+      return sc_data_access_t::fmt_value( e_data[ i ] -> base_value, type, sub_type );
   }
   
   return 0.0;

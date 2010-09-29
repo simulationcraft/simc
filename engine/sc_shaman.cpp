@@ -300,7 +300,7 @@ struct shaman_attack_t : public attack_t
   {
     shaman_t* p = player -> cast_shaman();
     if ( p -> primary_tree() == TREE_ENHANCEMENT ) 
-      base_hit += p -> spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE ) / 100.0;
+      base_hit += p -> spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
   }
   
   shaman_attack_t( const char* n, player_t* player, uint32_t id ) :
@@ -1252,7 +1252,7 @@ double shaman_attack_t::cost_reduction() SC_CONST
   double   cr = 0.0;
   
   if ( p -> buffs_shamanistic_rage -> up() )
-    cr += p -> buffs_shamanistic_rage -> base_value( A_ADD_PCT_MODIFIER ) / 100.0;
+    cr += p -> buffs_shamanistic_rage -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
 
   return cr;
 }
@@ -1298,7 +1298,7 @@ struct melee_t : public shaman_attack_t
     
     if ( p -> buffs_unleash_wind -> up() )
     {
-      h *= 1.0 / ( 1.0 + ( p -> buffs_unleash_wind -> base_value( A_319 ) / 100.0 ) );
+      h *= 1.0 / ( 1.0 + ( p -> buffs_unleash_wind -> base_value( E_APPLY_AURA, A_319 ) ) );
     }
     
     return h;
@@ -1552,7 +1552,7 @@ double shaman_spell_t::haste() SC_CONST
   // XXX: Is there any point for checking instant cast speed here?
   if ( ! is_instant() && p -> buffs_elemental_mastery -> up() )
   {
-    h *= 1.0 / ( 1.0 + p -> buffs_elemental_mastery -> base_value( A_MOD_CASTING_SPEED_NOT_STACK ) / 100.0 );
+    h *= 1.0 / ( 1.0 + p -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_CASTING_SPEED_NOT_STACK ) );
   }
   return h;
 }
@@ -1577,11 +1577,11 @@ double shaman_spell_t::cost_reduction() SC_CONST
   double   cr = base_cost_reduction;
 
   if ( p -> buffs_shamanistic_rage -> up() )
-    cr += p -> buffs_shamanistic_rage ->base_value( A_ADD_PCT_MODIFIER ) / 100.0;
+    cr += p -> buffs_shamanistic_rage ->base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
     
   // XXX: School mask for the spell is in effect 2, should we use it?
   if ( harmful && ! pseudo_pet && ! proc && p -> buffs_elemental_focus -> up() )
-    cr += p -> buffs_elemental_focus -> base_value( A_ADD_PCT_MODIFIER ) / 100.0;
+    cr += p -> buffs_elemental_focus -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
 
   // XXX: Does maelstrom 5stack abilities count as instants?
   if ( is_instant() && p -> primary_tree() == TREE_ENHANCEMENT )
@@ -1652,7 +1652,7 @@ void shaman_spell_t::player_buff()
   }
   
   if ( p -> buffs_elemental_mastery -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE ) )
-    player_multiplier *= 1.0 + p -> buffs_elemental_mastery -> base_value( A_MOD_DAMAGE_PERCENT_DONE ) / 100.0;
+    player_multiplier *= 1.0 + p -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
     
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
@@ -1832,7 +1832,7 @@ struct chain_lightning_t : public shaman_spell_t
       t        *= 1.0 + p -> buffs_elemental_mastery_insta -> base_value() / 100.0;
 
     // misc_value of 10 is cast time reduction for A_ADD_PCT_MODIFIER
-    t          *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( A_ADD_PCT_MODIFIER, E_APPLY_AURA, 10 ) / 100.0;
+    t          *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 10 );
     
     return t;
   }
@@ -1868,7 +1868,7 @@ struct chain_lightning_t : public shaman_spell_t
     double   cr = shaman_spell_t::cost_reduction();
     
     // misc_value of 14 is mana cost reduction for A_ADD_PCT_MODIFIER
-    cr         += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( A_ADD_PCT_MODIFIER, E_APPLY_AURA, 14) / 100.0;
+    cr         += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14);
 
     return cr;
   }
@@ -2086,7 +2086,7 @@ struct lava_burst_t : public shaman_spell_t
       
     // Apply unleash flame here, however i'm not 100% certain it is the right place, as it's an additive bonus
     if ( p -> buffs_unleash_flame -> up() )
-      player_multiplier *= 1.0 + p -> buffs_unleash_flame -> base_value( A_ADD_PCT_MODIFIER ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_unleash_flame -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
   }
 
   virtual bool ready()
@@ -2189,7 +2189,7 @@ struct lightning_bolt_t : public shaman_spell_t
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> base_value() / 100.0;
     }
 
-    t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( A_ADD_PCT_MODIFIER, E_APPLY_AURA, 10 ) / 100.0;
+    t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 10 );
     return t;
   }
   
@@ -2212,7 +2212,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     double   cr = shaman_spell_t::cost_reduction();
     
-    cr += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( A_ADD_PCT_MODIFIER, E_APPLY_AURA, 10 ) / 100.0;
+    cr += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 10 );
 
     return cr;
   }
@@ -2553,7 +2553,7 @@ struct flame_shock_t : public shaman_spell_t
     
     // Apply unleash flame here, however i'm not 100% certain it is the right place, as it's an additive bonus
     if ( p -> buffs_unleash_flame -> up() )
-      player_multiplier *= 1.0 + p -> buffs_unleash_flame -> base_value( A_ADD_PCT_MODIFIER ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_unleash_flame -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
   }
   
   virtual void tick()
