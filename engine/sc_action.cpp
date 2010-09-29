@@ -123,7 +123,7 @@ void action_t::_init_action_t()
   max_time_to_die                = 0.0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
-  P400                           = -1;
+  P403                           = -1;
   moving                         = -1;
   vulnerable                     = 0;
   invulnerable                   = 0;
@@ -311,7 +311,7 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "P400",                   OPT_BOOL,   &P400                  },
+    { "P403",                   OPT_BOOL,   &P403                  },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
     { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
@@ -1431,8 +1431,8 @@ bool action_t::ready()
     if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
       return false;
 
-  if ( P400 != -1 )
-    if ( P400 != sim -> P400 )
+  if ( P403 != -1 )
+    if ( P403 != sim -> P403 )
       return false;
 
   if ( moving != -1 )
