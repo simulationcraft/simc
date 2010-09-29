@@ -1935,7 +1935,7 @@ struct chain_lightning_t : public shaman_spell_t
     elemental_overload_stats = p -> get_stats( "elemental_overload" ); // Testing needed to see if this still suffers from the jump penalty
     elemental_overload_stats -> school = SCHOOL_NATURE;    
     if ( p -> glyphs.chain_lightning )
-      glyph_targets = p -> player_data.effect_base_value( 55449, E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
+      glyph_targets = (int) p -> player_data.effect_base_value( 55449, E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
    }
 
   virtual void execute()
@@ -3562,7 +3562,7 @@ struct lightning_shield_buff_t : public new_buff_t
       
     // This requires rolling thunder checking for max stack
     if ( s -> talent_rolling_thunder -> rank() > 0 )
-      max_stack = s -> talent_rolling_thunder -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL );
+      max_stack = (int) s -> talent_rolling_thunder -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL );
       
     init();
   }
