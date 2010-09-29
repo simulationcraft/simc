@@ -48,6 +48,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <limits>
 #include <algorithm>
 #include <assert.h>
 #include <ctype.h>
@@ -868,6 +869,7 @@ enum effect_type_t {
   E_TALENT_SPEC_SELECT = 162,
   E_163 = 163,
   E_164 = 164,
+  E_MAX
 };
 
 enum effect_subtype_t {
@@ -1191,6 +1193,7 @@ enum effect_subtype_t {
   A_317 = 317,
   A_318 = 318,
   A_319 = 319,
+  A_MAX
 };
 
 // These names come from the MANGOS project.
@@ -1767,6 +1770,8 @@ private:
   int                             talent_compare( const void *vid1, const void *vid2 );
 };
 
+#define DEFAULT_MISC_VALUE std::numeric_limits<int>::min()
+
 class sc_data_access_t : public sc_data_t
 {
 public:
@@ -1808,12 +1813,6 @@ public:
   virtual const char*   spell_desc( const uint32_t spell_id ) SC_CONST;
   virtual const char*   spell_tooltip( const uint32_t spell_id ) SC_CONST;
 
-  // More Generic stuff
-  virtual uint32_t      spell_effect_id( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type = A_NONE ) SC_CONST;
-  virtual uint32_t      spell_trigger_spell_id( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type ) SC_CONST;
-  virtual int32_t       spell_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type = A_NONE, int misc_value = 0 ) SC_CONST;
-
-
   // Effect methods
   virtual bool          effect_exists( const uint32_t effect_id ) SC_CONST;
 
@@ -1849,6 +1848,14 @@ public:
   virtual double        effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
   virtual double        effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
 
+  // Aand more generic stuff
+  virtual const spelleffect_data_t * effect( uint32_t, effect_type_t, effect_subtype_t, int ) SC_CONST;
+  virtual double        effect_min( uint32_t, uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double        effect_max( uint32_t, uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double        effect_base_value( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double        effect_coeff( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double        effect_period( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual uint32_t      effect_trigger_spell_id( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
 
 // Talent methods
   virtual bool          talent_exists( const uint32_t talent_id ) SC_CONST;
@@ -1912,6 +1919,9 @@ public:
   virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
   virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
 
+
+// Static methods
+  static double         fmt_value( double, effect_type_t, effect_subtype_t );
 private:
 };
 
@@ -3583,10 +3593,7 @@ struct spell_id_t
   virtual int    effect_die_sides( const uint32_t effect_num ) SC_CONST;
 
   // Generalized access API
-  virtual int32_t base_value() SC_CONST;
-  virtual int32_t base_value( effect_type_t type ) SC_CONST;
-  virtual int32_t base_value( effect_type_t type, effect_subtype_t sub_type ) SC_CONST;
-  virtual int32_t base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST;
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE ) SC_CONST;
 private:
 };
 

@@ -395,6 +395,8 @@ bool spell_id_t::init( const uint32_t id, int t )
     return false;
   }
 
+  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
+
   uint32_t n_effects = 0;
   
   // Map effects, figure out if this is a single-effect spell
@@ -417,8 +419,6 @@ bool spell_id_t::init( const uint32_t id, int t )
   }
   else
     single = 0;
-
-  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
 
   return true;  
 }
@@ -476,6 +476,8 @@ bool spell_id_t::init( const char* s_name )
     return false;
   }
 
+  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
+
   uint32_t n_effects = 0;
   
   // Map effects, figure out if this is a single-effect spell
@@ -498,8 +500,6 @@ bool spell_id_t::init( const char* s_name )
   }
   else
     single = 0;
-
-  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
 
   return true;  
 }
@@ -1169,70 +1169,23 @@ int spell_id_t::effect_die_sides( const uint32_t effect_num ) SC_CONST
   return pp -> player_data.effect_die_sides( effect_id );
 }
 
-int32_t spell_id_t::base_value() SC_CONST
+double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
 {
-  if ( single ) return single -> base_value;
+  if ( single )
+    return sc_data_access_t::fmt_value( single -> base_value, (effect_type_t) single -> type, (effect_subtype_t) single -> subtype );
 
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
     if ( ! effects[ i ] )
       continue;
 
-    return effects[ i ] -> base_value;
+    if ( ( type == E_MAX || effects[ i ] -> type == type ) && 
+         ( sub_type == A_MAX || effects[ i ] -> subtype == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) )
+      return sc_data_access_t::fmt_value( effects[ i ] -> base_value, type, sub_type );
   }
   
-  return 0;
-}
-
-int32_t spell_id_t::base_value( effect_type_t type ) SC_CONST
-{
-  if ( single ) return single -> base_value;
-
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! effects[ i ] )
-      continue;
-
-    if ( effects[ i ] -> type == type )
-      return effects[ i ] -> base_value;
-  }
-  
-  return 0;
-}
-
-int32_t spell_id_t::base_value( effect_type_t type, effect_subtype_t stype ) SC_CONST
-{
-  if ( single ) return single -> base_value;
-
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! effects[ i ] )
-      continue;
-
-    if ( effects[ i ] -> type == type && 
-       ( effects[ i ] -> subtype == stype ) )
-      return effects[ i ] -> base_value;
-  }
-  
-  return 0;
-}
-
-int32_t spell_id_t::base_value( effect_type_t type, effect_subtype_t stype, int misc_value ) SC_CONST
-{
-  if ( single ) return single -> base_value;
-
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! effects[ i ] )
-      continue;
-
-    if ( effects[ i ] -> type == type && 
-       ( effects[ i ] -> subtype == stype ) && 
-       ( effects[ i ] -> misc_value == misc_value ) )
-      return effects[ i ] -> base_value;
-  }
-  
-  return 0;
+  return 0.0;
 }
 
 // ==========================================================================

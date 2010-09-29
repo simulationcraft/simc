@@ -695,8 +695,10 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
 
 /*************** Effect type based searching of spell id *************************/
 
-uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type ) SC_CONST
+const spelleffect_data_t * sc_data_access_t::effect( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
 {
+  const spelleffect_data_t * e;
+
   if ( !spell_id )
     return 0;
 
@@ -707,60 +709,109 @@ uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, effect_type
     if ( ! m_spells_index[ spell_id ] -> effect[ i ] || ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
       continue;
 
-    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
-      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type )
-      return m_spells_index[ spell_id ] -> effect[ i ];
+    e = m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ];
+
+    if ( ( type == E_MAX || e -> type == type ) &&
+         ( sub_type == A_MAX || e -> subtype == sub_type ) &&
+         ( misc_value == DEFAULT_MISC_VALUE || e -> misc_value == misc_value ) )
+      return e;
   }
 
   return 0;
 }
 
-uint32_t sc_data_access_t::spell_trigger_spell_id( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type ) SC_CONST
+double sc_data_access_t::effect_min( uint32_t spell_id, uint32_t level, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
 {
+  const spelleffect_data_t * e = 0;
+
   if ( !spell_id )
     return 0;
 
   assert( spell_exists( spell_id ) );
-  
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! m_spells_index[ spell_id ] -> effect[ i ] || 
-      ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
-      continue;
-      
-    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
-      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type )
-      return m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> trigger_spell;
-  }
 
-  return 0;
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0.0;
+
+  return effect_min( e -> id, get_class_type( m_spells_index[ spell_id ] -> scaling_type ), level );
 }
 
-int32_t sc_data_access_t::spell_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double sc_data_access_t::effect_max( uint32_t spell_id, uint32_t level, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
 {
+  const spelleffect_data_t * e = 0;
+
   if ( !spell_id )
     return 0;
 
   assert( spell_exists( spell_id ) );
-  
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! m_spells_index[ spell_id ] -> effect[ i ] || 
-      ! m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] )
-      continue;
-      
-    if ( m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> type == type &&
-      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> subtype == sub_type &&
-      m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> misc_value == misc_value )
-      return m_effects_index[ m_spells_index[ spell_id ] -> effect[ i ] ] -> base_value;
-  }
 
-  return 0;
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0.0;
+
+  return effect_max( e -> id, get_class_type( m_spells_index[ spell_id ] -> scaling_type ), level );
 }
 
+double sc_data_access_t::effect_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  double                     bv = 0.0;
+  const spelleffect_data_t * e  = 0;
 
+  if ( !spell_id )
+    return 0;
 
+  assert( spell_exists( spell_id ) );
 
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0.0;
+
+  bv = fmt_value( 1.0 * e -> base_value, type, sub_type );
+
+  return bv;
+}
+
+double sc_data_access_t::effect_coeff( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  const spelleffect_data_t * e  = 0;
+
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0.0;
+
+  return e -> coeff;
+}
+
+double sc_data_access_t::effect_period( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  const spelleffect_data_t * e  = 0;
+
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0.0;
+
+  return e -> amplitude;
+}
+
+uint32_t sc_data_access_t::effect_trigger_spell_id( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  const spelleffect_data_t * e  = 0;
+
+  if ( !spell_id )
+    return 0;
+
+  assert( spell_exists( spell_id ) );
+
+  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+    return 0;
+
+  return e -> trigger_spell;
+}
 
 /*************** Talent functions ***********************/
 
@@ -1396,6 +1447,48 @@ bool sc_data_access_t::check_talent_name( const uint32_t talent_id, const char* 
 }
 
 
+/***************************** Static functions *************************************/
+double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
+{
+  // Automagically divide by 100.0 for percent based abilities
+  switch ( type )
+  {
+    case E_ENERGIZE_PCT:
+    case E_WEAPON_PERCENT_DAMAGE:
+      v /= 100.0;
+      break;
+    case E_APPLY_AURA:
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_RAID:
+      switch ( sub_type )
+      {
+        case A_MOD_HIT_CHANCE:
+        case A_ADD_PCT_MODIFIER:
+        case A_MOD_OFFHAND_DAMAGE_PCT:
+        case A_MOD_ATTACK_POWER_PCT:
+        case A_MOD_RANGED_ATTACK_POWER_PCT:
+        case A_MOD_TOTAL_STAT_PERCENTAGE:
+        case A_MOD_INCREASES_SPELL_PCT_TO_HIT:
+        case A_MOD_RATING_FROM_STAT:
+        case A_MOD_CASTING_SPEED_NOT_STACK: // Wrath of Air, note this can go > +-100, but only on NPC (and possibly item) abilities
+        case A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER:
+        case A_MOD_DAMAGE_PERCENT_DONE:
+        case A_MOD_ALL_CRIT_CHANCE:
+        case A_MOD_EXPERTISE:
+        case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
+        case A_319: // Windfury Totem
+          v /= 100.0;
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return v;
+}
 
 /***************************** local functions *************************************/
 
