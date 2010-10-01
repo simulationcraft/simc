@@ -634,7 +634,7 @@ static void trigger_sudden_death( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( p -> rng_sudden_death -> roll ( p -> talents.sudden_death -> rank() * 0.05 ) )
+  if ( p -> rng_sudden_death -> roll ( p -> talents.sudden_death -> rank() * 0.03 ) )
   {
     p -> cooldowns_colossus_smash -> reset();
     p -> procs_sudden_death       -> occur();
