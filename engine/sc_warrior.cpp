@@ -1433,16 +1433,17 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
-    warrior_attack_t::execute();
-    p -> buffs_incite -> expire();
+    warrior_attack_t::execute();    
     if( result_is_hit() )
     {
       if ( result == RESULT_CRIT )
       {
         p -> buffs_tier8_2pc_melee -> trigger();
-        p -> buffs_incite          -> trigger();
+        if ( ! p -> buffs_incite -> check() )
+          p -> buffs_incite          -> trigger();
       }
     }
+    p -> buffs_incite -> expire();
   }
   
   virtual void player_buff()
