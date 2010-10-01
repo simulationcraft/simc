@@ -396,7 +396,7 @@ struct paladin_attack_t : public attack_t
     may_crit = true;
     if ( p -> primary_tree() == TREE_RETRIBUTION && p -> main_hand_weapon.group() == WEAPON_2H )
     {
-      base_multiplier *= 1.1;
+      base_multiplier *= 1.0 + 0.01 * p->passives.two_handed_weapon_spec->effect_base_value(1);
     }
 
     base_multiplier *= 1.0 + 0.01 * p->talents.communion->effect_base_value(3);
