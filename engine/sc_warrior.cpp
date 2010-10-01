@@ -3293,7 +3293,7 @@ void player_t::warrior_init( sim_t* sim )
 
 void player_t::warrior_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.battle_shout ) sim -> auras.battle_shout -> override( 1, 1395 );
+  if ( sim -> overrides.battle_shout ) sim -> auras.battle_shout -> override( 1, 549.0 );
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   target_t* t = sim -> target;
