@@ -291,21 +291,24 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // Assassination tree, 13 abilities
+    // Assassination tree, 16 abilities
     {
        8676, // Ambush
        1833, // Cheap Shot
+       2818, // Deadly Poison
       26679, // Deadly Throw
       51722, // Dismantle
       32645, // Envenom
        2098, // Eviscerate
        8647, // Expose Armor
         703, // Garrote
+       8680, // Instant Poison
         408, // Kidney Shot
        1329, // Mutilate
        1943, // Rupture
        5171, // Slice and Dice
       79140, // Vendetta
+      13218, // Wound Poison
           0,
     },
     // Combat tree, 14 abilities
