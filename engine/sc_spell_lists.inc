@@ -1,7 +1,7 @@
-#define CLASS_ABILITY_SIZE (58)
+#define CLASS_ABILITY_SIZE (59)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13066
+// Class based active abilities, wow build 13117
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -227,7 +227,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 58 abilities
+    // Pet tree, 59 abilities
     {
       90355, // Ancient Hysteria
       50433, // Ankle Crack
@@ -254,6 +254,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       58604, // Lava Breath
       53426, // Lick Your Wounds
       24844, // Lightning Breath
+      90327, // Lock Jaw
       54680, // Monstrous Bite
       50479, // Nether Shock
       50245, // Pin
@@ -831,7 +832,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13066
+// Talent tree specialization abilities, wow build 13117
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1088,7 +1089,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13066
+// Class mastery abilities, wow build 13117
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1173,7 +1174,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13066
+// Racial abilities, wow build 13117
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1805,7 +1806,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13066
+// Glyph spells for classes, wow build 13117
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2106,12 +2107,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (16 spells)
+    // Major Glyphs (15 spells)
     {
       55437, // Glyph of Chain Heal
       55449, // Glyph of Chain Lightning
       55452, // Glyph of Elemental Mastery
-      94388, // Glyph of Feral Charge
       55450, // Glyph of Fire Nova
       55443, // Glyph of Frost Shock
       59289, // Glyph of Ghost Wolf
@@ -2264,11 +2264,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (17 spells)
+    // Major Glyphs (18 spells)
     {
       63057, // Glyph of Barkskin
       54760, // Glyph of Entangling Roots
       94386, // Glyph of Faerie Fire
+      94388, // Glyph of Feral Charge
       67598, // Glyph of Ferocious Bite
       62080, // Glyph of Focus
       54810, // Glyph of Frenzied Regeneration
@@ -2283,7 +2284,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54828, // Glyph of Starfall
       57862, // Glyph of Thorns
       62970, // Glyph of Wild Growth
-          0,
     },
     // Minor Glyphs (6 spells)
     {
