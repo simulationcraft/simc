@@ -582,6 +582,10 @@ const char* util_t::flask_type_string( int flask )
   case FLASK_PURE_MOJO:          return "pure_mojo";
   case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
   case FLASK_SUPREME_POWER:      return "supreme_power";
+  case FLASK_STEELSKIN:          return "steelskin";
+  case FLASK_DRACONIC_MIND:      return "draconic_mind";
+  case FLASK_WINDS:              return "winds";
+  case FLASK_TITANIC_STRENGTH:   return "titanic_strength";
   }
   return "unknown";
 }

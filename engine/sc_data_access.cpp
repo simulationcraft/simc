@@ -1463,6 +1463,7 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
       switch ( sub_type )
       {
         case A_MOD_HIT_CHANCE:
+        case A_MOD_SPELL_HIT_CHANCE:
         case A_ADD_PCT_MODIFIER:
         case A_MOD_OFFHAND_DAMAGE_PCT:
         case A_MOD_ATTACK_POWER_PCT:
@@ -1473,6 +1474,7 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
         case A_MOD_CASTING_SPEED_NOT_STACK: // Wrath of Air, note this can go > +-100, but only on NPC (and possibly item) abilities
         case A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER:
         case A_MOD_DAMAGE_PERCENT_DONE:
+        case A_MOD_DAMAGE_FROM_CASTER: // vendetta
         case A_MOD_ALL_CRIT_CHANCE:
         case A_MOD_EXPERTISE:
         case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...

@@ -79,6 +79,19 @@ struct flask_t : public action_t
     case FLASK_SUPREME_POWER:
       player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
       break;
+    case FLASK_STEELSKIN:
+      player -> stat_gain( STAT_STAMINA, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      break;
+    case FLASK_DRACONIC_MIND:
+      player -> stat_gain( STAT_INTELLECT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      break;
+    case FLASK_WINDS:
+      player -> stat_gain( STAT_AGILITY, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      break;
+    case FLASK_TITANIC_STRENGTH:
+      player -> stat_gain( STAT_STRENGTH, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      break;
+
     default: assert( 0 );
     }
   }

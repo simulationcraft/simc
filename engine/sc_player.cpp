@@ -637,7 +637,8 @@ void player_t::init()
   init_professions();
   init_consumables();
   init_talents();
-  init_spells(); 
+  init_values();
+  init_spells();
   init_scaling();
   init_buffs();
   init_actions();
@@ -646,7 +647,6 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
-  init_values();
 }
 
 // player_t::init_base =====================================================
@@ -808,7 +808,7 @@ void player_t::init_core()
 
   initial_haste_rating 		= initial_stats.haste_rating;
 
-  initial_mastery_rating 		= initial_stats.mastery_rating;
+  initial_mastery_rating 	= initial_stats.mastery_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
