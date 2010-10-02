@@ -1972,7 +1972,7 @@ struct option_t
 
 // Talent Translation =========================================================
 
-#define MAX_TALENT_POINTS 71
+#define MAX_TALENT_POINTS 41
 #define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
 #define MAX_TALENT_TREES 3
 #define MAX_TALENT_COL 4

@@ -259,13 +259,13 @@ void action_t::parse_data( sc_data_access_t& pData )
             {
               case A_PERIODIC_DAMAGE:
                 tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = floor( pData.effect_min ( effect, player_type( player -> type ), player -> level ) );
+                base_td          = pData.effect_base_value ( effect );;
                 base_tick_time   = pData.effect_period ( effect );
                 num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
                 break;
               case A_PERIODIC_LEECH:
                 tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = floor( pData.effect_min ( effect, player_type( player -> type ), player -> level ) );
+                base_td          = pData.effect_base_value ( effect );;
                 base_tick_time   = pData.effect_period ( effect );
                 num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
                 break;

@@ -1571,6 +1571,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> base_cost: %.1f"
            "<br> cooldown: %.2f"
            "<br> base_execute_time: %.2f"
+           "<br> base_crit: %.2f"
            "<br> <b>direct damage</b>"
            "<br> may_crit: %s"
            "<br> direct_power_mod: %.6f"
@@ -1583,6 +1584,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> base_td: %.2f"
            "<br> num_ticks: %i"
            "<br> base_tick_time: %.2f"
+           "<br> scale_with_haste: %s"
            "<br> dot_behavior: %s<br>"
            "<br> <b> weapon</b>"
            "<br> weapon_power_mod: %.6f"
@@ -1590,10 +1592,11 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            a -> id, util_t::school_type_string( a-> school ),
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
            a -> range, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration, a -> base_execute_time,
-           a -> may_crit?"true":"false", a -> direct_power_mod,
+           a -> base_crit, a -> may_crit?"true":"false", a -> direct_power_mod,
            a -> base_dd_min, a -> base_dd_max,
            a -> tick_may_crit?"true":"false",
            a -> tick_zero?"true":"false", a -> tick_power_mod, a -> base_td, a -> num_ticks, a -> base_tick_time,
+           a -> scale_with_haste?"true":"false",
            a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
            a -> weapon_power_mod);
       i++;
@@ -1658,9 +1661,9 @@ static void print_html2_player( FILE* file, player_t* p )
 {
   char buffer[ 4096 ];
 
-  util_t::fprintf( file, "<a name=\"%s\" href=\"javascript:;\" onclick=\"toggleSlide('%s');\"><h1>%s&nbsp;:&nbsp;%.0fdps</h1></a>\n", p -> name(), p -> name(), p -> name(), p -> dps );
+  util_t::fprintf( file, "<a name=\"%s\" href=\"javascript:;\" onclick=\"toggleSlide('%s-player');\"><h1>%s&nbsp;:&nbsp;%.0fdps</h1></a>\n", p -> name(), p -> name(), p -> name(), p -> dps );
 
-  util_t::fprintf( file, "<div id=\"%s\" style=\"display:%s;\"><style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n",
+  util_t::fprintf( file, "<div id=\"%s-player\" style=\"display:%s;\"><style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n",
       p -> name(), p -> is_pet()?"none":"");
 
   util_t::fprintf( file,

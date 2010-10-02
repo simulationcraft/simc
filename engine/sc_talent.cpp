@@ -1201,7 +1201,7 @@ active_spell_t::active_spell_t( player_t* player, const char* t_name ) :
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, id, ptype, stype )
 {
-  push_back();
+
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
@@ -1219,7 +1219,7 @@ active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype, const player_type stype ) :
   spell_id_t( player, t_name, s_name, false, ptype, stype )
 {
-  push_back();
+
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
