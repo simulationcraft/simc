@@ -157,6 +157,7 @@ void action_t::_init_action_t()
 
   stats = player -> get_stats( name_str );
   stats -> school = school;
+  stats -> resource = resource;
 
   id = spell_id();
 
@@ -229,26 +230,52 @@ void action_t::parse_data( sc_data_access_t& pData )
       base_cost = pData.spell_cost( id );
     if (effect_nr != 0 )
     {
-    	int effect = pData.spell_effect_id ( id, effect_nr );
-    	if (pData.effect_exists ( effect ) )
-    	{
-    		// Direct Damage
-    		if ( !pData.effect_period ( effect ) )
-    		{
-    			direct_power_mod = pData.effect_coeff( effect );
-    			base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-    			base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
-    		}
-    		// Dot
-    		else
-    		{
-    			tick_power_mod   = pData.effect_coeff( effect );
-    			//base_td          = pData.effect_base_value ( effect );
-          base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-    			base_tick_time   = pData.effect_period ( effect );
-    			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
-    		}
-    	}
+      for ( int i=1;i<4;i++)
+      {
+        int effect = pData.spell_effect_id ( id, i );
+        if (pData.effect_exists ( effect ) )
+        {
+          switch ( pData.effect_type ( effect) )
+          {
+          // Direct Damage
+          case E_SCHOOL_DAMAGE:
+            direct_power_mod = pData.effect_coeff( effect );
+            base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+            base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+            break;
+
+          case E_WEAPON_DAMAGE:
+            direct_power_mod = pData.effect_coeff( effect );
+            base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+            base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+            break;
+
+          // Dot
+          case E_APPLY_AURA:
+
+            switch ( pData.effect_subtype ( effect) )
+            {
+              case A_PERIODIC_DAMAGE:
+                tick_power_mod   = pData.effect_coeff( effect );
+                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+                base_tick_time   = pData.effect_period ( effect );
+                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                break;
+              case A_PERIODIC_LEECH:
+                tick_power_mod   = pData.effect_coeff( effect );
+                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+                base_tick_time   = pData.effect_period ( effect );
+                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                break;
+              case A_PERIODIC_TRIGGER_SPELL:
+                base_tick_time   = pData.effect_period ( effect );
+                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                break;
+            }
+            break;
+          }
+        }
+      }
     }
   }
 }
@@ -1062,7 +1089,7 @@ void action_t::additional_damage( double amount,
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   sim -> target -> assess_damage( amount, school, dmg_type );
-  stats -> add_result( amount, dmg_type, result );
+  stats -> add_result( dmg_type, this );
 }
 
 // action_t::schedule_execute ==============================================
@@ -1301,11 +1328,11 @@ void action_t::update_stats( int type )
 {
   if ( type == DMG_DIRECT )
   {
-    stats -> add( direct_dmg, type, result, time_to_execute );
+    stats -> add( type, this, time_to_execute );
   }
   else if ( type == DMG_OVER_TIME )
   {
-    stats -> add( tick_dmg, type, result, time_to_tick );
+    stats -> add( type, this, time_to_tick );
   }
   else assert( 0 );
 }
@@ -1314,15 +1341,9 @@ void action_t::update_stats( int type )
 
 void action_t::update_result( int type )
 {
-  if ( type == DMG_DIRECT )
-  {
-    stats -> add_result( direct_dmg, type, result );
-  }
-  else if ( type == DMG_OVER_TIME )
-  {
-    stats -> add_result( tick_dmg, type, result );
-  }
-  else assert( 0 );
+  stats -> add_result ( type, this );
+
+
 }
 
 // action_t::update_time ===================================================

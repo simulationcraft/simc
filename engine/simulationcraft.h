@@ -2524,7 +2524,7 @@ struct sim_t
   std::vector<double> iteration_timeline;
   std::vector<int> distribution_timeline;
   std::string timeline_chart;
-  std::string output_file_str, log_file_str, html_file_str, wiki_file_str, xml_file_str;
+  std::string output_file_str, log_file_str, html_file_str, html2_file_str, wiki_file_str, xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
@@ -3460,6 +3460,7 @@ struct stats_t
   bool analyzed;
   bool initialized;
 
+  int resource;
   double resource_consumed;
   double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
@@ -3480,8 +3481,8 @@ struct stats_t
   std::vector<double> timeline_dps;
 
   void consume_resource( double r ) { resource_consumed += r; }
-  void add( double amount, int dmg_type, int result, double time );
-  void add_result( double amount, int dmg_type, int result );
+  void add( int dmg_type, action_t* a, double time );
+  void add_result( int dmg_type, action_t* a );
   void add_time  ( double amount, int dmg_type );
   void init();
   void reset( action_t* );
@@ -4185,6 +4186,7 @@ struct report_t
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
+  static void print_html2( sim_t* );
   static void print_wiki( sim_t* );
   static void print_xml( sim_t* );
   static void print_suite( sim_t* );

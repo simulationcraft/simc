@@ -1521,6 +1521,7 @@ std::vector<option_t>& sim_t::get_options()
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html_file_str                            ) },
+      { "html2",                            OPT_STRING, &( html2_file_str                            ) },
       { "xml",                              OPT_STRING, &( xml_file_str                             ) },
       { "log",                              OPT_BOOL,   &( log                                      ) },
       { "output",                           OPT_STRING, &( output_file_str                          ) },

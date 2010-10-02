@@ -29,7 +29,7 @@ actions+=/drain_life
 actions+=/life_tap
 
 # Gear Summary
-gear_stamina=3000
+gear_stamina=10000
 gear_intellect=7000
 gear_spirit=500
 gear_spell_power=2000
