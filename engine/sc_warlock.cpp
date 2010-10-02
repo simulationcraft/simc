@@ -3070,7 +3070,7 @@ struct summon_pet_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( pet_name.c_str() == "felguard" )
+    if ( !pet_name.compare("felguard") )
     {
       check_talent( p -> active_spells.summon_felguard -> ok() );
     }
