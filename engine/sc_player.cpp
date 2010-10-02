@@ -2524,6 +2524,9 @@ talent_tab_name player_t::primary_tab() SC_CONST
     {
       if ( talent_tab_points[ 0 ] >= talent_tab_points[ 2 ] )
       {
+        if ( ! talent_tab_points[ 0 ] )
+          return TALENT_TAB_NONE;
+
         return ( talent_tab_name ) 0;
       }
       else
