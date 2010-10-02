@@ -555,7 +555,7 @@ struct rogue_t : public player_t
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
 };
 
-namespace Rogue   // ANONYMOUS NAMESPACE =========================================
+namespace // ANONYMOUS NAMESPACE ============================================
 {
 
 // ==========================================================================
@@ -1121,7 +1121,7 @@ void rogue_attack_t::parse_options( const std::string& options_str )
   parse_options( options, options_str );
 }
 
-// rogue_attack_t::parse_options ===========================================
+// rogue_attack_t::create_expression =======================================
 
 action_expr_t* rogue_attack_t::create_expression( const std::string& name_str )
 {
@@ -2751,11 +2751,11 @@ void rogue_poison_t::player_buff()
   spell_t::player_buff();
 }
 
-// rogue_attack_t::total_multiplier =======================================
+// rogue_poison_t::total_multiplier =======================================
 
 double rogue_poison_t::total_multiplier() SC_CONST
 {
-  // we have to overwrite it because Executioner is additive with talents
+  // we have to overwrite it because Potent Poisons is additive with talents
   rogue_t* p = player -> cast_rogue();
 
   double add_mult = 0.0;
@@ -3222,11 +3222,11 @@ struct vendetta_buff_t : public new_buff_t
 
 } // ANONYMOUS NAMESPACE ===================================================
 
-using namespace Rogue;
-
 // =========================================================================
 // Rogue Character Definition
 // =========================================================================
+
+// rogue_t::composite_attribute_multiplier ==================================
 
 double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
 {  
@@ -4066,7 +4066,7 @@ void player_t::rogue_combat_begin( sim_t* sim )
     sim -> auras.honor_among_thieves -> override();
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.2 );
+  if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
   if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
   if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
   if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();

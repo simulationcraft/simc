@@ -637,7 +637,6 @@ void player_t::init()
   init_professions();
   init_consumables();
   init_talents();
-  init_values();
   init_spells();
   init_scaling();
   init_buffs();
@@ -647,6 +646,7 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
+  init_values();
 }
 
 // player_t::init_base =====================================================
