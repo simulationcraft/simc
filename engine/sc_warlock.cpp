@@ -18,46 +18,10 @@
  * - Seed of Corruption with Soulburn: Trigger Corruptions
  * - Verify that impending doom immediately resets metamorphosis cooldown when it procs while the cooldown has less than 15 seconds left
  * - Execute felguard:felstorm by player, not the pet
+ * - Figure out EXACTLY how the incinerate boni (when immolate is up) calculates
  *
  */
 
-/*
-{ "Warlock Pet Scaling 01"            , 34947, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 25045, 25046, 25047 }, { 0x00000140, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Mod Stat (2)                            { 25045, 0x00, 34947, 0,    6,   29,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       2,       0,     0,   0.0 },
-Apply Aura: Mod Melee Attack Power                  { 25046, 0x00, 34947, 1,    6,   99,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Mod Damage Done (126)                   { 25047, 0x00, 34947, 2,    6,   13,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,     126,       0,     0,   0.0 },
-
-
-{ "Warlock Pet Scaling 02"            , 34956, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 25058, 25059, 25060 }, { 0x000001c0, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Increase Max Power - Flat               { 25058, 0x00, 34956, 0,    6,   35,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Mod Resistance (Physical)               { 25059, 0x00, 34956, 1,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       1,       0,     0,   0.0 },
-Apply Aura: Mod Resistance (Fire)                   { 25060, 0x00, 34956, 2,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       4,       0,     0,   0.0 },
-
-
-{ "Warlock Pet Scaling 03"            , 34957, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 25061, 25062, 25063 }, { 0x000001c0, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Mod Resistance (Frost)                  { 25061, 0x00, 34957, 0,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,      16,       0,     0,   0.0 },
-Apply Aura: Mod Resistance (Arcane)                 { 25062, 0x00, 34957, 1,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,      64,       0,     0,   0.0 },
-Apply Aura: Mod Resistance (Nature)                 { 25063, 0x00, 34957, 2,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       8,       0,     0,   0.0 },
-
-
-{ "Warlock Pet Scaling 04"            , 34958, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 25064, 25065, 25066 }, { 0x000001c0, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Mod Resistance (Shadow)                 { 25064, 0x00, 34958, 0,    6,   22,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,      32,       0,     0,   0.0 },
-Apply Aura: Power Regen                             { 25065, 0x00, 34958, 1,    6,   85,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Mod Spell Hit Chance %                  { 25066, 0x00, 34958, 2,    6,   55,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-
-
-{ "Warlock Pet Scaling 05"            , 61013, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 54805, 54806, 54807 }, { 0x000001c0, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Mod Melee & Ranged Hit Chance %         { 54805, 0x00, 61013, 0,    6,   54,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Mod Spell Hit Chance %                  { 54806, 0x00, 61013, 1,    6,   55,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Mod Expertise                           { 54807, 0x00, 61013, 2,    6,  240,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-
-
-{ "Warlock Pet Scaling 06"            , 89953, 0x00,  0.0, 0x01,  0, 0x100, 0x000,  0,   0,     0.0,     0.0,       0,    0,    0,         0,   0, 0x000,   0,   0,   0,  0,     0,     0,  0, { 92948, 92949, 97334 }, { 0x000001c0, 0x00000000, 0x00000000, 0x10000000, 0x02108000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 }, 0, 0 },
-Apply Aura: Mod Crit Chance % - All                 { 92948, 0x00, 89953, 0,    6,  290,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       0,       0,     0,   0.0 },
-Apply Aura: Decrease Attack Speed % (1)             { 92949, 0x00, 89953, 1,    6,  193,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,       1,       0,     0,   0.0 },
-Apply Aura: Reduce Target Resistances - Flat (126)  { 97334, 0x00, 89953, 2,    6,  123,  0.0000000000,  0.0000000000,  0.0000000000,  0.0000000000,     0,     0.0,     0.0,       0,     126,       0,     0,   0.0 },
-
- */
 
 
 // ==========================================================================
@@ -108,6 +72,7 @@ struct warlock_t : public player_t
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
+  cooldown_t* cooldowns_shadowflame_dot;
 
 
   // Affliction
@@ -203,6 +168,7 @@ struct warlock_t : public player_t
     active_spell_t* soul_fire;
     active_spell_t* incinerate;
     active_spell_t* shadowflame;
+    active_spell_t* shadowflame_dot;
     active_spell_t* fel_flame;
     active_spell_t* bane_of_havoc;
     active_spell_t* chaos_bolt;
@@ -334,6 +300,7 @@ struct warlock_t : public player_t
     cooldowns_improved_soul_fire -> duration  = 30.0;
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
+    cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
 
     spells_burning_embers         = 0;
 
@@ -430,6 +397,7 @@ struct warlock_t : public player_t
     active_spells.soul_fire             = new active_spell_t( this, "soul_fire", "Soul Fire" );
     active_spells.incinerate            = new active_spell_t( this, "incinerate", "Incinerate" );
     active_spells.shadowflame           = new active_spell_t( this, "shadowflame", "Shadowflame" );
+    active_spells.shadowflame_dot       = new active_spell_t( this, "shadowflame", 47960 );
     active_spells.fel_flame             = new active_spell_t( this, "fel_flame", "Fel Flame" );
     active_spells.bane_of_havoc         = new active_spell_t( this, "bane_of_havoc", "Bane of Havoc" );
     active_spells.chaos_bolt            = new active_spell_t( this, "chaos_bolt", "Chaos Bolt", talent_chaos_bolt );
@@ -462,6 +430,7 @@ struct warlock_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -740,7 +709,7 @@ struct warlock_spell_t : public spell_t
     may_crit      = true;
     dot_behavior  = DOT_REFRESH;
   }
-  warlock_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+  warlock_spell_t( const active_spell_t& s, int t = TREE_NONE, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE  ) :
       spell_t( s, ptype, stype, t )
   {
     may_crit      = true;
@@ -1116,7 +1085,6 @@ struct felguard_pet_t : public warlock_pet_t
         felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
         aoe       = true;
         harmful   = false;
-        channeled      = true;
         tick_zero      = true;
         id=89751;
         parse_data( player -> player_data );
@@ -1386,8 +1354,8 @@ struct infernal_pet_t : public warlock_pet_t
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       background        = true;
       repeating         = true;
-      base_dd_min = base_dd_max = p -> player_data.effect_base_value ( 11232 );
-      direct_power_mod  = 0.2;
+      base_dd_min = base_dd_max = p -> player_data.effect_real_ppl ( 11232 ) * p -> level;
+      direct_power_mod  = 0.4;
       range = p -> player_data.effect_radius ( 11232 );
     }
 
@@ -1501,8 +1469,8 @@ struct ebon_imp_pet_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 309.6;
-    main_hand_weapon.max_dmg    = 309.6;
+    main_hand_weapon.min_dmg    = 772;
+    main_hand_weapon.max_dmg    = 1080;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
@@ -1809,8 +1777,6 @@ struct bane_of_agony_t : public warlock_spell_t
       // after patch 3.0.8, the added ticks are double the base damage
       base_td = ( base_td * 12 + base_td * 4 ) / 14;
     }
-    trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
-
   }
 
   virtual void execute()
@@ -1985,7 +1951,6 @@ struct shadow_bolt_t : public warlock_spell_t
     trigger_impending_doom( this );
     if ( result_is_hit() )
     {
-      p -> buffs_molten_core -> trigger(3);
       target_t*  t = sim -> target;
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> rank() / 5.0 );
       trigger_soul_leech( this );
@@ -2094,7 +2059,7 @@ struct chaos_bolt_t : public warlock_spell_t
 {
 
   chaos_bolt_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.chaos_bolt ) )
+    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.chaos_bolt ), TREE_DESTRUCTION )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -2541,40 +2506,12 @@ struct haunt_t : public warlock_spell_t
   }
 
 };
-// Immolate Burst Spell ======================================================
 
-struct immolate_burst_t : public warlock_spell_t
-{
-    immolate_burst_t( player_t* player ) :
-        warlock_spell_t( "immolate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
-
-    {
-      warlock_t* p = player -> cast_warlock();
-
-      proc       = true;
-      background = true;
-      may_crit   = true;
-
-      id = 348;
-      effect_nr=2;
-      parse_effect_data( p -> player_data);
-
-      base_multiplier = 1.0 + ( p -> talent_improved_immolate -> rank() * 0.10 );
-
-      name_str = "immolate_burst";
-    }
-    virtual void execute()
-    {
-      warlock_spell_t::execute();
-      update_stats( DMG_DIRECT );
-    }
-};
 
 // Immolate Spell =============================================================
 
 struct immolate_t : public warlock_spell_t
 {
-  spell_t*  immolate_burst;
 
   immolate_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.immolate ) )
@@ -2592,26 +2529,11 @@ struct immolate_t : public warlock_spell_t
     base_execute_time -= p -> talent_bane -> rank() * 0.1;
     base_td_multiplier *= 1.0 + ( p -> glyphs.immolate              * 0.10 );
 
-    immolate_burst = new immolate_burst_t( p );
-
-    tick_power_mod = immolate_burst -> direct_power_mod;
-    base_td = player -> player_data.effect_base_value( player -> player_data.spell_effect_id( id, 3 ) );
-    base_tick_time=3.0; // hardcoded because amplitude is in effect nr. 3
-    num_ticks=5;
-
   }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
-
-
-
-    if ( immolate_burst )
-    {
-      immolate_burst -> execute();
-    }
-
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
@@ -2621,13 +2543,44 @@ struct immolate_t : public warlock_spell_t
 
   }
 
+  virtual void tick()
+  {
+    warlock_spell_t::tick();
+    warlock_t* p = player -> cast_warlock();
+    p -> buffs_molten_core -> trigger(3);
+  }
+
 
 };
 
+// Shadowflame DOT Spell =============================================================
+
+struct shadowflame_dot_t : public warlock_spell_t
+{
+  shadowflame_dot_t( player_t* player ) :
+    warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.shadowflame_dot ) )
+  {
+    warlock_t* p = player -> cast_warlock();
+    dual       = true;
+    proc       = true;
+    background = true;
+    tick_may_crit   = true;
+    name_str = "shadowflame_dot";
+    cooldown = p -> cooldowns_shadowflame_dot;
+    cooldown -> duration = 0.0;
+
+  }
+
+  virtual void execute()
+  {
+   warlock_spell_t::execute();
+  }
+};
 // Shadowflame Spell =============================================================
 
 struct shadowflame_t : public warlock_spell_t
 {
+  shadowflame_dot_t* sf_dot;
   shadowflame_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( *( ( ( warlock_t* ) ( player -> cast_warlock() ) ) -> active_spells.shadowflame ) )
   {
@@ -2636,22 +2589,19 @@ struct shadowflame_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    warlock_t* p = player -> cast_warlock();
 
     may_crit          = true;
+    sf_dot = new shadowflame_dot_t( p );
+    cooldown -> duration = p -> player_data.spell_cooldown ( id );
 
   }
 
   virtual void execute()
   {
-    base_td = base_td_init;
-    // DD is shadow damage, DoT is fire damage
-    school = SCHOOL_SHADOW;
     warlock_spell_t::execute();
-    if ( result_is_hit() )
-    {
-      // DD was shadow, now DoT is fire, so reset school
-      school = SCHOOL_FIRE;
-    }
+    sf_dot -> execute();
+
   }
 };
 
@@ -2812,42 +2762,7 @@ struct conflagrate_t : public warlock_spell_t
   }
 };
 
-// Incinerate Burst Immolate Spell ======================================================
 
-struct incinerate_burst_immolate_t : public warlock_spell_t
-{
-  incinerate_burst_immolate_t( player_t* player ) :
-        warlock_spell_t( "incinerate", player, SCHOOL_FIRE, TREE_DESTRUCTION )
-
-    {
-      warlock_t* p = player -> cast_warlock();
-
-      background = true;
-      may_crit   = true;
-
-
-      id = 29722;
-      parse_effect_data( p -> player_data);
-
-      base_dd_min /= 4;
-      base_dd_max /= 4;
-      direct_power_mod /= 4;
-
-      name_str = "incinerate_burst_immolate";
-    }
-
-    virtual double calculate_direct_damage()
-    {
-      direct_dmg = (base_dd_min + base_dd_max) / 2;
-      return direct_dmg;
-    }
-
-    virtual void execute()
-    {
-      warlock_spell_t::execute();
-      update_stats( DMG_DIRECT );
-    }
-};
 
 // Incinerate Spell =========================================================
 
@@ -2871,18 +2786,20 @@ struct incinerate_t : public warlock_spell_t
     base_execute_time -= util_t::talent_rank( p -> talent_emberstorm -> rank(), 2, 0.13, 0.25 );
     base_multiplier *= 1.0 + ( p -> glyphs.incinerate            * 0.05 );
 
-    incinerate_burst_immolate = new incinerate_burst_immolate_t( p );
+
   }
 
   virtual void execute()
   {
-  warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
     trigger_impending_doom( this );
-    if ( incinerate_burst_immolate && p -> dots_immolate -> ticking() )
-       {
-      incinerate_burst_immolate -> execute();
-       }
+
+  }
+
+  virtual void modify_direct_damage()
+  {
+    spell_t::modify_direct_damage();
+    direct_dmg += sim -> range( base_dd_min, base_dd_max ) / 4.0 * total_dd_multiplier();
   }
 
   virtual void schedule_travel()
@@ -3025,17 +2942,6 @@ struct soul_fire_t : public warlock_spell_t
         }
   }
 
-  virtual void player_buff()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
-    if ( p -> buffs_molten_core -> up() )
-    {
-      player_crit += p -> talent_molten_core -> rank() * 0.05;
-      player_multiplier *= 1 + p -> talent_molten_core -> rank() * 0.06;
-      p -> buffs_molten_core -> decrement();
-    }
-  }
 };
 
 // Life Tap Spell ===========================================================
@@ -3808,6 +3714,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 };
 
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
@@ -4005,6 +3912,14 @@ void warlock_t::init_base()
 
 }
 
+// warlock_t::init_scaling ===================================================
+
+void warlock_t::init_scaling()
+{
+  player_t::init_scaling();
+    scales_with[ STAT_STAMINA ] = 1;
+}
+
 // warlock_t::init_buffs =====================================================
 
 void warlock_t::init_buffs()
@@ -4019,7 +3934,7 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor"     );
   buffs_haunted               = new buff_t( this, "haunted",             1, 12.0, 0.0, talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, "metamorphosis",       1, 30.0 + glyphs.metamorphosis * 6.0, 0.0, talent_metamorphosis -> rank() );
-  buffs_molten_core           = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.05 );
+  buffs_molten_core           = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, "shadow_embrace",      3, 12.0, 0.0, talent_shadow_embrace -> rank() );
   buffs_shadow_trance         = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talent_nightfall -> rank() * 0.02 +  glyphs.corruption * 0.04 );
   buffs_tier10_4pc_caster     = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
