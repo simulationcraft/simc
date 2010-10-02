@@ -222,15 +222,17 @@ void action_t::parse_data( sc_data_access_t& pData )
     range                = pData.spell_max_range ( id );
     travel_speed         = pData.spell_missile_speed ( id );
     trigger_gcd          = pData.spell_gcd ( id );
+    school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
+    resource             = pData.spell_power_type( id );
 
     // For mana it returns the % of base mana, not the absolute cost
-    if ( pData.spell_power_type( id ) == RESOURCE_MANA )
+    if ( resource == RESOURCE_MANA )
       base_cost = floor ( pData.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
     else
       base_cost = pData.spell_cost( id );
-    if (effect_nr != 0 )
-    {
-      for ( int i=1;i<4;i++)
+
+
+      for ( int i=1; i <= MAX_EFFECTS; i++)
       {
         int effect = pData.spell_effect_id ( id, i );
         if (pData.effect_exists ( effect ) )
@@ -257,26 +259,26 @@ void action_t::parse_data( sc_data_access_t& pData )
             {
               case A_PERIODIC_DAMAGE:
                 tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+                base_td          = floor( pData.effect_min ( effect, player_type( player -> type ), player -> level ) );
                 base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
                 break;
               case A_PERIODIC_LEECH:
                 tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+                base_td          = floor( pData.effect_min ( effect, player_type( player -> type ), player -> level ) );
                 base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
                 break;
               case A_PERIODIC_TRIGGER_SPELL:
                 base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
+                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
                 break;
             }
             break;
           }
         }
       }
-    }
+
   }
 }
 
