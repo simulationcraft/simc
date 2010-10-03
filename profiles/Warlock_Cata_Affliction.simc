@@ -4,7 +4,7 @@ warlock=Warlock_Cata_Affliction
 level=85
 race=goblin
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=2232220030133213210000000000000000000332
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=2232220030133213212300200000000000000020
 glyphs=bane_of_agony/haunt/life_tap/unstable_affliction
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -18,14 +18,13 @@ actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
 actions+=/demon_soul,health_percentage<=25
 actions+=/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<3)
-actions+=/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gcd
+actions+=/bane_of_doom,time_to_die>=20,if=!ticking|dot.bane_of_doom.remains<gcd
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
-actions+=/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)|!ticking
-actions+=/drain_soul,health_percentage<=25,interrupt=1,if=!ticking
-#actions+=/fel_flame,if=dot.unstable_affliction.remains<=5|!ticking
+actions+=/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)
+actions+=/drain_soul,health_percentage<=25,interrupt=1
 actions+=/summon_doomguard,time>=100
 actions+=/shadow_bolt,if=buff.shadow_trance.react
-actions+=/drain_life,if=!ticking
+actions+=/drain_life
 actions+=/life_tap
 
 # Gear Summary

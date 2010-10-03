@@ -15,7 +15,7 @@ actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/demon_soul,if=buff.metamorphosis.react
 actions+=/summon_infernal,if=buff.metamorphosis.react
 actions+=/metamorphosis
-actions+=/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)|!ticking
+actions+=/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)&!ticking
 actions+=/bane_of_doom,time_to_die>=20,if=!ticking
 actions+=/hand_of_guldan
 actions+=/immolation,if=buff.metamorphosis.react
@@ -33,8 +33,6 @@ gear_intellect=7000
 gear_spirit=500
 gear_spell_power=2000
 gear_hit_rating=800
-gear_crit_rating=2000
-gear_haste_rating=2000
-gear_mastery_rating=1500
-gear_armor=4000
-meta_gem=chaotic_skyflare
+gear_crit_rating=1750
+gear_haste_rating=2500
+gear_mastery_rating=1250

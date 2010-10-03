@@ -437,6 +437,7 @@ struct warlock_pet_t : public pet_t
   attack_t* melee;
 
   gain_t* gains_mana_feed;
+  proc_t* procs_mana_feed;
 
   struct _stat_list_t {
     int id;
@@ -452,6 +453,7 @@ struct warlock_pet_t : public pet_t
       damage_modifier( 1.0 ), melee( 0 )
   {
     gains_mana_feed = get_gain("mana_feed");
+    procs_mana_feed = get_proc("mana_feed");
 
   }
 
@@ -837,14 +839,14 @@ struct warlock_pet_attack_t : public attack_t
 
 static void trigger_mana_feed( action_t* s, double travel_result )
 {
-  pet_t* a = ( pet_t* ) s -> player -> cast_pet();
+  warlock_pet_t* a = ( warlock_pet_t* ) s -> player -> cast_pet();
   warlock_t* p = a -> owner -> cast_warlock();
   if ( p -> talent_mana_feed -> rank() )
   {
     if ( travel_result == RESULT_CRIT )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talent_mana_feed -> rank(), p -> gains_mana_feed );
-
+      a -> procs_mana_feed -> occur();
     }
   }
 }
