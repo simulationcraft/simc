@@ -847,7 +847,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
       direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       
       // Elemental fury
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     }
 
     base_multiplier     *= 1.0 +
@@ -877,7 +877,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
       direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       
       // Elemental fury
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     }
 
     base_multiplier     *= 1.0 +
@@ -973,7 +973,7 @@ struct lightning_charge_t : public shaman_spell_t
       p -> set_bonus.tier7_2pc_melee() * 0.10;
 
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
       
     consume_threshold = ( int ) p -> talent_fulmination -> base_value();
   }
@@ -1874,7 +1874,7 @@ struct chain_lightning_t : public shaman_spell_t
       base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
       
       // Elemental fury
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     }
 
     base_multiplier     *= 1.0 +
@@ -2045,7 +2045,7 @@ struct fire_nova_t : public shaman_spell_t
     if ( p -> primary_tree() == TREE_ELEMENTAL )
     {
       // Elemental fury
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     }
     
     // Scaling information is from another spell (8349)
@@ -2249,7 +2249,7 @@ struct lightning_bolt_t : public shaman_spell_t
       base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
       
       // Elemental fury
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     }
 
     base_multiplier     *= 1.0 +
@@ -2584,7 +2584,7 @@ struct earth_shock_t : public shaman_spell_t
     base_cost_reduction  += p -> talent_convection -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
     
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
 
     cooldown = p -> cooldowns_shock;
     cooldown -> duration  = 6.0 + p -> talent_reverberation -> base_value() / 1000.0;
@@ -2652,7 +2652,7 @@ struct flame_shock_t : public shaman_spell_t
     base_cost_reduction  += p -> talent_convection -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
     
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
 
     // XX: For now, apply the tier9 2p bonus first, then do the glyph duration increase
     double n              = num_ticks;
@@ -2735,7 +2735,7 @@ struct frost_shock_t : public shaman_spell_t
     base_cost_reduction  += p -> talent_convection -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
 
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
 
     cooldown              = p -> cooldowns_shock;
     cooldown -> duration  = 6.0 + p -> talent_reverberation -> base_value() / 1000.0;
@@ -2958,7 +2958,7 @@ struct magma_totem_t : public shaman_totem_t
     base_multiplier  *= 1.0 + p -> talent_call_of_flame -> effect_base_value( 1 ) / 100.0;
     
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     
     // Spell id 8188 does the triggering of magma totem's aura
     base_tick_time    = p -> player_data.effect_period( 8188, E_APPLY_AURA, A_PERIODIC_TRIGGER_SPELL );
@@ -3096,7 +3096,7 @@ struct searing_totem_t : public shaman_totem_t
     base_multiplier     *= 1.0 + p -> talent_call_of_flame -> effect_base_value( 2 ) / 100.0;
     
     if ( p -> primary_tree() == TREE_ELEMENTAL )
-      base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> base_value();
     
     // Scaling information is found in Searing Bolt (3606)
     base_dd_min          = p -> player_data.effect_min( 3606, p -> level, E_SCHOOL_DAMAGE );
