@@ -14,8 +14,11 @@ struct druid_t : public player_t
   // Active
   action_t* active_t10_4pc_caster_dot;
 
-  // Eclipse, same as the ingame bar
-  double eclipse_bar_value;
+  // Auto-attacks
+  attack_t* cat_melee_attack;
+  attack_t* bear_melee_attack;
+
+  double equipped_weapon_dps;
 
   // Buffs
   buff_t* buffs_berserk;
@@ -71,22 +74,30 @@ struct druid_t : public player_t
   proc_t* procs_primal_fury;
   proc_t* procs_tier8_2pc;
 
-  // Up-Times
-  uptime_t* uptimes_energy_cap;
-  uptime_t* uptimes_rage_cap;
-  uptime_t* uptimes_rip;
-  uptime_t* uptimes_rake;
-
   // Random Number Generation
   rng_t* rng_euphoria;
   rng_t* rng_fury_swipes;
   rng_t* rng_blood_in_the_water;
   rng_t* rng_primal_fury;
   
-  attack_t* cat_melee_attack;
-  attack_t* bear_melee_attack;
+  // Tree specialization passives
+  // Balance
+  passive_spell_t* spec_moonfury;
+  passive_spell_t* mastery_total_eclipse; // Mastery
+  double eclipse_bar_value; // Tracking the current value of the eclipse bar
+  
+  // Feral
+  passive_spell_t* spec_aggression;
+  passive_spell_t* spec_vengeance;
+  passive_spell_t* mastery_razor_claws; // Mastery
+  passive_spell_t* mastery_savage_defender; // Mastery
 
-  double equipped_weapon_dps;
+  // Up-Times
+  uptime_t* uptimes_energy_cap;
+  uptime_t* uptimes_rage_cap;
+  uptime_t* uptimes_rip;
+  uptime_t* uptimes_rake;
+
 
   // Talents
   /* Changes, build 12984
@@ -153,15 +164,14 @@ struct druid_t : public player_t
     
     // Feral  
     talent_t* berserk;
+    talent_t* blood_in_the_water;
     talent_t* brutal_impact; // NYI
     talent_t* endless_carnage;
-    talent_t* blood_in_the_water;
     talent_t* feral_aggression;
     talent_t* feral_charge; // NYI
     talent_t* feral_swiftness;
     talent_t* furor;
     talent_t* fury_swipes;
-    talent_t* stampede; // Valid to run out->charge->ravage?
     talent_t* infected_wounds;
     talent_t* king_of_the_jungle;
     talent_t* leader_of_the_pack;
@@ -172,8 +182,10 @@ struct druid_t : public player_t
     talent_t* primal_madness; // NYI
     talent_t* pulverize; // NYI
     talent_t* rend_and_tear;
+    talent_t* stampede; // Valid to run out->charge->ravage?
     talent_t* survival_instincts; // NYI
     talent_t* thick_hide; // How does the +10% and +33%@bear stack etc
+
     
     // Resto
     talent_t* blessing_of_the_grove;
@@ -214,7 +226,16 @@ struct druid_t : public player_t
 
     active_t10_4pc_caster_dot = 0;
     
-    eclipse_bar_value = 0;
+    // Balance
+    spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
+    mastery_total_eclipse = new passive_spell_t( this, "total_eclipse", 77492 );
+    eclipse_bar_value     = 0;
+
+    // Feral
+    spec_aggression         = new passive_spell_t( this, "aggression",      84735 );
+    spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
+    mastery_razor_claws     = new passive_spell_t( this, "razor_claws",     77493 );
+    mastery_savage_defender = new passive_spell_t( this, "savage_defender", 77494 );
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
     cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
@@ -422,12 +443,15 @@ struct druid_bear_attack_t : public attack_t
 
 struct druid_spell_t : public spell_t
 {
-  int skip_on_eclipse;
+  int    skip_on_eclipse;
+  double base_cost_reduction;
   druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-      spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ) 
+      spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ),
+      base_cost_reduction( 0.0 )
       { }
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
+  virtual double cost_reduction() SC_CONST;
   virtual void   execute();
   virtual double execute_time() SC_CONST;
   virtual double haste() SC_CONST;
@@ -615,8 +639,6 @@ static void trigger_eclipse_proc( druid_t* p )
 
 static void trigger_eclipse_energy_gain( spell_t* s, double gain )
 {
-  // EVERY druid has the eclipse mechanic, regardless of chosen tree
-  // but only balance druid get an actual bonus from it (12% base + mastery)
   if ( gain == 0 ) return;
   
   druid_t* p = s -> player -> cast_druid();
@@ -1412,7 +1434,7 @@ struct tigers_fury_t : public druid_cat_attack_t
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
     }
 
-    p -> buffs_tigers_fury -> trigger( 1, 0.88 );
+    p -> buffs_tigers_fury -> trigger( 1, 0.15 );
     update_ready();
   }
 
@@ -2013,6 +2035,17 @@ bool druid_spell_t::ready()
   return true;
 }
 
+// druid_spell_t::cost_reduction ===========================================
+
+double druid_spell_t::cost_reduction() SC_CONST
+{
+  druid_t* p = player -> cast_druid();
+  double   cr = 0.0;
+
+  cr += p -> talents.moonglow -> base_value();
+  return cr;
+}
+
 // druid_spell_t::cost =====================================================
 
 double druid_spell_t::cost() SC_CONST
@@ -2020,10 +2053,9 @@ double druid_spell_t::cost() SC_CONST
   druid_t* p = player -> cast_druid();
   if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   double c = spell_t::cost();
-  if ( resource == RESOURCE_MANA && p -> talents.moonglow -> rank() )
-    c *= 1.0 - 0.03 * p -> talents.moonglow -> rank();
-
-  return spell_t::cost();
+  c *= 1.0 + cost_reduction();
+  if ( c < 0 ) c = 0.0;  
+  return c;
 }
 
 // druid_spell_t::haste ====================================================
@@ -2115,7 +2147,7 @@ void druid_spell_t::player_buff()
     // Moonfury: Arcane and Nature spell damage increased by 25%
     // One of the bonuses for choosing balance spec
     if ( p -> primary_tree() == TREE_BALANCE )
-      player_multiplier *= 1.25;
+      player_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 3 );
 
     if ( p -> buffs_moonkin_form -> check() )
       player_multiplier *= 1.10;
@@ -2124,11 +2156,11 @@ void druid_spell_t::player_buff()
   // Eclipse increases wrath damage by 1.5% per mastery point
   if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_lunar -> up() )
-      player_multiplier *= 1.25 + p -> composite_mastery() * 0.015;
+      player_multiplier *= 1.25 + p -> composite_mastery() * 0.0001 * p -> mastery_total_eclipse -> effect_base_value( 2 );
 
   if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_solar -> up() )
-      player_multiplier *= 1.25 + p -> composite_mastery() * 0.015;
+      player_multiplier *= 1.25 + p -> composite_mastery() * 0.0001 * p -> mastery_total_eclipse -> effect_base_value( 2 );
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon -> rank() * 0.02;
   
@@ -2449,7 +2481,7 @@ struct insect_swarm_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
-  int start_num_ticks;
+  int         start_num_ticks;
   moonfire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), start_num_ticks( 0 )
   {
@@ -2461,16 +2493,8 @@ struct moonfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 14, 406, 476, 200, 0.21 },
-      { 75, 13, 347, 407, 171, 0.21 },
-      { 70, 12, 305, 357, 150, 495  },
-      { 64, 11, 220, 220, 111, 430  },
-      { 58, 10, 189, 221,  96, 375  },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48463 );
+    id = 8921;
+    parse_data( p -> player_data );
 
     base_execute_time = 0;
     base_tick_time    = 2.0;
@@ -2478,18 +2502,14 @@ struct moonfire_t : public druid_spell_t
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     start_num_ticks  += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
     num_ticks         = start_num_ticks;
-    direct_power_mod  = 0.15;
-    tick_power_mod    = 0.13;
     may_crit          = true;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     
-    // Costreduction from moonglow and lunar shower is additive? pita
-    // up to 9%+90%=99%
-    
-    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> effect_base_value( 2 );
 
-    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) * 0.01;
+    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 );
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
@@ -2538,14 +2558,17 @@ struct moonfire_t : public druid_spell_t
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
     }
   }
-  virtual double cost() SC_CONST
+  virtual double cost_reduction() SC_CONST
   {
+    // Costreduction from moonglow and lunar shower is additive? pita
+    // up to 9%+90%=99%
     druid_t* p = player -> cast_druid();
-    double c = druid_spell_t::cost();
-    c *= 1.0 - (0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
+    double cr = druid_spell_t::cost_reduction();
+    cr += (-0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
 
-    if ( c < 0 ) c = 0;
-    return c;
+    if ( cr < 0 ) cr = 0;
+    return cr;
+    
   }
   virtual bool ready()
   {
@@ -2813,7 +2836,9 @@ struct starfire_t : public druid_spell_t
     may_crit          = true;
 
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
-    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -2929,7 +2954,9 @@ struct wrath_t : public druid_spell_t
     
     // Times are given in ms in DBC files
     base_execute_time += p -> talents.starlight_wrath -> effect_base_value( 1 ) * 0.001;
-    base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
@@ -3016,7 +3043,9 @@ struct starfall_t : public druid_spell_t
         dual             = true;
 
         base_dd_min = base_dd_max  = 0;
-        base_crit_bonus_multiplier *= 1.0 + (( p -> primary_tree() == TREE_BALANCE ) ? 1.0 : 0.0 );
+        if ( p -> primary_tree() == TREE_BALANCE )
+          base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+
 
         if ( p -> glyphs.focus )
           base_multiplier *= 1.1;
