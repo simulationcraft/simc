@@ -113,6 +113,8 @@ struct priest_t : public player_t
     passive_spell_t* shadow_orbs;
     passive_spell_t* dark_evangelism_1;
     passive_spell_t* dark_evangelism_2;
+    passive_spell_t* holy_evangelism_1;
+    passive_spell_t* holy_evangelism_2;
   };
 
   passive_spells_t passive_spells;
@@ -140,6 +142,7 @@ struct priest_t : public player_t
     active_spell_t* inner_focus;
     active_spell_t* chakra;
     active_spell_t* archangel;
+    active_spell_t* holy_archangel;
     active_spell_t* dark_archangel;
  
     active_spell_t* penance;
@@ -171,6 +174,7 @@ struct priest_t : public player_t
   // Uptimes
   uptime_t* uptimes_mind_spike[ 4 ];
   uptime_t* uptimes_dark_evangelism[ 6 ];
+  uptime_t* uptimes_holy_evangelism[ 6 ];
   uptime_t* uptimes_shadow_orb[ 4 ];
 
   // Procs
@@ -225,7 +229,7 @@ struct priest_t : public player_t
 
     // Discipline
     double twin_disciplines_value;
-    double dark_evangelism_value;
+    double dark_evangelism_damage_value;
     double holy_evangelism_damage_value;
     double holy_evangelism_mana_value;
     double dark_archangel_damage_value;
@@ -347,6 +351,9 @@ struct priest_t : public player_t
 
     passive_spells.dark_evangelism_1    = new passive_spell_t( this, "dark_evangelism_1", 87117 );
     passive_spells.dark_evangelism_2    = new passive_spell_t( this, "dark_evangelism_2", 87118 );
+    passive_spells.holy_evangelism_1    = new passive_spell_t( this, "holy_evangelism_1", 81660 );
+    passive_spells.holy_evangelism_2    = new passive_spell_t( this, "holy_evangelism_2", 81661 );
+
 
     passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //             done: talent function 12803          incomplete: link with main talent tree
     passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); //           done: talent function 12803
@@ -379,6 +386,7 @@ struct priest_t : public player_t
     active_spells.inner_focus           = new active_spell_t( this, "inner_focus", "Inner Focus", talents.inner_focus );
     active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
     active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
+    active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
     active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
 
     cooldowns_mind_blast                = get_cooldown( "mind_blast" );
@@ -706,6 +714,7 @@ void priest_spell_t::player_buff()
   for ( int i=0; i < 6; i++ )
   {
     p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
+    p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
   }
 #if 0
   for ( int i=0; i < 4; i++ )
@@ -908,7 +917,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     if ( ! p -> bugs )
     {
-      m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+      m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     }
 
     player_multiplier *= m;
@@ -968,7 +977,7 @@ struct devouring_plague_t : public priest_spell_t
 
     priest_spell_t::player_buff();
     
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
   }
 
   virtual void tick()
@@ -1358,7 +1367,7 @@ struct mind_flay_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
     player_multiplier *= m;
@@ -1805,7 +1814,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     m += p -> constants.improved_shadow_word_pain_value;
     m += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
-    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
 
     player_multiplier *= m;
   }
@@ -2037,7 +2046,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_value;
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
   }
 };
 
@@ -2108,7 +2117,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 struct archangel_t : public priest_spell_t
 {
   archangel_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "archangel", player, SCHOOL_HOLY, TREE_DISCIPLINE )
+      priest_spell_t( "archangel", player, "Archangel" )
   {
     priest_t* p = player -> cast_priest();
 
@@ -2491,6 +2500,13 @@ void priest_t::init_uptimes()
   uptimes_dark_evangelism[ 4 ]  = get_uptime( "dark_evangelism_4" );
   uptimes_dark_evangelism[ 5 ]  = get_uptime( "dark_evangelism_5" );
 
+  uptimes_holy_evangelism[ 0 ]  = get_uptime( "holy_evangelism_0" );
+  uptimes_holy_evangelism[ 1 ]  = get_uptime( "holy_evangelism_1" );
+  uptimes_holy_evangelism[ 2 ]  = get_uptime( "holy_evangelism_2" );
+  uptimes_holy_evangelism[ 3 ]  = get_uptime( "holy_evangelism_3" );
+  uptimes_holy_evangelism[ 4 ]  = get_uptime( "holy_evangelism_4" );
+  uptimes_holy_evangelism[ 5 ]  = get_uptime( "holy_evangelism_5" );
+
   uptimes_shadow_orb[ 0 ]  = get_uptime( "shadow_orb_0" );
   uptimes_shadow_orb[ 1 ]  = get_uptime( "shadow_orb_1" );
   uptimes_shadow_orb[ 2 ]  = get_uptime( "shadow_orb_2" );
@@ -2676,29 +2692,44 @@ void priest_t::init_values()
 
   // Discipline/Holy
   constants.meditation_value                = passive_spells.meditation_disc    -> ok() ? 
-                                                passive_spells.meditation_disc  -> effect_base_value( 1 ) / 100.0 :
-                                                passive_spells.meditation_holy  -> effect_base_value( 1 ) / 100.0;
+                                                passive_spells.meditation_disc  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT ) :
+                                                passive_spells.meditation_holy  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT );
 
   // Discipline
-  constants.twin_disciplines_value          = talents.twin_disciplines          -> effect_base_value( 1 ) / 100.0;
+  constants.twin_disciplines_value          = talents.twin_disciplines->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
   switch ( talents.evangelism -> rank() )
   {
-  case 1: constants.dark_evangelism_value   = passive_spells.dark_evangelism_1  -> effect_base_value( 1 ) / 100.0; break;
-  case 2: constants.dark_evangelism_value   = passive_spells.dark_evangelism_2  -> effect_base_value( 1 ) / 100.0; break;
-  default: constants.dark_evangelism_value  = 0.0; break;
+  case 1: 
+    constants.dark_evangelism_damage_value  = passive_spells.dark_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
+    constants.holy_evangelism_damage_value  = passive_spells.holy_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0 );
+    constants.holy_evangelism_mana_value    = passive_spells.holy_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
+    break;
+  case 2:
+    constants.dark_evangelism_damage_value  = passive_spells.dark_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
+    constants.holy_evangelism_damage_value  = passive_spells.holy_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0 );
+    constants.holy_evangelism_mana_value    = passive_spells.holy_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
+    break;
+  default: 
+    constants.dark_evangelism_damage_value  = 0.0; 
+    constants.holy_evangelism_damage_value  = 0.0;
+    constants.holy_evangelism_mana_value    = 0.0;
+    break;
   }
-  constants.holy_evangelism_damage_value    = 0.02;
-  constants.holy_evangelism_mana_value      = 0.03;
+
   if ( ! bugs )
   {
-    constants.dark_archangel_damage_value   = active_spells.dark_archangel      -> effect_base_value( 1 ) / 100.0;
-    constants.dark_archangel_mana_value     = active_spells.dark_archangel      -> effect_base_value( 3 ) / 100.0;
+    constants.dark_archangel_damage_value   = active_spells.dark_archangel   -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
+    constants.dark_archangel_mana_value     = active_spells.dark_archangel   -> effect_base_value( 3 ) / 100.0;
+    constants.holy_archangel_value          = active_spells.archangel        -> base_value();
+    constants.archangel_mana_value          = active_spells.holy_archangel   -> base_value( E_ENERGIZE_PCT );
   }
   else
   {
     constants.dark_archangel_damage_value   = 0.02;
     constants.dark_archangel_mana_value     = 0.03;
+    constants.holy_archangel_value          = 0.04;
+    constants.archangel_mana_value          = 0.05;
   }
   constants.holy_archangel_value            = 0.03;
   constants.archangel_mana_value            = 0.03;

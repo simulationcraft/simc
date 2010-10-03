@@ -39,7 +39,7 @@ struct warlock_t : public player_t
   {
 
     warlock_glyph_t( player_t* player, const char* n, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE ) :
-      spell_id_t( player, n, n, ptype, stype )
+      spell_id_t( player, n, n, false, ptype, stype )
       {
 
       }

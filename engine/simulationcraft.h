@@ -1200,6 +1200,8 @@ enum effect_subtype_t {
   A_MAX
 };
 
+#define DEFAULT_MISC_VALUE std::numeric_limits<int>::min()
+
 // These names come from the MANGOS project.
 enum spell_attribute_t {
  SPELL_ATTR_UNK0 = 0x0000, // 0
@@ -1774,8 +1776,6 @@ private:
   int                             talent_compare( const void *vid1, const void *vid2 );
 };
 
-#define DEFAULT_MISC_VALUE std::numeric_limits<int>::min()
-
 class sc_data_access_t : public sc_data_t
 {
 public:
@@ -1853,10 +1853,10 @@ public:
   virtual double        effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
 
   // Aand more generic stuff
-  virtual const spelleffect_data_t * effect( uint32_t, effect_type_t, effect_subtype_t, int ) SC_CONST;
+  virtual const spelleffect_data_t * effect( uint32_t, effect_type_t, effect_subtype_t, int, int = DEFAULT_MISC_VALUE ) SC_CONST;
   virtual double        effect_min( uint32_t, uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
   virtual double        effect_max( uint32_t, uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
-  virtual double        effect_base_value( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double        effect_base_value( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE, int = DEFAULT_MISC_VALUE ) SC_CONST;
   virtual double        effect_coeff( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
   virtual double        effect_period( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
   virtual uint32_t      effect_trigger_spell_id( uint32_t, effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
@@ -2295,7 +2295,7 @@ struct new_buff_t : public buff_t
     double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
 
   virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE ) SC_CONST; 
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST; 
 };
 
 // Expressions =================================================================
@@ -3547,8 +3547,8 @@ struct spell_id_t
 
   virtual ~spell_id_t() {}
 
-  virtual bool init( const char* s_name = NULL );
-  virtual bool init( const uint32_t id, int t = -1 );
+  bool init( const char* s_name = NULL );
+  bool init( const uint32_t id, int t = -1 );
   virtual uint32_t spell_id() { return ( pp && spell_id_t_data ) ? spell_id_t_id : 0; };
   virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
@@ -3611,7 +3611,7 @@ struct spell_id_t
   virtual int    effect_die_sides( const uint32_t effect_num ) SC_CONST;
 
   // Generalized access API
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
 private:
 };
 
@@ -3817,6 +3817,7 @@ struct action_t : public active_spell_t
   virtual void   check_spec( int necessary_spec );
   virtual void   check_min_level( int level );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
+  virtual void   init() { };
 
   virtual double   miss_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
   virtual double  dodge_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }

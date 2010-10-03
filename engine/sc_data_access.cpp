@@ -695,7 +695,7 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
 
 /*************** Effect type based searching of spell id *************************/
 
-const spelleffect_data_t * sc_data_access_t::effect( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+const spelleffect_data_t * sc_data_access_t::effect( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
   const spelleffect_data_t * e;
 
@@ -713,7 +713,8 @@ const spelleffect_data_t * sc_data_access_t::effect( uint32_t spell_id, effect_t
 
     if ( ( type == E_MAX || e -> type == type ) &&
          ( sub_type == A_MAX || e -> subtype == sub_type ) &&
-         ( misc_value == DEFAULT_MISC_VALUE || e -> misc_value == misc_value ) )
+         ( misc_value == DEFAULT_MISC_VALUE || e -> misc_value == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || e -> misc_value_2 == misc_value2 ) )
       return e;
   }
 
@@ -750,7 +751,7 @@ double sc_data_access_t::effect_max( uint32_t spell_id, uint32_t level, effect_t
   return effect_max( e -> id, get_class_type( m_spells_index[ spell_id ] -> scaling_type ), level );
 }
 
-double sc_data_access_t::effect_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double sc_data_access_t::effect_base_value( uint32_t spell_id, effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
   double                     bv = 0.0;
   const spelleffect_data_t * e  = 0;
@@ -760,7 +761,7 @@ double sc_data_access_t::effect_base_value( uint32_t spell_id, effect_type_t typ
 
   assert( spell_exists( spell_id ) );
 
-  if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
+  if ( ( e = effect( spell_id, type, sub_type, misc_value, misc_value2 ) ) == 0 )
     return 0.0;
 
   bv = fmt_value( 1.0 * e -> base_value, type, sub_type );
@@ -1477,6 +1478,7 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
         case A_MOD_DAMAGE_FROM_CASTER: // vendetta
         case A_MOD_ALL_CRIT_CHANCE:
         case A_MOD_EXPERTISE:
+        case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
         case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
         case A_319: // Windfury Totem
           v /= 100.0;

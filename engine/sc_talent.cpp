@@ -1169,7 +1169,7 @@ int spell_id_t::effect_die_sides( const uint32_t effect_num ) SC_CONST
   return pp -> player_data.effect_die_sides( effect_id );
 }
 
-double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
   if ( single )
     return sc_data_access_t::fmt_value( single -> base_value, (effect_type_t) single -> type, (effect_subtype_t) single -> subtype );
@@ -1181,7 +1181,8 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
 
     if ( ( type == E_MAX || effects[ i ] -> type == type ) && 
          ( sub_type == A_MAX || effects[ i ] -> subtype == sub_type ) && 
-         ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) )
+         ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value_2 == misc_value2 ) )
       return sc_data_access_t::fmt_value( effects[ i ] -> base_value, type, sub_type );
   }
   
