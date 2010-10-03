@@ -1458,14 +1458,6 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
       v /= 100.0;
       break;
     case E_APPLY_AURA:
-      switch ( sub_type )
-       {
-      case A_ADD_PCT_MODIFIER:
-        v /= 100.0;
-        break;
-      default:
-        break;
-       }
     case E_APPLY_AREA_AURA_PARTY:
     case E_APPLY_AREA_AURA_RAID:
       switch ( sub_type )
