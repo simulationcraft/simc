@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (58)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13082
+// Class based active abilities, wow build 13131
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -834,7 +834,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13082
+// Talent tree specialization abilities, wow build 13131
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1091,7 +1091,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13082
+// Class mastery abilities, wow build 13131
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1176,7 +1176,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13082
+// Racial abilities, wow build 13131
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1808,7 +1808,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13082
+// Glyph spells for classes, wow build 13131
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2109,12 +2109,11 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (16 spells)
+    // Major Glyphs (15 spells)
     {
       55437, // Glyph of Chain Heal
       55449, // Glyph of Chain Lightning
       55452, // Glyph of Elemental Mastery
-      94388, // Glyph of Feral Charge
       55450, // Glyph of Fire Nova
       55443, // Glyph of Frost Shock
       59289, // Glyph of Ghost Wolf
@@ -2267,11 +2266,12 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (17 spells)
+    // Major Glyphs (18 spells)
     {
       63057, // Glyph of Barkskin
       54760, // Glyph of Entangling Roots
       94386, // Glyph of Faerie Fire
+      94388, // Glyph of Feral Charge
       67598, // Glyph of Ferocious Bite
       62080, // Glyph of Focus
       54810, // Glyph of Frenzied Regeneration
@@ -2286,7 +2286,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       54828, // Glyph of Starfall
       57862, // Glyph of Thorns
       62970, // Glyph of Wild Growth
-          0,
     },
     // Minor Glyphs (6 spells)
     {
