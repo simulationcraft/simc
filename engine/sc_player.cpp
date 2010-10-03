@@ -1881,7 +1881,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
   }
   else
   {
-    m *= 1.0 + sim -> auras.unleashed_rage -> value() * 0.01;
+    m *= 1.0 + sim -> auras.unleashed_rage -> value();
   }
 
   return m;
