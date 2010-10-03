@@ -15,7 +15,7 @@ actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/demon_soul,if=buff.metamorphosis.react
 actions+=/summon_infernal,if=buff.metamorphosis.react
 actions+=/metamorphosis
-actions+=/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)&!ticking
+actions+=/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)|!ticking
 actions+=/bane_of_doom,time_to_die>=20,if=!ticking
 actions+=/hand_of_guldan
 actions+=/immolation,if=buff.metamorphosis.react

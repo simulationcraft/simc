@@ -20,12 +20,12 @@ actions+=/demon_soul,health_percentage<=25
 actions+=/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<3)
 actions+=/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gcd
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
-actions+=/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)
-actions+=/drain_soul,health_percentage<=25,interrupt=1
-#actions+=/fel_flame,if=dot.unstable_affliction.remains<=5
+actions+=/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)|!ticking
+actions+=/drain_soul,health_percentage<=25,interrupt=1,if=!ticking
+#actions+=/fel_flame,if=dot.unstable_affliction.remains<=5|!ticking
 actions+=/summon_doomguard,time>=100
 actions+=/shadow_bolt,if=buff.shadow_trance.react
-actions+=/drain_life
+actions+=/drain_life,if=!ticking
 actions+=/life_tap
 
 # Gear Summary

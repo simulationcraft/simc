@@ -15,8 +15,8 @@ actions+=/summon_pet,imp
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/soulburn
 actions+=/demon_soul
-actions+=/bane_of_havoc,if=!ticking
-actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time&!ticking
+actions+=/bane_of_doom,if=!ticking
+actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking
 actions+=/conflagrate
 actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up
 actions+=/soul_fire,if=buff.empowered_imp.react
