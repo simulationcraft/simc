@@ -78,9 +78,6 @@ struct warlock_t : public player_t
   buff_t* buffs_metamorphosis;
   buff_t* buffs_molten_core;
   buff_t* buffs_shadow_trance;
-  buff_t* buffs_tier7_2pc_caster;
-  buff_t* buffs_tier7_4pc_caster;
-  buff_t* buffs_tier10_4pc_caster;
   buff_t* buffs_hand_of_guldan;
   buff_t* buffs_improved_soul_fire;
   buff_t* buffs_dark_intent_feedback;
@@ -574,15 +571,12 @@ struct warlock_pet_t : public pet_t
     {
       a -> base_multiplier  *= 1.05;
     }
-    if ( o -> set_bonus.tier9_2pc_caster() )
-    {
-      a -> base_crit += 0.10;
-    }
 
     if ( o -> buffs_hand_of_guldan -> up() )
     {
       a -> base_crit += 0.10;
     }
+
     if ( o -> mastery_spells.master_demonologist -> ok() && o -> buffs_metamorphosis -> up())
     {
       a -> base_multiplier *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * 0.015 );
@@ -720,8 +714,8 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> talent_soul_leech -> rank() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.02 * p -> talent_soul_leech -> rank(), p ->gains_soul_leech );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talent_soul_leech -> rank(), p -> gains_soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect_base_value( 1 ) / 100.0, p ->gains_soul_leech );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect_base_value ( 1 ) / 100.0, p -> gains_soul_leech );
 
       p -> trigger_replenishment();
     }
@@ -802,10 +796,6 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.10;
-    }
     if ( p -> pet_type != PET_INFERNAL )
     {
       player_attack_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
@@ -839,11 +829,6 @@ struct warlock_pet_attack_t : public attack_t
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
     player_attack_power += 0.57 * o -> composite_spell_power( SCHOOL_MAX );
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.10;
-    }
-
   }
 
 };
@@ -884,7 +869,12 @@ struct warlock_pet_spell_t : public spell_t
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     p -> adjust_base_modifiers( this );
   }
-
+  warlock_pet_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, sname, player, ptype, stype, t )
+  {
+    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+    p -> adjust_base_modifiers( this );
+  }
 
   virtual void execute()
   {
@@ -1229,29 +1219,27 @@ struct succubus_pet_t : public warlock_pet_t
   struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_spell_t( "Succubus: Lash of Pain", player, RESOURCE_MANA, SCHOOL_SHADOW )
+        warlock_pet_spell_t( "Succubus: Lash of Pain", player, "Lash of Pain", WARLOCK, WARLOCK )
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      id = 7814;
-      parse_data ( o -> player_data);
 
       may_crit          = true;
-      base_multiplier *= 1.0 + ( o -> glyphs.lash_of_pain ? 0.25 : 0.00 );
+      base_multiplier *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
+      direct_power_mod = 0.612 * 0.5; // from the tooltip
+    }
+    virtual void travel( int travel_result, double travel_dmg)
+    {
+      warlock_pet_spell_t::travel(travel_result, travel_dmg);
+      trigger_mana_feed ( this, travel_result );
     }
   };
 
   succubus_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 412.5;
-    main_hand_weapon.max_dmg    = 412.5;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
 
-    damage_modifier = 1.05;
 
-    action_list_str = "/snapshot_stats/lash_of_pain/wait_until_ready";
+    action_list_str = "/snapshot_stats/lash_of_pain";
   }
   virtual void init_base()
   {
@@ -1259,9 +1247,8 @@ struct succubus_pet_t : public warlock_pet_t
 
     resource_base[ RESOURCE_HEALTH ] = 1468;
     resource_base[ RESOURCE_MANA   ] = 1559;
-
-    melee = new warlock_pet_melee_t( this, "succubus_melee" );
   }
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -1513,15 +1500,6 @@ void warlock_spell_t::player_buff()
   }
 
   player_multiplier *= 1.0 + ( p -> talent_demonic_pact -> rank() * 0.02 );
-
-  if ( p -> buffs_tier10_4pc_caster -> up() )
-  {
-    player_multiplier *= 1.10;
-  }
-
-
-
-
 }
 
 // warlock_spell_t::target_debuff ============================================
@@ -2011,6 +1989,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     may_resist        = false;
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
     cooldown -> duration -= ( p -> glyphs.chaos_bolt -> value() / 100.0 );
   }
 
@@ -2405,6 +2384,8 @@ struct haunt_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
   }
 
   virtual void execute()
@@ -3140,6 +3121,8 @@ struct hand_of_guldan_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
   }
 
   virtual void execute()
@@ -3483,7 +3466,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick();
     target_t* t = sim -> target;
-    if ( t -> total_dmg - dot_damage_done > player -> player_data.effect_misc_value2( 16911 ) )
+    if ( t -> total_dmg - dot_damage_done > effect_base_value ( 2 ) )
     {
       dot_damage_done=0.0;
       seed_of_corruption_aoe -> execute();
@@ -3678,7 +3661,7 @@ void warlock_t::init_base()
 {
   player_t::init_base();
 
-  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + util_t::talent_rank( talent_demonic_embrace -> rank(), 3, 0.04, 0.07, 0.10 );
+  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talent_demonic_embrace -> effect_base_value ( 1 ) / 100.0;
 
   base_attack_power = -10;
   initial_attack_power_per_strength = 2.0;
@@ -3714,18 +3697,12 @@ void warlock_t::init_buffs()
   buffs_molten_core           = new buff_t( this, "molten_core",         3, 15.0, 0.0, talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, "shadow_embrace",      3, 12.0, 0.0, talent_shadow_embrace -> rank() );
   buffs_shadow_trance         = new buff_t( this, "shadow_trance",       1,  0.0, 0.0, talent_nightfall -> rank() * 0.02 +  glyphs.corruption -> value() );
-  buffs_tier10_4pc_caster     = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 ); // Fix-Me: Might need to add an ICD.
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",      1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, "improved_soul_fire",  1, 15.0, 0.0, (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn              = new buff_t( this, "soulburn",            1, 15.0 );
   buffs_demon_soul            = new buff_t( this, "demon_soul",          3, 30.0 );
   buffs_soul_shards           = new buff_t( this, "soul_shards",         3 );
   buffs_bane_of_havoc         = new buff_t( this, "bane_of_havoc",       1, 300.0 );
-
-  buffs_tier7_2pc_caster      = new      buff_t( this, "tier7_2pc_caster",                   1, 10.0, 0.0, set_bonus.tier7_2pc_caster() * 0.15 );
-  buffs_tier7_4pc_caster      = new stat_buff_t( this, "tier7_4pc_caster", STAT_SPIRIT, 300, 1, 10.0, 0.0, set_bonus.tier7_4pc_caster() );
-
-
 }
 
 // warlock_t::init_gains =====================================================
@@ -3780,11 +3757,12 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    std::string tap_str = "life_tap";
-    action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
-    action_list_str += "/fel_armor/summon_pet";
+    action_list_str += "/flask,type=draconic_mind";
+    action_list_str += "/food,type=fish_feast";
+    action_list_str += "/fel_armor";
 
     // Choose Pet
+    action_list_str += "/summon_pet";
     if ( summon_pet_str.empty() )
     {
       if ( primary_tree() == TREE_DEMONOLOGY )
@@ -3797,9 +3775,8 @@ void warlock_t::init_actions()
         summon_pet_str = "succubus";
     }
     action_list_str += "," + summon_pet_str;
+
     action_list_str += "/snapshot_stats";
-
-
 
     // Usable Item
     int num_items = ( int ) items.size();
@@ -3857,24 +3834,15 @@ void warlock_t::init_actions()
       if ( talent_demonic_empowerment -> rank() ) action_list_str += "/demonic_empowerment";
       action_list_str += "/metamorphosis";
       action_list_str += "/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)";
-      action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react)|(buff.metamorphosis.remains<15)";
+      action_list_str += "/immolation";
       action_list_str += "/bane_of_doom,time_to_die>=70";
       if ( talent_decimation -> rank() ) action_list_str += "/soul_fire,if=(buff.decimation.react)&(buff.molten_core.react)";
       action_list_str += "/corruption,time_to_die>=8,if=!ticking";
       if ( talent_decimation -> rank() ) action_list_str += "/soul_fire,if=buff.decimation.react";
       action_list_str += "/incinerate,if=buff.molten_core.react";
-      // Set Mana Buffer pre 35% with or without Glyph of Life Tap
-      if( set_bonus.tier7_4pc_caster() || glyphs.life_tap )
-        {
-        action_list_str += "/life_tap,trigger=12000,health_percentage>=35,if=buff.metamorphosis.down";
-        }
-      else
-        {
-        action_list_str += "/life_tap,trigger=19000,health_percentage>=35,if=buff.metamorphosis.down";
-        }
-    action_list_str += "/bane_of_agony,moving=1,if=(!ticking)&!(dot.bane_of_doom.remains>0)";
-    action_list_str += "/fel_flame,if=dot.immolate.remains<=4";
-    action_list_str += "/shadow_bolt";
+      action_list_str += "/bane_of_agony,moving=1,if=(!ticking)&!(dot.bane_of_doom.remains>0)";
+      action_list_str += "/fel_flame,if=dot.immolate.remains<=4";
+      action_list_str += "/shadow_bolt";
 
   default:
 
@@ -3887,7 +3855,7 @@ void warlock_t::init_actions()
     if ( talent_shadowburn -> rank() ) action_list_str += "/shadowburn,moving=1";
     if ( talent_shadowfury -> rank()  ) action_list_str += "/shadowfury,moving=1";
 
-    action_list_str += "/" + tap_str; // to use when no mana or nothing else is possible
+    action_list_str += "/life_tap"; // to use when no mana or nothing else is possible
 
     action_list_default = 1;
   }
@@ -3962,6 +3930,7 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "kelthuzads"   ) ) return SET_T9_CASTER;
   if ( strstr( s, "guldans"      ) ) return SET_T9_CASTER;
   if ( strstr( s, "dark_coven"   ) ) return SET_T10_CASTER;
+  if ( strstr( s, "shadowflame"  ) ) return SET_T11_CASTER;
 
   return SET_NONE;
 }

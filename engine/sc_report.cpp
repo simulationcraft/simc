@@ -1054,7 +1054,7 @@ static void print_html_stats (FILE* file, player_t* a )
   util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_block, 100 * a -> composite_tank_block(), a -> stats.block_rating );
   util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_crit,  100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
 
-  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", a -> buffed_mastery, a -> composite_mastery(), a -> stats.mastery_rating );
+  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%</td> <td>%.2f%</td> <td>%.0f</td> </tr>\n", a -> buffed_mastery, a -> composite_mastery(), a -> stats.mastery_rating );
 
   util_t::fprintf( file, "</table> <br />\n" );
   }
@@ -1651,7 +1651,7 @@ static void print_html2_stats (FILE* file, player_t* a )
   util_t::fprintf( file, " <tr> <th>Tank-Block</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_block, 100 * a -> composite_tank_block(), a -> stats.block_rating );
   util_t::fprintf( file, " <tr> <th>Tank-Crit</th>   <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_crit,  100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
 
-  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", a -> buffed_mastery, a -> composite_mastery(), a -> stats.mastery_rating );
+  util_t::fprintf( file, " <tr> <th>Mastery</th>  <td>%.2f% </td> <td>%.2f%</td> <td>%.0f</td> </tr>\n", a -> buffed_mastery, a -> composite_mastery(), a -> stats.mastery_rating );
 
   util_t::fprintf( file, "</tbody></table> <br />\n" );
   }
@@ -2425,7 +2425,7 @@ static void print_wiki_player( FILE* file, player_t* p )
   util_t::fprintf( file, "|| *Tank-Block*  || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating );
   util_t::fprintf( file, "|| *Tank-Crit*   || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ), 0.0 );
 
-  util_t::fprintf( file, "|| *Mastery*  || %.2f%% || %.2f%% || %.0f ||\n", p -> buffed_mastery, p -> composite_mastery(), p -> stats.mastery_rating );
+  util_t::fprintf( file, "|| *Mastery*  || %.2f% || %.2f% || %.0f ||\n", p -> buffed_mastery, p -> composite_mastery(), p -> stats.mastery_rating );
 
   util_t::fprintf( file, "\n" );
 
