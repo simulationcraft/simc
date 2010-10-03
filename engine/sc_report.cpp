@@ -1567,6 +1567,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> school: %s<br> resource: %s"
            "<br> tree: %s"
            "<br> range: %.1f"
+           "<br> travel_speed: %.4f"
            "<br> trigger_gcd: %.4f"
            "<br> base_cost: %.1f"
            "<br> cooldown: %.2f"
@@ -1591,7 +1592,8 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "</div>",
            a -> id, util_t::school_type_string( a-> school ),
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
-           a -> range, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration, a -> base_execute_time,
+           a -> range, a -> travel_speed, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration,
+           a -> base_execute_time,
            a -> base_crit, a -> may_crit?"true":"false", a -> direct_power_mod,
            a -> base_dd_min, a -> base_dd_max,
            a -> tick_may_crit?"true":"false",
