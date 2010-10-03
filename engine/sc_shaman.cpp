@@ -975,7 +975,7 @@ struct lightning_charge_t : public shaman_spell_t
     if ( p -> primary_tree() == TREE_ELEMENTAL )
       base_crit_bonus_multiplier += p -> spec_elemental_fury -> base_value();
       
-    consume_threshold = p -> talent_fulmination -> base_value();
+    consume_threshold = ( int ) p -> talent_fulmination -> base_value();
   }
 
   virtual void player_buff()
@@ -2595,7 +2595,7 @@ struct earth_shock_t : public shaman_spell_t
       min_gcd             = 1.0;
     }
     
-    consume_threshold     = p -> talent_fulmination -> base_value();
+    consume_threshold     = ( int ) p -> talent_fulmination -> base_value();
   }
   
   virtual void execute()
