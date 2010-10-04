@@ -3557,9 +3557,9 @@ struct unleash_elements_buff_t : public new_buff_t
     init();
   }
   
-  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
   {
-    return new_buff_t::base_value( type, sub_type, misc_value ) * ( 1.0 + bonus );
+    return new_buff_t::base_value( type, sub_type, misc_value, misc_value2 ) * ( 1.0 + bonus );
   }
 };
 

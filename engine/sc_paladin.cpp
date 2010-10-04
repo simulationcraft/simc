@@ -1815,12 +1815,6 @@ struct holy_wrath_t : public paladin_spell_t
 
     if ( p -> librams.wracking ) base_spell_power += 120;
   }
-
-  virtual bool ready()
-  {
-    paladin_t* p = player -> cast_paladin();
-    return paladin_spell_t::ready();
-  }
 };
 
 struct inquisition_t : public paladin_spell_t

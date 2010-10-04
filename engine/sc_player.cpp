@@ -1114,7 +1114,7 @@ void player_t::init_talents()
   uint32_t tab_sizes[ MAX_TALENT_TREES ];
   uint32_t tab_start[ MAX_TALENT_TREES + 1 ];
   std::vector<int>::const_iterator talent_iter;
-
+  
   num_talents = talent_list2.size();
 
   uint32_t list_size = 0;
@@ -3999,11 +3999,11 @@ bool player_t::parse_talent_trees( int talents[], const uint32_t size )
 {
   std::vector<talent_translation_t> translations = this->get_talent_list();
 
-  for(unsigned int i = 0; i < translations.size(); i++)
+  for( unsigned int i = 0; i < translations.size() ; i++ )
   {
-          int *address = translations[i].address;
-          if ( ! address ) continue;
-          *address = talents[i];
+    int *address = translations[ i ].address;
+    if ( ! address ) continue;
+    *address = talents[i];
   }
 
   uint32_t i = 0;

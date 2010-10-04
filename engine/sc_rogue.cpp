@@ -65,7 +65,7 @@ struct glyph_t : spell_id_t
     return m_gain;
   }
 
-  double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type, int m_v );
 
   virtual void trigger() {}
@@ -73,7 +73,7 @@ struct glyph_t : spell_id_t
 
 // glyph_t::base_value ======================================================
 
-double glyph_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double glyph_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
@@ -96,7 +96,8 @@ double glyph_t::base_value( effect_type_t type, effect_subtype_t sub_type, int m
 
       if ( ( type == E_MAX || effects[ i ] -> type == type ) && 
            ( sub_type == A_MAX || effects[ i ] -> subtype == sub_type ) && 
-           ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) )
+           ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) &&
+           ( misc_value2 == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value_2 == misc_value2 ) )
       {
         return fmt_value( effects[ i ] -> base_value, 
           (effect_type_t) effects[ i ] -> type, 
@@ -619,7 +620,7 @@ struct rogue_attack_t : public attack_t
 
     background = true; // prevent action from being executed
   }
-  void parse_data( spell_id_t* s_data );
+  virtual void parse_data( spell_id_t* s_data );
 };
 
 // ==========================================================================
@@ -651,7 +652,7 @@ struct rogue_poison_t : public spell_t
     base_attack_power_multiplier = 1.0;
   }
 
-  void parse_data( spell_id_t* s_data );
+  virtual void parse_data( spell_id_t* s_data );
   virtual void player_buff();
   virtual double total_multiplier() SC_CONST;
 };
@@ -786,18 +787,6 @@ static void trigger_energy_refund( rogue_attack_t* a )
 
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
 }
-
-// trigger_find_weakness ====================================================
-
-static void trigger_find_weakness( rogue_attack_t* a )
-{
-  rogue_t* p = a -> player -> cast_rogue();
-
-  if ( ! p -> talents.find_weakness -> rank() )
-    return;
-
-  p -> buffs_find_weakness -> trigger();
-};
 
 // trigger_relentless_strikes ===============================================
 
