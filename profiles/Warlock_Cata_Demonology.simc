@@ -9,7 +9,7 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
 actions+=/dark_intent
-actions+=/summon_pet,felguard
+actions+=/summon_felguard
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/demon_soul,if=buff.metamorphosis.react

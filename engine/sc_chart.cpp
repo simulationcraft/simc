@@ -549,7 +549,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
                 st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ), i ); s += buffer;
     }
     s += "&amp;";
-    s += "chtt=Raid+Damage+Per+Execute+Time";
+    if (chart==0)s += "chtt=Raid+Damage+Per+Execute+Time";
     s += "&amp;";
     s += "chts=000000,20";
 

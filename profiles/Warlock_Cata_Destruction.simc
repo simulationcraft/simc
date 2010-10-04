@@ -11,7 +11,7 @@ actions+=/food,type=fish_feast
 actions+=/fel_armor
 actions+=/dark_intent
 actions+=/snapshot_stats
-actions+=/summon_pet,imp
+actions+=/summon_imp
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/soulburn
 actions+=/demon_soul

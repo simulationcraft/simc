@@ -10,7 +10,7 @@ actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
 actions+=/dark_intent
-actions+=/summon_pet,felhunter
+actions+=/summon_felhunter
 actions+=/snapshot_stats
 actions+=/curse_of_elements,health_percentage<=25
 actions+=/soulburn
