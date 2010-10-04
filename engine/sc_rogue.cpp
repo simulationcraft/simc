@@ -8,6 +8,13 @@
 // ==========================================================================
 // New Glyph
 // ==========================================================================
+static std::string str_tokenize( const std::string& src )
+{
+  std::string token = tolower( src );
+  replace_char( token, ' ', '_' );
+  return token;
+}
+
 struct glyph_t : spell_id_t
 {
   double m_value;
@@ -21,12 +28,11 @@ struct glyph_t : spell_id_t
     m_value( 0.0 ), 
     m_rng( 0 ), m_proc( 0 ), m_gain( 0 )
   {
-    token_name = tolower( s_name + "_glyph" );
-    replace_char( token_name, ' ', '_' );
+    token_name = str_tokenize( s_name + "_glyph" );
 
-    std::string tmp_name = "Glyph of " + s_name;
+    std::string real_name = "Glyph of " + s_name;
     
-    uint32_t id = p -> player_data.find_glyph_spell( p -> type, tmp_name.c_str() );
+    uint32_t id = p -> player_data.find_glyph_spell( p -> type, real_name.c_str() );
 
     if ( ! id )
       return;
@@ -164,30 +170,32 @@ struct combo_points_t
 
   void add( unsigned num, const char* action = 0 )
   {    
-    int to_add   = clamp( num, 0, COMBO_POINTS_MAX - count );
-    int overflow = num - to_add;
+    unsigned actual_num = clamp( num, 0, COMBO_POINTS_MAX - count );
+    unsigned overflow   = num - actual_num;
 
     // we count all combo points gained in the proc
     for ( unsigned i = 0; i < num; i++ )
       proc -> occur();
     
     // add actual combo points
-    if ( to_add > 0 )
-      count += to_add;
+    if ( actual_num > 0 )
+      count += actual_num;
     
     // count wasted combo points
     if ( overflow > 0 )
     {
-      for ( int i = 0; i < overflow; i++ )
+      for ( unsigned i = 0; i < overflow; i++ )
         wasted -> occur();
     }
 
     if ( sim -> log )
     {
       if ( action )
-        log_t::output( sim, "%s gains %d (%d) combo_points from %s (%d)", player -> name(), to_add, num, action, count );
+        log_t::output( sim, "%s gains %d (%d) combo_points from %s (%d)", 
+                       player -> name(), actual_num, num, action, count );
       else
-        log_t::output( sim, "%s gains %d (%d) combo_points (%d)", player -> name(), to_add, num, count );
+        log_t::output( sim, "%s gains %d (%d) combo_points (%d)", 
+                       player -> name(), actual_num, num, count );
     }
   }
 
@@ -201,9 +209,11 @@ struct combo_points_t
     if ( sim -> log )
     {
       if (action )
-        log_t::output( sim, "%s spends %d combo_points on %s", player -> name(), count, action);
+        log_t::output( sim, "%s spends %d combo_points on %s", 
+                       player -> name(), count, action);
       else
-        log_t::output( sim, "%s loses %d combo_points", player -> name(), count);
+        log_t::output( sim, "%s loses %d combo_points", 
+                       player -> name(), count);
     }
 
     count = 0;
@@ -220,7 +230,6 @@ struct combo_points_t
     return rank( cp_list );
   }
 };
-
 
 // ==========================================================================
 // Rogue
@@ -514,8 +523,7 @@ namespace // ANONYMOUS NAMESPACE ============================================
 
 struct rogue_attack_t : public attack_t
 {
-  spell_id_t* spell_data;
-  buff_t*     m_buff;
+  buff_t* m_buff;
 
   /**
    * Simple actions do not invoke attack_t ::execute and ::player_buff methods.
@@ -532,48 +540,35 @@ struct rogue_attack_t : public attack_t
   // we now track how much CPs can an action give us
   unsigned adds_combo_points;
   
-  rogue_attack_t( const char* n, rogue_t* p ) :
-    attack_t( n, p, RESOURCE_ENERGY, SCHOOL_PHYSICAL, TREE_NONE, true ), spell_data( 0 )
+  rogue_attack_t( const char* n, rogue_t* p, bool special = false ) :
+    attack_t( n, p, RESOURCE_ENERGY, SCHOOL_PHYSICAL, TREE_NONE, special ), 
+    simple( false ), m_buff( 0 ), adds_combo_points( 0 )
   {
     _init();
   }
   
-  rogue_attack_t( const char* n, rogue_t* p, uint32_t id ) :
-    attack_t( n, p, RESOURCE_ENERGY, SCHOOL_PHYSICAL, TREE_NONE, true ), spell_data( 0 )
-  {
-    assert( p -> player_data.spell_exists( id ) );
-    spell_data = new active_spell_t( p, n, id );
-    
-    _init();
-
-    may_crit         = true;
-    scale_with_haste = false;
-  }
-    
-  rogue_attack_t( const char* n, rogue_t* p, spell_id_t* spell ) :
-    attack_t( n, p, RESOURCE_ENERGY, SCHOOL_PHYSICAL, TREE_NONE, true ), spell_data( spell )
+  rogue_attack_t( const char* n, uint32_t id, rogue_t* p, bool simple = false ) :
+    attack_t( n, id, p, p -> type, p-> type, 0, true ), 
+    simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
   {
     _init();
-
-    may_crit         = true;
-    scale_with_haste = false;
   }
     
   void _init()
   {
-    m_buff                = 0;
-    simple                = false;
+    may_crit              = true;
+    scale_with_haste      = false;
+    
     requires_weapon       = WEAPON_NONE;
     requires_position     = POSITION_NONE;
     requires_stealth      = false;
     requires_combo_points = false;
-    adds_combo_points     = 0;
     
     rogue_t* p = player -> cast_rogue();
 
     base_hit  += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
 
-    custom_parse_data();
+    parse_data( p -> player_data );
   }
   
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -586,6 +581,8 @@ struct rogue_attack_t : public attack_t
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
   virtual double total_multiplier() SC_CONST;
+
+  virtual void   parse_data( sc_data_access_t& pData );
 
   void add_combo_points()
   {
@@ -606,8 +603,6 @@ struct rogue_attack_t : public attack_t
     if ( m_buff )
       m_buff -> trigger();
   }
-
-  void custom_parse_data();
 };
 
 // ==========================================================================
@@ -616,19 +611,15 @@ struct rogue_attack_t : public attack_t
 
 struct rogue_poison_t : public spell_t
 {
-  spell_id_t* spell_data;
-  
-  rogue_poison_t( const char* n, rogue_t* p, const uint32_t id ) :
-    spell_t( n, p, RESOURCE_NONE, SCHOOL_NATURE, TREE_ASSASSINATION ), spell_data( 0 )
+  rogue_poison_t( const char* n, const uint32_t id, rogue_t* p ) :
+    spell_t( n, id, p )
   {
-    assert( player -> player_data.spell_exists( id ) );
-    spell_data = new active_spell_t( player, n, id );
-
-    custom_parse_data();
-
-    background  = true;
-    base_cost   = 0;
-    trigger_gcd = 0;
+    background       = true;
+    base_cost        = 0;
+    trigger_gcd      = 0;
+    may_crit         = true;
+    tick_may_crit    = false; // not really sure about that
+    scale_with_haste = false;
     
     base_hit         += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_SPELL_HIT_CHANCE );
     base_multiplier  *= 1.0 + p -> talents.vile_poisons -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
@@ -641,8 +632,6 @@ struct rogue_poison_t : public spell_t
 
   virtual void player_buff();
   virtual double total_multiplier() SC_CONST;
-
-  void custom_parse_data();
 };
 
 // ==========================================================================
@@ -984,13 +973,17 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
   if ( ! p -> talents.venomous_wounds -> rank() )
     return;
 
+  // we currently only check for presence of deadly poison
+  if ( ! p -> buffs_poison_doses -> check() )
+    return;
+
   if ( p -> rng_venomous_wounds -> roll( p -> talents.venomous_wounds -> proc_chance() ) )
   {    
     if ( ! p -> active_venomous_wound )
     {
       struct venomous_wound_t : public rogue_poison_t
       {
-        venomous_wound_t( rogue_t* p ) : rogue_poison_t( "venomous_wound", p, 79136 )
+        venomous_wound_t( rogue_t* p ) : rogue_poison_t( "venomous_wound", 79136, p )
         {
           proc = true;
           direct_power_mod = .1125;
@@ -1085,71 +1078,53 @@ action_expr_t* rogue_attack_t::create_expression( const std::string& name_str )
 
 // rogue_attack_t::parse_data ==============================================
 
-void rogue_attack_t::custom_parse_data()
+void rogue_attack_t::parse_data( sc_data_access_t& pData )
 {
-  if ( ! spell_data )
+  // it will effectively be called second time (after action_t ctor)
+  // but I want to be sure I don't fuck up this OO stuff with virtual functions
+  attack_t::parse_data( pData );
+
+  // reset some damage related stuff ::parse_data set which may be wrong
+  direct_power_mod = 0.0;
+  base_dd_min      = 0.0;
+  base_dd_max      = 0.0;
+  tick_power_mod   = 0.0;
+
+  if ( ! pData.spell_exists(id) )
     return;
   
-  if ( ! spell_data -> ok() )
+  for ( int i = 1; i <= MAX_EFFECTS; i++ )
   {
-    sim -> errorf( "Player %s attempting to execute action %s without the required spell.\n", player -> name(), name() );
-
-    background = true; // prevent action from being executed
-
-    return;
-  }
-  
-  base_execute_time    = spell_data -> cast_time();
-  cooldown -> duration = spell_data -> cooldown();
-  range                = spell_data -> max_range();
-  travel_speed         = spell_data -> missile_speed();
-  base_cost            = spell_data -> cost();
-  trigger_gcd          = spell_data -> gcd();
-                                         
-  school               = spell_data -> get_school_type();
-  stats -> school      = school;
-    
-  // There are no rogue abilities that scale with flat AP
-  direct_power_mod     = 0.0;
-
-  // Do simplistic parsing of stuff, based on effect type/subtype
-  for ( int effect_num = 1; effect_num <= MAX_EFFECTS; effect_num++ ) 
-  {
-    if ( ! spell_data -> effect_id( effect_num ) )
-      continue;
-
-    if ( spell_data -> effect_trigger_spell( effect_num ) > 0 )
-      continue;
+    int effect = pData.spell_effect_id ( id, i );
         
-    switch ( spell_data -> effect_type( effect_num ) )
+    if ( ! pData.effect_exists ( effect ) )
+      continue;
+          
+    switch ( pData.effect_type ( effect) )
     {
       case E_ADD_COMBO_POINTS:
-        adds_combo_points = spell_data -> effect_base_value( effect_num );
+        adds_combo_points = pData.effect_base_value( effect );
         break;
 
       case E_NORMALIZED_WEAPON_DMG:
         normalize_weapon_speed = true;
       case E_WEAPON_DAMAGE:
         weapon = &( player -> main_hand_weapon );
-        base_dd_min = spell_data -> effect_min( effect_num );
-        base_dd_max = spell_data -> effect_max( effect_num );
+        base_dd_min = pData.effect_min( effect, player_type( player -> type ), player -> level );
+        base_dd_max = pData.effect_max( effect, player_type( player -> type ), player -> level );
         break;
         
       case E_WEAPON_PERCENT_DAMAGE:
         weapon = &( player -> main_hand_weapon );
-        weapon_multiplier = spell_data -> effect_base_value( effect_num ) / 100.0;
+        weapon_multiplier = pData.effect_base_value( effect ) / 100.0;
         break;
 
       case E_APPLY_AURA:
         {
-          if ( spell_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
+          if ( pData.effect_subtype( effect ) == A_PERIODIC_DAMAGE &&
+               school == SCHOOL_PHYSICAL )
           {
-            if ( school == SCHOOL_PHYSICAL )
-              school = stats -> school = SCHOOL_BLEED;
-              
-            base_td        = spell_data -> effect_min( effect_num );
-    			  base_tick_time = spell_data -> effect_period( effect_num );
-    			  num_ticks      = int ( spell_data -> duration() / base_tick_time );
+            school = stats -> school = SCHOOL_BLEED;
           }
         }
         break;
@@ -1341,8 +1316,6 @@ struct melee_t : public rogue_attack_t
     repeating       = true;
     trigger_gcd     = 0;
     base_cost       = 0;
-    special         = false;
-    may_glance      = true;
     may_crit        = true;
 
     if ( p -> dual_wield() )
@@ -1448,9 +1421,8 @@ struct auto_attack_t : public action_t
 struct adrenaline_rush_t : public rogue_attack_t
 {
   adrenaline_rush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "adrenaline_rush", p, p -> talents.adrenaline_rush )
+    rogue_attack_t( "adrenaline_rush", p -> talents.adrenaline_rush -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_adrenaline_rush );
 
     parse_options( options_str );
@@ -1462,7 +1434,7 @@ struct adrenaline_rush_t : public rogue_attack_t
 struct ambush_t : public rogue_attack_t
 {
   ambush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "ambush", p, 8676 )
+    rogue_attack_t( "ambush", 8676, p )
   {
     requires_position      = POSITION_BACK;
     requires_stealth       = true;
@@ -1509,7 +1481,7 @@ struct ambush_t : public rogue_attack_t
 struct backstab_t : public rogue_attack_t
 {
   backstab_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "backstab", p, 53 )
+    rogue_attack_t( "backstab", 53, p )
   {
     requires_weapon    = WEAPON_DAGGER;
     requires_position  = POSITION_BACK;
@@ -1569,9 +1541,8 @@ struct backstab_t : public rogue_attack_t
 struct blade_flurry_t : public rogue_attack_t
 {
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> spec_blade_flurry )
+    rogue_attack_t( "blade_flurry", p -> spec_blade_flurry -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_blade_flurry );
 
     parse_options( options_str );
@@ -1583,9 +1554,8 @@ struct blade_flurry_t : public rogue_attack_t
 struct cold_blood_t : public rogue_attack_t
 {
   cold_blood_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "cold_blood", p, p -> talents.cold_blood )
+    rogue_attack_t( "cold_blood", p -> talents.cold_blood -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_cold_blood );
 
     parse_options( options_str );
@@ -1597,7 +1567,7 @@ struct cold_blood_t : public rogue_attack_t
     
     rogue_t* p = player -> cast_rogue();
 
-    p -> resource_gain( RESOURCE_ENERGY, spell_data -> base_value( E_ENERGIZE ) , p -> gains_cold_blood );
+    p -> resource_gain( RESOURCE_ENERGY, base_value( E_ENERGIZE ), p -> gains_cold_blood );
   }
 };
 
@@ -1610,7 +1580,7 @@ struct envenom_t : public rogue_attack_t
   double dose_dmg;
 
   envenom_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "envenom", p, 32645 ), min_doses( 1 ), no_buff( 0 )
+    rogue_attack_t( "envenom", 32645, p ), min_doses( 1 ), no_buff( 0 )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
@@ -1620,7 +1590,7 @@ struct envenom_t : public rogue_attack_t
 
     base_multiplier *= 1.0 + p -> talents.coup_de_grace -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
 
-    dose_dmg = spell_data -> effect_average( 1 );
+    dose_dmg = effect_average( 1 );
 
     option_t options[] =
     {
@@ -1699,11 +1669,11 @@ struct envenom_t : public rogue_attack_t
 
 struct eviscerate_t : public rogue_attack_t
 {
-  double combo_point_dmg_min[5];
-  double combo_point_dmg_max[5];
+  double combo_point_dmg_min[ COMBO_POINTS_MAX ];
+  double combo_point_dmg_max[ COMBO_POINTS_MAX ];
 
   eviscerate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "eviscerate", p, 2098 )
+    rogue_attack_t( "eviscerate", 2098, p )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
@@ -1715,11 +1685,11 @@ struct eviscerate_t : public rogue_attack_t
                                p -> talents.coup_de_grace -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) );
     base_crit       += p -> glyphs.eviscerate -> value();
 
-    double _min     = spell_data -> effect_min( 1 );
-    double _max     = spell_data -> effect_max( 1 );
-    double cp_bonus = spell_data -> effect_unk( 1 );
+    double _min     = effect_min( 1 );
+    double _max     = effect_max( 1 );
+    double cp_bonus = effect_unk( 1 );
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < COMBO_POINTS_MAX; i++)
     {
       combo_point_dmg_min[ i ] = _min + cp_bonus * ( i + 1 );
       combo_point_dmg_max[ i ] = _max + cp_bonus * ( i + 1 );
@@ -1779,7 +1749,7 @@ struct expose_armor_t : public rogue_attack_t
   int override_sunder;
 
   expose_armor_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "expose_armor", p, 8647 ), override_sunder( 0 )
+    rogue_attack_t( "expose_armor", 6847, p ), override_sunder( 0 )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
@@ -1851,7 +1821,7 @@ struct expose_armor_t : public rogue_attack_t
 struct feint_t : public rogue_attack_t
 {
   feint_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "feint", p, 1966 )
+    rogue_attack_t( "feint", 1966, p )
   {
     parse_options( options_str );
   }
@@ -1874,7 +1844,7 @@ struct feint_t : public rogue_attack_t
 struct garrote_t : public rogue_attack_t
 {
   garrote_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "garrote", p, 703 )
+    rogue_attack_t( "garrote", 703, p )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
@@ -1931,7 +1901,7 @@ struct garrote_t : public rogue_attack_t
 struct hemorrhage_t : public rogue_attack_t
 {
   hemorrhage_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "hemorrhage", p, p -> talents.hemorrhage )
+    rogue_attack_t( "hemorrhage", p -> talents.hemorrhage -> spell_id(), p )
   {
     // It does not have CP gain effect in spell dbc for soem reason
     adds_combo_points = 1;
@@ -1973,7 +1943,7 @@ struct hemorrhage_t : public rogue_attack_t
 struct kick_t : public rogue_attack_t
 {
   kick_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "kick", p, 1766 )
+    rogue_attack_t( "kick", 1766, p )
   {
     base_dd_min = base_dd_max = 1;
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
@@ -1996,7 +1966,7 @@ struct kick_t : public rogue_attack_t
 struct killing_spree_tick_t : public rogue_attack_t
 {
   killing_spree_tick_t( rogue_t* p ) :
-    rogue_attack_t( "killing_spree", p )
+    rogue_attack_t( "killing_spree", p, true )
   {
     dual        = true;
     background  = true;
@@ -2020,12 +1990,12 @@ struct killing_spree_t : public rogue_attack_t
   attack_t* killing_spree_tick;
 
   killing_spree_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "killing_spree", p, p -> talents.killing_spree )
+    rogue_attack_t( "killing_spree", p -> talents.killing_spree -> spell_id(), p )
   {
     base_dd_min = base_dd_max = 1;
     channeled = true;
     num_ticks = 5;
-    base_tick_time = spell_data -> effect_period( 1 );
+    base_tick_time = effect_period( 1 );
 
     killing_spree_tick = new killing_spree_tick_t( p );
 
@@ -2082,7 +2052,7 @@ struct killing_spree_t : public rogue_attack_t
 struct mutilate_strike_t : public rogue_attack_t
 {
   mutilate_strike_t( rogue_t* p ) :
-    rogue_attack_t( "mutilate", p, 5374 )
+    rogue_attack_t( "mutilate", 5374, p )
   {
     dual        = true;
     background  = true;
@@ -2122,7 +2092,7 @@ struct mutilate_t : public rogue_attack_t
   attack_t* strike;
   
   mutilate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "mutilate", p, p -> spec_mutilate )
+    rogue_attack_t( "mutilate", p -> spec_mutilate -> spell_id(), p )
   {
     strike = new mutilate_strike_t( p );
 
@@ -2177,9 +2147,8 @@ struct mutilate_t : public rogue_attack_t
 struct premeditation_t : public rogue_attack_t
 {
   premeditation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "premeditation", p, p -> talents.premeditation )
+    rogue_attack_t( "premeditation", p -> talents.premeditation -> spell_id(), p, true )
   {
-    simple           = true;
     requires_stealth = true;
 
     parse_options( options_str );
@@ -2191,7 +2160,7 @@ struct premeditation_t : public rogue_attack_t
 struct revealing_strike_t : public rogue_attack_t
 {
   revealing_strike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "revealing_strike", p, p -> talents.revealing_strike )
+    rogue_attack_t( "revealing_strike", p -> talents.revealing_strike -> spell_id(), p )
   {
     add_trigger_buff( p -> buffs_revealing_strike );
 
@@ -2203,10 +2172,10 @@ struct revealing_strike_t : public rogue_attack_t
 
 struct rupture_t : public rogue_attack_t
 {
-  double combo_point_dmg[5];
+  double combo_point_dmg[ COMBO_POINTS_MAX ];
 
   rupture_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "rupture", p, 1943 )
+    rogue_attack_t( "rupture", 1943, p )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
@@ -2217,11 +2186,11 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     base_multiplier      *= 1.0 + p -> set_bonus.tier7_2pc_melee() * 0.10;
     
-    double base   = spell_data -> effect_average( 1 );
-    double cp_var = spell_data -> effect_unk( 1 );
+    double base     = effect_average( 1 );
+    double cp_bonus = effect_unk( 1 );
 
-    for (int i = 0; i < 5; i++)
-      combo_point_dmg[i] = base + cp_var * (i + 1);
+    for (int i = 0; i < COMBO_POINTS_MAX; i++)
+      combo_point_dmg[ i ] = base + cp_bonus * ( i + 1 );
 
     parse_options( options_str );
   }
@@ -2279,9 +2248,8 @@ struct rupture_t : public rogue_attack_t
 struct shadowstep_t : public rogue_attack_t
 {
   shadowstep_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstep", p, p -> spec_shadowstep )
+    rogue_attack_t( "shadowstep", p -> spec_shadowstep -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_shadowstep );
 
     parse_options( options_str );
@@ -2293,7 +2261,7 @@ struct shadowstep_t : public rogue_attack_t
 struct shiv_t : public rogue_attack_t
 {
   shiv_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shiv", p, 5938 )
+    rogue_attack_t( "shiv", 5938, p )
   {
     weapon = &( p -> off_hand_weapon );
     if ( weapon -> type == WEAPON_NONE ) 
@@ -2322,7 +2290,7 @@ struct shiv_t : public rogue_attack_t
 struct sinister_strike_t : public rogue_attack_t
 {
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "sinister_strike", p, 1752 )
+    rogue_attack_t( "sinister_strike", 1752, p )
   {
     base_cost       += p -> talents.improved_sinister_strike -> base_value( E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
     base_multiplier *= 1.0 + ( p -> talents.aggression               -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) +
@@ -2362,7 +2330,7 @@ struct sinister_strike_t : public rogue_attack_t
 struct slice_and_dice_t : public rogue_attack_t
 {
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "slice_and_dice", p, 5171 )
+    rogue_attack_t( "slice_and_dice", 5171, p )
   {
     check_min_level( 22 );
 
@@ -2446,10 +2414,8 @@ struct preparation_t : public rogue_attack_t
   std::vector<cooldown_t*> cooldown_list;
 
   preparation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "preparation", p, p -> talents.preparation )
+    rogue_attack_t( "preparation", p -> talents.preparation -> spell_id(), p, true )
   {
-    simple = true;
-
     cooldown_list.push_back( p -> get_cooldown( "shadowstep" ) );
     cooldown_list.push_back( p -> get_cooldown( "vanish"     ) );
 
@@ -2474,9 +2440,8 @@ struct preparation_t : public rogue_attack_t
 struct shadow_dance_t : public rogue_attack_t
 {
   shadow_dance_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_dance", p, p -> talents.shadow_dance )
+    rogue_attack_t( "shadow_dance", p -> talents.shadow_dance -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_shadow_dance );
 
     p -> buffs_shadow_dance -> duration += p -> glyphs.shadow_dance -> value();
@@ -2493,7 +2458,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
   bool unspecified_target;
 
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "tricks_target", p, 57934 ),
+    rogue_attack_t( "tricks_target", 57934, p ),
     unspecified_target( false )
   {
     std::string target_str = p -> tricks_of_the_trade_target_str;
@@ -2572,9 +2537,8 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 struct vanish_t : public rogue_attack_t
 {
   vanish_t( rogue_t* p, const std::string& options_str ) :
-      rogue_attack_t( "vanish", p, 1856 )
+    rogue_attack_t( "vanish", 1856, p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_stealthed );
 
     cooldown -> duration += p -> talents.elusiveness -> effect_base_value( 1 ) / 1000.0;
@@ -2598,9 +2562,8 @@ struct vanish_t : public rogue_attack_t
 struct vendetta_t : public rogue_attack_t
 {
   vendetta_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "vendetta", p, p -> talents.vendetta )
+    rogue_attack_t( "vendetta", p -> talents.vendetta -> spell_id(), p, true )
   {
-    simple = true;
     add_trigger_buff( p -> buffs_vendetta );
 
     parse_options( options_str );
@@ -2610,48 +2573,6 @@ struct vendetta_t : public rogue_attack_t
 // =========================================================================
 // Poisons
 // =========================================================================
-
-// rogue_poison_t::parse_data ==============================================
-
-void rogue_poison_t::custom_parse_data()
-{
-  if ( ! spell_data )
-    return;
-
-  if ( ! spell_data -> ok() )
-    return;
-  
-  // Do simplistic parsing of stuff, based on effect type/subtype
-  for ( int effect_num = 1; effect_num <= MAX_EFFECTS; effect_num++ ) 
-  {
-    if ( ! spell_data -> effect_id( effect_num ) )
-      continue;
-
-    if ( spell_data -> effect_trigger_spell( effect_num ) > 0 )
-      continue;
-        
-    switch ( spell_data -> effect_type( effect_num ) )
-    {
-      case E_SCHOOL_DAMAGE:
-        may_crit = true;
-        base_dd_min = spell_data -> effect_min( effect_num );
-        base_dd_max = spell_data -> effect_max( effect_num );
-        break;
-        
-      case E_APPLY_AURA:
-        {
-          if ( spell_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
-          {
-            base_td_init   = spell_data -> effect_min( effect_num );
-    			  base_tick_time = spell_data -> effect_period( effect_num );
-    			  num_ticks      = int ( spell_data -> duration() / base_tick_time );
-            number_ticks   = num_ticks;
-          }
-        }
-        break;
-    }
-  }
-}
 
 // rogue_poison_t::player_buff =============================================
 
@@ -2679,9 +2600,10 @@ double rogue_poison_t::total_multiplier() SC_CONST
 
 struct deadly_poison_t : public rogue_poison_t
 {
-  deadly_poison_t( rogue_t* player ) :  rogue_poison_t( "deadly_poison", player, 2818 )
+  deadly_poison_t( rogue_t* player ) :  rogue_poison_t( "deadly_poison", 2818, player )
   {
     tick_power_mod = 0.108 / num_ticks;
+    number_ticks   = num_ticks;
   }
 
   virtual void execute()
@@ -2712,7 +2634,7 @@ struct deadly_poison_t : public rogue_poison_t
 
       if ( result_is_hit() )
       {
-        if ( p -> buffs_poison_doses -> check() == 5 )
+        if ( p -> buffs_poison_doses -> check() == max_stacks() )
         {
           p -> buffs_deadly_proc -> trigger();
           weapon_t* other_w = ( weapon -> slot == SLOT_MAIN_HAND ) ? &( p -> off_hand_weapon ) : &( p -> main_hand_weapon );
@@ -2731,7 +2653,7 @@ struct deadly_poison_t : public rogue_poison_t
         {
           schedule_tick();
           apply_poison_debuff( p );
-          stats -> num_executes++; // we increment num_executes on firstapplication so that it shows up in the chart
+          stats -> num_executes++; // we increment num_executes on first application so that it shows up in the chart
         }
       }
     }
@@ -2772,7 +2694,7 @@ struct deadly_poison_t : public rogue_poison_t
 
 struct instant_poison_t : public rogue_poison_t
 {
-  instant_poison_t( rogue_t* player ) : rogue_poison_t( "instant_poison", player, 8680 )
+  instant_poison_t( rogue_t* player ) : rogue_poison_t( "instant_poison", 8680, player )
   {
     direct_power_mod = 0.09;
   }
@@ -2814,7 +2736,7 @@ struct instant_poison_t : public rogue_poison_t
 
 struct wound_poison_t : public rogue_poison_t
 {
-  wound_poison_t( rogue_t* player ) : rogue_poison_t( "wound_poison", player, 13218 )
+  wound_poison_t( rogue_t* player ) : rogue_poison_t( "wound_poison", 13218, player )
   {
     direct_power_mod = .036;
   }
