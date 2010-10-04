@@ -761,7 +761,7 @@ struct lava_burst_overload_t : public shaman_spell_t
             
     base_crit_bonus_multiplier *= 1.0 + 
       ( ( p -> primary_tree() == TREE_ELEMENTAL ) * p -> spec_elemental_fury -> base_value() +
-          p -> talent_lava_flows -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 24 ) +
+          p -> talent_lava_flows -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 15 ) +
           p -> set_bonus.tier7_4pc_caster() * 0.10 );
   }
 
@@ -2069,7 +2069,7 @@ struct lava_burst_t : public shaman_spell_t
       
     base_crit_bonus_multiplier *= 1.0 + 
       ( ( p -> primary_tree() == TREE_ELEMENTAL ) * p -> spec_elemental_fury -> base_value() +
-          p -> talent_lava_flows -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 24 ) +
+          p -> talent_lava_flows -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 15 ) +
           p -> set_bonus.tier7_4pc_caster() * 0.10 );
 
     // XXX: Item effects
