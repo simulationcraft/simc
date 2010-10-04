@@ -459,10 +459,10 @@ struct rogue_t : public player_t
     dots_rupture          = get_dot( "rupture" );
 
     // Cooldowns
-    cooldowns_honor_among_thieves      = get_cooldown( "honor_among_thieves" );
-    cooldowns_seal_fate                = get_cooldown( "seal_fate"           );
-    cooldowns_adrenaline_rush          = get_cooldown( "adrenaline_rush"     );
-    cooldowns_killing_spree            = get_cooldown( "killing_spree"       );
+    cooldowns_honor_among_thieves = get_cooldown( "honor_among_thieves" );
+    cooldowns_seal_fate           = get_cooldown( "seal_fate"           );
+    cooldowns_adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
+    cooldowns_killing_spree       = get_cooldown( "killing_spree"       );
 
     // Options
     critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
@@ -573,11 +573,7 @@ struct rogue_attack_t : public attack_t
 
     base_hit  += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
 
-    if ( spell_data )
-    {
-      check_spell( spell_data );
-      parse_data( spell_data );
-    }
+    custom_parse_data();
   }
   
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -611,16 +607,7 @@ struct rogue_attack_t : public attack_t
       m_buff -> trigger();
   }
 
-  void check_spell( spell_id_t* spell )
-  {
-    if ( spell -> ok() )
-      return;
-
-    sim -> errorf( "Player %s attempting to execute action %s without the required spell.\n", player -> name(), name() );
-
-    background = true; // prevent action from being executed
-  }
-  virtual void parse_data( spell_id_t* s_data );
+  void custom_parse_data();
 };
 
 // ==========================================================================
@@ -637,7 +624,7 @@ struct rogue_poison_t : public spell_t
     assert( player -> player_data.spell_exists( id ) );
     spell_data = new active_spell_t( player, n, id );
 
-    parse_data( spell_data );
+    custom_parse_data();
 
     background  = true;
     base_cost   = 0;
@@ -652,9 +639,10 @@ struct rogue_poison_t : public spell_t
     base_attack_power_multiplier = 1.0;
   }
 
-  virtual void parse_data( spell_id_t* s_data );
   virtual void player_buff();
   virtual double total_multiplier() SC_CONST;
+
+  void custom_parse_data();
 };
 
 // ==========================================================================
@@ -761,6 +749,8 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
     p -> buffs_slice_and_dice -> trigger( 5 );
 }
 
+
+
 // trigger_initiative ======================================================
 
 static void trigger_initiative( rogue_attack_t* a )
@@ -787,6 +777,18 @@ static void trigger_energy_refund( rogue_attack_t* a )
 
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
 }
+
+// trigger_find_weakness ====================================================
+
+static void trigger_find_weakness( rogue_attack_t* a )
+{
+  rogue_t* p = a -> player -> cast_rogue();
+
+  if ( ! p -> talents.find_weakness -> rank() )
+    return;
+
+  p -> buffs_find_weakness -> trigger();
+};
 
 // trigger_relentless_strikes ===============================================
 
@@ -1083,22 +1085,28 @@ action_expr_t* rogue_attack_t::create_expression( const std::string& name_str )
 
 // rogue_attack_t::parse_data ==============================================
 
-void rogue_attack_t::parse_data( spell_id_t* s_data )
+void rogue_attack_t::custom_parse_data()
 {
-  if ( ! s_data )
-    return;
-
-  if ( ! s_data -> ok() )
+  if ( ! spell_data )
     return;
   
-  base_execute_time    = s_data -> cast_time();
-  cooldown -> duration = s_data -> cooldown();
-  range                = s_data -> max_range();
-  travel_speed         = s_data -> missile_speed();
-  base_cost            = s_data -> cost();
-  trigger_gcd          = s_data -> gcd();
+  if ( ! spell_data -> ok() )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required spell.\n", player -> name(), name() );
+
+    background = true; // prevent action from being executed
+
+    return;
+  }
+  
+  base_execute_time    = spell_data -> cast_time();
+  cooldown -> duration = spell_data -> cooldown();
+  range                = spell_data -> max_range();
+  travel_speed         = spell_data -> missile_speed();
+  base_cost            = spell_data -> cost();
+  trigger_gcd          = spell_data -> gcd();
                                          
-  school               = s_data -> get_school_type();
+  school               = spell_data -> get_school_type();
   stats -> school      = school;
     
   // There are no rogue abilities that scale with flat AP
@@ -1107,41 +1115,41 @@ void rogue_attack_t::parse_data( spell_id_t* s_data )
   // Do simplistic parsing of stuff, based on effect type/subtype
   for ( int effect_num = 1; effect_num <= MAX_EFFECTS; effect_num++ ) 
   {
-    if ( ! s_data -> effect_id( effect_num ) )
+    if ( ! spell_data -> effect_id( effect_num ) )
       continue;
 
-    if ( s_data -> effect_trigger_spell( effect_num ) > 0 )
+    if ( spell_data -> effect_trigger_spell( effect_num ) > 0 )
       continue;
         
-    switch ( s_data -> effect_type( effect_num ) )
+    switch ( spell_data -> effect_type( effect_num ) )
     {
       case E_ADD_COMBO_POINTS:
-        adds_combo_points = s_data -> effect_base_value( effect_num );
+        adds_combo_points = spell_data -> effect_base_value( effect_num );
         break;
 
       case E_NORMALIZED_WEAPON_DMG:
         normalize_weapon_speed = true;
       case E_WEAPON_DAMAGE:
         weapon = &( player -> main_hand_weapon );
-        base_dd_min = s_data -> effect_min( effect_num );
-        base_dd_max = s_data -> effect_max( effect_num );
+        base_dd_min = spell_data -> effect_min( effect_num );
+        base_dd_max = spell_data -> effect_max( effect_num );
         break;
         
       case E_WEAPON_PERCENT_DAMAGE:
         weapon = &( player -> main_hand_weapon );
-        weapon_multiplier = s_data -> effect_base_value( effect_num ) / 100.0;
+        weapon_multiplier = spell_data -> effect_base_value( effect_num ) / 100.0;
         break;
 
       case E_APPLY_AURA:
         {
-          if ( s_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
+          if ( spell_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
           {
             if ( school == SCHOOL_PHYSICAL )
               school = stats -> school = SCHOOL_BLEED;
               
-            base_td        = s_data -> effect_min( effect_num );
-    			  base_tick_time = s_data -> effect_period( effect_num );
-    			  num_ticks      = int ( s_data -> duration() / base_tick_time );
+            base_td        = spell_data -> effect_min( effect_num );
+    			  base_tick_time = spell_data -> effect_period( effect_num );
+    			  num_ticks      = int ( spell_data -> duration() / base_tick_time );
           }
         }
         break;
@@ -1456,8 +1464,6 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, 8676 )
   {
-    check_min_level( 8 );
-
     requires_position      = POSITION_BACK;
     requires_stealth       = true;
 
@@ -1481,9 +1487,7 @@ struct ambush_t : public rogue_attack_t
     if ( result_is_hit() )
     {
       trigger_initiative( this );
-
-      if ( p -> talents.find_weakness -> rank() )
-        p -> buffs_find_weakness -> trigger();
+      trigger_find_weakness(this );
     }
 
     p -> buffs_shadowstep -> expire();
@@ -1507,8 +1511,6 @@ struct backstab_t : public rogue_attack_t
   backstab_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "backstab", p, 53 )
   {
-    check_min_level( 18 );
-
     requires_weapon    = WEAPON_DAGGER;
     requires_position  = POSITION_BACK;
     
@@ -1569,8 +1571,6 @@ struct blade_flurry_t : public rogue_attack_t
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_flurry", p, p -> spec_blade_flurry )
   {
-    check_spec( TREE_COMBAT );
-
     simple = true;
     add_trigger_buff( p -> buffs_blade_flurry );
 
@@ -1612,8 +1612,6 @@ struct envenom_t : public rogue_attack_t
   envenom_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "envenom", p, 32645 ), min_doses( 1 ), no_buff( 0 )
   {
-    check_min_level( 54 );
-
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1641,13 +1639,7 @@ struct envenom_t : public rogue_attack_t
 
     int doses_consumed = std::min( p -> buffs_poison_doses -> current_stack, cp );
 
-    double envenom_duration = 1.0 + cp;
-
-    if ( p -> buffs_envenom -> remains_lt( envenom_duration ) )
-    {
-      p -> buffs_envenom -> duration = envenom_duration;
-      p -> buffs_envenom -> trigger();
-    }
+    p -> buffs_envenom -> trigger( cp );
 
     rogue_attack_t::execute();
 
@@ -1789,10 +1781,9 @@ struct expose_armor_t : public rogue_attack_t
   expose_armor_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "expose_armor", p, 8647 ), override_sunder( 0 )
   {
-    check_min_level( 36 );
-
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
 
     requires_combo_points = true;
 
@@ -1862,8 +1853,6 @@ struct feint_t : public rogue_attack_t
   feint_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "feint", p, 1966 )
   {
-    check_min_level( 42 );
-
     parse_options( options_str );
   }
 
@@ -1887,8 +1876,6 @@ struct garrote_t : public rogue_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "garrote", p, 703 )
   {
-    check_min_level( 40 );
-
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1915,9 +1902,7 @@ struct garrote_t : public rogue_attack_t
     if ( result_is_hit() )
     {
       trigger_initiative( this );
-
-      if ( p -> talents.find_weakness -> rank() )
-        p -> buffs_find_weakness -> trigger();
+      trigger_find_weakness(this );
     }
 
     p -> buffs_shadowstep -> expire();
@@ -1990,8 +1975,6 @@ struct kick_t : public rogue_attack_t
   kick_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "kick", p, 1766 )
   {
-    check_min_level( 12 );
-    
     base_dd_min = base_dd_max = 1;
     may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0.0;
@@ -2141,8 +2124,6 @@ struct mutilate_t : public rogue_attack_t
   mutilate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "mutilate", p, p -> spec_mutilate )
   {
-    check_spec( TREE_ASSASSINATION );
-
     strike = new mutilate_strike_t( p );
 
     // so it passes ready checks
@@ -2227,8 +2208,6 @@ struct rupture_t : public rogue_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, 1943 )
   {
-    check_min_level( 46 );
-
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2302,9 +2281,7 @@ struct shadowstep_t : public rogue_attack_t
   shadowstep_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstep", p, p -> spec_shadowstep )
   {
-    check_spec( TREE_SUBTLETY );
-
-    simple       = true;
+    simple = true;
     add_trigger_buff( p -> buffs_shadowstep );
 
     parse_options( options_str );
@@ -2318,8 +2295,6 @@ struct shiv_t : public rogue_attack_t
   shiv_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shiv", p, 5938 )
   {
-    check_min_level( 70 );
-
     weapon = &( p -> off_hand_weapon );
     if ( weapon -> type == WEAPON_NONE ) 
       background = true; // Do not allow execution.
@@ -2521,8 +2496,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     rogue_attack_t( "tricks_target", p, 57934 ),
     unspecified_target( false )
   {
-    check_min_level( 75 );
-
     std::string target_str = p -> tricks_of_the_trade_target_str;
 
     option_t options[] =
@@ -2601,8 +2574,6 @@ struct vanish_t : public rogue_attack_t
   vanish_t( rogue_t* p, const std::string& options_str ) :
       rogue_attack_t( "vanish", p, 1856 )
   {
-    check_min_level( 22 );
-
     simple = true;
     add_trigger_buff( p -> buffs_stealthed );
 
@@ -2642,38 +2613,38 @@ struct vendetta_t : public rogue_attack_t
 
 // rogue_poison_t::parse_data ==============================================
 
-void rogue_poison_t::parse_data( spell_id_t* s_data )
+void rogue_poison_t::custom_parse_data()
 {
-  if ( ! s_data )
+  if ( ! spell_data )
     return;
 
-  if ( ! s_data -> ok() )
+  if ( ! spell_data -> ok() )
     return;
   
   // Do simplistic parsing of stuff, based on effect type/subtype
   for ( int effect_num = 1; effect_num <= MAX_EFFECTS; effect_num++ ) 
   {
-    if ( ! s_data -> effect_id( effect_num ) )
+    if ( ! spell_data -> effect_id( effect_num ) )
       continue;
 
-    if ( s_data -> effect_trigger_spell( effect_num ) > 0 )
+    if ( spell_data -> effect_trigger_spell( effect_num ) > 0 )
       continue;
         
-    switch ( s_data -> effect_type( effect_num ) )
+    switch ( spell_data -> effect_type( effect_num ) )
     {
       case E_SCHOOL_DAMAGE:
         may_crit = true;
-        base_dd_min = s_data -> effect_min( effect_num );
-        base_dd_max = s_data -> effect_max( effect_num );
+        base_dd_min = spell_data -> effect_min( effect_num );
+        base_dd_max = spell_data -> effect_max( effect_num );
         break;
         
       case E_APPLY_AURA:
         {
-          if ( s_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
+          if ( spell_data -> effect_subtype( effect_num ) == A_PERIODIC_DAMAGE )
           {
-            base_td_init   = s_data -> effect_min( effect_num );
-    			  base_tick_time = s_data -> effect_period( effect_num );
-    			  num_ticks      = int ( s_data -> duration() / base_tick_time );
+            base_td_init   = spell_data -> effect_min( effect_num );
+    			  base_tick_time = spell_data -> effect_period( effect_num );
+    			  num_ticks      = int ( spell_data -> duration() / base_tick_time );
             number_ticks   = num_ticks;
           }
         }
@@ -3034,6 +3005,27 @@ struct adrenaline_rush_buff_t : public new_buff_t
   virtual bool trigger( int, double, double )
   { // we keep haste % as current_value
     return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
+  }
+};
+
+struct envenom_buff_t : public new_buff_t
+{
+  envenom_buff_t( rogue_t* p ) :
+    new_buff_t( p, "envenom", 32645 ) { }
+
+  virtual bool trigger( int cp, double, double )
+  {
+    rogue_t* p = player -> cast_rogue();
+    
+    double new_duration = 1.0 + cp;
+
+    if ( remains_lt( new_duration ) )
+    {
+      duration = new_duration;
+      return new_buff_t::trigger();
+    }
+    else
+      return false;
   }
 };
 
@@ -3713,10 +3705,10 @@ void rogue_t::init_buffs()
 
   buffs_blade_flurry       = new new_buff_t( this, "blade_flurry",   spec_blade_flurry -> spell_id() );
   buffs_cold_blood         = new new_buff_t( this, "cold_blood",     talents.cold_blood -> spell_id() );
-  buffs_envenom            = new new_buff_t( this, "envenom",        32645 );
   buffs_shadow_dance       = new new_buff_t( this, "shadow_dance",   talents.shadow_dance -> spell_id() );
 
   buffs_adrenaline_rush    = new adrenaline_rush_buff_t    ( this, talents.adrenaline_rush -> spell_id() );
+  buffs_envenom            = new envenom_buff_t            ( this );
   buffs_find_weakness      = new find_weakness_buff_t      ( this, talents.find_weakness -> spell_id() );
   buffs_killing_spree      = new killing_spree_buff_t      ( this, talents.killing_spree -> spell_id() );
   buffs_master_of_subtlety = new master_of_subtlety_buff_t ( this, spec_master_of_subtlety -> spell_id()  );
