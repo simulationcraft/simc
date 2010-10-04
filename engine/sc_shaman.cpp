@@ -190,61 +190,6 @@ struct shaman_t : public player_t
     cooldowns_strike            = get_cooldown( "strike"            );
     cooldowns_windfury_weapon   = get_cooldown( "windfury_weapon"   );
 
-    // Tree Specialization
-    spec_elemental_fury         = new passive_spell_t( this, "elemental_fury",     60188 );
-    spec_shamanism              = new passive_spell_t( this, "shamanism",          62099 );
-
-    spec_mental_quickness       = new passive_spell_t( this, "mental_quickness",   30814 );
-    spec_dual_wield             = new passive_spell_t( this, "dual_wield",         86629 );
-    spec_primal_wisdom          = new passive_spell_t( this, "primal_wisdom",      51522 );
-
-    // Masteries
-    mastery_elemental_overload  = new passive_spell_t( this, "elemental_overload", 77222 );
-    mastery_enhanced_elements   = new passive_spell_t( this, "enhanced_elements",  77223 );
-
-    // Talents
-
-    // Elemental
-    talent_acuity                   = new talent_t( this, "acuity", "Acuity" ); 
-    talent_call_of_flame            = new talent_t( this, "call_of_flame", "Call of Flame" );
-    talent_concussion               = new talent_t( this, "concussion", "Concussion" );
-    talent_convection               = new talent_t( this, "convection", "Convection" );
-    talent_elemental_focus          = new talent_t( this, "elemental_focus", "Elemental Focus" );
-    talent_elemental_mastery        = new talent_t( this, "elemental_mastery", "Elemental Mastery" );
-    talent_elemental_oath           = new talent_t( this, "elemental_oath", "Elemental Oath" );
-    talent_elemental_precision      = new talent_t( this, "elemental_precision", "Elemental Precision" );
-    talent_feedback                 = new talent_t( this, "feedback", "Feedback" );
-    talent_fulmination              = new talent_t( this, "fulmination", "Fulmination" );
-    talent_improved_fire_nova       = new talent_t( this, "improved_fire_nova", "Improved Fire Nova" );
-    talent_lava_flows               = new talent_t( this, "lava_flows", "Lava Flows" );
-    talent_lava_surge               = new talent_t( this, "lava_surge", "Lava Surge" );
-    talent_reverberation            = new talent_t( this, "reverberation", "Reverberation" );
-    talent_rolling_thunder          = new talent_t( this, "rolling_thunder", "Rolling Thunder" );
-    talent_totemic_wrath            = new talent_t( this, "totemic_wrath", "Totemic Wrath" );
-
-    // Enhancement
-    talent_elemental_devastation    = new talent_t( this, "elemental_devastation", "Elemental Devastation" );
-    talent_elemental_weapons        = new talent_t( this, "elemental_weapons", "Elemental Weapons" );
-    talent_feral_spirit             = new talent_t( this, "feral_spirit", "Feral Spirit" );
-    talent_flurry                   = new talent_t( this, "flurry", "Flurry" );
-    talent_focused_strikes          = new talent_t( this, "focused_strikes", "Focused Strikes" );
-    talent_frozen_power             = new talent_t( this, "frozen_power", "Frozen Power" );
-    talent_improved_lava_lash       = new talent_t( this, "improved_lava_lash", "Improved Lava Lash" );
-    talent_improved_shields         = new talent_t( this, "improved_shields", "Improved Shields" );    
-    talent_maelstrom_weapon         = new talent_t( this, "maelstrom_weapon", "Maelstrom Weapon" );
-    talent_searing_flames           = new talent_t( this, "searing_flames", "Searing Flames" );
-    talent_shamanistic_rage         = new talent_t( this, "shamanistic_rage", "Shamanistic Rage" );
-    talent_static_shock             = new talent_t( this, "static_shock", "Static Shock" );
-    talent_stormstrike              = new talent_t( this, "stormstrike", "Stormstrike" );
-    talent_toughness                = new talent_t( this, "toughness", "Toughness" );
-    talent_unleashed_rage           = new talent_t( this, "unleashed_rage", "Unleashed Rage" );
-
-    // Restoration
-    talent_mana_tide_totem          = new talent_t( this, "mana_tide_totem", "Mana Tide Totem" );
-    talent_natures_swiftness        = new talent_t( this, "natures_swiftness", "Nature's Swiftness" );
-    talent_telluric_currents        = new talent_t( this, "telluric_currents", "Telluric Currents" );
-    talent_totemic_focus            = new talent_t( this, "totemic_focus", "Totemic Focus" );
-
     // Weapon Enchants
     windfury_weapon_attack   = 0;
     flametongue_weapon_spell = 0;
@@ -254,6 +199,8 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -3690,6 +3637,75 @@ void shaman_t::create_pets()
 {
   create_pet( "spirit_wolf" );
   create_pet( "fire_elemental" );
+}
+
+// shaman_t::init_talents ======================================================
+
+void shaman_t::init_talents()
+{
+  // Talents
+
+  // Elemental
+  talent_acuity                   = new talent_t( this, "acuity", "Acuity" ); 
+  talent_call_of_flame            = new talent_t( this, "call_of_flame", "Call of Flame" );
+  talent_concussion               = new talent_t( this, "concussion", "Concussion" );
+  talent_convection               = new talent_t( this, "convection", "Convection" );
+  talent_elemental_focus          = new talent_t( this, "elemental_focus", "Elemental Focus" );
+  talent_elemental_mastery        = new talent_t( this, "elemental_mastery", "Elemental Mastery" );
+  talent_elemental_oath           = new talent_t( this, "elemental_oath", "Elemental Oath" );
+  talent_elemental_precision      = new talent_t( this, "elemental_precision", "Elemental Precision" );
+  talent_feedback                 = new talent_t( this, "feedback", "Feedback" );
+  talent_fulmination              = new talent_t( this, "fulmination", "Fulmination" );
+  talent_improved_fire_nova       = new talent_t( this, "improved_fire_nova", "Improved Fire Nova" );
+  talent_lava_flows               = new talent_t( this, "lava_flows", "Lava Flows" );
+  talent_lava_surge               = new talent_t( this, "lava_surge", "Lava Surge" );
+  talent_reverberation            = new talent_t( this, "reverberation", "Reverberation" );
+  talent_rolling_thunder          = new talent_t( this, "rolling_thunder", "Rolling Thunder" );
+  talent_totemic_wrath            = new talent_t( this, "totemic_wrath", "Totemic Wrath" );
+
+  // Enhancement
+  talent_elemental_devastation    = new talent_t( this, "elemental_devastation", "Elemental Devastation" );
+  talent_elemental_weapons        = new talent_t( this, "elemental_weapons", "Elemental Weapons" );
+  talent_feral_spirit             = new talent_t( this, "feral_spirit", "Feral Spirit" );
+  talent_flurry                   = new talent_t( this, "flurry", "Flurry" );
+  talent_focused_strikes          = new talent_t( this, "focused_strikes", "Focused Strikes" );
+  talent_frozen_power             = new talent_t( this, "frozen_power", "Frozen Power" );
+  talent_improved_lava_lash       = new talent_t( this, "improved_lava_lash", "Improved Lava Lash" );
+  talent_improved_shields         = new talent_t( this, "improved_shields", "Improved Shields" );    
+  talent_maelstrom_weapon         = new talent_t( this, "maelstrom_weapon", "Maelstrom Weapon" );
+  talent_searing_flames           = new talent_t( this, "searing_flames", "Searing Flames" );
+  talent_shamanistic_rage         = new talent_t( this, "shamanistic_rage", "Shamanistic Rage" );
+  talent_static_shock             = new talent_t( this, "static_shock", "Static Shock" );
+  talent_stormstrike              = new talent_t( this, "stormstrike", "Stormstrike" );
+  talent_toughness                = new talent_t( this, "toughness", "Toughness" );
+  talent_unleashed_rage           = new talent_t( this, "unleashed_rage", "Unleashed Rage" );
+
+  // Restoration
+  talent_mana_tide_totem          = new talent_t( this, "mana_tide_totem", "Mana Tide Totem" );
+  talent_natures_swiftness        = new talent_t( this, "natures_swiftness", "Nature's Swiftness" );
+  talent_telluric_currents        = new talent_t( this, "telluric_currents", "Telluric Currents" );
+  talent_totemic_focus            = new talent_t( this, "totemic_focus", "Totemic Focus" );
+
+  player_t::init_talents();
+}
+
+// shaman_t::init_spells ======================================================
+
+void shaman_t::init_spells()
+{
+  player_t::init_spells();
+
+  // Tree Specialization
+  spec_elemental_fury         = new passive_spell_t( this, "elemental_fury",     60188 );
+  spec_shamanism              = new passive_spell_t( this, "shamanism",          62099 );
+
+  spec_mental_quickness       = new passive_spell_t( this, "mental_quickness",   30814 );
+  spec_dual_wield             = new passive_spell_t( this, "dual_wield",         86629 );
+  spec_primal_wisdom          = new passive_spell_t( this, "primal_wisdom",      51522 );
+
+  // Masteries
+  mastery_elemental_overload  = new passive_spell_t( this, "elemental_overload", 77222 );
+  mastery_enhanced_elements   = new passive_spell_t( this, "enhanced_elements",  77223 );
 }
 
 // shaman_t::init_glyphs ======================================================

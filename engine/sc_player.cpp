@@ -397,6 +397,7 @@ player_t::player_t( sim_t*             s,
   talent_list2.clear();
   passive_spell_list.clear();
   active_spell_list.clear();
+  talent_str.clear();
 }
 
 // player_t::~player_t =====================================================
@@ -619,7 +620,9 @@ void player_t::init()
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
   initialized = 1;
-
+  init_data();
+  init_talents();
+  init_spells();
   init_rating();
   init_glyphs();
   init_race();
@@ -636,8 +639,6 @@ void player_t::init()
   init_enchant();
   init_professions();
   init_consumables();
-  init_talents();
-  init_spells();
   init_scaling();
   init_buffs();
   init_actions();
@@ -647,6 +648,13 @@ void player_t::init()
   init_rng();
   init_stats();
   init_values();
+}
+
+// player_t::init_data =====================================================
+
+void player_t::init_data()
+{
+  player_data.set_parent( & sim -> sim_data );
 }
 
 // player_t::init_base =====================================================
@@ -1096,14 +1104,79 @@ void player_t::init_rating()
 
 void player_t::init_talents()
 {
+  uint32_t i = 0;
+  uint32_t j = 0;
+  uint32_t tab = 0;
+  uint32_t num = 0;
+  uint32_t talent_id = 0;
+  uint32_t num_talents;
+  uint32_t rank;
+  uint32_t tab_sizes[ MAX_TALENT_TREES ];
+  uint32_t tab_start[ MAX_TALENT_TREES + 1 ];
+  std::vector<int>::const_iterator talent_iter;
 
+  num_talents = talent_list2.size();
+
+  uint32_t list_size = 0;
+  
+  tab_start[ 0 ] = 0;
+
+  for ( uint32_t k = 0; k < MAX_TALENT_TREES; k ++ )
+  {
+    tab_sizes[ k ] = player_data.talent_player_get_num_talents( type, k );
+    list_size += tab_sizes[ k ];
+  }
+
+  tab_start[ MAX_TALENT_TREES ] = list_size;
+
+  for ( uint32_t k = 1; k < MAX_TALENT_TREES; k++ )
+  {
+    tab_start[ k ] = tab_start[ k - 1 ] + tab_sizes[ k - 1 ];
+  }
+
+  tab = 0;
+  num = 0;
+
+  talent_iter = talent_str.begin();
+
+  for ( i = 0; ( i < list_size ) && ( talent_iter != talent_str.end() ); i++, num++, talent_iter++ )
+  {
+    if ( i >= tab_start[ tab + 1 ] )
+    {
+      tab++;
+      num = 0;
+    }
+
+    rank = ( *talent_iter >= 0 ) && ( *talent_iter <= 3 ) ? *talent_iter : 0 ;
+
+    talent_id = player_data.talent_player_get_id_by_num( type, tab, num );
+
+    if ( talent_id != 0 )
+    {
+      for ( j = 0; j < num_talents; j++ )
+      {
+        if ( talent_list2[ j ] && talent_list2[ j ] -> talent_t_data && talent_list2[ j ] -> talent_t_data-> id == talent_id )
+        {
+          talent_str.begin();
+          
+          if ( rank > player_data.talent_max_rank( talent_id ) )
+            rank = player_data.talent_max_rank( talent_id );
+          talent_list2[ j ] -> set_rank( rank );
+          talent_tab_points[ tab ] += rank;
+          break;
+        }
+      }
+    }   
+  }
+
+  pri_tree = primary_tab();
 }
 
-// player_t::init_talents =================================================
+// player_t::init_spells =================================================
 
 void player_t::init_spells()
 {
-  pri_tree = primary_tab();
+  
 }
 
 
@@ -3922,7 +3995,7 @@ std::vector<talent_translation_t>& player_t::get_talent_list()
 
 // player_t::parse_talent_trees ===================================================
 
-bool player_t::parse_talent_trees( int talents[] )
+bool player_t::parse_talent_trees( int talents[], const uint32_t size )
 {
   std::vector<talent_translation_t> translations = this->get_talent_list();
 
@@ -3934,63 +4007,10 @@ bool player_t::parse_talent_trees( int talents[] )
   }
 
   uint32_t i = 0;
-  uint32_t j = 0;
-  uint32_t tab = 0;
-  uint32_t num = 0;
-  uint32_t talent_id = 0;
-  uint32_t num_talents;
-  uint32_t rank;
-  uint32_t tab_sizes[ MAX_TALENT_TREES ];
-  uint32_t tab_start[ MAX_TALENT_TREES + 1 ];
-
-  num_talents = talent_list2.size();
-
-  uint32_t list_size = 0;
-  
-  tab_start[ 0 ] = 0;
-
-
-  for ( uint32_t k = 0; k < MAX_TALENT_TREES; k ++ )
+  while ( i < size )
   {
-    tab_sizes[ k ] = player_data.talent_player_get_num_talents( type, k );
-    list_size += tab_sizes[ k ];
-  }
-
-  tab_start[ MAX_TALENT_TREES ] = list_size;
-
-  for ( uint32_t k = 1; k < MAX_TALENT_TREES; k++ )
-  {
-    tab_start[ k ] = tab_start[ k - 1 ] + tab_sizes[ k - 1 ];
-  }
-
-  tab = 0;
-  num = 0;
-
-  for ( i = 0; i < list_size; i++, num++ )
-  {
-    if ( i >= tab_start[ tab + 1 ] )
-    {
-      tab++;
-      num = 0;
-    }
-
-    talent_id = player_data.talent_player_get_id_by_num( type, tab, num );
-
-    if ( talent_id != 0 )
-    {
-      for ( j = 0; j < num_talents; j++ )
-      {
-        if ( talent_list2[ j ] && talent_list2[ j ] -> talent_t_data && talent_list2[ j ] -> talent_t_data-> id == talent_id )
-        {
-          rank = ( talents[ i ] >= 0 ) && ( talents[ i ] <= 3 ) ? talents[ i ] : 0 ;
-          if ( rank > player_data.talent_max_rank( talent_id ) )
-            rank = player_data.talent_max_rank( talent_id );
-          talent_list2[ j ] -> set_rank( rank );
-          talent_tab_points[ tab ] += rank;
-          break;
-        }
-      }
-    }   
+    talent_str.push_back( talents[ i ] );
+    i++;
   }
 
   return true;
@@ -4015,7 +4035,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     talents[i] = c - '0';
   }
 
-  return parse_talent_trees(talents);
+  return parse_talent_trees( talents, talent_string.size() );
 }
 
 // player_t::parse_talents_mmo ==============================================
@@ -4132,7 +4152,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 
-  if ( ! parse_talent_trees( talents ) )
+  if ( ! parse_talent_trees( talents, talent_list.size() ) )
     return false;
 
   return true;

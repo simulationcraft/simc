@@ -636,7 +636,7 @@ bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_
   }
   for(i=0;i<translations.size();i++)
 	  talents[i] = talents[i+1];
-  return  player->parse_talent_trees(talents);
+  return  player->parse_talent_trees( talents, translations.size() );
 }
 
 void mmo_champion_t::get_next_range_byte(unsigned int* rangeval, char** src) {

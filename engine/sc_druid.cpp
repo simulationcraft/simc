@@ -226,16 +226,7 @@ struct druid_t : public player_t
 
     active_t10_4pc_caster_dot = 0;
     
-    // Balance
-    spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
-    mastery_total_eclipse = new passive_spell_t( this, "total_eclipse", 77492 );
     eclipse_bar_value     = 0;
-
-    // Feral
-    spec_aggression         = new passive_spell_t( this, "aggression",      84735 );
-    spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
-    mastery_razor_claws     = new passive_spell_t( this, "razor_claws",     77493 );
-    mastery_savage_defender = new passive_spell_t( this, "savage_defender", 77494 );
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
     cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
@@ -250,60 +241,12 @@ struct druid_t : public player_t
     cat_melee_attack = 0;
     bear_melee_attack = 0;
 
-    equipped_weapon_dps = 0;
-    
-    talents.balance_of_power      = new talent_t( this, "balance_of_power", "Balance of Power" );
-    talents.berserk               = new talent_t( this, "berserk", "Berserk" );
-    talents.blessing_of_the_grove = new talent_t( this, "blessing_of_the_grove", "Blessing of the Grove" );
-    talents.blood_in_the_water    = new talent_t( this, "blood_in_the_water", "Blood in the Water" );
-    talents.brutal_impact         = new talent_t( this, "brutal_impact", "Brutal Impact" );
-    talents.earth_and_moon        = new talent_t( this, "earth_and_moon", "Earth and Moon" );
-    talents.endless_carnage       = new talent_t( this, "endless_carnage", "Endless Carnage" );
-    talents.euphoria              = new talent_t( this, "euphoria", "Euphoria" );
-    talents.dreamstate            = new talent_t( this, "dreamstate", "Dreamstate" );               
-    talents.feral_aggression      = new talent_t( this, "feral_aggression", "Feral Aggression" );
-    talents.feral_charge          = new talent_t( this, "feral_charge", "Feral Charge" );
-    talents.feral_swiftness       = new talent_t( this, "feral_swiftness", "Feral Swiftness" );
-    talents.force_of_nature       = new talent_t( this, "force_of_nature", "Force of Nature" );
-    talents.fungal_growth         = new talent_t( this, "fungal_growth", "Fungal Growth" );
-    talents.furor                 = new talent_t( this, "furor", "Furor" );
-    talents.fury_of_stormrage     = new talent_t( this, "fury_of_stormrage", "Fury of Stormrage" );
-    talents.fury_swipes           = new talent_t( this, "fury_swipes", "Fury Swipes" );
-    talents.gale_winds            = new talent_t( this, "gale_winds", "Gale Winds" );
-    talents.genesis               = new talent_t( this, "genesis", "Genesis" );
-    talents.heart_of_the_wild     = new talent_t( this, "heart_of_the_wild", "Heart of the Wild" );
-    talents.infected_wounds       = new talent_t( this, "infected_wounds", "Infected Wounds" );
-    talents.king_of_the_jungle    = new talent_t( this, "king_of_the_jungle", "King of the Jungle" );
-    talents.leader_of_the_pack    = new talent_t( this, "leader_of_the_pack", "Leader of the Pack" );
-    talents.lunar_shower          = new talent_t( this, "lunar_shower", "Lunar Shower" );
-    talents.master_shapeshifter   = new talent_t( this, "master_shapeshifter", "Master Shapeshifter" );
-    talents.moonglow              = new talent_t( this, "moonglow", "Moonglow" );
-    talents.moonkin_form          = new talent_t( this, "moonkin_form", "Moonkin Form" );
-    talents.natural_reaction      = new talent_t( this, "natural_reaction", "Natural Reaction" );
-    talents.natures_majesty       = new talent_t( this, "natures_majesty", "Nature's Majesty" );
-    talents.natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
-    talents.natures_grace         = new talent_t( this, "natures_grace", "Nature's Grace" );
-    talents.nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
-    talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
-    talents.owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
-    talents.predatory_strikes     = new talent_t( this, "predatory_strikes", "Predatory Strikes" );
-    talents.primal_fury           = new talent_t( this, "primal_fury", "Primal Fury" );
-    talents.primal_madness        = new talent_t( this, "primal_madness", "Primal Madness" );
-    talents.pulverize             = new talent_t( this, "pulverize", "Pulverize" );
-    talents.rend_and_tear         = new talent_t( this, "rend_and_tear", "Rend and Tear" );
-    talents.shooting_stars        = new talent_t( this, "shooting_stars", "Shooting Stars" );
-    talents.solar_beam            = new talent_t( this, "solar_beam", "Solar Beam" );
-    talents.stampede              = new talent_t( this, "stampede", "Stampede" );
-    talents.starfall              = new talent_t( this, "starfall", "Starfall" );
-    talents.starlight_wrath       = new talent_t( this, "starlight_wrath", "Starlight Wrath" );
-    talents.sunfire               = new talent_t( this, "sunfire", "Sunfire" );
-    talents.survival_instincts    = new talent_t( this, "survival_instincts", "Survival Instincts" );
-    talents.thick_hide            = new talent_t( this, "thick_hide", "Thick Hide" );
-    talents.typhoon               = new talent_t( this, "typhoon", "Typhoon" );
-
+    equipped_weapon_dps = 0; 
   }
 
   // Character Definition
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -3379,6 +3322,79 @@ pet_t* druid_t::create_pet( const std::string& pet_name )
 void druid_t::create_pets()
 {
   create_pet( "treants" );
+}
+
+// druid_t::init_talents =====================================================
+
+void druid_t::init_talents()
+{
+  talents.balance_of_power      = new talent_t( this, "balance_of_power", "Balance of Power" );
+  talents.berserk               = new talent_t( this, "berserk", "Berserk" );
+  talents.blessing_of_the_grove = new talent_t( this, "blessing_of_the_grove", "Blessing of the Grove" );
+  talents.blood_in_the_water    = new talent_t( this, "blood_in_the_water", "Blood in the Water" );
+  talents.brutal_impact         = new talent_t( this, "brutal_impact", "Brutal Impact" );
+  talents.earth_and_moon        = new talent_t( this, "earth_and_moon", "Earth and Moon" );
+  talents.endless_carnage       = new talent_t( this, "endless_carnage", "Endless Carnage" );
+  talents.euphoria              = new talent_t( this, "euphoria", "Euphoria" );
+  talents.dreamstate            = new talent_t( this, "dreamstate", "Dreamstate" );               
+  talents.feral_aggression      = new talent_t( this, "feral_aggression", "Feral Aggression" );
+  talents.feral_charge          = new talent_t( this, "feral_charge", "Feral Charge" );
+  talents.feral_swiftness       = new talent_t( this, "feral_swiftness", "Feral Swiftness" );
+  talents.force_of_nature       = new talent_t( this, "force_of_nature", "Force of Nature" );
+  talents.fungal_growth         = new talent_t( this, "fungal_growth", "Fungal Growth" );
+  talents.furor                 = new talent_t( this, "furor", "Furor" );
+  talents.fury_of_stormrage     = new talent_t( this, "fury_of_stormrage", "Fury of Stormrage" );
+  talents.fury_swipes           = new talent_t( this, "fury_swipes", "Fury Swipes" );
+  talents.gale_winds            = new talent_t( this, "gale_winds", "Gale Winds" );
+  talents.genesis               = new talent_t( this, "genesis", "Genesis" );
+  talents.heart_of_the_wild     = new talent_t( this, "heart_of_the_wild", "Heart of the Wild" );
+  talents.infected_wounds       = new talent_t( this, "infected_wounds", "Infected Wounds" );
+  talents.king_of_the_jungle    = new talent_t( this, "king_of_the_jungle", "King of the Jungle" );
+  talents.leader_of_the_pack    = new talent_t( this, "leader_of_the_pack", "Leader of the Pack" );
+  talents.lunar_shower          = new talent_t( this, "lunar_shower", "Lunar Shower" );
+  talents.master_shapeshifter   = new talent_t( this, "master_shapeshifter", "Master Shapeshifter" );
+  talents.moonglow              = new talent_t( this, "moonglow", "Moonglow" );
+  talents.moonkin_form          = new talent_t( this, "moonkin_form", "Moonkin Form" );
+  talents.natural_reaction      = new talent_t( this, "natural_reaction", "Natural Reaction" );
+  talents.natures_majesty       = new talent_t( this, "natures_majesty", "Nature's Majesty" );
+  talents.natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
+  talents.natures_grace         = new talent_t( this, "natures_grace", "Nature's Grace" );
+  talents.nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
+  talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
+  talents.owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
+  talents.predatory_strikes     = new talent_t( this, "predatory_strikes", "Predatory Strikes" );
+  talents.primal_fury           = new talent_t( this, "primal_fury", "Primal Fury" );
+  talents.primal_madness        = new talent_t( this, "primal_madness", "Primal Madness" );
+  talents.pulverize             = new talent_t( this, "pulverize", "Pulverize" );
+  talents.rend_and_tear         = new talent_t( this, "rend_and_tear", "Rend and Tear" );
+  talents.shooting_stars        = new talent_t( this, "shooting_stars", "Shooting Stars" );
+  talents.solar_beam            = new talent_t( this, "solar_beam", "Solar Beam" );
+  talents.stampede              = new talent_t( this, "stampede", "Stampede" );
+  talents.starfall              = new talent_t( this, "starfall", "Starfall" );
+  talents.starlight_wrath       = new talent_t( this, "starlight_wrath", "Starlight Wrath" );
+  talents.sunfire               = new talent_t( this, "sunfire", "Sunfire" );
+  talents.survival_instincts    = new talent_t( this, "survival_instincts", "Survival Instincts" );
+  talents.thick_hide            = new talent_t( this, "thick_hide", "Thick Hide" );
+  talents.typhoon               = new talent_t( this, "typhoon", "Typhoon" );
+
+  player_t::init_talents();
+}
+
+// druid_t::init_spells =====================================================
+
+void druid_t::init_spells()
+{
+  player_t::init_spells();
+
+  // Balance
+  spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
+  mastery_total_eclipse = new passive_spell_t( this, "total_eclipse", 77492 );
+
+  // Feral
+  spec_aggression         = new passive_spell_t( this, "aggression",      84735 );
+  spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
+  mastery_razor_claws     = new passive_spell_t( this, "razor_claws",     77493 );
+  mastery_savage_defender = new passive_spell_t( this, "savage_defender", 77494 );
 }
 
 // druid_t::init_glyphs =====================================================

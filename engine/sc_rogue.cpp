@@ -457,57 +457,6 @@ struct rogue_t : public player_t
     // Dots
     dots_rupture          = get_dot( "rupture" );
 
-    // Talents
-
-    // Assasination
-    talents.cold_blood                 = new talent_t( this, "cold_blood", "Cold Blood" );
-    talents.coup_de_grace              = new talent_t( this, "coup_de_grace", "Coup de Grace" );
-    talents.cut_to_the_chase           = new talent_t( this, "cut_to_the_chase", "Cut to the Chase" );
-    talents.improved_expose_armor      = new talent_t( this, "improved_expose_armor", "Improved Expose Armor" );
-    talents.lethality                  = new talent_t( this, "lethality", "Lethality" );    
-    talents.master_poisoner            = new talent_t( this, "master_poisoner", "Master Poisoner" );
-    talents.murderous_intent           = new talent_t( this, "murderous_intent", "Murderous Intent" );
-    talents.overkill                   = new talent_t( this, "overkill", "Overkill" );
-    talents.puncturing_wounds          = new talent_t( this, "puncturing_wounds", "Puncturing Wounds" );
-    talents.quickening                 = new talent_t( this, "quickening", "Quickening" );
-    talents.ruthlessness               = new talent_t( this, "ruthlessness", "Ruthlessness" );
-    talents.seal_fate                  = new talent_t( this, "seal_fate", "Seal Fate" );
-    talents.vendetta                   = new talent_t( this, "vendetta", "Vendetta" );
-    talents.venomous_wounds            = new talent_t( this, "venomous_wounds", "Venomous Wounds" );
-    talents.vile_poisons               = new talent_t( this, "vile_poisons", "Vile Poisons" );
-
-    // Combat
-    talents.adrenaline_rush            = new talent_t( this, "adrenaline_rush", "Adrenaline Rush" );
-    talents.aggression                 = new talent_t( this, "aggression", "Aggression" );
-    talents.bandits_guile              = new talent_t( this, "bandits_guile", "Bandit's Guile" );
-    talents.combat_potency             = new talent_t( this, "combat_potency", "Combat Potency" ); 
-    talents.improved_sinister_strike   = new talent_t( this, "improved_sinister_strike", "Improved Sinister Strike" );
-    talents.improved_slice_and_dice    = new talent_t( this, "improved_slice_and_dice", "Improved Slice and Dice" );
-    talents.killing_spree              = new talent_t( this, "killing_spree", "Killing Spree" ); 
-    talents.lightning_reflexes         = new talent_t( this, "lightning_reflexes", "Lightning Reflexes" );
-    talents.precision                  = new talent_t( this, "precision", "Precision" );
-    talents.restless_blades            = new talent_t( this, "restless_blades", "Restless Blades" );
-    talents.revealing_strike           = new talent_t( this, "revealing_strike", "Revealing Strike" );
-    talents.savage_combat              = new talent_t( this, "savage_combat", "Savage Combat" );
-    
-    // Subtlety
-    talents.elusiveness                = new talent_t( this, "elusiveness", "Elusiveness" );
-    talents.energetic_recovery         = new talent_t( this, "energetic_recovery", "Energetic Recovery" );
-    talents.find_weakness              = new talent_t( this, "find_weakness", "Find Weakness" );
-    talents.hemorrhage                 = new talent_t( this, "hemorrhage", "Hemorrhage" );
-    talents.honor_among_thieves        = new talent_t( this, "honor_among_thieves", "Honor Among Thieves" );
-    talents.improved_ambush            = new talent_t( this, "improved_ambush", "Improved Ambush" );
-    talents.initiative                 = new talent_t( this, "initiative", "Initiative" );
-    talents.opportunity                = new talent_t( this, "opportunity", "Opportunity" );
-    talents.premeditation              = new talent_t( this, "premeditation", "Premeditation" );
-    talents.preparation                = new talent_t( this, "preparation", "Preparation" );
-    talents.relentless_strikes         = new talent_t( this, "relentless_strikes", "Relentless Strikes" );
-    talents.sanguinary_vein            = new talent_t( this, "sanguinary_vein", "Sanguinary Vein" );
-    talents.serrated_blades            = new talent_t( this, "serrated_blades", "Serrated Blades" );
-    talents.shadow_dance               = new talent_t( this, "shadow_dance", "Shadow Dance" );
-    talents.slaughter_from_the_shadows = new talent_t( this, "slaughter_from_the_shadows", "Slaughter from the Shadows" );
-    talents.waylay                     = new talent_t( this, "waylay", "Waylay" );
-
     // Cooldowns
     cooldowns_honor_among_thieves      = get_cooldown( "honor_among_thieves" );
     cooldowns_seal_fate                = get_cooldown( "seal_fate"           );
@@ -521,6 +470,8 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -531,8 +482,6 @@ struct rogue_t : public player_t
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_actions();
-  virtual void      init_talents();
-  virtual void      init_spells();
   virtual void      init_values();
   virtual void      register_callbacks();
   virtual void      combat_begin();
@@ -3590,6 +3539,57 @@ void rogue_t::init_base()
 
 void rogue_t::init_talents()
 {
+  // Talents
+
+  // Assasination
+  talents.cold_blood                 = new talent_t( this, "cold_blood", "Cold Blood" );
+  talents.coup_de_grace              = new talent_t( this, "coup_de_grace", "Coup de Grace" );
+  talents.cut_to_the_chase           = new talent_t( this, "cut_to_the_chase", "Cut to the Chase" );
+  talents.improved_expose_armor      = new talent_t( this, "improved_expose_armor", "Improved Expose Armor" );
+  talents.lethality                  = new talent_t( this, "lethality", "Lethality" );    
+  talents.master_poisoner            = new talent_t( this, "master_poisoner", "Master Poisoner" );
+  talents.murderous_intent           = new talent_t( this, "murderous_intent", "Murderous Intent" );
+  talents.overkill                   = new talent_t( this, "overkill", "Overkill" );
+  talents.puncturing_wounds          = new talent_t( this, "puncturing_wounds", "Puncturing Wounds" );
+  talents.quickening                 = new talent_t( this, "quickening", "Quickening" );
+  talents.ruthlessness               = new talent_t( this, "ruthlessness", "Ruthlessness" );
+  talents.seal_fate                  = new talent_t( this, "seal_fate", "Seal Fate" );
+  talents.vendetta                   = new talent_t( this, "vendetta", "Vendetta" );
+  talents.venomous_wounds            = new talent_t( this, "venomous_wounds", "Venomous Wounds" );
+  talents.vile_poisons               = new talent_t( this, "vile_poisons", "Vile Poisons" );
+
+  // Combat
+  talents.adrenaline_rush            = new talent_t( this, "adrenaline_rush", "Adrenaline Rush" );
+  talents.aggression                 = new talent_t( this, "aggression", "Aggression" );
+  talents.bandits_guile              = new talent_t( this, "bandits_guile", "Bandit's Guile" );
+  talents.combat_potency             = new talent_t( this, "combat_potency", "Combat Potency" ); 
+  talents.improved_sinister_strike   = new talent_t( this, "improved_sinister_strike", "Improved Sinister Strike" );
+  talents.improved_slice_and_dice    = new talent_t( this, "improved_slice_and_dice", "Improved Slice and Dice" );
+  talents.killing_spree              = new talent_t( this, "killing_spree", "Killing Spree" ); 
+  talents.lightning_reflexes         = new talent_t( this, "lightning_reflexes", "Lightning Reflexes" );
+  talents.precision                  = new talent_t( this, "precision", "Precision" );
+  talents.restless_blades            = new talent_t( this, "restless_blades", "Restless Blades" );
+  talents.revealing_strike           = new talent_t( this, "revealing_strike", "Revealing Strike" );
+  talents.savage_combat              = new talent_t( this, "savage_combat", "Savage Combat" );
+  
+  // Subtlety
+  talents.elusiveness                = new talent_t( this, "elusiveness", "Elusiveness" );
+  talents.energetic_recovery         = new talent_t( this, "energetic_recovery", "Energetic Recovery" );
+  talents.find_weakness              = new talent_t( this, "find_weakness", "Find Weakness" );
+  talents.hemorrhage                 = new talent_t( this, "hemorrhage", "Hemorrhage" );
+  talents.honor_among_thieves        = new talent_t( this, "honor_among_thieves", "Honor Among Thieves" );
+  talents.improved_ambush            = new talent_t( this, "improved_ambush", "Improved Ambush" );
+  talents.initiative                 = new talent_t( this, "initiative", "Initiative" );
+  talents.opportunity                = new talent_t( this, "opportunity", "Opportunity" );
+  talents.premeditation              = new talent_t( this, "premeditation", "Premeditation" );
+  talents.preparation                = new talent_t( this, "preparation", "Preparation" );
+  talents.relentless_strikes         = new talent_t( this, "relentless_strikes", "Relentless Strikes" );
+  talents.sanguinary_vein            = new talent_t( this, "sanguinary_vein", "Sanguinary Vein" );
+  talents.serrated_blades            = new talent_t( this, "serrated_blades", "Serrated Blades" );
+  talents.shadow_dance               = new talent_t( this, "shadow_dance", "Shadow Dance" );
+  talents.slaughter_from_the_shadows = new talent_t( this, "slaughter_from_the_shadows", "Slaughter from the Shadows" );
+  talents.waylay                     = new talent_t( this, "waylay", "Waylay" );
+
   player_t::init_talents();
 }
 

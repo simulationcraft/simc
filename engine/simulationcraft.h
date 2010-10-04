@@ -2826,6 +2826,7 @@ struct player_t
   std::vector<talent_translation_t> talent_list;
   uint32_t talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t *> talent_list2;
+  std::vector<int> talent_str;
 
   talent_tree_type tree_type[ MAX_TALENT_TREES ];
 
@@ -3099,6 +3100,7 @@ struct player_t
   virtual const char* id();
 
   virtual void init();
+  virtual void init_data();
   virtual void init_glyphs() {}
   virtual void init_base() = 0;
   virtual void init_items();
@@ -3211,7 +3213,7 @@ struct player_t
   virtual void register_spell_cast_result_callback   ( int64_t result_mask, action_callback_t* );
 
   virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual bool parse_talent_trees( int talents[] );
+  virtual bool parse_talent_trees( int talents[], const uint32_t size );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
@@ -3363,6 +3365,7 @@ struct pet_t : public player_t
   virtual double intellect() SC_CONST;
 
   virtual void init();
+  virtual void init_data();
   virtual void init_base();
   virtual void reset();
   virtual void summon( double duration=0 );

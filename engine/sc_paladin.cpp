@@ -239,58 +239,6 @@ struct paladin_t : public player_t
     active_seal_of_truth_dot          = 0;
 
     tier10_2pc_procs_from_strikes     = false;
-
-    // Holy
-    talents.arbiter_of_the_light   = new talent_t( this, "arbiter_of_the_light", "Arbiter of the Light" );
-    talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
-    talents.blazing_light          = new talent_t( this, "blazing_light", "Blazing Light" );
-    talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
-    // Prot
-    talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
-    talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
-    talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
-    talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
-    // Ret
-    talents.crusade            = new talent_t( this, "crusade", "Crusade" );
-    talents.rule_of_law        = new talent_t( this, "rule_of_law", "Rule of Law" );
-    talents.communion          = new talent_t( this, "communion", "Communion" );
-    talents.the_art_of_war     = new talent_t( this, "the_art_of_war", "The Art of War" );
-    talents.divine_storm       = new talent_t( this, "divine_storm", "Divine Storm" );
-    talents.sanctity_of_battle = new talent_t( this, "sanctity_of_battle", "Sanctity of Battle" );
-    talents.seals_of_command   = new talent_t( this, "seals_of_command", "Seals of Command" );
-    talents.divine_purpose     = new talent_t( this, "divine_purpose", "Divine Purpose" );
-    talents.sanctified_wrath   = new talent_t( this, "sanctified_wrath", "Sanctified Wrath" );
-    talents.inquiry_of_faith   = new talent_t( this, "inquiry_of_faith", "Inquiry of Faith" );
-    talents.zealotry           = new talent_t( this, "zealotry", "Zealotry" );
-
-    spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield", PALADIN_PROTECTION );
-    spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
-    spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
-    spells.crusader_strike           = new active_spell_t( this, "crusader_strike", "Crusader Strike" );
-    spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
-    spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
-    spells.divine_storm              = new active_spell_t( this, "divine_storm", "Divine Storm", talents.divine_storm );
-    spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
-    spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", "Guardian of Ancient Kings" );
-    spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
-    spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
-    spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
-    spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock", PALADIN_HOLY );
-    spells.holy_wrath                = new active_spell_t( this, "holy_wrath", "Holy Wrath" );
-    spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
-    spells.judgement                 = new active_spell_t( this, "judgement", "Judgement" );
-    spells.shield_of_the_righteous   = new active_spell_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
-    spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
-    spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
-
-    passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light", PALADIN_PROTECTION );
-    passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance", PALADIN_PROTECTION );
-    passives.divine_bulwark         = new passive_spell_t( this, "divine_bulwark", "Divine Bulwark", PALADIN_PROTECTION, true );
-    passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", 31930, PALADIN_PROTECTION );
-    passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light", PALADIN_RETRIBUTION );
-    passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization", PALADIN_RETRIBUTION );
-    passives.hand_of_light          = new passive_spell_t( this, "hand_of_light", "Hand of Light", PALADIN_RETRIBUTION, true );
-    passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", 89906, PALADIN_RETRIBUTION );
   }
 
   virtual void      init_race();
@@ -303,6 +251,7 @@ struct paladin_t : public player_t
   virtual void      init_items();
   virtual void      init_buffs();
   virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_actions();
   virtual void      init_rating();
   virtual void      reset();
@@ -2410,7 +2359,64 @@ void paladin_t::init_rating()
 
 void paladin_t::init_talents()
 {
+  // Holy
+  talents.arbiter_of_the_light   = new talent_t( this, "arbiter_of_the_light", "Arbiter of the Light" );
+  talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
+  talents.blazing_light          = new talent_t( this, "blazing_light", "Blazing Light" );
+  talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
+  // Prot
+  talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
+  talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
+  talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
+  talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
+  // Ret
+  talents.crusade            = new talent_t( this, "crusade", "Crusade" );
+  talents.rule_of_law        = new talent_t( this, "rule_of_law", "Rule of Law" );
+  talents.communion          = new talent_t( this, "communion", "Communion" );
+  talents.the_art_of_war     = new talent_t( this, "the_art_of_war", "The Art of War" );
+  talents.divine_storm       = new talent_t( this, "divine_storm", "Divine Storm" );
+  talents.sanctity_of_battle = new talent_t( this, "sanctity_of_battle", "Sanctity of Battle" );
+  talents.seals_of_command   = new talent_t( this, "seals_of_command", "Seals of Command" );
+  talents.divine_purpose     = new talent_t( this, "divine_purpose", "Divine Purpose" );
+  talents.sanctified_wrath   = new talent_t( this, "sanctified_wrath", "Sanctified Wrath" );
+  talents.inquiry_of_faith   = new talent_t( this, "inquiry_of_faith", "Inquiry of Faith" );
+  talents.zealotry           = new talent_t( this, "zealotry", "Zealotry" );
+
   player_t::init_talents();
+}
+
+void paladin_t::init_spells()
+{
+  player_t::init_spells();
+
+  spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield", PALADIN_PROTECTION );
+  spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
+  spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
+  spells.crusader_strike           = new active_spell_t( this, "crusader_strike", "Crusader Strike" );
+  spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
+  spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
+  spells.divine_storm              = new active_spell_t( this, "divine_storm", "Divine Storm", talents.divine_storm );
+  spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
+  spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", "Guardian of Ancient Kings" );
+  spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
+  spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
+  spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
+  spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock", PALADIN_HOLY );
+  spells.holy_wrath                = new active_spell_t( this, "holy_wrath", "Holy Wrath" );
+  spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
+  spells.judgement                 = new active_spell_t( this, "judgement", "Judgement" );
+  spells.shield_of_the_righteous   = new active_spell_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
+  spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
+  spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
+
+  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light", PALADIN_PROTECTION );
+  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance", PALADIN_PROTECTION );
+  passives.divine_bulwark         = new passive_spell_t( this, "divine_bulwark", "Divine Bulwark", PALADIN_PROTECTION, true );
+  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", 31930, PALADIN_PROTECTION );
+  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light", PALADIN_RETRIBUTION );
+  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization", PALADIN_RETRIBUTION );
+  passives.hand_of_light          = new passive_spell_t( this, "hand_of_light", "Hand of Light", PALADIN_RETRIBUTION, true );
+  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", 89906, PALADIN_RETRIBUTION );
 
   // talented spells
   spells.avengers_shield->init_enabled();
@@ -2431,7 +2437,6 @@ void paladin_t::init_talents()
   passives.vengeance->init_enabled();
   passives.hand_of_light->init_enabled();
   passives.judgements_of_the_bold->init_enabled();
-
 }
 
 // paladin_t::primary_tab ====================================================

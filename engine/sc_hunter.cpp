@@ -177,6 +177,8 @@ struct hunter_t : public player_t
   }
 
   // Character Definition
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -2766,6 +2768,22 @@ void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
       }
     }
   }
+}
+
+// hunter_t::init_talents ===================================================
+
+void hunter_t::init_talents()
+{
+
+
+  player_t::init_talents();
+}
+
+// hunter_t::init_spells ===================================================
+
+void hunter_t::init_spells()
+{
+  player_t::init_spells();
 }
 
 // hunter_t::init_glyphs ===================================================

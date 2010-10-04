@@ -80,9 +80,15 @@ const char* pet_t::id()
 
 void pet_t::init()
 {
-  player_data.set_parent( &owner -> player_data );
   player_t::init();
   level = owner -> level;
+}
+
+// pet_t::init_data()
+
+void pet_t::init_data()
+{
+  player_data.set_parent( &owner -> player_data );
 }
 
 // pet_t::init_base =========================================================

@@ -362,24 +362,13 @@ struct death_knight_t : public player_t
     blood_plague        = NULL;
     frost_fever         = NULL;
 
-    passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
-    passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites", DEATH_KNIGHT_BLOOD );
-    passives.frost_strike              = new passive_spell_t( this, "frost_strike", "Frost Strike", DEATH_KNIGHT_FROST );
-    passives.heart_strike              = new passive_spell_t( this, "heart_strike", "Heart Strike", DEATH_KNIGHT_BLOOD );
-    passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons", DEATH_KNIGHT_FROST );
-    passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls", DEATH_KNIGHT_UNHOLY );
-    passives.reaping                   = new passive_spell_t( this, "reaping", "Reaping", DEATH_KNIGHT_UNHOLY );
-    passives.runic_empowerment         = new passive_spell_t( this, "runic_empowerment", 81229 );
-    passives.scourge_strike            = new passive_spell_t( this, "scourge_strike", "Scourge Strke", DEATH_KNIGHT_UNHOLY );
-    passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might", DEATH_KNIGHT_UNHOLY );
-    passives.vengeance                 = new passive_spell_t( this, "vengeance", "Vengeance", DEATH_KNIGHT_BLOOD );
-    passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
-
     cooldowns_howling_blast = get_cooldown( "howling_blast" );
   }
 
   // Character Definition
   virtual void      init();
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_actions();
   virtual void      init_enchant();
   virtual void      init_race();
@@ -3777,6 +3766,31 @@ void death_knight_t::init_base()
   resource_base[ RESOURCE_RUNIC ]  = 100 + talents.runic_power_mastery * 15;
 
   base_gcd = 1.5;
+}
+
+void death_knight_t::init_talents()
+{
+
+
+  player_t::init_talents();
+}
+
+void death_knight_t::init_spells()
+{
+  player_t::init_spells();
+
+  passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
+  passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites", DEATH_KNIGHT_BLOOD );
+  passives.frost_strike              = new passive_spell_t( this, "frost_strike", "Frost Strike", DEATH_KNIGHT_FROST );
+  passives.heart_strike              = new passive_spell_t( this, "heart_strike", "Heart Strike", DEATH_KNIGHT_BLOOD );
+  passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons", DEATH_KNIGHT_FROST );
+  passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls", DEATH_KNIGHT_UNHOLY );
+  passives.reaping                   = new passive_spell_t( this, "reaping", "Reaping", DEATH_KNIGHT_UNHOLY );
+  passives.runic_empowerment         = new passive_spell_t( this, "runic_empowerment", 81229 );
+  passives.scourge_strike            = new passive_spell_t( this, "scourge_strike", "Scourge Strke", DEATH_KNIGHT_UNHOLY );
+  passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might", DEATH_KNIGHT_UNHOLY );
+  passives.vengeance                 = new passive_spell_t( this, "vengeance", "Vengeance", DEATH_KNIGHT_BLOOD );
+  passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
 }
 
 void death_knight_t::init_actions()

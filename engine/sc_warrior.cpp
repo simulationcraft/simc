@@ -215,95 +215,14 @@ struct warrior_t : public player_t
     active_deep_wounds   = 0;
     active_stance        = STANCE_BATTLE;
 
-    // Active Spells
-    active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout", WARRIOR_FURY );
-    active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage", WARRIOR_FURY );
-    active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm", WARRIOR_ARMS );
-    active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst", WARRIOR_FURY );
-    active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave", WARRIOR_FURY );
-    active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash", WARRIOR_ARMS );
-    active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow", WARRIOR_PROTECTION );
-    active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm", WARRIOR_ARMS );
-    active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish", WARRIOR_FURY );
-    active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate", WARRIOR_PROTECTION );
-    active_spells.execute           = new active_spell_t( this, "execute", "Execute", WARRIOR_FURY );
-    active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike", WARRIOR_ARMS );
-    active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage", WARRIOR_FURY );
-    active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike", WARRIOR_ARMS );
-    active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower", WARRIOR_ARMS );
-    active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel", WARRIOR_FURY );
-    active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow", WARRIOR_FURY );
-    active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness", WARRIOR_FURY );
-    active_spells.rend              = new active_spell_t( this, "rend", "Rend", WARRIOR_ARMS );
-    active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge", WARRIOR_PROTECTION );
-    active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash", WARRIOR_PROTECTION );
-    active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block", WARRIOR_PROTECTION );
-    active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam", WARRIOR_PROTECTION );
-    active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave", WARRIOR_PROTECTION );
-    active_spells.slam              = new active_spell_t( this, "slam", "Slam", WARRIOR_FURY );
-    active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes", WARRIOR_ARMS );
-    active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap", WARRIOR_ARMS );
-    active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush", WARRIOR_FURY );
-    active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind", WARRIOR_FURY );
-
     // Cooldowns
     cooldowns_colossus_smash        = get_cooldown( "colossus_smash"      );
     cooldowns_shield_slam           = get_cooldown( "shield_slam"         );
-
-    // Talents
-
-    // Arms
-    talents.bladestorm              = new talent_t( this, "bladestorm", "Bladestorm" );
-    talents.blood_frenzy            = new talent_t( this, "blood_frenzy", "Blood Frenzy" );
-    talents.deadly_calm             = new talent_t( this, "deadly_calm", "Deadly Calm" );
-    talents.deep_wounds             = new talent_t( this, "deep_wounds", "Deep Wounds" );
-    talents.drums_of_war            = new talent_t( this, "drums_of_war", "Drums of War" );
-    talents.impale                  = new talent_t( this, "impale", "Impale" );
-    talents.improved_slam           = new talent_t( this, "improved_slam", "Improved Slam" );
-    talents.lambs_to_the_slaughter  = new talent_t( this, "lambs_to_the_slaughter", "Lambs to the Slaughter" );
-    talents.sudden_death            = new talent_t( this, "sudden_death", "Sudden Death" );
-    talents.sweeping_strikes        = new talent_t( this, "sweeping_strikes", "Sweeping Strikes" );
-    talents.tactical_mastery        = new talent_t( this, "tactical_mastery", "Tactical Mastery" );
-    talents.taste_for_blood         = new talent_t( this, "taste_for_blood", "Taste for Blood" );
-    talents.war_academy             = new talent_t( this, "war_academy", "War Academy" );
-    talents.wrecking_crew           = new talent_t( this, "wrecking_crew", "Wrecking Crew" );
-
-    // Fury
-    talents.battle_trance           = new talent_t( this, "battle_trance", "Battle Trance" );
-    talents.bloodsurge              = new talent_t( this, "bloodsurge", "Bloodsurge" );
-    talents.booming_voice           = new talent_t( this, "booming_voice", "Booming Voice" );
-    talents.cruelty                 = new talent_t( this, "cruelty", "Cruelty" );
-    talents.death_wish              = new talent_t( this, "death_wish", "Death Wish" );
-    talents.enrage                  = new talent_t( this, "enrage", "Enrage" );
-    talents.executioner             = new talent_t( this, "executioner", "Executioner" );
-    talents.flurry                  = new talent_t( this, "flurry", "Flurry" );
-    talents.gag_order               = new talent_t( this, "gag_order", "Gag Order" );
-    talents.intensify_rage          = new talent_t( this, "intensify_rage", "Intensify Rage" );
-    talents.meat_cleaver            = new talent_t( this, "meat_cleaver", "Meat Cleaver" );
-    talents.raging_blow             = new talent_t( this, "raging_blow", "Raging Blow" );
-    talents.rampage                 = new talent_t( this, "rampage", "Rampage" );
-    talents.rude_interruption       = new talent_t( this, "rude_interruption", "Rude Interruption" );
-    talents.single_minded_fury      = new talent_t( this, "single_minded_fury", "Single-Minded Fury" );
-    talents.titans_grip             = new talent_t( this, "titans_grip", "Titan's Grip" );
-
-    // Prot
-    talents.bastion_of_defense      = new talent_t( this, "bastion_of_defense", "Bastion of Defense" );
-    talents.concussion_blow         = new talent_t( this, "concussion_blow", "Concussion Blow" );
-    talents.devastate               = new talent_t( this, "devastate", "Devastate" );
-    talents.heavy_repercussions     = new talent_t( this, "heavy_repercussions", "Heavy Repercussions" );
-    talents.hold_the_line           = new talent_t( this, "hold_the_line", "Hold the Line" );
-    talents.impending_victory       = new talent_t( this, "impending_victory", "Impending Victory" );
-    talents.improved_revenge        = new talent_t( this, "improved_revenge", "Improved Revenge" );
-    talents.incite                  = new talent_t( this, "incite", "Incite" );
-    talents.shockwave               = new talent_t( this, "shockwave", "Shockwave" );
-    talents.shield_mastery          = new talent_t( this, "shield_mastery", "Shield Mastery" );
-    talents.shield_specialization   = new talent_t( this, "shield_specialization", "Shield Specialization" );
-    talents.sword_and_board         = new talent_t( this, "sword_and_board", "Sword and Board" );
-    talents.toughness               = new talent_t( this, "toughness", "Toughness" );
-    talents.thunderstruck           = new talent_t( this, "thunderstruck", "Thunderstruck" );
   }
 
   // Character Definition
+  virtual void      init_talents();
+  virtual void      init_spells();
   virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
@@ -2702,6 +2621,104 @@ action_t* warrior_t::create_action( const std::string& name,
 
   return player_t::create_action( name, options_str );
 }
+
+// warrior_t::init_talents ==================================================
+
+void warrior_t::init_talents()
+{
+  // Talents
+
+  // Arms
+  talents.bladestorm              = new talent_t( this, "bladestorm", "Bladestorm" );
+  talents.blood_frenzy            = new talent_t( this, "blood_frenzy", "Blood Frenzy" );
+  talents.deadly_calm             = new talent_t( this, "deadly_calm", "Deadly Calm" );
+  talents.deep_wounds             = new talent_t( this, "deep_wounds", "Deep Wounds" );
+  talents.drums_of_war            = new talent_t( this, "drums_of_war", "Drums of War" );
+  talents.impale                  = new talent_t( this, "impale", "Impale" );
+  talents.improved_slam           = new talent_t( this, "improved_slam", "Improved Slam" );
+  talents.lambs_to_the_slaughter  = new talent_t( this, "lambs_to_the_slaughter", "Lambs to the Slaughter" );
+  talents.sudden_death            = new talent_t( this, "sudden_death", "Sudden Death" );
+  talents.sweeping_strikes        = new talent_t( this, "sweeping_strikes", "Sweeping Strikes" );
+  talents.tactical_mastery        = new talent_t( this, "tactical_mastery", "Tactical Mastery" );
+  talents.taste_for_blood         = new talent_t( this, "taste_for_blood", "Taste for Blood" );
+  talents.war_academy             = new talent_t( this, "war_academy", "War Academy" );
+  talents.wrecking_crew           = new talent_t( this, "wrecking_crew", "Wrecking Crew" );
+
+  // Fury
+  talents.battle_trance           = new talent_t( this, "battle_trance", "Battle Trance" );
+  talents.bloodsurge              = new talent_t( this, "bloodsurge", "Bloodsurge" );
+  talents.booming_voice           = new talent_t( this, "booming_voice", "Booming Voice" );
+  talents.cruelty                 = new talent_t( this, "cruelty", "Cruelty" );
+  talents.death_wish              = new talent_t( this, "death_wish", "Death Wish" );
+  talents.enrage                  = new talent_t( this, "enrage", "Enrage" );
+  talents.executioner             = new talent_t( this, "executioner", "Executioner" );
+  talents.flurry                  = new talent_t( this, "flurry", "Flurry" );
+  talents.gag_order               = new talent_t( this, "gag_order", "Gag Order" );
+  talents.intensify_rage          = new talent_t( this, "intensify_rage", "Intensify Rage" );
+  talents.meat_cleaver            = new talent_t( this, "meat_cleaver", "Meat Cleaver" );
+  talents.raging_blow             = new talent_t( this, "raging_blow", "Raging Blow" );
+  talents.rampage                 = new talent_t( this, "rampage", "Rampage" );
+  talents.rude_interruption       = new talent_t( this, "rude_interruption", "Rude Interruption" );
+  talents.single_minded_fury      = new talent_t( this, "single_minded_fury", "Single-Minded Fury" );
+  talents.titans_grip             = new talent_t( this, "titans_grip", "Titan's Grip" );
+
+  // Prot
+  talents.bastion_of_defense      = new talent_t( this, "bastion_of_defense", "Bastion of Defense" );
+  talents.concussion_blow         = new talent_t( this, "concussion_blow", "Concussion Blow" );
+  talents.devastate               = new talent_t( this, "devastate", "Devastate" );
+  talents.heavy_repercussions     = new talent_t( this, "heavy_repercussions", "Heavy Repercussions" );
+  talents.hold_the_line           = new talent_t( this, "hold_the_line", "Hold the Line" );
+  talents.impending_victory       = new talent_t( this, "impending_victory", "Impending Victory" );
+  talents.improved_revenge        = new talent_t( this, "improved_revenge", "Improved Revenge" );
+  talents.incite                  = new talent_t( this, "incite", "Incite" );
+  talents.shockwave               = new talent_t( this, "shockwave", "Shockwave" );
+  talents.shield_mastery          = new talent_t( this, "shield_mastery", "Shield Mastery" );
+  talents.shield_specialization   = new talent_t( this, "shield_specialization", "Shield Specialization" );
+  talents.sword_and_board         = new talent_t( this, "sword_and_board", "Sword and Board" );
+  talents.toughness               = new talent_t( this, "toughness", "Toughness" );
+  talents.thunderstruck           = new talent_t( this, "thunderstruck", "Thunderstruck" );
+
+  player_t::init_talents();
+}
+
+// warrior_t::init_spells ==================================================
+
+void warrior_t::init_spells()
+{
+  player_t::init_spells();
+
+  // Active Spells
+  active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout", WARRIOR_FURY );
+  active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage", WARRIOR_FURY );
+  active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm", WARRIOR_ARMS );
+  active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst", WARRIOR_FURY );
+  active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave", WARRIOR_FURY );
+  active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash", WARRIOR_ARMS );
+  active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow", WARRIOR_PROTECTION );
+  active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm", WARRIOR_ARMS );
+  active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish", WARRIOR_FURY );
+  active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate", WARRIOR_PROTECTION );
+  active_spells.execute           = new active_spell_t( this, "execute", "Execute", WARRIOR_FURY );
+  active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike", WARRIOR_ARMS );
+  active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage", WARRIOR_FURY );
+  active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike", WARRIOR_ARMS );
+  active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower", WARRIOR_ARMS );
+  active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel", WARRIOR_FURY );
+  active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow", WARRIOR_FURY );
+  active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness", WARRIOR_FURY );
+  active_spells.rend              = new active_spell_t( this, "rend", "Rend", WARRIOR_ARMS );
+  active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge", WARRIOR_PROTECTION );
+  active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash", WARRIOR_PROTECTION );
+  active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block", WARRIOR_PROTECTION );
+  active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam", WARRIOR_PROTECTION );
+  active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave", WARRIOR_PROTECTION );
+  active_spells.slam              = new active_spell_t( this, "slam", "Slam", WARRIOR_FURY );
+  active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes", WARRIOR_ARMS );
+  active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap", WARRIOR_ARMS );
+  active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush", WARRIOR_FURY );
+  active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind", WARRIOR_FURY );
+}
+
 
 // warrior_t::init_glyphs ===================================================
 
