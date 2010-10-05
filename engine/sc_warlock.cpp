@@ -11,10 +11,8 @@
  * - add soulburn effect to UA and Searing Pain
  * - reverse soul_shards consumption from 0->3 to 3->0
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
- * - Change Conflagrate if necessary
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
- * - Verify that impending doom immediately resets metamorphosis cooldown when it procs while the cooldown has less than 15 seconds left
  * - Execute felguard:felstorm by player, not the pet
  * - Figure out EXACTLY how the incinerate boni (when immolate is up) calculates
  */
@@ -22,6 +20,113 @@
 // ==========================================================================
 // Warlock
 // ==========================================================================
+
+
+namespace pet_stats {
+
+struct _stat_list_t {
+  int id;
+  double stats[ BASE_STAT_MAX ];
+};
+  // Base Stats, same for all pets. Depend on level
+  static const _stat_list_t pet_base_stats[]=
+  {
+          // str, agi,  sta, int, spi
+    { 80, {    0,   0,    0,   0,   0 } },
+    { 81, {  345, 297,  333, 151, 212 } },
+    { 82, {    0,   0,    0,   0,   0 } },
+    { 83, {    0,   0,    0,   0,   0 } },
+    { 84, {    0,   0,    0,   0,   0 } },
+    { 85, {  453, 883,  353, 159, 225 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t imp_base_stats[]=
+  {
+          // str, agi,  sta, int, spi
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t felguard_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0, 5395, 16703 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t felhunter_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t succubus_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t infernal_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t doomguard_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+
+  static const _stat_list_t ebon_imp_base_stats[]=
+  {
+
+    { 80, {0, 0, 0, 0, 0,    0,     0 } },
+    { 81, {0, 0, 0, 0, 0,    0,     0 } },
+    { 82, {0, 0, 0, 0, 0,    0,     0 } },
+    { 83, {0, 0, 0, 0, 0,    0,     0 } },
+    { 84, {0, 0, 0, 0, 0,    0,     0 } },
+    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+    { 0, { 0 } }
+  };
+}
+
+
 
 struct warlock_pet_t;
 
@@ -32,7 +137,14 @@ struct warlock_t : public player_t
   {
     warlock_glyph_t( player_t* player, const char* n, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE ) :
       spell_id_t( player, n, n, false, ptype, stype )
-      { }
+      {
+      init_enabled( true, false );
+      }
+
+    void enable()
+    {
+      init_enabled( true, true );
+    }
 
     double value( int effect_nr=1) SC_CONST
     {
@@ -182,9 +294,6 @@ struct warlock_t : public player_t
   rng_t* rng_siphon_life;
   rng_t* rng_ebon_imp;
 
-  // Custom Parameters
-  std::string summon_pet_str;
-
   // Spells
   spell_t* spells_burning_embers;
 
@@ -314,58 +423,104 @@ struct warlock_t : public player_t
 
 struct warlock_pet_t : public pet_t
 {
-  int       pet_type;
+  pet_type_t       pet_type;
   double    damage_modifier;
   attack_t* melee;
+
 
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
 
-  struct _stat_list_t
-  {
-    int id;
-    double stats[ BASE_STAT_MAX ];
-  };
 
-  warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, int pt ) :
+  struct warlock_pet_data_t
+  {
+    warlock_pet_data_t() { }
+
+    double warlock_pet_data_t::get_attribute_base( int level, int stat_type, pet_type_t pet_type )
+    {
+      double r                      = 0.0;
+      const pet_stats::_stat_list_t* base_list = 0;
+      const pet_stats::_stat_list_t*  pet_list = 0;
+
+      base_list = pet_stats::pet_base_stats;
+
+      for ( int i=0; i < BASE_STAT_MAX; i++ )
+      {
+        if      ( pet_type == PET_IMP          ) pet_list = pet_stats::imp_base_stats;
+        else if ( pet_type == PET_FELGUARD         ) pet_list = pet_stats::felguard_base_stats;
+        else if ( pet_type == PET_FELHUNTER         ) pet_list = pet_stats::felhunter_base_stats;
+        else if ( pet_type == PET_SUCCUBUS         ) pet_list = pet_stats::succubus_base_stats;
+        else if ( pet_type == PET_INFERNAL         ) pet_list = pet_stats::infernal_base_stats;
+        else if ( pet_type == PET_DOOMGUARD         ) pet_list = pet_stats::doomguard_base_stats;
+        else if ( pet_type == PET_EBON_IMP         ) pet_list = pet_stats::ebon_imp_base_stats;
+      }
+
+      if ( (level < 80 || level > 85 ) )
+      {
+        return 0.0;
+      }
+
+      if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
+      {
+        return 0.0;
+      }
+
+      switch ( stat_type )
+      {
+      case BASE_STAT_STRENGTH:
+      case BASE_STAT_AGILITY:
+      case BASE_STAT_STAMINA:
+      case BASE_STAT_INTELLECT:
+      case BASE_STAT_SPIRIT:
+      case BASE_STAT_HEALTH:
+      case BASE_STAT_MANA:
+        break;
+      default:
+        return 0.0;
+        break;
+      }
+
+      int i;
+
+      if ( base_list )
+      {
+        for ( i = 0; base_list[ i ].id != 0; i++ )
+        {
+          if ( level == base_list[ i ].id )
+          {
+            r += base_list[ i ].stats[ stat_type ];
+            break;
+          }
+        }
+      }
+
+      if ( pet_list )
+      {
+        for ( i = 0; pet_list[ i ].id != 0; i++ )
+        {
+          if ( level == pet_list[ i ].id )
+          {
+            r += pet_list[ i ].stats[ stat_type ];
+            break;
+          }
+        }
+      }
+
+      return r;
+    }
+
+
+  };
+  warlock_pet_data_t warlock_pet_data;
+
+  warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {
     gains_mana_feed = get_gain("mana_feed");
     procs_mana_feed = get_proc("mana_feed");
   }
 
-  double get_attribute_base( int level, int stat_type, const _stat_list_t pet_stats[] )
-  {
-    double class_value            = 0.0;
-    double r                      = 0.0;
-    const _stat_list_t* stat_list = 0;
 
-    if ( (level < 80 || level > 85 ) )
-    {
-      return 0.0;
-    }
-
-    if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
-    {
-      return 0.0;
-    }
-    stat_list = pet_stats;
-
-    int i;
-
-    for ( i = 0; stat_list[ i ].id != 0; i++ )
-    {
-      if ( level == stat_list[ i ].id )
-      {
-        class_value = stat_list[ i ].stats[ stat_type ];
-        break;
-      }
-    }
-
-    r = class_value;
-
-    return r;
-  }
 
   virtual bool ooc_buffs() { return true; }
 
@@ -373,24 +528,13 @@ struct warlock_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    static const _stat_list_t pet_stats[]=
-    {
-            // str, agi,  sta, int, spi
-      { 80, {  314,  90,  328, 150, 209 } },
-      { 81, {  345, 297,  333, 151, 212 } },
-      { 82, {  345, 297,  333, 151, 212 } },
-      { 83, {  345, 297,  333, 151, 212 } },
-      { 84, {  345, 297,  333, 151, 212 } },
-      { 85, {  453, 883,  353, 159, 225 } },
-      { 0, { 0 } }
-    };
-
-    attribute_base[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_stats );
-    attribute_base[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_stats );
-    attribute_base[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_stats );
-    attribute_base[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_stats );
-    attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_stats );
-
+    attribute_base[ ATTR_STRENGTH  ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
+    attribute_base[ ATTR_AGILITY   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
+    attribute_base[ ATTR_STAMINA   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
+    attribute_base[ ATTR_INTELLECT ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
+    attribute_base[ ATTR_SPIRIT    ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
+    resource_base[ RESOURCE_HEALTH ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
+    resource_base[ RESOURCE_MANA   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_MANA, pet_type );
     base_attack_crit                  = 0.0328; // level invariant
     base_spell_crit                   = 0.0092; // level invariant
 
@@ -441,10 +585,7 @@ struct warlock_pet_t : public pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    if ( level == 81 )
-      sp += owner -> composite_spell_power( school ) * 0.455;
-    if ( level == 85 )
-      sp += owner -> composite_spell_power( school ) * 0.5;
+    sp += owner -> composite_spell_power( school ) * 0.5;
     return floor( sp );
   }
 
@@ -960,9 +1101,6 @@ struct imp_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
-    resource_base[ RESOURCE_HEALTH ] = 4011;
-    resource_base[ RESOURCE_MANA   ] = 1175;
     mana_per_intellect = 14.28;
     mp5_per_intellect  = 5.0 / 6.0;
   }
@@ -1013,7 +1151,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
-      if ( o -> glyphs.felguard -> ok())base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
+      if ( o -> glyphs.felguard -> ok() )base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
     }
   };
 
@@ -1095,8 +1233,6 @@ struct felguard_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 1627;
-    resource_base[ RESOURCE_MANA   ] = 3331;
 
     melee = new melee_t( this );
   }
@@ -1180,8 +1316,7 @@ struct felhunter_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 4788;
-    resource_base[ RESOURCE_MANA   ] = 18559;
+
 
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
@@ -1347,9 +1482,6 @@ struct infernal_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 20300;
-    resource_base[ RESOURCE_MANA   ] = 0;
-
 
     melee      = new   warlock_pet_melee_t( this, "Infernal Melee" );
     immolation = new infernal_immolation_t( this );
@@ -1392,8 +1524,6 @@ struct doomguard_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 18000;
-    resource_base[ RESOURCE_MANA   ] = 3000;
 
     action_list_str = "/snapshot_stats/doom_bolt";
   }
@@ -1508,22 +1638,56 @@ struct bane_of_agony_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
+    /*
+     * BOA DATA:
+     * No Glyph
+     * 16 Ticks:
+     * middle low low low low low    middle middle middle middle middle high high high high high
+     * 15 ticks:
+     * low    low low low low middle middle middle middle middle high   high high high high
+     * 14 ticks:
+     * low    low low low low middle middle middle middle high strange strange strange
+     * 828 828 403 403 403 486 998 485 485 1167  691 1421 691 1316
+     * 374 373 373 373 767 449 449 450 924  526  640  640 640 1316
+     * 378 777 777 777 378 461 460 460 460  543 1370  666 666  666
+     * 378 378 777 378 378 460 460 946 460  542 1369  667 666 1369
+     *
+     *
+     * 13 ticks:
+     * 2487 sp, lvl 80 -> middle = 130.14 + 0.1000000015 * 2487 = 378.84
+     * -> difference = base_td / 2, only 1 middle tick at the beginning
+     * 378 645 313 313 313 378 379 778 378 443 444 444 443
+     * 12 ticks:
+     * low low low low    middle middle middle middle   high high high high
+     * and it looks like low-tick = middle-tick - base_td / 2
+     * and              high-tick = middle-tick + base_td / 2
+     * at 12 ticks, everything is very consistent with this logic
+     */
+
+
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    base_td = base_td / 12;
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
-    if ( p -> glyphs.bane_of_agony )
-    {
-      int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> value() / 1000.0 / base_tick_time );
-      // after patch 3.0.8, the added ticks are double the base damage
-      base_td = ( base_td * num_ticks + base_td * 4 ) / (num_ticks + a_extra_ticks);
-      num_ticks += a_extra_ticks;
-    }
+
+    int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> value() / 1000.0 / base_tick_time );
+    // after patch 3.0.8, the added ticks are double the base damage
+    base_td = ( base_td * num_ticks + base_td * 4 ) / (num_ticks + a_extra_ticks);
+    num_ticks += a_extra_ticks;
+
+  }
+
+  virtual void modify_tick_damage()
+  {
+    warlock_spell_t::modify_tick_damage();
+
+    //double difference = base_td /2;
+    // I'll leave that here if we figure out how the rampup is exactly determined
   }
 
   virtual void execute()
@@ -1577,6 +1741,11 @@ struct bane_of_doom_t : public warlock_spell_t
         p -> buffs_bane_of_havoc -> expire();
       }
     }
+  }
+
+  virtual void target_debuff( int dmg_type )
+  {
+    action_t::target_debuff( DMG_DIRECT );
   }
 
   virtual void tick()
@@ -1732,10 +1901,10 @@ struct burning_embers_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     double cap;
     double a;
-    
+
     cap = ( 0.5 * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + 167 ) / 7.0;
     a = base_td * p -> talent_burning_embers -> effect_base_value( 1 ) / 100.0 + tick_dmg;
-    
+
     if ( a > cap)
       tick_dmg = cap;
     else
@@ -1874,7 +2043,7 @@ struct shadowburn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> glyphs.shadowburn )
+    if ( p -> glyphs.shadowburn -> ok() )
     {
       if ( sim -> target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
       {
@@ -2235,7 +2404,7 @@ struct shadowflame_dot_t : public warlock_spell_t
     proc       = true;
     background = true;
     name_str = "shadowflame_dot";
-    cooldown = p -> cooldowns_shadowflame_dot;
+    cooldown = p -> cooldowns_shadowflame_dot; // decouple cooldown
     cooldown -> duration = spell_id_t::cooldown ();
   }
 };
@@ -2346,7 +2515,9 @@ struct incinerate_t : public warlock_spell_t
   virtual void modify_direct_damage()
   {
     spell_t::modify_direct_damage();
-    direct_dmg += sim -> range( base_dd_min, base_dd_max ) / 4.0 * total_dd_multiplier();
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> dots_immolate -> ticking() )
+      direct_dmg += sim -> range( base_dd_min, base_dd_max ) / 4.0 * total_dd_multiplier();
   }
 
   virtual void travel( int travel_result, double travel_dmg)
@@ -2526,7 +2697,7 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if (  max_mana_pct > 0 ) 
+    if (  max_mana_pct > 0 )
       if( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
         return false;
 
@@ -3027,7 +3198,7 @@ struct dark_intent_t : public warlock_spell_t
       if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Dark Intent", p -> name() );
       p -> buffs.dark_intent_feedback -> override(3);
       if (p -> buffs.dark_intent -> check()) p -> buffs.dark_intent -> expire();
-	  p -> buffs.dark_intent -> override(1);
+    p -> buffs.dark_intent -> override(1);
     }
     else
     {
@@ -3513,23 +3684,23 @@ void warlock_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if      ( n == "chaos_bolt"          ) glyphs.chaos_bolt -> ok();
-    else if ( n == "conflagrate"         ) glyphs.conflagrate -> ok();
-    else if ( n == "corruption"          ) glyphs.corruption -> ok();
-    else if ( n == "bane_of_agony"       ) glyphs.bane_of_agony -> ok();
-    else if ( n == "felguard"            ) glyphs.felguard -> ok();
+    if      ( n == "chaos_bolt"          ) glyphs.chaos_bolt -> enable();
+    else if ( n == "conflagrate"         ) glyphs.conflagrate -> enable();
+    else if ( n == "corruption"          ) glyphs.corruption -> enable();
+    else if ( n == "bane_of_agony"       ) glyphs.bane_of_agony -> enable();
+    else if ( n == "felguard"            ) glyphs.felguard -> enable();
     else if ( n == "felhunter"           );
-    else if ( n == "haunt"               ) glyphs.haunt -> ok();
-    else if ( n == "immolate"            ) glyphs.immolate -> ok();
-    else if ( n == "imp"                 ) glyphs.imp -> ok();
-    else if ( n == "incinerate"          ) glyphs.incinerate -> ok();
-    else if ( n == "life_tap"            ) glyphs.life_tap -> ok();
-    else if ( n == "metamorphosis"       ) glyphs.metamorphosis -> ok();
+    else if ( n == "haunt"               ) glyphs.haunt -> enable();
+    else if ( n == "immolate"            ) glyphs.immolate -> enable();
+    else if ( n == "imp"                 ) glyphs.imp -> enable();
+    else if ( n == "incinerate"          ) glyphs.incinerate -> enable();
+    else if ( n == "life_tap"            ) glyphs.life_tap -> enable();
+    else if ( n == "metamorphosis"       ) glyphs.metamorphosis -> enable();
     else if ( n == "searing_pain"        );
-    else if ( n == "shadow_bolt"         ) glyphs.shadow_bolt -> ok();
-    else if ( n == "shadow_burn"         ) glyphs.shadowburn -> ok();
-    else if ( n == "unstable_affliction" ) glyphs.unstable_affliction -> ok();
-    else if ( n == "lash_of_pain"        ) glyphs.lash_of_pain -> ok();
+    else if ( n == "shadow_bolt"         ) glyphs.shadow_bolt -> enable();
+    else if ( n == "shadow_burn"         ) glyphs.shadowburn -> enable();
+    else if ( n == "unstable_affliction" ) glyphs.unstable_affliction -> enable();
+    else if ( n == "lash_of_pain"        ) glyphs.lash_of_pain -> enable();
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "curse_of_exhaustion" ) ;
     else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
@@ -3544,7 +3715,7 @@ void warlock_t::init_glyphs()
     else if ( n == "soulstone" )           ;
     else if ( n == "unending_breath" )     ;
     else if ( n == "voidwalker" )          ;
-    else if ( ! sim -> parent ) 
+    else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
     }
@@ -3679,19 +3850,15 @@ void warlock_t::init_actions()
     action_list_str += "/fel_armor";
 
     // Choose Pet
-    action_list_str += "/summon_";
-    if ( summon_pet_str.empty() )
-    {
-      if ( primary_tree() == TREE_DEMONOLOGY )
-        summon_pet_str = "felguard";
-      else if ( primary_tree() == TREE_DESTRUCTION )
-        summon_pet_str = "imp";
-      else if ( primary_tree() == TREE_AFFLICTION )
-        summon_pet_str = "felhunter";
-      else
-        summon_pet_str = "succubus";
-    }
-    action_list_str += summon_pet_str;
+
+    if ( primary_tree() == TREE_DEMONOLOGY )
+      action_list_str += "/summon_felguard";
+    else if ( primary_tree() == TREE_DESTRUCTION )
+      action_list_str += "/summon_imp";
+    else if ( primary_tree() == TREE_AFFLICTION )
+      action_list_str += "/summon_felhunter";
+    else
+      action_list_str += "/summon_succubus";
 
     action_list_str += "/snapshot_stats";
 
@@ -3816,7 +3983,6 @@ std::vector<option_t>& warlock_t::get_options()
     option_t warlock_options[] =
     {
       // @option_doc loc=player/warlock/misc title="Misc"
-      { "summon_pet",               OPT_STRING, &( summon_pet_str                      ) },
       { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
