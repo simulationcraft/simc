@@ -810,7 +810,12 @@ double spell_id_t::cooldown() SC_CONST
     return 0.0;
   }
 
-  return pp -> player_data.spell_cooldown( spell_id_t_id );
+  double d = pp -> player_data.spell_cooldown( spell_id_t_id );
+
+  if ( d > ( pp -> sim -> wheel_seconds - 2.0 ) )
+    d = pp -> sim -> wheel_seconds - 2.0;
+
+  return d;
 }
 
 double spell_id_t::gcd() SC_CONST
@@ -839,8 +844,13 @@ double spell_id_t::duration() SC_CONST
   {
     return 0.0;
   }
+  
+  double d = pp -> player_data.spell_duration( spell_id_t_id );
 
-  return pp -> player_data.spell_duration( spell_id_t_id );
+  if ( d > ( pp -> sim -> wheel_seconds - 2.0 ) )
+    d = pp -> sim -> wheel_seconds - 2.0;
+
+  return d;
 }
 
 double spell_id_t::cost() SC_CONST

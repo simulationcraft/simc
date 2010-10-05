@@ -219,6 +219,8 @@ void action_t::parse_data( sc_data_access_t& pData )
   {
     base_execute_time    = pData.spell_cast_time ( id, player -> level );
     cooldown -> duration = pData.spell_cooldown ( id );
+    if ( cooldown -> ( duration > sim -> wheel_seconds - 2.0 ) )
+      cooldown -> duration = sim -> wheel_seconds - 2.0;
     range                = pData.spell_max_range ( id );
     travel_speed         = pData.spell_missile_speed ( id );
     trigger_gcd          = pData.spell_gcd ( id );
@@ -232,52 +234,52 @@ void action_t::parse_data( sc_data_access_t& pData )
       base_cost = pData.spell_cost( id );
 
 
-      for ( int i=1; i <= MAX_EFFECTS; i++)
+    for ( int i=1; i <= MAX_EFFECTS; i++)
+    {
+      int effect = pData.spell_effect_id ( id, i );
+      if (pData.effect_exists ( effect ) )
       {
-        int effect = pData.spell_effect_id ( id, i );
-        if (pData.effect_exists ( effect ) )
+        switch ( pData.effect_type ( effect) )
         {
-          switch ( pData.effect_type ( effect) )
+        // Direct Damage
+        case E_SCHOOL_DAMAGE:
+          direct_power_mod = pData.effect_coeff( effect );
+          base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+          break;
+
+        case E_WEAPON_DAMAGE:
+          direct_power_mod = pData.effect_coeff( effect );
+          base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+          break;
+
+        // Dot
+        case E_APPLY_AURA:
+
+          switch ( pData.effect_subtype ( effect) )
           {
-          // Direct Damage
-          case E_SCHOOL_DAMAGE:
-            direct_power_mod = pData.effect_coeff( effect );
-            base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-            base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
-            break;
-
-          case E_WEAPON_DAMAGE:
-            direct_power_mod = pData.effect_coeff( effect );
-            base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-            base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
-            break;
-
-          // Dot
-          case E_APPLY_AURA:
-
-            switch ( pData.effect_subtype ( effect) )
-            {
-              case A_PERIODIC_DAMAGE:
-                tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-                base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-                break;
-              case A_PERIODIC_LEECH:
-                tick_power_mod   = pData.effect_coeff( effect );
-                base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-                base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-                break;
-              case A_PERIODIC_TRIGGER_SPELL:
-                base_tick_time   = pData.effect_period ( effect );
-                num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-                break;
-            }
-            break;
+            case A_PERIODIC_DAMAGE:
+              tick_power_mod   = pData.effect_coeff( effect );
+              base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+              base_tick_time   = pData.effect_period ( effect );
+              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+              break;
+            case A_PERIODIC_LEECH:
+              tick_power_mod   = pData.effect_coeff( effect );
+              base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+              base_tick_time   = pData.effect_period ( effect );
+              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+              break;
+            case A_PERIODIC_TRIGGER_SPELL:
+              base_tick_time   = pData.effect_period ( effect );
+              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+              break;
           }
+          break;
         }
       }
+    }
 
   }
 }

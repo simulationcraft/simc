@@ -751,8 +751,15 @@ new_buff_t::new_buff_t( player_t*          p,
   if ( id > 0 && player -> player_data.spell_exists( id ) )
   {
     max_stack            = player -> player_data.spell_max_stacks( id );
+
     duration             = player -> player_data.spell_duration( id );
+    if ( duration > ( player -> sim -> wheel_seconds - 2.0 ) )
+      duration = player -> sim -> wheel_seconds - 2.0;
+
     cooldown             = player -> player_data.spell_cooldown( id );
+    if ( cooldown > ( player -> sim -> wheel_seconds - 2.0 ) )
+      cooldown = player -> sim -> wheel_seconds - 2.0;
+
     default_stack_charge = player -> player_data.spell_initial_stacks( id );
 
     if ( override_chance == 0 )
