@@ -130,7 +130,7 @@ bool talent_t::set_rank( uint32_t value )
 
   talent_t_rank = value;
 
-  init( rank_spell_id( talent_t_rank ) );
+  int_init( rank_spell_id( talent_t_rank ) );
 
   return true;
 }
@@ -264,7 +264,7 @@ spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_nam
   memset(effects, 0, sizeof(effects));
   single = 0;
   if ( run_init )
-    init( t_name );
+    int_init( t_name );
 }
 
 
@@ -281,7 +281,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
   if ( scaling_type    == PLAYER_NONE )
     scaling_type        = pp -> type;
 
-  init( );
+  int_init( );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
@@ -293,7 +293,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
 {
   memset(effects, 0, sizeof(effects));
   single = 0;
-  init( );
+  int_init( );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
@@ -305,7 +305,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
 {
   memset(effects, 0, sizeof(effects));
   single = 0;
-  init( );
+  int_init( );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, const bool is_talent, const player_type ptype, const player_type stype ) :
@@ -322,7 +322,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
   if ( scaling_type    == PLAYER_NONE )
     scaling_type        = pp -> type;
 
-  init( s_name );
+  int_init( s_name );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
@@ -334,7 +334,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
 {
   memset(effects, 0, sizeof(effects));
   single = 0;
-  init( s_name );
+  int_init( s_name );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
@@ -346,7 +346,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
 {
   memset(effects, 0, sizeof(effects));
   single = 0;
-  init( s_name );
+  int_init( s_name );
 }
 
 spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const player_type stype ) :
@@ -365,7 +365,7 @@ spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const p
     scaling_type = stype;
 }
 
-bool spell_id_t::init( const uint32_t id, int t )
+bool spell_id_t::int_init( const uint32_t id, int t )
 {
   assert( pp && pp -> sim );
 
@@ -423,7 +423,7 @@ bool spell_id_t::init( const uint32_t id, int t )
   return true;  
 }
 
-bool spell_id_t::init( const char* s_name )
+bool spell_id_t::int_init( const char* s_name )
 {
   assert( pp && pp -> sim );
 

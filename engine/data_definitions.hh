@@ -1,6 +1,8 @@
 #ifndef DATA_DEFINITIONS_HH
 #define DATA_DEFINITIONS_HH
 
+#include "data_enums.hh"
+
 // Spell.dbc
 struct spell_data_t {
   const char * name;               // Spell name from Spell.dbc stringblock (enGB)
@@ -47,30 +49,30 @@ struct spell_data_t {
 
 // SpellEffect.dbc
 struct spelleffect_data_t {
-  unsigned    id;              // Effect id
-  unsigned    flags;           // Unused for now, 0x00 for all
-  unsigned    spell_id;        // Spell this effect belongs to
-  unsigned    index;           // Effect index for the spell
-  int         type;            // Effect type
-  int         subtype;         // Effect sub-type
+  unsigned         id;              // Effect id
+  unsigned         flags;           // Unused for now, 0x00 for all
+  unsigned         spell_id;        // Spell this effect belongs to
+  unsigned         index;           // Effect index for the spell
+  effect_type_t    type;            // Effect type
+  effect_subtype_t subtype;         // Effect sub-type
   // SpellScaling.dbc
-  double      m_avg;           // Effect average spell scaling multiplier
-  double      m_delta;         // Effect delta spell scaling multiplier
-  double      m_unk;           // 
+  double           m_avg;           // Effect average spell scaling multiplier
+  double           m_delta;         // Effect delta spell scaling multiplier
+  double           m_unk;           // 
   // 
-  double      coeff;           // Effect coefficient
-  double      amplitude;       // Effect amplitude (e.g., tick time)
+  double           coeff;           // Effect coefficient
+  double           amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
-  double      radius;          // Spell radius variables
-  double      radius_max;
+  double           radius;          // Spell radius variables
+  double           radius_max;
   // 
-  int         base_value;      // Effect value
-  int         misc_value;      // Effect miscellaneous value
-  int         misc_value_2;    // Effect miscellaneous value
-  int         trigger_spell;   // Effect triggers this spell id
-  double      pp_combo_points; // Effect points per combo points
-  double      real_ppl;        // Effect real points per level
-  int         die_sides;       // Effect damage range
+  int              base_value;      // Effect value
+  int              misc_value;      // Effect miscellaneous value
+  int              misc_value_2;    // Effect miscellaneous value
+  int              trigger_spell;   // Effect triggers this spell id
+  double           pp_combo_points; // Effect points per combo points
+  double           real_ppl;        // Effect real points per level
+  int              die_sides;       // Effect damage range
 };
 
 struct talent_data_t {

@@ -326,14 +326,22 @@ double sc_data_access_t::spell_cast_time( const uint32_t spell_id, const uint32_
 
   assert( spell_exists( spell_id ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  double min_cast = m_spells_index[ spell_id ]->cast_min;
-  double max_cast = m_spells_index[ spell_id ]->cast_max;
-  double div_cast = m_spells_index[ spell_id ]->cast_div;
+  int min_cast = m_spells_index[ spell_id ]->cast_min;
+  int max_cast = m_spells_index[ spell_id ]->cast_max;
+  int div_cast = m_spells_index[ spell_id ]->cast_div;
 
-  if ( level >= div_cast )
+  if ( div_cast < 0 )
+  {
+    if ( min_cast < 0 )
+      return 0.0;
+
+    return ( double ) min_cast;
+  }
+
+  if ( level >= ( uint32_t) div_cast )
     return max_cast/1000.0;
   
-  return (min_cast + ( max_cast - min_cast ) * ( level - 1 ) / ( div_cast - 1 )) / 1000.0;
+  return ( 1.0 * min_cast + ( 1.0 * max_cast - min_cast ) * ( level - 1 ) / ( 1.0 * div_cast - 1 )) / 1000.0;
 }
 
 uint32_t sc_data_access_t::spell_effect_id( const uint32_t spell_id, const uint32_t effect_num ) SC_CONST

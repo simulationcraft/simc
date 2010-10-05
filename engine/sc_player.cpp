@@ -1170,6 +1170,11 @@ void player_t::init_talents()
   }
 
   pri_tree = primary_tab();
+
+  for ( j = 0; j < num_talents; j++ )
+  {
+    talent_list2[ j ] -> init();
+  }
 }
 
 // player_t::init_spells =================================================

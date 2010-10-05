@@ -37,7 +37,7 @@ struct glyph_t : spell_id_t
     if ( ! id )
       return;
 
-    init( id );
+    int_init( id );
     init_enabled( true, false );
   }
 
