@@ -2588,7 +2588,7 @@ struct summon_pet_t : public warlock_spell_t
 {
   std::string pet_name;
 
-  summon_pet_t( const char* n = "summon_pet", player_t* player, const char* sname, const std::string& options_str ) :
+  summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
     warlock_spell_t( n, player, sname ), pet_name(n)
   {
     warlock_t* p = player -> cast_warlock();
