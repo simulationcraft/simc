@@ -181,6 +181,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\data_enums.hh"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_action.cpp"
 			>
 		</File>
