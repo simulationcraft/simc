@@ -234,6 +234,7 @@ struct warrior_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
+  virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
@@ -1122,7 +1123,8 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_colossus_smash -> trigger(); // FIXME: Buff ignores target armor
+    if( result_is_hit() )
+      p -> buffs_colossus_smash -> trigger();
   }
 };
 
@@ -3096,6 +3098,18 @@ double warrior_t::composite_attack_hit() SC_CONST
     ah += .03;
   }
   return ah;
+}
+
+// warrior_t::composite_attack_penetration ====================================
+
+double warrior_t::composite_attack_penetration() SC_CONST
+{
+  double arp = player_t::composite_attack_penetration();
+
+  if ( buffs_colossus_smash -> up() )
+    arp = 1.0;
+
+  return arp;
 }
 
 // warrior_t::composite_tank_block ==========================================
