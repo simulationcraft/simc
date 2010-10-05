@@ -219,7 +219,7 @@ void action_t::parse_data( sc_data_access_t& pData )
   {
     base_execute_time    = pData.spell_cast_time ( id, player -> level );
     cooldown -> duration = pData.spell_cooldown ( id );
-    if ( cooldown -> ( duration > sim -> wheel_seconds - 2.0 ) )
+    if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
       cooldown -> duration = sim -> wheel_seconds - 2.0;
     range                = pData.spell_max_range ( id );
     travel_speed         = pData.spell_missile_speed ( id );
