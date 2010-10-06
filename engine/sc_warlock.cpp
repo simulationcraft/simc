@@ -320,7 +320,7 @@ struct warlock_t : public player_t
 
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
     cooldowns_improved_soul_fire              = get_cooldown ( "improved_soul_fire" );
-    cooldowns_improved_soul_fire -> duration  = 30.0;
+    cooldowns_improved_soul_fire -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
@@ -2449,7 +2449,7 @@ struct conflagrate_t : public warlock_spell_t
 
     double t = ( p -> dots_immolate -> action -> base_td + p -> dots_immolate -> action -> total_power() * p -> dots_immolate -> action -> tick_power_mod );
 
-    base_dd_min  = t * 5;
+    base_dd_min  = t * 5 * ( p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 17962, 2 ) ) / 100.0 );
     base_dd_max  = base_dd_min;
 
     warlock_spell_t::execute();
