@@ -45,12 +45,12 @@ main_hand=zinrokh_destroyer_of_worlds,stats=374str_512sta_228hit_228crit,weapon=
 off_hand=zinrokh_destroyer_of_worlds,stats=374str_512sta_228hit_228crit,weapon=sword2h_3.80speed_1894min_2843max
 
 # Gear Summary
-# gear_strength=3331
+# gear_strength=3705
 # gear_agility=107
-# gear_stamina=4989
+# gear_stamina=5501
 # gear_attack_power=338
-# gear_hit_rating=834
-# gear_crit_rating=1110
+# gear_hit_rating=1062
+# gear_crit_rating=1338
 # gear_haste_rating=1560
 # gear_expertise_rating=295
 # gear_mastery_rating=758

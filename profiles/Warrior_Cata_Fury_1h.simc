@@ -45,14 +45,14 @@ main_hand=elementium_bonesplitter,stats=146str_219sta_97haste_97exp,weapon=axe_2
 off_hand=elementium_bonesplitter,stats=146str_219sta_97haste_97exp,weapon=axe_2.60speed_841min_1563max
 
 # Gear Summary
-# gear_strength=3331
+# gear_strength=3249
 # gear_agility=107
-# gear_stamina=4989
+# gear_stamina=4915
 # gear_attack_power=338
-# gear_hit_rating=834
-# gear_crit_rating=1110
-# gear_haste_rating=1560
-# gear_expertise_rating=295
+# gear_hit_rating=606
+# gear_crit_rating=882
+# gear_haste_rating=1754
+# gear_expertise_rating=489
 # gear_mastery_rating=758
 # meta_gem=relentless_earthsiege
 # tier11_2pc_melee=1
