@@ -1,6 +1,7 @@
 #!./simc 
 
 warlock=Warlock_Cata_Affliction
+#bugs=0
 level=85
 race=goblin
 use_pre_potion=-1

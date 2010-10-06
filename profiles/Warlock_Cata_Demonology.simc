@@ -1,6 +1,7 @@
 #!./simc 
 
 warlock=Warlock_Cata_Demonology
+#bugs=0
 level=85
 race=goblin
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000332220031031221221133202

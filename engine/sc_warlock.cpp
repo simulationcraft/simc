@@ -31,97 +31,65 @@ struct _stat_list_t {
   // Base Stats, same for all pets. Depend on level
   static const _stat_list_t pet_base_stats[]=
   {
-          // str, agi,  sta, int, spi
-    { 80, {    0,   0,    0,   0,   0 } },
-    { 81, {  345, 297,  333, 151, 212 } },
-    { 82, {    0,   0,    0,   0,   0 } },
-    { 83, {    0,   0,    0,   0,   0 } },
-    { 84, {    0,   0,    0,   0,   0 } },
-    { 85, {  453, 883,  353, 159, 225 } },
+          // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t imp_base_stats[]=
   {
-          // str, agi,  sta, int, spi
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,  5026, 25273,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felguard_base_stats[]=
   {
-
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0, 5395, 16703 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,  5395, 16703,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felhunter_base_stats[]=
   {
-
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,  5395, 16703,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t succubus_base_stats[]=
   {
-
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+     { 85, {    0,   0,    0,   0,    0,  5640, 16703,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t infernal_base_stats[]=
   {
-
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t doomguard_base_stats[]=
   {
-
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t ebon_imp_base_stats[]=
   {
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 0, { 0 } }
+  };
 
-    { 80, {0, 0, 0, 0, 0,    0,     0 } },
-    { 81, {0, 0, 0, 0, 0,    0,     0 } },
-    { 82, {0, 0, 0, 0, 0,    0,     0 } },
-    { 83, {0, 0, 0, 0, 0,    0,     0 } },
-    { 84, {0, 0, 0, 0, 0,    0,     0 } },
-    { 85, {0, 0, 0, 0, 0,    0,     0 } },
+  static const _stat_list_t voidwalker_base_stats[]=
+  {
+          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 85, {    0,   0,    0,   0,    0,  6131, 16703,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 }
@@ -432,11 +400,9 @@ struct warlock_pet_t : public pet_t
   proc_t* procs_mana_feed;
 
 
-  struct warlock_pet_data_t
-  {
-    warlock_pet_data_t() { }
 
-    double warlock_pet_data_t::get_attribute_base( int level, int stat_type, pet_type_t pet_type )
+
+    double get_attribute_base( int level, int stat_type, pet_type_t pet_type )
     {
       double r                      = 0.0;
       const pet_stats::_stat_list_t* base_list = 0;
@@ -453,31 +419,12 @@ struct warlock_pet_t : public pet_t
         else if ( pet_type == PET_INFERNAL         ) pet_list = pet_stats::infernal_base_stats;
         else if ( pet_type == PET_DOOMGUARD         ) pet_list = pet_stats::doomguard_base_stats;
         else if ( pet_type == PET_EBON_IMP         ) pet_list = pet_stats::ebon_imp_base_stats;
-      }
-
-      if ( (level < 80 || level > 85 ) )
-      {
-        return 0.0;
+        else if ( pet_type == PET_VOIDWALKER         ) pet_list = pet_stats::voidwalker_base_stats;
       }
 
       if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
       {
         return 0.0;
-      }
-
-      switch ( stat_type )
-      {
-      case BASE_STAT_STRENGTH:
-      case BASE_STAT_AGILITY:
-      case BASE_STAT_STAMINA:
-      case BASE_STAT_INTELLECT:
-      case BASE_STAT_SPIRIT:
-      case BASE_STAT_HEALTH:
-      case BASE_STAT_MANA:
-        break;
-      default:
-        return 0.0;
-        break;
       }
 
       int i;
@@ -493,6 +440,10 @@ struct warlock_pet_t : public pet_t
           }
         }
       }
+      else
+      {
+        sim -> errorf( "No Pet Base Stats avaiable for this level.\n");
+      }
 
       if ( pet_list )
       {
@@ -505,13 +456,14 @@ struct warlock_pet_t : public pet_t
           }
         }
       }
+      else
+      {
+        sim -> errorf( "Pet %s has no base stats avaiable on this level.\n", name());
+      }
 
       return r;
     }
 
-
-  };
-  warlock_pet_data_t warlock_pet_data;
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
@@ -528,31 +480,35 @@ struct warlock_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
-    attribute_base[ ATTR_AGILITY   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
-    attribute_base[ ATTR_STAMINA   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
-    attribute_base[ ATTR_INTELLECT ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
-    attribute_base[ ATTR_SPIRIT    ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
-    resource_base[ RESOURCE_HEALTH ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
-    resource_base[ RESOURCE_MANA   ]  = warlock_pet_data.get_attribute_base( level, BASE_STAT_MANA, pet_type );
-    base_attack_crit                  = 0.0328; // level invariant
-    base_spell_crit                   = 0.0092; // level invariant
+    attribute_base[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
+    attribute_base[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
+    attribute_base[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
+    attribute_base[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
+    attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
+    resource_base[ RESOURCE_HEALTH ]  = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
+    resource_base[ RESOURCE_MANA   ]  = get_attribute_base( level, BASE_STAT_MANA, pet_type );
+    initial_attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
+    initial_spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
+    initial_dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
+    base_spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
+    base_attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
+    base_mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
-    initial_attack_crit_per_agility   = 0.01 / 52.0;
 
-    initial_spell_crit_per_intellect  = owner -> initial_spell_crit_per_intellect;
-
-    initial_attack_power_per_strength = 1.0;
-    base_attack_power = -20;
-
+    initial_attack_power_per_strength = 1.0; // tested
+    base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
     stamina_per_owner = 0.6496; // level invariant, tested
-    intellect_per_owner = 0; // removed in cata
+    intellect_per_owner = 0; // removed in cata, tested
 
-    health_per_stamina = 10.0;
-    mana_per_intellect = 10.8;
-
-
+    base_attack_crit                  += 0.0328; // seems to be level invariant, untested
+    base_spell_crit                   += 0.0092; // seems to be level invariant, untested
+    initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
+    initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
+    health_per_stamina = 10.0; // untested!
+    mana_per_intellect = 10.8; // untested!
     mp5_per_intellect  = 2.0 / 3.0; // untested!
+
+
   }
 
   virtual void schedule_ready( double delta_time=0,
@@ -660,6 +616,7 @@ struct warlock_spell_t : public spell_t
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
+
   warlock_spell_t( const active_spell_t& s, int t = TREE_NONE, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE  ) :
       spell_t( s, ptype, stype, t ), usable_pre_combat( false)
   {
@@ -668,6 +625,7 @@ struct warlock_spell_t : public spell_t
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
+
   warlock_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, sname, player, ptype, stype, t ), usable_pre_combat( false)
   {
@@ -676,6 +634,7 @@ struct warlock_spell_t : public spell_t
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
+
   warlock_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, id, player, ptype, stype, t ), usable_pre_combat( false)
   {
@@ -1746,6 +1705,12 @@ struct bane_of_doom_t : public warlock_spell_t
   virtual void target_debuff( int dmg_type )
   {
     action_t::target_debuff( DMG_DIRECT );
+
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> bugs && p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 4.0 )
+    {
+      target_multiplier *=  1.0 + 0.20 ;
+    }
   }
 
   virtual void tick()
@@ -2167,7 +2132,19 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     double min_multiplier[] = { 0, 0.03, 0.06 };
-    double max_multiplier[] = { 0, 0.09, 0.18 };
+    double max_multiplier [3] = {0};
+    if ( p -> bugs )
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.12;
+      max_multiplier[2] =  0.24;
+    }
+    else
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.09;
+      max_multiplier[2] =  0.18;
+    }
 
     assert( p -> talent_soul_siphon -> rank() >= 0 &&
             p -> talent_soul_siphon -> rank() <= 2 );
@@ -2254,7 +2231,19 @@ struct drain_soul_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     double min_multiplier[] = { 0, 0.03, 0.06 };
-    double max_multiplier[] = { 0, 0.09, 0.18 };
+    double max_multiplier [3] = {0};
+    if ( p -> bugs )
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.12;
+      max_multiplier[2] =  0.24;
+    }
+    else
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.09;
+      max_multiplier[2] =  0.18;
+    }
 
     assert( p -> talent_soul_siphon -> rank() >= 0 &&
             p -> talent_soul_siphon -> rank() <= 2 );
@@ -2300,9 +2289,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_td = effect_base_value( 2 );
-
-    if ( p -> glyphs.unstable_affliction )
-      base_execute_time -= 0.2;
+    base_execute_time += p -> glyphs.unstable_affliction -> value() / 1000.0;
   }
 
   virtual void execute()
@@ -2501,7 +2488,8 @@ struct incinerate_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
+    if ( !p -> bugs )
+      base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
     base_multiplier *= 1.0 + ( p -> glyphs.incinerate -> value() / 100.0 );
   }
