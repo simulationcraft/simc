@@ -205,6 +205,8 @@ struct warrior_t : public player_t
   };
   glyphs_t glyphs;
 
+  bool plate_specialization;
+
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARRIOR, name, r )
   {
     tree_type[ WARRIOR_ARMS       ] = TREE_ARMS;
@@ -212,12 +214,15 @@ struct warrior_t : public player_t
     tree_type[ WARRIOR_PROTECTION ] = TREE_PROTECTION;
 
     // Active
-    active_deep_wounds   = 0;
-    active_stance        = STANCE_BATTLE;
+    active_deep_wounds = 0;
+    active_stance      = STANCE_BATTLE;
 
     // Cooldowns
-    cooldowns_colossus_smash        = get_cooldown( "colossus_smash"      );
-    cooldowns_shield_slam           = get_cooldown( "shield_slam"         );
+    cooldowns_colossus_smash = get_cooldown( "colossus_smash" );
+    cooldowns_shield_slam    = get_cooldown( "shield_slam"    );
+
+    // Plate Specialization enabled by default
+    plate_specialization = true;
   }
 
   // Character Definition
@@ -237,6 +242,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
@@ -498,6 +504,8 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
 {
   // Basic Formula:      http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=1
   // Blue Clarification: http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
+
+  if ( a -> proc ) return;
 
   warrior_t* p = a -> player -> cast_warrior();
   weapon_t*  w = a -> weapon;
@@ -3118,6 +3126,20 @@ double warrior_t::composite_attack_penetration() SC_CONST
   return arp;
 }
 
+// warrior_t::composite_attribute_multiplier ===============================
+
+double warrior_t::composite_attribute_multiplier( int attr ) SC_CONST
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( ( attr == STAT_STRENGTH ) && plate_specialization && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
+    m *= 1.05;
+  else if ( ( attr == STAT_STAMINA ) && plate_specialization && primary_tree() == TREE_PROTECTION )
+    m *= 1.05;
+
+  return m;
+}
+
 // warrior_t::composite_tank_block ==========================================
 
 double warrior_t::composite_tank_block() SC_CONST
@@ -3235,6 +3257,7 @@ std::vector<option_t>& warrior_t::get_options()
     option_t warrior_options[] =
     {
       // @option_doc loc=player/warrior/talents title="Talents"
+      { "plate_specialization", OPT_BOOL, &plate_specialization },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
