@@ -632,9 +632,8 @@ double action_t::armor() SC_CONST
   target_t* t = sim -> target;
 
   double adjusted_armor =  t -> base_armor();
-  double amor_reduction = std::max(  std::max( t -> debuffs.sunder_armor -> stack(), 
-                                               t -> debuffs.expose_armor -> stack() ) * 0.04,
-                                               t -> debuffs.expose_armor -> value() );
+  double amor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
+                                    t -> debuffs.expose_armor -> value() );
   adjusted_armor *= 1.0 - amor_reduction;
 
   return adjusted_armor;

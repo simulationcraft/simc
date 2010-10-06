@@ -174,7 +174,7 @@ struct food_t : public action_t
       player -> stat_gain( STAT_STAMINA, 30 );
       break;
     case FOOD_HEARTY_RHINO:
-      player -> stat_gain( STAT_ARMOR_PENETRATION_RATING, 40 );
+      player -> stat_gain( STAT_CRIT_RATING, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
     case FOOD_IMPERIAL_MANTA_STEAK:

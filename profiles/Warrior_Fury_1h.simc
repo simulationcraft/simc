@@ -1,0 +1,61 @@
+#!./simc 
+warrior=Warrior_Cata_Fury1h
+optimal_raid=1
+level=85
+race=tauren
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320002000000000000000322220313011012232013
+glyphs=bloodthirst/raging_blow/slam/berserker_rage
+actions=flask,type=endless_rage
+actions+=/food,type=fish_feast
+actions+=/stance,choose=berserker,if=in_combat=0
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/recklessness
+actions+=/death_wish
+actions+=/inner_rage,rage>=90
+actions+=/heroic_strike,rage>=75
+actions+=/whirlwind,if=target.adds>0
+actions+=/bloodthirst
+actions+=/colossus_smash
+actions+=/raging_blow
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/execute
+actions+=/battle_shout
+actions+=/berserker_rage
+
+shoulders=earthern_pauldrons,stats=233str_380sta_169haste_149hit,gems=40str_10haste
+legs=earthen_legplates,stats=301str_512sta_228mastery_188hit,gems=20str_20crit_20haste
+head=earthen_helmet,stats=281str_512sta_228haste_168exp,gems=relentless_earthsiege_30str
+hands=earthen_gauntlets,stats=233str_380sta_169haste_149mastery,gems=40hit_10str
+chest=earthen_battleplate,stats=301str_512sta_228crit_188haste,gems=40str_20str
+neck=gift_of_nadun,stats=190str_286sta_127haste_127crit
+waist=elementium_girdle_of_pain,stats=253str_380sta_169hit_169haste,gems=40str
+feet=woe_breeders_boots,stats=233str_380sta_169crit_149haste,gems=20str_20crit_10crit
+finger1=band_of_bees,stats=190str_286sta_127haste_127mastery
+finger2=band_of_bees,stats=190str_286sta_127haste_127mastery
+trinket1=deathbringers_will,heroic=1,stats=167crit
+trinket2=deaths_verdict,heroic=1,stats=288ap
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10crit_10str_20str_4str,enchant=50ap
+
+# Ring is actually unique
+back=floating_web,stats=190str_286sta_127mastery_127exp
+ranged=finely_tuned_throat_needler,stats=107agi_161sta_77haste_63crit
+main_hand=elementium_bonesplitter,stats=146str_219sta_97haste_97exp,weapon=axe_2.60speed_841min_1563max
+off_hand=elementium_bonesplitter,stats=146str_219sta_97haste_97exp,weapon=axe_2.60speed_841min_1563max
+
+# Gear Summary
+# gear_strength=3331
+# gear_agility=107
+# gear_stamina=4989
+# gear_attack_power=338
+# gear_hit_rating=834
+# gear_crit_rating=1110
+# gear_haste_rating=1560
+# gear_expertise_rating=295
+# gear_mastery_rating=758
+# meta_gem=relentless_earthsiege
+# tier11_2pc_melee=1
+# tier11_4pc_melee=1
+# trinket1=deathbringers_will,heroic=1
+# trinket2=deaths_verdict,heroic=1

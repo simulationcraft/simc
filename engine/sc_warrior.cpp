@@ -2282,8 +2282,9 @@ struct berserker_rage_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );  
     if ( p -> glyphs.berserker_rage )
-      p -> resource_gain( RESOURCE_RAGE, 5, p -> gains_berserker_rage );
+      p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_berserker_rage );
   }
 };
 
@@ -2736,6 +2737,7 @@ void warrior_t::init_glyphs()
     std::string& n = glyph_names[ i ];
 
     if      ( n == "battle"           ) glyphs.battle = 1;
+    else if ( n == "berserker_rage"   ) glyphs.berserker_rage = 1;
     else if ( n == "bladestorm"       ) glyphs.bladestorm = 1;
     else if ( n == "bloodthirst"      ) glyphs.bloodthirst = 1;
     else if ( n == "cleaving"         ) glyphs.cleaving = 1;
@@ -2751,7 +2753,6 @@ void warrior_t::init_glyphs()
     else if ( n == "slam"             ) glyphs.slam = 1;
     else if ( n == "sweeping_strikes" ) glyphs.sweeping_strikes = 1;
     // To prevent warnings....
-    else if ( n == "berserker_rage"     ) ;
     else if ( n == "bloody_healing"     ) ;
     else if ( n == "command"            ) ;
     else if ( n == "demoralizing_shout" ) ;
@@ -2965,7 +2966,7 @@ void warrior_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=hearty_rhino";
+    action_list_str = "flask,type=endless_rage/food,type=fish_feast";
     if      ( primary_tree() == TREE_ARMS       ) action_list_str += "/stance,choose=battle,if=in_combat=0";
     else if ( primary_tree() == TREE_FURY       ) action_list_str += "/stance,choose=berserker,if=in_combat=0";
     else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive,if=in_combat=0";
@@ -2990,12 +2991,12 @@ void warrior_t::init_actions()
     }
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.sweeping_strikes ) action_list_str += "/sweeping_strikes,if=target.adds>0";
-      if ( talents.deadly_calm ) action_list_str += "/deadly_calm,rage<10";
+      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
+      if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,rage<10";
       action_list_str += "/inner_rage,rage>=90";
       action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
       action_list_str += "/cleave,rage>=75,if=target.adds>0";
-      action_list_str += "/rend";
+      action_list_str += "/rend,if=!ticking";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/bladestorm";
       action_list_str += "/mortal_strike";
@@ -3004,29 +3005,34 @@ void warrior_t::init_actions()
       action_list_str += "/execute,health_percentage<=20";
       action_list_str += "/slam";
       action_list_str += "/battle_shout";
+      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_FURY )
     {
       action_list_str += "/recklessness";
-      action_list_str += "/death_wish";
+      if ( talents.death_wish -> rank() ) action_list_str += "/death_wish";
       action_list_str += "/inner_rage,rage>=90";
       action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
       action_list_str += "/cleave,rage>=75,if=target.adds>0";
-      action_list_str += "/whirlwind,if=target.adds>0";
-      action_list_str += "/raging_blow";
+      action_list_str += "/whirlwind,if=target.adds>0";      
       action_list_str += "/bloodthirst";
+      action_list_str += "/colossus_smash";
+      action_list_str += "/raging_blow";
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute";
       action_list_str += "/battle_shout";
+      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
       action_list_str += "/heroic_strike,rage>=15";
       action_list_str += "/revenge";
-      if ( talents.shockwave       ) action_list_str += "/shockwave";
+      if ( talents.shockwave ) action_list_str += "/shockwave";
       action_list_str += "/shield_block,sync=shield_slam";
       action_list_str += "/shield_slam";
-      if ( talents.devastate       ) action_list_str += "/devastate";
+      if ( talents.devastate ) action_list_str += "/devastate";
+      action_list_str += "/battle_shout";
+      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
     }
     else
     {
@@ -3330,6 +3336,6 @@ void player_t::warrior_combat_begin( sim_t* sim )
   target_t* t = sim -> target;
   if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
   if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
-  if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override(  3 );
+  if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
   if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
 }
