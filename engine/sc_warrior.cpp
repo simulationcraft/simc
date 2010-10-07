@@ -91,6 +91,10 @@ struct warrior_t : public player_t
   cooldown_t* cooldowns_colossus_smash;
   cooldown_t* cooldowns_shield_slam;
 
+  // Dots
+  dot_t* dots_deep_wounds;
+  dot_t* dots_rend;
+
   // Events
   event_t* deep_wounds_delay_event;
 
@@ -124,7 +128,9 @@ struct warrior_t : public player_t
   rng_t* rng_tier10_4pc_melee;  
 
   // Up-Times
+  uptime_t* uptimes_deep_wounds;
   uptime_t* uptimes_rage_cap;
+  uptime_t* uptimes_rend;
 
   struct talents_t
   {
@@ -220,6 +226,10 @@ struct warrior_t : public player_t
     // Cooldowns
     cooldowns_colossus_smash = get_cooldown( "colossus_smash" );
     cooldowns_shield_slam    = get_cooldown( "shield_slam"    );
+
+    // Dots
+    dots_deep_wounds = get_dot( "deep_wounds" );
+    dots_rend        = get_dot( "rend"        );
 
     // Plate Specialization enabled by default
     plate_specialization = true;
@@ -382,6 +392,7 @@ static void trigger_deep_wounds( action_t* a )
 
       id = 12834;
     }
+
     virtual void target_debuff( int dmg_type )
     {
       target_t* t = sim -> target;
@@ -394,10 +405,12 @@ static void trigger_deep_wounds( action_t* a )
         target_multiplier /= 1.04;
       }
     }
+
     virtual double total_td_multiplier() SC_CONST
     {
       return target_multiplier;
     }
+
     virtual void tick()
     {
       warrior_attack_t::tick();
@@ -744,7 +757,7 @@ void warrior_attack_t::player_buff()
     player_multiplier *= 1.05;
 
   if ( p -> talents.rampage -> rank() )
-    player_crit += 0.02;
+    player_crit += p -> talents.rampage -> effect_base_value( 2 ) / 100.0;
 
   if ( p -> buffs_hold_the_line -> check() )
     player_crit += 0.10;
@@ -850,6 +863,11 @@ struct melee_t : public warrior_attack_t
     {
 	    trigger_rage_gain( this, rage_conversion_value );
 
+      if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
+      {
+        p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
+      }
+
       double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
       if ( p -> primary_tree() == TREE_FURY )
       {
@@ -897,17 +915,9 @@ struct auto_attack_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     p -> main_hand_attack -> schedule_execute();
-    if ( result_is_hit() && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
-    {
-      p -> resource_gain( RESOURCE_RAGE, 20, p -> gains_blood_frenzy );
-    }
     if ( p -> off_hand_attack )
     {
       p -> off_hand_attack -> schedule_execute();
-      if ( result_is_hit()  && p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> rank() * 0.05 ) )
-      {
-        p -> resource_gain( RESOURCE_RAGE, 20, p -> gains_blood_frenzy );
-      }
     }
   }
 
@@ -1027,7 +1037,7 @@ struct bloodthirst_t : public warrior_attack_t
     player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
     direct_power_mod   = 0.50;    
     may_crit           = true;
-    base_crit         += 0.05 * p -> talents.cruelty -> rank();
+    base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
@@ -1418,7 +1428,7 @@ struct mortal_strike_t : public warrior_attack_t
     may_crit                    = true;
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> rank() * 0.10;
-    base_crit                  += 0.05 * p -> talents.cruelty -> rank();
+    base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
 
     if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;   
   }
@@ -1793,7 +1803,7 @@ struct shield_slam_t : public warrior_attack_t
     weapon_multiplier = 0;
     direct_power_mod  = 0; // FIXME: What is this?
     may_crit          = true;
-    base_crit        += 0.05 * p -> talents.cruelty -> rank();
+    base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
     base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam        +
 			                           0.10 * p -> set_bonus.tier7_2pc_tank() );
   }
@@ -2943,7 +2953,9 @@ void warrior_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_rage_cap = get_uptime( "rage_cap" );
+  uptimes_deep_wounds = get_uptime( "deep_wounds" );
+  uptimes_rage_cap    = get_uptime( "rage_cap"    );
+  uptimes_rend        = get_uptime( "rend"        );
 }
 
 // warrior_t::init_rng ======================================================
@@ -3161,8 +3173,10 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-                              resource_max    [ RESOURCE_RAGE] );
+  uptimes_deep_wounds -> update( dots_deep_wounds -> ticking() );
+  uptimes_rage_cap    -> update( resource_current[ RESOURCE_RAGE ] ==
+                                 resource_max    [ RESOURCE_RAGE] );
+  uptimes_rend        -> update( dots_rend -> ticking() );
 }
 
 // warrior_t::resource_loss =================================================
