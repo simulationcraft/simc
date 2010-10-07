@@ -7,43 +7,6 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// trigger_judgement_of_wisdom ==============================================
-
-struct judgement_of_wisdom_callback_t : public action_callback_t
-{
-  gain_t* gain;
-  proc_t* proc;
-  rng_t*  rng;
-
-  judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
-  {
-    gain = p -> get_gain( "judgement_of_wisdom" );
-    proc = p -> get_proc( "judgement_of_wisdom" );
-    rng  = p -> get_rng ( "judgement_of_wisdom" );
-  }
-
-  virtual void trigger( action_t* a )
-  {
-    sim_t* sim = a -> sim;
-
-    if ( ! sim -> target -> debuffs.judgement_of_wisdom -> check() )
-      return;
-
-    player_t* p = a -> player;
-
-    double base_mana = p -> resource_base[ RESOURCE_MANA ];
-
-    double PPM = 15.0;
-
-    if ( ! rng -> roll( a -> ppm_proc_chance( PPM ) ) )
-      return;
-
-    proc -> occur();
-
-    p -> resource_gain( RESOURCE_MANA, base_mana * 0.02, gain );
-  }
-};
-
 // dark_intent_callback ==================================================
 
 struct dark_intent_callback_t : public action_callback_t
@@ -1225,7 +1188,6 @@ void player_t::init_gains()
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.innervate              = get_gain( "innervate" );
-  gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
@@ -2818,13 +2780,6 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
-  if ( primary_resource() == RESOURCE_MANA )
-  {
-    action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
-
-    register_attack_direct_result_callback( RESULT_HIT_MASK, cb );
-    register_spell_direct_result_callback ( RESULT_HIT_MASK, cb );
-  }
   dark_intent_cb = new dark_intent_callback_t( this );
   dark_intent_cb -> active = false;
   register_spell_result_callback ( RESULT_CRIT_MASK, dark_intent_cb );

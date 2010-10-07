@@ -1683,7 +1683,7 @@ struct arcane_shot_t : public hunter_attack_t
     parse_data( p -> player_data );
     base_cost   -= p -> talents.efficiency;
 
-    // To trigger ppm-based JoW
+    // To trigger ppm-based abilities
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0;
@@ -1875,7 +1875,7 @@ struct explosive_tick_t : public hunter_attack_t
     };
     init_rank( ranks, 60053 );
 
-    // To trigger ppm-based JoW
+    // To trigger ppm-based abilities
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0;

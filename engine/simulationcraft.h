@@ -1954,7 +1954,6 @@ struct sim_t
     int improved_shadow_bolt;
     int infected_wounds;
     int insect_swarm;
-    int judgement_of_wisdom;
     int judgements_of_the_just;
     int leader_of_the_pack;
     int mana_spring_totem;
@@ -2566,7 +2565,6 @@ struct player_t
     gain_t* focus_regen;
     gain_t* innervate;
     gain_t* glyph_of_innervate;
-    gain_t* judgement_of_wisdom;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
     gain_t* mp5_regen;
@@ -2925,7 +2923,6 @@ struct target_t
     debuff_t* infected_wounds;
     debuff_t* insect_swarm;
     debuff_t* invulnerable;
-    debuff_t* judgement_of_wisdom;
     debuff_t* judgements_of_the_just;
     debuff_t* mangle;
     debuff_t* scorpid_sting;
