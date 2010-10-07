@@ -301,6 +301,8 @@ struct shaman_attack_t : public attack_t
           base_dd_max      = p -> player_data.effect_max( e -> id, p -> type, p -> level );
           direct_power_mod = p -> player_data.effect_coeff( e -> id );
           break;
+        default:
+          break;
       }
     }
     
@@ -390,7 +392,11 @@ struct shaman_spell_t : public spell_t
               tick_power_mod = p -> player_data.effect_coeff( e -> id );
               num_ticks      = (int) ( p -> player_data.spell_duration( id ) / base_tick_time );
               break;
+            default:
+              break;
           }
+          break;
+        default:
           break;
       }
     }
