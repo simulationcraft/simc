@@ -1692,7 +1692,16 @@ bool sim_t::parse_option( const std::string& name,
     if ( option_t::parse( this, active_player -> get_options(), name, value ) )
       return true;
 
-  return option_t::parse( this, get_options(), name, value );
+  if ( option_t::parse( this, get_options(), name, value ) )
+    return true;
+
+  if ( active_player )
+  {
+    nvpair_t *s = new nvpair_t( name, value );
+    active_player -> unknown_options.push_back( s );
+  }
+
+  return true;
 }
 
 // sim_t::parse_options =====================================================

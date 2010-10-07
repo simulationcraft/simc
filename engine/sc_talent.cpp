@@ -68,6 +68,11 @@ talent_t::talent_t( player_t* player, const char* t_name, const char* name ) :
   }
 
   talent_init_enabled( false, false );
+
+  if ( !check_unknown_options( OPT_TALENT_RANK_FORCED ) )
+  {
+    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Talent %s unknown option", name );
+  }
 }
 
 talent_t::talent_t( const talent_t& copy ) :
@@ -118,7 +123,7 @@ uint32_t talent_t::get_spell_id( ) SC_CONST
   return pp -> player_data.talent_rank_spell_id( talent_t_data -> id, talent_t_rank );
 }
 
-bool talent_t::set_rank( uint32_t value )
+bool talent_t::set_rank( uint32_t value, bool no_force )
 {
   if ( !talent_t_data )
     return false;
@@ -126,6 +131,15 @@ bool talent_t::set_rank( uint32_t value )
   if ( value > pp -> player_data.talent_max_rank( talent_t_data -> id ) )
   {
     return false;
+  }
+
+  if ( no_force && talent_t_forced_override )
+  {
+    return true;
+  }
+  else if ( ! no_force )
+  {
+    talent_t_forced_override = true;
   }
 
   talent_t_rank = value;
@@ -365,6 +379,24 @@ spell_id_t::spell_id_t( const spell_id_t& copy, const player_type ptype, const p
     scaling_type = stype;
 }
 
+nvpair_t *spell_id_t::find_spell_option()
+{
+  assert( pp && pp -> sim );
+ 
+  nvpair_t* t = NULL;
+
+  for ( int32_t i = pp -> unknown_options.size() - 1; i >= 0; i-- )
+  {
+    t = pp -> unknown_options[ i ];
+    if ( t -> name == token_name )
+    {
+      return t;
+    }
+  }
+
+  return NULL;
+}
+
 bool spell_id_t::int_init( const uint32_t id, int t )
 {
   assert( pp && pp -> sim );
@@ -396,6 +428,29 @@ bool spell_id_t::int_init( const uint32_t id, int t )
   }
 
   init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
+
+  struct nvpair_t* nvp = NULL;
+
+  if ( ( nvp = find_spell_option() ) != NULL )
+  {
+    option_t opt[ 2 ];
+    std::vector<option_t> opt_vector;
+
+    opt[ 1 ].name = NULL;
+    opt[ 1 ].type = OPT_UNKNOWN;
+    opt[ 1 ].address = NULL;
+    opt[ 0 ].name = token_name.c_str();
+    opt[ 0 ].type = OPT_SPELL_ENABLED;
+    opt[ 0 ].address = this;
+    option_t::copy( opt_vector, opt );
+
+    if ( !option_t::parse( pp -> sim, opt_vector, nvp -> name, nvp -> value ) )
+    {
+      spell_id_t_id = 0;
+      if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
+      return false;
+    }
+  }
 
   uint32_t n_effects = 0;
   
@@ -481,6 +536,13 @@ bool spell_id_t::int_init( const char* s_name )
   }
 
   init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
+
+  if ( !spell_id_t_m_is_talent && !check_unknown_options() )
+  {
+    spell_id_t_id = 0;
+    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
+    return false;
+  }
 
   uint32_t n_effects = 0;
   
@@ -627,6 +689,33 @@ void spell_id_t::add_options( player_t* p, std::vector<spell_id_t *> *spell_list
 
     i++;
   }
+}
+
+bool spell_id_t::check_unknown_options( int opt_type )
+{
+  struct nvpair_t* nvp = NULL;
+
+  assert( pp && pp -> sim );
+
+  if ( ( nvp = find_spell_option() ) != NULL )
+  {
+    option_t opt[ 2 ];
+    std::vector<option_t> opt_vector;
+
+    opt[ 1 ].name = NULL;
+    opt[ 1 ].type = OPT_UNKNOWN;
+    opt[ 1 ].address = NULL;
+    opt[ 0 ].name = token_name.c_str();
+    opt[ 0 ].type = opt_type;
+    opt[ 0 ].address = this;
+    option_t::copy( opt_vector, opt );
+
+    if ( !option_t::parse( pp -> sim, opt_vector, nvp -> name, nvp -> value ) )
+    {
+      return false;
+    }
+  }  
+  return true;
 }
 
 const char* spell_id_t::real_name() SC_CONST

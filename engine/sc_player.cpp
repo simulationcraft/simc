@@ -461,6 +461,12 @@ player_t::~player_t()
     talent_list2.pop_back();
     delete s;
   }
+  while ( unknown_options.size() )
+  {
+    nvpair_t* t = unknown_options.back();
+    unknown_options.pop_back();
+    delete t;
+  }
 }
 
 // player_t::id ============================================================

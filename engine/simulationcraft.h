@@ -1455,6 +1455,7 @@ enum option_type_t
   OPT_LIST,       // std::vector<std::string>*
   OPT_FUNC,       // function pointer
   OPT_TALENT_RANK, // talent rank
+  OPT_TALENT_RANK_FORCED, // forced set of talent rank
   OPT_SPELL_ENABLED, // spell enabled
   OPT_DEPRECATED,
   OPT_UNKNOWN
@@ -1479,6 +1480,15 @@ struct option_t
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
   static bool parse_token( sim_t*, std::string& token );
+};
+
+struct nvpair_t
+{
+  std::string name;
+  std::string value;
+
+  nvpair_t() { name = ""; value = ""; };
+  nvpair_t( const std::string& n, const std::string& v ) : name( n ), value( v ) { };
 };
 
 // Talent Translation =========================================================
@@ -2331,6 +2341,7 @@ struct player_t
 
   // Option Parsing
   std::vector<option_t> options;
+  std::vector<nvpair_t *> unknown_options;
 
   // Talent Parsing
   std::vector<talent_translation_t> talent_list;
@@ -3059,6 +3070,7 @@ struct spell_id_t
   virtual ~spell_id_t() {}
 
   virtual void init() {}
+  nvpair_t *find_spell_option();
   bool int_init( const char* s_name = NULL );
   bool int_init( const uint32_t id, int t = -1 );
   virtual uint32_t spell_id() { return ( pp && spell_id_t_data ) ? spell_id_t_id : 0; };
@@ -3071,6 +3083,7 @@ struct spell_id_t
   static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
 
   static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector, int opt_type = OPT_SPELL_ENABLED );
+  virtual bool check_unknown_options( int opt_type = OPT_SPELL_ENABLED );
   static uint32_t get_school_mask( const school_type s );
   static school_type get_school_type( const uint32_t mask );
   static bool is_school( const school_type s, const school_type s2 );
@@ -3148,7 +3161,7 @@ struct talent_t : spell_id_t
   virtual uint32_t id() { return ( pp && talent_t_data ) ? talent_t_data->id : 0; };
   virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
   virtual uint32_t get_spell_id( ) SC_CONST;
-  virtual bool set_rank( uint32_t value );
+  virtual bool set_rank( uint32_t value, bool no_force = true );
   virtual bool ok() SC_CONST;
   talent_t* find_talent_in_list( const char* t_name );
   talent_t* find_talent_in_list( const uint32_t id );
