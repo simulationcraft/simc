@@ -201,9 +201,11 @@ struct druid_t : public player_t
   struct glyphs_t
   {
     int berserk;
+    int ferocious_bite;
     int focus;
     int innervate;
     int insect_swarm;
+    int lacerate;
     int mangle;
     int monsoon;
     int moonfire;
@@ -212,6 +214,8 @@ struct druid_t : public player_t
     int shred;
     int starfall;
     int starfire;
+    int starsurge;
+    int tigers_fury;
     int typhoon;
     int wrath;
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
@@ -1359,9 +1363,13 @@ struct tigers_fury_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     id = 5217;
+    parse_data( p -> player_data );
 
+    if ( p -> set_bonus.tier7_4pc_melee() ) 
+      cooldown -> duration -= 3.0;
+    if ( p -> glyphs.tigers_fury ) 
+      cooldown -> duration -= 3.0;
 
-    cooldown -> duration    = 30.0 - 3.0 * p -> set_bonus.tier7_4pc_melee();
     trigger_gcd = 0;
   }
 
@@ -1400,7 +1408,8 @@ struct ferocious_bite_t : public druid_cat_attack_t
   double_pair* combo_point_dmg;
 
   ferocious_bite_t( player_t* player, const std::string& options_str ) :
-      druid_cat_attack_t( "ferocious_bite", player, SCHOOL_PHYSICAL, TREE_FERAL )
+      druid_cat_attack_t( "ferocious_bite", player, SCHOOL_PHYSICAL, TREE_FERAL ),
+      excess_energy( 0.0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1429,6 +1438,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
                           p -> level >= 72 ? dmg_72 :
                           p -> level >= 63 ? dmg_63 :
                           dmg_60 );
+    
   }
 
   virtual void execute()
@@ -1441,15 +1451,24 @@ struct ferocious_bite_t : public druid_cat_attack_t
     direct_power_mod = 0.07 * p -> buffs_combo_points -> stack();
     // consumes up to 35 additional energy to increase damage by up to 100%.
     // Assume 100/35 = 2.857% per additional energy consumed
-    excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
-
-    if ( excess_energy > 35 )
-    {
-      excess_energy     = 35;
-    }
-    else if ( excess_energy < 0 )
+    
+    // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
+    if ( p -> glyphs.ferocious_bite )
     {
       excess_energy     = 0;
+    }
+    else
+    {
+      excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
+  
+      if ( excess_energy > 35 )
+      {
+        excess_energy     = 35;
+      }
+      else if ( excess_energy < 0 )
+      {
+        excess_energy     = 0;
+      }
     }
 
     druid_cat_attack_t::execute();
@@ -1465,7 +1484,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
   virtual void consume_resource()
   {
-    // Ferocious Bite consumes 35+x energy, with 0 <= x <= 30.
+    // Ferocious Bite consumes 35+x energy, with 0 <= x <= 35.
     // Consumes the base_cost and handles Omen of Clarity
     druid_cat_attack_t::consume_resource();
 
@@ -2353,7 +2372,8 @@ struct insect_swarm_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
   insect_swarm_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE )
+      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ),
+      starsurge_cd( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2425,7 +2445,8 @@ struct moonfire_t : public druid_spell_t
   cooldown_t* starsurge_cd;
   int         start_num_ticks;
   moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), start_num_ticks( 0 )
+      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), 
+      starsurge_cd( 0 ), start_num_ticks( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2897,7 +2918,7 @@ struct wrath_t : public druid_spell_t
     // Times are given in ms in DBC files
     base_execute_time += p -> talents.starlight_wrath -> effect_base_value( 1 ) * 0.001;
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> effect_base_value( 2 );
 
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -3052,14 +3073,14 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
+  cooldown_t* starfall_cd;
   starsurge_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "starsurge", player, SCHOOL_SPELLSTORM, TREE_BALANCE )
+      druid_spell_t( "starsurge", player, SCHOOL_SPELLSTORM, TREE_BALANCE ),
+      starfall_cd( 0 )
   {
     druid_t* p = player -> cast_druid();
     
-    assert ( p -> primary_tree() == TREE_BALANCE );
-    
-    travel_speed = 21.0;
+    check_spec( TREE_BALANCE );
     
     option_t options[] =
     {
@@ -3067,19 +3088,10 @@ struct starsurge_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 11, 1486, 1960, 0, 0.11 },
-      { 84, 10, 1486, 1960, 0, 0.11 },
-      { 83,  9, 1486, 1960, 0, 0.11 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 78674 );
-
-    base_execute_time    = 2.0;
-    direct_power_mod     = ( base_execute_time / 3.5 );
-    may_crit             = true;
-    cooldown -> duration = 15.0;
+    id = 78674;
+    parse_data( p -> player_data );
+    
+    starfall_cd = p -> get_cooldown( "starfall" );
   }
   
   virtual void travel( int    travel_result,
@@ -3098,7 +3110,11 @@ struct starsurge_t : public druid_spell_t
       double gain = 15;
       if ( ! p -> buffs_eclipse_lunar -> check() 
         && ( p -> buffs_eclipse_solar -> check() || p -> eclipse_bar_value < 0 ) ) gain = -gain;
+
       trigger_eclipse_energy_gain( this, gain );
+
+      if ( p -> glyphs.starsurge )
+        starfall_cd -> ready -= 5.0;
     }
   }
 
@@ -3409,38 +3425,42 @@ void druid_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if      ( n == "berserk"      ) glyphs.berserk = 1;
-    else if ( n == "focus"        ) glyphs.focus = 1;
-    else if ( n == "innervate"    ) glyphs.innervate = 1;
-    else if ( n == "insect_swarm" ) glyphs.insect_swarm = 1;
-    else if ( n == "mangle"       ) glyphs.mangle = 1;
-    else if ( n == "moonfire"     ) glyphs.moonfire = 1;
-    else if ( n == "monsoon"      ) glyphs.monsoon = 1;
-    else if ( n == "rip"          ) glyphs.rip = 1;
-    else if ( n == "savage_roar"  ) glyphs.savage_roar = 1;
-    else if ( n == "shred"        ) glyphs.shred = 1;
-    else if ( n == "starfire"     ) glyphs.starfire = 1;
-    else if ( n == "starfall"     ) glyphs.starfall = 1;
-    else if ( n == "typhoon"      ) glyphs.typhoon = 1;
-    else if ( n == "wrath"        ) glyphs.wrath = 1;
+    if      ( n == "berserk"               ) glyphs.berserk = 1;
+    else if ( n == "ferocious_bite"        ) glyphs.ferocious_bite = 1;
+    else if ( n == "focus"                 ) glyphs.focus = 1;
+    else if ( n == "innervate"             ) glyphs.innervate = 1;
+    else if ( n == "insect_swarm"          ) glyphs.insect_swarm = 1;
+    else if ( n == "lacerate"              ) glyphs.lacerate = 1;
+    else if ( n == "mangle"                ) glyphs.mangle = 1;
+    else if ( n == "monsoon"               ) glyphs.monsoon = 1;
+    else if ( n == "moonfire"              ) glyphs.moonfire = 1;
+    else if ( n == "rip"                   ) glyphs.rip = 1;
+    else if ( n == "savage_roar"           ) glyphs.savage_roar = 1;
+    else if ( n == "shred"                 ) glyphs.shred = 1;
+    else if ( n == "starfall"              ) glyphs.starfall = 1;
+    else if ( n == "starfire"              ) glyphs.starfire = 1;
+    else if ( n == "starsurge"             ) glyphs.starsurge = 1;
+    else if ( n == "tigers_fury"           ) glyphs.tigers_fury = 1;
+    else if ( n == "typhoon"               ) glyphs.typhoon = 1;
+    else if ( n == "wrath"                 ) glyphs.wrath = 1;
     // minor glyphs, to prevent 'not-found' warning
     else if ( n == "aquatic_form"          ) ;
     else if ( n == "barkskin"              ) ;
     else if ( n == "challenging_roar"      ) ;
     else if ( n == "dash"                  ) ;
     else if ( n == "entangling_roots"      ) ;
+    else if ( n == "faerie_fire"           ) ;
+    else if ( n == "feral_charge"          ) ;
     else if ( n == "frenzied_regeneration" ) ;
-    else if ( n == "growling"              ) ;
     else if ( n == "healing_touch"         ) ;
     else if ( n == "hurricane"             ) ;
     else if ( n == "lifebloom"             ) ;
     else if ( n == "maul"                  ) ;
-    else if ( n == "nourish"               ) ;
-    else if ( n == "rapid_rejuvenation"    ) ;
+    else if ( n == "rake"                  ) ;
     else if ( n == "rebirth"               ) ;
-    else if ( n == "rejuvenation"          ) ;
     else if ( n == "regrowth"              ) ;
-    else if ( n == "survival_instincts"    ) ;
+    else if ( n == "rejuvenation"          ) ;
+    else if ( n == "solar_beam"            ) ;
     else if ( n == "swiftmend"             ) ;
     else if ( n == "the_wild"              ) ;
     else if ( n == "thorns"                ) ;
