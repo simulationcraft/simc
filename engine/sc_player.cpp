@@ -1458,8 +1458,6 @@ double player_t::composite_attack_haste() SC_CONST
     }
   }
 
-
-
   return h;
 }
 
@@ -1963,7 +1961,8 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
 
     if ( buffs.tricks_of_the_trade -> up() )
     {
-      m *= 1.15;
+      // because of the glyph we now track the damage % increase in the buff value
+      m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
     if ( sim -> auras.ferocious_inspiration -> up() || sim -> auras.sanctified_retribution -> up() )
