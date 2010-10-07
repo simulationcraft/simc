@@ -1623,7 +1623,7 @@ static void trigger_necrosis( action_t* a )
       background     = true;
       proc           = true;
       trigger_gcd    = false;
-      base_dd_max = base_dd_max = 0.01;
+      base_dd_min = base_dd_max = 0.01;
 
       reset();
     }

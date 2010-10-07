@@ -650,7 +650,7 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::haste ===================================================
 
-  double warlock_spell_t::haste() SC_CONST
+  virtual double haste() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
     double h = spell_t::haste();
@@ -681,7 +681,7 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::player_buff =============================================
 
-  void warlock_spell_t::player_buff()
+  virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -698,7 +698,7 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::target_debuff ============================================
 
-  void warlock_spell_t::target_debuff( int dmg_type )
+  virtual void target_debuff( int dmg_type )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -772,7 +772,7 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::execute ==================================================
 
-  void warlock_spell_t::execute()
+  virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -790,7 +790,7 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::parse_options =============================================
 
-  void warlock_spell_t::parse_options( option_t*          options,
+  virtual void parse_options( option_t*          options,
                                        const std::string& options_str )
   {
     option_t base_options[] =

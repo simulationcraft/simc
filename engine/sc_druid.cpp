@@ -282,7 +282,6 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
-  virtual talent_tree_type  primary_tree() SC_CONST;
   virtual int       target_swing();
 
   // Utilities
@@ -4039,27 +4038,6 @@ int druid_t::primary_resource() SC_CONST
   if ( talents.moonkin_form -> rank() ) return RESOURCE_MANA;
   if ( tank > 0 ) return RESOURCE_RAGE;
   return RESOURCE_ENERGY;
-}
-
-// druid_t::primary_tree ====================================================
-
-talent_tree_type druid_t::primary_tree() SC_CONST
-{
-  if ( level > 9 && level <= 69 )
-  {
-    if ( talent_tab_points[ TREE_BALANCE     ] > 0 ) return TREE_BALANCE;
-    if ( talent_tab_points[ TREE_FERAL       ] > 0 ) return TREE_FERAL;
-    if ( talent_tab_points[ TREE_RESTORATION ] > 0 ) return TREE_RESTORATION;
-    return TREE_NONE;
-  }
-  else
-  {
-    if ( talent_tab_points[ TREE_BALANCE     ] > 30 ) return TREE_BALANCE;
-    if ( talent_tab_points[ TREE_FERAL       ] > 30 ) return TREE_FERAL;
-    if ( talent_tab_points[ TREE_RESTORATION ] > 30 ) return TREE_RESTORATION;
-    return TREE_NONE;
-  }
-  return TREE_NONE;
 }
 
 // druid_t::target_swing ====================================================
