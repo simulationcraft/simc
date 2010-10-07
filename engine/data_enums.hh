@@ -1,6 +1,39 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+// Property (misc_value) types for
+// A_ADD_PCT_MODIFIER, A_ADD_FLAT_MODIFIER
+enum property_type_t {
+  P_GENERIC           = 0,
+  P_DURATION          = 1,
+  P_THREAT            = 2,
+  P_EFFECT_1          = 3,
+  P_STACK             = 4,
+  P_RANGE             = 5,
+  P_RADIUS            = 6,
+  P_CRIT              = 7,
+  P_UNKNOWN_1         = 8, // Unknown
+  P_PUSHBACK          = 9,
+  P_CAST_TIME         = 10,
+  P_COOLDOWN          = 11,
+  P_EFFECT_2          = 12,
+  P_RESOURCE_COST     = 14,
+  P_CRIT_DAMAGE       = 15,
+  P_PENETRATION       = 16,
+  P_TARGET            = 17,
+  P_PROC_CHANCE       = 18, // Unconfirmed
+  P_UNKNOWN_2         = 19, // Unknown
+  P_TARGET_BONUS      = 20, // Improved Revenge, Glyph of Chain Heal, ...
+  P_GCD               = 21, // Only used for flat modifiers?
+  P_TICK_DAMAGE       = 22,
+  P_EFFECT_3          = 23,
+  P_SPELL_POWER       = 24,
+  P_PROC_FREQUENCY    = 26,
+  P_DAMAGE_TAKEN      = 27,
+  P_DISPEL_CHANCE     = 28,
+  P_MAX               = 29,
+};
+
 enum effect_type_t {
     E_NONE = 0,
     E_INSTAKILL = 1,

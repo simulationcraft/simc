@@ -3127,6 +3127,11 @@ struct spell_id_t
 
   // Generalized access API
   virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
+  
+  // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
+  // based on the property of the modifier (as defined by misc_value)
+  virtual double mod_additive( property_type_t = P_MAX ) SC_CONST;
+
 private:
 };
 

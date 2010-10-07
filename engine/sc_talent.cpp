@@ -1203,6 +1203,78 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
   return 0.0;
 }
 
+double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
+{
+  // Move this somewhere sane, here for now
+  static double property_flat_divisor[] = {
+    1.0,    // P_GENERIC
+    1000.0, // P_DURATION
+    1.0,    // P_THREAT
+    1.0,    // P_EFFECT_1
+    1.0,    // P_STACK
+    1.0,    // P_RANGE
+    1.0,    // P_RADIUS
+    100.0,  // P_CRIT
+    1.0,    // P_UNKNOWN
+    1.0,    // P_PUSHBACK
+    1000.0, // P_CAST_TIME
+    1000.0, // P_COOLDOWN
+    1.0,    // P_EFFECT_2
+    1.0,    // Unused
+    1.0,    // P_RESOURCE_COST
+    1.0,    // P_CRIT_DAMAGE
+    1.0,    // P_PENETRATION
+    1.0,    // P_TARGET
+    100.0,  // P_PROC_CHANCE
+    1.0,    // P_UNKNOWN
+    1.0,    // P_TARGET_BONUS
+    1000.0, // P_GCD
+    1.0,    // P_TICK_DAMAGE
+    1.0,    // P_EFFECT_3
+    100.0,  // P_SPELL_POWER
+    1.0,    // Unused
+    1.0,    // P_PROC_FREQUENCY
+    1.0,    // P_DAMAGE_TAKEN
+    100.0,  // P_DISPEL_CHANCE
+  };
+
+  if ( single )
+  {
+    if ( p_type == P_MAX || single -> subtype == A_ADD_FLAT_MODIFIER || single -> subtype == A_ADD_PCT_MODIFIER )
+    {
+      if ( single -> subtype == (int) A_ADD_PCT_MODIFIER )
+        return single -> base_value / 100.0;
+      // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
+      else
+        return single -> base_value / property_flat_divisor[ single -> misc_value ];
+    }
+    else
+      return 0.0;
+  }
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! effects[ i ] )
+      continue;
+
+    if ( effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER || effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
+      continue;
+
+    if ( p_type == P_MAX || effects[ i ] -> misc_value == p_type )
+    {
+      // Divide by 100 for every A_ADD_PCT_MODIFIER
+      if ( effects[ i ] -> subtype == (int) A_ADD_PCT_MODIFIER )
+        return effects[ i ] -> base_value / 100.0;
+      // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
+      else
+        return effects[ i ] -> base_value / property_flat_divisor[ effects[ i ] -> misc_value ];
+    }
+  }
+  
+  return 0.0;
+}
+
+
 // ==========================================================================
 // Active Spell ID
 // ==========================================================================
