@@ -703,6 +703,8 @@ double action_t::resistance() SC_CONST
     if ( resist_rating < 0 ) resist_rating = 0;
     if ( resist_rating > 0 ) resist = resist_rating / player_skill;
 
+#if 0
+// TO-DO: No sign of partial resists on either Beta or PTR. ifdefing out for now in case they come back...
     if ( ! binary )
     {
       int delta_level = t -> level - player -> level;
@@ -711,6 +713,7 @@ double action_t::resistance() SC_CONST
         resist += delta_level * 0.02;
       }
     }
+#endif
 
     if ( resist > 1.0 ) resist = 1.0;
   }
