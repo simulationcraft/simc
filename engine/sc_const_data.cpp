@@ -39,10 +39,11 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_combat_ratings.create_copy( ( double * ) __ptr_gt_combat_ratings, MAX_LEVEL, sizeof( __ptr_gt_combat_ratings ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_combat_rating_scalar.create_copy( ( double * ) __ptr_gt_octclass_combat_rating_scalar, CLASS_SIZE, sizeof( __ptr_gt_octclass_combat_rating_scalar ) / ( CLASS_SIZE * sizeof( double ) ) );
       m_class_spells.create_copy( ( uint32_t * ) __ptr_class_ability_data, PTR_CLASS_ABILITY_SIZE, PTR_CLASS_ABILITY_TREE_SIZE, sizeof( __ptr_class_ability_data ) / ( PTR_CLASS_ABILITY_SIZE * PTR_CLASS_ABILITY_TREE_SIZE * sizeof( uint32_t ) ) );
-      m_talent_spec_spells.create_copy( ( uint32_t * ) __ptr_tree_specialization_data, TREE_SPECIALIZATION_SIZE, MAX_TALENT_TABS, sizeof( __ptr_tree_specialization_data ) / ( TREE_SPECIALIZATION_SIZE * MAX_TALENT_TABS * sizeof( uint32_t ) ) );
-      m_racial_spells.create_copy( ( uint32_t * ) __ptr_race_ability_data, RACE_ABILITY_SIZE, CLASS_SIZE, sizeof( __ptr_race_ability_data ) / ( RACE_ABILITY_SIZE * CLASS_SIZE * sizeof( uint32_t ) ) );
-      m_mastery_spells.create_copy( ( uint32_t * ) __ptr_class_mastery_ability_data, CLASS_MASTERY_ABILITY_SIZE, sizeof( __ptr_class_mastery_ability_data ) / ( CLASS_MASTERY_ABILITY_SIZE * sizeof( uint32_t ) ) );
-      m_glyph_spells.create_copy( ( uint32_t * ) __ptr_glyph_abilities_data, GLYPH_ABILITIES_SIZE, 3, sizeof( __ptr_glyph_abilities_data ) / ( GLYPH_ABILITIES_SIZE * 3 * sizeof( uint32_t ) ) );
+      m_talent_spec_spells.create_copy( ( uint32_t * ) __ptr_tree_specialization_data, PTR_TREE_SPECIALIZATION_SIZE, MAX_TALENT_TABS, sizeof( __ptr_tree_specialization_data ) / ( PTR_TREE_SPECIALIZATION_SIZE * MAX_TALENT_TABS * sizeof( uint32_t ) ) );
+      m_racial_spells.create_copy( ( uint32_t * ) __ptr_race_ability_data, PTR_RACE_ABILITY_SIZE, CLASS_SIZE, sizeof( __ptr_race_ability_data ) / ( PTR_RACE_ABILITY_SIZE * CLASS_SIZE * sizeof( uint32_t ) ) );
+      m_mastery_spells.create_copy( ( uint32_t * ) __ptr_class_mastery_ability_data, PTR_CLASS_MASTERY_ABILITY_SIZE, sizeof( __ptr_class_mastery_ability_data ) / ( PTR_CLASS_MASTERY_ABILITY_SIZE * sizeof( uint32_t ) ) );
+      m_glyph_spells.create_copy( ( uint32_t * ) __ptr_glyph_abilities_data, PTR_GLYPH_ABILITIES_SIZE, 3, sizeof( __ptr_glyph_abilities_data ) / ( PTR_GLYPH_ABILITIES_SIZE * 3 * sizeof( uint32_t ) ) );
+      m_set_bonus_spells.create_copy( ( uint32_t * ) __ptr_tier_bonuses_data, PTR_TIER_BONUSES_SIZE, 12, sizeof( __ptr_tier_bonuses_data ) / ( PTR_TIER_BONUSES_SIZE * 12 * sizeof( uint32_t ) ) );
       m_dodge_base.create_copy( ( double * ) __ptr_gt_chance_to_dodge_base, sizeof( __ptr_gt_chance_to_dodge_base ) / sizeof( double ) );
       m_dodge_scale.create_copy( ( double * ) __ptr_gt_dodge_per_agi, MAX_LEVEL, sizeof( __ptr_gt_dodge_per_agi ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_base_mp5.create_copy( ( double * ) __ptr_gt_base_mp5, MAX_LEVEL, sizeof( __ptr_gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );
@@ -68,6 +69,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_racial_spells.create_copy( ( uint32_t * ) __race_ability_data, RACE_ABILITY_SIZE, CLASS_SIZE, sizeof( __race_ability_data ) / ( RACE_ABILITY_SIZE * CLASS_SIZE * sizeof( uint32_t ) ) );
       m_mastery_spells.create_copy( ( uint32_t * ) __class_mastery_ability_data, CLASS_MASTERY_ABILITY_SIZE, sizeof( __class_mastery_ability_data ) / ( CLASS_MASTERY_ABILITY_SIZE * sizeof( uint32_t ) ) );
       m_glyph_spells.create_copy( ( uint32_t * ) __glyph_abilities_data, GLYPH_ABILITIES_SIZE, 3, sizeof( __glyph_abilities_data ) / ( GLYPH_ABILITIES_SIZE * 3 * sizeof( uint32_t ) ) );
+      m_set_bonus_spells.create_copy( ( uint32_t * ) __tier_bonuses_data, TIER_BONUSES_SIZE, 12, sizeof( __tier_bonuses_data ) / ( TIER_BONUSES_SIZE * 12 * sizeof( uint32_t ) ) );
       m_dodge_base.create_copy( ( double * ) __gt_chance_to_dodge_base, sizeof( __gt_chance_to_dodge_base ) / sizeof( double ) );
       m_dodge_scale.create_copy( ( double * ) __gt_dodge_per_agi, MAX_LEVEL, sizeof( __gt_dodge_per_agi ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_base_mp5.create_copy( ( double * ) __gt_base_mp5, MAX_LEVEL, sizeof( __gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );

@@ -457,6 +457,10 @@ bool spell_id_t::int_init( const char* s_name )
       {
         spell_id_t_id = pp -> player_data.find_glyph_spell( spell_list_type, s_name );
       }
+      if ( !spell_id_t_id )
+      {
+        spell_id_t_id = pp -> player_data.find_set_bonus_spell( spell_list_type, s_name );
+      }
     }
   }
 

@@ -1420,6 +1420,35 @@ uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const char* na
   return 0;
 }
 
+uint32_t sc_data_access_t::find_set_bonus_spell( const player_type c, const char* name, const int tier ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  
+  assert( name && name[ 0 ] && ( tier < ( int ) m_set_bonus_spells.rows ) );
+
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+  uint32_t j = 0;
+  uint32_t max_row = m_set_bonus_spells.rows;
+  if ( tier >= 0 )
+  {
+    j = tier;
+    max_row = tier + 1;
+  }
+  while ( j < max_row )
+  {
+    i = 0;
+    while ( ( ( p = m_set_bonus_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+    {
+      if ( check_spell_name( *p, name ) )
+        return *p;
+      i++;
+    };        
+    j++;
+  }
+  return 0;
+}
+
 uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const glyph_type type, uint32_t num ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
@@ -1433,7 +1462,6 @@ uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const glyph_ty
 
   return *p;
 }
-
 
 bool sc_data_access_t::check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST
 {

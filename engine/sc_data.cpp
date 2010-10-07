@@ -52,6 +52,7 @@ void sc_data_t::m_copy( const sc_data_t& copy )
   m_racial_spells.copy_array( copy.m_racial_spells );
   m_mastery_spells.copy_array( copy.m_mastery_spells );
   m_glyph_spells.copy_array( copy.m_glyph_spells );
+  m_set_bonus_spells.copy_array( copy.m_set_bonus_spells );
   m_dodge_base.copy_array( copy.m_dodge_base );
   m_class_spells.copy_array( copy.m_class_spells );
   m_dodge_scale.copy_array( copy.m_dodge_scale );

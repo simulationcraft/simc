@@ -1255,6 +1255,7 @@ public:
   sc_array_t<uint32_t>            m_racial_spells;
   sc_array_t<uint32_t>            m_mastery_spells;
   sc_array_t<uint32_t>            m_glyph_spells;
+  sc_array_t<uint32_t>            m_set_bonus_spells;
   sc_array_t<double>              m_dodge_base;
   sc_array_t<double>              m_dodge_scale;
   sc_array_t<double>              m_base_mp5;
@@ -1426,6 +1427,7 @@ public:
   virtual uint32_t      find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST;
   virtual uint32_t      find_mastery_spell( const player_type c, const char* name ) SC_CONST;
   virtual uint32_t      find_glyph_spell( const player_type c, const char* name ) SC_CONST;
+  virtual uint32_t      find_set_bonus_spell( const player_type c, const char* name, const int tier = -1 ) SC_CONST;
   virtual uint32_t      find_glyph_spell( const player_type c, const glyph_type type, uint32_t num ) SC_CONST;
 
 // Misc methods
