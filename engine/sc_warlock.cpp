@@ -2449,7 +2449,7 @@ struct conflagrate_t : public warlock_spell_t
 
     double t = ( p -> dots_immolate -> action -> base_td + p -> dots_immolate -> action -> total_power() * p -> dots_immolate -> action -> tick_power_mod );
 
-    base_dd_min  = t * 5 * ( p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 17962, 2 ) ) / 100.0 );
+    base_dd_min  = t * p -> dots_immolate -> action -> hasted_num_ticks() * ( p -> player_data.effect_base_value( p -> player_data.spell_effect_id( id, 2 ) ) / 100.0 );
     base_dd_max  = base_dd_min;
 
     warlock_spell_t::execute();
