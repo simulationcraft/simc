@@ -1016,25 +1016,28 @@ void action_t::last_tick()
 
 void action_t::travel( int travel_result, double travel_dmg=0 )
 {
-  if ( direct_dmg > 0 )
+  if ( result_is_hit() )
   {
-    assess_damage( travel_dmg, DMG_DIRECT );
-  }
-  if ( num_ticks > 0 )
-  {
-    if ( dot_behavior == DOT_REFRESH )
+    if ( direct_dmg > 0 )
     {
-      current_tick = 0;
-      snapshot_haste = haste();
-      number_ticks = hasted_num_ticks();
-      if ( ! ticking ) schedule_tick();
+      assess_damage( travel_dmg, DMG_DIRECT );
     }
-    else
+    if ( num_ticks > 0 )
     {
-      if ( ticking ) cancel();
-      snapshot_haste = haste();
-      number_ticks = hasted_num_ticks();
-      schedule_tick();
+      if ( dot_behavior == DOT_REFRESH )
+      {
+        current_tick = 0;
+        snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
+        if ( ! ticking ) schedule_tick();
+      }
+      else
+      {
+        if ( ticking ) cancel();
+        snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
+        schedule_tick();
+      }
     }
   }
 

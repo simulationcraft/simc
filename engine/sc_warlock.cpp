@@ -1014,7 +1014,7 @@ struct warlock_spell_t : public spell_t
   static void trigger_ebon_imp( spell_t* s )
   {
     warlock_t* p = s -> player -> cast_warlock();
-    double x = 0.25 + ( p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0 : 0.0 );
+    double x = 0.25 + p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
     if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
