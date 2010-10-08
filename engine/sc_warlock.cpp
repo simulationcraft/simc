@@ -92,6 +92,51 @@ struct _stat_list_t {
     { 85, {    0,   0,    0,   0,    0,  6131, 16703,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
+
+  struct _weapon_list_t
+  {
+    int id;
+    double min_dmg, max_dmg;
+    double swing_time;
+  };
+
+  static const _weapon_list_t imp_weapon[]=
+  {
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t felguard_weapon[]=
+  {
+    { 80, 412.5, 412.5, 2.0 },
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t felhunter_weapon[]=
+  {
+    { 80, 309.6, 309.6, 2.0 },
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t succubus_weapon[]=
+  {
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t infernal_weapon[]=
+  {
+    { 80, 412.5, 412.5, 2.0 },
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t doomguard_weapon[]=
+  {
+    { 80, 309.6, 309.6, 2.0 },
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t ebon_imp_weapon[]=
+  {
+    { 85, 772.0, 1080.0, 2.0 },
+    { 0, 0, 0, 0 }
+  };
+  static const _weapon_list_t voidwalker_weapon[]=
+  {
+    { 0, 0, 0, 0 }
+  };
 }
 
 
@@ -394,6 +439,8 @@ struct warlock_pet_t : public pet_t
   pet_type_t       pet_type;
   double    damage_modifier;
   attack_t* melee;
+  int stats_avaiable;
+  int stats2_avaiable;
 
 
   gain_t* gains_mana_feed;
@@ -408,10 +455,9 @@ struct warlock_pet_t : public pet_t
       const pet_stats::_stat_list_t* base_list = 0;
       const pet_stats::_stat_list_t*  pet_list = 0;
 
+
       base_list = pet_stats::pet_base_stats;
 
-      for ( int i=0; i < BASE_STAT_MAX; i++ )
-      {
         if      ( pet_type == PET_IMP          ) pet_list = pet_stats::imp_base_stats;
         else if ( pet_type == PET_FELGUARD         ) pet_list = pet_stats::felguard_base_stats;
         else if ( pet_type == PET_FELHUNTER         ) pet_list = pet_stats::felhunter_base_stats;
@@ -420,7 +466,6 @@ struct warlock_pet_t : public pet_t
         else if ( pet_type == PET_DOOMGUARD         ) pet_list = pet_stats::doomguard_base_stats;
         else if ( pet_type == PET_EBON_IMP         ) pet_list = pet_stats::ebon_imp_base_stats;
         else if ( pet_type == PET_VOIDWALKER         ) pet_list = pet_stats::voidwalker_base_stats;
-      }
 
       if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
       {
@@ -428,21 +473,18 @@ struct warlock_pet_t : public pet_t
       }
 
       int i;
-
       if ( base_list )
       {
-        for ( i = 0; base_list[ i ].id != 0; i++ )
+       for ( i = 0; base_list[ i ].id != 0; i++ )
         {
           if ( level == base_list[ i ].id )
           {
             r += base_list[ i ].stats[ stat_type ];
+            stats_avaiable++;
             break;
           }
         }
-      }
-      else
-      {
-        sim -> errorf( "No Pet Base Stats avaiable for this level.\n");
+
       }
 
       if ( pet_list )
@@ -452,26 +494,90 @@ struct warlock_pet_t : public pet_t
           if ( level == pet_list[ i ].id )
           {
             r += pet_list[ i ].stats[ stat_type ];
+            stats2_avaiable++;
             break;
           }
         }
-      }
-      else
-      {
-        sim -> errorf( "Pet %s has no base stats avaiable on this level.\n", name());
       }
 
       return r;
     }
 
+    double get_weapon( int level, pet_type_t pet_type, int n )
+       {
+         double r                      = 0.0;
+         const pet_stats::_weapon_list_t*  weapon_list = 0;
+
+           if      ( pet_type == PET_IMP          ) weapon_list = pet_stats::imp_weapon;
+           else if ( pet_type == PET_FELGUARD     ) weapon_list = pet_stats::felguard_weapon;
+           else if ( pet_type == PET_FELHUNTER    ) weapon_list = pet_stats::felhunter_weapon;
+           else if ( pet_type == PET_SUCCUBUS     ) weapon_list = pet_stats::succubus_weapon;
+           else if ( pet_type == PET_INFERNAL     ) weapon_list = pet_stats::infernal_weapon;
+           else if ( pet_type == PET_DOOMGUARD    ) weapon_list = pet_stats::doomguard_weapon;
+           else if ( pet_type == PET_EBON_IMP     ) weapon_list = pet_stats::ebon_imp_weapon;
+           else if ( pet_type == PET_VOIDWALKER   ) weapon_list = pet_stats::voidwalker_weapon;
+
+         if ( weapon_list )
+         {
+           if ( n == 3 )
+           {
+             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
+             {
+               if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].swing_time;
+                 break;
+               }
+             }
+           }
+
+           else if ( n == 1 )
+           {
+             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
+             {
+               if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].min_dmg;
+                 break;
+               }
+             }
+           }
+
+           else if ( n == 2 )
+           {
+             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
+             {
+               if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].max_dmg;
+                 break;
+               }
+             }
+           }
+         }
+         if ( n == 3 && r == 0 )r = 1.0; // set swing-time to 1.00 if there is no weapon
+         return r;
+       }
 
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {
     gains_mana_feed = get_gain("mana_feed");
     procs_mana_feed = get_proc("mana_feed");
-  }
+    stats_avaiable = 0;
+    stats2_avaiable = 0;
 
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = get_weapon( level, pet_type, 1 );
+    main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = get_weapon( level, pet_type, 3 );
+    if (main_hand_weapon.swing_time == 0 )
+    {
+      sim -> errorf( "Pet %s has swingtime == 0.\n", name());
+      assert(0);
+    }
+  }
 
 
   virtual bool ooc_buffs() { return true; }
@@ -494,6 +600,11 @@ struct warlock_pet_t : public pet_t
     base_attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
     base_mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
+
+    if ( stats_avaiable != 13 )
+      sim -> errorf( "Pet %s has no general base stats avaiable on this level.\n", name());
+    if ( stats2_avaiable != 13 )
+      sim -> errorf( "Pet %s has no base stats avaiable on this level.\n", name());
 
     initial_attack_power_per_strength = 1.0; // tested
     base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
@@ -889,9 +1000,12 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> dots_corruption -> ticking() ) return;
 
-    if ( p -> rng_everlasting_affliction -> roll( p -> talent_everlasting_affliction -> proc_chance() ) )
+    if ( p -> talent_everlasting_affliction -> rank() )
     {
-      p -> dots_corruption -> action -> refresh_duration();
+      if ( p -> rng_everlasting_affliction -> roll( p -> talent_everlasting_affliction -> proc_chance() ) )
+      {
+        p -> dots_corruption -> action -> refresh_duration();
+      }
     }
   }
 
@@ -900,12 +1014,13 @@ struct warlock_spell_t : public spell_t
   static void trigger_ebon_imp( spell_t* s )
   {
     warlock_t* p = s -> player -> cast_warlock();
-
-    if ( p -> rng_ebon_imp -> roll ( 0.25 + p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0  : 0 ) )
+    double x = 0.25 + ( p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0 : 0.0 );
+    if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
-      p -> summon_pet( "ebon_imp", 14.99 );
+      p -> summon_pet( "ebon_imp", 15.0 );
     }
+
   }
 };
 
@@ -953,6 +1068,9 @@ struct warlock_pet_attack_t : public attack_t
   warlock_pet_attack_t( const char* n, player_t* player, int r=RESOURCE_MANA, const school_type s=SCHOOL_PHYSICAL ) :
     attack_t( n, player, r, s, TREE_NONE, true )
   {
+    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+
+    weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
   }
@@ -1128,7 +1246,6 @@ struct felguard_pet_t : public warlock_pet_t
       aoe         = true;
       direct_tick = true;
 
-      weapon   = &( p -> main_hand_weapon );
     }
 
     virtual void execute()
@@ -1177,12 +1294,6 @@ struct felguard_pet_t : public warlock_pet_t
   felguard_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 412.5;
-    main_hand_weapon.max_dmg    = 412.5;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
-
     damage_modifier = 1.05;
 
     action_list_str += "/snapshot_stats/felstorm/legion_strike/wait_until_ready";
@@ -1262,20 +1373,12 @@ struct felhunter_pet_t : public warlock_pet_t
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 309.6;
-    main_hand_weapon.max_dmg    = 309.6;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
-
     action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
-
 
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
@@ -1425,12 +1528,6 @@ struct infernal_pet_t : public warlock_pet_t
   infernal_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 412.5;
-    main_hand_weapon.max_dmg    = 412.5;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
-
     damage_modifier = 3.20;
 
     action_list_str = "/snapshot_stats";
@@ -1504,12 +1601,6 @@ struct ebon_imp_pet_t : public warlock_pet_t
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 772;
-    main_hand_weapon.max_dmg    = 1080;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
-
     action_list_str = "/snapshot_stats/wait_until_ready";
   }
 
@@ -1519,13 +1610,6 @@ struct ebon_imp_pet_t : public warlock_pet_t
 
     melee = new warlock_pet_melee_t( this, "ebon_imp_melee" );
   }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    return player_t::create_action( name, options_str );
-  }
-
 };
 
 
@@ -2197,14 +2281,15 @@ struct drain_soul_t : public warlock_spell_t
     {
       warlock_t* p = player -> cast_warlock();
       trigger_everlasting_affliction( this );
-      if ( (sim -> target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
+      if ( p -> talent_pandemic -> rank() )
       {
-          if ( p -> dots_unstable_affliction -> ticking() )
-          {
-
+        if ( (sim -> target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
+        {
+            if ( p -> dots_unstable_affliction -> ticking() )
+            {
               p -> dots_unstable_affliction -> action -> refresh_duration();
-
-          }
+            }
+        }
       }
     }
 
@@ -3101,7 +3186,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     p -> buffs_hand_of_guldan -> trigger();
     trigger_impending_doom( this );
 
-    if ( p -> dots_immolate -> ticking() )
+    if ( p -> dots_immolate -> ticking()  && p -> talent_cremation -> rank() )
     {
       if ( p -> rng_cremation -> roll( p -> talent_cremation -> rank() * 0.5 ) )
       {
@@ -3824,7 +3909,7 @@ void warlock_t::init_rng()
   rng_cremation               = get_rng( "cremation"              );
   rng_impending_doom          = get_rng( "impending_doom"         );
   rng_siphon_life             = get_rng( "siphon_life"            );
-  rng_ebon_imp                = get_rng( "ebon_imp"                );
+  rng_ebon_imp                = get_rng( "ebon_imp_proc"          );
 }
 
 // warlock_t::init_actions ===================================================
