@@ -940,6 +940,7 @@ void action_t::execute()
   if ( result_is_hit() )
   {
     calculate_direct_damage();
+    schedule_travel();
   }
   else
   {
@@ -949,8 +950,6 @@ void action_t::execute()
       log_t::miss_event( this );
     }
   }
-
-  schedule_travel();
 
   update_ready();
 
