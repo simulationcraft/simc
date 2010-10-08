@@ -3810,6 +3810,7 @@ int mage_t::decode_set( item_t& item )
   if ( strstr( s, "sunstriders" ) ) return SET_T9_CASTER;
   if ( strstr( s, "khadgars"    ) ) return SET_T9_CASTER;
   if ( strstr( s, "bloodmage"   ) ) return SET_T10_CASTER;
+  if ( strstr( s, "firelord"    ) ) return SET_T11_CASTER;
 
   return SET_NONE;
 }

@@ -3302,18 +3302,19 @@ int warrior_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
+  log_t::output( sim, "THIS ITEM IS NAMED %s", s );
 
-  bool is_melee = ( strstr( s, "helmet"   ) ||
-		    strstr( s, "shoulderplates" ) ||
-		    strstr( s, "battleplate"    ) ||
-		    strstr( s, "legplates"      ) ||
-		    strstr( s, "gauntlets"      ) );
+  bool is_melee = ( strstr( s, "helmet"         ) ||
+		                strstr( s, "shoulderplates" ) ||
+		                strstr( s, "battleplate"    ) ||
+		                strstr( s, "legplates"      ) ||
+		                strstr( s, "gauntlets"      ) );
 
-  bool is_tank = ( strstr( s, "greathelm" ) ||
-		   strstr( s, "pauldrons"   ) ||
-		   strstr( s, "breastplate" ) ||
-		   strstr( s, "legguards"   ) ||
-		   strstr( s, "handguards"  ) );
+  bool is_tank = ( strstr( s, "greathelm"   ) ||
+		               strstr( s, "pauldrons"   ) ||
+		               strstr( s, "breastplate" ) ||
+		               strstr( s, "legguards"   ) ||
+		               strstr( s, "handguards"  ) );
 
   if ( strstr( s, "dreadnaught" ) )
   {
@@ -3338,6 +3339,18 @@ int warrior_t::decode_set( item_t& item )
   }
   if ( strstr( s, "earthen" ) )
   {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+		                  strstr( s, "pauldrons"     ) ||
+		                  strstr( s, "battleplate"   ) ||
+		                  strstr( s, "legplates"     ) ||
+		                  strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+		                 strstr( s, "shoulderguards" ) ||
+		                 strstr( s, "chestguard"     ) ||
+		                 strstr( s, "legguards"      ) ||
+		                 strstr( s, "handguards"     ) );
+
     if ( is_melee ) return SET_T11_MELEE;
     if ( is_tank  ) return SET_T11_TANK;
   }

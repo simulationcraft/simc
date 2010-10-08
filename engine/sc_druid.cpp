@@ -4028,6 +4028,17 @@ int druid_t::decode_set( item_t& item )
   }
   if ( strstr( s, "stormrider" ) )
   {
+    bool is_caster = ( strstr( s, "cover"         ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "vestment"      ) ||
+                       strstr( s, "leggings"      ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "headpiece"    ) ||
+                      strstr( s, "spaulders"    ) ||
+                      strstr( s, "raiment"      ) ||
+                      strstr( s, "legguards"    ) ||
+                      strstr( s, "grips"        ) );
     if ( is_caster ) return SET_T11_CASTER;
     if ( is_melee  ) return SET_T11_MELEE;
   }

@@ -4363,6 +4363,13 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1\n";
     if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1\n";
 
+    if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1\n";
+    if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1\n";
+    if ( set_bonus.tier11_2pc_melee()  ) profile_str += "# tier11_2pc_melee=1\n";
+    if ( set_bonus.tier11_4pc_melee()  ) profile_str += "# tier11_4pc_melee=1\n";
+    if ( set_bonus.tier11_2pc_tank()   ) profile_str += "# tier11_2pc_tank=1\n";
+    if ( set_bonus.tier11_4pc_tank()   ) profile_str += "# tier11_4pc_tank=1\n";
+
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
@@ -4469,6 +4476,12 @@ std::vector<option_t>& player_t::get_options()
       { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]         ) },
       { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]          ) },
       { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]          ) },
+      { "tier11_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_CASTER ]        ) },
+      { "tier11_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_CASTER ]        ) },
+      { "tier11_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_MELEE ]         ) },
+      { "tier11_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_MELEE ]         ) },
+      { "tier11_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_TANK ]          ) },
+      { "tier11_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_TANK ]          ) },
       // @option_doc loc=skip
       { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
       { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },

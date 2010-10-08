@@ -25,7 +25,7 @@ actions+=/slam
 actions+=/battle_shout
 actions+=/berserker_rage
 
-shoulders=earthern_pauldrons,stats=233str_380sta_169haste_149hit,gems=40str_10haste
+shoulders=earthen_pauldrons,stats=233str_380sta_169haste_149hit,gems=40str_10haste
 legs=earthen_legplates,stats=301str_512sta_228mastery_188hit,gems=20str_20crit_20haste
 head=earthen_helmet,stats=281str_512sta_228haste_168exp,gems=relentless_earthsiege_30str
 hands=earthen_gauntlets,stats=233str_380sta_169haste_149mastery,gems=40hit_10str

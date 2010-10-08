@@ -3397,6 +3397,7 @@ int hunter_t::decode_set( item_t& item )
   if ( strstr( s, "scourgestalker"        ) ) return SET_T8_MELEE;
   if ( strstr( s, "windrunners"           ) ) return SET_T9_MELEE;
   if ( strstr( s, "ahnkahar_blood_hunter" ) ) return SET_T10_MELEE;
+  if ( strstr( s, "lightning_charged"     ) ) return SET_T11_MELEE;
 
   return SET_NONE;
 }

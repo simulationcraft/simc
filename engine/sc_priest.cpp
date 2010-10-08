@@ -3014,6 +3014,15 @@ int priest_t::decode_set( item_t& item )
               strstr( s, "pants"     ) );
     if ( is_caster ) return SET_T10_CASTER;
   }
+  if ( strstr( s, "mercurial" ) )
+  {
+    is_caster = ( strstr( s, "hood"          ) ||
+                  strstr( s, "shoulderwraps" ) ||
+                  strstr( s, "vestment"      ) ||
+                  strstr( s, "gloves"        ) ||
+                  strstr( s, "leggings"      ) );
+    if ( is_caster ) return SET_T11_CASTER;
+  }
 
   return SET_NONE;
 }
