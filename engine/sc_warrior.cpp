@@ -3302,7 +3302,6 @@ int warrior_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-  log_t::output( sim, "THIS ITEM IS NAMED %s", s );
 
   bool is_melee = ( strstr( s, "helmet"         ) ||
 		                strstr( s, "shoulderplates" ) ||
