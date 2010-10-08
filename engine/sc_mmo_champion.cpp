@@ -286,7 +286,7 @@ static bool parse_item_stats( item_t&     item,
     }
   }
 
-  std::string armor_str;;
+  std::string armor_str;
   if ( get_tti_value( armor_str, node, "tti-armor" ) )
   {
     std::string::size_type pos = armor_str.find( " " );
@@ -295,7 +295,7 @@ static bool parse_item_stats( item_t&     item,
     item.armory_stats_str += armor_str + "armor";
   }
 
-  std::string block_str;;
+  std::string block_str;
   if ( get_tti_value( armor_str, node, "tti-block" ) )
   {
     std::string::size_type pos = block_str.find( " " );
