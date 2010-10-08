@@ -956,17 +956,22 @@ void sim_t::analyze_player( player_t* p )
 
   assert( p -> iteration_dps.size() >= ( size_t ) iterations );
 
-  p -> dps_min = 0;
-  p -> dps_max = 0;
-  p -> dps_std_dev = 0;
+  p -> dps_min = 1.0E+50;
+  p -> dps_max = -1.0E+50;
+  p -> dps_std_dev = 0.0;
   for ( int i=0; i < iterations; i++ )
   {
     double i_dps = p -> iteration_dps[ i ];
-    if ( p -> dps_min == 0 || p -> dps_min > i_dps ) p -> dps_min = i_dps;
-    if ( p -> dps_max == 0 || p -> dps_max < i_dps ) p -> dps_max = i_dps;
+    if ( p -> dps_min > i_dps ) p -> dps_min = i_dps;
+    if ( p -> dps_max < i_dps ) p -> dps_max = i_dps;
     double delta = i_dps - p -> dps;
     p -> dps_std_dev += delta * delta;
   }
+  if ( p -> dps_min >= 1.0E+50 )
+    p -> dps_min = 0.0;
+  if ( p -> dps_max < 0.0 )
+    p -> dps_max = 0.0;
+
   p -> dps_std_dev /= iterations;
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
   p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
