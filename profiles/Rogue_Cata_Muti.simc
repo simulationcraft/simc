@@ -27,5 +27,3 @@ main_hand=elementium_shank,stats=146agi_97hit_97haste_219sta,enchant=berserking,
 off_hand=throat_slasher,stats=129agi_86crit_86hit_194sta,enchant=berserking,weapon=dagger_1.40speed_401min_745max
 ranged=slashing_thorns,stats=84agi_56crit_56hit_126sta
 
-#add it in here for now
-enchant_expertise_rating=1000
