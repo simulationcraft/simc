@@ -550,8 +550,6 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( ! ( p -> primary_tree() == TREE_ARMS ) )
     return;
   
-  // FIXME: Does this have a cooldown like Sword Spec did?
-
   if ( p -> rng_strikes_of_opportunity -> roll( 0.02 * p -> composite_mastery() ) )
   {
     if ( a -> sim -> log )
@@ -620,7 +618,7 @@ void warrior_attack_t::assess_damage( double amount,
 double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
-  double c = attack_t::cost() / 10; // Currently sc_spell_data has all costs * 10
+  double c = attack_t::cost() / 10; // Rage Costs are stored as * 10
   if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
   if ( p -> buffs_deadly_calm   -> check() )          c  = 0;
@@ -2185,7 +2183,7 @@ void warrior_spell_t::execute()
 double warrior_spell_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
-  double c = spell_t::cost();
+  double c = spell_t::cost() / 10; // Rage Costs are stored as * 10;
   if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
   if ( c < 0 ) c = 0;
   return c;
