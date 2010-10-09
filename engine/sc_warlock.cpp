@@ -8,7 +8,6 @@
  * To Do:
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
- * - add soulburn effect to UA and Searing Pain
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
@@ -225,6 +224,7 @@ struct warlock_t : public player_t
   buff_t* buffs_soulburn;
   buff_t* buffs_demon_soul;
   buff_t* buffs_bane_of_havoc;
+  buff_t* buffs_searing_pain_soulburn;
 
   cooldown_t* cooldowns_improved_soul_fire;
   cooldown_t* cooldowns_metamorphosis;
@@ -2288,7 +2288,7 @@ struct drain_life_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
 
-    if ( p -> buffs_soulburn -> up() )
+    if ( p -> buffs_soulburn -> check() )
     {
       t *= 1.0 - 0.6;
     }
@@ -2481,7 +2481,7 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual double calculate_direct_damage()
   {
     warlock_t* p = player -> cast_warlock();
-	direct_dmg = ( p -> buffs_soulburn -> up() ) ? ( base_td + total_power() * tick_power_mod ) * num_ticks * 0.30 : 0;
+	direct_dmg = ( p -> buffs_soulburn -> check() ) ? ( base_td + total_power() * tick_power_mod ) * num_ticks * 0.30 : 0;
 	return direct_dmg;
   }
 };
@@ -2749,6 +2749,23 @@ struct searing_pain_t : public warlock_spell_t
     {
       player_crit += p -> talent_improved_searing_pain -> effect_base_value( 1 ) / 100.0;
     }
+
+	if ( p -> buffs_soulburn -> check() ) player_crit +=  1.00;
+
+	if ( p -> buffs_searing_pain_soulburn -> check() ) player_crit += 0.50;
+
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
+
+    if ( p -> buffs_soulburn -> up() )
+    {
+      p -> buffs_soulburn -> expire();
+	  p -> buffs_searing_pain_soulburn -> trigger(); 
+    }
   }
 };
 
@@ -2794,7 +2811,7 @@ struct soul_fire_t : public warlock_spell_t
     {
       t = 0;
     }
-    if ( p -> buffs_soulburn -> up() )
+    if ( p -> buffs_soulburn -> check() )
     {
       t = 0;
     }
@@ -2955,8 +2972,13 @@ struct summon_pet_t : public warlock_spell_t
 
   virtual void execute()
   {
-    player -> summon_pet( pet_name.c_str(), summoning_duration );
+    warlock_t* p = player -> cast_warlock();
+    p -> summon_pet( pet_name.c_str(), summoning_duration );
     warlock_spell_t::execute();
+	if ( p -> buffs_soulburn -> up() )
+    {
+      p -> buffs_soulburn -> expire();
+    }
   }
 
   virtual double execute_time() SC_CONST
@@ -2964,7 +2986,7 @@ struct summon_pet_t : public warlock_spell_t
      warlock_t* p = player -> cast_warlock();
      double t = warlock_spell_t::execute_time();
 
-     if ( p -> buffs_soulburn -> up() )
+     if ( p -> buffs_soulburn -> check() )
      {
        t = 0.0;
      }
@@ -3590,7 +3612,7 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
       if ( p -> buffs_soulburn -> up() && p -> talent_soulburn_seed_of_corruption -> rank() )
       {
         // Trigger Multiple Corruptions
-        p -> buffs_soulburn -> decrement();
+        p -> buffs_soulburn -> expire();
       }
     }
 };
@@ -3999,6 +4021,7 @@ void warlock_t::init_buffs()
   buffs_soulburn              = new buff_t( this, "soulburn",            1, 15.0 );
   buffs_demon_soul            = new buff_t( this, "demon_soul",          3, 30.0 );
   buffs_bane_of_havoc         = new buff_t( this, "bane_of_havoc",       1, 300.0 );
+  buffs_searing_pain_soulburn = new buff_t( this, "bane_of_havoc",       1, 6.0 );
 }
 
 // warlock_t::init_gains =====================================================
