@@ -9,7 +9,6 @@
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
  * - add soulburn effect to UA and Searing Pain
- * - reverse soul_shards consumption from 0->3 to 3->0
  * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
@@ -225,7 +224,6 @@ struct warlock_t : public player_t
   buff_t* buffs_dark_intent_feedback;
   buff_t* buffs_soulburn;
   buff_t* buffs_demon_soul;
-  buff_t* buffs_soul_shards;
   buff_t* buffs_bane_of_havoc;
 
   cooldown_t* cooldowns_improved_soul_fire;
@@ -2468,12 +2466,23 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      warlock_t* p = player -> cast_warlock();
       if ( p -> dots_immolate -> ticking() )
         p -> dots_immolate -> action -> cancel();
+	}
+	if ( p -> buffs_soulburn -> up() )
+    {
+      p -> buffs_soulburn -> expire();
     }
+  }
+
+  virtual double calculate_direct_damage()
+  {
+    warlock_t* p = player -> cast_warlock();
+	direct_dmg = ( p -> buffs_soulburn -> up() ) ? ( base_td + total_power() * tick_power_mod ) * num_ticks * 0.30 : 0;
+	return direct_dmg;
   }
 };
 
@@ -3441,17 +3450,14 @@ struct soulburn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     p -> buffs_soulburn -> trigger();
-    p -> buffs_soul_shards -> increment();
     warlock_spell_t::execute();
   }
 
   virtual bool ready()
   {
-    warlock_t* p = player -> cast_warlock();
-    if ( p ->  buffs_soul_shards -> stack() == 3)
-      return false;
     return warlock_spell_t::ready();
   }
+
 };
 
 // Demon Soul Spell =======================================================
@@ -3959,6 +3965,8 @@ void warlock_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+  resource_base[ RESOURCE_SOUL_SHARDS ] = 3;
 }
 
 // warlock_t::init_scaling ===================================================
@@ -3990,7 +3998,6 @@ void warlock_t::init_buffs()
   buffs_improved_soul_fire    = new buff_t( this, "improved_soul_fire",  1, 15.0, 0.0, (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn              = new buff_t( this, "soulburn",            1, 15.0 );
   buffs_demon_soul            = new buff_t( this, "demon_soul",          3, 30.0 );
-  buffs_soul_shards           = new buff_t( this, "soul_shards",         3 );
   buffs_bane_of_havoc         = new buff_t( this, "bane_of_havoc",       1, 300.0 );
 }
 
