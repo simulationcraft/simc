@@ -1487,8 +1487,7 @@ struct succubus_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 1468;
-    resource_base[ RESOURCE_MANA   ] = 1559;
+	melee = new warlock_pet_melee_t( this, "succubus_melee" );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1551,11 +1550,17 @@ struct voidwalker_pet_t : public warlock_pet_t
   voidwalker_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
   {
-  damage_modifier = 0.86;
+    damage_modifier = 0.86;
 
     action_list_str = "/snapshot_stats/torment";
   }
 
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+
+	melee = new warlock_pet_melee_t( this, "voidwalker_melee" );
+  }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
