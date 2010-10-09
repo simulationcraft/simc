@@ -16,9 +16,7 @@
  * - Execute felguard:felstorm by player, not the pet
  * - Figure out EXACTLY how the incinerate bonus (when immolate is up) calculates
  * - Verify shadow bite spell power coefficient
- * - Implement Voidwalker
- * - Implement pet scaling with owner int
- * - Investigate pet mp5 - probably needs to scale with owner int as well
+ * - Investigate pet mp5 - probably needs to scale with owner int
  */
 
 // ==========================================================================
@@ -418,6 +416,7 @@ struct warlock_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void		init_resources( bool force );
   virtual void      reset();
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -475,14 +474,8 @@ struct warlock_pet_t : public pet_t
   int stats_avaiable;
   int stats2_avaiable;
 
-  double sp_per_owner_sp, ap_per_owner_sp;
-
-
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
-
-
-
 
     double get_attribute_base( int level, int stat_type, pet_type_t pet_type )
     {
@@ -602,13 +595,6 @@ struct warlock_pet_t : public pet_t
     stats_avaiable = 0;
     stats2_avaiable = 0;
 
-	if ( level == 85 ) {
-      sp_per_owner_sp = 0.5317;
-	} else {
-	  sp_per_owner_sp = 0.5;
-	}
-	ap_per_owner_sp = sp_per_owner_sp * 2;
-
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = get_weapon( level, pet_type, 1 );
     main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
@@ -658,10 +644,18 @@ struct warlock_pet_t : public pet_t
     initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
     initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
     health_per_stamina = 10.0; // untested!
-    mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per owner int
+    mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
     mp5_per_intellect  = 2.0 / 3.0; // untested!
 
 
+  }
+
+  virtual void init_resources( bool force )
+  {
+    bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
+	player_t::init_resources( force );
+	if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * (level / 80) * 7.5;
+	resource_current[ RESOURCE_MANA ] = resource_max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
   }
 
   virtual void schedule_ready( double delta_time=0,
@@ -700,7 +694,7 @@ struct warlock_pet_t : public pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    sp += owner -> composite_spell_power( school ) * sp_per_owner_sp;
+    sp += owner -> composite_spell_power( school ) * ( level / 80) * 0.5;
     return floor( sp );
   }
 
@@ -708,7 +702,7 @@ struct warlock_pet_t : public pet_t
   {
     // seems  to be twice the owner_sp -> pet_sp conversion
     double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 );
     return ap;
   }
 
@@ -4147,6 +4141,13 @@ void warlock_t::init_actions()
 
   player_t::init_actions();
 }
+
+void warlock_t::init_resources( bool force )
+  {
+	player_t::init_resources( force );
+	if ( active_pet ) active_pet -> init_resources( force );
+  }
+
 
 // warlock_t::reset ==========================================================
 
