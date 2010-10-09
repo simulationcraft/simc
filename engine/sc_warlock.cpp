@@ -17,6 +17,8 @@
  * - Figure out EXACTLY how the incinerate bonus (when immolate is up) calculates
  * - Verify shadow bite spell power coefficient
  * - Implement Voidwalker
+ * - Implement pet scaling with owner int
+ * - Investigate pet mp5 - probably needs to scale with owner int as well
  */
 
 // ==========================================================================
@@ -43,34 +45,39 @@ struct _stat_list_t {
   static const _stat_list_t imp_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5026, 25273,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felguard_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5395, 16703,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felhunter_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5395, 16703,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t succubus_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-     { 85, {    0,   0,    0,   0,    0,  5640, 16703,         0,         0,     0,     0,     0,   0,       0 } },
+     { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+     { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t infernal_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
@@ -78,6 +85,7 @@ struct _stat_list_t {
   static const _stat_list_t doomguard_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+     { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
      { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
@@ -85,6 +93,7 @@ struct _stat_list_t {
   static const _stat_list_t ebon_imp_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
@@ -92,7 +101,8 @@ struct _stat_list_t {
   static const _stat_list_t voidwalker_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  6131, 16703,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
@@ -648,7 +658,7 @@ struct warlock_pet_t : public pet_t
     initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
     initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
     health_per_stamina = 10.0; // untested!
-    mana_per_intellect = 10.8; // untested!
+    mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per owner int
     mp5_per_intellect  = 2.0 / 3.0; // untested!
 
 
