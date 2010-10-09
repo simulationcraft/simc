@@ -677,12 +677,18 @@ struct warlock_pet_t : public pet_t
 
   virtual void summon( double duration=0 )
   {
+    warlock_t*  o = owner -> cast_warlock();
     pet_t::summon( duration );
+    if ( o -> talent_demonic_pact -> rank() )
+      sim -> auras.demonic_pact -> trigger();
   }
 
   virtual void dismiss()
   {
+    warlock_t*  o = owner -> cast_warlock();
     pet_t::dismiss();
+    if ( o -> talent_demonic_pact -> rank() )
+      sim -> auras.demonic_pact -> expire();
   }
 
   virtual void interrupt()
@@ -1236,8 +1242,6 @@ struct imp_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
 
     o -> active_pet = this;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> trigger();
     warlock_pet_t::summon( duration );
   }
 
@@ -1246,8 +1250,6 @@ struct imp_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
     warlock_pet_t::dismiss();
     o -> active_pet = 0;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> expire();
   }
 };
 
@@ -1266,6 +1268,8 @@ struct felguard_pet_t : public warlock_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
       aoe = true;
       direct_power_mod = 0.264;
+      base_spell_power_multiplier = 1.0;
+      base_attack_power_multiplier = 0.0;
 
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
@@ -1361,8 +1365,6 @@ struct felguard_pet_t : public warlock_pet_t
   {
     warlock_t* o = owner -> cast_warlock();
     o -> active_pet = this;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> trigger();
     warlock_pet_t::summon( duration );
   }
 
@@ -1371,8 +1373,6 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
     warlock_pet_t::dismiss();
     o -> active_pet = 0;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> expire();
   }
 };
 
@@ -1393,7 +1393,6 @@ struct felhunter_pet_t : public warlock_pet_t
       may_crit          = true;
       target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
       direct_power_mod = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
-
     }
 
     virtual void player_buff()
@@ -1446,8 +1445,6 @@ struct felhunter_pet_t : public warlock_pet_t
 
     o -> active_pet = this;
     sim -> auras.fel_intelligence -> trigger();
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> trigger();
     warlock_pet_t::summon( duration );
   }
 
@@ -1457,8 +1454,6 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t::dismiss();
     o -> active_pet = 0;
     sim -> auras.fel_intelligence -> expire();
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> expire();
   }
 };
 
@@ -1513,10 +1508,7 @@ struct succubus_pet_t : public warlock_pet_t
   virtual void summon( double duration=0 )
   {
     warlock_t* o = owner -> cast_warlock();
-
     o -> active_pet = this;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> trigger();
     warlock_pet_t::summon( duration );
   }
 
@@ -1525,8 +1517,6 @@ struct succubus_pet_t : public warlock_pet_t
     warlock_t* o = owner -> cast_warlock();
     warlock_pet_t::dismiss();
     o -> active_pet = 0;
-    if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> expire();
   }
 
   virtual double composite_spell_haste() SC_CONST
@@ -1542,6 +1532,59 @@ struct succubus_pet_t : public warlock_pet_t
    }
 };
 
+// ==========================================================================
+// Pet Voidwalker
+// ==========================================================================
+
+struct voidwalker_pet_t : public warlock_pet_t
+{
+  struct torment_t : public warlock_pet_spell_t
+  {
+    torment_t( player_t* player ) :
+        warlock_pet_spell_t( "Voidwalker: Torment", player, "Torment" )
+    {
+      direct_power_mod = 0.512;
+
+    }
+
+    virtual void travel( int travel_result, double travel_dmg)
+    {
+      warlock_pet_spell_t::travel(travel_result, travel_dmg);
+      trigger_mana_feed ( this, travel_result ); // untested
+    }
+  };
+
+  voidwalker_pet_t( sim_t* sim, player_t* owner ) :
+      warlock_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
+  {
+  damage_modifier = 0.86;
+
+    action_list_str = "/snapshot_stats/torment";
+  }
+
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "torment" ) return new torment_t( this );
+
+    return player_t::create_action( name, options_str );
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    warlock_t* o = owner -> cast_warlock();
+    o -> active_pet = this;
+    warlock_pet_t::summon( duration );
+  }
+
+  virtual void dismiss()
+  {
+    warlock_t* o = owner -> cast_warlock();
+    warlock_pet_t::dismiss();
+    o -> active_pet = 0;
+  }
+};
 // ==========================================================================
 // Pet Infernal
 // ==========================================================================
@@ -2877,9 +2920,10 @@ struct fel_armor_t : public warlock_spell_t
 struct summon_pet_t : public warlock_spell_t
 {
   std::string pet_name;
+  double summoning_duration;
 
   summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
-    warlock_spell_t( n, player, sname ), pet_name(n)
+    warlock_spell_t( n, player, sname ), pet_name(n), summoning_duration ( 0 )
   {
     warlock_t* p = player -> cast_warlock();
     option_t options[] =
@@ -2890,20 +2934,21 @@ struct summon_pet_t : public warlock_spell_t
 
     harmful = false;
     base_execute_time -= p -> talent_master_summoner -> rank() * 0.5;
-    usable_pre_combat = true;
+  }
+
+  summon_pet_t( const char* n, player_t* player, int id ) :
+    warlock_spell_t( n, player, id ), pet_name(n), summoning_duration ( 0 )
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    harmful = false;
+    base_execute_time -= p -> talent_master_summoner -> rank() * 0.5;
   }
 
   virtual void execute()
   {
-    player -> summon_pet( pet_name.c_str() );
+    player -> summon_pet( pet_name.c_str(), summoning_duration );
     warlock_spell_t::execute();
-  }
-
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-    if ( p -> active_pet ) return false;
-    return warlock_spell_t::ready();
   }
 
   virtual double execute_time() SC_CONST
@@ -2921,34 +2966,63 @@ struct summon_pet_t : public warlock_spell_t
 
 };
 
-struct summon_felhunter_t : public summon_pet_t
+// Summon Main Pet Spell ==========================================================
+
+struct summon_main_pet_t : public summon_pet_t
+{
+  std::string pet_name;
+
+  summon_main_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
+    summon_pet_t( n, player, sname, options_str )
+  {
+
+    usable_pre_combat = true;
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> active_pet ) return false;
+    return summon_pet_t::ready();
+  }
+
+};
+
+struct summon_felhunter_t : public summon_main_pet_t
 {
   summon_felhunter_t( player_t* player, const std::string& options_str ) :
-    summon_pet_t( "felhunter", player, "Summon Felhunter", options_str )
+    summon_main_pet_t( "felhunter", player, "Summon Felhunter", options_str )
   { }
 };
 
-struct summon_felguard_t : public summon_pet_t
+struct summon_felguard_t : public summon_main_pet_t
 {
   summon_felguard_t( player_t* player, const std::string& options_str ) :
-    summon_pet_t( "felguard", player, "Summon Felguard", options_str )
+    summon_main_pet_t( "felguard", player, "Summon Felguard", options_str )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_summon_felguard -> ok() );
   }
 };
 
-struct summon_succubus_t : public summon_pet_t
+struct summon_succubus_t : public summon_main_pet_t
 {
   summon_succubus_t( player_t* player, const std::string& options_str ) :
-    summon_pet_t( "succubus", player, "Summon Succubus", options_str )
+    summon_main_pet_t( "succubus", player, "Summon Succubus", options_str )
   { }
 };
 
-struct summon_imp_t : public summon_pet_t
+struct summon_imp_t : public summon_main_pet_t
 {
   summon_imp_t( player_t* player, const std::string& options_str ) :
-    summon_pet_t( "imp", player, "Summon Imp", options_str )
+    summon_main_pet_t( "imp", player, "Summon Imp", options_str )
+  { }
+};
+
+struct summon_voidwalker_t : public summon_main_pet_t
+{
+  summon_voidwalker_t( player_t* player, const std::string& options_str ) :
+    summon_main_pet_t( "voidwalker", player, "Summon Voidwalker", options_str )
   { }
 };
 
@@ -2968,33 +3042,26 @@ struct infernal_awakening_t : public warlock_spell_t
 
 // Summon Infernal Spell ==========================================================
 
-struct summon_infernal_t : public warlock_spell_t
+struct summon_infernal_t : public summon_pet_t
 {
   infernal_awakening_t* infernal_awakening;
 
   summon_infernal_t( player_t* player, const std::string& options_str  ) :
-    warlock_spell_t( "summon_infernal", player, "Summon Infernal" )
+    summon_pet_t( "infernal", player, "Summon Infernal", options_str )
   {
     warlock_t* p = player -> cast_warlock();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
+    summoning_duration = 45.0 + 10.0 * p -> talent_ancient_grimoire -> rank();
     infernal_awakening = new infernal_awakening_t( p );
   }
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    consume_resource();
-    update_ready();
     if ( infernal_awakening )
       infernal_awakening -> execute();
     p -> cooldowns_doomguard -> start();
-    player -> summon_pet( "infernal", 45.0 + 10.0 * p -> talent_ancient_grimoire -> rank() );
+    summon_pet_t::execute();
   }
 
   virtual bool ready()
@@ -3003,28 +3070,28 @@ struct summon_infernal_t : public warlock_spell_t
     if ( !p -> buffs_metamorphosis -> check() )
       return false;
 
-    return warlock_spell_t::ready();
+    return summon_pet_t::ready();
   }
 };
 
 // Summon Doomguard2 Spell =========================================================
 
-struct summon_doomguard2_t : public warlock_spell_t
+struct summon_doomguard2_t : public summon_pet_t
 {
   summon_doomguard2_t( player_t* player ) :
-    warlock_spell_t( "summon_doomguard2", player, 60478 )
+    summon_pet_t( "doomguard", player, 60478 )
   {
+    warlock_t* p = player -> cast_warlock();
     harmful = false;
     background = true;
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect_base_value( 1 ) / 1000.0;
   }
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    consume_resource();
-    update_ready();
     p -> cooldowns_infernal -> start();
-    p -> summon_pet( "doomguard", duration() + p -> talent_ancient_grimoire -> effect_base_value( 1 ) / 1000.0 );
+    summon_pet_t::execute();
   }
 };
 
@@ -3034,11 +3101,10 @@ struct summon_doomguard_t : public warlock_spell_t
 {
   summon_doomguard2_t* summon_doomguard2;
 
-  summon_doomguard_t( player_t* player, const std::string& options_str  ) :
+  summon_doomguard_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "summon_doomguard", player, "Summon Doomguard" )
   {
     warlock_t* p = player -> cast_warlock();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -3647,6 +3713,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "summon_felhunter"    ) return new    summon_felhunter_t( this, options_str );
   if ( name == "summon_felguard"     ) return new     summon_felguard_t( this, options_str );
   if ( name == "summon_succubus"     ) return new     summon_succubus_t( this, options_str );
+  if ( name == "summon_voidwalker"   ) return new   summon_voidwalker_t( this, options_str );
   if ( name == "summon_imp"          ) return new          summon_imp_t( this, options_str );
   if ( name == "summon_infernal"     ) return new     summon_infernal_t( this, options_str );
   if ( name == "summon_doomguard"    ) return new    summon_doomguard_t( this, options_str );
@@ -3671,13 +3738,14 @@ pet_t* warlock_t::create_pet( const std::string& pet_name )
 
   if ( p ) return p;
 
-  if ( pet_name == "felguard"  ) return new  felguard_pet_t( sim, this );
-  if ( pet_name == "felhunter" ) return new felhunter_pet_t( sim, this );
-  if ( pet_name == "imp"       ) return new       imp_pet_t( sim, this );
-  if ( pet_name == "succubus"  ) return new  succubus_pet_t( sim, this );
-  if ( pet_name == "infernal"  ) return new  infernal_pet_t( sim, this );
-  if ( pet_name == "doomguard" ) return new doomguard_pet_t( sim, this );
-  if ( pet_name == "ebon_imp"  ) return new  ebon_imp_pet_t( sim, this );
+  if ( pet_name == "felguard"     ) return new    felguard_pet_t( sim, this );
+  if ( pet_name == "felhunter"    ) return new   felhunter_pet_t( sim, this );
+  if ( pet_name == "imp"          ) return new         imp_pet_t( sim, this );
+  if ( pet_name == "succubus"     ) return new    succubus_pet_t( sim, this );
+  if ( pet_name == "voidwalker"   ) return new  voidwalker_pet_t( sim, this );
+  if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
+  if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
+  if ( pet_name == "ebon_imp"     ) return new    ebon_imp_pet_t( sim, this );
 
   return 0;
 }
@@ -3690,6 +3758,7 @@ void warlock_t::create_pets()
   create_pet( "felhunter" );
   create_pet( "imp"       );
   create_pet( "succubus"  );
+  create_pet( "voidwalker");
   create_pet( "infernal"  );
   create_pet( "doomguard" );
   create_pet( "ebon_imp"  );
