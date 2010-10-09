@@ -102,6 +102,7 @@ struct _stat_list_t {
 
   static const _weapon_list_t imp_weapon[]=
   {
+    { 81, 116.7, 176.7, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t felguard_weapon[]=
@@ -112,6 +113,7 @@ struct _stat_list_t {
   static const _weapon_list_t felhunter_weapon[]=
   {
     { 80, 309.6, 309.6, 2.0 },
+    { 81, 678.4, 1010.4, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t succubus_weapon[]=
@@ -135,6 +137,8 @@ struct _stat_list_t {
   };
   static const _weapon_list_t voidwalker_weapon[]=
   {
+      // //    damage_modifier = 0.8;
+    { 81, 678.4, 1010.4, 2.0 },
     { 0, 0, 0, 0 }
   };
 }
@@ -652,14 +656,16 @@ struct warlock_pet_t : public pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
+    // 85 = 0.5317, 81 = 0.46, 80 = 0.5
     sp += owner -> composite_spell_power( school ) * 0.5;
     return floor( sp );
   }
 
   virtual double composite_attack_power() SC_CONST
   {
+    // seems  to be twice the owner_sp -> pet_sp conversion
     double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * 0.90;
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * 1.0;
     return ap;
   }
 
@@ -699,10 +705,8 @@ struct warlock_pet_t : public pet_t
     {
       m  *= 1.05;
     }
-    if ( o -> mastery_spells.master_demonologist -> ok() && o -> buffs_metamorphosis -> up())
-    {
-      m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * 0.015 );
-    }
+
+    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * 0.015 );
 
     return m;
   }
@@ -916,7 +920,7 @@ struct warlock_spell_t : public spell_t
   {
     double t = spell_t::gcd();
 
-    if ( usable_pre_combat ) t=0;
+    if ( usable_pre_combat && sim -> current_time <= 0.01 ) t=0;
 
     return t;
   }
@@ -925,7 +929,7 @@ struct warlock_spell_t : public spell_t
   {
      double t = spell_t::execute_time();
 
-     if ( usable_pre_combat ) t=0;
+     if ( usable_pre_combat && sim -> current_time <= 0.01 ) t=0;
 
      return t;
   }
@@ -2843,7 +2847,6 @@ struct summon_pet_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-    base_execute_time = 6.0; // hardcoded for now
     base_execute_time -= p -> talent_master_summoner -> rank() * 0.5;
     usable_pre_combat = true;
   }
@@ -2851,6 +2854,7 @@ struct summon_pet_t : public warlock_spell_t
   virtual void execute()
   {
     player -> summon_pet( pet_name.c_str() );
+    warlock_spell_t::execute();
   }
 
   virtual bool ready()
