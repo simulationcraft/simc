@@ -288,6 +288,7 @@ struct warlock_t : public player_t
     passive_spell_t* cataclysm;
     passive_spell_t* doom_and_gloom;
     passive_spell_t* pandemic;
+    passive_spell_t* nethermancy;
 
   };
   passive_spells_t passive_spells;
@@ -359,6 +360,7 @@ struct warlock_t : public player_t
   };
   constants_t constants;
 
+
   warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
   {
     tree_type[ WARLOCK_AFFLICTION  ] = TREE_AFFLICTION;
@@ -387,6 +389,8 @@ struct warlock_t : public player_t
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
 
+
+
     spells_burning_embers         = 0;
   }
 
@@ -413,6 +417,7 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -2555,7 +2560,7 @@ struct conflagrate_t : public warlock_spell_t
 
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
     cooldown -> duration -= p -> glyphs.conflagrate -> value();
-    base_td_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0);
+    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0);
   }
 
   virtual void execute()
@@ -2564,7 +2569,7 @@ struct conflagrate_t : public warlock_spell_t
 
     double t = ( p -> dots_immolate -> action -> base_td + p -> dots_immolate -> action -> total_power() * p -> dots_immolate -> action -> tick_power_mod );
 
-    base_dd_min  = t * p -> dots_immolate -> action -> hasted_num_ticks() * ( p -> player_data.effect_base_value( p -> player_data.spell_effect_id( id, 2 ) ) / 100.0 );
+    base_dd_min  = t * p -> dots_immolate -> action -> number_ticks *  effect_base_value( 2 ) / 100.0 ;
     base_dd_max  = base_dd_min;
 
     warlock_spell_t::execute();
@@ -3588,6 +3593,18 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
+// warlock_t::composite_attribute_multiplier ================================
+
+double warlock_t::composite_attribute_multiplier( int attr ) SC_CONST
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( ( attr == STAT_INTELLECT ) && passive_spells.nethermancy -> ok() )
+    m *= 1.0 + ( passive_spells.nethermancy -> effect_base_value( 1 ) / 100.0 );
+
+  return m;
+}
+
 // warlock_t::create_action =================================================
 
 action_t* warlock_t::create_action( const std::string& name,
@@ -3743,7 +3760,8 @@ void warlock_t::init_spells()
   passive_spells.shadow_mastery       = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
   passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
   passive_spells.cataclysm            = new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
-
+  passive_spells.nethermancy          = new passive_spell_t( this, "nethermancy", 86091 );
+  passive_spells.nethermancy -> init_enabled (true, true );
   //Affliction
   passive_spells.doom_and_gloom       = new passive_spell_t(this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
   passive_spells.pandemic             = new passive_spell_t(this, "pandemic", "Pandemic", talent_pandemic );
@@ -4086,6 +4104,7 @@ std::vector<option_t>& warlock_t::get_options()
     option_t warlock_options[] =
     {
       // @option_doc loc=player/warlock/misc title="Misc"
+      { "nethermancy",              OPT_BOOL,   &( passive_spells.nethermancy -> spell_id_t_enabled  ) },
       { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
