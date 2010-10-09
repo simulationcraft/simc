@@ -14,7 +14,9 @@
  * - Bane of Agony and haste scaling looks strange
  * - Seed of Corruption with Soulburn: Trigger Corruptions
  * - Execute felguard:felstorm by player, not the pet
- * - Figure out EXACTLY how the incinerate boni (when immolate is up) calculates
+ * - Figure out EXACTLY how the incinerate bonus (when immolate is up) calculates
+ * - Verify shadow bite spell power coefficient
+ * - Implement Voidwalker
  */
 
 // ==========================================================================
@@ -107,38 +109,49 @@ struct _stat_list_t {
   };
   static const _weapon_list_t felguard_weapon[]=
   {
-    { 80, 412.5, 412.5, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t felhunter_weapon[]=
   {
-    { 80, 309.6, 309.6, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 81, 678.4, 1010.4, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t succubus_weapon[]=
   {
+	{ 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t infernal_weapon[]=
-  {
-    { 80, 412.5, 412.5, 2.0 },
+  { 
+	{ 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t doomguard_weapon[]=
   {
-    { 80, 309.6, 309.6, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t ebon_imp_weapon[]=
   {
-    { 85, 772.0, 1080.0, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t voidwalker_weapon[]=
   {
-      // //    damage_modifier = 0.8;
-    { 81, 678.4, 1010.4, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
 }
@@ -446,6 +459,8 @@ struct warlock_pet_t : public pet_t
   int stats_avaiable;
   int stats2_avaiable;
 
+  double sp_per_owner_sp, ap_per_owner_sp;
+
 
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
@@ -571,6 +586,13 @@ struct warlock_pet_t : public pet_t
     stats_avaiable = 0;
     stats2_avaiable = 0;
 
+	if ( level == 85 ) {
+      sp_per_owner_sp = 0.5317;
+	} else {
+	  sp_per_owner_sp = 0.5;
+	}
+	ap_per_owner_sp = sp_per_owner_sp * 2;
+
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = get_weapon( level, pet_type, 1 );
     main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
@@ -656,8 +678,7 @@ struct warlock_pet_t : public pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    // 85 = 0.5317, 81 = 0.46, 80 = 0.5
-    sp += owner -> composite_spell_power( school ) * 0.5;
+    sp += owner -> composite_spell_power( school ) * sp_per_owner_sp;
     return floor( sp );
   }
 
@@ -665,7 +686,7 @@ struct warlock_pet_t : public pet_t
   {
     // seems  to be twice the owner_sp -> pet_sp conversion
     double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * 1.0;
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
     return ap;
   }
 
@@ -1298,7 +1319,7 @@ struct felguard_pet_t : public warlock_pet_t
   felguard_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
-    damage_modifier = 1.05;
+    damage_modifier = 1.0;
 
     action_list_str += "/snapshot_stats/felstorm/legion_strike/wait_until_ready";
   }
@@ -1355,7 +1376,7 @@ struct felhunter_pet_t : public warlock_pet_t
       warlock_t*       o = p -> owner -> cast_warlock();
       may_crit          = true;
       target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
-      direct_power_mod = 0.5 * 0.614; // very strange hardcoded values in the shadow bite tooltip
+      direct_power_mod = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
 
     }
 
@@ -1377,6 +1398,8 @@ struct felhunter_pet_t : public warlock_pet_t
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
+	damage_modifier = 0.8;
+
     action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
   }
 
@@ -1437,7 +1460,7 @@ struct succubus_pet_t : public warlock_pet_t
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       may_crit          = true;
       base_multiplier *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
-      direct_power_mod = 0.612 * 0.5; // from the tooltip
+      direct_power_mod = 0.612; // from the tooltip - tests show the 0.5 factor is not used
       min_gcd = 1.5;
     }
 
@@ -1451,6 +1474,8 @@ struct succubus_pet_t : public warlock_pet_t
   succubus_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
+	damage_modifier = 1.025;
+
     action_list_str = "/snapshot_stats/lash_of_pain";
   }
   virtual void init_base()
@@ -1532,10 +1557,9 @@ struct infernal_pet_t : public warlock_pet_t
   infernal_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
-    damage_modifier = 3.20;
+    damage_modifier = 1.16;
 
     action_list_str = "/snapshot_stats";
-
   }
 
   virtual void init_base()
@@ -1605,6 +1629,8 @@ struct ebon_imp_pet_t : public warlock_pet_t
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
+	damage_modifier = 1.14;
+
     action_list_str = "/snapshot_stats/wait_until_ready";
   }
 
