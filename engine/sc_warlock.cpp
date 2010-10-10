@@ -2621,7 +2621,7 @@ struct conflagrate_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
-    cooldown -> duration -= p -> glyphs.conflagrate -> value();
+    cooldown -> duration += ( p -> glyphs.conflagrate -> value() / 1000 );
     base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0);
   }
 
