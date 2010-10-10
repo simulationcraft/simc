@@ -1481,12 +1481,6 @@ struct succubus_pet_t : public warlock_pet_t
 
     action_list_str = "/snapshot_stats/lash_of_pain";
   }
-  virtual void init_base()
-  {
-    warlock_pet_t::init_base();
-
-	melee = new warlock_pet_melee_t( this, "succubus_melee" );
-  }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
