@@ -895,7 +895,7 @@ struct warlock_spell_t : public spell_t
       }
       if ( p -> buffs_haunted -> up() )
       {
-        shadow_td_multiplier *= 1.20 + ( p -> glyphs.haunt ? 0.03 : 0.00 );
+        shadow_td_multiplier *= 1.20 + ( p -> glyphs.haunt -> ok() ? 0.03 : 0.00 );
       }
       if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 4.0 )
       {
@@ -1265,7 +1265,7 @@ struct felguard_pet_t : public warlock_pet_t
 
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
-      if ( o -> glyphs.felguard -> ok() )base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
+      if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
     }
   };
 
@@ -2098,7 +2098,7 @@ struct chaos_bolt_t : public warlock_spell_t
     may_resist        = false;
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
     base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
-    cooldown -> duration -= ( p -> glyphs.chaos_bolt -> value() / 100.0 );
+    cooldown -> duration += ( p -> glyphs.chaos_bolt -> value() / 1000.0 );
   }
 
   virtual void execute()
@@ -2621,7 +2621,7 @@ struct conflagrate_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
-    cooldown -> duration += ( p -> glyphs.conflagrate -> value() / 1000 );
+    cooldown -> duration += ( p -> glyphs.conflagrate -> value() / 1000.0 );
     base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0);
   }
 
@@ -2862,7 +2862,7 @@ struct life_tap_t : public warlock_spell_t
 
     harmful = false;
 
-    if ( p -> glyphs.life_tap )
+    if ( p -> glyphs.life_tap -> ok() )
       trigger_gcd -= 0.5;
   }
 
