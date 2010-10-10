@@ -2899,8 +2899,9 @@ struct fel_armor_t : public warlock_spell_t
   fel_armor_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "fel_armor", player, "Fel Armor" ), bonus_spell_power( 0 )
   {
+	warlock_t* p = player -> cast_warlock();
     harmful = false;
-    bonus_spell_power = effect_min ( 1 );
+	bonus_spell_power = ( p -> level == 80 ) ? 180 : effect_min ( 1 );
 
     // Model the passive health tick.....
     base_tick_time = effect_period( 2 );
