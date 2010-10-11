@@ -1254,7 +1254,7 @@ struct felguard_pet_t : public warlock_pet_t
   struct legion_strike_t : public warlock_pet_attack_t
   {
     legion_strike_t( player_t* player ) :
-      warlock_pet_attack_t( "felguard_legionStrike", player, "Legion Strike" )
+		warlock_pet_attack_t( "Felguard: Legion Strike", player, "Legion Strike" )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
@@ -1266,6 +1266,12 @@ struct felguard_pet_t : public warlock_pet_t
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
       if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
+    }
+
+    virtual void execute()
+    {
+      warlock_pet_attack_t::execute();
+	  trigger_mana_feed ( this, result );
     }
   };
 
