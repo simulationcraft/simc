@@ -2907,7 +2907,7 @@ struct fel_armor_t : public warlock_spell_t
   {
 	warlock_t* p = player -> cast_warlock();
     harmful = false;
-	bonus_spell_power = p -> player_data.effect_min( effect_id( 1 ), p -> player_data.spell_scaling_class( id ), p -> level );
+	bonus_spell_power = effect_min( 1 );
 
     // Model the passive health tick.....
     base_tick_time = effect_period( 2 );
