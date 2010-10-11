@@ -278,7 +278,15 @@ const spell_id_t* set_bonus_array_t::set( set_type s ) SC_CONST
 const spell_id_t* set_bonus_array_t::create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST
 {
   if ( ! p -> player_data.spell_exists( spell_id ) )
+  {
+    if ( spell_id > 0 )
+    {
+      p -> sim -> errorf( "Set bonus spell identifier %u for %s not found in spell data.", 
+        spell_id,
+        p -> name_str.c_str() );
+    }
     return 0;
+  }
 
   switch ( spell_id )
   {
