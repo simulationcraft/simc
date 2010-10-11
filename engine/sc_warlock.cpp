@@ -977,7 +977,7 @@ struct warlock_spell_t : public spell_t
     warlock_t* p = s -> player -> cast_warlock();
     if ( p -> talent_impending_doom -> rank() )
     {
-      if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> proc_chance() / 100.0  : 0 ) )
+      if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> proc_chance()  : 0 ) )
       {
         p -> procs_impending_doom -> occur();
         if ( p -> cooldowns_metamorphosis -> remains() > p -> talent_impending_doom -> effect_base_value( 2 ) )
@@ -3991,7 +3991,7 @@ void warlock_t::init_base()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
-    scales_with[ STAT_STAMINA ] = 1;
+  scales_with[ STAT_SPIRIT ] = 0;
 }
 
 // warlock_t::init_buffs =====================================================
