@@ -226,6 +226,7 @@ void action_t::parse_data( sc_data_access_t& pData )
     trigger_gcd          = pData.spell_gcd ( id );
     school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
     resource             = pData.spell_power_type( id );
+    scaling_type         = pData.spell_scaling_class( id );
 
     // For mana it returns the % of base mana, not the absolute cost
     if ( resource == RESOURCE_MANA )
@@ -244,14 +245,14 @@ void action_t::parse_data( sc_data_access_t& pData )
         // Direct Damage
         case E_SCHOOL_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_min      = pData.effect_min ( effect, scaling_type, player -> level );
+          base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
           break;
 
         case E_WEAPON_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_min      = pData.effect_min ( effect, scaling_type, player -> level );
+          base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
           break;
 
         // Dot
@@ -261,13 +262,13 @@ void action_t::parse_data( sc_data_access_t& pData )
           {
             case A_PERIODIC_DAMAGE:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
             case A_PERIODIC_LEECH:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
