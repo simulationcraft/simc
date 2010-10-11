@@ -408,6 +408,16 @@ enum slot_type   // these enum values match armory settings
   SLOT_MAX       = 19
 };
 
+// Tiers 6..14
+#ifndef N_TIER
+#define N_TIER 9
+#endif
+
+// Caster 2/4, Melee 2/4, Tank 2/4
+#ifndef N_TIER_BONUS
+#define N_TIER_BONUS 6
+#endif
+
 enum set_type
 {
   SET_NONE = 0,
@@ -2316,6 +2326,20 @@ struct set_bonus_t
   set_bonus_t();
 };
 
+struct set_bonus_array_t
+{
+  const spell_id_t* set_bonuses[ SET_MAX ];
+  const spell_id_t* default_value;
+  player_t*         p;
+  
+  set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
+  virtual ~set_bonus_array_t();
+  
+  virtual bool              has_set_bonus( set_type s ) SC_CONST;
+  virtual const spell_id_t* set( set_type s ) SC_CONST;
+  virtual const spell_id_t* create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST;
+};
+
 // Player ====================================================================
 
 struct player_t
@@ -2519,6 +2543,7 @@ struct player_t
   std::vector<item_t> items;
   gear_stats_t stats, initial_stats, gear, enchant;
   set_bonus_t set_bonus;
+  set_bonus_array_t * sets;
   int meta_gem;
 
   // Scale Factors

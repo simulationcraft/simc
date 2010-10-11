@@ -299,6 +299,7 @@ player_t::player_t( sim_t*             s,
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
+    sets( 0 ),
     meta_gem( META_GEM_NONE ), scaling_lag( 0 ), rng_list( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
@@ -467,6 +468,9 @@ player_t::~player_t()
     unknown_options.pop_back();
     delete t;
   }
+  
+  if ( sets )
+    delete sets;
 }
 
 // player_t::id ============================================================

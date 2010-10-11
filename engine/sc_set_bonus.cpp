@@ -190,3 +190,97 @@ bool set_bonus_t::init( player_t* p )
   return true;
 }
 
+// set_bonus_array_t::set_bonus_array_t ======================================
+
+set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :
+  p ( p )
+{
+  // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
+  // array, based on set_type enum
+  for ( int i = 0; i < N_TIER; i++ )
+  {
+    for ( int j = 0; j < N_TIER_BONUS; j++ )
+    {
+      int b = 0;
+
+      switch( j )
+      {
+        // 2pc/4pc caster
+        case 0:
+        case 1:
+          b = j + 1;
+          break;
+        // 2pc/4pc melee
+        case 2:
+        case 3:
+          b = j + 2;
+          break;
+        case 4:
+        case 5:
+          b = j + 3;
+          break;
+        default:
+          break;
+      }
+      
+      set_bonuses[ 1 + i * 9 + b ] = create_set_bonus( p, a_bonus[ i ][ j ] );
+      
+      // if ( set_bonuses[ 1 + i * 9 + b ] )
+      //  log_t::output( p -> sim, "Initializing set bonus %u to slot %d", a_bonus[ i ][ j ], 1 + i * 9 + b );
+    }
+  }
+  
+  // Dummy default value that returns 0 always to everything, so missing 
+  // set bonuses will never give out a value nor crash, even if you dont 
+  // if ( p -> set_bonus.tierX_Ypc_caster() ), which isnt even necessary
+  // in this system
+  default_value = new spell_id_t( p, 0 );
+}
+
+set_bonus_array_t::~set_bonus_array_t()
+{
+  for ( int i = 0; i < SET_MAX; i++ )
+  {
+    if ( set_bonuses[ i ] )
+      delete set_bonuses[ i ];
+  }
+
+  delete default_value;
+}
+
+// SET_T10_2PC_CASTER = 38, tier = 4, btype = 0, bonus = 1
+// 1 + 4 * 9 + 0 * 3 >= 1 * 2
+// 1 + 36 + 0 >= 2
+// count[ 38 ] > 0 || ( count[ 38 ] < 0 && count[ 37 ] >= 2 )
+bool set_bonus_array_t::has_set_bonus( set_type s ) SC_CONST
+{
+  int tier  = ( s - 1 ) / 9,
+      btype = ( ( s - 1 ) - tier * 9 ) / 3,
+      bonus = ( s - 1 ) % 3;
+    
+  if ( p -> set_bonus.count[ s ] > 0 || ( p -> set_bonus.count[ s ] < 0 && p -> set_bonus.count[ 1 + tier * 9 + btype * 3 ] >= bonus * 2 ) )
+    return true;
+      
+  return false;
+}
+
+const spell_id_t* set_bonus_array_t::set( set_type s ) SC_CONST
+{
+  if ( has_set_bonus( s ) && set_bonuses[ s ] )
+    return set_bonuses[ s ];
+
+  return default_value;
+}
+
+// Override this one to create custom spell_id_t returns
+const spell_id_t* set_bonus_array_t::create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST
+{
+  if ( ! p -> player_data.spell_exists( spell_id ) )
+    return 0;
+
+  switch ( spell_id )
+  {
+    default:
+      return new spell_id_t( p, "", spell_id );
+  }
+}
