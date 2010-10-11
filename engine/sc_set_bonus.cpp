@@ -195,6 +195,8 @@ bool set_bonus_t::init( player_t* p )
 set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :
   p ( p )
 {
+  memset( set_bonuses, 0, sizeof( set_bonuses ) );
+  
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
   // array, based on set_type enum
   for ( int i = 0; i < N_TIER; i++ )
