@@ -244,14 +244,14 @@ void action_t::parse_data( sc_data_access_t& pData )
         // Direct Damage
         case E_SCHOOL_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
           break;
 
         case E_WEAPON_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
           break;
 
         // Dot
@@ -261,13 +261,13 @@ void action_t::parse_data( sc_data_access_t& pData )
           {
             case A_PERIODIC_DAMAGE:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
             case A_PERIODIC_LEECH:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, player_type( player -> type ), player -> level );
+              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
@@ -298,14 +298,14 @@ void action_t::parse_effect_data( sc_data_access_t& pData )
     		if ( !pData.effect_period ( effect ) )
     		{
     			direct_power_mod = pData.effect_coeff( effect );
-    			base_dd_min      = pData.effect_min ( effect, player_type( player -> type ), player -> level );
-    			base_dd_max      = pData.effect_max ( effect, player_type( player -> type ), player -> level );
+    			base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+    			base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
     		}
     		// Dot
     		else
     		{
     			tick_power_mod   = pData.effect_coeff( effect );
-    			base_td          = pData.effect_average ( effect, player_type( player -> type ), player -> level );
+    			base_td          = pData.effect_average ( effect, pData.spell_scaling_class( id ), player -> level );
     			base_tick_time   = pData.effect_period ( effect );
     			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
     		}
