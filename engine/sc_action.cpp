@@ -953,6 +953,8 @@ void action_t::execute()
 
   update_ready();
 
+  if ( ! dual ) update_stats( DMG_DIRECT );
+
   if ( repeating && ! proc ) schedule_execute();
 
   if ( harmful ) player -> in_combat = true;
@@ -1041,7 +1043,7 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
     }
   }
 
-  if ( ! dual ) update_stats( DMG_DIRECT );
+
 }
 
 // action_t::assess_damage ==================================================
@@ -1097,7 +1099,7 @@ void action_t::additional_damage( double amount,
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   sim -> target -> assess_damage( amount, school, dmg_type );
-  stats -> add_result( dmg_type, this );
+  stats -> add_result( amount, dmg_type, result );
 }
 
 // action_t::schedule_execute ==============================================
@@ -1336,11 +1338,11 @@ void action_t::update_stats( int type )
 {
   if ( type == DMG_DIRECT )
   {
-    stats -> add( type, this, time_to_execute );
+    stats -> add( direct_dmg, type, result, time_to_execute );
   }
   else if ( type == DMG_OVER_TIME )
   {
-    stats -> add( type, this, time_to_tick );
+    stats -> add( tick_dmg, type, result, time_to_tick );
   }
   else assert( 0 );
 }
@@ -1349,9 +1351,15 @@ void action_t::update_stats( int type )
 
 void action_t::update_result( int type )
 {
-  stats -> add_result ( type, this );
-
-
+  if ( type == DMG_DIRECT )
+  {
+    stats -> add_result( direct_dmg, type, result );
+  }
+  else if ( type == DMG_OVER_TIME )
+  {
+    stats -> add_result( tick_dmg, type, result );
+  }
+  else assert( 0 );
 }
 
 // action_t::update_time ===================================================

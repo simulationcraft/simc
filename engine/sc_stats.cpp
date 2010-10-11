@@ -77,33 +77,22 @@ void stats_t::add_time( double amount,
 
 // stats_t::add_result ======================================================
 
-void stats_t::add_result( int dmg_type, action_t* a )
+void stats_t::add_result( double amount,
+			  int    dmg_type,
+			  int    result )
 {
- double amount;
-  if ( dmg_type == DMG_DIRECT )
-  {
-    amount = a -> direct_dmg;
-  }
-  else if ( dmg_type == DMG_OVER_TIME )
-  {
-    amount = a -> tick_dmg;
-  }
-  else assert( 0 );
-
   // Check for DoT application
   if( amount == 0 )
-    if( a -> result == RESULT_HIT || a -> result == RESULT_CRIT )
+    if( result == RESULT_HIT || result == RESULT_CRIT )
       return;
 
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
-
-  stats_results_t& r = ( dmg_type == DMG_DIRECT ) ? execute_results[ a -> result ] : tick_results[ a -> result ];
+  stats_results_t& r = ( dmg_type == DMG_DIRECT ) ? execute_results[ result ] : tick_results[ result ];
 
   r.count += 1;
   r.total_dmg += amount;
-
 
   if ( amount < r.min_dmg ) r.min_dmg = amount;
   if ( amount > r.max_dmg ) r.max_dmg = amount;
@@ -120,10 +109,12 @@ void stats_t::add_result( int dmg_type, action_t* a )
 
 // stats_t::add =============================================================
 
-void stats_t::add( int dmg_type, action_t* a,
+void stats_t::add( double amount,
+                   int    dmg_type,
+                   int    result,
                    double time )
 {
-  add_result( dmg_type, a );
+  add_result( amount, dmg_type, result );
 
   if ( dmg_type == DMG_DIRECT )
   {

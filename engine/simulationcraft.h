@@ -3032,8 +3032,8 @@ struct stats_t
   std::vector<double> timeline_dps;
 
   void consume_resource( double r ) { resource_consumed += r; }
-  void add( int dmg_type, action_t* a, double time );
-  void add_result( int dmg_type, action_t* a );
+  void add( double amount, int dmg_type, int result, double time );
+  void add_result( double amount, int dmg_type, int result );
   void add_time  ( double amount, int dmg_type );
   void init();
   void reset( action_t* );
