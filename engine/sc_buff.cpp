@@ -78,15 +78,15 @@ buff_t::buff_t( player_t*          p,
 buff_t::buff_t( player_t*          p,
                 const std::string& n,
                 const char*        sname,
-                const player_type  ptype,
-                const player_type  stype,
+                double             chance,
                 bool               q,
                 bool               r,
                 int                rng_type ) :
-  spell_id_t( p, n.c_str(), sname, false, ptype, stype ),
+  spell_id_t( p, n.c_str(), sname, false, PLAYER_NONE, PLAYER_NONE ),
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
-  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ), buff_cooldown( cooldown() ), default_chance( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ),
+  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
+  buff_cooldown( cooldown() ), default_chance( chance ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();
@@ -107,15 +107,15 @@ buff_t::buff_t( player_t*          p,
 buff_t::buff_t( player_t*          p,
                 const uint32_t     id,
                 const std::string& n,
-                const player_type  ptype,
-                const player_type  stype,
+                double             chance,
                 bool               q,
                 bool               r,
                 int                rng_type ) :
-  spell_id_t( p, n.c_str(), id, ptype, stype ),
+  spell_id_t( p, n.c_str(), id, PLAYER_NONE, PLAYER_NONE ),
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
-  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ), buff_cooldown( cooldown() ), default_chance( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ),
+  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
+  buff_cooldown( cooldown() ), default_chance( chance ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();

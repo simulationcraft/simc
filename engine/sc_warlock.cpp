@@ -4001,7 +4001,7 @@ void warlock_t::init_buffs()
   buffs_backdraft             = new buff_t( this, "backdraft",             3, 15.0, 0.0, talent_backdraft -> rank() );
   buffs_decimation            = new buff_t( this, "decimation",            1,  8.0, 0.0, talent_decimation -> rank() );
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
-  buffs_empowered_imp         = new buff_t( this, "empowered_imp",         1,  8.0, 0.0, talent_empowered_imp -> rank() * 0.02 );
+  buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect_base_value( 1 ) / 100.0 );
   buffs_eradication           = new buff_t( this, "eradication",           1, 10.0, 0.0, talent_eradication -> rank() ? 0.06 : 0.00 );
   buffs_haunted               = new buff_t( this, "haunted",               1, 12.0, 0.0, talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, "metamorphosis",         1, 30.0 + glyphs.metamorphosis -> value() / 1000.0, 0.0, talent_metamorphosis -> rank() );

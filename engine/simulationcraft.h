@@ -1943,12 +1943,12 @@ struct buff_t : public spell_id_t
 
   // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
-                  const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE,
+                  double chance=0,
                   bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Player Buff as spell_id_t by id
   buff_t( player_t*, const uint32_t id, const std::string& name,
-                  const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE,
+                  double chance=0,
                   bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
