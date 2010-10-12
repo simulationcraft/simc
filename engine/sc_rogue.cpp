@@ -491,14 +491,13 @@ namespace // ANONYMOUS NAMESPACE ============================================
 
 struct rogue_attack_t : public attack_t
 {
-  buff_t* m_buff;
-
   /**
    * Simple actions do not invoke attack_t ::execute and ::player_buff methods.
    * It's added for simple buff actions ( like AR, CB etc. ) which may consume resources,
    * require CPs etc, but don't do any damage (by themselves at least).
    */
   bool simple;
+  buff_t* m_buff;
 
   int  requires_weapon;
   int  requires_position;
@@ -1118,8 +1117,6 @@ void rogue_attack_t::parse_data( sc_data_access_t& pData )
 
 double rogue_attack_t::cost() SC_CONST
 {
-  rogue_t* p = player -> cast_rogue();
-
   double c = attack_t::cost();
 
   if ( c <= 0 ) 
@@ -2661,7 +2658,7 @@ struct deadly_poison_t : public rogue_poison_t
 
       if ( result_is_hit() )
       {
-        if ( p -> buffs_poison_doses -> check() == max_stacks() )
+        if ( p -> buffs_poison_doses -> check() == ( int ) max_stacks() )
         {
           p -> buffs_deadly_proc -> trigger();
           weapon_t* other_w = ( weapon -> slot == SLOT_MAIN_HAND ) ? &( p -> off_hand_weapon ) : &( p -> main_hand_weapon );
@@ -2957,8 +2954,6 @@ struct envenom_buff_t : public new_buff_t
 
   virtual bool trigger( int cp, double, double )
   {
-    rogue_t* p = player -> cast_rogue();
-    
     double new_duration = 1.0 + cp;
 
     if ( remains_lt( new_duration ) )

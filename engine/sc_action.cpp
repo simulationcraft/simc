@@ -234,7 +234,6 @@ void action_t::parse_data( sc_data_access_t& pData )
     else
       base_cost = pData.spell_cost( id );
 
-
     for ( int i=1; i <= MAX_EFFECTS; i++)
     {
       int effect = pData.spell_effect_id ( id, i );
@@ -249,15 +248,21 @@ void action_t::parse_data( sc_data_access_t& pData )
           base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
           break;
 
-        case E_WEAPON_DAMAGE:
-          direct_power_mod = pData.effect_coeff( effect );
+        case E_NORMALIZED_WEAPON_DMG:
+          normalize_weapon_speed = true;
+        case E_WEAPON_DAMAGE:         
           base_dd_min      = pData.effect_min ( effect, scaling_type, player -> level );
           base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
+          weapon = &( player -> main_hand_weapon );
+          break;
+
+        case E_WEAPON_PERCENT_DAMAGE:
+          weapon = &( player -> main_hand_weapon );
+          weapon_multiplier = pData.effect_base_value( effect ) / 100.0;
           break;
 
         // Dot
         case E_APPLY_AURA:
-
           switch ( pData.effect_subtype ( effect) )
           {
             case A_PERIODIC_DAMAGE:

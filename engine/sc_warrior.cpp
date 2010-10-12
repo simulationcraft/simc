@@ -1130,7 +1130,6 @@ struct colossus_smash_t : public warrior_attack_t
     id = 86346;
     parse_data( p -> player_data );
 
-    weapon      = &( p -> main_hand_weapon );
     may_crit    = true;
     base_dd_min = 120;
     base_dd_max = 120;
@@ -1166,7 +1165,7 @@ struct concussion_blow_t : public warrior_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-    direct_power_mod  = 0.038;
+    direct_power_mod  = effect_base_value( 3 ) / 100.0;
     may_crit          = true;
   }
 };
@@ -1186,23 +1185,8 @@ struct devastate_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 336, 336, 0, 150 },
-      { 84, 84, 329, 329, 0, 150 },
-      { 83, 83, 322, 322, 0, 150 },
-      { 82, 82, 316, 316, 0, 150 },
-      { 81, 81, 309, 309, 0, 150 },
-      { 80, 80, 302, 302, 0, 150 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
-
     id = 20243;
     parse_data( p -> player_data );
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 1.50;
 
     may_crit   = true;
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0
@@ -1407,23 +1391,9 @@ struct mortal_strike_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 423, 423, 0, 250 },
-      { 84, 84, 414, 414, 0, 250 },
-      { 83, 83, 406, 406, 0, 250 },
-      { 82, 82, 397, 397, 0, 250 },
-      { 81, 81, 388, 388, 0, 250 },
-      { 80, 80, 380, 380, 0, 250 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
-
     id = 12294;
     parse_data( p -> player_data );
-
-    weapon_multiplier           = 1;
-    weapon                      = &( p -> main_hand_weapon );
+    
     may_crit                    = true;
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
@@ -1473,8 +1443,6 @@ struct overpower_t : public warrior_attack_t
 
     id = 7384;
     parse_data( p -> player_data );
-
-    weapon = &( p -> main_hand_weapon );
 
     may_crit   = true;
     may_dodge  = false;
@@ -1572,7 +1540,6 @@ struct raging_blow_t : public warrior_attack_t
     id = 85288;
     parse_data( p -> player_data );
 
-    weapon     = &( p -> main_hand_weapon );
     may_crit   = true;
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
@@ -1627,27 +1594,15 @@ struct rend_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 0, 0, 84, 100 },
-      { 84, 84, 0, 0, 83, 100 },
-      { 83, 83, 0, 0, 81, 100 },
-      { 82, 82, 0, 0, 79, 100 },
-      { 81, 81, 0, 0, 77, 100 },
-      { 80, 80, 0, 0, 76, 100 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    id = 47465;
+    id = 94009; // The action is 772, but the damage is stored in 94009
     parse_data( p -> player_data );
 
+    base_cost              = 100.0; // Cost is stored in 772
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = false;
     normalize_weapon_speed = false;
-    num_ticks              = 5;
-    base_tick_time         = 3.0;
-    base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    scale_with_haste       = false;
+    base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;    
     stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
   }
 
@@ -1682,24 +1637,12 @@ struct revenge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 1619, 1977, 0, 50 },
-      { 84, 84, 1585, 1937, 0, 50 },
-      { 83, 83, 1552, 1896, 0, 50 },
-      { 82, 82, 1519, 1855, 0, 50 },
-      { 81, 81, 1486, 1816, 0, 50 },
-      { 80, 80, 1454, 1776, 0, 50 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
-
     id = 6572;
     parse_data( p -> player_data );
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-    direct_power_mod  = 0.31;
+    direct_power_mod  = 0.31; // Assumption from 3.3.5
     may_crit          = true;
     base_multiplier  *= 1 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                           + p -> glyphs.revenge * 0.1;
@@ -1782,18 +1725,6 @@ struct shield_slam_t : public warrior_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    static rank_t ranks[] =
-    {
-      { 85, 85, 826, 868, 0, 200 },
-      { 84, 84, 810, 850, 0, 200 },
-      { 83, 83, 792, 832, 0, 200 },
-      { 82, 82, 776, 814, 0, 200 },
-      { 81, 81, 759, 797, 0, 200 },
-      { 80, 80, 752, 780, 0, 200 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
 
     id = 23922;
     parse_data( p -> player_data );
@@ -1918,6 +1849,7 @@ struct slam_t : public warrior_attack_t
       { 0, 0, 0, 0, 0, 0 },
     };
     init_rank( ranks );
+    // FIXME: Scaling data is stored in effect 462, but not parsed automatically
 
     id = 1464;
     parse_data( p -> player_data );
@@ -2015,18 +1947,6 @@ struct thunder_clap_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 201, 201, 0, 200 },
-      { 84, 84, 197, 197, 0, 200 },
-      { 83, 83, 193, 193, 0, 200 },
-      { 82, 82, 189, 189, 0, 200 },
-      { 81, 81, 185, 185, 0, 200 },
-      { 80, 80, 181, 181, 0, 200 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
-
     id = 6343;
     parse_data( p -> player_data );
 
@@ -2067,14 +1987,11 @@ struct whirlwind_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    weapon = &( p -> main_hand_weapon );
-
     id = 1680;
     parse_data( p -> player_data );
 
     aoe               = true;
     may_crit          = true;
-    weapon_multiplier = 0.50;
     stancemask        = STANCE_BERSERKER;
   }
 
