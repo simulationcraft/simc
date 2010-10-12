@@ -1643,6 +1643,193 @@ struct event_compare_t
   }
 };
 
+// Spell ID class
+
+struct spell_id_t
+{
+  uint32_t spell_id_t_id;
+  struct spell_data_t* spell_id_t_data;
+  bool spell_id_t_enabled;
+  player_t* pp;
+  player_type spell_list_type;
+  player_type scaling_type;
+  bool spell_id_t_forced_override;
+  bool spell_id_t_forced_value;
+  std::string token_name;
+  bool spell_id_t_is_mastery;
+  bool spell_id_t_req_tree;
+  talent_tab_name spell_id_t_tab;
+  struct talent_t* spell_id_t_req_talent;
+  bool spell_id_t_m_is_talent;
+  const spelleffect_data_t * effects[MAX_EFFECTS];
+  const spelleffect_data_t * single;
+  int spell_id_t_tree;
+
+  spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  spell_id_t( player_t* player = NULL, const char* t_name = NULL );
+  spell_id_t( player_t* player, const bool run_init, const char* t_name );
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name, const bool is_talent = false, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+
+  virtual ~spell_id_t() {}
+
+  virtual void init() {}
+  nvpair_t *find_spell_option();
+  bool int_init( const char* s_name = NULL );
+  bool int_init( const uint32_t id, int t = -1 );
+  virtual uint32_t spell_id() { return ( pp && spell_id_t_data ) ? spell_id_t_id : 0; };
+  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
+  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
+
+  virtual bool ok() SC_CONST;
+
+  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name );
+  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
+
+  static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector, int opt_type = OPT_SPELL_ENABLED );
+  virtual bool check_unknown_options( int opt_type = OPT_SPELL_ENABLED );
+  static uint32_t get_school_mask( const school_type s );
+  static school_type get_school_type( const uint32_t mask );
+  static bool is_school( const school_type s, const school_type s2 );
+
+  virtual void push_back() {};
+
+  // Access methods
+
+  virtual const char* real_name() SC_CONST;
+  virtual const std::string token() SC_CONST;
+  virtual double missile_speed() SC_CONST;
+  virtual uint32_t school_mask() SC_CONST;
+  virtual school_type get_school_type() SC_CONST;
+  virtual resource_type power_type() SC_CONST;
+  virtual double min_range() SC_CONST;
+  virtual double max_range() SC_CONST;
+  virtual bool in_range() SC_CONST;
+  virtual double cooldown() SC_CONST;
+  virtual double gcd() SC_CONST;
+  virtual uint32_t category() SC_CONST;
+  virtual double duration() SC_CONST;
+  virtual double cost() SC_CONST;
+  virtual uint32_t rune_cost() SC_CONST;
+  virtual double runic_power_gain() SC_CONST;
+  virtual uint32_t max_stacks() SC_CONST;
+  virtual uint32_t initial_stacks() SC_CONST;
+  virtual double proc_chance() SC_CONST;
+  virtual double cast_time() SC_CONST;
+  virtual uint32_t effect_id( const uint32_t effect_num ) SC_CONST;
+  virtual bool flags( const spell_attribute_t f ) SC_CONST;
+  virtual const char* desc() SC_CONST;
+  virtual const char* tooltip() SC_CONST;
+  virtual int32_t effect_type( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_subtype( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_base_value( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_misc_value1( const uint32_t effect_num ) SC_CONST;
+  virtual int32_t effect_misc_value2( const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t effect_trigger_spell( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_average( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_delta( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_unk( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_min( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_max( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_coeff( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_period( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_radius( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_radius_max( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_pp_combo_points( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_real_ppl( const uint32_t effect_num ) SC_CONST;
+  virtual int    effect_die_sides( const uint32_t effect_num ) SC_CONST;
+
+  // Generalized access API
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
+
+  // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
+  // based on the property of the modifier (as defined by misc_value)
+  virtual double mod_additive( property_type_t = P_MAX ) SC_CONST;
+
+private:
+};
+
+// Talent class
+
+struct talent_t : spell_id_t
+{
+  struct talent_data_t* talent_t_data;
+  unsigned talent_t_rank;
+  bool talent_t_enabled;
+  bool talent_t_forced_override;
+  bool talent_t_forced_value;
+
+  talent_t( player_t* p, const char* t_name, const char* name );
+  talent_t( const talent_t& copy );
+  virtual ~talent_t() {}
+  virtual uint32_t id() { return ( pp && talent_t_data ) ? talent_t_data->id : 0; };
+  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
+  virtual uint32_t get_spell_id( ) SC_CONST;
+  virtual bool set_rank( uint32_t value, bool no_force = true );
+  virtual bool ok() SC_CONST;
+  talent_t* find_talent_in_list( const char* t_name );
+  talent_t* find_talent_in_list( const uint32_t id );
+  virtual uint32_t rank() SC_CONST;
+
+  virtual bool talent_init_enabled( bool override_enabled = false, bool override_value = false );
+
+  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
+
+  virtual uint32_t max_rank() SC_CONST;
+  virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
+
+private:
+  virtual uint32_t find_talent_id( const char* name );
+};
+
+// Active Spell ID class
+
+struct active_spell_t : public spell_id_t
+{
+  active_spell_t( const active_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  active_spell_t( player_t* player = NULL, const char* t_name = NULL );
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+  virtual ~active_spell_t() {}
+
+
+  active_spell_t* find_spell_in_list( const char* t_name );
+  active_spell_t* find_spell_in_list( const uint32_t id );
+
+  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
+  virtual void push_back();
+};
+
+// Passive Spell ID class
+
+struct passive_spell_t : public spell_id_t
+{
+  passive_spell_t( const passive_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  passive_spell_t( player_t* player = NULL, const char* t_name = NULL );
+  passive_spell_t( player_t* player, const bool run_init, const char* t_name );
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
+  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
+  passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
+  virtual ~passive_spell_t() {}
+
+  passive_spell_t* find_spell_in_list( const char* t_name );
+  passive_spell_t* find_spell_in_list( const uint32_t id );
+
+  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
+  virtual void push_back();
+};
+
 // Raid Event
 
 struct raid_event_t
@@ -1719,9 +1906,10 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
+
 // Buffs ======================================================================
 
-struct buff_t
+struct buff_t : public spell_id_t
 {
   sim_t* sim;
   player_t* player;
@@ -1729,7 +1917,7 @@ struct buff_t
   std::vector<std::string> aura_str;
   std::vector<double> stack_occurrence;
   int current_stack, max_stack;
-  double current_value, react, duration, cooldown, cooldown_ready, default_chance;
+  double current_value, react, buff_duration, buff_cooldown, cooldown_ready, default_chance;
   double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
@@ -1745,13 +1933,18 @@ struct buff_t
 
   // Raid Aura
   buff_t( sim_t*, const std::string& name,
-          int max_stack=1, double duration=0, double cooldown=0,
+          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Player Buff
   buff_t( player_t*, const std::string& name,
-          int max_stack=1, double duration=0, double cooldown=0,
+          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+
+  // Player Buff by passive_spell_t
+  buff_t( player_t*, const std::string& name, const char* sname,
+                  const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE,
+                  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -1782,7 +1975,7 @@ struct buff_t
   virtual void   aura_loss();
   virtual void   merge( buff_t* other_buff );
   virtual void   analyze();
-  virtual void   init();
+  virtual void   _init_buff_t();
   virtual const char* name() { return name_str.c_str(); }
 
   action_expr_t* create_expression( action_t*, const std::string& type );
@@ -1797,7 +1990,7 @@ struct stat_buff_t : public buff_t
   double amount;
   stat_buff_t( player_t*, const std::string& name,
                int stat, double amount,
-               int max_stack=1, double duration=0, double cooldown=0,
+               int max_stack=1, double buff_duration=0, double buff_cooldown=0,
                double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual ~stat_buff_t() { };
   virtual void bump     ( int stacks=1, double value=-1.0 );
@@ -1808,7 +2001,7 @@ struct stat_buff_t : public buff_t
 struct debuff_t : public buff_t
 {
   debuff_t( sim_t*, const std::string& name,
-            int max_stack=1, double duration=0, double cooldown=0,
+            int max_stack=1, double buff_duration=0, double buff_cooldown=0,
             double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual void aura_gain();
   virtual void aura_loss();
@@ -1816,18 +2009,6 @@ struct debuff_t : public buff_t
 
 typedef struct buff_t aura_t;
 
-struct new_buff_t : public buff_t
-{
-  int                       default_stack_charge;
-  const spelleffect_data_t* e_data[MAX_EFFECTS];
-  const spelleffect_data_t* single;
-  
-  new_buff_t( player_t*, const std::string&, uint32_t, 
-    double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
-
-  virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST; 
-};
 
 // Expressions =================================================================
 
@@ -1852,6 +2033,19 @@ enum token_type_t {
   TOK_RPAR,
   TOK_NUM,
   TOK_STR
+};
+
+struct new_buff_t : public buff_t
+{
+  int                       default_stack_charge;
+  const spelleffect_data_t* e_data[MAX_EFFECTS];
+  const spelleffect_data_t* single;
+
+  new_buff_t( player_t*, const std::string&, uint32_t, 
+    double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
+
+  virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
 };
 
 struct action_expr_t
@@ -2331,10 +2525,10 @@ struct set_bonus_array_t
   const spell_id_t* set_bonuses[ SET_MAX ];
   const spell_id_t* default_value;
   player_t*         p;
-  
+
   set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
   virtual ~set_bonus_array_t();
-  
+
   virtual bool              has_set_bonus( set_type s ) SC_CONST;
   virtual const spell_id_t* set( set_type s ) SC_CONST;
   virtual const spell_id_t* create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST;
@@ -3060,192 +3254,8 @@ struct base_stats_t
   double spell_crit, melee_crit;
 };
 
-// Spell ID class
 
-struct spell_id_t
-{
-  uint32_t spell_id_t_id;
-  struct spell_data_t* spell_id_t_data;
-  bool spell_id_t_enabled;
-  player_t* pp;
-  player_type spell_list_type;
-  player_type scaling_type;
-  bool spell_id_t_forced_override;
-  bool spell_id_t_forced_value;
-  std::string token_name;  
-  bool spell_id_t_is_mastery;
-  bool spell_id_t_req_tree;
-  talent_tab_name spell_id_t_tab;
-  struct talent_t* spell_id_t_req_talent;
-  bool spell_id_t_m_is_talent;
-  const spelleffect_data_t * effects[MAX_EFFECTS];
-  const spelleffect_data_t * single;
-  int spell_id_t_tree;
 
-  spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  spell_id_t( player_t* player = NULL, const char* t_name = NULL );
-  spell_id_t( player_t* player, const bool run_init, const char* t_name );
-  spell_id_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
-  spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
-  spell_id_t( player_t* player, const char* t_name, const char* s_name, const bool is_talent = false, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
-  spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
-
-  virtual ~spell_id_t() {}
-
-  virtual void init() {}
-  nvpair_t *find_spell_option();
-  bool int_init( const char* s_name = NULL );
-  bool int_init( const uint32_t id, int t = -1 );
-  virtual uint32_t spell_id() { return ( pp && spell_id_t_data ) ? spell_id_t_id : 0; };
-  virtual bool init_enabled( bool override_enabled = false, bool override_value = false );
-  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
-
-  virtual bool ok() SC_CONST;
-
-  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name );
-  static spell_id_t* find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id );
-
-  static void add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector, int opt_type = OPT_SPELL_ENABLED );
-  virtual bool check_unknown_options( int opt_type = OPT_SPELL_ENABLED );
-  static uint32_t get_school_mask( const school_type s );
-  static school_type get_school_type( const uint32_t mask );
-  static bool is_school( const school_type s, const school_type s2 );
-
-  virtual void push_back() {};
-
-  // Access methods
-
-  virtual const char* real_name() SC_CONST;
-  virtual const std::string token() SC_CONST;
-  virtual double missile_speed() SC_CONST;
-  virtual uint32_t school_mask() SC_CONST;
-  virtual school_type get_school_type() SC_CONST;
-  virtual resource_type power_type() SC_CONST;
-  virtual double min_range() SC_CONST;
-  virtual double max_range() SC_CONST;
-  virtual bool in_range() SC_CONST;
-  virtual double cooldown() SC_CONST;
-  virtual double gcd() SC_CONST;
-  virtual uint32_t category() SC_CONST;
-  virtual double duration() SC_CONST;
-  virtual double cost() SC_CONST;
-  virtual uint32_t rune_cost() SC_CONST;
-  virtual double runic_power_gain() SC_CONST;
-  virtual uint32_t max_stacks() SC_CONST;
-  virtual uint32_t initial_stacks() SC_CONST;
-  virtual double proc_chance() SC_CONST;
-  virtual double cast_time() SC_CONST;
-  virtual uint32_t effect_id( const uint32_t effect_num ) SC_CONST;
-  virtual bool flags( const spell_attribute_t f ) SC_CONST;
-  virtual const char* desc() SC_CONST;
-  virtual const char* tooltip() SC_CONST;
-  virtual int32_t effect_type( const uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_subtype( const uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_base_value( const uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_misc_value1( const uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_misc_value2( const uint32_t effect_num ) SC_CONST;
-  virtual uint32_t effect_trigger_spell( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_average( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_delta( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_unk( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_min( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_max( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_coeff( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_period( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_radius( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_radius_max( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_pp_combo_points( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_real_ppl( const uint32_t effect_num ) SC_CONST;
-  virtual int    effect_die_sides( const uint32_t effect_num ) SC_CONST;
-
-  // Generalized access API
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
-  
-  // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
-  // based on the property of the modifier (as defined by misc_value)
-  virtual double mod_additive( property_type_t = P_MAX ) SC_CONST;
-
-private:
-};
-
-// Talent class
-
-struct talent_t : spell_id_t
-{
-  struct talent_data_t* talent_t_data;
-  unsigned talent_t_rank;
-  bool talent_t_enabled;
-  bool talent_t_forced_override;
-  bool talent_t_forced_value;
-
-  talent_t( player_t* p, const char* t_name, const char* name );
-  talent_t( const talent_t& copy );
-  virtual ~talent_t() {}
-  virtual uint32_t id() { return ( pp && talent_t_data ) ? talent_t_data->id : 0; };
-  virtual uint32_t get_effect_id( const uint32_t effect_num ) SC_CONST;
-  virtual uint32_t get_spell_id( ) SC_CONST;
-  virtual bool set_rank( uint32_t value, bool no_force = true );
-  virtual bool ok() SC_CONST;
-  talent_t* find_talent_in_list( const char* t_name );
-  talent_t* find_talent_in_list( const uint32_t id );
-  virtual uint32_t rank() SC_CONST;
-
-  virtual bool talent_init_enabled( bool override_enabled = false, bool override_value = false );
-
-  static void add_options( player_t* p, std::vector<option_t>& opt_vector );
-
-  virtual uint32_t max_rank() SC_CONST;
-  virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
-
-private:
-  virtual uint32_t find_talent_id( const char* name );
-};
-
-// Active Spell ID class
-
-struct active_spell_t : public spell_id_t
-{
-  active_spell_t( const active_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  active_spell_t( player_t* player = NULL, const char* t_name = NULL );
-  active_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
-  active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
-  active_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
-  active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
-  virtual ~active_spell_t() {}
-  
-
-  active_spell_t* find_spell_in_list( const char* t_name );
-  active_spell_t* find_spell_in_list( const uint32_t id );
-
-  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
-  virtual void push_back();
-};
-
-// Passive Spell ID class
-
-struct passive_spell_t : public spell_id_t
-{
-  passive_spell_t( const passive_spell_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  passive_spell_t( player_t* player = NULL, const char* t_name = NULL );
-  passive_spell_t( player_t* player, const bool run_init, const char* t_name );
-  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent );
-  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery = false );
-  passive_spell_t( player_t* player, const char* t_name, const char* s_name, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
-  passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent );
-  passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery = false );
-  virtual ~passive_spell_t() {}
-
-  passive_spell_t* find_spell_in_list( const char* t_name );
-  passive_spell_t* find_spell_in_list( const uint32_t id );
-
-  static void add_options( player_t* player, std::vector<option_t>& opt_vector );
-  virtual void push_back();
-};
 
 
 // Action ====================================================================

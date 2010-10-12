@@ -1843,7 +1843,7 @@ struct inquisition_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
-    p -> buffs_inquisition -> duration = base_duration * p -> holy_power_stacks();
+    p -> buffs_inquisition -> buff_duration = base_duration * p -> holy_power_stacks();
     p -> buffs_inquisition -> trigger();
     if ( p -> talents.holy_shield )
       p -> buffs_holy_shield -> trigger();
@@ -2509,19 +2509,19 @@ void paladin_t::regen( double periodicity )
 
   if ( buffs_divine_plea -> up() )
   {
-    double amount = periodicity * resource_max[ RESOURCE_MANA ] * 0.10 / buffs_divine_plea->duration;
+    double amount = periodicity * resource_max[ RESOURCE_MANA ] * 0.10 / buffs_divine_plea -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_divine_plea );
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
     double mps = resource_base[ RESOURCE_MANA ] * passives.judgements_of_the_wise->effect_base_value(1) / 100.0;
-    double amount = periodicity * mps / buffs_judgements_of_the_wise->duration;
+    double amount = periodicity * mps / buffs_judgements_of_the_wise -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
     double mps = resource_base[ RESOURCE_MANA ] * passives.judgements_of_the_bold->effect_base_value(1) / 100.0;
-    double amount = periodicity * mps / buffs_judgements_of_the_bold->duration;
+    double amount = periodicity * mps / buffs_judgements_of_the_bold -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
 }

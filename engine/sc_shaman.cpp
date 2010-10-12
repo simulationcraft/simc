@@ -2875,7 +2875,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
     if ( p -> talent_totemic_wrath -> rank() )
     {
       if ( sim -> overrides.flametongue_totem == 0 )
-        sim -> auras.flametongue_totem -> duration = totem_duration;
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
     }
 
@@ -2914,7 +2914,7 @@ struct flametongue_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
 
     if ( sim -> overrides.flametongue_totem == 0 )
-      sim -> auras.flametongue_totem -> duration = totem_duration;
+      sim -> auras.flametongue_totem -> buff_duration = totem_duration;
 
     sim -> auras.flametongue_totem -> trigger( 1, totem_bonus );
   }
@@ -2986,7 +2986,7 @@ struct magma_totem_t : public shaman_totem_t
     if ( p -> talent_totemic_wrath -> rank() )
     {
       if ( sim -> overrides.flametongue_totem == 0 )
-        sim -> auras.flametongue_totem -> duration = totem_duration;
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
     }
       
@@ -3021,7 +3021,7 @@ struct mana_spring_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
     
     if ( sim -> overrides.mana_spring_totem == 0 )
-      sim -> auras.mana_spring_totem -> duration = totem_duration;
+      sim -> auras.mana_spring_totem -> buff_duration = totem_duration;
     sim -> auras.mana_spring_totem -> trigger( 1, totem_bonus );
   }
 
@@ -3058,7 +3058,7 @@ struct mana_tide_totem_t : public shaman_totem_t
       if ( p -> party == player -> party )
       {
         // Change buff duration based on totem duration
-        p -> buffs.mana_tide -> duration = totem_duration;
+        p -> buffs.mana_tide -> buff_duration = totem_duration;
         p -> buffs.mana_tide -> trigger( 1, totem_bonus );
       }
     }
@@ -3127,7 +3127,7 @@ struct searing_totem_t : public shaman_totem_t
     if ( p -> talent_totemic_wrath -> rank() )
     {
       if ( sim -> overrides.flametongue_totem == 0 )
-        sim -> auras.flametongue_totem -> duration = totem_duration;
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
       sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
     }
       
@@ -3185,7 +3185,7 @@ struct strength_of_earth_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
 
     if ( sim -> overrides.strength_of_earth == 0 )
-      sim -> auras.strength_of_earth -> duration = totem_duration;
+      sim -> auras.strength_of_earth -> buff_duration = totem_duration;
     sim -> auras.strength_of_earth -> trigger( 1, totem_bonus );
   }
 
@@ -3215,7 +3215,7 @@ struct windfury_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
 
     if ( sim -> overrides.windfury_totem == 0 )
-      sim -> auras.windfury_totem -> duration = totem_duration;
+      sim -> auras.windfury_totem -> buff_duration = totem_duration;
     sim -> auras.windfury_totem -> trigger( 1, totem_bonus );
   }
 
@@ -3245,7 +3245,7 @@ struct wrath_of_air_totem_t : public shaman_totem_t
     shaman_totem_t::execute();
 
     if ( sim -> overrides.wrath_of_air == 0 )
-      sim -> auras.wrath_of_air -> duration = totem_duration;
+      sim -> auras.wrath_of_air -> buff_duration = totem_duration;
     sim -> auras.wrath_of_air -> trigger( 1, totem_bonus );
   }
 
@@ -3506,7 +3506,7 @@ struct water_shield_t : public shaman_spell_t
 struct maelstrom_weapon_t : public new_buff_t
 {
   maelstrom_weapon_t( player_t *         p,
-                      const std::string& n,
+                      const char* n,
                       uint32_t           id ) :
     new_buff_t( p, n, id ) { }
 
@@ -3531,7 +3531,7 @@ struct maelstrom_weapon_t : public new_buff_t
 struct elemental_devastation_t : public new_buff_t
 {
   elemental_devastation_t( player_t *         p,
-                           const std::string& n,
+                           const char*        n,
                            uint32_t           id ) :
     new_buff_t( p, n, id ) 
   { 
@@ -3540,7 +3540,7 @@ struct elemental_devastation_t : public new_buff_t
 
     // Duration has to be parsed out from the triggered spell
     uint32_t trigger = p -> player_data.effect_trigger_spell_id( id, E_APPLY_AURA, A_PROC_TRIGGER_SPELL_WITH_VALUE );
-    duration = p -> player_data.spell_duration( trigger );
+    buff_duration = p -> player_data.spell_duration( trigger );
     
     // And fix atomic, as it's a triggered spell, but not really .. sigh
     single = e_data[ 0 ];
@@ -3550,7 +3550,7 @@ struct elemental_devastation_t : public new_buff_t
 struct lightning_shield_buff_t : public new_buff_t
 {
   lightning_shield_buff_t( player_t *         p,
-                           const std::string& n,
+                           const char*        n,
                            uint32_t           id ) :
     new_buff_t( p, n, id ) 
   { 
@@ -3563,14 +3563,14 @@ struct lightning_shield_buff_t : public new_buff_t
     if ( s -> talent_rolling_thunder -> rank() > 0 )
       max_stack = (int) s -> talent_rolling_thunder -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL );
       
-    init();
+    _init_buff_t();
   }
 };
 
 struct searing_flames_buff_t : public new_buff_t
 {
   searing_flames_buff_t( player_t *         p,
-                         const std::string& n,
+                         const char*        n,
                          uint32_t           id ) :
     new_buff_t( p, n, id, 1.0, true ) // Quiet buff, dont show in report
   {
@@ -3581,10 +3581,10 @@ struct searing_flames_buff_t : public new_buff_t
     default_chance     = p -> player_data.effect_base_value( id, E_APPLY_AURA ) / 100.0;
 
     // Various other things are specified in the actual debuff placed on the target
-    duration           = p -> player_data.spell_duration( 77661 );
+    buff_duration           = p -> player_data.spell_duration( 77661 );
     max_stack          = p -> player_data.spell_max_stacks( 77661 );
 
-    init();
+    _init_buff_t();
   }
 };
 
@@ -3592,7 +3592,7 @@ struct unleash_elements_buff_t : public new_buff_t
 {
   double bonus;
   unleash_elements_buff_t( player_t *         p,
-                           const std::string& n,
+                           const char*        n,
                            uint32_t           id ) :
     new_buff_t( p, n, id, 1.0, false ), bonus( 0.0 )
   {
@@ -3602,7 +3602,7 @@ struct unleash_elements_buff_t : public new_buff_t
     shaman_t* s = player -> cast_shaman();
     bonus       = s -> talent_elemental_weapons -> effect_base_value( 2 ) / 100.0;
 
-    init();
+    _init_buff_t();
   }
   
   virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
@@ -3614,7 +3614,7 @@ struct unleash_elements_buff_t : public new_buff_t
 struct maelstrom_power_t : public new_buff_t
 {
   maelstrom_power_t( player_t *         p,
-                     const std::string& n,
+                     const char*        n,
                      uint32_t           id ) :
     new_buff_t( p, n, id, 1.0, false )
   {
@@ -3624,7 +3624,7 @@ struct maelstrom_power_t : public new_buff_t
     // Proc chance is in the base spell, 70832
     default_chance = p -> player_data.effect_base_value( 70832, E_APPLY_AURA, A_DUMMY ) / 100.0;
 
-    init();
+    _init_buff_t();
   }
 };
 

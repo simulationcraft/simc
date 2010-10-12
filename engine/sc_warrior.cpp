@@ -312,13 +312,13 @@ static void trigger_blood_frenzy( action_t* a )
   target_t* t = a -> sim -> target;
 
   // Don't alter the duration if it is set to 0 (override/optimal_raid)
-  if ( t -> debuffs.blood_frenzy_bleed -> duration > 0 )
+  if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > 0 )
   {
-    t -> debuffs.blood_frenzy_bleed -> duration = a -> num_ticks * a -> base_tick_time;
+    t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
   }
-  if ( t -> debuffs.blood_frenzy_physical -> duration > 0 )
+  if ( t -> debuffs.blood_frenzy_physical -> buff_duration > 0 )
   {
-    t -> debuffs.blood_frenzy_physical -> duration = a -> num_ticks * a -> base_tick_time;
+    t -> debuffs.blood_frenzy_physical -> buff_duration = a -> num_ticks * a -> base_tick_time;
   }
 
   double value = p -> talents.blood_frenzy -> rank();
@@ -346,14 +346,14 @@ static void trigger_bloodsurge( action_t* a )
   if ( p -> set_bonus.tier10_4pc_melee() && p -> rng_tier10_4pc_melee -> roll( 0.30 ) )
   {
     p -> buffs_bloodsurge -> max_stack = 2;
-    p -> buffs_bloodsurge -> duration  = 10;
+    p -> buffs_bloodsurge -> buff_duration  = 10;
 
-    p -> buffs_tier10_4pc_melee -> duration = 20;
+    p -> buffs_tier10_4pc_melee -> buff_duration = 20;
   }
   else
   {
     p -> buffs_bloodsurge -> max_stack = 1;
-    p -> buffs_bloodsurge -> duration  = 10;
+    p -> buffs_bloodsurge -> buff_duration  = 10;
   }
 
   if ( p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack ) )
@@ -2184,7 +2184,7 @@ struct battle_shout_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     
     if ( ! sim -> overrides.battle_shout )
-      sim -> auras.battle_shout -> duration = 120 + p -> glyphs.battle * 120;
+      sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle * 120;
     sim -> auras.battle_shout -> trigger( 1, 1395 );
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );

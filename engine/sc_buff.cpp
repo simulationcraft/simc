@@ -21,12 +21,12 @@ buff_t::buff_t( sim_t*             s,
                 bool               r,
                 int                rng_type,
                 int                id ) :
+  spell_id_t( 0, n.c_str() ),
   sim( s ), player( 0 ), name_str( n ), 
-  max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
+  max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id )
 {
-  init();
-
+  _init_buff_t();
   rng = sim -> get_rng( n, rng_type );
 
   buff_t** tail = &( sim -> buff_list );
@@ -36,6 +36,9 @@ buff_t::buff_t( sim_t*             s,
   }
   next = *tail;
   *tail = this;
+
+
+
 }
 
 // buff_t::buff_t ===========================================================
@@ -50,11 +53,43 @@ buff_t::buff_t( player_t*          p,
                 bool               r,
                 int                rng_type,
                 int                id ) :
+  spell_id_t( p, n.c_str() ),
   sim( p -> sim ), player( p ), name_str( n ), 
-  max_stack( ms ), duration( d ), cooldown( cd ), default_chance( ch ),
+  max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false), quiet( q ), aura_id( id )
 {
-  init();
+  _init_buff_t();
+
+  rng = player -> get_rng( n, rng_type );
+  buff_t** tail = &(  player -> buff_list );
+
+  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+  next = *tail;
+  *tail = this;
+
+
+}
+
+// buff_t::buff_t ===========================================================
+
+buff_t::buff_t( player_t*          p,
+                const std::string& n,
+                const char*        sname,
+                const player_type  ptype,
+                const player_type  stype,
+                bool               q,
+                bool               r,
+                int                rng_type ) :
+  spell_id_t( p, n.c_str(), sname, false, ptype, stype ),
+  sim( p -> sim ), player( p ), name_str( n ),
+  max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
+  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ), buff_cooldown( cooldown() ), default_chance( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ),
+  reverse( r ), constant( false), quiet( q ), aura_id( 0 )
+{
+  _init_buff_t();
 
   rng = player -> get_rng( n, rng_type );
   buff_t** tail = &(  player -> buff_list );
@@ -69,7 +104,7 @@ buff_t::buff_t( player_t*          p,
 
 // buff_t::init =============================================================
 
-void buff_t::init()
+void buff_t::_init_buff_t()
 {
   current_stack = 0;
   current_value = 0;
@@ -111,7 +146,10 @@ void buff_t::init()
     }
     delete [] buffer;
   }
+
+
 }
+
 
 // buff_t::may_react ========================================================
 
@@ -231,8 +269,8 @@ bool buff_t::trigger( int    stacks,
     increment( stacks, value );
   }
 
-  if ( cooldown > 0 )
-    cooldown_ready = sim -> current_time + cooldown;
+  if ( buff_cooldown > 0 )
+    cooldown_ready = sim -> current_time + buff_cooldown;
 
   trigger_successes++;
 
@@ -296,7 +334,7 @@ void buff_t::start( int    stacks,
   }
   last_start = sim -> current_time;
 
-  if ( duration > 0 )
+  if ( buff_duration > 0 )
   {
     struct expiration_t : public event_t
     {
@@ -304,7 +342,7 @@ void buff_t::start( int    stacks,
       expiration_t( sim_t* sim, player_t* p, buff_t* b ) : event_t( sim, p ), buff( b )
       {
         name = buff -> name();
-        sim -> add_event( this, buff -> duration );
+        sim -> add_event( this, buff -> buff_duration );
       }
       virtual void execute()
       {
@@ -328,12 +366,12 @@ void buff_t::refresh( int    stacks,
 
   bump( stacks, value );
 
-  if ( duration > 0 )
+  if ( buff_duration > 0 )
   {
     assert( expiration );
-    if( expiration -> occurs() < sim -> current_time + duration )
+    if( expiration -> occurs() < sim -> current_time + buff_duration )
     {
-      expiration -> reschedule( duration );
+      expiration -> reschedule( buff_duration );
     }
   }
 }
@@ -375,7 +413,7 @@ void buff_t::override( int    stacks,
 {
   if( max_stack == 0 ) return;
   assert( current_stack == 0 );
-  duration = 0;
+  buff_duration = 0;
   start( stacks, value );
 }
 
@@ -752,13 +790,13 @@ new_buff_t::new_buff_t( player_t*          p,
   {
     max_stack            = player -> player_data.spell_max_stacks( id );
 
-    duration             = player -> player_data.spell_duration( id );
-    if ( duration > ( player -> sim -> wheel_seconds - 2.0 ) )
-      duration = player -> sim -> wheel_seconds - 2.0;
+    buff_duration             = player -> player_data.spell_duration( id );
+    if ( buff_duration > ( player -> sim -> wheel_seconds - 2.0 ) )
+      buff_duration = player -> sim -> wheel_seconds - 2.0;
 
-    cooldown             = player -> player_data.spell_cooldown( id );
-    if ( cooldown > ( player -> sim -> wheel_seconds - 2.0 ) )
-      cooldown = player -> sim -> wheel_seconds - 2.0;
+    buff_cooldown             = player -> player_data.spell_cooldown( id );
+    if ( buff_cooldown > ( player -> sim -> wheel_seconds - 2.0 ) )
+      buff_cooldown = player -> sim -> wheel_seconds - 2.0;
 
     default_stack_charge = player -> player_data.spell_initial_stacks( id );
 
@@ -775,8 +813,8 @@ new_buff_t::new_buff_t( player_t*          p,
       max_stack          = player -> player_data.spell_initial_stacks( id );
 
     // A duration of < 0 in blizzard speak is infinite -> change to 0
-    if ( duration < 0 )
-      duration           = 0.0;
+    if ( buff_duration < 0 )
+      buff_duration           = 0.0;
 
     // Some spells seem to have a max_stack but no initial stacks, so set 
     // initial stacks to 1 if it is 0 in spell data
@@ -820,12 +858,12 @@ new_buff_t::new_buff_t( player_t*          p,
     if ( sim -> debug )
     {
       log_t::output( sim, "Initializing New Buff %s id=%d max_stack=%d default_charges=%d cooldown=%.2f duration=%.2f default_chance=%.2f atomic=%s",
-        name_str.c_str(), id, max_stack, default_stack_charge, cooldown, duration, default_chance,
+        name_str.c_str(), id, max_stack, default_stack_charge, buff_cooldown, buff_duration, default_chance,
         single ? "true" : "false");
     }
   }
   
-  init();
+  _init_buff_t();
 }
 
 bool new_buff_t::trigger( int stacks, double value, double chance)

@@ -1258,7 +1258,7 @@ struct savage_roar_t : public druid_cat_attack_t
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
 
-    p -> buffs_savage_roar -> duration = duration;
+    p -> buffs_savage_roar -> buff_duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
     //p -> buffs_combo_points -> expire();
   }

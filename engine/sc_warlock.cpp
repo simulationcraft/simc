@@ -8,11 +8,10 @@
  * To Do:
  * - Check if curse_of_elements is counted for affliction_effects in every possible situation
  *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
- * - create a way to use soulburn with summon_pet infight (re-summon felguard after infernal).
- * - Bane of Agony and haste scaling looks strange
+ * - Bane of Agony and haste scaling looks strange (and is crazy as hell, we'll leave it at average base_td for now)
  * - Seed of Corruption with Soulburn: Trigger Corruptions
  * - Execute felguard:felstorm by player, not the pet
- * - Figure out EXACTLY how the incinerate bonus (when immolate is up) calculates
+ * - Verify if the current incinerate bonus calculation is correct
  * - Verify shadow bite spell power coefficient
  * - Investigate pet mp5 - probably needs to scale with owner int
  */
@@ -32,7 +31,7 @@ struct _stat_list_t {
   static const _stat_list_t pet_base_stats[]=
   {
           // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-	{ 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
@@ -65,8 +64,8 @@ struct _stat_list_t {
   static const _stat_list_t succubus_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-     { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
-     { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
@@ -81,8 +80,8 @@ struct _stat_list_t {
   static const _stat_list_t doomguard_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-     { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
@@ -131,14 +130,14 @@ struct _stat_list_t {
   };
   static const _weapon_list_t succubus_weapon[]=
   {
-	{ 80, 824.6, 824.6, 2.0 },
+	  { 80, 824.6, 824.6, 2.0 },
     { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t infernal_weapon[]=
   { 
-	{ 80, 824.6, 824.6, 2.0 },
+	  { 80, 824.6, 824.6, 2.0 },
     { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
@@ -358,14 +357,7 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
-  struct constants_t
-  {
-    double siphon_life_proc_chance;
-    double pandemic_gcd;
-    double shadow_and_flame;
-    double mana_feed;
-  };
-  constants_t constants;
+  double constants_pandemic_gcd;
 
 
   warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
@@ -1145,7 +1137,7 @@ static void trigger_mana_feed( action_t* s, double travel_result )
   {
     if ( travel_result == RESULT_CRIT )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talent_mana_feed -> rank(), p -> gains_mana_feed );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect_base_value( 3 ), p -> gains_mana_feed );
       a -> procs_mana_feed -> occur();
     }
   }
@@ -1732,7 +1724,7 @@ struct curse_of_elements_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
   virtual void execute()
@@ -1802,7 +1794,7 @@ struct bane_of_agony_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
-    trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
     int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> value() / 1000.0 / base_tick_time );
     // after patch 3.0.8, the added ticks are double the base damage
@@ -1851,7 +1843,7 @@ struct bane_of_doom_t : public warlock_spell_t
     parse_options( options, options_str );
 
     scale_with_haste = false;
-    trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
   }
@@ -1910,7 +1902,7 @@ struct bane_of_havoc_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd -= p -> constants.pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
   virtual void execute()
@@ -2243,7 +2235,7 @@ struct corruption_t : public warlock_spell_t
       p -> procs_shadow_trance -> occur();
     if ( p -> talent_siphon_life -> rank() )
     {
-      if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> rank() * p -> constants.siphon_life_proc_chance ) )
+      if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> proc_chance() / 100.0 ) )
       {
         p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.02 );
       }
@@ -2876,7 +2868,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_gain( RESOURCE_MANA, life * 1.20, p -> gains_life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet)
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> constants.mana_feed * p -> talent_mana_feed -> rank(), p -> active_pet -> gains_mana_feed );
+      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> talent_mana_feed -> effect_base_value( 1 ), p -> active_pet -> gains_mana_feed );
     }
   }
 
@@ -2905,9 +2897,9 @@ struct fel_armor_t : public warlock_spell_t
   fel_armor_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "fel_armor", player, "Fel Armor" ), bonus_spell_power( 0 )
   {
-	warlock_t* p = player -> cast_warlock();
+    warlock_t* p = player -> cast_warlock();
     harmful = false;
-	bonus_spell_power = effect_min( 1 );
+    bonus_spell_power = effect_min( 1 );
 
     // Model the passive health tick.....
     base_tick_time = effect_period( 2 );
@@ -2916,14 +2908,14 @@ struct fel_armor_t : public warlock_spell_t
     usable_pre_combat = true;
   }
 
+
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) log_t::output( sim, "%s performs %s with %.1f spellpower", p -> name(), name(), bonus_spell_power );
 
     p -> buffs_fel_armor -> trigger( 1, bonus_spell_power );
-
     schedule_tick();
   }
 
@@ -2937,7 +2929,10 @@ struct fel_armor_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    return ! p -> buffs_fel_armor -> check();
+    if ( p -> buffs_fel_armor -> up() )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3279,12 +3274,12 @@ struct demonic_empowerment_t : public warlock_spell_t
     update_ready();
     if( p -> active_pet -> pet_type == PET_FELGUARD )
     {
-      p -> buffs_demonic_empowerment -> duration = 15.0;
+      p -> buffs_demonic_empowerment -> buff_duration = 15.0;
       p -> buffs_demonic_empowerment -> trigger();
     }
     else if( p -> active_pet -> pet_type == PET_IMP )
     {
-      p -> buffs_demonic_empowerment -> duration = 30.0;
+      p -> buffs_demonic_empowerment -> buff_duration = 30.0;
       p -> buffs_demonic_empowerment -> trigger();
     }
     else assert( false );
@@ -3508,22 +3503,22 @@ struct demon_soul_t : public warlock_spell_t
 
     if ( p -> active_pet -> pet_type == PET_IMP )
     {
-      p -> buffs_demon_soul -> duration = 30.0;
+      p -> buffs_demon_soul -> buff_duration = 30.0;
       p -> buffs_demon_soul -> trigger( 3, 1.0 );
     }
     if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
     {
-      p -> buffs_demon_soul -> duration = 20.0;
+      p -> buffs_demon_soul -> buff_duration = 20.0;
       p -> buffs_demon_soul -> trigger( 1, 3.0 );
     }
     if ( p -> active_pet -> pet_type == PET_FELHUNTER )
     {
-      p -> buffs_demon_soul -> duration = 20.0;
+      p -> buffs_demon_soul -> buff_duration = 20.0;
       p -> buffs_demon_soul -> trigger( 1, 4.0 );
     }
     if ( p -> active_pet -> pet_type == PET_FELGUARD )
     {
-      p -> buffs_demon_soul -> duration = 20.0;
+      p -> buffs_demon_soul -> buff_duration = 20.0;
       p -> buffs_demon_soul -> trigger( 1, 5.0 );
     }
   }
@@ -3878,10 +3873,7 @@ void warlock_t::init_spells()
   mastery_spells.potent_afflictions   = new passive_spell_t(this, "potent_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
   mastery_spells.master_demonologist  = new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY, true );
 
-  constants.siphon_life_proc_chance   = 0.50;
-  constants.pandemic_gcd              = 0.25;
-  constants.shadow_and_flame          = 0.04;
-  constants.mana_feed                 = 0.30;
+  constants_pandemic_gcd              = 0.25;
 
   glyphs.metamorphosis        = new warlock_glyph_t(this, "Glyph of Metamorphosis");
   glyphs.life_tap             = new warlock_glyph_t(this, "Glyph of Life Tap");
@@ -4011,7 +4003,6 @@ void warlock_t::init_buffs()
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
   buffs_empowered_imp         = new buff_t( this, "empowered_imp",         1,  8.0, 0.0, talent_empowered_imp -> rank() * 0.02 );
   buffs_eradication           = new buff_t( this, "eradication",           1, 10.0, 0.0, talent_eradication -> rank() ? 0.06 : 0.00 );
-  buffs_fel_armor             = new buff_t( this, "fel_armor");
   buffs_haunted               = new buff_t( this, "haunted",               1, 12.0, 0.0, talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, "metamorphosis",         1, 30.0 + glyphs.metamorphosis -> value() / 1000.0, 0.0, talent_metamorphosis -> rank() );
   buffs_molten_core           = new buff_t( this, "molten_core",           3, 15.0, 0.0, talent_molten_core -> rank() * 0.02 );
@@ -4023,6 +4014,9 @@ void warlock_t::init_buffs()
   buffs_demon_soul            = new buff_t( this, "demon_soul",            3, 30.0 );
   buffs_bane_of_havoc         = new buff_t( this, "bane_of_havoc",         1, 300.0 );
   buffs_searing_pain_soulburn = new buff_t( this, "searing_pain_soulburn", 1, 6.0 );
+
+  buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
+
 }
 
 // warlock_t::init_gains =====================================================

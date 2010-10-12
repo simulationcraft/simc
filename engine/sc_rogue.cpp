@@ -911,7 +911,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       double value = p -> player_data.effect_base_value( 57933, E_APPLY_AURA );
       value += p -> glyphs.tricks_of_the_trade -> base_value( E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
       
-      t -> buffs.tricks_of_the_trade -> duration = duration;
+      t -> buffs.tricks_of_the_trade -> buff_duration = duration;
       t -> buffs.tricks_of_the_trade -> trigger( 1, value / 100.0 );
     }
 
@@ -1769,7 +1769,7 @@ struct expose_armor_t : public rogue_attack_t
 
       if ( t -> debuffs.expose_armor -> remains_lt( duration ) )
       {
-        t -> debuffs.expose_armor -> duration = duration;
+        t -> debuffs.expose_armor -> buff_duration = duration;
         t -> debuffs.expose_armor -> trigger( 1, 0.12 );
       }
 
@@ -2146,7 +2146,7 @@ struct recuperate_t : public rogue_attack_t
     num_ticks = 2 * p -> combo_points -> count;
     number_ticks = num_ticks;
 
-    p -> buffs_recuperate -> duration = num_ticks * base_tick_time;
+    p -> buffs_recuperate -> buff_duration = num_ticks * base_tick_time;
     p -> buffs_recuperate -> trigger();
     
     consume_resource();
@@ -2464,7 +2464,7 @@ struct shadow_dance_t : public rogue_attack_t
   {
     add_trigger_buff( p -> buffs_shadow_dance );
 
-    p -> buffs_shadow_dance -> duration += p -> glyphs.shadow_dance -> value();
+    p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> value();
 
     parse_options( options_str );
   }
@@ -2937,8 +2937,8 @@ struct adrenaline_rush_buff_t : public new_buff_t
   { 
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown = 0;
-    duration += p -> glyphs.adrenaline_rush -> value();
+    buff_cooldown = 0;
+    buff_duration += p -> glyphs.adrenaline_rush -> value();
   }
 
   virtual bool trigger( int, double, double )
@@ -2958,7 +2958,7 @@ struct envenom_buff_t : public new_buff_t
 
     if ( remains_lt( new_duration ) )
     {
-      duration = new_duration;
+      buff_duration = new_duration;
       return new_buff_t::trigger();
     }
     else
@@ -2975,9 +2975,9 @@ struct find_weakness_buff_t : public new_buff_t
       return;
 
     // Duration is specified in the actual debuff (or is it a buff?) placed on the target
-    duration = p -> player_data.spell_duration( 91021 );
+    buff_duration = p -> player_data.spell_duration( 91021 );
 
-    init();
+    _init_buff_t();
   }
 
   virtual bool trigger( int, double, double )
@@ -2993,7 +2993,7 @@ struct killing_spree_buff_t : public new_buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown = 0;
+    buff_cooldown = 0;
   }
 
   virtual bool trigger( int, double, double )
@@ -3012,7 +3012,7 @@ struct master_of_subtlety_buff_t : public new_buff_t
   master_of_subtlety_buff_t( rogue_t* p, uint32_t id ) :
     new_buff_t( p, "master_of_subtlety", id )
   {
-    duration = 6.0;
+    buff_duration = 6.0;
   }
 
   virtual bool trigger( int, double, double )
@@ -3066,7 +3066,7 @@ struct slice_and_dice_buff_t : public new_buff_t
 
     if ( remains_lt( new_duration ) )
     {
-      duration = new_duration;
+      buff_duration = new_duration;
       return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
     }
     else
@@ -3079,7 +3079,7 @@ struct vendetta_buff_t : public new_buff_t
   vendetta_buff_t( rogue_t* p, uint32_t id ) :
     new_buff_t( p, "vendetta", id )
   {
-    duration *= 1.0 + p -> glyphs.vendetta -> value();
+    buff_duration *= 1.0 + p -> glyphs.vendetta -> value();
   }
 
   virtual bool trigger( int, double, double )

@@ -1568,7 +1568,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( a -> sim -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
   {
     double value = util_t::talent_rank( p -> talents.ebon_plaguebringer, 3, 4, 9, 13 );
-    a -> sim -> target -> debuffs.ebon_plaguebringer -> duration = disease_duration;
+    a -> sim -> target -> debuffs.ebon_plaguebringer -> buff_duration = disease_duration;
     a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
   }
 }
@@ -2051,7 +2051,7 @@ struct blood_plague_t : public death_knight_spell_t
     num_ticks = 5 + 4.0 * p -> talents.epidemic / 3.0;
     if ( ! sim -> overrides.blood_plague )
     {
-      t -> debuffs.blood_plague -> duration = 3.0 * num_ticks;
+      t -> debuffs.blood_plague -> buff_duration = 3.0 * num_ticks;
       t -> debuffs.blood_plague -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2063,7 +2063,7 @@ struct blood_plague_t : public death_knight_spell_t
     target_t* t = sim -> target;
     if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.blood_plague -> duration = dot -> ready - sim -> current_time;
+      t -> debuffs.blood_plague -> buff_duration = dot -> ready - sim -> current_time;
       t -> debuffs.blood_plague -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2075,7 +2075,7 @@ struct blood_plague_t : public death_knight_spell_t
     target_t* t = sim -> target;
     if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.blood_plague -> duration = dot -> ready - sim -> current_time;
+      t -> debuffs.blood_plague -> buff_duration = dot -> ready - sim -> current_time;
       t -> debuffs.blood_plague -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2208,13 +2208,13 @@ struct bone_shield_t : public death_knight_spell_t
       double pre_cast = p -> sim -> range( 8.0, 16.0 );
 
       cooldown -> duration -= pre_cast;
-      p -> buffs_bone_shield -> duration -= pre_cast;
+      p -> buffs_bone_shield -> buff_duration -= pre_cast;
 
       p -> buffs_bone_shield -> trigger( 1, 0.02 );
       death_knight_spell_t::execute();
 
       cooldown -> duration += pre_cast;
-      p -> buffs_bone_shield -> duration += pre_cast;
+      p -> buffs_bone_shield -> buff_duration += pre_cast;
     }
     else
     {
@@ -2559,7 +2559,7 @@ struct frost_fever_t : public death_knight_spell_t
     num_ticks = 4.0 * p -> talents.epidemic / 3.0;
     if ( ! sim -> overrides.frost_fever )
     {
-      t -> debuffs.frost_fever -> duration = 3.0 * num_ticks;
+      t -> debuffs.frost_fever -> buff_duration = 3.0 * num_ticks;
       t -> debuffs.frost_fever -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2571,7 +2571,7 @@ struct frost_fever_t : public death_knight_spell_t
     target_t* t = sim -> target;
     if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.frost_fever -> duration = dot -> ready - sim -> current_time;
+      t -> debuffs.frost_fever -> buff_duration = dot -> ready - sim -> current_time;
       t -> debuffs.frost_fever -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2583,7 +2583,7 @@ struct frost_fever_t : public death_knight_spell_t
     target_t* t = sim -> target;
     if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
     {
-      t -> debuffs.frost_fever -> duration = dot -> ready - sim -> current_time;
+      t -> debuffs.frost_fever -> buff_duration = dot -> ready - sim -> current_time;
       t -> debuffs.frost_fever -> trigger();
     }
     trigger_ebon_plaguebringer( this );
@@ -2753,7 +2753,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     update_ready();
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
-      sim -> auras.horn_of_winter -> duration = 120 + p -> glyphs.horn_of_winter * 60;
+      sim -> auras.horn_of_winter -> buff_duration = 120 + p -> glyphs.horn_of_winter * 60;
     sim -> auras.horn_of_winter -> trigger( 1, bonus );
 
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
