@@ -7,7 +7,7 @@ use_pre_potion=-1
  
 talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=033323001302211132100300000000000000002030020000000000000
 
-glyphs=mutilate/vendetta/rupture/expose_armor
+glyphs=mutilate/backstab/rupture/expose_armor
 
 head=wind_dancers_helmet,stats=281agi_1356armor_228crit_168hit_512sta,gems=relentless_earthsiege_30agi,enchant=60agi_35haste
 neck=amulet_of_dull_dreaming,stats=168agi_112crit_112haste_252sta

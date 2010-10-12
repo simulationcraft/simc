@@ -26,7 +26,7 @@ enum property_type_t {
   P_TARGET_BONUS      = 20, // Improved Revenge, Glyph of Chain Heal, ...
   P_GCD               = 21, // Only used for flat modifiers?
   P_TICK_DAMAGE       = 22,
-  P_EFFECT_3          = 23,
+  P_EFFECT_3          = 23, // Glyph of Killing Spree, Glyph of Revealing Strike (both +% damage increases)
   P_SPELL_POWER       = 24,
   P_PROC_FREQUENCY    = 26,
   P_DAMAGE_TAKEN      = 27,
