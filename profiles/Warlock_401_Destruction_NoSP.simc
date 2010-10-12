@@ -16,7 +16,7 @@ actions+=/bane_of_doom,if=!ticking
 actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking
 actions+=/conflagrate
 actions+=/summon_doomguard,time>=100
-actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0|buff.soulburn.up
+actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up
 actions+=/chaos_bolt
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/shadowflame
