@@ -2662,8 +2662,7 @@ struct incinerate_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    if ( !p -> bugs )
-      base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
+    base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
     base_multiplier *= 1.0 + ( p -> glyphs.incinerate -> value() / 100.0 );
   }
@@ -4217,7 +4216,6 @@ std::vector<option_t>& warlock_t::get_options()
     option_t warlock_options[] =
     {
       // @option_doc loc=player/warlock/misc title="Misc"
-      { "nethermancy",              OPT_BOOL,   &( passive_spells.nethermancy -> spell_id_t_enabled  ) },
       { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
