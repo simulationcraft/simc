@@ -416,6 +416,7 @@ bool spell_id_t::int_init( const uint32_t id, int t )
   if ( spell_id_t_id && pp -> player_data.spell_exists( spell_id_t_id ) )
   {
     spell_id_t_data = pp -> player_data.m_spells_index[ spell_id_t_id ];
+    scaling_type    = pp -> player_data.spell_scaling_class( spell_id_t_id );
     if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s initialized", token_name.c_str() );
 
     pp -> player_data.spell_set_used( spell_id_t_id, true );
@@ -522,6 +523,7 @@ bool spell_id_t::int_init( const char* s_name )
   if ( spell_id_t_id && pp -> player_data.spell_exists( spell_id_t_id ) )
   {
     spell_id_t_data = pp -> player_data.m_spells_index[ spell_id_t_id ];
+    scaling_type    = pp -> player_data.spell_scaling_class( spell_id_t_id );
     if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s initialized", token_name.c_str() );
 
     pp -> player_data.spell_set_used( spell_id_t_id, true );

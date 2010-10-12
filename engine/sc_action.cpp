@@ -226,7 +226,6 @@ void action_t::parse_data( sc_data_access_t& pData )
     trigger_gcd          = pData.spell_gcd ( id );
     school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
     resource             = pData.spell_power_type( id );
-    scaling_type         = pData.spell_scaling_class( id );
 
     // For mana it returns the % of base mana, not the absolute cost
     if ( resource == RESOURCE_MANA )
