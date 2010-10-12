@@ -2899,7 +2899,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     harmful = false;
-    bonus_spell_power = effect_min( 1 );
+    bonus_spell_power = p -> buffs_fel_armor -> effect_min( 1 );
 
     // Model the passive health tick.....
     base_tick_time = effect_period( 2 );
@@ -4015,6 +4015,8 @@ void warlock_t::init_buffs()
   buffs_bane_of_havoc         = new buff_t( this, "bane_of_havoc",         1, 300.0 );
   buffs_searing_pain_soulburn = new buff_t( this, "searing_pain_soulburn", 1, 6.0 );
 
+  // using the new constructors
+  buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
 
 }

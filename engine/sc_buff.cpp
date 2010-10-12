@@ -102,6 +102,35 @@ buff_t::buff_t( player_t*          p,
   *tail = this;
 }
 
+// buff_t::buff_t ===========================================================
+
+buff_t::buff_t( player_t*          p,
+                const uint32_t     id,
+                const std::string& n,
+                const player_type  ptype,
+                const player_type  stype,
+                bool               q,
+                bool               r,
+                int                rng_type ) :
+  spell_id_t( p, n.c_str(), id, ptype, stype ),
+  sim( p -> sim ), player( p ), name_str( n ),
+  max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
+  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ), buff_cooldown( cooldown() ), default_chance( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ),
+  reverse( r ), constant( false), quiet( q ), aura_id( 0 )
+{
+  _init_buff_t();
+
+  rng = player -> get_rng( n, rng_type );
+  buff_t** tail = &(  player -> buff_list );
+
+  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+  next = *tail;
+  *tail = this;
+}
+
 // buff_t::init =============================================================
 
 void buff_t::_init_buff_t()

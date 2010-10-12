@@ -1941,8 +1941,13 @@ struct buff_t : public spell_id_t
           int max_stack=1, double buff_duration=0, double buff_cooldown=0,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
-  // Player Buff by passive_spell_t
+  // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
+                  const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE,
+                  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+
+  // Player Buff as spell_id_t by id
+  buff_t( player_t*, const uint32_t id, const std::string& name,
                   const player_type ptype=PLAYER_NONE, const player_type stype=PLAYER_NONE,
                   bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
