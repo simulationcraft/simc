@@ -206,6 +206,7 @@ struct death_knight_t : public player_t
     int hungering_cold;
     int icy_reach;
     int improved_blood_presence;
+    int improved_blood_tap;
     int improved_death_strike;
     int improved_frost_presence;
     int improved_icy_talons;
@@ -224,6 +225,7 @@ struct death_knight_t : public player_t
     int resilient_infection;
     int rime;
     int rune_tap;
+    int runic_corruption;
     int runic_power_mastery;
     int sanguine_fortitude;
     int scarlet_fever;
@@ -4349,29 +4351,29 @@ std::vector<talent_translation_t>& death_knight_t::get_talent_list()
   if ( talent_list.empty() )
   {
     talent_translation_t translation_table[][MAX_TALENT_TREES] =
-    {
-      { { 1,  2, &( talents.butchery                   ) }, { 1,  3, &( talents.runic_power_mastery         ) }, { 1,  2, &( talents.unholy_command             ) } },
-      { { 2,  3, &( talents.blade_barrier              ) }, { 2,  2, &( talents.icy_reach                   ) }, { 2,  3, &( talents.virulence                  ) } },
-      { { 3,  3, &( talents.bladed_armor               ) }, { 3,  3, &( talents.nerves_of_cold_steel        ) }, { 3,  3, &( talents.epidemic                   ) } },
-      { { 4,  3, &( talents.blood_caked_blade          ) }, { 4,  3, &( talents.annihilation                ) }, { 4,  2, &( talents.desecration                ) } },
-      { { 5,  3, &( talents.scent_of_blood             ) }, { 5,  1, &( talents.lichborne                   ) }, { 5,  2, &( talents.resilient_infection        ) } },
-      { { 6,  2, &( talents.scarlet_fever              ) }, { 6,  2, &( talents.on_a_pale_horse             ) }, { 6,  3, &( talents.morbidity                  ) } },
-      { { 7,  2, &( talents.abominations_might         ) }, { 7,  2, &( talents.endless_winter              ) }, { 7,  3, &( talents.necrosis                   ) } },
-      { { 8,  1, &( talents.bone_shield                ) }, { 8,  2, &( talents.merciless_combat            ) }, { 8,  1, &( talents.unholy_frenzy              ) } },
-      { { 9,  3, &( talents.toughness                  ) }, { 9,  2, &( talents.chill_of_the_grave          ) }, { 9,  2, &( talents.contagion                  ) } },
-      { { 10, 2, &( talents.hand_of_doom               ) }, { 10, 3, &( talents.killing_machine             ) }, { 10, 3, &( talents.shadow_infusion            ) } },
-      { { 11, 2, &( talents.sanguine_fortitude         ) }, { 11, 3, &( talents.rime                        ) }, { 11, 3, &( talents.magic_suppression          ) } },
-      { { 12, 2, &( talents.blood_parasite             ) }, { 12, 1, &( talents.pillar_of_frost             ) }, { 12, 3, &( talents.rage_of_rivendare          ) } },
-      { { 13, 2, &( talents.improved_blood_presence    ) }, { 13, 1, &( talents.improved_icy_talons         ) }, { 13, 1, &( talents.unholy_blight              ) } },
-      { { 14, 3, &( talents.will_of_the_necropolis     ) }, { 14, 2, &( talents.brittle_bones               ) }, { 14, 1, &( talents.anti_magic_zone            ) } },
-      { { 15, 1, &( talents.rune_tap                   ) }, { 15, 2, &( talents.chilblains                  ) }, { 15, 2, &( talents.improved_unholy_presence   ) } },
-      { { 16, 1, &( talents.vampiric_blood             ) }, { 16, 1, &( talents.hungering_cold              ) }, { 16, 1, &( talents.dark_transformation        ) } },
-      { { 17, 3, &( talents.improved_death_strike      ) }, { 17, 2, &( talents.improved_frost_presence     ) }, { 17, 2, &( talents.ebon_plaguebringer         ) } },
-      { { 18, 2, &( talents.crimson_scourge            ) }, { 18, 3, &( talents.threat_of_thassarian        ) }, { 18, 3, &( talents.sudden_doom                ) } },
-      { { 19, 1, &( talents.dancing_rune_weapon        ) }, { 19, 3, &( talents.might_of_the_frozen_wastes  ) }, { 19, 1, &( talents.summon_gargoyle            ) } },
-      { { 0, 0, NULL                                    }, { 20, 1, &( talents.howling_blast               ) }, { 0, 0, NULL                                    } },
-      { { 0, 0, NULL                                    }, { 0,  0, NULL                                    }, { 0, 0, NULL                                    } }
-    };
+      {
+	{ { 1,  2, &( talents.butchery                   ) }, { 1,  3, &( talents.runic_power_mastery         ) }, { 1,  2, &( talents.unholy_command             ) } },
+	{ { 2,  3, &( talents.blade_barrier              ) }, { 2,  2, &( talents.icy_reach                   ) }, { 2,  3, &( talents.virulence                  ) } },
+	{ { 3,  3, &( talents.bladed_armor               ) }, { 3,  3, &( talents.nerves_of_cold_steel        ) }, { 3,  3, &( talents.epidemic                   ) } },
+	{ { 4,  2, &( talents.improved_blood_tap         ) }, { 4,  3, &( talents.annihilation                ) }, { 4,  2, &( talents.desecration                ) } },
+	{ { 5,  3, &( talents.scent_of_blood             ) }, { 5,  1, &( talents.lichborne                   ) }, { 5,  2, &( talents.resilient_infection        ) } },
+	{ { 6,  2, &( talents.scarlet_fever              ) }, { 6,  2, &( talents.on_a_pale_horse             ) }, { 6,  3, &( talents.morbidity                  ) } },
+	{ { 7,  2, &( talents.hand_of_doom               ) }, { 7,  2, &( talents.endless_winter              ) }, { 7,  2, &( talents.runic_corruption           ) } },
+	{ { 8,  2, &( talents.blood_caked_blade          ) }, { 8,  2, &( talents.merciless_combat            ) }, { 8,  1, &( talents.unholy_frenzy              ) } },
+	{ { 9,  1, &( talents.bone_shield                ) }, { 9,  2, &( talents.chill_of_the_grave          ) }, { 9,  2, &( talents.contagion                  ) } },   
+	{ { 10, 3, &( talents.toughness                  ) }, { 10, 3, &( talents.killing_machine             ) }, { 10, 3, &( talents.shadow_infusion            ) } },
+	{ { 11, 2, &( talents.abominations_might         ) }, { 11, 3, &( talents.rime                        ) }, { 11, 3, &( talents.magic_suppression          ) } },
+	{ { 12, 2, &( talents.sanguine_fortitude         ) }, { 12, 1, &( talents.pillar_of_frost             ) }, { 12, 3, &( talents.rage_of_rivendare          ) } },
+	{ { 13, 2, &( talents.blood_parasite             ) }, { 13, 1, &( talents.improved_icy_talons         ) }, { 13, 1, &( talents.unholy_blight              ) } },
+	{ { 14, 2, &( talents.improved_blood_presence    ) }, { 14, 2, &( talents.brittle_bones               ) }, { 14, 1, &( talents.anti_magic_zone            ) } },
+	{ { 15, 3, &( talents.will_of_the_necropolis     ) }, { 15, 2, &( talents.chilblains                  ) }, { 15, 2, &( talents.improved_unholy_presence   ) } },    
+	{ { 16, 1, &( talents.rune_tap                   ) }, { 16, 1, &( talents.hungering_cold              ) }, { 16, 1, &( talents.dark_transformation        ) } },
+	{ { 17, 1, &( talents.vampiric_blood             ) }, { 17, 2, &( talents.improved_frost_presence     ) }, { 17, 2, &( talents.ebon_plaguebringer         ) } },
+	{ { 18, 3, &( talents.improved_death_strike      ) }, { 18, 3, &( talents.threat_of_thassarian        ) }, { 18, 3, &( talents.sudden_doom                ) } },
+	{ { 19, 2, &( talents.crimson_scourge            ) }, { 19, 3, &( talents.might_of_the_frozen_wastes  ) }, { 19, 1, &( talents.summon_gargoyle            ) } },
+	{ { 20, 1, &( talents.dancing_rune_weapon        ) }, { 20, 1, &( talents.howling_blast               ) }, { 0, 0, NULL                                     } },
+	{ { 0, 0, NULL                                     }, { 0,  0, NULL                                     }, { 0, 0, NULL                                     } }
+      };
 
     util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table ) );
   }
@@ -4409,6 +4411,7 @@ std::vector<option_t>& death_knight_t::get_options()
       { "hungering_cold",                   OPT_INT, &( talents.hungering_cold                   ) },
       { "icy_reach",                        OPT_INT, &( talents.icy_reach                        ) },
       { "improved_blood_presence",          OPT_INT, &( talents.improved_blood_presence          ) },
+      { "improved_blood_tap",               OPT_INT, &( talents.improved_blood_tap               ) },
       { "improved_death_strike",            OPT_INT, &( talents.improved_death_strike            ) },
       { "improved_frost_presence",          OPT_INT, &( talents.improved_frost_presence          ) },
       { "improved_icy_talons",              OPT_INT, &( talents.improved_icy_talons              ) },
@@ -4424,6 +4427,7 @@ std::vector<option_t>& death_knight_t::get_options()
       { "rage_of_rivendare",                OPT_INT, &( talents.rage_of_rivendare                ) },
       { "rime",                             OPT_INT, &( talents.rime                             ) },
       { "rune_tap",                         OPT_INT, &( talents.rune_tap                         ) },
+      { "runic_corruption",                 OPT_INT, &( talents.runic_corruption                 ) },
       { "runic_power_mastery",              OPT_INT, &( talents.runic_power_mastery              ) },
       { "scent_of_blood",                   OPT_INT, &( talents.scent_of_blood                   ) },
       { "sudden_doom",                      OPT_INT, &( talents.sudden_doom                      ) },
