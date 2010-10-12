@@ -89,10 +89,10 @@ struct patch_t
     *version  = ( int ) m % 100; m /= 100;
     *arch     = ( int ) m % 100;
   }
-  patch_t() { mask = encode( 4, 0, 3 ); }
+  patch_t() { mask = encode( 4, 0, 1 ); }
 };
 
-#define SC_MAJOR_VERSION "403"
+#define SC_MAJOR_VERSION "401"
 #define SC_MINOR_VERSION "1"
 
 // Forward Declarations ======================================================

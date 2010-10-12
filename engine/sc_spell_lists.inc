@@ -1,7 +1,7 @@
-#define CLASS_ABILITY_SIZE (59)
+#define CLASS_ABILITY_SIZE (58)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13117
+// Class based active abilities, wow build 13164
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -162,7 +162,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // Beast Mastery tree, 20 abilities
+    // Beast Mastery tree, 19 abilities
     {
        5118, // Aspect of the Cheetah
       82661, // Aspect of the Fox
@@ -176,7 +176,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       83243, // Call Pet 3
       83244, // Call Pet 4
       83245, // Call Pet 5
-       2641, // Dismiss Pet
       82726, // Fervor
       19577, // Intimidation
       34026, // Kill Command
@@ -227,7 +226,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 59 abilities
+    // Pet tree, 58 abilities
     {
       90355, // Ancient Hysteria
       50433, // Ankle Crack
@@ -254,7 +253,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       58604, // Lava Breath
       53426, // Lick Your Wounds
       24844, // Lightning Breath
-      90327, // Lock Jaw
       54680, // Monstrous Bite
       50479, // Nether Shock
       50245, // Pin
@@ -835,7 +833,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13117
+// Talent tree specialization abilities, wow build 13164
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1092,7 +1090,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13117
+// Class mastery abilities, wow build 13164
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1177,7 +1175,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13117
+// Racial abilities, wow build 13164
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1809,7 +1807,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13117
+// Glyph spells for classes, wow build 13164
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2323,7 +2321,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13117
+// Tier item set bonuses for class, wow build 13164
 static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
   {
     {

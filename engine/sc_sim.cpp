@@ -374,7 +374,7 @@ sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P403( true ), // The reverse of how it would normally be.
+    parent( p ), P403( false ),
     free_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), canceled( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
@@ -742,7 +742,7 @@ bool sim_t::init()
 
   P403 = patch.after( 4, 0, 3 );
 
-  if ( ! P403 ) // TO-DO: The reverse of how it would normally be.
+  if ( P403 )
   {
     sim_data.set_parent( &sim_t::ptr_data );
   }

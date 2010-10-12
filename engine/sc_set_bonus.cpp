@@ -287,10 +287,5 @@ const spell_id_t* set_bonus_array_t::create_set_bonus( player_t* p, uint32_t spe
     }
     return 0;
   }
-
-  switch ( spell_id )
-  {
-    default:
-      return new spell_id_t( p, "", spell_id );
-  }
+  return new spell_id_t( p, "", spell_id );
 }

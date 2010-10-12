@@ -1,6 +1,6 @@
-#define TALENT_SIZE (659)
+#define TALENT_SIZE (658)
 
-// 659 talents, wow build 13117
+// 658 talents, wow build 13164
 static struct talent_data_t __talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 } },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 } },
@@ -650,7 +650,6 @@ static struct talent_data_t __talent_data[] = {
   { "Nether Ward"                       , 12120, 0x00,  2, 0x100, 0x0,     0,  0,  3,  3, { 91713,     0,     0 } },
   { "Improved Hot Streak"               , 12121, 0x00,  1, 0x080, 0x0, 10573,  0,  2,  3, { 44446, 44448,     0 } },
   { "Malfurion's Gift"                  , 12146, 0x00,  2, 0x400, 0x0, 11712,  1,  3,  3, { 92363, 92364,     0 } },
-  { "Overgrowth"                        , 12148, 0x00,  0, 0x400, 0x0,     0,  0,  3,  1, { 93404, 93405,     0 } },
   { "Dreamstate"                        , 12149, 0x00,  0, 0x400, 0x0,  8389,  1,  0,  4, { 33597, 33599,     0 } },
   { "Sunfire"                           , 12150, 0x00,  0, 0x400, 0x0,     0,  0,  2,  4, { 93401,     0,     0 } },
   { "Paragon of Virtue"                 , 12151, 0x00,  0, 0x002, 0x0,     0,  0,  3,  4, { 93418, 93417,     0 } },
