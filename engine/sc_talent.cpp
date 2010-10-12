@@ -1331,7 +1331,7 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
 
   if ( single )
   {
-    if ( p_type == P_MAX || single -> subtype == A_ADD_FLAT_MODIFIER || single -> subtype == A_ADD_PCT_MODIFIER )
+    if ( p_type == P_MAX || single -> subtype == A_ADD_FLAT_MODIFIER && single -> subtype == A_ADD_PCT_MODIFIER )
     {
       if ( single -> subtype == (int) A_ADD_PCT_MODIFIER )
         return single -> base_value / 100.0;
