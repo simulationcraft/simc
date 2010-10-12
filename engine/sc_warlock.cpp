@@ -1991,7 +1991,6 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> buffs_shadow_embrace -> trigger();
       target_t*  t = sim -> target;
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
-      trigger_soul_leech( this );
       trigger_everlasting_affliction( this );
     }
   }
@@ -2630,7 +2629,6 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( result_is_hit() )
     {
-      trigger_soul_leech( this );
       p -> buffs_backdraft -> trigger( 3 );
     }
   }
@@ -3092,7 +3090,7 @@ struct summon_infernal_t : public summon_pet_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( !p -> buffs_metamorphosis -> check() )
+    if ( !p -> buffs_metamorphosis -> check() && !p -> bugs)
       return false;
 
     return summon_pet_t::ready();
