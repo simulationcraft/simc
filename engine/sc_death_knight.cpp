@@ -110,8 +110,6 @@ struct death_knight_t : public player_t
   buff_t* buffs_killing_machine;
   buff_t* buffs_rime;
   buff_t* buffs_scent_of_blood;
-  buff_t* buffs_sigil_hanged_man;
-  buff_t* buffs_sigil_virulence;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier9_2pc_melee;
   buff_t* buffs_rune_of_the_fallen_crusader;
@@ -293,34 +291,6 @@ struct death_knight_t : public player_t
   };
   constants_t constants;
 
-  // Sigils
-  struct sigils_t
-  {
-    // PVP
-    int deadly_strife;
-    int furious_strife;
-    int hateful_strife;
-    int relentless_strife;
-    int savage_strife;
-
-    // PVE
-    int arthritic_binding;
-    int awareness;
-    int dark_rider;
-    int deflection;
-    int frozen_conscience;
-    int hanged_man;
-    int haunted_dreams;
-    int insolence;
-    int unfaltering_knight;
-    int vengeful_heart;
-    int virulence;
-    int wild_buck;
-
-    sigils_t() { memset( ( void* ) this, 0x0, sizeof( sigils_t ) ); }
-  };
-  sigils_t sigils;
-
   struct runes_t
   {
     dk_rune_t slot[RUNE_SLOT_MAX];
@@ -383,7 +353,6 @@ struct death_knight_t : public player_t
   virtual void      init_procs();
   virtual void      init_resources( bool force );
   virtual void      init_uptimes();
-  virtual void      init_items();
   virtual void      init_rating();
   virtual void      init_values();
   virtual double    composite_armor() SC_CONST;
@@ -616,7 +585,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_dd_multiplier *= 1 + ( 0.05 * o -> talents.morbidity +
                                   0.15 * o -> glyphs.dark_death );
       base_crit += o -> set_bonus.tier8_2pc_melee() * 0.08;
-      base_dd_adder = 380 * o -> sigils.vengeful_heart;
 
       direct_power_mod  = 0.15;
       base_multiplier *= 0.50;
@@ -716,7 +684,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-      if ( o -> sigils.awareness )  base_dd_adder = 420;
       base_crit += o -> talents.improved_death_strike * 0.03;
       base_multiplier *= 1 + o -> talents.improved_death_strike * 0.15;
       base_multiplier *= 0.50; // DRW malus
@@ -883,7 +850,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> glyphs.obliterate ) weapon_multiplier *= 1.0;
-      if ( o -> sigils.awareness )  base_dd_adder = 420;
       base_multiplier *= 1.0 + o -> set_bonus.tier10_2pc_melee() * 0.1;
       base_multiplier *= 0.50; // DRW malus
       base_dd_min = base_dd_max = 584;
@@ -2330,7 +2296,6 @@ struct death_coil_t : public death_knight_spell_t
     base_dd_multiplier *= 1 + ( 0.05 * p -> talents.morbidity +
                                 0.15 * p -> glyphs.dark_death );
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
-    base_dd_adder = 380 * p -> sigils.vengeful_heart;
 
     if ( sudden_doom )
     {
@@ -2491,9 +2456,6 @@ struct death_strike_t : public death_knight_attack_t
     normalize_weapon_speed = true;
     weapon_multiplier *= 0.75;
 
-    if ( p -> sigils.awareness )
-      base_dd_adder = 420;
-
     base_crit += p -> talents.improved_death_strike * 0.03;
     base_multiplier *= 1 + p -> talents.improved_death_strike * 0.15;
   }
@@ -2511,9 +2473,6 @@ struct death_strike_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_sigil_virulence -> trigger();
-      p -> buffs_sigil_hanged_man -> trigger();
-
       trigger_abominations_might( this, 0.5 );
     }
     // 30/60/100% to also hit with OH
@@ -2680,7 +2639,6 @@ struct frost_strike_t : public death_knight_attack_t
 
     base_crit += p -> set_bonus.tier8_2pc_melee() * 0.08;
     base_cost -= p -> glyphs.frost_strike * 8;
-    base_dd_adder = 113 * p -> sigils.vengeful_heart;
   }
 
   virtual void consume_resource() { }
@@ -3013,8 +2971,6 @@ struct obliterate_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.8;
     normalize_weapon_speed = true;
-    if ( p -> sigils.awareness )
-      base_dd_adder = 420;
 
     // (0.8+0.2)/0.8 = 1.25
     if ( p -> glyphs.obliterate )
@@ -3064,8 +3020,6 @@ struct obliterate_t : public death_knight_attack_t
         p -> dots_frost_fever -> reset();
       }
       p -> resource_gain( RESOURCE_RUNIC, 2.5 * p -> talents.chill_of_the_grave, p -> gains_chill_of_the_grave );
-      p -> buffs_sigil_virulence -> trigger();
-      p -> buffs_sigil_hanged_man -> trigger();
 
       if ( p -> buffs_rime -> trigger() )
       {
@@ -3418,9 +3372,6 @@ struct scourge_strike_t : public death_knight_attack_t
     cost_unholy = 1;
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1;
-
-    if ( p -> sigils.awareness )
-      base_dd_adder = 420;
   }
 
   void execute()
@@ -3431,9 +3382,6 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_t* p = player -> cast_death_knight();
       scourge_strike_shadow -> base_dd_adder = direct_dmg;
       scourge_strike_shadow -> execute();
-
-      p -> buffs_sigil_virulence -> trigger();
-      p -> buffs_sigil_hanged_man -> trigger();
 
       if ( p -> glyphs.scourge_strike )
       {
@@ -4157,8 +4105,6 @@ void death_knight_t::init_buffs()
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",   1,                                20.0, 60.0, talents.pillar_of_frost );
 
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_sigil_hanged_man   = new stat_buff_t( this, "sigil_of_the_hanged_man", STAT_STRENGTH ,  73, 3, 15.0,   0, sigils.hanged_man );
-  buffs_sigil_virulence    = new stat_buff_t( this, "sigil_of_virulence",      STAT_STRENGTH , 200, 1, 20.0,   0, sigils.virulence   * 0.80 );
   buffs_tier9_2pc_melee    = new stat_buff_t( this, "tier9_2pc_melee",         STAT_STRENGTH , 180, 1, 15.0,  45, set_bonus.tier9_2pc_melee() * 0.50 );
 
   struct bloodworms_buff_t : public buff_t
@@ -4213,37 +4159,6 @@ void death_knight_t::init_uptimes()
 
   uptimes_blood_plague       = get_uptime( "blood_plague" );
   uptimes_frost_fever        = get_uptime( "frost_fever" );
-}
-
-void death_knight_t::init_items()
-{
-  player_t::init_items();
-
-  std::string& sigil = items[ SLOT_RANGED ].encoded_name_str;
-
-  if ( sigil.empty() ) return;
-
-  if      ( sigil == "deadly_gladiators_sigil_of_strife"     ) sigils.deadly_strife = 1;
-  else if ( sigil == "furious_gladiators_sigil_of_strife"    ) sigils.furious_strife = 1;
-  else if ( sigil == "hateful_gladiators_sigil_of_strife"    ) sigils.hateful_strife = 1;
-  else if ( sigil == "relentless_gladiators_sigil_of_strife" ) sigils.relentless_strife = 1;
-  else if ( sigil == "savage_gladiators_sigil_of_strife"     ) sigils.savage_strife = 1;
-  else if ( sigil == "sigil_of_arthritic_binding"            ) sigils.arthritic_binding = 1;
-  else if ( sigil == "sigil_of_awareness"                    ) sigils.awareness = 1;
-  else if ( sigil == "sigil_of_deflection"                   ) sigils.deflection = 1;
-  else if ( sigil == "sigil_of_haunted_dreams"               ) sigils.haunted_dreams = 1;
-  else if ( sigil == "sigil_of_insolence"                    ) sigils.insolence = 1;
-  else if ( sigil == "sigil_of_the_dark_rider"               ) sigils.dark_rider = 1;
-  else if ( sigil == "sigil_of_the_frozen_conscience"        ) sigils.frozen_conscience = 1;
-  else if ( sigil == "sigil_of_the_hanged_man"               ) sigils.hanged_man = 1;
-  else if ( sigil == "sigil_of_the_unfaltering_knight"       ) sigils.unfaltering_knight = 1;
-  else if ( sigil == "sigil_of_the_vengeful_heart"           ) sigils.vengeful_heart = 1;
-  else if ( sigil == "sigil_of_the_wild_buck"                ) sigils.wild_buck = 1;
-  else if ( sigil == "sigil_of_virulence"                    ) sigils.virulence = 1;
-  else
-  {
-    sim -> errorf( "Player %s has unknown sigil %s", name(), sigil.c_str() );
-  }
 }
 
 // death_knight_t::init_rating =======================================================
@@ -4440,8 +4355,6 @@ std::vector<option_t>& death_knight_t::get_options()
       { "vampiric_blood",                   OPT_INT, &( talents.vampiric_blood                   ) },
       { "virulence",                        OPT_INT, &( talents.virulence                        ) },
       { "will_of_the_necropolis",           OPT_INT, &( talents.will_of_the_necropolis           ) },
-      // @option_doc loc=player/deathknight/misc title="Misc"
-      { "sigil",                            OPT_STRING, &( items[ SLOT_RANGED ].options_str      ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
