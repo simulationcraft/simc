@@ -3823,7 +3823,9 @@ int mage_t::decode_set( item_t& item )
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type r )
 {
-  return new mage_t( sim, name, r );
+  sim -> errorf( "Mage Module isn't avaiable at the moment." );
+
+  //return new mage_t( sim, name, r );
 }
 
 // player_t::mage_init ======================================================

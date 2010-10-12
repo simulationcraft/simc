@@ -1,4 +1,4 @@
-Globals_Cata.simc
+Globals_Cata_85.simc
 
 #Mage_Cata_Fire.simc
 
@@ -18,3 +18,6 @@ Warlock_Cata_Destruction.simc
 Warrior_Cata_Arms.simc
 Warrior_Cata_Fury_1h.simc
 Warrior_Cata_Fury_2h.simc
+
+Shaman_Cata_Enhancement.simc
+Shaman_Cata_Elemental.simc

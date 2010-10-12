@@ -4500,7 +4500,9 @@ void death_knight_t::trigger_runic_empowerment()
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type r )
 {
-  return new death_knight_t( sim, name, r );
+  sim -> errorf( "Deathknight Module isn't avaiable at the moment." );
+
+  //return new death_knight_t( sim, name, r );
 }
 
 // player_t::death_knight_init ==============================================
