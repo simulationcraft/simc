@@ -738,6 +738,12 @@ struct warlock_pet_t : public pet_t
     return m;
   }
 
+  virtual double composite_mp5() SC_CONST
+  {
+    return mp5 + mp5_per_intellect * owner -> intellect();
+  }
+
+
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
