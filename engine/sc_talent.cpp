@@ -1348,7 +1348,7 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
     if ( ! effects[ i ] )
       continue;
 
-    if ( effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER || effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
+    if ( effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER && effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
       continue;
 
     if ( p_type == P_MAX || effects[ i ] -> misc_value == p_type )
