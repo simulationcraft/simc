@@ -1,0 +1,81 @@
+#!./simc 
+
+warrior=Warrior_401_Fury_1h
+#origin="http://profiler.wowhead.com/profile=20969288"
+#Source Talents/Glyphs: http://wowtal.com/#k=mFbu_1u.a5o.warrior.RDgUP0
+level=80
+race=tauren
+use_pre_potion=-1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=300000000000000000000322220313011012232102
+glyphs=bloodthirst/raging_blow/slam/cleaving/battle/berserker_rage
+actions=flask,type=endless_rage
+actions+=/food,type=dragonfin_filet
+actions+=/stance,choose=berserker,if=in_combat=0
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/recklessness
+actions+=/death_wish
+#actions+=/inner_rage,rage>=90
+actions+=/heroic_strike,rage>=75
+actions+=/whirlwind,if=target.adds>0
+actions+=/bloodthirst
+#actions+=/colossus_smash
+actions+=/raging_blow
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/execute
+actions+=/battle_shout
+actions+=/berserker_rage
+
+#Reforge haste -> hit
+head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_64haste_42hit_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit
+#Reforge haste -> hit
+neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68crit_36haste_24hit_141sta,gems=10str_10hit_4agi
+#Reforge haste -> hit
+shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_49haste_33hit_90crit_204sta_128str,gems=20str_4str,enchant=40ap_15crit
+#Reforge haste -> hit
+chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_62haste_42hit_122crit_275sta_167str,gems=20str_10str_10hit_6str,enchant=10str_10agi_10sta_10int_10spi
+#Reforge crit -> exp
+waist=coldwraith_links,heroic=1,stats=1550armor_78haste_51crit_34exp_204sta_120str,gems=10crit_10str_20str_34str_6str
+#Reforge crit -> exp
+legs=legplates_of_aetheric_strife,heroic=1,stats=2311armor_108haste_50crit_34exp_243sta_138str,gems=10str_10hit_34str_10str_10crit_8crit,enchant=75ap_22crit
+#Reforge crit -> exp
+feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74haste_54crit_36exp_204sta_120str,gems=10crit_10str_10str_10hit_6str,enchant=15sta
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_78crit_60hit_153sta_94str,gems=10crit_10str_20str_4str,enchant=50ap
+hands=sanctified_ymirjar_lords_gauntlets,heroic=1,stats=1723armor_90crit_82hit_204sta_128str,gems=10crit_10str_20str_4str,enchant=44ap
+#Reforge crit to exp
+finger1=ashen_band_of_endless_might,stats=85str_35crit_24exp_79hit_144sta,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+#Reforge crit -> exp
+finger2=might_of_blight,heroic=1,stats=94str_153sta_41crit_27exp_60haste,gems=10crit_10str_4str
+#Reforge crit -> hit
+trinket1=deathbringers_will,heroic=1,stats=101crit_66hit
+trinket2=deaths_verdict,heroic=1,stats=288ap
+#Reforge crit-> exp
+back=winding_sheet,heroic=1,stats=94str_153sta_41crit_27exp_60haste,gems=10str_10crit_4str,enchant=22agi
+#Reforge crit -> hit
+main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_113sta_34crit_22hit_48haste,gems=20str_4agi,enchant=berserking,weapon=axe_2.60speed_481min_895max
+#Reforget crit -> hit
+off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_113sta_34crit_22hit_48haste,gems=20str_4agi,enchant=berserking,weapon=axe_2.60speed_481min_895max
+#Reforge crit -> exp
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33haste_25crit_16exp_80sta,gems=20str_4agi,weapon=crossbow_3.00speed_834min_1252max
+
+# Gear Summary
+# gear_strength=1769
+# gear_agility=401
+# gear_stamina=2684
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=547
+# gear_hit_rating=512
+# gear_crit_rating=1173
+# gear_haste_rating=720
+# gear_mastery_rating=0
+# gear_armor=15747
+# meta_gem=relentless_earthsiege
+# tier10_2pc_melee=1
+# tier10_4pc_melee=1
+# trinket1=deathbringers_will,heroic=1
+# trinket2=deaths_verdict,heroic=1
+# main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max
+# off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max
+# ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_834min_1252max
+
