@@ -1792,11 +1792,6 @@ double player_t::composite_spell_haste() SC_CONST
 
     if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( sim -> auras.swift_retribution -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
     if ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check())
     {
       h *= 1.0 / ( 1.0 + 0.05 );

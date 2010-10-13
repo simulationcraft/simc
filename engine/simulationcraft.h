@@ -2190,7 +2190,6 @@ struct sim_t
     int strength_of_earth;
     int strength_of_wrynn;
     int sunder_armor;
-    int swift_retribution;
     int thunder_clap;
     int trueshot_aura;
     int unleashed_rage;
@@ -2223,7 +2222,6 @@ struct sim_t
     aura_t* rampage;
     aura_t* sanctified_retribution;
     aura_t* strength_of_earth;
-    aura_t* swift_retribution;
     aura_t* trueshot;
     aura_t* unleashed_rage;
     aura_t* windfury_totem;

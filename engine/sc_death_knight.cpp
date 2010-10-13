@@ -4430,6 +4430,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
   sim -> errorf( "Deathknight Module isn't avaiable at the moment." );
 
   //return new death_knight_t( sim, name, r );
+  return NULL;
 }
 
 // player_t::death_knight_init ==============================================

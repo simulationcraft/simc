@@ -3413,6 +3413,7 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_typ
   sim -> errorf( "Hunter Module isn't avaiable at the moment." );
 
   //return new hunter_t( sim, name, r );
+  return NULL;
 }
 
 
