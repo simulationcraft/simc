@@ -1377,14 +1377,14 @@ struct heroic_strike_t : public warrior_attack_t
     id = 78;
     parse_data( p -> player_data );
 
-    may_crit         = true;
-    base_crit       += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    base_dd_min      = 8;
-    base_dd_max      = 8;
-    direct_power_mod = 0.6;
-    weapon           = &( p -> main_hand_weapon );
-    normalize_weapon_speed = false;
+    may_crit          = true;
+    base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
+    base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    base_dd_min       = 8;
+    base_dd_max       = 8;
+    direct_power_mod  = 0.6;
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
 
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
