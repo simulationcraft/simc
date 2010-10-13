@@ -85,6 +85,7 @@ struct druid_t : public player_t
   passive_spell_t* spec_moonfury;
   passive_spell_t* mastery_total_eclipse; // Mastery
   double eclipse_bar_value; // Tracking the current value of the eclipse bar
+  int    eclipse_bar_direction; // Tracking the current direction of the eclipse bar
   
   // Feral
   passive_spell_t* spec_aggression;
@@ -194,6 +195,7 @@ struct druid_t : public player_t
     active_t10_4pc_caster_dot = 0;
     
     eclipse_bar_value     = 0;
+    eclipse_bar_direction = 0;
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
     cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
@@ -542,6 +544,9 @@ static void trigger_eclipse_proc( druid_t* p )
   p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01 * p -> talents.euphoria -> effect_base_value( 3 ) , p -> gains_euphoria );
   p -> buffs_t11_4pc_caster -> trigger( 3 );
   p -> buffs_natures_grace -> reset_cooldown();
+  
+  // When eclipse procs the direction of the bar switches!
+  p -> eclipse_bar_direction = - p -> eclipse_bar_direction;
 }
 
 // trigger_eclipse_energy_gain ==============================================
@@ -551,6 +556,21 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
   if ( gain == 0 ) return;
   
   druid_t* p = s -> player -> cast_druid();
+
+  if ( p -> eclipse_bar_direction == 0 )
+  {
+    // No eclipse gained at all by now => Start of the encounter
+    // Set the direction to the direction of the first gain!
+    p -> eclipse_bar_direction = ( gain > 0 ? 1 : -1 );
+  }
+  else
+  {
+    // If the gain isn't not alligned with the direction of the bar it won't happen
+    // +*+ == -*- => >0 => fine
+    // -*+ == +*- => <0 => Not alligned, no gain
+    if ( p -> eclipse_bar_direction * gain < 0 )
+      return;
+  }
 
   double old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
@@ -3692,23 +3712,24 @@ void druid_t::init_actions()
     else
     {
       action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
-      if ( talents.moonkin_form -> rank() ) action_list_str += "/moonkin_form";
+      if ( talents.moonkin_form -> rank() ) 
+        action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
-      if ( talents.typhoon -> rank() ) action_list_str += "/typhoon,moving=1";
+      if ( talents.typhoon -> rank() ) 
+        action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,trigger=-2000";
       if ( talents.force_of_nature -> rank() )
-      {
         action_list_str+="/treants,time>=5";
-      }
-      if ( talents.starfall -> rank() ) action_list_str+="/starfall,if=!eclipse";
+      if ( talents.starfall -> rank() ) 
+        action_list_str+="/starfall,if=!eclipse";
       action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
-      action_list_str += "/moonfire,if=!ticking&!eclipse";
-      action_list_str += "/insect_swarm,if=!ticking&!eclipse";
-      action_list_str += "/wrath,if=trigger_lunar";
+      action_list_str += "/moonfire,if=!ticking";
+      action_list_str += "/insect_swarm,if=!ticking";
+      action_list_str += "/starsurge";
       action_list_str += use_str;
-      action_list_str += "/starfire,if=buff.lunar_eclipse.react&(buff.lunar_eclipse.remains>cast_time)";
-      action_list_str += "/wrath,if=buff.solar_eclipse.react&(buff.solar_eclipse.remains>cast_time)";
+      action_list_str += "/starfire,if=buff.lunar_eclipse.up";
+      action_list_str += "/wrath,if=buff.solar_eclipse.up";
       action_list_str += "/starfire";
     }
     action_list_default = 1;
@@ -3905,6 +3926,15 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
       virtual int evaluate() { result_num = action -> player -> cast_druid() -> eclipse_bar_value; return TOK_NUM; }
     };
     return new eclipse_expr_t( a );
+  }
+  else if ( name_str == "eclipse_dir" )
+  {
+    struct eclipse_dir_expr_t : public action_expr_t
+    {
+      eclipse_dir_expr_t( action_t* a) : action_expr_t( a, "eclipse_dir", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> cast_druid() -> eclipse_bar_direction; return TOK_NUM; }
+    };
+    return new eclipse_dir_expr_t( a );
   }
   return player_t::create_expression( a, name_str );
 }
