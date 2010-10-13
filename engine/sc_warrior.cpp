@@ -56,6 +56,7 @@ struct warrior_t : public player_t
   buff_t* buffs_bastion_of_defense;
   buff_t* buffs_battle_stance;
   buff_t* buffs_battle_trance;
+  buff_t* buffs_berserker_rage;
   buff_t* buffs_berserker_stance;
   buff_t* buffs_bloodsurge;
   buff_t* buffs_colossus_smash;
@@ -1610,7 +1611,7 @@ struct raging_blow_t : public warrior_attack_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! ( p -> buffs_death_wish -> check() || p -> buffs_enrage -> check() ) )
+    if ( ! ( p -> buffs_death_wish -> check() || p -> buffs_enrage -> check() || p -> buffs_berserker_rage -> check() ) )
       return false;
 
     return warrior_attack_t::ready();
@@ -2258,6 +2259,7 @@ struct berserker_rage_t : public warrior_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );  
     if ( p -> glyphs.berserker_rage )
       p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_berserker_rage );
+    p -> buffs_berserker_rage -> trigger();
   }
 };
 
@@ -2862,6 +2864,7 @@ void warrior_t::init_buffs()
   buffs_bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, 12.0,   0, talents.bastion_of_defense -> proc_chance() );
   buffs_battle_stance             = new buff_t( this, "battle_stance"    );
   buffs_battle_trance             = new buff_t( this, "battle_trance",             1, 15.0,   0, talents.battle_trance -> proc_chance() );
+  buffs_berserker_rage            = new buff_t( this, "berserker_rage",            1, 10.0 );
   buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, talents.bloodsurge -> proc_chance() );
   buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
