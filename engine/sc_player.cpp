@@ -3957,6 +3957,7 @@ std::vector<talent_translation_t>& player_t::get_talent_list()
         return talent_list;
 }
 
+
 // player_t::parse_talent_trees ===================================================
 
 bool player_t::parse_talent_trees( int talents[], const uint32_t size )
@@ -4051,10 +4052,13 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   int talents[ MAX_TALENT_SLOTS ] = {0};
   unsigned int tree_size[ MAX_TALENT_TREES ] = {0};
   unsigned int tree_count[ MAX_TALENT_TREES ] = {0};
+  unsigned int number_talents = 0;
 
-  for (unsigned int i=0; i < talent_list.size(); i++ )
+
+  for (unsigned int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    tree_size[ talent_list[i].tree ]++;
+    tree_size[ i ] = player_data.talent_player_get_num_talents( type, i );
+    number_talents += tree_size[i];
   }
 
   unsigned int tree = 0;
@@ -4062,9 +4066,14 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   for ( unsigned int i=1; i < talent_string.length(); i++ )
   {
-    if ( (tree >= MAX_TALENT_TREES) || (count > talent_list.size()) )
+    if ( (tree >= MAX_TALENT_TREES) )
     {
-      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talents or trees specified.\n", name() );
+      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talent trees specified.\n", name() );
+      return false;
+    }
+    if ( (count >  number_talents) )
+    {
+      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talents specified.\n", name() );
       return false;
     }
 
@@ -4116,10 +4125,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 
-  if ( ! parse_talent_trees( talents, talent_list.size() ) )
-    return false;
-
-  return true;
+  return parse_talent_trees( talents, number_talents );
 }
 
 // player_t::create_expression ==============================================
