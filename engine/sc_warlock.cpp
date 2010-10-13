@@ -3993,6 +3993,7 @@ void warlock_t::init_scaling()
 {
   player_t::init_scaling();
   scales_with[ STAT_SPIRIT ] = 0;
+  scales_with[ STAT_STAMINA ] = 1;
 }
 
 // warlock_t::init_buffs =====================================================
