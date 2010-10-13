@@ -3981,6 +3981,9 @@ void warlock_t::init_glyphs()
     else if ( n == "soulstone" )           ;
     else if ( n == "unending_breath" )     ;
     else if ( n == "voidwalker" )          ;
+    else if ( n == "ritual_of_souls" )     ;
+    else if ( n == "demonic_circle" )      ;
+    else if ( n == "soul_swap" )           ;
     else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -4128,10 +4131,10 @@ void warlock_t::init_actions()
       action_list_str += "/summon_felguard";
     else if ( primary_tree() == TREE_DESTRUCTION )
       action_list_str += "/summon_imp";
-    else if ( primary_tree() == TREE_AFFLICTION )
-      action_list_str += "/summon_felhunter";
-    else
+    else if ( primary_tree() == TREE_AFFLICTION && glyphs.lash_of_pain -> ok() )
       action_list_str += "/summon_succubus";
+    else
+      action_list_str += "/summon_felhunter";
 
     action_list_str += "/snapshot_stats";
 
@@ -4173,44 +4176,58 @@ void warlock_t::init_actions()
     case TREE_AFFLICTION:
 
       if ( talent_haunt -> rank() ) action_list_str += "/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<4)";
+      action_list_str += "/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gcd";
       action_list_str += "/corruption,if=!ticking";
-      action_list_str += "/bane_of_agony,time_to_die>=20,if=!ticking";
+      action_list_str += "/soulburn,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
+      action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
-      action_list_str += "/drain_life";
+      action_list_str += "/summon_doomguard,time>=100";
+      action_list_str += "/shadow_bolt";
+
+    break;
 
     case TREE_DESTRUCTION:
+      action_list_str += "/soulburn";
+      action_list_str += "/bane_of_doom,if=!ticking";
+      action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
-      action_list_str += "/immolate,time_to_die>=3,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/summon_doomguard,time>=100";
+      action_list_str += "/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up";
       action_list_str += "/chaos_bolt";
-      action_list_str += "/bane_of_doom,time_to_die>=70";
-      action_list_str += "/bane_of_agony,moving=1,if=(!ticking)&!(dot.bane_of_doom.remains>0)";
-      action_list_str += "/fel_flame,if=dot.immolate.remains<=4";
+      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
+      action_list_str += "/shadowflame";
+      action_list_str += "/soul_fire,if=buff.empowered_imp.react";
+      action_list_str += "/searing_pain,health_percentage<=50";
       action_list_str += "/incinerate";
 
+    break;
+
     case TREE_DEMONOLOGY:
-      if ( talent_demonic_empowerment -> rank() ) action_list_str += "/demonic_empowerment";
+      action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
       action_list_str += "/metamorphosis";
-      action_list_str += "/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)";
-      action_list_str += "/immolation";
-      action_list_str += "/bane_of_doom,time_to_die>=70";
-      if ( talent_decimation -> rank() ) action_list_str += "/soul_fire,if=(buff.decimation.react)&(buff.molten_core.react)";
-      action_list_str += "/corruption,time_to_die>=8,if=!ticking";
-      if ( talent_decimation -> rank() ) action_list_str += "/soul_fire,if=buff.decimation.react";
+      action_list_str += "/soulburn,if=buff.metamorphosis.react";
+      action_list_str += "/soul_fire,if=buff.soulburn.react";
+      action_list_str += "/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)&!ticking";
+      action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
+      action_list_str += "/hand_of_guldan";
+      action_list_str += "/immolation,if=buff.metamorphosis.react";
+      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
+      action_list_str += "/shadowflame";
+      action_list_str += "/soul_fire,if=buff.decimation.react";
       action_list_str += "/incinerate,if=buff.molten_core.react";
-      action_list_str += "/bane_of_agony,moving=1,if=(!ticking)&!(dot.bane_of_doom.remains>0)";
-      action_list_str += "/fel_flame,if=dot.immolate.remains<=4";
       action_list_str += "/shadow_bolt";
+
+    break;
 
   default:
 
-      action_list_str += "/corruption,if=!ticking/bane_of_agony,time_to_die>20,if=!ticking/immolate,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/corruption,if=!ticking";
+      action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
+      action_list_str += "/immolate,if=(dot.immolate.remains<cast_time)";
+      action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
   }
-
-    // instants to use when moving if possible
-    if ( talent_shadowburn -> rank() ) action_list_str += "/shadowburn,moving=1";
-    if ( talent_shadowfury -> rank()  ) action_list_str += "/shadowfury,moving=1";
 
     action_list_str += "/life_tap"; // to use when no mana or nothing else is possible
 
