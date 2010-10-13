@@ -703,8 +703,6 @@ void warrior_attack_t::execute()
   {
     p -> buffs_overpower -> trigger();
   }
-
-  trigger_strikes_of_opportunity( this );
 }
 
 // warrior_attack_t::parse_options ==========================================
@@ -892,6 +890,7 @@ struct melee_t : public warrior_attack_t
     if ( result_is_hit() )
     {
 	    trigger_rage_gain( this, rage_conversion_value );
+      trigger_strikes_of_opportunity( this );
 
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
@@ -1018,6 +1017,14 @@ struct bladestorm_t : public warrior_attack_t
     if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );
+  }
+  
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+    if ( p ->  off_hand_attack ) p -> off_hand_attack -> cancel();
   }
 
   virtual void tick()
@@ -1392,7 +1399,7 @@ struct heroic_strike_t : public warrior_attack_t
       {
         p -> buffs_tier8_2pc_melee -> trigger();
         if ( ! p -> buffs_incite -> check() )
-          p -> buffs_incite          -> trigger();
+          p -> buffs_incite -> trigger();
       }
     }
     p -> buffs_incite -> expire();
