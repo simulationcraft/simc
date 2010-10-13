@@ -333,6 +333,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_talents.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_target.cpp"
 			>
 		</File>
