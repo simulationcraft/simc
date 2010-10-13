@@ -1143,7 +1143,7 @@ static void trigger_mana_feed( action_t* s, double travel_result )
   {
     if ( travel_result == RESULT_CRIT )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect_base_value( 3 ), p -> gains_mana_feed );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] / 100.0 * p -> talent_mana_feed -> effect_base_value( 3 ), p -> gains_mana_feed );
       a -> procs_mana_feed -> occur();
     }
   }
