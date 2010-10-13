@@ -772,7 +772,7 @@ void warrior_attack_t::player_buff()
     }
   }
 
-  if ( p -> spec.dual_wield_specialization -> ok() && p -> dual_wield() )
+  if ( p -> spec.dual_wield_specialization -> ok() && p -> dual_wield() && school == SCHOOL_PHYSICAL )
   {
     player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
   }
