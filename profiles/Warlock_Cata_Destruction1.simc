@@ -1,6 +1,6 @@
 #!./simc 
 
-warlock=Warlock_Cata_Destruction
+warlock=Warlock_Cata_Destruction1
 #bugs=0
 level=85
 race=goblin
@@ -30,11 +30,13 @@ actions+=/incinerate
 actions+=/life_tap
 
 # Gear Summary
-gear_stamina=10000
-gear_intellect=7000
-gear_spirit=500
-gear_spell_power=2000
-gear_hit_rating=800
-gear_crit_rating=1750
-gear_haste_rating=2500
-gear_mastery_rating=1250
+gear_stamina=4000
+gear_intellect=4000
+gear_spirit=200
+gear_spell_power=1000
+gear_hit_rating=260
+gear_crit_rating=700
+gear_haste_rating=900
+gear_mastery_rating=100
+gear_armor=4000
+meta_gem=chaotic_skyflare
