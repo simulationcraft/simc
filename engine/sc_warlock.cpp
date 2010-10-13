@@ -1166,8 +1166,13 @@ struct warlock_pet_spell_t : public spell_t
   warlock_pet_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
     spell_t( s, ptype, stype, t )
   { }
-  warlock_pet_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = WARLOCK, int t = TREE_NONE ) :
+
+  warlock_pet_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, sname, player, ptype, stype, t )
+  { }
+
+  warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      spell_t( n, id, player, ptype, stype, t )
   { }
 
   virtual void player_buff()
@@ -1595,17 +1600,16 @@ struct infernal_pet_t : public warlock_pet_t
   struct immolation_damage_t : public warlock_pet_spell_t
   {
     immolation_damage_t( player_t* player ) :
-      warlock_pet_spell_t( "immolation_dmg", player, 20153 )
+      warlock_pet_spell_t( "immolation_dmg", 20153, player )
     {
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       background  = true;
       aoe         = true;
       direct_tick = true;
       stats = player -> get_stats( "infernal_immolation" );
-      base_dd_min = base_dd_max = p -> player_data.effect_real_ppl ( 11232 ) * p -> level; // works
-      //base_dd_min = base_dd_max = effect_real_ppl ( 1 ) * p -> level; // doesn't work
+      base_dd_min = base_dd_max = effect_real_ppl ( 1 ) * p -> level;
       direct_power_mod  = 0.4;
-      range = p -> player_data.effect_radius ( 11232 );
+
     }
 
     virtual void execute()
@@ -1621,7 +1625,7 @@ struct infernal_pet_t : public warlock_pet_t
     immolation_damage_t* immolation_damage;
 
     infernal_immolation_t( player_t* player, const std::string& options_str ) :
-      warlock_pet_spell_t( "infernal_immolation", player, 19483 )
+      warlock_pet_spell_t( "infernal_immolation", 19483, player )
     {
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       option_t options[] =
@@ -1629,11 +1633,9 @@ struct infernal_pet_t : public warlock_pet_t
         { NULL, OPT_UNKNOWN, NULL }
       };
       parse_options( options, options_str );
-
       harmful = false;
       num_ticks      = 1;
       number_ticks   = 1;
-      base_tick_time = 2.0; // without it there is no value, even though 10699 has amplitude 2000
       scale_with_haste = false;
 
       immolation_damage = new immolation_damage_t( p );
