@@ -2281,7 +2281,7 @@ struct corruption_t : public warlock_spell_t
       p -> procs_shadow_trance -> occur();
     if ( p -> talent_siphon_life -> rank() )
     {
-      if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> proc_chance() / 100.0 ) )
+      if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> proc_chance() ) )
       {
         p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.02 );
       }
@@ -4056,7 +4056,7 @@ void warlock_t::init_buffs()
   buffs_metamorphosis         = new buff_t( this, "metamorphosis",         1, 30.0 + glyphs.metamorphosis -> value() / 1000.0, 0.0, talent_metamorphosis -> rank() );
   buffs_molten_core           = new buff_t( this, "molten_core",           3, 15.0, 0.0, talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, "shadow_embrace",        3, 12.0, 0.0, talent_shadow_embrace -> rank() );
-  buffs_shadow_trance         = new buff_t( this, "shadow_trance",         1,  0.0, 0.0, talent_nightfall -> proc_chance() / 100.0 +  glyphs.corruption -> value() / 100.0 );
+  buffs_shadow_trance         = new buff_t( this, "shadow_trance",         1,  0.0, 0.0, talent_nightfall -> proc_chance() +  glyphs.corruption -> value() / 100.0 );
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, "improved_soul_fire",    1, 15.0, 0.0, (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn              = new buff_t( this, "soulburn",              1, 15.0 );
