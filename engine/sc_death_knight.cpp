@@ -559,7 +559,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_td           = 36;
       trigger_gcd       = 0;
       base_tick_time    = 3.0;
-      num_ticks         = 5 + 4.0 * o -> talents.epidemic / 3.0;
+      num_ticks         = 5 + 4 * o -> talents.epidemic / 3;
       base_attack_power_multiplier = 1;
       tick_power_mod    = 0.055 * 1.15;
       base_spell_power_multiplier  = 0;
@@ -719,7 +719,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       trigger_gcd       = 0;
       base_td           = 29;
       base_tick_time    = 3.0;
-      num_ticks         = 5 + 4.0 * o -> talents.epidemic / 3.0;
+      num_ticks         = 5 + 4 * o -> talents.epidemic / 3;
       base_multiplier  *= 1.0 + o -> glyphs.icy_touch * 0.2;
       base_attack_power_multiplier = 1;
       tick_power_mod    = 0.055 * 1.15;
@@ -2029,7 +2029,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_cost         = 0;
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 5 + 4.0 * p -> talents.epidemic / 3.0;
+    num_ticks         = 5 + 4 * p -> talents.epidemic / 3;
     base_attack_power_multiplier *= 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> talents.ebon_plaguebringer * 0.15;
     tick_power_mod    = 1;
@@ -2048,7 +2048,7 @@ struct blood_plague_t : public death_knight_spell_t
 
     target_t* t = sim -> target;
     added_ticks = 0;
-    num_ticks = 5 + 4.0 * p -> talents.epidemic / 3.0;
+    num_ticks = 5 + 4 * p -> talents.epidemic / 3;
     if ( ! sim -> overrides.blood_plague )
     {
       t -> debuffs.blood_plague -> buff_duration = 3.0 * num_ticks;
@@ -2538,7 +2538,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_cost         = 0;
     base_execute_time = 0;
     base_tick_time    = 3.0;
-    num_ticks         = 5 + 4.0 * p -> talents.epidemic / 3.0;
+    num_ticks         = 5 + 4 * p -> talents.epidemic / 3;
     base_attack_power_multiplier *= 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2 + p -> talents.ebon_plaguebringer * 0.15;
     tick_power_mod    = 1;
@@ -2556,7 +2556,7 @@ struct frost_fever_t : public death_knight_spell_t
 
     target_t* t = sim -> target;
     added_ticks = 0;
-    num_ticks = 4.0 * p -> talents.epidemic / 3.0;
+    num_ticks = 4 * p -> talents.epidemic / 3;
     if ( ! sim -> overrides.frost_fever )
     {
       t -> debuffs.frost_fever -> buff_duration = 3.0 * num_ticks;

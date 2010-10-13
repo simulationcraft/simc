@@ -109,6 +109,41 @@ struct warrior_t : public player_t
   gain_t* gains_shield_specialization;
   gain_t* gains_sudden_death;
 
+  // Glyphs
+  struct glyphs_t
+  {
+    int battle;
+    int berserker_rage;
+    int bladestorm;
+    int bloodthirst;
+    int cleaving;
+    int devastate;
+    int enduring_victory;
+    int mortal_strike;
+    int overpower;
+    int raging_blow;
+    int resonating_power;
+    int revenge;
+    int shield_slam;
+    int shockwave;
+    int slam;
+    int sweeping_strikes;
+
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
+  // Mastery
+  struct mastery_t
+  {
+    passive_spell_t* critical_block;
+    passive_spell_t* strikes_of_opportunity;
+    passive_spell_t* unshackled_fury;
+
+    mastery_t() { memset( ( void* ) this, 0x0, sizeof( mastery_t ) ); }
+  };
+  mastery_t mastery;
+
   // Procs
   proc_t* procs_deferred_deep_wounds;
   proc_t* procs_munched_deep_wounds;
@@ -126,11 +161,20 @@ struct warrior_t : public player_t
   rng_t* rng_wrecking_crew;
   rng_t* rng_tier10_4pc_melee;  
 
-  // Up-Times
-  uptime_t* uptimes_deep_wounds;
-  uptime_t* uptimes_rage_cap;
-  uptime_t* uptimes_rend;
+  // Spec Passives
+  struct spec_t
+  {
+    passive_spell_t* anger_management;    
+    passive_spell_t* dual_wield_specialization;
+    passive_spell_t* precision;
+    passive_spell_t* sentinel;
+    passive_spell_t* two_handed_weapon_specialization;
 
+    spec_t() { memset( ( void* ) this, 0x0, sizeof( spec_t ) ); }
+  };
+  spec_t spec;
+
+  // Talents
   struct talents_t
   {
     // Arms
@@ -187,28 +231,10 @@ struct warrior_t : public player_t
   };
   talents_t talents;
 
-  struct glyphs_t
-  {
-    int battle;
-    int berserker_rage;
-    int bladestorm;
-    int bloodthirst;
-    int cleaving;
-    int devastate;
-    int enduring_victory;
-    int mortal_strike;
-    int overpower;
-    int raging_blow;
-    int resonating_power;
-    int revenge;
-    int shield_slam;
-    int shockwave;
-    int slam;
-    int sweeping_strikes;
-
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
+  // Up-Times
+  uptime_t* uptimes_deep_wounds;
+  uptime_t* uptimes_rage_cap;
+  uptime_t* uptimes_rend;
 
   bool plate_specialization;
 
@@ -331,7 +357,6 @@ static void trigger_blood_frenzy( action_t* a )
   {
     t -> debuffs.blood_frenzy_physical -> trigger( 1, value * 15 );
   }
-
 }
 
 // trigger_bloodsurge =======================================================
@@ -346,14 +371,14 @@ static void trigger_bloodsurge( action_t* a )
   if ( p -> set_bonus.tier10_4pc_melee() && p -> rng_tier10_4pc_melee -> roll( 0.30 ) )
   {
     p -> buffs_bloodsurge -> max_stack = 2;
-    p -> buffs_bloodsurge -> buff_duration  = 10;
+    p -> buffs_bloodsurge -> buff_duration = 10;
 
     p -> buffs_tier10_4pc_melee -> buff_duration = 20;
   }
   else
   {
     p -> buffs_bloodsurge -> max_stack = 1;
-    p -> buffs_bloodsurge -> buff_duration  = 10;
+    p -> buffs_bloodsurge -> buff_duration = 10;
   }
 
   if ( p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack ) )
@@ -364,7 +389,6 @@ static void trigger_bloodsurge( action_t* a )
 
 // trigger_deep_wounds ======================================================
 
-// FIXME: Currently broken
 static void trigger_deep_wounds( action_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
@@ -517,7 +541,8 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   // Basic Formula:      http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=1
   // Blue Clarification: http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
 
-  if ( a -> proc ) return;
+  if ( a -> proc )
+    return;
 
   warrior_t* p = a -> player -> cast_warrior();
   weapon_t*  w = a -> weapon;
@@ -528,7 +553,10 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   
   double rage_gain = rage_factor * w -> swing_time;
 
-  if ( p -> primary_tree() == TREE_ARMS ) rage_gain *= 1.25;
+  if ( p -> spec.anger_management -> ok() )
+  {
+    rage_gain *= 1.0 + p -> spec.anger_management -> effect_base_value( 2 ) / 100.0;
+  }
 
   p -> resource_gain( RESOURCE_RAGE, rage_gain, w -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
 }
@@ -537,20 +565,23 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
 
 static void trigger_strikes_of_opportunity( attack_t* a )
 {
-  if ( a -> proc ) return;
+  if ( a -> proc )
+    return;
 
-  if ( a -> result_is_miss() ) return;
+  if ( a -> result_is_miss() )
+    return;
 
   weapon_t* w = a -> weapon;
 
-  if ( ! w ) return;
+  if ( ! w )
+    return;
 
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( ! ( p -> primary_tree() == TREE_ARMS ) )
+  if ( ! p -> mastery.strikes_of_opportunity -> ok() )
     return;
   
-  if ( p -> rng_strikes_of_opportunity -> roll( 0.02 * p -> composite_mastery() ) )
+  if ( p -> rng_strikes_of_opportunity -> roll( p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect_base_value( 2 ) / 10000.0 ) )
   {
     if ( a -> sim -> log )
       log_t::output( a -> sim, "%s gains one extra attack through %s",
@@ -662,7 +693,6 @@ void warrior_attack_t::execute()
   {
     trigger_sudden_death( this );
 
-    // Critproccgalore
     if( result == RESULT_CRIT )
     {
       trigger_deep_wounds( this );
@@ -684,10 +714,10 @@ void warrior_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "min_rage",       OPT_FLT, &min_rage       },
-    { "max_rage",       OPT_FLT, &max_rage       },
-    { "rage>",          OPT_FLT, &min_rage       },
-    { "rage<",          OPT_FLT, &max_rage       },
+    { "min_rage", OPT_FLT, &min_rage },
+    { "max_rage", OPT_FLT, &max_rage },
+    { "rage>",    OPT_FLT, &min_rage },
+    { "rage<",    OPT_FLT, &max_rage },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -704,13 +734,13 @@ void warrior_attack_t::player_buff()
 
   if ( weapon )
   {
-    if ( p -> primary_tree() == TREE_FURY && weapon -> slot == SLOT_OFF_HAND )
+    if ( p -> spec.dual_wield_specialization -> ok() && weapon -> slot == SLOT_OFF_HAND )
     {
-      player_multiplier *= 1.0 + 0.25;
+      player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
     }
-    if ( weapon -> group() == WEAPON_2H && p -> primary_tree() == TREE_ARMS)
+    if ( p -> spec.two_handed_weapon_specialization -> ok() && weapon -> group() == WEAPON_2H)
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
     }
   }
 
@@ -742,9 +772,9 @@ void warrior_attack_t::player_buff()
     }
   }
 
-  if ( p -> primary_tree() == TREE_FURY && p -> dual_wield() )
+  if ( p -> spec.dual_wield_specialization -> ok() && p -> dual_wield() )
   {
-    player_multiplier *= 1.10;
+    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
   }
 
   if ( special && p -> buffs_recklessness -> up() )
@@ -869,9 +899,9 @@ struct melee_t : public warrior_attack_t
       }
 
       double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
-      if ( p -> primary_tree() == TREE_FURY )
+      if ( p -> mastery.unshackled_fury -> ok() )
       {
-        enrage_value *= p -> composite_mastery() * 0.0313;
+        enrage_value *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
       }
       p -> buffs_enrage -> trigger( 1, enrage_value);
     }
@@ -1564,9 +1594,9 @@ struct raging_blow_t : public warrior_attack_t
   {
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
-    if ( p -> primary_tree() == TREE_FURY )
+    if ( p -> mastery.unshackled_fury -> ok() )
     {
-      player_multiplier *= 1.0 + p -> composite_mastery() * 0.0313;
+      player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
     }
   }
 
@@ -2289,9 +2319,10 @@ struct death_wish_t : public warrior_spell_t
     harmful = false;
     if ( p -> talents.intensify_rage -> rank() )
       cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
+
     enrage_bonus = 0.20;
-    if ( p -> primary_tree() == TREE_FURY )
-      enrage_bonus *= p -> composite_mastery() * 0.0313; 
+    if ( p -> mastery.unshackled_fury -> ok() )
+      enrage_bonus *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0; 
   }
 
   virtual void execute()
@@ -2662,8 +2693,19 @@ void warrior_t::init_spells()
   active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap", WARRIOR_ARMS );
   active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush", WARRIOR_FURY );
   active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind", WARRIOR_FURY );
-}
 
+  // Mastery
+  mastery.critical_block         = new passive_spell_t( this, "critical_block",         76857, WARRIOR_PROTECTION );
+  mastery.strikes_of_opportunity = new passive_spell_t( this, "strikes_of_opportunity", 76838, WARRIOR_ARMS );
+  mastery.unshackled_fury        = new passive_spell_t( this, "unshackled_fury",        76856, WARRIOR_FURY );
+
+  // Spec Passives
+  spec.anger_management                 = new passive_spell_t( this, "anger_management",                 12296, WARRIOR_ARMS );
+  spec.dual_wield_specialization        = new passive_spell_t( this, "dual_wield_specialization",        23588, WARRIOR_FURY );
+  spec.precision                        = new passive_spell_t( this, "precision",                        29592, WARRIOR_FURY );
+  spec.sentinel                         = new passive_spell_t( this, "sentinel",                         29144, WARRIOR_PROTECTION );
+  spec.two_handed_weapon_specialization = new passive_spell_t( this, "two_handed_weapon_specialization", 12712, WARRIOR_ARMS );
+}
 
 // warrior_t::init_glyphs ===================================================
 
@@ -2761,10 +2803,12 @@ void warrior_t::init_base()
   base_dodge   = 0.03664;
   base_parry   = 0.05;
   base_block   = 0.05;
-  if ( primary_tree() == TREE_PROTECTION )
+
+  if ( mastery.critical_block -> ok() )
   {
-   base_block += 0.15 + 0.0125 * composite_mastery();
+    base_block += composite_mastery() * mastery.critical_block -> effect_base_value( 3 ) / 10000.0;
   }
+
   if ( talents.toughness -> rank() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
   initial_dodge_per_agility = 0.0001180;
@@ -2775,7 +2819,11 @@ void warrior_t::init_base()
   diminished_dodge_capi = 1.0 / 0.88129021;
   diminished_parry_capi = 1.0 / 0.47003525;
 
-  attribute_multiplier_initial[ ATTR_STAMINA  ]   *= 1 + primary_tree() == TREE_PROTECTION * 0.15;
+  if ( spec.sentinel -> ok() )
+  {
+    attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0  + spec.sentinel -> effect_base_value( 1 ) / 100.0;
+    base_block += spec.sentinel -> effect_base_value( 3 ) / 100.0;
+  }
 
   health_per_stamina = 10;
 
@@ -3043,9 +3091,9 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 double warrior_t::composite_attack_hit() SC_CONST
 {
   double ah = player_t::composite_attack_hit();
-  if ( primary_tree() == TREE_FURY )
+  if ( spec.precision -> ok() )
   {
-    ah += .03;
+    ah += spec.precision -> effect_base_value( 1 ) / 100.0;
   }
   return ah;
 }
@@ -3092,7 +3140,7 @@ void warrior_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( primary_tree() == TREE_ARMS )
+  if ( spec.anger_management -> ok() )
   {
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
