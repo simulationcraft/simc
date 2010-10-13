@@ -482,7 +482,6 @@ struct rogue_attack_t : public attack_t
   virtual void   assess_damage( double amount, int dmg_type );
   virtual double total_multiplier() SC_CONST;
 
-  void reparse_data( sc_data_access_t& pData );
   void add_combo_points();
   void add_trigger_buff( buff_t* buff );
   void trigger_buff();
@@ -940,19 +939,30 @@ void rogue_attack_t::_init_rogue_attack_t()
   may_crit              = true;
   tick_may_crit         = true;
   scale_with_haste      = false;
+
+  // reset some damage related stuff ::parse_data set which we will overwhire anyway in actual spell ctors/executes
+  direct_power_mod = 0.0;
+  tick_power_mod   = 0.0;
+
+  // move base tick damage to base_td_init
+  if ( base_td )
+  {
+    base_td_init = base_td;
+    base_td = 0;
+  }
     
   requires_weapon       = WEAPON_NONE;
   requires_position     = POSITION_NONE;
   requires_stealth      = false;
   requires_combo_points = false;
 
+  adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
+
   combo_points_spent    = 0;
     
   rogue_t* p = player -> cast_rogue();
 
   base_hit  += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
-
-  reparse_data( p -> player_data );
 }
 
 // rogue_attack_t::parse_options ===========================================
@@ -993,45 +1003,6 @@ action_expr_t* rogue_attack_t::create_expression( const std::string& name_str )
   }
 
   return attack_t::create_expression( name_str );
-}
-
-// rogue_attack_t::reparse_data ============================================
-
-void rogue_attack_t::reparse_data( sc_data_access_t& pData )
-{
-  // reset some damage related stuff ::parse_data set which may be wrong
-  direct_power_mod = 0.0;
-  tick_power_mod   = 0.0;
-  if ( base_td )
-  {
-    base_td_init = base_td;
-    base_td = 0;
-  }
-
-  if ( ! pData.spell_exists(id) )
-    return;
-  
-  for ( int i = 1; i <= MAX_EFFECTS; i++ )
-  {
-    int effect = pData.spell_effect_id ( id, i );
-        
-    if ( ! pData.effect_exists ( effect ) )
-      continue;
-          
-    switch ( pData.effect_type ( effect) )
-    {
-      case E_ADD_COMBO_POINTS:
-        adds_combo_points = pData.effect_base_value( effect );
-        break;
-
-      case E_APPLY_AURA:
-        {
-          if ( pData.effect_subtype( effect ) == A_PERIODIC_DAMAGE && school == SCHOOL_PHYSICAL )
-            school = stats -> school = SCHOOL_BLEED;
-        }
-        break;
-    }
-  }
 }
 
 // rogue_attack_t::cost ====================================================
@@ -2559,14 +2530,14 @@ struct deadly_poison_t : public rogue_poison_t
 
     if ( ! success )
     {
-      double chance = 30.0;
+      double chance = 0.30;
 
-      chance += p -> spec_improved_poisons -> base_value( E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
+      chance += p -> spec_improved_poisons -> mod_additive( P_PROC_CHANCE );
 
       if ( p -> buffs_envenom -> up() )
-        chance += p -> buffs_envenom -> base_value( E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
+        chance += p -> buffs_envenom -> base_value( E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 100.0;
 
-      success = p -> rng_deadly_poison -> roll( chance / 100.0 );
+      success = p -> rng_deadly_poison -> roll( chance );
     }
 
     if ( success )
@@ -2652,7 +2623,7 @@ struct instant_poison_t : public rogue_poison_t
     {
       double m = 1.0;
 
-      m += p -> spec_improved_poisons -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
+      m += p -> spec_improved_poisons -> mod_additive( P_PROC_FREQUENCY );
 
       if ( p -> buffs_envenom -> up() )
         m += p -> buffs_envenom -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
