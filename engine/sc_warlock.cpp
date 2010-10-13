@@ -2871,7 +2871,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_gain( RESOURCE_MANA, life * 1.20, p -> gains_life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet)
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> talent_mana_feed -> effect_base_value( 1 ), p -> active_pet -> gains_mana_feed );
+      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
     }
   }
 
