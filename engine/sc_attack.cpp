@@ -102,18 +102,17 @@ void attack_t::player_buff()
       case WEAPON_AXE:
       case WEAPON_AXE_2H:
       case WEAPON_FIST:
-	player_expertise += 0.05;
-	break;
+	      player_expertise += 0.03;
+	      break;
       }
     }
     else if ( p -> race == RACE_TROLL )
     {
       switch ( weapon -> type )
       {
-      case WEAPON_THROWN:
       case WEAPON_BOW:
-	player_crit += 0.01;
-	break;
+	      player_crit += 0.01;
+	      break;
       }
     }
     else if ( p -> race == RACE_HUMAN )
@@ -124,8 +123,8 @@ void attack_t::player_buff()
       case WEAPON_MACE_2H:
       case WEAPON_SWORD:
       case WEAPON_SWORD_2H:
-	player_expertise += 0.03;
-	break;
+	      player_expertise += 0.03;
+	      break;
       }
     }
     else if ( p -> race == RACE_DWARF )
@@ -133,35 +132,24 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       case WEAPON_GUN: 
-	player_crit += 0.01;
-	break;
+	      player_crit += 0.01;
+	      break;
       case WEAPON_MACE:
       case WEAPON_MACE_2H:
-	player_expertise += 0.05;
-	break;
+	      player_expertise += 0.03;
+	      break;
       }
     }
-    else if ( p -> race == RACE_GOBLIN )
+    else if ( p -> race == RACE_GNOME )
     {
       switch ( weapon -> type )
       {
-      // Goblin Weapon Types
-      case WEAPON_GUN:
-      default: break;
+      case WEAPON_DAGGER:
+      case WEAPON_SWORD:
+	      player_expertise += 0.03;
+	      break;
       }
-      // GOBLIN BONI
     }
-    else if ( p -> race == RACE_WORGEN )
-    {
-      switch ( weapon -> type )
-      {
-      // Worgen Weapon Types
-      case WEAPON_GUN:
-      default: break;
-      }
-      // WORGEN BONI
-    }
-
   }
 
   if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
