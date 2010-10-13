@@ -1276,7 +1276,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
   overrides.frost_fever            = optimal_raid;
-  overrides.heart_of_the_crusader  = optimal_raid;
   overrides.hellscreams_warsong    = 0;
   overrides.heroic_presence        = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
@@ -1558,7 +1557,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
       { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
-      { "override.heart_of_the_crusader",   OPT_BOOL,   &( overrides.heart_of_the_crusader          ) },
       { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
       { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
       { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },

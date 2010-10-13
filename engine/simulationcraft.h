@@ -2161,7 +2161,6 @@ struct sim_t
     int dark_intent;
     int fortitude;
     int frost_fever;
-    int heart_of_the_crusader;
     int hellscreams_warsong;
     int hemorrhage;
     int heroic_presence;
@@ -3149,7 +3148,6 @@ struct target_t
     debuff_t* faerie_fire;
     debuff_t* frostbite;
     debuff_t* frost_fever;
-    debuff_t* heart_of_the_crusader;
     debuff_t* hunters_mark;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;

@@ -2725,7 +2725,6 @@ void player_t::paladin_init( sim_t* sim )
 
   target_t* t = sim -> target;
 
-  t -> debuffs.heart_of_the_crusader  = new debuff_t( sim, "heart_of_the_crusader",  1, 20.0 );
   t -> debuffs.judgements_of_the_just = new debuff_t( sim, "judgements_of_the_just", 1, 20.0 );
 }
 
@@ -2747,6 +2746,5 @@ void player_t::paladin_combat_begin( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.heart_of_the_crusader  ) t -> debuffs.heart_of_the_crusader  -> override();
   if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
 }
