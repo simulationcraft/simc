@@ -701,7 +701,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   int user_id=0;
   if ( js_t::get_value( user_id, profile_js, "user" ) && ( user_id != 0 ) )
   {
-    p -> origin_str = "http://profiler.wowhead.com/profile=" + id;
+    p -> origin_str = "http://www.wowhead.com/profile=" + id;
   }
   else
   {
@@ -709,7 +709,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     std::string character_name = name_str;
     format_server( server_name );
     armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-    p -> origin_str = "http://profiler.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
+    p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
   p -> professions_str = "";

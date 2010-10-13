@@ -1274,6 +1274,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
     case STAT_ARMOR:                    id = 41;  break;
+    case STAT_MASTERY_RATING:                  id = 170; break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
     }
