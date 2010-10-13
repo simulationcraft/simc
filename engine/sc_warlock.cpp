@@ -14,6 +14,7 @@
  * - Verify if the current incinerate bonus calculation is correct
  * - Verify shadow bite spell power coefficient
  * - Investigate pet mp5 - probably needs to scale with owner int
+ * - Dismissing a pet drops aura -> demonic_pact. Either don't let it dropt if there is another pet alive, or recheck application when dropping it.
  */
 
 // ==========================================================================
@@ -358,6 +359,8 @@ struct warlock_t : public player_t
   glyphs_t glyphs;
 
   double constants_pandemic_gcd;
+
+  double use_pre_soulburn;
 
 
   warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
@@ -953,7 +956,7 @@ struct warlock_spell_t : public spell_t
   {
     double t = spell_t::gcd();
 
-    if ( usable_pre_combat && sim -> current_time <= 0.01 ) t=0;
+    if ( usable_pre_combat && ! player -> in_combat ) t=0;
 
     return t;
   }
@@ -962,7 +965,7 @@ struct warlock_spell_t : public spell_t
   {
      double t = spell_t::execute_time();
 
-     if ( usable_pre_combat && sim -> current_time <= 0.01 ) t=0;
+     if ( usable_pre_combat && player -> in_combat ) t=0;
 
      return t;
   }
@@ -1586,49 +1589,85 @@ struct voidwalker_pet_t : public warlock_pet_t
 
 struct infernal_pet_t : public warlock_pet_t
 {
- struct infernal_immolation_t : public warlock_pet_spell_t
+
+  // Immolation Damage Spell =====================================================
+
+  struct immolation_damage_t : public warlock_pet_spell_t
   {
-    infernal_immolation_t( player_t* player ) :
-      warlock_pet_spell_t( "Infernal: Immolation", player, RESOURCE_NONE, SCHOOL_FIRE )
+    immolation_damage_t( player_t* player ) :
+      warlock_pet_spell_t( "immolation_dmg", player, 20153 )
     {
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-      background        = true;
-      repeating         = true;
-      base_dd_min = base_dd_max = p -> player_data.effect_real_ppl ( 11232 ) * p -> level;
+      background  = true;
+      aoe         = true;
+      direct_tick = true;
+      stats = player -> get_stats( "infernal_immolation" );
+      base_dd_min = base_dd_max = p -> player_data.effect_real_ppl ( 11232 ) * p -> level; // works
+      //base_dd_min = base_dd_max = effect_real_ppl ( 1 ) * p -> level; // doesn't work
       direct_power_mod  = 0.4;
       range = p -> player_data.effect_radius ( 11232 );
     }
 
-    virtual double execute_time() SC_CONST
+    virtual void execute()
     {
-      // immolation is an aura that ticks every 2 seconds
-      return 2.0;
+      warlock_pet_spell_t::execute();
+      tick_dmg = direct_dmg;
+      update_stats( DMG_OVER_TIME );
     }
   };
 
- infernal_immolation_t* immolation;
+  struct infernal_immolation_t : public warlock_pet_spell_t
+  {
+    immolation_damage_t* immolation_damage;
+
+    infernal_immolation_t( player_t* player, const std::string& options_str ) :
+      warlock_pet_spell_t( "infernal_immolation", player, 19483 )
+    {
+      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+      option_t options[] =
+      {
+        { NULL, OPT_UNKNOWN, NULL }
+      };
+      parse_options( options, options_str );
+
+      harmful = false;
+      num_ticks      = 1;
+      number_ticks   = 1;
+      base_tick_time = 2.0; // without it there is no value, even though 10699 has amplitude 2000
+      scale_with_haste = false;
+
+      immolation_damage = new immolation_damage_t( p );
+    }
+
+  virtual void tick()
+  {
+    current_tick = 0; // ticks indefinitely
+    immolation_damage -> execute();
+  }
+};
+
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
       warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     damage_modifier = 1.16;
 
-    action_list_str = "/snapshot_stats";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/immolation,if=!ticking";
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-
     melee      = new   warlock_pet_melee_t( this, "Infernal Melee" );
-    immolation = new infernal_immolation_t( this );
   }
-  virtual void schedule_ready( double delta_time=0,
-                               bool   waiting=false )
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
   {
-    melee -> schedule_execute();
-    immolation -> schedule_execute();
+    if ( name == "immolation" ) return new infernal_immolation_t( this, options_str );
+    return player_t::create_action( name, options_str );
   }
 
   virtual double composite_attack_hit() SC_CONST
@@ -3470,7 +3509,8 @@ struct soulburn_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    p -> buffs_soulburn -> trigger();
+    if ( !( p -> use_pre_soulburn == true && p -> in_combat ) )
+      p -> buffs_soulburn -> trigger();
     warlock_spell_t::execute();
   }
 
@@ -4221,6 +4261,7 @@ std::vector<option_t>& warlock_t::get_options()
     option_t warlock_options[] =
     {
       // @option_doc loc=player/warlock/misc title="Misc"
+      { "use_pre_soulburn",         OPT_BOOL,   &( use_pre_soulburn                    ) },
       { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
