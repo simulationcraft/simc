@@ -1,11 +1,9 @@
 #!./simc 
-
 warrior=Warrior_401_Arms
 level=80
 race=tauren
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=30200323120212312211032
-# Source Talents/Glyphs: http://wowtal.com/#k=DVzWo0ip.a5o.warrior.RAmCdP
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3020032312021231221100200000000000000000030000000000000000000
 glyphs=mortal_strike/overpower/slam/cleaving/sweeping_strikes/battle/berserker_rage
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
@@ -13,63 +11,54 @@ actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/deadly_calm,rage<=10
-# actions+=/inner_rage,rage>=90
-actions+=/heroic_strike,rage>=75,if=target.adds=0/cleave,rage>=75,if=target.adds>0
+actions+=/sweeping_strikes,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0
+actions+=/cleave,if=target.adds>0
 actions+=/rend,if=!ticking
 actions+=/overpower,if=buff.taste_for_blood.remains<1.5
-actions+=/bladestorm
+actions+=/bladestorm,if=target.adds>0
 actions+=/mortal_strike
-# actions+=/colossus_smash
 actions+=/overpower
 actions+=/execute
 actions+=/slam
 actions+=/battle_shout
 actions+=/berserker_rage
 
-#Reforge haste -> mastery
-head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_64haste_42mastery_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit
-#Reforge haste -> mastery
-neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68crit_36haste_24mastery_141sta,gems=10str_10hit_4agi
-#Reforge haste -> mastery
-shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_50haste_32mastery_90crit_204sta_128str,gems=20str_4str,enchant=40ap_15crit
-#Reforge haste -> mastery
-chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_64haste_42mastery_122crit_275sta_167str,gems=20str_10str_10hit_6str,enchant=10str_10agi_10sta_10int_10spi
-#Reforge haste -> mastery
-waist=coldwraith_links,heroic=1,stats=1550armor_47haste_31mastery_85crit_204sta_120str,gems=10crit_10str_20str_34str_6str
-#Reforge haste -> mastery
-legs=legplates_of_aetheric_strife,heroic=1,stats=2311armor_65haste_43mastery_84crit_243sta_138str,gems=10str_10hit_34str_10str_10crit_8crit,enchant=75ap_22crit
-#Reforge haste -> mastery
-feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_44haste_30mastery_90crit_204sta_120str,gems=10crit_10str_10str_10hit_6str,enchant=15sta
-#Reforge crit -> exp
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_41crit_27exp_60hit_153sta_94str,gems=10crit_10str_20str_4str,enchant=50ap
-#Reforge crit -> mastery
-hands=sanctified_ymirjar_lords_gauntlets,heroic=1,stats=1723armor_54crit_36mastery_82hit_204sta_128str,gems=10crit_10str_20str_4str,enchant=44ap
-#Reforge extra hit -> mastery
-finger1=ashen_band_of_endless_might,stats=85str_59crit_64hit_15mastery_144sta,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_106haste_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit
+neck=penumbra_pendant,heroic=1,stats=101str_163sta_73crit_65haste,gems=10str_10hit_4str
+#Reforge haste -> exp
+shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_52haste_30exp_90crit_204sta_128str,gems=10str_10crit_4str,enchant=40ap_15crit
+chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_106haste_122crit_275sta_167str,gems=10str_10crit_10str_10hit_6str,enchant=10str_10agi_10sta_10int_10spi
+waist=coldwraith_links,heroic=1,stats=1550armor_78haste_85crit_204sta_120str,gems=10crit_10str_10str_10crit_34str_6str
+legs=legplates_of_aetheric_strife,heroic=1,stats=2311armor_108haste_84crit_243sta_138str,gems=10str_10hit_34str_10str_10crit_8crit,enchant=75ap_22crit
+#Reforge haste -> exp
+feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_44haste_30exp_90crit_204sta_120str,gems=10crit_10str_10str_10hit_6str,enchant=15sta
+wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_153sta_94str,gems=10crit_10str_10str_10crit_4str,enchant=50ap
+hands=sanctified_ymirjar_lords_gauntlets,heroic=1,stats=1723armor_90crit_82hit_204sta_128str,gems=10crit_10str_10str_10crit_4str,enchant=44ap
+#Reforge extra hit -> exp
+finger1=ashen_band_of_endless_might,stats=85str_59crit_64hit_15exp_144sta,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
 #Reforge haste -> exp
 finger2=might_of_blight,heroic=1,stats=94str_153sta_68crit_36haste_24exp,gems=10crit_10str_4str
-#Reforge crit -> exp
-trinket1=deathbringers_will,heroic=1,stats=101crit_66exp
+trinket1=deathbringers_will,heroic=1,stats=167crit
 trinket2=deaths_verdict,heroic=1,stats=288ap
 #Reforge haste -> exp
 back=winding_sheet,heroic=1,stats=94str_153sta_68crit_36haste_24exp,gems=10str_10crit_4str,enchant=22agi
 #Reforge haste -> exp
-main_hand=shadowmourne,stats=68haste_46exp_114crit_268sta_196str,gems=20str_20str_20str_8str,enchant=berserking,weapon=axe2h_3.70speed_965min_1609max
+main_hand=shadowmourne,stats=68haste_46exp_114crit_268sta_196str,gems=10str_10crit_10str_10crit_10str_10crit_8str,enchant=berserking,weapon=axe2h_3.70speed_965min_1609max
 #Reforge haste -> exp
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_20haste_13exp_41crit_80sta,gems=20str_4agi,weapon=crossbow_3.00speed_834min_1252max
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_20haste_13exp_41crit_80sta,gems=10str_10crit_4agi,weapon=crossbow_3.00speed_834min_1252max
 # Gear Summary
-# gear_strength=1993
-# gear_agility=225
-# gear_stamina=2726
+# gear_strength=2008
+# gear_agility=119
+# gear_stamina=2748
 # gear_intellect=10
 # gear_spirit=10
 # gear_attack_power=547
 # gear_hit_rating=246
-# gear_crit_rating=1344
-# gear_haste_rating=530
-# gear_mastery_rating=295
+# gear_crit_rating=1568
+# gear_haste_rating=719
 # gear_armor=15747
-# gear_expertise_rating=200
+# gear_expertise_rating=182
 # meta_gem=relentless_earthsiege
 # tier10_2pc_melee=1
 # tier10_4pc_melee=1

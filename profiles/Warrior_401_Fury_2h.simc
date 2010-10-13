@@ -6,29 +6,29 @@ warrior=Warrior_401_Fury_2h
 level=80
 race=tauren
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=300000000000000000000322220313011012232102
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=3000000000000000000003222203130110122321020000000000000000000
 glyphs=bloodthirst/raging_blow/slam/cleaving/battle/berserker_rage
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/stance,choose=berserker,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
-actions+=/recklessness
 actions+=/death_wish
-#actions+=/inner_rage,rage>=90
-actions+=/heroic_strike,rage>=75
+actions+=/heroic_strike
+actions+=/raging_blow
 actions+=/whirlwind,if=target.adds>0
 actions+=/bloodthirst
-#actions+=/colossus_smash
-actions+=/raging_blow
+actions+=/berserker_rage,if=!(buff.enrage.react&buff.death_wish.react)
+actions+=/recklessness
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
 actions+=/battle_shout
 actions+=/berserker_rage
+
 #Reforge haste -> hit
 head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_64haste_42hit_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit
-#Reforge haste -> hit
-neck=sindragosas_cruel_claw,heroic=1,stats=102agi_68crit_36haste_24hit_141sta,gems=10str_10hit_4agi
+#Reforge crit -> hit
+neck=penumbra_pendant,heroic=1,stats=101str_163sta_45crit_28hit_65haste,gems=10str_10hit_4str
 #Reforge haste -> hit
 shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_49haste_33hit_90crit_204sta_128str,gems=20str_4str,enchant=40ap_15crit
 #Reforge haste -> hit
@@ -58,15 +58,15 @@ ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33haste_25crit_16ex
 off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=73crit_49hit_114exp_292sta_171str,gems=20str_20str_20str_8str,enchant=berserking,weapon=sword2h_3.60speed_1001min_1503max
 
 # Gear Summary
-# gear_strength=2232
-# gear_agility=225
-# gear_stamina=3018
+# gear_strength=2337
+# gear_agility=119
+# gear_stamina=3040
 # gear_intellect=10
 # gear_spirit=10
 # gear_attack_power=547
-# gear_hit_rating=667
-# gear_crit_rating=1254
-# gear_haste_rating=738
+# gear_hit_rating=671
+# gear_crit_rating=1231
+# gear_haste_rating=767
 # gear_mastery_rating=0
 # gear_armor=15747
 # meta_gem=relentless_earthsiege
