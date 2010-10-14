@@ -2050,16 +2050,6 @@ struct shadow_bolt_t : public warlock_spell_t
     return warlock_spell_t::ready();
   }
 
-  virtual double haste()
-  {
-    warlock_t* p = player -> cast_warlock();
-    double h = warlock_spell_t::haste();
-    if ( p -> buffs_backdraft -> up() )
-    {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
-    }
-	return h;
-  }
 };
 
 // Burning Embers Spell ===========================================================
@@ -2686,7 +2676,7 @@ struct conflagrate_t : public warlock_spell_t
 
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
     cooldown -> duration += ( p -> glyphs.conflagrate -> value() / 1000.0 );
-    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0);
+    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0 ) + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
   }
 
   virtual void execute()
