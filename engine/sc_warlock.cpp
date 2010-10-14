@@ -778,16 +778,15 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, pt )
   {}
 
-  virtual void init_base()
+  virtual void summon( double duration=0 )
   {
-    warlock_pet_t::init_base();
-
+    warlock_pet_t::summon( duration );
     warlock_t*  o = owner -> cast_warlock();
 
-    spell_power[SCHOOL_MAX] += o -> composite_spell_power(SCHOOL_MAX);
-    attack_power += o -> composite_attack_power();
+    spell_power[ SCHOOL_MAX ] += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80) * 0.5;
+    attack_power += o -> composite_attack_power() * ( level / 80 );
     attack_hit += o -> composite_attack_hit();
-    attack_expertise += o -> composite_attack_expertise();
+    attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
     spell_haste += o -> composite_spell_haste();
     attack_haste += o -> composite_attack_haste();
   }
