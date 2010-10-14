@@ -61,6 +61,16 @@ static std::string wiki_player_reference( player_t* p )
   return buffer;
 }
 
+// wiki_chart_url =====================================================
+
+static void wiki_chart_url( std::string& buffer )
+{
+  for ( std::string::size_type pos = buffer.find( " ", 0 ); pos != std::string::npos; pos = buffer.find( " ", pos ) )
+  {
+    buffer.replace( pos, 1, "+" );
+  }
+}
+
 // wiki_player_anchor ========================================================
 
 static std::string wiki_player_anchor( player_t* p )
@@ -2237,36 +2247,42 @@ static void print_wiki_player( FILE* file, player_t* p )
     action_dpet_str = p -> action_dpet_chart;
     action_dpet_str += "&dummy=dummy.png";
     simplify_html( action_dpet_str );
+    wiki_chart_url( action_dpet_str );
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
     action_dmg_str = p -> action_dmg_chart.c_str();
     action_dmg_str += "&dummy=dummy.png";
     simplify_html( action_dmg_str );
+    wiki_chart_url( action_dmg_str );
   }
   if ( ! p -> gains_chart.empty() )
   {
     gains_str = p -> gains_chart.c_str();
     gains_str += "&dummy=dummy.png";
     simplify_html( gains_str );
+    wiki_chart_url( gains_str );
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
     timeline_resource_str = p -> timeline_resource_chart.c_str();
     timeline_resource_str += "&dummy=dummy.png";
     simplify_html( timeline_resource_str );
+    wiki_chart_url( timeline_resource_str );
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
     timeline_dps_str = p -> timeline_dps_chart.c_str();
     timeline_dps_str += "&dummy=dummy.png";
     simplify_html( timeline_dps_str );
+    wiki_chart_url( timeline_dps_str );
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
     distribution_dps_str = p -> distribution_dps_chart;
     distribution_dps_str += "&dummy=dummy.png";
     simplify_html( distribution_dps_str );
+    wiki_chart_url( distribution_dps_str );
   }
 
   util_t::fprintf( file,
