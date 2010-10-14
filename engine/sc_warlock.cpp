@@ -2585,6 +2585,7 @@ struct haunt_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
+	direct_power_mod = 2 / 3.5;
   }
 
   virtual void travel( int travel_result, double travel_dmg)
