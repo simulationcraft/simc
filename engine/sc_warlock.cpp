@@ -2801,7 +2801,7 @@ struct searing_pain_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
 
-    if ( sim -> target -> health_percentage() <= 50 && p -> talent_improved_searing_pain -> rank() )
+    if ( sim -> target -> health_percentage() <= 25 && p -> talent_improved_searing_pain -> rank() )
     {
       player_crit += p -> talent_improved_searing_pain -> effect_base_value( 1 ) / 100.0;
     }
@@ -2886,7 +2886,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( ( sim -> target -> health_percentage() >= 80 ) && ( p -> cooldowns_improved_soul_fire -> remains() <=0 ) )
+      if ( p -> cooldowns_improved_soul_fire -> remains() <=0 )
       {
         p -> buffs_improved_soul_fire -> trigger();
         p -> cooldowns_improved_soul_fire -> start();
