@@ -684,6 +684,31 @@ struct warlock_pet_t : public pet_t
     if ( melee ) melee -> cancel();
   }
 
+
+
+
+};
+
+struct warlock_main_pet_t : public warlock_pet_t
+{
+  warlock_main_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
+    warlock_pet_t( sim, owner, pet_name, pt )
+  {}
+
+  virtual void summon( double duration=0 )
+  {
+    warlock_t* o = owner -> cast_warlock();
+    o -> active_pet = this;
+    warlock_pet_t::summon( duration );
+  }
+
+  virtual void dismiss()
+  {
+    warlock_t* o = owner -> cast_warlock();
+    warlock_pet_t::dismiss();
+    o -> active_pet = 0;
+  }
+
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
@@ -745,8 +770,27 @@ struct warlock_pet_t : public pet_t
   {
     return mp5 + mp5_per_intellect * owner -> intellect();
   }
+};
 
+struct warlock_guardian_pet_t : public warlock_pet_t
+{
+  warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
+    warlock_pet_t( sim, owner, pet_name, pt )
+  {}
 
+  virtual void init_base()
+  {
+    warlock_pet_t::init_base();
+
+    warlock_t*  o = owner -> cast_warlock();
+
+    spell_power[SCHOOL_MAX] += o -> composite_spell_power(SCHOOL_MAX);
+    attack_power += o -> composite_attack_power();
+    attack_hit += o -> composite_attack_hit();
+    attack_expertise += o -> composite_attack_expertise();
+    spell_haste += o -> composite_spell_haste();
+    attack_haste += o -> composite_attack_haste();
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1184,7 +1228,7 @@ struct warlock_pet_spell_t : public spell_t
 // Pet Imp
 // ==========================================================================
 
-struct imp_pet_t : public warlock_pet_t
+struct imp_pet_t : public warlock_main_pet_t
 {
   struct firebolt_t : public warlock_pet_spell_t
   {
@@ -1206,14 +1250,14 @@ struct imp_pet_t : public warlock_pet_t
   };
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
-    warlock_pet_t( sim, owner, "imp", PET_IMP )
+    warlock_main_pet_t( sim, owner, "imp", PET_IMP )
   {
     action_list_str = "/snapshot_stats/firebolt";
   }
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_main_pet_t::init_base();
     mana_per_intellect = 14.28;
     mp5_per_intellect  = 5.0 / 6.0;
   }
@@ -1223,22 +1267,7 @@ struct imp_pet_t : public warlock_pet_t
   {
     if ( name == "firebolt" ) return new firebolt_t( this );
 
-    return player_t::create_action( name, options_str );
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    warlock_t* o = owner -> cast_warlock();
-
-    o -> active_pet = this;
-    warlock_pet_t::summon( duration );
-  }
-
-  virtual void dismiss()
-  {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::dismiss();
-    o -> active_pet = 0;
+    return warlock_main_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1246,7 +1275,7 @@ struct imp_pet_t : public warlock_pet_t
 // Pet Felguard
 // ==========================================================================
 
-struct felguard_pet_t : public warlock_pet_t
+struct felguard_pet_t : public warlock_main_pet_t
 {
   struct legion_strike_t : public warlock_pet_attack_t
   {
@@ -1332,7 +1361,7 @@ struct felguard_pet_t : public warlock_pet_t
   };
 
   felguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "felguard", PET_FELGUARD )
+      warlock_main_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
     damage_modifier = 1.0;
 
@@ -1341,7 +1370,7 @@ struct felguard_pet_t : public warlock_pet_t
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_main_pet_t::init_base();
 
 
     melee = new melee_t( this );
@@ -1353,21 +1382,7 @@ struct felguard_pet_t : public warlock_pet_t
     if ( name == "legion_strike"   ) return new legion_strike_t( this );
     if ( name == "felstorm"        ) return new      felstorm_t( this );
 
-    return player_t::create_action( name, options_str );
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    warlock_t* o = owner -> cast_warlock();
-    o -> active_pet = this;
-    warlock_pet_t::summon( duration );
-  }
-
-  virtual void dismiss()
-  {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::dismiss();
-    o -> active_pet = 0;
+    return warlock_main_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1375,7 +1390,7 @@ struct felguard_pet_t : public warlock_pet_t
 // Pet Felhunter
 // ==========================================================================
 
-struct felhunter_pet_t : public warlock_pet_t
+struct felhunter_pet_t : public warlock_main_pet_t
 {
    // TODO: Need to add fel intelligence on the warlock while felhunter is out
   struct shadow_bite_t : public warlock_pet_spell_t
@@ -1406,7 +1421,7 @@ struct felhunter_pet_t : public warlock_pet_t
   };
 
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
+      warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
 	damage_modifier = 0.8;
 
@@ -1431,23 +1446,18 @@ struct felhunter_pet_t : public warlock_pet_t
   {
     if ( name == "shadow_bite" ) return new shadow_bite_t( this );
 
-    return player_t::create_action( name, options_str );
+    return warlock_main_pet_t::create_action( name, options_str );
   }
 
   virtual void summon( double duration=0 )
   {
-    warlock_t* o = owner -> cast_warlock();
-
-    o -> active_pet = this;
     sim -> auras.fel_intelligence -> trigger();
-    warlock_pet_t::summon( duration );
+    warlock_main_pet_t::summon( duration );
   }
 
   virtual void dismiss()
   {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::dismiss();
-    o -> active_pet = 0;
+    warlock_main_pet_t::dismiss();
     sim -> auras.fel_intelligence -> expire();
   }
 };
@@ -1456,7 +1466,7 @@ struct felhunter_pet_t : public warlock_pet_t
 // Pet Succubus
 // ==========================================================================
 
-struct succubus_pet_t : public warlock_pet_t
+struct succubus_pet_t : public warlock_main_pet_t
 {
   struct lash_of_pain_t : public warlock_pet_spell_t
   {
@@ -1478,9 +1488,9 @@ struct succubus_pet_t : public warlock_pet_t
   };
 
   succubus_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
+      warlock_main_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
-	damage_modifier = 1.025;
+    damage_modifier = 1.025;
 
     action_list_str = "/snapshot_stats/lash_of_pain";
   }
@@ -1490,21 +1500,7 @@ struct succubus_pet_t : public warlock_pet_t
   {
     if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
 
-    return player_t::create_action( name, options_str );
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    warlock_t* o = owner -> cast_warlock();
-    o -> active_pet = this;
-    warlock_pet_t::summon( duration );
-  }
-
-  virtual void dismiss()
-  {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::dismiss();
-    o -> active_pet = 0;
+    return warlock_main_pet_t::create_action( name, options_str );
   }
 
   virtual double composite_spell_haste() SC_CONST
@@ -1524,7 +1520,7 @@ struct succubus_pet_t : public warlock_pet_t
 // Pet Voidwalker
 // ==========================================================================
 
-struct voidwalker_pet_t : public warlock_pet_t
+struct voidwalker_pet_t : public warlock_main_pet_t
 {
   struct torment_t : public warlock_pet_spell_t
   {
@@ -1543,7 +1539,7 @@ struct voidwalker_pet_t : public warlock_pet_t
   };
 
   voidwalker_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
+      warlock_main_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
   {
     damage_modifier = 0.86;
 
@@ -1552,7 +1548,7 @@ struct voidwalker_pet_t : public warlock_pet_t
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_main_pet_t::init_base();
 
 	melee = new warlock_pet_melee_t( this, "voidwalker_melee" );
   }
@@ -1562,28 +1558,14 @@ struct voidwalker_pet_t : public warlock_pet_t
   {
     if ( name == "torment" ) return new torment_t( this );
 
-    return player_t::create_action( name, options_str );
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    warlock_t* o = owner -> cast_warlock();
-    o -> active_pet = this;
-    warlock_pet_t::summon( duration );
-  }
-
-  virtual void dismiss()
-  {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::dismiss();
-    o -> active_pet = 0;
+    return warlock_main_pet_t::create_action( name, options_str );
   }
 };
 // ==========================================================================
 // Pet Infernal
 // ==========================================================================
 
-struct infernal_pet_t : public warlock_pet_t
+struct infernal_pet_t : public warlock_guardian_pet_t
 {
 
   // Immolation Damage Spell =====================================================
@@ -1641,7 +1623,7 @@ struct infernal_pet_t : public warlock_pet_t
 
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
+      warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     damage_modifier = 1.16;
 
@@ -1651,7 +1633,7 @@ struct infernal_pet_t : public warlock_pet_t
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_guardian_pet_t::init_base();
 
     melee      = new   warlock_pet_melee_t( this, "Infernal Melee" );
   }
@@ -1660,7 +1642,7 @@ struct infernal_pet_t : public warlock_pet_t
                                    const std::string& options_str )
   {
     if ( name == "immolation" ) return new infernal_immolation_t( this, options_str );
-    return player_t::create_action( name, options_str );
+    return warlock_guardian_pet_t::create_action( name, options_str );
   }
 
   virtual double composite_attack_hit() SC_CONST
@@ -1675,7 +1657,7 @@ struct infernal_pet_t : public warlock_pet_t
 // Pet Doomguard
 // ==========================================================================
 
-struct doomguard_pet_t : public warlock_pet_t
+struct doomguard_pet_t : public warlock_guardian_pet_t
 {
   struct doom_bolt_t : public warlock_pet_spell_t
   {
@@ -1687,13 +1669,12 @@ struct doomguard_pet_t : public warlock_pet_t
   };
 
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
+      warlock_guardian_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   { }
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
-
+    warlock_guardian_pet_t::init_base();
 
     action_list_str = "/snapshot_stats/doom_bolt";
   }
@@ -1702,7 +1683,7 @@ struct doomguard_pet_t : public warlock_pet_t
                                    const std::string& options_str )
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
-    return player_t::create_action( name, options_str );
+    return warlock_guardian_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1710,10 +1691,10 @@ struct doomguard_pet_t : public warlock_pet_t
 // Pet Ebon Imp
 // ==========================================================================
 
-struct ebon_imp_pet_t : public warlock_pet_t
+struct ebon_imp_pet_t : public warlock_guardian_pet_t
 {
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
-    warlock_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
+    warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
 	damage_modifier = 1.14;
 
@@ -1722,7 +1703,7 @@ struct ebon_imp_pet_t : public warlock_pet_t
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_guardian_pet_t::init_base();
 
     melee = new warlock_pet_melee_t( this, "ebon_imp_melee" );
   }
@@ -2050,6 +2031,16 @@ struct shadow_bolt_t : public warlock_spell_t
     return warlock_spell_t::ready();
   }
 
+  virtual double haste()
+  {
+    warlock_t* p = player -> cast_warlock();
+    double h = warlock_spell_t::haste();
+    if ( p -> buffs_backdraft -> up() )
+    {
+      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+    }
+	return h;
+  }
 };
 
 // Burning Embers Spell ===========================================================
