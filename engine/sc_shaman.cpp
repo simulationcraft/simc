@@ -4339,9 +4339,12 @@ void player_t::shaman_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.elemental_oath    ) sim -> auras.elemental_oath    -> override();
   if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 0.10 );
-  if ( sim -> overrides.mana_spring_totem ) sim -> auras.mana_spring_totem -> override( 1, 326.0 );
-  if ( sim -> overrides.strength_of_earth ) sim -> auras.strength_of_earth -> override( 1, 549.0 );
   if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 0.10 );
   if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.10 );
-  if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.20 );
+  if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.05 );
+  
+  if ( sim -> overrides.mana_spring_totem ) 
+    sim -> auras.mana_spring_totem -> override( 1, sim -> sim_data.effect_min( 5677, ( sim -> P403 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_POWER_REGEN ) );
+  if ( sim -> overrides.strength_of_earth ) 
+    sim -> auras.strength_of_earth -> override( 1, sim -> sim_data.effect_min( 8076, ( sim -> P403 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_STAT ) );
 }
