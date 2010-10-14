@@ -606,7 +606,7 @@ void enchant_t::init( player_t* p )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
-    buff_t* buff = new stat_buff_t( p, "executioner", STAT_ARMOR_PENETRATION_RATING, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff_t* buff = new stat_buff_t( p, "executioner", STAT_CRIT_RATING, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
 
     if ( mh_enchant == "executioner" )
     {
