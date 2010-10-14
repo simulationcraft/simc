@@ -82,8 +82,6 @@ struct warrior_t : public player_t
   buff_t* buffs_thunderstruck;
   buff_t* buffs_victory_rush;
   buff_t* buffs_wrecking_crew;
-  buff_t* buffs_tier7_4pc_melee;
-  buff_t* buffs_tier8_2pc_melee;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier10_4pc_melee;
 
@@ -439,7 +437,6 @@ static void trigger_deep_wounds( action_t* a )
     {
       warrior_attack_t::tick();
       warrior_t* p = player -> cast_warrior();
-      p -> buffs_tier7_4pc_melee -> trigger();
       p -> buffs_tier10_2pc_melee -> trigger();
     }
   };
@@ -651,8 +648,6 @@ double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost() / 10; // Rage Costs are stored as * 10
-  if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
-  if ( c < 0 ) c = 0;
   if ( p -> buffs_deadly_calm   -> check() )          c  = 0;
   if ( p -> buffs_inner_rage    -> check() )          c *= 1.50;
   if ( p -> buffs_battle_trance -> check() && c > 5 ) c  = 0;
@@ -688,7 +683,6 @@ void warrior_attack_t::execute()
   attack_t::execute();
 
   warrior_t* p = player -> cast_warrior();
-  p -> buffs_tier7_4pc_melee -> expire();
   p -> buffs_battle_trance   -> expire();
 
   if ( result_is_hit() )
@@ -747,12 +741,10 @@ void warrior_attack_t::player_buff()
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
     player_multiplier *= 1.05;
-    if ( player -> set_bonus.tier9_2pc_melee() ) player_penetration += 0.06;
   }
   else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
     player_multiplier *= 1.10;
-    if ( player -> set_bonus.tier9_2pc_melee() ) player_crit += 0.02;
   }
   else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
   {
@@ -1077,8 +1069,6 @@ struct bloodthirst_t : public warrior_attack_t
     direct_power_mod   = 0.50;    
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
-
-    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;
   }
 
   virtual void execute()
@@ -1230,9 +1220,6 @@ struct devastate_t : public warrior_attack_t
     may_crit   = true;
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0
                + p -> glyphs.devastate * 0.05;
-
-    if ( p -> set_bonus.tier8_2pc_tank() ) base_crit += 0.10;
-    if ( p -> set_bonus.tier9_2pc_tank() ) base_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1285,7 +1272,9 @@ struct execute_t : public warrior_attack_t
   virtual double gcd() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_tier10_4pc_melee -> up() ) return trigger_gcd - 0.5;
+    if ( p -> buffs_tier10_4pc_melee -> up() )
+      return trigger_gcd - 0.5;
+
     return trigger_gcd;
   }
 
@@ -1387,23 +1376,18 @@ struct heroic_strike_t : public warrior_attack_t
     direct_power_mod  = 0.6;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
-    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();    
-    if( result_is_hit() )
+    if ( result == RESULT_CRIT )
     {
-      if ( result == RESULT_CRIT )
-      {
-        p -> buffs_tier8_2pc_melee -> trigger();
-        if ( ! p -> buffs_incite -> check() )
-          p -> buffs_incite -> trigger();
-      }
+      if ( ! p -> buffs_incite -> check() )
+        p -> buffs_incite -> trigger();
     }
+
     p -> buffs_incite -> expire();
   }
   
@@ -1437,8 +1421,6 @@ struct mortal_strike_t : public warrior_attack_t
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
-
-    if ( p -> set_bonus.tier8_4pc_melee() ) base_crit += 0.10;   
   }
 
   virtual void execute()
@@ -1649,7 +1631,6 @@ struct rend_t : public warrior_attack_t
   {
     warrior_attack_t::tick();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_tier7_4pc_melee -> trigger();
     p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
@@ -1773,8 +1754,7 @@ struct shield_slam_t : public warrior_attack_t
     direct_power_mod  = 0; // FIXME: What is this?
     may_crit          = true;
     base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
-    base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam        +
-			                           0.10 * p -> set_bonus.tier7_2pc_tank() );
+    base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam );
   }
 
   virtual void player_buff()
@@ -1899,17 +1879,16 @@ struct slam_t : public warrior_attack_t
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
-    base_multiplier            *= 1 + p -> set_bonus.tier7_2pc_melee()     * 0.10
-                                    + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
+    base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
-
-    if ( player -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
 
   virtual double gcd() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_tier10_4pc_melee -> up() ) return trigger_gcd - 0.5;
+    if ( p -> buffs_tier10_4pc_melee -> up() )
+      return trigger_gcd - 0.5;
+
     return trigger_gcd;
   }
 
@@ -1940,10 +1919,6 @@ struct slam_t : public warrior_attack_t
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
-    if ( result == RESULT_CRIT )
-    {
-      p -> buffs_tier8_2pc_melee -> trigger();
-    }
 
     if ( p -> talents.single_minded_fury -> rank() && p -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -2114,34 +2089,16 @@ struct warrior_spell_t : public spell_t
   {}
 
   virtual double cost() SC_CONST;
-  virtual void   execute();
   virtual double gcd() SC_CONST;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual bool   ready();
 };
 
-// warrior_spell_t::execute =================================================
-
-void warrior_spell_t::execute()
-{
-  warrior_spell_t::consume_resource();
-
-  // As it seems tier7 4pc is consumed by everything, no matter if it costs
-  // rage. "Reduces the rage cost of your next ability is reduced by 5."
-  warrior_t* p = player -> cast_warrior();
-  p -> buffs_tier7_4pc_melee -> expire();
-
-  update_ready();
-}
-
 // warrior_spell_t::cost ====================================================
 
 double warrior_spell_t::cost() SC_CONST
 {
-  warrior_t* p = player -> cast_warrior();
   double c = spell_t::cost() / 10; // Rage Costs are stored as * 10;
-  if ( p -> buffs_tier7_4pc_melee -> check() ) c -= 5;
-  if ( c < 0 ) c = 0;
   return c;
 }
 
@@ -2891,11 +2848,8 @@ void warrior_t::init_buffs()
   buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, 20.0,   0, talents.thunderstruck -> proc_chance() );
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 + glyphs.enduring_victory * 5.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
-  buffs_tier7_4pc_melee           = new buff_t( this, "tier7_4pc_melee",           1, 30.0,   0, set_bonus.tier7_4pc_melee() * 0.10 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
   buffs_tier10_4pc_melee          = new buff_t( this, "tier10_4pc_melee",          2, 20.0,   0, set_bonus.tier10_4pc_melee() );
-
-  buffs_tier8_2pc_melee = new stat_buff_t( this, "tier8_2pc_melee", STAT_HASTE_RATING, 150, 1, 5.0, 0, set_bonus.tier8_2pc_melee() * 0.40 );
 }
 
 // warrior_t::init_gains ====================================================
@@ -3062,7 +3016,8 @@ void warrior_t::combat_begin()
     buffs_battle_stance -> trigger();
   }
 
-  if ( talents.rampage -> rank() ) sim -> auras.rampage -> trigger();
+  if ( talents.rampage -> rank() )
+    sim -> auras.rampage -> trigger();
 }
 
 // warrior_t::reset =========================================================
@@ -3291,22 +3246,6 @@ int warrior_t::decode_set( item_t& item )
 		               strstr( s, "legguards"   ) ||
 		               strstr( s, "handguards"  ) );
 
-  if ( strstr( s, "dreadnaught" ) )
-  {
-    if ( is_melee ) return SET_T7_MELEE;
-    if ( is_tank  ) return SET_T7_TANK;
-  }
-  if ( strstr( s, "siegebreaker" ) )
-  {
-    if ( is_melee ) return SET_T8_MELEE;
-    if ( is_tank  ) return SET_T8_TANK;
-  }
-  if ( strstr( s, "wrynns" ) ||
-       strstr( s, "hellscreams"  ) )
-  {
-    if ( is_melee ) return SET_T9_MELEE;
-    if ( is_tank  ) return SET_T9_TANK;
-  }
   if ( strstr( s, "ymirjar" ) )
   {
     if ( is_melee ) return SET_T10_MELEE;

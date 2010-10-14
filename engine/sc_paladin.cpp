@@ -1094,12 +1094,6 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     update_stats( DMG_DIRECT );
   }
 
-  virtual void tick()
-  {
-    paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::tick();
-  }
-
   virtual void last_tick()
   {
     paladin_t* p = player -> cast_paladin();
