@@ -319,6 +319,9 @@ struct warlock_t : public player_t
   gain_t* gains_soul_leech;
   gain_t* gains_mana_feed;
 
+  // Uptimes
+  uptime_t* uptimes_backdraft[ 4 ];
+
   // Procs
   proc_t* procs_empowered_imp;
   proc_t* procs_impending_doom;
@@ -2027,6 +2030,12 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_backdraft[ i ] -> update( i == p -> buffs_backdraft -> stack() );
+    }
+
     if ( p -> buffs_backdraft -> up() )
     {
       p -> buffs_backdraft -> decrement();
@@ -2175,6 +2184,12 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_backdraft[ i ] -> update( i == p -> buffs_backdraft -> stack() );
+    }
+
     if ( p -> buffs_backdraft -> up() )
     {
       p -> buffs_backdraft -> decrement();
@@ -2743,6 +2758,12 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p -> uptimes_backdraft[ i ] -> update( i == p -> buffs_backdraft -> stack() );
+    }
+
     if ( p -> buffs_backdraft -> up() )
     {
       p -> buffs_backdraft -> decrement();
@@ -4128,6 +4149,11 @@ void warlock_t::init_gains()
 void warlock_t::init_uptimes()
 {
   player_t::init_uptimes();
+
+  uptimes_backdraft[ 0 ]  = get_uptime( "backdraft_0" );
+  uptimes_backdraft[ 1 ]  = get_uptime( "backdraft_1" );
+  uptimes_backdraft[ 2 ]  = get_uptime( "backdraft_2" );
+  uptimes_backdraft[ 3 ]  = get_uptime( "backdraft_3" );
 }
 // warlock_t::init_procs =====================================================
 
