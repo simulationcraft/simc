@@ -813,11 +813,6 @@ struct warlock_spell_t : public spell_t
       h *= 1.0 / ( 1.0 + ranks[ p -> talent_eradication -> rank() ] );
     }
 
-    if ( tree == TREE_DESTRUCTION && p -> buffs_backdraft -> up() )
-    {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
-    }
-
     if ( p -> buffs_improved_soul_fire -> up())
     {
       h /= ( 1.0 + util_t::talent_rank( p -> talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
@@ -927,10 +922,6 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs_backdraft -> up() && time_to_execute > 0 && tree == TREE_DESTRUCTION )
-    {
-      p -> buffs_backdraft -> decrement();
-    }
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && tree == TREE_DESTRUCTION )
     {
       p -> buffs_demon_soul -> decrement();
@@ -2004,9 +1995,14 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual double execute_time() SC_CONST
   {
+    double h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs_shadow_trance -> up() ) return 0;
-    return warlock_spell_t::execute_time();
+    if ( p -> buffs_shadow_trance -> up() ) h = 0;
+    if ( p -> buffs_backdraft -> up() )
+    {
+      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+    }
+    return h;
   }
 
   virtual void schedule_execute()
@@ -2020,7 +2016,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
-
+    if ( p -> buffs_backdraft -> up() )
+    {
+      p -> buffs_backdraft -> decrement();
+    }
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 3.0 )
     {
       target_multiplier *= 1.0 + 0.10;
@@ -2049,6 +2048,17 @@ struct shadow_bolt_t : public warlock_spell_t
         return false;
 
     return warlock_spell_t::ready();
+  }
+
+  virtual double haste()
+  {
+    warlock_t* p = player -> cast_warlock();
+    double h = warlock_spell_t::haste();
+    if ( p -> buffs_backdraft -> up() )
+    {
+      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+    }
+	return h;
   }
 };
 
@@ -2139,9 +2149,25 @@ struct chaos_bolt_t : public warlock_spell_t
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> value() / 1000.0 );
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    double h = warlock_spell_t::execute_time();
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> buffs_backdraft -> up() )
+    {
+      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+    }
+    return h;
+  }
+
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> buffs_backdraft -> up() )
+    {
+      p -> buffs_backdraft -> decrement();
+    }
     if ( result_is_hit() )
     {
       trigger_soul_leech( this );
@@ -2715,6 +2741,11 @@ struct incinerate_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> buffs_backdraft -> up() )
+    {
+      p -> buffs_backdraft -> decrement();
+    }
     trigger_impending_doom( this );
   }
 
@@ -2756,6 +2787,10 @@ struct incinerate_t : public warlock_spell_t
     if ( p -> buffs_molten_core -> up() )
     {
       h *= 1.0 - p -> talent_molten_core -> rank() * 0.10;
+    }
+    if ( p -> buffs_backdraft -> up() )
+    {
+      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
     }
 
     return h;
