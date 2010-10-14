@@ -787,8 +787,8 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     attack_power += o -> composite_attack_power() * ( level / 80 );
     attack_hit += o -> composite_attack_hit();
     attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
-    spell_haste += o -> composite_spell_haste();
-    attack_haste += o -> composite_attack_haste();
+    spell_haste *= o -> composite_spell_haste();
+    attack_haste *= o -> composite_attack_haste();
   }
 };
 
