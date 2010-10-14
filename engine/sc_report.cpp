@@ -2837,6 +2837,9 @@ void report_t::print_wiki( sim_t* sim )
   std::string wiki_name = sim -> wiki_file_str;
   std::string::size_type pos = wiki_name.rfind( ".wiki" );
   if ( pos != std::string::npos ) wiki_name = wiki_name.substr( 0, pos );
+  std::string wiki_file_name = wiki_name;
+  pos = wiki_name.rfind( DIRECTORY_DELIMITER );
+  if ( pos != std::string::npos ) wiki_name = wiki_name.substr( pos + 1, wiki_name.length() - pos );
 
   print_wiki_preamble( file, sim );
   print_wiki_contents( file, sim, wiki_name, PLAYER_NONE );
@@ -2858,7 +2861,7 @@ void report_t::print_wiki( sim_t* sim )
     if ( ! file )
     {
       std::string type_name = player_type_string( p );
-      std::string file_name = wiki_name + type_name + ".wiki";
+      std::string file_name = wiki_file_name + type_name + ".wiki";
 
       file = fopen( file_name.c_str(), "w" );
       if ( ! file )
