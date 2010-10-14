@@ -1672,14 +1672,19 @@ struct exorcism_t : public paladin_spell_t
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 	  
     may_crit = true;
+    tick_may_crit = true;
 
     direct_power_mod = 1.0;
+    tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
 
     if ( p -> set_bonus.tier8_2pc_melee() ) base_multiplier *= 1.10;
 
-    if ( p -> glyphs.exorcism ) base_multiplier *= 1.20; // FIXME the 20% should be a DoT
+    if ( ! p -> glyphs.exorcism )
+    {
+      base_td = 0;
+    }
 
     if ( p -> librams.wracking ) base_spell_power += 120;
   }
@@ -2605,42 +2610,42 @@ std::vector<option_t>& paladin_t::get_options()
     option_t paladin_options[] =
     {
       // @option_doc loc=player/paladin/talents title="Talents"
-      { "arbiter_of_the_light",        OPT_TALENT_RANK,    talents.arbiter_of_the_light          },
+      //{ "arbiter_of_the_light",        OPT_TALENT_RANK,    talents.arbiter_of_the_light          },
       { "ardent_defender",             OPT_INT,         &( talents.ardent_defender             ) },
       { "aura_mastery",                OPT_INT,         &( talents.aura_mastery                ) },
-      { "blazing_light",               OPT_TALENT_RANK,    talents.blazing_light                 },
+      //{ "blazing_light",               OPT_TALENT_RANK,    talents.blazing_light                 },
       { "blessed_life",                OPT_INT,         &( talents.blessed_life                ) },
-      { "communion",                   OPT_TALENT_RANK,    talents.communion                     },
-      { "crusade",                     OPT_TALENT_RANK,    talents.crusade                       },
-      { "divine_favor",                OPT_TALENT_RANK,    talents.divine_favor                  },
-      { "divine_purpose",              OPT_TALENT_RANK,    talents.divine_purpose                },
-      { "divine_storm",                OPT_TALENT_RANK,    talents.divine_storm                  },
+      //{ "communion",                   OPT_TALENT_RANK,    talents.communion                     },
+      //{ "crusade",                     OPT_TALENT_RANK,    talents.crusade                       },
+      //{ "divine_favor",                OPT_TALENT_RANK,    talents.divine_favor                  },
+      //{ "divine_purpose",              OPT_TALENT_RANK,    talents.divine_purpose                },
+      //{ "divine_storm",                OPT_TALENT_RANK,    talents.divine_storm                  },
       { "enlightened_judgements",      OPT_INT,         &( talents.enlightened_judgements      ) },
       { "eternal_glory",               OPT_INT,         &( talents.eternal_glory               ) },
       { "eye_for_an_eye",              OPT_INT,         &( talents.eye_for_an_eye              ) },
       { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
-      { "hammer_of_the_righteous",     OPT_TALENT_RANK,    talents.hammer_of_the_righteous       },
+      //{ "hammer_of_the_righteous",     OPT_TALENT_RANK,    talents.hammer_of_the_righteous       },
       { "holy_shield",                 OPT_INT,         &( talents.holy_shield                 ) },
       { "improved_hammer_of_justice",  OPT_INT,         &( talents.improved_hammer_of_justice  ) },
       { "improved_judgement",          OPT_INT,         &( talents.improved_judgement          ) },
-      { "inquiry_of_faith",            OPT_TALENT_RANK,    talents.inquiry_of_faith              },
+      //{ "inquiry_of_faith",            OPT_TALENT_RANK,    talents.inquiry_of_faith              },
       { "judgements_of_the_just",      OPT_INT,         &( talents.judgements_of_the_just      ) },
-      { "judgements_of_the_pure",      OPT_TALENT_RANK,    talents.judgements_of_the_pure        },
+      //{ "judgements_of_the_pure",      OPT_TALENT_RANK,    talents.judgements_of_the_pure        },
       { "long_arm_of_the_law",         OPT_INT,         &( talents.long_arm_of_the_law         ) },
       { "rebuke",                      OPT_INT,         &( talents.rebuke                      ) },
       { "reckoning",                   OPT_INT,         &( talents.reckoning                   ) },
-      { "rule_of_law",                 OPT_TALENT_RANK,    talents.rule_of_law                   },
+      //{ "rule_of_law",                 OPT_TALENT_RANK,    talents.rule_of_law                   },
       { "sacred_duty",                 OPT_INT,         &( talents.sacred_duty                 ) },
-      { "sanctified_wrath",            OPT_TALENT_RANK,    talents.sanctified_wrath              },
-      { "sanctity_of_battle",          OPT_TALENT_RANK,    talents.sanctity_of_battle            },
-      { "seals_of_command",            OPT_TALENT_RANK,    talents.seals_of_command              },
-      { "seals_of_the_pure",           OPT_TALENT_RANK,    talents.seals_of_the_pure             },
+      //{ "sanctified_wrath",            OPT_TALENT_RANK,    talents.sanctified_wrath              },
+      //{ "sanctity_of_battle",          OPT_TALENT_RANK,    talents.sanctity_of_battle            },
+      //{ "seals_of_command",            OPT_TALENT_RANK,    talents.seals_of_command              },
+      //{ "seals_of_the_pure",           OPT_TALENT_RANK,    talents.seals_of_the_pure             },
       { "shield_of_the_templar",       OPT_INT,         &( talents.shield_of_the_templar       ) },
-      { "the_art_of_war",              OPT_TALENT_RANK,    talents.the_art_of_war                },
+      //{ "the_art_of_war",              OPT_TALENT_RANK,    talents.the_art_of_war                },
       { "toughness",                   OPT_INT,         &( talents.toughness                   ) },
       { "vindication",                 OPT_INT,         &( talents.vindication                 ) },
-      { "zealotry",                    OPT_TALENT_RANK,    talents.zealotry                      },
-      { "wrath_of_the_lightbringer",   OPT_TALENT_RANK,    talents.wrath_of_the_lightbringer     },
+      //{ "zealotry",                    OPT_TALENT_RANK,    talents.zealotry                      },
+      //{ "wrath_of_the_lightbringer",   OPT_TALENT_RANK,    talents.wrath_of_the_lightbringer     },
       // @option_doc loc=player/paladin/misc title="Misc"
       { "tier10_2pc_procs_from_strikes", OPT_BOOL, &( tier10_2pc_procs_from_strikes    ) },
       { NULL, OPT_UNKNOWN, NULL }
