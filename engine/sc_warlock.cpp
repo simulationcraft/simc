@@ -166,6 +166,8 @@ struct _stat_list_t {
 
 
 struct warlock_pet_t;
+struct warlock_main_pet_t;
+struct warlock_guardian_pet_t;
 
 struct warlock_t : public player_t
 {
@@ -194,7 +196,7 @@ struct warlock_t : public player_t
   };
 
   // Active
-  warlock_pet_t* active_pet;
+  warlock_main_pet_t* active_pet;
 
   dot_t*  dots_corruption;
   dot_t*  dots_unstable_affliction;
@@ -689,6 +691,10 @@ struct warlock_pet_t : public pet_t
 
 };
 
+// ==========================================================================
+// Warlock Main Pet
+// ==========================================================================
+
 struct warlock_main_pet_t : public warlock_pet_t
 {
   warlock_main_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
@@ -718,7 +724,6 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_attack_power() SC_CONST
   {
-    // seems  to be twice the owner_sp -> pet_sp conversion
     double ap = pet_t::composite_attack_power();
     ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 );
     return ap;
@@ -772,6 +777,10 @@ struct warlock_main_pet_t : public warlock_pet_t
   }
 };
 
+// ==========================================================================
+// Warlock Guardian Pet
+// ==========================================================================
+
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
@@ -784,12 +793,14 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     warlock_t*  o = owner -> cast_warlock();
     reset();
 
+    // untested !!
     spell_power[ SCHOOL_MAX ] += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80) * 0.5;
     attack_power += o -> composite_attack_power() * ( level / 80 );
     attack_hit += o -> composite_attack_hit();
     attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
     spell_haste *= o -> composite_spell_haste();
     attack_haste *= o -> composite_attack_haste();
+    // untested!!
   }
 };
 
@@ -1150,8 +1161,14 @@ struct warlock_pet_attack_t : public attack_t
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = WARLOCK, int t = TREE_NONE ) :
+  warlock_pet_attack_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
     attack_t( n, sname, player, ptype, stype, t, true )
+  {
+    may_crit   = true;
+    special = true;
+  }
+  warlock_pet_attack_t( const char* n, const uint32_t id, player_t* player, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
+      attack_t( n, id, player, ptype, stype, t, true )
   {
     may_crit   = true;
     special = true;
@@ -1196,19 +1213,27 @@ struct warlock_pet_spell_t : public spell_t
 
   warlock_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_MANA, const school_type s=SCHOOL_SHADOW ) :
     spell_t( n, player, r, s )
-  { }
+  {
+    may_crit          = true;
+  }
 
   warlock_pet_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
     spell_t( s, ptype, stype, t )
-  { }
+  {
+    may_crit          = true;
+  }
 
   warlock_pet_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, sname, player, ptype, stype, t )
-  { }
+  {
+    may_crit          = true;
+  }
 
   warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
       spell_t( n, id, player, ptype, stype, t )
-  { }
+  {
+    may_crit          = true;
+  }
 
   virtual void player_buff()
   {
@@ -1235,31 +1260,33 @@ struct imp_pet_t : public warlock_main_pet_t
     firebolt_t( player_t* player ):
       warlock_pet_spell_t( "firebolt", player, "Firebolt" )
     {
-      imp_pet_t* p = ( imp_pet_t* ) player -> cast_pet();
-      warlock_t* o = p -> owner -> cast_warlock();
-
-      may_crit          = true;
+      warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> value() / 100.0 );
-
     }
+
     virtual void execute()
     {
       warlock_pet_spell_t::execute();
     }
+
     virtual void travel( int travel_result, double travel_dmg);
   };
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_main_pet_t( sim, owner, "imp", PET_IMP )
   {
-    action_list_str = "/snapshot_stats/firebolt";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/firebolt";
   }
 
   virtual void init_base()
   {
     warlock_main_pet_t::init_base();
+
+    // untested !!
     mana_per_intellect = 14.28;
     mp5_per_intellect  = 5.0 / 6.0;
+    // untested !!
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1284,8 +1311,8 @@ struct felguard_pet_t : public warlock_main_pet_t
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-      aoe = true;
-      direct_power_mod = 0.264;
+      aoe               = true;
+      direct_power_mod  = 0.264;
       base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
 
@@ -1297,7 +1324,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     virtual void execute()
     {
       warlock_pet_attack_t::execute();
-	  trigger_mana_feed ( this, result );
+      trigger_mana_feed ( this, result );
     }
   };
 
@@ -1311,7 +1338,6 @@ struct felguard_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.33;
       dual        = true;
       background  = true;
-      may_crit    = true;
       aoe         = true;
       direct_tick = true;
 
@@ -1330,14 +1356,12 @@ struct felguard_pet_t : public warlock_main_pet_t
     attack_t* felstorm_tick;
 
     felstorm_t( player_t* player ) :
-      warlock_pet_attack_t( "Felguard: Felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+      warlock_pet_attack_t( "Felguard: Felstorm", 89751, player )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       aoe       = true;
       harmful   = false;
-      tick_zero      = true;
-      id=89751;
-      parse_data( player -> player_data );
+      tick_zero = true;
 
       felstorm_tick = new felstorm_tick_t( p );
     }
@@ -1365,13 +1389,15 @@ struct felguard_pet_t : public warlock_main_pet_t
   {
     damage_modifier = 1.0;
 
-    action_list_str += "/snapshot_stats/felstorm/legion_strike/wait_until_ready";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/felstorm";
+    action_list_str += "/legion_strike";
+    action_list_str += "/wait_until_ready";
   }
 
   virtual void init_base()
   {
     warlock_main_pet_t::init_base();
-
 
     melee = new melee_t( this );
   }
@@ -1400,16 +1426,15 @@ struct felhunter_pet_t : public warlock_main_pet_t
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
-      may_crit          = true;
       target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
-      direct_power_mod = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
+      direct_power_mod   = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
     }
 
     virtual void player_buff()
     {
-      felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
-      warlock_t*      o = p -> owner -> cast_warlock();
       warlock_pet_spell_t::player_buff();
+
+      warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       player_multiplier *= 1.0 + o -> active_dots() * 0.15;
     }
 
@@ -1425,18 +1450,21 @@ struct felhunter_pet_t : public warlock_main_pet_t
   {
 	damage_modifier = 0.8;
 
-    action_list_str = "/snapshot_stats/shadow_bite/wait_until_ready";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/shadow_bite";
+    action_list_str += "/wait_until_ready";
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
+    // untested in cataclyms!!
     health_per_stamina = 9.5;
     mana_per_intellect = 11.55;
     mp5_per_intellect  = 8.0 / 324.0;
-
     base_mp5 = 11.22;
+    // untested in cataclyms!!
 
     melee = new warlock_pet_melee_t( this, "felhunter_melee" );
   }
@@ -1473,11 +1501,10 @@ struct succubus_pet_t : public warlock_main_pet_t
     lash_of_pain_t( player_t* player ) :
         warlock_pet_spell_t( "Succubus: Lash of Pain", player, "Lash of Pain" )
     {
-      warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      may_crit          = true;
-      base_multiplier *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
-      direct_power_mod = 0.612; // from the tooltip - tests show the 0.5 factor is not used
-      min_gcd = 1.5;
+      warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
+      base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
+      direct_power_mod  = 0.612; // from the tooltip - tests show the 0.5 factor is not used
+      min_gcd           = 1.5;
     }
 
     virtual void travel( int travel_result, double travel_dmg)
@@ -1492,7 +1519,8 @@ struct succubus_pet_t : public warlock_main_pet_t
   {
     damage_modifier = 1.025;
 
-    action_list_str = "/snapshot_stats/lash_of_pain";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/lash_of_pain";
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1528,7 +1556,6 @@ struct voidwalker_pet_t : public warlock_main_pet_t
         warlock_pet_spell_t( "Voidwalker: Torment", player, "Torment" )
     {
       direct_power_mod = 0.512;
-
     }
 
     virtual void travel( int travel_result, double travel_dmg)
@@ -1543,14 +1570,15 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   {
     damage_modifier = 0.86;
 
-    action_list_str = "/snapshot_stats/torment";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/torment";
   }
 
   virtual void init_base()
   {
     warlock_main_pet_t::init_base();
 
-	melee = new warlock_pet_melee_t( this, "voidwalker_melee" );
+    melee = new warlock_pet_melee_t( this, "voidwalker_melee" );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1606,10 +1634,11 @@ struct infernal_pet_t : public warlock_guardian_pet_t
         { NULL, OPT_UNKNOWN, NULL }
       };
       parse_options( options, options_str );
-      harmful = false;
-      num_ticks      = 1;
-      number_ticks   = 1;
-      scale_with_haste = false;
+
+      harmful           = false;
+      num_ticks         = 1;
+      number_ticks      = 1;
+      scale_with_haste  = false;
 
       immolation_damage = new immolation_damage_t( p );
     }
@@ -1642,14 +1671,17 @@ struct infernal_pet_t : public warlock_guardian_pet_t
                                    const std::string& options_str )
   {
     if ( name == "immolation" ) return new infernal_immolation_t( this, options_str );
+
     return warlock_guardian_pet_t::create_action( name, options_str );
   }
 
+  // untested in cataclyms!!
   virtual double composite_attack_hit() SC_CONST
     { return 0; }
 
   virtual double composite_spell_hit()  SC_CONST
     { return 0; }
+  // untested in cataclyms!!
 
 };
 
@@ -1663,9 +1695,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   {
     doom_bolt_t( player_t* player ) :
       warlock_pet_spell_t( "doomguard_doombolt", player, "Doom Bolt" )
-    {
-      may_crit          = true;
-    }
+    { }
   };
 
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
@@ -1676,13 +1706,15 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   {
     warlock_guardian_pet_t::init_base();
 
-    action_list_str = "/snapshot_stats/doom_bolt";
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/doom_bolt";
   }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
+
     return warlock_guardian_pet_t::create_action( name, options_str );
   }
 };
@@ -1696,7 +1728,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
-	damage_modifier = 1.14;
+    damage_modifier = 1.14;
 
     action_list_str = "/snapshot_stats/wait_until_ready";
   }
@@ -1708,9 +1740,6 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     melee = new warlock_pet_melee_t( this, "ebon_imp_melee" );
   }
 };
-
-
-
 
 // Curse of Elements Debuff ==================================================
 
