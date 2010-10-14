@@ -1307,7 +1307,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct legion_strike_t : public warlock_pet_attack_t
   {
     legion_strike_t( player_t* player ) :
-		warlock_pet_attack_t( "Felguard: Legion Strike", player, "Legion Strike" )
+		warlock_pet_attack_t( "legion_strike", player, "Legion Strike" )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
@@ -1331,7 +1331,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct felstorm_tick_t : public warlock_pet_attack_t
   {
     felstorm_tick_t( player_t* player ) :
-        warlock_pet_attack_t( "Felguard: Felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+        warlock_pet_attack_t( "felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       base_dd_min=base_dd_max=p -> player_data.effect_misc_value1( p -> player_data.spell_effect_id( 89753, 1) );
@@ -1356,7 +1356,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     attack_t* felstorm_tick;
 
     felstorm_t( player_t* player ) :
-      warlock_pet_attack_t( "Felguard: Felstorm", 89751, player )
+      warlock_pet_attack_t( "felstorm", 89751, player )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       aoe       = true;
@@ -1380,7 +1380,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct melee_t : public warlock_pet_melee_t
   {
     melee_t( player_t* player ) :
-        warlock_pet_melee_t( player, "Felguard: Melee" )
+        warlock_pet_melee_t( player, "melee" )
     { }
   };
 
@@ -1422,7 +1422,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
   struct shadow_bite_t : public warlock_pet_spell_t
   {
     shadow_bite_t( player_t* player ) :
-      warlock_pet_spell_t( "felhunter_shadow_bite", player, "Shadow Bite" )
+      warlock_pet_spell_t( "shadow_bite", player, "Shadow Bite" )
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
@@ -1499,7 +1499,7 @@ struct succubus_pet_t : public warlock_main_pet_t
   struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_spell_t( "Succubus: Lash of Pain", player, "Lash of Pain" )
+        warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
@@ -1553,7 +1553,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   struct torment_t : public warlock_pet_spell_t
   {
     torment_t( player_t* player ) :
-        warlock_pet_spell_t( "Voidwalker: Torment", player, "Torment" )
+        warlock_pet_spell_t( "torment", player, "Torment" )
     {
       direct_power_mod = 0.512;
     }
@@ -1694,7 +1694,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   struct doom_bolt_t : public warlock_pet_spell_t
   {
     doom_bolt_t( player_t* player ) :
-      warlock_pet_spell_t( "doomguard_doombolt", player, "Doom Bolt" )
+      warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     { }
   };
 
@@ -1740,6 +1740,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     melee = new warlock_pet_melee_t( this, "ebon_imp_melee" );
   }
 };
+
 
 // Curse of Elements Debuff ==================================================
 
