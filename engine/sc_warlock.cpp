@@ -2328,10 +2328,10 @@ struct drain_life_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double tick_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
-    double t = warlock_spell_t::execute_time();
+    double t = warlock_spell_t::tick_time();
 
     if ( p -> buffs_soulburn -> check() )
     {
@@ -2517,18 +2517,8 @@ struct unstable_affliction_t : public warlock_spell_t
       if ( p -> dots_immolate -> ticking() )
         p -> dots_immolate -> action -> cancel();
 	}
-	if ( p -> buffs_soulburn -> up() )
-    {
-      p -> buffs_soulburn -> expire();
-    }
   }
 
-  virtual double calculate_direct_damage()
-  {
-    warlock_t* p = player -> cast_warlock();
-	direct_dmg = ( p -> buffs_soulburn -> check() ) ? ( base_td + total_power() * tick_power_mod ) * num_ticks * 0.30 : 0;
-	return direct_dmg;
-  }
 };
 
 // Haunt Spell ==============================================================
