@@ -2799,6 +2799,10 @@ struct searing_pain_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+	direct_power_mod = 1.5 / 3.5;
+	base_dd_min = 288; 
+	base_dd_max = 341;
   }
 
   virtual void player_buff()
