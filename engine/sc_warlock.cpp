@@ -1000,7 +1000,7 @@ struct warlock_spell_t : public spell_t
   {
      double t = spell_t::execute_time();
 
-     if ( usable_pre_combat && player -> in_combat ) t=0;
+     if ( usable_pre_combat && !player -> in_combat ) t=0;
 
      return t;
   }
