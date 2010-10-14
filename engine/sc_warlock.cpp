@@ -360,7 +360,7 @@ struct warlock_t : public player_t
 
   double constants_pandemic_gcd;
 
-  double use_pre_soulburn;
+  int use_pre_soulburn;
 
 
   warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARLOCK, name, r )
@@ -391,7 +391,7 @@ struct warlock_t : public player_t
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
 
-
+    use_pre_soulburn = 0;
 
     spells_burning_embers         = 0;
   }
@@ -3511,7 +3511,7 @@ struct soulburn_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( !( p -> use_pre_soulburn == true && p -> in_combat ) )
+    if ( !( p -> use_pre_soulburn && p -> in_combat ) )
       p -> buffs_soulburn -> trigger();
     warlock_spell_t::execute();
   }
