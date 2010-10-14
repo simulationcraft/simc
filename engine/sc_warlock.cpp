@@ -2031,7 +2031,7 @@ struct shadow_bolt_t : public warlock_spell_t
     return warlock_spell_t::ready();
   }
 
-  virtual double haste()
+  virtual double haste() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
     double h = warlock_spell_t::haste();
