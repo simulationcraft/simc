@@ -782,6 +782,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   {
     warlock_pet_t::summon( duration );
     warlock_t*  o = owner -> cast_warlock();
+    reset();
 
     spell_power[ SCHOOL_MAX ] += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80) * 0.5;
     attack_power += o -> composite_attack_power() * ( level / 80 );
