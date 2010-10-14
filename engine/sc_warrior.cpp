@@ -658,6 +658,7 @@ double warrior_attack_t::cost() SC_CONST
   if ( p -> buffs_battle_trance -> check() && c > 5 ) c  = 0;
   return c;
 }
+
 // warrior_attack_t::consume_resource =======================================
 
 void warrior_attack_t::consume_resource()
