@@ -117,7 +117,7 @@ struct druid_t : public player_t
     talent_t* moonkin_form;
     talent_t* natures_grace;
     talent_t* natures_majesty;
-    talent_t* overgrowth;
+//    talent_t* overgrowth;
     talent_t* owlkin_frenzy;
     talent_t* shooting_stars;
     talent_t* solar_beam;
@@ -661,6 +661,7 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
       num_ticks        = 2;
       number_ticks     = num_ticks;
       scale_with_haste = false;
+      id               = 71023;
       reset();
     }
     void player_buff() {}
@@ -3353,7 +3354,7 @@ void druid_t::init_talents()
   talents.natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
   talents.natures_grace         = new talent_t( this, "natures_grace", "Nature's Grace" );
   talents.nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
-  talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
+//  talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
   talents.owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
   talents.predatory_strikes     = new talent_t( this, "predatory_strikes", "Predatory Strikes" );
   talents.primal_fury           = new talent_t( this, "primal_fury", "Primal Fury" );
