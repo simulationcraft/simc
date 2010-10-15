@@ -16,6 +16,8 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
+  { "4179",  "Synapse Springs",                                           "synapse_springs"                },
   { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery_2"        },
   { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery_2"          },
   { "4115",  "Lightweave Embroidery",                                     "lightweave_embroidery_2"        },

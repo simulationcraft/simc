@@ -1019,7 +1019,10 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   // Enchants
   else if ( name == "pyrorocket"                   ) e = "1837Fire_45Cd";  // temporary for backwards compatibility
   else if ( name == "hand_mounted_pyro_rocket"     ) e = "1837Fire_45Cd";
-  else if ( name == "hyperspeed_accelerators"      ) e = "340Haste_12Dur_60Cd";
+  else if ( name == "hyperspeed_accelerators"      ) e = "240Haste_12Dur_60Cd";
+  // Wotlk
+  else if ( name == "synapse_springs"              ) e = "480Int_12Dur_60Cd";
+  else if ( name == "tazik_shocker"                ) e = "1165Nature_120Cd";
 
   if ( e.empty() ) return false;
 
