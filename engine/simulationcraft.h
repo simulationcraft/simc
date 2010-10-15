@@ -2322,10 +2322,13 @@ struct scaling_t
   sim_t* baseline_sim;
   sim_t* ref_sim;
   sim_t* delta_sim;
+  sim_t* ref_sim2;
+  sim_t* delta_sim2;
   int    scale_stat;
   double scale_value;
   int    calculate_scale_factors;
   int    center_scale_delta;
+  int    five_point_stencil;
   int    positive_scale_delta;
   int    scale_lag;
   double scale_factor_noise;

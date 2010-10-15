@@ -1870,10 +1870,26 @@ static void print_html2_player( FILE* file, player_t* p )
     if ( b -> quiet || ! b -> start_count || b -> constant )
       continue;
 
-    util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
-         b -> name(), b -> avg_start, b -> avg_refresh,
+    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
+         b -> name(), b -> player -> name(), b -> name(), b -> avg_start, b -> avg_refresh,
          b -> avg_start_interval, b -> avg_trigger_interval,
          b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
+
+    util_t::fprintf( file, "<br>id: %.i"
+                           "<br>tooltip: %s"
+                           "<br>max_stacks: %.i"
+                           "<br>duration: %.2f"
+                           "<br>cooldown: %.2f"
+                           "<br>default_chance: %.2f",
+                           b -> spell_id_t_id,
+                           b -> tooltip(),
+                           b -> max_stack,
+                           b -> buff_duration,
+                           b -> buff_cooldown,
+                           b -> default_chance );
+
+    util_t::fprintf( file, "</tr>\n" );
   }
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 

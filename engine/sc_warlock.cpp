@@ -628,9 +628,9 @@ struct warlock_pet_t : public pet_t
 
 
     if ( stats_avaiable != 13 )
-      sim -> errorf( "Pet %s has no general base stats avaiable on this level.\n", name());
+      sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level);
     if ( stats2_avaiable != 13 )
-      sim -> errorf( "Pet %s has no base stats avaiable on this level.\n", name());
+      sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level);
 
     initial_attack_power_per_strength = 1.0; // tested
     base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
@@ -3004,6 +3004,12 @@ struct fel_armor_t : public warlock_spell_t
     warlock_spell_t( "fel_armor", player, "Fel Armor" ), bonus_spell_power( 0 )
   {
     warlock_t* p = player -> cast_warlock();
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     harmful = false;
     bonus_spell_power = p -> buffs_fel_armor -> effect_min( 1 );
 
