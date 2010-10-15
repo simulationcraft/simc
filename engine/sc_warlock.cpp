@@ -689,8 +689,15 @@ struct warlock_pet_t : public pet_t
     if ( melee ) melee -> cancel();
   }
 
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+  }
 
-
+  virtual double composite_spell_crit() SC_CONST
+  {
+	return owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+  }
 
 };
 
@@ -2521,7 +2528,7 @@ struct drain_soul_t : public warlock_spell_t
 
       if ( sim -> target -> health_percentage() < effect_base_value( 3 ) )
       {
-        player_multiplier *= 4.0 + de_bonus * 0.01;
+        player_multiplier *= 2.0 + de_bonus * 0.01;
       }
   }
 };
