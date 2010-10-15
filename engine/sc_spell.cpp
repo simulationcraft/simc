@@ -112,6 +112,7 @@ void spell_t::player_buff()
 
   if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
        p -> meta_gem == META_CHAOTIC_SKYFLARE      ||
+       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT  ||
        p -> meta_gem == META_RELENTLESS_EARTHSIEGE ||
        p -> meta_gem == META_RELENTLESS_EARTHSTORM )
   {

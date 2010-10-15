@@ -522,19 +522,55 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
 int armory_t::parse_meta_gem( const std::string& description )
 {
-  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"         ) return META_AUSTERE_EARTHSIEGE;
-  if ( description == "+21 Critical Strike Rating and +2% Mana"                     ) return META_BEAMING_EARTHSIEGE;
-  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFLARE;
-  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFIRE;
-  if ( description == "+25 Spell Power and +2% Intellect"                           ) return META_EMBER_SKYFLARE;
-  if ( description == "+21 Defense Rating and +5% Shield Block Value"               ) return META_ETERNAL_EARTHSIEGE;
-  if ( description == "+21 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSIEGE;
-  if ( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
-  if ( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
-  if ( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
-  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFLARE;
-  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_STARFLARE;
-  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFIRE;
+  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;
+  if ( description == "+81 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and +2% Mana"                           ) return META_BEAMING_EARTHSIEGE;
+  if ( description == "+21 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSIEGE;
+  if ( description == "+12 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSTORM;
+  if ( description == "+54 Intellect and +2% Reduced Threat"                              ) return META_BRACING_SHADOWSPIRIT;
+  if ( description == "+54 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFLARE;
+  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFIRE;
+  if ( description == "+54 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SHADOWSPIRIT;
+  if ( description == "+14 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFIRE;
+  if ( description == "+25 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFLARE;
+  if ( description == "+81 Stamina and Reduce Spell Damage Taken by 2%"                   ) return META_EFFULGENT_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SHADOWSPIRIT;
+  if ( description == "+12 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFIRE;
+  if ( description == "+21 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFLARE;
+  if ( description == "+54 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_STARFLARE;
+  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFIRE;
+  if ( description == "+21 Dodge Rating and +1% Shield Block Value"                       ) return META_ETERNAL_EARTHSIEGE;
+  if ( description == "+81 Stamina and +5% Shield Block Value"                            ) return META_ETERNAL_SHADOWSPIRIT;
+  if ( description == "+54 Mastery Rating and Minor Run Speed Increase"                   ) return META_FLEET_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SHADOWSPIRIT;
+  if ( description == "+21 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SKYFLARE;
+  if ( description == "+17 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_STARFLARE;
+  if ( description == "+54 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_STARFLARE;
+  if ( description == "+21 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSIEGE;
+  if ( description == "+12 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSTORM;
+  if ( description == "+21 Haste Rating and Sometimes Heal on Your Crits"                 ) return META_INVIGORATING_EARTHSIEGE;
+  if ( description == "+21 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSIEGE;
+  if ( description == "+12 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSTORM;
+  if ( description == "+21 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSIEGE;
+  if ( description == "+17 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSHATTER;
+  if ( description == "+32 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSIEGE;
+  if ( description == "+26 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSHATTER;
+  if ( description == "+18 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSTORM;
+  if ( description == "+81 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_SHADOWSPIRIT;
+  if ( description == "+81 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SHADOWSPIRIT;
+  if ( description == "+22 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SKYFLARE;
+  if ( description == "+12 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFIRE;
+  if ( description == "+21 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_STARFLARE;
+  if ( description == "+17 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_STARFLARE;
+  if ( description == "+21 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_SKYFLARE;
+  if ( description == "+21 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSIEGE;
+  if ( description == "+17 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSHATTER;
 
   return META_GEM_NONE;
 }

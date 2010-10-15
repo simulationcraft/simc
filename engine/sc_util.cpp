@@ -337,42 +337,54 @@ const char* util_t::meta_gem_type_string( int type )
 {
   switch ( type )
   {
-  case META_AUSTERE_EARTHSIEGE:      return "austere_earthsiege";
-  case META_BEAMING_EARTHSIEGE:      return "beaming_earthsiege";
-  case META_BRACING_EARTHSIEGE:      return "bracing_earthsiege";
-  case META_BRACING_EARTHSTORM:      return "bracing_earthstorm";
-  case META_CHAOTIC_SKYFIRE:         return "chaotic_skyfire";
-  case META_CHAOTIC_SKYFLARE:        return "chaotic_skyflare";
-  case META_EMBER_SHADOWSPIRIT:      return "ember_shadowspirit";
-  case META_EMBER_SKYFLARE:          return "ember_skyflare";
-  case META_ENIGMATIC_SKYFLARE:      return "enigmatic_skyflare";
-  case META_ENIGMATIC_STARFLARE:     return "enigmatic_starflare";
-  case META_ENIGMATIC_SKYFIRE:       return "enigmatic_skyfire";
-  case META_ETERNAL_EARTHSIEGE:      return "eternal_earthsiege";
-  case META_ETERNAL_EARTHSTORM:      return "eternal_earthstorm";
-  case META_FORLORN_SKYFLARE:        return "forlorn_skyflare";
-  case META_FORLORN_STARFLARE:       return "forlorn_starflare";
-  case META_IMPASSIVE_SKYFLARE:      return "impassive_skyflare";
-  case META_IMPASSIVE_STARFLARE:     return "impassive_starflare";
-  case META_INSIGHTFUL_EARTHSIEGE:   return "insightful_earthsiege";
-  case META_INSIGHTFUL_EARTHSTORM:   return "insightful_earthstorm";
-  case META_INVIGORATING_EARTHSIEGE: return "invigorating_earthsiege";
-  case META_MYSTICAL_SKYFIRE:        return "mystical_skyfire";
-  case META_PERSISTENT_EARTHSHATTER: return "persistent_earthshatter";
-  case META_PERSISTENT_EARTHSIEGE:   return "persistent_earthsiege";
-  case META_POWERFUL_EARTHSHATTER:   return "powerful_earthshatter";
-  case META_POWERFUL_EARTHSIEGE:     return "powerful_earthsiege";
-  case META_POWERFUL_EARTHSTORM:     return "powerful_earthstorm";
-  case META_RELENTLESS_EARTHSIEGE:   return "relentless_earthsiege";
-  case META_RELENTLESS_EARTHSTORM:   return "relentless_earthstorm";
-  case META_REVITALIZING_SKYFLARE:   return "revitalizing_skyflare";
-  case META_SWIFT_SKYFIRE:           return "swift_skyfire";
-  case META_SWIFT_SKYFLARE:          return "swift_skyflare";
-  case META_SWIFT_STARFIRE:          return "swift_starfire";
-  case META_SWIFT_STARFLARE:         return "swift_starflare";
-  case META_TIRELESS_STARFLARE:      return "tireless_starflare";
-  case META_TRENCHANT_EARTHSHATTER:  return "trenchant_earthshatter";
-  case META_TRENCHANT_EARTHSIEGE:    return "trenchant_earthsiege";
+  case META_AUSTERE_EARTHSIEGE:        return "austere_earthsiege";
+  case META_AUSTERE_SHADOWSPIRIT:      return "austere_shadowspirit";
+  case META_BEAMING_EARTHSIEGE:        return "beaming_earthsiege";
+  case META_BRACING_EARTHSIEGE:        return "bracing_earthsiege";
+  case META_BRACING_EARTHSTORM:        return "bracing_earthstorm";
+  case META_BRACING_SHADOWSPIRIT:      return "bracing_shadowspirit";
+  case META_CHAOTIC_SHADOWSPIRIT:      return "chaotic_shadowspirit";
+  case META_CHAOTIC_SKYFIRE:           return "chaotic_skyfire";
+  case META_CHAOTIC_SKYFLARE:          return "chaotic_skyflare";
+  case META_DESTRUCTIVE_SHADOWSPIRIT:  return "destructive_shadowspirit";
+  case META_EFFULGENT_SHADOWSPIRIT:    return "effulgent_shadowspirit";
+  case META_EMBER_SHADOWSPIRIT:        return "ember_shadowspirit";
+  case META_EMBER_SKYFLARE:            return "ember_skyflare";
+  case META_ENIGMATIC_SHADOWSPIRIT:    return "enigmatic_shadowspirit";
+  case META_ENIGMATIC_SKYFLARE:        return "enigmatic_skyflare";
+  case META_ENIGMATIC_STARFLARE:       return "enigmatic_starflare";
+  case META_ENIGMATIC_SKYFIRE:         return "enigmatic_skyfire";
+  case META_ETERNAL_EARTHSIEGE:        return "eternal_earthsiege";
+  case META_ETERNAL_EARTHSTORM:        return "eternal_earthstorm";
+  case META_ETERNAL_SHADOWSPIRIT:      return "eternal_shadowspirit";
+  case META_FLEET_SHADOWSPIRIT:        return "fleet_shadowspirit";
+  case META_FORLORN_SHADOWSPIRIT:      return "forlorn_shadowspirit";
+  case META_FORLORN_SKYFLARE:          return "forlorn_skyflare";
+  case META_FORLORN_STARFLARE:         return "forlorn_starflare";
+  case META_IMPASSIVE_SHADOWSPIRIT:    return "impassive_shadowspirit";
+  case META_IMPASSIVE_SKYFLARE:        return "impassive_skyflare";
+  case META_IMPASSIVE_STARFLARE:       return "impassive_starflare";
+  case META_INSIGHTFUL_EARTHSIEGE:     return "insightful_earthsiege";
+  case META_INSIGHTFUL_EARTHSTORM:     return "insightful_earthstorm";
+  case META_INVIGORATING_EARTHSIEGE:   return "invigorating_earthsiege";
+  case META_MYSTICAL_SKYFIRE:          return "mystical_skyfire";
+  case META_PERSISTENT_EARTHSHATTER:   return "persistent_earthshatter";
+  case META_PERSISTENT_EARTHSIEGE:     return "persistent_earthsiege";
+  case META_POWERFUL_EARTHSHATTER:     return "powerful_earthshatter";
+  case META_POWERFUL_EARTHSIEGE:       return "powerful_earthsiege";
+  case META_POWERFUL_EARTHSTORM:       return "powerful_earthstorm";
+  case META_POWERFUL_SHADOWSPIRIT:     return "powerful_shadowspirit";
+  case META_RELENTLESS_EARTHSIEGE:     return "relentless_earthsiege";
+  case META_RELENTLESS_EARTHSTORM:     return "relentless_earthstorm";
+  case META_REVITALIZING_SHADOWSPIRIT: return "revitalizing_shadowspirit";
+  case META_REVITALIZING_SKYFLARE:     return "revitalizing_skyflare";
+  case META_SWIFT_SKYFIRE:             return "swift_skyfire";
+  case META_SWIFT_SKYFLARE:            return "swift_skyflare";
+  case META_SWIFT_STARFIRE:            return "swift_starfire";
+  case META_SWIFT_STARFLARE:           return "swift_starflare";
+  case META_TIRELESS_STARFLARE:        return "tireless_starflare";
+  case META_TRENCHANT_EARTHSHATTER:    return "trenchant_earthshatter";
+  case META_TRENCHANT_EARTHSIEGE:      return "trenchant_earthsiege";
   }
   return "unknown";
 }
@@ -608,6 +620,7 @@ const char* util_t::food_type_string( int food )
   switch ( food )
   {
   case FOOD_NONE:                     return "none";
+  case FOOD_BASILISK_LIVERDOG:        return "basilisk_liverdog";
   case FOOD_BLACKENED_BASILISK:       return "blackened_basilisk";
   case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin";
   case FOOD_CRUNCHY_SERPENT:          return "crunchy_serpent";

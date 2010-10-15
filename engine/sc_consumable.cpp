@@ -143,6 +143,10 @@ struct food_t : public action_t
     player -> food = type;
     switch ( type )
     {
+    case FOOD_BASILISK_LIVERDOG:
+      player -> stat_gain( STAT_HASTE_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
     case FOOD_BLACKENED_BASILISK:
       player -> stat_gain( STAT_SPELL_POWER, 23 );
       player -> stat_gain( STAT_SPIRIT, 20 );

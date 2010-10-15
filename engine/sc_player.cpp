@@ -709,49 +709,61 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
 
-  if      ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_BRACING_EARTHSIEGE      ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_BRACING_EARTHSTORM      ) item_stats.spell_power += 14;
-  else if ( meta_gem == META_CHAOTIC_SKYFIRE         ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_CHAOTIC_SKYFLARE        ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_EMBER_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_EMBER_SKYFLARE          ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_ENIGMATIC_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_ENIGMATIC_STARFLARE     ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_ENIGMATIC_SKYFIRE       ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_FORLORN_SKYFLARE        ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_FORLORN_STARFLARE       ) item_stats.spell_power += 20;
-  else if ( meta_gem == META_IMPASSIVE_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_IMPASSIVE_STARFLARE     ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE   ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM   ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER ) item_stats.attack_power += 34;
-  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE   ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_POWERFUL_EARTHSHATTER   ) item_stats.attribute[ ATTR_STAMINA ] += 26;
-  else if ( meta_gem == META_POWERFUL_EARTHSIEGE     ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_POWERFUL_EARTHSTORM     ) item_stats.attribute[ ATTR_STAMINA ] += 18;
-  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE   ) item_stats.attribute[ ATTR_AGILITY ] += 21;
-  else if ( meta_gem == META_RELENTLESS_EARTHSTORM   ) item_stats.attribute[ ATTR_AGILITY ] += 12;
-  else if ( meta_gem == META_REVITALIZING_SKYFLARE   ) item_stats.mp5 += 8;
-  else if ( meta_gem == META_SWIFT_SKYFIRE           ) item_stats.attack_power += 24;
-  else if ( meta_gem == META_SWIFT_SKYFLARE          ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_SWIFT_STARFIRE          ) item_stats.spell_power  += 12;
-  else if ( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
-  else if ( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
-  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER  ) item_stats.spell_power  += 20;
-  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE    ) item_stats.spell_power  += 25;
+  if      ( meta_gem == META_AUSTERE_EARTHSIEGE        ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_BEAMING_EARTHSIEGE        ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_BRACING_EARTHSIEGE        ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_BRACING_EARTHSTORM        ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_BRACING_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_CHAOTIC_SHADOWSPIRIT      ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_CHAOTIC_SKYFIRE           ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_CHAOTIC_SKYFLARE          ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_DESTRUCTIVE_SHADOWSPIRIT  ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFIRE       ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFLARE      ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_EFFULGENT_SHADOWSPIRIT    ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_EMBER_SHADOWSPIRIT        ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_EMBER_SKYFIRE             ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_EMBER_SKYFLARE            ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_ENIGMATIC_SHADOWSPIRIT    ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_ENIGMATIC_SKYFLARE        ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_ENIGMATIC_STARFLARE       ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_ENIGMATIC_SKYFIRE         ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_ETERNAL_EARTHSIEGE        ) item_stats.dodge_rating += 21;
+  else if ( meta_gem == META_ETERNAL_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_FLEET_SHADOWSPIRIT        ) item_stats.mastery_rating += 54;
+  else if ( meta_gem == META_FORLORN_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_FORLORN_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_FORLORN_STARFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_IMPASSIVE_SHADOWSPIRIT    ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_IMPASSIVE_SKYFLARE        ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_IMPASSIVE_STARFLARE       ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE     ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM     ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE   ) item_stats.haste_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER   ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE     ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_POWERFUL_EARTHSHATTER     ) item_stats.attribute[ ATTR_STAMINA ] += 26;
+  else if ( meta_gem == META_POWERFUL_EARTHSIEGE       ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_POWERFUL_EARTHSTORM       ) item_stats.attribute[ ATTR_STAMINA ] += 18;
+  else if ( meta_gem == META_POWERFUL_SHADOWSPIRIT     ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE     ) item_stats.attribute[ ATTR_AGILITY ] += 21;
+  else if ( meta_gem == META_RELENTLESS_EARTHSTORM     ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+  else if ( meta_gem == META_REVITALIZING_SHADOWSPIRIT ) item_stats.attribute[ ATTR_SPIRIT  ] += 54;
+  else if ( meta_gem == META_REVITALIZING_SKYFLARE     ) item_stats.attribute[ ATTR_SPIRIT  ] += 22;
+  else if ( meta_gem == META_SWIFT_SKYFIRE             ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_SWIFT_SKYFLARE            ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_SWIFT_STARFLARE           ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_TIRELESS_STARFLARE        ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TIRELESS_SKYFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER    ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE      ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
 
-  if ( meta_gem == META_AUSTERE_EARTHSIEGE )
+  if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
     initial_armor_multiplier *= 1.02;
   }
-  else if ( meta_gem == META_EMBER_SHADOWSPIRIT )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  else if ( meta_gem == META_EMBER_SKYFLARE )
+  else if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
     mana_per_intellect *= 1.02;
   }
@@ -929,7 +941,7 @@ void player_t::init_resources( bool force )
 
       if ( i == RESOURCE_MANA ) 
       {
-        if ( meta_gem == META_EMBER_SHADOWSPIRIT )
+        if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
         {
           resource_initial[ i ] *= 1.02;
         }
