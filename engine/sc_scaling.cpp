@@ -78,11 +78,12 @@ static bool parse_normalize_scale_factors( sim_t* sim,
 // scaling_t::scaling_t =====================================================
 
 scaling_t::scaling_t( sim_t* s ) :
-  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ),
+  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ), ref_sim2( 0 ), delta_sim2( 0 ),
   scale_stat( STAT_NONE ),
   scale_value( 0 ),
   calculate_scale_factors( 0 ),
   center_scale_delta( 0 ),
+  five_point_stencil( 0 ),
   positive_scale_delta( 0 ),
   scale_lag( 0 ),
   scale_factor_noise( 0.0 ),
@@ -227,12 +228,30 @@ void scaling_t::analyze_stats()
 
     bool center = center_scale_delta && ! stat_may_cap( i );
 
-    ref_sim = center ? new sim_t( sim ) : baseline_sim;
+
+
+    // 5 point stencil
+    bool fivepstencil = five_point_stencil && ! stat_may_cap( i );
+    if ( fivepstencil )
+    {
+      center = true;
+      ref_sim2 = new sim_t( sim );
+      ref_sim2 -> scaling -> scale_stat = i;
+      ref_sim2 -> scaling -> scale_value = -scale_delta;
+      ref_sim2 -> execute();
+
+      delta_sim2 = new sim_t( sim );
+      delta_sim2 -> scaling -> scale_stat = i;
+      delta_sim2 -> scaling -> scale_value = +scale_delta;
+      delta_sim2 -> execute();
+    }
 
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     delta_sim -> execute();
+
+    ref_sim = center ? new sim_t( sim ) : baseline_sim;
 
     if ( center )
     {
@@ -250,14 +269,27 @@ void scaling_t::analyze_stats()
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
+      player_t*   ref_p2 = 0;
+      player_t* delta_p2 = 0;
+      if ( fivepstencil )
+      {
+        ref_p2 =   ref_sim2 -> find_player( p -> name() );
+        delta_p2 = delta_sim2 -> find_player( p -> name() );
+      }
       double divisor = scale_delta;
+      if ( fivepstencil)
+        divisor = scale_delta * 6;
 
       if ( delta_p -> invert_spirit_scaling )
         divisor = -divisor;
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
-      double f = ( delta_p -> dps - ref_p -> dps ) / divisor;
+      double f;
+      if ( fivepstencil )
+        f= ( ref_p2 -> dps + 8 * delta_p -> dps - 8 * ref_p -> dps - delta_p2 -> dps ) / divisor;
+      else
+        f = ( delta_p -> dps - ref_p -> dps ) / divisor;
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
         f /= 10.0;
@@ -269,11 +301,15 @@ void scaling_t::analyze_stats()
     {
       report_t::print_text( sim -> output_file,   ref_sim, true );
       report_t::print_text( sim -> output_file, delta_sim, true );
+      if (ref_sim2)   report_t::print_text( sim -> output_file,   ref_sim2, true );
+      if (delta_sim2) report_t::print_text( sim -> output_file, delta_sim2, true );
     }
 
     if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
     delete delta_sim;
-    delta_sim = ref_sim = 0;
+    delete delta_sim2;
+    delete ref_sim2;
+    delta_sim = ref_sim = delta_sim2 = ref_sim2 = 0;
 
     remaining_scaling_stats--;
   }
@@ -398,6 +434,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "normalize_scale_factors",        OPT_FUNC,   ( void* ) ::parse_normalize_scale_factors },
     { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
     { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
+    { "five_point_stencil",             OPT_BOOL,   &( five_point_stencil                   ) },
     { "positive_scale_delta",           OPT_BOOL,   &( positive_scale_delta                 ) },
     { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
     { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
