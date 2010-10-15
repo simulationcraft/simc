@@ -16,6 +16,9 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery_2"        },
+  { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery_2"          },
+  { "4115",  "Lightweave Embroidery",                                     "lightweave_embroidery_2"        },
   { "3878",  "Mind Amplification Dish",                                   "45Sta"                          },
   { "3876",  "Inscription of the Pinnacle",                               "15Dodge_10Def"                  },
   { "3875",  "+30 Attack Power and +10 Crit Rating",                      "30AP_10Crit"                    },

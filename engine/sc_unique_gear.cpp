@@ -917,6 +917,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
   else if ( name == "whispering_fanged_skull"             ) e = ( heroic ? "OnAttackHit_1250AP_35%_15Dur_45Cd" : "OnAttackHit_1110AP_35%_15Dur_45Cd" );
+  else if ( name == "charred_twilight_scale"              ) e = ( heroic ? "OnSpellCast_861SP_10%_15Dur_45Cd" : "OnSpellCast_763SP_10%_15Dur_45Cd" );
+  else if ( name == "sharpened_twilight_scale"            ) e = ( heroic ? "OnAttackHit_1472AP_35%_15Dur_45Cd" : "OnAttackHit_1304AP_35%_15Dur_45Cd" );
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
@@ -936,10 +938,14 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
-  else if ( name == "lightweave"                          ) e = "OnSpellCast_590SP_35%_15Dur_60Cd";  // temporary for backwards compatibility
-  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_590SP_35%_15Dur_60Cd";
-  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_35%_60Cd";
-  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_800AP_25%_60Cd";
+  else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
+  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  // TO-DO: Check ICD.
+  else if ( name == "lightweave_embroidery_2"             ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  
+  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_400Mana_35%_60Cd";
+  else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_800Mana_15%_60Cd";       // TO-DO: Check ICD.
+  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_400AP_20%_60Cd";
+  else if ( name == "swordguard_embroidery_2"             ) e = "OnAttackHit_1000AP_15%_60Cd";        // TO-DO: Check ICD.
 
   // DK Runeforges
   else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";
