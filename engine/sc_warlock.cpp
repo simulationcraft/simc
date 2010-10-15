@@ -3282,6 +3282,7 @@ struct immolation_damage_t : public warlock_spell_t
     background  = true;
     aoe         = true;
     direct_tick = true;
+    may_crit    = false;
     base_dd_min = base_dd_max = 526; // hardcoded
     stats = player -> get_stats( "immolation_aura" );
   }
@@ -3311,7 +3312,7 @@ struct immolation_aura_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-
+    tick_may_crit = false;
     immolation_damage = new immolation_damage_t( p );
   }
 
