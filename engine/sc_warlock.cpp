@@ -1704,7 +1704,9 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   {
     doom_bolt_t( player_t* player ) :
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
-    { }
+    {
+      base_execute_time = 2.5;
+    }
   };
 
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
