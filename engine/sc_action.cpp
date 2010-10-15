@@ -244,8 +244,8 @@ void action_t::parse_data( sc_data_access_t& pData )
         // Direct Damage
         case E_SCHOOL_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, scaling_type, player -> level );
-          base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
+          base_dd_min      = pData.effect_min( effect, scaling_type, player -> level );
+          base_dd_max      = pData.effect_max( effect, scaling_type, player -> level );
           break;
 
         case E_NORMALIZED_WEAPON_DMG:

@@ -1918,13 +1918,13 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
-  if ( sim -> auras.abominations_might -> up() || sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
+  if ( sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
   {
     m *= 1.10;
   }
   else
   {
-    m *= 1.0 + sim -> auras.unleashed_rage -> value();
+    m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(),sim -> auras.abominations_might -> value() );
   }
 
   return m;
