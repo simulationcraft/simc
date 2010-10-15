@@ -1622,18 +1622,17 @@ struct rend_t : public warrior_attack_t
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = true;
     tick_may_crit          = true;
+    tick_zero              = true;
     normalize_weapon_speed = false;
     scale_with_haste       = false;
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;    
     stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
   }
 
-  virtual void tick()
+  virtual double calculate_direct_damage()
   {
-    warrior_attack_t::tick();
-    warrior_t* p = player -> cast_warrior();
-    p -> buffs_tier10_2pc_melee -> trigger();
-    p -> buffs_taste_for_blood -> trigger();
+    // Rend doesn't actually hit with the weapon, but ticks on application
+    return 0.0;
   }
 
   virtual void execute()
@@ -1642,6 +1641,14 @@ struct rend_t : public warrior_attack_t
     warrior_attack_t::execute();
     if ( result_is_hit() )
       trigger_blood_frenzy( this );
+  }
+
+  virtual void tick()
+  {
+    warrior_attack_t::tick();
+    warrior_t* p = player -> cast_warrior();
+    p -> buffs_tier10_2pc_melee -> trigger();
+    p -> buffs_taste_for_blood -> trigger();
   }
 };
 
