@@ -659,7 +659,9 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
       tick_power_mod   = 0;
       base_tick_time   = 2.0;
       num_ticks        = 2;
+      number_ticks     = num_ticks;
       scale_with_haste = false;
+      reset();
     }
     void player_buff() {}
     void target_debuff( int dmg_type ) {}
@@ -1307,7 +1309,7 @@ struct shred_t : public druid_cat_attack_t
 
     if ( t -> debuffs.bleeding -> check() )
     {
-      player_multiplier *= 1 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
+      player_multiplier *= 1 + 0.01 * p -> talents.rend_and_tear -> mod_additive( P_CRIT );
     }
 
   }
