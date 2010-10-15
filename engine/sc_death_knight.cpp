@@ -3313,10 +3313,12 @@ struct presence_t : public death_knight_spell_t
     {
       case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger(); break;
       case PRESENCE_FROST:
-        double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-        if ( p -> talents.improved_frost_presence -> rank() )
-          fp_value += p -> talents.improved_frost_presence -> effect_base_value( 1 );
-        p -> buffs_frost_presence  -> trigger( 1, fp_value / 100.0 );
+        {
+          double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+          if ( p -> talents.improved_frost_presence -> rank() )
+            fp_value += p -> talents.improved_frost_presence -> effect_base_value( 1 );
+          p -> buffs_frost_presence  -> trigger( 1, fp_value / 100.0 );
+        }
         break;
       case PRESENCE_UNHOLY:
         p -> buffs_unholy_presence -> trigger( 1, 0.15 );
