@@ -562,6 +562,7 @@ enum flask_type
   FLASK_BLINDING_LIGHT,
   FLASK_DISTILLED_WISDOM,
   FLASK_ENDLESS_RAGE,
+  FLASK_FLOWING_WATER,
   FLASK_FROST_WYRM,
   FLASK_MIGHTY_RESTORATION,
   FLASK_PURE_DEATH,
@@ -1568,6 +1569,7 @@ struct util_t
   static const char* resource_type_string      ( int type );
   static const char* result_type_string        ( int type );
   static const char* school_type_string        ( int type );
+  static const char* armor_type_string         ( player_type ptype, int slot_type );
   static const char* slot_type_string          ( int type );
   static const char* stat_type_string          ( int type );
   static const char* stat_type_abbrev          ( int type );
@@ -1590,6 +1592,7 @@ struct util_t
   static school_type parse_school_type         ( const std::string& name );
   static int parse_slot_type                   ( const std::string& name );
   static int parse_stat_type                   ( const std::string& name );
+  static int parse_reforge_type                ( const std::string& name );
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
 
@@ -2437,7 +2440,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   int slot;
-  bool unique, unique_enchant, is_heroic;
+  bool unique, unique_enchant, unique_addon, is_heroic, is_matching_type, is_reforged;
 
   // Option Data
   std::string option_name_str;
@@ -2445,10 +2448,13 @@ struct item_t
   std::string option_stats_str;
   std::string option_gems_str;
   std::string option_enchant_str;
+  std::string option_addon_str;
   std::string option_equip_str;
   std::string option_use_str;
   std::string option_weapon_str;
   std::string option_heroic_str;
+  std::string option_armor_type_str;
+  std::string option_reforge_str;
   std::string options_str;
 
   // Armory Data
@@ -2457,8 +2463,11 @@ struct item_t
   std::string armory_stats_str;
   std::string armory_gems_str;
   std::string armory_enchant_str;
+  std::string armory_addon_str;
   std::string armory_weapon_str;
   std::string armory_heroic_str;
+  std::string armory_armor_type_str;
+  std::string armory_reforge_str;
 
   // Encoded Data
   std::string id_str;
@@ -2466,10 +2475,13 @@ struct item_t
   std::string encoded_stats_str;
   std::string encoded_gems_str;
   std::string encoded_enchant_str;
+  std::string encoded_addon_str;
   std::string encoded_equip_str;
   std::string encoded_use_str;
   std::string encoded_weapon_str;
   std::string encoded_heroic_str;
+  std::string encoded_armor_type_str;
+  std::string encoded_reforge_str;
 
   // Extracted data
   gear_stats_t stats;
@@ -2488,14 +2500,17 @@ struct item_t
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
-  } use, equip, enchant;
+  } use, equip, enchant, addon, use_addon;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ), is_heroic( false ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   bool heroic() SC_CONST;
+  bool reforged() SC_CONST;
+  bool matching_type();
   const char* name() SC_CONST;
   const char* slot_name() SC_CONST;
+  const char* armor_type();
   weapon_t* weapon() SC_CONST;
   bool init();
   bool parse_options();
@@ -2503,11 +2518,14 @@ struct item_t
   bool decode_stats();
   bool decode_gems();
   bool decode_enchant();
+  bool decode_addon();
   bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
   bool decode_heroic();
+  bool decode_armor_type();
+  bool decode_reforge();
 
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
   static int  parse_gem( item_t&            item,
@@ -2762,6 +2780,8 @@ struct player_t
   set_bonus_t set_bonus;
   set_bonus_array_t * sets;
   int meta_gem;
+  bool matching_gear;
+  stat_type matching_gear_type;
 
   // Scale Factors
   gear_stats_t scaling;
@@ -2803,6 +2823,7 @@ struct player_t
     buff_t* dark_intent_feedback;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
+    buff_t* volcanic_potion;
     buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
@@ -3689,6 +3710,7 @@ struct enchant_t
   static void init( player_t* );
   static bool get_encoding( std::string& name, std::string& encoding, const std::string& enchant_id );
   static bool download( item_t&, const std::string& enchant_id );
+  static bool download_addon( item_t&, const std::string& enchant_id );
 };
 
 // Consumable ================================================================
@@ -3909,7 +3931,7 @@ struct wowhead_t
                                     const std::string& name,
                                     int active=1 );
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id, int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
@@ -3919,7 +3941,7 @@ struct wowhead_t
 
 struct mmo_champion_t
 {
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], int cache_only=0 );
+  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id, int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );

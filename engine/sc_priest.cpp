@@ -282,7 +282,6 @@ struct priest_t : public player_t
   };
   power_mod_t power_mod;
 
-  bool   mysticism;
   bool   use_shadow_word_death;
   int    use_mind_blast;
   int    recast_mind_blast;
@@ -294,7 +293,8 @@ struct priest_t : public player_t
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
 
-    mysticism                           = true;
+    matching_gear_type = STAT_INTELLECT;
+
     use_shadow_word_death               = false;
     use_mind_blast                      = 1;
     recast_mind_blast                   = 0;
@@ -342,7 +342,6 @@ struct priest_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_armor() SC_CONST;
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
@@ -2186,19 +2185,6 @@ double priest_t::composite_armor() SC_CONST
   return floor( a );
 }
 
-// priest_t::composite_attribute_multiplier ================================
-
-double priest_t::composite_attribute_multiplier( int attr ) SC_CONST
-{
-  double m = player_t::composite_attribute_multiplier( attr );
-
-  if ( ( attr == STAT_INTELLECT ) && mysticism )
-    m *= 1.05;
-
-  return m;
-}
-
-
 // priest_t::composite_spell_power =========================================
 
 double priest_t::composite_spell_power( const school_type school ) SC_CONST
@@ -2930,7 +2916,6 @@ std::vector<option_t>& priest_t::get_options()
       { "glyph_spirit_tap",                         OPT_BOOL,   &( glyphs.spirit_tap                          ) },
       { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
       // @option_doc loc=player/priest/misc title="Misc"
-      { "mysticism",                                OPT_BOOL,   &( mysticism                                  ) },
       { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
       { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
       { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },

@@ -59,11 +59,11 @@ struct flask_t : public action_t
     case FLASK_ENDLESS_RAGE:
       player -> stat_gain( STAT_ATTACK_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
       break;
+    case FLASK_MIGHTY_RESTORATION:
+      player -> stat_gain( STAT_SPIRIT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      break;
     case FLASK_FROST_WYRM:
       player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
-      break;
-    case FLASK_MIGHTY_RESTORATION:
-      player -> stat_gain( STAT_MP5, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 44 : 31 );
       break;
     case FLASK_PURE_DEATH:
       player -> spell_power[ SCHOOL_FIRE   ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
@@ -387,6 +387,59 @@ struct wild_magic_potion_t : public action_t
 };
 
 // ==========================================================================
+// Volcanic Potion
+// ==========================================================================
+
+struct volcanic_potion_t : public action_t
+{
+  volcanic_potion_t( player_t* p, const std::string& options_str ) :
+      action_t( ACTION_USE, "volcanic_potion", p )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+    cooldown = p -> get_cooldown( "potion" );
+    cooldown -> duration = 60.0;
+  }
+
+  virtual void execute()
+  {
+    if ( player -> in_combat )
+    {
+      player -> buffs.volcanic_potion   -> trigger();
+    }
+    else
+    {
+      cooldown -> duration -= 5.0;
+      player -> buffs.volcanic_potion   -> buff_duration -= 5.0;
+      player -> buffs.volcanic_potion   -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.volcanic_potion   -> buff_duration += 5.0;
+    }
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
+
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
 // Indestructible Potion
 // ==========================================================================
 
@@ -464,7 +517,7 @@ struct mana_potion_t : public action_t
 
     if ( min == 0 && max == 0 )
     {
-      min = max = util_t::ability_rank( player -> level,  4300,80,  2400,68,  1800,0 );
+      min = max = util_t::ability_rank( player -> level,  10000,85, 4300,80,  2400,68,  1800,0 );
     }
 
     if ( min > max ) std::swap( min, max );
@@ -643,6 +696,7 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "indestructible_potion" ) return new indestructible_potion_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
   if ( name == "speed_potion"          ) return new          speed_potion_t( p, options_str );
+  if ( name == "volcanic_potion"       ) return new       volcanic_potion_t( p, options_str );
   if ( name == "wild_magic_potion"     ) return new     wild_magic_potion_t( p, options_str );
 
   return 0;

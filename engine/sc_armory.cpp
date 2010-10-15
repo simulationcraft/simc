@@ -244,6 +244,29 @@ static bool parse_item_heroic( item_t& item,
   return true;
 }
 
+// parse_item_heroic ========================================================
+
+static bool parse_item_armor_type( item_t& item,
+                                   xml_node_t* node )
+{
+  item.armory_armor_type_str.clear();
+
+  xml_node_t* equip_data = xml_t::get_node( node, "equipData" );
+
+  if ( equip_data )
+  {
+    if ( ! xml_t::get_value( item.armory_armor_type_str, equip_data, "subclassName/." ) ) return false;
+  }
+  else
+  {
+    return false;
+  }
+
+  armory_t::format( item.armory_armor_type_str );
+
+  return true;
+}
+
 // parse_item_stats =========================================================
 
 static bool parse_item_stats( item_t& item,
@@ -303,6 +326,20 @@ static bool parse_item_stats( item_t& item,
 
   if ( item.sim -> debug && ! s.empty() )
     log_t::output( item.sim, "%s %s %s armory_stats=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
+
+  return true;
+}
+
+// parse_item_reforge =========================================================
+
+static bool parse_item_reforge( item_t& item,
+                              xml_node_t* xml )
+{
+  item.armory_reforge_str.clear();
+
+  // TO-DO
+
+  armory_t::format( item.armory_reforge_str );
 
   return true;
 }
@@ -392,8 +429,9 @@ static bool parse_item_enchant( item_t& item,
   {
     std::string& s = item.armory_enchant_str;
 
-    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
-    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow";    }
+    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
+    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
+    else if ( enchant == "Swordguard Embroidery"      ) { s += "_swordguard_embroidery_2"; }
     else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
     else if ( enchant == "Berserking"               ) { s += "_berserking";  }
     else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
@@ -412,6 +450,47 @@ static bool parse_item_enchant( item_t& item,
 
     if ( item.sim -> debug && ! s.empty() )
       log_t::output( item.sim, "%s %s %s armory_enchant=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
+  }
+
+  return true;
+}
+
+// parse_item_enchant =======================================================
+
+static bool parse_item_addon( item_t& item,
+                                xml_node_t* xml )
+{
+  item.armory_addon_str.clear();
+
+  std::string enchant;
+
+  // TO-DO: support when armory updated
+
+  if ( xml_t::get_value( enchant, xml, "addon/." ) )  
+  {
+    std::string& s = item.armory_addon_str;
+
+    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
+    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
+    else if ( enchant == "Swordguard Embroidery"      ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
+    else if ( enchant == "Berserking"               ) { s += "_berserking";  }
+    else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
+    else if ( enchant == "Executioner"              ) { s += "_executioner"; }
+    else if ( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
+    else
+    {
+      armory_t::fuzzy_stats( s, enchant );
+    }
+
+    if ( ! s.empty() )
+    {
+      s.erase( 0, 1 );
+      armory_t::format( s );
+    }
+
+    if ( item.sim -> debug && ! s.empty() )
+      log_t::output( item.sim, "%s %s %s armory_addon=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
   }
 
   return true;
@@ -883,13 +962,15 @@ player_t* armory_t::download_player( sim_t* sim,
 
       bool success = false;
 
-      std::string enchant_id, gem_ids[ 3 ];
+      std::string enchant_id, addon_id, gem_ids[ 3 ];
       if ( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
+// TO-DO
+//         xml_t::get_value( addon_id,   item_nodes[ i ], "permanentenchant2" ) &&    
            xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
            xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
            xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = item_t::download_slot( item, id_str, enchant_id, gem_ids );
+        success = item_t::download_slot( item, id_str, enchant_id, gem_ids, addon_id );
       }
 
       if ( ! success )
@@ -935,9 +1016,21 @@ bool armory_t::download_slot( item_t& item,
     return false;
   }
 
+  if ( ! parse_item_armor_type( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse armor type for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_reforge( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -950,6 +1043,12 @@ bool armory_t::download_slot( item_t& item,
   if ( ! parse_item_enchant( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_addon( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse addon for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -987,6 +1086,12 @@ bool armory_t::download_item( item_t& item,
   if ( ! parse_item_heroic( item, item_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse heroic flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_armor_type( item, item_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse armor type for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 

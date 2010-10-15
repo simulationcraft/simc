@@ -300,7 +300,7 @@ player_t::player_t( sim_t*             s,
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
     sets( 0 ),
-    meta_gem( META_GEM_NONE ), scaling_lag( 0 ), rng_list( 0 )
+    meta_gem( META_GEM_NONE ), matching_gear( false ), matching_gear_type( STAT_NONE), scaling_lag( 0 ), rng_list( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -667,6 +667,8 @@ void player_t::init_items()
 
   gear_stats_t item_stats;
 
+  matching_gear = true;
+
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
@@ -676,6 +678,11 @@ void player_t::init_items()
     {
       sim -> errorf( "Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
       return;
+    }
+
+    if ( ! item.matching_type() )
+    {
+      matching_gear = false;
     }
 
     for ( int j=0; j < STAT_MAX; j++ )
@@ -954,7 +961,7 @@ void player_t::init_resources( bool force )
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
           // ICC buff.
-          resource_initial[ i ] *= 1.15;
+          resource_initial[ i ] *= 1.30;
         }
       }
     }
@@ -1196,7 +1203,8 @@ void player_t::init_buffs()
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 120.0, 120.0 );
   buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
+  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  1200.0,            1, 25.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
 }
 
@@ -1953,6 +1961,11 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
     if ( buffs.blessing_of_kings -> check() || buffs.mark_of_the_wild -> check() ) m *= 1.05;
   if ( attr == ATTR_SPIRIT ) 
     if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
+
+  // Matched gear. i.e. Mysticism etc.
+  if ( ( level >= 50 ) && matching_gear && ( attr == matching_gear_type ) )
+    m *= 1.05;
+
   return m;
 }
 
@@ -1967,7 +1980,7 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
-      m *= 1.15;
+      m *= 1.30;
     }
 
     if ( buffs.tricks_of_the_trade -> up() )

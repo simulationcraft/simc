@@ -682,6 +682,48 @@ const char* util_t::slot_type_string( int slot )
   return "unknown";
 }
 
+const char* util_t::armor_type_string( player_type ptype, int slot_type )
+{
+  bool has_armor_type = false;
+  
+  switch ( slot_type )
+  {
+  case SLOT_HEAD:   
+  case SLOT_SHOULDERS:
+  case SLOT_CHEST:    
+  case SLOT_WAIST:    
+  case SLOT_LEGS:     
+  case SLOT_FEET:      
+  case SLOT_WRISTS:   
+  case SLOT_HANDS:     
+    has_armor_type = true;
+    break;
+  default:
+    has_armor_type = false;
+    break;
+  }
+
+  switch ( ptype )
+  {
+  case WARRIOR:
+  case PALADIN:
+  case DEATH_KNIGHT:
+    return ( has_armor_type ? "plate" : NULL );
+  case HUNTER:
+  case SHAMAN:
+    return ( has_armor_type ? "mail" : NULL );
+  case DRUID:
+  case ROGUE:
+    return ( has_armor_type ? "leather" : NULL );
+  case MAGE:
+  case PRIEST:
+  case WARLOCK:
+    return ( has_armor_type ? "cloth" : NULL );
+  default:
+    return NULL;
+  }
+}
+
 // util_t::parse_slot_type =================================================
 
 int util_t::parse_slot_type( const std::string& name )
@@ -868,6 +910,28 @@ int util_t::parse_stat_type( const std::string& name )
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
   return STAT_NONE;
+}
+
+// util_t::parse_reforge_type =================================================
+
+int util_t::parse_reforge_type( const std::string& name )
+{
+  int s = util_t::parse_stat_type( name );
+  
+  switch ( s )
+  {
+  case STAT_EXPERTISE_RATING:
+  case STAT_HIT_RATING:
+  case STAT_CRIT_RATING:
+  case STAT_HASTE_RATING:
+  case STAT_MASTERY_RATING:
+  case STAT_SPIRIT:
+  case STAT_DODGE_RATING:
+  case STAT_PARRY_RATING:
+    return s;
+  default:
+    return STAT_NONE;
+  }
 }
 
 // util_t::translate_class_id ==============================================

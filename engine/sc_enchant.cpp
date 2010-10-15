@@ -16,11 +16,34 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4209",  "+60 Agility and 35 Haste rating",                           "60agi_35haste"                  },
+  { "4208",  "+60 Strength and 35 Mastery rating",                        "60str_35mastery"                },
+  { "4207",  "+60 Intellect and 35 Critical Strike rating",               "60int_35crit"                   },
+  { "4206",  "+90 Stamina and 35 Dodge rating",                           "90sta_35dodge"                  },
+  { "4205",  "+30 Agility and +20 Mastery Rating",                        "30agi_20mastery"                },
+  { "4204",  "+50 Agility and +25 Mastery Rating",                        "50agi_25mastery"                },
+  { "4203",  "+30 Agility and +20 Mastery Rating",                        "30agi_20mastery"                },
+  { "4202",  "+50 Strength and +25 Critical Strike Rating",               "50str_25crit"                   },
+  { "4201",  "+30 Strength and +20 Critical Strike Rating",               "30str_20crit"                   },
+  { "4200",  "+50 Intellect and 25 Haste Rating",                         "50int_25haste"                  },
+  { "4199",  "+30 Intellect and 20 Haste Rating",                         "30int_20haste"                  },
+  { "4198",  "+75 Stamina and 25 Dodge Rating",                           "75sta_25dodge"                  },
+  { "4197",  "+45 Stamina and 20 Dodge Rating",                           "45sta_20dodge"                  },
+  { "4196",  "+130 Intellect and 25 Haste Rating",                        "130int_25haste"                 },
+  { "4195",  "+195 Stamina and 25 Dodge Rating",                          "195sta_25dodge"                 },
+  { "4194",  "+130 Strength and 25 Critical Strike Rating",               "130str_25crit"                  },
+  { "4193",  "+130 Agility and +25 Mastery Rating",                       "130agi_25mastery"               },
+  { "4192",  "+130 Intellect",                                            "130int"                         },
+  { "4191",  "+130 Strength",                                             "130str"                         },
+  { "4190",  "+130 Agility",                                              "130agi"                         },
+  { "4189",  "+195 Stamina",                                              "195sta"                         },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
   { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery_2"        },
   { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery_2"          },
   { "4115",  "Lightweave Embroidery",                                     "lightweave_embroidery_2"        },
+  { "4114",  "+95 Intellect and +55 Spirit",                              "95int_55spi"                    },
+  { "4113",  "+95 Intellect and +80 Stamina",                             "95int_80sta"                    },
   { "4112",  "+95 Intellect and +80 Stamina",                             "95int_80sta"                    },
   { "4111",  "+55 Intellect and +65 Stamina",                             "55int_65sta"                    },
   { "4110",  "+95 Intellect and +55 Spirit",                              "95int_55spi"                    },
@@ -690,6 +713,26 @@ bool enchant_t::download( item_t&            item,
   if ( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
   {
     armory_t::format( item.armory_enchant_str );
+    return true;
+  }
+
+  return false;
+}
+
+// enchant_t::download ======================================================
+
+bool enchant_t::download_addon( item_t&            item,
+                                const std::string& enchant_id )
+{
+  item.armory_addon_str.clear();
+
+  if ( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
+    return true;
+
+  std::string enchant_name;
+  if ( get_encoding( enchant_name, item.armory_addon_str, enchant_id ) )
+  {
+    armory_t::format( item.armory_addon_str );
     return true;
   }
 

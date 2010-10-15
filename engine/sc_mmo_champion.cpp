@@ -309,6 +309,20 @@ static bool parse_item_stats( item_t&     item,
   return true;
 }
 
+// parse_item_stats =========================================================
+
+static bool parse_item_reforge( item_t&     item,
+                              xml_node_t* node )
+{
+  item.armory_reforge_str.clear();
+
+  // TO-DO (if it even makes sense)
+
+  armory_t::format( item.armory_reforge_str );
+
+  return true;
+}
+
 // parse_item_name ==========================================================
 
 static bool parse_item_name( item_t&            item,
@@ -351,6 +365,29 @@ static bool parse_item_heroic( item_t&     item,
   if ( xml_t::get_value( heroic_str, node, "tti-heroic" ) )
   {
     item.armory_heroic_str = "1";
+  }
+
+  armory_t::format( item.armory_heroic_str );
+
+  return true;
+}
+
+// parse_item_armor_type =========================================================
+
+static bool parse_item_armor_type( item_t&     item,
+                                   xml_node_t* node )
+{
+  item.armory_armor_type_str = "";
+
+  xml_node_t* subclass_node = xml_t::get_node( node, "tti-subclass" );
+
+  if ( subclass_node )
+  {
+    std::string armor_str;
+    if ( xml_t::get_value( armor_str, subclass_node, "a/." ) )
+    {
+      item.armory_armor_type_str = armor_str;
+    }
   }
 
   armory_t::format( item.armory_heroic_str );
@@ -473,6 +510,12 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_armor_type( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -494,6 +537,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& item_id,
                                     const std::string& enchant_id,
                                     const std::string  gem_ids[ 3 ],
+                                    const std::string& addon_id,
                                     int cache_only )
 {
   player_t* p = item.player;
@@ -518,9 +562,21 @@ bool mmo_champion_t::download_slot( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_armor_type( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_reforge( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine reforge for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -539,6 +595,12 @@ bool mmo_champion_t::download_slot( item_t&            item,
   if ( ! enchant_t::download( item, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
+    //return false;
+  }
+
+  if ( ! enchant_t::download_addon( item, addon_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 

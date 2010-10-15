@@ -548,7 +548,9 @@ player_t* rawr_t::load_player( sim_t* sim,
         return 0;
       }
 
-      bool success = item_t::download_slot( item, item_id, enchant_id, gem_ids );
+      std::string addon_id = ""; // TO-DO
+
+      bool success = item_t::download_slot( item, item_id, enchant_id, gem_ids, addon_id );
 
       if ( ! success )
       {
