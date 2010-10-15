@@ -651,9 +651,9 @@ struct warlock_pet_t : public pet_t
   virtual void init_resources( bool force )
   {
     bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
-	player_t::init_resources( force );
-	if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * (level / 80) * 7.5;
-	resource_current[ RESOURCE_MANA ] = resource_max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
+    player_t::init_resources( force );
+    if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * (level / 80) * 7.5;
+    resource_current[ RESOURCE_MANA ] = resource_max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
   }
 
   virtual void schedule_ready( double delta_time=0,
@@ -732,11 +732,6 @@ struct warlock_main_pet_t : public warlock_pet_t
     return ap;
   }
 
-  virtual double composite_attack_hit() SC_CONST
-  {
-    return owner -> composite_spell_hit();
-  }
-
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
@@ -776,7 +771,9 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_mp5() SC_CONST
   {
-    return mp5 + mp5_per_intellect * owner -> intellect();
+    double h = player_t::composite_mp5();
+    h += mp5_per_intellect * owner -> intellect();
+    return h;
   }
 };
 
@@ -805,6 +802,12 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     attack_haste *= o -> composite_attack_haste();
     // untested!!
   }
+
+  virtual double composite_attack_hit() SC_CONST
+    { return 0; }
+
+  virtual double composite_attack_expertise() SC_CONST
+    { return 0; }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1677,15 +1680,6 @@ struct infernal_pet_t : public warlock_guardian_pet_t
 
     return warlock_guardian_pet_t::create_action( name, options_str );
   }
-
-  // untested in cataclyms!!
-  virtual double composite_attack_hit() SC_CONST
-    { return 0; }
-
-  virtual double composite_spell_hit()  SC_CONST
-    { return 0; }
-  // untested in cataclyms!!
-
 };
 
 // ==========================================================================
