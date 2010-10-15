@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (59)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13117
+// Class based active abilities, wow build 13189
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -113,13 +113,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       85673, // Word of Glory
           0,
     },
-    // Protection tree, 21 abilities
+    // Protection tree, 20 abilities
     {
       31850, // Ardent Defender
       31935, // Avenger's Shield
       20217, // Blessing of Kings
         465, // Devotion Aura
-      70940, // Divine Guardian
         498, // Divine Protection
         642, // Divine Shield
       86150, // Guardian of Ancient Kings
@@ -162,7 +161,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Hunter
   {
-    // Beast Mastery tree, 20 abilities
+    // Beast Mastery tree, 19 abilities
     {
        5118, // Aspect of the Cheetah
       82661, // Aspect of the Fox
@@ -176,7 +175,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       83243, // Call Pet 3
       83244, // Call Pet 4
       83245, // Call Pet 5
-       2641, // Dismiss Pet
       82726, // Fervor
       19577, // Intimidation
       34026, // Kill Command
@@ -835,7 +833,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13117
+// Talent tree specialization abilities, wow build 13189
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1092,7 +1090,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13117
+// Class mastery abilities, wow build 13189
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1177,7 +1175,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13117
+// Racial abilities, wow build 13189
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1809,7 +1807,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13117
+// Glyph spells for classes, wow build 13189
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2288,7 +2286,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       57862, // Glyph of Thorns
       62970, // Glyph of Wild Growth
     },
-    // Minor Glyphs (6 spells)
+    // Minor Glyphs (7 spells)
     {
       57856, // Glyph of Aquatic Form
       57858, // Glyph of Challenging Roar
@@ -2296,6 +2294,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       57855, // Glyph of Mark of the Wild
       62135, // Glyph of Typhoon
       57857, // Glyph of Unburdened Rebirth
+      95212, // Glyph of the Treant
           0,
     },
     // Prime Glyphs (16 spells)
@@ -2323,7 +2322,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13117
+// Tier item set bonuses for class, wow build 13189
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
