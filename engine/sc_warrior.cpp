@@ -1620,7 +1620,8 @@ struct rend_t : public warrior_attack_t
 
     base_cost              = 100.0; // Cost is stored in 772
     weapon                 = &( p -> main_hand_weapon );
-    may_crit               = false;
+    may_crit               = true;
+    tick_may_crit          = true;
     normalize_weapon_speed = false;
     scale_with_haste       = false;
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;    
@@ -1639,7 +1640,8 @@ struct rend_t : public warrior_attack_t
   {
     base_td = base_td_init + calculate_weapon_damage() / 5.0;
     warrior_attack_t::execute();
-    if ( result_is_hit() ) trigger_blood_frenzy( this );
+    if ( result_is_hit() )
+      trigger_blood_frenzy( this );
   }
 };
 
@@ -2318,7 +2320,6 @@ struct inner_rage_t : public warrior_spell_t
 
     id = 1134;
     parse_data( p -> player_data );
-    cooldown -> duration = 15.0; // Fake this so we're not spammed by events
   }
 
   virtual void execute()
