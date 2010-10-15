@@ -688,17 +688,6 @@ struct warlock_pet_t : public pet_t
     pet_t::interrupt();
     if ( melee ) melee -> cancel();
   }
-
-  virtual double composite_attack_crit() SC_CONST
-  {
-    return owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-  }
-
-  virtual double composite_spell_crit() SC_CONST
-  {
-	return owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-  }
-
 };
 
 // ==========================================================================
@@ -782,6 +771,20 @@ struct warlock_main_pet_t : public warlock_pet_t
     h += mp5_per_intellect * owner -> intellect();
     return h;
   }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    double h = warlock_pet_t::composite_attack_crit();
+    h += owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    return h;
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    double h = warlock_pet_t::composite_spell_crit();
+    h += owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    return h;
+  }
 };
 
 // ==========================================================================
@@ -807,6 +810,8 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
     spell_haste *= o -> composite_spell_haste();
     attack_haste *= o -> composite_attack_haste();
+    attack_crit += o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    spell_crit += o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
     // untested!!
   }
 
