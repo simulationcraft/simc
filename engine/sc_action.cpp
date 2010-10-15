@@ -556,9 +556,10 @@ void action_t::target_debuff( int dmg_type )
     {
       target_multiplier *= 1.04;
     }
-    else if ( t -> debuffs.blood_frenzy_physical -> value() )
+    else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() )
     {
-      target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_physical -> value() * 0.01;
+      target_multiplier *= 1.0 + std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
+                                           t -> debuffs.brittle_bones         -> value() );
     }
   }
   else

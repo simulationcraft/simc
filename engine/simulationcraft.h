@@ -2146,6 +2146,7 @@ struct sim_t
     int blood_plague;
     int bloodlust;
     int bloodlust_early;
+    int brittle_bones;
     int celerity;
     int curse_of_elements;
     int demonic_pact;
@@ -3140,6 +3141,7 @@ struct target_t
     debuff_t* bleeding;
     debuff_t* blood_frenzy_bleed;
     debuff_t* blood_frenzy_physical;
+    debuff_t* brittle_bones;
     debuff_t* casting;
     debuff_t* blood_plague;
     debuff_t* curse_of_elements;
