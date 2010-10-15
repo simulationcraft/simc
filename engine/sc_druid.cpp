@@ -2091,7 +2091,7 @@ void druid_spell_t::player_buff()
     // Moonfury: Arcane and Nature spell damage increased by 25%
     // One of the bonuses for choosing balance spec
     if ( p -> primary_tree() == TREE_BALANCE )
-      player_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 3 );
+      player_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> mod_additive( P_GENERIC );
 
     if ( p -> buffs_moonkin_form -> check() )
       player_multiplier *= 1.10;
@@ -2450,9 +2450,9 @@ struct moonfire_t : public druid_spell_t
     dot_behavior      = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> effect_base_value( 2 );
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 );
+    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
@@ -2777,7 +2777,7 @@ struct starfire_t : public druid_spell_t
 
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
@@ -2895,7 +2895,7 @@ struct wrath_t : public druid_spell_t
     // Times are given in ms in DBC files
     base_execute_time += p -> talents.starlight_wrath -> effect_base_value( 1 ) * 0.001;
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> effect_base_value( 2 );
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
 
     if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
@@ -2984,7 +2984,7 @@ struct starfall_t : public druid_spell_t
 
         base_dd_min = base_dd_max  = 0;
         if ( p -> primary_tree() == TREE_BALANCE )
-          base_crit_bonus_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> effect_base_value( 2 );
+          base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
 
         if ( p -> glyphs.focus )
@@ -3069,7 +3069,7 @@ struct starsurge_t : public druid_spell_t
     parse_data( p -> player_data );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> effect_base_value( 2 );
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
     
     starfall_cd = p -> get_cooldown( "starfall" );
   }
@@ -3082,14 +3082,10 @@ struct starsurge_t : public druid_spell_t
 
     if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
-      // Positive vs negative eclipse energy gain
-      // Eclipse Up: Yes | No |
-      // Solar Side:  -     +
-      // Lunar Side:  +     -
-      // Start with +, if lunar down, but solar up OR lunar down, but on lunar side => switch to -
+      // gain is positive for p -> eclipse_bar_direction==0
+      // else it is towards p -> eclipse_bar_direction
       double gain = 15;
-      if ( ! p -> buffs_eclipse_lunar -> check() 
-        && ( p -> buffs_eclipse_solar -> check() || p -> eclipse_bar_value < 0 ) ) gain = -gain;
+      if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
       trigger_eclipse_energy_gain( this, gain );
 
@@ -3435,6 +3431,7 @@ void druid_t::init_glyphs()
     else if ( n == "healing_touch"         ) ;
     else if ( n == "hurricane"             ) ;
     else if ( n == "lifebloom"             ) ;
+    else if ( n == "mark_of_the_wild"      ) ;
     else if ( n == "maul"                  ) ;
     else if ( n == "rake"                  ) ;
     else if ( n == "rebirth"               ) ;
@@ -3442,7 +3439,6 @@ void druid_t::init_glyphs()
     else if ( n == "rejuvenation"          ) ;
     else if ( n == "solar_beam"            ) ;
     else if ( n == "swiftmend"             ) ;
-    else if ( n == "the_wild"              ) ;
     else if ( n == "thorns"                ) ;
     else if ( n == "unburdened_rebirth"    ) ;
     else if ( n == "wild_growth"           ) ;
@@ -3728,8 +3724,8 @@ void druid_t::init_actions()
       action_list_str += "/insect_swarm,if=!ticking";
       action_list_str += "/starsurge";
       action_list_str += use_str;
-      action_list_str += "/starfire,if=buff.lunar_eclipse.up";
-      action_list_str += "/wrath,if=buff.solar_eclipse.up";
+      action_list_str += "/starfire,if=eclipse_dir=-1";
+      action_list_str += "/wrath,if=eclipse_dir=1";
       action_list_str += "/starfire";
     }
     action_list_default = 1;
