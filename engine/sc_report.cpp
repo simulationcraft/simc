@@ -91,7 +91,7 @@ static std::string wiki_player_anchor( player_t* p )
 
 static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
-  if ( s -> num_executes == 0 &&  s -> total_dmg == 0 ) return;
+  if ( s -> num_executes == 0 && s -> total_dmg == 0 ) return;
 
   if( max_name_length == 0 ) max_name_length = 20;
 
@@ -1236,7 +1236,7 @@ static void print_html_player( FILE* file, player_t* p )
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> num_executes > 0 )
+    if ( s -> num_executes > 0 || s -> total_dmg > 0 )
     {
       print_html_action( file, s );
     }
@@ -1837,7 +1837,7 @@ static void print_html2_player( FILE* file, player_t* p )
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> num_executes > 0 )
+    if ( s -> num_executes > 0 || s -> total_dmg > 0 )
     {
       print_html2_action( file, s, p );
     }
