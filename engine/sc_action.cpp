@@ -1183,7 +1183,7 @@ void action_t::schedule_tick()
     snapshot_haste = haste();
   }
 
-  number_ticks = hasted_num_ticks();
+  number_ticks = hasted_num_ticks() + added_ticks;
   time_to_tick = tick_time();
 
   tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
@@ -1275,7 +1275,6 @@ void action_t::refresh_duration()
 
 void action_t::extend_duration( int extra_ticks )
 {
-  number_ticks += extra_ticks;
   added_ticks += extra_ticks;
 
   if ( dot_behavior == DOT_WAIT )
