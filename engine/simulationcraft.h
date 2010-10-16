@@ -2781,7 +2781,6 @@ struct player_t
   set_bonus_array_t * sets;
   int meta_gem;
   bool matching_gear;
-  stat_type matching_gear_type;
 
   // Scale Factors
   gear_stats_t scaling;
@@ -2949,6 +2948,8 @@ struct player_t
   virtual double composite_attack_power_multiplier() SC_CONST;
   virtual double composite_spell_power_multiplier() SC_CONST;
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
+
+  virtual double matching_gear_multiplier( const stat_type attr ) SC_CONST { return 0.0; }
 
   virtual double composite_player_multiplier( const school_type school ) SC_CONST;
 

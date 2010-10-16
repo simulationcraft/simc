@@ -238,6 +238,7 @@ struct druid_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual double    composite_block_value() SC_CONST { return 0; }
   virtual double    composite_tank_parry() SC_CONST { return 0; }
   virtual double    composite_tank_block() SC_CONST { return 0; }
@@ -3896,6 +3897,30 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
       m *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
 
   return m;
+}
+
+// druid_t::matching_gear_multiplier ==================================
+
+double druid_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  switch ( primary_tree() )
+  {
+  case TREE_BALANCE:
+  case TREE_RESTORATION:
+    if ( attr == STAT_INTELLECT )
+      return 0.05;
+    break;
+  case TREE_FERAL:
+    if ( ( attr == STAT_STAMINA ) && ( buffs_bear_form -> check() ) )
+      return 0.05;
+    if ( ( attr == STAT_AGILITY ) && ( buffs_cat_form -> check() ) )
+      return 0.05;
+    break;
+  default:
+    break;
+  }
+
+  return 0.0;
 }
 
 // druid_t::composite_tank_crit =============================================

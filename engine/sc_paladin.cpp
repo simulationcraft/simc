@@ -221,6 +221,7 @@ struct paladin_t : public player_t
   virtual void      interrupt();
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -2297,6 +2298,30 @@ double paladin_t::composite_tank_block() SC_CONST
   if ( buffs_holy_shield -> up() ) b += 0.15;
   b += get_divine_bulwark();
   return b;
+}
+
+// paladin_t::matching_gear_multiplier =====================================
+
+double paladin_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  switch ( primary_tree() )
+  {
+  case TREE_PROTECTION:
+    if ( attr == STAT_STAMINA )
+      return 0.05;
+    break;
+  case TREE_RETRIBUTION:
+    if ( attr == STAT_STRENGTH )
+      return 0.05;
+    break;
+  case TREE_HOLY:
+    if ( attr == STAT_INTELLECT )
+      return 0.05;
+    break;
+  default: 
+    break;
+  }
+  return 0.0;
 }
 
 // paladin_t::regen  ========================================================

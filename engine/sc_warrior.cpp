@@ -235,8 +235,6 @@ struct warrior_t : public player_t
   uptime_t* uptimes_rage_cap;
   uptime_t* uptimes_rend;
 
-  bool plate_specialization;
-
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, WARRIOR, name, r )
   {
     tree_type[ WARRIOR_ARMS       ] = TREE_ARMS;
@@ -254,9 +252,6 @@ struct warrior_t : public player_t
     // Dots
     dots_deep_wounds = get_dot( "deep_wounds" );
     dots_rend        = get_dot( "rend"        );
-
-    // Plate Specialization enabled by default
-    plate_specialization = true;
   }
 
   // Character Definition
@@ -276,7 +271,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
@@ -3111,18 +3106,16 @@ double warrior_t::composite_attack_penetration() SC_CONST
   return arp;
 }
 
-// warrior_t::composite_attribute_multiplier ===============================
+// warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::composite_attribute_multiplier( int attr ) SC_CONST
+double warrior_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
 {
-  double m = player_t::composite_attribute_multiplier( attr );
+  if ( ( attr == STAT_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
+    return 0.05;
+  if ( ( attr == STAT_STAMINA ) && ( primary_tree() == TREE_PROTECTION ) )
+    return 0.05;
 
-  if ( ( attr == STAT_STRENGTH ) && plate_specialization && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
-    m *= 1.05;
-  else if ( ( attr == STAT_STAMINA ) && plate_specialization && primary_tree() == TREE_PROTECTION )
-    m *= 1.05;
-
-  return m;
+  return 0.0;
 }
 
 // warrior_t::composite_tank_block ==========================================
@@ -3244,7 +3237,6 @@ std::vector<option_t>& warrior_t::get_options()
     option_t warrior_options[] =
     {
       // @option_doc loc=player/warrior/talents title="Talents"
-      { "plate_specialization", OPT_BOOL, &plate_specialization },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

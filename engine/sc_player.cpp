@@ -300,7 +300,7 @@ player_t::player_t( sim_t*             s,
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
     sets( 0 ),
-    meta_gem( META_GEM_NONE ), matching_gear( false ), matching_gear_type( STAT_NONE), scaling_lag( 0 ), rng_list( 0 )
+    meta_gem( META_GEM_NONE ), matching_gear( false ), scaling_lag( 0 ), rng_list( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -1963,8 +1963,8 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
     if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
 
   // Matched gear. i.e. Mysticism etc.
-  if ( ( level >= 50 ) && matching_gear && ( attr == matching_gear_type ) )
-    m *= 1.05;
+  if ( ( level >= 50 ) && matching_gear )
+    m *= 1.0 + matching_gear_multiplier( (const stat_type) attr );
 
   return m;
 }

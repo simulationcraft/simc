@@ -295,6 +295,7 @@ struct mage_t : public player_t
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -3605,6 +3606,16 @@ double mage_t::composite_spell_crit() SC_CONST
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
 
   return c;
+}
+
+// mage_t::matching_gear_multiplier =====================================
+
+double mage_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  if ( attr == STAT_INTELLECT )
+    return 0.05;
+
+  return 0.0;
 }
 
 // mage_t::combat_begin ====================================================

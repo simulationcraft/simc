@@ -425,7 +425,7 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -3815,16 +3815,14 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
-// warlock_t::composite_attribute_multiplier ================================
+// warlock_t::matching_gear_multiplier =============================================
 
-double warlock_t::composite_attribute_multiplier( int attr ) SC_CONST
+double warlock_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
 {
-  double m = player_t::composite_attribute_multiplier( attr );
-
   if ( ( attr == STAT_INTELLECT ) && passive_spells.nethermancy -> ok() )
-    m *= 1.0 + ( passive_spells.nethermancy -> effect_base_value( 1 ) / 100.0 );
+    return ( passive_spells.nethermancy -> effect_base_value( 1 ) / 100.0 );
 
-  return m;
+  return 0.0;
 }
 
 // warlock_t::create_action =================================================

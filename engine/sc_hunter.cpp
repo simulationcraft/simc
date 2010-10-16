@@ -197,6 +197,7 @@ struct hunter_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -3215,6 +3216,16 @@ double hunter_t::composite_attack_crit() SC_CONST
   double ac = player_t::composite_attack_crit();
 
   return ac;
+}
+
+// hunter_t::matching_gear_multiplier =====================================
+
+double hunter_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  if ( attr == STAT_AGILITY )
+    return 0.05;
+
+  return 0.0;
 }
 
 // hunter_t::regen  =======================================================

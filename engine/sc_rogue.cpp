@@ -346,7 +346,6 @@ struct rogue_t : public player_t
   combo_points_t* combo_points;
 
   // Options
-  bool leather_specialization;
   std::vector<action_callback_t*> critical_strike_callbacks;
   std::vector<double> critical_strike_intervals;
   std::string critical_strike_intervals_str;
@@ -381,9 +380,6 @@ struct rogue_t : public player_t
     critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
     tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
-
-    // leather specialization enabled by default
-    leather_specialization = true;
   }
 
   ~rogue_t()
@@ -422,6 +418,7 @@ struct rogue_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
@@ -2994,13 +2991,23 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
   if ( attr == ATTR_AGILITY )
   {
     m *= 1.0 + spec_sinister_calling -> base_value( E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE );
-
-    if ( leather_specialization )
-      m *= 1.05;
   }
   
   return m;
 }
+
+// rogue_t::matching_gear_multiplier ==================================
+
+double rogue_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{  
+  if ( attr == ATTR_AGILITY )
+  {
+    return 0.05;
+  }
+  
+  return 0.0;
+}
+
 
 // rogue_t::composite_attack_power_multiplier ===============================
 
@@ -3786,7 +3793,6 @@ std::vector<option_t>& rogue_t::get_options()
     option_t rogue_options[] =
     {
       // @option_doc loc=player/rogue/misc title="Misc"
-      { "leather_specialization",     OPT_BOOL,   &( leather_specialization         ) },
       { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str  ) },
       { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
       { NULL, OPT_UNKNOWN, NULL }

@@ -292,9 +292,7 @@ struct priest_t : public player_t
     tree_type[ PRIEST_DISCIPLINE ] = TREE_DISCIPLINE;
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
-
-    matching_gear_type = STAT_INTELLECT;
-
+   
     use_shadow_word_death               = false;
     use_mind_blast                      = 1;
     recast_mind_blast                   = 0;
@@ -345,6 +343,8 @@ struct priest_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
 
   virtual void      regen( double periodicity );
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -2232,6 +2232,14 @@ double priest_t::composite_player_multiplier( const school_type school ) SC_CONS
   }
 
   return m;
+}
+
+double priest_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  if ( attr == STAT_INTELLECT )
+    return 0.05;
+
+  return 0.0;
 }
 
 // priest_t::create_action ===================================================

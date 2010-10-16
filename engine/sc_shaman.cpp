@@ -222,6 +222,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3750,12 +3751,7 @@ void shaman_t::init_talents()
   talent_telluric_currents        = new talent_t( this, "telluric_currents", "Telluric Currents" );
   talent_totemic_focus            = new talent_t( this, "totemic_focus", "Totemic Focus" );
 
-  player_t::init_talents();
-  
-  if ( primary_tree() == TREE_ENHANCEMENT )
-    matching_gear_type = STAT_AGILITY;
-  else
-    matching_gear_type = STAT_INTELLECT;
+  player_t::init_talents(); 
 }
 
 // shaman_t::init_spells ======================================================
@@ -4106,6 +4102,24 @@ void shaman_t::interrupt()
 
   if ( main_hand_attack ) main_hand_attack -> cancel();
   if (  off_hand_attack )  off_hand_attack -> cancel();
+}
+
+// shaman_t::matching_gear_multiplier =============================================
+
+double shaman_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  if ( primary_tree() == TREE_ENHANCEMENT )
+  {
+    if ( attr == STAT_AGILITY )
+      return 0.05;
+  }
+  else
+  {
+    if ( attr == STAT_INTELLECT )
+      return 0.05;
+  }
+
+  return 0.0;
 }
 
 // shaman_t::composite_attack_power ==========================================

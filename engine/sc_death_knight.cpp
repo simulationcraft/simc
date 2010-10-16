@@ -382,6 +382,7 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_tank_parry() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
@@ -4380,6 +4381,27 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
   }
 
   return m;
+}
+
+// death_knight_t::matching_gear_multiplier ==================================
+
+double death_knight_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+{
+  switch ( primary_tree() )
+  {
+  case TREE_UNHOLY:
+  case TREE_FROST:
+    if ( attr == STAT_STRENGTH )
+      return 0.05;
+    break;
+  case TREE_BLOOD:
+    if ( attr == STAT_STAMINA )
+    break;
+  default:
+    break;
+  }
+
+  return 0.0;
 }
 
 double death_knight_t::composite_spell_hit() SC_CONST
