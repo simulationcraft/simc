@@ -1040,14 +1040,12 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
       {
         current_tick = 0;
         snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
         if ( ! ticking ) schedule_tick();
       }
       else
       {
         if ( ticking ) cancel();
         snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
         schedule_tick();
       }
     }
@@ -1185,6 +1183,7 @@ void action_t::schedule_tick()
     snapshot_haste = haste();
   }
 
+  number_ticks = hasted_num_ticks();
   time_to_tick = tick_time();
 
   tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
