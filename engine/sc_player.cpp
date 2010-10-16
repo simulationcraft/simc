@@ -1906,7 +1906,7 @@ double player_t::composite_spell_crit() SC_CONST
 
   if ( ( race == RACE_WORGEN ) )
   {
-    sc *= 1.01;
+    sc += 0.01;
   }
 
   return sc;
