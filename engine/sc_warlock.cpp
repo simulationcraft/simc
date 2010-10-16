@@ -227,6 +227,7 @@ struct warlock_t : public player_t
   buff_t* buffs_demon_soul;
   buff_t* buffs_bane_of_havoc;
   buff_t* buffs_searing_pain_soulburn;
+  buff_t* buffs_tier10_4pc_caster;
 
   cooldown_t* cooldowns_improved_soul_fire;
   cooldown_t* cooldowns_metamorphosis;
@@ -913,6 +914,12 @@ struct warlock_spell_t : public spell_t
     }
 
     player_multiplier *= 1.0 + ( p -> talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
+
+	if ( p -> buffs_tier10_4pc_caster -> up() )
+	{
+      player_multiplier *= 1.10;
+	}
+
   }
 
   // warlock_spell_t::target_debuff ============================================
@@ -1160,6 +1167,11 @@ struct warlock_pet_melee_t : public attack_t
       player_crit += 0.10;
     }
 
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
+    }
+
   }
 };
 
@@ -1201,6 +1213,11 @@ struct warlock_pet_attack_t : public attack_t
     if ( o -> buffs_hand_of_guldan -> up() )
     {
       player_crit += 0.10;
+    }
+
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
     }
 
   }
@@ -1262,6 +1279,11 @@ struct warlock_pet_spell_t : public spell_t
     if ( o -> buffs_hand_of_guldan -> up() )
     {
       player_crit += 0.10;
+    }
+
+    if ( o -> buffs_tier10_4pc_caster -> up() )
+    {
+      player_multiplier *= 1.10;
     }
 
   }
@@ -2013,6 +2035,8 @@ struct shadow_bolt_t : public warlock_spell_t
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
     base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt -> value() / 100.0 );
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0 );
+
+    base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
   }
 
   virtual double execute_time() SC_CONST
@@ -2328,7 +2352,7 @@ struct corruption_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0 + p -> set_bonus.tier10_2pc_caster() * 0.05;
     base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> rank()  * 0.04 );
   }
 
@@ -2572,6 +2596,16 @@ struct unstable_affliction_t : public warlock_spell_t
 	}
   }
 
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::tick();
+    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier10_4pc_caster -> trigger();
+    }
+  }
+
 };
 
 // Haunt Spell ==============================================================
@@ -2647,7 +2681,12 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t::tick();
     warlock_t* p = player -> cast_warlock();
     p -> buffs_molten_core -> trigger( 3 );
+    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier10_4pc_caster -> trigger();
+    }
   }
+
 };
 
 // Shadowflame DOT Spell =============================================================
@@ -2758,9 +2797,10 @@ struct incinerate_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
+    base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
-    base_multiplier *= 1.0 + ( p -> glyphs.incinerate -> value() / 100.0 );
+    base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> value() / 100.0 );
+	base_crit		  += p -> set_bonus.tier10_2pc_caster() * 0.05;
   }
 
   virtual void execute()
@@ -2890,6 +2930,7 @@ struct soul_fire_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 1 ) / 1000.0;
+	base_crit		  += p -> set_bonus.tier10_2pc_caster() * 0.05;
   }
 
   virtual void execute()
@@ -4142,6 +4183,8 @@ void warlock_t::init_buffs()
   // using the new constructors
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
+
+  buffs_tier10_4pc_caster     = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 );
 
 }
 
