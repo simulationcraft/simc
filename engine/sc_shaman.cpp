@@ -7,7 +7,6 @@
 // TODO
 // ==========================================================================
 // Spirit Walker's Grace Ability
-// Elemental Precision does not benefit from spirit enchants or gems (nightmare tear, all stats chest), this is a bug.
 // Validate lvl85 values
 // Searing Flames affected by player crit?
 // ==========================================================================
@@ -4124,7 +4123,8 @@ double shaman_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_RATING_FROM_STAT ) * spirit() ) / rating.spell_hit;
+  hit += ( talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_RATING_FROM_STAT ) * 
+    ( spirit() - attribute_base[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
 }
