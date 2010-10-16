@@ -3,12 +3,12 @@ warlock=Warlock_401_Affliction_Drain
 level=80
 race=undead    
 #talents=http://cata.wowhead.com/talent#IrhrousGcdZf:sbRbo
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321000000000000000000023
-glyphs=lash_of_pain/haunt/life_tap/bane_of_agony/shadow_bolt
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321030000000000000000002
+glyphs=imp/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
-actions+=/summon_succubus
+actions+=/summon_imp
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
