@@ -793,7 +793,7 @@ struct templars_verdict_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 0.90, 2.25 );
+    weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.40, 1.10, 2.90 );
     paladin_attack_t::execute();
   }
 
@@ -1748,7 +1748,7 @@ struct zealotry_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    uses_holy_power = true;
+    uses_holy_power = false;
     harmful = false;
     parse_data(p->player_data);
   }
@@ -1759,7 +1759,6 @@ struct zealotry_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_zealotry -> trigger();
-    consume_and_gain_holy_power();
   }
 
   virtual bool ready()
