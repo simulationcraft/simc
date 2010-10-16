@@ -1892,7 +1892,11 @@ struct bane_of_agony_t : public warlock_spell_t
   {
     warlock_spell_t::modify_tick_damage();
 
-    //double difference = base_td /2;
+    double difference = base_td /2;
+    if (number_ticks==12 && current_tick <=4 )
+      tick_dmg -= difference;
+    if (number_ticks==12 && current_tick>=9)
+      tick_dmg += difference;
     // I'll leave that here if we figure out how the rampup is exactly determined
   }
 
@@ -4175,6 +4179,7 @@ void warlock_t::init_buffs()
   buffs_haunted               = new buff_t( this, talent_haunt -> spell_id(), "haunted", talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
   buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> value() / 1000.0;
+  buffs_metamorphosis -> buff_cooldown = 0;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_molten_core -> max_stack = 3;
   buffs_shadow_embrace        = new buff_t( this, talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", talent_shadow_embrace -> rank() );
