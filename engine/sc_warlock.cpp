@@ -1302,7 +1302,6 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> value() / 100.0 );
       direct_power_mod = 0.690;  // From live testing 2010/10/15
-      min_gcd=1.5;
 	  base_execute_time -= o -> talent_dark_arts -> rank() * 0.25;
       if ( o -> bugs ) min_gcd = 1.5;
     }
