@@ -810,8 +810,8 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
     spell_haste *= o -> composite_spell_haste();
     attack_haste *= o -> composite_attack_haste();
-    attack_crit += o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-    spell_crit += o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    attack_crit = o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    spell_crit = o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
     // untested!!
   }
 
