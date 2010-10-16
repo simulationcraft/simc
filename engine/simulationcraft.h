@@ -2184,7 +2184,6 @@ struct sim_t
     int frost_fever;
     int hellscreams_warsong;
     int hemorrhage;
-    int heroic_presence;
     int honor_among_thieves;
     int horn_of_winter;
     int hunters_mark;

@@ -1276,7 +1276,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
   overrides.frost_fever            = optimal_raid;
-  overrides.heroic_presence        = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
@@ -1559,7 +1558,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
       { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
       { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
-      { "override.heroic_presence",         OPT_BOOL,   &( overrides.heroic_presence                ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
       { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
