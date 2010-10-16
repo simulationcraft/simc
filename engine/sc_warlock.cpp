@@ -1301,7 +1301,8 @@ struct imp_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> value() / 100.0 );
-	  direct_power_mod = 0.690;  // From live testing 2010/10/15
+      direct_power_mod = 0.690;  // From live testing 2010/10/15
+      min_gcd=1.5;
     }
 
     virtual void execute()
@@ -4164,6 +4165,7 @@ void warlock_t::init_buffs()
   player_t::init_buffs();
 
   buffs_backdraft             = new buff_t( this, talent_backdraft -> effect_trigger_spell( 1 ), "backdraft" );
+  buffs_backdraft -> max_stack= 3;
   buffs_decimation            = new buff_t( this, talent_decimation -> effect_trigger_spell( 1 ), "decimation" );
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
   buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect_base_value( 1 ) / 100.0 );
@@ -4172,21 +4174,19 @@ void warlock_t::init_buffs()
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
   buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> value() / 1000.0;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
+  buffs_molten_core -> max_stack = 3;
   buffs_shadow_embrace        = new buff_t( this, talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", talent_shadow_embrace -> rank() );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> value() / 100.0 );
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
-  buffs_improved_soul_fire -> buff_cooldown = 15.0;
+  buffs_improved_soul_fire -> buff_cooldown = 0;
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul            = new buff_t( this, 77801, "demon_soul" );
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, "searing_pain_soulburn", 1, 6.0 );
-
-  // using the new constructors
-  buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
 
-  buffs_tier10_4pc_caster     = new buff_t( this, "tier10_4pc_caster",   1, 10.0, 0.0, 0.15 );
+  buffs_tier10_4pc_caster     = new buff_t( this, 70840, "tier10_4pc_caster", 0.15 );
 
 }
 
