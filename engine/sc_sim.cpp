@@ -1276,7 +1276,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
   overrides.frost_fever            = optimal_raid;
-  overrides.hellscreams_warsong    = 0;
   overrides.heroic_presence        = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
@@ -1298,7 +1297,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.savage_combat          = optimal_raid;
   overrides.scorpid_sting          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
-  overrides.strength_of_wrynn      = 0;
   overrides.sunder_armor           = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
