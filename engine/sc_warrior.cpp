@@ -582,7 +582,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
 
     p -> procs_strikes_of_opportunity -> occur();
     
-    double proc_value = ( a -> sim -> P403 ) ? 0.75 : 1.15; // HOTFIX 115% weapon damage
+    double proc_value = ( a -> sim -> P403 ) ? 1.15 : 0.75;
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> player_multiplier *= proc_value;
     p -> main_hand_attack -> execute();
@@ -960,8 +960,8 @@ struct bladestorm_tick_t : public warrior_attack_t
     id = 50622;
     parse_data( p -> player_data );
     
-    if ( ! sim -> P403 )
-      weapon_multiplier = 1.5; // HOTFIX: 150% weapon damage
+    if ( sim -> P403 )
+      weapon_multiplier = 1.5;
 
     dual        = true;
     background  = true;
@@ -1070,7 +1070,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
     player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
-    direct_power_mod   = ( sim -> P403 ) ? 0.50 : 0.75; // HOTFIX 
+    direct_power_mod   = ( sim -> P403 ) ? 0.75 : 0.50;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1569,8 +1569,8 @@ struct raging_blow_t : public warrior_attack_t
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
 
-    if ( ! sim -> P403 )
-      weapon_multiplier *= 1.50; // HOTFIX  - 150% weapon damage
+    if ( sim -> P403 )
+      weapon_multiplier *= 1.50;
   }
 
   virtual void execute()
@@ -1633,8 +1633,6 @@ struct rend_t : public warrior_attack_t
     normalize_weapon_speed = false;
     scale_with_haste       = false;
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    if ( ! sim -> P403 )
-      base_multiplier *= 1.5; // HOTFIX: Base damage increased by 50%
     stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
   }
 
@@ -1899,8 +1897,8 @@ struct slam_t : public warrior_attack_t
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
     base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
-    if ( ! sim -> P403 )
-      weapon_multiplier *= 1.50; // HOTFIX  - 150% weapon damage
+    if ( sim -> P403 )
+      weapon_multiplier *= 1.50;
   }
 
   virtual double gcd() SC_CONST
@@ -1914,14 +1912,14 @@ struct slam_t : public warrior_attack_t
 
   virtual double haste() SC_CONST
   {
-    // No haste for slam cast?
+    // No haste for slam cast
     return 1.0;
   }
 
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! sim -> P403 ) // HOTFIX - Bloodsurge is now instant and free
+    if ( sim -> P403 )
     {
       if ( p -> buffs_bloodsurge -> check() )
         return 0;

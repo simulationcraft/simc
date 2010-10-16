@@ -678,10 +678,10 @@ struct warlock_pet_t : public pet_t
 
   virtual void dismiss()
   {
-    warlock_t*  o = owner -> cast_warlock();
     pet_t::dismiss();
 	/* Commenting this out for now - we never dismiss the real pet during combat
 	anyway, and we don't want to accidentally turn off DP when guardians are dismissed
+    warlock_t*  o = owner -> cast_warlock();
     if ( o -> talent_demonic_pact -> rank() )
       sim -> auras.demonic_pact -> expire();
 	  */

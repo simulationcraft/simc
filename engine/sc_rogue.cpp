@@ -3000,7 +3000,7 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 double rogue_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
 {  
-  if ( attr == ATTR_AGILITY )
+  if ( attr == STAT_AGILITY )
   {
     return 0.05;
   }
