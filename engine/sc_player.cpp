@@ -1469,6 +1469,11 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
+    if ( buffs.unholy_frenzy -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+
     h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
 
     if ( type != PLAYER_PET )

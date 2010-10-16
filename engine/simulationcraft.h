@@ -2812,7 +2812,6 @@ struct player_t
     buff_t* mongoose_oh;
     buff_t* moving;
     buff_t* power_infusion;
-    buff_t* hysteria;
     buff_t* replenishment;
     buff_t* self_movement;
     buff_t* speed_potion;
@@ -2821,6 +2820,7 @@ struct player_t
     buff_t* dark_intent_feedback;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
+    buff_t* unholy_frenzy;
     buff_t* volcanic_potion;
     buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
