@@ -86,7 +86,8 @@ buff_t::buff_t( player_t*          p,
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
-  buff_cooldown( cooldown() ), default_chance( chance ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
+  buff_cooldown( cooldown() ),
+  default_chance( (chance != -1) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();
@@ -115,7 +116,8 @@ buff_t::buff_t( player_t*          p,
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0.0 ) ? max_stacks() : 1 ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
-  buff_cooldown( cooldown() ), default_chance( chance ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
+  buff_cooldown( cooldown() ),
+  default_chance( (chance != -1) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();

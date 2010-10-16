@@ -4176,6 +4176,7 @@ void warlock_t::init_buffs()
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> value() / 100.0 );
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
+  buffs_improved_soul_fire -> buff_cooldown = 15.0;
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul            = new buff_t( this, 77801, "demon_soul" );
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
