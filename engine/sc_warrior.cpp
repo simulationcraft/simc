@@ -2210,7 +2210,7 @@ struct battle_shout_t : public warrior_spell_t
     
     if ( ! sim -> overrides.battle_shout )
       sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle * 120;
-    sim -> auras.battle_shout -> trigger( 1, 1395 );
+    sim -> auras.battle_shout -> trigger( 1, sim -> sim_data.effect_min( 6673, p -> level, E_APPLY_AURA, A_MOD_STAT ) );
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
