@@ -680,8 +680,11 @@ struct warlock_pet_t : public pet_t
   {
     warlock_t*  o = owner -> cast_warlock();
     pet_t::dismiss();
+	/* Commenting this out for now - we never dismiss the real pet during combat
+	anyway, and we don't want to accidentally turn off DP when guardians are dismissed
     if ( o -> talent_demonic_pact -> rank() )
       sim -> auras.demonic_pact -> expire();
+	  */
   }
 
   virtual void interrupt()
@@ -775,16 +778,12 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_attack_crit() SC_CONST
   {
-    double h = warlock_pet_t::composite_attack_crit();
-    h += owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-    return h;
+    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
   }
 
   virtual double composite_spell_crit() SC_CONST
   {
-    double h = warlock_pet_t::composite_spell_crit();
-    h += owner -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-    return h;
+    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
   }
 };
 
@@ -1302,6 +1301,7 @@ struct imp_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> value() / 100.0 );
+	  direct_power_mod = 0.690;  // From live testing 2010/10/15
     }
 
     virtual void execute()
