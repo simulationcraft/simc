@@ -455,7 +455,7 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 1, "3.3.3" ) );
+  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 2, "4.0.1", "4.0.3" ) );
   globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
