@@ -4,11 +4,11 @@ level=80
 race=undead
 #talents=http://cata.wowhead.com/talent#IrhrousGcdZG:sbRbo
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321000000000000000000032
-glyphs=imp/haunt/life_tap/bane_of_agony/shadow_bolt
+glyphs=lash_of_pain/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
-actions+=/summon_imp
+actions+=/summon_succubus
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
@@ -17,7 +17,7 @@ actions+=/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gc
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/unstable_affliction,time_to_die>=5,if=!ticking|(dot.unstable_affliction.remains<tick_time)
 actions+=/drain_soul,health_percentage<=25,interrupt=1
-actions+=/summon_doomguard,time>=100
+actions+=/summon_doomguard,if=buff.metamorphosis.react
 actions+=/shadow_bolt
 actions+=/life_tap
 head=sanctified_dark_coven_hood,heroic=1,stats=973armor_114crit_106haste_159int_261sta,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit

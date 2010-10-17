@@ -3,7 +3,7 @@ warlock=Warlock_401_Destruction
 level=80
 race=undead
 #talents=http://cata.wowhead.com/talent#I0bZcZIrrcMbskdo:zoVb
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00200000000000000003000000000000000003322220302201311211
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00300000000000000002000000000000000003322220302201311211
 glyphs=conflagrate/immolate/imp/life_tap
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -15,13 +15,13 @@ actions+=/soulburn
 actions+=/bane_of_doom,if=!ticking
 actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time+gcd|!ticking
 actions+=/conflagrate
-actions+=/summon_doomguard,time>=100
 actions+=/soul_fire,if=buff.soulburn.up
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/chaos_bolt
 actions+=/shadowflame
-actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0
+actions+=/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=cast_time
 actions+=/soul_fire,if=buff.empowered_imp.react
+actions+=/summon_doomguard,if=buff.bloodlust.react
 actions+=/incinerate
 actions+=/life_tap
 head=sanctified_dark_coven_hood,heroic=1,stats=973armor_114crit_106haste_159int_261sta,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit
