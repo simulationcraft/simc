@@ -13,12 +13,12 @@ struct spell_data_t {
   int          power_type;         // Resource type
   unsigned     class_mask;         // Class mask for spell
   unsigned     race_mask;          // Racial mask for the spell
-  int          scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array
+  int          scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
   // SpellLevels.dbc
   unsigned     spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   // SpellRange.dbc
-  double       min_range;          // Minimum range (in yards?)
-  double       max_range;          // Maximum range (in yards?)
+  double       min_range;          // Minimum range in yards
+  double       max_range;          // Maximum range in yards
   // SpellCooldown.dbc
   unsigned     cooldown;           // Cooldown in milliseconds
   unsigned     gcd;                // GCD in milliseconds
@@ -58,17 +58,17 @@ struct spelleffect_data_t {
   // SpellScaling.dbc
   double           m_avg;           // Effect average spell scaling multiplier
   double           m_delta;         // Effect delta spell scaling multiplier
-  double           m_unk;           // 
+  double           m_unk;           // Unused effect scaling multiplier
   // 
   double           coeff;           // Effect coefficient
   double           amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
-  double           radius;          // Spell radius variables
-  double           radius_max;
+  double           radius;          // Minimum spell radius
+  double           radius_max;      // Maximum spell radius
   // 
   int              base_value;      // Effect value
   int              misc_value;      // Effect miscellaneous value
-  int              misc_value_2;    // Effect miscellaneous value
+  int              misc_value_2;    // Effect miscellaneous value 2
   int              trigger_spell;   // Effect triggers this spell id
   double           pp_combo_points; // Effect points per combo points
   double           real_ppl;        // Effect real points per level
