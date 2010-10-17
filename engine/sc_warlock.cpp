@@ -2316,6 +2316,14 @@ struct shadowburn_t : public warlock_spell_t
       }
     }
   }
+
+  virtual bool ready()
+  {
+    if ( sim -> target -> health_percentage() >= 20 )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
 };
 
 // Shadowfury Spell ===========================================================
