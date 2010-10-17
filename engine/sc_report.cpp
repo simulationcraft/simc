@@ -2190,11 +2190,11 @@ static void print_wiki_player( FILE* file, player_t* p )
 {
   std::string anchor_name = wiki_player_anchor( p );
 
-  util_t::fprintf( file, "= %s =\n", anchor_name.c_str() );
+  util_t::fprintf( file, "= !%s =\n", anchor_name.c_str() );
 
   util_t::fprintf( file,
 		   "|| *Name* || *Race* || *Class* || *Tree* || *Level* ||\n"
-		   "|| *!%s*  || %s     || %s      || %s     || %d      ||\n"
+		   "|| *%s*  || %s     || %s      || %s     || %d      ||\n"
 		   "\n",
 		   p -> name(), p -> race_str.c_str(),
 		   util_t::player_type_string( p -> type ),
