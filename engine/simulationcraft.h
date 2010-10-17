@@ -2345,6 +2345,7 @@ struct scaling_t
   sim_t* delta_sim2;
   int    scale_stat;
   double scale_value;
+  double scale_delta_multiplier;
   int    calculate_scale_factors;
   int    center_scale_delta;
   int    five_point_stencil;
@@ -2356,6 +2357,7 @@ struct scaling_t
   int    debug_scale_factors;
   std::string scale_only_str;
   int    current_scaling_stat, num_scaling_stats, remaining_scaling_stats;
+  double    scale_haste_iterations;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
