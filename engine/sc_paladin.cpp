@@ -1856,7 +1856,6 @@ void paladin_t::init_base()
   base_block   = 0.05;
   initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness / 3.0;
   initial_dodge_per_agility = 0.0001670;
-  initial_armor_per_agility = 2.0;
 
   diminished_kfactor    = 0.9560;
   diminished_miss_capi  = 1.0 / 0.16;

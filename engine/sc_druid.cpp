@@ -3492,7 +3492,6 @@ void druid_t::init_base()
   base_dodge   = 0.0560970;
   initial_armor_multiplier  = 1.0 + util_t::talent_rank( talents.thick_hide -> rank(), 3, 0.04, 0.07, 0.10 );
   initial_dodge_per_agility = 0.0002090;
-  initial_armor_per_agility = 2.0;
 
   diminished_kfactor    = 0.9560;
   diminished_miss_capi  = 1.0 / 0.16;
