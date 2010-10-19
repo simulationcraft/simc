@@ -2840,8 +2840,9 @@ struct incinerate_t : public warlock_spell_t
   {
     spell_t::modify_direct_damage();
     warlock_t* p = player -> cast_warlock();
+	double divisor = ( sim -> P403 ) ? 6.0 : 4.0;
     if ( p -> dots_immolate -> ticking() )
-      direct_dmg += sim -> range( base_dd_min, base_dd_max ) / 4.0 * total_dd_multiplier();
+      direct_dmg += sim -> range( base_dd_min, base_dd_max ) / divisor * total_dd_multiplier();
   }
 
   virtual void travel( int travel_result, double travel_dmg)
