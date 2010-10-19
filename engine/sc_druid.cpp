@@ -238,7 +238,7 @@ struct druid_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_block_value() SC_CONST { return 0; }
   virtual double    composite_tank_parry() SC_CONST { return 0; }
   virtual double    composite_tank_block() SC_CONST { return 0; }
@@ -3487,16 +3487,14 @@ void druid_t::init_base()
   initial_attack_power_per_strength = 2.0;
 
   // FIXME! Level-specific!  Should be form-specific!
-  base_defense = level * 5;
   base_miss    = 0.05;
   base_dodge   = 0.0560970;
   initial_armor_multiplier  = 1.0 + util_t::talent_rank( talents.thick_hide -> rank(), 3, 0.04, 0.07, 0.10 );
   initial_dodge_per_agility = 0.0002090;
 
-  diminished_kfactor    = 0.9560;
-  diminished_miss_capi  = 1.0 / 0.16;
-  diminished_dodge_capi = 1.0 / 0.88129021;
-  diminished_parry_capi = 1.0 / 0.47003525;
+  diminished_kfactor    = 0.009720;
+  diminished_dodge_capi = 0.008555;
+  diminished_parry_capi = 0.008555;
 
   resource_base[ RESOURCE_ENERGY ] = 100;
   resource_base[ RESOURCE_RAGE   ] = 100;
@@ -3900,19 +3898,19 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // druid_t::matching_gear_multiplier ==================================
 
-double druid_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double druid_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   switch ( primary_tree() )
   {
   case TREE_BALANCE:
   case TREE_RESTORATION:
-    if ( attr == STAT_INTELLECT )
+    if ( attr == ATTR_INTELLECT )
       return 0.05;
     break;
   case TREE_FERAL:
-    if ( ( attr == STAT_STAMINA ) && ( buffs_bear_form -> check() ) )
+    if ( ( attr == ATTR_STAMINA ) && ( buffs_bear_form -> check() ) )
       return 0.05;
-    if ( ( attr == STAT_AGILITY ) && ( buffs_cat_form -> check() ) )
+    if ( ( attr == ATTR_AGILITY ) && ( buffs_cat_form -> check() ) )
       return 0.05;
     break;
   default:

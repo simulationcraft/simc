@@ -268,7 +268,6 @@ player_t::player_t( sim_t*             s,
     base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
     base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ),
     base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), buffed_block_value( 0 ),
-    base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),     buffed_defense( 0 ),
     base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
     base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
@@ -276,7 +275,7 @@ player_t::player_t( sim_t*             s,
     armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
     armor_per_agility( 0 ), initial_armor_per_agility( 0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
-    diminished_miss_capi( 0 ), diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+    diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
     // Attacks
     main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
     // Resources
@@ -881,7 +880,6 @@ void player_t::init_defense()
 {
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
-  initial_stats.defense_rating = gear.defense_rating + enchant.defense_rating + ( is_pet() ? 0 : sim -> enchant.defense_rating );
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
   initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + ( is_pet() ? 0 : sim -> enchant.parry_rating );
   initial_stats.block_rating   = gear.block_rating   + enchant.block_rating   + ( is_pet() ? 0 : sim -> enchant.block_rating );
@@ -889,7 +887,6 @@ void player_t::init_defense()
 
   if ( initial_stats.armor          < 0 ) initial_stats.armor          = 0;
   if ( initial_stats.bonus_armor    < 0 ) initial_stats.bonus_armor    = 0;
-  if ( initial_stats.defense_rating < 0 ) initial_stats.defense_rating = 0;
   if ( initial_stats.dodge_rating   < 0 ) initial_stats.dodge_rating   = 0;
   if ( initial_stats.parry_rating   < 0 ) initial_stats.parry_rating   = 0;
   if ( initial_stats.block_rating   < 0 ) initial_stats.block_rating   = 0;
@@ -897,7 +894,6 @@ void player_t::init_defense()
 
   initial_armor       = base_armor       + initial_stats.armor;
   initial_bonus_armor = base_bonus_armor + initial_stats.bonus_armor;
-  initial_defense     = base_defense     + initial_stats.defense_rating / rating.defense;
   initial_miss        = base_miss;
   initial_dodge       = base_dodge       + initial_stats.dodge_rating / rating.dodge;
   initial_parry       = base_parry       + initial_stats.parry_rating / rating.parry;
@@ -1317,7 +1313,6 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ARMOR          ] = 0;
     scales_with[ STAT_BONUS_ARMOR    ] = 0;
-    scales_with[ STAT_DEFENSE_RATING ] = 0;
     scales_with[ STAT_DODGE_RATING   ] = 0;
     scales_with[ STAT_PARRY_RATING   ] = 0;
 
@@ -1423,7 +1418,6 @@ void player_t::init_scaling()
 
       case STAT_ARMOR:          initial_armor       += v; break;
       case STAT_BONUS_ARMOR:    initial_bonus_armor += v; break;
-      case STAT_DEFENSE_RATING: initial_defense     += v; break;
       case STAT_DODGE_RATING:   initial_dodge       += v; break;
       case STAT_PARRY_RATING:   initial_parry       += v; break;
 
@@ -1568,7 +1562,7 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
   {
     m = 0.05;
 
-    double delta = composite_defense() - sim -> target -> weapon_skill;
+    double delta = 5.0 * ( level - sim -> target -> level );
 
     if( delta > 0 )
     {
@@ -1629,7 +1623,7 @@ double player_t::composite_tank_dodge() SC_CONST
 
   d += agility() * dodge_per_agility;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
+  double delta = 5.0 * ( level - sim -> target -> level );
 
   if( delta > 0 )
   {
@@ -1652,7 +1646,7 @@ double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
+  double delta = 5.0 * ( level - sim -> target -> level );
 
   if( delta > 0 )
   {
@@ -1675,7 +1669,7 @@ double player_t::composite_tank_block() SC_CONST
 {
   double b = block;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
+  double delta = 5.0 * ( level - sim -> target -> level );
 
   if( delta > 0 )
   {
@@ -1713,7 +1707,7 @@ double player_t::composite_tank_crit( const school_type school ) SC_CONST
   {
     c = 0.05 + 0.002 * ( sim -> target -> level - level );
 
-    double delta = composite_defense() - sim -> target -> weapon_skill;
+    double delta = 5.0 * ( level - sim -> target -> level );
 
     if( delta > 0 )
     {
@@ -1735,30 +1729,6 @@ double player_t::composite_tank_crit( const school_type school ) SC_CONST
   return c;
 }
 
-// player_t::diminished_miss =========================================
-
-double player_t::diminished_miss( const school_type school ) SC_CONST
-{
-  if ( diminished_kfactor == 0 || diminished_miss_capi == 0 ) return 0;
-
-  if ( school != SCHOOL_PHYSICAL )
-    return 0;
-
-  // Only contributions from gear are subject to diminishing returns;
-
-  double m = 0;
-
-  m += 0.0004 * stats.defense_rating / rating.defense;
-
-  if ( m == 0 ) return 0;
-
-  double diminished_m = m / ( m * diminished_miss_capi + diminished_kfactor );
-
-  double loss = m - diminished_m;
-
-  return loss > 0 ? loss : 0;
-}
-
 // player_t::diminished_dodge ========================================
 
 double player_t::diminished_dodge() SC_CONST
@@ -1769,13 +1739,11 @@ double player_t::diminished_dodge() SC_CONST
 
   double d = stats.dodge_rating / rating.dodge;
 
-  d += 0.0004 * stats.defense_rating / rating.defense;
-
-  d += dodge_per_agility * stats.attribute[ ATTR_AGILITY ] * attribute_multiplier[ ATTR_AGILITY ];
+  d += dodge_per_agility * stats.attribute[ ATTR_AGILITY ] * composite_attribute_multiplier( ATTR_AGILITY );
 
   if ( d == 0 ) return 0;
 
-  double diminished_d = d / ( d * diminished_dodge_capi + diminished_kfactor );
+  double diminished_d = 0.01 / ( diminished_dodge_capi + diminished_kfactor / d );
 
   double loss = d - diminished_d;
 
@@ -1792,11 +1760,9 @@ double player_t::diminished_parry() SC_CONST
 
   double p = stats.parry_rating / rating.parry;
 
-  p += 0.0004 * stats.defense_rating / rating.defense;
-
   if ( p == 0 ) return 0;
 
-  double diminished_p = p / ( p * diminished_parry_capi + diminished_kfactor );
+  double diminished_p = 0.01 / ( diminished_parry_capi + diminished_kfactor / p );
 
   double loss = p - diminished_p;
 
@@ -1969,7 +1935,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   // Matched gear. i.e. Mysticism etc.
   if ( ( level >= 50 ) && matching_gear )
-    m *= 1.0 + matching_gear_multiplier( (const stat_type) attr );
+    m *= 1.0 + matching_gear_multiplier( (const attribute_type) attr );
 
   return m;
 }
@@ -2199,7 +2165,6 @@ void player_t::reset()
 
   armor              = initial_armor;
   bonus_armor        = initial_bonus_armor;
-  defense            = initial_defense;
   dodge              = initial_dodge;
   parry              = initial_parry;
   block              = initial_block;
@@ -2695,7 +2660,6 @@ void player_t::stat_gain( int    stat,
 
   case STAT_ARMOR:          stats.armor          += amount; armor       += amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; bonus_armor += amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating += amount; defense     += amount / rating.defense; break;
   case STAT_DODGE_RATING:   stats.dodge_rating   += amount; dodge       += amount / rating.dodge;   break;
   case STAT_PARRY_RATING:   stats.parry_rating   += amount; parry       += amount / rating.parry;   break;
 
@@ -2763,7 +2727,6 @@ void player_t::stat_loss( int    stat,
 
   case STAT_ARMOR:          stats.armor          -= amount; armor       -= amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; bonus_armor -= amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating -= amount; defense     -= amount / rating.defense; break;
   case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; dodge       -= amount / rating.dodge;   break;
   case STAT_PARRY_RATING:   stats.parry_rating   -= amount; parry       -= amount / rating.parry;   break;
 
@@ -3213,7 +3176,7 @@ int player_t::target_swing()
   double roll = sim -> rng -> real();
   double chance = 0;
 
-  chance += ( composite_tank_miss( SCHOOL_PHYSICAL ) - diminished_miss( SCHOOL_PHYSICAL ) );
+  chance += ( composite_tank_miss( SCHOOL_PHYSICAL ) );
   if ( roll <= chance ) return RESULT_MISS;
 
   chance += ( composite_tank_dodge() - diminished_dodge() );
@@ -3631,8 +3594,7 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_armor       = p -> composite_armor();
     p -> buffed_block_value = p -> composite_block_value();
-    p -> buffed_defense     = p -> composite_defense();
-    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL );
+    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
     p -> buffed_dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
     p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();
     p -> buffed_block       = p -> composite_tank_block();

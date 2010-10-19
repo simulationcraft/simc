@@ -271,7 +271,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
@@ -2793,7 +2793,6 @@ void warrior_t::init_base()
   base_attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
-  base_defense = level * 5;
   base_miss    = 0.05;
   base_dodge   = 0.03664;
   base_parry   = 0.05;
@@ -2808,10 +2807,9 @@ void warrior_t::init_base()
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
   initial_dodge_per_agility = 0.0001180;
 
-  diminished_kfactor    = 0.9560;
-  diminished_miss_capi  = 1.0 / 0.16;
-  diminished_dodge_capi = 1.0 / 0.88129021;
-  diminished_parry_capi = 1.0 / 0.47003525;
+  diminished_kfactor    = 0.009560;
+  diminished_dodge_capi = 0.01523660;
+  diminished_parry_capi = 0.01523660;
 
   if ( spec.sentinel -> ok() )
   {
@@ -3105,11 +3103,11 @@ double warrior_t::composite_attack_penetration() SC_CONST
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
-  if ( ( attr == STAT_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
+  if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
     return 0.05;
-  if ( ( attr == STAT_STAMINA ) && ( primary_tree() == TREE_PROTECTION ) )
+  if ( ( attr == ATTR_STAMINA ) && ( primary_tree() == TREE_PROTECTION ) )
     return 0.05;
 
   return 0.0;

@@ -418,7 +418,7 @@ struct rogue_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
@@ -2998,9 +2998,9 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // rogue_t::matching_gear_multiplier ==================================
 
-double rogue_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double rogue_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {  
-  if ( attr == STAT_AGILITY )
+  if ( attr == ATTR_AGILITY )
   {
     return 0.05;
   }
@@ -3342,6 +3342,10 @@ void rogue_t::init_base()
   energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
   base_gcd = 1.0;
+
+  diminished_kfactor    = 0.009880;
+  diminished_dodge_capi = 0.006870;
+  diminished_parry_capi = 0.006870;
 }
 
 // rogue_t::init_talents ======================================================

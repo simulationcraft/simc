@@ -221,7 +221,7 @@ struct paladin_t : public player_t
   virtual void      interrupt();
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -1849,7 +1849,6 @@ void paladin_t::init_base()
   base_attack_power = ( level * 3 ) - 20;
 
   // FIXME! Level-specific!
-  base_defense = level * 5;
   base_miss    = 0.05;
   base_dodge   = 0.0349430;
   base_parry   = 0.05;
@@ -1857,10 +1856,9 @@ void paladin_t::init_base()
   initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness / 3.0;
   initial_dodge_per_agility = 0.0001670;
 
-  diminished_kfactor    = 0.9560;
-  diminished_miss_capi  = 1.0 / 0.16;
-  diminished_dodge_capi = 1.0 / 0.88129021;
-  diminished_parry_capi = 1.0 / 0.47003525;
+  diminished_kfactor    = 0.009560;
+  diminished_dodge_capi = 0.01523660;
+  diminished_parry_capi = 0.01523660;
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
@@ -2300,20 +2298,20 @@ double paladin_t::composite_tank_block() SC_CONST
 
 // paladin_t::matching_gear_multiplier =====================================
 
-double paladin_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double paladin_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   switch ( primary_tree() )
   {
   case TREE_PROTECTION:
-    if ( attr == STAT_STAMINA )
+    if ( attr == ATTR_STAMINA )
       return 0.05;
     break;
   case TREE_RETRIBUTION:
-    if ( attr == STAT_STRENGTH )
+    if ( attr == ATTR_STRENGTH )
       return 0.05;
     break;
   case TREE_HOLY:
-    if ( attr == STAT_INTELLECT )
+    if ( attr == ATTR_INTELLECT )
       return 0.05;
     break;
   default: 

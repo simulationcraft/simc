@@ -197,7 +197,7 @@ struct hunter_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -2877,6 +2877,10 @@ void hunter_t::init_base()
   focus_regen_per_second = 10;
   
   position = POSITION_RANGED;
+
+  diminished_kfactor    = 0.009880;
+  diminished_dodge_capi = 0.006870;
+  diminished_parry_capi = 0.006870;
 }
 
 // hunter_t::init_buffs =======================================================
@@ -3220,9 +3224,9 @@ double hunter_t::composite_attack_crit() SC_CONST
 
 // hunter_t::matching_gear_multiplier =====================================
 
-double hunter_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double hunter_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
-  if ( attr == STAT_AGILITY )
+  if ( attr == ATTR_AGILITY )
     return 0.05;
 
   return 0.0;

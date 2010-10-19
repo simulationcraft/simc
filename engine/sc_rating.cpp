@@ -370,7 +370,6 @@ void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
   ranged_crit       = pData.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
   expertise         = pData.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
   armor_penetration = 1; // no data
-  defense           = 1; // no data
   dodge             = pData.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
   parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
   block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);

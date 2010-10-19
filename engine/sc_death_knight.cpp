@@ -409,7 +409,7 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_tank_parry() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
@@ -3794,6 +3794,10 @@ void death_knight_t::init_base()
     resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect_base_value( 1 ) / 10.0;
 
   base_gcd = 1.5;
+
+  diminished_kfactor    = 0.009560;
+  diminished_dodge_capi = 0.01523660;
+  diminished_parry_capi = 0.01523660;
 }
 
 // death_knight_t::init_talents =============================================
@@ -4391,17 +4395,17 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // death_knight_t::matching_gear_multiplier ==================================
 
-double death_knight_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   switch ( primary_tree() )
   {
   case TREE_UNHOLY:
   case TREE_FROST:
-    if ( attr == STAT_STRENGTH )
+    if ( attr == ATTR_STRENGTH )
       return 0.05;
     break;
   case TREE_BLOOD:
-    if ( attr == STAT_STAMINA )
+    if ( attr == ATTR_STAMINA )
     break;
   default:
     break;

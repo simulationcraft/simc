@@ -222,7 +222,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3882,6 +3882,10 @@ void shaman_t::init_base()
   }
 
   distance = ( primary_tree() == TREE_ENHANCEMENT ) ? 3 : 30;
+
+  diminished_kfactor    = 0.009880;
+  diminished_dodge_capi = 0.006870;
+  diminished_parry_capi = 0.006870;
 }
 
 // shaman_t::init_scaling ====================================================
@@ -4106,16 +4110,16 @@ void shaman_t::interrupt()
 
 // shaman_t::matching_gear_multiplier =============================================
 
-double shaman_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   if ( primary_tree() == TREE_ENHANCEMENT )
   {
-    if ( attr == STAT_AGILITY )
+    if ( attr == ATTR_AGILITY )
       return 0.05;
   }
   else
   {
-    if ( attr == STAT_INTELLECT )
+    if ( attr == ATTR_INTELLECT )
       return 0.05;
   }
 

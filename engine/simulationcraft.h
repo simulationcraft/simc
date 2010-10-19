@@ -529,7 +529,7 @@ enum stat_type
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
-  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DEFENSE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
   STAT_MAX
 };
@@ -1910,7 +1910,6 @@ struct gear_stats_t
   double weapon_offhand_speed;
   double armor;
   double bonus_armor;
-  double defense_rating;
   double dodge_rating;
   double parry_rating;
   double block_rating;
@@ -2405,7 +2404,7 @@ struct rating_t
   double attack_haste, attack_hit, attack_crit;
   double ranged_haste, ranged_hit,ranged_crit;
   double expertise, armor_penetration;
-  double defense, dodge, parry, block;
+  double dodge, parry, block;
   double mastery;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
   void init( sim_t*, sc_data_access_t& pData, int level, int type );
@@ -2671,7 +2670,6 @@ struct player_t
   double base_armor,       initial_armor,       armor,       buffed_armor;
   double base_bonus_armor, initial_bonus_armor, bonus_armor;
   double base_block_value, initial_block_value, block_value, buffed_block_value;
-  double base_defense,     initial_defense,     defense,     buffed_defense;
   double base_miss,        initial_miss,        miss,        buffed_miss, buffed_crit;
   double base_dodge,       initial_dodge,       dodge,       buffed_dodge;
   double base_parry,       initial_parry,       parry,       buffed_parry;
@@ -2679,7 +2677,7 @@ struct player_t
   double armor_multiplier,  initial_armor_multiplier;
   double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
-  double diminished_miss_capi, diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
+  double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -2935,14 +2933,12 @@ struct player_t
 
   virtual double composite_armor()                 SC_CONST;
   virtual double composite_block_value()           SC_CONST;
-  virtual double composite_defense()               SC_CONST { return defense; }
   virtual double composite_tank_miss( const school_type school ) SC_CONST;
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;
   virtual double composite_tank_block()            SC_CONST;
   virtual double composite_tank_crit( const school_type school ) SC_CONST;
 
-  virtual double diminished_miss( const school_type school )  SC_CONST;
   virtual double diminished_dodge()             SC_CONST;
   virtual double diminished_parry()             SC_CONST;
 
@@ -2950,7 +2946,7 @@ struct player_t
   virtual double composite_spell_power_multiplier() SC_CONST;
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
 
-  virtual double matching_gear_multiplier( const stat_type attr ) SC_CONST { return 0.0; }
+  virtual double matching_gear_multiplier( const attribute_type attr ) SC_CONST { return 0.0; }
 
   virtual double composite_player_multiplier( const school_type school ) SC_CONST;
 

@@ -344,7 +344,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
 
-  virtual double    matching_gear_multiplier( const stat_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
   virtual void      regen( double periodicity );
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -2234,9 +2234,9 @@ double priest_t::composite_player_multiplier( const school_type school ) SC_CONS
   return m;
 }
 
-double priest_t::matching_gear_multiplier( const stat_type attr ) SC_CONST
+double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
-  if ( attr == STAT_INTELLECT )
+  if ( attr == ATTR_INTELLECT )
     return 0.05;
 
   return 0.0;
@@ -2384,6 +2384,10 @@ void priest_t::init_base()
 
   health_per_stamina = 10;
   mana_per_intellect = 15;
+
+  diminished_kfactor    = 0.009830;
+  diminished_dodge_capi = 0.006650;
+  diminished_parry_capi = 0.006650;
 }
 
 // priest_t::init_gains ======================================================
