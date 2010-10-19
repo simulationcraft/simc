@@ -647,7 +647,7 @@ void priest_spell_t::player_buff()
   }
 #endif
 
-  if ( heal = true )
+  if ( heal == true )
   {
     player_multiplier *= 1.15;
   }

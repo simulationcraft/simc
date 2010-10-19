@@ -152,6 +152,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_runic_corruption;
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_shadow_infusion;
+  buff_t* buffs_sudden_doom;
   buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_unholy_presence;
   
@@ -382,7 +383,6 @@ struct death_knight_t : public player_t
     active_dancing_rune_weapon = NULL;
     active_ghoul               = NULL;
 
-    sudden_doom         = NULL;
     blood_plague        = NULL;
     frost_fever         = NULL;
 
@@ -1142,6 +1142,16 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       p -> main_hand_attack -> schedule_execute();
     }
+    
+    virtual void player_buff()
+    {
+      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+      if ( o -> buffs_shadow_infusion -> check() )
+      {
+        player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+    }
 
     virtual bool ready()
     {
@@ -1163,6 +1173,17 @@ struct ghoul_pet_t : public pet_t
       base_dd_min      = base_dd_max = 0.1;
       direct_power_mod = 0;
     }
+
+    virtual void player_buff()
+    {
+      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+      if ( o -> buffs_shadow_infusion -> check() )
+      {
+       player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+    }
+
   };
 
   struct ghoul_pet_sweeping_claws_t : public ghoul_pet_attack_t
@@ -1222,6 +1243,7 @@ struct ghoul_pet_t : public pet_t
 
   virtual bool ooc_buffs()
   {
+    // FIXME: What does this do? Ghouls no longer get buffs themselves
     death_knight_t* o = owner -> cast_death_knight();
     if ( o -> passives.master_of_ghouls -> ok() )
       return true;
@@ -1238,7 +1260,7 @@ struct ghoul_pet_t : public pet_t
            std::max( sim -> auras.horn_of_winter    -> value(),
                      sim -> auras.battle_shout      -> value() ) );
 
-    double strength_scaling = 0.7; // % of str ghould gets from the DK
+    double strength_scaling = 1.0; // % of str ghould gets from the DK
     strength_scaling += o -> glyphs.raise_dead * .4; // But the glyph is additive!
     a += o -> strength() *  strength_scaling;
 
@@ -1268,15 +1290,12 @@ struct ghoul_pet_t : public pet_t
     return o -> composite_attack_haste();
   }
 
-  virtual void player_buff()
+  virtual double composite_attack_crit() SC_CONST
   {
+    // Ghouls recieve 100% of their master's crit
     death_knight_t* o = owner -> cast_death_knight();
-    if ( o -> buffs_shadow_infusion -> check() )
-    {
-      // player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
-    }
+    return o -> composite_attack_crit();
   }
-
   virtual int primary_resource() SC_CONST { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1313,12 +1332,9 @@ struct death_knight_attack_t : public attack_t
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     additive_factors( false )
   {
-    death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
     may_glance = false;
-
-    base_crit += p -> talents.ebon_plaguebringer -> rank() * 0.01;
   }
 
   virtual void   reset();
@@ -1347,7 +1363,6 @@ struct death_knight_spell_t : public spell_t
     spell_t( n, player, RESOURCE_RUNIC, s, t ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
   {
-    death_knight_t* p = player -> cast_death_knight();
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit = true;
     // The Chaotic Skyflare Diamonds plays oddly for death knight
@@ -1362,8 +1377,6 @@ struct death_knight_spell_t : public spell_t
     base_crit_bonus_multiplier = 2.0;
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
-
-    base_crit += p -> talents.ebon_plaguebringer -> rank() * 0.01;
   }
 
   virtual void   reset();
@@ -1577,16 +1590,18 @@ static void trigger_brittle_bones( spell_t* s )
 
 static void trigger_ebon_plaguebringer( action_t* a )
 {
-  if ( a -> sim -> overrides.ebon_plaguebringer ) return;
+  if ( a -> sim -> overrides.ebon_plaguebringer )
+    return;
+
   death_knight_t* p = a -> player -> cast_death_knight();
-  if ( ! p -> talents.ebon_plaguebringer -> rank() ) return;
+  if ( ! p -> talents.ebon_plaguebringer -> rank() )
+    return;
 
   double disease_duration = a -> dot -> ready - a -> sim -> current_time;
   if ( a -> sim -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
   {
-    double value = util_t::talent_rank( p -> talents.ebon_plaguebringer -> rank(), 3, 4, 9, 13 );
     a -> sim -> target -> debuffs.ebon_plaguebringer -> buff_duration = disease_duration;
-    a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, value );
+    a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
   }
 }
 
@@ -1915,7 +1930,8 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      trigger_blood_caked_blade( this );
+      p -> buffs_sudden_doom -> trigger();
+      trigger_blood_caked_blade( this );      
       if ( p -> buffs_scent_of_blood -> up() )
       {
         p -> resource_gain( resource, 10, p -> gains_scent_of_blood );
@@ -2053,7 +2069,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     num_ticks         = 5 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
     base_attack_power_multiplier *= 0.055 * 1.15;
-    base_multiplier  *= 1.0 + p -> talents.ebon_plaguebringer -> rank() * 0.15;
+    base_multiplier  *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
     tick_power_mod    = 1;
     may_miss          = false;
     cooldown -> duration          = 0.0;
@@ -2063,29 +2079,15 @@ struct blood_plague_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
-    target_t* t = sim -> target;
-    added_ticks = 0;
-    num_ticks = 5 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
-    if ( ! sim -> overrides.blood_plague )
-    {
-      t -> debuffs.blood_plague -> buff_duration = 3.0 * num_ticks;
-      t -> debuffs.blood_plague -> trigger();
-    }
     trigger_ebon_plaguebringer( this );
   }
 
   virtual void extend_duration( int extra_ticks )
   {
     death_knight_spell_t::extend_duration( extra_ticks );
-    target_t* t = sim -> target;
-    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
-    {
-      t -> debuffs.blood_plague -> buff_duration = dot -> ready - sim -> current_time;
-      t -> debuffs.blood_plague -> trigger();
-    }
+
     trigger_ebon_plaguebringer( this );
   }
 
@@ -2102,12 +2104,7 @@ struct blood_plague_t : public death_knight_spell_t
   virtual void refresh_duration()
   {
     death_knight_spell_t::refresh_duration();
-    target_t* t = sim -> target;
-    if ( ! sim -> overrides.blood_plague && t -> debuffs.blood_plague -> remains_lt( dot -> ready ) )
-    {
-      t -> debuffs.blood_plague -> buff_duration = dot -> ready - sim -> current_time;
-      t -> debuffs.blood_plague -> trigger();
-    }
+
     trigger_ebon_plaguebringer( this );
   }
 
@@ -2435,8 +2432,8 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p -> sim -> roll( p -> constants.runic_empowerment_proc_chance ) )
       p -> trigger_runic_empowerment();
-    
-    p -> buffs_shadow_infusion -> trigger();
+    if ( ! p -> buffs_dark_transformation -> check() )
+      p -> buffs_shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
   }
 };
 
@@ -2592,9 +2589,9 @@ struct festering_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       if (  p -> dots_blood_plague -> ticking() )
-	p -> dots_blood_plague -> action -> extend_duration( 2 );
+	      p -> dots_blood_plague -> action -> extend_duration( 2 );
       if (  p -> dots_frost_fever -> ticking() )
-	p -> dots_frost_fever -> action -> extend_duration( 2 );
+	      p -> dots_frost_fever -> action -> extend_duration( 2 );
     }
   }
 };
@@ -2608,9 +2605,9 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    id = p-> spells.blood_plague -> spell_id();
+    id = p-> spells.frost_fever -> spell_id();
     effect_nr = 0;
-    parse_data(p->player_data);
+    parse_data( p -> player_data );
 
     trigger_gcd       = 0;
     base_cost         = 0;
@@ -2618,7 +2615,8 @@ struct frost_fever_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     num_ticks = 5 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
     base_attack_power_multiplier *= 0.055 * 1.15;
-    base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2 + p -> talents.ebon_plaguebringer -> rank() * 0.15;
+    base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2 
+                            + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
     tick_power_mod    = 1;
 
     may_miss          = false;
@@ -2629,17 +2627,8 @@ struct frost_fever_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
-    target_t* t = sim -> target;
-    added_ticks = 0;
-    num_ticks = 5 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
-    if ( ! sim -> overrides.frost_fever )
-    {
-      t -> debuffs.frost_fever -> buff_duration = 3.0 * num_ticks;
-      t -> debuffs.frost_fever -> trigger();
-    }
     trigger_brittle_bones( this );
     trigger_ebon_plaguebringer( this );
   }
@@ -2647,12 +2636,7 @@ struct frost_fever_t : public death_knight_spell_t
   virtual void extend_duration( int extra_ticks )
   {
     death_knight_spell_t::extend_duration( extra_ticks );
-    target_t* t = sim -> target;
-    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
-    {
-      t -> debuffs.frost_fever -> buff_duration = dot -> ready - sim -> current_time;
-      t -> debuffs.frost_fever -> trigger();
-    }
+
     trigger_brittle_bones( this );
     trigger_ebon_plaguebringer( this );
   }
@@ -2660,12 +2644,7 @@ struct frost_fever_t : public death_knight_spell_t
   virtual void refresh_duration()
   {
     death_knight_spell_t::refresh_duration();
-    target_t* t = sim -> target;
-    if ( ! sim -> overrides.frost_fever && t -> debuffs.frost_fever -> remains_lt( dot -> ready ) )
-    {
-      t -> debuffs.frost_fever -> buff_duration = dot -> ready - sim -> current_time;
-      t -> debuffs.frost_fever -> trigger();
-    }
+
     trigger_brittle_bones( this );
     trigger_ebon_plaguebringer( this );
   }
@@ -3593,6 +3572,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 //if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
+//if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
   if ( name == "plague_strike"            ) return new plague_strike_t            ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
@@ -4239,7 +4219,8 @@ void death_knight_t::init_buffs()
   buffs_rime                = new buff_t( this, "rime",                                               1,  30.0,  0.0, talents.rime -> proc_chance() );
   buffs_runic_corruption    = new buff_t( this, "runic_corruption",                                   1,   3.0,  0.0, talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
-  buffs_shadow_infusion      = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
+  buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, talents.summon_gargoyle -> proc_chance() );
   buffs_tier10_4pc_melee    = new buff_t( this, "tier10_4pc_melee",                                   1,  15.0,  0.0, set_bonus.tier10_4pc_melee() );  
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
 
@@ -4615,9 +4596,7 @@ void player_t::death_knight_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.blood_plague       = new debuff_t( sim, "blood_plague",       1, 15.0 );
   t -> debuffs.brittle_bones      = new debuff_t( sim, "brittle_bones",      1, 15.0 );
-  t -> debuffs.frost_fever        = new debuff_t( sim, "frost_fever",        1, 15.0 );
   t -> debuffs.ebon_plaguebringer = new debuff_t( sim, "ebon_plaguebringer", 1, 15.0 );
 }
 
@@ -4632,8 +4611,6 @@ void player_t::death_knight_combat_begin( sim_t* sim )
   if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 
   target_t* t = sim -> target;
-  if ( sim -> overrides.blood_plague       ) t -> debuffs.blood_plague       -> override();
   if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
-  if ( sim -> overrides.frost_fever        ) t -> debuffs.frost_fever        -> override();
-  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,   8 );
+  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
 }

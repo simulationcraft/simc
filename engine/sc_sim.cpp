@@ -1296,7 +1296,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blessing_of_wisdom     = optimal_raid;
   overrides.blood_frenzy_bleed     = optimal_raid;
   overrides.blood_frenzy_physical  = optimal_raid;
-  overrides.blood_plague           = optimal_raid;
   overrides.bloodlust              = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
@@ -1308,7 +1307,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
-  overrides.frost_fever            = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
@@ -1571,7 +1569,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.blessing_of_wisdom",      OPT_BOOL,   &( overrides.blessing_of_wisdom             ) },
       { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
       { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
-      { "override.blood_plague",            OPT_BOOL,   &( overrides.blood_plague                   ) },
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
@@ -1586,7 +1583,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
       { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
       { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
-      { "override.frost_fever",             OPT_BOOL,   &( overrides.frost_fever                    ) },
       { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
       { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
       { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },

@@ -2161,12 +2161,12 @@ struct sim_t
     int blessing_of_wisdom;
     int blood_frenzy_bleed;
     int blood_frenzy_physical;
-    int blood_plague;
     int bloodlust;
     int bloodlust_early;
     int brittle_bones;
     int celerity;
     int curse_of_elements;
+    int dark_intent;
     int demonic_pact;
     int devotion_aura;
     int earth_and_moon;
@@ -2177,9 +2177,7 @@ struct sim_t
     int ferocious_inspiration;
     int flametongue_totem;
     int focus_magic;
-    int dark_intent;
     int fortitude;
-    int frost_fever;
     int hellscreams_warsong;
     int hemorrhage;
     int honor_among_thieves;
@@ -3182,13 +3180,13 @@ struct target_t
     debuff_t* blood_frenzy_physical;
     debuff_t* brittle_bones;
     debuff_t* casting;
-    debuff_t* blood_plague;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* ebon_plaguebringer;
+    debuff_t* expose_armor;
     debuff_t* faerie_fire;
     debuff_t* frostbite;
-    debuff_t* frost_fever;
+    debuff_t* hemorrhage;
     debuff_t* hunters_mark;
     debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
@@ -3197,6 +3195,9 @@ struct target_t
     debuff_t* invulnerable;
     debuff_t* judgements_of_the_just;
     debuff_t* mangle;
+    debuff_t* master_poisoner;
+    debuff_t* poisoned;
+    debuff_t* savage_combat;
     debuff_t* scorpid_sting;
     debuff_t* shattering_throw;
     debuff_t* slow;
@@ -3204,12 +3205,8 @@ struct target_t
     debuff_t* thunder_clap;
     debuff_t* vulnerable;
     debuff_t* winters_chill;
-    debuff_t* winters_grasp;
-    debuff_t* master_poisoner;
-    debuff_t* poisoned;
-    debuff_t* savage_combat;
-    debuff_t* expose_armor;
-    debuff_t* hemorrhage;
+    debuff_t* winters_grasp;  
+    
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
     bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
     bool snared();
