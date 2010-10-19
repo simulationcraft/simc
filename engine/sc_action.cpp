@@ -686,8 +686,8 @@ double action_t::resistance() SC_CONST
 
     if ( resist < 0.0 )
       resist = 0.0;
-    else if ( resist > 1.0 )
-      resist = 1.0;
+    else if ( resist > 0.75 )
+      resist = 0.75;
   }
   else
   {
