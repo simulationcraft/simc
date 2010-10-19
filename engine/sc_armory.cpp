@@ -288,7 +288,6 @@ static bool parse_item_stats( item_t& item,
 
   if ( xml_t::get_value( value, xml, "bonusAttackPower/."      ) ) s += "_" + value + "ap";
   if ( xml_t::get_value( value, xml, "bonusExpertiseRating/."  ) ) s += "_" + value + "exp";
-  if ( xml_t::get_value( value, xml, "bonusArmorPenetration/." ) ) s += "_" + value + "arpen";
 
   if ( xml_t::get_value( value, xml, "bonusHitRating/."   ) ) s += "_" + value + "hit";
   if ( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
@@ -579,7 +578,6 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
   stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
-  stat_search( encoding_str, splits, STAT_ARMOR_PENETRATION_RATING, "armor penetration rating" );
 
   stat_search( encoding_str, splits, STAT_HASTE_RATING, 	"haste rating" );
   stat_search( encoding_str, splits, STAT_HIT_RATING,   	"ranged hit rating" );

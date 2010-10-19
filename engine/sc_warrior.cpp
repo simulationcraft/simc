@@ -40,6 +40,7 @@ struct warrior_t : public player_t
     active_spell_t* recklessness;
     active_spell_t* rend;
     active_spell_t* revenge;
+    active_spell_t* shattering_throw;
     active_spell_t* shield_bash;
     active_spell_t* shield_block;
     active_spell_t* shield_slam;
@@ -268,7 +269,6 @@ struct warrior_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -306,6 +306,8 @@ struct warrior_attack_t : public attack_t
     may_glance   = false;
     normalize_weapon_speed = true;
   }
+
+  virtual double armor() SC_CONST;
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   consume_resource();
@@ -622,6 +624,20 @@ static void trigger_sword_and_board( attack_t* a )
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
+
+double warrior_attack_t::armor() SC_CONST
+{
+  warrior_t* p = player -> cast_warrior();
+
+  double a = attack_t::armor();
+
+  if ( p -> buffs_colossus_smash -> check() )
+  {
+    a *= 1.0 - p -> buffs_colossus_smash -> value();
+  }
+
+  return a;
+}
 
 // warrior_attack_t::assess_damage ==========================================
 
@@ -1174,7 +1190,7 @@ struct colossus_smash_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
     if( result_is_hit() )
-      p -> buffs_colossus_smash -> trigger();
+      p -> buffs_colossus_smash -> trigger( 1, 1.0 );
   }
 };
 
@@ -1709,6 +1725,43 @@ struct revenge_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     if ( ! p -> buffs_revenge -> check() ) return false;
+    return warrior_attack_t::ready();
+  }
+};
+
+// Shattering Throw ==============================================================
+
+// TO-DO: Only a shell at the moment. Needs testing for damage etc.
+struct shattering_throw_t : public warrior_attack_t
+{
+  shattering_throw_t( player_t* player, const std::string& options_str ) :
+    warrior_attack_t( "shattering_throw", player, SCHOOL_PHYSICAL, TREE_PROTECTION )
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    id = 64382;
+    parse_data( p -> player_data );
+
+    stancemask = STANCE_BATTLE;
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+    warrior_attack_t::execute();
+    if ( result_is_hit() )
+      p -> sim -> target -> debuffs.shattering_throw -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> target -> debuffs.shattering_throw -> check() ) return false;
     return warrior_attack_t::ready();
   }
 };
@@ -2579,13 +2632,14 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "recklessness"     ) return new recklessness_t    ( this, options_str );
   if ( name == "rend"             ) return new rend_t            ( this, options_str );
   if ( name == "revenge"          ) return new revenge_t         ( this, options_str );
+  if ( name == "shattering_throw" ) return new shattering_throw_t( this, options_str );
   if ( name == "shield_bash"      ) return new shield_bash_t     ( this, options_str );
   if ( name == "shield_block"     ) return new shield_block_t    ( this, options_str );
   if ( name == "shield_slam"      ) return new shield_slam_t     ( this, options_str );
   if ( name == "shockwave"        ) return new shockwave_t       ( this, options_str );
   if ( name == "slam"             ) return new slam_t            ( this, options_str );
   if ( name == "stance"           ) return new stance_t          ( this, options_str );
-  if ( name == "sweeping_strikes" ) return new sweeping_strikes_t( this, options_str);
+  if ( name == "sweeping_strikes" ) return new sweeping_strikes_t( this, options_str );
   if ( name == "thunder_clap"     ) return new thunder_clap_t    ( this, options_str );
   if ( name == "victory_rush"     ) return new victory_rush_t    ( this, options_str );
   if ( name == "whirlwind"        ) return new whirlwind_t       ( this, options_str );
@@ -2679,6 +2733,7 @@ void warrior_t::init_spells()
   active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness", WARRIOR_FURY );
   active_spells.rend              = new active_spell_t( this, "rend", "Rend", WARRIOR_ARMS );
   active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge", WARRIOR_PROTECTION );
+  active_spells.shattering_throw  = new active_spell_t( this, "shattering_throw", "Shattering Throw", WARRIOR_ARMS );
   active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash", WARRIOR_PROTECTION );
   active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block", WARRIOR_PROTECTION );
   active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam", WARRIOR_PROTECTION );
@@ -2794,7 +2849,6 @@ void warrior_t::init_base()
 
   // FIXME! Level-specific!
   base_miss    = 0.05;
-  base_dodge   = 0.03664;
   base_parry   = 0.05;
   base_block   = 0.05;
 
@@ -2805,7 +2859,6 @@ void warrior_t::init_base()
 
   if ( talents.toughness -> rank() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
-  initial_dodge_per_agility = 0.0001180;
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -3089,18 +3142,6 @@ double warrior_t::composite_attack_hit() SC_CONST
   return ah;
 }
 
-// warrior_t::composite_attack_penetration ====================================
-
-double warrior_t::composite_attack_penetration() SC_CONST
-{
-  double arp = player_t::composite_attack_penetration();
-
-  if ( buffs_colossus_smash -> up() )
-    arp = 1.0;
-
-  return arp;
-}
-
 // warrior_t::matching_gear_multiplier ======================================
 
 double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
@@ -3317,6 +3358,7 @@ void player_t::warrior_init( sim_t* sim )
   t -> debuffs.blood_frenzy_physical = new debuff_t( sim, "blood_frenzy_physical", 1, 15.0 );
   t -> debuffs.sunder_armor          = new debuff_t( sim, "sunder_armor",          1, 30.0 );
   t -> debuffs.thunder_clap          = new debuff_t( sim, "thunder_clap",          1, 30.0 );
+  t -> debuffs.shattering_throw      = new debuff_t( sim, "shattering_throw",      1 );
 }
 
 // player_t::warrior_combat_begin ===========================================

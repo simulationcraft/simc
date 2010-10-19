@@ -500,11 +500,7 @@ void action_t::player_buff()
   {
     // Not applicable
   }
-  else if ( school == SCHOOL_PHYSICAL )
-  {
-    player_penetration = p -> composite_attack_penetration();
-  }
-  else
+  else if ( school != SCHOOL_PHYSICAL )
   {
     player_penetration = p -> composite_spell_penetration();
   }
@@ -601,13 +597,9 @@ void action_t::target_debuff( int dmg_type )
 
   if ( t -> resilience > 0 )
   {
-  	double percent_resil = t -> resilience / 94.3;
-	double crit_chance_reduce = percent_resil * 0.01;
-	double crit_damage_reduce = percent_resil * 2.2 * 0.01;
-	double damage_reduce = percent_resil * 2 * 0.01;
-	target_crit -= crit_chance_reduce;
-	target_crit_multiplier *= 1 - crit_damage_reduce;
-	target_multiplier *= 1 - damage_reduce;
+    double percent_resil = t -> resilience / 94.3;
+    double damage_reduce = percent_resil * 2 * 0.01;
+    target_multiplier *= 1 - damage_reduce;
   }
 
   if ( sim -> debug )
@@ -642,9 +634,14 @@ double action_t::armor() SC_CONST
   target_t* t = sim -> target;
 
   double adjusted_armor =  t -> base_armor();
-  double amor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
-                                    t -> debuffs.expose_armor -> value() );
-  adjusted_armor *= 1.0 - amor_reduction;
+  double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
+                           std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
+                                     t -> debuffs.expose_armor -> value() ) );
+  // TO-DO: Also need to add the Hunter Pets Raptor and Serpent
+
+  armor_reduction += t -> debuffs.shattering_throw -> stack() * 0.20;
+
+  adjusted_armor *= 1.0 - armor_reduction;
 
   return adjusted_armor;
 }
@@ -654,7 +651,7 @@ double action_t::armor() SC_CONST
 double action_t::resistance() SC_CONST
 {
   if ( ! may_resist ) return 0;
-
+  
   target_t* t = sim -> target;
   double resist=0;
 
@@ -666,22 +663,31 @@ double action_t::resistance() SC_CONST
   }
   else if ( school == SCHOOL_PHYSICAL )
   {
-    double half_reduction = 400 + 85.0 * ( player -> level + 4.5 * ( player -> level - 59 ) );
-    double reduced_armor = armor();
-    double penetration_max = std::min( reduced_armor, ( reduced_armor + half_reduction ) / 3.0 );
+    double a, b;
 
-    if ( penetration > 1 ) penetration = 1;
-
-    double adjusted_armor = reduced_armor - penetration_max * penetration;
-
-    if ( adjusted_armor <= 0 )
+    if ( player -> level > 80 )
     {
-      resist = 0.0;
+      a = 2167.5;
+      b = -158167.5;
+    }
+    else if ( player -> level >= 60 )
+    {
+      a = 467.5;
+      b = -22167.5;
     }
     else
     {
-      resist = adjusted_armor / ( adjusted_armor + half_reduction );
+      a = 85.0;
+      b = 400.0;
     }
+    
+    double temp_armor = armor();
+    resist = temp_armor / ( temp_armor + a * player -> level + b );
+
+    if ( resist < 0.0 )
+      resist = 0.0;
+    else if ( resist > 1.0 )
+      resist = 1.0;
   }
   else
   {

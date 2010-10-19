@@ -95,7 +95,6 @@ static const char* stat_color( int type )
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
     case STAT_MASTERY_RATING:           return class_text_color( ROGUE );
     case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
-    case STAT_ARMOR_PENETRATION_RATING: return class_text_color( ROGUE );
     case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );
     default:                            return ( 0 );
   }
@@ -1196,7 +1195,6 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_SPELL_POWER:              name = "spd";  break;
     case STAT_ATTACK_POWER:             name = "map";  break;
     case STAT_EXPERTISE_RATING:         name = "Exp";  break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "arp";  break;
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
@@ -1269,7 +1267,6 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_SPELL_POWER:              id = 123; break;
     case STAT_ATTACK_POWER:             id = 77;  break;
     case STAT_EXPERTISE_RATING:         id = 117; break;
-    case STAT_ARMOR_PENETRATION_RATING: id = 114; break;
     case STAT_HIT_RATING:               id = 119; break;
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
@@ -1356,7 +1353,6 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;

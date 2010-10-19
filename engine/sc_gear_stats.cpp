@@ -37,7 +37,6 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         += value; break;
-  case STAT_ARMOR_PENETRATION_RATING: armor_penetration_rating += value; break;
 
   case STAT_HIT_RATING:   hit_rating   += value; break;
   case STAT_CRIT_RATING:  crit_rating  += value; break;
@@ -94,7 +93,6 @@ void gear_stats_t::set_stat( int    stat,
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         = value; break;
-  case STAT_ARMOR_PENETRATION_RATING: armor_penetration_rating = value; break;
 
   case STAT_HIT_RATING:   hit_rating   = value; break;
   case STAT_CRIT_RATING:  crit_rating  = value; break;
@@ -150,7 +148,6 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
 
   case STAT_ATTACK_POWER:             return attack_power;
   case STAT_EXPERTISE_RATING:         return expertise_rating;
-  case STAT_ARMOR_PENETRATION_RATING: return armor_penetration_rating;
 
   case STAT_HIT_RATING:   return hit_rating;
   case STAT_CRIT_RATING:  return crit_rating;

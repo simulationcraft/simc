@@ -1648,7 +1648,6 @@ std::vector<option_t>& sim_t::get_options()
       { "default_enchant_mp5",                      OPT_FLT,  &( enchant.mp5                         ) },
       { "default_enchant_attack_power",             OPT_FLT,  &( enchant.attack_power                ) },
       { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
-      { "default_enchant_armor_penetration_rating", OPT_FLT,  &( enchant.armor_penetration_rating    ) },
       { "default_enchant_armor",                    OPT_FLT,  &( enchant.bonus_armor                 ) },
       { "default_enchant_dodge_rating",             OPT_FLT,  &( enchant.dodge_rating                ) },
       { "default_enchant_parry_rating",             OPT_FLT,  &( enchant.parry_rating                ) },

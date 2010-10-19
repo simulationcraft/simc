@@ -995,7 +995,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
   virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
-  virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
   virtual double composite_player_multiplier( const school_type school ) SC_CONST
   {
@@ -1012,7 +1011,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
-    attack_penetration   = o -> composite_attack_penetration();
     drw_melee -> schedule_execute();
   }
 

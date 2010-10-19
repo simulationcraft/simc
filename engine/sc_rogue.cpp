@@ -420,7 +420,6 @@ struct rogue_t : public player_t
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
-  virtual double    composite_attack_penetration() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
 };
 
@@ -478,6 +477,7 @@ struct rogue_attack_t : public attack_t
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
   virtual double total_multiplier() SC_CONST;
+  virtual double armor() SC_CONST;
 
   void add_combo_points();
   void add_trigger_buff( buff_t* buff );
@@ -929,6 +929,20 @@ static void remove_poison_debuff( rogue_t* p )
 // Attacks
 // =========================================================================
 
+double rogue_attack_t::armor() SC_CONST
+{
+  rogue_t* p = player -> cast_rogue();
+
+  double a = attack_t::armor();
+
+  if ( p -> buffs_find_weakness -> check() )
+  {
+    a *= 1.0 - p -> buffs_find_weakness -> value();
+  }
+
+  return a;
+}
+
 // rogue_attack_t::_init ===================================================
 
 void rogue_attack_t::_init_rogue_attack_t()
@@ -1359,7 +1373,7 @@ struct ambush_t : public rogue_attack_t
     if ( result_is_hit() )
     {
       trigger_initiative( this );
-      trigger_find_weakness(this );
+      trigger_find_weakness( this );
     }
 
     p -> buffs_shadowstep -> expire();
@@ -3020,18 +3034,6 @@ double rogue_t::composite_attack_power_multiplier() SC_CONST
   m *= 1.0 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_ATTACK_POWER_PCT );
 
   return m;
-}
-
-// rogue_t::composite_attack_penetration ====================================
-
-double rogue_t::composite_attack_penetration() SC_CONST
-{
-  double arp = player_t::composite_attack_penetration();
-
-  if ( buffs_find_weakness -> check() )
-    arp += buffs_find_weakness -> value();
-
-  return arp;
 }
 
 // rogue_t::composite_player_multiplier =====================================

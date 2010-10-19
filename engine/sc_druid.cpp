@@ -2230,7 +2230,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     {
       update_ready();
     }
-    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank() );
+    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
   }
 
   virtual bool ready()
@@ -2269,7 +2269,7 @@ struct faerie_fire_t : public druid_spell_t
     target_t* t = sim -> target;
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
-    t -> debuffs.faerie_fire -> trigger();
+    t -> debuffs.faerie_fire -> trigger( 1, 0.04 );
   }
 
   virtual bool ready()
@@ -3488,9 +3488,7 @@ void druid_t::init_base()
 
   // FIXME! Level-specific!  Should be form-specific!
   base_miss    = 0.05;
-  base_dodge   = 0.0560970;
   initial_armor_multiplier  = 1.0 + util_t::talent_rank( talents.thick_hide -> rank(), 3, 0.04, 0.07, 0.10 );
-  initial_dodge_per_agility = 0.0002090;
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -4171,7 +4169,7 @@ void player_t::druid_combat_begin( sim_t* sim )
 
   target_t* t = sim -> target;
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
-  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3 );
+  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
 }

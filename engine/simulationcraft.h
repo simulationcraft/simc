@@ -525,7 +525,7 @@ enum stat_type
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_SPELL_POWER, STAT_SPELL_PENETRATION, STAT_MP5,
-  STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_ARMOR_PENETRATION_RATING,
+  STAT_ATTACK_POWER, STAT_EXPERTISE_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
@@ -1900,7 +1900,6 @@ struct gear_stats_t
   double mp5;
   double attack_power;
   double expertise_rating;
-  double armor_penetration_rating;
   double hit_rating;
   double crit_rating;
   double haste_rating;
@@ -2403,7 +2402,7 @@ struct rating_t
   double  spell_haste,  spell_hit,  spell_crit;
   double attack_haste, attack_hit, attack_crit;
   double ranged_haste, ranged_hit,ranged_crit;
-  double expertise, armor_penetration;
+  double expertise;
   double dodge, parry, block;
   double mastery;
   rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
@@ -2658,7 +2657,6 @@ struct player_t
   double base_attack_hit,         initial_attack_hit,          attack_hit,         buffed_attack_hit;
   double base_attack_expertise,   initial_attack_expertise,    attack_expertise,   buffed_attack_expertise;
   double base_attack_crit,        initial_attack_crit,         attack_crit,        buffed_attack_crit;
-  double base_attack_penetration, initial_attack_penetration,  attack_penetration, buffed_attack_penetration;
   double attack_power_multiplier,   initial_attack_power_multiplier;
   double attack_power_per_strength, initial_attack_power_per_strength;
   double attack_power_per_agility,  initial_attack_power_per_agility;
@@ -2921,7 +2919,6 @@ struct player_t
   virtual double composite_attack_crit() SC_CONST;
   virtual double composite_attack_expertise() SC_CONST { return attack_expertise; }
   virtual double composite_attack_hit() SC_CONST;
-  virtual double composite_attack_penetration() SC_CONST { return attack_penetration; }
 
   virtual double composite_spell_haste() SC_CONST;
   virtual double composite_spell_power( const school_type school ) SC_CONST;
@@ -3198,6 +3195,7 @@ struct target_t
     debuff_t* judgements_of_the_just;
     debuff_t* mangle;
     debuff_t* scorpid_sting;
+    debuff_t* shattering_throw;
     debuff_t* slow;
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;

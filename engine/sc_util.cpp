@@ -760,7 +760,6 @@ const char* util_t::stat_type_string( int stat )
 
   case STAT_ATTACK_POWER:             return "attack_power";
   case STAT_EXPERTISE_RATING:         return "expertise_rating";
-  case STAT_ARMOR_PENETRATION_RATING: return "armor_penetration_rating";
 
   case STAT_HIT_RATING:   return "hit_rating";
   case STAT_CRIT_RATING:  return "crit_rating";
@@ -812,7 +811,6 @@ const char* util_t::stat_type_abbrev( int stat )
 
   case STAT_ATTACK_POWER:             return "AP";
   case STAT_EXPERTISE_RATING:         return "Exp";
-  case STAT_ARMOR_PENETRATION_RATING: return "ArPen";
 
   case STAT_HIT_RATING:   return "Hit";
   case STAT_CRIT_RATING:  return "Crit";
@@ -864,7 +862,6 @@ const char* util_t::stat_type_wowhead( int stat )
 
   case STAT_ATTACK_POWER:             return "atkpwr";
   case STAT_EXPERTISE_RATING:         return "exprtng";
-  case STAT_ARMOR_PENETRATION_RATING: return "armorpenrtng";
 
   case STAT_HIT_RATING:   return "hitrtng";
   case STAT_CRIT_RATING:  return "critstrkrtng";

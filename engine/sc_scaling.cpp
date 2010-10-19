@@ -146,7 +146,6 @@ void scaling_t::init_deltas()
   if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 150 : 300;
 
   if ( stats.attack_power             == 0 ) stats.attack_power             =  scale_delta_multiplier * smooth_scale_factors ?  150 :  300;
-  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  scale_delta_multiplier * smooth_scale_factors ?  150 :  300;
 
   if ( stats.expertise_rating == 0 ) 
   {
@@ -454,7 +453,6 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "scale_spell_power",              OPT_FLT,    &( stats.spell_power                    ) },
     { "scale_attack_power",             OPT_FLT,    &( stats.attack_power                   ) },
     { "scale_expertise_rating",         OPT_FLT,    &( stats.expertise_rating               ) },
-    { "scale_armor_penetration_rating", OPT_FLT,    &( stats.armor_penetration_rating       ) },
     { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
     { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },

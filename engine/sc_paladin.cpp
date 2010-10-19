@@ -1850,11 +1850,9 @@ void paladin_t::init_base()
 
   // FIXME! Level-specific!
   base_miss    = 0.05;
-  base_dodge   = 0.0349430;
   base_parry   = 0.05;
   base_block   = 0.05;
   initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness / 3.0;
-  initial_dodge_per_agility = 0.0001670;
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;

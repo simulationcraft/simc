@@ -141,20 +141,30 @@ void target_t::init()
 {
   if ( initial_armor < 0 ) 
   {
+    // TO-DO: Fill in the blanks.
+    // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
     switch ( level )
     {
-    case 80: initial_armor = 9729;  break;
-    case 81: initial_armor = 10034; break;
-    case 82: initial_armor = 10338; break;
-    case 83: initial_armor = 10643; break;
-    default: initial_armor = 10643;
+    case 80: initial_armor = 9729; break; 
+    case 81: initial_armor = 10034; break; 
+    case 82: initial_armor = 10338; break; 
+    case 83: initial_armor = 10643; break; 
+    case 84: initial_armor = 10880; break; // Need real value
+    case 85: initial_armor = 11161; break; // Need real value
+    case 86: initial_armor = 11441; break; // Need real value
+    case 87: initial_armor = 11682; break;
+    case 88: initial_armor = 12016; break;
+    default: if ( level < 80 )
+               initial_armor = (int) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+             break;
     }
   }
 
   if( resilience > 0 )
   {
-  	// 1414.5 current capped resilience
-  	resilience = std::min(resilience, 1414.5);
+    // TO-DO: Needs work.
+    // 1414.5 current capped resilience
+    resilience = std::min(resilience, 1414.5);
   }
 
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;

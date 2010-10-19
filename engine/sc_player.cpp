@@ -257,7 +257,6 @@ player_t::player_t( sim_t*             s,
     base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
     base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_attack_expertise( 0 ),
     base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),        buffed_attack_crit( 0 ),
-    base_attack_penetration( 0 ), initial_attack_penetration( 0 ),  attack_penetration( 0 ), buffed_attack_penetration( 0 ),
     attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
     attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
     attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
@@ -857,11 +856,9 @@ void player_t::init_attack()
 {
   initial_stats.attack_power             = gear.attack_power             + enchant.attack_power             + ( is_pet() ? 0 : sim -> enchant.attack_power );
   initial_stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating         + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
-  initial_stats.armor_penetration_rating = gear.armor_penetration_rating + enchant.armor_penetration_rating + ( is_pet() ? 0 : sim -> enchant.armor_penetration_rating );
 
   if ( initial_stats.attack_power             < 0 ) initial_stats.attack_power             = 0;
   if ( initial_stats.expertise_rating         < 0 ) initial_stats.expertise_rating         = 0;
-  if ( initial_stats.armor_penetration_rating < 0 ) initial_stats.armor_penetration_rating = 0;
 
   initial_attack_power = base_attack_power + initial_stats.attack_power;
 
@@ -870,14 +867,14 @@ void player_t::init_attack()
   initial_attack_crit = base_attack_crit + initial_stats.crit_rating / rating.attack_crit;
 
   initial_attack_expertise = base_attack_expertise + initial_stats.expertise_rating / rating.expertise;
-
-  initial_attack_penetration = base_attack_penetration + initial_stats.armor_penetration_rating / rating.armor_penetration;
 }
 
 // player_t::init_defense ====================================================
 
 void player_t::init_defense()
 {
+  base_dodge = player_data.dodge_base( type );
+
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
@@ -892,13 +889,14 @@ void player_t::init_defense()
   if ( initial_stats.block_rating   < 0 ) initial_stats.block_rating   = 0;
   if ( initial_stats.block_value    < 0 ) initial_stats.block_value    = 0;
 
-  initial_armor       = base_armor       + initial_stats.armor;
-  initial_bonus_armor = base_bonus_armor + initial_stats.bonus_armor;
-  initial_miss        = base_miss;
-  initial_dodge       = base_dodge       + initial_stats.dodge_rating / rating.dodge;
-  initial_parry       = base_parry       + initial_stats.parry_rating / rating.parry;
-  initial_block       = base_block       + initial_stats.block_rating / rating.block;
-  initial_block_value = base_block_value + initial_stats.block_value;
+  initial_armor             = base_armor       + initial_stats.armor;
+  initial_bonus_armor       = base_bonus_armor + initial_stats.bonus_armor;
+  initial_miss              = base_miss;
+  initial_dodge             = base_dodge       + initial_stats.dodge_rating / rating.dodge;
+  initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
+  initial_block             = base_block       + initial_stats.block_rating / rating.block;
+  initial_block_value       = base_block_value + initial_stats.block_value;
+  initial_dodge_per_agility = player_data.dodge_scale( type, level );
 
   if ( tank > 0 ) position = POSITION_FRONT;
 }
@@ -1298,7 +1296,6 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
-    scales_with[ STAT_ARMOR_PENETRATION_RATING ] = 0; // Stat removed in Cataclysm
 
     scales_with[ STAT_HIT_RATING   		] = 1;
     scales_with[ STAT_CRIT_RATING  		] = 1;
@@ -1337,7 +1334,6 @@ void player_t::init_scaling()
 
       case STAT_ATTACK_POWER:             initial_attack_power       += v;                            break;
       case STAT_EXPERTISE_RATING:         initial_attack_expertise   += v / rating.expertise;         break;
-      case STAT_ARMOR_PENETRATION_RATING: initial_attack_penetration += v / rating.armor_penetration; break;
 
       case STAT_HIT_RATING:
         initial_attack_hit += v / rating.attack_hit;
@@ -2161,7 +2157,6 @@ void player_t::reset()
   attack_hit         = initial_attack_hit;
   attack_expertise   = initial_attack_expertise;
   attack_crit        = initial_attack_crit;
-  attack_penetration = initial_attack_penetration;
 
   armor              = initial_armor;
   bonus_armor        = initial_bonus_armor;
@@ -2638,7 +2633,6 @@ void player_t::stat_gain( int    stat,
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; attack_power       += amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; attack_expertise   += amount / rating.expertise;         break;
-  case STAT_ARMOR_PENETRATION_RATING: stats.armor_penetration_rating += amount; attack_penetration += amount / rating.armor_penetration; break;
 
   case STAT_HIT_RATING:
     stats.hit_rating += amount;
@@ -2705,7 +2699,6 @@ void player_t::stat_loss( int    stat,
 
   case STAT_ATTACK_POWER:             stats.attack_power             -= amount; attack_power       -= amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; attack_expertise   -= amount / rating.expertise;         break;
-  case STAT_ARMOR_PENETRATION_RATING: stats.armor_penetration_rating -= amount; attack_penetration -= amount / rating.armor_penetration; break;
 
   case STAT_HIT_RATING:
     stats.hit_rating -= amount;
@@ -3590,7 +3583,6 @@ struct snapshot_stats_t : public action_t
     p -> buffed_attack_hit         = p -> composite_attack_hit();
     p -> buffed_attack_expertise   = p -> composite_attack_expertise();
     p -> buffed_attack_crit        = p -> composite_attack_crit();
-    p -> buffed_attack_penetration = p -> composite_attack_penetration();
 
     p -> buffed_armor       = p -> composite_armor();
     p -> buffed_block_value = p -> composite_block_value();
@@ -4497,7 +4489,6 @@ std::vector<option_t>& player_t::get_options()
       { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                         ) },
       { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                                ) },
       { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                            ) },
-      { "gear_armor_penetration_rating",        OPT_FLT,  &( gear.armor_penetration_rating                    ) },
       { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                                ) },
       { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                                  ) },
       { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                                 ) },
@@ -4520,7 +4511,6 @@ std::vector<option_t>& player_t::get_options()
       { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
       { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
       { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
-      { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
       { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
       { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                              ) },
       { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
