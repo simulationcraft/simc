@@ -544,7 +544,7 @@ static void trigger_eclipse_proc( druid_t* p )
   // All extra procs when eclipse pops
   p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01 * p -> talents.euphoria -> effect_base_value( 3 ) , p -> gains_euphoria );
   p -> buffs_t11_4pc_caster -> trigger( 3 );
-  p -> buffs_natures_grace -> reset_cooldown();
+  p -> buffs_natures_grace -> cooldown -> reset();
   
   // When eclipse procs the direction of the bar switches!
   p -> eclipse_bar_direction = - p -> eclipse_bar_direction;

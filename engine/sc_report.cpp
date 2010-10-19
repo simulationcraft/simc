@@ -1569,6 +1569,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
       // Diplay of action infos
       util_t::fprintf( file,
            "<b>Static Values:</b>"
+           "<br> heal: %s"
            "<br> id: %i"
            "<br> school: %s<br> resource: %s"
            "<br> tree: %s"
@@ -1597,7 +1598,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> <b> weapon</b>"
            "<br> weapon_power_mod: %.6f"
            "</div>",
-           a -> id, util_t::school_type_string( a-> school ),
+           a -> heal?"true":"false", a -> id, util_t::school_type_string( a-> school ),
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
            a -> range, a -> travel_speed, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration,
            a -> base_execute_time,
@@ -1871,16 +1872,18 @@ static void print_html2_player( FILE* file, player_t* p )
     util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
 
     util_t::fprintf( file, "<br>id: %.i"
+                           "<br>cooldown name: %s"
                            "<br>tooltip: %s"
                            "<br>max_stacks: %.i"
                            "<br>duration: %.2f"
                            "<br>cooldown: %.2f"
                            "<br>default_chance: %.2f",
                            b -> spell_id_t_id,
+                           b -> cooldown -> name_str.c_str(),
                            b -> tooltip(),
                            b -> max_stack,
                            b -> buff_duration,
-                           b -> buff_cooldown,
+                           b -> cooldown -> duration,
                            b -> default_chance );
 
     util_t::fprintf( file, "</tr>\n" );

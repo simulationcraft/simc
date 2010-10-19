@@ -1763,7 +1763,7 @@ struct bloodlust_t : public shaman_spell_t
     if ( player -> buffs.bloodlust -> check() )
       return false;
 
-    if (  sim -> current_time < player -> buffs.bloodlust -> cooldown_ready )
+    if (  player -> buffs.bloodlust -> cooldown -> remains() > 0 )
       return false;
 
     return shaman_spell_t::ready();
@@ -1946,8 +1946,8 @@ struct elemental_mastery_t : public shaman_spell_t
     
     // Hack cooldowns for elemental mastery, as they are now tracked in both
     // in this spell, and in the two buffs we use for it.
-    p -> buffs_elemental_mastery_insta -> reset_cooldown();
-    p -> buffs_elemental_mastery       -> reset_cooldown();
+    p -> buffs_elemental_mastery_insta -> cooldown -> reset();
+    p -> buffs_elemental_mastery       -> cooldown -> reset();
     
     p -> buffs_elemental_mastery_insta -> trigger();
     p -> buffs_elemental_mastery       -> trigger();

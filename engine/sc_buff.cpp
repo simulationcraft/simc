@@ -27,6 +27,12 @@ buff_t::buff_t( sim_t*             s,
   reverse( r ), constant( false ), quiet( q ), aura_id( id )
 {
   _init_buff_t();
+
+  cooldown = sim -> get_cooldown( "buff_" + name_str );
+  cooldown -> duration = buff_cooldown;
+  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
+    cooldown -> duration = sim -> wheel_seconds - 2.0;
+
   rng = sim -> get_rng( n, rng_type );
 
   buff_t** tail = &( sim -> buff_list );
@@ -60,6 +66,11 @@ buff_t::buff_t( player_t*          p,
 {
   _init_buff_t();
 
+  cooldown = player -> get_cooldown( "buff_" + name_str );
+  cooldown -> duration = buff_cooldown;
+  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
+    cooldown -> duration = sim -> wheel_seconds - 2.0;
+
   rng = player -> get_rng( n, rng_type );
   buff_t** tail = &(  player -> buff_list );
 
@@ -86,11 +97,16 @@ buff_t::buff_t( player_t*          p,
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : (initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
-  buff_cooldown( cooldown() ),
   default_chance( (chance != -1) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();
+
+
+  cooldown = player -> get_cooldown( "buff_" + name_str );
+  cooldown -> duration = player -> player_data.spell_cooldown( spell_id());
+  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
+    cooldown -> duration = sim -> wheel_seconds - 2.0;
 
   rng = player -> get_rng( n, rng_type );
   buff_t** tail = &(  player -> buff_list );
@@ -116,11 +132,15 @@ buff_t::buff_t( player_t*          p,
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : (initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
-  buff_cooldown( cooldown() ),
   default_chance( (chance != -1) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false), quiet( q ), aura_id( 0 )
 {
   _init_buff_t();
+
+  cooldown = player -> get_cooldown( "buff_" + name_str );
+  cooldown -> duration = player -> player_data.spell_cooldown( spell_id());
+  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
+    cooldown -> duration = sim -> wheel_seconds - 2.0;
 
   rng = player -> get_rng( n, rng_type );
   buff_t** tail = &(  player -> buff_list );
@@ -139,7 +159,6 @@ void buff_t::_init_buff_t()
 {
   current_stack = 0;
   current_value = 0;
-  cooldown_ready = 0;
   last_start = -1;
   last_trigger = -1;
   start_intervals_sum = 0;
@@ -273,9 +292,8 @@ bool buff_t::trigger( int    stacks,
 {
   if ( max_stack == 0 || chance == 0 ) return false;
 
-  if ( cooldown_ready > 0 )
-    if ( sim -> current_time < cooldown_ready )
-      return false;
+  if ( cooldown -> remains() > 0 )
+    return false;
 
   trigger_attempts++;
 
@@ -300,8 +318,13 @@ bool buff_t::trigger( int    stacks,
     increment( stacks, value );
   }
 
-  if ( buff_cooldown > 0 )
-    cooldown_ready = sim -> current_time + buff_cooldown;
+  // new buff cooldown impl
+  if ( cooldown -> duration > 0 )
+  {
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
+
+    cooldown -> start();
+  }
 
   trigger_successes++;
 
@@ -518,7 +541,7 @@ void buff_t::aura_loss()
 
 void buff_t::reset()
 {
-  cooldown_ready = 0;
+  cooldown -> reset();
   expire();
   last_start = -1;
   last_trigger = -1;
@@ -615,7 +638,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
     {
       buff_t* buff;
       buff_cooldown_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_remains", TOK_NUM ), buff(b) {}
-      virtual int evaluate() { result_num = buff -> cooldown_ready - buff -> sim -> current_time; return TOK_NUM; }
+      virtual int evaluate() { result_num = buff -> cooldown -> remains(); return TOK_NUM; }
     };
     return new buff_cooldown_remains_expr_t( action, this );
   }
@@ -673,7 +696,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
         }
         else
         {
-          result_num = buff -> cooldown_ready - buff -> sim -> current_time;
+          result_num = buff -> cooldown -> remains();
         }
         return TOK_NUM; 
       }
@@ -825,9 +848,9 @@ new_buff_t::new_buff_t( player_t*          p,
     if ( buff_duration > ( player -> sim -> wheel_seconds - 2.0 ) )
       buff_duration = player -> sim -> wheel_seconds - 2.0;
 
-    buff_cooldown             = player -> player_data.spell_cooldown( id );
-    if ( buff_cooldown > ( player -> sim -> wheel_seconds - 2.0 ) )
-      buff_cooldown = player -> sim -> wheel_seconds - 2.0;
+    cooldown -> duration     = player -> player_data.spell_cooldown( id );
+    if ( cooldown -> duration > ( player -> sim -> wheel_seconds - 2.0 ) )
+      cooldown -> duration = player -> sim -> wheel_seconds - 2.0;
 
     default_stack_charge = player -> player_data.spell_initial_stacks( id );
 
@@ -889,7 +912,7 @@ new_buff_t::new_buff_t( player_t*          p,
     if ( sim -> debug )
     {
       log_t::output( sim, "Initializing New Buff %s id=%d max_stack=%d default_charges=%d cooldown=%.2f duration=%.2f default_chance=%.2f atomic=%s",
-        name_str.c_str(), id, max_stack, default_stack_charge, buff_cooldown, buff_duration, default_chance,
+        name_str.c_str(), id, max_stack, default_stack_charge, cooldown -> duration, buff_duration, default_chance,
         single ? "true" : "false");
     }
   }

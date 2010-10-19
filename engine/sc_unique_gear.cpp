@@ -279,7 +279,7 @@ static void register_deathbringers_will( item_t* item )
 
     virtual void trigger( action_t* a )
     {
-      if ( buff -> cooldown_ready > sim -> current_time ) return;
+      if ( buff -> cooldown -> remains() > 0 ) return;
 
       // Unholy Death Knights are different than Frost and Blood, so they get a special proc.
       static int uh_death_knight_stats[] = { STAT_STRENGTH, STAT_HASTE_RATING, STAT_CRIT_RATING  };

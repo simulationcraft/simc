@@ -1935,7 +1935,7 @@ struct buff_t : public spell_id_t
   std::vector<std::string> aura_str;
   std::vector<double> stack_occurrence;
   int current_stack, max_stack;
-  double current_value, react, buff_duration, buff_cooldown, cooldown_ready, default_chance;
+  double current_value, react, buff_duration, buff_cooldown, default_chance;
   double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
@@ -1945,6 +1945,7 @@ struct buff_t : public spell_id_t
   event_t* expiration;
   rng_t* rng;
   buff_t* next;
+  cooldown_t* cooldown;
 
   buff_t() : sim( 0 ) {}
   virtual ~buff_t() { };
@@ -1983,7 +1984,6 @@ struct buff_t : public spell_id_t
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
-  void   reset_cooldown() { cooldown_ready = 0; }
 
   virtual void   start    ( int stacks=1, double value=-1.0 );
           void   refresh  ( int stacks=0, double value=-1.0 );
@@ -2252,6 +2252,8 @@ struct sim_t
   buff_t* buff_list;
   double aura_delay;
 
+  cooldown_t* cooldown_list;
+
   // Replenishment
   int replenishment_targets;
   std::vector<player_t*> replenishment_candidates;
@@ -2324,6 +2326,7 @@ struct sim_t
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   double    iteration_adjust();
   player_t* find_player( const std::string& name );
+  cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
@@ -3309,6 +3312,7 @@ struct action_t : public active_spell_t
   uint32_t id;
   int effect_nr;
   school_type school;
+  bool heal;
   int resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
@@ -3532,6 +3536,7 @@ struct cooldown_t
   double ready;
   cooldown_t* next;
   cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
+  cooldown_t( const std::string& n, sim_t* s ) : sim(s), player(0), name_str(n), duration(0), ready(-1), next(0) {}
   void reset() { ready=-1; }
   void start( double override=-1 )
   {

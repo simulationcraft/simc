@@ -229,7 +229,6 @@ struct warlock_t : public player_t
   buff_t* buffs_searing_pain_soulburn;
   buff_t* buffs_tier10_4pc_caster;
 
-  cooldown_t* cooldowns_improved_soul_fire;
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
@@ -391,8 +390,7 @@ struct warlock_t : public player_t
     dots_burning_embers         = get_dot( "burning_embers" );
 
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
-    cooldowns_improved_soul_fire              = get_cooldown ( "improved_soul_fire" );
-    cooldowns_improved_soul_fire -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );
+
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
@@ -2790,7 +2788,6 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    // If there is neither an active immolate nor shadowflame, then conflag is not ready
     if ( ! ( p -> dots_immolate -> ticking() ) ) return false;
 
     return warlock_spell_t::ready();
@@ -2994,10 +2991,9 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( p -> cooldowns_improved_soul_fire -> remains() <=0 && ( sim -> P403 || sim -> target -> health_percentage() >= 80 ) )
+      if ( ( sim -> P403 || sim -> target -> health_percentage() >= 80 ) )
       {
         p -> buffs_improved_soul_fire -> trigger();
-        p -> cooldowns_improved_soul_fire -> start();
       }
     }
   }
@@ -4185,20 +4181,20 @@ void warlock_t::init_buffs()
   player_t::init_buffs();
 
   buffs_backdraft             = new buff_t( this, talent_backdraft -> effect_trigger_spell( 1 ), "backdraft" );
-  buffs_decimation            = new buff_t( this, talent_decimation -> effect_trigger_spell( 1 ), "decimation" );
+  buffs_decimation            = new buff_t( this, talent_decimation -> effect_trigger_spell( 1 ), "decimation", talent_decimation -> ok() );
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
   buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect_base_value( 1 ) / 100.0 );
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs_haunted               = new buff_t( this, talent_haunt -> spell_id(), "haunted", talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
   buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> value() / 1000.0;
-  buffs_metamorphosis -> buff_cooldown = 0;
+  buffs_metamorphosis -> cooldown -> duration = 0;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", talent_shadow_embrace -> rank() );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> value() / 100.0 );
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
-  buffs_improved_soul_fire -> buff_cooldown = 0; // we have cooldown.improved_soul_fire for that (which is accessible as an option in the profiles)
+  buffs_improved_soul_fire -> cooldown -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul            = new buff_t( this, 77801, "demon_soul" );
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );

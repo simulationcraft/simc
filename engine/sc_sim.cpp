@@ -393,7 +393,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-    buff_list( 0 ), aura_delay( 0 ), replenishment_targets( 0 ),
+    buff_list( 0 ), aura_delay( 0 ),cooldown_list( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
@@ -466,6 +466,12 @@ sim_t::~sim_t()
   {
     buff_list = b -> next;
     delete b;
+  }
+
+  while ( cooldown_t* d = cooldown_list )
+  {
+    cooldown_list = d -> next;
+    delete d;
   }
 
   if ( rng     )           delete rng;
@@ -1245,6 +1251,33 @@ player_t* sim_t::find_player( const std::string& name )
     if ( name == p -> name() ) return p;
   }
   return 0;
+}
+
+// sim_t::get_cooldown ===================================================
+
+cooldown_t* sim_t::get_cooldown( const std::string& name )
+{
+  cooldown_t* c=0;
+
+  for ( c = cooldown_list; c; c = c -> next )
+  {
+    if ( c -> name_str == name )
+      return c;
+  }
+
+  c = new cooldown_t( name, this );
+
+  cooldown_t** tail = &cooldown_list;
+
+  while ( *tail && name > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+
+  c -> next = *tail;
+  *tail = c;
+
+  return c;
 }
 
 // sim_t::use_optimal_buffs_and_debuffs =====================================

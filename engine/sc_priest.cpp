@@ -105,10 +105,11 @@ struct priest_t : public player_t
 
   struct passive_spells_t
   {
-    passive_spell_t* shadow_power; //         done: talent function 12803          incomplete: link with main talent tree
-    passive_spell_t* meditation_holy; //      done: talent function 12803
-    passive_spell_t* meditation_disc; //      done: talent function 12803
     passive_spell_t* enlightenment;
+    passive_spell_t* spiritual_healing;
+    passive_spell_t* shadow_power;
+    passive_spell_t* meditation_holy;
+    passive_spell_t* meditation_disc;
     
     passive_spell_t* shadow_orbs;
     passive_spell_t* dark_evangelism_1;
@@ -645,6 +646,11 @@ void priest_spell_t::player_buff()
     p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
   }
 #endif
+
+  if ( heal = true )
+  {
+    player_multiplier *= 1.15;
+  }
 }
 
 // priest_spell_t::assess_damage =============================================
@@ -1820,7 +1826,9 @@ struct chakra_t : public priest_spell_t
 
   virtual void execute()
   {
+    cooldown -> duration = 1000;
     priest_spell_t::execute();
+
     priest_t* p = player -> cast_priest();
     p -> buffs_chakra_pre -> trigger( 1 , 1.0, 1.0 );
   }
@@ -1832,7 +1840,7 @@ struct chakra_t : public priest_spell_t
     if ( p -> buffs_chakra_pre -> up() )
        return false;
 
-    return true;
+    return priest_spell_t::ready();
    }
 };
 
@@ -2168,6 +2176,174 @@ struct dark_archangel_t : public priest_spell_t
    }
 };
 
+// Experimental Heal Spells
+
+// Renew Spell ============================================================
+
+struct renew_t : public priest_spell_t
+{
+
+  renew_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "renew", player, "Renew" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    heal = true;
+  }
+
+  virtual double gcd() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+    double t = spell_t::gcd();
+
+    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3) t -=0.5;
+
+    return t;
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+     double t = spell_t::execute_time();
+
+     if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3) t -=0.5;
+
+     return t;
+  }
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+    if ( p -> buffs_chakra_pre -> up())
+    {
+      p -> buffs_chakra -> trigger( 1 , 3, 1.0 );
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = 60.0;
+      p -> cooldowns_chakra -> start();
+    }
+
+    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3)
+    {
+      //p -> buffs_chakra -> ready += 4;
+    }
+  }
+
+};
+
+struct heal_t : public priest_spell_t
+{
+
+  heal_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "heal", player, "Heal" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    priest_t* p = player -> cast_priest();
+    if ( p -> buffs_chakra_pre -> up())
+    {
+      p -> buffs_chakra -> trigger( 1 , 1, 1.0 );
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = 60.0;
+      p -> cooldowns_chakra -> start();
+    }
+
+    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 1)
+    {
+      //p -> buffs_chakra -> ready += 4;
+    }
+  }
+
+};
+
+struct flash_heal_t : public priest_spell_t
+{
+
+  flash_heal_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "flash_heal", player, "Flash Heal" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+  }
+
+};
+
+struct greater_heal_t : public priest_spell_t
+{
+
+  greater_heal_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "greater_heal", player, "Greater Heal" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+  }
+
+
+};
+
+struct circle_of_healing_t : public priest_spell_t
+{
+
+  circle_of_healing_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "circle_of_healing", player, "Circle of Healing" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    base_multiplier *= 5;
+  }
+
+};
+
+struct prayer_of_mending_t : public priest_spell_t
+{
+
+  prayer_of_mending_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "prayer_of_mending", player, "Prayer of Mending" )
+  {
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    base_multiplier *= 5;
+    direct_power_mod = effect_coeff(1);
+    base_dd_min = base_dd_max = effect_min(1);
+  }
+
+};
+
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -2268,6 +2444,12 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "dark_archangel"    ) return new dark_archangel_t    ( this, options_str );
   if ( name == "chakra"            ) return new chakra_t            ( this, options_str );
   if ( name == "inner_will"        ) return new inner_will_t        ( this, options_str );
+  if ( name == "renew"        ) return new renew_t        ( this, options_str );
+  if ( name == "heal"        ) return new heal_t        ( this, options_str );
+  if ( name == "flash_heal"        ) return new flash_heal_t        ( this, options_str );
+  if ( name == "greater_heal"        ) return new greater_heal_t        ( this, options_str );
+  if ( name == "circle_of_healing"        ) return new circle_of_healing_t        ( this, options_str );
+  if ( name == "prayer_of_mending"        ) return new prayer_of_mending_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2518,11 +2700,11 @@ void priest_t::init_spells()
   passive_spells.holy_evangelism_1    = new passive_spell_t( this, "holy_evangelism_1", 81660 );
   passive_spells.holy_evangelism_2    = new passive_spell_t( this, "holy_evangelism_2", 81661 );
 
-
+  passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
+  passive_spells.spiritual_healing    = new passive_spell_t( this, "spiritual_healing", "Enlightenment", PRIEST_HOLY );
   passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //             done: talent function 12803          incomplete: link with main talent tree
   passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); //           done: talent function 12803
   passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); //           done: talent function 12803
-  passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
 
   // Shadow Mastery
   passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs", PRIEST_SHADOW, true );

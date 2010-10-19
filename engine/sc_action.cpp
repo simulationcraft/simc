@@ -18,6 +18,7 @@ void action_t::_init_action_t()
   player                         = pp;
   id                             = 0;
   effect_nr                      = 1;
+  heal                           = false;
   result                         = RESULT_NONE;
   dual                           = false;
   binary                         = false;
@@ -242,6 +243,8 @@ void action_t::parse_data( sc_data_access_t& pData )
         switch ( pData.effect_type ( effect) )
         {
         // Direct Damage
+        case E_HEAL:
+          heal = true;
         case E_SCHOOL_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
           base_dd_min      = pData.effect_min( effect, scaling_type, player -> level );
@@ -281,6 +284,13 @@ void action_t::parse_data( sc_data_access_t& pData )
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
             case A_PERIODIC_TRIGGER_SPELL:
+              base_tick_time   = pData.effect_period ( effect );
+              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+              break;
+            case A_PERIODIC_HEAL:
+              heal = true;
+              tick_power_mod   = pData.effect_coeff( effect );
+              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;

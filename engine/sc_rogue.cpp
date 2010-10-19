@@ -2839,7 +2839,7 @@ struct adrenaline_rush_buff_t : public new_buff_t
   { 
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    buff_cooldown = 0;
+    cooldown -> duration = 0;
     buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
   }
 
@@ -2895,7 +2895,7 @@ struct killing_spree_buff_t : public new_buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    buff_cooldown = 0;
+    cooldown -> duration = 0;
   }
 
   virtual bool trigger( int, double, double )
