@@ -1684,6 +1684,7 @@ struct spell_id_t
   const spelleffect_data_t * effects[MAX_EFFECTS];
   const spelleffect_data_t * single;
   int spell_id_t_tree;
+  double rp_gain;
 
   spell_id_t( const spell_id_t& copy, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE );
   spell_id_t( player_t* player = NULL, const char* t_name = NULL );

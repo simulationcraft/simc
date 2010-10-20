@@ -228,6 +228,7 @@ void action_t::parse_data( sc_data_access_t& pData )
     school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
     resource             = pData.spell_power_type( id );
     scaling_type         = pData.spell_scaling_class( id );
+    rp_gain              = pData.spell_runic_power_gain( id );
 
     // For mana it returns the % of base mana, not the absolute cost
     if ( resource == RESOURCE_MANA )
