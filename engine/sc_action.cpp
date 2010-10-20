@@ -684,7 +684,6 @@ double action_t::resistance() SC_CONST
   }
   else
   {
-    double player_skill = player -> level * 5.0;
     double resist_rating = t -> spell_resistance[ school ];
 
     if ( school == SCHOOL_FROSTFIRE )
