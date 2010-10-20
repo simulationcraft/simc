@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (59)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13195
+// Class based active abilities, wow build 13202
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -310,7 +310,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       13218, // Wound Poison
           0,
     },
-    // Combat tree, 14 abilities
+    // Combat tree, 13 abilities
     {
       13750, // Adrenaline Rush
          53, // Backstab
@@ -323,7 +323,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       51690, // Killing Spree
       73651, // Recuperate
       84617, // Revealing Strike
-      14251, // Riposte
        5938, // Shiv
        1752, // Sinister Strike
           0,
@@ -833,7 +832,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13195
+// Talent tree specialization abilities, wow build 13202
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1090,7 +1089,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13195
+// Class mastery abilities, wow build 13202
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1175,7 +1174,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13195
+// Racial abilities, wow build 13202
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1807,7 +1806,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13195
+// Glyph spells for classes, wow build 13202
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2230,8 +2229,8 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       58070, // Glyph of Drain Soul
       58107, // Glyph of Enslave Demon
       56238, // Glyph of Health Funnel
-      58094, // Glyph of Ritual of Souls
       58079, // Glyph of Unending Breath
+      58094, // Ritual of Souls
           0,
     },
     // Prime Glyphs (13 spells)
@@ -2322,7 +2321,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13195
+// Tier item set bonuses for class, wow build 13202
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
