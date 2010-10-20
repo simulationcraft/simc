@@ -673,26 +673,8 @@ double action_t::resistance() SC_CONST
   }
   else if ( school == SCHOOL_PHYSICAL )
   {
-    double a, b;
-
-    if ( player -> level > 80 )
-    {
-      a = 2167.5;
-      b = -158167.5;
-    }
-    else if ( player -> level >= 60 )
-    {
-      a = 467.5;
-      b = -22167.5;
-    }
-    else
-    {
-      a = 85.0;
-      b = 400.0;
-    }
-    
     double temp_armor = armor();
-    resist = temp_armor / ( temp_armor + a * player -> level + b );
+    resist = temp_armor / ( temp_armor + player -> armor_coeff );
 
     if ( resist < 0.0 )
       resist = 0.0;
@@ -715,19 +697,22 @@ double action_t::resistance() SC_CONST
                                 t -> spell_resistance[ SCHOOL_NATURE ] );
     }
     else if ( school == SCHOOL_SHADOWFROST )
-        {
-          resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
-                                    t -> spell_resistance[ SCHOOL_FROST ] );
-        }
+    {
+      resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
+                                t -> spell_resistance[ SCHOOL_FROST ] );
+    }
     else if ( school == SCHOOL_SHADOWFLAME )
-            {
-              resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
-                                        t -> spell_resistance[ SCHOOL_FIRE ] );
-            }
+    {
+      resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
+                                t -> spell_resistance[ SCHOOL_FIRE ] );
+    }
 
     resist_rating -= penetration;
     if ( resist_rating < 0 ) resist_rating = 0;
-    if ( resist_rating > 0 ) resist = resist_rating / player_skill;
+    if ( resist_rating > 0 )
+    {
+      resist = resist_rating / ( resist_rating + player -> half_resistance_rating );
+    }
 
 #if 0
 // TO-DO: No sign of partial resists on either Beta or PTR. ifdefing out for now in case they come back...

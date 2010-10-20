@@ -2677,6 +2677,8 @@ struct player_t
   double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
   double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
+  double armor_coeff;
+  double half_resistance_rating;
 
   // Weapons
   weapon_t main_hand_weapon;

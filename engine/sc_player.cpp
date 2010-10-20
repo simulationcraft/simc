@@ -275,6 +275,8 @@ player_t::player_t( sim_t*             s,
     armor_per_agility( 0 ), initial_armor_per_agility( 0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
     diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+    armor_coeff( 0 ),
+    half_resistance_rating( 0 ),
     // Attacks
     main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
     // Resources
@@ -848,6 +850,19 @@ void player_t::init_spell()
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
   mana_regen_base = player_data.spi_regen( type, level ); 
+
+  if ( level >= 61 )
+  {
+    half_resistance_rating = 150.0 + ( level - 60 ) * ( level - 67.5 );
+  }
+  else if ( level >= 21 )
+  {
+    half_resistance_rating = 50.0 + ( level - 20 ) * 2.5;
+  }
+  else
+  {
+    half_resistance_rating = 50.0;
+  }
 }
 
 // player_t::init_attack ====================================================
@@ -867,6 +882,24 @@ void player_t::init_attack()
   initial_attack_crit = base_attack_crit + initial_stats.crit_rating / rating.attack_crit;
 
   initial_attack_expertise = base_attack_expertise + initial_stats.expertise_rating / rating.expertise;
+
+  double a,b;
+  if ( level > 80 )
+  {
+    a = 2167.5;
+    b = -158167.5;
+  }
+  else if ( level >= 60 )
+  {
+    a = 467.5;
+    b = -22167.5;
+  }
+  else
+  {
+    a = 85.0;
+    b = 400.0;
+  }
+  armor_coeff = a * level + b;
 }
 
 // player_t::init_defense ====================================================
