@@ -1,8 +1,7 @@
 #!./simc 
 warlock=Warlock_401_Affliction_Drain
 level=80
-race=undead    
-#talents=http://cata.wowhead.com/talent#IrhrousGcdZf:sbRbo
+race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321030000000000000000002
 glyphs=imp/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=frost_wyrm

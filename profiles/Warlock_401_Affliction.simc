@@ -2,7 +2,6 @@
 warlock=Warlock_401_Affliction
 level=80
 race=undead
-#talents=http://cata.wowhead.com/talent#IrhrousGcdZG:sbRbo
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321000000000000000000032
 glyphs=lash_of_pain/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=frost_wyrm

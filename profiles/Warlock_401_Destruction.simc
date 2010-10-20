@@ -2,7 +2,6 @@
 warlock=Warlock_401_Destruction
 level=80
 race=undead
-#talents=http://cata.wowhead.com/talent#I0bZcZIrrcMbskdo:zoVb
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00300000000000000002000000000000000003322220302201311211
 glyphs=conflagrate/immolate/imp/life_tap
 actions=flask,type=frost_wyrm

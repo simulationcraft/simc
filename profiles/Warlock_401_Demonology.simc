@@ -2,7 +2,6 @@
 warlock=Warlock_401_Demonology
 level=80
 race=undead
-#talents=http://cata.wowhead.com/talent#IZcdrfourRdoG:mVabo
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000032122231031221221132
 glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=frost_wyrm
