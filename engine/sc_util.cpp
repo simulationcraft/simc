@@ -887,19 +887,19 @@ const char* util_t::stat_type_wowhead( int stat )
 
 // util_t::parse_stat_type =================================================
 
-int util_t::parse_stat_type( const std::string& name )
+stat_type util_t::parse_stat_type( const std::string& name )
 {
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( str_compare_ci( name, util_t::stat_type_string( i ) ) )
-      return i;
+      return (stat_type) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( str_compare_ci( name, util_t::stat_type_abbrev( i ) ) )
-      return i;
+      return (stat_type) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
-      return i;
+      return (stat_type) i;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
@@ -908,9 +908,9 @@ int util_t::parse_stat_type( const std::string& name )
 
 // util_t::parse_reforge_type =================================================
 
-int util_t::parse_reforge_type( const std::string& name )
+stat_type util_t::parse_reforge_type( const std::string& name )
 {
-  int s = util_t::parse_stat_type( name );
+  stat_type s = util_t::parse_stat_type( name );
   
   switch ( s )
   {

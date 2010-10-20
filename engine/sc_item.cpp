@@ -100,7 +100,9 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-    sim(p->sim), player(p), slot(SLOT_NONE), unique(false), unique_enchant(false), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ), options_str(o)
+    sim(p->sim), player(p), slot(SLOT_NONE), unique(false), unique_enchant(false), unique_addon( false ), is_heroic( false ), is_matching_type( false ), 
+    is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
+    options_str(o)
 {
 }
 
@@ -379,6 +381,7 @@ bool item_t::decode_stats()
           s = STAT_BONUS_ARMOR;
         }
       }
+      base_stats.add_stat( s, t.value );
       stats.add_stat( s, t.value );
     }
     else
@@ -391,7 +394,7 @@ bool item_t::decode_stats()
   return true;
 }
 
-// item_t::decode_stats =====================================================
+// item_t::decode_reforge =====================================================
 
 bool item_t::decode_reforge()
 {
@@ -402,24 +405,31 @@ bool item_t::decode_reforge()
   std::vector<token_t> tokens;
   int num_tokens = parse_tokens( tokens, encoded_reforge_str );
 
-  for ( int i=0; i < num_tokens; i++ )
+  if ( num_tokens <= 0 )
+    return true;
+
+  if ( num_tokens != 2 )
   {
-    token_t& t = tokens[ i ];
-
-    int s = util_t::parse_reforge_type( t.name );
-
-    if ( s != STAT_NONE )
-    {
-      stats.add_stat( s, t.value );
-    }
-    else
-    {
-      sim -> errorf( "Player %s has unknown 'reforge=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-      return false;
-    }
+    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", player -> name(), encoded_reforge_str, slot_name() );
+    return false;
   }
 
-  is_reforged = true;
+  stat_type s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
+  stat_type s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
+  if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) || ( base_stats.get_stat( s1 ) <= 0.0 ) || ( base_stats.get_stat( s2 ) > 0.0 ) )
+  {
+    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", player -> name(), encoded_reforge_str, slot_name() );
+    return false;
+  }
+
+  reforged_from = s1;
+  reforged_to   = s2;
+
+  double amount = floor( base_stats.get_stat( reforged_from ) * 0.4 );
+  stats.add_stat( reforged_from, -amount );
+  stats.add_stat( reforged_to,    amount );
+
+  is_reforged   = true;
   return true;
 }
 

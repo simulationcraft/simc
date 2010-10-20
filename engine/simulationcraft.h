@@ -1591,8 +1591,8 @@ struct util_t
   static int parse_result_type                 ( const std::string& name );
   static school_type parse_school_type         ( const std::string& name );
   static int parse_slot_type                   ( const std::string& name );
-  static int parse_stat_type                   ( const std::string& name );
-  static int parse_reforge_type                ( const std::string& name );
+  static stat_type parse_stat_type             ( const std::string& name );
+  static stat_type parse_reforge_type          ( const std::string& name );
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
 
@@ -2442,6 +2442,8 @@ struct item_t
   player_t* player;
   int slot;
   bool unique, unique_enchant, unique_addon, is_heroic, is_matching_type, is_reforged;
+  stat_type reforged_from;
+  stat_type reforged_to;
 
   // Option Data
   std::string option_name_str;
@@ -2485,7 +2487,7 @@ struct item_t
   std::string encoded_reforge_str;
 
   // Extracted data
-  gear_stats_t stats;
+  gear_stats_t base_stats,stats;
   struct special_effect_t
   {
     std::string name_str, trigger_str;
