@@ -1,4 +1,4 @@
-#define PTR_CLASS_ABILITY_SIZE (59)
+#define PTR_CLASS_ABILITY_SIZE (61)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
 // Class based active abilities, wow build 13202
@@ -225,11 +225,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 59 abilities
+    // Pet tree, 61 abilities
     {
+      55749, // Acid Spit
       90355, // Ancient Hysteria
       50433, // Ankle Crack
       17253, // Bite
+      93433, // Burrow Attack
       53434, // Call of the Wild
       61685, // Charge
       16827, // Claw
