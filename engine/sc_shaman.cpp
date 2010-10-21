@@ -58,6 +58,9 @@ struct shaman_t : public player_t
   // Masteries
   passive_spell_t* mastery_elemental_overload;
   passive_spell_t* mastery_enhanced_elements;
+  
+  // Armor specializations
+  passive_spell_t* mail_specialization;
 
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
@@ -79,6 +82,7 @@ struct shaman_t : public player_t
   proc_t* procs_lava_surge;
   proc_t* procs_maelstrom_weapon;
   proc_t* procs_rolling_thunder;
+  proc_t* procs_static_shock;
   proc_t* procs_windfury;
 
   // Random Number Generators
@@ -256,7 +260,7 @@ struct shaman_attack_t : public attack_t
   
   /* Class spell data based construction, spell name in s_name */
   shaman_attack_t( const char* n, const char* s_name, player_t* player, int tree = TREE_NONE, bool special = true ) :
-    attack_t( n, s_name, player, PLAYER_NONE, PLAYER_NONE, tree, special ) 
+    attack_t( n, s_name, player, SHAMAN, SHAMAN, tree, special ) 
   { 
     shaman_t* p = player -> cast_shaman();
     
@@ -267,7 +271,7 @@ struct shaman_attack_t : public attack_t
   
   /* Spell data based construction, spell id in spell_id */
   shaman_attack_t( const char* n, uint32_t spell_id, player_t* player, int tree = TREE_NONE, bool special = true ) :
-    attack_t( n, spell_id, player, PLAYER_NONE, PLAYER_NONE, tree, special ) 
+    attack_t( n, spell_id, player, SHAMAN, SHAMAN, tree, special ) 
   { 
     shaman_t* p = player -> cast_shaman();
     
@@ -306,7 +310,7 @@ struct shaman_spell_t : public spell_t
   
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p, int tree = TREE_NONE ) :
-    spell_t( n, s_name, p, PLAYER_NONE, PLAYER_NONE, tree ), base_cost_reduction( 0.0 )
+    spell_t( n, s_name, p, SHAMAN, SHAMAN, tree ), base_cost_reduction( 0.0 )
   
   {
     may_crit = true;
@@ -314,7 +318,7 @@ struct shaman_spell_t : public spell_t
 
   /* Spell data based construction, spell id in spell_id */
   shaman_spell_t( const char* n, uint32_t spell_id, player_t* p, int tree = TREE_NONE ) :
-    spell_t( n, spell_id, p, PLAYER_NONE, PLAYER_NONE, tree ), base_cost_reduction( 0.0 )
+    spell_t( n, spell_id, p, SHAMAN, SHAMAN, tree ), base_cost_reduction( 0.0 )
   
   {
     may_crit = true;
@@ -823,7 +827,10 @@ static void trigger_static_shock ( attack_t* a )
     p -> sets -> set( SET_T9_2PC_MELEE ) -> mod_additive( P_PROC_CHANCE );
 
   if ( p -> rng_static_shock -> roll( chance ) )
+  {
     p -> active_lightning_charge -> execute();
+    p -> procs_static_shock -> occur();
+  }
 }
 
 // =========================================================================
@@ -3771,6 +3778,8 @@ void shaman_t::init_spells()
   // Masteries
   mastery_elemental_overload  = new passive_spell_t( this, "elemental_overload", 77222 );
   mastery_enhanced_elements   = new passive_spell_t( this, "enhanced_elements",  77223 );
+  
+  mail_specialization         = new passive_spell_t( this, "mail_specialization", 86529 );
 }
 
 // shaman_t::init_glyphs ======================================================
@@ -3962,6 +3971,7 @@ void shaman_t::init_procs()
   procs_elemental_overload = get_proc( "elemental_overload" );  
   procs_lava_surge         = get_proc( "lava_surge"         );
   procs_maelstrom_weapon   = get_proc( "maelstrom_weapon"   );
+  procs_static_shock       = get_proc( "static_shock"       );
   procs_rolling_thunder    = get_proc( "rolling_thunder"    );
   procs_windfury           = get_proc( "windfury"           );
 }
@@ -4021,7 +4031,7 @@ void shaman_t::init_actions()
 
       if ( set_bonus.tier10_4pc_melee() )
       {
-        action_list_str += "/fire_elemental_totem,if=buff.maelstrom_power.up,time_to_die>=125";
+        action_list_str += "/fire_elemental_totem,if=buff.maelstrom_power.react,time_to_die>=125";
         action_list_str += "/fire_elemental_totem,time_to_die<=124";
       }
       else
@@ -4086,7 +4096,7 @@ void shaman_t::init_actions()
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/searing_totem";
       action_list_str += "/chain_lightning,if=target.adds>1";
-      if ( ! ( set_bonus.tier9_4pc_caster() || set_bonus.tier10_2pc_caster() || set_bonus.tier11_4pc_caster() ))
+      if ( ! ( set_bonus.tier9_4pc_caster() || set_bonus.tier10_2pc_caster() || set_bonus.tier11_4pc_caster() || level > 80 ))
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
       action_list_str += "/lightning_bolt";
       if ( primary_tree() == TREE_ELEMENTAL ) action_list_str += "/thunderstorm";
@@ -4115,12 +4125,12 @@ double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   if ( primary_tree() == TREE_ENHANCEMENT )
   {
     if ( attr == ATTR_AGILITY )
-      return 0.05;
+      return mail_specialization -> base_value() / 100.0;
   }
   else
   {
     if ( attr == ATTR_INTELLECT )
-      return 0.05;
+      return mail_specialization -> base_value() / 100.0;
   }
 
   return 0.0;
