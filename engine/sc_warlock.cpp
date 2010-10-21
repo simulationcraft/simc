@@ -886,7 +886,10 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> buffs_improved_soul_fire -> up())
     {
-      h /= ( 1.0 + util_t::talent_rank( p -> talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
+      if ( p -> buffs.bloodlust -> up() )
+        p -> buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
+      else
+        h /= ( 1.0 + util_t::talent_rank( p -> talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
     }
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 )
     {
@@ -2993,7 +2996,8 @@ struct soul_fire_t : public warlock_spell_t
 
       if ( ( sim -> P403 || sim -> target -> health_percentage() >= 80 ) )
       {
-        p -> buffs_improved_soul_fire -> trigger();
+        if ( !p -> buffs.bloodlust -> up() )
+          p -> buffs_improved_soul_fire -> trigger();
       }
     }
   }
