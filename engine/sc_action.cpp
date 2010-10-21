@@ -276,7 +276,6 @@ void action_t::parse_data( sc_data_access_t& pData )
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               if ( school == SCHOOL_PHYSICAL )
                 school = stats -> school = SCHOOL_BLEED;
-
               break;
             case A_PERIODIC_LEECH:
               tick_power_mod   = pData.effect_coeff( effect );
