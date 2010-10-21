@@ -260,7 +260,7 @@ struct shaman_attack_t : public attack_t
   
   /* Class spell data based construction, spell name in s_name */
   shaman_attack_t( const char* n, const char* s_name, player_t* player, int tree = TREE_NONE, bool special = true ) :
-    attack_t( n, s_name, player, SHAMAN, SHAMAN, tree, special ) 
+    attack_t( n, s_name, player, tree, special ) 
   { 
     shaman_t* p = player -> cast_shaman();
     
@@ -271,7 +271,7 @@ struct shaman_attack_t : public attack_t
   
   /* Spell data based construction, spell id in spell_id */
   shaman_attack_t( const char* n, uint32_t spell_id, player_t* player, int tree = TREE_NONE, bool special = true ) :
-    attack_t( n, spell_id, player, SHAMAN, SHAMAN, tree, special ) 
+    attack_t( n, spell_id, player, tree, special ) 
   { 
     shaman_t* p = player -> cast_shaman();
     
@@ -310,16 +310,14 @@ struct shaman_spell_t : public spell_t
   
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p, int tree = TREE_NONE ) :
-    spell_t( n, s_name, p, SHAMAN, SHAMAN, tree ), base_cost_reduction( 0.0 )
-  
+    spell_t( n, s_name, p, tree ), base_cost_reduction( 0.0 )
   {
     may_crit = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
   shaman_spell_t( const char* n, uint32_t spell_id, player_t* p, int tree = TREE_NONE ) :
-    spell_t( n, spell_id, p, SHAMAN, SHAMAN, tree ), base_cost_reduction( 0.0 )
-  
+    spell_t( n, spell_id, p, tree ), base_cost_reduction( 0.0 )
   {
     may_crit = true;
   }

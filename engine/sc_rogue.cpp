@@ -459,7 +459,7 @@ struct rogue_attack_t : public attack_t
   }
   
   rogue_attack_t( const char* n, uint32_t id, rogue_t* p, bool simple = false ) :
-    attack_t( n, id, p, p -> type, p-> type, 0, true ), 
+    attack_t( n, id, p, 0, true ), 
     simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
   {
     _init_rogue_attack_t();

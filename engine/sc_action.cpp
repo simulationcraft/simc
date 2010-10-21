@@ -180,8 +180,8 @@ action_t::action_t( int               ty,
   _init_action_t();
 }
 
-action_t::action_t( int ty, const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
-  active_spell_t( p, name, sname, ptype, stype ),
+action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
+  active_spell_t( p, name, sname ),
   sim( pp->sim ), type( ty ), name_str( token_name ), 
   player( pp ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
@@ -189,8 +189,8 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, co
   _init_action_t();
 }
 
-action_t::action_t( int ty, const active_spell_t& s, const player_type ptype, const player_type stype, int t, bool sp ) :
-  active_spell_t( s, ptype, stype ), 
+action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
+  active_spell_t( s ), 
   sim( pp->sim ), type( ty ), name_str( token_name ), 
   player( pp ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
@@ -198,8 +198,8 @@ action_t::action_t( int ty, const active_spell_t& s, const player_type ptype, co
   _init_action_t();
 }
 
-action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t, bool sp ) :
-  active_spell_t( p, name, id, ptype, stype ),
+action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
+  active_spell_t( p, name, id ),
   sim( pp->sim ), type( type ), name_str( token_name ), 
   player( pp ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
@@ -227,7 +227,6 @@ void action_t::parse_data( sc_data_access_t& pData )
     trigger_gcd          = pData.spell_gcd ( id );
     school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
     resource             = pData.spell_power_type( id );
-    scaling_type         = pData.spell_scaling_class( id );
     rp_gain              = pData.spell_runic_power_gain( id );
 
     // For mana it returns the % of base mana, not the absolute cost
@@ -248,15 +247,15 @@ void action_t::parse_data( sc_data_access_t& pData )
           heal = true;
         case E_SCHOOL_DAMAGE:
           direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min( effect, scaling_type, player -> level );
-          base_dd_max      = pData.effect_max( effect, scaling_type, player -> level );
+          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
           break;
 
         case E_NORMALIZED_WEAPON_DMG:
           normalize_weapon_speed = true;
         case E_WEAPON_DAMAGE:         
-          base_dd_min      = pData.effect_min ( effect, scaling_type, player -> level );
-          base_dd_max      = pData.effect_max ( effect, scaling_type, player -> level );
+          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
           weapon = &( player -> main_hand_weapon );
           break;
 
@@ -271,7 +270,7 @@ void action_t::parse_data( sc_data_access_t& pData )
           {
             case A_PERIODIC_DAMAGE:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
+              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               if ( school == SCHOOL_PHYSICAL )
@@ -279,7 +278,7 @@ void action_t::parse_data( sc_data_access_t& pData )
               break;
             case A_PERIODIC_LEECH:
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
+              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;
@@ -290,7 +289,7 @@ void action_t::parse_data( sc_data_access_t& pData )
             case A_PERIODIC_HEAL:
               heal = true;
               tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, scaling_type, player -> level );
+              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
               base_tick_time   = pData.effect_period ( effect );
               num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
               break;

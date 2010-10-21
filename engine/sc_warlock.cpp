@@ -174,8 +174,8 @@ struct warlock_t : public player_t
 
   struct warlock_glyph_t : public spell_id_t
   {
-    warlock_glyph_t( player_t* player, const char* n, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE ) :
-      spell_id_t( player, n, n, false, ptype, stype )
+    warlock_glyph_t( player_t* player, const char* n ) :
+      spell_id_t( player, n, n, false )
       {
       init_enabled( true, false );
       }
@@ -839,8 +839,8 @@ struct warlock_spell_t : public spell_t
     weapon_multiplier = 0.0;
   }
 
-  warlock_spell_t( const active_spell_t& s, int t = TREE_NONE, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE  ) :
-      spell_t( s, ptype, stype, t ), usable_pre_combat( false)
+  warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+      spell_t( s, t ), usable_pre_combat( false)
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -848,8 +848,8 @@ struct warlock_spell_t : public spell_t
     weapon_multiplier = 0.0;
   }
 
-  warlock_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, sname, player, ptype, stype, t ), usable_pre_combat( false)
+  warlock_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+      spell_t( n, sname, player, t ), usable_pre_combat( false)
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -857,8 +857,8 @@ struct warlock_spell_t : public spell_t
     weapon_multiplier = 0.0;
   }
 
-  warlock_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, id, player, ptype, stype, t ), usable_pre_combat( false)
+  warlock_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+      spell_t( n, id, player, t ), usable_pre_combat( false)
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1191,14 +1191,14 @@ struct warlock_pet_attack_t : public attack_t
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-    attack_t( n, sname, player, ptype, stype, t, true )
+  warlock_pet_attack_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+    attack_t( n, sname, player, t, true )
   {
     may_crit   = true;
     special = true;
   }
-  warlock_pet_attack_t( const char* n, const uint32_t id, player_t* player, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      attack_t( n, id, player, ptype, stype, t, true )
+  warlock_pet_attack_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
+      attack_t( n, id, player, t, true )
   {
     may_crit   = true;
     special = true;
@@ -1252,20 +1252,20 @@ struct warlock_pet_spell_t : public spell_t
     may_crit          = true;
   }
 
-  warlock_pet_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-    spell_t( s, ptype, stype, t )
+  warlock_pet_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+    spell_t( s, t )
   {
     may_crit          = true;
   }
 
-  warlock_pet_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, sname, player, ptype, stype, t )
+  warlock_pet_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+      spell_t( n, sname, player, t )
   {
     may_crit          = true;
   }
 
-  warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, const player_type ptype = WARLOCK, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, id, player, ptype, stype, t )
+  warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
+      spell_t( n, id, player, t )
   {
     may_crit          = true;
   }

@@ -371,24 +371,24 @@ struct priest_spell_t : public spell_t
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
-  priest_spell_t( const active_spell_t& s, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( s, ptype, stype, t )
+  priest_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+      spell_t( s )
   {
     may_crit          = true;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
-  priest_spell_t( const char* n, player_t* player, const char* sname, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, sname, player, ptype, stype, t )
+  priest_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+      spell_t( n, sname, player, t )
   {
     may_crit          = true;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
-  priest_spell_t( const char* n, player_t* player, const uint32_t id, const player_type ptype = PLAYER_NONE, const player_type stype = PLAYER_NONE, int t = TREE_NONE ) :
-      spell_t( n, id, player, ptype, stype, t )
+  priest_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+      spell_t( n, id, player, t )
   {
     may_crit          = true;
     tick_may_crit     = true;
@@ -505,7 +505,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     player_t::init_spells();
 
-    shadowcrawl                 = new active_spell_t ( this, "shadowcrawl", "Shadowcrawl", PRIEST, PRIEST );
+    shadowcrawl                 = new active_spell_t ( this, "shadowcrawl", "Shadowcrawl" );
     mana_leech                  = new passive_spell_t( this, "mana_leech", 34650 );
   }
   virtual void init_base()

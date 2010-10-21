@@ -20,8 +20,8 @@ void spell_t::_init_spell_t()
   min_gcd = 1.0;
 }
 
-spell_t::spell_t( const active_spell_t& s, const player_type ptype, const player_type stype, int t ) :
-  action_t( ACTION_SPELL, s, ptype, stype, t, true )
+spell_t::spell_t( const active_spell_t& s, int t ) :
+  action_t( ACTION_SPELL, s, t, true )
 {
   _init_spell_t();
 }
@@ -32,14 +32,14 @@ spell_t::spell_t( const char* n, player_t* p, int r, const school_type s, int t 
   _init_spell_t();
 }
 
-spell_t::spell_t( const char* name, const char* sname, player_t* p, const player_type ptype, const player_type stype, int t ) :
-    action_t( ACTION_SPELL, name, sname, p, ptype, stype, t, true )
+spell_t::spell_t( const char* name, const char* sname, player_t* p, int t ) :
+    action_t( ACTION_SPELL, name, sname, p, t, true )
 {
   _init_spell_t();
 }
 
-spell_t::spell_t( const char* name, const uint32_t id, player_t* p, const player_type ptype, const player_type stype, int t ) :
-    action_t( ACTION_SPELL, name, id, p, ptype, stype, t, true )
+spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
+    action_t( ACTION_SPELL, name, id, p, t, true )
 {
   _init_spell_t();
 }
