@@ -457,7 +457,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       56815, // Rune Strike
           0,
     },
-    // Unholy tree, 14 abilities
+    // Unholy tree, 15 abilities
     {
       48707, // Anti-Magic Shell
       51052, // Anti-Magic Zone
@@ -469,6 +469,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       73975, // Necrotic Strike
       77575, // Outbreak
       45462, // Plague Strike
+      46584, // Raise Dead
       55090, // Scourge Strike
       49206, // Summon Gargoyle
       49016, // Unholy Frenzy
