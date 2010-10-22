@@ -534,6 +534,7 @@ struct crusader_strike_t : public paladin_attack_t
     paladin_t* p = player->cast_paladin();
     if ( p->talents.sanctity_of_battle->rank() > 0 )
     {
+      // FIXME: apparently sanctity of battle scales with spell haste, not melee haste >.<
       cooldown->duration = base_cooldown * haste();
     }
 
@@ -1872,12 +1873,12 @@ void paladin_t::init_base()
   case TREE_PROTECTION:
     tank = 1;
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.15 * 1.05; // assume plate spec active
-    base_spell_hit += 0.06;
+    base_spell_hit += 0.08;
     break;
 
   case TREE_RETRIBUTION:
     attribute_multiplier_initial[ ATTR_STRENGTH  ] *= 1.05; // assume plate spec active
-    base_spell_hit += 0.06;
+    base_spell_hit += 0.08;
     break;
   default: break;
   }
