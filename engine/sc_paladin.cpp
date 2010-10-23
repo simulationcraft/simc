@@ -67,11 +67,12 @@ struct paladin_t : public player_t
     passive_spell_t* touched_by_the_light;
     passive_spell_t* vengeance;
     passive_spell_t* divine_bulwark;
-    passive_spell_t* judgements_of_the_wise;
     passive_spell_t* sheath_of_light;
     passive_spell_t* two_handed_weapon_spec;
     passive_spell_t* hand_of_light;
-    passive_spell_t* judgements_of_the_bold;
+    passive_spell_t* judgements_of_the_bold; // passive stuff is hidden here because spells
+    passive_spell_t* judgements_of_the_wise; // can only have three effects
+    passive_spell_t* plate_specialization;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
   };
   passives_t passives;
@@ -96,6 +97,8 @@ struct paladin_t : public player_t
     active_spell_t* shield_of_the_righteous;
     active_spell_t* templars_verdict;
     active_spell_t* zealotry;
+    active_spell_t* judgements_of_the_bold; // the actual self-buff
+    active_spell_t* judgements_of_the_wise; // the actual self-buff
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
@@ -173,7 +176,7 @@ struct paladin_t : public player_t
   {
     // prime
     int crusader_strike;
-    int exorcism; // FIXME: currently implemented as x1.2
+    int exorcism;
     int holy_shock;
     int judgement;
     int hammer_of_the_righteous;
@@ -508,6 +511,10 @@ struct crusader_strike_t : public paladin_attack_t
     trigger_seal = true;
 
     parse_data(p->player_data);
+    if (p->primary_tree() == TREE_PROTECTION)
+    {
+      cooldown->duration -= p->passives.judgements_of_the_wise->effect_base_value(2) * 0.001;
+    }
     base_cooldown = cooldown->duration;
 
     weapon                 = &( p -> main_hand_weapon );
@@ -1862,23 +1869,26 @@ void paladin_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
+  double plate_spec = 1.0 + 0.01 * passives.plate_specialization->effect_base_value(1);
+
   switch ( primary_tree() )
   {
   case TREE_HOLY:
     base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
     base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.05; // assume plate spec active
+    attribute_multiplier_initial[ ATTR_INTELLECT ] *= plate_spec; // assume plate spec active
     break;
 
   case TREE_PROTECTION:
     tank = 1;
-    attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.15 * 1.05; // assume plate spec active
-    base_spell_hit += 0.08;
+    attribute_multiplier_initial[ ATTR_STAMINA   ] *= plate_spec; // assume plate spec active
+    attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + 0.01 * passives.touched_by_the_light->effect_base_value(3);
+    base_spell_hit += 0.01 * passives.judgements_of_the_wise->effect_base_value(3);
     break;
 
   case TREE_RETRIBUTION:
-    attribute_multiplier_initial[ ATTR_STRENGTH  ] *= 1.05; // assume plate spec active
-    base_spell_hit += 0.08;
+    attribute_multiplier_initial[ ATTR_STRENGTH  ] *= plate_spec; // assume plate spec active
+    base_spell_hit += 0.01 * passives.sheath_of_light->effect_base_value(3);
     break;
   default: break;
   }
@@ -1995,7 +2005,12 @@ void paladin_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_SPIRIT ] = primary_tree() == TREE_HOLY;
+  talent_tree_type tree = primary_tree();
+
+  // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
+  scales_with[ STAT_INTELLECT   ] = tree == TREE_HOLY;
+  scales_with[ STAT_SPIRIT      ] = tree == TREE_HOLY;
+  scales_with[ STAT_SPELL_POWER ] = tree == TREE_HOLY;
 }
 
 // paladin_t::decode_set ====================================================
@@ -2093,8 +2108,8 @@ void paladin_t::init_buffs()
   buffs_holy_power             = new buff_t( this, "holy_power", 3 );
   buffs_inquisition            = new buff_t( this, "inquisition", 1 );
   buffs_zealotry               = new buff_t( this, "zealotry", 1, spells.zealotry->duration() );
-  buffs_judgements_of_the_wise = new buff_t( this, "judgements_of_the_wise", 1, passives.judgements_of_the_wise->duration() );
-  buffs_judgements_of_the_bold = new buff_t( this, "judgements_of_the_bold", 1, passives.judgements_of_the_bold->duration() );
+  buffs_judgements_of_the_wise = new buff_t( this, "judgements_of_the_wise", 1, spells.judgements_of_the_wise->duration() );
+  buffs_judgements_of_the_bold = new buff_t( this, "judgements_of_the_bold", 1, spells.judgements_of_the_bold->duration() );
   buffs_hand_of_light          = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
 }
 
@@ -2213,15 +2228,18 @@ void paladin_t::init_spells()
   spells.shield_of_the_righteous   = new active_spell_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
   spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
   spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
+  spells.judgements_of_the_wise    = new active_spell_t( this, "judgements_of_the_wise", 31930, PALADIN_PROTECTION );
+  spells.judgements_of_the_bold    = new active_spell_t( this, "judgements_of_the_bold", 89906, PALADIN_RETRIBUTION );
 
   passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light", PALADIN_PROTECTION );
   passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance", PALADIN_PROTECTION );
   passives.divine_bulwark         = new passive_spell_t( this, "divine_bulwark", "Divine Bulwark", PALADIN_PROTECTION, true );
-  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", 31930, PALADIN_PROTECTION );
   passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light", PALADIN_RETRIBUTION );
   passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization", PALADIN_RETRIBUTION );
   passives.hand_of_light          = new passive_spell_t( this, "hand_of_light", "Hand of Light", PALADIN_RETRIBUTION, true );
-  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", 89906, PALADIN_RETRIBUTION );
+  passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
+  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold", PALADIN_RETRIBUTION );
+  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise", PALADIN_PROTECTION );
 
   // talented spells
   spells.avengers_shield->init_enabled();
@@ -2232,16 +2250,16 @@ void paladin_t::init_spells()
   spells.shield_of_the_righteous->init_enabled();
   spells.templars_verdict->init_enabled();
   spells.zealotry->init_enabled();
+  spells.judgements_of_the_wise->init_enabled();
+  spells.judgements_of_the_bold->init_enabled();
 
   // spec passives
   passives.divine_bulwark->init_enabled();
-  passives.judgements_of_the_wise->init_enabled();
   passives.sheath_of_light->init_enabled();
   passives.touched_by_the_light->init_enabled();
   passives.two_handed_weapon_spec->init_enabled();
   passives.vengeance->init_enabled();
   passives.hand_of_light->init_enabled();
-  passives.judgements_of_the_bold->init_enabled();
 }
 
 // paladin_t::primary_tab ====================================================
@@ -2275,10 +2293,10 @@ double paladin_t::composite_spell_power( const school_type school ) SC_CONST
   switch ( primary_tree() )
   {
   case TREE_PROTECTION:
-    sp += strength() * 0.60;
+    sp += strength() * 0.01 * passives.touched_by_the_light->effect_base_value(1);
     break;
   case TREE_RETRIBUTION:
-    sp += composite_attack_power_multiplier() * composite_attack_power() * 0.30;
+    sp += composite_attack_power_multiplier() * composite_attack_power() * 0.01 * passives.sheath_of_light->effect_base_value(1);
     break;
   default: break;
   }
@@ -2332,13 +2350,13 @@ void paladin_t::regen( double periodicity )
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
-    double mps = resource_base[ RESOURCE_MANA ] * passives.judgements_of_the_wise->effect_base_value(1) / 100.0;
+    double mps = resource_base[ RESOURCE_MANA ] * spells.judgements_of_the_wise->effect_base_value(1) * 0.01;
     double amount = periodicity * mps / buffs_judgements_of_the_wise -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
-    double mps = resource_base[ RESOURCE_MANA ] * passives.judgements_of_the_bold->effect_base_value(1) / 100.0;
+    double mps = resource_base[ RESOURCE_MANA ] * spells.judgements_of_the_bold->effect_base_value(1) * 0.01;
     double amount = periodicity * mps / buffs_judgements_of_the_bold -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
