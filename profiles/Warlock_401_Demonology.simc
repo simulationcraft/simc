@@ -18,7 +18,7 @@ actions+=/soul_fire,if=buff.soulburn.react
 actions+=/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)&!ticking
 actions+=/bane_of_doom,time_to_die>=20,if=!ticking
 actions+=/hand_of_guldan
-actions+=/immolation,if=(buff.tier10_4pc_caster.up|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10
+actions+=/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10
 actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/shadowflame
 actions+=/incinerate,if=buff.molten_core.react
