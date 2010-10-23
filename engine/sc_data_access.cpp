@@ -1,21 +1,5 @@
 #include "simulationcraft.h"
 
-static uint32_t get_class_id( const player_type c );
-
-static player_type get_class_type( const int c );
-
-static uint32_t get_class_mask( const player_type c );
-
-static uint32_t get_race_id( const race_type r );
-
-static uint32_t get_race_mask( const race_type r );
-
-static uint32_t get_pet_mask( const pet_type_t p );
-
-static uint32_t get_pet_id( const pet_type_t p );
-
-static player_type get_pet_class_type( const pet_type_t c );
-
 sc_data_access_t::sc_data_access_t( sc_data_t* p, const bool ptr ) : sc_data_t( p, ptr )
 {
   
@@ -1532,7 +1516,27 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
 
 /***************************** local functions *************************************/
 
-static uint32_t get_class_id( const player_type c )
+player_type sc_data_access_t::get_class_type( const int c )
+{
+  switch ( c )
+  {
+    case -1: return PLAYER_SPECIAL_SCALE;
+    case 1:  return WARRIOR;
+    case 2:  return PALADIN;
+    case 3:  return HUNTER;
+    case 4:  return ROGUE;
+    case 5:  return PRIEST;
+    case 6:  return DEATH_KNIGHT;
+    case 7:  return SHAMAN;
+    case 8:  return MAGE;
+    case 9:  return WARLOCK;
+    case 11: return DRUID;
+    default: break;
+  }
+  return PLAYER_NONE;
+}
+
+uint32_t sc_data_access_t::get_class_id( const player_type c )
 {
   switch ( c )
   {
@@ -1554,27 +1558,7 @@ static uint32_t get_class_id( const player_type c )
   return 0;
 }
 
-static player_type get_class_type( const int c )
-{
-  switch ( c )
-  {
-    case -1: return PLAYER_SPECIAL_SCALE;
-    case 1:  return WARRIOR;
-    case 2:  return PALADIN;
-    case 3:  return HUNTER;
-    case 4:  return ROGUE;
-    case 5:  return PRIEST;
-    case 6:  return DEATH_KNIGHT;
-    case 7:  return SHAMAN;
-    case 8:  return MAGE;
-    case 9:  return WARLOCK;
-    case 11: return DRUID;
-    default: break;
-  }
-  return PLAYER_NONE;
-}
-
-static player_type get_pet_class_type( const pet_type_t c )
+player_type sc_data_access_t::get_pet_class_type( const pet_type_t c )
 {
   player_type p = WARRIOR;
 
@@ -1598,7 +1582,7 @@ static player_type get_pet_class_type( const pet_type_t c )
   return p;
 }
 
-static uint32_t get_class_mask( const player_type c )
+uint32_t sc_data_access_t::get_class_mask( const player_type c )
 {
   uint32_t id = get_class_id( c );
 
@@ -1609,7 +1593,7 @@ static uint32_t get_class_mask( const player_type c )
 }
 
 
-static uint32_t get_race_id( const race_type r )
+uint32_t sc_data_access_t::get_race_id( const race_type r )
 {
   switch ( r )
   {
@@ -1630,7 +1614,7 @@ static uint32_t get_race_id( const race_type r )
   return 0;
 }
 
-static uint32_t get_race_mask( const race_type r )
+uint32_t sc_data_access_t::get_race_mask( const race_type r )
 {
   uint32_t id = get_race_id( r );
 
@@ -1640,7 +1624,7 @@ static uint32_t get_race_mask( const race_type r )
   return 0x00;
 }
 
-static uint32_t get_pet_mask( const pet_type_t p )
+uint32_t sc_data_access_t::get_pet_mask( const pet_type_t p )
 {
   if ( p <= PET_FEROCITY )
     return 0x1;
@@ -1652,7 +1636,7 @@ static uint32_t get_pet_mask( const pet_type_t p )
   return 0x0;
 }
 
-static uint32_t get_pet_id( const pet_type_t p )
+uint32_t sc_data_access_t::get_pet_id( const pet_type_t p )
 {
   uint32_t mask = get_pet_mask( p );
 

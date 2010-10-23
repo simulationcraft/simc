@@ -4,6 +4,7 @@
 #include "data_enums.hh"
 
 // Spell.dbc
+#pragma pack( push, 1 )
 struct spell_data_t {
   const char * name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned     id;                 // Spell ID in dbc
@@ -88,5 +89,6 @@ struct talent_data_t {
   unsigned     row;         // Talent row
   unsigned     rank_id[3];  // Talent spell rank identifiers for ranks 1..3
 };
+#pragma pack( pop )
 
 #endif

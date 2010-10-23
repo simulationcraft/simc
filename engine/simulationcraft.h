@@ -56,6 +56,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <sstream>
 
 #include "data_enums.hh"
 
@@ -1093,8 +1094,12 @@ public:
 
   T& ref( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 );
   T* ptr( const uint32_t i, const uint32_t j = 0, const uint32_t k = 0 ) SC_CONST;
-
+  T& raw_ref( uint32_t i ) SC_CONST { return m_data[ i ]; }
+  T* raw_ptr( uint32_t i ) SC_CONST { return m_data + i * sizeof( T ); }
+  
   void fill( T val );
+  
+  uint32_t size() SC_CONST { return m_size; }
 
 private:
   T m_def;
@@ -1462,9 +1467,16 @@ public:
   virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
   virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
 
-
 // Static methods
   static double         fmt_value( double, effect_type_t, effect_subtype_t );
+  static player_type    get_class_type( const int c );
+  static player_type    get_pet_class_type( const pet_type_t c );
+  static uint32_t       get_class_id( const player_type c );
+  static uint32_t       get_class_mask( const player_type c );
+  static uint32_t       get_race_id( const race_type r );
+  static uint32_t       get_race_mask( const race_type r );
+  static uint32_t       get_pet_mask( const pet_type_t p );
+  static uint32_t       get_pet_id( const pet_type_t p );
 private:
 };
 
@@ -1661,6 +1673,15 @@ struct event_compare_t
   {
     return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
   }
+};
+
+// Spell information struct, holding static functions to output spell data in a human readable form
+struct spell_info_t
+{
+  static std::string to_str( sim_t* sim, const spell_data_t* spell );
+  static std::string to_str( sim_t* sim, uint32_t spell_id );
+  static std::string talent_to_str( sim_t* sim, const talent_data_t* talent );
+  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int indent = 6 );
 };
 
 // Spell ID class
@@ -2053,8 +2074,11 @@ enum token_type_t {
   TOK_GTEQ,
   TOK_LPAR,
   TOK_RPAR,
+  TOK_IN,
+  TOK_NOTIN,
   TOK_NUM,
-  TOK_STR
+  TOK_STR,
+  TOK_SPELL_LIST
 };
 
 struct new_buff_t : public buff_t
@@ -2068,6 +2092,36 @@ struct new_buff_t : public buff_t
 
   virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
   virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
+};
+
+struct expr_token_t
+{
+  int type;
+  std::string label;
+};
+
+enum expr_data_type_t {
+  DATA_SPELL = 0,
+  DATA_TALENT,
+  DATA_TALENT_SPELL,
+  DATA_CLASS_SPELL,
+  DATA_RACIAL_SPELL,
+  DATA_MASTERY_SPELL,
+  DATA_SPECIALIZATION_SPELL,
+  DATA_GLYPH_SPELL,
+  DATA_SET_BONUS_SPELL
+};
+
+struct expression_t
+{
+  static int precedence( int token_type );
+  static int is_unary( int token_type );
+  static int is_binary( int token_type );
+  static int next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str );
+  static void parse_tokens( action_t* action, std::vector<expr_token_t>& tokens, const std::string& expr_str );
+  static void print_tokens( std::vector<expr_token_t>& tokens );
+  static void convert_to_unary( action_t* action, std::vector<expr_token_t>& tokens );
+  static bool convert_to_rpn( action_t* action, std::vector<expr_token_t>& tokens );
 };
 
 struct action_expr_t
@@ -2087,6 +2141,43 @@ struct action_expr_t
   virtual const char* name() { return name_str.c_str(); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );
+};
+
+struct spell_data_expr_t
+{
+  std::string name_str;
+  sim_t* sim;
+  expr_data_type_t data_type;
+  
+  int result_type;
+  double result_num;
+  std::vector<uint32_t> result_spell_list;
+  std::string result_str;
+
+  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_type_t dt = DATA_SPELL, int t=TOK_UNKNOWN ) : name_str(n), sim(sim), data_type( dt ), result_type(t), result_num(0), result_spell_list() {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_NUM; result_num = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_STR; result_str = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_SPELL_LIST; result_spell_list = constant_value; }
+  virtual ~spell_data_expr_t() { name_str.clear(); result_str.clear(); };
+  virtual int evaluate() { return result_type; }
+  virtual const char* name() { return name_str.c_str(); }
+  
+  virtual std::vector<uint32_t> operator|(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator&(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator-(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  
+  virtual std::vector<uint32_t> operator<(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator==(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator!=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+
+  virtual std::vector<uint32_t> in(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> not_in(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  
+  static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
+  static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
 // Simulation Engine =========================================================
@@ -2288,6 +2379,9 @@ struct sim_t
   std::vector<sim_t*> children;
   void* thread_handle;
   int  thread_index;
+  
+  // Spell database access
+  spell_data_expr_t* sd;
 
   sim_t( sim_t* parent=0, int thrdID=0 );
   virtual ~sim_t();

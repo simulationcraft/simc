@@ -362,6 +362,14 @@ static bool parse_rawr( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+static void * parse_spell_query( sim_t*             sim,
+                                 const std::string& name,
+                                 const std::string& value)
+{
+  sim -> sd = spell_data_expr_t::parse( sim, value );
+  return 0;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -399,7 +407,8 @@ sim_t::sim_t( sim_t* p, int index ) :
     merge_ignite( 0 ), report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
-    report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index )
+    report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index ),
+    sd( 0 )
 {
   path_str += "|profiles";
   path_str += "|..";
@@ -492,6 +501,9 @@ sim_t::~sim_t()
     delete children[ i ];
   }
   if ( timing_wheel ) delete[] timing_wheel;
+  
+  if ( sd )
+    delete sd;
 }
 
 // sim_t::add_event ==========================================================
@@ -1534,6 +1546,7 @@ std::vector<option_t>& sim_t::get_options()
       { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
       { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
       { "threads",                          OPT_INT,    &( threads                                  ) },
+      { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
       // @option_doc loc=global/lag title="Lag"
       { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
       { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
@@ -1878,6 +1891,21 @@ int sim_t::main( int argc, char** argv )
     init();
     util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
+  }
+  // Spell query, dont simulate anything
+  else if ( sd )
+  {
+    init();
+
+    sd -> evaluate();
+
+    for ( std::vector<uint32_t>::const_iterator i = sd -> result_spell_list.begin(); i != sd -> result_spell_list.end(); i++ )
+    {
+      if ( sd -> data_type == DATA_TALENT )
+        util_t::fprintf( output_file, "%s", spell_info_t::talent_to_str( this, sim_data.m_talents_index[ *i ] ).c_str() );
+      else
+        util_t::fprintf( output_file, "%s", spell_info_t::to_str( this, sim_data.m_spells_index[ *i ] ).c_str() );
+    }
   }
   else
   {

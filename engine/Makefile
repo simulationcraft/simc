@@ -99,6 +99,8 @@ SRC =\
 	sc_set_bonus.cpp	\
 	sc_sim.cpp		\
 	sc_spell.cpp		\
+	sc_spell_data.cpp	\
+	sc_spell_info.cpp	\
 	sc_stats.cpp		\
 	sc_talent.cpp		\
 	sc_target.cpp		\
