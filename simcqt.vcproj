@@ -394,11 +394,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_spell_data.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_spell_data.inc"
 				>
 			</File>
 			<File
 				RelativePath="engine\sc_spell_data_ptr.inc"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\sc_spell_info.cpp"
 				>
 			</File>
 			<File
