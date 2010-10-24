@@ -397,7 +397,8 @@ struct sd_expr_binary_t : public spell_list_expr_t
   virtual int evaluate()
   {
     int  left_result =  left -> evaluate();
-    int right_result = right -> evaluate();
+    
+    right -> evaluate();
     result_type      = TOK_UNKNOWN;
     
     if ( left_result != TOK_SPELL_LIST )
