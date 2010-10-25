@@ -4117,6 +4117,8 @@ void warlock_t::init_glyphs()
     else if ( n == "ritual_of_souls" )     ;
     else if ( n == "demonic_circle" )      ;
     else if ( n == "soul_swap" )           ;
+    else if ( n == "eye_of_kilrogg" )      ;
+    else if ( n == "fear" )                ;
     else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -4267,8 +4269,11 @@ void warlock_t::init_actions()
   {
     // Flask
     if ( level >= 80 && sim -> P403 )
-    action_list_str += "/flask,type=draconic_mind";
+      action_list_str += "/flask,type=draconic_mind";
     else if ( level >= 75 )
+      action_list_str += "/flask,type=frost_wyrm";
+
+    // Food
     action_list_str += "/food,type=fish_feast";
 
     // Armor
