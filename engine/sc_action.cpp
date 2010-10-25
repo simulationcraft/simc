@@ -1678,6 +1678,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_time_expr_t( this );
   }
+  if ( name_str == "travel_time" )
+  {
+    struct travel_time_expr_t : public action_expr_t
+    {
+      travel_time_expr_t( action_t* a ) : action_expr_t( a, "travel_time", TOK_NUM ) {}
+    virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
+    };
+    return new travel_time_expr_t( this );
+  }
 
   return player -> create_expression( this, name_str );
 }

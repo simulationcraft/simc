@@ -1687,7 +1687,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file,
        "<table class=\"player\">\n"
        "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> <th>ApM</th> </tr>\n"
-       "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td> <td>%.1f</td>\n"
+       "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.2f%%</td> <td>%.1f</td>\n"
        "</table><br />\n",
        p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
        p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),

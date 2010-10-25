@@ -4265,21 +4265,26 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+    // Flask
+    if ( level >= 80 && sim -> P403 )
     action_list_str += "/flask,type=draconic_mind";
+    else if ( level >= 75 )
     action_list_str += "/food,type=fish_feast";
+
+    // Armor
     action_list_str += "/fel_armor";
 
     // Choose Pet
-
     if ( primary_tree() == TREE_DEMONOLOGY )
       action_list_str += "/summon_felguard";
     else if ( primary_tree() == TREE_DESTRUCTION )
       action_list_str += "/summon_imp";
-    else if ( primary_tree() == TREE_AFFLICTION && glyphs.lash_of_pain -> ok() )
-      action_list_str += "/summon_succubus";
+    else if ( primary_tree() == TREE_AFFLICTION )
+      action_list_str += "/summon_imp";
     else
-      action_list_str += "/summon_felhunter";
+      action_list_str += "/summon_voidwalker";
 
+    // Snapshot Stats
     action_list_str += "/snapshot_stats";
 
     // Usable Item
@@ -4304,71 +4309,67 @@ void warlock_t::init_actions()
     }
 
     // Choose Potion
-    if ( talent_haunt -> rank() )
-    {
-      action_list_str += "/wild_magic_potion,if=!in_combat";
-      action_list_str += "/speed_potion,if=buff.bloodlust.react";
-    }
-    else
-    {
-      action_list_str += "/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)";
-    }
+    action_list_str += "/speed_potion,if=buff.bloodlust.react|!in_combat";
 
 
     switch ( primary_tree() )
     {
+
     case TREE_AFFLICTION:
 
-      if ( talent_haunt -> rank() ) action_list_str += "/haunt,if=(buff.haunted.remains<3)|(dot.corruption.remains<4)";
-      action_list_str += "/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<gcd";
-      action_list_str += "/corruption,if=!ticking";
-      action_list_str += "/soulburn,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
-      action_list_str += "/unstable_affliction,time_to_die>=5,if=(dot.unstable_affliction.remains<cast_time)";
-      if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,health_percentage<=25,interrupt=1";
-      action_list_str += "/summon_doomguard,time>=100";
-      action_list_str += "/shadow_bolt";
+      if ( talent_haunt -> rank() ) action_list_str += "/haunt";
+      action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
+      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
+      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+gcd))&target.time_to_die>=5";
+      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
+      if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
+      action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
+      action_list_str += "/soulburn";
+      action_list_str += "/drain_life";
 
     break;
 
     case TREE_DESTRUCTION:
       action_list_str += "/soulburn";
+      if ( talent_improved_soul_fire -> ok() )
+        action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down";
       action_list_str += "/bane_of_doom,if=!ticking";
       action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
-      action_list_str += "/summon_doomguard,time>=100";
-      action_list_str += "/soul_fire,health_percentage>=80,if=cooldown.improved_soul_fire.remains<=0&buff.soulburn.up";
       action_list_str += "/chaos_bolt";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
       action_list_str += "/shadowflame";
-      action_list_str += "/soul_fire,if=buff.empowered_imp.react";
-      action_list_str += "/searing_pain,health_percentage<=50";
+      action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
+      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
       action_list_str += "/incinerate";
 
     break;
 
     case TREE_DEMONOLOGY:
+      action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
       action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
       action_list_str += "/metamorphosis";
       action_list_str += "/soulburn,if=buff.metamorphosis.react";
       action_list_str += "/soul_fire,if=buff.soulburn.react";
-      action_list_str += "/immolate,time_to_die>=4,if=(dot.immolate.remains<cast_time)&!ticking";
+      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking";
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/hand_of_guldan";
-      action_list_str += "/immolation,if=buff.metamorphosis.react";
-      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
+      action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10";
+      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/shadowflame";
-      action_list_str += "/soul_fire,if=buff.decimation.react";
       action_list_str += "/incinerate,if=buff.molten_core.react";
+      action_list_str += "/soul_fire,if=buff.decimation.react";
       action_list_str += "/shadow_bolt";
 
     break;
 
   default:
-
-      action_list_str += "/corruption,if=!ticking";
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
-      action_list_str += "/immolate,if=(dot.immolate.remains<cast_time)";
-      action_list_str += "/shadow_bolt";
+      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
+      action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
+      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      action_list_str += "/incinerate";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
   }
