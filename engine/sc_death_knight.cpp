@@ -1999,12 +1999,14 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    id = p -> spells.blood_plague -> spell_id();
+    id = 59879;
     parse_data( p -> player_data );
-
+    
+    base_td              = 1.0;
     base_tick_time       = 3.0;
+    tick_may_crit        = true;
     num_ticks            = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
-    direct_power_mod    *= 0.055 * 1.15;
+    tick_power_mod       = 0.055 * 1.15;
     base_multiplier     *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
     may_miss             = false;
     scale_with_haste     = false;
@@ -2533,8 +2535,10 @@ struct frost_fever_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     scale_with_haste  = false;
     may_miss          = false;
+    tick_may_crit     = true;
+    base_td           = 1;
     num_ticks         = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
-    direct_power_mod *= 0.055 * 1.15;
+    tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
                             + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
     reset(); // Not a real action
@@ -3148,12 +3152,14 @@ struct plague_strike_t : public death_knight_attack_t
     };
     parse_options( options, options_str );
 
-    id = p -> spells.plague_strike -> spell_id();
+    id = 45462;
     parse_data( p -> player_data );
 
     cost_unholy      = 1;
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
   }
+
+  virtual void consume_resource() { }
 
   virtual void execute()
   {
