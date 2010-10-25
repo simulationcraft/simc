@@ -73,6 +73,7 @@ static int resource_id( int resource )
   case  RESOURCE_ENERGY: return 3;
   case  RESOURCE_FOCUS:  return 2;
   case  RESOURCE_RUNIC:  return 6;
+  case  RESOURCE_RUNE:   return 7;
   }
   assert( 0 );
   return -1;

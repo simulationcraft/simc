@@ -3155,8 +3155,6 @@ struct plague_strike_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
   }
 
-  virtual void consume_resource() { }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -3553,6 +3551,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
+  if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
   if ( name == "plague_strike"            ) return new plague_strike_t            ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
@@ -3967,9 +3966,12 @@ void death_knight_t::init_actions()
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
-      action_list_str += "/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+      if (level > 81)
+      {
+	action_list_str += "/outbreak,if=dot.frost_fever.ticking<3|dot.blood_plague.ticking<3";
+      }
+      action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
+      action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       action_list_str += "/dark_transformation";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
@@ -4118,7 +4120,7 @@ void death_knight_t::init_glyphs()
     else if ( n == "rune_strike"     ) glyphs.rune_strike = 1;
     else if ( n == "scourge_strike"  ) glyphs.scourge_strike = 1;
     // To prevent warnings
-    else if ( n == "anit_magic_shield"   ) ;
+    else if ( n == "antimagic_shell"     ) ;
     else if ( n == "blood_boil"          ) ;
     else if ( n == "blood_tap"           ) ;
     else if ( n == "bone_shield"         ) ;
