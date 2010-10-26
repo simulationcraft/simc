@@ -515,7 +515,7 @@ struct army_ghoul_pet_t : public pet_t
       army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
 
-      id = 47468;
+      id = 91776;
       parse_data( o -> player_data );
     }
   };
@@ -533,7 +533,8 @@ struct army_ghoul_pet_t : public pet_t
     initial_attack_power_per_strength = 2.0;
     initial_attack_power_per_agility  = 1.0;
 
-    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+    // Ghouls don't appear to gain any crit from agi, they may also just have none
+    // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resource_base[ RESOURCE_ENERGY ] = 100;
     energy_regen_per_second  = 10;
@@ -1744,15 +1745,22 @@ void death_knight_attack_t::reset()
 void death_knight_attack_t::consume_resource()
 {
   death_knight_t* p = player -> cast_death_knight();
+
   if ( rp_gain > 0 )
   {
     if ( p -> buffs_frost_presence -> check() )
+    {
       rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 50384, E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 100.0;
+    }
     if ( p -> talents.improved_frost_presence -> rank() )
-      rp_gain *= 1 + p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0;
+    {
+      rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0;
+    }
 
     if ( result_is_hit() )
-      p -> resource_gain( resource, rp_gain, p -> gains_rune_abilities );
+    {
+      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
+    }
   }
   else
   {
@@ -4575,7 +4583,7 @@ void death_knight_t::regen( double periodicity )
   player_t::regen( periodicity );
 
   if ( talents.butchery -> rank() )
-    resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 1 ) / 100.0 / periodicity ), gains_butchery );
+    resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 2 ) / 10.0 / 5.0 / periodicity ), gains_butchery );
 
   uptimes_blood_plague -> update( dots_blood_plague -> ticking() );
   uptimes_frost_fever  -> update( dots_frost_fever -> ticking() );

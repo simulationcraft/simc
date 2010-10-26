@@ -1581,6 +1581,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> base_execute_time: %.2f"
            "<br> base_crit: %.2f"
            "<br> tooltip: %s"
+           "<br> rp gain: %.1f"
            "<br> <b>direct damage</b>"
            "<br> may_crit: %s"
            "<br> direct_power_mod: %.6f"
@@ -1602,7 +1603,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
            a -> range, a -> travel_speed, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration,
            a -> base_execute_time,
-           a -> base_crit, a -> tooltip(),
+           a -> base_crit, a -> tooltip(), a -> rp_gain,
            a -> may_crit?"true":"false", a -> direct_power_mod,
            a -> base_dd_min, a -> base_dd_max,
            a -> tick_may_crit?"true":"false",
