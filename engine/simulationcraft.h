@@ -2191,6 +2191,7 @@ struct sim_t
   int         P403;
   event_t*    free_list;
   target_t*   target;
+  target_t*   target_list;
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
@@ -2418,6 +2419,7 @@ struct sim_t
   double    iteration_adjust();
   player_t* find_player( const std::string& name );
   cooldown_t* get_cooldown( const std::string& name );
+  target_t* get_target( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
@@ -3259,6 +3261,7 @@ struct target_t
 {
   sim_t* sim;
   std::string name_str, race_str, id_str;
+  target_t* next;
   int race;
   int level;
   int spell_resistance[ SCHOOL_MAX ];
@@ -3310,7 +3313,7 @@ struct target_t
   };
   debuffs_t debuffs;
 
-  target_t( sim_t* s );
+  target_t( sim_t* s, const std::string& n );
   ~target_t();
 
   void init();
