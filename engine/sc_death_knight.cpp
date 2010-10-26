@@ -573,13 +573,6 @@ struct army_ghoul_pet_t : public pet_t
     o -> active_army_ghoul = 0;
   }
 
-  virtual double composite_attack_crit() SC_CONST
-  {
-    // Ghouls recieve 100% of their master's crit
-    death_knight_t* o = owner -> cast_death_knight();
-    return o -> composite_attack_crit();
-  }
-
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> composite_attack_hit(); // Hit gains equal to expertise
@@ -601,13 +594,6 @@ struct army_ghoul_pet_t : public pet_t
   virtual int primary_resource() SC_CONST
   {
     return RESOURCE_ENERGY;
-  }
-
-  virtual void regen( double periodicity )
-  {
-    periodicity *= 1.0 + composite_attack_haste();
-
-    player_t::regen( periodicity );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
