@@ -5,6 +5,7 @@
 
 #include "simulationcraft.h"
 
+struct army_ghoul_pet_t;
 struct bloodworms_pet_t;
 struct dancing_rune_weapon_pet_t;
 struct ghoul_pet_t;
@@ -237,6 +238,7 @@ struct death_knight_t : public player_t
   passives_t passives;
 
   // Pets and Guardians
+  army_ghoul_pet_t*          active_army_ghoul;
   bloodworms_pet_t*          active_bloodworms;
   dancing_rune_weapon_pet_t* active_dancing_rune_weapon;
   ghoul_pet_t*               active_ghoul;
@@ -372,6 +374,7 @@ struct death_knight_t : public player_t
     dots_frost_fever     = get_dot( "frost_fever" );
 
     // Pets and Guardians
+    active_army_ghoul          = NULL;
     active_bloodworms          = NULL;
     active_dancing_rune_weapon = NULL;
     active_ghoul               = NULL;
@@ -446,6 +449,175 @@ struct death_knight_t : public player_t
 // ==========================================================================
 // Guardians
 // ==========================================================================
+
+// ==========================================================================
+// Army of the Dead Ghoul
+// ==========================================================================
+
+// Army of the Dead ghouls are basically a copy of the pet ghoul, but with a 50% damage penalty, but you get 8 of them
+struct army_ghoul_pet_t : public pet_t
+{
+  army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "army_of_the_dead_ghoul" )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
+    main_hand_weapon.max_dmg    = 100; // FIXME only level 80 value
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = 2.0;
+
+    action_list_str = "auto_attack/claw";
+  }
+
+  struct army_ghoul_pet_attack_t : public attack_t
+  {
+    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL ) :
+      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL )
+    {
+      weapon = &( player -> main_hand_weapon );
+      may_crit = true;
+      weapon_power_mod *= 0.84; // What is this based off?
+      base_multiplier *= 4.0; // 50% of damage x 8 ghouls
+    }
+  };
+
+  struct army_ghoul_pet_melee_t : public army_ghoul_pet_attack_t
+  {
+    army_ghoul_pet_melee_t( player_t* player ) :
+      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
+    {
+      base_execute_time = weapon -> swing_time;
+      base_dd_min       = base_dd_max = 1;
+      background        = true;
+      repeating         = true;
+    }
+  };
+
+  struct army_ghoul_pet_auto_attack_t : public army_ghoul_pet_attack_t
+  {
+    army_ghoul_pet_auto_attack_t( player_t* player ) :
+      army_ghoul_pet_attack_t( "auto_attack", player )
+    {
+      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
+
+      weapon = &( p -> main_hand_weapon );
+      p -> main_hand_attack = new army_ghoul_pet_melee_t( player );
+      trigger_gcd = 0;
+    }
+
+    virtual void execute()
+    {
+      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
+      p -> main_hand_attack -> schedule_execute();
+    }
+    
+    virtual bool ready()
+    {
+      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
+      return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+    }
+  };
+
+  struct army_ghoul_pet_claw_t : public army_ghoul_pet_attack_t
+  {
+    army_ghoul_pet_claw_t( player_t* player ) :
+      army_ghoul_pet_attack_t( "claw", player )
+    {
+      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 47468;
+      parse_data( o -> player_data );
+    }
+  };
+
+  virtual void init_base()
+  {
+    // FIXME: Level 80/85 values did they change?
+    attribute_base[ ATTR_STRENGTH  ] = 331;
+    attribute_base[ ATTR_AGILITY   ] = 856;
+    attribute_base[ ATTR_STAMINA   ] = 361;
+    attribute_base[ ATTR_INTELLECT ] = 65;
+    attribute_base[ ATTR_SPIRIT    ] = 109;
+
+    base_attack_power = -20;
+    initial_attack_power_per_strength = 2.0;
+    initial_attack_power_per_agility  = 1.0;
+
+    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+
+    resource_base[ RESOURCE_ENERGY ] = 100;
+    energy_regen_per_second  = 10;
+  }
+
+  virtual double strength() SC_CONST
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    double a = attribute[ ATTR_STRENGTH ];
+    a += o -> strength();
+    a *= composite_attribute_multiplier( ATTR_STRENGTH );
+    return floor( a );
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::summon( duration );
+    o -> active_army_ghoul = this;
+  }
+
+  virtual void dismiss()
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::dismiss();
+    o -> active_army_ghoul = 0;
+  }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    // Ghouls recieve 100% of their master's crit
+    death_knight_t* o = owner -> cast_death_knight();
+    return o -> composite_attack_crit();
+  }
+
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    return owner -> composite_attack_hit(); // Hit gains equal to expertise
+  }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    // Ghouls receive 100% of their master's haste.
+    // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
+    death_knight_t* o = owner -> cast_death_knight();
+    return o -> composite_attack_haste();
+  }
+
+  virtual double composite_attack_hit() SC_CONST
+  {
+    return floor( owner -> composite_attack_hit() * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
+  }
+
+  virtual int primary_resource() SC_CONST
+  {
+    return RESOURCE_ENERGY;
+  }
+
+  virtual void regen( double periodicity )
+  {
+    periodicity *= 1.0 + composite_attack_haste();
+
+    player_t::regen( periodicity );
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  {
+    if ( name == "auto_attack"    ) return new  army_ghoul_pet_auto_attack_t( this );
+    if ( name == "claw"           ) return new         army_ghoul_pet_claw_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+}; 
 
 // ==========================================================================
 // Bloodworms
@@ -1964,14 +2136,22 @@ struct army_of_the_dead_t : public death_knight_spell_t
       double pre_cast = p -> sim -> range( 8.0, 16.0 );
       cooldown -> duration -= pre_cast;
       death_knight_spell_t::execute();
-      // player -> summon_pet( "army_ghoul" ); FIXME: Add in the army ghoul
+      player -> summon_pet( "army_of_the_dead_ghoul", 40.0 );
       cooldown -> duration += pre_cast;
     }
     else
     {
       death_knight_spell_t::execute();
-      // player -> summon_pet( "army_ghoul" );
+      player -> summon_pet( "army_of_the_dead_ghoul", 40.0 );
     }
+  }
+    virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> active_army_ghoul )
+      return false;
+
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -2063,8 +2243,6 @@ struct blood_plague_t : public death_knight_spell_t
 
     trigger_ebon_plaguebringer( this );
   }
-
-  virtual bool ready() { return false; }
 };
 
 // Blood Strike =============================================================
@@ -2349,7 +2527,7 @@ struct death_and_decay_t : public death_knight_spell_t
 
     aoe              = true;
     cost_unholy      = 1;
-    direct_power_mod = 0.064;
+    tick_power_mod   = 0.064;
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
     base_tick_time   = 1.0;
@@ -2552,11 +2730,11 @@ struct frost_fever_t : public death_knight_spell_t
     id = 59921;
     parse_data( p -> player_data );
 
+    base_td           = 1.0;
     base_tick_time    = 3.0;
     scale_with_haste  = false;
     may_miss          = false;
     tick_may_crit     = true;
-    base_td           = 1;
     num_ticks         = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
@@ -2597,8 +2775,6 @@ struct frost_fever_t : public death_knight_spell_t
       player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 1000.0 * p -> composite_mastery();
     }
   }
-
-  virtual bool ready()     { return false; }
 };
 
 // Frost Strike =============================================================
@@ -2623,6 +2799,7 @@ struct frost_strike_t : public death_knight_attack_t
   }
 
   virtual void consume_resource() { }
+
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -2945,12 +3122,14 @@ struct mind_freeze_t : public death_knight_spell_t
     if ( p -> talents.endless_winter -> rank() )
       base_cost += p -> talents.endless_winter -> effect_base_value( 1 ) / 10.0;
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
+    may_miss = may_resist = false;
   }
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! sim -> target -> debuffs.casting -> check() )
+      return false;
+
     return death_knight_spell_t::ready();
   }
 };
@@ -2973,8 +3152,7 @@ struct necrotic_strike_t : public death_knight_attack_t
     id = 73975;
     parse_data( p -> player_data );
 
-    cost_unholy            = 1;
-    normalize_weapon_speed = false;
+    cost_unholy = 1;
   }
 };
 
@@ -3253,7 +3431,6 @@ struct presence_t : public death_knight_spell_t
       cost_frost = 1;
     }
 
-    base_cost   = 0;
     trigger_gcd = 0;
     cooldown -> duration = 1.0;
     harmful     = false;
@@ -3402,9 +3579,11 @@ struct rune_strike_t : public death_knight_attack_t
 struct scourge_strike_t : public death_knight_attack_t
 {
   attack_t* scourge_strike_shadow;
+
   struct scourge_strike_shadow_t : public death_knight_attack_t
   {
-    scourge_strike_shadow_t( player_t* player ) : death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
+    scourge_strike_shadow_t( player_t* player ) : 
+      death_knight_attack_t( "scourge_strike_shadow", player, SCHOOL_SHADOW, TREE_UNHOLY )
     {
       death_knight_t* p = player -> cast_death_knight();
 
@@ -3415,8 +3594,6 @@ struct scourge_strike_t : public death_knight_attack_t
       background        = true;
       trigger_gcd       = 0;
       weapon_multiplier = 0;
-      direct_power_mod  = 0;
-      base_dd_min       = base_dd_max = 0.1;
       if ( p -> glyphs.scourge_strike )
         base_multiplier *= 1.0 + 0.3;
 
@@ -3652,6 +3829,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
 
 void death_knight_t::create_pets()
 {
+  create_pet( "army_of_the_dead_ghoul" );
   create_pet( "bloodworms" );
   create_pet( "dancing_rune_weapon" );
   create_pet( "gargoyle" );
@@ -3666,10 +3844,11 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name )
 
   if ( p ) return p;
 
-  if ( pet_name == "bloodworms"          ) return new bloodworms_pet_t          ( sim, this );
-  if ( pet_name == "dancing_rune_weapon" ) return new dancing_rune_weapon_pet_t ( sim, this );
-  if ( pet_name == "gargoyle"            ) return new gargoyle_pet_t            ( sim, this );
-  if ( pet_name == "ghoul"               ) return new ghoul_pet_t               ( sim, this );
+  if ( pet_name == "army_of_the_dead_ghoul" ) return new army_ghoul_pet_t          ( sim, this );
+  if ( pet_name == "bloodworms"             ) return new bloodworms_pet_t          ( sim, this );
+  if ( pet_name == "dancing_rune_weapon"    ) return new dancing_rune_weapon_pet_t ( sim, this );
+  if ( pet_name == "gargoyle"               ) return new gargoyle_pet_t            ( sim, this );
+  if ( pet_name == "ghoul"                  ) return new ghoul_pet_t               ( sim, this );
 
   return 0;
 }
@@ -3911,6 +4090,7 @@ void death_knight_t::init_actions()
     {
       action_list_str += "/presence,choose=frost"; // 1H Frost/Blood
     }
+    action_list_str +="/army_of_the_dead";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -4281,6 +4461,7 @@ void death_knight_t::reset()
   active_presence = 0;
 
   // Pets and Guardians
+  active_army_ghoul          = NULL;
   active_bloodworms          = NULL;
   active_dancing_rune_weapon = NULL;
   active_ghoul               = NULL;
