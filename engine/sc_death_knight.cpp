@@ -36,84 +36,37 @@ struct dk_rune_t
 {
   int        type;
   rune_state state;
-  double     cooldown_time;
+  double     value;   // 0.0 to 1.0, with 1.0 being full
   dk_rune_t* paired_rune;
 
-  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), cooldown_time( 0.0 ), paired_rune( NULL ) {}
+  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), paired_rune( NULL ) {}
 
   bool is_death() SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0; }
-  bool is_ready( double t ) SC_CONST { return t >= cooldown_time; }
+  bool is_ready() SC_CONST { return state == STATE_FULL; }
+  bool is_depleted() SC_CONST { return state == STATE_DEPLETED; }
+  bool is_regenerating() SC_CONST { return state == STATE_REGENERATING; }
   int  get_type() SC_CONST { return type & RUNE_TYPE_MASK; }
 
-  rune_state get_rune_state( sim_t* sim )
-  {
-    if ( sim -> current_time >= cooldown_time )
-      return STATE_FULL;
-    else
-      return STATE_DEPLETED;
-  }
+  void regen_rune( player_t* p, double periodicity );
 
-  void consume( sim_t* sim, player_t* p, bool convert )
+  void consume( bool convert )
   {
-    assert ( get_rune_state( sim ) == STATE_FULL );
-
-    
+    assert ( value >= 1.0 );
     type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 );
-    double cooldown = 10.0 / ( 1 + p -> composite_attack_haste() );
-
-    /* FIX ME: This doesn't work
-    death_knight_t* o = p -> cast_death_knight();
-    if ( o -> buffs_blood_presence -> check() && o -> talents.improved_blood_presence -> rank() )
-    {
-      cooldown /= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );  
-    }
-    if ( o -> buffs_unholy_presence -> check() )
-    {
-      cooldown /= 1.0 + 0.10;
-    }
-    // FIXME: Does this increase the refresh rate of all runes or just newly used runes under the buff
-    if ( o -> buffs_runic_corruption -> check() )
-    {
-      cooldown /= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
-    }
-    */
-
-    if ( paired_rune->get_rune_state( sim ) == STATE_FULL )
-    {
-      cooldown_time = sim->current_time + cooldown;
-    }
-    else
-    {
-      cooldown_time = paired_rune->cooldown_time + cooldown;
-    }
+    value = 0.0;
+    state = STATE_DEPLETED;
   }
 
-  void fill_rune( player_t* p )
+  void fill_rune()
   {
-    cooldown_time = 0.0;
-    double cooldown = 10.0 / ( 1 + p -> composite_attack_haste() );
-    /* FIX ME: This doesn't work
-    death_knight_t* o = p -> cast_death_knight();
-    if ( o -> buffs_blood_presence -> check() && o -> talents.improved_blood_presence -> rank() )
-    {
-      cooldown /= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );  
-    }
-    if ( o -> buffs_unholy_presence -> check() )
-    {
-      cooldown /= 1.0 + 0.10;
-    }
-    // FIXME: Does this increase the refresh rate of all runes or just newly used runes under the buff
-    if ( o -> buffs_runic_corruption -> check() )
-    {
-      cooldown /= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
-    }
-    */
-    paired_rune -> cooldown_time = std::min( p -> sim->current_time + cooldown, paired_rune-> cooldown_time );
+    value = 1.0;
+    state = STATE_FULL;
   }
 
   void reset()
   {
-    cooldown_time = 0.0;
+    value = 1.0;
+    state = STATE_FULL;
     type = type & RUNE_TYPE_MASK;
   }
 
@@ -445,6 +398,42 @@ struct death_knight_t : public player_t
     }
   }
 };
+
+void dk_rune_t::regen_rune(player_t* p, double periodicity)
+{
+  // Full runes don't regen.
+  if (state == STATE_FULL) return;
+  // If the other rune is already regening, we don't.
+  if (state == STATE_DEPLETED && paired_rune->state == STATE_REGENERATING) return;
+
+  death_knight_t* o = p -> cast_death_knight();
+  // Base rune regen rate is 10 seconds; we want the per-second regen
+  // rate, so divide by 10.0.  Haste linearly scales regen rate --
+  // 100% haste means a rune regens in 5 seconds, etc.
+  double rate = ( 1.0 + p -> composite_attack_haste() ) / 10.0;
+
+  if ( o -> buffs_blood_presence -> check() && o -> talents.improved_blood_presence -> rank() )
+    {
+      rate *= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );  
+    }
+  if ( o -> buffs_unholy_presence -> check() )
+    {
+      rate *= 1.15;
+    }
+  if ( o -> buffs_runic_corruption -> check() )
+    {
+      rate *= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
+    }
+
+  value = std::min(1.0, value + periodicity * rate);
+  if (value >= 1.0)
+    state = STATE_FULL;
+  else
+    state = STATE_REGENERATING;
+
+  if ( p -> sim -> debug && state == STATE_FULL )
+    log_t::output( p -> sim, "rune %d regens to full", type );
+}
 
 // ==========================================================================
 // Guardians
@@ -1477,12 +1466,11 @@ struct death_knight_spell_t : public spell_t
 static int count_runes( player_t* player )
 {
   death_knight_t* p = player -> cast_death_knight();
-  double t = p -> sim -> current_time;
   int count = 0;
 
   // Storing ready runes by type in 2 bit blocks with 0 value bit separator (11 bits total)
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if ( p -> _runes.slot[i].is_ready( t ) )
+    if ( p -> _runes.slot[i].is_ready() )
       count |= 1 << ( i + ( i >> 1 ) );
 
   // Adding bits in each two-bit block (0xDB = 011 011 011)
@@ -1496,12 +1484,11 @@ static int count_death_runes( death_knight_t* p, bool inactive )
 {
   // Getting death rune count is a bit more complicated as it depends
   // on talents which runetype can be converted to death runes
-  double t = p -> sim -> current_time;
   int count = 0;
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if ( ( inactive || r.is_ready( t ) ) && r.is_death() )
+    if ( ( inactive || r.is_ready() ) && r.is_death() )
       ++count;
   }
   return count;
@@ -1520,7 +1507,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
       // Show the consumed type of the rune
       // Not the type it is after consumption
       int consumed_type = p -> _runes.slot[i].type;
-      p -> _runes.slot[i].consume( p->sim, player, convert_runes );
+      p -> _runes.slot[i].consume( convert_runes );
 
       if ( p -> sim -> log )
         log_t::output( p -> sim, "%s consumes rune #%d, type %d", p -> name(), i, consumed_type );
@@ -1536,7 +1523,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
       if ( p -> _runes.slot[j].is_death() )
         rune_letter = 'd';
 
-      if ( p -> _runes.slot[j].is_ready( p -> sim -> current_time ) )
+      if ( p -> _runes.slot[j].is_ready() )
         rune_letter = toupper( rune_letter );
       rune_str += rune_letter;
     }
@@ -1552,7 +1539,6 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
 static bool group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
 {
   death_knight_t* p = player -> cast_death_knight();
-  double t = p -> sim -> current_time;
   int cost[]  = { blood + frost + unholy, blood, frost, unholy };
   bool use[RUNE_SLOT_MAX] = { false };
 
@@ -1560,7 +1546,7 @@ static bool group_runes ( player_t* player, int blood, int frost, int unholy, bo
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if ( r.is_ready( t ) && ! r.is_death() && cost[r.get_type()] > 0 )
+    if ( r.is_ready() && ! r.is_death() && cost[r.get_type()] > 0 )
     {
       --cost[r.get_type()];
       --cost[0];
@@ -1572,7 +1558,7 @@ static bool group_runes ( player_t* player, int blood, int frost, int unholy, bo
   for ( int i = RUNE_SLOT_MAX; cost[0] > 0 && i--; )
   {
     dk_rune_t& r = p -> _runes.slot[i];
-    if ( r.is_ready( t ) && r.is_death() )
+    if ( r.is_ready() && r.is_death() )
     {
       --cost[0];
       use[i] = true;
@@ -2309,7 +2295,6 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     death_knight_t* p = player -> cast_death_knight();
-    double t = p -> sim -> current_time;
 
     // Blood tap has some odd behavior.  One of the oddest is that, if
     // you have a death rune on cooldown and a full blood rune, using
@@ -2323,9 +2308,9 @@ struct blood_tap_t : public death_knight_spell_t
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready( t ) )
+      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
       {
-        r.fill_rune( p );
+        r.fill_rune();
         rune_was_refreshed = true;
         break;
       }
@@ -2337,9 +2322,9 @@ struct blood_tap_t : public death_knight_spell_t
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
       {
         dk_rune_t& r = p -> _runes.slot[i];
-        if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready( t ) )
+        if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
         {
-          r.fill_rune( p );
+          r.fill_rune();
           rune_was_refreshed = true;
           break;
         }
@@ -2350,7 +2335,7 @@ struct blood_tap_t : public death_knight_spell_t
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && r.is_ready( t ) )
+      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && r.is_ready() )
       {
         r.type = ( r.type & RUNE_TYPE_MASK ) | RUNE_TYPE_DEATH;
         break;
@@ -2657,7 +2642,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
-      r.fill_rune( p );
+      r.fill_rune();
     }
   }
 };
@@ -2688,11 +2673,14 @@ struct festering_strike_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
   }
 
+  virtual void consume_resource() { }
+
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -3581,7 +3569,7 @@ struct scourge_strike_t : public death_knight_attack_t
       trigger_gcd       = 0;
       weapon_multiplier = 0;
       if ( p -> glyphs.scourge_strike )
-        base_multiplier *= 1.0 + 0.3;
+        base_multiplier *= 1.3;
 
       // Only blizzard knows, but for the shadowpart in 3.3 the follwing
       // +x% buffs are ADDITIVE (which this flag controls)
@@ -3593,7 +3581,7 @@ struct scourge_strike_t : public death_knight_attack_t
     {
       death_knight_t* p = player -> cast_death_knight();
       death_knight_attack_t::target_debuff( dmg_type );
-      target_multiplier *= p -> diseases() * effect_base_value( 3 ) / 100.0;
+      target_multiplier *= p -> diseases() * 0.12;
     }
   };
 
@@ -3623,7 +3611,7 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
-      scourge_strike_shadow -> base_dd_adder = direct_dmg;
+      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = direct_dmg;
       scourge_strike_shadow -> execute();
     }
   }
@@ -3851,7 +3839,7 @@ double death_knight_t::composite_attack_haste() SC_CONST
   if ( talents.improved_icy_talons -> rank() )
     haste *= 1.0 / ( 1.0 + talents.improved_icy_talons ->effect_base_value( 3 ) / 100.0 );
   if ( active_presence == PRESENCE_UNHOLY && talents.improved_unholy_presence -> rank() )
-    haste *= 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 );
+    haste *= 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0;
 
   return haste;
 }
@@ -4027,28 +4015,28 @@ void death_knight_t::init_spells()
   passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
   
   // Spells
-  spells.blood_boil                  = new active_spell_t( this, "blood_boil", "Blood Boil", DEATH_KNIGHT_BLOOD );  
-  spells.blood_plague                = new active_spell_t( this, "blood_plague", "Blood Plague", DEATH_KNIGHT_UNHOLY );
-  spells.blood_strike                = new active_spell_t( this, "blood_strike", "Blood Strike", DEATH_KNIGHT_BLOOD );
-  spells.blood_tap                   = new active_spell_t( this, "blood_tap", "Blood Tap", DEATH_KNIGHT_BLOOD );
-  spells.death_coil                  = new active_spell_t( this, "death_coil", "Death Coil", DEATH_KNIGHT_UNHOLY );
-  spells.death_strike                = new active_spell_t( this, "death_strike", "Death Strike", DEATH_KNIGHT_BLOOD );
-  spells.empower_rune_weapon         = new active_spell_t( this, "empower_rune_weapon", "Empower Rune Weapon", DEATH_KNIGHT_FROST );
-  spells.festering_strike            = new active_spell_t( this, "festering_strike", "Festering Strke", DEATH_KNIGHT_FROST );
-  spells.frost_fever                 = new active_spell_t( this, "frost_fever", "Frost Fever", DEATH_KNIGHT_FROST );
+  spells.blood_boil                  = new active_spell_t( this, "blood_boil", "Blood Boil" );  
+  spells.blood_plague                = new active_spell_t( this, "blood_plague", "Blood Plague" );
+  spells.blood_strike                = new active_spell_t( this, "blood_strike", "Blood Strike" );
+  spells.blood_tap                   = new active_spell_t( this, "blood_tap", "Blood Tap" );
+  spells.death_coil                  = new active_spell_t( this, "death_coil", "Death Coil" );
+  spells.death_strike                = new active_spell_t( this, "death_strike", "Death Strike" );
+  spells.empower_rune_weapon         = new active_spell_t( this, "empower_rune_weapon", "Empower Rune Weapon" );
+  spells.festering_strike            = new active_spell_t( this, "festering_strike", "Festering Strike" );
+  spells.frost_fever                 = new active_spell_t( this, "frost_fever", "Frost Fever" );
   spells.frost_strike                = new active_spell_t( this, "frost_strike", "Frost Strike", DEATH_KNIGHT_FROST );
   spells.heart_strike                = new active_spell_t( this, "heart_strike", "Heart Strike", DEATH_KNIGHT_BLOOD );
-  spells.horn_of_winter              = new active_spell_t( this, "horn_of_winter", "Horn of Winter", DEATH_KNIGHT_FROST );
-  spells.icy_touch                   = new active_spell_t( this, "icy_touch", "Icy Touch", DEATH_KNIGHT_FROST );
+  spells.horn_of_winter              = new active_spell_t( this, "horn_of_winter", "Horn of Winter" );
+  spells.icy_touch                   = new active_spell_t( this, "icy_touch", "Icy Touch" );
   spells.mind_freeze                 = new active_spell_t( this, "mind_freeze", "Mind Freeze", DEATH_KNIGHT_FROST );
-  spells.necrotic_strike             = new active_spell_t( this, "necrotic_strike", "Necrotic Strike", DEATH_KNIGHT_UNHOLY );
-  spells.obliterate                  = new active_spell_t( this, "obliterate", "Obliterate", DEATH_KNIGHT_FROST );
-  spells.outbreak                    = new active_spell_t( this, "outbreak", "Outbreak", DEATH_KNIGHT_UNHOLY );
-  spells.pestilence                  = new active_spell_t( this, "pestilence", "Pestilence", DEATH_KNIGHT_UNHOLY );
-  spells.plague_strike               = new active_spell_t( this, "plague_strike", "Plague Strike", DEATH_KNIGHT_UNHOLY );  
-  spells.raise_dead                  = new active_spell_t( this, "raise_dead", "Raise Dead", DEATH_KNIGHT_UNHOLY );
-  spells.rune_strike                 = new active_spell_t( this, "rune_strike", "Rune Strike", DEATH_KNIGHT_FROST );
-  spells.scourge_strike              = new active_spell_t( this, "scourge_strike", "Scourge Strke", DEATH_KNIGHT_UNHOLY );
+  spells.necrotic_strike             = new active_spell_t( this, "necrotic_strike", "Necrotic Strike" );
+  spells.obliterate                  = new active_spell_t( this, "obliterate", "Obliterate" );
+  spells.outbreak                    = new active_spell_t( this, "outbreak", "Outbreak" );
+  spells.pestilence                  = new active_spell_t( this, "pestilence", "Pestilence" );
+  spells.plague_strike               = new active_spell_t( this, "plague_strike", "Plague Strike" );  
+  spells.raise_dead                  = new active_spell_t( this, "raise_dead", "Raise Dead" );
+  spells.rune_strike                 = new active_spell_t( this, "rune_strike", "Rune Strike" );
+  spells.scourge_strike              = new active_spell_t( this, "scourge_strike", "Scourge Strike", DEATH_KNIGHT_UNHOLY );
   spells.unholy_frenzy               = new active_spell_t( this, "unholy_frenzy", "Unholy Frenzy", DEATH_KNIGHT_UNHOLY );
 }
 
@@ -4591,6 +4579,11 @@ void death_knight_t::regen( double periodicity )
 
   uptimes_blood_plague -> update( dots_blood_plague -> ticking() );
   uptimes_frost_fever  -> update( dots_frost_fever -> ticking() );
+
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    _runes.slot[i].regen_rune(this, periodicity);
+  }
 }
 
 // death_knight_t::get_translation_list =====================================
@@ -4683,19 +4676,17 @@ void death_knight_t::trigger_runic_empowerment()
     return;
   }
 
-  double now = sim -> current_time;
-
-  bool fully_depleted_runes[RUNE_SLOT_MAX / 2];
-  for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
+  bool fully_depleted_runes[RUNE_SLOT_MAX];
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     fully_depleted_runes[i] = false;
-    if ( !_runes.slot[i].is_ready( now ) && !_runes.slot[i+1].is_ready( now ) )
+    if ( !_runes.slot[i].is_depleted() )
       fully_depleted_runes[i] = true;
   }
 
   // Use a fair algorithm to pick whichever rune to regen.
   int rune_to_regen = -1;
-  for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     if ( sim -> roll( 1.0 / static_cast<double>( i + 1 ) ) )
     {
@@ -4705,11 +4696,7 @@ void death_knight_t::trigger_runic_empowerment()
 
   if ( rune_to_regen >= 0 )
   {
-    if ( _runes.slot[rune_to_regen].cooldown_time < _runes.slot[rune_to_regen + 1].cooldown_time )
-    {
-      ++rune_to_regen;
-    }
-    _runes.slot[rune_to_regen].fill_rune( this );
+    _runes.slot[rune_to_regen].fill_rune();
     if ( sim -> log )
       log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
   }
