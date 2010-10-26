@@ -1554,7 +1554,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
        "Resource per Execute: %.2f<br>"
        "Resource consumed: %.2f<br>"
        "Resource consumed %%: %.2f%%<br>",
-       s -> rpe, s -> resource_consumed, s -> resource_consumed ? s -> resource_consumed / s -> player -> resource_lost [ s -> resource ] : 0);
+       s -> rpe, s -> resource_consumed, s -> resource_consumed ? s -> resource_consumed / s -> player -> resource_lost [ s -> resource ] * 100.0 : 0);
   int i=0;
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
