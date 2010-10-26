@@ -206,39 +206,7 @@ void target_t::combat_begin()
 {
   if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
 
-  if ( sim -> overrides.bloodlust )
-  {
-    // Setup a periodic check for Bloodlust
 
-    struct bloodlust_check_t : public event_t
-    {
-      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
-      {
-        name = "Bloodlust Check";
-        sim -> add_event( this, 1.0 );
-      }
-      virtual void execute()
-      {
-        target_t* t = sim -> target;
-        if ( ( sim -> overrides.bloodlust_early && ( sim -> current_time > ( double ) sim -> overrides.bloodlust_early ) ) ||
-             ( t -> health_percentage() < 25 ) ||
-             ( t -> time_to_die()       < 60 ) )
-        {
-	  for ( player_t* p = sim -> player_list; p; p = p -> next )
-          {
-	    if ( p -> sleeping ) continue;
-	    p -> buffs.bloodlust -> trigger();
-	  }
-        }
-        else
-        {
-          new ( sim ) bloodlust_check_t( sim );
-        }
-      }
-    };
-
-    new ( sim ) bloodlust_check_t( sim );
-  }
 }
 
 // target_t::combat_end ======================================================

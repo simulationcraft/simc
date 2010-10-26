@@ -683,7 +683,10 @@ void sim_t::reset()
   {
     b -> reset();
   }
-  target -> reset();
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
+    t -> reset();
+  }
   for ( player_t* p = player_list; p; p = p -> next )
   {
     p -> reset();
@@ -699,7 +702,10 @@ void sim_t::combat_begin()
 
   reset();
 
-  target -> combat_begin();
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
+    t -> combat_begin();
+  }
 
   player_t::combat_begin( this );
 
@@ -710,6 +716,41 @@ void sim_t::combat_begin()
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
+
+
+  if ( overrides.bloodlust )
+  {
+    // Setup a periodic check for Bloodlust
+
+    struct bloodlust_check_t : public event_t
+    {
+      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
+      {
+        name = "Bloodlust Check";
+        sim -> add_event( this, 1.0 );
+      }
+      virtual void execute()
+      {
+        target_t* t = sim -> target;
+        if ( ( sim -> overrides.bloodlust_early && ( sim -> current_time > ( double ) sim -> overrides.bloodlust_early ) ) ||
+             ( t -> health_percentage() < 25 ) ||
+             ( t -> time_to_die()       < 60 ) )
+        {
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+          {
+      if ( p -> sleeping ) continue;
+      p -> buffs.bloodlust -> trigger();
+    }
+        }
+        else
+        {
+          new ( sim ) bloodlust_check_t( sim );
+        }
+      }
+    };
+
+    new ( this ) bloodlust_check_t( this );
+  }
 }
 
 // sim_t::combat_end ========================================================
@@ -725,8 +766,10 @@ void sim_t::combat_end()
 
   flush_events();
 
-  target -> combat_end();
-
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
+    t -> combat_end();
+  }
   player_t::combat_end( this );
 
   raid_event_t::combat_end( this );
@@ -793,7 +836,10 @@ bool sim_t::init()
   if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
   if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
 
-  target -> init();
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
+    t -> init();
+  }
 
   raid_event_t::init( this );
 
