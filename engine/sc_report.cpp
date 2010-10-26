@@ -97,7 +97,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   util_t::fprintf( file,
                    "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
-		   max_name_length,
+                   max_name_length,
                    s -> name_str.c_str(),
                    s -> num_executes,
                    s -> frequency,
@@ -200,7 +200,7 @@ static void print_actions( FILE* file, player_t* p )
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
     if ( s -> total_dmg > 0 )
       if( max_length < (int) s -> name_str.length() )
-	max_length = ( int ) s -> name_str.length();
+        max_length = ( int ) s -> name_str.length();
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -245,10 +245,12 @@ static void print_buffs( FILE* file, player_t* p )
       int length = ( int ) strlen( b -> name() );
       if( ( total_length + length ) > 100 )
       {
-	if ( ! first ) util_t::fprintf( file, "\n" ); first=false;
-	util_t::fprintf( file, "  Constant Buffs:" );
-	prefix = ' ';
-	total_length = 0;
+        if ( ! first )
+          util_t::fprintf( file, "\n" );
+        first=false;
+        util_t::fprintf( file, "  Constant Buffs:" );
+        prefix = ' ';
+        total_length = 0;
       }
       util_t::fprintf( file, "%c%s", prefix, b -> name() );
       prefix = '/';
@@ -344,9 +346,9 @@ static void print_buffs( FILE* file, sim_t* sim )
       int length = ( int ) strlen( b -> name() );
       if( ( total_length + length ) > 100 )
       {
-	util_t::fprintf( file, "\n  Constant:" );
-	prefix = ' ';
-	total_length = 0;
+        util_t::fprintf( file, "\n  Constant:" );
+        prefix = ' ';
+        total_length = 0;
       }
       util_t::fprintf( file, "%c%s", prefix, b -> name() );
       prefix = '/';
@@ -376,18 +378,16 @@ static void print_buffs( FILE* file, sim_t* sim )
     {
       util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh,
-		       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
-      if( b -> benefit_pct > 0 &&
-	  b -> benefit_pct < 100 )
+      if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {
-	util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
+        util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
       }
 
-      if ( b -> trigger_pct > 0 &&
-	   b -> trigger_pct < 100 )
+      if ( b -> trigger_pct > 0 && b -> trigger_pct < 100 )
       {
-	util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
+        util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
       }
 
       util_t::fprintf( file, "\n" );
@@ -450,7 +450,7 @@ static void print_defense_stats( FILE* file, player_t* p )
                    100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
                    100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
                    100 * p -> buffed_block, 100 * p -> composite_tank_block(), p -> stats.block_rating,
-		   100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
+                   100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
 // print_gains ===============================================================
@@ -505,13 +505,14 @@ static void print_pet_gains( FILE* file, player_t* p )
 
       for ( gain_t* g = pet -> gain_list; g; g = g -> next )
       {
-	if ( g -> actual > 0 )
+        if ( g -> actual > 0 )
         {
-	  util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
-	  double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-	  if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
-	  util_t::fprintf( file, "\n" );
-	}
+          util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
+          double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+          if ( overflow_pct > 1.0 )
+            util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
+          util_t::fprintf( file, "\n" );
+        }
       }
     }
   }
@@ -713,7 +714,7 @@ static void print_dps_plots( FILE* file, player_t* p )
       int num_points = pd.size();
       for( int j=0; j < num_points; j++ )
       {
-	util_t::fprintf( file, "%s%.0f", (j?"|":""), pd[ j ] );
+        util_t::fprintf( file, "%s%.0f", (j?"|":""), pd[ j ] );
       }
       util_t::fprintf( file, "\n" );
     }
@@ -806,8 +807,7 @@ struct compare_hat_donor_interval
 {
   bool operator()( player_t* l, player_t* r ) SC_CONST
   {
-    return( l -> procs.hat_donor -> frequency <
-	    r -> procs.hat_donor -> frequency );
+    return( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
   }
 };
 
@@ -887,7 +887,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file, " <tr> <td><img src=\"%s\" /></td> <td><img src=\"%s\" /></td> </tr>\n",
-		     sim -> dps_charts[ i ].c_str(), sim -> gear_charts[ i ].c_str() );
+                     sim -> dps_charts[ i ].c_str(), sim -> gear_charts[ i ].c_str() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
@@ -932,10 +932,10 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
       util_t::fprintf( file, "  <tr> <th>profile</th>" );
       for ( int i=0; i < STAT_MAX; i++ )
       {
-	if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+        if ( sim -> scaling -> stats.get_stat( i ) != 0 )
         {
-	  util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
-	}
+          util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+        }
       }
       util_t::fprintf( file, " <th>wowhead</th> <th>lootrank</th> </tr>\n" );
     }
@@ -949,7 +949,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
       }
     }
     util_t::fprintf( file, " <td><a href=\"%s\"> wowhead </a></td> <td><a href=\"%s\"> lootrank</a></td> </tr>\n",
-		     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
+                     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
 }
@@ -969,9 +969,9 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
       continue;
 
     util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n",
-		     b -> name(), b -> avg_start, b -> avg_refresh,
-		     b -> avg_start_interval, b -> avg_trigger_interval,
-		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+                     b -> name(), b -> avg_start, b -> avg_refresh,
+                     b -> avg_start_interval, b -> avg_trigger_interval,
+                     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
@@ -998,28 +998,28 @@ static void print_html_action( FILE* file, stats_t* s )
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
   util_t::fprintf( file,
-		   " <tr>"
-		   " <td>%s</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
-		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
-		   " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
-		   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
-		   " </tr>\n",
-		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
-		   s -> num_executes, s -> frequency,
-		   s -> dpe, s -> dpet, s -> dpr, s -> rpe,
-		   s -> execute_results[ RESULT_HIT  ].avg_dmg,
-		   s -> execute_results[ RESULT_CRIT ].avg_dmg,
-		   s -> execute_results[ RESULT_CRIT ].max_dmg,
-		   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-		   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
-		   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
-		   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
-		   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
-		   s -> num_ticks,
-		   s -> tick_results[ RESULT_HIT  ].avg_dmg,
-		   s -> tick_results[ RESULT_CRIT ].avg_dmg,
-		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-		   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+                   " <tr>"
+                   " <td>%s</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
+                   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
+                   " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
+                   " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
+                   " </tr>\n",
+                   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
+                   s -> num_executes, s -> frequency,
+                   s -> dpe, s -> dpet, s -> dpr, s -> rpe,
+                   s -> execute_results[ RESULT_HIT  ].avg_dmg,
+                   s -> execute_results[ RESULT_CRIT ].avg_dmg,
+                   s -> execute_results[ RESULT_CRIT ].max_dmg,
+                   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
+                   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
+                   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+                   s -> num_ticks,
+                   s -> tick_results[ RESULT_HIT  ].avg_dmg,
+                   s -> tick_results[ RESULT_CRIT ].avg_dmg,
+                   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
+                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
 }
 
 
@@ -1077,36 +1077,36 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, "<style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n" );
 
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   "  <tr> <th>Name</th> <th>Race</th> <th>Class</th> <th>Tree</th> <th>Level</th> </tr>\n"
-		   "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
-		   "</table><br />\n",
-		   p -> name(), p -> race_str.c_str(),
-		   util_t::player_type_string( p -> type ),
-		   util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+                   "<table class=\"player\">\n"
+                   "  <tr> <th>Name</th> <th>Race</th> <th>Class</th> <th>Tree</th> <th>Level</th> </tr>\n"
+                   "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
+                   "</table><br />\n",
+                   p -> name(), p -> race_str.c_str(),
+                   util_t::player_type_string( p -> type ),
+                   util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> <th>ApM</th> </tr>\n"
-		   "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td> <td>%.1f</td>\n"
-		   "</table><br />\n",
-		   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
-		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
-		   100.0 * p -> total_waiting / p -> total_seconds,
-		   60.0 * p -> total_foreground_actions / p -> total_seconds  );
+                   "<table class=\"player\">\n"
+                   "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> <th>ApM</th> </tr>\n"
+                   "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.1f%%</td> <td>%.1f</td>\n"
+                   "</table><br />\n",
+                   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+                   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
+                   100.0 * p -> total_waiting / p -> total_seconds,
+                   60.0 * p -> total_foreground_actions / p -> total_seconds  );
   if ( p -> origin_str.compare("unknown") )
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   "  <tr> <th>Origin</th> <td><a href=\"%s\">%s</a></td>\n"
-		   "</table><br />\n",
-		   p -> origin_str.c_str(), p -> origin_str.c_str() );
+                   "<table class=\"player\">\n"
+                   "  <tr> <th>Origin</th> <td><a href=\"%s\">%s</a></td>\n"
+                   "</table><br />\n",
+                   p -> origin_str.c_str(), p -> origin_str.c_str() );
 
   if ( !p -> talents_str.empty() )
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   "  <tr> <th>Talents</th> <td><a href=\"%s\">%s</a></td>\n"
-		   "</table><br />\n",
-		   p -> talents_str.c_str(), p -> talents_str.c_str() );
+                   "<table class=\"player\">\n"
+                   "  <tr> <th>Talents</th> <td><a href=\"%s\">%s</a></td>\n"
+                   "</table><br />\n",
+                   p -> talents_str.c_str(), p -> talents_str.c_str() );
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
@@ -1128,23 +1128,23 @@ static void print_html_player( FILE* file, player_t* p )
     util_t::fprintf( file, " <tr> <th></th>" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+        util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
 
     if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <th>ms Lag</th>" );
-    util_t::fprintf( file, " </tr>\n" );
+      util_t::fprintf( file, " </tr>\n" );
 
     util_t::fprintf( file, " <tr> <th>Scale Factors</th>" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+        util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
 
     if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling_lag );
-    util_t::fprintf( file, " </tr>\n" );
+      util_t::fprintf( file, " </tr>\n" );
 
     util_t::fprintf( file, " <tr> <th>Normalized</th>" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
+        util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
     util_t::fprintf( file, " </tr>\n" );
 
     util_t::fprintf( file, "</table>\n" );
@@ -1152,7 +1152,7 @@ static void print_html_player( FILE* file, player_t* p )
 
     util_t::fprintf( file, "<table class=\"player\">\n" );
     util_t::fprintf( file, " <tr> <th>Gear Ranking</th> <td><a href=\"%s\">wowhead</a></td> <td><a href=\"%s\">lootrank</a></td> </tr>\n",
-		     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
+                     p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
     util_t::fprintf( file, "</table> <br />\n" );
   }
 
@@ -1195,13 +1195,13 @@ static void print_html_player( FILE* file, player_t* p )
   }
 
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
-		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
-		   "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
-		   action_dpet_str.c_str(), action_dmg_str.c_str(),
-		   gains_str.c_str(), timeline_resource_str.c_str(),
-		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
+                   "<table class=\"player\">\n"
+                   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+                   "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+                   "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
+                   action_dpet_str.c_str(), action_dmg_str.c_str(),
+                   gains_str.c_str(), timeline_resource_str.c_str(),
+                   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
   if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
   {
@@ -1220,13 +1220,13 @@ static void print_html_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</tr></table> <br />\n" );
 
   util_t::fprintf( file,
-		   "<table class=\"player\">\n"
-		   " <tr>"
-		   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
-		   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th> RPE </th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
-		   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
-		   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
-		   " </tr>\n" );
+                   "<table class=\"player\">\n"
+                   " <tr>"
+                   " <th>Ability</th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
+                   " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th> RPE </th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
+                   " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
+                   " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
+                   " </tr>\n" );
 
   util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
 
@@ -1249,7 +1249,7 @@ static void print_html_player( FILE* file, player_t* p )
         if ( first )
         {
           first = false;
-	  util_t::fprintf( file, " <tr> <th>pet - %s</th> <th>%.0f</th> </tr>\n", pet -> name_str.c_str(), pet -> dps );
+          util_t::fprintf( file, " <tr> <th>pet - %s</th> <th>%.0f</th> </tr>\n", pet -> name_str.c_str(), pet -> dps );
         }
         print_html_action( file, s );
       }
@@ -1265,9 +1265,9 @@ static void print_html_player( FILE* file, player_t* p )
       continue;
 
     util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
-		     b -> name(), b -> avg_start, b -> avg_refresh,
-		     b -> avg_start_interval, b -> avg_trigger_interval,
-		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+                     b -> name(), b -> avg_start, b -> avg_refresh,
+                     b -> avg_start_interval, b -> avg_trigger_interval,
+                     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
   }
   util_t::fprintf( file, "</table> <br />\n" );
 
@@ -1318,13 +1318,13 @@ static void print_html_player( FILE* file, player_t* p )
     {
       if ( g -> actual > 0 )
       {
-	if ( first )
-	{
-	  first = false;
-	  util_t::fprintf( file, "  <tr> <th>pet - %s</th> <th>%s</th> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
-	}
-	double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-	util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+        if ( first )
+        {
+          first = false;
+          util_t::fprintf( file, "  <tr> <th>pet - %s</th> <th>%s</th> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
+        }
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
       }
     }
   }
@@ -2028,8 +2028,7 @@ static void print_wiki_contents( FILE* file, sim_t* sim, const std::string& wiki
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    if ( player_type != PLAYER_NONE &&
-	 player_type != p -> type )
+    if ( player_type != PLAYER_NONE && player_type != p -> type )
       continue;
 
     std::string anchor_name = wiki_player_reference( p );
@@ -2094,10 +2093,10 @@ static void print_wiki_scale_factors( FILE*  file, sim_t* sim )
       util_t::fprintf( file, "|| *profile* ||" );
       for ( int i=0; i < STAT_MAX; i++ )
       {
-	if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+        if ( sim -> scaling -> stats.get_stat( i ) != 0 )
         {
-	  util_t::fprintf( file, " *%s* ||", util_t::stat_type_abbrev( i ) );
-	}
+          util_t::fprintf( file, " *%s* ||", util_t::stat_type_abbrev( i ) );
+        }
       }
       util_t::fprintf( file, " *wowhead* || *lootrank* ||\n" );
     }
@@ -2133,9 +2132,9 @@ static void print_wiki_auras_debuffs( FILE*  file, sim_t* sim )
       continue;
 
     util_t::fprintf( file, "|| %s || %.1f || %.1f || %.1fsec || %.1fsec || %.0f%% || %.0f%% ||\n",
-		     b -> name(), b -> avg_start, b -> avg_refresh,
-		     b -> avg_start_interval, b -> avg_trigger_interval,
-		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+                     b -> name(), b -> avg_start, b -> avg_refresh,
+                     b -> avg_start_interval, b -> avg_trigger_interval,
+                     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
   }
   util_t::fprintf( file, "\n" );
 
@@ -2162,23 +2161,23 @@ static void print_wiki_action( FILE* file, stats_t* s )
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
   util_t::fprintf( file,
-		   "||%s||%.0f||%.1f%%||%.1f||%.2fsec||%.0f||%.0f||%.1f||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||\n",
-		   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
-		   s -> num_executes, s -> frequency,
-		   s -> dpe, s -> dpet, s -> dpr,
-		   s -> execute_results[ RESULT_HIT  ].avg_dmg,
-		   s -> execute_results[ RESULT_CRIT ].avg_dmg,
-		   s -> execute_results[ RESULT_CRIT ].max_dmg,
-		   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-		   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
-		   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
-		   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
-		   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
-		   s -> num_ticks,
-		   s -> tick_results[ RESULT_HIT  ].avg_dmg,
-		   s -> tick_results[ RESULT_CRIT ].avg_dmg,
-		   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-		   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+                   "||%s||%.0f||%.1f%%||%.1f||%.2fsec||%.0f||%.0f||%.1f||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||\n",
+                   s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
+                   s -> num_executes, s -> frequency,
+                   s -> dpe, s -> dpet, s -> dpr,
+                   s -> execute_results[ RESULT_HIT  ].avg_dmg,
+                   s -> execute_results[ RESULT_CRIT ].avg_dmg,
+                   s -> execute_results[ RESULT_CRIT ].max_dmg,
+                   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
+                   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
+                   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+                   s -> num_ticks,
+                   s -> tick_results[ RESULT_HIT  ].avg_dmg,
+                   s -> tick_results[ RESULT_CRIT ].avg_dmg,
+                   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
+                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
 }
 
 // print_wiki_player =========================================================
@@ -2190,21 +2189,21 @@ static void print_wiki_player( FILE* file, player_t* p )
   util_t::fprintf( file, "= !%s =\n", anchor_name.c_str() );
 
   util_t::fprintf( file,
-		   "|| *Name* || *Race* || *Class* || *Tree* || *Level* ||\n"
-		   "|| *%s*  || %s     || %s      || %s     || %d      ||\n"
-		   "\n",
-		   p -> name(), p -> race_str.c_str(),
-		   util_t::player_type_string( p -> type ),
-		   util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+                   "|| *Name* || *Race* || *Class* || *Tree* || *Level* ||\n"
+                   "|| *%s*  || %s     || %s      || %s     || %d      ||\n"
+                   "\n",
+                   p -> name(), p -> race_str.c_str(),
+                   util_t::player_type_string( p -> type ),
+                   util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file,
-		   "|| *DPS*  || *Error* || *Range* || *DPR* || *RPS-Out* || *RPS-In* || *Resource* || *Waiting* || *ApM* ||\n"
-		   "|| *%.0f* || %.1f / %.1f%%  || %.1f / %.1f%%  || %.1f  || %.1f      || %.1f     || %s         || %.1f%%    || %.1f  ||\n"
-		   "\n",
-		   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
-		   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
-		   100.0 * p -> total_waiting / p -> total_seconds,
-		   60.0 * p -> total_foreground_actions / p -> total_seconds  );
+                   "|| *DPS*  || *Error* || *Range* || *DPR* || *RPS-Out* || *RPS-In* || *Resource* || *Waiting* || *ApM* ||\n"
+                   "|| *%.0f* || %.1f / %.1f%%  || %.1f / %.1f%%  || %.1f  || %.1f      || %.1f     || %s         || %.1f%%    || %.1f  ||\n"
+                   "\n",
+                   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+                   p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
+                   100.0 * p -> total_waiting / p -> total_seconds,
+                   60.0 * p -> total_foreground_actions / p -> total_seconds  );
 
   util_t::fprintf( file, "|| *Origin* || [%s] ||\n\n", p -> origin_str.c_str() );
 
@@ -2225,19 +2224,19 @@ static void print_wiki_player( FILE* file, player_t* p )
     util_t::fprintf( file, "|| ||" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " *%s* ||", util_t::stat_type_abbrev( i ) );
+        util_t::fprintf( file, " *%s* ||", util_t::stat_type_abbrev( i ) );
     util_t::fprintf( file, "\n" );
 
     util_t::fprintf( file, "|| *Scale Factors* ||" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+        util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
     util_t::fprintf( file, "\n" );
 
     util_t::fprintf( file, "|| *Normalized* ||" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-	util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
+        util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
     util_t::fprintf( file, "\n" );
 
     util_t::fprintf( file, "_DPS gain per unit stat increase except for *Hit/Expertise* which represent *DPS loss* per unit stat *decrease*_<p>\n" );
@@ -2299,18 +2298,18 @@ static void print_wiki_player( FILE* file, player_t* p )
   }
 
   util_t::fprintf( file,
-		   "|| %s || %s ||\n"
-		   "|| %s || %s ||\n"
-		   "|| %s || %s ||\n"
-		   "\n",
-		   action_dpet_str.c_str(), action_dmg_str.c_str(),
-		   gains_str.c_str(), timeline_resource_str.c_str(),
-		   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
+                   "|| %s || %s ||\n"
+                   "|| %s || %s ||\n"
+                   "|| %s || %s ||\n"
+                   "\n",
+                   action_dpet_str.c_str(), action_dmg_str.c_str(),
+                   gains_str.c_str(), timeline_resource_str.c_str(),
+                   timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
 
   util_t::fprintf( file,
-		   "||*Ability*||*DPS*||*DPS%%*||*Count*||*Interval*||*DPE*||*DPET*||*DPR*||*Hit*||*Crit*||*Max*||*Crit%%*"
-		   "||*M%%*||*D%%*||*P%%*||*G%%*||*Ticks*||*T-Hit*||*T-Crit*||*T-Crit%%*||*T-M%%*||\n" );
+                   "||*Ability*||*DPS*||*DPS%%*||*Count*||*Interval*||*DPE*||*DPET*||*DPR*||*Hit*||*Crit*||*Max*||*Crit%%*"
+                   "||*M%%*||*D%%*||*P%%*||*G%%*||*Ticks*||*T-Hit*||*T-Crit*||*T-Crit%%*||*T-M%%*||\n" );
 
   util_t::fprintf( file, "|| *!%s* || *%.0f ||\n", p -> name(), p -> dps );
 
@@ -2333,7 +2332,7 @@ static void print_wiki_player( FILE* file, player_t* p )
         if ( first )
         {
           first = false;
-	  util_t::fprintf( file, "|| *pet - %s* || *%.0f* ||\n", pet -> name_str.c_str(), pet -> dps );
+          util_t::fprintf( file, "|| *pet - %s* || *%.0f* ||\n", pet -> name_str.c_str(), pet -> dps );
         }
         print_wiki_action( file, s );
       }
@@ -2349,9 +2348,9 @@ static void print_wiki_player( FILE* file, player_t* p )
       continue;
 
     util_t::fprintf( file, "|| %s || %.1f || %.1f || %.1fsec || %.1fsec || %.0f%% || %.0f%% ||\n",
-		     b -> name(), b -> avg_start, b -> avg_refresh,
-		     b -> avg_start_interval, b -> avg_trigger_interval,
-		     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+                     b -> name(), b -> avg_start, b -> avg_refresh,
+                     b -> avg_start_interval, b -> avg_trigger_interval,
+                     b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
   }
   util_t::fprintf( file, "\n" );
 
@@ -2402,13 +2401,13 @@ static void print_wiki_player( FILE* file, player_t* p )
     {
       if ( g -> actual > 0 )
       {
-	if ( first )
-	{
-	  first = false;
-	  util_t::fprintf( file, "|| *pet - %s* || *%s* ||\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
-	}
-	double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-	util_t::fprintf( file, "|| %s || %.1f || %.1f%% ||\n", g -> name(), g -> actual, overflow_pct );
+        if ( first )
+        {
+          first = false;
+          util_t::fprintf( file, "|| *pet - %s* || *%s* ||\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
+        }
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        util_t::fprintf( file, "|| %s || %.1f || %.1f%% ||\n", g -> name(), g -> actual, overflow_pct );
       }
     }
   }
@@ -2629,8 +2628,8 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
     util_t::fprintf( file, "\nPlayer: %s %s %s %s %d\n",
                      p -> name(), p -> race_str.c_str(),
-		     util_t::player_type_string( p -> type ),
-		     util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+                     util_t::player_type_string( p -> type ),
+                     util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
     util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%",
                      p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( p -> dps_max - p -> dps_min ) / 2.0 , ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps );
@@ -2893,8 +2892,8 @@ void report_t::print_wiki( sim_t* sim )
       file = fopen( file_name.c_str(), "w" );
       if ( ! file )
       {
-	util_t::fprintf( stderr, "simulationcraft: Unable to open wiki player file '%s'\n", file_name.c_str() );
-	exit( 0 );
+        util_t::fprintf( stderr, "simulationcraft: Unable to open wiki player file '%s'\n", file_name.c_str() );
+        exit( 0 );
       }
 
       print_wiki_preamble( file, sim );
@@ -2996,9 +2995,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-	std::string profile_str = "";
+        std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_GEAR );
-	fprintf( file, "%s", profile_str.c_str() );
+        fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }
@@ -3012,9 +3011,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-	std::string profile_str = "";
+        std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_TALENTS );
-	fprintf( file, "%s", profile_str.c_str() );
+        fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }
@@ -3028,9 +3027,9 @@ void report_t::print_profiles( sim_t* sim )
       }
       else
       {
-	std::string profile_str = "";
+        std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_ACTIONS );
-	fprintf( file, "%s", profile_str.c_str() );
+        fprintf( file, "%s", profile_str.c_str() );
         fclose( file );
       }
     }

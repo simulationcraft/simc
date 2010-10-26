@@ -1006,11 +1006,11 @@ struct ghoul_pet_t : public pet_t
   struct ghoul_pet_attack_t : public attack_t
   {
     ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL ) :
-      attack_t( "ghoul_pet_attack", player, RESOURCE_ENERGY, SCHOOL_PHYSICAL )
+      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      weapon_power_mod *= 0.84;
+      weapon_power_mod *= 0.84; // What is this based off?
     }
   };
 
@@ -1023,7 +1023,6 @@ struct ghoul_pet_t : public pet_t
       base_dd_min       = base_dd_max = 1;
       background        = true;
       repeating         = true;
-      direct_power_mod  = 0;
     }
   };
 
@@ -1047,11 +1046,16 @@ struct ghoul_pet_t : public pet_t
     
     virtual void player_buff()
     {
+      ghoul_pet_attack_t::player_buff();
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> buffs_shadow_infusion -> check() )
       {
         player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+      if ( o -> buffs_frost_presence -> check() )
+      {
+        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
       }
     }
 
@@ -1068,21 +1072,24 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_attack_t( "claw", player )
     {
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 91776;
-      parse_data( p -> player_data );
-
-      base_dd_min      = base_dd_max = 0.1;
-      direct_power_mod = 0;
+      parse_data( o -> player_data );
     }
 
     virtual void player_buff()
     {
+      ghoul_pet_attack_t::player_buff();
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> buffs_shadow_infusion -> check() )
       {
        player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+      if ( o -> buffs_frost_presence -> check() )
+      {
+        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
       }
     }
 
@@ -1093,13 +1100,11 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_sweeping_claws_t( player_t* player ) :
       ghoul_pet_attack_t( "sweeping_claws", player )
     {
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();      
+      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 91778;
-      parse_data( p -> player_data );
-
-      base_dd_min      = base_dd_max = 0.1;
-      direct_power_mod = 0;
+      parse_data( o -> player_data );
     }
     
     virtual void assess_damage( double amount, int dmg_type )
@@ -1109,6 +1114,17 @@ struct ghoul_pet_t : public pet_t
       for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
       {
         ghoul_pet_attack_t::additional_damage( amount, dmg_type );
+      }
+    }
+
+    virtual void player_buff()
+    {
+      ghoul_pet_attack_t::player_buff();
+      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+      if ( o -> buffs_frost_presence -> check() )
+      {
+        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
       }
     }
 
@@ -1134,7 +1150,7 @@ struct ghoul_pet_t : public pet_t
     attribute_base[ ATTR_SPIRIT    ] = 109;
 
     base_attack_power = -20;
-    initial_attack_power_per_strength = 1.0;
+    initial_attack_power_per_strength = 2.0;
     initial_attack_power_per_agility  = 1.0;
 
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -1143,29 +1159,13 @@ struct ghoul_pet_t : public pet_t
     energy_regen_per_second  = 10;
   }
 
-  virtual bool ooc_buffs()
-  {
-    // FIXME: What does this do? Ghouls no longer get buffs themselves
-    death_knight_t* o = owner -> cast_death_knight();
-    if ( o -> passives.master_of_ghouls -> ok() )
-      return true;
-
-    return false;
-  }
-
   virtual double strength() SC_CONST
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    if ( o -> passives.master_of_ghouls )
-      a += std::max( sim -> auras.strength_of_earth -> value(),
-           std::max( sim -> auras.horn_of_winter    -> value(),
-                     sim -> auras.battle_shout      -> value() ) );
-
     double strength_scaling = 1.0; // % of str ghould gets from the DK
     strength_scaling += o -> glyphs.raise_dead * .4; // But the glyph is additive!
-    a += o -> strength() *  strength_scaling;
-
+    a += o -> strength() * strength_scaling;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return floor( a );
   }
@@ -1184,6 +1184,18 @@ struct ghoul_pet_t : public pet_t
     o -> active_ghoul = 0;
   }
 
+  virtual double composite_attack_crit() SC_CONST
+  {
+    // Ghouls recieve 100% of their master's crit
+    death_knight_t* o = owner -> cast_death_knight();
+    return o -> composite_attack_crit();
+  }
+
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    return owner -> composite_attack_hit(); // Hit gains equal to expertise
+  }
+
   virtual double composite_attack_haste() SC_CONST
   {
     // Ghouls receive 100% of their master's haste.
@@ -1192,13 +1204,22 @@ struct ghoul_pet_t : public pet_t
     return o -> composite_attack_haste();
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_hit() SC_CONST
   {
-    // Ghouls recieve 100% of their master's crit
-    death_knight_t* o = owner -> cast_death_knight();
-    return o -> composite_attack_crit();
+    return floor( owner -> composite_attack_hit() * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
   }
-  virtual int primary_resource() SC_CONST { return RESOURCE_ENERGY; }
+
+  virtual int primary_resource() SC_CONST
+  {
+    return RESOURCE_ENERGY;
+  }
+
+  virtual void regen( double periodicity )
+  {
+    periodicity *= 1.0 + composite_attack_haste();
+
+    player_t::regen( periodicity );
+  }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1208,8 +1229,7 @@ struct ghoul_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-};
+}; 
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -4378,7 +4398,7 @@ double death_knight_t::composite_player_multiplier( const school_type school ) S
 {
   double m = player_t::composite_player_multiplier( school );
   // Factor flat multipliers here so they effect procs, grenades, etc.
-  m *= 1.0 + buffs_blood_presence -> value();
+  m *= 1.0 + buffs_frost_presence -> value();
   m *= 1.0 + buffs_bone_shield -> value();
   return m;
 }
