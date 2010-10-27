@@ -525,7 +525,6 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   weapon_t*  w = a -> weapon;
 
   double rage_factor = 6.5;
-  if ( a -> result == RESULT_CRIT ) rage_factor *= 2.0;
   if ( w -> slot == SLOT_OFF_HAND ) rage_factor /= 2.0;
   
   double rage_gain = rage_factor * w -> swing_time;
