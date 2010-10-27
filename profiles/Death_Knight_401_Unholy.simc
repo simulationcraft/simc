@@ -18,10 +18,15 @@ actions+=/auto_attack
 actions+=/icy_touch,if=dot.frost_fever.remains<3
 actions+=/plague_strike,if=dot.blood_plague.remains<3
 actions+=/dark_transformation
-actions+=/scourge_strike
-actions+=/festering_strike
 actions+=/summon_gargoyle,time<=60
 actions+=/summon_gargoyle,if=buff.bloodlust.react
+actions+=/scourge_strike,if=death=4
+actions+=/scourge_strike,if=unholy=2
+actions+=/festering_strike,if=blood=2&frost=2
+actions+=/death_coil,if=runic_power>90
+actions+=/death_coil,if=buff.sudden_doom.react
+actions+=/scourge_strike
+actions+=/festering_strike
 actions+=/death_coil
 actions+=/blood_tap,if=unholy=0&inactive_death=1
 actions+=/empower_rune_weapon,if=unholy=0
