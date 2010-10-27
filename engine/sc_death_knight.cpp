@@ -446,6 +446,8 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 // Army of the Dead ghouls are basically a copy of the pet ghoul, but with a 50% damage penalty, but you get 8 of them
 struct army_ghoul_pet_t : public pet_t
 {
+  double snapshot_haste, snapshot_hit, snapshot_strength;
+
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "army_of_the_dead_ghoul" )
   {
@@ -542,9 +544,8 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double strength() SC_CONST
   {
-    death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    a += o -> strength();
+    a += snapshot_strength;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return floor( a );
   }
@@ -553,6 +554,9 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
+    snapshot_haste    = o -> composite_attack_haste();
+    snapshot_hit      = o -> composite_attack_hit();
+    snapshot_strength = o -> strength();
     o -> active_army_ghoul = this;
   }
 
@@ -565,20 +569,19 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_attack_hit(); // Hit gains equal to expertise
+    return snapshot_hit; // Hit gains equal to expertise
   }
 
   virtual double composite_attack_haste() SC_CONST
   {
     // Ghouls receive 100% of their master's haste.
     // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
-    death_knight_t* o = owner -> cast_death_knight();
-    return o -> composite_attack_haste();
+    return snapshot_haste;
   }
 
   virtual double composite_attack_hit() SC_CONST
   {
-    return floor( owner -> composite_attack_hit() * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
+    return floor( snapshot_hit * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
   }
 
   virtual int primary_resource() SC_CONST
@@ -1142,6 +1145,8 @@ struct gargoyle_pet_t : public pet_t
 
 struct ghoul_pet_t : public pet_t
 {
+  double snapshot_crit, snapshot_haste, snapshot_hit, snapshot_strength;
+
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "ghoul" )
   {
@@ -1204,6 +1209,10 @@ struct ghoul_pet_t : public pet_t
       {
         player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
       }
+      if ( o -> buffs_dark_transformation -> check() )
+      {
+        player_multiplier *= 2;
+      }
       if ( o -> buffs_frost_presence -> check() )
       {
         player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
@@ -1237,6 +1246,10 @@ struct ghoul_pet_t : public pet_t
       if ( o -> buffs_shadow_infusion -> check() )
       {
         player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+      if ( o -> buffs_dark_transformation -> check() )
+      {
+        player_multiplier *= 2;
       }
       if ( o -> buffs_frost_presence -> check() )
       {
@@ -1273,6 +1286,10 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_attack_t::player_buff();
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
+      if ( o -> buffs_dark_transformation -> check() )
+      {
+        player_multiplier *= 2;
+      }
       if ( o -> buffs_frost_presence -> check() )
       {
         player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
@@ -1316,15 +1333,28 @@ struct ghoul_pet_t : public pet_t
     double a = attribute[ ATTR_STRENGTH ];
     double strength_scaling = 1.0; // % of str ghould gets from the DK
     strength_scaling += o -> glyphs.raise_dead * .4; // But the glyph is additive!
-    a += o -> strength() * strength_scaling;
+
+    // Perma Ghouls are updated constantly
+    if ( o -> passives.master_of_ghouls -> ok() )
+    {
+      a += o -> strength() * strength_scaling;
+    }
+    else
+    {
+      a += snapshot_strength * strength_scaling;
+    }
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return floor( a );
   }
 
   virtual void summon( double duration=0 )
   {
-    death_knight_t* o = owner -> cast_death_knight();
+    death_knight_t* o = owner -> cast_death_knight();    
     pet_t::summon( duration );
+    snapshot_crit     = o -> composite_attack_crit();
+    snapshot_haste    = o -> composite_attack_haste();
+    snapshot_hit      = o -> composite_attack_hit();
+    snapshot_strength = o -> strength();
     o -> active_ghoul = this;
   }
 
@@ -1339,12 +1369,31 @@ struct ghoul_pet_t : public pet_t
   {
     // Ghouls recieve 100% of their master's crit
     death_knight_t* o = owner -> cast_death_knight();
-    return o -> composite_attack_crit();
+
+    // Perma Ghouls are updated constantly
+    if ( o -> passives.master_of_ghouls -> ok() )
+    {
+      return o -> composite_attack_crit();
+    }
+    else
+    {
+      return snapshot_crit;
+    }    
   }
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_attack_hit(); // Hit gains equal to expertise
+    death_knight_t* o = owner -> cast_death_knight();
+
+    // Perma Ghouls are updated constantly
+    if ( o -> passives.master_of_ghouls -> ok() )
+    {
+      return o -> composite_attack_hit();
+    }
+    else
+    {
+      return snapshot_hit;
+    }
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -1352,12 +1401,32 @@ struct ghoul_pet_t : public pet_t
     // Ghouls receive 100% of their master's haste.
     // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
     death_knight_t* o = owner -> cast_death_knight();
-    return o -> composite_attack_haste();
+
+    // Perma Ghouls are updated constantly
+    if ( o -> passives.master_of_ghouls -> ok() )
+    {
+      return o -> composite_attack_haste();
+    }
+    else
+    {
+      return snapshot_haste;
+    }
   }
 
   virtual double composite_attack_hit() SC_CONST
   {
-    return floor( owner -> composite_attack_hit() * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
+    // Hit is rounded down, 7.99% hit is 7%
+    death_knight_t* o = owner -> cast_death_knight();
+
+    // Perma Ghouls are updated constantly
+    if ( o -> passives.master_of_ghouls -> ok() )
+    {
+       return floor( o -> composite_attack_hit() * 100.0 ) / 100.0; 
+    }
+    else
+    {
+       return floor( snapshot_hit * 100.0 ) / 100.0; 
+    }   
   }
 
   virtual int primary_resource() SC_CONST
@@ -1748,21 +1817,20 @@ void death_knight_attack_t::reset()
 void death_knight_attack_t::consume_resource()
 {
   death_knight_t* p = player -> cast_death_knight();
-
   if ( rp_gain > 0 )
   {
-    if ( p -> buffs_frost_presence -> check() )
-    {
-      rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 50384, E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 100.0;
-    }
-    if ( p -> talents.improved_frost_presence -> rank() )
-    {
-      rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0;
-    }
-
     if ( result_is_hit() )
     {
-      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
+      double real_rp_gain = rp_gain;
+      if ( p -> buffs_frost_presence -> check() )
+      {
+        real_rp_gain *= 1.10;
+      }
+      if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
+      {
+        real_rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0;
+      }
+      p -> resource_gain( RESOURCE_RUNIC, real_rp_gain, p -> gains_rune_abilities );
     }
   }
   else
@@ -1903,13 +1971,19 @@ void death_knight_spell_t::consume_resource()
   death_knight_t* p = player -> cast_death_knight();
   if ( rp_gain > 0 )
   {
-    if ( p -> buffs_frost_presence -> check() )
-      rp_gain *= 1 + sim -> sim_data.effect_base_value( 50384, E_APPLY_AURA, A_ADD_FLAT_MODIFIER );
-    if ( p -> talents.improved_frost_presence -> rank() )
-      rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0;
-
     if ( result_is_hit() )
-      p -> resource_gain( resource, rp_gain, p -> gains_rune_abilities );
+    {
+      double real_rp_gain = rp_gain;
+      if ( p -> buffs_frost_presence -> check() )
+      {
+        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 100.0;
+      }
+      if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
+      {
+        real_rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0;
+      }
+      p -> resource_gain( resource, real_rp_gain, p -> gains_rune_abilities );
+    }
   }
   else
   {
@@ -2972,7 +3046,9 @@ struct howling_blast_t : public death_knight_spell_t
         p -> frost_fever -> execute();
       }
       if ( p -> talents.chill_of_the_grave -> rank() )
+      {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect_base_value( 1 ) / 10.0, p -> gains_chill_of_the_grave );
+      }
     }
     p -> buffs_rime -> expire();
   }
@@ -3049,8 +3125,9 @@ struct icy_touch_t : public death_knight_spell_t
     if ( result_is_hit() )
     {
       if ( p -> talents.chill_of_the_grave -> rank() )
+      {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect_base_value( 1 ) / 10.0, p -> gains_chill_of_the_grave );
-
+      }
       if ( ! p -> frost_fever )
         p -> frost_fever = new frost_fever_t( p );
       p -> frost_fever -> execute();
@@ -3183,8 +3260,9 @@ struct obliterate_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       if ( p -> talents.chill_of_the_grave -> rank() )
+      {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect_base_value( 1 ) / 10.0, p -> gains_chill_of_the_grave );
-
+      }
       if ( p -> buffs_rime -> trigger() )
       {
         p -> cooldowns_howling_blast -> reset();
@@ -3446,7 +3524,7 @@ struct presence_t : public death_knight_spell_t
     {
       double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
       if ( p -> talents.improved_frost_presence -> rank() )
-        fp_value += p -> talents.improved_frost_presence -> effect_base_value( 1 );
+        fp_value += p -> talents.improved_frost_presence -> effect_base_value( 2 );
       p -> buffs_frost_presence  -> trigger( 1, fp_value / 100.0 );
     }
     break;

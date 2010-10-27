@@ -69,6 +69,7 @@ void action_t::_init_action_t()
   player_hit                     = 0.0;
   player_crit                    = 0.0;
   player_penetration             = 0.0;
+  rp_gain                        = 0.0;
   target_multiplier              = 1.0;
   target_hit                     = 0.0;
   target_crit                    = 0.0;
