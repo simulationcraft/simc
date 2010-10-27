@@ -4104,8 +4104,8 @@ void death_knight_t::init_spells()
   plate_specialization               = new passive_spell_t( this, "plate_specialization", 86524 );
 
   // Mastery
-  mastery.blightcaller               = new passive_spell_t( this, "blightcaller", "Blightcaller", DEATH_KNIGHT_UNHOLY );
-  mastery.frozen_heart               = new passive_spell_t( this, "frozen_heart", "Frozen Heart", DEATH_KNIGHT_FROST );
+  mastery.blightcaller               = new passive_spell_t( this, "blightcaller", 77515, DEATH_KNIGHT_UNHOLY, true );
+  mastery.frozen_heart               = new passive_spell_t( this, "frozen_heart", 77514, DEATH_KNIGHT_FROST,  true );
 
   // Passives
   passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
@@ -4320,7 +4320,7 @@ void death_knight_t::init_enchant()
     razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", 50401, player )
     {
       may_miss    = false;
-      may_crit    = false; // FIXME!!  Can the damage crit?
+      may_crit    = false;
       may_resist  = true;
       background  = true;
       proc        = true;
