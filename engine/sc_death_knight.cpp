@@ -4337,7 +4337,8 @@ void death_knight_t::init_enchant()
   // Damage Proc
   struct razorice_spell_t : public death_knight_spell_t
   {
-    razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", 50401, player )
+    //razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", 50401, player ) Use this one it's added to the TBC
+    razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
     {
       may_miss    = false;
       may_crit    = false;
