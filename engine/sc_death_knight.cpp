@@ -2584,6 +2584,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     parse_data( p -> player_data );
     extract_rune_cost( p->talents.dark_transformation, &cost_blood, &cost_frost, &cost_unholy );
+    base_cost = 0;
   }
 
   virtual void execute()
