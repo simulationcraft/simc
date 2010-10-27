@@ -26,9 +26,13 @@ const char *rune_symbols = "!bfu!!";
 
 #define RUNIC_POWER_REFUND  0.9
 
-#define GET_BLOOD_RUNE_COUNT(x)  (((x&0x01) + ((x&0x02)>>1))    )
-#define GET_FROST_RUNE_COUNT(x)  (((x&0x08) + ((x&0x10)>>1)) >>3)
-#define GET_UNHOLY_RUNE_COUNT(x) (((x&0x40) + ((x&0x80)>>1)) >>6)
+// These macros simplify using the result of count_runes(), which
+// returns a number of the form 0x000AABBCC where AA is the number of
+// Unholy runes, BB is the number of Frost runes, and CC is the number
+// of Blood runes.
+#define GET_BLOOD_RUNE_COUNT(x)  ((x >>  0) & 0xff)
+#define GET_FROST_RUNE_COUNT(x)  ((x >>  8) & 0xff)
+#define GET_UNHOLY_RUNE_COUNT(x) ((x >> 16) & 0xff)
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
@@ -1593,16 +1597,13 @@ struct death_knight_spell_t : public spell_t
 static int count_runes( player_t* player )
 {
   death_knight_t* p = player -> cast_death_knight();
-  int count = 0;
+  int count_by_type[RUNE_SLOT_MAX / 2] = { 0, 0, 0 }; // blood, frost, unholy
 
-  // Storing ready runes by type in 2 bit blocks with 0 value bit separator (11 bits total)
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if ( p -> _runes.slot[i].is_ready() )
-      count |= 1 << ( i + ( i >> 1 ) );
+  for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
+    count_by_type[i] = ((int)p -> _runes.slot[2 * i].is_ready() +
+			(int)p -> _runes.slot[2 * i + 1].is_ready());
 
-  // Adding bits in each two-bit block (0xDB = 011 011 011)
-  // NOTE: Use GET_XXX_RUNE_COUNT macros to process return value
-  return ( ( count & ( count << 1 ) ) | ( count >> 1 ) ) & 0xDB;
+  return count_by_type[0] + (count_by_type[1] << 8) + (count_by_type[2] << 16);
 }
 
 // Count Death Runes ========================================================
@@ -4260,7 +4261,10 @@ void death_knight_t::init_actions()
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       action_list_str += "/dark_transformation";
-      action_list_str += "/death_coil,if=runic_power>=90";
+      action_list_str += "/scourge_strike,if=death=4";
+      action_list_str += "/scourge_strike,if=unholy=2";
+      action_list_str += "/festering_strike,if=blood=2&frost=2";
+      action_list_str += "/death_coil,if=runic_power>90";
       action_list_str += "/death_coil,if=buff.sudden_doom.react";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
