@@ -2274,7 +2274,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 struct blood_boil_t : public death_knight_spell_t
 {
-  blood_boil_t( death_knight_t* player, const std::string& options_str, bool sudden_doom = false ) :
+  blood_boil_t( death_knight_t* player, const std::string& options_str ) :
     death_knight_spell_t( "blood_boil", player->spells.blood_boil->spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -2673,10 +2673,18 @@ struct death_coil_t : public death_knight_spell_t
       base_cost += p -> talents.runic_corruption -> effect_base_value( 2 );
   }
 
+  virtual double cost() SC_CONST
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> buffs_sudden_doom -> check() ) return 0;
+    return death_knight_spell_t::cost();
+  }
+
   void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
+    p -> buffs_sudden_doom -> decrement();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
@@ -4268,6 +4276,11 @@ void death_knight_t::init_actions()
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       action_list_str += "/dark_transformation";
+      if ( talents.summon_gargoyle -> rank() )
+      {
+        action_list_str += "/summon_gargoyle,time<=60";
+        action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
+      }
       action_list_str += "/scourge_strike,if=death=4";
       action_list_str += "/scourge_strike,if=unholy=2";
       action_list_str += "/festering_strike,if=blood=2&frost=2";
@@ -4275,11 +4288,6 @@ void death_knight_t::init_actions()
       action_list_str += "/death_coil,if=buff.sudden_doom.react";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
-      if ( talents.summon_gargoyle -> rank() )
-      {
-        action_list_str += "/summon_gargoyle,time<=60";
-        action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
-      }
       action_list_str += "/death_coil";
       action_list_str += "/blood_tap,if=frost=0&unholy=0&blood=1&inactive_death=1";
       action_list_str += "/empower_rune_weapon,if=blood=0&frost=0&unholy=0";
