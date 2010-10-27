@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (61)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13202
+// Class based active abilities, wow build 13221
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -371,7 +371,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        9484, // Shackle Undead
           0,
     },
-    // Holy tree, 20 abilities
+    // Holy tree, 21 abilities
     {
       32546, // Binding Heal
       14751, // Chakra
@@ -386,6 +386,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       14914, // Holy Fire
       15237, // Holy Nova
       88625, // Holy Word: Chastise
+      88684, // Holy Word: Serenity
       64901, // Hymn of Hope
       73325, // Leap of Faith
         724, // Lightwell
@@ -835,7 +836,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13202
+// Talent tree specialization abilities, wow build 13221
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1092,7 +1093,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13202
+// Class mastery abilities, wow build 13221
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1177,7 +1178,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13202
+// Racial abilities, wow build 13221
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1286,6 +1287,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
+      92682, // Explorer
       20596, // Frost Resistance
       20595, // Gun Specialization
       59224, // Mace Specialization
@@ -1462,7 +1464,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
-        822, // Magic Resistance
+        822, // Arcane Resistance
           0,
     },
     // Racial abilities for Warrior class
@@ -1809,7 +1811,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13202
+// Glyph spells for classes, wow build 13221
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1872,7 +1874,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (17 spells)
+    // Major Glyphs (18 spells)
     {
       63218, // Glyph of Beacon of Light
       54935, // Glyph of Cleansing
@@ -1885,21 +1887,20 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       54923, // Glyph of Hammer of Justice
       54926, // Glyph of Hammer of Wrath
       56420, // Glyph of Holy Wrath
+      57955, // Glyph of Lay on Hands
       54940, // Glyph of Light of Dawn
       54925, // Glyph of Rebuke
       63225, // Glyph of Salvation
       54931, // Glyph of Turn Evil
       54938, // Glyph of the Ascetic Crusader
       93466, // Glyph of the Long Word
-          0,
     },
-    // Minor Glyphs (7 spells)
+    // Minor Glyphs (6 spells)
     {
       57937, // Glyph of Blessing of Kings
       57958, // Glyph of Blessing of Might
       57979, // Glyph of Insight
       57954, // Glyph of Justice
-      57955, // Glyph of Lay on Hands
       89401, // Glyph of Righteousness
       57947, // Glyph of Truth
           0,
@@ -2324,7 +2325,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13202
+// Tier item set bonuses for class, wow build 13221
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {

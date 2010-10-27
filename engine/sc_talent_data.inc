@@ -1,6 +1,6 @@
 #define TALENT_SIZE (658)
 
-// 658 talents, wow build 13164
+// 658 talents, wow build 13205
 static struct talent_data_t __talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 } },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 } },
