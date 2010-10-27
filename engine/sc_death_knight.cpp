@@ -37,6 +37,7 @@ struct dk_rune_t
   int        type;
   rune_state state;
   double     value;   // 0.0 to 1.0, with 1.0 being full
+  int        slot_number;
   dk_rune_t* paired_rune;
 
   dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), paired_rune( NULL ) {}
@@ -212,6 +213,7 @@ struct death_knight_t : public player_t
       {
         slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 );
         slot[i].paired_rune = &( slot[i ^ 1] ); // xor!
+	slot[i].slot_number = i;
       }
 
     }
@@ -440,7 +442,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
       o -> buffs_tier11_4pc_melee -> trigger();
 
     if ( p -> sim -> debug )
-      log_t::output( p -> sim, "rune %d regens to full", type );
+      log_t::output( p -> sim, "rune %d regens to full", slot_number );
   }
 }
 
