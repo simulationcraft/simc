@@ -590,7 +590,13 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return std::max(snapshot_hit, snapshot_expertise); // Hit gains equal to expertise
+    // Divide hit by 0.25; expertise is stored not as a percent or
+    // rating but as the effective "expertise" amount, which is 0.25%
+    // antidodge/antiparry per point.  Since hit is a percent, we need
+    // to divide by 0.25 to get an expertise value of the equivalentb
+    // percents, as percent-equivalent is apparently how the game
+    // functions.
+    return std::max(snapshot_hit / 0.25, snapshot_expertise); // Hit gains equal to expertise
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -1411,7 +1417,8 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> passives.master_of_ghouls -> ok() )
     {
-      return std::max(o -> composite_attack_hit(), o -> composite_attack_expertise());
+      // See comment above about expertise and pets.
+      return std::max(o -> composite_attack_hit() / 0.25, o -> composite_attack_expertise());
     }
     else
     {
