@@ -413,28 +413,33 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   death_knight_t* o = p -> cast_death_knight();
   // Base rune regen rate is 10 seconds; we want the per-second regen
-  // rate, so divide by 10.0.  Haste linearly scales regen rate --
-  // 100% haste means a rune regens in 5 seconds, etc.
-  double rate = ( 1.0 + p -> composite_attack_haste() ) / 10.0;
+  // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
+  // means composite_attack_haste is 1/1.3), so we invert it.  Haste
+  // linearly scales regen rate -- 100% haste means a rune regens in 5
+  // seconds, etc.
+  double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
 
   if ( o -> buffs_blood_presence -> check() && o -> talents.improved_blood_presence -> rank() )
   {
-    rate *= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );
+    runes_per_second *= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );
   }
   if ( o -> buffs_unholy_presence -> check() )
   {
-    rate *= 1.15;
+    runes_per_second *= 1.15;
   }
   if ( o -> buffs_runic_corruption -> check() )
   {
-    rate *= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
+    runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
   }
 
-  value = std::min( 1.0, value + periodicity * rate );
+  value = std::min( 1.0, value + periodicity * runes_per_second );
   if ( value >= 1.0 )
     state = STATE_FULL;
   else
     state = STATE_REGENERATING;
+
+  if (p -> sim -> debug)
+    log_t::output( p -> sim, "rune %d regen rate %.3f with haste %.2f percent", slot_number, runes_per_second, 100.0 / p -> composite_attack_haste() );
 
   if ( state == STATE_FULL )
   {
@@ -3936,7 +3941,7 @@ double death_knight_t::composite_attack_haste() SC_CONST
   if ( talents.improved_icy_talons -> rank() )
     haste *= 1.0 / ( 1.0 + talents.improved_icy_talons -> effect_base_value( 3 ) / 100.0 );
   if ( active_presence == PRESENCE_UNHOLY && talents.improved_unholy_presence -> rank() )
-    haste *= 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0;
+    haste *= 1.0 / ( 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0 );
 
   return haste;
 }
