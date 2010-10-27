@@ -676,7 +676,9 @@ void warrior_attack_t::execute()
   attack_t::execute();
 
   warrior_t* p = player -> cast_warrior();
-  p -> buffs_battle_trance   -> expire();
+  // Battle Trance only is effective+consumed if action cost was >=5
+  if ( attack_t::cost() >= 50 ) 
+    p -> buffs_battle_trance -> expire();
 
   if ( result_is_hit() )
   {
