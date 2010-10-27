@@ -84,7 +84,6 @@ struct warrior_t : public player_t
   buff_t* buffs_victory_rush;
   buff_t* buffs_wrecking_crew;
   buff_t* buffs_tier10_2pc_melee;
-  buff_t* buffs_tier10_4pc_melee;
 
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
@@ -159,7 +158,6 @@ struct warrior_t : public player_t
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
   rng_t* rng_wrecking_crew;
-  rng_t* rng_tier10_4pc_melee;  
 
   // Spec Passives
   struct spec_t
@@ -364,23 +362,7 @@ static void trigger_bloodsurge( action_t* a )
   if ( ! p -> talents.bloodsurge -> rank() )
     return;
 
-  if ( p -> set_bonus.tier10_4pc_melee() && p -> rng_tier10_4pc_melee -> roll( 0.30 ) )
-  {
-    p -> buffs_bloodsurge -> max_stack = 2;
-    p -> buffs_bloodsurge -> buff_duration = 10;
-
-    p -> buffs_tier10_4pc_melee -> buff_duration = 20;
-  }
-  else
-  {
-    p -> buffs_bloodsurge -> max_stack = 1;
-    p -> buffs_bloodsurge -> buff_duration = 10;
-  }
-
-  if ( p -> buffs_bloodsurge -> trigger( p -> buffs_bloodsurge -> max_stack ) )
-  {
-    p -> buffs_tier10_4pc_melee -> trigger();
-  }
+  p -> buffs_bloodsurge -> trigger();
 }
 
 // trigger_deep_wounds ======================================================
@@ -798,6 +780,9 @@ void warrior_attack_t::player_buff()
 
   if ( p -> buffs_bastion_of_defense -> check() )
     player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+
+  if ( p -> set_bonus.tier10_4pc_melee() )
+    player_multiplier *= 1.05;
 
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
@@ -1289,15 +1274,6 @@ struct execute_t : public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
   }
 
-  virtual double gcd() SC_CONST
-  {
-    warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_tier10_4pc_melee -> up() )
-      return trigger_gcd - 0.5;
-
-    return trigger_gcd;
-  }
-
   virtual void consume_resource()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1330,7 +1306,6 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
     p -> buffs_lambs_to_the_slaughter -> expire();
-    p -> buffs_tier10_4pc_melee -> decrement();
     if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
     {
       p -> buffs_executioner_talent -> trigger();
@@ -1954,15 +1929,6 @@ struct slam_t : public warrior_attack_t
       weapon_multiplier *= 1.50;
   }
 
-  virtual double gcd() SC_CONST
-  {
-    warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_tier10_4pc_melee -> up() )
-      return trigger_gcd - 0.5;
-
-    return trigger_gcd;
-  }
-
   virtual double haste() SC_CONST
   {
     // No haste for slam cast
@@ -1972,11 +1938,9 @@ struct slam_t : public warrior_attack_t
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( sim -> P403 )
-    {
-      if ( p -> buffs_bloodsurge -> check() )
-        return 0;
-    }
+    if ( p -> buffs_bloodsurge -> check() )
+      return 0;
+
     return warrior_attack_t::cost();
   }
 
@@ -1996,7 +1960,6 @@ struct slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     
     p -> buffs_bloodsurge -> decrement();
-    p -> buffs_tier10_4pc_melee -> decrement();
 
     // MH hit
     weapon = &( player -> main_hand_weapon );
@@ -2902,7 +2865,7 @@ void warrior_t::init_buffs()
   buffs_battle_trance             = new buff_t( this, "battle_trance",             1, 15.0,   0, talents.battle_trance -> proc_chance() );
   buffs_berserker_rage            = new buff_t( this, "berserker_rage",            1, 10.0 );
   buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
-  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                2,  5.0,   0, talents.bloodsurge -> proc_chance() );
+  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1, 10.0,   0, talents.bloodsurge -> proc_chance() );
   buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
   buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, 10.0 );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0 );
@@ -2927,7 +2890,6 @@ void warrior_t::init_buffs()
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 + glyphs.enduring_victory * 5.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
-  buffs_tier10_4pc_melee          = new buff_t( this, "tier10_4pc_melee",          2, 20.0,   0, set_bonus.tier10_4pc_melee() );
 }
 
 // warrior_t::init_gains ====================================================
@@ -2984,7 +2946,6 @@ void warrior_t::init_rng()
   rng_impending_victory         = get_rng( "impending_victory"         );
   rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng_sudden_death              = get_rng( "sudden_death"              );
-  rng_tier10_4pc_melee          = get_rng( "tier10_4pc_melee"          );
   rng_wrecking_crew             = get_rng( "wrecking_crew"             );
 }
 
