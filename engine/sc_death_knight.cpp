@@ -2387,7 +2387,7 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * effect_base_value( 3 ) / 100.0;
+    target_multiplier *= 1 + p -> diseases() * p -> spells.blood_strike -> effect_base_value( 3 ) / 100.0;
   }
 };
 
@@ -2653,7 +2653,7 @@ struct death_coil_t : public death_knight_spell_t
       base_crit        += 0.05;
 
     if ( p -> talents.runic_corruption -> rank() )
-      base_cost += effect_base_value( 2 );
+      base_cost += p -> talents.runic_corruption -> effect_base_value( 2 );
   }
 
   void execute()
@@ -2974,7 +2974,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( dmg_type );
-    target_multiplier *= 1 + p -> diseases() * effect_base_value( 3 ) / 100.0;
+    target_multiplier *= 1 + p -> diseases() * p -> spells.heart_strike -> effect_base_value( 3 ) / 100.0;
   }
 };
 
@@ -3415,7 +3415,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
-    p -> buffs_pillar_of_frost -> trigger( 1, effect_base_value( 1 ) / 100.0 );
+    p -> buffs_pillar_of_frost -> trigger( 1, p -> talents.pillar_of_frost -> effect_base_value( 1 ) / 100.0 );
   }
 };
 
@@ -3932,7 +3932,7 @@ double death_knight_t::composite_attack_haste() SC_CONST
   if ( passives.icy_talons -> ok() )
     haste *= 1.0 / ( 1.0 + passives.icy_talons -> effect_base_value( 1 ) / 100.0 );
   if ( talents.improved_icy_talons -> rank() )
-    haste *= 1.0 / ( 1.0 + talents.improved_icy_talons ->effect_base_value( 3 ) / 100.0 );
+    haste *= 1.0 / ( 1.0 + talents.improved_icy_talons -> effect_base_value( 3 ) / 100.0 );
   if ( active_presence == PRESENCE_UNHOLY && talents.improved_unholy_presence -> rank() )
     haste *= 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0;
 
