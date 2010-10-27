@@ -69,7 +69,6 @@ struct dk_rune_t
     state = STATE_FULL;
     type = type & RUNE_TYPE_MASK;
   }
-
 };
 
 // ==========================================================================
@@ -106,6 +105,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_shadow_infusion;
   buff_t* buffs_sudden_doom;
   buff_t* buffs_tier10_4pc_melee;
+  buff_t* buffs_tier11_4pc_melee;
   buff_t* buffs_unholy_presence;
 
   // Constants
@@ -374,6 +374,7 @@ struct death_knight_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
+  virtual int       primary_role() SC_CONST { return ROLE_ATTACK; }
   virtual void      trigger_runic_empowerment();
 
   // Death Knight Specific helperfunctions
@@ -431,8 +432,14 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   else
     state = STATE_REGENERATING;
 
-  if ( p -> sim -> debug && state == STATE_FULL )
-    log_t::output( p -> sim, "rune %d regens to full", type );
+  if ( state == STATE_FULL )
+  {
+    if ( is_death() )
+      o -> buffs_tier11_4pc_melee -> trigger();
+
+    if ( p -> sim -> debug )
+      log_t::output( p -> sim, "rune %d regens to full", type );
+  }
 }
 
 // ==========================================================================
@@ -778,6 +785,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_dd_max      = o -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
       base_multiplier *= 1 + o -> glyphs.death_coil * 0.15;
       base_multiplier *= 0.50; // DRW Penalty
+      if ( o -> set_bonus.tier11_2pc_melee() )
+        base_crit     += 0.05;
 
       if ( o -> race == RACE_ORC )
       {
@@ -2617,6 +2626,8 @@ struct death_coil_t : public death_knight_spell_t
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
     base_multiplier *= 1 + p -> talents.morbidity -> effect_base_value( 1 ) / 100.0
                        + p -> glyphs.death_coil * 0.15;
+    if ( p -> set_bonus.tier11_2pc_melee() )
+      base_crit        += 0.05;
 
     if ( p -> talents.runic_corruption -> rank() )
       base_cost += effect_base_value( 2 );
@@ -2753,7 +2764,9 @@ struct festering_strike_t : public death_knight_attack_t
     cost_frost = 1;
     cost_blood = 1;
     if ( p -> passives.reaping -> ok() )
+    {
       convert_runes = 1.0;
+    }
 
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
   }
@@ -2854,7 +2867,9 @@ struct frost_strike_t : public death_knight_attack_t
     id = 49143;
     parse_data( p -> player_data );
 
-    base_cost -= p -> glyphs.frost_strike * 80;
+    base_cost   -= p -> glyphs.frost_strike * 80;
+    if ( p -> set_bonus.tier11_2pc_melee() )
+      base_crit += 0.05;
   }
 
   virtual void consume_resource() { }
@@ -4098,7 +4113,7 @@ void death_knight_t::init_spells()
   passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites", DEATH_KNIGHT_BLOOD );
   passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons", DEATH_KNIGHT_FROST );
   passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls", DEATH_KNIGHT_UNHOLY );
-  passives.reaping                   = new passive_spell_t( this, "reaping", "Reaping", DEATH_KNIGHT_UNHOLY );
+  passives.reaping                   = new passive_spell_t( this, "reaping", 56835 );
   passives.runic_empowerment         = new passive_spell_t( this, "runic_empowerment", 81229 );
   passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might", DEATH_KNIGHT_UNHOLY );
   passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
@@ -4450,6 +4465,7 @@ void death_knight_t::init_buffs()
   buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
   buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, talents.summon_gargoyle -> proc_chance() );
   buffs_tier10_4pc_melee    = new buff_t( this, "tier10_4pc_melee",                                   1,  15.0,  0.0, set_bonus.tier10_4pc_melee() );
+  buffs_tier11_4pc_melee    = new buff_t( this, "tier11_4pc_melee",                                   3,  30.0,  0.0, set_bonus.tier11_4pc_melee() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
 
   struct bloodworms_buff_t : public buff_t
@@ -4563,6 +4579,9 @@ double death_knight_t::composite_attack_power() SC_CONST
   {
     ap += composite_armor() / talents.bladed_armor -> effect_base_value( 1 );
   }
+  if ( buffs_tier11_4pc_melee -> check() )
+    ap *= 1.0 + buffs_tier11_4pc_melee -> stack() / 100.0;
+
   return ap;
 }
 

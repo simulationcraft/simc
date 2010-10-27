@@ -1,5 +1,5 @@
 #!./simc 
-#debug=1
+
 death_knight=Death_Knight_401_Frost_1h
 level=80
 race=tauren
@@ -39,7 +39,7 @@ trinket1=deathbringers_will,heroic=1,stats=167crit,reforge=crit_mastery
 trinket2=sharpened_twilight_scale,heroic=1,stats=184crit,equip=onattackhit_1472ap_35%_15dur_45cd,reforge=crit_mastery
 back=winding_sheet,heroic=1,stats=599armor_68crit_60haste_153sta_94str,gems=10haste_10str_4str,enchant=23haste,reforge=crit_mastery
 main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_56crit_48haste_113sta,gems=20str_4agi,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_481min_895max,reforge=crit_mastery
-off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_56crit_48haste_113sta,gems=20str_4agi,weapon=axe_2.60speed_481min_895max,reforge=crit_mastery
+off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,stats=84agi_56crit_48haste_113sta,gems=20str_4agi,enchant=rune_of_razorice,weapon=axe_2.60speed_481min_895max,reforge=crit_mastery
 ranged=sigil_of_the_hanged_man,stats=34crit_34haste_77sta_51str,gems=34str,reforge=crit_mastery
 # Gear Summary
 # gear_strength=1979
@@ -59,4 +59,4 @@ ranged=sigil_of_the_hanged_man,stats=34crit_34haste_77sta_51str,gems=34str,refor
 # tier10_4pc_melee=1
 # trinket1=deathbringers_will,heroic=1
 # main_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max,enchant=rune_of_the_fallen_crusader
-# off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max
+# off_hand=havocs_call_blade_of_lordaeron_kings,heroic=1,weapon=axe_2.60speed_481min_895max,enchant=rune_of_razorice
