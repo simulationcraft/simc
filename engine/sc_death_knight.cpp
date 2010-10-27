@@ -462,7 +462,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 // Army of the Dead ghouls are basically a copy of the pet ghoul, but with a 50% damage penalty, but you get 8 of them
 struct army_ghoul_pet_t : public pet_t
 {
-  double snapshot_haste, snapshot_hit, snapshot_strength;
+  double snapshot_haste, snapshot_hit, snapshot_expertise, snapshot_strength;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "army_of_the_dead_ghoul" )
@@ -570,9 +570,10 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    snapshot_haste    = o -> composite_attack_haste();
-    snapshot_hit      = o -> composite_attack_hit();
-    snapshot_strength = o -> strength();
+    snapshot_haste     = o -> composite_attack_haste();
+    snapshot_hit       = o -> composite_attack_hit();
+    snapshot_expertise = o -> composite_attack_expertise();
+    snapshot_strength  = o -> strength();
     o -> active_army_ghoul = this;
   }
 
@@ -585,7 +586,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return snapshot_hit; // Hit gains equal to expertise
+    return std::max(snapshot_hit, snapshot_expertise); // Hit gains equal to expertise
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -1406,7 +1407,7 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> passives.master_of_ghouls -> ok() )
     {
-      return o -> composite_attack_hit();
+      return std::max(o -> composite_attack_hit(), o -> composite_attack_expertise());
     }
     else
     {
@@ -4117,6 +4118,7 @@ void death_knight_t::init_spells()
   passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
 
   // Spells
+  spells.army_of_the_dead            = new active_spell_t( this, "army_of_the_dead", 42650 );
   spells.blood_boil                  = new active_spell_t( this, "blood_boil", 48721 );
   spells.blood_plague                = new active_spell_t( this, "blood_plague", 59879 );
   spells.blood_strike                = new active_spell_t( this, "blood_strike", 45902 );
@@ -4257,6 +4259,8 @@ void death_knight_t::init_actions()
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       action_list_str += "/dark_transformation";
+      action_list_str += "/death_coil,if=runic_power>=90";
+      action_list_str += "/death_coil,if=buff.sudden_doom.react";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       if ( talents.summon_gargoyle -> rank() )
