@@ -362,6 +362,7 @@ struct death_knight_t : public player_t
   virtual void      init_resources( bool force );
   virtual void      init_uptimes();
   virtual void      init_values();
+  double composite_pet_attack_crit();
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
@@ -466,7 +467,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 // Army of the Dead ghouls are basically a copy of the pet ghoul, but with a 50% damage penalty, but you get 8 of them
 struct army_ghoul_pet_t : public pet_t
 {
-  double snapshot_haste, snapshot_hit, snapshot_expertise, snapshot_strength;
+  double snapshot_haste, snapshot_hit, snapshot_crit, snapshot_expertise;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "army_of_the_dead_ghoul" )
@@ -488,7 +489,6 @@ struct army_ghoul_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       weapon_power_mod *= 0.84; // What is this based off?
-      base_multiplier *= 4.0; // 50% of damage x 8 ghouls
     }
   };
 
@@ -553,7 +553,7 @@ struct army_ghoul_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-    initial_attack_power_per_agility  = 1.0;
+    initial_attack_power_per_agility  = 0.0;
 
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -565,7 +565,6 @@ struct army_ghoul_pet_t : public pet_t
   virtual double strength() SC_CONST
   {
     double a = attribute[ ATTR_STRENGTH ];
-    a += snapshot_strength;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return floor( a );
   }
@@ -576,8 +575,8 @@ struct army_ghoul_pet_t : public pet_t
     pet_t::summon( duration );
     snapshot_haste     = o -> composite_attack_haste();
     snapshot_hit       = o -> composite_attack_hit();
+    snapshot_crit      = o -> composite_pet_attack_crit();
     snapshot_expertise = o -> composite_attack_expertise();
-    snapshot_strength  = o -> strength();
     o -> active_army_ghoul = this;
   }
 
@@ -609,6 +608,11 @@ struct army_ghoul_pet_t : public pet_t
   virtual double composite_attack_hit() SC_CONST
   {
     return floor( snapshot_hit * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
+  }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return snapshot_crit;
   }
 
   virtual int primary_resource() SC_CONST
@@ -1197,6 +1201,25 @@ struct ghoul_pet_t : public pet_t
       may_crit = true;
       weapon_power_mod *= 0.84; // What is this based off?
     }
+
+    virtual void player_buff()
+    {
+      attack_t::player_buff();
+      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+      if ( o -> buffs_shadow_infusion -> check() )
+      {
+        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * 0.10;
+      }
+      if ( o -> buffs_dark_transformation -> check() )
+      {
+        player_multiplier *= 2;
+      }
+      if ( o -> buffs_frost_presence -> check() )
+      {
+        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
+      }
+    }
   };
 
   struct ghoul_pet_melee_t : public ghoul_pet_attack_t
@@ -1229,25 +1252,6 @@ struct ghoul_pet_t : public pet_t
       p -> main_hand_attack -> schedule_execute();
     }
 
-    virtual void player_buff()
-    {
-      ghoul_pet_attack_t::player_buff();
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-      if ( o -> buffs_shadow_infusion -> check() )
-      {
-        player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
-      }
-      if ( o -> buffs_dark_transformation -> check() )
-      {
-        player_multiplier *= 2;
-      }
-      if ( o -> buffs_frost_presence -> check() )
-      {
-        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
-      }
-    }
-
     virtual bool ready()
     {
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
@@ -1265,25 +1269,6 @@ struct ghoul_pet_t : public pet_t
 
       id = 91776;
       parse_data( o -> player_data );
-    }
-
-    virtual void player_buff()
-    {
-      ghoul_pet_attack_t::player_buff();
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-      if ( o -> buffs_shadow_infusion -> check() )
-      {
-        player_multiplier *= o -> buffs_shadow_infusion -> stack() * 0.10;
-      }
-      if ( o -> buffs_dark_transformation -> check() )
-      {
-        player_multiplier *= 2;
-      }
-      if ( o -> buffs_frost_presence -> check() )
-      {
-        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
-      }
     }
 
   };
@@ -1309,22 +1294,6 @@ struct ghoul_pet_t : public pet_t
         ghoul_pet_attack_t::additional_damage( amount, dmg_type );
       }
     }
-
-    virtual void player_buff()
-    {
-      ghoul_pet_attack_t::player_buff();
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-      if ( o -> buffs_dark_transformation -> check() )
-      {
-        player_multiplier *= 2;
-      }
-      if ( o -> buffs_frost_presence -> check() )
-      {
-        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
-      }
-    }
-
     virtual bool ready()
     {
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
@@ -1380,7 +1349,8 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    snapshot_crit     = o -> composite_attack_crit();
+    // Pets don't seem to inherit their master's crit at the moment.
+    snapshot_crit     = o -> composite_pet_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
@@ -1394,6 +1364,7 @@ struct ghoul_pet_t : public pet_t
     o -> active_ghoul = 0;
   }
 
+  
   virtual double composite_attack_crit() SC_CONST
   {
     // Ghouls recieve 100% of their master's crit
@@ -1402,14 +1373,14 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> passives.master_of_ghouls -> ok() )
     {
-      return o -> composite_attack_crit();
+      return o -> composite_pet_attack_crit();
     }
     else
     {
       return snapshot_crit;
     }
   }
-
+  
   virtual double composite_attack_expertise() SC_CONST
   {
     death_knight_t* o = owner -> cast_death_knight();
@@ -2601,6 +2572,7 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p -> buffs_dark_transformation -> trigger();
+    p -> buffs_shadow_infusion -> expire();
   }
 
   virtual bool ready()
@@ -2849,6 +2821,7 @@ struct frost_fever_t : public death_knight_spell_t
     scale_with_haste  = false;
     may_miss          = false;
     tick_may_crit     = true;
+    base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
     num_ticks         = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
@@ -3762,7 +3735,11 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     consume_resource();
     update_ready();
-    player -> summon_pet( "gargoyle", 30.0 );
+    // Examining logs show gargoyls take 4.5-5.5 seconds before they
+    // can begin casting, so rather than the tooltip's 30s duration,
+    // let's use 25s.  This still probably overestimates and assumes
+    // no meleeing, which gargoyles sometimes choose to do.
+    player -> summon_pet( "gargoyle", 25.0 );
   }
 };
 
@@ -4595,6 +4572,18 @@ int death_knight_t::target_swing()
   buffs_scent_of_blood -> trigger();
 
   return result;
+}
+
+
+// death_knight_t::composite_pet_attack_crit ===============================
+
+double death_knight_t::composite_pet_attack_crit() {
+  // XXX: this is what I observe.  My ghoul absolutely doesn't get my
+  // crit rating.  He crits on average ~10% of the time across
+  // multiple nights of raiding and thousands of hits.  I would expect
+  // 35-40% but get solidly 9-10% after lvl 83 crit suppression.
+  // Needs more testing to confirm.
+  return 0.14;
 }
 
 // death_knight_t::composite_attack_power ===================================
