@@ -478,7 +478,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       48265, // Unholy Presence
           0,
     },
-    // Pet tree, 4 abilities
+    // Pet tree, 5 abilities
     {
       47468, // Claw
       47481, // Gnaw
