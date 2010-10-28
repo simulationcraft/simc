@@ -1607,6 +1607,13 @@ struct auto_shot_t : public hunter_attack_t
     if ( p -> buffs.moving -> check() ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
+
+  virtual double execute_time() SC_CONST
+  {
+    double h = 1.0;
+    h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
+    return hunter_attack_t::execute_time() * h;
+  }
 };
 
 // Aimed Shot ================================================================
