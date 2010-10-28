@@ -3772,7 +3772,7 @@ struct unholy_frenzy_t : public spell_t
   player_t* unholy_frenzy_target;
 
   unholy_frenzy_t( player_t* player, const std::string& options_str ) :
-    spell_t( "unholy_frenzy", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_UNHOLY ), unholy_frenzy_target( 0 )
+    spell_t( "unholy_frenzy", 49016, player ), unholy_frenzy_target( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.unholy_frenzy -> rank() );
@@ -3784,8 +3784,6 @@ struct unholy_frenzy_t : public spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    parse_data( p -> player_data );
 
     if ( target_str.empty() )
     {
@@ -4269,6 +4267,10 @@ void death_knight_t::init_actions()
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
+      if ( talents.unholy_frenzy -> rank() )
+      {
+        action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
+      }
       if ( level > 81 )
       {
         action_list_str += "/outbreak,if=dot.frost_fever.ticking<3|dot.blood_plague.ticking<3";
