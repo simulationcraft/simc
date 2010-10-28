@@ -489,6 +489,7 @@ struct army_ghoul_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       weapon_power_mod *= 0.84; // What is this based off?
+      base_multiplier *= 4.0; // 50% of damage x 8 ghouls
     }
   };
 
