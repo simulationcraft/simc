@@ -430,7 +430,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   }
   if ( o -> buffs_unholy_presence -> check() )
   {
-    runes_per_second *= 1.15;
+    runes_per_second *= 1.1;
   }
   if ( o -> buffs_runic_corruption -> check() )
   {
