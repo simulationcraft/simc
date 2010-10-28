@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (60)
+#define CLASS_ABILITY_SIZE (62)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
 // Class based active abilities, wow build 13205
@@ -226,11 +226,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 60 abilities
+    // Pet tree, 62 abilities
     {
       55749, // Acid Spit
       90355, // Ancient Hysteria
       50433, // Ankle Crack
+      90337, // Bad Manner
       17253, // Bite
       93433, // Burrow Attack
       53434, // Call of the Wild
@@ -242,6 +243,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       50256, // Demoralizing Roar
       24423, // Demoralizing Screech
       50285, // Dust Cloud
+      90363, // Embrace of the Shale Spider
       75447, // Ferocious Inspiration
       34889, // Fire Breath
       54644, // Frost Breath
@@ -478,7 +480,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       48265, // Unholy Presence
           0,
     },
-    // Pet tree, 4 abilities
+    // Pet tree, 5 abilities
     {
       47468, // Claw
       47481, // Gnaw
