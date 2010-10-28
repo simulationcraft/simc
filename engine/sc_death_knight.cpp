@@ -1973,7 +1973,7 @@ void death_knight_attack_t::player_buff()
 
   if ( p -> mastery.frozen_heart -> ok() && school == SCHOOL_FROST )
   {
-    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0;
+    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
   }
 }
 
@@ -2067,7 +2067,7 @@ void death_knight_spell_t::player_buff()
 
   if ( p -> mastery.frozen_heart -> ok() && school == SCHOOL_FROST )
   {
-    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0;
+    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
   }
 
   if ( sim -> debug )
@@ -2346,7 +2346,7 @@ struct blood_plague_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> mastery.blightcaller -> ok() )
     {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 1000.0 * p -> composite_mastery();
+      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
     }
   }
 
@@ -2886,7 +2886,7 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> mastery.blightcaller -> ok() )
     {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 1000.0 * p -> composite_mastery();
+      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
     }
   }
 };
