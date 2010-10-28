@@ -3565,6 +3565,7 @@ struct attack_t : public action_t
 
   // Attack Overrides
   virtual double haste() SC_CONST;
+  virtual double swing_haste() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );

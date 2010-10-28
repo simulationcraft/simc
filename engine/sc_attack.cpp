@@ -66,6 +66,15 @@ attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, boo
   _init_attack_t();
 }
 
+// attack_t::swing_haste =====================================================
+
+double attack_t::swing_haste() SC_CONST
+{
+  double h = 1.0;
+  h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
+  return h * player -> composite_attack_haste();
+}
+
 // attack_t::haste ==========================================================
 
 double attack_t::haste() SC_CONST
@@ -78,7 +87,7 @@ double attack_t::haste() SC_CONST
 double attack_t::execute_time() SC_CONST
 {
   if ( base_execute_time == 0 ) return 0;
-  return base_execute_time * haste();
+  return base_execute_time * swing_haste();
 }
 
 // attack_t::player_buff ====================================================
