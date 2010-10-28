@@ -60,6 +60,7 @@ struct priest_t : public player_t
   buff_t* buffs_mind_spike;
   buff_t* buffs_shadowfiend;
   buff_t* buffs_spirit_tap;
+  buff_t* buffs_glyph_of_shadow_word_death;
 
   // Talents
 
@@ -294,25 +295,25 @@ struct priest_t : public player_t
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
    
-    use_shadow_word_death               = false;
-    use_mind_blast                      = 1;
-    recast_mind_blast                   = 0;
-    was_sub_25                          = false;
+    use_shadow_word_death                = false;
+    use_mind_blast                       = 1;
+    recast_mind_blast                    = 0;
+    was_sub_25                           = false;
 
-    distance                            = 40;
+    distance                             = 40;
 
-    max_mana_cost                       = 0.0;
+    max_mana_cost                        = 0.0;
 
-    dots_shadow_word_pain               = get_dot( "shadow_word_pain" );
-    dots_vampiric_touch                 = get_dot( "vampiric_touch" );
-    dots_devouring_plague               = get_dot( "devouring_plague" );
-    dots_holy_fire                      = get_dot( "holy_fire" );
+    dots_shadow_word_pain                = get_dot( "shadow_word_pain" );
+    dots_vampiric_touch                  = get_dot( "vampiric_touch" );
+    dots_devouring_plague                = get_dot( "devouring_plague" );
+    dots_holy_fire                       = get_dot( "holy_fire" );
 
-    cooldowns_mind_blast                = get_cooldown( "mind_blast" );
-    cooldowns_shadow_fiend              = get_cooldown( "shadow_fiend" );
-    cooldowns_archangel                 = get_cooldown( "archangel"   );
-    cooldowns_dark_archangel            = get_cooldown( "dark_archangel" );
-    cooldowns_chakra                    = get_cooldown( "chakra"   );
+    cooldowns_mind_blast                 = get_cooldown( "mind_blast" );
+    cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
+    cooldowns_archangel                  = get_cooldown( "archangel"   );
+    cooldowns_dark_archangel             = get_cooldown( "dark_archangel" );
+    cooldowns_chakra                     = get_cooldown( "chakra"   );
   }
 
   // Character Definition
@@ -1647,6 +1648,13 @@ struct shadow_word_death_t : public priest_spell_t
     id = p -> active_spells.shadow_word_death -> spell_id();
     parse_data( p -> player_data );
 
+    if ( ! p -> sim -> P403 )
+    {
+      direct_power_mod = 0.2820000052;
+      base_dd_min *= 0.3336820246621212656891103184076;
+      base_dd_max *= 0.3336820246621212656891103184076;
+    }
+
     may_crit = true;
 
     base_cost        *= 1.0 
@@ -1660,7 +1668,8 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() <= 25 );
+    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) && 
+                     ( sim -> target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
 
@@ -1668,6 +1677,7 @@ struct shadow_word_death_t : public priest_spell_t
     {
       // Tested to confirm that it won't reset if it Misses.
       cooldown -> reset();
+      p -> buffs_glyph_of_shadow_word_death -> trigger();
     }
   }
 
@@ -1703,6 +1713,11 @@ struct shadow_word_death_t : public priest_spell_t
       m += p -> talents.mind_melt -> rank() * 0.15;
     }
     player_multiplier *= m;
+
+    if ( p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() <= 25 ) )
+    {
+      player_multiplier *= 3.0; // TO-DO: Need to check how this stacks properly.
+    }
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
   }
@@ -2743,22 +2758,23 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_inner_fire          = new buff_t( this, "inner_fire"                                       );
-  buffs_inner_fire_armor    = new buff_t( this, "inner_fire_armor"                                 );
-  buffs_inner_will          = new buff_t( this, "inner_will"                                       );
-  buffs_shadow_form         = new buff_t( this, "shadow_form",         1                           );
-  buffs_mind_melt           = new buff_t( this, "mind_melt",           2, 6.0, 0,1                 );
-  buffs_dark_evangelism     = new buff_t( this, "dark_evangelism",     5, 15.0, 0, 0.4             );
-  buffs_holy_evangelism     = new buff_t( this, "holy_evangelism",     5, 15.0, 0, 1.0             );
-  buffs_shadow_orb          = new buff_t( this, "shadow_orb",          3, 60.0                     );
-  buffs_dark_archangel      = new buff_t( this, "dark_archangel",      5, 18.0                     );
-  buffs_holy_archangel      = new buff_t( this, "holy_archangel",      5, 18.0                     );
-  buffs_chakra_pre          = new buff_t( this, "chakra_pre",          1                           );
-  buffs_chakra              = new buff_t( this, "chakra_buff",         1, 30.0                     );
-  buffs_vampiric_embrace    = new buff_t( this, "vampiric_embrace",    1                           );
-  buffs_mind_spike          = new buff_t( this, "mind_spike",          3, 12.0                     );
-  buffs_spirit_tap          = new buff_t( this, "spirit_tap",          1, 12.0                     );
-  buffs_shadowfiend         = new buff_t( this, "shadowfiend", 1 );
+  buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
+  buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
+  buffs_inner_will                 = new buff_t( this, "inner_will"                                              );
+  buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
+  buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
+  buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 15.0, 0, 0.4             );
+  buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 15.0, 0, 1.0             );
+  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",                 3, 60.0                     );
+  buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
+  buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
+  buffs_chakra_pre                 = new buff_t( this, "chakra_pre",                 1                           );
+  buffs_chakra                     = new buff_t( this, "chakra_buff",                1, 30.0                     );
+  buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );
+  buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
+  buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
+  buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
+  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
 }
 
 // priest_t::init_actions =====================================================
