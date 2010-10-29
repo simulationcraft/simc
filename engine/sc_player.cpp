@@ -3646,7 +3646,7 @@ struct snapshot_stats_t : public action_t
       double chance = attack -> miss_chance( delta_level );
       if( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
-      chance = attack -> dodge_chance( delta_level );
+      chance = attack -> dodge_chance(  p -> level, sim -> target -> level );
       if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
     }
 

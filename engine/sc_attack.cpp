@@ -214,16 +214,32 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
 
 // attack_t::dodge_chance ===================================================
 
-double attack_t::dodge_chance( int delta_level ) SC_CONST
+double attack_t::dodge_chance( int source_level, int target_level ) SC_CONST
 {
-  return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
+  int delta_level = target_level - source_level;
+  double chance;
+
+  if ( ( target_level > 83 ) || ( target_level < 80 ) )
+    chance = 0.05;
+  else
+    chance = 0.04125;
+
+  return chance + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::parry_chance ===================================================
 
-double attack_t::parry_chance( int delta_level ) SC_CONST
+double attack_t::parry_chance( int source_level, int target_level ) SC_CONST
 {
-  return 0.14 + delta_level * 0.005 - 0.25 * total_expertise();
+  int delta_level = target_level - source_level;
+  double chance;
+
+  if ( ( target_level > 83 ) || ( target_level < 80 ) )
+    chance = 0.14;
+  else
+    chance = 0.13125;
+
+  return chance + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::glance_chance ==================================================
@@ -268,8 +284,8 @@ int attack_t::build_table( double* chances,
   int delta_level = sim -> target -> level - player -> level;
 
   if ( may_miss   )   miss =   miss_chance( delta_level );
-  if ( may_dodge  )  dodge =  dodge_chance( delta_level );
-  if ( may_parry  )  parry =  parry_chance( delta_level );
+  if ( may_dodge  )  dodge =  dodge_chance( player -> level, sim -> target -> level );
+  if ( may_parry  )  parry =  parry_chance( player -> level, sim -> target -> level );
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_block && sim -> target -> block_value > 0 )
