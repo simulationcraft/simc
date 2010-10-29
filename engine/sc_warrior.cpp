@@ -601,6 +601,7 @@ static void trigger_sword_and_board( attack_t* a )
 }
 
 // trigger_enrage ===========================================================
+
 static void trigger_enrage( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
@@ -862,10 +863,11 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double haste() SC_CONST
+  virtual double swing_haste() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    double h = warrior_attack_t::haste();
+    double h = warrior_attack_t::swing_haste();
+
     if ( p -> buffs_flurry -> up() )
     {
       h *= 1.0 / ( 1.0 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 ) );
@@ -1274,8 +1276,7 @@ struct execute_t : public warrior_attack_t
     base_dd_min       = 10;
     base_dd_max       = 10;
     
-    // Handling of additional scaling for additional consumed rage is handled in player_buff()
-    direct_power_mod  = 0.25;
+    // Rage scaling is handled in player_buff()
 
     // Execute consumes rage no matter if it missed or not
     aoe = true;
@@ -1327,14 +1328,14 @@ struct execute_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     // player_buff happens before consume_resource
-    // so be we can savely check here how much excess rage we will spend
+    // so we can safely check here how much excess rage we will spend
     double base_consumed = cost();
     double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + base_consumed );
     
-    // Rage cost is done, convert the excessrage to damage
+    // Damage scales directly with AP per rage since 4.0.1.
+    direct_power_mod = 0.0525 * max_consumed;
     // up to 50% AP for up to 20
     // 2.5%*AP ~ 1 excess_rage
-    player_dd_adder = 0.025 * ( max_consumed - base_consumed ) * p -> composite_attack_power() -1;
 
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
