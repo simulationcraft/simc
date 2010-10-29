@@ -1556,9 +1556,12 @@ struct raging_blow_t : public warrior_attack_t
       weapon_multiplier *= 1.50;
   }
 
+  // We run this attack again for off-hand but we don't re-consume
+  // so we do the consume() call once in execute.
+  virtual void consume_resource { }
+
   virtual void execute()
   {
-    attack_t::consume_resource();
     warrior_t* p = player -> cast_warrior();
 
     weapon = &( player -> main_hand_weapon );
@@ -1569,6 +1572,8 @@ struct raging_blow_t : public warrior_attack_t
       weapon = &( player -> off_hand_weapon );
       warrior_attack_t::execute();
     }
+
+    warrior_attack_t::consume_resource();
   }
 
   virtual void player_buff()
@@ -1945,6 +1950,7 @@ struct slam_t : public warrior_attack_t
       return warrior_attack_t::execute_time();
   }
 
+  // We don't want to re-consume for off-hand hits with SMF.
   virtual void consume_resource() { }
 
   virtual void execute()
