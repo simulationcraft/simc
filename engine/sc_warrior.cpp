@@ -2358,6 +2358,7 @@ struct death_wish_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
     p -> buffs_death_wish -> trigger( 1, enrage_bonus );
+    p -> buffs_enrage -> expire();
   }
 };
 
