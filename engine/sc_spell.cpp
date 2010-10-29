@@ -132,7 +132,7 @@ void spell_t::target_debuff( int dmg_type )
   target_t* t = sim -> target;
 
 
-  int crit_debuff = std::max( t -> debuffs.critical_mass        -> stack() *  5 ,
+  int crit_debuff = std::max( t -> debuffs.critical_mass        -> stack() * 5,
                               t -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 

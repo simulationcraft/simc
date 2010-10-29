@@ -72,21 +72,27 @@ struct mage_t : public player_t
   // Glyphs
   struct glyphs_t
   {
-    int arcane_barrage;
+    // Prime
     int arcane_blast;
-    int arcane_missiles;
-    int arcane_power;
-    int eternal_water;
-    int fireball;
-    int frostbolt;
+    int cone_of_cold;
     int ice_lance;
     int living_bomb;
     int mage_armor;
-    int mana_gem;
+    int pyroblast;
+
+    // Major
+    int arcane_barrage;
+    int arcane_missiles;
+    int dragons_breath;
+    int fireball;
+    int frostbolt;
+    int frostfire;
     int mirror_image;
     int molten_armor;
-    int water_elemental;
-    int frostfire;
+
+    // Minor
+    int arcane_brilliance;
+
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -281,11 +287,7 @@ struct mage_spell_t : public spell_t
   mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
       dps_rotation( 0 ),
-      dpm_rotation( 0 ),
-      arcane_power( 0 ),
-      icy_veins( 0 ),
-      min_ab_stack( 0 ),
-      max_ab_stack( 0 )
+      dpm_rotation( 0 )
   {
 
   }
@@ -293,11 +295,7 @@ struct mage_spell_t : public spell_t
   mage_spell_t( const char* n, uint32_t id, mage_t* p ) :
     spell_t( n, id, p ),
     dps_rotation( 0 ),
-    dpm_rotation( 0 ),
-    arcane_power( 0 ),
-    icy_veins( 0 ),
-    min_ab_stack( 0 ),
-    max_ab_stack( 0 )
+    dpm_rotation( 0 )
   {
 
   }
@@ -321,7 +319,7 @@ struct water_elemental_pet_t : public pet_t
   struct water_bolt_t : public spell_t
   {
     water_bolt_t( player_t* player ):
-      spell_t( "water_bolt", 31707, player, TREE_FROST ) // FIXME: needs to be whitelisted
+      spell_t( "water_bolt", 31707, player )
     {
       may_crit  = true;
     }
@@ -387,21 +385,63 @@ struct mirror_image_pet_t : public pet_t
   std::vector<action_t*> sequences;
   int sequence_finished;
 
-  struct mirror_blast_t : public spell_t
+  struct arcane_blast_t : public spell_t
   {
     action_t* next_in_sequence;
 
-    mirror_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-        spell_t( "mirror_blast", mirror_image, RESOURCE_MANA, SCHOOL_FIRE, TREE_FIRE ),
-        next_in_sequence( nis )
+    arcane_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "arcane_blast", 88084, mirror_image ), next_in_sequence( nis )
     {
-      base_cost         = 0;
-      base_execute_time = 0;
-      base_dd_min       = 92;
-      base_dd_max       = 103;
-      direct_power_mod  = 0.15;
       may_crit          = true;
       background        = true;
+
+      // FIXME: This can be removed once it's whitelisted
+      base_cost         = 0;
+      base_execute_time = 3.0;
+      base_dd_min       = 201 / 2;
+      base_dd_max       = 233 / 2;
+      direct_power_mod  = 0.30;
+    }
+
+    virtual void execute()
+    {
+      spell_t::execute();
+      if ( next_in_sequence )
+      {
+        next_in_sequence -> schedule_execute();
+      }
+      else
+      {
+        mirror_image_pet_t* mi = ( mirror_image_pet_t* ) player;
+        mi -> sequence_finished++;
+        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+      }
+    }
+
+    virtual void player_buff()
+    {
+      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
+      spell_t::player_buff();
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
+    }
+  };
+
+  struct fire_blast_t : public spell_t
+  {
+    action_t* next_in_sequence;
+
+    fire_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "fire_blast", 59637, mirror_image ), next_in_sequence( nis )
+    {
+      background        = true;
+      may_crit          = true;
+
+      // FIXME: This can be removed once 59637 is whitelisted
+      base_cost         = 0;
+      base_execute_time = 0;
+      base_dd_min       = 88;
+      base_dd_max       = 98;
+      direct_power_mod  = 0.15;
     }
 
     virtual void player_buff()
@@ -427,21 +467,63 @@ struct mirror_image_pet_t : public pet_t
     }
   };
 
-  struct mirror_bolt_t : public spell_t
+  struct fireball_t : public spell_t
   {
     action_t* next_in_sequence;
 
-    mirror_bolt_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-        spell_t( "mirror_bolt", mirror_image, RESOURCE_MANA, SCHOOL_FROST, TREE_FROST ),
-        next_in_sequence( nis )
+    fireball_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "fireball", 88082, mirror_image ), next_in_sequence( nis )
     {
+      may_crit          = true;
+      background        = true;
+
+      // FIXME: This can be removed once it's whitelisted
+      base_cost         = 0;
+      base_execute_time = 3.0;
+      base_dd_min       = 242 / 2;
+      base_dd_max       = 308 / 2;
+      direct_power_mod  = 0.30;
+    }
+
+    virtual void execute()
+    {
+      spell_t::execute();
+      if ( next_in_sequence )
+      {
+        next_in_sequence -> schedule_execute();
+      }
+      else
+      {
+        mirror_image_pet_t* mi = ( mirror_image_pet_t* ) player;
+        mi -> sequence_finished++;
+        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
+      }
+    }
+
+    virtual void player_buff()
+    {
+      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
+      spell_t::player_buff();
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
+    }
+  };
+
+  struct frostbolt_t : public spell_t
+  {
+    action_t* next_in_sequence;
+
+    frostbolt_t( mirror_image_pet_t* mirror_image, action_t* nis ):
+      spell_t( "frost_bolt", 59638, mirror_image ), next_in_sequence( nis )
+    {
+      may_crit          = true;
+      background        = true;
+
+      // FIXME: This can be removed once it's whitelisted
       base_cost         = 0;
       base_execute_time = 3.0;
       base_dd_min       = 163;
       base_dd_max       = 169;
       direct_power_mod  = 0.30;
-      may_crit          = true;
-      background        = true;
     }
 
     virtual void execute()
@@ -468,7 +550,7 @@ struct mirror_image_pet_t : public pet_t
   };
 
   mirror_image_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 4 ), sequence_finished( 0 )
+    pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
   {}
   virtual void init_base()
   {
@@ -490,11 +572,36 @@ struct mirror_image_pet_t : public pet_t
     {
       action_t* front=0;
 
-      for ( int j=0; j < num_rotations; j++ )
+      if ( owner -> cast_mage() -> glyphs.mirror_image && owner -> cast_mage() -> primary_tree() != TREE_FROST )
       {
-        front = new mirror_bolt_t ( this, front );
-        front = new mirror_bolt_t ( this, front );
-        front = new mirror_blast_t( this, front );
+        // Fire/Arcane Mages cast 9 Fireballs/Arcane Blasts
+        num_rotations = 9;    
+        for ( int j=0; j < num_rotations; j++ )
+        {
+          if ( owner -> cast_mage() -> primary_tree() == TREE_FIRE )
+          {   
+            front = new fireball_t ( this, front );
+          }
+          else
+          {
+            front = new arcane_blast_t ( this, front );
+          }
+        }
+      }
+      else
+      {
+        num_rotations = 2;
+        for ( int j=0; j < num_rotations; j++ )
+        {
+          // Mirror Image casts 10 Frostbolts, 4 Fire Blasts
+          front = new frostbolt_t ( this, front );
+          front = new frostbolt_t ( this, front );
+          front = new frostbolt_t ( this, front );
+          front = new fire_blast_t( this, front );
+          front = new frostbolt_t ( this, front );
+          front = new frostbolt_t ( this, front );
+          front = new fire_blast_t( this, front );
+        }
       }
       sequences.push_back( front );
     }
@@ -522,8 +629,7 @@ struct mirror_image_pet_t : public pet_t
 
 // trigger_ignite ===========================================================
 
-static void trigger_ignite( spell_t* s,
-                            double   dmg )
+static void trigger_ignite( spell_t* s, double dmg )
 {
   if ( s -> school != SCHOOL_FIRE &&
        s -> school != SCHOOL_FROSTFIRE ) return;
@@ -751,7 +857,7 @@ static void trigger_replenishment( spell_t* s )
   if ( ! p -> talents.enduring_winter -> rank() )
     return;
 
-  if ( p -> sim -> current_time < p -> _cooldowns.enduring_winter ) // This is no longer listed on the talent, is it still in effect?
+  if ( p -> sim -> current_time < p -> _cooldowns.enduring_winter ) // FIXME: This is no longer listed on the talent, is it still in effect?
     return;
 
   if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> proc_chance() ) )
@@ -1061,7 +1167,8 @@ struct arcane_brilliance_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    bonus = p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
+    bonus      = p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
+    base_cost *= 1.0 - p -> glyphs.arcane_brilliance * 0.5;
   }
 
   virtual void execute()
@@ -1134,7 +1241,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     update_stats( DMG_OVER_TIME );
     if ( result == RESULT_CRIT )
     {
-      trigger_master_of_elements( this, 1.0 / num_ticks ); // FIXME: Does this change w/ the num of ticks are always 3 (base # of ticks)?
+      trigger_master_of_elements( this, 1.0 / num_ticks ); // FIXME: Does this change w/ the num of ticks or always 3 (base # of ticks)?
     }
   }
 };
@@ -1275,6 +1382,8 @@ struct combustion_t : public mage_spell_t
     mage_spell_t::execute();
     // mage_t* p = player -> cast_mage();
     // FIXME: Add Combustion dot
+    // The dot takes current tick value of Ignite/Pyro/Living bomb/Glyphed FFB, sums it up to create a new dot
+    // That Dot ticks once a second for 10 seconds
   }
 };
 
@@ -1285,14 +1394,17 @@ struct cone_of_cold_t : public mage_spell_t
   cone_of_cold_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "cone_of_cold", 120, player )
   {
+    mage_t* p = player -> cast_mage();
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
     
-    aoe      = true;
-    may_crit = true;
+    aoe              = true;
+    may_crit         = true;
+    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold * 0.25;
   }
 };
 
@@ -1395,14 +1507,17 @@ struct dragons_breath_t : public mage_spell_t
   dragons_breath_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "dragons_breath", 31661, player )
   {
+    mage_t* p = player -> cast_mage();
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
     
-    aoe      = true;
-    may_crit = true;
+    aoe                   = true;
+    may_crit              = true;
+    cooldown -> duration -= p -> glyphs.dragons_breath * 3.0;
   }
 };
 
@@ -1421,8 +1536,10 @@ struct evocation_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
+    base_execute_time     = 6.0;
     base_tick_time        = 2.0;
-    num_ticks             = ( int ) ( base_execute_time / base_tick_time );
+    num_ticks             = 3;
+    scale_with_haste      = false;
     channeled             = true;
     harmful               = false;
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
@@ -1913,10 +2030,13 @@ struct living_bomb_explosion_t : public mage_spell_t
   living_bomb_explosion_t( mage_t* player ) :
     mage_spell_t( "living_bomb", 44461, player )
   {
-    aoe        = true;
-    dual       = true;
-    background = true;
-    may_crit   = true;
+    mage_t* p = player -> cast_mage();
+
+    aoe              = true;
+    dual             = true;
+    background       = true;
+    may_crit         = true;
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03;
   }
 
   virtual void execute()
@@ -1951,7 +2071,8 @@ struct living_bomb_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    may_crit          = true;
+    may_crit         = true;
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03;
 
     living_bomb_explosion = new living_bomb_explosion_t( p );
   }
@@ -2107,7 +2228,7 @@ struct molten_armor_t : public mage_spell_t
       log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     p -> buffs_mage_armor -> expire();
-    p -> buffs_molten_armor -> trigger( 1, effect_base_value( 3 ) / 100.0 );
+    p -> buffs_molten_armor -> trigger();
   }
 
   virtual bool ready()
@@ -2178,6 +2299,7 @@ struct pyroblast_t : public mage_spell_t
   pyroblast_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "pyroblast", 92315, player )
   {
+    mage_t* p = player -> cast_mage();
     check_spec( TREE_FIRE );
 
     option_t options[] =
@@ -2188,6 +2310,7 @@ struct pyroblast_t : public mage_spell_t
 
     may_crit      = true;
     tick_may_crit = true;
+    base_crit    += p -> glyphs.pyroblast * 0.05;
   }
 
   virtual void execute()
@@ -2287,9 +2410,6 @@ struct slow_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
 
     sim -> target -> debuffs.slow -> trigger();
   }
@@ -2420,7 +2540,7 @@ struct choose_rotation_t : public action_t
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows -> rank() * 60.0 );
 
     // Mana Gem
-    regen_rate += 3400 * ( 1.0 + p -> glyphs.mana_gem * 0.40 ) / 120.0;
+    regen_rate += 3400 / 120.0; // FIXME: Possible to derive mana gem value?
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -2544,8 +2664,8 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
   if ( p ) return p;
 
-  if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
   if ( pet_name == "mirror_image"    ) return new mirror_image_pet_t   ( sim, this );
+  if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
 
   return 0;
 }
@@ -2554,8 +2674,8 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
 void mage_t::create_pets()
 {
-  create_pet( "water_elemental" );
-  create_pet( "mirror_image" );
+  create_pet( "mirror_image"    );
+  create_pet( "water_elemental" );  
 }
 
 // mage_t::init_glyphs ====================================================
@@ -2571,38 +2691,40 @@ void mage_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if      ( n == "arcane_barrage"  ) glyphs.arcane_barrage = 1;
-    else if ( n == "arcane_blast"    ) glyphs.arcane_blast = 1;
-    else if ( n == "arcane_missiles" ) glyphs.arcane_missiles = 1;
-    else if ( n == "arcane_power"    ) glyphs.arcane_power = 1;
-    else if ( n == "eternal_water"   ) glyphs.eternal_water = 1;
-    else if ( n == "fireball"        ) glyphs.fireball = 1;
-    else if ( n == "fireball"        ) glyphs.fireball = 1;
-    else if ( n == "frostbolt"      ) glyphs.frostbolt = 1;
-    else if ( n == "frostbolt"       ) glyphs.frostbolt = 1;
-    else if ( n == "ice_lance"       ) glyphs.ice_lance = 1;
-    else if ( n == "living_bomb"     ) glyphs.living_bomb = 1;
-    else if ( n == "mage_armor"      ) glyphs.mage_armor = 1;
-    else if ( n == "mana_gem"        ) glyphs.mana_gem = 1;
-    else if ( n == "mirror_image"    ) glyphs.mirror_image = 1;
-    else if ( n == "molten_armor"    ) glyphs.molten_armor = 1;
-    else if ( n == "water_elemental" ) glyphs.water_elemental = 1;
-    else if ( n == "frostfire"       ) glyphs.frostfire = 1;
+    if      ( n == "arcane_barrage"    ) glyphs.arcane_barrage = 1;
+    else if ( n == "arcane_blast"      ) glyphs.arcane_blast = 1;
+    else if ( n == "arcane_brilliance" ) glyphs.arcane_brilliance = 1;
+    else if ( n == "arcane_missiles"   ) glyphs.arcane_missiles = 1;
+    else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold = 1;
+    else if ( n == "dragons_breath"    ) glyphs.dragons_breath = 1;
+    else if ( n == "fireball"          ) glyphs.fireball = 1;
+    else if ( n == "frostbolt"         ) glyphs.frostbolt = 1;
+    else if ( n == "frostfire"         ) glyphs.frostfire = 1;
+    else if ( n == "ice_lance"         ) glyphs.ice_lance = 1;
+    else if ( n == "living_bomb"       ) glyphs.living_bomb = 1;
+    else if ( n == "mage_armor"        ) glyphs.mage_armor = 1;
+    else if ( n == "mirror_image"      ) glyphs.mirror_image = 1;
+    else if ( n == "molten_armor"      ) glyphs.molten_armor = 1;
+    else if ( n == "pyroblast"         ) glyphs.pyroblast = 1;
     // To prevent warnings....
-    else if ( n == "arcane_intellect" ) ;
-    else if ( n == "blast_wave"       ) ;
-    else if ( n == "blink"            ) ;
-    else if ( n == "evocation"        ) ;
-    else if ( n == "fire_blast"       ) ;
-    else if ( n == "fire_ward"        ) ;
-    else if ( n == "frost_armor"      ) ;
-    else if ( n == "frost_ward"       ) ;
-    else if ( n == "ice_barrier"      ) ;
-    else if ( n == "ice_block"        ) ;
-    else if ( n == "icy_veins"        ) ;
-    else if ( n == "polymorph"        ) ;
-    else if ( n == "slow_fall"        ) ;
-    else if ( n == "the_penguin"      ) ;
+    else if ( n == "arcane_power" ) ;
+    else if ( n == "armors"       ) ;
+    else if ( n == "blast_wave"   ) ;
+    else if ( n == "blink"        ) ;
+    else if ( n == "conjuring"    ) ;
+    else if ( n == "deep_freeze"  ) ;
+    else if ( n == "evocation"    ) ;
+    else if ( n == "frost_nova"   ) ;
+    else if ( n == "ice_barrier"  ) ;
+    else if ( n == "ice_block"    ) ;
+    else if ( n == "icy_veins"    ) ;
+    else if ( n == "invisibility" ) ;
+    else if ( n == "mana_shield"  ) ;
+    else if ( n == "monkey"       ) ;
+    else if ( n == "penguin"      ) ;
+    else if ( n == "polymorph"    ) ;
+    else if ( n == "slow"         ) ;
+    else if ( n == "slow_fall"    ) ;
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -2759,8 +2881,8 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4, 6.0 );
-  buffs_arcane_power         = new buff_t( this, "arcane_power",         1, ( glyphs.arcane_power ? 18.0 : 15.0 ) );
+  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4,  6.0 );
+  buffs_arcane_power         = new buff_t( this, "arcane_power",         1, 15.0 );
   buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 2.0, talents.brain_freeze -> rank() * 0.05 );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 10.0, 0, talents.arcane_concentration -> rank() * 0.02 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
@@ -2844,7 +2966,7 @@ void mage_t::init_actions()
     action_list_str += "/speed_potion";
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
-    if ( talents.improved_scorch -> rank() ) action_list_str += "/scorch,debuff=1";
+    if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -2862,12 +2984,10 @@ void mage_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
-    if ( talents.combustion -> rank()   ) action_list_str += "/combustion";
-    if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
-    if ( talents.icy_veins -> rank()    ) action_list_str += "/icy_veins";
     action_list_str += "/mirror_image";
     if ( primary_tree() == TREE_ARCANE )
     {
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
       action_list_str += "/mana_gem";
       action_list_str += "/evocation,if=!buff.arcane_blast.up";
       action_list_str += "/choose_rotation";
@@ -2884,6 +3004,7 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FIRE )
     {
+      if ( talents.combustion -> rank()   ) action_list_str += "/combustion";
       action_list_str += "/mana_gem";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb";
@@ -2901,6 +3022,7 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
+      if ( talents.icy_veins -> rank()    ) action_list_str += "/icy_veins";
       action_list_str += "/water_elemental";
       action_list_str += "/mana_gem";
       action_list_str += "/deep_freeze";
@@ -2981,9 +3103,7 @@ double mage_t::composite_spell_crit() SC_CONST
 
   if ( buffs_molten_armor -> up() )
   {
-    double spirit_contribution = glyphs.molten_armor ? 0.55 : 0.35;
-
-    c += spirit() * spirit_contribution / rating.spell_crit;
+    c += 0.03 + glyphs.molten_armor * 0.02;
   }
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
@@ -3018,11 +3138,11 @@ void mage_t::combat_begin()
 
     if ( armor_type_str == "mage" )
     {
-      buffs_mage_armor -> start();
+      buffs_mage_armor -> trigger();
     }
     else if ( armor_type_str == "molten" )
     {
-      buffs_molten_armor -> start();
+      buffs_molten_armor -> trigger();
     }
     else
     {
@@ -3235,7 +3355,7 @@ void player_t::mage_init( sim_t* sim )
 
   target_t* t = sim -> target;
   t -> debuffs.critical_mass = new debuff_t( sim, "critical_mass", 1, 30.0 );
-  t -> debuffs.slow          = new debuff_t( sim, "slow",            1, 15.0 );
+  t -> debuffs.slow          = new debuff_t( sim, "slow",          1, 15.0 );
 }
 
 // player_t::mage_combat_begin ==============================================
