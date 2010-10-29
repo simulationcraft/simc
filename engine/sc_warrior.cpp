@@ -103,8 +103,8 @@ struct warrior_t : public player_t
   gain_t* gains_berserker_rage;
   gain_t* gains_blood_frenzy;
   gain_t* gains_incoming_damage;
-  gain_t* gains_mh_attack;
-  gain_t* gains_oh_attack;
+  gain_t* gains_melee_main_hand;
+  gain_t* gains_melee_off_hand;
   gain_t* gains_shield_specialization;
   gain_t* gains_sudden_death;
 
@@ -513,10 +513,9 @@ static void trigger_deep_wounds( action_t* a )
 
 // trigger_rage_gain ========================================================
 
-static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
+static void trigger_rage_gain( attack_t* a )
 {
-  // Basic Formula:      http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=1
-  // Blue Clarification: http://forums.worldofwarcraft.com/thread.html?topicId=17367760070&sid=1&pageNo=13#250
+  // Since 4.0.1 rage gain is 6.5 * weaponspeed and half that for off-hand
 
   if ( a -> proc )
     return;
@@ -524,17 +523,16 @@ static void trigger_rage_gain( attack_t* a, double rage_conversion_value )
   warrior_t* p = a -> player -> cast_warrior();
   weapon_t*  w = a -> weapon;
 
-  double rage_factor = 6.5;
-  if ( w -> slot == SLOT_OFF_HAND ) rage_factor /= 2.0;
-  
-  double rage_gain = rage_factor * w -> swing_time;
+  double rage_gain = 6.5 * w -> swing_time;
 
+  if ( w -> slot == SLOT_OFF_HAND ) rage_gain /= 2.0;
+  
   if ( p -> spec.anger_management -> ok() )
   {
     rage_gain *= 1.0 + p -> spec.anger_management -> effect_base_value( 2 ) / 100.0;
   }
 
-  p -> resource_gain( RESOURCE_RAGE, rage_gain, w -> slot == SLOT_OFF_HAND ? p -> gains_oh_attack : p -> gains_mh_attack );
+  p -> resource_gain( RESOURCE_RAGE, rage_gain, w -> slot == SLOT_OFF_HAND ? p -> gains_melee_off_hand : p -> gains_melee_main_hand );
 }
 
 // trigger_strikes_of_opportunity ===========================================
@@ -820,10 +818,9 @@ bool warrior_attack_t::ready()
 struct melee_t : public warrior_attack_t
 {
   int sync_weapons;
-  double rage_conversion_value;
 
   melee_t( const char* name, player_t* player, int sw ) :
-    warrior_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw ), rage_conversion_value( 0 )
+    warrior_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -839,12 +836,6 @@ struct melee_t : public warrior_attack_t
     normalize_weapon_speed = false;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
-
-    // Rage Conversion Value, needed for: damage done => rage gained
-    if ( p -> level == 80 )
-      rage_conversion_value = 453.3;
-    else
-      rage_conversion_value = 0.0091107836 * p -> level * p -> level + 3.225598133 * p -> level + 4.2652911;
   }
 
   virtual double haste() SC_CONST
@@ -881,7 +872,7 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::execute();
     if ( result_is_hit() )
     {
-	    trigger_rage_gain( this, rage_conversion_value );
+      trigger_rage_gain( this );
       trigger_strikes_of_opportunity( this );
 
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
@@ -2905,8 +2896,8 @@ void warrior_t::init_gains()
   gains_berserker_rage         = get_gain( "berserker_rage"        );
   gains_blood_frenzy           = get_gain( "blood_frenzy"          );
   gains_incoming_damage        = get_gain( "incoming_damage"       );
-  gains_mh_attack              = get_gain( "mh_attack"             );
-  gains_oh_attack              = get_gain( "oh_attack"             );
+  gains_melee_main_hand        = get_gain( "melee_main_hand"       );
+  gains_melee_off_hand         = get_gain( "melee_off_hand"        );
   gains_shield_specialization  = get_gain( "shield_specialization" );
   gains_sudden_death           = get_gain( "sudden_death"          );
 }
