@@ -1987,7 +1987,9 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( sim -> auras.ferocious_inspiration -> up() || sim -> auras.sanctified_retribution -> up() )
+    if ( sim -> auras.ferocious_inspiration  -> up()
+      || sim -> auras.sanctified_retribution -> up()
+      || sim -> auras.arcane_tactics         -> up() )
     {
       m *= 1.03;
     }
