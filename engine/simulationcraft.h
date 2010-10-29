@@ -2256,6 +2256,7 @@ struct sim_t
     int bloodlust_early;
     int brittle_bones;
     int celerity;
+    int critical_mass;
     int curse_of_elements;
     int dark_intent;
     int demonic_pact;
@@ -2275,7 +2276,6 @@ struct sim_t
     int horn_of_winter;
     int hunters_mark;
     int improved_icy_talons;
-    int improved_scorch;
     int improved_shadow_bolt;
     int infected_wounds;
     int insect_swarm;
@@ -2300,7 +2300,6 @@ struct sim_t
     int trueshot_aura;
     int unleashed_rage;
     int windfury_totem;
-    int winters_chill;
     int wrath_of_air;
     overrides_t() { memset( ( void* ) this, 0x0, sizeof( overrides_t ) ); }
   };
@@ -3280,15 +3279,14 @@ struct target_t
     debuff_t* blood_frenzy_physical;
     debuff_t* brittle_bones;
     debuff_t* casting;
+    debuff_t* critical_mass;
     debuff_t* curse_of_elements;
     debuff_t* earth_and_moon;
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
     debuff_t* faerie_fire;
-    debuff_t* frostbite;
     debuff_t* hemorrhage;
     debuff_t* hunters_mark;
-    debuff_t* improved_scorch;
     debuff_t* improved_shadow_bolt;
     debuff_t* infected_wounds;
     debuff_t* insect_swarm;
@@ -3304,11 +3302,8 @@ struct target_t
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;
     debuff_t* vulnerable;
-    debuff_t* winters_chill;
-    debuff_t* winters_grasp;  
     
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
-    bool frozen() { return frostbite -> check() || winters_grasp -> check(); }
     bool snared();
   };
   debuffs_t debuffs;

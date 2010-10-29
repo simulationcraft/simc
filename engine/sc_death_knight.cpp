@@ -2873,6 +2873,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_attack_t( "frost_strike", player->spells.frost_strike->spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
+    check_spec( TREE_FROST );
 
     option_t options[] =
     {
@@ -2929,6 +2930,7 @@ struct heart_strike_t : public death_knight_attack_t
     death_knight_attack_t( "heart_strike", player->spells.heart_strike->spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
+    check_spec( TREE_BLOOD );
 
     option_t options[] =
     {
@@ -3661,6 +3663,7 @@ struct scourge_strike_t : public death_knight_attack_t
       death_knight_spell_t( "scourge_strike_shadow", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
       death_knight_t* p = player -> cast_death_knight();
+      check_spec( TREE_UNHOLY );
 
       id = 70890;  // not in inc files?  hmm
       weapon = &( player -> main_hand_weapon );
@@ -4445,7 +4448,6 @@ void death_knight_t::init_scaling()
   if ( off_hand_weapon.type != WEAPON_NONE )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
   }
 }
 

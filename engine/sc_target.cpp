@@ -218,7 +218,6 @@ void target_t::combat_end()
 
 bool target_t::debuffs_t::snared()
 {
-  if ( frozen() ) return true;
   if (  slow -> check() ) return true;
   if ( thunder_clap -> check() ) return true;
   if ( infected_wounds -> check() ) return true;

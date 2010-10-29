@@ -1387,6 +1387,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blood_frenzy_bleed     = optimal_raid;
   overrides.blood_frenzy_physical  = optimal_raid;
   overrides.bloodlust              = optimal_raid;
+  overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
@@ -1400,7 +1401,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
-  overrides.improved_scorch        = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
@@ -1422,7 +1422,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
   overrides.windfury_totem         = optimal_raid;
-  overrides.winters_chill          = optimal_raid;
   overrides.wrath_of_air           = optimal_raid;
 }
 
@@ -1663,6 +1662,7 @@ std::vector<option_t>& sim_t::get_options()
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
+      { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
       { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
@@ -1680,7 +1680,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
       { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
       { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
-      { "override.improved_scorch",         OPT_BOOL,   &( overrides.improved_scorch                ) },
       { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
       { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
       { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
@@ -1703,7 +1702,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
       { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
       { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
-      { "override.winters_chill",           OPT_BOOL,   &( overrides.winters_chill                  ) },
       { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
       // @option_doc loc=global/regen title="Regen"
       { "infinite_energy",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },

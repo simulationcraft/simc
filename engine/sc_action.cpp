@@ -603,8 +603,6 @@ void action_t::target_debuff( int dmg_type )
 
   if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= 2.0;
 
-  if ( t -> debuffs.winters_grasp -> up() ) target_hit += 0.02;
-
   if ( t -> resilience > 0 )
   {
     double percent_resil = t -> resilience / 94.3;
