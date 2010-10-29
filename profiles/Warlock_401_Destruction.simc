@@ -11,7 +11,7 @@ actions+=/summon_imp
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/soulburn
-actions+=/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down
+actions+=/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down
 actions+=/bane_of_doom,if=!ticking
 actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time+gcd|!ticking
 actions+=/conflagrate
