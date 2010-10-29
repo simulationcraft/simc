@@ -1334,8 +1334,6 @@ struct execute_t : public warrior_attack_t
     
     // Damage scales directly with AP per rage since 4.0.1.
     direct_power_mod = 0.0525 * max_consumed;
-    // up to 50% AP for up to 20
-    // 2.5%*AP ~ 1 excess_rage
 
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
@@ -1387,20 +1385,20 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();    
-    if ( result == RESULT_CRIT )
-    {
-      if ( ! p -> buffs_incite -> check() )
-        p -> buffs_incite -> trigger();
-    }
 
-    p -> buffs_incite -> expire();
+    if ( p -> buffs_incite -> check() )
+      p -> buffs_incite -> expire();
+    else if ( result == RESULT_CRIT )
+      p -> buffs_incite -> trigger();
+
   }
   
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_incite -> check() ) player_crit += 1.0;
+    if ( p -> buffs_incite -> check() )
+      player_crit += 1.0;
   }
 };
 
