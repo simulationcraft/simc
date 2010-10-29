@@ -2890,7 +2890,7 @@ void warrior_t::init_buffs()
   buffs_executioner_talent        = new buff_t( this, "executioner_talent",        5,  9.0 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry -> proc_chance() );
   buffs_hold_the_line             = new buff_t( this, "hold_the_line",             1,  5.0 * talents.hold_the_line -> rank() ); 
-  buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 6.0, talents.incite -> proc_chance() );
+  buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
   buffs_inner_rage                = new buff_t( this, "inner_rage",                1, 15.0 );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> proc_chance() );
