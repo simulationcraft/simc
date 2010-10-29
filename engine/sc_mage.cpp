@@ -20,13 +20,9 @@ struct mage_t : public player_t
   // Active Spells
   struct active_spells_t
   {
-    // Spec Spells
     active_spell_t* arcane_barrage;
     active_spell_t* pyroblast;
     active_spell_t* summon_water_elemental;
-
-    active_spell_t* fireball;
-    active_spell_t* living_bomb;
   };
   active_spells_t active_spells;
 
@@ -66,6 +62,7 @@ struct mage_t : public player_t
   gain_t* gains_clearcasting;
   gain_t* gains_empowered_fire;
   gain_t* gains_evocation;
+  gain_t* gains_mage_armor;
   gain_t* gains_mana_gem;
   gain_t* gains_master_of_elements;
 
@@ -96,6 +93,15 @@ struct mage_t : public player_t
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
+
+  // Mastery
+  struct mastery_spells_t
+  {
+    passive_spell_t* flashburn;
+    passive_spell_t* frostburn;
+    passive_spell_t* mana_adept;
+  };
+  mastery_spells_t mastery;
 
   // Options
   std::string focus_magic_target_str;
@@ -143,70 +149,70 @@ struct mage_t : public player_t
   {
     // Arcane
     talent_t* arcane_concentration;
-    talent_t* improved_counterspell;
-    talent_t* netherwind_presence;
-    talent_t* torment_the_weak;
-    talent_t* invocation;
+    talent_t* arcane_flows;
+    talent_t* arcane_potency;
+    talent_t* arcane_power;
+    talent_t* arcane_tactics;
+    talent_t* focus_magic;
+    talent_t* improved_arcane_explosion;
     talent_t* improved_arcane_missiles;
     talent_t* improved_blink;
-    talent_t* arcane_flows;
-    talent_t* presence_of_mind;
-    talent_t* missile_barrage;
-    talent_t* prismatic_cloak;
-    talent_t* improved_polymorph;
-    talent_t* arcane_tactics;
-    talent_t* incanters_absorption;
-    talent_t* improved_arcane_explosion;
-    talent_t* arcane_potency;
-    talent_t* slow;
-    talent_t* nether_vortex;
-    talent_t* focus_magic;
+    talent_t* improved_counterspell;
     talent_t* improved_mana_gem;
-    talent_t* arcane_power;
+    talent_t* improved_polymorph;
+    talent_t* incanters_absorption;
+    talent_t* invocation;
+    talent_t* missile_barrage;
+    talent_t* nether_vortex;
+    talent_t* netherwind_presence;
+    talent_t* presence_of_mind;
+    talent_t* prismatic_cloak;
+    talent_t* slow;
+    talent_t* torment_the_weak;
 
     // Fire
-    talent_t* master_of_elements;
-    talent_t* burning_soul;
-    talent_t* improved_fire_blast;
-    talent_t* ignite;
-    talent_t* fire_power;
-    talent_t* blazing_speed;
-    talent_t* impact;
-    talent_t* cauterize;
     talent_t* blast_wave;
-    talent_t* hot_streak;
-    talent_t* improved_scorch;
-    talent_t* molten_shields;
+    talent_t* blazing_speed;
+    talent_t* burning_soul;
+    talent_t* cauterize;
     talent_t* combustion;
-    talent_t* improved_hot_streak;
-    talent_t* firestarter;
-    talent_t* improved_flamestrike;
-    talent_t* dragons_breath;
-    talent_t* molten_fury;
-    talent_t* pyromaniac;
     talent_t* critical_mass;
+    talent_t* dragons_breath;
+    talent_t* fire_power;
+    talent_t* firestarter;
+    talent_t* hot_streak;
+    talent_t* ignite;
+    talent_t* impact;
+    talent_t* improved_fire_blast;
+    talent_t* improved_flamestrike;
+    talent_t* improved_hot_streak;
+    talent_t* improved_scorch;
     talent_t* living_bomb;
+    talent_t* master_of_elements;
+    talent_t* molten_fury;
+    talent_t* molten_shields;
+    talent_t* pyromaniac;
 
     // Frost
+    talent_t* brain_freeze;
+    talent_t* cold_snap;
+    talent_t* deep_freeze;
     talent_t* early_frost;
-    talent_t* piercing_ice;
-    talent_t* shatter;
+    talent_t* enduring_winter;
+    talent_t* fingers_of_frost;
+    talent_t* frostfire_orb;
+    talent_t* ice_barrier;
     talent_t* ice_floes;
-    talent_t* improved_cone_of_cold;
-    talent_t* piercing_chill;
-    talent_t* permafrost;
     talent_t* ice_shards;
     talent_t* icy_veins;
-    talent_t* fingers_of_frost;
+    talent_t* improved_cone_of_cold;
     talent_t* improved_freeze;
-    talent_t* enduring_winter;
-    talent_t* cold_snap;
-    talent_t* brain_freeze;
-    talent_t* shattered_barrier;
-    talent_t* ice_barrier;
+    talent_t* permafrost;
+    talent_t* piercing_chill;
+    talent_t* piercing_ice;
     talent_t* reactive_barrier;
-    talent_t* frostfire_orb;
-    talent_t* deep_freeze;
+    talent_t* shatter;
+    talent_t* shattered_barrier;
 
     talents_list_t() { memset( ( void* ) this, 0x0, sizeof( talents_list_t ) ); }
   };
@@ -258,7 +264,6 @@ struct mage_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual talent_tree_type primary_tree() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -308,6 +313,7 @@ struct mage_spell_t : public spell_t
   virtual void   travel( int travel_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
+  virtual void   target_debuff( int dmg_type );
 };
 
 // ==========================================================================
@@ -1024,7 +1030,6 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.18;
   }
 
-  double arcane_blast_multiplier = 0;
   double fire_power_multiplier   = 0;
 
   if ( school == SCHOOL_ARCANE )
@@ -1033,17 +1038,11 @@ void mage_spell_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect_base_value( 1 ) / 100.0;
     }
-
+    
     player_multiplier *= 1.0 + p -> passive_spells.arcane_specialization -> effect_base_value( 1 ) / 100.0;
-
-    int ab_stack = p ->  buffs_arcane_blast -> stack();
-
-    arcane_blast_multiplier = ab_stack * ( 0.20 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
-
-    for ( int i=0; i < 5; i++ )
-    {
-      p -> uptimes_arcane_blast[ i ] -> update( i == ab_stack );
-    }
+      
+    double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
+    player_multiplier *= 1.0 + p -> mastery.mana_adept -> effect_base_value( 2 ) / 10000.0 * mana_pct;  
   }
   else if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
   {
@@ -1071,11 +1070,16 @@ void mage_spell_t::player_buff()
   else if ( school == SCHOOL_FROST )
   {
     player_multiplier *= 1.0 + p -> passive_spells.frost_specialization -> effect_base_value( 1 ) / 100.0;
+
+    if ( p -> buffs_fingers_of_frost -> may_react() )
+    {
+      player_multiplier *= 1.0 + p -> mastery.frostburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+    }
   }
 
   double arcane_power_multiplier = p -> buffs_arcane_power -> check() ? 0.20 : 0.0;
 
-  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier + fire_power_multiplier;
+  player_multiplier *= 1.0 + arcane_power_multiplier + fire_power_multiplier;
 
   if ( p -> buffs_arcane_potency -> up() && ! dual )
   {
@@ -1085,6 +1089,20 @@ void mage_spell_t::player_buff()
   if ( sim -> debug )
     log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f",
                    name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+}
+
+// mage_spell_t::target_debuff ==============================================
+
+void mage_spell_t::target_debuff( int dmg_type )
+{
+  spell_t::target_debuff( dmg_type );
+
+  if ( school == SCHOOL_FIRE && dmg_type == DMG_OVER_TIME )
+  {
+    mage_t* p = player -> cast_mage();
+
+    target_multiplier *= 1.0 + p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+  }
 }
 
 // ==========================================================================
@@ -1123,8 +1141,6 @@ struct arcane_barrage_t : public mage_spell_t
 
 struct arcane_blast_t : public mage_spell_t
 {
-  int max_buff;
-
   arcane_blast_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "arcane_blast", 30451, player )
   {
@@ -1153,6 +1169,13 @@ struct arcane_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     p -> buffs_arcane_blast -> trigger();
+  }
+
+  virtual void player_buff()
+  {
+    mage_spell_t::player_buff();
+    mage_t* p = player -> cast_mage();
+    player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( 0.20 + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
   }
 };
 
@@ -1539,7 +1562,7 @@ struct evocation_t : public mage_spell_t
     base_execute_time     = 6.0;
     base_tick_time        = 2.0;
     num_ticks             = 3;
-    scale_with_haste      = false;
+    tick_zero             = true;
     channeled             = true;
     harmful               = false;
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
@@ -2738,70 +2761,70 @@ void mage_t::init_talents()
 {
   // Arcane
   talents.arcane_concentration        = new talent_t( this, "arcane_concentration", "Arcane Concentration" );
-  talents.improved_counterspell       = new talent_t( this, "improved_counterspell", "Improved Counterspell" );
-  talents.netherwind_presence         = new talent_t( this, "netherwind_presence", "Netherwind Presence" );
-  talents.torment_the_weak            = new talent_t( this, "torment_the_weak", "Torment the Weak" );
-  talents.invocation                  = new talent_t( this, "invocation", "Invocation" );
+  talents.arcane_flows                = new talent_t( this, "arcane_flows", "Arcane Flows" );
+  talents.arcane_potency              = new talent_t( this, "arcane_potency", "Arcane Potency" );
+  talents.arcane_power                = new talent_t( this, "arcane_power", "Arcane Power" );
+  talents.arcane_tactics              = new talent_t( this, "arcane_tactics", "Arcane Tactics" );
+  talents.focus_magic                 = new talent_t( this, "focus_magic", "Focus Magic" );
+  talents.improved_arcane_explosion   = new talent_t( this, "improved_arcane_explosion", "Improved Arcane Explosion" );
   talents.improved_arcane_missiles    = new talent_t( this, "improved_arcane_missiles", "Improved Arcane Missiles" );
   talents.improved_blink              = new talent_t( this, "improved_blink", "Improved Blink" );
-  talents.arcane_flows                = new talent_t( this, "arcane_flows", "Arcane Flows" );
-  talents.presence_of_mind            = new talent_t( this, "presence_of_mind", "Presence of Mind" );
-  talents.missile_barrage             = new talent_t( this, "missile_barrage", "Missile Barrage" );
-  talents.prismatic_cloak             = new talent_t( this, "prismatic_cloak", "Prismatic Cloak" );
-  talents.improved_polymorph          = new talent_t( this, "improved_polymorph", "Improved Polymorph" );
-  talents.arcane_tactics              = new talent_t( this, "arcane_tactics", "Arcane Tactics" );
-  talents.incanters_absorption        = new talent_t( this, "incanters_absorption", "Incanter's Absorption" );
-  talents.improved_arcane_explosion    = new talent_t( this, "improved_arcane_explosion", "Improved Arcane Explosion" );
-  talents.arcane_potency              = new talent_t( this, "arcane_potency", "Arcane Potency" );
-  talents.slow                        = new talent_t( this, "slow", "Slow" );
-  talents.nether_vortex               = new talent_t( this, "nether_vortex", "Nether Vortex" );
-  talents.focus_magic                 = new talent_t( this, "focus_magic", "Focus Magic" );
+  talents.improved_counterspell       = new talent_t( this, "improved_counterspell", "Improved Counterspell" );
   talents.improved_mana_gem           = new talent_t( this, "improved_mana_gem", "Improved Mana Gem" );
-  talents.arcane_power                = new talent_t( this, "arcane_power", "Arcane Power" );
+  talents.improved_polymorph          = new talent_t( this, "improved_polymorph", "Improved Polymorph" );
+  talents.incanters_absorption        = new talent_t( this, "incanters_absorption", "Incanter's Absorption" );
+  talents.invocation                  = new talent_t( this, "invocation", "Invocation" );
+  talents.missile_barrage             = new talent_t( this, "missile_barrage", "Missile Barrage" );
+  talents.nether_vortex               = new talent_t( this, "nether_vortex", "Nether Vortex" );
+  talents.netherwind_presence         = new talent_t( this, "netherwind_presence", "Netherwind Presence" );
+  talents.presence_of_mind            = new talent_t( this, "presence_of_mind", "Presence of Mind" );
+  talents.prismatic_cloak             = new talent_t( this, "prismatic_cloak", "Prismatic Cloak" );
+  talents.slow                        = new talent_t( this, "slow", "Slow" );
+  talents.torment_the_weak            = new talent_t( this, "torment_the_weak", "Torment the Weak" );
 
   // Fire
-  talents.master_of_elements = new talent_t( this, "master_of_elements", "Master of Elements" );
-  talents.burning_soul = new talent_t( this, "burning_soul", "Burning Soul" );
-  talents.improved_fire_blast = new talent_t( this, "improved_fire_blast", "Improved Fire Blast" );
-  talents.ignite = new talent_t( this, "ignite", "Ignite" );
-  talents.fire_power = new talent_t( this, "fire_power", "Fire Power" );
-  talents.blazing_speed = new talent_t( this, "blazing_speed", "Blazing Speed" );
-  talents.impact = new talent_t( this, "impact", "Impact" );
-  talents.cauterize = new talent_t( this, "cauterize", "Cauterize" );
-  talents.blast_wave = new talent_t( this, "blast_wave", "Blast Wave" );
-  talents.hot_streak = new talent_t( this, "hot_streak", "Hot Streak" );
-  talents.improved_scorch = new talent_t( this, "improved_scorch", "Improved Scorch" );
-  talents.molten_shields = new talent_t( this, "molten_shields", "Molten Shields" );
-  talents.combustion = new talent_t( this, "combustion", "Combustion" );
-  talents.improved_hot_streak = new talent_t( this, "improved_hot_streak", "Improved Hot Streak" );
-  talents.firestarter = new talent_t( this, "firestarter", "Firestarter" );
-  talents.improved_flamestrike = new talent_t( this, "improved_flamestrike", "Improved Flamestrike" );
-  talents.dragons_breath = new talent_t( this, "dragons_breath", "Dragon's Breath" );
-  talents.molten_fury = new talent_t( this, "molten_fury", "Molten Fury" );
-  talents.pyromaniac = new talent_t( this, "pyromaniac", "Pyromaniac" );
-  talents.critical_mass = new talent_t( this, "critical_mass", "Critical Mass" );
-  talents.living_bomb = new talent_t( this, "living_bomb", "Living Bomb" );
+  talents.blast_wave                  = new talent_t( this, "blast_wave", "Blast Wave" );
+  talents.blazing_speed               = new talent_t( this, "blazing_speed", "Blazing Speed" );
+  talents.burning_soul                = new talent_t( this, "burning_soul", "Burning Soul" );
+  talents.cauterize                   = new talent_t( this, "cauterize", "Cauterize" );
+  talents.combustion                  = new talent_t( this, "combustion", "Combustion" );
+  talents.critical_mass               = new talent_t( this, "critical_mass", "Critical Mass" );
+  talents.dragons_breath              = new talent_t( this, "dragons_breath", "Dragon's Breath" );
+  talents.fire_power                  = new talent_t( this, "fire_power", "Fire Power" );
+  talents.firestarter                 = new talent_t( this, "firestarter", "Firestarter" );
+  talents.hot_streak                  = new talent_t( this, "hot_streak", "Hot Streak" );
+  talents.ignite                      = new talent_t( this, "ignite", "Ignite" );
+  talents.impact                      = new talent_t( this, "impact", "Impact" );
+  talents.improved_fire_blast         = new talent_t( this, "improved_fire_blast", "Improved Fire Blast" );
+  talents.improved_flamestrike        = new talent_t( this, "improved_flamestrike", "Improved Flamestrike" );
+  talents.improved_hot_streak         = new talent_t( this, "improved_hot_streak", "Improved Hot Streak" );
+  talents.improved_scorch             = new talent_t( this, "improved_scorch", "Improved Scorch" );
+  talents.living_bomb                 = new talent_t( this, "living_bomb", "Living Bomb" );
+  talents.master_of_elements          = new talent_t( this, "master_of_elements", "Master of Elements" );
+  talents.molten_fury                 = new talent_t( this, "molten_fury", "Molten Fury" );
+  talents.molten_shields              = new talent_t( this, "molten_shields", "Molten Shields" );
+  talents.pyromaniac                  = new talent_t( this, "pyromaniac", "Pyromaniac" );
 
   // Frost
-  talents.early_frost = new talent_t( this, "early_frost", "Early Frost" );
-  talents.piercing_ice = new talent_t( this, "piercing_ice", "Piercing Ice" );
-  talents.shatter = new talent_t( this, "shatter", "Shatter" );
-  talents.ice_floes = new talent_t( this, "ice_floes", "Ice Floes" );
-  talents.improved_cone_of_cold = new talent_t( this, "improved_cone_of_cold", "Improved Cone of Cold" );
-  talents.piercing_chill = new talent_t( this, "piercing_chill", "Piercing Chill" );
-  talents.permafrost = new talent_t( this, "permafrost", "Permafrost" );
-  talents.ice_shards = new talent_t( this, "ice_shards", "Ice Shards" );
-  talents.icy_veins = new talent_t( this, "icy_veins", "Icy Veins" );
-  talents.fingers_of_frost = new talent_t( this, "fingers_of_frost", "Fingers of Frost" );
-  talents.improved_freeze = new talent_t( this, "improved_freeze", "Improved Freeze" );
-  talents.enduring_winter = new talent_t( this, "enduring_winter", "Enduring Winter" );
-  talents.cold_snap = new talent_t( this, "cold_snap", "Cold Snap" );
-  talents.brain_freeze = new talent_t( this, "brain_freeze", "Brain Freeze" );
-  talents.shattered_barrier = new talent_t( this, "shattered_barrier", "Shattered Barrier" );
-  talents.ice_barrier = new talent_t( this, "ice_barrier", "Ice Barrier" );
-  talents.reactive_barrier = new talent_t( this, "reactive_barrier", "Reactive Barrier" );
-  talents.frostfire_orb = new talent_t( this, "frostfire_orb", "Frostfire Orb" );
-  talents.deep_freeze = new talent_t( this, "deep_freeze", "Deep Freeze" );
+  talents.brain_freeze                = new talent_t( this, "brain_freeze", "Brain Freeze" );
+  talents.cold_snap                   = new talent_t( this, "cold_snap", "Cold Snap" );
+  talents.deep_freeze                 = new talent_t( this, "deep_freeze", "Deep Freeze" );
+  talents.early_frost                 = new talent_t( this, "early_frost", "Early Frost" );
+  talents.enduring_winter             = new talent_t( this, "enduring_winter", "Enduring Winter" );
+  talents.fingers_of_frost            = new talent_t( this, "fingers_of_frost", "Fingers of Frost" );
+  talents.frostfire_orb               = new talent_t( this, "frostfire_orb", "Frostfire Orb" );
+  talents.ice_barrier                 = new talent_t( this, "ice_barrier", "Ice Barrier" );
+  talents.ice_floes                   = new talent_t( this, "ice_floes", "Ice Floes" );
+  talents.ice_shards                  = new talent_t( this, "ice_shards", "Ice Shards" );
+  talents.icy_veins                   = new talent_t( this, "icy_veins", "Icy Veins" );
+  talents.improved_cone_of_cold       = new talent_t( this, "improved_cone_of_cold", "Improved Cone of Cold" );
+  talents.improved_freeze             = new talent_t( this, "improved_freeze", "Improved Freeze" );
+  talents.permafrost                  = new talent_t( this, "permafrost", "Permafrost" );
+  talents.piercing_chill              = new talent_t( this, "piercing_chill", "Piercing Chill" );
+  talents.piercing_ice                = new talent_t( this, "piercing_ice", "Piercing Ice" );
+  talents.reactive_barrier            = new talent_t( this, "reactive_barrier", "Reactive Barrier" );
+  talents.shatter                     = new talent_t( this, "shatter", "Shatter" );
+  talents.shattered_barrier           = new talent_t( this, "shattered_barrier", "Shattered Barrier" );
 
   player_t::init_talents();
 }
@@ -2812,21 +2835,15 @@ void mage_t::init_spells()
 {
   player_t::init_spells();
 
+  // Mastery
+  mastery.flashburn                   = new passive_spell_t( this, "flashburn",  76595, MAGE_FIRE,   true );
+  mastery.frostburn                   = new passive_spell_t( this, "frostburn",  76613, MAGE_FROST,  true );
+  mastery.mana_adept                  = new passive_spell_t( this, "mana_adept", 76547, MAGE_ARCANE, true );
+
+  // Passives
   passive_spells.arcane_specialization = new passive_spell_t( this, "arcane_specialization", "Arcane Specialization", MAGE_ARCANE );
-  passive_spells.fire_specialization = new passive_spell_t( this, "fire_specialization", "Fire Specialization", MAGE_ARCANE );
-  passive_spells.frost_specialization = new passive_spell_t( this, "frost_specialization", "Frost Specialization", MAGE_ARCANE );
-
-  if ( sim -> P403 )
-  {
-    active_spells.pyroblast  = new active_spell_t( this, "pyroblast", "Pyroblast", MAGE_FIRE );
-  }
-  else
-  {
-    active_spells.pyroblast  = new active_spell_t( this, "pyroblast", "Pyroblast!", MAGE_FIRE );
-  }
-
-  active_spells.fireball    = new active_spell_t( this, "fireball", "Fireball" );
-  active_spells.living_bomb = new active_spell_t( this, "living_bomb", "Living Bomb" );
+  passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization",   MAGE_FIRE );
+  passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization",  MAGE_FROST );
 }
 
 // mage_t::init_race ======================================================
@@ -2836,14 +2853,17 @@ void mage_t::init_race()
   race = util_t::parse_race_type( race_str );
   switch ( race )
   {
-  case RACE_HUMAN:
-  case RACE_DRAENEI:
-  case RACE_GNOME:
-  case RACE_UNDEAD:
-  case RACE_TROLL:
   case RACE_BLOOD_ELF:
-  case RACE_WORGEN:
+  case RACE_DRAENEI:
+  case RACE_DWARF:
   case RACE_GOBLIN:
+  case RACE_GNOME:
+  case RACE_HUMAN:
+  case RACE_NIGHT_ELF:
+  case RACE_ORC:
+  case RACE_TROLL:
+  case RACE_UNDEAD:
+  case RACE_WORGEN:
     break;
   default:
     race = RACE_UNDEAD;
@@ -2908,10 +2928,10 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_clearcasting       = get_gain( "clearcasting" );
-  gains_empowered_fire     = get_gain( "empowered_fire" );
-  gains_evocation          = get_gain( "evocation" );
-  gains_mana_gem           = get_gain( "mana_gem" );
+  gains_clearcasting       = get_gain( "clearcasting"       );
+  gains_evocation          = get_gain( "evocation"          );
+  gains_mage_armor         = get_gain( "mage_armor"         );
+  gains_mana_gem           = get_gain( "mana_gem"           );
   gains_master_of_elements = get_gain( "master_of_elements" );
 }
 
@@ -2933,13 +2953,13 @@ void mage_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0" );
-  uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1" );
-  uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2" );
-  uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3" );
-  uptimes_arcane_blast[ 4 ]    = get_uptime( "arcane_blast_4" );
-  uptimes_dps_rotation         = get_uptime( "dps_rotation" );
-  uptimes_dpm_rotation         = get_uptime( "dpm_rotation" );
+  uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0"  );
+  uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1"  );
+  uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2"  );
+  uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3"  );
+  uptimes_arcane_blast[ 4 ]    = get_uptime( "arcane_blast_4"  );
+  uptimes_dps_rotation         = get_uptime( "dps_rotation"    );
+  uptimes_dpm_rotation         = get_uptime( "dpm_rotation"    );
   uptimes_water_elemental      = get_uptime( "water_elemental" );
 }
 
@@ -3046,41 +3066,6 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::primary_tree ====================================================
-
-talent_tree_type mage_t::primary_tree() SC_CONST
-{
-  if ( level > 10 && level <= 69 )
-  {
-    if ( talent_tab_points[ MAGE_ARCANE ] > 0 ) return TREE_ARCANE;
-    if ( talent_tab_points[ MAGE_FIRE ] > 0 ) return TREE_FIRE;
-    if ( talent_tab_points[ MAGE_FROST ] > 0 ) return TREE_DESTRUCTION;
-    return TREE_NONE;
-  }
-  else
-  {
-    if ( talent_tab_points[ MAGE_FROST ] >= talent_tab_points[ MAGE_ARCANE ] )
-    {
-      if ( talent_tab_points[ MAGE_FROST ] >= talent_tab_points[ MAGE_FIRE ] )
-      {
-        return TREE_FROST;
-      }
-      else
-      {
-        return TREE_FIRE;
-      }
-    }
-    else if ( talent_tab_points[ MAGE_FIRE ] >= talent_tab_points[ MAGE_ARCANE ] )
-    {
-      return TREE_FIRE;
-    }
-    else
-    {
-      return TREE_ARCANE;
-    }
-  }
-}
-
 // mage_t::composite_spell_power ===========================================
 
 double mage_t::composite_spell_power( const school_type school ) SC_CONST
@@ -3171,12 +3156,20 @@ void mage_t::regen( double periodicity )
 
   if ( buffs_mage_armor -> up() )
   {
-    mana_regen_while_casting += 0.50 + ( glyphs.mage_armor ? 0.20 : 0.00 );
+    double gain_amount = resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
+    gain_amount *= 1.0 + ( glyphs.mage_armor ? 0.20 : 0.00 );
+
+    resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
   }
 
   player_t::regen( periodicity );
 
   uptimes_water_elemental -> update( active_water_elemental != 0 );
+
+  for ( int i=0; i < 5; i++ )
+  {
+    uptimes_arcane_blast[ i ] -> update( i == buffs_arcane_blast -> stack() );
+  }
 }
 
 // mage_t::resource_gain ===================================================
@@ -3337,7 +3330,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type 
 {
   sim -> errorf( "Mage Module isn't avaiable at the moment." );
 
-  // return new mage_t( sim, name, r );
+  return new mage_t( sim, name, r );
   return NULL;
 }
 
